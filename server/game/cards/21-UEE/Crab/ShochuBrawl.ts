@@ -7,7 +7,7 @@ export default class ShochuBrawl extends DrawCard {
 
     setupCardAbilities() {
         this.action({
-            title: 'Gain +1 military for each bushi character',
+            title: 'Initiate a Military Duel, bowing the loser and dishonoring the winner',
             condition: (context) => context.game.isDuringConflict('political'),
             initiateDuel: {
                 type: DuelTypes.Military,
@@ -16,8 +16,7 @@ export default class ShochuBrawl extends DrawCard {
                         AbilityDsl.actions.bow({ target: duel.loser }),
                         AbilityDsl.actions.dishonor({ target: duel.winner })
                     ])
-            },
-            max: AbilityDsl.limit.perConflict(1)
+            }
         });
     }
 }

@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Locations } from '../../../Constants';
+import { Locations } from '../../../Constants';
 import DrawCard from '../../../drawcard';
 
 export default class SenseisHeirloom extends DrawCard {
@@ -9,16 +9,13 @@ export default class SenseisHeirloom extends DrawCard {
         this.attachmentConditions({ trait: 'bushi' });
 
         this.reaction({
-            title: 'Search the top of your deck for an event',
+            title: 'Search the top of your deck for a card',
             when: {
                 onCardAttached: (event, context) => event.card === context.source
             },
             gameAction: AbilityDsl.actions.deckSearch((context) => ({
-                amount: (context.source.parent as DrawCard).getGlory(),
-                cardCondition: (card) => card.type === CardTypes.Event,
-                gameAction: AbilityDsl.actions.moveCard({
-                    destination: Locations.Hand
-                })
+                amount: 2 * (context.source.parent as DrawCard).printedGlory,
+                gameAction: AbilityDsl.actions.moveCard({ destination: Locations.Hand })
             }))
         });
     }

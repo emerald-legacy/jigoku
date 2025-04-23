@@ -13,6 +13,7 @@ export default class DojiReiha extends DrawCard {
                 type: DuelTypes.Political,
                 gameAction: (duel) =>
                     AbilityDsl.actions.sequential([
+                        AbilityDsl.actions.honor({ target: duel.participants }),
                         AbilityDsl.actions.chooseAction((context) => ({
                             player: duel.winningPlayer === context.player ? Players.Self : Players.Opponent,
                             options: {
@@ -25,8 +26,7 @@ export default class DojiReiha extends DrawCard {
                                     action: AbilityDsl.actions.noAction()
                                 }
                             }
-                        })),
-                        AbilityDsl.actions.honor({ target: duel.participants })
+                        }))
                     ])
             }
         });

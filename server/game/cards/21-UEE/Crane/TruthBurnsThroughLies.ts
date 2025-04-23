@@ -7,6 +7,8 @@ export default class TruthBurnsThroughLies extends DrawCard {
     static id = 'truth-burns-through-lies';
 
     setupCardAbilities() {
+        this.attachmentConditions({ trait: 'courtier' });
+
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
                 title: 'Dishonor a character',

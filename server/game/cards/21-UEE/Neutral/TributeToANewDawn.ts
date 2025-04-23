@@ -13,24 +13,24 @@ export default class TributeToANewDawn extends DrawCard {
         this.action({
             title: 'Discard multiple attachments',
             condition: (context) =>
-                context.player.anyCardsInPlay((card) => card.type === CardTypes.Attachment) &&
+                context.player.anyCardsInPlay((card: DrawCard) => card.type === CardTypes.Attachment) &&
                 (!context.player.opponent ||
-                    context.player.opponent.anyCardsInPlay((card) => card.type === CardTypes.Attachment)),
+                    context.player.opponent.anyCardsInPlay((card: DrawCard) => card.type === CardTypes.Attachment)),
             targets: {
                 [FIRST]: {
-                    activePromptTitle: 'Choose up to 3 attachments to keep',
+                    activePromptTitle: 'Choose up to 2 attachments to keep',
                     cardType: CardTypes.Attachment,
                     mode: TargetModes.UpTo,
-                    numCards: 3,
+                    numCards: 2,
                     controller: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
                     player: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
                     gameAction: AbilityDsl.actions.bow()
                 },
                 [SECOND]: {
-                    activePromptTitle: 'Choose up to 3 attachments to keep',
+                    activePromptTitle: 'Choose up to 2 attachments to keep',
                     cardType: CardTypes.Attachment,
                     mode: TargetModes.UpTo,
-                    numCards: 3,
+                    numCards: 2,
                     controller: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
                     player: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
                     gameAction: AbilityDsl.actions.bow()
