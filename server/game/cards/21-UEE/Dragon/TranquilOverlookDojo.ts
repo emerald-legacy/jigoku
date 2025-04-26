@@ -18,6 +18,7 @@ function actionVersion(self: TranquilOverlookDojo, limit: AbilityLimit, type: Du
     self.action({
         title,
         condition: (context) => context.game.isDuringConflict(),
+        cost: AbilityDsl.costs.bowSelf(),
         initiateDuel: {
             type,
             opponentChoosesDuelTarget: true,
