@@ -265,6 +265,24 @@ class Player extends GameObject {
         });
     }
 
+    /**
+     * @param {string} trait
+     * @returns {boolean} true/false if the trait is in pay
+     **/
+    isCharacterTraitInPlay(trait) {
+        return this.game.allCards.some((card) => {
+            return (
+                card.type === CardTypes.Character &&
+                card.controller === this &&
+                card.hasTrait(trait) &&
+                card.isFaceup() &&
+                (card.location === Locations.PlayArea ||
+                    (card.isProvince && !card.isBroken) ||
+                    (card.isInProvince() && card.type === CardTypes.Holding))
+            );
+        });
+    }
+
     areLocationsAdjacent(locationA, locationB) {
         switch (locationA) {
             case Locations.ProvinceOne:

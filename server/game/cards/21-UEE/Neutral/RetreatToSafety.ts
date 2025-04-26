@@ -17,7 +17,7 @@ export default class RetreatToSafety extends DrawCard {
             },
             then: (parentContext) => ({
                 gameAction: AbilityDsl.actions.conditional({
-                    condition: (context) => context.player.isTraitInPlay('commander'),
+                    condition: (context) => context.player.isCharacterTraitInPlay('commander'),
                     falseGameAction: AbilityDsl.actions.noAction(),
                     trueGameAction: AbilityDsl.actions.selectCard({
                         activePromptTitle: 'Choose a character to ready',
