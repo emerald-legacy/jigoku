@@ -11,7 +11,7 @@ export default class TributeToANewDawn extends DrawCard {
 
     setupCardAbilities() {
         this.action({
-            title: 'Discard multiple attachments',
+            title: 'Remove multiple attachments from the game',
             condition: (context) =>
                 context.player.anyCardsInPlay((card: DrawCard) => card.type === CardTypes.Attachment) &&
                 (!context.player.opponent ||
@@ -36,10 +36,10 @@ export default class TributeToANewDawn extends DrawCard {
                     gameAction: AbilityDsl.actions.bow()
                 }
             },
-            gameAction: AbilityDsl.actions.discardFromPlay((context) => ({
+            gameAction: AbilityDsl.actions.removeFromGame((context) => ({
                 target: this.#getAffectedAttachments(context)
             })),
-            effect: 'discard {1}',
+            effect: 'remove {1} from the game',
             effectArgs: (context) => [this.#getAffectedAttachments(context)]
         });
     }
@@ -50,7 +50,7 @@ export default class TributeToANewDawn extends DrawCard {
         for (const card of context.targets[SECOND]) protectedAttachments.add(card);
 
         return (context.game.allCards as Array<DrawCard>).filter(
-            (card) => card.type === CardTypes.Attachment && !protectedAttachments.has(card)
+            (card) => card.type === CardTypes.Attachment && card.isInPlay() && !protectedAttachments.has(card)
         );
     }
 }
