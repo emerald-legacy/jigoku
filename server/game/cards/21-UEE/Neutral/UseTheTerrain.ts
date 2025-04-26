@@ -3,7 +3,7 @@ import AbilityDsl from '../../../abilitydsl';
 import { Durations } from '../../../Constants';
 import DrawCard from '../../../drawcard';
 
-export class UseTheTerrain extends DrawCard {
+export default class UseTheTerrain extends DrawCard {
     static id = 'use-the-terrain';
 
     setupCardAbilities() {

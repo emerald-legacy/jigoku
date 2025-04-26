@@ -1,8 +1,8 @@
 import { GameModes } from '../../../../GameModes';
 import { CardTypes, Locations, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import { ProvinceCard } from '../../../ProvinceCard';
 
-export default class Landfall extends DrawCard {
+export default class Landfall extends ProvinceCard {
     static id = 'landfall';
 
     setupCardAbilities() {
