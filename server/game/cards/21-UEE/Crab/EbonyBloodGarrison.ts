@@ -24,7 +24,7 @@ export default class EbonyBloodGarrison extends StrongholdCard {
                 },
                 [OPP_PROVINCE]: {
                     dependsOn: MY_PROVINCE,
-                    controller: Players.Self,
+                    controller: Players.Opponent,
                     cardType: CardTypes.Province,
                     location: Locations.Provinces,
                     cardCondition: (card) => card.facedown && !card.isStronghold
