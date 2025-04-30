@@ -30,6 +30,8 @@ describe('Ebony Blood Garrison', function () {
         });
 
         it('chooses non stronghold provinces', function () {
+            const initialFate = this.player1.fate;
+            const initalHandSize = this.player1.hand.length;
             this.player1.clickCard(this.ebonyBloodGarrison);
             expect(this.player1).toHavePrompt('Choose a province');
             expect(this.player1).toBeAbleToSelect(this.manicuredGarden);
@@ -52,6 +54,8 @@ describe('Ebony Blood Garrison', function () {
             expect(this.getChatLogs(10)).toContain(
                 'player1 uses Ebony Blood Garrison, bowing Ebony Blood Garrison to drag player2 into chaos'
             );
+            expect(this.player1.fate).toBe(initialFate + 1);
+            expect(this.player1.hand.length).toBe(initalHandSize + 1);
         });
     });
 });
