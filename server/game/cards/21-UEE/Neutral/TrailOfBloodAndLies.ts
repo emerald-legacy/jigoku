@@ -11,9 +11,10 @@ export default class TrailOfBloodAndLies extends DrawCard {
             when: {
                 onMoveFate: (event, context) =>
                     context.game.currentPhase !== Phases.Fate &&
+                    event.fate > 0 &&
                     event.origin &&
                     event.origin.type === CardTypes.Character &&
-                    event.fate > 0
+                    event.origin.controller === context.player.opponent
             },
             target: {
                 cardType: CardTypes.Character,
