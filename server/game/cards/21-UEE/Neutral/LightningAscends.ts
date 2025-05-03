@@ -19,6 +19,8 @@ export default class LightningAscends extends DrawCard {
                     })
                 },
                 enemy: {
+                    activePromptTitle: 'Choose a character to lose all traits',
+                    dependsOn: 'monk',
                     cardType: CardTypes.Character,
                     controller: Players.Opponent,
                     cardCondition: (card) => card.isParticipating(),
@@ -27,8 +29,8 @@ export default class LightningAscends extends DrawCard {
                     }))
                 }
             },
-            effect: 'grant 2 military skill to {0} and removes traits from {1}',
-            effectArgs: (context) => [context.targets.monk, context.targets.enemy]
+            effect: 'grant +2 {1} to {2} and removes all traits from {3}',
+            effectArgs: (context) => ['military', context.targets.monk, context.targets.enemy]
         });
     }
 }
