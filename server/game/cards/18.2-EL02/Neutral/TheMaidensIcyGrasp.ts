@@ -23,10 +23,10 @@ export default class TheMaidensIcyGrasp extends DrawCard {
                 cardType: CardTypes.Character,
                 cardCondition: (card: DrawCard) => this.charactersPlayedThisConflict.has(card),
                 gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.cardLastingEffect({
-                        effect: [AbilityDsl.effects.changeContributionFunction((_: unknown) => 0)],
+                    AbilityDsl.actions.cardLastingEffect((context) => ({
+                        effect: [AbilityDsl.effects.cannotContribute(() => (card) => card === context.target)],
                         duration: Durations.UntilEndOfConflict
-                    }),
+                    })),
                     AbilityDsl.actions.onAffinity({
                         trait: 'water',
                         gameAction: AbilityDsl.actions.removeFate((context) => ({ target: context.target }))

@@ -20,11 +20,11 @@ export default class IaijutsuSensei extends DrawCard {
                 message: 'prevent {0} from contributing to resolution of this conflict',
                 messageArgs: (duel) => duel.loser,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.cardLastingEffect({
+                    AbilityDsl.actions.cardLastingEffect((context) => ({
                         target: duel.loser,
-                        effect: [AbilityDsl.effects.changeContributionFunction(() => 0)],
+                        effect: [AbilityDsl.effects.cannotContribute(() => (card) => duel.loser.includes(card))],
                         duration: Durations.UntilEndOfConflict
-                    })
+                    }))
             }
         });
     }
