@@ -50,8 +50,8 @@ describe('Ebony Blood Garrison', () => {
             expect(this.getChatLogs(10)).toContain(
                 "player1 uses Ebony Blood Garrison, bowing Ebony Blood Garrison to drag player2 into chaos, as a crisis strikes Manicured Garden and Entrenched Position"
             );
-            expect(this.player1.fate).toBe(initialFate + 1);
-            expect(this.player1.hand.length).toBe(initalHandSize + 1);
+            // expect(this.player1.fate).toBe(initialFate + 1);
+            // expect(this.player1.hand.length).toBe(initalHandSize + 1);
         });
 
         it('triggers on-reveal abilities', function () {
@@ -72,8 +72,8 @@ describe('Ebony Blood Garrison', () => {
             expect(this.getChatLogs(10)).toContain("player2 uses Retire to the Brotherhood to discard Hida Guardian");
             expect(this.avalancheOfStone.isBroken).toBe(true);
             expect(this.retireToTheBrotherhood.isBroken).toBe(true);
-            expect(this.player1.fate).toBe(initialFate + 1);
-            expect(this.player1.hand.length).toBe(initalHandSize + 1);
+            // expect(this.player1.fate).toBe(initialFate + 1);
+            // expect(this.player1.hand.length).toBe(initalHandSize + 1);
         });
     });
 });

@@ -49,17 +49,17 @@ export default class EbonyBloodGarrison extends StrongholdCard {
                     )
                 );
 
-                context.game.queueStep(
-                    new SimpleStep(context.game, () =>
-                        AbilityDsl.actions.draw({ target: context.player }).resolve(context.player, context)
-                    )
-                );
-
-                context.game.queueStep(
-                    new SimpleStep(context.game, () =>
-                        AbilityDsl.actions.gainFate({ target: context.player }).resolve(context.player, context)
-                    )
-                );
+                // context.game.queueStep(
+                //     new SimpleStep(context.game, () =>
+                //         AbilityDsl.actions.draw({ target: context.player }).resolve(context.player, context)
+                //     )
+                // );
+                //
+                // context.game.queueStep(
+                //     new SimpleStep(context.game, () =>
+                //         AbilityDsl.actions.gainFate({ target: context.player }).resolve(context.player, context)
+                //     )
+                // );
             },
             effect: 'drag {1} into chaos, as a crisis strikes {2} and {3}',
             effectArgs: (context) => [
