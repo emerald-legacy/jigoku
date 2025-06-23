@@ -6,9 +6,13 @@ export default class EminentHistorian extends DrawCard {
     static id = 'eminent-historian';
 
     setupCardAbilities() {
+        this.persistentEffect({
+            effect: AbilityDsl.effects.cardCannot('receiveDishonorToken')
+        });
+
         this.action({
             title: 'Honor a character',
-            condition: (context) => context.source.isParticipating() && !context.player.opponent?.isMoreHonorable(),
+            condition: (context) => !context.player.opponent?.isMoreHonorable(),
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,
