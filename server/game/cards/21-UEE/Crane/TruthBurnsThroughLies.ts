@@ -7,7 +7,7 @@ export default class TruthBurnsThroughLies extends DrawCard {
     static id = 'truth-burns-through-lies';
 
     setupCardAbilities() {
-        this.attachmentConditions({ trait: 'courtier' });
+        this.attachmentConditions({ trait: ['courtier', 'magistrate'] });
 
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
@@ -17,7 +17,9 @@ export default class TruthBurnsThroughLies extends DrawCard {
                     cardType: CardTypes.Character,
                     cardCondition: (card, context) =>
                         card.isParticipating() &&
-                        (context.source.hasTrait('magistrate') || card.printedCost < context.source.printedCost),
+                        (context.source.hasTrait('magistrate')
+                            ? card.printedCost <= context.source.printedCost
+                            : card.printedCost < context.source.printedCost),
                     gameAction: AbilityDsl.actions.dishonor()
                 }
             } as ActionProps<this>)
