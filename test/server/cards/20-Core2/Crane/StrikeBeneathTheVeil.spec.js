@@ -22,7 +22,6 @@ describe('Strike Beneath the Veil', function () {
 
             this.player1.playAttachment(this.fineKatana, this.toturi);
             this.player2.playAttachment(this.pillowBook, this.toturi);
-            this.player1.playAttachment(this.ornateFan, this.toturi);
 
             this.noMoreActions();
             this.initiateConflict({
@@ -37,8 +36,9 @@ describe('Strike Beneath the Veil', function () {
 
             this.player2.clickCard(this.toturi);
             expect(this.toturi.getMilitarySkill()).toBe(2);
+            expect(this.toturi.getPoliticalSkill()).toBe(0);
             expect(this.getChatLogs(5)).toContain(
-                'player2 plays Strike Beneath the Veil to give Akodo Toturi -6military'
+                'player2 plays Strike Beneath the Veil to give Akodo Toturi -6military and -6political'
             );
         });
     });

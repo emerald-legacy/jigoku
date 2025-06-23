@@ -3,7 +3,7 @@ import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
 
 function penalty(target: DrawCard): number {
-    return -2 * target.attachments.length;
+    return -3 * target.attachments.length;
 }
 
 export default class StrikeBeneathTheVeil extends DrawCard {
@@ -12,16 +12,16 @@ export default class StrikeBeneathTheVeil extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Give a military penalty to a participating character',
-            condition: (context) => context.game.isDuringConflict('military'),
+            condition: (context) => context.game.isDuringConflict(),
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: AbilityDsl.effects.modifyMilitarySkill(penalty(context.target))
+                    effect: AbilityDsl.effects.modifyBothSkills(penalty(context.target))
                 }))
             },
-            effect: 'give {0} {1}{2}',
-            effectArgs: (context) => [penalty(context.target), 'military']
+            effect: 'give {0} {1}{2} and {1}{3}',
+            effectArgs: (context) => [penalty(context.target), 'military','political']
         });
     }
 }
