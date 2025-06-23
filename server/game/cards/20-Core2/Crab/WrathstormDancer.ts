@@ -10,14 +10,10 @@ export default class WrathstormDancer extends DrawCard {
         this.persistentEffect({
             condition: (context) =>
                 context.source.isParticipating() &&
-                context.game.findAnyCardsInPlay(
-                    (otherCard: BaseCard) =>
-                        otherCard !== context.source &&
-                        otherCard.type === CardTypes.Character &&
-                        otherCard.hasTrait('berserker') &&
-                        otherCard.isParticipating()
-                ).length > 0,
-            effect: AbilityDsl.effects.modifyMilitarySkill(3)
+                (context.player.cardsInPlay as DrawCard[]).some(
+                    (card) => card.hasTrait('berserker') && card !== context.source && card.isParticipating()
+                ),
+            effect: AbilityDsl.effects.doesNotBow()
         });
     }
 }
