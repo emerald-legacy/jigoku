@@ -24,14 +24,20 @@ export default class DrawingTheVoid extends DrawCard {
                             activePromptTitle: 'Choose a card to remove from the game',
                             cards: revealedCards,
                             targets: true,
-                            player: context.player.hasAffinity('void') ? Players.Self : Players.Opponent,
+                            player: Players.Self,
                             message: '{0} removes {1} from the game - the void consumes!',
                             messageArgs: (card, player) => [player, card],
                             gameAction: AbilityDsl.actions.moveCard({ destination: Locations.RemovedFromGame })
+                        })),
+                        AbilityDsl.actions.conditional((context) => ({
+                            condition: context.player.hasAffinity('void'),
+                            trueGameAction: AbilityDsl.actions.draw(),
+                            falseGameAction: AbilityDsl.actions.noAction()
                         }))
                     ]
                 };
-            })
+            }),
+            max: AbilityDsl.limit.perRound(1)
         });
     }
 }
