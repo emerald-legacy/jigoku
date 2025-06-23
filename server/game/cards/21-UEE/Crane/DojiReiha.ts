@@ -11,6 +11,7 @@ export default class DojiReiha extends DrawCard {
             condition: (context) => context.source.isParticipating(),
             initiateDuel: {
                 type: DuelTypes.Political,
+                opponentChoosesDuelTarget: true,
                 gameAction: (duel) =>
                     AbilityDsl.actions.sequential([
                         AbilityDsl.actions.honor({ target: duel.participants }),
