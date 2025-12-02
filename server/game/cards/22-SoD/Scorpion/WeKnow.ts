@@ -50,16 +50,13 @@ export default class WeKnow extends DrawCard {
                 }
             },
             then: context => ({
-                gameAction: AbilityDsl.actions.conditional({
-                    condition: _ => context.player.honor > context.player.opponent?.honor,
-                    trueGameAction: AbilityDsl.actions.loseHonor({
-                        target: context.player,
-                        amount: 2
-                    }),
-                    falseGameAction: AbilityDsl.actions.noAction()
+                thenCondition: () => context.player.honor > context.player.opponent?.honor,
+                gameAction: AbilityDsl.actions.loseHonor({
+                    target: context.player,
+                    amount: 2
                 }),
                 message: '{3} loses 2 honor',
-                messageArgs: thenContext => [context.player]
+                messageArgs: () => [context.player]
             }),
             effect: '{1}{2}{3}',
             effectArgs: (context) => {

@@ -62,12 +62,13 @@ describe('SoD - Scorpion', function () {
                 this.assassination = this.player2.findCardByName('assassination');
                 this.uji = this.player1.findCardByName('daidoji-uji');
                 this.uji.honor();
+                this.keeper.dishonor();
             });
 
             it('should work', function () {
                 this.player1.clickCard(this.shinobu);
                 expect(this.player1).toBeAbleToSelect(this.keeper);
-                expect(this.player1).toBeAbleToSelect(this.diplomat);
+                expect(this.player1).not.toBeAbleToSelect(this.diplomat);
 
                 this.player1.clickCard(this.keeper);
                 expect(this.getChatLogs(5)).toContain('player1 uses Bayushi Shinobu, bowing Bayushi Shinobu to take control of Keeper Initiate');
@@ -84,7 +85,7 @@ describe('SoD - Scorpion', function () {
                 this.player2.clickCard(this.assassination);
                 this.player2.clickCard(this.keeper);
 
-                expect(this.player1.honor).toBe(honor - 2);
+                expect(this.player1.honor).toBe(honor - 3); // 2 from the effect, 1 from the DH token
                 expect(this.getChatLogs(5)).toContain('player1 loses 2 honor due to the delayed effect of Bayushi Shinobu');
             });
 
@@ -389,6 +390,9 @@ describe('SoD - Scorpion', function () {
                 expect(this.player1).toBeAbleToSelect(this.rumormonger);
                 this.player1.clickCard(this.rumormonger);
 
+                let honor1 = this.player1.honor;
+                let honor2 = this.player2.honor;
+
                 expect(this.player1).not.toBeAbleToSelect(this.challenger);
                 expect(this.player1).not.toBeAbleToSelect(this.keeper);
                 expect(this.player1).toBeAbleToSelect(this.diplomat);
@@ -406,10 +410,14 @@ describe('SoD - Scorpion', function () {
                 expect(this.brash.isHonored).toBe(false);
                 expect(this.brash.isDishonored).toBe(true);
 
+                expect(this.player1.honor).toBe(honor1);
+                expect(this.player2.honor).toBe(honor2);
+
                 expect(this.getChatLogs(5)).toContain('player1 plays We Know, bowing Bayushi Rumormonger to replace Brash Samurai honored status token with a dishonored status token');
+                expect(this.getChatLogs(5)).not.toContain('player1 loses 2 honor');
             });
 
-            it('dishonor', function () {
+            it('lose honor', function () {
                 let hand1 = this.player1.hand.length;
                 this.player1.clickCard(this.weknow);
                 expect(this.player1).toBeAbleToSelect(this.rumormonger);

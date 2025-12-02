@@ -13,7 +13,7 @@ export default class CripplingCurse extends DrawCard {
     static id = 'crippling-curse';
 
     setupCardAbilities() {
-        this.forcedInterrupt({
+        this.forcedReaction({
             title: 'Discard fate and characters',
             when: {
                 onPhaseStarted: (event, context) =>

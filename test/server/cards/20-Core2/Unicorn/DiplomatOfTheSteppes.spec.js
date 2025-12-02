@@ -7,7 +7,7 @@ describe('Diplomat of the Steppes', function () {
                     inPlay: ['arbiter-of-authority']
                 },
                 player2: {
-                    inPlay: ['diplomat-of-the-steppes', 'wandering-ronin','golden-eagle'],
+                    inPlay: ['diplomat-of-the-steppes', 'wandering-ronin', 'golden-eagle'],
                     hand: []
                 }
             });
