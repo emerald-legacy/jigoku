@@ -23,8 +23,12 @@ export default class SerenadeOfAThousandLanterns extends DrawCard {
             then: (context) => ({
                 gameAction: AbilityDsl.actions.onAffinity({
                     trait: 'fire',
-                    gameAction: AbilityDsl.actions.gainHonor()
-                })
+                    gameAction: AbilityDsl.actions.gainHonor(() => ({
+                        target: context.player,
+                        amount: 1
+                    })),
+                    effect: 'gain 1 honor'
+                }),
             })
         });
     }
