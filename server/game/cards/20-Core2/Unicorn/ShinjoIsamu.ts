@@ -25,7 +25,6 @@ export default class ShinjoIsamu extends DrawCard {
                 mode: TargetModes.Ring,
                 activePromptTitle: 'Choose a ring',
                 ringCondition: (ring: Ring, context: AbilityContext) =>
-                    ring.isUnclaimed() &&
                     (context.game.currentConflict as Conflict)
                         .getConflictProvinces()
                         .some((province: ProvinceCard) => province.getElement().includes(ring.element)),

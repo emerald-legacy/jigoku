@@ -67,7 +67,7 @@ describe('Shinjo Isamu', function () {
             expect(this.player1).not.toBeAbleToSelect(this.shinjoIsamu);
         });
 
-        it('resolves unclaimed ring matching province', function () {
+        it('resolves ring matching province', function () {
             this.initiateConflict({
                 type: 'military',
                 ring: 'void',

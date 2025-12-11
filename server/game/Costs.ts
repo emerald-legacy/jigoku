@@ -821,10 +821,20 @@ export function optional(cost: Cost): Cost {
     };
 }
 
-export function optionalFateCost(amount: number): Cost {
+export function optionalFateCost(amount: number, forcePayment: (context: TriggeredAbilityContext) => boolean = () => false): Cost {
     return {
         promptsPlayer: true,
-        canPay() {
+        canPay(context: TriggeredAbilityContext) {
+            if (forcePayment(context)) {
+                let fateAvailable = true;
+                if (context.player.fate < amount) {
+                    fateAvailable = false;
+                }
+                if (!context.player.checkRestrictions('spendFate', context)) {
+                    fateAvailable = false;
+                }
+                return fateAvailable;
+            }
             return true;
         },
         getActionName(context: TriggeredAbilityContext) {
@@ -844,6 +854,12 @@ export function optionalFateCost(amount: number): Cost {
             if (!context.player.checkRestrictions('spendFate', context)) {
                 fateAvailable = false;
             }
+
+            if (forcePayment(context) && fateAvailable) {
+                context.costs.optionalFateCost = amount;
+                return;
+            }
+
             let choices = [];
             let handlers = [];
             context.costs.optionalFateCost = 0;

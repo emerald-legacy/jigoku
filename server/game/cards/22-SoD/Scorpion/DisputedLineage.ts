@@ -19,13 +19,13 @@ export default class DisputedLineage extends DrawCard {
                             onDefendersDeclared: (event) => event.defenders.includes(context.target)
                         },
                         onlyRemoveOnSuccess: true,
-                        duration: Durations.UntilEndOfRound,
                         gameAction: AbilityDsl.actions.discardAtRandom({
                             target: context.player.opponent
                         }),
                         message: '{0} discards a card at random due to the delayed effect of {1}',
                         messageArgs: [context.player.opponent, context.source]
-                    })
+                    }),
+                    duration: Durations.UntilEndOfRound,
                 }))
             },
             effect: "make {1} discard a card the next time {0} commits to a conflict",

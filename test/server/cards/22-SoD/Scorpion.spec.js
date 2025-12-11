@@ -271,6 +271,36 @@ describe('SoD - Scorpion', function () {
                 expect(this.getChatLogs(5)).toContain('player2 discards a card at random due to the delayed effect of Disputed Lineage');
             });
 
+            it('should work on second conflict', function () {
+                this.player1.clickCard(this.lineage);
+                this.player1.clickCard(this.keeper);
+
+                let hand = this.player2.hand.length;
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.rumormonger],
+                    defenders: [this.diplomat]
+                });
+
+                expect(this.player2.hand.length).toBe(hand);
+
+                this.rumormonger.bow();
+                this.noMoreActions();
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.keeper],
+                    defenders: [],
+                    ring: 'earth'
+                });
+
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.player2.hand.length).toBe(hand - 1);
+                expect(this.getChatLogs(5)).toContain('player2 discards a card at random due to the delayed effect of Disputed Lineage');
+            });
+
             it('should only work once per round', function () {
                 this.player1.clickCard(this.lineage);
                 this.player1.clickCard(this.keeper);

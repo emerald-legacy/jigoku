@@ -257,4 +257,59 @@ describe('Expert Bartering', function () {
             expect(this.player1).toHavePrompt('Action Window');
         });
     });
+
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 10,
+                    inPlay: ['doji-kuwanan', 'doomed-shugenja'],
+                    hand: ['expert-bartering']
+                },
+                player2: {
+                    inPlay: ['iuchi-rimei', 'hida-kisada'],
+                    hand: ['ornate-fan', 'calling-in-favors', 'court-mask'],
+                    provinces: ['blood-of-onnotangu']
+                }
+            });
+
+            this.rimei = this.player2.findCardByName('iuchi-rimei');
+            this.kisada = this.player2.findCardByName('hida-kisada');
+            this.fan = this.player2.findCardByName('ornate-fan');
+            this.calling = this.player2.findCardByName('calling-in-favors');
+            this.blood = this.player2.findCardByName('blood-of-onnotangu');
+            this.courtMask = this.player2.findCardByName('court-mask');
+
+            this.kuwanan = this.player1.findCardByName('doji-kuwanan');
+            this.doomed = this.player1.findCardByName('doomed-shugenja');
+            this.expert = this.player1.findCardByName('expert-bartering');
+
+            this.player2.playAttachment(this.fan, this.doomed);
+            this.player1.playAttachment(this.expert, this.kuwanan);
+            this.player2.playAttachment(this.courtMask, this.rimei);
+        });
+
+        it('should work if you don\'t control any other attachments', function () {
+            let fate = this.player1.fate;
+            this.player1.clickCard(this.expert);
+            expect(this.player1).not.toHavePrompt('Spend 1 fate?');
+            expect(this.player1).not.toHavePromptButton('Yes');
+            expect(this.player1).not.toHavePromptButton('No');
+
+            expect(this.player1).toBeAbleToSelect(this.courtMask);
+            this.player1.clickCard(this.courtMask);
+
+            expect(this.player1.fate).toBe(fate - 1);
+            expect(this.getChatLogs(10)).toContain('player1 uses Expert Bartering, paying 1 fate to switch Expert Bartering with Court Mask');
+        });
+
+        it('should not work if you don\'t control any other attachments and have no fate', function () {
+            expect(this.player1).toHavePrompt('Action Window');
+            this.player1.fate = 0;
+            this.game.checkGameState(true);
+            this.player1.clickCard(this.expert);
+            expect(this.player1).toHavePrompt('Action Window');
+        });
+    });
 });
