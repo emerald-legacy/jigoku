@@ -33,17 +33,19 @@
         "bcrypt": "^5.1.1",
         "connect-mongo": "4.6.0",
         "cookie-parser": "^1.4.6",
+        "cors": "^2.8.5",
         "cross-env": "^7.0.3",
         "express": "^4.18.2",
+        "express-rate-limit": "^7.1.5",
         "express-session": "^1.17.3",
-        "helmet": "^3.8.1",
+        "helmet": "^7.1.0",
         "jsonwebtoken": "^9.0.0",
         "mkdirp": "^3.0.1",
         "moment": "^2.29.4",
         "mongodb": "4.1.4",
         "monk": "^3.1.4",
         "nodemailer": ">=6.4.16",
-        "passport": "^0.3.2",
+        "passport": "^0.7.0",
         "passport-local": "^1.0.0",
         "pmx": "^1.6.7",
         "socket.io": "^1.7.4",
@@ -69,6 +71,6 @@
         "typescript": "^4.9.5"
     },
     "volta": {
-        "node": "14.21.3"
+        "node": "20.11.0"
     }
 }

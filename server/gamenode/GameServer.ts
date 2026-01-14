@@ -42,10 +42,22 @@ export class GameServer {
         this.zmqSocket.on('onCloseGame', this.onCloseGame.bind(this));
         this.zmqSocket.on('onCardData', this.onCardData.bind(this));
 
+        // HTTP request handler for health checks
+        const requestHandler = (req: http.IncomingMessage, res: http.ServerResponse) => {
+            if (req.url === '/health') {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    status: 'ok',
+                    timestamp: Date.now(),
+                    games: this.games.size
+                }));
+            }
+        };
+
         const server =
             !privateKey || !certificate
-                ? http.createServer()
-                : https.createServer({ key: privateKey, cert: certificate });
+                ? http.createServer(requestHandler)
+                : https.createServer({ key: privateKey, cert: certificate }, requestHandler);
 
         server.listen(env.gameNodeSocketIoPort);
 
@@ -157,14 +169,15 @@ export class GameServer {
             jwt.verify(socket.handshake.query.token, env.secret, function (err, user) {
                 if (err) {
                     logger.info(err);
-                    return;
+                    return next();
                 }
 
                 socket.request.user = user;
+                next();
             });
+        } else {
+            next();
         }
-
-        next();
     }
 
     gameWon(game: Game, reason: string, winner: Player): void {
