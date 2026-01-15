@@ -1,7 +1,7 @@
 const Server = require('./server.js');
 const Lobby = require('./lobby.js');
 const pmx = require('pmx');
-const monk = require('monk');
+const monk = require('monk').default;
 const env = require('./env.js');
 
 function runServer() {

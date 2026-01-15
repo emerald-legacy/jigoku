@@ -1,4 +1,4 @@
-const monk = require('monk');
+const monk = require('monk').default;
 const env = require('../env.js');
 const DeckService = require('../services/DeckService.js');
 const { wrapAsync } = require('../util.js');

@@ -1,4 +1,4 @@
-const monk = require('monk');
+const monk = require('monk').default;
 const UserService = require('../services/UserService.js');
 const { logger } = require('../logger');
 const env = require('../env.js');

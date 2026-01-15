@@ -15,7 +15,7 @@ const http = require('http');
 const helmet = require('helmet');
 const cors = require('cors');
 const { rateLimit } = require('express-rate-limit');
-const monk = require('monk');
+const monk = require('monk').default;
 const _ = require('underscore');
 
 const UserService = require('./services/UserService.js');
