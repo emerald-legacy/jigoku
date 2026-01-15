@@ -1,38 +1,39 @@
-name: Ringteki CI
+name: Build
 
-on: 
+on:
   push:
+    branches: [master, main]
   pull_request:
-
-env:
-    DB_PATH: "" 
-    DOMAIN: "" 
-    ENVIRONMENT: "" 
-    GAME_NODE_HOST: "" 
-    GAME_NODE_NAME: "" 
-    GAME_NODE_SOCKET_IO_PORT: "" 
-    HTTPS: "" 
-    LOBBY_PORT: "" 
-    MQ_URL: "" 
-    SECRET: "" 
+    branches: [master, main]
 
 jobs:
   build:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
     env:
-      CXX: g++-4.9
+      DB_PATH: mongodb://localhost:27017/ringteki
+      DOMAIN: localhost
+      ENVIRONMENT: test
+      GAME_NODE_HOST: localhost
+      GAME_NODE_NAME: node-1
+      GAME_NODE_SOCKET_IO_PORT: 9500
+      HTTPS: false
+      LOBBY_PORT: 4000
+      MQ_URL: tcp://127.0.0.1:6000
+      SECRET: test-secret
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
         with:
-          node-version: '14.21.3'
-      - run: npm install
-      - run: npm install -g typescript@4.9.5
-      - run: npx tsc
-      - name: Fetch Data
-        run: node bin/fetchdata.js prod
-      - name: Test
-        run: npm test
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript compile
+        run: npx tsc
+
       - name: Lint
         run: npm run lint
