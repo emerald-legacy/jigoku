@@ -1,5 +1,4 @@
-const zmq = require('zeromq');
-const router = zmq.socket('router');
+const { Router } = require('zeromq');
 const { logger } = require('./logger');
 const _ = require('underscore');
 const monk = require('monk').default;
@@ -13,16 +12,35 @@ class GameRouter extends EventEmitter {
 
         this.workers = {};
         this.gameService = new GameService(monk(env.dbPath));
+        this.router = new Router();
+        this.running = false;
 
-        router.bind(env.mqUrl, (err) => {
-            if (err) {
-                logger.info(err);
-            }
-        });
-
-        router.on('message', this.onMessage.bind(this));
-
+        this.init(env.mqUrl);
         setInterval(this.checkTimeouts.bind(this), 1000 * 60);
+    }
+
+    async init(url) {
+        try {
+            await this.router.bind(url);
+            logger.info('GameRouter bound to', url);
+            this.running = true;
+            this.receiveMessages();
+        } catch (err) {
+            logger.error('Failed to bind GameRouter:', err);
+        }
+    }
+
+    async receiveMessages() {
+        while (this.running) {
+            try {
+                const [identity, delimiter, msg] = await this.router.receive();
+                this.onMessage(identity, msg);
+            } catch (err) {
+                if (this.running) {
+                    logger.error('Error receiving message:', err);
+                }
+            }
+        }
     }
 
     // External methods
@@ -184,7 +202,9 @@ class GameRouter extends EventEmitter {
 
     // Internal methods
     sendCommand(identity, command, arg) {
-        router.send([identity, '', JSON.stringify({ command: command, arg: arg })]);
+        this.router.send([identity, '', JSON.stringify({ command: command, arg: arg })]).catch(err => {
+            logger.error('Error sending command:', err);
+        });
     }
 
     checkTimeouts() {
@@ -203,6 +223,11 @@ class GameRouter extends EventEmitter {
                 }
             }
         });
+    }
+
+    close() {
+        this.running = false;
+        this.router.close();
     }
 }
 

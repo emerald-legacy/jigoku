@@ -1,4 +1,4 @@
-FROM node:18-bookworm-slim AS builder
+FROM node:22-bookworm-slim AS builder
 
 WORKDIR /app
 
@@ -21,7 +21,7 @@ COPY . .
 RUN mkdir -p server/logs && npx tsc
 
 # Production stage
-FROM node:18-bookworm-slim
+FROM node:22-bookworm-slim
 
 # Install runtime dependencies
 RUN apt-get update && \
