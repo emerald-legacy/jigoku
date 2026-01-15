@@ -10,7 +10,7 @@ export default class MazeOfIllusion extends DrawCard {
 
     public setupCardAbilities() {
         this.action({
-            title: "Dishonor and bow a character if your opponent can't guess your dial",
+            title: 'Dishonor and bow a character if your opponent can\'t guess your dial',
             condition: (context) => this.game.isDuringConflict() && context.player.opponent !== undefined,
 
             target: {
@@ -19,7 +19,7 @@ export default class MazeOfIllusion extends DrawCard {
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: [AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor()]
             },
-            effect: "bow and dishonor {0} if {1} can't guess whether their dial is even or odd",
+            effect: 'bow and dishonor {0} if {1} can\'t guess whether their dial is even or odd',
             effectArgs: (context) => context.player.opponent,
             handler: (context) =>
                 this.game.promptWithHandlerMenu(context.player, {
@@ -46,7 +46,7 @@ export default class MazeOfIllusion extends DrawCard {
     private resolveAbility(choice: Choice, value: number, context: AbilityContext) {
         this.game.addMessage('{0} guesses {1}', context.player.opponent, choice);
         this.game.actions.setHonorDial({ value }).resolve(context.player, context);
-        if ((choice === 'Odd') === (value % 2 === 0)) {
+        if((choice === 'Odd') === (value % 2 === 0)) {
             context.game.applyGameAction(context, { bow: context.target, dishonor: context.target });
         }
     }

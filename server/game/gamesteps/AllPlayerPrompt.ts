@@ -1,5 +1,5 @@
-import type Player from "../player";
-import { UiPrompt } from "./UiPrompt";
+import type Player from '../player';
+import { UiPrompt } from './UiPrompt';
 
 export class AllPlayerPrompt extends UiPrompt {
     activeCondition(player: Player) {
@@ -11,6 +11,6 @@ export class AllPlayerPrompt extends UiPrompt {
     }
 
     isComplete() {
-        return this.game.getPlayers().every(player => this.completionCondition(player))
+        return this.game.getPlayers().every(player => this.completionCondition(player));
     }
 }

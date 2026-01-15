@@ -39,17 +39,17 @@ export class CostReducer {
             properties.playingTypes &&
             (Array.isArray(properties.playingTypes) ? properties.playingTypes : [properties.playingTypes]);
         this.limit = properties.limit;
-        if (this.limit) {
+        if(this.limit) {
             this.limit.registerEvents(game);
         }
     }
 
     public canReduce(playingType: PlayTypes, card: BaseCard, target?: BaseCard, ignoreType = false): boolean {
-        if (this.limit && this.limit.isAtMax(this.source.controller)) {
+        if(this.limit && this.limit.isAtMax(this.source.controller)) {
             return false;
-        } else if (!ignoreType && this.cardType && card.getType() !== this.cardType) {
+        } else if(!ignoreType && this.cardType && card.getType() !== this.cardType) {
             return false;
-        } else if (this.playingTypes && !this.playingTypes.includes(playingType)) {
+        } else if(this.playingTypes && !this.playingTypes.includes(playingType)) {
             return false;
         }
         const context = this.game.getFrameworkContext(card.controller);

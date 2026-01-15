@@ -7,7 +7,7 @@ const agreeableCost = () => ({
     getActionName(context) { // eslint-disable-line no-unused-vars
         return 'agreeableArrangementCost';
     },
-    getCostMessage: function (context) { // eslint-disable-line no-unused-vars
+    getCostMessage: function (context) {
         return ['giving {1} control of {0}', context.player.opponent];
     },
     canPay: function(context) {

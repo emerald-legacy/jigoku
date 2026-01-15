@@ -33,7 +33,7 @@ describe('Capture the False Eye', function () {
 
             expect(this.kuwanan.bowed).toBe(true);
             expect(this.getChatLogs(5)).toContain(
-                "player1 plays Capture the False Eye to bow Doji Kuwanan. For this conflict, player1's events cost 1 more fate - did player1 walk into a trap?"
+                'player1 plays Capture the False Eye to bow Doji Kuwanan. For this conflict, player1\'s events cost 1 more fate - did player1 walk into a trap?'
             );
             expect(this.player1.fate).toBe(initialFate - 1);
 

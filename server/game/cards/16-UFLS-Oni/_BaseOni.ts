@@ -11,7 +11,7 @@ export class BaseOni extends DrawCard {
     }
 
     public onCardLeavesPlay(event: any) {
-        if (event.card === this && this.location !== Locations.RemovedFromGame) {
+        if(event.card === this && this.location !== Locations.RemovedFromGame) {
             this.game.addMessage('{0} is removed from the game due to being a Shadowlands character', this);
             this.owner.moveCard(this, Locations.RemovedFromGame);
         }

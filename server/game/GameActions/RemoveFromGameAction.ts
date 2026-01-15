@@ -19,23 +19,23 @@ export class RemoveFromGameAction extends CardGameAction {
         const propValidLocations = Array.isArray(properties.location)
             ? properties.location
             : properties.location
-            ? [properties.location]
-            : undefined;
+                ? [properties.location]
+                : undefined;
 
-        if (propValidLocations) {
-            for (const validLocation of propValidLocations) {
-                if (validLocation === Locations.Any || card.location === validLocation) {
+        if(propValidLocations) {
+            for(const validLocation of propValidLocations) {
+                if(validLocation === Locations.Any || card.location === validLocation) {
                     return true;
                 }
             }
             return false;
         }
 
-        if (card.type === CardTypes.Holding) {
-            if (!card.location.includes('province')) {
+        if(card.type === CardTypes.Holding) {
+            if(!card.location.includes('province')) {
                 return false;
             }
-        } else if (card.location !== Locations.PlayArea) {
+        } else if(card.location !== Locations.PlayArea) {
             return false;
         }
 

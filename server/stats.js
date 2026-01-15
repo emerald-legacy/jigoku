@@ -8,7 +8,7 @@ const env = require('./env.js');
 async function runStats() {
     const args = process.argv.slice(2);
 
-    if (args.length < 2) {
+    if(args.length < 2) {
         console.error('Must provide start and end date');
         process.exit(1);
     }
@@ -29,32 +29,32 @@ async function runStats() {
     let factionAlliances = {};
 
     games.forEach((game) => {
-        if (Object.keys(game.players).length !== 2) {
+        if(Object.keys(game.players).length !== 2) {
             rejected.singlePlayer++;
 
             return;
         }
 
-        if (!game.winner) {
+        if(!game.winner) {
             rejected.noWinner++;
 
             return;
         }
 
         Object.values(game.players).forEach((player) => {
-            if (!players[player.name]) {
+            if(!players[player.name]) {
                 players[player.name] = { name: player.name, wins: 0, losses: 0 };
             }
 
-            if (!factions[player.faction]) {
+            if(!factions[player.faction]) {
                 factions[player.faction] = { name: player.faction, wins: 0, losses: 0 };
             }
 
-            if (!alliances[player.alliance]) {
+            if(!alliances[player.alliance]) {
                 alliances[player.alliance] = { name: player.alliance, wins: 0, losses: 0 };
             }
 
-            if (!factionAlliances[player.faction + player.agenda]) {
+            if(!factionAlliances[player.faction + player.agenda]) {
                 factionAlliances[player.faction + player.agenda] = {
                     name: player.faction + ' / ' + player.agenda,
                     wins: 0,
@@ -67,7 +67,7 @@ async function runStats() {
             var allianceStat = alliances[player.alliance];
             var factionAllianceStat = factionAlliances[player.faction + player.agenda];
 
-            if (player.name === game.winner) {
+            if(player.name === game.winner) {
                 playerStat.wins++;
                 factionStat.wins++;
                 allianceStat.wins++;

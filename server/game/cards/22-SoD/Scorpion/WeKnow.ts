@@ -32,7 +32,7 @@ export default class WeKnow extends DrawCard {
                     choices: (context) => {
                         const targetToken: StatusToken = context.tokens.token[0];
                         const targetCard = targetToken.card;
-                        if (!(targetCard instanceof DrawCard)) {
+                        if(!(targetCard instanceof DrawCard)) {
                             // should never happen
                             return {};
                         }
@@ -45,7 +45,7 @@ export default class WeKnow extends DrawCard {
                                 AbilityDsl.actions.loseHonor({ target: context.player.opponent }),
                                 AbilityDsl.actions.draw({ target: context.player, amount: 2 })
                             ])
-                        }
+                        };
                     }
                 }
             },
@@ -60,19 +60,19 @@ export default class WeKnow extends DrawCard {
             }),
             effect: '{1}{2}{3}',
             effectArgs: (context) => {
-                if (context.selects.select.choice === 'Lose honor and let opponent draw cards') {
+                if(context.selects.select.choice === 'Lose honor and let opponent draw cards') {
                     return [
                         'draw two cards and cause ',
                         context.player.opponent,
                         ' to lose 1 honor'
-                    ]
-                } else {
-                    return [
-                        'replace ',
-                        context.tokens.token[0].card,
-                        ' honored status token with a dishonored status token'
-                    ]
+                    ];
                 }
+                return [
+                    'replace ',
+                    context.tokens.token[0].card,
+                    ' honored status token with a dishonored status token'
+                ];
+
             }
         });
     }

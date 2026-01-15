@@ -21,27 +21,27 @@ export class PlayAttachmentToRingAction extends BaseAction {
     }
 
     meetsRequirements(context = this.createContext(), ignoredRequirements: string[] = []) {
-        if (
+        if(
             !ignoredRequirements.includes('phase') &&
             context.game.currentPhase === Phases.Dynasty &&
             !parseGameMode(context.game.gameMode).dynastyPhaseCanPlayAttachments
         ) {
             return 'phase';
         }
-        if (
+        if(
             !ignoredRequirements.includes('location') &&
             !context.player.isCardInPlayableLocation(context.source, PlayTypes.PlayFromHand)
         ) {
             return 'location';
         }
-        if (
+        if(
             !ignoredRequirements.includes('cannotTrigger') &&
             !context.source.canPlay(context, PlayTypes.PlayFromHand)
         ) {
             return 'cannotTrigger';
         }
 
-        if (context.source.anotherUniqueInPlay(context.player)) {
+        if(context.source.anotherUniqueInPlay(context.player)) {
             return 'unique';
         }
         return super.meetsRequirements(context);

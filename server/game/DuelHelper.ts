@@ -3,28 +3,28 @@ const AbilityDsl = require('./abilitydsl');
 const ThenAbility = require('./ThenAbility');
 const Costs = require('./Costs.js');
 const { Locations, CardTypes, EffectNames, Players } = require('./Constants');
-import { InitiateDuel } from "./Interfaces";
+import { InitiateDuel } from './Interfaces';
 
 export const initiateDuel = (game, card, properties) => {
-    if (properties.initiateDuel) {
-        if (card.type === CardTypes.Character) {
+    if(properties.initiateDuel) {
+        if(card.type === CardTypes.Character) {
             initiateDuelFromCharacter(game, card, properties);
         } else {
             initiateDuelFromOther(game, card, properties);
         }
     }
-}
+};
 
 const checkChallengerCondition = (card, context, properties) => {
     const requiresConflict = getProperty(properties, context, 'requiresConflict');
     const challengerCondition = getProperty(properties, context, 'challengerCondition');
 
     // default target condition
-    if (!challengerCondition) {
+    if(!challengerCondition) {
         return !requiresConflict || card.isParticipating();
     }
     return challengerCondition(card, context);
-}
+};
 
 const initiateDuelFromCharacter = (game, card, properties) => {
     let prevCondition = properties.condition;
@@ -32,7 +32,7 @@ const initiateDuelFromCharacter = (game, card, properties) => {
         const abilityCondition = (!prevCondition || prevCondition(context));
         const challengerCondition = checkChallengerCondition(card, context, properties);
         return abilityCondition && challengerCondition;
-    }
+    };
     properties.target = {
         ...getBaselineDuelTargetProperties(card, properties),
         gameAction: AbilityDsl.actions.duel((context) => {
@@ -40,7 +40,7 @@ const initiateDuelFromCharacter = (game, card, properties) => {
             return Object.assign({ challenger: context.source }, duelProperties);
         })
     };
-}
+};
 
 const initiateDuelFromOther = (game, card, properties) => {
     properties.targets = {
@@ -61,8 +61,8 @@ const initiateDuelFromOther = (game, card, properties) => {
                 return Object.assign({ challenger: context.targets.challenger }, duelProperties);
             })
         }
-    };    
-}
+    };
+};
 
 const getBaselineDuelTargetProperties = (challenger, properties) => {
     const props = {
@@ -75,25 +75,25 @@ const getBaselineDuelTargetProperties = (challenger, properties) => {
         cardCondition: (card, context) => {
             const challengerCard = challenger ?? context.targets.challenger;
 
-            if (challengerCard === card) {
+            if(challengerCard === card) {
                 return false;
             }
             const requiresConflict = getProperty(properties, context, 'requiresConflict');
             const targetCondition = getProperty(properties, context, 'targetCondition');
             // default target condition
-            if (!targetCondition) {
+            if(!targetCondition) {
                 return !requiresConflict || card.isParticipating();
             }
             return targetCondition(card, context);
-        },        
+        }
     };
     return props;
-}
+};
 
 const getProperty = (properties, context, propName?) => {
     let duelProperties: InitiateDuel;
 
-    if (typeof properties.initiateDuel === 'function') {
+    if(typeof properties.initiateDuel === 'function') {
         duelProperties = properties.initiateDuel(context);
     } else {
         duelProperties = properties.initiateDuel;
@@ -103,11 +103,11 @@ const getProperty = (properties, context, propName?) => {
     duelProperties = {
         requiresConflict: true,
         ...duelProperties
-    }
+    };
 
-    if (!propName) {
+    if(!propName) {
         return duelProperties;
     }
 
     return duelProperties?.[propName];
-}
+};

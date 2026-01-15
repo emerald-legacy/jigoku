@@ -23,13 +23,13 @@ export class ZmqSocket extends EventEmitter {
     }
 
     private async receiveMessages() {
-        while (this.running) {
+        while(this.running) {
             try {
                 // Dealer receives [delimiter, message] - the router adds identity automatically
                 const [delimiter, msg] = await this.socket.receive();
                 this.onMessage(delimiter, msg.toString());
-            } catch (err) {
-                if (this.running) {
+            } catch(err) {
+                if(this.running) {
                     logger.error('Error receiving message:', err);
                 }
             }
@@ -66,7 +66,7 @@ export class ZmqSocket extends EventEmitter {
                     arg: z.any()
                 })
                 .parse(JSON.parse(msg.toString()));
-        } catch (e) {
+        } catch(e) {
             logger.info(e);
             return;
         }
@@ -75,11 +75,11 @@ export class ZmqSocket extends EventEmitter {
     private onMessage(delimiter: unknown, msg: string) {
         const message = this.parseMsg(msg);
 
-        if (!message) {
+        if(!message) {
             return;
         }
 
-        switch (message.command) {
+        switch(message.command) {
             case 'PING':
                 this.send('PONG');
                 break;

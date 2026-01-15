@@ -18,12 +18,12 @@ export default class IntoTheStorm extends DrawCard {
                     targetController: Players.Any,
                     effect: AbilityDsl.effects.increaseCost({
                         amount: 1,
-                        match: (card) => card.type === CardTypes.Event,
+                        match: (card) => card.type === CardTypes.Event
                     }),
                     duration: Durations.Custom,
                     until: {
                         onCardPlayed: event => event.player === context.player && event.card.type === CardTypes.Event && event.card !== context.source,
-                        onConflictFinished: () => true,
+                        onConflictFinished: () => true
                     },
                     endingMessage: 'The storm abates, events no longer cost 1 more'
                 })),

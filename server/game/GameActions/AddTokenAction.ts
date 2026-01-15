@@ -20,14 +20,14 @@ export class AddTokenAction extends CardGameAction<AddTokenProperties> {
     }
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if (!card.isFaceup()) {
+        if(!card.isFaceup()) {
             return false;
         }
-        if ([CardTypes.Holding, CardTypes.Province].includes(card.type)) {
-            if (!card.location.includes('province')) {
+        if([CardTypes.Holding, CardTypes.Province].includes(card.type)) {
+            if(!card.location.includes('province')) {
                 return false;
             }
-        } else if (card.location !== Locations.PlayArea) {
+        } else if(card.location !== Locations.PlayArea) {
             return false;
         }
         return super.canAffect(card, context);

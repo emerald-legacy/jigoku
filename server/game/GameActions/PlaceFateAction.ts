@@ -26,11 +26,11 @@ export class PlaceFateAction extends CardGameAction {
 
     canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
         const { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateProperties;
-        if (amount === 0 || card.location !== Locations.PlayArea) {
+        if(amount === 0 || card.location !== Locations.PlayArea) {
             return false;
         }
 
-        if (origin instanceof Ring && !context.player.checkRestrictions('takeFateFromRings', context)) {
+        if(origin instanceof Ring && !context.player.checkRestrictions('takeFateFromRings', context)) {
             return false;
         }
 
@@ -38,7 +38,7 @@ export class PlaceFateAction extends CardGameAction {
     }
 
     checkOrigin(context: AbilityContext, origin?: Player | Ring | DrawCard): boolean {
-        if (!origin) {
+        if(!origin) {
             return true;
         }
 

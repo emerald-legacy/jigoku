@@ -6,11 +6,11 @@ describe('SoD - Scorpion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['bayushi-rumormonger'],
-                        hand: [],
+                        hand: []
                     },
                     player2: {
                         inPlay: ['keeper-initiate', 'doji-diplomat'],
-                        hand: ['assassination', 'let-go', 'duelist-training'],
+                        hand: ['assassination', 'let-go', 'duelist-training']
                     }
                 });
 
@@ -48,11 +48,11 @@ describe('SoD - Scorpion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['bayushi-shinobu', 'daidoji-uji'],
-                        hand: [],
+                        hand: []
                     },
                     player2: {
                         inPlay: ['keeper-initiate', 'doji-diplomat'],
-                        hand: ['assassination', 'let-go', 'duelist-training'],
+                        hand: ['assassination', 'let-go', 'duelist-training']
                     }
                 });
 
@@ -105,11 +105,11 @@ describe('SoD - Scorpion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['bayushi-rumormonger'],
-                        hand: ['pressure'],
+                        hand: ['pressure']
                     },
                     player2: {
                         inPlay: ['keeper-initiate', 'doji-diplomat'],
-                        hand: ['assassination', 'let-go', 'duelist-training', 'favored-mount'],
+                        hand: ['assassination', 'let-go', 'duelist-training', 'favored-mount']
                     }
                 });
 
@@ -184,7 +184,7 @@ describe('SoD - Scorpion', function () {
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'military',
-                    attackers: [this.keeper, this.diplomat],
+                    attackers: [this.keeper, this.diplomat]
                 });
 
                 expect(this.player1).toBeAbleToSelect(this.pressure);
@@ -203,11 +203,11 @@ describe('SoD - Scorpion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['bayushi-rumormonger'],
-                        hand: ['disputed-lineage'],
+                        hand: ['disputed-lineage']
                     },
                     player2: {
                         inPlay: ['keeper-initiate', 'doji-diplomat'],
-                        hand: ['assassination', 'let-go', 'duelist-training', 'favored-mount'],
+                        hand: ['assassination', 'let-go', 'duelist-training', 'favored-mount']
                     }
                 });
 
@@ -263,7 +263,7 @@ describe('SoD - Scorpion', function () {
                 this.initiateConflict({
                     type: 'military',
                     attackers: [this.keeper, this.diplomat],
-                    defenders: [],
+                    defenders: []
                 });
 
 
@@ -338,11 +338,11 @@ describe('SoD - Scorpion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['bayushi-rumormonger', 'border-rider', 'doji-diplomat'],
-                        hand: ['command-the-tributary'],
+                        hand: ['command-the-tributary']
                     },
                     player2: {
                         inPlay: ['keeper-initiate'],
-                        hand: ['soshi-aya', 'let-go', 'duelist-training'],
+                        hand: ['soshi-aya', 'let-go', 'duelist-training']
                     }
                 });
 
@@ -393,11 +393,11 @@ describe('SoD - Scorpion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['bayushi-rumormonger'],
-                        hand: ['we-know'],
+                        hand: ['we-know']
                     },
                     player2: {
                         inPlay: ['keeper-initiate', 'doji-diplomat', 'brash-samurai', 'doji-challenger'],
-                        hand: ['assassination', 'let-go', 'duelist-training'],
+                        hand: ['assassination', 'let-go', 'duelist-training']
                     }
                 });
 
@@ -485,11 +485,11 @@ describe('SoD - Scorpion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['bayushi-yunako'],
-                        hand: ['kiss-of-the-sea', 'compelling-testimony', 'assassination', 'fine-katana', 'let-go', 'way-of-the-scorpion'],
+                        hand: ['kiss-of-the-sea', 'compelling-testimony', 'assassination', 'fine-katana', 'let-go', 'way-of-the-scorpion']
                     },
                     player2: {
                         inPlay: ['brash-samurai', 'keeper-initiate'],
-                        hand: ['a-perfect-cut', 'defiance', 'kakita-technique', 'subdue-the-spirits'],
+                        hand: ['a-perfect-cut', 'defiance', 'kakita-technique', 'subdue-the-spirits']
                     }
                 });
 
@@ -516,7 +516,7 @@ describe('SoD - Scorpion', function () {
                 this.initiateConflict({
                     type: 'military',
                     attackers: [this.yunako],
-                    defenders: [this.brash],
+                    defenders: [this.brash]
                 });
 
                 this.player2.clickCard(this.cut);
@@ -533,7 +533,7 @@ describe('SoD - Scorpion', function () {
                 this.initiateConflict({
                     type: 'military',
                     attackers: [this.yunako],
-                    defenders: [this.brash, this.keeper],
+                    defenders: [this.brash, this.keeper]
                 });
 
                 this.player2.clickCard(this.subdue);
@@ -549,7 +549,7 @@ describe('SoD - Scorpion', function () {
                 this.initiateConflict({
                     type: 'political',
                     attackers: [this.yunako],
-                    defenders: [this.brash],
+                    defenders: [this.brash]
                 });
 
                 this.player2.pass();
@@ -567,7 +567,7 @@ describe('SoD - Scorpion', function () {
                 this.initiateConflict({
                     type: 'political',
                     attackers: [this.yunako],
-                    defenders: [this.brash, this.keeper],
+                    defenders: [this.brash, this.keeper]
                 });
 
                 this.player2.pass();
@@ -582,7 +582,7 @@ describe('SoD - Scorpion', function () {
                 this.initiateConflict({
                     type: 'political',
                     attackers: [this.yunako],
-                    defenders: [this.brash],
+                    defenders: [this.brash]
                 });
 
                 this.player2.clickCard(this.defiance);
@@ -599,7 +599,7 @@ describe('SoD - Scorpion', function () {
                 this.initiateConflict({
                     type: 'political',
                     attackers: [this.yunako],
-                    defenders: [this.brash],
+                    defenders: [this.brash]
                 });
 
                 this.player2.pass();
@@ -618,7 +618,7 @@ describe('SoD - Scorpion', function () {
                 this.initiateConflict({
                     type: 'political',
                     attackers: [this.yunako],
-                    defenders: [this.brash],
+                    defenders: [this.brash]
                 });
 
                 this.player2.clickCard(this.brash);
@@ -631,7 +631,7 @@ describe('SoD - Scorpion', function () {
                 this.initiateConflict({
                     type: 'military',
                     attackers: [this.yunako],
-                    defenders: [this.brash],
+                    defenders: [this.brash]
                 });
 
                 this.player2.pass();
@@ -645,7 +645,7 @@ describe('SoD - Scorpion', function () {
                 this.initiateConflict({
                     type: 'political',
                     attackers: [this.yunako],
-                    defenders: [this.brash],
+                    defenders: [this.brash]
                 });
 
                 this.player2.clickCard(this.technique);

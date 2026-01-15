@@ -50,12 +50,12 @@ export default class CastleOfAir extends DrawCard {
                     }),
                     falseGameAction: AbilityDsl.actions.noAction()
                 }))
-            ]),
+            ])
         });
     }
 
     onHonorLoss(event: any) {
-        if (
+        if(
             event.context.game.currentConflict &&
             event.dueToUnopposed &&
             !!this.playersTriggered.get(event.context.player.uuid) &&

@@ -49,7 +49,7 @@ class Effect {
     refreshContext() {
         this.context = this.game.getFrameworkContext(this.source.controller);
         this.context.source = this.source;
-        if (this.ability) {
+        if(this.ability) {
             this.context.ability = this.ability;
         }
         this.effect.setContext(this.context);
@@ -91,7 +91,7 @@ class Effect {
     }
 
     isEffectActive() {
-        if (this.duration !== Durations.Persistent) {
+        if(this.duration !== Durations.Persistent) {
             return true;
         }
         let effectOnSource = this.source.persistentEffects.some(effect => effect.ref && effect.ref.includes(this));
@@ -99,11 +99,11 @@ class Effect {
     }
 
     checkCondition(stateChanged) {
-        if (!this.condition(this.context) || !this.isEffectActive()) {
+        if(!this.condition(this.context) || !this.isEffectActive()) {
             stateChanged = this.targets.length > 0 || stateChanged;
             this.cancel();
             return stateChanged;
-        } else if (typeof this.match === 'function') {
+        } else if(typeof this.match === 'function') {
             // Get any targets which are no longer valid
             let invalidTargets = this.targets.filter(target => !this.match(target, this.context) || !this.isValidTarget(target));
             // Remove invalid targets
@@ -116,13 +116,13 @@ class Effect {
             // Apply the effect to new targets
             newTargets.forEach(target => this.addTarget(target));
             return stateChanged || newTargets.length > 0;
-        } else if (this.targets.includes(this.match)) {
-            if (!this.isValidTarget(this.match)) {
+        } else if(this.targets.includes(this.match)) {
+            if(!this.isValidTarget(this.match)) {
                 this.cancel();
                 return true;
             }
             return this.effect.recalculate(this.match) || stateChanged;
-        } else if (!this.targets.includes(this.match) && this.isValidTarget(this.match)) {
+        } else if(!this.targets.includes(this.match) && this.isValidTarget(this.match)) {
             this.addTarget(this.match);
             return true;
         }

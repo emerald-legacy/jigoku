@@ -61,7 +61,7 @@ describe('Two Hands', function () {
                 expect(this.challenger.getPoliticalSkill()).toBe(3);
                 expect(this.yoshi.getPoliticalSkill()).toBe(6);
                 expect(this.getChatLogs(5)).toContain(
-                    "player2 plays Two Hands to set Kakita Yoshi and Doji Challenger military skills equal to 2"
+                    'player2 plays Two Hands to set Kakita Yoshi and Doji Challenger military skills equal to 2'
                 );
             });
         });

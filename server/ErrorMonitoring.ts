@@ -3,7 +3,7 @@
 
 export function captureException(exception: any, extra?: Record<string, unknown>): void {
     console.error('Error captured:', exception);
-    if (extra) {
+    if(extra) {
         console.error('Extra context:', extra);
     }
 }

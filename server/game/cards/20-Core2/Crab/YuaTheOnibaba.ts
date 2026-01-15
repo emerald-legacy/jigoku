@@ -9,17 +9,17 @@ function charactersToBuffAndNerf(yuaController: Player, conflict: Conflict) {
         toBuff: [] as Array<DrawCard>,
         toNerf: [] as Array<DrawCard>
     };
-    for (const character of conflict.getAttackers()) {
-        if (!character.hasTrait('bushi')) {
+    for(const character of conflict.getAttackers()) {
+        if(!character.hasTrait('bushi')) {
             res.toNerf.push(character);
-        } else if (character.controller === yuaController) {
+        } else if(character.controller === yuaController) {
             res.toBuff.push(character);
         }
     }
-    for (const character of conflict.getDefenders()) {
-        if (!character.hasTrait('bushi')) {
+    for(const character of conflict.getDefenders()) {
+        if(!character.hasTrait('bushi')) {
             res.toNerf.push(character);
-        } else if (character.controller === yuaController) {
+        } else if(character.controller === yuaController) {
             res.toBuff.push(character);
         }
     }

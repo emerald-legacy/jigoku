@@ -8,7 +8,7 @@ class CardService {
 
     async replaceCards(cards) {
         await this.cards.deleteMany({});
-        if (cards.length > 0) {
+        if(cards.length > 0) {
             await this.cards.insertMany(cards);
         }
         return cards;
@@ -16,7 +16,7 @@ class CardService {
 
     async replacePacks(packs) {
         await this.packs.deleteMany({});
-        if (packs.length > 0) {
+        if(packs.length > 0) {
             await this.packs.insertMany(packs);
         }
         return packs;
@@ -28,7 +28,7 @@ class CardService {
             const cards = {};
 
             result.forEach(card => {
-                if (options && options.shortForm) {
+                if(options && options.shortForm) {
                     const { id, name, type, clan, side, deck_limit, elements, is_unique, influence_cost, influence_pool, pack_cards, role_restriction, allowed_clans } = card;
                     cards[card.id] = { id, name, type, clan, side, deck_limit, elements, is_unique, influence_cost, influence_pool, pack_cards, role_restriction, allowed_clans };
                 } else {
@@ -37,7 +37,7 @@ class CardService {
             });
 
             return cards;
-        } catch (err) {
+        } catch(err) {
             logger.info(err);
         }
     }
@@ -45,7 +45,7 @@ class CardService {
     async getAllPacks() {
         try {
             return await this.packs.find({}).toArray();
-        } catch (err) {
+        } catch(err) {
             logger.info(err);
         }
     }

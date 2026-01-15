@@ -18,7 +18,7 @@ export default class DiscipleOfDeception extends DrawCard {
         this.action({
             title: 'Treat a status token as a different token',
             condition: (context) => context.game.isDuringConflict(),
-            effect: "replace {1}'s {2} with {3} until the end of the conflict",
+            effect: 'replace {1}\'s {2} with {3} until the end of the conflict',
             effectArgs: (context) => [context.tokens.second[0].card, context.tokens.second, context.tokens.first],
             targets: {
                 first: {
@@ -54,7 +54,7 @@ export default class DiscipleOfDeception extends DrawCard {
         this.tokensChanged.forEach((token) => {
             const targetCard = token.card;
             token.overrideStatus = undefined;
-            if (targetCard) {
+            if(targetCard) {
                 targetCard.updateStatusTokenEffects();
             }
         });

@@ -41,7 +41,7 @@ export class FatePhase extends Phase {
     }
 
     discardCharactersWithNoFate() {
-        for (const player of this.game.getPlayersInFirstPlayerOrder()) {
+        for(const player of this.game.getPlayersInFirstPlayerOrder()) {
             this.game.queueSimpleStep(() =>
                 this.promptPlayerToDiscard(player, new Set(player.cardsInPlay.filter(characterShouldBeDiscarded)))
             );
@@ -49,13 +49,13 @@ export class FatePhase extends Phase {
     }
 
     promptPlayerToDiscard(player: Player, cardsToDiscard: Set<DrawCard>) {
-        for (const card of cardsToDiscard) {
-            if (!characterShouldBeDiscarded(card)) {
+        for(const card of cardsToDiscard) {
+            if(!characterShouldBeDiscarded(card)) {
                 cardsToDiscard.delete(card);
             }
         }
 
-        if (cardsToDiscard.size === 0) {
+        if(cardsToDiscard.size === 0) {
             return;
         }
 
@@ -76,7 +76,7 @@ export class FatePhase extends Phase {
                 return true;
             },
             onCancel: () => {
-                for (const character of cardsToDiscard) {
+                for(const character of cardsToDiscard) {
                     this.game.applyGameAction(null, { discardFromPlay: character });
                 }
             }
@@ -90,11 +90,11 @@ export class FatePhase extends Phase {
         });
         let processed = false;
         this.game.queueSimpleStep(() => {
-            for (const player of this.game.getPlayersInFirstPlayerOrder()) {
-                if (!processed) {
+            for(const player of this.game.getPlayersInFirstPlayerOrder()) {
+                if(!processed) {
                     const numFate = events.filter((a) => !('recipient' in a) || a.recipient == null).length;
                     const postFunc = player.mostRecentEffect(EffectNames.CustomFatePhaseFateRemoval);
-                    if (postFunc) {
+                    if(postFunc) {
                         postFunc(player, numFate);
                         processed = true;
                     }
@@ -104,7 +104,7 @@ export class FatePhase extends Phase {
     }
 
     placeFateOnUnclaimedRings() {
-        if (this.game.gameMode === GameModes.Skirmish) {
+        if(this.game.gameMode === GameModes.Skirmish) {
             return;
         }
         const recipients = Object.values(this.game.rings)
@@ -116,7 +116,7 @@ export class FatePhase extends Phase {
     }
 
     discardFromProvinces() {
-        for (const player of this.game.getPlayersInFirstPlayerOrder()) {
+        for(const player of this.game.getPlayersInFirstPlayerOrder()) {
             this.game.queueSimpleStep(() => this.discardFromProvincesForPlayer(player));
         }
     }
@@ -124,12 +124,12 @@ export class FatePhase extends Phase {
     discardFromProvincesForPlayer(player) {
         let cardsToDiscard = [];
         let cardsOnUnbrokenProvinces = [];
-        for (const location of this.game.getProvinceArray()) {
+        for(const location of this.game.getProvinceArray()) {
             const provinceCard = player.getProvinceCardInProvince(location);
             const province = player.getSourceList(location);
             const dynastyCards = province.filter((card: DrawCard) => card.isDynasty && card.isFaceup());
-            if (dynastyCards.length > 0 && provinceCard) {
-                if (provinceCard.isBroken && this.game.gameMode !== GameModes.Skirmish) {
+            if(dynastyCards.length > 0 && provinceCard) {
+                if(provinceCard.isBroken && this.game.gameMode !== GameModes.Skirmish) {
                     cardsToDiscard = cardsToDiscard.concat(dynastyCards);
                 } else {
                     cardsOnUnbrokenProvinces = cardsOnUnbrokenProvinces.concat(dynastyCards);
@@ -137,7 +137,7 @@ export class FatePhase extends Phase {
             }
         }
 
-        if (cardsOnUnbrokenProvinces.length > 0) {
+        if(cardsOnUnbrokenProvinces.length > 0) {
             this.game.promptForSelect(player, {
                 source: 'Discard Dynasty Cards',
                 numCards: 0,
@@ -150,27 +150,27 @@ export class FatePhase extends Phase {
                 cardCondition: (card) => cardsOnUnbrokenProvinces.includes(card),
                 onSelect: (player, cards) => {
                     cardsToDiscard = cardsToDiscard.concat(cards);
-                    if (cardsToDiscard.length > 0) {
+                    if(cardsToDiscard.length > 0) {
                         this.game.addMessage('{0} discards {1} from their provinces', player, cardsToDiscard);
                         this.game.applyGameAction(this.game.getFrameworkContext(), { discardCard: cardsToDiscard });
                     }
                     return true;
                 },
                 onCancel: () => {
-                    if (cardsToDiscard.length > 0) {
+                    if(cardsToDiscard.length > 0) {
                         this.game.addMessage('{0} discards {1} from their provinces', player, cardsToDiscard);
                         this.game.applyGameAction(this.game.getFrameworkContext(), { discardCard: cardsToDiscard });
                     }
                     return true;
                 }
             });
-        } else if (cardsToDiscard.length > 0) {
+        } else if(cardsToDiscard.length > 0) {
             this.game.addMessage('{0} discards {1} from their provinces', player, cardsToDiscard);
             this.game.applyGameAction(this.game.getFrameworkContext(), { discardCard: cardsToDiscard });
         }
 
         this.game.queueSimpleStep(() => {
-            for (const location of this.game.getProvinceArray(false)) {
+            for(const location of this.game.getProvinceArray(false)) {
                 this.game.queueSimpleStep(() => {
                     player.replaceDynastyCard(location);
                     return true;
@@ -192,7 +192,7 @@ export class FatePhase extends Phase {
     passFirstPlayer() {
         const firstPlayer = this.game.getFirstPlayer();
         const otherPlayer = this.game.getOtherPlayer(firstPlayer);
-        if (otherPlayer) {
+        if(otherPlayer) {
             this.game.raiseEvent(EventNames.OnPassFirstPlayer, { player: otherPlayer }, () =>
                 this.game.setFirstPlayer(otherPlayer)
             );

@@ -18,7 +18,7 @@ export class ConditionalAction extends GameAction<ConditionalActionProperties> {
     getGameAction(context: AbilityContext, additionalProperties = {}): GameAction {
         let properties = this.getProperties(context, additionalProperties);
         let condition = properties.condition;
-        if (typeof condition === 'function') {
+        if(typeof condition === 'function') {
             condition = condition(context, properties);
         }
         return condition ? properties.trueGameAction : properties.falseGameAction;

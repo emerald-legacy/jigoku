@@ -6,7 +6,7 @@ export default class AkodoKage extends DrawCard {
 
     setupCardAbilities() {
         this.reaction({
-            title: "Set your opponent's dial to equal yours",
+            title: 'Set your opponent\'s dial to equal yours',
             when: {
                 onHonorDialsRevealed: (event, context) =>
                     event.isHonorBid &&

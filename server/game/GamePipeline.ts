@@ -21,7 +21,7 @@ export class GamePipeline {
     getCurrentStep(): Step {
         const step = this.pipeline[0];
 
-        if (typeof step === 'function') {
+        if(typeof step === 'function') {
             const createdStep = step();
             this.pipeline[0] = createdStep;
             return createdStep;
@@ -31,11 +31,11 @@ export class GamePipeline {
     }
 
     queueStep(step: Step) {
-        if (this.pipeline.length === 0) {
+        if(this.pipeline.length === 0) {
             this.pipeline.unshift(step);
         } else {
             var currentStep = this.getCurrentStep();
-            if (currentStep.queueStep) {
+            if(currentStep.queueStep) {
                 currentStep.queueStep(step);
             } else {
                 this.queue.push(step);
@@ -44,15 +44,15 @@ export class GamePipeline {
     }
 
     cancelStep() {
-        if (this.pipeline.length === 0) {
+        if(this.pipeline.length === 0) {
             return;
         }
 
         var step = this.getCurrentStep();
 
-        if (step.cancelStep && step.isComplete) {
+        if(step.cancelStep && step.isComplete) {
             step.cancelStep();
-            if (!step.isComplete()) {
+            if(!step.isComplete()) {
                 return;
             }
         }
@@ -61,9 +61,9 @@ export class GamePipeline {
     }
 
     handleCardClicked(player: Player, card: BaseCard) {
-        if (this.pipeline.length > 0) {
+        if(this.pipeline.length > 0) {
             var step = this.getCurrentStep();
-            if (step.onCardClicked(player, card) !== false) {
+            if(step.onCardClicked(player, card) !== false) {
                 return true;
             }
         }
@@ -72,18 +72,18 @@ export class GamePipeline {
     }
 
     handleRingClicked(player: Player, ring: Ring) {
-        if (this.pipeline.length === 0) {
+        if(this.pipeline.length === 0) {
             return false;
         }
 
         const step = this.getCurrentStep();
-        if (step.onRingClicked(player, ring) !== false) {
+        if(step.onRingClicked(player, ring) !== false) {
             return true;
         }
     }
 
     handleMenuCommand(player: Player, arg: string, uuid: string, method: string) {
-        if (this.pipeline.length === 0) {
+        if(this.pipeline.length === 0) {
             return false;
         }
 
@@ -94,13 +94,13 @@ export class GamePipeline {
     continue() {
         this.#queueIntoPipeline();
 
-        while (this.pipeline.length > 0) {
+        while(this.pipeline.length > 0) {
             const currentStep = this.getCurrentStep();
 
             // Explicitly check for a return of false - if no return values is
             // defined then just continue to the next step.
-            if (currentStep.continue() === false) {
-                if (this.queue.length === 0) {
+            if(currentStep.continue() === false) {
+                if(this.queue.length === 0) {
                     return false;
                 }
             } else {
@@ -125,18 +125,18 @@ export class GamePipeline {
     }
 
     getDebugInfoForStep(step: StepItem) {
-        if (typeof step === 'function') {
+        if(typeof step === 'function') {
             return step.toString();
         }
 
         let name = step.constructor.name;
-        if (step.pipeline) {
+        if(step.pipeline) {
             let result = {};
             result[name] = step.pipeline.getDebugInfo();
             return result;
         }
 
-        if (step.getDebugInfo) {
+        if(step.getDebugInfo) {
             return step.getDebugInfo();
         }
 

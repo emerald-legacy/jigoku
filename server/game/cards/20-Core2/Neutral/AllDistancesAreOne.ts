@@ -53,7 +53,7 @@ export default class AllDistancesAreOne extends DrawCard {
                     effectArgs: () => [context[CAPTURED_ORIGINAL_PROVINCE]],
                     gameAction: AbilityDsl.actions.turnFacedown({
                         target: context[CAPTURED_ORIGINAL_PROVINCE] as ProvinceCard
-                    }),
+                    })
                 })
             })
         });

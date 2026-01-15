@@ -43,7 +43,7 @@ export default class DevelopingMasterpiece extends DrawCard {
             effectArgs: (context: AbilityContext) => [this.getHonorGain(context)],
             then: (context) => {
                 const haiku = randomHaiku();
-                if (haiku) {
+                if(haiku) {
                     haiku.forEach((line) => context.game.addMessage(`>> ${line}`));
                     context.game.addMessage('>>>> Matsuo Bashō <<<<');
                 }
@@ -77,11 +77,11 @@ export default class DevelopingMasterpiece extends DrawCard {
 
 const haikus = [
     ['Ah! The ancient pond', 'As a frog takes the plunge', 'Sound of the water'],
-    ["The octopus' fleeting dream", 'in the trap', 'the summer moon'],
+    ['The octopus\' fleeting dream', 'in the trap', 'the summer moon'],
     ['Another year is gone;', 'and I still wear', 'straw hat and straw sandal.'],
     ['Along this road', 'Goes no one,', 'This autumn eve.'],
     ['Sick on a journey,', 'my dreams wander', 'the withered fields'],
-    ['Even in Kyoto—', "hearing the cuckoo's cry—", 'I long for Kyoto'],
+    ['Even in Kyoto—', 'hearing the cuckoo\'s cry—', 'I long for Kyoto'],
     ['One field', 'did they plant.', 'I, under the willow.'],
     ['This pervasive silence', 'Enhanced yet by cicadas simmering', 'Into the Temple Rocks dissipating'],
     ['Dividing like clam', 'and shell, I leave for Futami—', 'Autumn is passing by'],
@@ -94,11 +94,11 @@ const haikus = [
     ['I am one', 'Who eats his breakfast,', 'Gazing at morning glories.'],
     ['Deep autumn—', 'my neighbor,', 'how does he live, I wonder?'],
     ['Not this human sadness,', 'cuckoo,', 'but your solitary cry.'],
-    ['Sad nodes', "we're all the bamboo's children", 'in the end'],
+    ['Sad nodes', 'we\'re all the bamboo\'s children', 'in the end'],
     ['Sweet-smelling rice fields!', 'To our right as we push through,', 'The Ariso Sea.'],
     ['The whitebait', 'opens its eye', 'in the net of the law'],
     ['Should I take it in my hand,', 'it would disappear with my hot tears,', 'like the frost of autumn.'],
-    ['The summer grasses—', "Of the brave soldiers' dreams", 'The aftermath.']
+    ['The summer grasses—', 'Of the brave soldiers\' dreams', 'The aftermath.']
 ];
 function randomHaiku(): string[] {
     return haikus[Math.floor(haikus.length * Math.random())];

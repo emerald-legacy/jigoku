@@ -6,16 +6,16 @@ import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
 const resourcesAvailable = (context) => {
     let honorAvailable = false;
     let fateAvailable = false;
-    if (context.game.actions.loseHonor().canAffect(context.player, context)) {
+    if(context.game.actions.loseHonor().canAffect(context.player, context)) {
         honorAvailable = true;
     }
 
-    if (context.game.actions.loseFate().canAffect(context.player, context)) {
+    if(context.game.actions.loseFate().canAffect(context.player, context)) {
         fateAvailable = true;
     }
 
     return { honorAvailable, fateAvailable };
-}
+};
 
 const eyesOfTheSerpentCost = function () {
     return {
@@ -27,12 +27,12 @@ const eyesOfTheSerpentCost = function () {
         },
         canPay: function (context: TriggeredAbilityContext) {
             const { honorAvailable, fateAvailable } = resourcesAvailable(context);
-            return honorAvailable || fateAvailable
+            return honorAvailable || fateAvailable;
         },
         resolve: function (context, result) {
             const { honorAvailable, fateAvailable } = resourcesAvailable(context);
             context.costs.merchantOfCuriositiesCostPaid = false;
-            if (honorAvailable && fateAvailable) {
+            if(honorAvailable && fateAvailable) {
                 context.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Spend 1 honor or 1 fate?',
                     source: context.source,
@@ -43,17 +43,16 @@ const eyesOfTheSerpentCost = function () {
                     ]
                 });
             } else {
-                if (honorAvailable) {
-                    context.costs.serpentCostPaid = 'honor'
-                }
-                else if (fateAvailable) {
-                    context.costs.serpentCostPaid = 'fate'
+                if(honorAvailable) {
+                    context.costs.serpentCostPaid = 'honor';
+                } else if(fateAvailable) {
+                    context.costs.serpentCostPaid = 'fate';
                 }
             }
         },
         payEvent: function (context) {
             let events = [];
-            if (context.costs.serpentCostPaid === 'honor') {
+            if(context.costs.serpentCostPaid === 'honor') {
                 const action = context.game.actions.loseHonor({ amount: 1 });
                 events.push(action.getEvent(context.player, context));
             } else {
@@ -85,11 +84,11 @@ export default class EyesOfTheSerpent extends DrawCard {
                             target: context.player,
                             amount: 1
                         })),
-                        effect: 'gain 1 honor',
+                        effect: 'gain 1 honor'
                     }))
                 ])
             },
-            effect: "taint {1}",
+            effect: 'taint {1}',
             effectArgs: (context) => [context.target]
         });
     }

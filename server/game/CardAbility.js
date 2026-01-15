@@ -7,7 +7,7 @@ const { initiateDuel } = require('./DuelHelper');
 
 class CardAbility extends ThenAbility {
     constructor(game, card, properties) {
-        if (properties.initiateDuel) {
+        if(properties.initiateDuel) {
             initiateDuel(game, card, properties);
         }
         super(game, card, properties);
@@ -25,16 +25,16 @@ class CardAbility extends ThenAbility {
         this.max = properties.max;
         this.abilityIdentifier = properties.abilityIdentifier;
         this.origin = properties.origin;
-        if (!this.abilityIdentifier) {
+        if(!this.abilityIdentifier) {
             this.abilityIdentifier = this.printedAbility ? this.card.id + '1' : '';
         }
         this.maxIdentifier = this.card.name + this.abilityIdentifier;
 
-        if (this.max) {
+        if(this.max) {
             this.card.owner.registerAbilityMax(this.maxIdentifier, this.max);
         }
 
-        if (card.getType() === CardTypes.Event && !this.isKeywordAbility()) {
+        if(card.getType() === CardTypes.Event && !this.isKeywordAbility()) {
             this.cost = this.cost.concat(Costs.payReduceableFateCost());
         }
     }
@@ -50,11 +50,11 @@ class CardAbility extends ThenAbility {
 
         let defaultedLocation = location || DefaultLocationForType[card.getType()] || Locations.PlayArea;
 
-        if (!Array.isArray(defaultedLocation)) {
+        if(!Array.isArray(defaultedLocation)) {
             defaultedLocation = [defaultedLocation];
         }
 
-        if (defaultedLocation.some((location) => location === Locations.Provinces)) {
+        if(defaultedLocation.some((location) => location === Locations.Provinces)) {
             defaultedLocation = defaultedLocation.filter((location) => location !== Locations.Provinces);
             defaultedLocation = defaultedLocation.concat(this.game.getProvinceArray());
         }
@@ -63,34 +63,34 @@ class CardAbility extends ThenAbility {
     }
 
     meetsRequirements(context, ignoredRequirements = []) {
-        if (this.card.isBlank() && this.printedAbility) {
+        if(this.card.isBlank() && this.printedAbility) {
             return 'blank';
         }
 
-        if (
+        if(
             (this.isTriggeredAbility() && !this.card.canTriggerAbilities(context, ignoredRequirements)) ||
             (this.card.type === CardTypes.Event && !this.card.canPlay(context, context.playType))
         ) {
             return 'cannotTrigger';
         }
 
-        if (this.isKeywordAbility() && !this.card.canInitiateKeywords(context)) {
+        if(this.isKeywordAbility() && !this.card.canInitiateKeywords(context)) {
             return 'cannotInitiate';
         }
 
-        if (!ignoredRequirements.includes('limit') && this.limit.isAtMax(context.player)) {
+        if(!ignoredRequirements.includes('limit') && this.limit.isAtMax(context.player)) {
             return 'limit';
         }
 
-        if (!ignoredRequirements.includes('max') && this.max && context.player.isAbilityAtMax(this.maxIdentifier)) {
+        if(!ignoredRequirements.includes('max') && this.max && context.player.isAbilityAtMax(this.maxIdentifier)) {
             return 'max';
         }
 
-        if (this.isCardPlayed() && this.card.isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
+        if(this.isCardPlayed() && this.card.isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
             return 'limited';
         }
 
-        if (
+        if(
             !ignoredRequirements.includes('phase') &&
             !this.isKeywordAbility() &&
             this.card.isDynasty &&
@@ -105,19 +105,19 @@ class CardAbility extends ThenAbility {
 
     getCosts(context, playCosts = true, triggerCosts = true) {
         let costs = super.getCosts(context, playCosts);
-        if (!context.subResolution && triggerCosts && context.player.anyEffect(EffectNames.AdditionalTriggerCost)) {
+        if(!context.subResolution && triggerCosts && context.player.anyEffect(EffectNames.AdditionalTriggerCost)) {
             const additionalTriggerCosts = context.player
                 .getEffects(EffectNames.AdditionalTriggerCost)
                 .map((effect) => effect(context));
             costs = costs.concat(...additionalTriggerCosts);
         }
-        if (!context.subResolution && triggerCosts && context.source.anyEffect(EffectNames.AdditionalTriggerCost)) {
+        if(!context.subResolution && triggerCosts && context.source.anyEffect(EffectNames.AdditionalTriggerCost)) {
             const additionalTriggerCosts = context.source
                 .getEffects(EffectNames.AdditionalTriggerCost)
                 .map((effect) => effect(context));
             costs = costs.concat(...additionalTriggerCosts);
         }
-        if (!context.subResolution && playCosts && context.player.anyEffect(EffectNames.AdditionalPlayCost)) {
+        if(!context.subResolution && playCosts && context.player.anyEffect(EffectNames.AdditionalPlayCost)) {
             const additionalPlayCosts = context.player
                 .getEffects(EffectNames.AdditionalPlayCost)
                 .map((effect) => effect(context));
@@ -138,10 +138,10 @@ class CardAbility extends ThenAbility {
     }
 
     getLocationMessage(location, context) {
-        if (location.match(/^\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b$/i)) {
+        if(location.match(/^\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b$/i)) {
             //it's a uuid
             let source = context.game.findAnyCardInPlayByUuid(location);
-            if (source) {
+            if(source) {
                 return `cards set aside by ${source.name}`;
             }
             return 'out of play area';
@@ -150,7 +150,7 @@ class CardAbility extends ThenAbility {
     }
 
     displayMessage(context, messageVerb = context.source.type === CardTypes.Event ? 'plays' : 'uses') {
-        if (
+        if(
             context.source.type === CardTypes.Event &&
             context.source.isConflict &&
             context.source.location !== Locations.Hand &&
@@ -160,17 +160,17 @@ class CardAbility extends ThenAbility {
                 '{0} plays {1} from {2} {3}',
                 context.player,
                 context.source,
-                context.source.controller === context.player ? 'their' : "their opponent's",
+                context.source.controller === context.player ? 'their' : 'their opponent\'s',
                 this.getLocationMessage(context.source.location, context)
             );
         }
 
-        if (this.properties.message) {
+        if(this.properties.message) {
             let messageArgs = this.properties.messageArgs;
-            if (typeof messageArgs === 'function') {
+            if(typeof messageArgs === 'function') {
                 messageArgs = messageArgs(context);
             }
-            if (!Array.isArray(messageArgs)) {
+            if(!Array.isArray(messageArgs)) {
                 messageArgs = [messageArgs];
             }
             this.game.addMessage(this.properties.message, ...messageArgs);
@@ -178,17 +178,17 @@ class CardAbility extends ThenAbility {
         }
         let origin = context.ability && context.ability.origin;
         // if origin is the same as source then ignore it
-        if (origin === context.source) {
+        if(origin === context.source) {
             origin = null;
         }
         // Player1 plays Assassination
-        let gainedAbility = origin ? "'s gained ability from " : '';
+        let gainedAbility = origin ? '\'s gained ability from ' : '';
         let messageArgs = [context.player, ' ' + messageVerb + ' ', context.source, gainedAbility, origin];
         let costMessages = this.cost
             .map((cost) => {
-                if (cost.getCostMessage && cost.getCostMessage(context)) {
+                if(cost.getCostMessage && cost.getCostMessage(context)) {
                     let card = context.costs[cost.getActionName(context)];
-                    if (card && card.isFacedown && card.isFacedown()) {
+                    if(card && card.isFacedown && card.isFacedown()) {
                         card = 'a facedown card';
                     }
                     let [format, args] = ['ERROR - MISSING COST MESSAGE', [' ', ' ']];
@@ -197,7 +197,7 @@ class CardAbility extends ThenAbility {
                 }
             })
             .filter((obj) => obj);
-        if (costMessages.length > 0) {
+        if(costMessages.length > 0) {
             // ,
             messageArgs.push(', ');
             // paying 3 honor
@@ -208,9 +208,9 @@ class CardAbility extends ThenAbility {
         let effectMessage = this.properties.effect;
         let effectArgs = [];
         let extraArgs = null;
-        if (!effectMessage) {
+        if(!effectMessage) {
             let gameActions = this.getGameActions(context).filter((gameAction) => gameAction.hasLegalTarget(context));
-            if (gameActions.length > 0) {
+            if(gameActions.length > 0) {
                 // effects with multiple game actions really need their own effect message
                 [effectMessage, extraArgs] = gameActions[0].getEffectMessage(context);
             }
@@ -219,14 +219,14 @@ class CardAbility extends ThenAbility {
             extraArgs = this.properties.effectArgs;
         }
 
-        if (extraArgs) {
-            if (typeof extraArgs === 'function') {
+        if(extraArgs) {
+            if(typeof extraArgs === 'function') {
                 extraArgs = extraArgs(context);
             }
             effectArgs = effectArgs.concat(extraArgs);
         }
 
-        if (effectMessage) {
+        if(effectMessage) {
             // to
             messageArgs.push(' to ');
             // discard Stoic Gunso

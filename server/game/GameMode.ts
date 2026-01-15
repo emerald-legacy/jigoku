@@ -9,14 +9,14 @@ type RingChoices = Record<string, (context: AbilityContext) => boolean>;
 export const AIR_CHOICE = {
     GAIN_2: 'Gain 2 Honor',
     TAKE_1: 'Take 1 Honor from opponent',
-    SKIP: "Don't resolve"
+    SKIP: 'Don\'t resolve'
 } as const;
 
 export const EARTH_CHOICE = {
     DRAW: 'Draw a card',
     FORCE_DISCARD: 'Opponent discards a card',
     DRAW_AND_FORCE_DISCARD: 'Draw a card and opponent discards',
-    SKIP: "Don't resolve"
+    SKIP: 'Don\'t resolve'
 } as const;
 
 export interface GameMode {
@@ -184,7 +184,7 @@ const Obsidian: GameMode = {
 };
 
 export function parseGameMode(candidateStr: string): GameMode {
-    switch (candidateStr) {
+    switch(candidateStr) {
         case 'skirmish':
             return Skirmish;
         case 'jade-edict':

@@ -38,7 +38,7 @@ export default class RelentlessGloryseeker extends DrawCard {
     }
 
     public onCardLeavesPlay(event: any) {
-        if (
+        if(
             event.card === this &&
             this.location !== Locations.RemovedFromGame &&
             this.ressurrectionsThisRound >= MAXIMUM_RESSURRECTIONS

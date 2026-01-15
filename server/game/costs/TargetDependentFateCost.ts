@@ -10,10 +10,10 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
     }
 
     public canPay(context: AbilityContext): boolean {
-        if (context.source.printedCost === null) {
+        if(context.source.printedCost === null) {
             return false;
         }
-        if (!context.targets[this.dependsOn]) {
+        if(!context.targets[this.dependsOn]) {
             // we don't need to check now because this will be checked again once targeting is done
             return true;
         }

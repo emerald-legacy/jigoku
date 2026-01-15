@@ -28,13 +28,13 @@ export default class AsakoKousuke extends DrawCard {
                     choices: (context) => {
                         const targetToken: StatusToken = context.tokens[ORIGINL_TOKEN][0];
                         const targetCard = targetToken.card;
-                        if (!(targetCard instanceof DrawCard)) {
+                        if(!(targetCard instanceof DrawCard)) {
                             // should never happen
                             return {};
                         }
 
                         const choices = [] as Array<[string, GameAction]>;
-                        if (!targetCard.isHonored) {
+                        if(!targetCard.isHonored) {
                             choices.push([
                                 'Turn it into Honored',
                                 AbilityDsl.actions.joint([
@@ -44,7 +44,7 @@ export default class AsakoKousuke extends DrawCard {
                             ]);
                         }
 
-                        if (!targetCard.isDishonored) {
+                        if(!targetCard.isDishonored) {
                             choices.push([
                                 'Turn it into Dishonored',
                                 AbilityDsl.actions.joint([
@@ -54,7 +54,7 @@ export default class AsakoKousuke extends DrawCard {
                             ]);
                         }
 
-                        if (!targetCard.isTainted) {
+                        if(!targetCard.isTainted) {
                             choices.push([
                                 'Turn it into Tainted',
                                 AbilityDsl.actions.joint([
@@ -74,8 +74,8 @@ export default class AsakoKousuke extends DrawCard {
                 context.selects.selection.choice === 'Turn it into Honored'
                     ? 'honored'
                     : context.selects.selection.choice === 'Turn it into Dishonored'
-                    ? 'dishonored'
-                    : 'tainted'
+                        ? 'dishonored'
+                        : 'tainted'
             ]
         });
     }

@@ -14,7 +14,7 @@ export class EndRoundPrompt extends PlayerOrderPrompt {
     }
 
     onMenuCommand(player: Player): boolean {
-        if (player !== this.currentPlayer) {
+        if(player !== this.currentPlayer) {
             return false;
         }
 

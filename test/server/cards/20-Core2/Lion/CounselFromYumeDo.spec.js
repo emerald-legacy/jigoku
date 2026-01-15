@@ -41,7 +41,7 @@ describe('Counsel from Yume-do', function () {
             expect(this.courtGames.location).toBe('conflict deck');
             expect(this.fineKatana.location).toBe('conflict deck');
             expect(this.getChatLogs(5)).toContain(
-                "player1 plays Counsel from Yume-do to shuffle A Perfect Cut, Court Games and Fine Katana into its owner's deck"
+                'player1 plays Counsel from Yume-do to shuffle A Perfect Cut, Court Games and Fine Katana into its owner\'s deck'
             );
             expect(this.getChatLogs(5)).toContain('player1 is shuffling their conflict deck');
             expect(this.player1.hand.length).toBe(0);

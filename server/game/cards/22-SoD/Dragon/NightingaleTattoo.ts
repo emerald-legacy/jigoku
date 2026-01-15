@@ -31,7 +31,7 @@ export default class NightingaleTattoo extends DrawCard {
                 cardCondition: (card) => card.hasTrait('tattoo') || card.hasTrait('kiho'),
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.returnToDeck({ location: Locations.ConflictDiscardPile, shuffle: true })
-            },
+            }
         });
     }
 }

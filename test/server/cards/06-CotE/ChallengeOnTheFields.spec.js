@@ -37,7 +37,7 @@ describe('Challenge on the Fields', function () {
             });
         });
 
-        describe("Challenge on the Fields's ability interaction with nested duels", function () {
+        describe('Challenge on the Fields\'s ability interaction with nested duels', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',
@@ -101,7 +101,7 @@ describe('Challenge on the Fields', function () {
             });
         });
 
-        describe("Challenge on the Fields's ability", function () {
+        describe('Challenge on the Fields\'s ability', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',
@@ -152,7 +152,7 @@ describe('Challenge on the Fields', function () {
                 expect(this.player1).not.toBeAbleToSelect(this.togashiMitsu);
             });
 
-            it("should prompt to select a participating character on your opponent's side", function () {
+            it('should prompt to select a participating character on your opponent\'s side', function () {
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.borderRider, this.battleMaidenRecruit, this.ideMessenger],

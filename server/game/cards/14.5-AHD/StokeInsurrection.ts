@@ -42,7 +42,7 @@ export default class StokeInsurrection extends DrawCard {
                     gameAction: AbilityDsl.actions.putIntoConflict()
                 }))
             ]),
-            effect: "reveal {1}'s dynasty cards and put up to two of them into play",
+            effect: 'reveal {1}\'s dynasty cards and put up to two of them into play',
             effectArgs: (context) => [context.player.opponent]
         });
     }

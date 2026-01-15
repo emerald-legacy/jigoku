@@ -8,7 +8,7 @@ export default class ArrowsFromTheWoods extends DrawCard {
 
     public setupCardAbilities() {
         this.action({
-            title: "Reduce opponent's characters mil",
+            title: 'Reduce opponent\'s characters mil',
             condition: (context) =>
                 context.game.isDuringConflict('military') &&
                 context.player.anyCardsInPlay((card: BaseCard) => card.isParticipating() && card.hasTrait('bushi')),
@@ -16,7 +16,7 @@ export default class ArrowsFromTheWoods extends DrawCard {
                 target: context.game.currentConflict.getCharacters(context.player.opponent),
                 effect: AbilityDsl.effects.modifyMilitarySkill(this.penaltyValue(context))
             })),
-            effect: "give {1}'s participating characters {2}{3}",
+            effect: 'give {1}\'s participating characters {2}{3}',
             effectArgs: (context) => [context.player.opponent, this.penaltyValue(context), 'military'],
             max: AbilityDsl.limit.perConflict(1)
         });

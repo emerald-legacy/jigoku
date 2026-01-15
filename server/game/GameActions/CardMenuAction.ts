@@ -50,10 +50,10 @@ export class CardMenuAction extends CardGameAction<CardMenuProperties> {
 
     hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
-        if (properties.handlers) {
+        if(properties.handlers) {
             return true;
         }
-        if (properties.gameActionHasLegalTarget) {
+        if(properties.gameActionHasLegalTarget) {
             return properties.gameActionHasLegalTarget(context);
         }
         return properties.cards.some((card) =>
@@ -71,7 +71,7 @@ export class CardMenuAction extends CardGameAction<CardMenuProperties> {
                 context,
                 Object.assign({}, additionalProperties, properties.subActionProperties(card))
             ) && properties.cardCondition(card, context);
-        if (
+        if(
             !this.hasLegalTarget(context, additionalProperties) ||
             (properties.cards.length === 0 && properties.choices.length === 0) ||
             (properties.player === Players.Opponent && !context.player.opponent)
@@ -79,7 +79,7 @@ export class CardMenuAction extends CardGameAction<CardMenuProperties> {
             return;
         }
         let player = properties.player === Players.Opponent ? context.player.opponent : context.player;
-        if (properties.targets && context.choosingPlayerOverride) {
+        if(properties.targets && context.choosingPlayerOverride) {
             player = context.choosingPlayerOverride;
         }
         let defaultProperties = {
@@ -90,7 +90,7 @@ export class CardMenuAction extends CardGameAction<CardMenuProperties> {
                     context,
                     Object.assign({}, additionalProperties, properties.subActionProperties(card))
                 );
-                if (properties.message) {
+                if(properties.message) {
                     let cards = properties.cards.filter((card) => cardCondition(card, context));
                     context.game.addMessage(properties.message, ...properties.messageArgs(card, player, cards));
                 }

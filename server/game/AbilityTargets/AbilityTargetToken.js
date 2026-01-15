@@ -91,7 +91,7 @@ class AbilityTargetToken {
             context: context,
             selector: this.selector,
             onSelect: (player, card) => {
-                if (!card || card.length === 0) {
+                if(!card || card.length === 0) {
                     return true;
                 }
 

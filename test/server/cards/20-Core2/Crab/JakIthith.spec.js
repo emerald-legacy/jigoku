@@ -1,4 +1,4 @@
-describe("Jak'Ithith", function() {
+describe('Jak\'Ithith', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({
@@ -83,7 +83,7 @@ describe("Jak'Ithith", function() {
                 this.player2.clickCard(this.borderlands);
                 expect(this.borderlands.attachments).toContain(this.katana);
                 expect(this.getChatLogs(5)).toContain(
-                    "player2 uses Jak'ithith to take control of and attach Togashi Initiate's Fine Katana to Borderlands Defender"
+                    'player2 uses Jak\'ithith to take control of and attach Togashi Initiate\'s Fine Katana to Borderlands Defender'
                 );
             });
 
@@ -102,7 +102,7 @@ describe("Jak'Ithith", function() {
 
                 this.player2.clickCard(this.borderlands);
                 expect(this.tattoo.location).toBe('conflict discard pile');
-                expect(this.getChatLogs(5)).toContain("player2 uses Jak'ithith to discard Centipede Tattoo");
+                expect(this.getChatLogs(5)).toContain('player2 uses Jak\'ithith to discard Centipede Tattoo');
             });
         });
 
@@ -141,7 +141,7 @@ describe("Jak'Ithith", function() {
                 this.player2.clickCard(this.borderlands);
                 expect(this.borderlands.attachments).toContain(this.katana);
                 expect(this.getChatLogs(5)).toContain(
-                    "player2 uses Jak'ithith to take control of and attach Togashi Initiate's Fine Katana to Borderlands Defender"
+                    'player2 uses Jak\'ithith to take control of and attach Togashi Initiate\'s Fine Katana to Borderlands Defender'
                 );
             });
 
@@ -160,7 +160,7 @@ describe("Jak'Ithith", function() {
 
                 this.player2.clickCard(this.borderlands);
                 expect(this.tattoo.location).toBe('conflict discard pile');
-                expect(this.getChatLogs(5)).toContain("player2 uses Jak'ithith to discard Centipede Tattoo");
+                expect(this.getChatLogs(5)).toContain('player2 uses Jak\'ithith to discard Centipede Tattoo');
             });
         });
     });

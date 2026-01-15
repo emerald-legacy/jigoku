@@ -15,7 +15,7 @@ export default class TwentyFourSteps extends DrawCard {
                 cardCondition: card => card.hasTrait('bushi') && card.attachments.length >= 2,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.ready(),
-                    AbilityDsl.actions.moveToConflict(),
+                    AbilityDsl.actions.moveToConflict()
                 ])
             },
             effect: 'ready {0} and move it into the conflict'

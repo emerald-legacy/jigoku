@@ -34,8 +34,8 @@ class CopyCard extends EffectValue<BaseCard> {
                 return value.getValue();
             })
         });
-        for (const effect of this.persistentEffects) {
-            if (
+        for(const effect of this.persistentEffects) {
+            if(
                 effect.location === Locations.Any ||
                 (target.getType() === CardTypes.Character && effect.location === Locations.PlayArea) ||
                 (target.getType() === CardTypes.Holding && effect.location === Locations.Provinces)
@@ -46,12 +46,12 @@ class CopyCard extends EffectValue<BaseCard> {
     }
 
     unapply(target: BaseCard) {
-        for (const value of this.getReactions(target)) {
+        for(const value of this.getReactions(target)) {
             // @ts-ignore
             value.unregisterEvents();
         }
-        for (const effect of this.persistentEffects) {
-            if (effect.ref) {
+        for(const effect of this.persistentEffects) {
+            if(effect.ref) {
                 target.removeEffectFromEngine(effect.ref);
                 delete effect.ref;
             }

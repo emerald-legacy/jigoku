@@ -50,7 +50,7 @@ export default class KakitaTechnique extends DrawCard {
             effect: 'give {0} +1{1} and +1{2} after each event they play{3}{4}{5}{6}',
             effectArgs: (context) => {
                 const actions = this.#getExtraActionCount(context);
-                if (actions > 0)
+                if(actions > 0) {
                     return [
                         'military',
                         'political',
@@ -59,6 +59,7 @@ export default class KakitaTechnique extends DrawCard {
                         ' additional action',
                         actions > 1 ? 's' : ''
                     ];
+                }
                 return ['military', 'political', '', '', '', ''];
             },
             max: AbilityDsl.limit.perConflict(1)

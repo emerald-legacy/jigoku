@@ -45,13 +45,13 @@ export class ConflictPhase extends Phase {
     }
 
     startConflictChoice() {
-        if (this.currentPlayer.getConflictOpportunities() === 0 && this.currentPlayer.opponent) {
+        if(this.currentPlayer.getConflictOpportunities() === 0 && this.currentPlayer.opponent) {
             this.currentPlayer = this.currentPlayer.opponent;
         }
-        if (this.currentPlayer.getConflictOpportunities() > 0) {
+        if(this.currentPlayer.getConflictOpportunities() > 0) {
             const forced = this.currentPlayer.mostRecentEffect(EffectNames.ForceConflictDeclarationType);
             const props = { forcedDeclaredType: forced };
-            if (
+            if(
                 initiateConflict(props).canAffect(this.currentPlayer, this.game.getFrameworkContext(this.currentPlayer))
             ) {
                 initiateConflict(props).resolve(this.currentPlayer, this.game.getFrameworkContext(this.currentPlayer));
@@ -61,7 +61,7 @@ export class ConflictPhase extends Phase {
                     '{0} passes their conflict opportunity as none of their characters can be declared as an attacker'
                 );
             }
-            if (this.currentPlayer.opponent) {
+            if(this.currentPlayer.opponent) {
                 this.currentPlayer = this.currentPlayer.opponent;
             }
             this.game.queueStep(new ActionWindow(this.game, 'Action Window', 'preConflict'));

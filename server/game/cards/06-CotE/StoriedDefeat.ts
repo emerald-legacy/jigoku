@@ -29,7 +29,7 @@ export default class StoriedDefeat extends DrawCard {
                             context.events.some((event) => event.name === EventNames.OnCardBowed) ? ['No'] : []
                         ),
                         choiceHandler: (choice, displayMessage) => {
-                            if (displayMessage) {
+                            if(displayMessage) {
                                 context.game.addMessage(
                                     '{0} chooses {1}to spend a fate to dishonor {2}',
                                     context.player,
@@ -65,9 +65,9 @@ export default class StoriedDefeat extends DrawCard {
     }
 
     public afterDuel(event: any) {
-        if (Array.isArray(event.duel.loser)) {
+        if(Array.isArray(event.duel.loser)) {
             (event.duel.loser as BaseCard[]).forEach((duelLoser) => this.duelLosersThisConflict.add(duelLoser));
-        } else if (event.duel.loser) {
+        } else if(event.duel.loser) {
             this.duelLosersThisConflict.add(event.duel.loser);
         }
     }

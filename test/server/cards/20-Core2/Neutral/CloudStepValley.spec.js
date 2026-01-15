@@ -38,7 +38,7 @@ describe('Cloud Step Valley', function () {
             this.noMoreActions();
         });
 
-        it("switches the location of opponent's characters", function () {
+        it('switches the location of opponent\'s characters', function () {
             this.initiateConflict({
                 attackers: [this.aggressiveMoto],
                 defenders: [this.yokuni],

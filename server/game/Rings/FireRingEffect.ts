@@ -18,13 +18,13 @@ export class FireRingEffect extends BaseAbility {
                 cardType: CardTypes.Character,
                 cardCondition: <C extends DrawCard>(card: C, context: AbilityContext) =>
                     card.allowGameAction('honor', context) || card.allowGameAction('dishonor', context),
-                buttons: optional ? [{ text: "Don't resolve", arg: 'dontResolve' }] : []
+                buttons: optional ? [{ text: 'Don\'t resolve', arg: 'dontResolve' }] : []
             }
         });
     }
 
     public executeHandler(context: AbilityContext) {
-        if (!context.target) {
+        if(!context.target) {
             context.game.addMessage('{0} chooses not to resolve the {1} ring', context.player, 'fire');
             this.onResolution(false);
             return;
@@ -33,7 +33,7 @@ export class FireRingEffect extends BaseAbility {
         const choices: string[] = [];
         const handlers: Array<() => void> = [];
 
-        if (context.target.allowGameAction('honor', context)) {
+        if(context.target.allowGameAction('honor', context)) {
             choices.push(`Honor ${context.target.name}`);
             handlers.push(() => {
                 context.game.addMessage(
@@ -47,7 +47,7 @@ export class FireRingEffect extends BaseAbility {
             });
         }
 
-        if (context.target.allowGameAction('dishonor', context)) {
+        if(context.target.allowGameAction('dishonor', context)) {
             choices.push(`Dishonor ${context.target.name}`);
             handlers.push(() => {
                 context.game.addMessage(
@@ -64,8 +64,8 @@ export class FireRingEffect extends BaseAbility {
         choices.push('Back');
         handlers.push(() => context.player.resolveRingEffects(['fire'], this.optional));
 
-        if (this.optional) {
-            choices.push("Don't resolve the fire ring");
+        if(this.optional) {
+            choices.push('Don\'t resolve the fire ring');
             handlers.push(() => {
                 context.game.addMessage('{0} chooses not to resolve the {1} ring', context.player, 'fire');
                 this.onResolution(false);

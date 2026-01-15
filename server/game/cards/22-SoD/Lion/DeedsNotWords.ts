@@ -29,11 +29,11 @@ export default class DeedsNotWords extends DrawCard {
                             message: '{0} claims the Imperial Favor to the delayed effect of {1}',
                             messageArgs: [context.player, context.source]
                         })
-                    })),
-                ]),
+                    }))
+                ])
             },
             then: context => ({
-                thenCondition: () => context.player.imperialFavor !== "",
+                thenCondition: () => context.player.imperialFavor !== '',
                 target: {
                     mode: TargetModes.Select,
                     choices: {
@@ -51,12 +51,12 @@ export default class DeedsNotWords extends DrawCard {
                                 messageArgs: (card) => [context.player, card, 'military'],
                                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
                                     effect: AbilityDsl.effects.modifyMilitarySkill(2)
-                                })),
+                                }))
                             }))
                         ]),
                         'Done': () => true
                     }
-                },
+                }
             }),
             effect: 'give {0} +2{1}',
             effectArgs: context => ['miliary']

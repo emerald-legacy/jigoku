@@ -11,7 +11,7 @@ export default class MotoOktai extends DrawCard {
 
     setupCardAbilities() {
         this.interrupt({
-            title: "Increase this character's skill",
+            title: 'Increase this character\'s skill',
             when: {
                 onCardLeavesPlay: ({ card }, context) =>
                     card.location === Locations.PlayArea && card.type === CardTypes.Character

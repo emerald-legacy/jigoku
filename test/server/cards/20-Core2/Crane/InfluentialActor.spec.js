@@ -39,7 +39,7 @@ xdescribe('Influential Actor', function () {
             expect(this.actor.isTainted).toBe(false);
         });
 
-        it("should not let you target someone you can't move a token to", function () {
+        it('should not let you target someone you can\'t move a token to', function () {
             this.brash.honor();
             this.brash.taint();
             this.player1.clickCard(this.actor);

@@ -7,7 +7,7 @@ export default class MantraOfEarth extends DrawCard {
 
     setupCardAbilities() {
         this.reaction({
-            title: "Make a monk untargetable by opponents' card effects and draw a card",
+            title: 'Make a monk untargetable by opponents\' card effects and draw a card',
             when: {
                 onConflictDeclared: (event, context) =>
                     event.ring.hasElement('earth') && event.conflict.attackingPlayer === context.player.opponent
@@ -24,7 +24,7 @@ export default class MantraOfEarth extends DrawCard {
                     })
                 }))
             },
-            effect: "make {0} untargetable by opponents' card effects and draw a card",
+            effect: 'make {0} untargetable by opponents\' card effects and draw a card',
             gameAction: AbilityDsl.actions.draw()
         });
     }

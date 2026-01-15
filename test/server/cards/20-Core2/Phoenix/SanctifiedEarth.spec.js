@@ -107,7 +107,7 @@ describe('Sanctified Earth', function () {
                 'player1 uses Sanctified Earth to give +2military and +2political to Garanto Guardian'
             );
             expect(this.getChatLogs(5)).toContain(
-                "player1 channels their earth affinity to make Garanto Guardian invulnerable to opponent's send home"
+                'player1 channels their earth affinity to make Garanto Guardian invulnerable to opponent\'s send home'
             );
 
             this.player2.clickCard(this.outwit);

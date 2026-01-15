@@ -2,7 +2,7 @@ const DrawCard = require('../../drawcard.js');
 const { Locations, Players, CardTypes } = require('../../Constants');
 
 class MyAncestorsStrength extends DrawCard {
-    setupCardAbilities(ability) { // eslint-disable-line no-unused-vars
+    setupCardAbilities(ability) {
         this.action({
             title: 'Modify base military and political skills',
             condition: () => this.game.isDuringConflict(),

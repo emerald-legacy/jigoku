@@ -4,10 +4,10 @@ describe('Master of Bindings', function () {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['obstinate-witch-hunter', 'obstinate-witch-hunter'],
+                    inPlay: ['obstinate-witch-hunter', 'obstinate-witch-hunter']
                 },
                 player2: {
-                    inPlay: ['isawa-tadaka'],
+                    inPlay: ['isawa-tadaka']
                 }
             });
 

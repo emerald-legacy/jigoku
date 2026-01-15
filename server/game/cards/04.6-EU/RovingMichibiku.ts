@@ -6,7 +6,7 @@ export default class RovingMichibiku extends DrawCard {
 
     public setupCardAbilities() {
         this.reaction({
-            title: "Take a ring from opponent's claimed pool",
+            title: 'Take a ring from opponent\'s claimed pool',
             when: {
                 afterConflict: (event, context) =>
                     context.source.isAttacking() &&

@@ -25,7 +25,7 @@ const parsedEnv = z
     })
     .safeParse(process.env);
 
-if (!parsedEnv.success) {
+if(!parsedEnv.success) {
     throw Error(`Failed to initialize environment variables: ${(parsedEnv as any).error.message}`);
 }
 

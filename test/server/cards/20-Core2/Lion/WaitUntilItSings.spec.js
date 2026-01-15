@@ -19,12 +19,12 @@ describe('Wait Until It Sings', function () {
             this.yoshi = this.player1.findCardByName('kakita-yoshi');
             this.assistant = this.player1.findCardByName('dutiful-assistant');
             this.sings = this.player1.findCardByName('wait-until-it-sings');
-            this.technique = this.player1.findCardByName('kakita-technique')
+            this.technique = this.player1.findCardByName('kakita-technique');
 
             this.tactician = this.player2.findCardByName('master-tactician');
             this.sings2 = this.player2.findCardByName('wait-until-it-sings');
             this.cut = this.player2.findCardByName('a-perfect-cut');
-            this.technique2 = this.player2.findCardByName('kakita-technique')
+            this.technique2 = this.player2.findCardByName('kakita-technique');
         });
 
         it('should give you an action during resolution - p1', function () {
@@ -69,7 +69,7 @@ describe('Wait Until It Sings', function () {
             expect(this.getChatLogs(10)).toContain('player2 plays Wait Until It Sings to take an action before conflict resolution');
 
             this.player1.playAttachment(this.assistant, this.ambusher);
- 
+
             this.noMoreActions();
 
             expect(this.getChatLogs(10)).toContain('player2 has a bonus action during resolution!');
@@ -94,7 +94,7 @@ describe('Wait Until It Sings', function () {
 
             this.player2.clickCard(this.sings2);
             expect(this.getChatLogs(10)).toContain('player2 plays Wait Until It Sings to take an action before conflict resolution');
- 
+
             this.noMoreActions();
 
             expect(this.getChatLogs(10)).toContain('player2 has a bonus action during resolution!');
@@ -119,7 +119,7 @@ describe('Wait Until It Sings', function () {
 
             this.player2.clickCard(this.sings2);
             this.player1.clickCard(this.sings);
- 
+
             this.noMoreActions();
 
             expect(this.getChatLogs(10)).toContain('player1 has a bonus action during resolution!');

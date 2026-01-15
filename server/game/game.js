@@ -164,7 +164,7 @@ class Game extends EventEmitter {
      */
     getPlayerByName(playerName) {
         let player = this.playersAndSpectators[playerName];
-        if (player && !this.isSpectator(player)) {
+        if(player && !this.isSpectator(player)) {
             return player;
         }
     }
@@ -223,7 +223,7 @@ class Game extends EventEmitter {
     findAnyCardInPlayByUuid(cardId) {
         return this.getPlayers().reduce(
             (card, player) => {
-                if (card) {
+                if(card) {
                     return card;
                 }
                 return player.findCardInPlayByUuid(cardId);
@@ -276,18 +276,18 @@ class Game extends EventEmitter {
     }
 
     getProvinceArray(includeStronghold = true) {
-        if (this.gameMode === GameModes.Skirmish) {
+        if(this.gameMode === GameModes.Skirmish) {
             return [Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree];
         }
         let array = [Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree, Locations.ProvinceFour];
-        if (includeStronghold) {
+        if(includeStronghold) {
             array.push(Locations.StrongholdProvince);
         }
         return array;
     }
 
     createToken(card, token = undefined) {
-        if (!token) {
+        if(!token) {
             token = new SpiritOfTheRiver(card);
         } else {
             token = new token(card);
@@ -301,11 +301,11 @@ class Game extends EventEmitter {
     }
 
     isDuringConflict(types = null) {
-        if (!this.currentConflict) {
+        if(!this.currentConflict) {
             return false;
-        } else if (!types) {
+        } else if(!types) {
             return true;
-        } else if (!Array.isArray(types)) {
+        } else if(!Array.isArray(types)) {
             types = [types];
         }
         return types.every((type) =>
@@ -320,9 +320,9 @@ class Game extends EventEmitter {
             passed: conflict.conflictPassed,
             uuid: conflict.uuid
         });
-        if (conflict.conflictPassed) {
+        if(conflict.conflictPassed) {
             conflict.attackingPlayer.declaredConflictOpportunities[ConflictTypes.Passed]++;
-        } else if (conflict.forcedDeclaredType) {
+        } else if(conflict.forcedDeclaredType) {
             conflict.attackingPlayer.declaredConflictOpportunities[ConflictTypes.Forced]++;
         } else {
             conflict.attackingPlayer.declaredConflictOpportunities[conflict.declaredType]++;
@@ -330,7 +330,7 @@ class Game extends EventEmitter {
     }
 
     getConflicts(player) {
-        if (!player) {
+        if(!player) {
             return [];
         }
         return this.conflictRecord.filter((record) => record.attackingPlayer === player);
@@ -338,7 +338,7 @@ class Game extends EventEmitter {
 
     recordConflictWinner(conflict) {
         let record = this.conflictRecord.find((record) => record.uuid === conflict.uuid);
-        if (record) {
+        if(record) {
             record.completed = true;
             record.winner = conflict.winner;
             record.typeSwitched = conflict.conflictTypeSwitched;
@@ -365,13 +365,13 @@ class Game extends EventEmitter {
     cardClicked(sourcePlayer, cardId) {
         var player = this.getPlayerByName(sourcePlayer);
 
-        if (!player) {
+        if(!player) {
             return;
         }
 
         var card = this.findAnyCardInAnyList(cardId);
 
-        if (!card) {
+        if(!card) {
             return;
         }
 
@@ -382,15 +382,15 @@ class Game extends EventEmitter {
     facedownCardClicked(playerName, location, controllerName, isProvince = false) {
         let player = this.getPlayerByName(playerName);
         let controller = this.getPlayerByName(controllerName);
-        if (!player || !controller) {
+        if(!player || !controller) {
             return;
         }
         let list = controller.getSourceList(location);
-        if (!list) {
+        if(!list) {
             return;
         }
         let card = list.find((card) => !isProvince === !card.isProvince);
-        if (card) {
+        if(card) {
             return this.pipeline.handleCardClicked(player, card);
         }
     }
@@ -404,17 +404,17 @@ class Game extends EventEmitter {
         var ring = this.rings[ringindex];
         var player = this.getPlayerByName(sourcePlayer);
 
-        if (!player || !ring) {
+        if(!player || !ring) {
             return;
         }
 
         // Check to see if the current step in the pipeline is waiting for input
-        if (this.pipeline.handleRingClicked(player, ring)) {
+        if(this.pipeline.handleRingClicked(player, ring)) {
             return;
         }
 
         // If it's not the conflict phase and the ring hasn't been claimed, flip it
-        if (this.currentPhase !== Phases.Conflict && !ring.claimed) {
+        if(this.currentPhase !== Phases.Conflict && !ring.claimed) {
             ring.flipConflictType();
         }
     }
@@ -428,11 +428,11 @@ class Game extends EventEmitter {
     menuItemClick(sourcePlayer, cardId, menuItem) {
         var player = this.getPlayerByName(sourcePlayer);
         var card = this.findAnyCardInAnyList(cardId);
-        if (!player || !card) {
+        if(!player || !card) {
             return;
         }
 
-        if (menuItem.command === 'click') {
+        if(menuItem.command === 'click') {
             this.cardClicked(sourcePlayer, cardId);
             return;
         }
@@ -450,11 +450,11 @@ class Game extends EventEmitter {
     ringMenuItemClick(sourcePlayer, sourceRing, menuItem) {
         var player = this.getPlayerByName(sourcePlayer);
         var ring = this.rings[sourceRing.element];
-        if (!player || !ring) {
+        if(!player || !ring) {
             return;
         }
 
-        if (menuItem.command === 'click') {
+        if(menuItem.command === 'click') {
             this.ringClicked(sourcePlayer, ring.element);
             return;
         }
@@ -470,11 +470,11 @@ class Game extends EventEmitter {
     showConflictDeck(playerName) {
         var player = this.getPlayerByName(playerName);
 
-        if (!player) {
+        if(!player) {
             return;
         }
 
-        if (!player.showConflict) {
+        if(!player.showConflict) {
             player.showConflictDeck();
 
             this.addMessage('{0} is looking at their conflict deck', player);
@@ -493,11 +493,11 @@ class Game extends EventEmitter {
     showDynastyDeck(playerName) {
         var player = this.getPlayerByName(playerName);
 
-        if (!player) {
+        if(!player) {
             return;
         }
 
-        if (!player.showDynasty) {
+        if(!player.showDynasty) {
             player.showDynastyDeck();
 
             this.addMessage('{0} is looking at their dynasty deck', player);
@@ -519,7 +519,7 @@ class Game extends EventEmitter {
     drop(playerName, cardId, source, target) {
         var player = this.getPlayerByName(playerName);
 
-        if (!player) {
+        if(!player) {
             return;
         }
 
@@ -532,10 +532,10 @@ class Game extends EventEmitter {
      */
     checkWinCondition() {
         let honorRequiredToWin = this.gameMode === GameModes.Skirmish ? 12 : 25;
-        for (const player of this.getPlayersInFirstPlayerOrder()) {
-            if (player.honor >= honorRequiredToWin) {
+        for(const player of this.getPlayersInFirstPlayerOrder()) {
+            if(player.honor >= honorRequiredToWin) {
                 this.recordWinner(player, 'honor');
-            } else if (player.opponent && player.opponent.honor <= 0) {
+            } else if(player.opponent && player.opponent.honor <= 0) {
                 this.recordWinner(player, 'dishonor');
             }
         }
@@ -548,7 +548,7 @@ class Game extends EventEmitter {
      * @param {String} reason
      */
     recordWinner(winner, reason) {
-        if (this.winner) {
+        if(this.winner) {
             return;
         }
 
@@ -568,11 +568,11 @@ class Game extends EventEmitter {
      * @param {Player} firstPlayer
      */
     setFirstPlayer(firstPlayer) {
-        if (!this.initialFirstPlayer) {
+        if(!this.initialFirstPlayer) {
             this.initialFirstPlayer = firstPlayer.name;
         }
-        for (let player of this.getPlayers()) {
-            if (player === firstPlayer) {
+        for(let player of this.getPlayers()) {
+            if(player === firstPlayer) {
                 player.firstPlayer = true;
             } else {
                 player.firstPlayer = false;
@@ -588,7 +588,7 @@ class Game extends EventEmitter {
      */
     changeStat(playerName, stat, value) {
         var player = this.getPlayerByName(playerName);
-        if (!player) {
+        if(!player) {
             return;
         }
 
@@ -596,7 +596,7 @@ class Game extends EventEmitter {
 
         target[stat] += value;
 
-        if (target[stat] < 0) {
+        if(target[stat] < 0) {
             target[stat] = 0;
         } else {
             this.addMessage('{0} sets {1} to {2} ({3})', player, stat, target[stat], (value > 0 ? '+' : '') + value);
@@ -612,12 +612,12 @@ class Game extends EventEmitter {
         var player = this.playersAndSpectators[playerName];
         var args = message.split(' ');
 
-        if (!player) {
+        if(!player) {
             return;
         }
 
-        if (!this.isSpectator(player)) {
-            if (this.chatCommands.executeCommand(player, args[0], args)) {
+        if(!this.isSpectator(player)) {
+            if(this.chatCommands.executeCommand(player, args[0], args)) {
                 this.checkGameState(true);
                 return;
             }
@@ -626,14 +626,14 @@ class Game extends EventEmitter {
                 return c.name.toLowerCase() === message.toLowerCase() || c.id.toLowerCase() === message.toLowerCase();
             });
 
-            if (card) {
+            if(card) {
                 this.gameChat.addChatMessage(player, { message: this.gameChat.formatMessage('{0}', [card]) });
 
                 return;
             }
         }
 
-        if (!this.isSpectator(player) || !this.spectatorSquelch) {
+        if(!this.isSpectator(player) || !this.spectatorSquelch) {
             this.gameChat.addChatMessage(player, message);
         }
     }
@@ -645,7 +645,7 @@ class Game extends EventEmitter {
     concede(playerName) {
         var player = this.getPlayerByName(playerName);
 
-        if (!player) {
+        if(!player) {
             return;
         }
 
@@ -653,14 +653,14 @@ class Game extends EventEmitter {
 
         var otherPlayer = this.getOtherPlayer(player);
 
-        if (otherPlayer) {
+        if(otherPlayer) {
             this.recordWinner(otherPlayer, 'concede');
         }
     }
 
     selectDeck(playerName, deck) {
         let player = this.getPlayerByName(playerName);
-        if (player) {
+        if(player) {
             player.selectDeck(deck);
         }
     }
@@ -672,7 +672,7 @@ class Game extends EventEmitter {
      */
     shuffleConflictDeck(playerName) {
         let player = this.getPlayerByName(playerName);
-        if (player) {
+        if(player) {
             player.shuffleConflictDeck();
         }
     }
@@ -684,7 +684,7 @@ class Game extends EventEmitter {
      */
     shuffleDynastyDeck(playerName) {
         let player = this.getPlayerByName(playerName);
-        if (player) {
+        if(player) {
             player.shuffleDynastyDeck();
         }
     }
@@ -741,7 +741,7 @@ class Game extends EventEmitter {
      */
     menuButton(playerName, arg, uuid, method) {
         var player = this.getPlayerByName(playerName);
-        if (!player) {
+        if(!player) {
             return false;
         }
 
@@ -759,7 +759,7 @@ class Game extends EventEmitter {
      */
     togglePromptedActionWindow(playerName, windowName, toggle) {
         var player = this.getPlayerByName(playerName);
-        if (!player) {
+        if(!player) {
             return;
         }
 
@@ -776,7 +776,7 @@ class Game extends EventEmitter {
      */
     toggleTimerSetting(playerName, settingName, toggle) {
         var player = this.getPlayerByName(playerName);
-        if (!player) {
+        if(!player) {
             return;
         }
 
@@ -793,7 +793,7 @@ class Game extends EventEmitter {
      */
     toggleOptionSetting(playerName, settingName, toggle) {
         var player = this.getPlayerByName(playerName);
-        if (!player) {
+        if(!player) {
             return;
         }
 
@@ -813,7 +813,7 @@ class Game extends EventEmitter {
         var players = {};
 
         Object.values(this.playersAndSpectators).forEach((player) => {
-            if (!player.left) {
+            if(!player.left) {
                 players[player.name] = player;
             }
         });
@@ -822,9 +822,9 @@ class Game extends EventEmitter {
 
         let playerWithNoStronghold = null;
 
-        for (let player of this.getPlayers()) {
+        for(let player of this.getPlayers()) {
             player.initialise();
-            if (this.gameMode !== GameModes.Skirmish && !player.stronghold) {
+            if(this.gameMode !== GameModes.Skirmish && !player.stronghold) {
                 playerWithNoStronghold = player;
             }
         }
@@ -837,8 +837,8 @@ class Game extends EventEmitter {
         );
         this.provinceCards = this.allCards.filter((card) => card.isProvince);
 
-        if (this.gameMode !== GameModes.Skirmish) {
-            if (playerWithNoStronghold) {
+        if(this.gameMode !== GameModes.Skirmish) {
+            if(playerWithNoStronghold) {
                 this.queueSimpleStep(() => {
                     this.addMessage(
                         'Invalid Deck Detected: {0} does not have a stronghold in their decklist',
@@ -850,9 +850,9 @@ class Game extends EventEmitter {
                 return false;
             }
 
-            for (let player of this.getPlayers()) {
+            for(let player of this.getPlayers()) {
                 let numProvinces = this.provinceCards.filter((a) => a.controller === player);
-                if (numProvinces.length !== 5) {
+                if(numProvinces.length !== 5) {
                     this.queueSimpleStep(() => {
                         this.addMessage('Invalid Deck Detected: {0} has {1} provinces', player, numProvinces.length);
                         return false;
@@ -923,7 +923,7 @@ class Game extends EventEmitter {
      * @returns {undefined}
      */
     markActionAsTaken() {
-        if (this.currentActionWindow) {
+        if(this.currentActionWindow) {
             this.currentActionWindow.markActionAsTaken();
         }
     }
@@ -975,15 +975,15 @@ class Game extends EventEmitter {
      * @returns {EventWindow}
      */
     openEventWindow(events) {
-        if (!Array.isArray(events)) {
+        if(!Array.isArray(events)) {
             events = [events];
         }
         return this.queueStep(new EventWindow(this, events));
     }
 
     openThenEventWindow(events) {
-        if (this.currentEventWindow) {
-            if (!Array.isArray(events)) {
+        if(this.currentEventWindow) {
+            if(!Array.isArray(events)) {
                 events = [events];
             }
             return this.queueStep(new ThenEventWindow(this, events));
@@ -1020,20 +1020,20 @@ class Game extends EventEmitter {
      * @returns {Event[]} - TODO: Change this?
      */
     applyGameAction(context, actions) {
-        if (!context) {
+        if(!context) {
             context = this.getFrameworkContext();
         }
         let actionPairs = Object.entries(actions);
         let events = actionPairs.reduce((array, [action, cards]) => {
             action = action === 'break' ? 'breakProvince' : action;
             const gameActionFactory = GameActions[action];
-            if (typeof gameActionFactory === 'function') {
+            if(typeof gameActionFactory === 'function') {
                 const gameAction = gameActionFactory({ target: cards });
                 gameAction.addEventsToArray(array, context);
             }
             return array;
         }, []);
-        if (events.length > 0) {
+        if(events.length > 0) {
             this.openEventWindow(events);
             this.queueSimpleStep(() => context.refill());
         }
@@ -1068,21 +1068,21 @@ class Game extends EventEmitter {
      * @param card
      */
     takeControl(player, card) {
-        if (
+        if(
             card.controller === player ||
             !card.checkRestrictions(EffectNames.TakeControl, this.getFrameworkContext())
         ) {
             return;
         }
-        if (!player || !player.cardsInPlay) {
+        if(!player || !player.cardsInPlay) {
             return;
         }
         card.controller.removeCardFromPile(card);
         player.cardsInPlay.push(card);
         card.controller = player;
-        if (card.isParticipating()) {
+        if(card.isParticipating()) {
             this.currentConflict.removeFromConflict(card);
-            if (player.isAttackingPlayer()) {
+            if(player.isAttackingPlayer()) {
                 this.currentConflict.addAttacker(card);
             } else {
                 this.currentConflict.addDefender(card);
@@ -1093,8 +1093,8 @@ class Game extends EventEmitter {
     }
 
     getFavorSide() {
-        for (const player of this.getPlayers()) {
-            if (player.imperialFavor) {
+        for(const player of this.getPlayers()) {
+            if(player.imperialFavor) {
                 return player.imperialFavor;
             }
         }
@@ -1102,7 +1102,7 @@ class Game extends EventEmitter {
     }
 
     watch(socketId, user) {
-        if (!this.allowSpectators) {
+        if(!this.allowSpectators) {
             return false;
         }
 
@@ -1113,7 +1113,7 @@ class Game extends EventEmitter {
     }
 
     join(socketId, user) {
-        if (this.started || this.getPlayers().length === 2) {
+        if(this.started || this.getPlayers().length === 2) {
             return false;
         }
 
@@ -1129,18 +1129,18 @@ class Game extends EventEmitter {
     leave(playerName) {
         var player = this.playersAndSpectators[playerName];
 
-        if (!player) {
+        if(!player) {
             return;
         }
 
         this.addMessage('{0} has left the game', playerName);
 
-        if (this.isSpectator(player) || !this.started) {
+        if(this.isSpectator(player) || !this.started) {
             delete this.playersAndSpectators[playerName];
         } else {
             player.left = true;
 
-            if (!this.finishedAt) {
+            if(!this.finishedAt) {
                 this.finishedAt = new Date();
             }
         }
@@ -1149,13 +1149,13 @@ class Game extends EventEmitter {
     disconnect(playerName) {
         var player = this.playersAndSpectators[playerName];
 
-        if (!player) {
+        if(!player) {
             return;
         }
 
         this.addMessage('{0} has disconnected', player);
 
-        if (this.isSpectator(player)) {
+        if(this.isSpectator(player)) {
             delete this.playersAndSpectators[playerName];
         } else {
             player.disconnected = true;
@@ -1167,18 +1167,18 @@ class Game extends EventEmitter {
     failedConnect(playerName) {
         var player = this.playersAndSpectators[playerName];
 
-        if (!player) {
+        if(!player) {
             return;
         }
 
-        if (this.isSpectator(player) || !this.started) {
+        if(this.isSpectator(player) || !this.started) {
             delete this.playersAndSpectators[playerName];
         } else {
             this.addMessage('{0} has failed to connect to the game', player);
 
             player.disconnected = true;
 
-            if (!this.finishedAt) {
+            if(!this.finishedAt) {
                 this.finishedAt = new Date();
             }
         }
@@ -1186,7 +1186,7 @@ class Game extends EventEmitter {
 
     reconnect(socket, playerName) {
         var player = this.getPlayerByName(playerName);
-        if (!player) {
+        if(!player) {
             return;
         }
 
@@ -1199,16 +1199,16 @@ class Game extends EventEmitter {
 
     checkGameState(hasChanged = false, events = []) {
         // check for a game state change (recalculating conflict skill if necessary)
-        if (
+        if(
             (!this.currentConflict && this.effectEngine.checkEffects(hasChanged)) ||
             (this.currentConflict && this.currentConflict.calculateSkill(hasChanged)) ||
             hasChanged
         ) {
             this.checkWinCondition();
             // if the state has changed, check for:
-            for (const player of this.getPlayers()) {
+            for(const player of this.getPlayers()) {
                 player.cardsInPlay.each((card) => {
-                    if (card.getModifiedController() !== player) {
+                    if(card.getModifiedController() !== player) {
                         // any card being controlled by the wrong player
                         this.takeControl(card.getModifiedController(), card);
                     }
@@ -1219,17 +1219,17 @@ class Game extends EventEmitter {
                     card && card.checkForIllegalAttachments();
                 });
 
-                if (!player.checkRestrictions('haveImperialFavor') && player.imperialFavor !== '') {
+                if(!player.checkRestrictions('haveImperialFavor') && player.imperialFavor !== '') {
                     this.addMessage('The imperial favor is discarded as {0} cannot have it', player.name);
                     player.loseImperialFavor();
                 }
             }
-            if (this.currentConflict) {
+            if(this.currentConflict) {
                 // conflicts with illegal participants
                 this.currentConflict.checkForIllegalParticipants();
             }
         }
-        if (events.length > 0) {
+        if(events.length > 0) {
             // check for any delayed effects which need to fire
             this.effectEngine.checkDelayedEffects(events);
         }
@@ -1254,38 +1254,38 @@ class Game extends EventEmitter {
 
         //conflict
         deck.conflictCards.forEach((cardData) => {
-            if (cardData && cardData.card) {
+            if(cardData && cardData.card) {
                 result.conflictCards.push(`${cardData.count}x ${cardData.card.id}`);
             }
         });
 
         //dynasty
         deck.dynastyCards.forEach((cardData) => {
-            if (cardData && cardData.card) {
+            if(cardData && cardData.card) {
                 result.dynastyCards.push(`${cardData.count}x ${cardData.card.id}`);
             }
         });
 
         //provinces
-        if (deck.provinceCards) {
+        if(deck.provinceCards) {
             deck.provinceCards.forEach((cardData) => {
-                if (cardData && cardData.card) {
+                if(cardData && cardData.card) {
                     result.provinceCards.push(cardData.card.id);
                 }
             });
         }
 
         //stronghold & role
-        if (deck.stronghold) {
+        if(deck.stronghold) {
             deck.stronghold.forEach((cardData) => {
-                if (cardData && cardData.card) {
+                if(cardData && cardData.card) {
                     result.stronghold = cardData.card.id;
                 }
             });
         }
-        if (deck.role) {
+        if(deck.role) {
             deck.role.forEach((cardData) => {
-                if (cardData && cardData.card) {
+                if(cardData && cardData.card) {
                     result.role = cardData.card.id;
                 }
             });
@@ -1331,8 +1331,8 @@ class Game extends EventEmitter {
         let ringState = {};
         let conflictState = {};
 
-        if (this.started) {
-            for (const player of this.getPlayers()) {
+        if(this.started) {
+            for(const player of this.getPlayers()) {
                 playerState[player.name] = player.getState(activePlayer);
             }
 
@@ -1340,7 +1340,7 @@ class Game extends EventEmitter {
                 ringState[ring.element] = ring.getState(activePlayer);
             });
 
-            if (this.currentPhase === 'conflict' && this.currentConflict) {
+            if(this.currentPhase === 'conflict' && this.currentConflict) {
                 conflictState = this.currentConflict.getSummary();
             }
 
@@ -1376,15 +1376,15 @@ class Game extends EventEmitter {
     getSummary(activePlayerName) {
         var playerSummaries = {};
 
-        for (const player of this.getPlayers()) {
+        for(const player of this.getPlayers()) {
             var deck = undefined;
-            if (player.left) {
+            if(player.left) {
                 return;
             }
 
-            if (activePlayerName === player.name && player.deck) {
+            if(activePlayerName === player.name && player.deck) {
                 deck = { name: player.deck.name, selected: player.deck.selected };
-            } else if (player.deck) {
+            } else if(player.deck) {
                 deck = { selected: player.deck.selected };
             } else {
                 deck = {};

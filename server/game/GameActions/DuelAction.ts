@@ -36,7 +36,7 @@ export class DuelAction extends CardGameAction {
 
     getProperties(context: AbilityContext, additionalProperties = {}): DuelProperties {
         const properties = super.getProperties(context, additionalProperties) as DuelProperties;
-        if (!properties.challenger) {
+        if(!properties.challenger) {
             properties.challenger = context.source;
         }
         return properties;
@@ -44,7 +44,7 @@ export class DuelAction extends CardGameAction {
 
     getEffectMessage(context: AbilityContext): [string, any[]] {
         const properties = this.getProperties(context);
-        if (!Array.isArray(properties.target)) {
+        if(!Array.isArray(properties.target)) {
             return [
                 'initiate a ' + properties.type.toString() + ' duel : {0} vs. {1}',
                 [properties.challenger, properties.target]
@@ -59,21 +59,21 @@ export class DuelAction extends CardGameAction {
     }
 
     canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
-        if (!context.player.opponent) {
+        if(!context.player.opponent) {
             return false;
         }
 
         const properties = this.getProperties(context, additionalProperties);
-        if (!super.canAffect(card, context)) {
+        if(!super.canAffect(card, context)) {
             return false;
         }
-        if (card.hasNoDuels() || properties.challenger.hasNoDuels()) {
+        if(card.hasNoDuels() || properties.challenger.hasNoDuels()) {
             return false;
         }
-        if (card === properties.challenger) {
+        if(card === properties.challenger) {
             return false; //cannot duel yourself
         }
-        if (!card.checkRestrictions('duel', context)) {
+        if(!card.checkRestrictions('duel', context)) {
             return false;
         }
 
@@ -89,7 +89,7 @@ export class DuelAction extends CardGameAction {
         const properties = this.getProperties(context, additionalProperties);
         const gameAction =
             typeof properties.gameAction === 'function' ? properties.gameAction(duel, context) : properties.gameAction;
-        if (gameAction && gameAction.hasLegalTarget(context)) {
+        if(gameAction && gameAction.hasLegalTarget(context)) {
             const [message, messageArgs] = properties.message
                 ? [properties.message, properties.messageArgs ? [].concat(properties.messageArgs(duel, context)) : []]
                 : gameAction.getEffectMessage(context);
@@ -112,21 +112,21 @@ export class DuelAction extends CardGameAction {
         );
         const addDuelEventsHandler = () => {
             const cards = (target as DrawCard[]).filter((card) => this.canAffect(card, context));
-            if (cards.length === 0) {
+            if(cards.length === 0) {
                 return;
             }
             const event = this.createEvent(null, context, additionalProperties);
             this.updateEvent(event, cards, context, additionalProperties);
             events.push(event);
         };
-        if (refuseGameAction && refuseGameAction.hasLegalTarget(context, additionalProperties)) {
+        if(refuseGameAction && refuseGameAction.hasLegalTarget(context, additionalProperties)) {
             context.game.promptWithHandlerMenu(context.player.opponent, {
                 activePromptTitle: 'Do you wish to refuse the duel?',
                 context: context,
                 choices: ['Yes', 'No'],
                 handlers: [
                     () => {
-                        if (refusalMessage) {
+                        if(refusalMessage) {
                             const refusalArgs = refusalMessageArgs ? [].concat(refusalMessageArgs(context)) : [];
                             context.game.addMessage(refusalMessage, ...refusalArgs);
                         } else {
@@ -148,10 +148,10 @@ export class DuelAction extends CardGameAction {
 
     addPropertiesToEvent(event, cards, context: AbilityContext, additionalProperties): void {
         const properties = this.getProperties(context, additionalProperties);
-        if (!cards) {
+        if(!cards) {
             cards = this.getProperties(context, additionalProperties).target;
         }
-        if (!Array.isArray(cards)) {
+        if(!Array.isArray(cards)) {
             cards = [cards];
         }
 
@@ -177,7 +177,7 @@ export class DuelAction extends CardGameAction {
         const context = event.context;
         const cards = event.cards;
         const properties = this.getProperties(context, additionalProperties);
-        if (
+        if(
             properties.challenger.location !== Locations.PlayArea ||
             cards.every((card) => card.location !== Locations.PlayArea)
         ) {
@@ -188,7 +188,7 @@ export class DuelAction extends CardGameAction {
         }
         const duel = event.duel;
         // const duel = new Duel(context.game, properties.challenger, cards, properties.type, properties.statistic, context.player);
-        if (properties.challengerEffect) {
+        if(properties.challengerEffect) {
             context.game.actions
                 .cardLastingEffect({
                     effect: properties.challengerEffect,
@@ -199,7 +199,7 @@ export class DuelAction extends CardGameAction {
                 })
                 .resolve(properties.challenger, context);
         }
-        if (properties.targetEffect) {
+        if(properties.targetEffect) {
             context.game.actions
                 .cardLastingEffect({
                     effect: properties.targetEffect,

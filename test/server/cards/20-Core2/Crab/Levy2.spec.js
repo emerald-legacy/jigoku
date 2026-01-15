@@ -50,7 +50,7 @@ describe('Levy 2', function () {
         it('should not draw if you have equal cards', function () {
             this.player2.moveCard(this.ann, 'conflict discard pile');
             this.player2.moveCard(this.fan, 'conflict discard pile');
-            
+
             let honor = this.player1.honor;
             let honor2 = this.player2.honor;
             let hand = this.player1.hand.length;

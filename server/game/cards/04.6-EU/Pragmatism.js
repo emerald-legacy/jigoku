@@ -1,7 +1,7 @@
 const DrawCard = require('../../drawcard.js');
 
 class Pragmatism extends DrawCard {
-    setupCardAbilities(ability) { // eslint-disable-line no-unused-vars
+    setupCardAbilities(ability) {
         this.attachmentConditions({
             myControl: true
         });

@@ -2,7 +2,7 @@ const DrawCard = require('../../drawcard.js');
 const { Players, CardTypes } = require('../../Constants');
 
 class CallowDelegate extends DrawCard {
-    setupCardAbilities(ability) { // eslint-disable-line no-unused-vars
+    setupCardAbilities(ability) {
         this.interrupt({
             title: 'Honor a character',
             when: {

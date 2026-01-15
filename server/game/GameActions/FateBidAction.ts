@@ -52,7 +52,7 @@ export class FateBidAction extends PlayerAction {
         context.game.queueStep(
             new FateBidPrompt(context.game, 'Choose an amount of fate', (result, context) => {
                 const actions: Array<LoseFateAction> = [];
-                for (const [player, amount] of result.bids) {
+                for(const [player, amount] of result.bids) {
                     context.game.addMessage('{0} spends {1} fate', player, amount);
                     actions.push(new LoseFateAction({ amount, target: player }));
                 }

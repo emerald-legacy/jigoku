@@ -23,13 +23,13 @@ export default class TheHundredHandStrike extends DrawCard {
                 puncher: {
                     cardType: CardTypes.Character,
                     controller: Players.Self,
-                    cardCondition: (card) => card.isParticipating() && card.hasTrait('monk'),
+                    cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
                 },
                 punchee: {
                     cardType: CardTypes.Character,
                     controller: Players.Opponent,
-                    cardCondition: (card) => card.isParticipating(),
-                },
+                    cardCondition: (card) => card.isParticipating()
+                }
             },
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.targets.punchee,

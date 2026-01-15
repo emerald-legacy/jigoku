@@ -26,8 +26,8 @@ export class UiPrompt extends BaseStep {
     }
 
     setPrompt(): void {
-        for (const player of this.game.getPlayers()) {
-            if (this.activeCondition(player)) {
+        for(const player of this.game.getPlayers()) {
+            if(this.activeCondition(player)) {
                 player.setPrompt(this.addDefaultCommandToButtons(this.activePrompt(player)));
                 player.startClock();
             } else {
@@ -46,20 +46,20 @@ export class UiPrompt extends BaseStep {
     }
 
     addDefaultCommandToButtons(original?: ActivePrompt) {
-        if (!original) {
+        if(!original) {
             return;
         }
 
         const newPrompt = { ...original };
-        if (newPrompt.buttons) {
-            for (const button of newPrompt.buttons) {
+        if(newPrompt.buttons) {
+            for(const button of newPrompt.buttons) {
                 button.command = button.command || 'menuButton';
                 (button as any).uuid = this.uuid;
             }
         }
 
-        if (newPrompt.controls) {
-            for (const controls of newPrompt.controls) {
+        if(newPrompt.controls) {
+            for(const controls of newPrompt.controls) {
                 (controls as any).uuid = this.uuid;
             }
         }
@@ -73,7 +73,7 @@ export class UiPrompt extends BaseStep {
     public continue(): boolean {
         const completed = this.isComplete();
 
-        if (completed) {
+        if(completed) {
             this.clearPrompts();
         } else {
             this.setPrompt();
@@ -83,13 +83,13 @@ export class UiPrompt extends BaseStep {
     }
 
     clearPrompts(): void {
-        for (const player of this.game.getPlayers()) {
+        for(const player of this.game.getPlayers()) {
             player.cancelPrompt();
         }
     }
 
     public onMenuCommand(player: Player, arg: string, uuid: string, method: string): boolean {
-        if (!this.activeCondition(player) || uuid !== this.uuid) {
+        if(!this.activeCondition(player) || uuid !== this.uuid) {
             return false;
         }
 

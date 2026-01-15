@@ -26,21 +26,21 @@ export class ResolveConflictRingAction extends RingAction {
     }
 
     eventHandler(event): void {
-        if (event.name !== this.eventName) {
+        if(event.name !== this.eventName) {
             return;
         }
 
         const cannotResolveRingEffects = event.context.player.getEffects(EffectNames.CannotResolveRings);
 
-        if (cannotResolveRingEffects.length) {
-            event.context.game.addMessage("{0}'s ring effect is cancelled.", event.context.player);
+        if(cannotResolveRingEffects.length) {
+            event.context.game.addMessage('{0}\'s ring effect is cancelled.', event.context.player);
             event.cancel();
             return;
         }
 
         let elements = event.ring.getElements();
         let player = event.player;
-        if (elements.length === 1) {
+        if(elements.length === 1) {
             this.resolveRingEffects(player, elements);
         } else {
             this.chooseElementsToResolve(player, elements, event.conflict.elementsToResolve);
@@ -53,12 +53,12 @@ export class ResolveConflictRingAction extends RingAction {
         elementsToResolve: number,
         chosenElements: string[] = []
     ): void {
-        if (elements.length === 0 || elementsToResolve === 0) {
+        if(elements.length === 0 || elementsToResolve === 0) {
             this.resolveRingEffects(player, chosenElements);
             return;
         }
         let activePromptTitle = 'Choose a ring effect to resolve (click the ring you want to resolve)';
-        if (chosenElements.length > 0) {
+        if(chosenElements.length > 0) {
             activePromptTitle = chosenElements.reduce(
                 (string, element) => string + ' ' + element,
                 activePromptTitle + '\nChosen elements:'
@@ -69,13 +69,13 @@ export class ResolveConflictRingAction extends RingAction {
         elements.map((element) =>
             buttons.push({ text: element.slice(0, 1).toUpperCase() + element.slice(1) + ' Ring', arg: element })
         );
-        if (chosenElements.length > 0) {
+        if(chosenElements.length > 0) {
             buttons.push({ text: 'Done', arg: 'done' });
         }
-        if (elementsToResolve >= elements.length) {
+        if(elementsToResolve >= elements.length) {
             buttons.push({ text: 'Resolve All Elements', arg: 'all' });
         }
-        buttons.push({ text: "Don't Resolve the Conflict Ring", arg: 'cancel' });
+        buttons.push({ text: 'Don\'t Resolve the Conflict Ring', arg: 'cancel' });
 
         player.game.promptForRingSelect(player, {
             activePromptTitle: activePromptTitle,
@@ -95,9 +95,9 @@ export class ResolveConflictRingAction extends RingAction {
             },
             onCancel: (player) => player.game.addMessage('{0} chooses not to resolve the conflict ring', player),
             onMenuCommand: (player, arg) => {
-                if (arg === 'all') {
+                if(arg === 'all') {
                     this.resolveRingEffects(player, elements.concat(chosenElements));
-                } else if (elements.includes(arg)) {
+                } else if(elements.includes(arg)) {
                     elementsToResolve--;
                     chosenElements.push(arg);
                     this.chooseElementsToResolve(
@@ -106,7 +106,7 @@ export class ResolveConflictRingAction extends RingAction {
                         elementsToResolve,
                         chosenElements
                     );
-                } else if (arg === 'done') {
+                } else if(arg === 'done') {
                     this.resolveRingEffects(player, chosenElements);
                 }
                 return true;
@@ -115,7 +115,7 @@ export class ResolveConflictRingAction extends RingAction {
     }
 
     resolveRingEffects(player: Player, elements: string[], optional: boolean = true): void {
-        if (!Array.isArray(elements)) {
+        if(!Array.isArray(elements)) {
             elements = [elements];
         }
         let rings = elements.map((element) => player.game.rings[element]);

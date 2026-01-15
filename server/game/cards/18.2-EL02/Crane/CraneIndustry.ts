@@ -35,7 +35,7 @@ export default class CraneIndustry extends DrawCard {
     }
 
     public onCardPlayed(event: BaseCard) {
-        if (event.card.type === CardTypes.Event && event.context.player === this.controller) {
+        if(event.card.type === CardTypes.Event && event.context.player === this.controller) {
             this.eventsPlayedThisConflictByThisPlayer.add(event.card.name);
         }
     }

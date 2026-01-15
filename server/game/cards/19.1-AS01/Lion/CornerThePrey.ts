@@ -29,7 +29,7 @@ export default class CornerThePrey extends DrawCard {
     }
 
     private getFollowerCount(context: AbilityContext): number {
-        if (context.costs.sacrifice) {
+        if(context.costs.sacrifice) {
             return context.costs.sacrifice.length;
         }
         const myFollowers = (context.game.allCards as BaseCard[]).filter(

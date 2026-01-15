@@ -22,14 +22,14 @@ class HifumiCost extends ReduceableFateCost {
 
     canPay(context: AbilityContext<any>): boolean {
         const cost = this.currentCost(context.player);
-        if (cost === 0) {
+        if(cost === 0) {
             return true;
         }
 
         let totalFateAvailable = 0;
-        for (const card of this.#cardsThatCanPayForHifumi(context)) {
+        for(const card of this.#cardsThatCanPayForHifumi(context)) {
             totalFateAvailable += card.fate;
-            if (totalFateAvailable >= cost) {
+            if(totalFateAvailable >= cost) {
                 return true;
             }
         }
@@ -82,7 +82,7 @@ export default class IsawaHifumi extends DrawCard {
                     playType: PlayTypes.PlayFromHand,
                     postHandler: (eventContext) => {
                         const card = eventContext.source;
-                        context.game.addMessage("{0} is removed from the game by {1}'s ability", card, context.source);
+                        context.game.addMessage('{0} is removed from the game by {1}\'s ability', card, context.source);
                         context.player.moveCard(card, Locations.RemovedFromGame);
                     }
                 })
@@ -98,7 +98,7 @@ export default class IsawaHifumi extends DrawCard {
     }
 
     public onCardLeavesPlay(event: any) {
-        if (event.card === this) {
+        if(event.card === this) {
             this.hifumiCost.refreshHifumiCount();
         }
     }

@@ -23,7 +23,7 @@ export default class UnderTheNewMoon extends DrawCard {
                 }),
                 choiceHandler: (choice, displayMessage) => {
                     const amount = parseInt(choice);
-                    if (displayMessage) {
+                    if(displayMessage) {
                         this.game.addMessage(
                             '{0} will attack with {1} character{2}',
                             context.player,
@@ -43,7 +43,7 @@ export default class UnderTheNewMoon extends DrawCard {
         const min = 1;
         const max = (context as any).event.attackerMatrix.maximumNumberOfAttackers;
         const array = [];
-        for (let i = min; i <= max; i++) {
+        for(let i = min; i <= max; i++) {
             array.push(i.toString());
         }
         return array;

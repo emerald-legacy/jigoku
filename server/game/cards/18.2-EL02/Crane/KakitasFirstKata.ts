@@ -15,7 +15,7 @@ export default class KakitasFirstKata extends DrawCard {
         this.eventRegistrar.register([EventNames.OnConflictFinished, EventNames.OnCardBowed]);
 
         this.action({
-            title: "Prevent opponent's bow and move effects",
+            title: 'Prevent opponent\'s bow and move effects',
             condition: (context) => context.game.isDuringConflict(),
             target: {
                 cardType: CardTypes.Character,
@@ -50,7 +50,7 @@ export default class KakitasFirstKata extends DrawCard {
                     })
                 ])
             },
-            effect: "{1}prevent opponents' actions from bowing or moving {0}",
+            effect: '{1}prevent opponents\' actions from bowing or moving {0}',
             effectArgs: (context) => (this.bowedCharactersThisConflict.has(context.target) ? 'ready and ' : '')
         });
     }

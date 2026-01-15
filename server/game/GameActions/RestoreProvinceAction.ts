@@ -14,10 +14,10 @@ export class RestoreProvinceAction extends CardGameAction {
     effect = 'restore {0}';
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if (!card.isProvince) {
+        if(!card.isProvince) {
             return false;
         }
-        if (!card.isBroken) {
+        if(!card.isBroken) {
             return false;
         }
         return super.canAffect(card, context);

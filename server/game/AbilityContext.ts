@@ -93,8 +93,8 @@ export class AbilityContext<S = any> {
     }
 
     refill(): void {
-        for (let player of this.game.getPlayersInFirstPlayerOrder()) {
-            for (let refill of this.provincesToRefill.filter((refill) => refill.player === player)) {
+        for(let player of this.game.getPlayersInFirstPlayerOrder()) {
+            for(let refill of this.provincesToRefill.filter((refill) => refill.player === player)) {
                 this.game.queueSimpleStep(() => {
                     player.replaceDynastyCard(refill.location);
                     return true;

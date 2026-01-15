@@ -11,11 +11,11 @@ export interface ClaimFavorProperties extends PlayerActionProperties {
 export class ClaimFavorAction extends PlayerAction<ClaimFavorProperties> {
     name = 'claimFavor';
     eventName = EventNames.OnClaimFavor;
-    effect = "claim the Emperor's favor";
+    effect = 'claim the Emperor\'s favor';
 
     hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
-        if (Array.isArray(properties.target)) {
+        if(Array.isArray(properties.target)) {
             return !!properties.target[0];
         }
         return !!properties.target;
@@ -27,7 +27,7 @@ export class ClaimFavorAction extends PlayerAction<ClaimFavorProperties> {
 
     eventHandler(event, additionalProperties = {}): void {
         let { side } = this.getProperties(event.context, additionalProperties);
-        if (event.player) {
+        if(event.player) {
             event.player.claimImperialFavor(side);
         }
     }

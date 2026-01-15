@@ -27,7 +27,7 @@ describe('Player', function () {
             this.player.initialise();
 
             this.gameSpy.raiseEvent.and.callFake((name, params, handler) => {
-                if (handler) {
+                if(handler) {
                     handler(params);
                 }
             });

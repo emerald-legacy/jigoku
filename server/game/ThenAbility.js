@@ -24,9 +24,9 @@ class ThenAbility extends BaseAbility {
     }
 
     checkGameActionsForPotential(context) {
-        if (super.checkGameActionsForPotential(context)) {
+        if(super.checkGameActionsForPotential(context)) {
             return true;
-        } else if (this.gameAction.every((gameAction) => gameAction.isOptional(context)) && this.properties.then) {
+        } else if(this.gameAction.every((gameAction) => gameAction.isOptional(context)) && this.properties.then) {
             const then =
                 typeof this.properties.then === 'function' ? this.properties.then(context) : this.properties.then;
             const thenAbility = new ThenAbility(this.game, this.card, then);
@@ -37,14 +37,14 @@ class ThenAbility extends BaseAbility {
 
     displayMessage(context) {
         let message = this.properties.message;
-        if (typeof message === 'function') {
+        if(typeof message === 'function') {
             message = message(context);
         }
-        if (message) {
+        if(message) {
             let messageArgs = [context.player, context.source, context.target];
-            if (this.properties.messageArgs) {
+            if(this.properties.messageArgs) {
                 let args = this.properties.messageArgs;
-                if (typeof args === 'function') {
+                if(typeof args === 'function') {
                     args = args(context);
                 }
                 messageArgs = messageArgs.concat(args);
@@ -69,22 +69,22 @@ class ThenAbility extends BaseAbility {
         context.events = [];
         let actions = this.getGameActions(context);
         let then = this.properties.then;
-        if (then && typeof then === 'function') {
+        if(then && typeof then === 'function') {
             then = then(context);
         }
-        for (const action of actions) {
+        for(const action of actions) {
             this.game.queueSimpleStep(() => {
                 action.addEventsToArray(context.events, context);
             });
         }
         this.game.queueSimpleStep(() => {
             let eventsToResolve = context.events.filter((event) => !event.cancelled && !event.resolved);
-            if (eventsToResolve.length > 0) {
+            if(eventsToResolve.length > 0) {
                 let window = this.openEventWindow(eventsToResolve);
-                if (then) {
+                if(then) {
                     window.addThenAbility(new ThenAbility(this.game, this.card, then), context, then.thenCondition);
                 }
-            } else if (then && then.thenCondition && then.thenCondition(context)) {
+            } else if(then && then.thenCondition && then.thenCondition(context)) {
                 let thenAbility = new ThenAbility(this.game, this.card, then);
                 this.game.resolveAbility(thenAbility.createContext(context.player));
             }

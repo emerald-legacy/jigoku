@@ -7,11 +7,11 @@ describe('SoD - Unicorn', function () {
                     player1: {
                         inPlay: ['bayushi-liar', 'kakita-toshimoko', 'keeper-initiate'],
                         dynastyDiscard: ['campfire-counsel'],
-                        hand: ['renowned-singer'],
+                        hand: ['renowned-singer']
                     },
                     player2: {
                         inPlay: ['doji-diplomat'],
-                        hand: ['assassination', 'let-go', 'duelist-training'],
+                        hand: ['assassination', 'let-go', 'duelist-training']
                     }
                 });
 
@@ -82,11 +82,11 @@ describe('SoD - Unicorn', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['bayushi-liar', 'kakita-toshimoko', 'keeper-initiate'],
-                        hand: ['cornering-maneuver'],
+                        hand: ['cornering-maneuver']
                     },
                     player2: {
                         inPlay: ['doji-diplomat', 'brash-samurai'],
-                        hand: ['assassination', 'let-go', 'duelist-training'],
+                        hand: ['assassination', 'let-go', 'duelist-training']
                     }
                 });
 
@@ -171,11 +171,11 @@ describe('SoD - Unicorn', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['kakita-toshimoko'],
-                        hand: ['admit-defeat'],
+                        hand: ['admit-defeat']
                     },
                     player2: {
                         inPlay: ['incessant-moto'],
-                        hand: ['way-of-the-scorpion'],
+                        hand: ['way-of-the-scorpion']
                     }
                 });
 
@@ -236,15 +236,15 @@ describe('SoD - Unicorn', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['kakita-toshimoko'],
-                        hand: ['admit-defeat'],
+                        hand: ['admit-defeat']
                     },
                     player2: {
                         inPlay: ['utaku-tomoe', 'moto-youth', 'moto-horde'],
-                        hand: ['dispatch'],
+                        hand: ['dispatch']
                     }
                 });
 
-                this.tomoe = this.player2.findCardByName('utaku-tomoe')
+                this.tomoe = this.player2.findCardByName('utaku-tomoe');
                 this.youth = this.player2.findCardByName('moto-youth');
                 this.horde = this.player2.findCardByName('moto-horde');
                 this.toshimoko = this.player1.findCardByName('kakita-toshimoko');
@@ -309,16 +309,16 @@ describe('SoD - Unicorn', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['kakita-toshimoko', 'keeper-initiate'],
-                        hand: ['strange-mirror'],
+                        hand: ['strange-mirror']
                     },
                     player2: {
                         inPlay: ['utaku-tomoe', 'moto-youth'],
-                        hand: ['dispatch'],
+                        hand: ['dispatch']
                     }
                 });
 
                 this.mirror = this.player1.findCardByName('strange-mirror');
-                this.tomoe = this.player2.findCardByName('utaku-tomoe')
+                this.tomoe = this.player2.findCardByName('utaku-tomoe');
                 this.youth = this.player2.findCardByName('moto-youth');
                 this.toshimoko = this.player1.findCardByName('kakita-toshimoko');
                 this.keeper = this.player1.findCardByName('keeper-initiate');
@@ -388,11 +388,11 @@ describe('SoD - Unicorn', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['kakita-toshimoko'],
-                        hand: ['admit-defeat', 'fine-katana'],
+                        hand: ['admit-defeat', 'fine-katana']
                     },
                     player2: {
                         inPlay: ['incessant-moto'],
-                        hand: ['way-of-the-scorpion', 'shiksha-scout', 'into-the-storm'],
+                        hand: ['way-of-the-scorpion', 'shiksha-scout', 'into-the-storm']
                     }
                 });
 

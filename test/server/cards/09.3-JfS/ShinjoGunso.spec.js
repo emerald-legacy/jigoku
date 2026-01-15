@@ -1,6 +1,6 @@
 describe('Shinjo Gunso', function () {
     integration(function () {
-        describe("Shinjo Gunso's ability", function () {
+        describe('Shinjo Gunso\'s ability', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'dynasty',

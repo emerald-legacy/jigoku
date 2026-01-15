@@ -13,7 +13,7 @@ export default class KakitasFinalStance extends DrawCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register(['onConflictFinished', 'afterDuel']);
         this.action({
-            title: "Character cannot be bowed and doesn't bow during resolution",
+            title: 'Character cannot be bowed and doesn\'t bow during resolution',
             condition: () => this.game.isDuringConflict('military'),
             target: {
                 cardType: CardTypes.Character,
@@ -32,7 +32,7 @@ export default class KakitasFinalStance extends DrawCard {
                     }))
                 ]
             },
-            effect: "prevent opponents' actions from bowing {0} and stop it bowing at the end of the conflict if it is involved in a duel"
+            effect: 'prevent opponents\' actions from bowing {0} and stop it bowing at the end of the conflict if it is involved in a duel'
         });
     }
 
@@ -43,7 +43,7 @@ export default class KakitasFinalStance extends DrawCard {
     public afterDuel(event: any) {
         const duel = event.duel as Duel;
         this.duelParticipantsInThisConflict.add(duel.challenger);
-        for (const target of duel.targets) {
+        for(const target of duel.targets) {
             this.duelParticipantsInThisConflict.add(target);
         }
     }

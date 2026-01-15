@@ -22,24 +22,24 @@ export class PlayAttachmentAction extends BaseAction {
     }
 
     meetsRequirements(context = this.createContext(), ignoredRequirements: string[] = []) {
-        if (
+        if(
             !ignoredRequirements.includes('phase') &&
             context.game.currentPhase === Phases.Dynasty &&
             !parseGameMode(context.game.gameMode).dynastyPhaseCanPlayAttachments
         ) {
             return 'phase';
         }
-        if (
+        if(
             !ignoredRequirements.includes('location') &&
             !context.player.isCardInPlayableLocation(context.source, context.playType)
         ) {
             return 'location';
         }
-        if (!ignoredRequirements.includes('cannotTrigger') && !context.source.canPlay(context, context.playType)) {
+        if(!ignoredRequirements.includes('cannotTrigger') && !context.source.canPlay(context, context.playType)) {
             return 'cannotTrigger';
         }
 
-        if (context.source.anotherUniqueInPlay(context.player)) {
+        if(context.source.anotherUniqueInPlay(context.player)) {
             return 'unique';
         }
         return super.meetsRequirements(context);

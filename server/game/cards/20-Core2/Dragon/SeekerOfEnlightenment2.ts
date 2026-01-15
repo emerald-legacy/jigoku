@@ -12,7 +12,7 @@ export default class SeekerOfEnlightenment2 extends DrawCard {
 
     getFateOnRings() {
         let total = 0;
-        for (const ring of Object.values(this.game.rings)) {
+        for(const ring of Object.values(this.game.rings)) {
             total += ring.fate;
         }
         return total;

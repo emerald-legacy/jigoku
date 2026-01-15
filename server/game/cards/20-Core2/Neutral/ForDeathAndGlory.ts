@@ -9,7 +9,7 @@ export default class ForDeathAndGlory extends DrawCard {
 
     setupCardAbilities() {
         this.action({
-            title: "Increase a character's military skill",
+            title: 'Increase a character\'s military skill',
             condition: (context) => context.game.isDuringConflict('military'),
             targets: {
                 [CHARACTER]: {
@@ -50,7 +50,7 @@ export default class ForDeathAndGlory extends DrawCard {
             },
             effect: '{1}{2}{3}',
             effectArgs: (context) => {
-                if (context.selects.select.choice === 'Gain +2 skill') {
+                if(context.selects.select.choice === 'Gain +2 skill') {
                     return ['grant 2 military skill to ', context.targets[CHARACTER], ''];
                 }
                 return [

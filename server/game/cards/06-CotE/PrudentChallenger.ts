@@ -10,7 +10,7 @@ export default class PrudentChallenger extends DrawCard {
             title: 'Initiate a duel to discard attachment',
             initiateDuel: {
                 type: DuelTypes.Military,
-                message: "{0} chooses one of {1}'s attachments to discard",
+                message: '{0} chooses one of {1}\'s attachments to discard',
                 messageArgs: (duel) => [duel.winnerController, duel.loser],
                 gameAction: (duel) =>
                     AbilityDsl.actions.selectCard({

@@ -28,19 +28,19 @@ export default class StewardOfCrypticLore extends DrawCard {
                 },
                 gameAction: AbilityDsl.actions.chooseAction(() => ({
                     options: {
-                        "Raise attacked province's strength by 3": {
+                        'Raise attacked province\'s strength by 3': {
                             action: AbilityDsl.actions.cardLastingEffect(() => ({
                                 targetLocation: Locations.Provinces,
                                 effect: AbilityDsl.effects.modifyProvinceStrength(3)
                             })),
-                            message: "{0} chooses to increase {1}'s strength by 3"
+                            message: '{0} chooses to increase {1}\'s strength by 3'
                         },
-                        "Lower attacked province's strength by 3": {
+                        'Lower attacked province\'s strength by 3': {
                             action: AbilityDsl.actions.cardLastingEffect(() => ({
                                 targetLocation: Locations.Provinces,
                                 effect: AbilityDsl.effects.modifyProvinceStrength(-3)
                             })),
-                            message: "{0} chooses to reduce {1}'s strength by 3"
+                            message: '{0} chooses to reduce {1}\'s strength by 3'
                         }
                     }
                 }))

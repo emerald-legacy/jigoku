@@ -4,7 +4,7 @@ describe('Fortress at the Sea of Fire', function () {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['brash-samurai', 'doji-challenger'],
+                    inPlay: ['brash-samurai', 'doji-challenger']
                 },
                 player2: {
                     inPlay: ['doji-kuwanan', 'crisis-breaker'],
@@ -44,7 +44,7 @@ describe('Fortress at the Sea of Fire', function () {
             expect(this.challenger.bowed).toBe(true);
 
             expect(this.getChatLogs(3)).toContain(
-                "player2 uses Fortress at the Sea of Fire, bowing Fortress at the Sea of Fire to bow Doji Challenger"
+                'player2 uses Fortress at the Sea of Fire, bowing Fortress at the Sea of Fire to bow Doji Challenger'
             );
         });
 
@@ -70,7 +70,7 @@ describe('Fortress at the Sea of Fire', function () {
             expect(this.breaker.bowed).toBe(false);
 
             expect(this.getChatLogs(3)).toContain(
-                "player2 uses Fortress at the Sea of Fire, bowing Fortress at the Sea of Fire to ready Crisis Breaker"
+                'player2 uses Fortress at the Sea of Fire, bowing Fortress at the Sea of Fire to ready Crisis Breaker'
             );
         });
 

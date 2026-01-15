@@ -29,7 +29,7 @@ export default class AncestralRivalry extends DrawCard {
                             target: context.player
                         }))
                     }
-                },
+                }
             },
             effect: '{1}{2}{3}{4}{5}{6}',
             effectArgs: (context) => context.selects.select.choice === 'Let opponent claim favor' ? [

@@ -6,7 +6,7 @@ class IkomaKiyono extends DrawCard {
         this.wouldInterrupt({
             title: 'Ready for Glory Count',
             when: {
-                onGloryCount: (event, context) => { // eslint-disable-line no-unused-vars
+                onGloryCount: (event, context) => {
                     return context.player && context.player.opponent && context.player.isMoreHonorable();
                 }
             },

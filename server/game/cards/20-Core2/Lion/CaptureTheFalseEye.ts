@@ -29,7 +29,7 @@ export default class CaptureTheFalseEye extends DrawCard {
                     }))
                 ]
             },
-            effect: "bow {0}. For this conflict, {1}'s events cost 1 more fate - did {1} walk into a trap?",
+            effect: 'bow {0}. For this conflict, {1}\'s events cost 1 more fate - did {1} walk into a trap?',
             effectArgs: (context) => [context.player]
         });
     }

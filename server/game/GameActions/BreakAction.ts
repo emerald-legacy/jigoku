@@ -14,7 +14,7 @@ export class BreakAction extends CardGameAction {
     effect = 'break {0}';
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if (!card.isProvince || card.isBroken) {
+        if(!card.isProvince || card.isBroken) {
             return false;
         }
         return super.canAffect(card, context);

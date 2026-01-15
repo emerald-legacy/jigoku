@@ -22,7 +22,7 @@ describe('Borderlands Defender', function () {
             this.noMoreActions();
         });
 
-        it("should not be able to be bowed by opponent's card effects as a defender", function () {
+        it('should not be able to be bowed by opponent\'s card effects as a defender', function () {
             this.initiateConflict({
                 type: 'military',
                 attackers: [this.togashiYokuni],
@@ -33,7 +33,7 @@ describe('Borderlands Defender', function () {
             expect(this.player1).not.toHavePrompt('Admit Defeat');
         });
 
-        it("should not be able to be sent home by opponent's card effects as a defender", function () {
+        it('should not be able to be sent home by opponent\'s card effects as a defender', function () {
             this.initiateConflict({
                 type: 'military',
                 attackers: [this.togashiYokuni],
@@ -56,7 +56,7 @@ describe('Borderlands Defender', function () {
             expect(this.borderlandsDefender.isParticipating()).toBe(false);
         });
 
-        it("should be able to be sent home by opponent's card effects as an attacker", function () {
+        it('should be able to be sent home by opponent\'s card effects as an attacker', function () {
             this.player1.passConflict();
             this.noMoreActions();
             this.initiateConflict({
@@ -70,7 +70,7 @@ describe('Borderlands Defender', function () {
             expect(this.borderlandsDefender.isParticipating()).toBe(false);
         });
 
-        it("should be able to be bowed by opponent's card effects as an attacker", function () {
+        it('should be able to be bowed by opponent\'s card effects as an attacker', function () {
             this.player1.passConflict();
             this.noMoreActions();
             this.initiateConflict({

@@ -76,7 +76,7 @@ describe('Hida Honoka', function () {
             this.player1.clickCard(this.alignment);
             this.player1.clickCard(this.richFrog);
             expect(this.richFrog.isBroken).toBe(true);
-            expect(this.alignment.location).toBe("removed from game");
+            expect(this.alignment.location).toBe('removed from game');
         });
     });
 });

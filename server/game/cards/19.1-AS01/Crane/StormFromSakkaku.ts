@@ -56,7 +56,7 @@ export default class StormFromSakkaku extends DrawCard {
     }
 
     public cancelRingEffect(event: any) {
-        if (event.context.game.currentConflict && this.isInConflictProvince() && this.isFaceup() && !event.cancelled) {
+        if(event.context.game.currentConflict && this.isInConflictProvince() && this.isFaceup() && !event.cancelled) {
             event.cancel();
             this.game.addMessage('{0} cancels the ring effect', this);
         }

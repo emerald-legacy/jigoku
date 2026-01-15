@@ -3,7 +3,7 @@ import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
 
 export default class IkomaNatsuko extends DrawCard {
-    static id = 'ikoma-natsuko'
+    static id = 'ikoma-natsuko';
 
     setupCardAbilities() {
         this.action({

@@ -23,8 +23,8 @@ export class ChessClock extends Clock implements ClockInterface {
     }
 
     public start() {
-        if (!this.manuallyPaused) {
-            if (this.mode !== 'down') {
+        if(!this.manuallyPaused) {
+            if(this.mode !== 'down') {
                 this.mode = 'down';
                 super.start();
             }
@@ -39,28 +39,28 @@ export class ChessClock extends Clock implements ClockInterface {
     public opponentStart() {}
 
     protected timeRanOut() {
-        this.player.game.addMessage("{0}'s clock has run out", this.player);
-        if (this.player.opponent && this.player.opponent.clock.timeLeft > 0) {
+        this.player.game.addMessage('{0}\'s clock has run out', this.player);
+        if(this.player.opponent && this.player.opponent.clock.timeLeft > 0) {
             this.player.game.recordWinner(this.player.opponent, 'clock');
         }
     }
 
     protected updateTimeLeft(secs: number) {
-        if (this.timeLeft === 0 || secs < 0) {
+        if(this.timeLeft === 0 || secs < 0) {
             return;
         }
-        if (secs <= this.delayToStartClock) {
+        if(secs <= this.delayToStartClock) {
             return;
         }
 
         secs = secs - this.delayToStartClock;
-        if (this.mode === 'down') {
+        if(this.mode === 'down') {
             this.modify(-secs);
-            if (this.timeLeft < 0) {
+            if(this.timeLeft < 0) {
                 this.timeLeft = 0;
                 this.timeRanOut();
             }
-        } else if (this.mode === 'up') {
+        } else if(this.mode === 'up') {
             this.modify(secs);
         }
     }

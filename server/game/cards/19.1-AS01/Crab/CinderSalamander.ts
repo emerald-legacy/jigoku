@@ -74,7 +74,7 @@ export default class CinderSalamander extends DrawCard {
         return salamanderCount > 1
             ? salamanderCount + ' salamanders'
             : salamanderCount === 1
-            ? '1 salamander'
-            : 'no salamanders';
+                ? '1 salamander'
+                : 'no salamanders';
     }
 }

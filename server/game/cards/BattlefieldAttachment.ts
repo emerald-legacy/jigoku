@@ -19,7 +19,7 @@ export class BattlefieldAttachment extends DrawCard {
     }
 
     public canAttach(parent: BaseCard) {
-        if (this.unbrokenOnly() && parent.type === CardTypes.Province && parent.isBroken) {
+        if(this.unbrokenOnly() && parent.type === CardTypes.Province && parent.isBroken) {
             return false;
         }
 

@@ -10,7 +10,7 @@ export default class Overhear extends DrawCard {
     public setupCardAbilities() {
         this.action({
             title: 'Place random card on top of deck',
-            effect: "reveal a random card from {1}'s hand and place it on top of {1}'s deck",
+            effect: 'reveal a random card from {1}\'s hand and place it on top of {1}\'s deck',
             effectArgs: (context) => [context.player.opponent],
             gameAction: AbilityDsl.actions.multipleContext((context) => {
                 let card = context.player.opponent && context.player.opponent.hand.shuffle().slice(0, 1);
@@ -30,14 +30,14 @@ export default class Overhear extends DrawCard {
             }),
             condition: (context) => context.game.isDuringConflict('political') && context.player.opponent !== undefined,
             then: (context) => {
-                if (
+                if(
                     context.game.currentConflict
                         .getCharacters(context.player)
                         .filter((card: DrawCard) => card.hasTrait('courtier')).length < 1
                 ) {
                     return;
                 }
-                if (context.subResolution) {
+                if(context.subResolution) {
                     return {
                         target: {
                             mode: TargetModes.Select,

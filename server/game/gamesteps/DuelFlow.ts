@@ -59,11 +59,11 @@ export class DuelFlow extends BaseStepWithPipeline {
     }
 
     #promptForHonorBid() {
-        if (this.duel.challenger.mostRecentEffect(EffectNames.WinDuel) === this.duel) {
+        if(this.duel.challenger.mostRecentEffect(EffectNames.WinDuel) === this.duel) {
             return;
         }
         const prohibitedBids = {};
-        for (const player of this.game.getPlayers()) {
+        for(const player of this.game.getPlayers()) {
             prohibitedBids[player.uuid] = Array.from(new Set(player.getEffects(EffectNames.CannotBidInDuels)));
         }
         this.game.promptForHonorBid(
@@ -83,12 +83,12 @@ export class DuelFlow extends BaseStepWithPipeline {
     }
 
     #announceResult() {
-        if (this.duel.challenger.mostRecentEffect(EffectNames.WinDuel) === this.duel) {
+        if(this.duel.challenger.mostRecentEffect(EffectNames.WinDuel) === this.duel) {
             this.game.addMessage('{0} wins the duel vs {1}', this.duel.challenger, this.duel.targets);
         } else {
             this.game.addMessage(this.duel.getTotalsForDisplay());
         }
-        if (!this.duel.winner) {
+        if(!this.duel.winner) {
             this.game.addMessage('The duel ends in a draw');
         }
         this.game.raiseEvent(EventNames.AfterDuel, {

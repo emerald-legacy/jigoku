@@ -22,12 +22,20 @@ export default class CompetingInterests extends DrawCard {
 
     #hasEnoughUniques(ctx: AbilityContext) {
         let totalUniques = 0;
-        for (const card of (ctx.game.currentConflict as undefined | Conflict).getParticipants() ?? []) {
-            if (card.controller !== ctx.player) {
-                if (card.isUnique()) totalUniques++;
-                for (const attachment of card.attachments) if (attachment.isUnique()) totalUniques++;
+        for(const card of (ctx.game.currentConflict as undefined | Conflict).getParticipants() ?? []) {
+            if(card.controller !== ctx.player) {
+                if(card.isUnique()) {
+                    totalUniques++;
+                }
+                for(const attachment of card.attachments) {
+                    if(attachment.isUnique()) {
+                        totalUniques++;
+                    }
+                }
 
-                if (totalUniques >= 2) return true;
+                if(totalUniques >= 2) {
+                    return true;
+                }
             }
         }
         return false;

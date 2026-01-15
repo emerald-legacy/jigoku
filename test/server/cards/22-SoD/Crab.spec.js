@@ -199,7 +199,7 @@ describe('SoD - Crab', function () {
                         conflictDiscard: ['under-the-new-moon']
                     },
                     player2: {
-                        inPlay: ['togashi-yokuni', 'doji-challenger', 'brash-samurai'],
+                        inPlay: ['togashi-yokuni', 'doji-challenger', 'brash-samurai']
                     }
                 });
 
@@ -217,7 +217,7 @@ describe('SoD - Crab', function () {
             it('should bow', function () {
                 this.noMoreActions();
                 this.initiateConflict({
-                    attackers: [this.skirmisher],
+                    attackers: [this.skirmisher]
                 });
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.assault);
@@ -240,7 +240,7 @@ describe('SoD - Crab', function () {
             it('should not bow', function () {
                 this.noMoreActions();
                 this.initiateConflict({
-                    attackers: [this.skirmisher],
+                    attackers: [this.skirmisher]
                 });
                 this.player1.clickCard(this.assault);
 

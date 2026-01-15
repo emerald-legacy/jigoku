@@ -8,7 +8,7 @@ export default class BenevolentLesserKami extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating() && context.game.currentConflict.elements.some(element => context.source.hasTrait(element)),
-            effect: AbilityDsl.effects.modifyBothSkills(1),
+            effect: AbilityDsl.effects.modifyBothSkills(1)
         });
 
         this.action({
@@ -42,7 +42,7 @@ export default class BenevolentLesserKami extends DrawCard {
                             target: context.source,
                             duration: Durations.UntilEndOfRound,
                             effect: AbilityDsl.effects.addTrait('void')
-                        })),
+                        }))
 
                     }
                 }
@@ -52,7 +52,7 @@ export default class BenevolentLesserKami extends DrawCard {
         });
 
         this.action({
-            title: "Shuffle into deck",
+            title: 'Shuffle into deck',
             gameAction: AbilityDsl.actions.returnToDeck(context => ({
                 target: context.source,
                 shuffle: true

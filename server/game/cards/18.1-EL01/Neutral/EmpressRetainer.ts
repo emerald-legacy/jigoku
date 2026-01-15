@@ -3,10 +3,10 @@ import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
 
 function modifier(_: unknown, context: AbilityContext<EmpressRetainer>) {
-    if (context.player.imperialFavor !== '') {
+    if(context.player.imperialFavor !== '') {
         return 1;
     }
-    if (context.player.opponent.imperialFavor !== '') {
+    if(context.player.opponent.imperialFavor !== '') {
         return -1;
     }
     return 0;

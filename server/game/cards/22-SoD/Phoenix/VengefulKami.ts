@@ -18,7 +18,7 @@ export default class VengefulKami extends DrawCard {
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([{
-            [EventNames.OnConflictDeclared + ":" + AbilityTypes.Reaction]: 'onConflictDeclaredReaction'
+            [EventNames.OnConflictDeclared + ':' + AbilityTypes.Reaction]: 'onConflictDeclaredReaction'
         }]);
         this.eventRegistrar.register([EventNames.OnRoundEnded]);
 
@@ -38,7 +38,7 @@ export default class VengefulKami extends DrawCard {
                 gameAction: AbilityDsl.actions.resolveRingEffect()
             },
             effect: 'resolve the {0} effect'
-        })
+        });
 
         this.persistentEffect({
             effect: AbilityDsl.effects.cardCannot({
@@ -53,32 +53,32 @@ export default class VengefulKami extends DrawCard {
     }
 
     public onConflictDeclaredReaction(event) {
-        if (!this.declaredProvinces) {
+        if(!this.declaredProvinces) {
             this.declaredProvinces = [];
         }
         const conflictString = this.getConflictString(event?.conflict);
 
-        if (!!conflictString) {
-            if (!this.declaredProvinces.includes(conflictString)) {
-                this.declaredProvinces.push(conflictString)
+        if(conflictString) {
+            if(!this.declaredProvinces.includes(conflictString)) {
+                this.declaredProvinces.push(conflictString);
             }
         }
     }
 
     private getConflictString(conflict) {
-        if (!conflict) {
+        if(!conflict) {
             return undefined;
         }
 
         const provinceString = this.getProvinceIdString(conflict.declaredProvince);
-        if (!provinceString) {
+        if(!provinceString) {
             return undefined;
         }
         return `${provinceString}-${conflict.uuid}`;
     }
 
     private getProvinceIdString(province) {
-        if (!province) {
+        if(!province) {
             return undefined;
         }
 
@@ -87,15 +87,15 @@ export default class VengefulKami extends DrawCard {
     }
 
     private wasProvinceAttacked(conflict, province) {
-        if (!this.declaredProvinces) {
+        if(!this.declaredProvinces) {
             return false;
         }
         const conflictString = this.getConflictString(conflict);
         const provinceString = this.getProvinceIdString(province);
 
-        for (let i = 0; i < this.declaredProvinces.length; i++) {
+        for(let i = 0; i < this.declaredProvinces.length; i++) {
             const a = this.declaredProvinces[i];
-            if (a.indexOf(provinceString) >= 0 && a !== conflictString) {
+            if(a.indexOf(provinceString) >= 0 && a !== conflictString) {
                 return true;
             }
         }

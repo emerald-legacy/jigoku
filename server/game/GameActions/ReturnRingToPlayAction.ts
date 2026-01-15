@@ -14,7 +14,7 @@ export class ReturnRingToPlayAction extends RingAction {
     }
 
     canAffect(ring: Ring, context: AbilityContext): boolean {
-        if (!ring.removedFromGame) {
+        if(!ring.removedFromGame) {
             return false;
         }
 

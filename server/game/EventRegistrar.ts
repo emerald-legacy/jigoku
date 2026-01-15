@@ -1,4 +1,4 @@
-import type Game from "./game";
+import type Game from './game';
 
 interface EventHandler {
     name: string;
@@ -37,11 +37,11 @@ export class EventRegistrar {
      * event-to-method mappings.
      */
     public register(events: Array<string | Record<string, string>>) {
-        for (const event of events) {
-            if (typeof event === 'string') {
+        for(const event of events) {
+            if(typeof event === 'string') {
                 this.registerEvent(event);
             } else {
-                for (const eventName in event) {
+                for(const eventName in event) {
                     const methodName = event[eventName];
                     this.registerEvent(eventName, methodName);
                 }
@@ -54,7 +54,7 @@ export class EventRegistrar {
      */
     public registerEvent(eventName: string, methodName = '') {
         const method = this.context[methodName || eventName];
-        if (typeof method !== 'function') {
+        if(typeof method !== 'function') {
             throw new Error(`Cannot bind event handler for ${eventName}`);
         }
 
@@ -67,7 +67,7 @@ export class EventRegistrar {
      * Unbinds all registered handlers from the event emitter.
      */
     public unregisterAll() {
-        for (const event of this.events) {
+        for(const event of this.events) {
             this.game.removeListener(event.name, event.handler);
         }
         this.events = [];

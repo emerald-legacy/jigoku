@@ -26,7 +26,7 @@ export default class MarvelousBeings extends DrawCard {
     }
 
     private marvelousSkillBonus(context: AbilityContext): number {
-        if (!context.costs.moveToConflict) {
+        if(!context.costs.moveToConflict) {
             return 0;
         }
         const bonus = Math.min(context.costs.moveToConflict.printedCost, 3);

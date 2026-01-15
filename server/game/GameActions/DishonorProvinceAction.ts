@@ -16,8 +16,8 @@ export class DishonorProvinceAction extends CardGameAction {
     getEffectMessage(context: AbilityContext): [string, any[]] {
         const properties = this.getProperties(context) as DishonorProvinceProperties;
         const targetArray = [];
-        if (properties.target) {
-            if (Array.isArray(properties.target)) {
+        if(properties.target) {
+            if(Array.isArray(properties.target)) {
                 properties.target.forEach((t) => {
                     const target = t as ProvinceCard;
                     const targetMessage = target && target.isFacedown && target.isFacedown() ? target.location : target;
@@ -33,9 +33,9 @@ export class DishonorProvinceAction extends CardGameAction {
     }
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if (card.type !== CardTypes.Province || card.isDishonored) {
+        if(card.type !== CardTypes.Province || card.isDishonored) {
             return false;
-        } else if (!card.isHonored && !card.checkRestrictions('receiveDishonorToken', context)) {
+        } else if(!card.isHonored && !card.checkRestrictions('receiveDishonorToken', context)) {
             return false;
         }
         return super.canAffect(card, context);

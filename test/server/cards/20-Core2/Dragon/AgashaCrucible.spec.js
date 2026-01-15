@@ -48,7 +48,7 @@ describe('Agasha Crucible', function () {
             this.player1.clickCard(this.shamefulDisplay);
 
             expect(this.getChatLogs(5)).toContain(
-                "player1 plays The Rushing Wave to set province 1's strength to 0 until the end of the phase"
+                'player1 plays The Rushing Wave to set province 1\'s strength to 0 until the end of the phase'
             );
             expect(this.getChatLogs(5)).toContain(
                 'player1 channels their water affinity to also set the strength of province 2 to 0'

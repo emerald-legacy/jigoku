@@ -90,7 +90,7 @@ xdescribe('Giver of Gifts 2', function () {
             expect(this.getChatLogs(1)).toContain('player2 moves Cloud the Mind to Iuchi Rimei');
         });
 
-        it("should allow moving an attachment that can only be attached to 'characters you control'", function () {
+        it('should allow moving an attachment that can only be attached to \'characters you control\'', function () {
             this.player2.clickCard(this.giverOfGifts);
             this.player2.clickCard(this.finger);
             expect(this.player2).not.toBeAbleToSelect(this.giverOfGifts);

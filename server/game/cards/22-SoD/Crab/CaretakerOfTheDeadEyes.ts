@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
-import { CardTypes, Players } from "../../../Constants";
+import { CardTypes, Players } from '../../../Constants';
 
 export default class CaretakerOfTheDeadEyes extends DrawCard {
     static id = 'caretaker-of-the-dead-eyes';

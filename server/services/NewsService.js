@@ -5,7 +5,7 @@ class NewsService {
 
     async getRecentNewsItems(options) {
         let cursor = this.news.find({}).sort({ datePublished: -1 });
-        if (options.limit) {
+        if(options.limit) {
             cursor = cursor.limit(parseInt(options.limit));
         }
         return cursor.toArray();

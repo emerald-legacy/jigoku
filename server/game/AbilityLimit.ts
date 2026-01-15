@@ -52,7 +52,7 @@ class UnlimitedAbilityLimit {
     }
 
     #getKey(player: string): string {
-        if (this.currentUser) {
+        if(this.currentUser) {
             return player + this.currentUser;
         }
         return player;
@@ -96,7 +96,7 @@ class FixedAbilityLimit {
     }
 
     #getKey(player: string): string {
-        if (this.currentUser) {
+        if(this.currentUser) {
             return player + this.currentUser;
         }
         return player;
@@ -124,13 +124,13 @@ class RepeatableAbilityLimit extends FixedAbilityLimit {
     }
 
     public registerEvents(eventEmitter: EventEmitter): void {
-        for (const eventN of this.eventName) {
+        for(const eventN of this.eventName) {
             eventEmitter.on(eventN, () => this.reset());
         }
     }
 
     public unregisterEvents(eventEmitter: EventEmitter): void {
-        for (const eventN of this.eventName) {
+        for(const eventN of this.eventName) {
             eventEmitter.removeListener(eventN, () => this.reset());
         }
     }

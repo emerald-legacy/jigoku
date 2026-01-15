@@ -22,9 +22,9 @@ export default class TwinSoulTemple extends StrongholdCard {
                     }),
                     choiceHandler: (choice, displayMessage) => {
                         let newElement = choice.toLowerCase();
-                        if (displayMessage) {
+                        if(displayMessage) {
                             this.game.addMessage(
-                                "{0} replaces {1}'s {2} ({3}) symbol with {4}",
+                                '{0} replaces {1}\'s {2} ({3}) symbol with {4}',
                                 context.player,
                                 context.elementCard,
                                 context.element.prettyName,
@@ -50,7 +50,7 @@ export default class TwinSoulTemple extends StrongholdCard {
         let currentEl = context.element.element;
 
         const index = els.indexOf(currentEl);
-        if (index > -1) {
+        if(index > -1) {
             els.splice(index, 1);
         }
         els.forEach((e, i) => (els[i] = this.capitalize(e)));

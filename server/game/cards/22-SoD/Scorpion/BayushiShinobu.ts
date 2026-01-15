@@ -18,8 +18,8 @@ export default class BayushiShinobu extends DrawCard {
                     }
                 }),
                 duration: Durations.Persistent,
-                multipleTrigger: true,
-            }),
+                multipleTrigger: true
+            })
         });
 
         this.action({
@@ -48,7 +48,7 @@ export default class BayushiShinobu extends DrawCard {
                             message: '{0} loses 2 honor due to the delayed effect of {1}',
                             messageArgs: [context.player, context.source]
                         }),
-                        duration: Durations.UntilEndOfPhase,
+                        duration: Durations.UntilEndOfPhase
                     }))
                 ])
             },
@@ -56,8 +56,5 @@ export default class BayushiShinobu extends DrawCard {
         });
     }
 }
-
-
-
 
 

@@ -36,7 +36,7 @@ describe('Twin Sister Blades', function() {
             this.player1.clickCard(this.yakamo);
 
             expect(this.player1.hand.length).toBe(hand + 1);
-            expect(this.getChatLogs(5)).toContain("player1 uses Hida Yakamo's gained ability from Twin Sister Blades to draw a card");
+            expect(this.getChatLogs(5)).toContain('player1 uses Hida Yakamo\'s gained ability from Twin Sister Blades to draw a card');
         });
 
         it('should draw a card on a bushi if not outnumbered', function() {
@@ -53,7 +53,7 @@ describe('Twin Sister Blades', function() {
             this.player1.clickCard(this.berserker);
 
             expect(this.player1.hand.length).toBe(hand + 1);
-            expect(this.getChatLogs(5)).toContain("player1 uses Matsu Berserker's gained ability from Twin Sister Blades to draw a card");
+            expect(this.getChatLogs(5)).toContain('player1 uses Matsu Berserker\'s gained ability from Twin Sister Blades to draw a card');
         });
 
         it('should not draw on a non-bushi', function() {
@@ -86,7 +86,7 @@ describe('Twin Sister Blades', function() {
             this.player1.clickCard(this.yakamo);
 
             expect(this.player1.hand.length).toBe(hand + 2);
-            expect(this.getChatLogs(5)).toContain("player1 uses Hida Yakamo's gained ability from Twin Sister Blades to draw 2 cards");
+            expect(this.getChatLogs(5)).toContain('player1 uses Hida Yakamo\'s gained ability from Twin Sister Blades to draw 2 cards');
         });
 
         it('should draw a card on a bushi non-duelist if outnumbered', function() {
@@ -103,7 +103,7 @@ describe('Twin Sister Blades', function() {
             this.player1.clickCard(this.berserker);
 
             expect(this.player1.hand.length).toBe(hand + 1);
-            expect(this.getChatLogs(5)).toContain("player1 uses Matsu Berserker's gained ability from Twin Sister Blades to draw a card");
+            expect(this.getChatLogs(5)).toContain('player1 uses Matsu Berserker\'s gained ability from Twin Sister Blades to draw a card');
         });
     });
 });

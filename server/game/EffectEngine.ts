@@ -23,7 +23,7 @@ export class EffectEngine {
 
     add(effect: Effect) {
         this.effects.push(effect);
-        if (effect.duration === Durations.Custom) {
+        if(effect.duration === Durations.Custom) {
             this.registerCustomDurationEvents(effect);
         }
         this.newEffect = true;
@@ -33,23 +33,23 @@ export class EffectEngine {
     checkDelayedEffects(events: any[]) {
         let effectsToTrigger = [];
         const effectsToRemove = [];
-        for (const effect of this.effects.filter(
+        for(const effect of this.effects.filter(
             (effect) => effect.isEffectActive() && effect.effect.type === EffectNames.DelayedEffect
         )) {
             const properties = effect.effect.getValue();
-            if (properties.condition) {
-                if (properties.condition(effect.context)) {
+            if(properties.condition) {
+                if(properties.condition(effect.context)) {
                     effectsToTrigger.push(effect);
                 }
             } else {
                 const triggeringEvents = events.filter((event) => properties.when[event.name]);
-                if (triggeringEvents.length > 0) {
+                if(triggeringEvents.length > 0) {
                     let effectTriggered = false;
-                    if (triggeringEvents.some((event) => properties.when[event.name](event, effect.context))) {
+                    if(triggeringEvents.some((event) => properties.when[event.name](event, effect.context))) {
                         effectsToTrigger.push(effect);
                         effectTriggered = true;
                     }
-                    if (!properties.multipleTrigger && effect.duration !== Durations.Persistent && (!properties.onlyRemoveOnSuccess || effectTriggered)) {
+                    if(!properties.multipleTrigger && effect.duration !== Durations.Persistent && (!properties.onlyRemoveOnSuccess || effectTriggered)) {
                         effectsToRemove.push(effect);
                     }
                 }
@@ -60,12 +60,12 @@ export class EffectEngine {
             const context = effect.context;
             const targets = effect.targets;
             return {
-                title: context.source.name + "'s effect" + (targets.length === 1 ? ' on ' + targets[0].name : ''),
+                title: context.source.name + '\'s effect' + (targets.length === 1 ? ' on ' + targets[0].name : ''),
                 handler: () => {
                     properties.gameAction.setDefaultTarget(() => targets);
-                    if (properties.message && properties.gameAction.hasLegalTarget(context)) {
+                    if(properties.message && properties.gameAction.hasLegalTarget(context)) {
                         let messageArgs = properties.messageArgs || [];
-                        if (typeof messageArgs === 'function') {
+                        if(typeof messageArgs === 'function') {
                             messageArgs = messageArgs(context, targets);
                         }
                         this.game.addMessage(properties.message, ...messageArgs);
@@ -77,10 +77,10 @@ export class EffectEngine {
                 }
             };
         });
-        if (effectsToRemove.length > 0) {
+        if(effectsToRemove.length > 0) {
             this.unapplyAndRemove((effect) => effectsToRemove.includes(effect));
         }
-        if (effectsToTrigger.length > 0) {
+        if(effectsToTrigger.length > 0) {
             this.game.openSimultaneousEffectWindow(effectsToTrigger);
         }
     }
@@ -93,25 +93,25 @@ export class EffectEngine {
                 !effect.canChangeZoneOnce &&
                 (!effect.canChangeZoneNTimes || effect.canChangeZoneNTimes === 0)
         );
-        for (const effect of this.effects) {
-            if (effect.match === card && effect.canChangeZoneOnce) {
+        for(const effect of this.effects) {
+            if(effect.match === card && effect.canChangeZoneOnce) {
                 effect.canChangeZoneOnce = false;
             }
-            if (effect.match === card && effect.canChangeZoneNTimes > 0) {
+            if(effect.match === card && effect.canChangeZoneNTimes > 0) {
                 effect.canChangeZoneNTimes--;
             }
         }
     }
 
     checkEffects(prevStateChanged = false, loops = 0) {
-        if (!prevStateChanged && !this.newEffect) {
+        if(!prevStateChanged && !this.newEffect) {
             return false;
         }
         let stateChanged = false;
         this.newEffect = false;
         // Check each effect's condition and find new targets
         stateChanged = this.effects.reduce((stateChanged, effect) => effect.checkCondition(stateChanged), stateChanged);
-        if (loops === 10) {
+        if(loops === 10) {
             throw new Error('EffectEngine.checkEffects looped 10 times');
         } else {
             this.checkEffects(stateChanged, loops + 1);
@@ -136,8 +136,8 @@ export class EffectEngine {
     }
 
     onPassActionPhasePriority(event) {
-        for (const effect of this.effects) {
-            if (
+        for(const effect of this.effects) {
+            if(
                 effect.duration === Durations.UntilSelfPassPriority &&
                 event.player === (effect as any).targetController
             ) {
@@ -146,25 +146,25 @@ export class EffectEngine {
         }
 
         this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Durations.UntilPassPriority);
-        for (const effect of this.effects) {
-            if (
+        for(const effect of this.effects) {
+            if(
                 effect.duration === Durations.UntilOpponentPassPriority ||
                 effect.duration === Durations.UntilSelfPassPriority
             ) {
                 effect.duration = Durations.UntilPassPriority;
-            } else if (effect.duration === Durations.UntilNextPassPriority) {
+            } else if(effect.duration === Durations.UntilNextPassPriority) {
                 effect.duration = Durations.UntilOpponentPassPriority;
             }
         }
     }
 
     registerCustomDurationEvents(effect: Effect) {
-        if (!effect.until) {
+        if(!effect.until) {
             return;
         }
 
         const handler = this.createCustomDurationHandler(effect);
-        for (const eventName of Object.keys(effect.until)) {
+        for(const eventName of Object.keys(effect.until)) {
             this.customDurationEvents.push({
                 name: eventName,
                 handler: handler,
@@ -176,8 +176,8 @@ export class EffectEngine {
 
     unregisterCustomDurationEvents(effect: Effect) {
         const remainingEvents = [];
-        for (const event of this.customDurationEvents) {
-            if (event.effect === effect) {
+        for(const event of this.customDurationEvents) {
+            if(event.effect === effect) {
                 this.game.removeListener(event.name, event.handler);
             } else {
                 remainingEvents.push(event);
@@ -190,11 +190,11 @@ export class EffectEngine {
         return (...args) => {
             let event = args[0];
             let listener = customDurationEffect.until[event.name];
-            if (listener && listener(...args)) {
+            if(listener && listener(...args)) {
                 customDurationEffect.cancel();
                 this.unregisterCustomDurationEvents(customDurationEffect);
                 this.effects = this.effects.filter((effect) => effect !== customDurationEffect);
-                if (customDurationEffect.endingMessage) {
+                if(customDurationEffect.endingMessage) {
                     this.game.addMessage(customDurationEffect.endingMessage);
                 }
             }
@@ -204,11 +204,11 @@ export class EffectEngine {
     unapplyAndRemove(match: (effect: Effect) => boolean) {
         let removedEffect = false;
         const remainingEffects = [];
-        for (const effect of this.effects) {
-            if (match(effect)) {
+        for(const effect of this.effects) {
+            if(match(effect)) {
                 removedEffect = true;
                 effect.cancel();
-                if (effect.duration === Durations.Custom) {
+                if(effect.duration === Durations.Custom) {
                     this.unregisterCustomDurationEvents(effect);
                 }
             } else {

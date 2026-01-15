@@ -14,13 +14,13 @@ export default class BeguilingMaiko extends DrawCard {
             },
             gameAction: AbilityDsl.actions.sequentialContext((context) => {
                 const favor = context.game.getFavorSide();
-                if (favor === undefined) {
+                if(favor === undefined) {
                     return {
                         gameActions: [AbilityDsl.actions.claimImperialFavor((context) => ({ target: context.player }))]
                     };
                 }
                 const gameActions: Array<GameAction> = [];
-                if (favor === FavorTypes.Military || favor === FavorTypes.Both) {
+                if(favor === FavorTypes.Military || favor === FavorTypes.Both) {
                     gameActions.push(
                         AbilityDsl.actions.lookAt((context) => ({
                             target: context.player.opponent.hand.sortBy((card: DrawCard) => card.name),
@@ -28,7 +28,7 @@ export default class BeguilingMaiko extends DrawCard {
                         }))
                     );
                 }
-                if (favor === FavorTypes.Political || favor === FavorTypes.Both) {
+                if(favor === FavorTypes.Political || favor === FavorTypes.Both) {
                     gameActions.push(
                         AbilityDsl.actions.selectCard({
                             effect: 'force {0} to dishonor one of their characters',

@@ -29,25 +29,25 @@ export class SetupPhase extends Phase {
 
     setupBegin() {
         const coinTossWinner = randomItem(this.game.getPlayers());
-        if (coinTossWinner) {
+        if(coinTossWinner) {
             coinTossWinner.firstPlayer = true;
         }
     }
 
     chooseFirstPlayer() {
         const firstPlayer = this.game.getFirstPlayer();
-        if (!firstPlayer.opponent) {
+        if(!firstPlayer.opponent) {
             return;
         }
 
-        if (
+        if(
             firstPlayer.stronghold?.stealFirstPlayerDuringSetupWithMsg &&
             !firstPlayer.opponent.stronghold?.stealFirstPlayerDuringSetupWithMsg
         ) {
             return;
         }
 
-        if (
+        if(
             !firstPlayer.stronghold?.stealFirstPlayerDuringSetupWithMsg &&
             firstPlayer.opponent.stronghold?.stealFirstPlayerDuringSetupWithMsg
         ) {
@@ -75,20 +75,20 @@ export class SetupPhase extends Phase {
     }
 
     attachStronghold() {
-        if (this.game.gameMode === GameModes.Skirmish) {
+        if(this.game.gameMode === GameModes.Skirmish) {
             return;
         }
-        for (const player of this.game.getPlayers()) {
+        for(const player of this.game.getPlayers()) {
             player.moveCard(player.stronghold, Locations.StrongholdProvince);
-            if (player.role) {
+            if(player.role) {
                 player.role.moveTo(Locations.Role);
             }
         }
     }
 
     setupProvinces() {
-        if (this.game.gameMode === GameModes.Skirmish) {
-            for (const player of this.game.getPlayers()) {
+        if(this.game.gameMode === GameModes.Skirmish) {
+            for(const player of this.game.getPlayers()) {
                 player.moveCard(player.provinceDeck.first(), Locations.ProvinceOne);
                 player.moveCard(player.provinceDeck.first(), Locations.ProvinceTwo);
                 player.moveCard(player.provinceDeck.first(), Locations.ProvinceThree);
@@ -101,32 +101,32 @@ export class SetupPhase extends Phase {
 
     fillProvinces() {
         const provinces = [Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree];
-        if (this.game.gameMode !== GameModes.Skirmish) {
+        if(this.game.gameMode !== GameModes.Skirmish) {
             provinces.push(Locations.ProvinceFour);
         }
-        for (const player of this.game.getPlayers()) {
-            for (const province of provinces) {
+        for(const player of this.game.getPlayers()) {
+            for(const province of provinces) {
                 const card = player.dynastyDeck.first();
-                if (card) {
+                if(card) {
                     player.moveCard(card, province);
                     card.facedown = false;
                 }
             }
         }
 
-        for (const card of this.game.allCards as BaseCard[]) {
+        for(const card of this.game.allCards as BaseCard[]) {
             card.applyAnyLocationPersistentEffects();
         }
     }
 
     drawStartingHands() {
-        for (const player of this.game.getPlayers()) {
+        for(const player of this.game.getPlayers()) {
             player.drawCardsToHand(this.game.gameMode === GameModes.Skirmish ? 3 : 4);
         }
     }
 
     startGame() {
-        for (const player of this.game.getPlayers()) {
+        for(const player of this.game.getPlayers()) {
             player.honor = this.game.gameMode === GameModes.Skirmish ? 6 : player.stronghold.cardData.honor;
             player.readyToStart = true;
         }

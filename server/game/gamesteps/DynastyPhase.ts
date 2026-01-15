@@ -38,25 +38,25 @@ export class DynastyPhase extends Phase {
     }
 
     #beginDynasty() {
-        for (const player of this.game.getPlayersInFirstPlayerOrder()) {
+        for(const player of this.game.getPlayersInFirstPlayerOrder()) {
             player.beginDynasty();
         }
     }
 
     #flipDynastyCards() {
         const allRevealedCards = new Set<DrawCard>();
-        for (const player of this.game.getPlayersInFirstPlayerOrder()) {
+        for(const player of this.game.getPlayersInFirstPlayerOrder()) {
             const revealedCards = new Set<DrawCard>();
-            for (const province of this.game.getProvinceArray()) {
-                for (const card of player.getDynastyCardsInProvince(province) as DrawCard[]) {
-                    if (card.isFacedown()) {
+            for(const province of this.game.getProvinceArray()) {
+                for(const card of player.getDynastyCardsInProvince(province) as DrawCard[]) {
+                    if(card.isFacedown()) {
                         this.game.applyGameAction(null, { flipDynasty: card });
                         revealedCards.add(card);
                         allRevealedCards.add(card);
                     }
                 }
             }
-            if (revealedCards.size > 0) {
+            if(revealedCards.size > 0) {
                 this.game.queueSimpleStep(() =>
                     this.game.addMessage('{0} reveals {1}', player, Array.from(revealedCards))
                 );
@@ -67,10 +67,10 @@ export class DynastyPhase extends Phase {
     }
 
     #collectFate() {
-        if (!this.gainFate) {
+        if(!this.gainFate) {
             return;
         }
-        for (const player of this.game.getPlayersInFirstPlayerOrder()) {
+        for(const player of this.game.getPlayersInFirstPlayerOrder()) {
             player.collectFate();
         }
     }
@@ -81,8 +81,8 @@ export class DynastyPhase extends Phase {
 
     #checkForRepeatDynasty() {
         let restarted = false;
-        for (const player of this.game.getPlayersInFirstPlayerOrder()) {
-            if (!restarted && player.anyEffect(EffectNames.RestartDynastyPhase)) {
+        for(const player of this.game.getPlayersInFirstPlayerOrder()) {
+            if(!restarted && player.anyEffect(EffectNames.RestartDynastyPhase)) {
                 restarted = true;
                 player.resetHonorEvents(this.game.roundNumber, this.game.currentPhase);
                 const effectSource = player.mostRecentEffect(EffectNames.RestartDynastyPhase);

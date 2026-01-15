@@ -58,7 +58,7 @@ describe('Kyuden Hida', function () {
             });
         });
 
-        describe("Kyuden Hida's ability", function () {
+        describe('Kyuden Hida\'s ability', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'dynasty',
@@ -237,7 +237,7 @@ describe('Kyuden Hida', function () {
             });
         });
 
-        describe("Kyuden Hida's ability (non-dynasty)", function () {
+        describe('Kyuden Hida\'s ability (non-dynasty)', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',

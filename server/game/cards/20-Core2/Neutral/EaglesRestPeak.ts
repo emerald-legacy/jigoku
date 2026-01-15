@@ -8,7 +8,7 @@ export default class EaglesRestPeak extends ProvinceCard {
 
     public setupCardAbilities() {
         this.action({
-            title: "Look at random cards from opponent's hand",
+            title: 'Look at random cards from opponent\'s hand',
             condition: (context) => context.player.opponent?.hand.size() > 0,
             target: {
                 activePromptTitle: 'Choose a character to lead the investigation',
@@ -30,7 +30,7 @@ export default class EaglesRestPeak extends ProvinceCard {
                         AbilityDsl.actions.handler({
                             handler: () => {
                                 this.game.addMessage('{0} sets aside {1}', opponent, setAsideCards);
-                                for (const card of setAsideCards) {
+                                for(const card of setAsideCards) {
                                     opponent.moveCard(card, Locations.RemovedFromGame);
                                 }
                             }
@@ -44,7 +44,7 @@ export default class EaglesRestPeak extends ProvinceCard {
                                 gameAction: AbilityDsl.actions.handler({
                                     handler: (context) => {
                                         context.game.addMessage('{0} picks back their cards', opponent);
-                                        for (const card of setAsideCards) {
+                                        for(const card of setAsideCards) {
                                             opponent.moveCard(card, Locations.Hand);
                                         }
                                     }

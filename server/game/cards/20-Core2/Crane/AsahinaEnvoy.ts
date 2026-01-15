@@ -23,7 +23,7 @@ export default class AsahinaEnvoy extends DrawCard {
                     deck: Decks.DynastyDeck,
                     shuffle: true,
                     selectedCardsHandler: (context, event, cards) => {
-                        if (cards.length === 0) {
+                        if(cards.length === 0) {
                             return this.game.addMessage('{0} selects no characters', event.player);
                         }
 
@@ -34,7 +34,7 @@ export default class AsahinaEnvoy extends DrawCard {
                             context.target.facedown ? context.target.location : context.target
                         );
 
-                        for (const card of cards) {
+                        for(const card of cards) {
                             event.player.moveCard(card, context.target.location);
                             card.facedown = false;
                         }

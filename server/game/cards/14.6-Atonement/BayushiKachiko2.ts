@@ -23,7 +23,7 @@ export default class BayushiKachiko2 extends DrawCard {
             effect: AbilityDsl.effects.delayedEffect({
                 when: {
                     onCardPlayed: (event: any, context: AbilityContext) => {
-                        if (this.cardsPlayedThisRound >= MAXIMUM_CARDS_ALLOWED) {
+                        if(this.cardsPlayedThisRound >= MAXIMUM_CARDS_ALLOWED) {
                             return false;
                         }
                         this.mostRecentEvent = event;
@@ -42,19 +42,19 @@ export default class BayushiKachiko2 extends DrawCard {
                 },
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) => {
-                        if (
+                        if(
                             this.mostRecentEvent.sourceOfCardPlayedFromConflictDiscard &&
                             this.mostRecentEvent.sourceOfCardPlayedFromConflictDiscard !== this
                         ) {
                             return;
                         }
-                        if (!this.cardsPlayedThisRound || this.cardsPlayedThisRound < 0) {
+                        if(!this.cardsPlayedThisRound || this.cardsPlayedThisRound < 0) {
                             this.cardsPlayedThisRound = 0;
                         }
                         this.mostRecentEvent.sourceOfCardPlayedFromConflictDiscard = this;
                         this.cardsPlayedThisRound++;
                         this.game.addMessage(
-                            "{0} plays a card from their opponent's conflict discard pile due to the ability of {1} ({2} use{3} remaining)",
+                            '{0} plays a card from their opponent\'s conflict discard pile due to the ability of {1} ({2} use{3} remaining)',
                             context.player,
                             context.source,
                             MAXIMUM_CARDS_ALLOWED - this.cardsPlayedThisRound,
@@ -98,7 +98,7 @@ export default class BayushiKachiko2 extends DrawCard {
     }
 
     public onCharacterEntersPlay(event: any) {
-        if (event.card === this) {
+        if(event.card === this) {
             this.cardsPlayedThisRound = 0;
         }
     }

@@ -36,7 +36,7 @@ export default class ShinjoGunso extends DrawCard {
                         AbilityDsl.actions.moveCard((context2) => ({
                             target: topFive.filter((a) => {
                                 const events = context2.events.filter((a) => a.name === 'onDeckSearch' && !a.cancelled);
-                                if (events.length > 0 && events[0].selectedCards) {
+                                if(events.length > 0 && events[0].selectedCards) {
                                     return !events[0].selectedCards.includes(a);
                                 }
                                 return true;

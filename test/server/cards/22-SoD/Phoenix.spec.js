@@ -6,11 +6,11 @@ describe('SoD - Phoenix', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['isawa-tadaka'],
-                        hand: ['ishiken-initiate', 'guardian-kami', 'kami-unleashed', 'appeasing-the-restless', 'jealous-ancestor', 'onibi'],
+                        hand: ['ishiken-initiate', 'guardian-kami', 'kami-unleashed', 'appeasing-the-restless', 'jealous-ancestor', 'onibi']
                     },
                     player2: {
                         inPlay: ['keeper-initiate', 'doji-diplomat'],
-                        hand: ['assassination', 'let-go', 'duelist-training'],
+                        hand: ['assassination', 'let-go', 'duelist-training']
                     }
                 });
 
@@ -180,11 +180,11 @@ describe('SoD - Phoenix', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['bayushi-rumormonger', 'solemn-scholar', 'brash-samurai'],
-                        hand: ['tessen-of-the-tsunami-legion'],
+                        hand: ['tessen-of-the-tsunami-legion']
                     },
                     player2: {
                         inPlay: ['keeper-initiate', 'doji-challenger'],
-                        hand: ['assassination', 'let-go', 'duelist-training'],
+                        hand: ['assassination', 'let-go', 'duelist-training']
                     }
                 });
 
@@ -274,11 +274,11 @@ describe('SoD - Phoenix', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['bayushi-rumormonger', 'benevolent-lesser-kami'],
-                        hand: [],
+                        hand: []
                     },
                     player2: {
                         inPlay: ['keeper-initiate', 'doji-diplomat'],
-                        hand: ['assassination', 'let-go', 'duelist-training'],
+                        hand: ['assassination', 'let-go', 'duelist-training']
                     }
                 });
 
@@ -336,11 +336,11 @@ describe('SoD - Phoenix', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['asako-shun', 'solemn-scholar'],
-                        hand: [],
+                        hand: []
                     },
                     player2: {
                         inPlay: ['keeper-initiate', 'doji-challenger'],
-                        hand: ['assassination', 'let-go', 'duelist-training'],
+                        hand: ['assassination', 'let-go', 'duelist-training']
                     }
                 });
 
@@ -399,7 +399,7 @@ describe('SoD - Phoenix', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['solemn-scholar'],
-                        hand: [],
+                        hand: []
                     },
                     player2: {
                         inPlay: ['keeper-initiate', 'doji-challenger'],
@@ -482,11 +482,11 @@ describe('SoD - Phoenix', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['solemn-scholar'],
-                        hand: [],
+                        hand: []
                     },
                     player2: {
                         inPlay: ['vengeful-kami', 'doji-challenger'],
-                        hand: ['assassination', 'let-go', 'duelist-training'],
+                        hand: ['assassination', 'let-go', 'duelist-training']
                     }
                 });
 
@@ -546,11 +546,11 @@ describe('SoD - Phoenix', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['adept-of-the-waves', 'solemn-scholar'],
-                        hand: ['ebb-and-flow', 'studious'],
+                        hand: ['ebb-and-flow', 'studious']
                     },
                     player2: {
                         inPlay: ['student-of-the-method', 'bayushi-aramoro'],
-                        hand: ['assassination', 'let-go', 'duelist-training'],
+                        hand: ['assassination', 'let-go', 'duelist-training']
                     }
                 });
 
@@ -571,7 +571,7 @@ describe('SoD - Phoenix', function () {
                 this.initiateConflict({
                     type: 'military',
                     attackers: [this.adept],
-                    defenders: [this.student, this.aramoro],
+                    defenders: [this.student, this.aramoro]
                 });
 
                 this.player2.pass();
@@ -611,7 +611,7 @@ describe('SoD - Phoenix', function () {
                 this.initiateConflict({
                     type: 'military',
                     attackers: [this.adept],
-                    defenders: [this.student, this.aramoro],
+                    defenders: [this.student, this.aramoro]
                 });
 
                 expect(this.student.getMilitarySkill()).toBe(3);
@@ -638,7 +638,7 @@ describe('SoD - Phoenix', function () {
                 this.initiateConflict({
                     type: 'military',
                     attackers: [this.adept, this.scholar],
-                    defenders: [this.student, this.aramoro],
+                    defenders: [this.student, this.aramoro]
                 });
 
                 this.player2.pass();

@@ -87,7 +87,7 @@ describe('Onsen Quarter', function() {
 
             expect(this.player1).toHavePrompt('Fire Ring');
             this.player1.clickCard(this.kuwanan);
-            this.player1.clickPrompt("Honor Doji Kuwanan");
+            this.player1.clickPrompt('Honor Doji Kuwanan');
 
             expect(this.getChatLogs(5)).toContain('player1 uses Onsen Quarters to resolve Fire Ring effect');
             expect(this.getChatLogs(5)).toContain('player1 resolves the fire ring, honoring Doji Kuwanan');

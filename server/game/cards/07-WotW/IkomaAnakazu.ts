@@ -27,7 +27,7 @@ export default class IkomaAnakazu extends DrawCard {
     }
 
     public onBreakProvince(event: any) {
-        if (event.conflict && event.conflict.attackingPlayer) {
+        if(event.conflict && event.conflict.attackingPlayer) {
             const oldValue = this.brokenProvincesThisPhase.get(event.conflict.attackingPlayer.name) || 0;
             this.brokenProvincesThisPhase.set(event.conflict.attackingPlayer.name, oldValue + 1);
         }

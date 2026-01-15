@@ -48,8 +48,8 @@ class TriggeredAbility extends CardAbility {
             this.abilityType !== AbilityTypes.ForcedReaction;
         let canPlayerTrigger = this.anyPlayer || context.player === this.card.controller || canOpponentTrigger;
 
-        if (!ignoredRequirements.includes('player') && !canPlayerTrigger) {
-            if (
+        if(!ignoredRequirements.includes('player') && !canPlayerTrigger) {
+            if(
                 this.card.type !== CardTypes.Event ||
                 !context.player.isCardInPlayableLocation(this.card, context.playType)
             ) {
@@ -61,10 +61,10 @@ class TriggeredAbility extends CardAbility {
     }
 
     eventHandler(event, window) {
-        for (const player of this.game.getPlayers()) {
+        for(const player of this.game.getPlayers()) {
             let context = this.createContext(player, event);
             //console.log(event.name, this.card.name, this.isTriggeredByEvent(event, context), this.meetsRequirements(context));
-            if (
+            if(
                 this.card.reactions.includes(this) &&
                 this.isTriggeredByEvent(event, context) &&
                 this.meetsRequirements(context) === ''
@@ -75,10 +75,10 @@ class TriggeredAbility extends CardAbility {
     }
 
     checkAggregateWhen(events, window) {
-        for (const player of this.game.getPlayers()) {
+        for(const player of this.game.getPlayers()) {
             let context = this.createContext(player, events);
             //console.log(events.map(event => event.name), this.card.name, this.aggregateWhen(events, context), this.meetsRequirements(context));
-            if (
+            if(
                 this.card.reactions.includes(this) &&
                 this.aggregateWhen(events, context) &&
                 this.meetsRequirements(context) === ''
@@ -106,9 +106,9 @@ class TriggeredAbility extends CardAbility {
     }
 
     registerEvents() {
-        if (this.events) {
+        if(this.events) {
             return;
-        } else if (this.aggregateWhen) {
+        } else if(this.aggregateWhen) {
             const event = {
                 name: 'aggregateEvent:' + this.abilityType,
                 handler: (events, window) => this.checkAggregateWhen(events, window)
@@ -132,7 +132,7 @@ class TriggeredAbility extends CardAbility {
     }
 
     unregisterEvents() {
-        if (this.events) {
+        if(this.events) {
             this.events.forEach((event) => {
                 this.game.removeListener(event.name, event.handler);
             });

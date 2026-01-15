@@ -1,4 +1,4 @@
-describe("Empress's Retainer", function () {
+describe('Empress\'s Retainer', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({

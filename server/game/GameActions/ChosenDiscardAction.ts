@@ -28,7 +28,7 @@ export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties> {
         let properties = this.getProperties(context, additionalProperties);
         const availableHand = player.hand.filter((card) => properties.cardCondition(card, context));
 
-        if (availableHand.length === 0 || properties.amount === 0) {
+        if(availableHand.length === 0 || properties.amount === 0) {
             return false;
         }
         return super.canAffect(player, context);
@@ -36,18 +36,18 @@ export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties> {
 
     addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
-        for (let player of properties.target as Player[]) {
+        for(let player of properties.target as Player[]) {
             const availableHand = player.hand.filter((card) => properties.cardCondition(card, context));
             let amount = Math.min(availableHand.length, properties.amount);
-            if (amount > 0) {
-                if (amount >= availableHand.length) {
+            if(amount > 0) {
+                if(amount >= availableHand.length) {
                     let event = this.getEvent(player, context) as any;
                     event.cards = availableHand;
                     events.push(event);
                     return;
                 }
 
-                if (properties.targets && context.choosingPlayerOverride && context.choosingPlayerOverride !== player) {
+                if(properties.targets && context.choosingPlayerOverride && context.choosingPlayerOverride !== player) {
                     let event = this.getEvent(player, context) as any;
                     event.cards = availableHand.slice(0, amount);
                     events.push(event);
@@ -83,7 +83,7 @@ export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties> {
     eventHandler(event): void {
         event.context.game.addMessage('{0} discards {1}', event.player, event.cards);
         event.discardedCards = event.cards;
-        for (let card of event.cards) {
+        for(let card of event.cards) {
             event.player.moveCard(card, card.isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile);
         }
     }

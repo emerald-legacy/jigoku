@@ -34,7 +34,7 @@ export default class IsawaTadaka2 extends DrawCard {
                     ]
                 };
             }),
-            effect: "look at {1} random card{3} in {2}'s hand",
+            effect: 'look at {1} random card{3} in {2}\'s hand',
             effectArgs: (context) => [
                 context.costs.removeFromGame.length,
                 context.player.opponent,

@@ -19,7 +19,7 @@ class TwinSisterBlades extends DrawCard {
     }
 
     getNumberOfCards(context) {
-        if (context.source.hasTrait('duelist') && context.game.currentConflict.hasMoreParticipants(context.player.opponent)) {
+        if(context.source.hasTrait('duelist') && context.game.currentConflict.hasMoreParticipants(context.player.opponent)) {
             return 2;
         }
         return 1;

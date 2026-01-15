@@ -7,7 +7,7 @@ export default class LightningAscends extends DrawCard {
 
     setupCardAbilities() {
         this.action({
-            title: "Increase a monk's military skill and remove traits from an opponent",
+            title: 'Increase a monk\'s military skill and remove traits from an opponent',
             condition: (context) => context.game.isDuringConflict(),
             targets: {
                 monk: {

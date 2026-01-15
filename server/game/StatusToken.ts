@@ -21,7 +21,7 @@ export class StatusToken extends EffectSource {
     }
 
     static create(game: Game, card: BaseCard, tokenType: CharacterStatus): StatusToken {
-        switch (tokenType) {
+        switch(tokenType) {
             case CharacterStatus.Tainted:
                 return new StatusToken(game, card, CharacterStatus.Tainted, 'Tainted Token');
             case CharacterStatus.Honored:
@@ -40,7 +40,7 @@ export class StatusToken extends EffectSource {
     }
 
     get grantedStatusName(): string {
-        switch (this.grantedStatus) {
+        switch(this.grantedStatus) {
             case CharacterStatus.Honored:
                 return 'Honorable';
             case CharacterStatus.Dishonored:
@@ -51,7 +51,7 @@ export class StatusToken extends EffectSource {
     }
 
     applyEffects(): void {
-        switch (this.grantedStatus) {
+        switch(this.grantedStatus) {
             case CharacterStatus.Honored:
                 return this.applyHonoredEffect();
             case CharacterStatus.Dishonored:
@@ -62,7 +62,7 @@ export class StatusToken extends EffectSource {
     }
 
     removeEffects() {
-        for (const effect of this.persistentEffects) {
+        for(const effect of this.persistentEffects) {
             this.removeEffectFromEngine(effect.ref);
             effect.ref = [];
         }
@@ -76,7 +76,7 @@ export class StatusToken extends EffectSource {
     }
 
     applyDishonoredEffect() {
-        if (!this.card || this.card.type !== CardTypes.Character) {
+        if(!this.card || this.card.type !== CardTypes.Character) {
             return;
         }
         const effect = {
@@ -89,7 +89,7 @@ export class StatusToken extends EffectSource {
     }
 
     applyHonoredEffect() {
-        if (!this.card || this.card.type !== CardTypes.Character) {
+        if(!this.card || this.card.type !== CardTypes.Character) {
             return;
         }
         const effect = {
@@ -102,15 +102,15 @@ export class StatusToken extends EffectSource {
     }
 
     applyTaintedEffect() {
-        if (!this.card) {
+        if(!this.card) {
             return;
         }
         const effects =
             this.card.type === CardTypes.Character
                 ? this.#taintEffectsOnCharacters()
                 : this.card.type === CardTypes.Province
-                ? this.#taintEffectsOnProvinces()
-                : [];
+                    ? this.#taintEffectsOnProvinces()
+                    : [];
 
         effects.forEach((effect: any) => {
             this.persistentEffects.push(effect);

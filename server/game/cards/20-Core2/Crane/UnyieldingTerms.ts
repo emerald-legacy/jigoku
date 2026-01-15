@@ -28,7 +28,7 @@ export default class UnyieldingTerms extends DrawCard {
                         AbilityDsl.actions.removeFate({ target: this.wonByDuelist(duel) ? duel.loser : undefined })
                     ]),
                 message: 'bow{1} {0}',
-                messageArgs: (duel) => [duel.loser, this.wonByDuelist(duel) ? ' and remove 1 fate from' : ''],
+                messageArgs: (duel) => [duel.loser, this.wonByDuelist(duel) ? ' and remove 1 fate from' : '']
             },
             max: AbilityDsl.limit.perRound(1)
         });

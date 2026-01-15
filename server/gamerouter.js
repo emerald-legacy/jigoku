@@ -24,18 +24,18 @@ class GameRouter extends EventEmitter {
             logger.info('GameRouter bound to', url);
             this.running = true;
             this.receiveMessages();
-        } catch (err) {
+        } catch(err) {
             logger.error('Failed to bind GameRouter:', err);
         }
     }
 
     async receiveMessages() {
-        while (this.running) {
+        while(this.running) {
             try {
                 const [identity, delimiter, msg] = await this.router.receive();
                 this.onMessage(identity, msg);
-            } catch (err) {
-                if (this.running) {
+            } catch(err) {
+                if(this.running) {
                     logger.error('Error receiving message:', err);
                 }
             }
@@ -46,7 +46,7 @@ class GameRouter extends EventEmitter {
     startGame(game) {
         var node = this.getNextAvailableGameNode();
 
-        if (!node) {
+        if(!node) {
             logger.error('Could not find new node for game');
             return;
         }
@@ -65,18 +65,18 @@ class GameRouter extends EventEmitter {
 
     getNextAvailableGameNode() {
         const workerList = Object.values(this.workers);
-        if (workerList.length === 0) {
+        if(workerList.length === 0) {
             return undefined;
         }
 
         var returnedWorker = undefined;
 
         workerList.forEach(worker => {
-            if (worker.numGames >= worker.maxGames || worker.disabled) {
+            if(worker.numGames >= worker.maxGames || worker.disabled) {
                 return;
             }
 
-            if (!returnedWorker || returnedWorker.numGames > worker.numGames) {
+            if(!returnedWorker || returnedWorker.numGames > worker.numGames) {
                 returnedWorker = worker;
             }
         });
@@ -96,7 +96,7 @@ class GameRouter extends EventEmitter {
 
     disableNode(nodeName) {
         var worker = this.workers[nodeName];
-        if (!worker) {
+        if(!worker) {
             return false;
         }
 
@@ -107,7 +107,7 @@ class GameRouter extends EventEmitter {
 
     enableNode(nodeName) {
         var worker = this.workers[nodeName];
-        if (!worker) {
+        if(!worker) {
             return false;
         }
 
@@ -117,7 +117,7 @@ class GameRouter extends EventEmitter {
     }
 
     notifyFailedConnect(game, username) {
-        if (!game.node) {
+        if(!game.node) {
             return;
         }
 
@@ -125,7 +125,7 @@ class GameRouter extends EventEmitter {
     }
 
     closeGame(game) {
-        if (!game.node) {
+        if(!game.node) {
             return;
         }
 
@@ -142,12 +142,12 @@ class GameRouter extends EventEmitter {
 
         try {
             message = JSON.parse(msg.toString());
-        } catch (err) {
+        } catch(err) {
             logger.info(err);
             return;
         }
 
-        switch (message.command) {
+        switch(message.command) {
             case 'HELLO':
                 this.emit('onWorkerStarted', identityStr);
                 this.workers[identityStr] = {
@@ -166,7 +166,7 @@ class GameRouter extends EventEmitter {
 
                 break;
             case 'PONG':
-                if (worker) {
+                if(worker) {
                     worker.pingSent = undefined;
                 } else {
                     logger.error('PONG received for unknown worker');
@@ -176,7 +176,7 @@ class GameRouter extends EventEmitter {
                 this.gameService.update(message.arg.game);
                 break;
             case 'GAMECLOSED':
-                if (worker) {
+                if(worker) {
                     worker.numGames--;
                 } else {
                     logger.error('Got close game for non existant worker', identity);
@@ -186,7 +186,7 @@ class GameRouter extends EventEmitter {
 
                 break;
             case 'PLAYERLEFT':
-                if (!message.arg.spectator) {
+                if(!message.arg.spectator) {
                     this.gameService.update(message.arg.game);
                 }
 
@@ -195,7 +195,7 @@ class GameRouter extends EventEmitter {
                 break;
         }
 
-        if (worker) {
+        if(worker) {
             worker.lastMessage = Date.now();
         }
     }
@@ -212,12 +212,12 @@ class GameRouter extends EventEmitter {
         const pingTimeout = 1 * 60 * 1000;
 
         Object.values(this.workers).forEach(worker => {
-            if (worker.pingSent && currentTime - worker.pingSent > pingTimeout) {
+            if(worker.pingSent && currentTime - worker.pingSent > pingTimeout) {
                 logger.info('worker', worker.identity + ' timed out');
                 delete this.workers[worker.identity];
                 this.emit('onWorkerTimedOut', worker.identity);
-            } else if (!worker.pingSent) {
-                if (currentTime - worker.lastMessage > pingTimeout) {
+            } else if(!worker.pingSent) {
+                if(currentTime - worker.lastMessage > pingTimeout) {
                     worker.pingSent = currentTime;
                     this.sendCommand(worker.identity, 'PING');
                 }

@@ -22,7 +22,7 @@ export default class SevenStingsKeep extends StrongholdCard {
                 }),
                 choiceHandler: (choice, displayMessage) => {
                     const amount = parseInt(choice);
-                    if (displayMessage) {
+                    if(displayMessage) {
                         this.game.addMessage(
                             '{0} will attack with {1} character{2}',
                             context.player,
@@ -42,7 +42,7 @@ export default class SevenStingsKeep extends StrongholdCard {
         const min = 1;
         const max = context.event.attackerMatrix.maximumNumberOfAttackers;
         const array = [];
-        for (let i = min; i <= max; i++) {
+        for(let i = min; i <= max; i++) {
             array.push(i.toString());
         }
         return array;

@@ -25,9 +25,9 @@ export class Deck {
         };
 
         //conflict
-        for (const { count, card, pack_id } of this.data.conflictCards ?? []) {
-            for (let i = 0; i < count; i++) {
-                if (card?.side === 'conflict') {
+        for(const { count, card, pack_id } of this.data.conflictCards ?? []) {
+            for(let i = 0; i < count; i++) {
+                if(card?.side === 'conflict') {
                     const CardConstructor = cards.get(card.id) ?? DrawCard;
                     // @ts-ignore
                     const conflictCard: DrawCard = new CardConstructor(player, card);
@@ -39,9 +39,9 @@ export class Deck {
         }
 
         //dynasty
-        for (const { count, card, pack_id } of this.data.dynastyCards ?? []) {
-            for (let i = 0; i < count; i++) {
-                if (card?.side === 'dynasty') {
+        for(const { count, card, pack_id } of this.data.dynastyCards ?? []) {
+            for(let i = 0; i < count; i++) {
+                if(card?.side === 'dynasty') {
                     const CardConstructor = cards.get(card.id) ?? DrawCard;
                     // @ts-ignore
                     const dynastyCard: DrawCard = new CardConstructor(player, card);
@@ -53,10 +53,10 @@ export class Deck {
         }
 
         //provinces
-        if (player.game.gameMode !== GameModes.Skirmish) {
-            for (const { count, card, pack_id } of this.data.provinceCards ?? []) {
-                for (let i = 0; i < count; i++) {
-                    if (card?.type === CardTypes.Province) {
+        if(player.game.gameMode !== GameModes.Skirmish) {
+            for(const { count, card, pack_id } of this.data.provinceCards ?? []) {
+                for(let i = 0; i < count; i++) {
+                    if(card?.type === CardTypes.Province) {
                         const CardConstructor = cards.get(card.id) ?? ProvinceCard;
                         // @ts-ignore
                         const provinceCard: ProvinceCard = new CardConstructor(player, card);
@@ -67,7 +67,7 @@ export class Deck {
                 }
             }
         } else {
-            for (let i = 0; i < 3; i++) {
+            for(let i = 0; i < 3; i++) {
                 const provinceCard = new ProvinceCard(player, this.#makeSkirmishProvinceCardData(i));
                 provinceCard.location = Locations.ProvinceDeck;
                 result.provinceCards.push(provinceCard);
@@ -75,10 +75,10 @@ export class Deck {
         }
 
         //stronghold & role
-        if (player.game.gameMode !== GameModes.Skirmish) {
-            for (const { count, card, pack_id } of this.data.stronghold ?? []) {
-                for (let i = 0; i < count; i++) {
-                    if (card?.type === CardTypes.Stronghold) {
+        if(player.game.gameMode !== GameModes.Skirmish) {
+            for(const { count, card, pack_id } of this.data.stronghold ?? []) {
+                for(let i = 0; i < count; i++) {
+                    if(card?.type === CardTypes.Stronghold) {
                         const CardConstructor = cards.get(card.id) ?? StrongholdCard;
                         // @ts-ignore
                         const strongholdCard: StrongholdCard = new CardConstructor(player, card);
@@ -88,9 +88,9 @@ export class Deck {
                     }
                 }
             }
-            for (const { count, card, pack_id } of this.data.role ?? []) {
-                for (let i = 0; i < count; i++) {
-                    if (card?.type === CardTypes.Role) {
+            for(const { count, card, pack_id } of this.data.role ?? []) {
+                for(let i = 0; i < count; i++) {
+                    if(card?.type === CardTypes.Role) {
                         const CardConstructor = cards.get(card.id) ?? RoleCard;
                         // @ts-ignore
                         const roleCard: RoleCard = new CardConstructor(player, card);
@@ -101,7 +101,7 @@ export class Deck {
             }
         }
 
-        for (const cardData of this.data.outsideTheGameCards ?? []) {
+        for(const cardData of this.data.outsideTheGameCards ?? []) {
             const CardConstructor = cards.get(cardData.id) ?? DrawCard;
             // @ts-ignore
             const card: DrawCard = new CardConstructor(player, cardData);
@@ -111,10 +111,10 @@ export class Deck {
 
         result.allCards.push(...result.provinceCards, ...result.conflictCards, ...result.dynastyCards);
 
-        if (result.stronghold) {
+        if(result.stronghold) {
             result.allCards.push(result.stronghold);
         }
-        if (result.role) {
+        if(result.role) {
             result.allCards.push(result.role);
         }
 

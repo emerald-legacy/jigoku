@@ -25,16 +25,16 @@ export class ReduceableFateCost implements Cost {
     constructor(public ignoreType: boolean) {}
 
     public canPay(context: AbilityContext): boolean {
-        if (context.source.printedCost === null) {
+        if(context.source.printedCost === null) {
             return false;
         }
 
         const minCost = context.player.getMinimumCost(context.playType, context, null, this.ignoreType);
-        if (minCost === 0) {
+        if(minCost === 0) {
             return true;
         }
 
-        if (context.source.isTemptationsMaho()) {
+        if(context.source.isTemptationsMaho()) {
             return false;
         }
 
@@ -51,8 +51,8 @@ export class ReduceableFateCost implements Cost {
         const ringPool = new Set<Ring>();
         const cardPool = new Set<BaseCard>();
         let alternatePoolTotal = 0;
-        for (const pool of alternatePools) {
-            if (pool.printedType === 'ring') {
+        for(const pool of alternatePools) {
+            if(pool.printedType === 'ring') {
                 ringPool.add(pool as Ring);
             } else {
                 cardPool.add(pool as BaseCard);
@@ -62,12 +62,12 @@ export class ReduceableFateCost implements Cost {
 
         const maxPlayerFate = this.#getMaxPlayerFate(context);
         const reducedCost = this.getReducedCost(context);
-        if (reducedCost > maxPlayerFate + alternatePoolTotal) {
+        if(reducedCost > maxPlayerFate + alternatePoolTotal) {
             result.cancelled = true;
             return;
         }
 
-        if (result.cancelled || alternatePools.size === 0) {
+        if(result.cancelled || alternatePools.size === 0) {
             return;
         }
 
@@ -76,16 +76,16 @@ export class ReduceableFateCost implements Cost {
             remainingPoolTotal: alternatePoolTotal
         };
         context.costs.alternateFate = new Map();
-        if (properties.reducedCost === 0) {
+        if(properties.reducedCost === 0) {
             return;
         }
 
         const handler = (alternatePool: PoolOption) => {
-            if (alternatePool === CANCELLED) {
+            if(alternatePool === CANCELLED) {
                 result.cancelled = true;
                 return;
             }
-            if (alternatePool === STOP) {
+            if(alternatePool === STOP) {
                 return;
             }
             context.game.queueSimpleStep(() => {
@@ -98,12 +98,12 @@ export class ReduceableFateCost implements Cost {
                 properties.maxFate = Math.min(altFate, properties.reducedCost);
                 properties.pool = alternatePool;
                 properties.numberOfChoices = properties.maxFate - properties.minFate + 1;
-                if (result.cancelled || properties.numberOfChoices === 0) {
+                if(result.cancelled || properties.numberOfChoices === 0) {
                     return;
                 }
                 const choiceHandler = () => {
                     alternatePools.delete(alternatePool);
-                    if (alternatePools.size > 0 && properties.reducedCost > 0) {
+                    if(alternatePools.size > 0 && properties.reducedCost > 0) {
                         this.promptForAlternateFateCardSelect(
                             context,
                             properties.reducedCost - maxPlayerFate,
@@ -116,7 +116,7 @@ export class ReduceableFateCost implements Cost {
             });
         };
 
-        for (const alternatePool of ringPool) {
+        for(const alternatePool of ringPool) {
             context.game.queueSimpleStep(() => {
                 properties.remainingPoolTotal -= alternatePool.getFate();
                 properties.minFate = Math.max(
@@ -126,14 +126,14 @@ export class ReduceableFateCost implements Cost {
                 properties.maxFate = Math.min(alternatePool.getFate(), properties.reducedCost);
                 properties.pool = alternatePool;
                 properties.numberOfChoices = properties.maxFate - properties.minFate + 1;
-                if (result.cancelled || properties.numberOfChoices === 0) {
+                if(result.cancelled || properties.numberOfChoices === 0) {
                     return;
                 }
                 this.promptForAlternateFate(context, result, properties);
             });
         }
 
-        if (cardPool.size > 0) {
+        if(cardPool.size > 0) {
             this.promptForAlternateFateCardSelect(context, properties.reducedCost - maxPlayerFate, cardPool, handler);
         }
     }
@@ -143,13 +143,13 @@ export class ReduceableFateCost implements Cost {
     }
 
     protected getFinalFatecost(context: AbilityContext, reducedCost: number) {
-        if (!context.costs.alternateFate) {
+        if(!context.costs.alternateFate) {
             return reducedCost;
         }
         let totalAlternateFate = 0;
-        for (const alternatePool of this.getAlternateFatePools(context)) {
+        for(const alternatePool of this.getAlternateFatePools(context)) {
             const amount: number = context.costs.alternateFate.get(alternatePool);
-            if (amount) {
+            if(amount) {
                 context.game.addMessage(
                     '{0} takes {1} fate from {2} to pay the cost of {3}',
                     context.player,
@@ -172,7 +172,7 @@ export class ReduceableFateCost implements Cost {
     ) {
         const currentCard = context.source;
         const buttons = [{ text: 'Cancel', arg: CANCELLED }];
-        if (minFate <= 0) {
+        if(minFate <= 0) {
             buttons.push({ text: 'Done', arg: STOP });
         }
         const waitingPromptTitle =
@@ -213,15 +213,15 @@ export class ReduceableFateCost implements Cost {
             { length: properties.numberOfChoices },
             (_, idx) => idx + properties.minFate
         );
-        if (result.canCancel) {
+        if(result.canCancel) {
             choices.push('Cancel');
         }
-        if (properties.maxFate === 0) {
+        if(properties.maxFate === 0) {
             context.costs.alternateFate.set(properties.pool, 0);
             return;
         }
 
-        if (typeof properties.pool === 'string') {
+        if(typeof properties.pool === 'string') {
             return;
         }
 
@@ -232,7 +232,7 @@ export class ReduceableFateCost implements Cost {
             choiceHandler: (choice: string) => {
                 context.player.clearSelectableCards();
 
-                if (choice === 'Cancel') {
+                if(choice === 'Cancel') {
                     result.cancelled = true;
                     return;
                 }
@@ -240,7 +240,7 @@ export class ReduceableFateCost implements Cost {
                 context.costs.alternateFate.set(properties.pool, choice);
                 properties.reducedCost -= parseInt(choice, 10);
 
-                if (handler) {
+                if(handler) {
                     handler(choice);
                 }
             }
@@ -263,10 +263,10 @@ export class ReduceableFateCost implements Cost {
     }
 
     #getMaxPlayerFate(context: AbilityContext): number {
-        if (context.source.isTemptationsMaho()) {
+        if(context.source.isTemptationsMaho()) {
             return 0;
         }
-        if (context.player.checkRestrictions('spendFate', context)) {
+        if(context.player.checkRestrictions('spendFate', context)) {
             return context.player.fate;
         }
         return 0;

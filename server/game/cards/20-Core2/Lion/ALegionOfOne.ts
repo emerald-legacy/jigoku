@@ -22,7 +22,7 @@ export default class ALegionOfOne extends DrawCard {
             },
             effect: 'give {0} +3/+0',
             then: (context) => {
-                if (context.subResolution) {
+                if(context.subResolution) {
                     return {
                         target: {
                             mode: TargetModes.Select,

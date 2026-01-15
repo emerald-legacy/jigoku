@@ -102,7 +102,7 @@ describe('Dai-Tsuchi', function () {
                 this.player1.clickCard(this.purifier);
                 this.player1.clickCard(this.ornatefan);
                 expect(this.getChatLogs(3)).toContain(
-                    "player1 uses Kuni Purifier's gained ability from Dai Tsuchi to return Ornate Fan to player2's hand and prevent them from playing copies this conflict"
+                    'player1 uses Kuni Purifier\'s gained ability from Dai Tsuchi to return Ornate Fan to player2\'s hand and prevent them from playing copies this conflict'
                 );
 
                 // ornate fan should stay in hand and not play

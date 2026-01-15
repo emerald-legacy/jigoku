@@ -183,7 +183,7 @@ export function discardTopCardsFromDeck(properties: { amount: number; deck: Deck
             context.costs.discardTopCardsFromDeck = getDeck(context).first(4);
         },
         pay: (context) => {
-            for (const card of context.costs.discardTopCardsFromDeck as DrawCard[]) {
+            for(const card of context.costs.discardTopCardsFromDeck as DrawCard[]) {
                 card.controller.moveCard(card, destination);
             }
         }
@@ -406,7 +406,7 @@ export function variableHonorCost(amountFunc: (context: TriggeredAbilityContext)
             const amount = amountFunc(context);
             const max = Math.min(amount, context.player.honor);
             const choices = Array.from(Array(max), (x, i) => String(i + 1));
-            if (result.canCancel) {
+            if(result.canCancel) {
                 choices.push('Cancel');
             }
             context.game.promptWithHandlerMenu(context.player, {
@@ -414,7 +414,7 @@ export function variableHonorCost(amountFunc: (context: TriggeredAbilityContext)
                 context: context,
                 choices: choices,
                 choiceHandler: (choice) => {
-                    if (choice === 'Cancel') {
+                    if(choice === 'Cancel') {
                         context.costs.variableHonorCost = 0;
                         result.cancelled = true;
                     } else {
@@ -444,7 +444,7 @@ export function variableFateCost(properties: {
     return {
         promptsPlayer: true,
         canPay(context: TriggeredAbilityContext) {
-            if ((context as any).ignoreFateCost) {
+            if((context as any).ignoreFateCost) {
                 return true;
             }
             const costModifiers = context.player.getTotalCostModifiers(PlayTypes.PlayFromHand, context.source);
@@ -462,14 +462,14 @@ export function variableFateCost(properties: {
             const maxAmount = deriveMaxAmount(context);
             const min = deriveMinAmount(context);
             let max = context.player.fate - costModifiers;
-            if (maxAmount >= 0) {
+            if(maxAmount >= 0) {
                 max = Math.min(maxAmount, context.player.fate - costModifiers);
             }
-            if (!context.game.actions.loseFate().canAffect(context.player, context)) {
+            if(!context.game.actions.loseFate().canAffect(context.player, context)) {
                 max = Math.min(max, -costModifiers);
             }
             const choices = Array.from({ length: max + 1 - min }, (_, idx) => String(idx + min));
-            if (result.canCancel) {
+            if(result.canCancel) {
                 choices.push('Cancel');
             }
             context.game.promptWithHandlerMenu(context.player, {
@@ -479,7 +479,7 @@ export function variableFateCost(properties: {
                 context: context,
                 choices: choices,
                 choiceHandler: (choice: string) => {
-                    if (choice === 'Cancel') {
+                    if(choice === 'Cancel') {
                         context.costs.variableFateCost = 0;
                         result.cancelled = true;
                     } else {
@@ -490,13 +490,13 @@ export function variableFateCost(properties: {
         },
         payEvent(context: TriggeredAbilityContext) {
             const payZeroFate = new HandlerAction({});
-            if ((context as any).ignoreFateCost) {
+            if((context as any).ignoreFateCost) {
                 return payZeroFate.getEvent(context.player, context);
             }
 
             const costModifiers = context.player.getTotalCostModifiers(PlayTypes.PlayFromHand, context.source);
             const cost = context.costs.variableFateCost + Math.min(0, costModifiers); //+ve cost modifiers are applied by the engine
-            if (cost > 0) {
+            if(cost > 0) {
                 const action = context.game.actions.loseFate({ amount: cost });
                 return action.getEvent(context.player, context);
             }
@@ -510,8 +510,8 @@ export function returnRings(amount = -1, ringCondition = (ring: Ring, context: T
     return {
         promptsPlayer: true,
         canPay(context: TriggeredAbilityContext) {
-            for (const ring of Object.values(context.game.rings)) {
-                if (ring.claimedBy === context.player.name && ringCondition(ring, context)) {
+            for(const ring of Object.values(context.game.rings)) {
+                if(ring.claimedBy === context.player.name && ringCondition(ring, context)) {
                     return true;
                 }
             }
@@ -527,10 +527,10 @@ export function returnRings(amount = -1, ringCondition = (ring: Ring, context: T
             const chosenRings = [];
             const promptPlayer = () => {
                 const buttons = [];
-                if (chosenRings.length > 0) {
+                if(chosenRings.length > 0) {
                     buttons.push({ text: 'Done', arg: 'done' });
                 }
-                if (result.canCancel) {
+                if(result.canCancel) {
                     buttons.push({ text: 'Cancel', arg: 'cancel' });
                 }
                 context.game.promptForRingSelect(context.player, {
@@ -543,7 +543,7 @@ export function returnRings(amount = -1, ringCondition = (ring: Ring, context: T
                         !chosenRings.includes(ring),
                     onSelect: (player, ring) => {
                         chosenRings.push(ring);
-                        if (
+                        if(
                             Object.values(context.game.rings).some(
                                 (ring) =>
                                     ring.claimedBy === context.player.name &&
@@ -558,7 +558,7 @@ export function returnRings(amount = -1, ringCondition = (ring: Ring, context: T
                         return true;
                     },
                     onMenuCommand: (player, arg) => {
-                        if (arg === 'done') {
+                        if(arg === 'done') {
                             context.costs.returnRing = chosenRings;
                             return true;
                         }
@@ -587,22 +587,22 @@ export function chooseFate(type: PlayTypes): Cost {
 
             // @ts-ignore
             let extrafate = context.player.fate - context.player.getReducedCost(type, context.source);
-            if (!context.player.checkRestrictions('placeFateWhenPlayingCharacter', context)) {
+            if(!context.player.checkRestrictions('placeFateWhenPlayingCharacter', context)) {
                 extrafate = 0;
             }
-            if (
+            if(
                 !context.player.checkRestrictions('placeFateWhenPlayingCharacterFromProvince', context) &&
                 type === PlayTypes.PlayFromProvince
             ) {
                 extrafate = 0;
             }
-            if (!context.player.checkRestrictions('spendFate', context)) {
+            if(!context.player.checkRestrictions('spendFate', context)) {
                 extrafate = 0;
             }
 
             let max = 3;
             let opts: Array<{ choice: string; handler: () => void }> = [];
-            for (let i = 0; i <= Math.min(extrafate, max); i++) {
+            for(let i = 0; i <= Math.min(extrafate, max); i++) {
                 opts.push({
                     choice: i.toString(),
                     handler: () => {
@@ -611,7 +611,7 @@ export function chooseFate(type: PlayTypes): Cost {
                 });
             }
 
-            if (extrafate > max) {
+            if(extrafate > max) {
                 opts[3] = {
                     choice: 'More',
                     handler: () => {
@@ -620,10 +620,10 @@ export function chooseFate(type: PlayTypes): Cost {
 
                         opts = opts
                             .filter((o) => {
-                                if (o.choice === 'Cancel') {
+                                if(o.choice === 'Cancel') {
                                     return true;
                                 }
-                                if (o.choice === 'More') {
+                                if(o.choice === 'More') {
                                     return extrafate >= max;
                                 }
                                 return extrafate >= parseInt(o.choice, 10) + 3;
@@ -645,7 +645,7 @@ export function chooseFate(type: PlayTypes): Cost {
                     }
                 };
             }
-            if (result.canCancel) {
+            if(result.canCancel) {
                 opts.push({
                     choice: 'Cancel',
                     handler: () => {
@@ -690,7 +690,7 @@ export function discardCardsUpToVariableX(amountDerivable: Derivable<number, Tri
                 location: Locations.Hand,
                 controller: Players.Self,
                 onSelect: (player, cards) => {
-                    if (cards.length === 0) {
+                    if(cards.length === 0) {
                         context.costs.discardCardsUpToVariableX = [];
                         result.cancelled = true;
                     } else {
@@ -731,7 +731,7 @@ export function discardCardsExactlyVariableX(amountDerivable: Derivable<number, 
                 location: Locations.Hand,
                 controller: Players.Self,
                 onSelect: (player, cards) => {
-                    if (cards.length === 0) {
+                    if(cards.length === 0) {
                         context.costs.discardCardsExactlyVariableX = [];
                         result.cancelled = true;
                     } else {
@@ -779,7 +779,7 @@ export function optional(cost: Cost): Cost {
             context.costs[getActionName(context)] ? cost.getCostMessage(context) : undefined,
         getActionName: getActionName,
         resolve: (context: TriggeredAbilityContext, result) => {
-            if (!cost.canPay(context)) {
+            if(!cost.canPay(context)) {
                 return;
             }
             const actionName = getActionName(context);
@@ -792,7 +792,7 @@ export function optional(cost: Cost): Cost {
                 () => { }
             ];
 
-            if (result.canCancel) {
+            if(result.canCancel) {
                 choices.push('Cancel');
                 handlers.push(() => {
                     result.cancelled = true;
@@ -809,7 +809,7 @@ export function optional(cost: Cost): Cost {
 
         payEvent: (context: TriggeredAbilityContext) => {
             const actionName = getActionName(context);
-            if (!context.costs[actionName]) {
+            if(!context.costs[actionName]) {
                 const doNothing = new HandlerAction({});
                 return doNothing.getEvent(context.player, context);
             }
@@ -825,12 +825,12 @@ export function optionalFateCost(amount: number, forcePayment: (context: Trigger
     return {
         promptsPlayer: true,
         canPay(context: TriggeredAbilityContext) {
-            if (forcePayment(context)) {
+            if(forcePayment(context)) {
                 let fateAvailable = true;
-                if (context.player.fate < amount) {
+                if(context.player.fate < amount) {
                     fateAvailable = false;
                 }
-                if (!context.player.checkRestrictions('spendFate', context)) {
+                if(!context.player.checkRestrictions('spendFate', context)) {
                     fateAvailable = false;
                 }
                 return fateAvailable;
@@ -841,21 +841,21 @@ export function optionalFateCost(amount: number, forcePayment: (context: Trigger
             return 'optionalFateCost';
         },
         getCostMessage: (context: TriggeredAbilityContext) => {
-            if (context.costs.optionalFateCost === 0) {
+            if(context.costs.optionalFateCost === 0) {
                 return undefined;
             }
             return ['paying {1} fate', [amount]];
         },
         resolve(context: TriggeredAbilityContext, result) {
             let fateAvailable = true;
-            if (context.player.fate < amount) {
+            if(context.player.fate < amount) {
                 fateAvailable = false;
             }
-            if (!context.player.checkRestrictions('spendFate', context)) {
+            if(!context.player.checkRestrictions('spendFate', context)) {
                 fateAvailable = false;
             }
 
-            if (forcePayment(context) && fateAvailable) {
+            if(forcePayment(context) && fateAvailable) {
                 context.costs.optionalFateCost = amount;
                 return;
             }
@@ -864,21 +864,21 @@ export function optionalFateCost(amount: number, forcePayment: (context: Trigger
             let handlers = [];
             context.costs.optionalFateCost = 0;
 
-            if (fateAvailable) {
+            if(fateAvailable) {
                 choices = ['Yes', 'No'];
                 handlers = [
                     () => (context.costs.optionalFateCost = amount),
                     () => (context.costs.optionalFateCost = 0)
                 ];
             }
-            if (fateAvailable && result.canCancel) {
+            if(fateAvailable && result.canCancel) {
                 choices.push('Cancel');
                 handlers.push(() => {
                     result.cancelled = true;
                 });
             }
 
-            if (choices.length > 0) {
+            if(choices.length > 0) {
                 context.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Spend ' + amount + ' fate?',
                     source: context.source,
@@ -901,34 +901,34 @@ export function optionalGiveFateCost(amount: number): Cost {
         },
         resolve(context: TriggeredAbilityContext, result) {
             let fateAvailable = true;
-            if (context.player.fate < amount) {
+            if(context.player.fate < amount) {
                 fateAvailable = false;
             }
-            if (!context.player.checkRestrictions('spendFate', context)) {
+            if(!context.player.checkRestrictions('spendFate', context)) {
                 fateAvailable = false;
             }
-            if (!context.player.opponent || !context.player.opponent.checkRestrictions('gainFate', context)) {
+            if(!context.player.opponent || !context.player.opponent.checkRestrictions('gainFate', context)) {
                 fateAvailable = false;
             }
             let choices = [];
             let handlers = [];
             context.costs.optionalFateCost = 0;
 
-            if (fateAvailable) {
+            if(fateAvailable) {
                 choices = ['Yes', 'No'];
                 handlers = [
                     () => (context.costs.optionalFateCost = amount),
                     () => (context.costs.optionalFateCost = 0)
                 ];
             }
-            if (fateAvailable && result.canCancel) {
+            if(fateAvailable && result.canCancel) {
                 choices.push('Cancel');
                 handlers.push(() => {
                     result.cancelled = true;
                 });
             }
 
-            if (choices.length > 0) {
+            if(choices.length > 0) {
                 context.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Give your opponent ' + amount + ' fate?',
                     source: context.source,
@@ -939,7 +939,7 @@ export function optionalGiveFateCost(amount: number): Cost {
         },
         pay(context: TriggeredAbilityContext) {
             context.player.fate -= context.costs.optionalFateCost;
-            if (context.player.opponent) {
+            if(context.player.opponent) {
                 context.player.opponent.fate += context.costs.optionalFateCost;
             }
         }
@@ -957,12 +957,12 @@ export function optionalOpponentLoseHonor(
         resolve: (context: TriggeredAbilityContext) => {
             context.costs[NAME] = false;
 
-            if ((typeof canPayFunc === 'function' && !canPayFunc(context)) || !context.player.opponent) {
+            if((typeof canPayFunc === 'function' && !canPayFunc(context)) || !context.player.opponent) {
                 return;
             }
 
             const honorAvailable = context.game.actions.loseHonor().canAffect(context.player.opponent, context);
-            if (honorAvailable) {
+            if(honorAvailable) {
                 context.game.promptWithHandlerMenu(context.player.opponent, {
                     activePromptTitle: prompt,
                     source: context.source,
@@ -972,7 +972,7 @@ export function optionalOpponentLoseHonor(
             }
         },
         payEvent: (context: TriggeredAbilityContext) => {
-            if (context.costs[NAME]) {
+            if(context.costs[NAME]) {
                 context.game.addMessage('{0} chooses to lose 1 honor', context.player.opponent, context.player);
                 return [
                     context.game.actions
@@ -995,23 +995,23 @@ export function optionalHonorTransferFromOpponentCost(canPayFunc = (context: Tri
         resolve(context: TriggeredAbilityContext, result) {
             context.costs.optionalHonorTransferFromOpponentCostPaid = false;
 
-            if (!canPayFunc(context)) {
+            if(!canPayFunc(context)) {
                 return;
             }
 
-            if (!context.player.opponent) {
+            if(!context.player.opponent) {
                 return;
             }
 
             let honorAvailable = true;
-            if (
+            if(
                 !context.game.actions.loseHonor().canAffect(context.player.opponent, context) ||
                 !context.game.actions.gainHonor().canAffect(context.player, context)
             ) {
                 honorAvailable = false;
             }
 
-            if (honorAvailable) {
+            if(honorAvailable) {
                 context.game.promptWithHandlerMenu(context.player.opponent, {
                     activePromptTitle: 'Give an honor to your opponent?',
                     source: context.source,
@@ -1024,7 +1024,7 @@ export function optionalHonorTransferFromOpponentCost(canPayFunc = (context: Tri
             }
         },
         payEvent(context: TriggeredAbilityContext) {
-            if (context.costs.optionalHonorTransferFromOpponentCostPaid) {
+            if(context.costs.optionalHonorTransferFromOpponentCostPaid) {
                 let events = [];
 
                 context.game.addMessage('{0} chooses to give {1} 1 honor', context.player.opponent, context.player);
@@ -1090,7 +1090,7 @@ export function switchLocation(): Cost {
             return 'switchLocation';
         },
         getCostMessage(context: TriggeredAbilityContext) {
-            if (!context.source.isParticipating()) {
+            if(!context.source.isParticipating()) {
                 return ['moving {1} home', [context.source]];
             }
             return ['moving {1} to the conflict', [context.source]];
@@ -1110,7 +1110,7 @@ export function switchLocation(): Cost {
 export function dishonorAndSacrifice(properties: SelectCostProperties): Cost {
     const gameAction = GameActions.multiple([
         GameActions.dishonor(),
-        GameActions.sacrifice(),
+        GameActions.sacrifice()
     ]);
     gameAction.name = 'dishonorAndSacrifice';
 
@@ -1118,7 +1118,7 @@ export function dishonorAndSacrifice(properties: SelectCostProperties): Cost {
         GameActions.selectCard(Object.assign({
             gameAction
         }, properties)),
-        "Choose a card to dishonor and sacrifice"
+        'Choose a card to dishonor and sacrifice'
     );
 
     actionCost.getActionName = () => 'dishonorAndSacrifice';

@@ -56,7 +56,7 @@ export default class KitsukiMasanori extends DrawCard {
                                 cardCondition: (card, context) => isSearchableCard(card, context),
                                 selectedCardsHandler: (context, event, cards) => {
                                     const card = cards[0];
-                                    if (!card) {
+                                    if(!card) {
                                         return;
                                     }
 

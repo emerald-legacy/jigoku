@@ -156,7 +156,9 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         // Get unique choices by event
         const seenEvents = new Set();
         choices = choices.filter(context => {
-            if(seenEvents.has(context.event)) return false;
+            if(seenEvents.has(context.event)) {
+                return false;
+            }
             seenEvents.add(context.event);
             return true;
         });

@@ -43,7 +43,7 @@ export default class HonoredVeterans extends DrawCard {
     }
 
     public onCardPlayed(event: any) {
-        if (event.player && event.card.type === CardTypes.Character) {
+        if(event.player && event.card.type === CardTypes.Character) {
             this.charactersPlayedThisPhase.add(event.card);
         }
     }
@@ -53,8 +53,8 @@ export default class HonoredVeterans extends DrawCard {
     }
 
     private canBePlayed(): boolean {
-        for (const card of this.charactersPlayedThisPhase) {
-            if (card.hasTrait('bushi')) {
+        for(const card of this.charactersPlayedThisPhase) {
+            if(card.hasTrait('bushi')) {
                 return true;
             }
         }
@@ -67,13 +67,13 @@ export default class HonoredVeterans extends DrawCard {
 
     private getCharacters(context: AbilityContext): Array<string | DrawCard> {
         const characters: Array<string | DrawCard> = [];
-        if (context.targets.myCharacter && !Array.isArray(context.targets.myCharacter)) {
+        if(context.targets.myCharacter && !Array.isArray(context.targets.myCharacter)) {
             characters.push(context.targets.myCharacter);
         }
-        if (context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
+        if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
             characters.push(context.targets.oppCharacter);
         }
-        if (characters.length === 0) {
+        if(characters.length === 0) {
             characters.push('no one');
         }
 

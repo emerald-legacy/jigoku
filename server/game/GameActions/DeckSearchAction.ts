@@ -51,7 +51,7 @@ export class DeckSearchAction extends PlayerAction {
 
     hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties) as DeckSearchProperties;
-        if (this.#getAmount(properties.amount, context) === 0) {
+        if(this.#getAmount(properties.amount, context) === 0) {
             return false;
         }
         const player = properties.player || context.player;
@@ -60,7 +60,7 @@ export class DeckSearchAction extends PlayerAction {
 
     getProperties(context: AbilityContext, additionalProperties = {}): DeckSearchProperties {
         const properties = super.getProperties(context, additionalProperties) as DeckSearchProperties;
-        if (properties.reveal === undefined) {
+        if(properties.reveal === undefined) {
             properties.reveal = properties.cardCondition !== undefined;
         }
         properties.cardCondition = properties.cardCondition || (() => true);
@@ -100,7 +100,7 @@ export class DeckSearchAction extends PlayerAction {
         const event = this.getEvent(player, context) as any;
         const amount = event.amount > -1 ? event.amount : this.#getDeck(player, properties).length;
         let cards = this.#getDeck(player, properties).slice(0, amount);
-        if (event.amount === -1) {
+        if(event.amount === -1) {
             cards = cards.filter((card) => properties.cardCondition(card, context));
         }
         events.push(event);
@@ -120,7 +120,7 @@ export class DeckSearchAction extends PlayerAction {
     }
 
     #getDeck(player: Player, properties: DeckSearchProperties): DrawCard[] {
-        switch (properties.deck) {
+        switch(properties.deck) {
             case Decks.DynastyDeck:
                 return player.dynastyDeck.toArray();
             case Decks.ConflictDeck:
@@ -135,24 +135,30 @@ export class DeckSearchAction extends PlayerAction {
         let selectAmount = 1;
         const choosingPlayer = properties.choosingPlayer || event.player;
 
-        if (properties.targetMode === TargetModes.UpTo || properties.targetMode === TargetModes.UpToVariable)
+        if(properties.targetMode === TargetModes.UpTo || properties.targetMode === TargetModes.UpToVariable) {
             selectAmount = this.#getNumCards(properties.numCards, context);
-        if (properties.targetMode === TargetModes.Single) selectAmount = 1;
-        if (properties.targetMode === TargetModes.Exactly || properties.targetMode === TargetModes.ExactlyVariable)
+        }
+        if(properties.targetMode === TargetModes.Single) {
+            selectAmount = 1;
+        }
+        if(properties.targetMode === TargetModes.Exactly || properties.targetMode === TargetModes.ExactlyVariable) {
             selectAmount = this.#getNumCards(properties.numCards, context);
-        if (properties.targetMode === TargetModes.Unlimited) selectAmount = -1;
+        }
+        if(properties.targetMode === TargetModes.Unlimited) {
+            selectAmount = -1;
+        }
 
         let title = properties.activePromptTitle;
-        if (!properties.activePromptTitle) {
+        if(!properties.activePromptTitle) {
             title = 'Select a card' + (properties.reveal ? ' to reveal' : '');
-            if (selectAmount < 0 || selectAmount > 1) {
+            if(selectAmount < 0 || selectAmount > 1) {
                 title =
                     `Select ${selectAmount < 0 ? 'all' : 'up to ' + selectAmount} cards` +
                     (properties.reveal ? ' to reveal' : '');
             }
         }
 
-        if (properties.shuffle) {
+        if(properties.shuffle) {
             cards.sort((a, b) => a.name.localeCompare(b.name));
         }
 
@@ -170,8 +176,10 @@ export class DeckSearchAction extends PlayerAction {
                 const newSelectedCards = new Set(selectedCards);
                 newSelectedCards.add(card);
                 const index = cards.indexOf(card, 0);
-                if (index > -1) cards.splice(index, 1);
-                if ((selectAmount < 0 || newSelectedCards.size < selectAmount) && cards.length > 0) {
+                if(index > -1) {
+                    cards.splice(index, 1);
+                }
+                if((selectAmount < 0 || newSelectedCards.size < selectAmount) && cards.length > 0) {
                     this.#selectCard(event, additionalProperties, cards, newSelectedCards);
                 } else {
                     this.#handleDone(properties, context, event, newSelectedCards, cards);
@@ -189,13 +197,13 @@ export class DeckSearchAction extends PlayerAction {
     ): void {
         event.selectedCards = Array.from(selectedCards);
         context.selects['deckSearch'] = Array.from(selectedCards);
-        if (properties.selectedCardsHandler === null) {
+        if(properties.selectedCardsHandler === null) {
             this.#defaultHandleDone(properties, context, event, selectedCards);
         } else {
             properties.selectedCardsHandler(context, event, Array.from(selectedCards));
         }
 
-        if (typeof properties.remainingCardsHandler === 'function') {
+        if(typeof properties.remainingCardsHandler === 'function') {
             const cardsToMove = allCards.filter((card) => !selectedCards.has(card));
             properties.remainingCardsHandler(context, event, cardsToMove);
         } else {
@@ -210,8 +218,8 @@ export class DeckSearchAction extends PlayerAction {
         selectedCards: Set<DrawCard>,
         allCards: DrawCard[]
     ) {
-        if (this.#shouldShuffle(properties.shuffle, context)) {
-            switch (properties.deck) {
+        if(this.#shouldShuffle(properties.shuffle, context)) {
+            switch(properties.deck) {
                 case Decks.ConflictDeck:
                     return event.player.shuffleConflictDeck();
                 case Decks.DynastyDeck:
@@ -221,11 +229,11 @@ export class DeckSearchAction extends PlayerAction {
             }
         }
 
-        if (properties.placeOnBottomInRandomOrder) {
+        if(properties.placeOnBottomInRandomOrder) {
             const cardsToMove = allCards.filter((card) => !selectedCards.has(card));
-            if (cardsToMove.length > 0) {
+            if(cardsToMove.length > 0) {
                 shuffleArray(cardsToMove);
-                for (const card of cardsToMove) {
+                for(const card of cardsToMove) {
                     event.player.moveCard(card, Locations.ConflictDeck, { bottom: true });
                 }
                 context.game.addMessage(
@@ -247,12 +255,12 @@ export class DeckSearchAction extends PlayerAction {
         this.#doneMessage(properties, context, event, selectedCards);
 
         const gameAction = this.getProperties(event.context).gameAction;
-        if (gameAction) {
+        if(gameAction) {
             const selectedArray = Array.from(selectedCards);
             event.context.targets = selectedArray;
             gameAction.setDefaultTarget(() => selectedArray);
             context.game.queueSimpleStep(() => {
-                if (gameAction.hasLegalTarget(context)) {
+                if(gameAction.hasLegalTarget(context)) {
                     gameAction.resolve(null, context);
                 }
             });
@@ -266,16 +274,16 @@ export class DeckSearchAction extends PlayerAction {
         selectedCards: Set<DrawCard>
     ): void {
         const choosingPlayer = properties.choosingPlayer || event.player;
-        if (selectedCards.size > 0 && properties.message) {
+        if(selectedCards.size > 0 && properties.message) {
             const args = properties.messageArgs ? properties.messageArgs(context, Array.from(selectedCards)) : [];
             return context.game.addMessage(properties.message, ...args);
         }
 
-        if (selectedCards.size === 0) {
+        if(selectedCards.size === 0) {
             return this.#takesNothing(properties, context, event);
         }
 
-        if (properties.reveal) {
+        if(properties.reveal) {
             return context.game.addMessage('{0} takes {1}', choosingPlayer, Array.from(selectedCards));
         }
 
@@ -290,9 +298,9 @@ export class DeckSearchAction extends PlayerAction {
     #takesNothing(properties: DeckSearchProperties, context: AbilityContext, event: any) {
         const choosingPlayer = properties.choosingPlayer || event.player;
         context.game.addMessage('{0} takes nothing', choosingPlayer);
-        if (properties.takesNothingGameAction) {
+        if(properties.takesNothingGameAction) {
             context.game.queueSimpleStep(() => {
-                if (properties.takesNothingGameAction.hasLegalTarget(context)) {
+                if(properties.takesNothingGameAction.hasLegalTarget(context)) {
                     properties.takesNothingGameAction.resolve(null, context);
                 }
             });

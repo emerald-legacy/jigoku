@@ -10,7 +10,7 @@ export default class AshalanLantern extends DrawCard {
 
     public setupCardAbilities() {
         this.action({
-            title: "Play a character from your opponent's dynasty deck",
+            title: 'Play a character from your opponent\'s dynasty deck',
             condition: (context) => context.game.isDuringConflict(),
             cost: AbilityDsl.costs.nameCard(),
             gameAction: AbilityDsl.actions.sequential([
@@ -38,9 +38,9 @@ export default class AshalanLantern extends DrawCard {
                             playType: PlayTypes.PlayFromHand,
                             playAction: target
                                 ? [
-                                      new PlayCharacterAsIfFromHandIntoConflict(target),
-                                      new PlayDisguisedCharacterAsIfFromHandIntoConflict(target)
-                                  ]
+                                    new PlayCharacterAsIfFromHandIntoConflict(target),
+                                    new PlayDisguisedCharacterAsIfFromHandIntoConflict(target)
+                                ]
                                 : undefined,
                             ignoredRequirements: ['phase'],
                             postHandler: () => context.player.moveCard(context.source, Locations.ConflictDiscardPile)
@@ -48,7 +48,7 @@ export default class AshalanLantern extends DrawCard {
                     }),
                     remainingCardsHandler: (context, event, cards) => {
                         context.game.addMessage(
-                            "{0} puts {1} on the top of {2}' dynasty deck",
+                            '{0} puts {1} on the top of {2}\' dynasty deck',
                             context.player,
                             cards,
                             context.player.opponent
@@ -63,7 +63,7 @@ export default class AshalanLantern extends DrawCard {
                     ]
                 }))
             ]),
-            effect: "look for a character on the top of {1}'s dynasty deck. They reveal {2}",
+            effect: 'look for a character on the top of {1}\'s dynasty deck. They reveal {2}',
             effectArgs: (context) => [context.player.opponent, context.player.opponent.dynastyDeck.first(3)]
         });
     }

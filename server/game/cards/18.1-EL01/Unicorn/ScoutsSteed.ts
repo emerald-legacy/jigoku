@@ -42,7 +42,7 @@ export default class ScoutsSteed extends DrawCard {
                     ]
                 })
             ),
-            effect: "ready {1} and send them on a journey! {2} cannot be broken during this conflict - it's just exploration for now",
+            effect: 'ready {1} and send them on a journey! {2} cannot be broken during this conflict - it\'s just exploration for now',
             effectArgs: (context) => [
                 context.source.parent,
                 context.target.isFacedown() ? context.target.location : context.target

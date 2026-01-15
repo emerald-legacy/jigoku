@@ -23,7 +23,7 @@ export default class KaiuNoIshiTauro extends DrawCard {
                     reveal: true,
                     selectedCardsHandler: (context, event, cards) => {
                         const card = cards[0];
-                        if (!card) {
+                        if(!card) {
                             context.game.addMessage('{0} takes nothing', context.player);
                             return;
                         }
@@ -43,7 +43,7 @@ export default class KaiuNoIshiTauro extends DrawCard {
                 }))
             },
             effect: 'search their deck for an attachment costing {1} or less and attach it to {0}',
-            effectArgs: (context) => context.costs.returnRing.length,
+            effectArgs: (context) => context.costs.returnRing.length
         });
     }
 }

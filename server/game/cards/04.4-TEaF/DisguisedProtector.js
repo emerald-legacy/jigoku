@@ -1,7 +1,7 @@
 const DrawCard = require('../../drawcard.js');
 
 class DisguisedProtector extends DrawCard {
-    setupCardAbilities(ability) { // eslint-disable-line no-unused-vars
+    setupCardAbilities(ability) {
         this.action({
             title: 'Add each players honor bid to their skill total',
             condition: context => context.source.isParticipating(),

@@ -17,7 +17,7 @@ export class MultipleGameAction extends GameAction {
         let { gameActions } = this.getProperties(context);
         let legalGameActions = gameActions.filter((action) => action.hasLegalTarget(context));
         let message = '{0}';
-        for (var i = 1; i < legalGameActions.length; i++) {
+        for(var i = 1; i < legalGameActions.length; i++) {
             message += i === legalGameActions.length - 1 ? ' and ' : ', ';
             message += '{' + i + '}';
         }
@@ -26,7 +26,7 @@ export class MultipleGameAction extends GameAction {
 
     getProperties(context: AbilityContext, additionalProperties = {}): MultipleActionProperties {
         let properties = super.getProperties(context, additionalProperties) as MultipleActionProperties;
-        for (const gameAction of properties.gameActions) {
+        for(const gameAction of properties.gameActions) {
             gameAction.setDefaultTarget(() => properties.target);
         }
         return properties;
@@ -49,9 +49,9 @@ export class MultipleGameAction extends GameAction {
 
     addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
-        for (const gameAction of properties.gameActions) {
+        for(const gameAction of properties.gameActions) {
             context.game.queueSimpleStep(() => {
-                if (gameAction.hasLegalTarget(context, additionalProperties)) {
+                if(gameAction.hasLegalTarget(context, additionalProperties)) {
                     gameAction.addEventsToArray(events, context, additionalProperties);
                 }
             });

@@ -55,7 +55,7 @@ describe('Child of Saltless Water', function () {
             expect(this.child.isParticipating()).toBe(true);
             expect(this.child.getMilitarySkill()).toBe(4);
 
-            expect(this.getChatLogs(5)).toContain("player2 uses Child of Saltless Water to set it's military to 4");
+            expect(this.getChatLogs(5)).toContain('player2 uses Child of Saltless Water to set it\'s military to 4');
         });
 
         it('should die when not in a conflict', function () {

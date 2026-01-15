@@ -22,7 +22,7 @@ export default class UndeadHorror extends BaseOni {
                         (card) => card.type === CardTypes.Character
                     ).length > 0
             },
-            effect: "attach a random character from {1}'s dynasty discard pile to {2}",
+            effect: 'attach a random character from {1}\'s dynasty discard pile to {2}',
             effectArgs: (context) => [context.player.opponent, context.source],
             gameAction: AbilityDsl.actions.sequentialContext((context) => {
                 const potentialTargets = (context.player.opponent.dynastyDiscardPile as BaseCard[]).filter(
@@ -63,7 +63,7 @@ export default class UndeadHorror extends BaseOni {
                         }),
                         AbilityDsl.actions.handler({
                             handler: (context) => {
-                                if (!this.messageShown) {
+                                if(!this.messageShown) {
                                     // for some reason, it shows the message twice
                                     context.game.addMessage('{0} is attached to {1}', targetCard, context.source);
                                 }

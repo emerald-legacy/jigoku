@@ -15,7 +15,9 @@ export default class YasukiYoshi extends DrawCard {
                 deck: Decks.ConflictDeck,
                 cardCondition: (card) => card.name === 'Writ of Survey',
                 selectedCardsHandler: (context, _, [card]) => {
-                    if (card == null) return;
+                    if(card == null) {
+                        return;
+                    }
 
                     context.game.addMessage('{0} receives their {1}', context.source, card);
                     context.game.queueSimpleStep(() =>

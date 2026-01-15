@@ -54,7 +54,7 @@ export default class CeremonialRobes extends DrawCard {
                         message: '{0} discards {1}',
                         callback: (chosenCard) => {
                             context.player.moveCard(chosenCard, Locations.DynastyDiscardPile);
-                            if (chosenCard.hasTrait('spirit')) {
+                            if(chosenCard.hasTrait('spirit')) {
                                 this.game.addMessage(
                                     '{0} was a Spirit! {1} and {2} lose 1 honor',
                                     chosenCard,
@@ -80,13 +80,13 @@ export default class CeremonialRobes extends DrawCard {
         selectableCards: BaseCard[]
     ) {
         const currentStep = remainingSteps.shift();
-        if (!currentStep) {
+        if(!currentStep) {
             return;
         }
-        if (selectableCards.length === 0) {
+        if(selectableCards.length === 0) {
             return;
         }
-        if (selectableCards.length === 1) {
+        if(selectableCards.length === 1) {
             const lastCard = selectableCards[0];
             this.game.addMessage(currentStep.message, context.player, lastCard, context.target);
             currentStep.callback(lastCard);

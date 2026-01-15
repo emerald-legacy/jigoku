@@ -7,7 +7,7 @@ export default class MasterOfTheBlade extends DrawCard {
 
     public setupCardAbilities() {
         this.duelStrike({
-            title: "Don't bow during resolution",
+            title: 'Don\'t bow during resolution',
             duelCondition: (duel, context) => duel.participants.includes(context.source),
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.source,
@@ -22,7 +22,7 @@ export default class MasterOfTheBlade extends DrawCard {
                     })
                 ]
             })),
-            effect: "prevent opponents' actions from bowing {0} and stop it bowing at the end of the conflict"
+            effect: 'prevent opponents\' actions from bowing {0} and stop it bowing at the end of the conflict'
         });
     }
 }

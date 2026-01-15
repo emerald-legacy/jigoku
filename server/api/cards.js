@@ -8,7 +8,7 @@ module.exports.init = function (server) {
         try {
             const cards = await cardService.getAllCards({ shortForm: true });
             res.send({ success: true, cards: cards });
-        } catch (err) {
+        } catch(err) {
             return next(err);
         }
     });
@@ -17,7 +17,7 @@ module.exports.init = function (server) {
         try {
             const packs = await cardService.getAllPacks();
             res.send({ success: true, packs: packs });
-        } catch (err) {
+        } catch(err) {
             return next(err);
         }
     });

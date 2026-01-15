@@ -5,7 +5,7 @@ import type BaseCard from '../../../basecard';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
 
 function targetsFromEvent(context: any): WeakSet<BaseCard> {
-    switch (context.event.name) {
+    switch(context.event.name) {
         case EventNames.OnStatusTokenMoved:
             return new WeakSet([context.event.donor]);
         case EventNames.OnCardDishonored:

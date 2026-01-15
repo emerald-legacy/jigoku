@@ -31,7 +31,7 @@ describe('Cinder Salamander', function () {
 
                 expect(this.cinderSalamander.location).toBe('dynasty deck');
                 expect(this.getChatLogs(5)).toContain(
-                    "player1 uses Cinder Salamander to shuffle Cinder Salamander into player1's dynasty deck"
+                    'player1 uses Cinder Salamander to shuffle Cinder Salamander into player1\'s dynasty deck'
                 );
 
                 this.player2.clickCard(this.chagatai);
@@ -55,7 +55,7 @@ describe('Cinder Salamander', function () {
                 this.player1.clickCard(this.cinderSalamander);
                 expect(this.cinderSalamander.location).toBe('dynasty deck');
                 expect(this.getChatLogs(5)).toContain(
-                    "player1 uses Cinder Salamander to shuffle Cinder Salamander into player1's dynasty deck"
+                    'player1 uses Cinder Salamander to shuffle Cinder Salamander into player1\'s dynasty deck'
                 );
             });
         });

@@ -16,16 +16,16 @@ export class GainStatusTokenAction extends CardGameAction<GainStatusTokenPropert
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
         let { token } = this.getProperties(context) as GainStatusTokenProperties;
-        if (
+        if(
             (token === CharacterStatus.Honored && card.isHonored) ||
             (token === CharacterStatus.Dishonored && card.isDishonored)
         ) {
             return false;
         }
-        if (token === CharacterStatus.Dishonored && !card.checkRestrictions('receiveDishonorToken', context)) {
+        if(token === CharacterStatus.Dishonored && !card.checkRestrictions('receiveDishonorToken', context)) {
             return false;
         }
-        if (token === CharacterStatus.Honored && !card.checkRestrictions('receiveHonorToken', context)) {
+        if(token === CharacterStatus.Honored && !card.checkRestrictions('receiveHonorToken', context)) {
             return false;
         }
 

@@ -35,12 +35,12 @@ export class HonorBidAction extends PlayerAction {
 
     getEffectMessage(context: AbilityContext): [string, any[]] {
         let properties: HonorBidProperties = this.getProperties(context);
-        if (properties.giveHonor) {
+        if(properties.giveHonor) {
             return ['bid honor', []];
         }
 
         const players = [];
-        switch (properties.players) {
+        switch(properties.players) {
             case Players.Any:
                 players.push(context.player);
                 players.push(context.player.opponent);
@@ -72,9 +72,9 @@ export class HonorBidAction extends PlayerAction {
     eventHandler(event): void {
         const context = event.context;
 
-        if (event.players === Players.Any) {
+        if(event.players === Players.Any) {
             const prohibitedBids = {};
-            for (const player of context.game.getPlayers()) {
+            for(const player of context.game.getPlayers()) {
                 prohibitedBids[player.uuid] = event.prohibitedBids;
             }
             const costHandler = event.giveHonor ? undefined : () => {};

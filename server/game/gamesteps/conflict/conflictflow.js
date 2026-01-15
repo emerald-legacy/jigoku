@@ -59,7 +59,7 @@ class ConflictFlow extends BaseStepWithPipeline {
         this.game.raiseEvent(EventNames.OnConflictDeclared, { conflict: this.conflict }, (event) => {
             this.game.queueSimpleStep(() => this.promptForNewConflict());
             this.game.queueSimpleStep(() => {
-                if (!this.conflict.conflictPassed && !this.conflict.conflictFailedToInitiate) {
+                if(!this.conflict.conflictPassed && !this.conflict.conflictFailedToInitiate) {
                     event.type = this.conflict.type;
                     event.ring = this.conflict.ring;
                     event.attackers = this.conflict.attackers.slice();
@@ -70,7 +70,7 @@ class ConflictFlow extends BaseStepWithPipeline {
             this.game.queueSimpleStep(() => this.payProvinceCosts());
             this.game.queueSimpleStep(() => this.initiateConflict());
             this.game.queueSimpleStep(() => {
-                if (this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
+                if(this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
                     event.cancel();
                 }
             });
@@ -84,7 +84,7 @@ class ConflictFlow extends BaseStepWithPipeline {
             this.conflict.attackingPlayer.cardsInPlay,
             this.game
         );
-        if (!attackerMatrix.canPass) {
+        if(!attackerMatrix.canPass) {
             this.canPass = false;
         }
 
@@ -97,14 +97,14 @@ class ConflictFlow extends BaseStepWithPipeline {
                     player: this.conflict.attackingPlayer
                 },
                 () => {
-                    if (this.conflict.attackingPlayer.anyEffect(EffectNames.DefendersChosenFirstDuringConflict)) {
+                    if(this.conflict.attackingPlayer.anyEffect(EffectNames.DefendersChosenFirstDuringConflict)) {
                         attackerMatrix.requiredNumberOfAttackers = this.conflict.attackingPlayer.mostRecentEffect(
                             EffectNames.DefendersChosenFirstDuringConflict
                         );
                         this.canPass = false;
                         this.promptForDefenders(true);
                     }
-                    if (
+                    if(
                         this.conflict.attackingPlayer.checkRestrictions(
                             'chooseConflictRing',
                             this.game.getFrameworkContext()
@@ -125,7 +125,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                         return;
                     }
 
-                    if (this.canPass) {
+                    if(this.canPass) {
                         this.game.promptWithHandlerMenu(this.conflict.attackingPlayer, {
                             source: 'Declare Conflict',
                             activePromptTitle: 'Do you wish to declare a conflict?',
@@ -147,7 +147,7 @@ class ConflictFlow extends BaseStepWithPipeline {
 
     defenderChoosesRing(attackerMatrix) {
         this.game.promptForRingSelect(this.conflict.defendingPlayer, {
-            activePromptTitle: 'Choose a ring for ' + this.conflict.attackingPlayer.name + "'s conflict",
+            activePromptTitle: 'Choose a ring for ' + this.conflict.attackingPlayer.name + '\'s conflict',
             source: 'Defender chooses conflict ring',
             waitingPromptTitle: 'Waiting for defender to choose conflict ring',
             ringCondition: (ring) =>
@@ -155,7 +155,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                 (attackerMatrix.isCombinationValid(ring, 'political') ||
                     attackerMatrix.isCombinationValid(ring, 'military')),
             onSelect: (player, ring) => {
-                if (!this.conflict.attackingPlayer.hasLegalConflictDeclaration({ type: ring.conflictType, ring })) {
+                if(!this.conflict.attackingPlayer.hasLegalConflictDeclaration({ type: ring.conflictType, ring })) {
                     ring.flipConflictType();
                 }
                 this.conflict.ring = ring;
@@ -178,7 +178,7 @@ class ConflictFlow extends BaseStepWithPipeline {
 
     payAttackerCosts() {
         this.game.updateCurrentConflict(null);
-        if (!this.conflict.conflictPassed) {
+        if(!this.conflict.conflictPassed) {
             const totalFateCost = this.conflict.attackers.reduce(
                 (total, card) => total + card.sumEffects(EffectNames.FateCostToAttack),
                 0
@@ -190,12 +190,12 @@ class ConflictFlow extends BaseStepWithPipeline {
             const totalCardCost =
                 this.conflict.conflictType === ConflictTypes.Military
                     ? this.conflict.attackers.reduce(
-                          (total, card) => total + card.sumEffects(EffectNames.CardCostToAttackMilitary),
-                          0
-                      )
+                        (total, card) => total + card.sumEffects(EffectNames.CardCostToAttackMilitary),
+                        0
+                    )
                     : 0;
             const costEvents = [];
-            if (!this.conflict.conflictPassed && totalFateCost > 0) {
+            if(!this.conflict.conflictPassed && totalFateCost > 0) {
                 this.game.addMessage(
                     '{0} pays {1} fate to declare their attackers',
                     this.conflict.attackingPlayer,
@@ -206,7 +206,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     this.game.getFrameworkContext(this.conflict.attackingPlayer)
                 );
             }
-            if (!this.conflict.conflictPassed && totalHonorCost > 0) {
+            if(!this.conflict.conflictPassed && totalHonorCost > 0) {
                 this.game.addMessage(
                     '{0} pays {1} honor to declare their attackers',
                     this.conflict.attackingPlayer,
@@ -217,7 +217,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     this.game.getFrameworkContext(this.conflict.attackingPlayer)
                 );
             }
-            if (!this.conflict.conflictPassed && totalCardCost > 0) {
+            if(!this.conflict.conflictPassed && totalCardCost > 0) {
                 this.game.addMessage(
                     '{0} must discard {1} card{2} to declare their attackers',
                     this.conflict.attackingPlayer,
@@ -237,23 +237,23 @@ class ConflictFlow extends BaseStepWithPipeline {
                     true
                 );
             }
-            if (costEvents.length > 0) {
+            if(costEvents.length > 0) {
                 this.game.openEventWindow(costEvents);
             }
             this.conflict.attackerDeclarationFailed = false;
             const additionalCosts = this.conflict.attackingPlayer
                 .getEffects(EffectNames.CostToDeclareAnyParticipants)
                 .filter((properties) => properties.type === 'attackers');
-            if (additionalCosts.length > 0) {
-                for (const properties of additionalCosts) {
+            if(additionalCosts.length > 0) {
+                for(const properties of additionalCosts) {
                     this.game.queueSimpleStep(() => {
                         const player = this.conflict.attackingPlaying;
                         const context = this.game.getFrameworkContext(player);
                         let cost = properties.cost;
-                        if (typeof cost === 'function') {
+                        if(typeof cost === 'function') {
                             cost = cost(player);
                         }
-                        if (cost.hasLegalTarget(context)) {
+                        if(cost.hasLegalTarget(context)) {
                             cost.resolve(player, context);
                             this.game.addMessage(
                                 '{0} {1} in order to declare attacking characters',
@@ -276,7 +276,7 @@ class ConflictFlow extends BaseStepWithPipeline {
 
     payProvinceCosts() {
         this.game.updateCurrentConflict(null);
-        if (!this.conflict.conflictPassed) {
+        if(!this.conflict.conflictPassed) {
             let provinceSlot = this.conflict.conflictProvince
                 ? this.conflict.conflictProvince.location
                 : Locations.ProvinceOne;
@@ -288,7 +288,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     : this.conflict.conflictProvince;
 
             const totalFateCost = province ? province.getFateCostToAttack() : 0;
-            if (!this.conflict.conflictPassed && totalFateCost > 0) {
+            if(!this.conflict.conflictPassed && totalFateCost > 0) {
                 this.game.addMessage(
                     '{0} pays {1} fate to declare a conflict at {2}',
                     this.conflict.attackingPlayer,
@@ -305,7 +305,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     result
                 );
                 this.game.queueSimpleStep(() => {
-                    if (costEvents && costEvents.length > 0) {
+                    if(costEvents && costEvents.length > 0) {
                         this.game.addMessage(
                             '{0} places {1} fate on the {2}',
                             this.conflict.attackingPlayer,
@@ -320,7 +320,7 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     initiateConflict() {
-        if (this.conflict.conflictPassed || this.conflict.attackerDeclarationFailed) {
+        if(this.conflict.conflictPassed || this.conflict.attackerDeclarationFailed) {
             return;
         }
 
@@ -349,13 +349,13 @@ class ConflictFlow extends BaseStepWithPipeline {
 
         this.game.openThenEventWindow(
             this.game.getEvent(EventNames.OnConflictDeclaredBeforeProvinceReveal, params, (event) => {
-                if (this.conflict.attackers.some((a) => a.location === Locations.PlayArea)) {
+                if(this.conflict.attackers.some((a) => a.location === Locations.PlayArea)) {
                     this.game.updateCurrentConflict(this.conflict);
                     this.conflict.declaredProvince = this.conflict.conflictProvince;
                     this.conflict.attackers.forEach((card) => (card.inConflict = true));
                     this.game.recordConflict(this.conflict);
                     const events = [];
-                    if (
+                    if(
                         this.conflict.ring.fate > 0 &&
                         this.conflict.attackingPlayer.checkRestrictions(
                             'takeFateFromRings',
@@ -398,13 +398,13 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     promptForCovert() {
-        if (this.game.gameMode === GameModes.Emerald) {
+        if(this.game.gameMode === GameModes.Emerald) {
             this.promptForCovertEmerald();
             return;
         }
 
         this.covert = [];
-        if (this.conflict.conflictPassed || this.conflict.isSinglePlayer) {
+        if(this.conflict.conflictPassed || this.conflict.isSinglePlayer) {
             return;
         }
 
@@ -421,11 +421,11 @@ class ConflictFlow extends BaseStepWithPipeline {
         );
         contexts = contexts.filter((context) => context.source.canInitiateKeywords(context));
 
-        for (let target of targets) {
+        for(let target of targets) {
             target.covert = false;
         }
 
-        if (contexts.length === 0) {
+        if(contexts.length === 0) {
             return;
         }
 
@@ -433,13 +433,13 @@ class ConflictFlow extends BaseStepWithPipeline {
         // - a legal combination of covert targets and covert attackers
         // - no remaining covert
         // - each target legally assigned - for Vine Tattoo and reactions like Tengu & Yasamura
-        if (targets.length === contexts.length) {
-            for (let i = 0; i < targets.length; i++) {
+        if(targets.length === contexts.length) {
+            for(let i = 0; i < targets.length; i++) {
                 let context = contexts[i];
                 context['target'] = context.targets.target = targets[i];
                 this.covert.push(context);
             }
-            if (
+            if(
                 this.covert.every(
                     (context) =>
                         context.targets.target.canBeBypassedByCovert(context) &&
@@ -451,8 +451,8 @@ class ConflictFlow extends BaseStepWithPipeline {
             this.covert = [];
         }
 
-        for (const context of contexts) {
-            if (context.player.checkRestrictions('initiateKeywords', context)) {
+        for(const context of contexts) {
+            if(context.player.checkRestrictions('initiateKeywords', context)) {
                 this.game.promptForSelect(this.conflict.attackingPlayer, {
                     activePromptTitle: 'Choose covert target for ' + context.source.name,
                     buttons: [{ text: 'No Target', arg: 'cancel' }],
@@ -473,7 +473,7 @@ class ConflictFlow extends BaseStepWithPipeline {
 
     promptForCovertEmerald() {
         this.covert = [];
-        if (this.conflict.conflictPassed || this.conflict.isSinglePlayer) {
+        if(this.conflict.conflictPassed || this.conflict.isSinglePlayer) {
             return;
         }
 
@@ -490,16 +490,16 @@ class ConflictFlow extends BaseStepWithPipeline {
         );
         contexts = contexts.filter((context) => context.source.canInitiateKeywords(context));
 
-        for (let target of targets) {
+        for(let target of targets) {
             target.covert = false;
         }
 
-        if (contexts.length === 0) {
+        if(contexts.length === 0) {
             return;
         }
 
-        for (const context of contexts) {
-            if (!context.player.checkRestrictions('initiateKeywords', context)) {
+        for(const context of contexts) {
+            if(!context.player.checkRestrictions('initiateKeywords', context)) {
                 return;
             }
         }
@@ -512,14 +512,14 @@ class ConflictFlow extends BaseStepWithPipeline {
             source: 'Choose Covert',
             cardCondition: (card) => {
                 let valid = false;
-                for (const context of contexts) {
+                for(const context of contexts) {
                     valid = valid || (card.canBeBypassedByCovert(context) && card.checkRestrictions('target', context));
                 }
                 return valid;
             },
             onSelect: (player, card) => {
-                for (const context of contexts) {
-                    if (card.canBeBypassedByCovert(context) && card.checkRestrictions('target', context)) {
+                for(const context of contexts) {
+                    if(card.canBeBypassedByCovert(context) && card.checkRestrictions('target', context)) {
                         context['target'] = context.targets.target = card;
                         this.covert.push(context);
                     }
@@ -530,16 +530,16 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     resolveCovert() {
-        if (this.covert.length === 0) {
+        if(this.covert.length === 0) {
             return;
         }
 
         let events = [];
 
-        if (this.game.gameMode === GameModes.Emerald) {
+        if(this.game.gameMode === GameModes.Emerald) {
             let goodContext = undefined;
             this.covert.forEach((context) => {
-                if (events.length === 0 && context.source && context.target) {
+                if(events.length === 0 && context.source && context.target) {
                     events = [
                         new InitiateCardAbilityEvent(
                             { card: context.source, context: context },
@@ -574,7 +574,7 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     revealProvince() {
-        if (
+        if(
             !this.game.currentConflict ||
             this.conflict.isSinglePlayer ||
             this.conflict.conflictPassed ||
@@ -595,7 +595,7 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     announceAttackerSkill() {
-        if (this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
+        if(this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
             return;
         }
 
@@ -608,11 +608,11 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     promptForDefenders(beingChosenFirst = false) {
-        if (this.conflict.conflictPassed || this.conflict.isSinglePlayer || this.conflict.conflictFailedToInitiate) {
+        if(this.conflict.conflictPassed || this.conflict.isSinglePlayer || this.conflict.conflictFailedToInitiate) {
             return;
         }
 
-        if (
+        if(
             !beingChosenFirst &&
             this.conflict.attackingPlayer.anyEffect(EffectNames.DefendersChosenFirstDuringConflict)
         ) {
@@ -623,21 +623,21 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     payDefendersCost() {
-        if (this.conflict.defenders.length > 0) {
+        if(this.conflict.defenders.length > 0) {
             this.conflict.defenderDeclarationFailed = false;
             const additionalCosts = this.conflict.defendingPlayer
                 .getEffects(EffectNames.CostToDeclareAnyParticipants)
                 .filter((properties) => properties.type === 'defenders');
-            if (additionalCosts.length > 0) {
-                for (const properties of additionalCosts) {
+            if(additionalCosts.length > 0) {
+                for(const properties of additionalCosts) {
                     this.game.queueSimpleStep(() => {
                         const player = this.conflict.defendingPlayer;
                         const context = this.game.getFrameworkContext(player);
                         let cost = properties.cost;
-                        if (typeof cost === 'function') {
+                        if(typeof cost === 'function') {
                             cost = cost(player);
                         }
-                        if (cost.hasLegalTarget(context)) {
+                        if(cost.hasLegalTarget(context)) {
                             cost.resolve(player, context);
                             this.game.addMessage(
                                 '{0} {1} in order to declare defending characters',
@@ -659,7 +659,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                 (total, card) => total + card.sumEffects(EffectNames.HonorCostToDeclare),
                 0
             );
-            if (!this.conflict.conflictPassed && totalHonorCost > 0) {
+            if(!this.conflict.conflictPassed && totalHonorCost > 0) {
                 const costEvents = [];
                 this.game.addMessage(
                     '{0} pays {1} honor to declare their defenders',
@@ -676,18 +676,18 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     announceDefenderSkill() {
-        if (this.conflict.conflictPassed || this.conflict.isSinglePlayer || this.conflict.conflictFailedToInitiate) {
+        if(this.conflict.conflictPassed || this.conflict.isSinglePlayer || this.conflict.conflictFailedToInitiate) {
             return;
         }
 
-        if (this.conflict.defenderDeclarationFailed) {
+        if(this.conflict.defenderDeclarationFailed) {
             this.conflict.defenders = [];
         }
 
         this.conflict.defenders.forEach((card) => (card.inConflict = true));
         this.conflict.defendingPlayer.cardsInPlay.each((card) => (card.covert = false));
 
-        if (this.conflict.defenders.length > 0) {
+        if(this.conflict.defenders.length > 0) {
             this.game.addMessage(
                 '{0} has defended with skill {1}',
                 this.conflict.defendingPlayer,
@@ -699,7 +699,7 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     openConflictActionWindow() {
-        if (this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
+        if(this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
             return;
         }
         this.game.raiseEvent(EventNames.OnConflictStarted, { conflict: this.conflict });
@@ -707,11 +707,11 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     determineWinner() {
-        if (this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
+        if(this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
             return;
         }
 
-        if (this.game.manualMode && !this.conflict.isSinglePlayer) {
+        if(this.game.manualMode && !this.conflict.isSinglePlayer) {
             this.game.promptWithMenu(this.conflict.attackingPlayer, this, {
                 activePrompt: {
                     promptTitle: 'Conflict Result',
@@ -731,14 +731,14 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     manuallyDetermineWinner(player, choice) {
-        if (choice === 'attacker') {
+        if(choice === 'attacker') {
             this.conflict.winner = player;
             this.conflict.loser = this.conflict.defendingPlayer;
-        } else if (choice === 'defender') {
+        } else if(choice === 'defender') {
             this.conflict.winner = this.conflict.defendingPlayer;
             this.conflict.loser = player;
         }
-        if (!this.conflict.winner && !this.conflict.loser) {
+        if(!this.conflict.winner && !this.conflict.loser) {
             this.game.addMessage('There is no winner or loser for this conflict because both sides have 0 skill');
         } else {
             this.game.addMessage('{0} won a {1} conflict', this.conflict.winner, this.conflict.conflictType);
@@ -747,7 +747,7 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     showConflictResult() {
-        if (!this.conflict.winner && !this.conflict.loser) {
+        if(!this.conflict.winner && !this.conflict.loser) {
             this.game.addMessage('There is no winner or loser for this conflict because both sides have 0 skill');
         } else {
             this.game.addMessage(
@@ -761,7 +761,7 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     afterConflict() {
-        if (this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
+        if(this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
             return;
         }
 
@@ -775,7 +775,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                 this.showConflictResult();
                 this.game.recordConflictWinner(this.conflict);
 
-                if ((this.conflict.isAttackerTheWinner() && this.conflict.defenders.length === 0) || forcedUnopposed) {
+                if((this.conflict.isAttackerTheWinner() && this.conflict.defenders.length === 0) || forcedUnopposed) {
                     this.conflict.conflictUnopposed = true;
                 }
             });
@@ -783,7 +783,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                 let prevWinner = event.conflict.winner;
                 this.conflict.winnerDetermined = false;
                 this.conflict.determineWinner();
-                if (this.conflict.winner !== prevWinner) {
+                if(this.conflict.winner !== prevWinner) {
                     let newEvent = eventFactory();
                     event.window.addEvent(newEvent);
                     return false;
@@ -797,7 +797,7 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     applyUnopposed() {
-        if (
+        if(
             this.conflict.conflictPassed ||
             this.game.manualMode ||
             this.conflict.isSinglePlayer ||
@@ -806,14 +806,14 @@ class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
-        if (this.game.gameMode === GameModes.Skirmish) {
-            if (this.conflict.conflictUnopposed) {
+        if(this.game.gameMode === GameModes.Skirmish) {
+            if(this.conflict.conflictUnopposed) {
                 this.game.addMessage('{0} has won an unopposed conflict', this.conflict.winner);
             }
             return;
         }
 
-        if (this.conflict.conflictUnopposed) {
+        if(this.conflict.conflictUnopposed) {
             let honorLossMods = this.conflict.sumEffects(EffectNames.ModifyUnopposedHonorLoss);
 
             const honorLoss = Math.max(0, 1 + honorLossMods);
@@ -826,7 +826,7 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     checkBreakProvince() {
-        if (
+        if(
             this.conflict.conflictPassed ||
             this.conflict.isSinglePlayer ||
             this.game.manualMode ||
@@ -838,7 +838,7 @@ class ConflictFlow extends BaseStepWithPipeline {
         this.conflict.provinceStrengthsAtResolution.forEach((a) => {
             let province = a.province;
             let strength = a.strength === undefined ? province.getStrength() : a.strength;
-            if (
+            if(
                 this.conflict.isAttackerTheWinner() &&
                 this.conflict.skillDifference >= strength &&
                 !province.isBroken
@@ -849,11 +849,11 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     resolveRingEffects() {
-        if (this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
+        if(this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
             return;
         }
 
-        if (this.conflict.isAttackerTheWinner()) {
+        if(this.conflict.isAttackerTheWinner()) {
             GameActions.resolveConflictRing().resolve(
                 this.conflict.ring,
                 this.game.getFrameworkContext(this.conflict.attackingPlayer)
@@ -862,16 +862,16 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     claimRing() {
-        if (this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
+        if(this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
             return;
         }
 
         let ring = this.conflict.ring;
-        if (ring.claimed) {
+        if(ring.claimed) {
             ring.contested = false;
             return;
         }
-        if (
+        if(
             this.conflict.winner &&
             this.conflict.winner.checkRestrictions('claimRings', this.game.getFrameworkContext())
         ) {
@@ -889,7 +889,7 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     returnHome() {
-        if (this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
+        if(this.conflict.conflictPassed || this.conflict.conflictFailedToInitiate) {
             return;
         }
 
@@ -928,7 +928,7 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     completeConflict() {
-        if (this.conflict.conflictPassed) {
+        if(this.conflict.conflictPassed) {
             return;
         }
 

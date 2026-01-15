@@ -17,7 +17,7 @@ export class MoveConflictAction extends CardGameAction {
     }
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if (
+        if(
             !card ||
             !context.game.isDuringConflict() ||
             card.type !== CardTypes.Province ||
@@ -37,7 +37,7 @@ export class MoveConflictAction extends CardGameAction {
         newProvince.inConflict = true;
         context.game.currentConflict.conflictProvince.inConflict = false;
         context.game.currentConflict.conflictProvince = newProvince;
-        if (newProvince.isFacedown()) {
+        if(newProvince.isFacedown()) {
             const revealEvent = event.context.game.actions
                 .reveal()
                 .getEvent(newProvince, event.context.game.getFrameworkContext());

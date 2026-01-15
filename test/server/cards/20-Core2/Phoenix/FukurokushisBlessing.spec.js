@@ -1,4 +1,4 @@
-describe("Fukurokushi's Blessing", function () {
+describe('Fukurokushi\'s Blessing', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
@@ -62,7 +62,7 @@ describe("Fukurokushi's Blessing", function () {
 
             this.player1.clickCard(this.blessing);
             expect(this.getChatLogs(10)).toContain(
-                "player1 plays Fukurokushi's Blessing to cancel the effects of Midnight Revels's ability"
+                'player1 plays Fukurokushi\'s Blessing to cancel the effects of Midnight Revels\'s ability'
             );
             expect(this.kuwanan.bowed).toBe(false);
         });

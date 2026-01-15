@@ -18,7 +18,7 @@ export default class ShosuroTechnique extends DrawCard {
         });
 
         this.action({
-            title: "Set shinobi's skills to that of an enemy",
+            title: 'Set shinobi\'s skills to that of an enemy',
             condition: (context) => context.game.isDuringConflict(ConflictTypes.Military),
             targets: {
                 shinobi: {
@@ -45,7 +45,7 @@ export default class ShosuroTechnique extends DrawCard {
                     effect: AbilityDsl.effects.setMilitarySkill(context.targets.enemy.militarySkill)
                 }))
             ]),
-            effect: "set the {3} of {1} to {4}{3} (equal to {2}). There's no blade as keen as surprise.",
+            effect: 'set the {3} of {1} to {4}{3} (equal to {2}). There\'s no blade as keen as surprise.',
             effectArgs: (context) => [context.targets.shinobi.name, context.targets.enemy.name, 'military', context.targets.enemy.militarySkill]
         });
     }

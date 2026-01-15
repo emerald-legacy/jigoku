@@ -43,7 +43,7 @@ export default class KyudenHida extends StrongholdCard {
                             postHandler: (hidaContext) => {
                                 const card = hidaContext.source;
                                 let discardedCards = this.kyudenHidaCards;
-                                if (card.location !== Locations.PlayArea) {
+                                if(card.location !== Locations.PlayArea) {
                                     this.game.addMessage('{0} chooses not to play a character', context.player);
                                 } else {
                                     discardedCards = this.kyudenHidaCards.filter((a) => a !== card);

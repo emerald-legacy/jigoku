@@ -34,7 +34,7 @@ export class FateBidPrompt extends AllPlayerPrompt {
     }
 
     continue() {
-        if (!super.continue()) {
+        if(!super.continue()) {
             return false;
         }
 
@@ -43,17 +43,17 @@ export class FateBidPrompt extends AllPlayerPrompt {
             highest: { amount: 0, players: new Set() },
             lowest: { amount: 0, players: new Set() }
         };
-        for (const [player, amount] of this.bids) {
-            if (amount > result.highest.amount) {
+        for(const [player, amount] of this.bids) {
+            if(amount > result.highest.amount) {
                 result.highest.amount = amount;
                 result.highest.players = new Set([player]);
-            } else if (amount === result.highest.amount) {
+            } else if(amount === result.highest.amount) {
                 result.highest.players.add(player);
             }
-            if (amount < result.lowest.amount) {
+            if(amount < result.lowest.amount) {
                 result.lowest.amount = amount;
                 result.lowest.players = new Set([player]);
-            } else if (amount === result.lowest.amount) {
+            } else if(amount === result.lowest.amount) {
                 result.lowest.players.add(player);
             }
         }
@@ -70,7 +70,7 @@ export class FateBidPrompt extends AllPlayerPrompt {
     spendFateAfterBid() {
         const actions: Array<LoseFateAction> = [];
         const context = this.game.getFrameworkContext();
-        for (const [player, amount] of this.bids) {
+        for(const [player, amount] of this.bids) {
             this.game.addMessage('{0} spends {1} fate', player, amount);
             actions.push(new LoseFateAction({ amount, target: player }));
         }
@@ -80,8 +80,8 @@ export class FateBidPrompt extends AllPlayerPrompt {
     activePrompt(player: Player) {
         const prohibitedBids = this.prohibitedBids[player.uuid] || [];
         const buttons: Array<{ text: string; arg: string }> = [];
-        for (let i = 0, max = player.fate; i <= max; i++) {
-            if (!prohibitedBids.includes(i)) {
+        for(let i = 0, max = player.fate; i <= max; i++) {
+            if(!prohibitedBids.includes(i)) {
                 const text = i.toString();
                 buttons.push({ text, arg: text });
             }

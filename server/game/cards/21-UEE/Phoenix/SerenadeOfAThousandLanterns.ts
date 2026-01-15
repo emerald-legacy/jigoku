@@ -28,7 +28,7 @@ export default class SerenadeOfAThousandLanterns extends DrawCard {
                         amount: 1
                     })),
                     effect: 'gain 1 honor'
-                }),
+                })
             })
         });
     }

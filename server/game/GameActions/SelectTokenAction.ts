@@ -38,7 +38,7 @@ export class SelectTokenAction extends TokenAction {
 
     getEffectMessage(context: AbilityContext): [string, any[]] {
         let { target, effect, effectArgs } = this.getProperties(context) as SelectTokenProperties;
-        if (effect) {
+        if(effect) {
             return [effect, effectArgs(context) || []];
         }
         return ['choose a status token for {0}', [target]];
@@ -46,7 +46,7 @@ export class SelectTokenAction extends TokenAction {
 
     canAffect(token: StatusToken, context: AbilityContext, additionalProperties = {}): boolean {
         let properties = super.getProperties(context, additionalProperties) as SelectTokenProperties;
-        if (properties.player === Players.Opponent && !context.player.opponent) {
+        if(properties.player === Players.Opponent && !context.player.opponent) {
             return false;
         }
         return (
@@ -66,25 +66,25 @@ export class SelectTokenAction extends TokenAction {
 
     addEventsToArray(events, context: AbilityContext, additionalProperties = {}): void {
         let properties = super.getProperties(context, additionalProperties) as SelectTokenProperties;
-        if (properties.player === Players.Opponent && !context.player.opponent) {
+        if(properties.player === Players.Opponent && !context.player.opponent) {
             return;
-        } else if (!properties.card.statusTokens.some((token) => properties.tokenCondition(token, context))) {
+        } else if(!properties.card.statusTokens.some((token) => properties.tokenCondition(token, context))) {
             return;
-        } else if (!this.hasLegalTarget(context, additionalProperties)) {
+        } else if(!this.hasLegalTarget(context, additionalProperties)) {
             return;
         }
         let player = properties.player === Players.Opponent ? context.player.opponent : context.player;
-        if (properties.targets && context.choosingPlayerOverride) {
+        if(properties.targets && context.choosingPlayerOverride) {
             player = context.choosingPlayerOverride;
         }
         let validTokens = properties.card.statusTokens.filter((token) =>
             properties.gameAction.canAffect(token, context)
         );
-        if (properties.singleToken && validTokens.length > 1) {
+        if(properties.singleToken && validTokens.length > 1) {
             const choices = validTokens.map((token) => token.name);
             const handlers = validTokens.map((token) => {
                 return () => {
-                    if (properties.message) {
+                    if(properties.message) {
                         context.game.addMessage(properties.message, ...properties.messageArgs(token, player));
                     }
                     context.tokens[this.name] = token;
@@ -103,7 +103,7 @@ export class SelectTokenAction extends TokenAction {
             });
         } else {
             context.tokens[this.name] = validTokens;
-            if (properties.message) {
+            if(properties.message) {
                 context.game.addMessage(properties.message, ...properties.messageArgs(validTokens, player));
             }
             properties.gameAction.addEventsToArray(

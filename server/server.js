@@ -52,7 +52,7 @@ class Server {
     }
 
     init() {
-        if (!this.isDeveloping) {
+        if(!this.isDeveloping) {
             app.use(requestHandler);
             app.use(errorHandler);
         }
@@ -63,13 +63,13 @@ class Server {
             helmet({
                 contentSecurityPolicy: {
                     directives: {
-                        defaultSrc: ["'self'"],
-                        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-                        styleSrc: ["'self'", "'unsafe-inline'"],
-                        imgSrc: ["'self'", 'data:', 'https:'],
-                        connectSrc: ["'self'", 'wss:', 'ws:'],
-                        fontSrc: ["'self'", 'data:'],
-                        objectSrc: ["'none'"],
+                        defaultSrc: ['\'self\''],
+                        scriptSrc: ['\'self\'', '\'unsafe-inline\'', '\'unsafe-eval\''],
+                        styleSrc: ['\'self\'', '\'unsafe-inline\''],
+                        imgSrc: ['\'self\'', 'data:', 'https:'],
+                        connectSrc: ['\'self\'', 'wss:', 'ws:'],
+                        fontSrc: ['\'self\'', 'data:'],
+                        objectSrc: ['\'none\''],
                         upgradeInsecureRequests: env.https === 'true' ? [] : null
                     }
                 },
@@ -144,7 +144,7 @@ class Server {
         app.get('{*splat}', (req, res) => {
             let token = undefined;
 
-            if (req.user) {
+            if(req.user) {
                 token = jwt.sign(req.user, env.secret);
                 // Remove blockList from user object for rendering
                 const { blockList, ...userWithoutBlockList } = req.user;
@@ -173,7 +173,7 @@ class Server {
         var port = env.lobbyPort;
 
         this.server.listen(port, '127.0.0.1', function onStart(err) {
-            if (err) {
+            if(err) {
                 logger.error(err);
             }
 
@@ -185,13 +185,13 @@ class Server {
         try {
             const user = await this.userService.getUserByUsername(username);
 
-            if (!user) {
+            if(!user) {
                 return done(null, false, { message: 'Invalid username/password' });
             }
 
             const valid = await bcrypt.compare(password, user.password);
 
-            if (!valid) {
+            if(!valid) {
                 return done(null, false, { message: 'Invalid username/password' });
             }
 
@@ -208,21 +208,21 @@ class Server {
             });
 
             return done(null, userObj);
-        } catch (err) {
+        } catch(err) {
             logger.error('Authentication error:', err);
             return done(err);
         }
     }
 
     serializeUser(user, done) {
-        if (user) {
+        if(user) {
             done(null, user._id);
         }
     }
 
     deserializeUser(id, done) {
         this.userService.getUserById(id).then((user) => {
-            if (!user) {
+            if(!user) {
                 return done(new Error('user not found'));
             }
 

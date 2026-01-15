@@ -7,9 +7,9 @@ export default class Infiltrator extends DrawCard {
 
     setupCardAbilities() {
         this.action({
-            title: "Look at the top card of an opponent's deck and play or discard it",
+            title: 'Look at the top card of an opponent\'s deck and play or discard it',
             condition: () => this.game.isDuringConflict(),
-            effect: "look at the top card of an opponent's deck and play or discard it",
+            effect: 'look at the top card of an opponent\'s deck and play or discard it',
             gameAction: AbilityDsl.actions.chooseAction((context) => {
                 const topCard = context.player.opponent?.conflictDeck.first();
                 return {
@@ -33,7 +33,7 @@ export default class Infiltrator extends DrawCard {
     }
 
     canPlay(context, playType) {
-        if (!context.player.opponent || context.player.showBid <= context.player.opponent.showBid) {
+        if(!context.player.opponent || context.player.showBid <= context.player.opponent.showBid) {
             return false;
         }
         return super.canPlay(context, playType);

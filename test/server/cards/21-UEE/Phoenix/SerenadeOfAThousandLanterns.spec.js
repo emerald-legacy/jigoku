@@ -1,11 +1,11 @@
-describe("Serenade of a Thousand Lanterns", function () {
+describe('Serenade of a Thousand Lanterns', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
                     inPlay: ['doomed-shugenja'],
-                    hand: ['serenade-of-a-thousand-lanterns'],
+                    hand: ['serenade-of-a-thousand-lanterns']
                 },
                 player2: {
                     hand: ['assassination'],
@@ -23,7 +23,7 @@ describe("Serenade of a Thousand Lanterns", function () {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.doomed],
-                defenders: [this.challenger],
+                defenders: [this.challenger]
             });
 
             let honor = this.player1.honor;
@@ -34,10 +34,10 @@ describe("Serenade of a Thousand Lanterns", function () {
             this.player1.clickPrompt('Done');
             expect(this.challenger.isParticipating()).toBe(false);
             expect(this.getChatLogs(5)).toContain(
-                "player1 plays Serenade of a Thousand Lanterns to send Doji Challenger home"
+                'player1 plays Serenade of a Thousand Lanterns to send Doji Challenger home'
             );
             expect(this.getChatLogs(5)).toContain(
-                "player1 channels their fire affinity to gain 1 honor"
+                'player1 channels their fire affinity to gain 1 honor'
             );
 
             expect(this.player1.honor).toBe(honor + 1);

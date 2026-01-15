@@ -9,7 +9,7 @@ class DeckService {
     async getById(id) {
         try {
             return await this.decks.findOne({ _id: toObjectId(id) });
-        } catch (err) {
+        } catch(err) {
             logger.error('Unable to fetch deck', err);
             throw new Error('Unable to fetch deck ' + id);
         }

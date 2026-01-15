@@ -3,7 +3,7 @@ import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
 
 export default class IkomaYumikosDagger extends DrawCard {
-    static id = 'ikoma-yumiko-s-dagger'
+    static id = 'ikoma-yumiko-s-dagger';
 
     setupCardAbilities() {
         this.wouldInterrupt({

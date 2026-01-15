@@ -8,7 +8,7 @@ export default class ToStormAFortress extends DrawCard {
 
     public setupCardAbilities() {
         this.action({
-            title: "Increase a character's military skill",
+            title: 'Increase a character\'s military skill',
             condition: (context) => context.game.isDuringConflict(ConflictTypes.Military),
             target: {
                 cardType: CardTypes.Character,
@@ -28,9 +28,9 @@ export default class ToStormAFortress extends DrawCard {
                                     province.controller.getDynastyCardsInProvince(province.location)
                                 );
 
-                            if (displayMessage && choice === 'Yes') {
+                            if(displayMessage && choice === 'Yes') {
                                 context.game.addMessage(
-                                    "{0}'s {1} discards {2}",
+                                    '{0}\'s {1} discards {2}',
                                     context.player,
                                     context.source,
                                     cardsToDiscard

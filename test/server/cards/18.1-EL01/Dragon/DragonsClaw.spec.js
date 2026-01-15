@@ -23,7 +23,7 @@ describe('Dragons Claw', function () {
             this.player2.playAttachment(this.claw, this.yoshi);
         });
 
-        describe("When Dragon's Fang is not attached", function () {
+        describe('When Dragon\'s Fang is not attached', function () {
             beforeEach(function () {
                 this.noMoreActions();
             });
@@ -41,7 +41,7 @@ describe('Dragons Claw', function () {
             });
         });
 
-        describe("When Dragon's Fang is also attached", function () {
+        describe('When Dragon\'s Fang is also attached', function () {
             beforeEach(function () {
                 this.player1.pass();
                 this.player2.playAttachment(this.fang, this.yoshi);
@@ -67,7 +67,7 @@ describe('Dragons Claw', function () {
                 expect(this.challenger.isParticipating()).toBe(false);
 
                 expect(this.getChatLogs(5)).toContain(
-                    "player2 uses Kakita Yoshi's gained ability from Dragon's Claw to bow Doji Challenger and send Doji Challenger home"
+                    'player2 uses Kakita Yoshi\'s gained ability from Dragon\'s Claw to bow Doji Challenger and send Doji Challenger home'
                 );
             });
         });

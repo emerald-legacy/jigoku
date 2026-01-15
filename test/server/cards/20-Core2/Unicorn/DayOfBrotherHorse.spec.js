@@ -51,7 +51,7 @@ describe('Day of Brother Horse', function () {
 
             expect(this.player1.hand.length).toBe(initialHandSize + 1);
             expect(this.getChatLogs(5)).toContain(
-                "player1 plays Day of Brother Horse to prevent player2 from declaring Fire Ring conflicts, draw 3 cards, and discard 1 card - it's a sunny day filled with celebration. The Moto share tales of the desert!"
+                'player1 plays Day of Brother Horse to prevent player2 from declaring Fire Ring conflicts, draw 3 cards, and discard 1 card - it\'s a sunny day filled with celebration. The Moto share tales of the desert!'
             );
 
             this.noMoreActions();

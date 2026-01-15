@@ -29,7 +29,7 @@ export default class KakitaRusumi extends DrawCard {
             then: (context) => ({
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => {
                     let target = [];
-                    if (context.selects['deckSearch']?.length > 0) {
+                    if(context.selects['deckSearch']?.length > 0) {
                         target = context.selects['deckSearch'][0];
                     }
                     return {
@@ -39,7 +39,7 @@ export default class KakitaRusumi extends DrawCard {
                             when: {
                                 onConflictFinished: () => true
                             },
-                            message: "{0} is discarded from play due to {1}'s effect",
+                            message: '{0} is discarded from play due to {1}\'s effect',
                             messageArgs: [target, context.source],
                             gameAction: AbilityDsl.actions.discardFromPlay()
                         })

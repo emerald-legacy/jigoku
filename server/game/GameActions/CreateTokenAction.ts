@@ -16,9 +16,9 @@ export class CreateTokenAction extends CardGameAction<CreateTokenProperties> {
     defaultProperties: CreateTokenProperties = { atHome: false };
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if (!card.isFacedown() || !card.isInProvince() || card.location === Locations.StrongholdProvince) {
+        if(!card.isFacedown() || !card.isInProvince() || card.location === Locations.StrongholdProvince) {
             return false;
-        } else if (!context.game.isDuringConflict('military')) {
+        } else if(!context.game.isDuringConflict('military')) {
             return false;
         }
         return super.canAffect(card, context);
@@ -33,8 +33,8 @@ export class CreateTokenAction extends CardGameAction<CreateTokenProperties> {
         this.checkForRefillProvince(card, event, additionalProperties);
         card.moveTo(Locations.RemovedFromGame);
         card.owner.moveCard(token, Locations.PlayArea);
-        if (!atHome) {
-            if (context.player.isAttackingPlayer()) {
+        if(!atHome) {
+            if(context.player.isAttackingPlayer()) {
                 context.game.currentConflict.addAttacker(token);
             } else {
                 context.game.currentConflict.addDefender(token);

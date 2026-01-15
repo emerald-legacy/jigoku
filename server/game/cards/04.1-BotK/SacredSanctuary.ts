@@ -30,7 +30,7 @@ export default class SacredSanctuary extends ProvinceCard {
                     }))
                 ]
             },
-            effect: "prevent opponents' actions from bowing {0} and stop it bowing at the end of the conflict"
+            effect: 'prevent opponents\' actions from bowing {0} and stop it bowing at the end of the conflict'
         });
     }
 }

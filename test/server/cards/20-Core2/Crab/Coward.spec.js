@@ -18,7 +18,7 @@ describe('Coward', function () {
                 });
 
                 this.kuwanan = this.player1.findCardByName('doji-kuwanan');
-                this.coward = this.player1.findCardByName('coward-')
+                this.coward = this.player1.findCardByName('coward-');
                 this.toshimoko = this.player2.findCardByName('kakita-toshimoko');
                 this.brash = this.player1.findCardByName('brash-samurai');
                 this.pd = this.player2.findCardByName('policy-debate');

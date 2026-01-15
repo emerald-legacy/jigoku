@@ -8,7 +8,7 @@ export default class Desolation extends DrawCard {
 
     public setupCardAbilities() {
         this.action({
-            title: "Blank opponent's provinces",
+            title: 'Blank opponent\'s provinces',
             cost: AbilityDsl.costs.payHonor(2),
             condition: (context) => context.player.opponent !== undefined,
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
@@ -16,7 +16,7 @@ export default class Desolation extends DrawCard {
                 duration: Durations.UntilEndOfPhase,
                 effect: AbilityDsl.effects.blank()
             })),
-            effect: "blank {1}'s provinces until the end of the phase",
+            effect: 'blank {1}\'s provinces until the end of the phase',
             effectArgs: (context) => context.player.opponent.name
         });
     }

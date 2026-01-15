@@ -34,11 +34,11 @@ export default class RecklessAssault extends DrawCard {
                                 const defenders = event.conflict.defenders;
                                 let isTargetADefender = false;
                                 targets.forEach(target => {
-                                    if (defenders.includes(target)) {
+                                    if(defenders.includes(target)) {
                                         isTargetADefender = true;
                                     }
                                 });
-                                return !isTargetADefender
+                                return !isTargetADefender;
                             }
                         },
                         gameAction: AbilityDsl.actions.bow(),
@@ -46,7 +46,7 @@ export default class RecklessAssault extends DrawCard {
                         messageArgs: [context.target, context.source]
                     })
                 }))
-            },
+            }
         });
     }
 }

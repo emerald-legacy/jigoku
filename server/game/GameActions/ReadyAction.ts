@@ -13,7 +13,7 @@ export class ReadyAction extends CardGameAction {
     targetType = [CardTypes.Character, CardTypes.Attachment, CardTypes.Stronghold];
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if ((card.location !== Locations.PlayArea && card.type !== CardTypes.Stronghold) || !card.bowed) {
+        if((card.location !== Locations.PlayArea && card.type !== CardTypes.Stronghold) || !card.bowed) {
             return false;
         }
         return super.canAffect(card, context);

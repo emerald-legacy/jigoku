@@ -12,11 +12,11 @@ let connectPromise = null;
  * Connect to MongoDB and return the database instance
  */
 async function connect(url) {
-    if (db) {
+    if(db) {
         return db;
     }
 
-    if (connectPromise) {
+    if(connectPromise) {
         return connectPromise;
     }
 
@@ -31,7 +31,7 @@ async function connect(url) {
             db = client.db(dbName);
             logger.info('Connected to MongoDB');
             return db;
-        } catch (err) {
+        } catch(err) {
             connectPromise = null;
             logger.error('MongoDB connection error:', err);
             throw err;
@@ -45,7 +45,7 @@ async function connect(url) {
  * Close the database connection
  */
 async function close() {
-    if (client) {
+    if(client) {
         await client.close();
         client = null;
         db = null;
@@ -58,7 +58,7 @@ async function close() {
  * Throws if not connected yet
  */
 function getDb() {
-    if (!db) {
+    if(!db) {
         throw new Error('Database not connected. Call connect() first.');
     }
     return db;
@@ -68,10 +68,10 @@ function getDb() {
  * Convert string ID to ObjectId if valid
  */
 function toObjectId(id) {
-    if (id instanceof ObjectId) {
+    if(id instanceof ObjectId) {
         return id;
     }
-    if (typeof id === 'string' && ObjectId.isValid(id)) {
+    if(typeof id === 'string' && ObjectId.isValid(id)) {
         return new ObjectId(id);
     }
     return id;

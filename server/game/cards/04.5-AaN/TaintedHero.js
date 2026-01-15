@@ -2,7 +2,7 @@ const DrawCard = require('../../drawcard.js');
 const { Durations, CardTypes } = require('../../Constants');
 
 class TaintedHero extends DrawCard {
-    setupCardAbilities(ability) { // eslint-disable-line no-unused-vars
+    setupCardAbilities(ability) {
         this.persistentEffect({
             effect: [
                 ability.effects.cardCannot('declareAsAttacker'),

@@ -16,7 +16,7 @@ export default class MirumotoDojo extends DrawCard {
                 messageArgs: (duel) =>
                     duel.loser ? (this.#wonByDuelist(duel)
                         ? ['discard  1 fate from ', duel.loser, '', this.#loserOwner(duel), '']
-                        : ['move  1 fate from ', duel.loser, ' to ', this.#loserOwner(duel), "'s pool"])
+                        : ['move  1 fate from ', duel.loser, ' to ', this.#loserOwner(duel), '\'s pool'])
                         : ['no effect', '', '', '', ''],
                 gameAction: (duel) =>
                     AbilityDsl.actions.joint(

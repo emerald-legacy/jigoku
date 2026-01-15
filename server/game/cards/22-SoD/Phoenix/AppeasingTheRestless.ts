@@ -20,7 +20,7 @@ export default class AppeasingTheRestless extends DrawCard {
             gameAction: AbilityDsl.actions.multipleContext(context => {
                 const gameActions = [];
 
-                if (context.player.fate > 0 && context.player.checkRestrictions('spendFate', context)) {
+                if(context.player.fate > 0 && context.player.checkRestrictions('spendFate', context)) {
                     gameActions.push(AbilityDsl.actions.selectCard(context => ({
                         activePromptTitle: 'Select spirits',
                         targets: false,
@@ -35,18 +35,18 @@ export default class AppeasingTheRestless extends DrawCard {
                         gameAction: AbilityDsl.actions.placeFate({
                             origin: context.player
                         })
-                    })))
+                    })));
                 }
 
-                if (!context.player.hasAffinity('void')) {
+                if(!context.player.hasAffinity('void')) {
                     gameActions.push(AbilityDsl.actions.conditional({
                         condition: () => (context.costs.bow?.getFate() ?? 0) === 0,
                         trueGameAction: AbilityDsl.actions.discardFromPlay({ target: context.costs.bow }),
                         falseGameAction: AbilityDsl.actions.removeFate({ target: context.costs.bow })
-                    }))
+                    }));
                 }
 
-                return { gameActions }
+                return { gameActions };
             })
         });
     }

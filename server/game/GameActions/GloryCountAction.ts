@@ -27,12 +27,12 @@ export class GloryCountAction extends GameAction<GloryCountProperties> {
             return player.getGloryCount();
         });
         let winner = game.getFirstPlayer();
-        if (winner.opponent) {
-            if (gloryTotals[0] === gloryTotals[1]) {
+        if(winner.opponent) {
+            if(gloryTotals[0] === gloryTotals[1]) {
                 game.addMessage('Both players are tied in glory at {0}.', gloryTotals[0]);
                 game.raiseEvent(EventNames.OnFavorGloryTied);
                 winner = null;
-            } else if (gloryTotals[0] < gloryTotals[1]) {
+            } else if(gloryTotals[0] < gloryTotals[1]) {
                 winner = winner.opponent;
                 game.addMessage('{0} wins the glory count {1} vs {2}', winner, gloryTotals[1], gloryTotals[0]);
             } else {
@@ -44,7 +44,7 @@ export class GloryCountAction extends GameAction<GloryCountProperties> {
             typeof properties.gameAction === 'function'
                 ? properties.gameAction(winner, event.context)
                 : properties.gameAction;
-        if (gameAction && gameAction.hasLegalTarget(event.context) && winner) {
+        if(gameAction && gameAction.hasLegalTarget(event.context) && winner) {
             gameAction.resolve(null, event.context);
         }
     }

@@ -29,7 +29,9 @@ export class GainHonorAction extends PlayerAction<GainHonorProperties> {
         let properties = this.getProperties(context, additionalProperties);
         var wouldGainAnyHonor = properties.amount !== 0;
 
-        if (!wouldGainAnyHonor) return false;
+        if(!wouldGainAnyHonor) {
+            return false;
+        }
 
         var [hasHonorLimit, amountToTransfer] = CalculateHonorLimit(
             player,
@@ -38,7 +40,9 @@ export class GainHonorAction extends PlayerAction<GainHonorProperties> {
             properties.amount
         );
 
-        if (hasHonorLimit && !amountToTransfer) return false;
+        if(hasHonorLimit && !amountToTransfer) {
+            return false;
+        }
 
         return super.canAffect(player, context);
     }

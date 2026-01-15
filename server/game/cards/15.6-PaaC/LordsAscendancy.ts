@@ -15,7 +15,7 @@ export default class LordsAscendancy extends ProvinceCard {
                     origin: context.target.controller
                 }))
             },
-            effect: "place a fate from {1}'s fate pool on {0}",
+            effect: 'place a fate from {1}\'s fate pool on {0}',
             effectArgs: (context) => [context.target.controller]
         });
     }

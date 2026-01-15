@@ -6,7 +6,7 @@ describe('SoD - Lion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['ancient-master'],
-                        hand: ['ancestral-rivalry'],
+                        hand: ['ancestral-rivalry']
                     },
                     player2: {
                         inPlay: ['keeper-initiate'],
@@ -109,7 +109,7 @@ describe('SoD - Lion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['ancient-master'],
-                        hand: ['ancestral-rivalry'],
+                        hand: ['ancestral-rivalry']
                     },
                     player2: {
                         inPlay: ['ikoma-natsuko'],
@@ -146,7 +146,7 @@ describe('SoD - Lion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['ancient-master', 'doji-challenger'],
-                        hand: ['ancestral-rivalry'],
+                        hand: ['ancestral-rivalry']
                     },
                     player2: {
                         inPlay: ['ikoma-natsuko', 'ikoma-yumiko-s-dagger'],
@@ -207,7 +207,7 @@ describe('SoD - Lion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['ancient-master'],
-                        hand: ['imperial-adjutant'],
+                        hand: ['imperial-adjutant']
                     },
                     player2: {
                         inPlay: ['ikoma-natsuko'],
@@ -284,7 +284,7 @@ describe('SoD - Lion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['ancient-master', 'doji-challenger'],
-                        hand: ['a-perfect-cut'],
+                        hand: ['a-perfect-cut']
                     },
                     player2: {
                         inPlay: ['ikoma-natsuko'],
@@ -328,7 +328,7 @@ describe('SoD - Lion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['ancient-master'],
-                        hand: ['ancestral-rivalry', 'the-stranger'],
+                        hand: ['ancestral-rivalry', 'the-stranger']
                     },
                     player2: {
                         inPlay: ['keeper-initiate'],
@@ -405,11 +405,11 @@ describe('SoD - Lion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['ancient-master'],
-                        hand: ['a-perfect-cut'],
+                        hand: ['a-perfect-cut']
                     },
                     player2: {
                         inPlay: ['ikoma-natsuko', 'doji-challenger'],
-                        hand: ['deeds-not-words'],
+                        hand: ['deeds-not-words']
                     }
                 });
 
@@ -529,7 +529,7 @@ describe('SoD - Lion', function () {
                 this.noMoreActions();
 
                 expect(this.player1).toHavePrompt('Air Ring');
-                this.player1.clickPrompt("Don\'t resolve");
+                this.player1.clickPrompt('Don\'t resolve');
 
                 expect(this.player1).toHavePrompt('Action Window');
             });

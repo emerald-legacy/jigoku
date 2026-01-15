@@ -39,7 +39,7 @@ class ResolveAbilityActionResolver extends AbilityResolver {
         const events = [
             this.game.getEvent(EventNames.OnCardAbilityInitiated, params, () => this.queueInitiateAbilitySteps())
         ];
-        if (this.context.ability.isTriggeredAbility() && !this.context.subResolution) {
+        if(this.context.ability.isTriggeredAbility() && !this.context.subResolution) {
             events.push(
                 this.game.getEvent(EventNames.OnCardAbilityTriggered, {
                     player: this.context.player,
@@ -52,12 +52,12 @@ class ResolveAbilityActionResolver extends AbilityResolver {
     }
 
     initiateAbilityEffects() {
-        if (this.cancelled) {
-            for (const event of this.events) {
+        if(this.cancelled) {
+            for(const event of this.events) {
                 event.cancel();
             }
             return;
-        } else if (this.context.ability.max && !this.context.subResolution) {
+        } else if(this.context.ability.max && !this.context.subResolution) {
             this.context.player.incrementAbilityMax(this.context.ability.maxIdentifier);
         }
         this.context.ability.displayMessage(this.context, 'resolves');
@@ -70,13 +70,13 @@ class ResolveAbilityActionResolver extends AbilityResolver {
     }
 
     resolveCosts() {
-        if (!this.ignoreCosts) {
+        if(!this.ignoreCosts) {
             super.resolveCosts();
         }
     }
 
     payCosts() {
-        if (!this.ignoreCosts) {
+        if(!this.ignoreCosts) {
             super.payCosts();
         }
     }
@@ -107,7 +107,7 @@ export class ResolveAbilityAction extends CardGameAction {
 
     getEffectMessage(context: TriggeredAbilityContext): [string, any[]] {
         let properties = this.getProperties(context) as ResolveAbilityProperties;
-        return ["resolve {0}'s {1} ability", [properties.target, properties.ability.title]];
+        return ['resolve {0}\'s {1} ability', [properties.target, properties.ability.title]];
     }
 
     canAffect(card: DrawCard, context: TriggeredAbilityContext, additionalProperties = {}): boolean {
@@ -115,7 +115,7 @@ export class ResolveAbilityAction extends CardGameAction {
         let ability = properties.ability as TriggeredAbility;
         let player = properties.player || context.player;
         let newContextEvent = properties.event;
-        if (
+        if(
             !super.canAffect(card, context) ||
             !ability ||
             (!properties.subResolution && player.isAbilityAtMax(ability.maxIdentifier))
@@ -138,7 +138,7 @@ export class ResolveAbilityAction extends CardGameAction {
         let newContextEvent = properties.event;
         let newContext = (properties.ability as TriggeredAbility).createContext(player, newContextEvent);
         newContext.subResolution = !!properties.subResolution;
-        if (properties.choosingPlayerOverride) {
+        if(properties.choosingPlayerOverride) {
             newContext.choosingPlayerOverride = properties.choosingPlayerOverride;
         }
         event.context.game.queueStep(

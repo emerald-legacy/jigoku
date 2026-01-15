@@ -67,18 +67,18 @@ export default class DragonTattoo extends DrawCard {
     }
 
     public onInitiateAbility(event: any) {
-        if (event.card.id === 'banzai' && event.context) {
+        if(event.card.id === 'banzai' && event.context) {
             this.extraBanzaiTarget = event.context.targets.target;
         }
     }
 
     private checkTargets(event: any, context: TriggeredAbilityContext): boolean {
-        if (!event.context) {
+        if(!event.context) {
             return false;
         }
 
-        for (const directTargets of Object.values<BaseCard | BaseCard[]>(event.context.targets)) {
-            if (
+        for(const directTargets of Object.values<BaseCard | BaseCard[]>(event.context.targets)) {
+            if(
                 Array.isArray(directTargets)
                     ? directTargets.some((card) => this.isValidTargetForTattoo(card, context))
                     : this.isValidTargetForTattoo(directTargets, context)
@@ -87,8 +87,8 @@ export default class DragonTattoo extends DrawCard {
             }
         }
 
-        for (const selectedTargets of Object.values<BaseCard | BaseCard[]>(event.context.selects)) {
-            if (
+        for(const selectedTargets of Object.values<BaseCard | BaseCard[]>(event.context.selects)) {
+            if(
                 Array.isArray(selectedTargets)
                     ? selectedTargets.some((card) => this.isValidTargetForTattoo(card, context))
                     : this.isValidTargetForTattoo(selectedTargets, context)
@@ -97,10 +97,10 @@ export default class DragonTattoo extends DrawCard {
             }
         }
 
-        if (event.card.id === 'banzai' && this.extraBanzaiTarget) {
+        if(event.card.id === 'banzai' && this.extraBanzaiTarget) {
             const prevExtraBanzaiTarget = this.extraBanzaiTarget;
             this.extraBanzaiTarget = undefined;
-            if (this.isValidTargetForTattoo(prevExtraBanzaiTarget, context)) {
+            if(this.isValidTargetForTattoo(prevExtraBanzaiTarget, context)) {
                 return true;
             }
         }

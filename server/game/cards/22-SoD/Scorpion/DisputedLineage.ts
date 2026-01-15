@@ -25,10 +25,10 @@ export default class DisputedLineage extends DrawCard {
                         message: '{0} discards a card at random due to the delayed effect of {1}',
                         messageArgs: [context.player.opponent, context.source]
                     }),
-                    duration: Durations.UntilEndOfRound,
+                    duration: Durations.UntilEndOfRound
                 }))
             },
-            effect: "make {1} discard a card the next time {0} commits to a conflict",
+            effect: 'make {1} discard a card the next time {0} commits to a conflict',
             effectArgs: (context) => [context.player.opponent]
         });
     }

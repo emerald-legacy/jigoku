@@ -42,7 +42,7 @@ describe('Webisus Blessing', function () {
 
             this.player1.clickCard(this.kuwanan);
             expect(this.getChatLogs(10)).toContain(
-                "player1 plays Webisu's Blessing to discard Doji Whisperer's Tainted Token and Doji Kuwanan's Honored Token"
+                'player1 plays Webisu\'s Blessing to discard Doji Whisperer\'s Tainted Token and Doji Kuwanan\'s Honored Token'
             );
         });
 
@@ -61,7 +61,7 @@ describe('Webisus Blessing', function () {
             this.player1.clickPrompt('Tainted Token');
             this.player1.clickCard(this.whisperer);
             expect(this.getChatLogs(10)).toContain(
-                "player1 plays Webisu's Blessing to discard Doji Whisperer's Tainted Token and Doji Whisperer's Dishonored Token"
+                'player1 plays Webisu\'s Blessing to discard Doji Whisperer\'s Tainted Token and Doji Whisperer\'s Dishonored Token'
             );
         });
 
@@ -84,7 +84,7 @@ describe('Webisus Blessing', function () {
             this.player1.clickPrompt('Done');
 
             expect(this.getChatLogs(10)).toContain(
-                "player1 plays Webisu's Blessing to discard Doji Whisperer's Tainted Token"
+                'player1 plays Webisu\'s Blessing to discard Doji Whisperer\'s Tainted Token'
             );
         });
     });

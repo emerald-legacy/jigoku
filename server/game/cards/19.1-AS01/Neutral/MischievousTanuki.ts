@@ -14,10 +14,10 @@ export default class MischievousTanuki extends DrawCard {
             gameAction: AbilityDsl.actions.honorBid({
                 message: '{0}{1}{2}{3}',
                 messageArgs: (context) => {
-                    if (context.player.showBid % 2 === context.player.opponent.showBid % 2) {
+                    if(context.player.showBid % 2 === context.player.opponent.showBid % 2) {
                         // @ts-ignore
                         return [context.player, ` takes ${context.fateTaken} fate from `, context.player.opponent, ''];
-                    } else if (context.player.showBid % 2 === 0) {
+                    } else if(context.player.showBid % 2 === 0) {
                         return [context.player, ' gains 2 honor and ', context.player.opponent, ' draws 2 cards'];
                     }
                     return [context.player, ' draws 2 cards and ', context.player.opponent, ' gains 2 honor'];

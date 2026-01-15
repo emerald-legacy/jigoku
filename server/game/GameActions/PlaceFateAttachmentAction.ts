@@ -28,11 +28,11 @@ export class PlaceFateAttachmentAction extends CardGameAction {
 
     canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
         let { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateAttachmentProperties;
-        if (amount === 0 || card.location !== Locations.PlayArea) {
+        if(amount === 0 || card.location !== Locations.PlayArea) {
             return false;
         }
 
-        if (origin && this.isRing(origin) && !context.player.checkRestrictions('takeFateFromRings', context)) {
+        if(origin && this.isRing(origin) && !context.player.checkRestrictions('takeFateFromRings', context)) {
             return false;
         }
 
@@ -44,10 +44,10 @@ export class PlaceFateAttachmentAction extends CardGameAction {
     }
 
     checkOrigin(origin: Player | Ring | DrawCard, context: AbilityContext): boolean {
-        if (origin) {
-            if (origin.fate === 0) {
+        if(origin) {
+            if(origin.fate === 0) {
                 return false;
-            } else if (['player', 'ring'].includes(origin.type)) {
+            } else if(['player', 'ring'].includes(origin.type)) {
                 return true;
             }
             return origin.allowGameAction('removeFate', context);

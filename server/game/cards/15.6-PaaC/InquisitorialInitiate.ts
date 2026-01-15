@@ -8,7 +8,7 @@ export default class InquisiorialInitiate extends DrawCard {
 
     public setupCardAbilities() {
         this.reaction({
-            title: "Discard an opponent's card",
+            title: 'Discard an opponent\'s card',
             when: {
                 afterConflict: (event, context) =>
                     context.source.isParticipating() &&

@@ -12,7 +12,7 @@ export default class HenshinMysteries extends ProvinceCard {
     }
 
     public cancelRingClaim(event: any) {
-        if (
+        if(
             !this.isBroken &&
             !this.isBlank() &&
             event.conflict &&

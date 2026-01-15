@@ -34,7 +34,7 @@ export default class SeppunRyo extends DrawCard {
     }
 
     getFavorSide(favor: string) {
-        switch (favor) {
+        switch(favor) {
             case 'military':
                 return FavorTypes.Military;
             case 'political':

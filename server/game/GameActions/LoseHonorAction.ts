@@ -37,7 +37,7 @@ export class LoseHonorAction extends PlayerAction<LoseHonorProperties> {
     }
 
     eventHandler(event): void {
-        if (event.player) {
+        if(event.player) {
             event.player.modifyHonor(event.amount);
         }
     }

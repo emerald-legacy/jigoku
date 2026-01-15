@@ -20,7 +20,7 @@ async function runServer() {
     });
 
     pmx.action('disable', (param, reply) => {
-        if (!param) {
+        if(!param) {
             reply({ error: 'Need to specify node to disable' });
 
             return;
@@ -30,7 +30,7 @@ async function runServer() {
     });
 
     pmx.action('enable', (param, reply) => {
-        if (!param) {
+        if(!param) {
             reply({ error: 'Need to specify node to enable' });
 
             return;

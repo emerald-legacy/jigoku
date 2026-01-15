@@ -51,7 +51,7 @@ export class GameObject {
 
     public allowGameAction(actionType: string, context = this.game.getFrameworkContext()) {
         const gameActionFactory = GameActions[actionType];
-        if (gameActionFactory) {
+        if(gameActionFactory) {
             const gameAction: GameAction = gameActionFactory();
             return gameAction.canAffect(this, context);
         }
@@ -69,7 +69,7 @@ export class GameObject {
     }
 
     public getType() {
-        if (this.anyEffect(EffectNames.ChangeType)) {
+        if(this.anyEffect(EffectNames.ChangeType)) {
             return this.mostRecentEffect(EffectNames.ChangeType);
         }
         return this.printedType;
@@ -115,22 +115,22 @@ export class GameObject {
     }
 
     public canBeTargeted(context: AbilityContext, selectedCards: GameObject | GameObject[] = []) {
-        if (!this.checkRestrictions('target', context)) {
+        if(!this.checkRestrictions('target', context)) {
             return false;
         }
         let targets = selectedCards;
-        if (!Array.isArray(targets)) {
+        if(!Array.isArray(targets)) {
             targets = [targets];
         }
 
         targets = targets.concat(this);
         let targetingCost = context.player.getTargetingCost(context.source, targets);
 
-        if (context.stage === Stages.PreTarget || context.stage === Stages.Cost) {
+        if(context.stage === Stages.PreTarget || context.stage === Stages.Cost) {
             //We haven't paid the cost yet, so figure out what it will cost to play this so we can know how much fate we'll have available for targeting
             let fateCost = 0;
             // @ts-ignore
-            if (context.ability.getReducedCost) {
+            if(context.ability.getReducedCost) {
                 //we only want to consider the ability cost, not the card cost
                 // @ts-ignore
                 fateCost = context.ability.getReducedCost(context);
@@ -142,7 +142,7 @@ export class GameObject {
                 availableFate >= targetingCost &&
                 (targetingCost === 0 || context.player.checkRestrictions('spendFate', context))
             );
-        } else if (context.stage === Stages.Target || context.stage === Stages.Effect) {
+        } else if(context.stage === Stages.Target || context.stage === Stages.Effect) {
             //We paid costs first, or targeting has to be done after costs have been paid
             return (
                 context.player.fate >= targetingCost &&

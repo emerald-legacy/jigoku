@@ -48,7 +48,7 @@ describe('Ebony Blood Garrison', () => {
             expect(this.manicuredGarden.isBroken).toBe(true);
             expect(this.entrenchedPosition.isBroken).toBe(true);
             expect(this.getChatLogs(10)).toContain(
-                "player1 uses Ebony Blood Garrison, bowing Ebony Blood Garrison to drag player2 into chaos, as a crisis strikes Manicured Garden and Entrenched Position"
+                'player1 uses Ebony Blood Garrison, bowing Ebony Blood Garrison to drag player2 into chaos, as a crisis strikes Manicured Garden and Entrenched Position'
             );
             // expect(this.player1.fate).toBe(initialFate + 1);
             // expect(this.player1.hand.length).toBe(initalHandSize + 1);
@@ -61,15 +61,15 @@ describe('Ebony Blood Garrison', () => {
             this.player1.clickCard(this.ebonyBloodGarrison);
             this.player1.clickCard(this.avalancheOfStone);
             this.player1.clickCard(this.retireToTheBrotherhood);
-            expect(this.getChatLogs(10)).toContain("player1 uses Ebony Blood Garrison, bowing Ebony Blood Garrison to drag player2 into chaos, as a crisis strikes Avalanche of Stone and Retire to the Brotherhood");
+            expect(this.getChatLogs(10)).toContain('player1 uses Ebony Blood Garrison, bowing Ebony Blood Garrison to drag player2 into chaos, as a crisis strikes Avalanche of Stone and Retire to the Brotherhood');
             expect(this.player1).toHavePrompt('Any reactions?');
 
             this.player1.clickCard(this.avalancheOfStone);
-            expect(this.getChatLogs(1)).toContain("player1 uses Avalanche of Stone to bow Hida Guardian");
+            expect(this.getChatLogs(1)).toContain('player1 uses Avalanche of Stone to bow Hida Guardian');
             expect(this.player2).toHavePrompt('Any reactions?');
 
             this.player2.clickCard(this.retireToTheBrotherhood);
-            expect(this.getChatLogs(10)).toContain("player2 uses Retire to the Brotherhood to discard Hida Guardian");
+            expect(this.getChatLogs(10)).toContain('player2 uses Retire to the Brotherhood to discard Hida Guardian');
             expect(this.avalancheOfStone.isBroken).toBe(true);
             expect(this.retireToTheBrotherhood.isBroken).toBe(true);
             // expect(this.player1.fate).toBe(initialFate + 1);

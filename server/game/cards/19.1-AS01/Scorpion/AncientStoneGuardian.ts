@@ -65,15 +65,15 @@ export default class AncientStoneGuardian extends DrawCard {
         return {
             gameActions: target
                 ? [
-                      AbilityDsl.actions.dishonor({ target: target }),
-                      AbilityDsl.actions.draw({ target: target.controller })
-                  ]
+                    AbilityDsl.actions.dishonor({ target: target }),
+                    AbilityDsl.actions.draw({ target: target.controller })
+                ]
                 : []
         };
     }
 
     private effectsForCard(target?: BaseCard | []) {
-        if (target instanceof DrawCard) {
+        if(target instanceof DrawCard) {
             // Target selected
             return [' ', target.controller, ' dishonors ', target, ' to draw a card.'];
         }

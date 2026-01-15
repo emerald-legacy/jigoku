@@ -39,78 +39,78 @@ describe('The Maidens Icy Grasp', function () {
         describe('base cases',function () {
 
 
-        it('character from hand', function () {
-            this.player2.clickCard(this.wanderer);
-            this.player2.clickPrompt('Play this character');
-            this.player2.clickPrompt('0');
-            this.player2.clickPrompt('Conflict');
+            it('character from hand', function () {
+                this.player2.clickCard(this.wanderer);
+                this.player2.clickPrompt('Play this character');
+                this.player2.clickPrompt('0');
+                this.player2.clickPrompt('Conflict');
 
-            this.player1.clickCard(this.grasp);
-            expect(this.player1).toHavePrompt('Choose a character');
-            this.player1.clickCard(this.wanderer);
-            expect(this.getChatLogs(5)).toContain(
-                "player1 plays The Maiden's Icy Grasp to prevent Tattooed Wanderer from contributing to resolution of this conflict"
-            );
-            expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 1 Defender: 9');
-        });
+                this.player1.clickCard(this.grasp);
+                expect(this.player1).toHavePrompt('Choose a character');
+                this.player1.clickCard(this.wanderer);
+                expect(this.getChatLogs(5)).toContain(
+                    'player1 plays The Maiden\'s Icy Grasp to prevent Tattooed Wanderer from contributing to resolution of this conflict'
+                );
+                expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 1 Defender: 9');
+            });
 
-        it('disguised character from hand', function () {
-            this.player2.clickCard(this.miyako);
-            this.player2.clickCard(this.spiritcaller);
-            this.player2.clickPrompt('Conflict');
-            this.player2.clickPrompt('Pass');
+            it('disguised character from hand', function () {
+                this.player2.clickCard(this.miyako);
+                this.player2.clickCard(this.spiritcaller);
+                this.player2.clickPrompt('Conflict');
+                this.player2.clickPrompt('Pass');
 
-            this.player1.clickCard(this.grasp);
-            expect(this.player1).toHavePrompt('Choose a character');
-            this.player1.clickCard(this.miyako);
-            expect(this.getChatLogs(5)).toContain(
-                "player1 plays The Maiden's Icy Grasp to prevent Shosuro Miyako from contributing to resolution of this conflict"
-            );
-            expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 1 Defender: 8');
-        });
+                this.player1.clickCard(this.grasp);
+                expect(this.player1).toHavePrompt('Choose a character');
+                this.player1.clickCard(this.miyako);
+                expect(this.getChatLogs(5)).toContain(
+                    'player1 plays The Maiden\'s Icy Grasp to prevent Shosuro Miyako from contributing to resolution of this conflict'
+                );
+                expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 1 Defender: 8');
+            });
 
-        it('spiritcaller', function () {
-            this.player2.clickCard(this.spiritcaller);
-            this.player2.clickCard(this.challenger);
+            it('spiritcaller', function () {
+                this.player2.clickCard(this.spiritcaller);
+                this.player2.clickCard(this.challenger);
 
-            this.player1.clickCard(this.grasp);
-            expect(this.player1).toHavePrompt('Choose a character');
-            this.player1.clickCard(this.challenger);
-            expect(this.getChatLogs(5)).toContain(
-                "player1 plays The Maiden's Icy Grasp to prevent Doji Challenger from contributing to resolution of this conflict"
-            );
-            expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 1 Defender: 8');
-        });
+                this.player1.clickCard(this.grasp);
+                expect(this.player1).toHavePrompt('Choose a character');
+                this.player1.clickCard(this.challenger);
+                expect(this.getChatLogs(5)).toContain(
+                    'player1 plays The Maiden\'s Icy Grasp to prevent Doji Challenger from contributing to resolution of this conflict'
+                );
+                expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 1 Defender: 8');
+            });
 
-        it('also works when conflict has alternative', function () {
-            this.player2.clickCard(this.oneWithTheSea);
-            this.player2.clickCard(this.ryuu);
+            it('also works when conflict has alternative', function () {
+                this.player2.clickCard(this.oneWithTheSea);
+                this.player2.clickCard(this.ryuu);
 
-            this.player1.clickCard(this.villageDoshin);
-            this.player1.clickPrompt('0');
-            this.player1.clickPrompt('Conflict');
+                this.player1.clickCard(this.villageDoshin);
+                this.player1.clickPrompt('0');
+                this.player1.clickPrompt('Conflict');
 
-            this.player2.clickCard(this.grasp2);
-            expect(this.player2).toHavePrompt('Choose a character');
-            this.player2.clickCard(this.villageDoshin);
-            expect(this.getChatLogs(5)).toContain(
-                "player2 plays The Maiden's Icy Grasp to prevent Village Dōshin from contributing to resolution of this conflict"
-            );
-            expect(this.getChatLogs(10)).toContain(`Military Air conflict - Attacker: ${
-            this.mystic.getMilitarySkill()
-            +this.mystic.getPoliticalSkill()
-            } Defender: ${
-            this.uji.getMilitarySkill()
-            +this.uji.getPoliticalSkill()
-            +this.spiritcaller.getMilitarySkill()
-            +this.spiritcaller.getPoliticalSkill()
-            +this.ryuu.getMilitarySkill()
-            +this.ryuu.getPoliticalSkill()
-            }`);
+                this.player2.clickCard(this.grasp2);
+                expect(this.player2).toHavePrompt('Choose a character');
+                this.player2.clickCard(this.villageDoshin);
+                expect(this.getChatLogs(5)).toContain(
+                    'player2 plays The Maiden\'s Icy Grasp to prevent Village Dōshin from contributing to resolution of this conflict'
+                );
+                expect(this.getChatLogs(10)).toContain(`Military Air conflict - Attacker: ${
+                    this.mystic.getMilitarySkill()
+            + this.mystic.getPoliticalSkill()
+                } Defender: ${
+                    this.uji.getMilitarySkill()
+            + this.uji.getPoliticalSkill()
+            + this.spiritcaller.getMilitarySkill()
+            + this.spiritcaller.getPoliticalSkill()
+            + this.ryuu.getMilitarySkill()
+            + this.ryuu.getPoliticalSkill()
+                }`);
 
-            this.noMoreActions();
-            expect(this.getChatLogs(2)).toContain('player2 won a military conflict 21 vs 2');
+                this.noMoreActions();
+                expect(this.getChatLogs(2)).toContain('player2 won a military conflict 21 vs 2');
+            });
         });
     });
 });
-})

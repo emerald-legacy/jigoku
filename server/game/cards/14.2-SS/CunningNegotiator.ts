@@ -8,7 +8,7 @@ export default class CunningNegotiator extends DrawCard {
 
     setupCardAbilities() {
         this.action({
-            title: "Political duel to resolve the attacked province's action ability",
+            title: 'Political duel to resolve the attacked province\'s action ability',
             condition: (context) => context.game.currentConflict,
             initiateDuel: {
                 type: DuelTypes.Political,
@@ -20,8 +20,8 @@ export default class CunningNegotiator extends DrawCard {
                         choices: duel.winner ? ['Yes', 'No'] : [],
                         player: duel.winnerController === context.player ? Players.Self : Players.Opponent,
                         choiceHandler: (choice, displayMessage) => {
-                            if (displayMessage) {
-                                if (choice === 'Yes') {
+                            if(displayMessage) {
+                                if(choice === 'Yes') {
                                     context.game.addMessage(
                                         '{0} chooses to trigger a province ability',
                                         context.player

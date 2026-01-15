@@ -10,10 +10,10 @@ export interface CancelActionProperties extends GameActionProperties {
 export class CancelAction extends GameAction {
     getEffectMessage(context: TriggeredAbilityContext): [string, any[]] {
         let { replacementGameAction, effect } = this.getProperties(context);
-        if (effect) {
+        if(effect) {
             return [effect, []];
         }
-        if (replacementGameAction) {
+        if(replacementGameAction) {
             return ['{1} {0} instead of {2}', [context.target, replacementGameAction.name, context.event.card]];
         }
         return ['cancel the effects of {0}', [context.event.card]];
@@ -21,19 +21,19 @@ export class CancelAction extends GameAction {
 
     getProperties(context: TriggeredAbilityContext, additionalProperties = {}): CancelActionProperties {
         let properties = super.getProperties(context, additionalProperties) as CancelActionProperties;
-        if (properties.replacementGameAction) {
+        if(properties.replacementGameAction) {
             properties.replacementGameAction.setDefaultTarget(() => properties.target);
         }
         return properties;
     }
 
     hasLegalTarget(context: TriggeredAbilityContext, additionalProperties = {}): boolean {
-        if (!context.event || context.event.cancelled) {
+        if(!context.event || context.event.cancelled) {
             return false;
         }
         let { replacementGameAction } = this.getProperties(context);
         let cannotBeCancelled = context.event.cannotBeCancelled;
-        if (
+        if(
             context.event.card &&
             typeof context.event.card.getType === 'function' &&
             context.event.card.getType() === CardTypes.Event &&
@@ -42,7 +42,7 @@ export class CancelAction extends GameAction {
         ) {
             cannotBeCancelled = true;
         }
-        if (
+        if(
             context.event.name === EventNames.OnCardLeavesPlay &&
             context.event.card &&
             !context.event.card.checkRestrictions('preventedFromLeavingPlay', context)
@@ -65,7 +65,7 @@ export class CancelAction extends GameAction {
 
     eventHandler(event, additionalProperties = {}): void {
         let { replacementGameAction } = this.getProperties(event.context, additionalProperties);
-        if (replacementGameAction) {
+        if(replacementGameAction) {
             let events = [];
             let eventWindow = event.context.event.window;
             replacementGameAction.addEventsToArray(
@@ -74,10 +74,10 @@ export class CancelAction extends GameAction {
                 Object.assign({ replacementEffect: true }, additionalProperties)
             );
             event.context.game.queueSimpleStep(() => {
-                if (!event.context.event.isSacrifice && events.length === 1) {
+                if(!event.context.event.isSacrifice && events.length === 1) {
                     event.context.event.replacementEvent = events[0];
                 }
-                for (let newEvent of events) {
+                for(let newEvent of events) {
                     eventWindow.addEvent(newEvent);
                 }
             });

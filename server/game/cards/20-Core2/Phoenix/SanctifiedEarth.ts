@@ -46,7 +46,7 @@ export default class SanctifiedEarth extends DrawCard {
 
                     AbilityDsl.actions.onAffinity({
                         trait: 'earth',
-                        effect: "make {0} invulnerable to opponent's send home",
+                        effect: 'make {0} invulnerable to opponent\'s send home',
                         effectArgs: (context) => [context.target],
                         gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                             target: context.target,

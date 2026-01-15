@@ -18,7 +18,7 @@ export default class MiokosSong extends StrongholdCard {
         });
 
         this.reaction({
-            title: "Sabotage the opponent's resources",
+            title: 'Sabotage the opponent\'s resources',
             when: {
                 onCardPlayed: (event, context) =>
                     context.player.opponent &&
@@ -45,12 +45,12 @@ export default class MiokosSong extends StrongholdCard {
                             handlers: [],
                             cardHandler: (selectedCard: DrawCard) => {
                                 const cardsFromProvince = province.cardsInSelf();
-                                for (const fromProvince of cardsFromProvince) {
+                                for(const fromProvince of cardsFromProvince) {
                                     context.player.opponent.moveCard(fromProvince, 'dynasty discard pile');
                                 }
                                 context.player.opponent.moveCard(selectedCard, province.location);
                                 selectedCard.facedown = false;
-                                for (const goToBottom of topCards.filter((c) => c !== selectedCard)) {
+                                for(const goToBottom of topCards.filter((c) => c !== selectedCard)) {
                                     context.player.opponent.moveCard(goToBottom, 'dynasty deck bottom');
                                 }
 

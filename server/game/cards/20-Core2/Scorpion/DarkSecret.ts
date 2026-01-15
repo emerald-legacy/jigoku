@@ -26,17 +26,17 @@ export default class DarkSecret extends DrawCard {
     }
 
     #quote(character: DrawCard): string {
-        switch (((character.printedCost ?? 0) + character.name.charCodeAt(0) + character.fate) % 7) {
+        switch(((character.printedCost ?? 0) + character.name.charCodeAt(0) + character.fate) % 7) {
             case 0:
                 return 'Man is not what he thinks he is, he is what he hides';
             case 1:
                 return 'What is Man? A miserable little pile of secrets';
             case 2:
-                return "I don't argue with my enemies; I explain to their children";
+                return 'I don\'t argue with my enemies; I explain to their children';
             case 3:
                 return 'With a secret like that, at some point the secret itself becomes irrelevant. The fact that you kept it does not';
             case 4:
-                return "A secret's worth depends on the people from whom it must be kept";
+                return 'A secret\'s worth depends on the people from whom it must be kept';
             case 5:
                 return 'Three may keep a secret, if two of them are dead';
             case 6:

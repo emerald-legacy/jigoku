@@ -23,23 +23,23 @@ export default class TruthIsInTheKilling extends DrawCard {
                         duel.loser.flatMap((loser) =>
                             applyFullEffect(duel)
                                 ? [
-                                      AbilityDsl.actions.removeFate({
-                                          target: loser,
-                                          amount: loser.getFate(),
-                                          recipient: loser.controller
-                                      }),
-                                      AbilityDsl.actions.discardFromPlay({ target: loser })
-                                  ]
+                                    AbilityDsl.actions.removeFate({
+                                        target: loser,
+                                        amount: loser.getFate(),
+                                        recipient: loser.controller
+                                    }),
+                                    AbilityDsl.actions.discardFromPlay({ target: loser })
+                                ]
                                 : [
-                                      AbilityDsl.actions.removeFate({
-                                          target: loser,
-                                          amount: loser.getFate(),
-                                          recipient: loser.controller
-                                      })
-                                  ]
+                                    AbilityDsl.actions.removeFate({
+                                        target: loser,
+                                        amount: loser.getFate(),
+                                        recipient: loser.controller
+                                    })
+                                ]
                         )
                     ),
-                message: "return all fate on {0} to {1}'s fate pool{2}",
+                message: 'return all fate on {0} to {1}\'s fate pool{2}',
                 messageArgs: (duel) => [duel.loser, duel.losingPlayer, applyFullEffect(duel) ? ' and discard them' : '']
             }
         });

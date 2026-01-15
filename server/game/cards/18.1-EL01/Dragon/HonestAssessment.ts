@@ -32,7 +32,7 @@ export default class HonestAssessment extends DrawCard {
                     ]
                 };
             }),
-            effect: "look at 4 random cards in {1}'s hand and discard all cards named {2}",
+            effect: 'look at 4 random cards in {1}\'s hand and discard all cards named {2}',
             effectArgs: (context) => [context.player.opponent, context.costs.nameCardCost]
         });
     }

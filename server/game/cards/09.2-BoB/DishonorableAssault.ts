@@ -14,7 +14,7 @@ export default class DishonorableAssault extends ProvinceCard {
             target: {
                 mode: TargetModes.ExactlyVariable,
                 numCardsFunc: (context) => {
-                    if (context && context.costs && context.costs.discardCardsUpToVariableX) {
+                    if(context && context.costs && context.costs.discardCardsUpToVariableX) {
                         return context.costs.discardCardsUpToVariableX.length;
                     }
 
@@ -29,11 +29,11 @@ export default class DishonorableAssault extends ProvinceCard {
     }
 
     getNumberOfLegalTargets(context) {
-        if (this.game.isDuringConflict()) {
+        if(this.game.isDuringConflict()) {
             let cards = this.game.currentConflict.getParticipants((card) => card.isAttacking());
             let count = 0;
             cards.forEach((card) => {
-                if (card.allowGameAction('dishonor', context)) {
+                if(card.allowGameAction('dishonor', context)) {
                     count++;
                 }
             });

@@ -29,7 +29,7 @@ export default class MirumotoHitori extends DrawCard {
                             when: {
                                 onPhaseStarted: (event) => event.phase === Phases.Dynasty
                             },
-                            message: "{0} is put into play due to {0}'s effect",
+                            message: '{0} is put into play due to {0}\'s effect',
                             messageArgs: [context.source],
                             gameAction: AbilityDsl.actions.putIntoPlay((context) => ({
                                 location: Locations.Any,

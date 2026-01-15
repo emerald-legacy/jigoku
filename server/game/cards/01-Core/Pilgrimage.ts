@@ -17,7 +17,7 @@ export default class Pilgrimage extends ProvinceCard {
     }
 
     public cancelRingEffect(event: any) {
-        if (
+        if(
             !this.isBroken &&
             !this.isBlank() &&
             event.context.game.currentConflict &&

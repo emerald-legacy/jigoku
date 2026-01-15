@@ -25,7 +25,10 @@ export class FlipFavorAction extends PlayerAction<FlipFavorProperties> {
     }
 
     eventHandler(event): void {
-        if (event.player.imperialFavor === 'military') event.player.imperialFavor = 'political';
-        else if (event.player.imperialFavor === 'political') event.player.imperialFavor = 'military';
+        if(event.player.imperialFavor === 'military') {
+            event.player.imperialFavor = 'political';
+        } else if(event.player.imperialFavor === 'political') {
+            event.player.imperialFavor = 'military';
+        }
     }
 }

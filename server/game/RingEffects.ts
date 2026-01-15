@@ -25,7 +25,7 @@ interface RingAbility extends BaseAbility {
 type ResolutionCb = (resolved: boolean) => void;
 
 function ringForElement(element: string) {
-    switch (element) {
+    switch(element) {
         case 'air':
             return (optional: boolean, gameMode: GameModes, onResolution: ResolutionCb) =>
                 new AirRingEffect(optional, gameMode, onResolution);
@@ -62,7 +62,7 @@ export class RingEffects {
     }
 
     static getRingName(element: string) {
-        switch (element) {
+        switch(element) {
             case 'air':
                 return 'Air Ring';
             case 'earth':

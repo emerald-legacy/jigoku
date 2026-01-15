@@ -30,7 +30,7 @@ export class MetaActionCost extends GameActionCost implements Cost {
 
     addEventsToArray(events: any[], context: AbilityContext, result: Result): void {
         const properties = this.action.getProperties(context) as SelectCardProperties;
-        if (properties.targets && context.choosingPlayerOverride) {
+        if(properties.targets && context.choosingPlayerOverride) {
             context.costs[properties.gameAction.name] = randomItem(
                 properties.selector.getAllLegalTargets(context, context.player)
             );
@@ -48,7 +48,7 @@ export class MetaActionCost extends GameActionCost implements Cost {
             cancelHandler: !result.canCancel ? null : () => (result.cancelled = true),
             subActionProperties: (target: any) => {
                 context.costs[properties.gameAction.name] = target;
-                if (target.createSnapshot) {
+                if(target.createSnapshot) {
                     context.costs[properties.gameAction.name + 'StateWhenChosen'] = target.createSnapshot();
                 }
                 return properties.subActionProperties ? properties.subActionProperties(target) : {};

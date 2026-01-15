@@ -80,7 +80,7 @@ const conflictingEffects = {
 class StaticEffect {
     constructor(type, value) {
         this.type = type;
-        if (value instanceof EffectValue) {
+        if(value instanceof EffectValue) {
             this.value = value;
         } else {
             this.value = new EffectValue(value);
@@ -93,7 +93,7 @@ class StaticEffect {
 
     apply(target) {
         target.addEffect(this);
-        if (this.value instanceof GainAbility && this.value.abilityType === AbilityTypes.Persistent) {
+        if(this.value instanceof GainAbility && this.value.abilityType === AbilityTypes.Persistent) {
             const copy = this.value.getCopy();
             copy.apply(target);
             this.copies.push(copy);
@@ -123,7 +123,7 @@ class StaticEffect {
     }
 
     canBeApplied(target) {
-        if (target.facedown && target.type !== CardTypes.Province) {
+        if(target.facedown && target.type !== CardTypes.Province) {
             return false;
         }
         return !hasDash[this.type] || !hasDash[this.type](target, this.value);
@@ -146,27 +146,27 @@ class StaticEffect {
     }
 
     checkConflictingEffects(type, target) {
-        if (binaryCardEffects.includes(type)) {
+        if(binaryCardEffects.includes(type)) {
             let matchingEffects = target.effects.filter((effect) => effect.type === type);
             return matchingEffects.every((effect) => this.hasLongerDuration(effect) || effect.isConditional);
         }
-        if (conflictingEffects[type]) {
+        if(conflictingEffects[type]) {
             let matchingEffects = conflictingEffects[type](target, this.getValue());
             return matchingEffects.every((effect) => this.hasLongerDuration(effect) || effect.isConditional);
         }
-        if (type === EffectNames.ModifyBothSkills) {
+        if(type === EffectNames.ModifyBothSkills) {
             return (
                 this.checkConflictingEffects(EffectNames.ModifyMilitarySkill, target) ||
                 this.checkConflictingEffects(EffectNames.ModifyPoliticalSkill, target)
             );
         }
-        if (type === EffectNames.HonorStatusDoesNotModifySkill) {
+        if(type === EffectNames.HonorStatusDoesNotModifySkill) {
             return (
                 this.checkConflictingEffects(EffectNames.ModifyMilitarySkill, target) ||
                 this.checkConflictingEffects(EffectNames.ModifyPoliticalSkill, target)
             );
         }
-        if (type === EffectNames.HonorStatusReverseModifySkill) {
+        if(type === EffectNames.HonorStatusReverseModifySkill) {
             return (
                 this.checkConflictingEffects(EffectNames.ModifyMilitarySkill, target) ||
                 this.checkConflictingEffects(EffectNames.ModifyPoliticalSkill, target)

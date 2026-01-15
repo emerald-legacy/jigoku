@@ -14,9 +14,9 @@ type MenuItem = {
 };
 
 export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, card: BaseCard) {
-    switch (menuItem.command) {
+    switch(menuItem.command) {
         case 'bow':
-            if (card.bowed) {
+            if(card.bowed) {
                 game.addMessage('{0} readies {1}', player, card);
                 card.ready();
             } else {
@@ -33,7 +33,7 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
             card.dishonor();
             return;
         case 'taint':
-            if (card.isTainted) {
+            if(card.isTainted) {
                 game.addMessage('{0} cleanses {1}', player, card);
                 card.untaint();
             } else {
@@ -50,22 +50,22 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
             card.modifyFate(-1);
             return;
         case 'move':
-            if (game.currentConflict) {
-                if (card.isParticipating()) {
+            if(game.currentConflict) {
+                if(card.isParticipating()) {
                     game.addMessage('{0} moves {1} out of the conflict', player, card);
                     game.currentConflict.removeFromConflict(card);
                 } else {
                     game.addMessage('{0} moves {1} into the conflict', player, card);
-                    if (card.controller.isAttackingPlayer()) {
+                    if(card.controller.isAttackingPlayer()) {
                         game.currentConflict.addAttacker(card);
-                    } else if (card.controller.isDefendingPlayer()) {
+                    } else if(card.controller.isDefendingPlayer()) {
                         game.currentConflict.addDefender(card);
                     }
                 }
             }
             return;
         case 'control':
-            if (player.opponent) {
+            if(player.opponent) {
                 game.addMessage('{0} gives {1} control of {2}', player, player.opponent, card);
                 card.setDefaultController(player.opponent);
             }
@@ -81,7 +81,7 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
         case 'break':
             game.addMessage('{0} {1} {2}', player, card.isBroken ? 'unbreaks' : 'breaks', card);
             card.isBroken = card.isBroken ? false : true;
-            if (card.location === Locations.StrongholdProvince && card.isBroken) {
+            if(card.location === Locations.StrongholdProvince && card.isBroken) {
                 game.recordWinner(player.opponent, 'conquest');
             }
             return;
@@ -100,9 +100,9 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
 }
 
 export function ringMenuClick(menuItem: MenuItem, game: Game, player: Player, ring: Ring) {
-    switch (menuItem.command) {
+    switch(menuItem.command) {
         case 'flip':
-            if (game.currentConflict && game.currentConflict.ring) {
+            if(game.currentConflict && game.currentConflict.ring) {
                 game.addMessage('{0} switches the conflict type', player);
                 game.currentConflict.switchType();
             } else {
@@ -118,13 +118,13 @@ export function ringMenuClick(menuItem: MenuItem, game: Game, player: Player, ri
             ring.resetRing();
             return;
         case 'contested':
-            if (game.currentConflict) {
-                if (!ring.claimed) {
+            if(game.currentConflict) {
+                if(!ring.claimed) {
                     game.addMessage('{0} switches the conflict to contest the {1} ring', player, ring.element);
                     game.currentConflict.switchElement(ring.element);
                 } else {
                     game.addMessage(
-                        "{0} tried to switch the conflict to contest the {1} ring, but it's already claimed",
+                        '{0} tried to switch the conflict to contest the {1} ring, but it\'s already claimed',
                         player,
                         ring.element
                     );
@@ -145,7 +145,7 @@ export function ringMenuClick(menuItem: MenuItem, game: Game, player: Player, ri
             ring.fate = 0;
             return;
         case 'conflict':
-            if (game.currentActionWindow && game.currentActionWindow.windowName === 'preConflict') {
+            if(game.currentActionWindow && game.currentActionWindow.windowName === 'preConflict') {
                 game.addMessage('{0} initiates a conflict', player);
                 const conflict = new Conflict(game, player, player.opponent, ring);
                 game.currentConflict = conflict;

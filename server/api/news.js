@@ -9,18 +9,18 @@ module.exports.init = function (server) {
         try {
             const news = await newsService.getRecentNewsItems({ limit: req.query.limit });
             res.send({ success: true, news: news });
-        } catch (err) {
+        } catch(err) {
             logger.error(err);
             res.send({ success: false, message: 'Error loading news' });
         }
     });
 
     server.put('/api/news', async function (req, res) {
-        if (!req.user) {
+        if(!req.user) {
             return res.status(401).send({ message: 'Unauthorized' });
         }
 
-        if (!req.user.permissions || !req.user.permissions.canEditNews) {
+        if(!req.user.permissions || !req.user.permissions.canEditNews) {
             return res.status(403).send({ message: 'Forbidden' });
         }
 
@@ -31,7 +31,7 @@ module.exports.init = function (server) {
                 datePublished: new Date()
             });
             res.send({ success: true });
-        } catch (err) {
+        } catch(err) {
             logger.error(err);
             res.send({ success: false, message: 'Error saving news item' });
         }

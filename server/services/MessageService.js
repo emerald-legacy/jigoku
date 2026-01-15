@@ -9,7 +9,7 @@ class MessageService {
         try {
             const result = await this.messages.insertOne(message);
             return { ...message, _id: result.insertedId };
-        } catch (err) {
+        } catch(err) {
             logger.error('Unable to insert message', err);
             throw new Error('Unable to insert message');
         }

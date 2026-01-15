@@ -23,7 +23,7 @@ export default class IkomaYumiko extends DrawCard {
             when: {
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             },
-            effect: `claim the Emperor's favor`,
+            effect: 'claim the Emperor\'s favor',
             gameAction: AbilityDsl.actions.claimImperialFavor((context) => ({
                 target: context.player
             }))

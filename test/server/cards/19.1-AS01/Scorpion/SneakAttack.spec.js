@@ -41,9 +41,9 @@ xdescribe('Sneak Attack', function () {
                 expect(this.player2).toHavePrompt('Waiting for opponent to take an action or pass');
 
                 expect(this.getChatLogs(5)).toContain(
-                    "player1 plays Sneak Attack, losing 1 honor to give player1 the first action in this conflict and peak at their opponent's hand"
+                    'player1 plays Sneak Attack, losing 1 honor to give player1 the first action in this conflict and peak at their opponent\'s hand'
                 );
-                expect(this.getChatLogs(5)).toContain("player1 sees For Shame! and Let Go in player2's hand");
+                expect(this.getChatLogs(5)).toContain('player1 sees For Shame! and Let Go in player2\'s hand');
             });
         });
 

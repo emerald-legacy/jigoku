@@ -39,20 +39,20 @@ export class GainAllAbilities extends EffectValue<BaseCard> {
                 return value.getValue();
             })
         };
-        for (const effect of this.persistentEffects) {
-            if (effect.location === Locations.PlayArea || effect.location === Locations.Any) {
+        for(const effect of this.persistentEffects) {
+            if(effect.location === Locations.PlayArea || effect.location === Locations.Any) {
                 effect.ref = target.addEffectToEngine(effect);
             }
         }
     }
 
     unapply(target: BaseCard) {
-        for (const value of this.abilitiesForTargets[target.uuid].reactions) {
+        for(const value of this.abilitiesForTargets[target.uuid].reactions) {
             // @ts-ignore
             value.unregisterEvents();
         }
-        for (const effect of this.persistentEffects) {
-            if (effect.ref) {
+        for(const effect of this.persistentEffects) {
+            if(effect.ref) {
                 target.removeEffectFromEngine(effect.ref);
                 delete effect.ref;
             }
@@ -61,14 +61,14 @@ export class GainAllAbilities extends EffectValue<BaseCard> {
     }
 
     getActions(target: BaseCard) {
-        if (this.abilitiesForTargets[target.uuid]) {
+        if(this.abilitiesForTargets[target.uuid]) {
             return this.abilitiesForTargets[target.uuid].actions;
         }
         return [];
     }
 
     getReactions(target: BaseCard) {
-        if (this.abilitiesForTargets[target.uuid]) {
+        if(this.abilitiesForTargets[target.uuid]) {
             return this.abilitiesForTargets[target.uuid].reactions;
         }
         return [];

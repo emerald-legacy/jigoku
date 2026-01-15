@@ -16,7 +16,7 @@ export class PlayerOrderPrompt extends UiPrompt {
     }
 
     private lazyFetchPlayers(): void {
-        if (!this.players) {
+        if(!this.players) {
             this.players = this.game.getPlayersInFirstPlayerOrder();
         }
     }

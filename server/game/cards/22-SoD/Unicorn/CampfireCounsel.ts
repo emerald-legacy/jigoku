@@ -20,11 +20,11 @@ export default class CampfireCounsel extends DrawCard {
             then: context => ({
                 thenCondition: () => !context.player.isCharacterTraitInPlay('storyteller'),
                 gameAction: AbilityDsl.actions.dishonor({
-                    target: context.target,
+                    target: context.target
                 }),
                 message: '{3} is dishonored',
                 messageArgs: thenContext => [context.target]
-            }),
+            })
         });
     }
 }

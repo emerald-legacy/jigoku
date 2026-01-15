@@ -49,7 +49,7 @@ export default class TheRushingWave extends DrawCard {
                     effectArgs: (context) => [adjacentProvinces(context.target)]
                 })
             },
-            effect: "set {1}'s strength to 0 until the end of the phase",
+            effect: 'set {1}\'s strength to 0 until the end of the phase',
             effectArgs: (context) => [provinceLog(context.target)]
         });
     }

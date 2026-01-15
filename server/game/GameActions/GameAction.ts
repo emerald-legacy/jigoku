@@ -27,7 +27,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties> {
     getDefaultTargets: (context: AbilityContext) => any = (context) => this.defaultTargets(context);
 
     constructor(propertyFactory: P | ((context?: AbilityContext) => P)) {
-        if (typeof propertyFactory === 'function') {
+        if(typeof propertyFactory === 'function') {
             this.propertyFactory = propertyFactory;
         } else {
             this.properties = propertyFactory;
@@ -45,7 +45,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties> {
             additionalProperties,
             this.properties ?? this.propertyFactory?.(context) ?? {}
         );
-        if (!Array.isArray(properties.target)) {
+        if(!Array.isArray(properties.target)) {
             properties.target = [properties.target];
         }
         properties.target = properties.target.filter(Boolean);
@@ -79,8 +79,8 @@ export class GameAction<P extends GameActionProperties = GameActionProperties> {
     }
 
     hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
-        for (const candidateTarget of this.#targets(context, additionalProperties)) {
-            if (this.canAffect(candidateTarget, context, additionalProperties)) {
+        for(const candidateTarget of this.#targets(context, additionalProperties)) {
+            if(this.canAffect(candidateTarget, context, additionalProperties)) {
                 return true;
             }
         }
@@ -88,8 +88,8 @@ export class GameAction<P extends GameActionProperties = GameActionProperties> {
     }
 
     allTargetsLegal(context: AbilityContext, additionalProperties = {}): boolean {
-        for (const candidateTarget of this.#targets(context, additionalProperties)) {
-            if (!this.canAffect(candidateTarget, context, additionalProperties)) {
+        for(const candidateTarget of this.#targets(context, additionalProperties)) {
+            if(!this.canAffect(candidateTarget, context, additionalProperties)) {
                 return false;
             }
         }
@@ -97,8 +97,8 @@ export class GameAction<P extends GameActionProperties = GameActionProperties> {
     }
 
     addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
-        for (const target of this.#targets(context, additionalProperties)) {
-            if (this.canAffect(target, context, additionalProperties)) {
+        for(const target of this.#targets(context, additionalProperties)) {
+            if(this.canAffect(target, context, additionalProperties)) {
                 events.push(this.getEvent(target, context, additionalProperties));
             }
         }
@@ -129,7 +129,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties> {
         target: undefined | PlayerOrRingOrCardOrToken | PlayerOrRingOrCardOrToken[],
         context: AbilityContext
     ): void {
-        if (target) {
+        if(target) {
             this.setDefaultTarget(() => target);
         }
         const events = [];
@@ -162,18 +162,18 @@ export class GameAction<P extends GameActionProperties = GameActionProperties> {
     }
 
     moveFateEventCondition(event): boolean {
-        if (event.origin) {
-            if (event.origin.getFate() === 0) {
+        if(event.origin) {
+            if(event.origin.getFate() === 0) {
                 return false;
-            } else if (
+            } else if(
                 event.origin.type === CardTypes.Character &&
                 !event.origin.allowGameAction('removeFate', event.context)
             ) {
                 return false;
             }
         }
-        if (event.recipient) {
-            if (
+        if(event.recipient) {
+            if(
                 event.recipient.type === CardTypes.Character &&
                 !event.recipient.allowGameAction('placeFate', event.context)
             ) {
@@ -184,11 +184,11 @@ export class GameAction<P extends GameActionProperties = GameActionProperties> {
     }
 
     moveFateEventHandler(event): void {
-        if (event.origin) {
+        if(event.origin) {
             event.fate = Math.min(event.fate, event.origin.getFate());
             event.origin.modifyFate(-event.fate);
         }
-        if (event.recipient) {
+        if(event.recipient) {
             event.recipient.modifyFate(event.fate);
         }
     }

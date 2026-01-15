@@ -57,7 +57,9 @@ class HandlerMenuPrompt extends UiPrompt {
             // Get unique cards by id
             const seenIds = new Set();
             let cards = this.properties.cards.filter(card => {
-                if(seenIds.has(card.id)) return false;
+                if(seenIds.has(card.id)) {
+                    return false;
+                }
                 seenIds.add(card.id);
                 return true;
             });

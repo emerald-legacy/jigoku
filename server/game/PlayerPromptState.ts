@@ -59,16 +59,16 @@ export class PlayerPromptState {
         this.buttons = !prompt.buttons
             ? []
             : prompt.buttons.map((button) => {
-                  if (button.card) {
-                      const { card, ...properties } = button;
-                      return Object.assign(
-                          { text: card.name, arg: card.uuid, card: card.getShortSummary() },
-                          properties
-                      );
-                  }
+                if(button.card) {
+                    const { card, ...properties } = button;
+                    return Object.assign(
+                        { text: card.name, arg: card.uuid, card: card.getShortSummary() },
+                        properties
+                    );
+                }
 
-                  return button;
-              });
+                return button;
+            });
     }
 
     cancelPrompt() {
@@ -90,7 +90,7 @@ export class PlayerPromptState {
             unselectable: this.selectCard && !selectable
         };
 
-        if (index !== -1 && this.selectOrder) {
+        if(index !== -1 && this.selectOrder) {
             return Object.assign({ order: index + 1 }, result);
         }
 
@@ -98,7 +98,7 @@ export class PlayerPromptState {
     }
 
     getRingSelectionState(ring: Ring) {
-        if (this.selectRing) {
+        if(this.selectRing) {
             return { unselectable: !this.selectableRings.includes(ring) };
         }
         return { unselectable: ring.game.currentConflict && !ring.contested };

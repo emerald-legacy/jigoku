@@ -32,7 +32,7 @@ describe('Wrathstorm Dancer', function () {
         it('bows as a result of conflict resolution if player has another berserker participating', function() {
             this.noMoreActions();
             this.initiateConflict({
-                attackers: [this.dancer ],
+                attackers: [this.dancer],
                 defenders: []
             });
             this.noMoreActions();

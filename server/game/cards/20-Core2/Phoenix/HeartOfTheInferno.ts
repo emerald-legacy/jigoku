@@ -19,15 +19,15 @@ export default class HeartOfTheInferno extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card: BaseCard) => card.isParticipating() || card.parent?.isParticipating(),
                 gameAction: AbilityDsl.actions.multipleContext((context) => {
-                    if (!(context.target instanceof DrawCard)) {
+                    if(!(context.target instanceof DrawCard)) {
                         return { gameActions: [] };
                     }
 
                     const gameActions: Array<GameAction> = [];
-                    if (context.target.type === CardTypes.Character && context.target.attachments.length === 0) {
+                    if(context.target.type === CardTypes.Character && context.target.attachments.length === 0) {
                         gameActions.push(AbilityDsl.actions.bow({ target: context.target }));
                     }
-                    if (context.target.type === CardTypes.Attachment && context.player.hasAffinity('fire', context)) {
+                    if(context.target.type === CardTypes.Attachment && context.player.hasAffinity('fire', context)) {
                         gameActions.push(AbilityDsl.actions.discardFromPlay({ target: context.target }));
                     }
 

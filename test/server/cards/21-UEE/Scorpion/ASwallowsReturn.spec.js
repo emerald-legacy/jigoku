@@ -1,4 +1,4 @@
-describe("A Swallow's Return", function () {
+describe('A Swallow\'s Return', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
@@ -50,7 +50,7 @@ describe("A Swallow's Return", function () {
 
             it('should prompt the player to choose a card to play', function () {
                 this.player2.clickCard(this.swallowsReturn);
-                expect(this.player2).toHavePrompt("A Swallow's Return");
+                expect(this.player2).toHavePrompt('A Swallow\'s Return');
                 expect(this.player2).toHavePrompt('Choose a card to play');
 
                 expect(this.player2).toHavePromptButton('Assassination');
@@ -58,7 +58,7 @@ describe("A Swallow's Return", function () {
                 expect(this.player2).toHavePromptButton('Honored Blade');
                 expect(this.player2).toHavePromptButton('Play nothing');
                 expect(this.getChatLogs(3)).toContain(
-                    "player2 plays A Swallow's Return, revealing Ready for Battle, Honored Blade and Assassination to choose one of those to play"
+                    'player2 plays A Swallow\'s Return, revealing Ready for Battle, Honored Blade and Assassination to choose one of those to play'
                 );
             });
 
@@ -75,7 +75,7 @@ describe("A Swallow's Return", function () {
                     'player2 chooses to play Assassination and discard Ready for Battle and Honored Blade'
                 );
                 expect(this.getChatLogs(5)).toContain(
-                    "player2 plays Assassination from their opponent's conflict deck"
+                    'player2 plays Assassination from their opponent\'s conflict deck'
                 );
 
                 expect(this.assassination.location).toBe('conflict discard pile');

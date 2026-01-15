@@ -7,7 +7,7 @@ class AbilityTargetSelect {
         this.properties = properties;
         this.dependentTarget = null;
         this.dependentCost = null;
-        if (this.properties.dependsOn) {
+        if(this.properties.dependsOn) {
             let dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
             dependsOnTarget.dependentTarget = this;
         }
@@ -23,7 +23,7 @@ class AbilityTargetSelect {
     }
 
     getChoices(context) {
-        if (typeof this.properties.choices === 'function') {
+        if(typeof this.properties.choices === 'function') {
             return this.properties.choices(context);
         }
         return this.properties.choices;
@@ -32,28 +32,28 @@ class AbilityTargetSelect {
     isChoiceLegal(key, context) {
         let contextCopy = context.copy();
         contextCopy.selects[this.name] = new SelectChoice(key);
-        if (this.name === 'target') {
+        if(this.name === 'target') {
             contextCopy.select = key;
         }
-        if (context.stage === Stages.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
+        if(context.stage === Stages.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
             return false;
         }
-        if (this.dependentTarget && !this.dependentTarget.hasLegalTarget(contextCopy)) {
+        if(this.dependentTarget && !this.dependentTarget.hasLegalTarget(contextCopy)) {
             return false;
         }
         let choice = this.getChoices(context)[key];
-        if (typeof choice === 'function') {
+        if(typeof choice === 'function') {
             return choice(contextCopy);
         }
         return choice.hasLegalTarget(contextCopy);
     }
 
     getGameAction(context) {
-        if (!context.selects[this.name]) {
+        if(!context.selects[this.name]) {
             return [];
         }
         let choice = this.getChoices(context)[context.selects[this.name].choice];
-        if (typeof choice !== 'function') {
+        if(typeof choice !== 'function') {
             return choice;
         }
         return [];
@@ -64,15 +64,15 @@ class AbilityTargetSelect {
     }
 
     resolve(context, targetResults) {
-        if (targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
+        if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
             return;
         }
-        if (this.properties.condition && !this.properties.condition(context)) {
+        if(this.properties.condition && !this.properties.condition(context)) {
             return;
         }
 
         let player = (this.properties.targets && context.choosingPlayerOverride) || this.getChoosingPlayer(context);
-        if (player === context.player.opponent && context.stage === Stages.PreTarget) {
+        if(player === context.player.opponent && context.stage === Stages.PreTarget) {
             targetResults.delayTargeting = this;
             return;
         }
@@ -81,25 +81,25 @@ class AbilityTargetSelect {
         let handlers = choices.map((choice) => {
             return () => {
                 context.selects[this.name] = new SelectChoice(choice);
-                if (this.name === 'target') {
+                if(this.name === 'target') {
                     context.select = choice;
                 }
             };
         });
-        if (player !== context.player.opponent && context.stage === Stages.PreTarget) {
-            if (!targetResults.noCostsFirstButton) {
+        if(player !== context.player.opponent && context.stage === Stages.PreTarget) {
+            if(!targetResults.noCostsFirstButton) {
                 choices.push('Pay costs first');
                 handlers.push(() => (targetResults.payCostsFirst = true));
             }
             choices.push('Cancel');
             handlers.push(() => (targetResults.cancelled = true));
         }
-        if (handlers.length === 1) {
+        if(handlers.length === 1) {
             handlers[0]();
-        } else if (handlers.length > 1) {
+        } else if(handlers.length > 1) {
             let waitingPromptTitle = '';
-            if (context.stage === Stages.PreTarget) {
-                if (context.ability.abilityType === 'action') {
+            if(context.stage === Stages.PreTarget) {
+                if(context.ability.abilityType === 'action') {
                     waitingPromptTitle = 'Waiting for opponent to take an action or pass';
                 } else {
                     waitingPromptTitle = 'Waiting for opponent';
@@ -117,7 +117,7 @@ class AbilityTargetSelect {
     }
 
     checkTarget(context) {
-        if (
+        if(
             this.properties.targets &&
             context.choosingPlayerOverride &&
             this.getChoosingPlayer(context) === context.player
@@ -129,14 +129,14 @@ class AbilityTargetSelect {
 
     getChoosingPlayer(context) {
         let playerProp = this.properties.player;
-        if (typeof playerProp === 'function') {
+        if(typeof playerProp === 'function') {
             playerProp = playerProp(context);
         }
         return playerProp === Players.Opponent ? context.player.opponent : context.player;
     }
 
     hasTargetsChosenByInitiatingPlayer(context) {
-        if (this.properties.targets) {
+        if(this.properties.targets) {
             return true;
         }
         let actions = Object.values(this.getChoices(context)).filter((value) => typeof value !== 'function');

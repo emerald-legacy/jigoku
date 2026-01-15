@@ -23,16 +23,16 @@ export default class KissOfTheSea extends DrawCard {
                         'setBaseDash'
                     ];
 
-                    if (!event.effectTypes) {
+                    if(!event.effectTypes) {
                         return false;
                     }
 
-                    if (!event.matches || !event.matches.includes(context.source.parent)) {
+                    if(!event.matches || !event.matches.includes(context.source.parent)) {
                         return false;
                     }
 
-                    for (let i = 0; i < event.effectTypes.length; i++) {
-                        if (effects.includes(event.effectTypes[i])) {
+                    for(let i = 0; i < event.effectTypes.length; i++) {
+                        if(effects.includes(event.effectTypes[i])) {
                             return true;
                         }
                     }
@@ -41,7 +41,7 @@ export default class KissOfTheSea extends DrawCard {
             },
             gameAction: AbilityDsl.actions.bow(context => ({
                 target: context.source.parent
-            })),
+            }))
         });
     }
 }

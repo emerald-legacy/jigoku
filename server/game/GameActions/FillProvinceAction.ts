@@ -28,11 +28,11 @@ export class FillProvinceAction extends PlayerAction<FillProvinceProperties> {
         let currentCards = event.player.getDynastyCardsInProvince(properties.location).length;
         event.player.refillProvince(properties.location, properties.fillTo - currentCards);
 
-        if (properties.faceup) {
+        if(properties.faceup) {
             event.context.game.queueSimpleStep(() => {
                 let cards = event.player.getDynastyCardsInProvince(properties.location);
                 cards.forEach((card) => {
-                    if (card) {
+                    if(card) {
                         card.facedown = false;
                     }
                 });

@@ -21,12 +21,12 @@ export default class GraspOfEarth2 extends DrawCard {
 
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.WouldInterrupt, {
-                title: "Block a character's movement to the conflict",
+                title: 'Block a character\'s movement to the conflict',
                 when: {
                     onMoveToConflict: (event: any, context: TriggeredAbilityContext) =>
                         event.card.type === CardTypes.Character && context.source.isParticipating()
                 },
-                effect: "deny {1}'s movement",
+                effect: 'deny {1}\'s movement',
                 effectArgs: (context: TriggeredAbilityContext) => [context.event.card],
                 gameAction: AbilityDsl.actions.cancel()
             })

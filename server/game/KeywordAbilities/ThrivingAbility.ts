@@ -22,7 +22,7 @@ export class ThrivingAbility extends TriggeredAbility {
             ],
             title: `${card.name}'s Thriving`,
             printedAbility: false,
-            message: "{0} places a card facedown in {1} due to {2}'s Thriving",
+            message: '{0} places a card facedown in {1} due to {2}\'s Thriving',
             messageArgs: (context: TriggeredAbilityContext<DrawCard>) => [
                 context.player,
                 context.player.getProvinceCardInProvince(context.source.location).isFacedown()

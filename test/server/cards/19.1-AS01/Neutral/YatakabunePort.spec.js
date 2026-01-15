@@ -34,8 +34,8 @@ describe('Yatakabune Port', function () {
             this.player2.clickCard(this.port);
             this.player2.clickPrompt('military');
             expect(this.player2.player.imperialFavor).toBe('military');
-            expect(this.getChatLogs(10)).toContain("player2 claims the Emperor's military favor!");
-            expect(this.getChatLogs(10)).toContain("player2 uses Yatakabune Port to claim the Emperor's favor");
+            expect(this.getChatLogs(10)).toContain('player2 claims the Emperor\'s military favor!');
+            expect(this.getChatLogs(10)).toContain('player2 uses Yatakabune Port to claim the Emperor\'s favor');
         });
     });
 });

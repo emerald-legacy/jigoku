@@ -45,7 +45,7 @@ export class SelectCardAction extends CardGameAction {
 
     getEffectMessage(context: AbilityContext): [string, any[]] {
         let { target, effect, effectArgs } = this.getProperties(context) as SelectCardProperties;
-        if (effect) {
+        if(effect) {
             return [effect, effectArgs(context) || []];
         }
         return ['choose a target for {0}', [target]];
@@ -54,7 +54,7 @@ export class SelectCardAction extends CardGameAction {
     getProperties(context: AbilityContext, additionalProperties = {}): SelectCardProperties {
         let properties = super.getProperties(context, additionalProperties) as SelectCardProperties;
         properties.gameAction.setDefaultTarget(() => properties.target);
-        if (!properties.selector) {
+        if(!properties.selector) {
             let cardCondition = (card, context) =>
                 properties.gameAction.allTargetsLegal(
                     context,
@@ -85,12 +85,12 @@ export class SelectCardAction extends CardGameAction {
 
     addEventsToArray(events, context: AbilityContext, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
-        if (properties.player === Players.Opponent && !context.player.opponent) {
+        if(properties.player === Players.Opponent && !context.player.opponent) {
             return;
         }
         let player = properties.player === Players.Opponent ? context.player.opponent : context.player;
         let mustSelect = [];
-        if (properties.targets) {
+        if(properties.targets) {
             player = context.choosingPlayerOverride || player;
             mustSelect = properties.selector
                 .getAllLegalTargets(context, player)
@@ -100,7 +100,7 @@ export class SelectCardAction extends CardGameAction {
                         .some((restriction) => restriction.isMatch('target', context))
                 );
         }
-        if (!properties.selector.hasEnoughTargets(context, player)) {
+        if(!properties.selector.hasEnoughTargets(context, player)) {
             return;
         }
         let defaultProperties = {
@@ -110,7 +110,7 @@ export class SelectCardAction extends CardGameAction {
             buttons: properties.cancelHandler ? [{ text: 'Cancel', arg: 'cancel' }] : [],
             onCancel: properties.cancelHandler,
             onSelect: (player, cards) => {
-                if (properties.message) {
+                if(properties.message) {
                     context.game.addMessage(properties.message, ...properties.messageArgs(cards, player, properties));
                 }
                 properties.gameAction.addEventsToArray(
@@ -118,16 +118,16 @@ export class SelectCardAction extends CardGameAction {
                     context,
                     Object.assign({ parentAction: this }, additionalProperties, properties.subActionProperties(cards))
                 );
-                if (properties.manuallyRaiseEvent) {
+                if(properties.manuallyRaiseEvent) {
                     context.game.openEventWindow(events);
                 }
                 return true;
             }
         };
         const finalProperties = Object.assign(defaultProperties, properties);
-        if (properties.hidePromptIfSingleCard) {
+        if(properties.hidePromptIfSingleCard) {
             const cards = properties.selector.getAllLegalTargets(context);
-            if (cards.length === 1) {
+            if(cards.length === 1) {
                 finalProperties.onSelect(player, cards[0]);
                 return;
             }

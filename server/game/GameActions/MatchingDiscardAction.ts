@@ -49,30 +49,30 @@ export class MatchingDiscardAction extends PlayerAction {
         let context = event.context;
         let player = event.player;
         let amount = Math.min(event.amount, player.hand.size());
-        if (amount < 0) {
+        if(amount < 0) {
             amount = player.hand.size(); //ensure we discard all matching copies
         }
 
-        if (amount === 0) {
+        if(amount === 0) {
             return;
         }
         let cards = event.cards;
         let cardsToDiscard = cards.filter((a) => event.match(context, a));
-        if (amount < cardsToDiscard.length) {
+        if(amount < cardsToDiscard.length) {
             cardsToDiscard = cardsToDiscard.slice(0, amount);
         }
         event.cards = cardsToDiscard;
         event.discardedCards = cardsToDiscard;
-        if (event.reveal) {
+        if(event.reveal) {
             player.game.addMessage('{0} reveals {1}', player, cards);
         }
-        if (cardsToDiscard.length > 0) {
+        if(cardsToDiscard.length > 0) {
             player.game.addMessage('{0} discards {1}', player, cardsToDiscard);
         } else {
             player.game.addMessage('{0} does not discard anything', player);
         }
 
-        for (const card of cardsToDiscard) {
+        for(const card of cardsToDiscard) {
             player.moveCard(card, card.isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile);
         }
     }

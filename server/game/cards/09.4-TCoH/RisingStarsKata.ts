@@ -37,7 +37,7 @@ export default class RisingStarsKata extends DrawCard {
     }
 
     public afterDuel(event: any) {
-        if (event.duel.winner) {
+        if(event.duel.winner) {
             const winners: BaseCard[] = Array.isArray(event.duel.winner) ? event.duel.winner : [event.duel.winner];
             winners.forEach((duelWinner) => this.duelWinnersThisConflict.add(duelWinner));
         }

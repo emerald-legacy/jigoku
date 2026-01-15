@@ -52,7 +52,7 @@ describe('Kotobuki\'s Blessing', function () {
             expect(this.getChatLogs(5)).toContain('player1 plays Kotobuki\'s Blessing to place 1 fate on Brash Samurai');
             expect(this.getChatLogs(5)).toContain('player1 chooses to discard Fine Katana from Brash Samurai');
         });
- 
+
         it('should put a fate and prompt to discard attachment (no discard)', function () {
             let fate = this.brash.fate;
 

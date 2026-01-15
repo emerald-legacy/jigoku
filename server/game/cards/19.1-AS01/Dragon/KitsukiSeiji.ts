@@ -29,7 +29,7 @@ export default class KitsukiSeiji extends DrawCard {
             effect: 'put the fate that would go on the {1} ring on {0} instead',
             effectArgs: () => [this.getCurrentElementSymbol(ELEMENT_KEY)],
             gameAction: AbilityDsl.actions.cancel((context) => {
-                switch ((context as any).event.name) {
+                switch((context as any).event.name) {
                     case 'onPlaceFateOnUnclaimedRings':
                         return { replacementGameAction: this.replacementForPlaceFateOnUnclaimedRings(context) };
                     case 'onMoveFate':
@@ -69,7 +69,7 @@ export default class KitsukiSeiji extends DrawCard {
         return AbilityDsl.actions.joint(
             (context as any).event.recipients.map((recipient) => {
                 const isSeijisRing = recipient.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY));
-                if (isSeijisRing) {
+                if(isSeijisRing) {
                     return AbilityDsl.actions.placeFate({
                         target: context.source,
                         amount: recipient.amount

@@ -9,7 +9,7 @@ export default class AlongTheRiverOfGold extends ProvinceCard {
 
     setupCardAbilities() {
         this.action({
-            title: "switch a character's base skills",
+            title: 'switch a character\'s base skills',
             conflictProvinceCondition: (province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)),
             target: {
                 cardType: CardTypes.Character,
@@ -18,7 +18,7 @@ export default class AlongTheRiverOfGold extends ProvinceCard {
                     effect: AbilityDsl.effects.switchBaseSkills()
                 })
             },
-            effect: "switch {0}'s military and political skill"
+            effect: 'switch {0}\'s military and political skill'
         });
     }
 

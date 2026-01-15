@@ -13,7 +13,7 @@ export class Event {
     context = null;
     window = null;
     replacementEvent = null;
-    condition = (event) => true; 
+    condition = (event) => true;
     order = 0;
     isContingent = false;
     checkFullyResolved = (event) => !event.cancelled;
@@ -25,8 +25,8 @@ export class Event {
         params: Partial<Params>,
         private handler?: (event: Event & Partial<Params>) => void
     ) {
-        for (const key in params) {
-            if (params.hasOwnProperty(key)) {
+        for(const key in params) {
+            if(params.hasOwnProperty(key)) {
                 this[key] = params[key];
             }
         }
@@ -34,7 +34,7 @@ export class Event {
 
     cancel() {
         this.cancelled = true;
-        if (this.window) {
+        if(this.window) {
             this.window.removeEvent(this);
         }
     }
@@ -48,16 +48,16 @@ export class Event {
     }
 
     checkCondition() {
-        if (this.cancelled || this.resolved || this.name === EventNames.Unnamed) {
+        if(this.cancelled || this.resolved || this.name === EventNames.Unnamed) {
             return;
         }
-        if (!this.condition(this)) {
+        if(!this.condition(this)) {
             this.cancel();
         }
     }
 
     getResolutionEvent() {
-        if (this.replacementEvent) {
+        if(this.replacementEvent) {
             return this.replacementEvent.getResolutionEvent();
         }
         return this;
@@ -69,7 +69,7 @@ export class Event {
 
     executeHandler() {
         this.resolved = true;
-        if (this.handler) {
+        if(this.handler) {
             this.handler(this);
         }
     }
