@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext';
 import { GameAction, type GameActionProperties } from './GameAction';
 
 export interface ConditionalActionProperties extends GameActionProperties {
-    condition: ((context: AbilityContext, properties: ConditionalActionProperties) => boolean) | boolean;
+    condition: ((context: any, properties: ConditionalActionProperties) => boolean) | boolean;
     trueGameAction: GameAction;
     falseGameAction: GameAction;
 }

@@ -100,7 +100,7 @@ import { TransferHonorAction, TransferHonorProperties } from './TransferHonorAct
 import { TriggerAbilityAction, TriggerAbilityProperties } from './TriggerAbilityAction';
 import { TurnCardFacedownAction, TurnCardFacedownProperties } from './TurnCardFacedownAction';
 
-type PropsFactory<Props> = Props | ((context: AbilityContext) => Props);
+type PropsFactory<Props> = Props | ((context: any) => Props);
 
 //////////////
 // CARD

@@ -16,7 +16,7 @@ export interface GameActionProperties {
 }
 
 export class GameAction<P extends GameActionProperties = GameActionProperties> {
-    propertyFactory?: (context?: AbilityContext) => P;
+    propertyFactory?: (context?: any) => P;
     properties?: P;
     targetType: string[] = [];
     eventName = EventNames.Unnamed;
@@ -26,7 +26,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties> {
     defaultProperties: P = { cannotBeCancelled: false, optional: false } as P;
     getDefaultTargets: (context: AbilityContext) => any = (context) => this.defaultTargets(context);
 
-    constructor(propertyFactory: P | ((context?: AbilityContext) => P)) {
+    constructor(propertyFactory: P | ((context?: any) => P)) {
         if(typeof propertyFactory === 'function') {
             this.propertyFactory = propertyFactory;
         } else {

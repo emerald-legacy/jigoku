@@ -7,7 +7,7 @@ import { PlayerAction, type PlayerActionProperties } from './PlayerAction';
 export interface ChosenDiscardProperties extends PlayerActionProperties {
     amount?: number;
     targets?: boolean;
-    cardCondition?: (card: BaseCard, context: AbilityContext) => boolean;
+    cardCondition?: (card: any, context: AbilityContext) => boolean;
 }
 
 export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties> {

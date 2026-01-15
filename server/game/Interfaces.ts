@@ -40,7 +40,7 @@ interface TargetRing extends BaseTarget {
 interface TargetAbility extends BaseTarget {
     mode: TargetModes.Ability;
     cardType?: CardTypes | CardTypes[];
-    cardCondition?: (card: BaseCard, context?: AbilityContext) => boolean;
+    cardCondition?: (card: any, context?: any) => boolean;
     abilityCondition?: (ability: CardAbility) => boolean;
 }
 
@@ -50,8 +50,8 @@ interface TargetToken extends BaseTarget {
     location?: Locations | Locations[];
     cardType?: CardTypes | CardTypes[];
     singleToken?: boolean;
-    cardCondition?: (card: BaseCard, context?: AbilityContext) => boolean;
-    tokenCondition?: (token: StatusToken, context?: AbilityContext) => boolean;
+    cardCondition?: (card: any, context?: any) => boolean;
+    tokenCondition?: (token: StatusToken, context?: any) => boolean;
 }
 
 interface TargetElementSymbol extends BaseTarget {
@@ -102,7 +102,7 @@ interface SubTarget {
 }
 
 interface ActionCardTarget {
-    cardCondition?: (card: BaseCard, context?: AbilityContext) => boolean;
+    cardCondition?: (card: any, context?: any) => boolean;
 }
 
 interface ActionRingTarget {
@@ -154,7 +154,7 @@ interface AbilityProps<Context> {
 }
 
 export interface ActionProps<Source = any> extends AbilityProps<AbilityContext<Source>> {
-    condition?: (context?: AbilityContext<Source>) => boolean;
+    condition?: (context?: any) => boolean;
     phase?: Phases | 'any';
     emeraldWorksInDynsty?: boolean;
     /**
@@ -166,7 +166,7 @@ export interface ActionProps<Source = any> extends AbilityProps<AbilityContext<S
 }
 
 interface TriggeredAbilityCardTarget {
-    cardCondition?: (card: BaseCard, context?: TriggeredAbilityContext) => boolean;
+    cardCondition?: (card: any, context?: any) => boolean;
 }
 
 interface TriggeredAbilityRingTarget {
@@ -210,7 +210,7 @@ export type TriggeredAbilityProps = TriggeredAbilityWhenProps | TriggeredAbility
 export interface PersistentEffectProps<Source = any> {
     location?: Locations | Locations[];
     condition?: (context: AbilityContext<Source>) => boolean;
-    match?: (card: BaseCard, context?: AbilityContext<Source>) => boolean;
+    match?: (card: any, context?: AbilityContext<Source>) => boolean;
     targetController?: Players;
     targetLocation?: Locations;
     effect: Function | Function[];
@@ -229,7 +229,7 @@ export interface AttachmentConditionProps {
     faction?: string | string[];
     trait?: string | string[];
     limitTrait?: traitLimit | traitLimit[];
-    cardCondition?: (card: BaseCard) => boolean;
+    cardCondition?: (card: any) => boolean;
 }
 
 interface HonoredToken {
