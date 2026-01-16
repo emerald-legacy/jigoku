@@ -928,14 +928,14 @@ class Game extends EventEmitter {
         this.queueStep(window);
     }
 
-    getEvent(eventName: string, params?: any, handler?: () => any): Event {
+    getEvent(eventName: string, params?: any, handler?: (event: any) => any): Event {
         return new Event(eventName, params, handler);
     }
 
     /**
      * Creates a game Event, and opens a window for it.
      */
-    raiseEvent(eventName: string, params: any = {}, handler: () => any = () => true): Event {
+    raiseEvent(eventName: string, params: any = {}, handler: (event?: any) => any = () => true): Event {
         const event = this.getEvent(eventName, params, handler);
         this.openEventWindow([event]);
         return event;
@@ -1299,8 +1299,8 @@ class Game extends EventEmitter {
     /*
      * This information is sent to the client
      */
-    getState(activePlayerName: string): any {
-        const activePlayer = this.playersAndSpectators[activePlayerName] || new AnonymousSpectator();
+    getState(activePlayerName?: string): any {
+        const activePlayer = (activePlayerName && this.playersAndSpectators[activePlayerName]) || new AnonymousSpectator();
         const playerState: Record<string, any> = {};
         const ringState: Record<string, any> = {};
         let conflictState: any = {};
@@ -1347,7 +1347,7 @@ class Game extends EventEmitter {
     /*
      * This is used for debugging?
      */
-    getSummary(activePlayerName: string): any {
+    getSummary(activePlayerName?: string): any {
         const playerSummaries: Record<string, any> = {};
 
         for (const player of this.getPlayers()) {

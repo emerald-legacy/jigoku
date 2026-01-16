@@ -158,7 +158,7 @@ export class GameServer {
     }
 
     sendGameState(game: Game): void {
-        for(const player of Object.values<Player>(game.getPlayersAndSpectators())) {
+        for(const player of Object.values(game.getPlayersAndSpectators()) as any[]) {
             if(player.socket && !player.left && !player.disconnected) {
                 player.socket.send('gamestate', game.getState(player.name));
             }
@@ -196,7 +196,7 @@ export class GameServer {
     }
 
     onStartGame(pendingGame: PendingGame): void {
-        const game = new Game(pendingGame, { router: this, shortCardData: this.shortCardData });
+        const game = new Game(pendingGame as any, { router: this, shortCardData: this.shortCardData });
         this.games.set(pendingGame.id, game);
 
         game.started = true;

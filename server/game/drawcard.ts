@@ -20,7 +20,7 @@ interface MenuItem {
 }
 
 class DrawCard extends BaseCard {
-    fromOutOfPlaySource?: DrawCard[];
+    fromOutOfPlaySource?: BaseCard[];
     eventRegistrarForEphemeral?: EventRegistrar;
 
     menu: MenuItem[] = [
@@ -919,7 +919,7 @@ class DrawCard extends BaseCard {
         this.bowed = false;
     }
 
-    canPlay(context: AbilityContext, type: string): boolean {
+    canPlay(context: AbilityContext, type: string = 'play'): boolean {
         return (
             this.checkRestrictions(type, context) &&
             context.player.checkRestrictions(type, context) &&
@@ -1161,7 +1161,7 @@ class DrawCard extends BaseCard {
         //empty function so playcardaction doesn't crash the game
     }
 
-    allowAttachment(attachment: DrawCard): boolean {
+    allowAttachment(attachment: BaseCard | DrawCard): boolean {
         const frameworkLimitsAttachmentsWithRepeatedNames =
             this.game.gameMode === GameModes.Emerald || this.game.gameMode === GameModes.Obsidian;
         if (frameworkLimitsAttachmentsWithRepeatedNames && this.type === CardTypes.Character) {

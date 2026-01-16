@@ -225,7 +225,7 @@ export class ReduceableFateCost implements Cost {
             return;
         }
 
-        context.player.setSelectableCards([properties.pool]);
+        context.player.setSelectableCards([properties.pool as BaseCard]);
         context.game.promptWithHandlerMenu(context.player, {
             activePromptTitle: `Choose amount of fate to spend from ${properties.pool.name}`,
             choices: choices,

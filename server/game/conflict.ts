@@ -394,7 +394,7 @@ export class Conflict extends GameObject {
                 card.getEffects(EffectNames.ContributeToConflict).some((value) => value === this.attackingPlayer)
             );
             this.attackerSkill =
-                this.calculateSkillFor(this.getAttackers().concat(additionalAttackers)) +
+                this.calculateSkillFor(this.getAttackers().concat(additionalAttackers as DrawCard[])) +
                 this.attackingPlayer.skillModifier;
             if(
                 (this.attackingPlayer.imperialFavor === this.conflictType ||
@@ -412,7 +412,7 @@ export class Conflict extends GameObject {
                 card.getEffects(EffectNames.ContributeToConflict).some((value) => value === this.defendingPlayer)
             );
             this.defenderSkill =
-                this.calculateSkillFor(this.getDefenders().concat(additionalDefenders)) +
+                this.calculateSkillFor(this.getDefenders().concat(additionalDefenders as DrawCard[])) +
                 this.defendingPlayer.skillModifier;
             if(
                 (this.defendingPlayer.imperialFavor === this.conflictType ||

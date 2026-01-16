@@ -974,7 +974,7 @@ class BaseCard extends EffectSource {
             this.game.promptForSelect(this.controller, {
                 activePromptTitle: 'Choose an attachment to discard',
                 waitingPromptTitle: 'Waiting for opponent to choose an attachment to discard',
-                cardCondition: (card: DrawCard) => card.parent === this && card.isRestricted(),
+                cardCondition: (card: DrawCard) => card.parent === (this as unknown as DrawCard) && card.isRestricted(),
                 onSelect: (player: Player, card: DrawCard) => {
                     this.game.addMessage(
                         '{0} discards {1} from {2} due to too many Restricted attachments',
@@ -1031,7 +1031,7 @@ class BaseCard extends EffectSource {
      * Checks 'no attachment' restrictions for this card when attempting to
      * attach the passed attachment card.
      */
-    allowAttachment(attachment: DrawCard): boolean {
+    allowAttachment(attachment: BaseCard | DrawCard): boolean {
         if(this.allowedAttachmentTraits.some((trait) => attachment.hasTrait(trait))) {
             return true;
         }
