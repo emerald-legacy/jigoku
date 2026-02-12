@@ -39,7 +39,6 @@ export default class DragonTattoo extends DrawCard {
                     this.cardPlayed = true;
                     return {
                         source: this,
-                        // @ts-expect-error -- event.card is dynamically typed from the onCardPlayed event, not in static event type
                         target: context.event.card,
                         resetOnCancel: true,
                         playType: PlayTypes.Other,
@@ -51,7 +50,6 @@ export default class DragonTattoo extends DrawCard {
                 otherwiseAction: AbilityDsl.actions.moveCard(() => {
                     this.cardPlayed = false;
                     return {
-                        // @ts-expect-error -- event.card is dynamically typed from the onCardPlayed event, not in static event type
                         target: context.event.card,
                         destination: Locations.RemovedFromGame
                     };

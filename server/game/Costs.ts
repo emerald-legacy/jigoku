@@ -586,7 +586,6 @@ export function chooseFate(type: PlayTypes): Cost {
         resolve(context: TriggeredAbilityContext & { chooseFate: number }, result: Result) {
             context.chooseFate = 0;
 
-            // @ts-expect-error -- getReducedCost is defined on subclass but not in Player's type declaration
             let extrafate = context.player.fate - context.player.getReducedCost(type, context.source);
             if(!context.player.checkRestrictions('placeFateWhenPlayingCharacter', context)) {
                 extrafate = 0;

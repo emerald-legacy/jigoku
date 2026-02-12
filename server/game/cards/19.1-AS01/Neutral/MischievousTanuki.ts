@@ -27,13 +27,11 @@ export default class MischievousTanuki extends DrawCard {
                     trueGameAction: AbilityDsl.actions.sequential([
                         AbilityDsl.actions.handler((context) => ({
                             handler: () => {
-                                // @ts-expect-error -- fateTaken is dynamically added to context during ability resolution
                                 context.fateTaken = Math.min(2, context.player.opponent.getFate());
                             }
                         })),
                         AbilityDsl.actions.takeFate((context) => ({
                             target: context.player.opponent,
-                            // @ts-expect-error -- fateTaken is dynamically added to context during ability resolution
                             amount: context.fateTaken
                         }))
                     ]),

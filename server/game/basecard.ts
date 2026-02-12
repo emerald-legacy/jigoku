@@ -1,6 +1,9 @@
-import AbilityDsl from './abilitydsl.js';
-import Effects from './effects';
-import EffectSource from './EffectSource.js';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const AbilityDsl = require('./abilitydsl.js');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const Effects = require('./effects');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const EffectSource = require('./EffectSource.js');
 import CardAbility from './CardAbility';
 import TriggeredAbility from './triggeredability';
 import Game from './game';
