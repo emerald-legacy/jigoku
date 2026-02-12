@@ -11,35 +11,7 @@ permissions:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-    env:
-      DB_PATH: mongodb://localhost:27017/ringteki
-      DOMAIN: localhost
-      ENVIRONMENT: test
-      GAME_NODE_HOST: localhost
-      GAME_NODE_NAME: node-1
-      GAME_NODE_SOCKET_IO_PORT: 9500
-      HTTPS: false
-      LOBBY_PORT: 4000
-      MQ_URL: tcp://127.0.0.1:6000
-      SECRET: test-secret
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: TypeScript compile
-        run: npx tsc
-
-      - name: Lint
-        run: npm run lint
+    uses: ./.github/workflows/build.yml
 
   deploy:
     needs: test
