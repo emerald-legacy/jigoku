@@ -9,10 +9,8 @@ const parsedEnv = z
         EMAIL_PATH: z.string().optional(),
         ENVIRONMENT: z.string(),
         GAME_NODE_CERT_PATH: z.string().optional(),
-        GAME_NODE_HOST: z.string(),
         GAME_NODE_KEY_PATH: z.string().optional(),
         GAME_NODE_NAME: z.string(),
-        GAME_NODE_ORIGIN: z.string().optional(),
         GAME_NODE_PROXY_PORT: z.coerce.number().int().optional(),
         GAME_NODE_SOCKET_IO_PORT: z.coerce.number().int(),
         HMAC_SECRET: z.string().optional(),
@@ -36,10 +34,8 @@ export const domain = parsedEnv.data.DOMAIN;
 export const emailPath = parsedEnv.data.EMAIL_PATH;
 export const environment = parsedEnv.data.ENVIRONMENT;
 export const gameNodeCertPath = parsedEnv.data.GAME_NODE_CERT_PATH;
-export const gameNodeHost = parsedEnv.data.GAME_NODE_HOST;
 export const gameNodeKeyPath = parsedEnv.data.GAME_NODE_KEY_PATH;
 export const gameNodeName = parsedEnv.data.GAME_NODE_NAME;
-export const gameNodeOrigin = parsedEnv.data.GAME_NODE_ORIGIN;
 export const gameNodeProxyPort = parsedEnv.data.GAME_NODE_PROXY_PORT;
 export const gameNodeSocketIoPort = parsedEnv.data.GAME_NODE_SOCKET_IO_PORT;
 export const hmacSecret = parsedEnv.data.HMAC_SECRET;

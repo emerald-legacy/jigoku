@@ -12,7 +12,6 @@ jobs:
       DB_PATH: mongodb://localhost:27017/ringteki
       DOMAIN: localhost
       ENVIRONMENT: test
-      GAME_NODE_HOST: localhost
       GAME_NODE_NAME: node-1
       GAME_NODE_SOCKET_IO_PORT: 9500
       HTTPS: false

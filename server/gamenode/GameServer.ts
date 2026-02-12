@@ -18,7 +18,7 @@ import * as env from '../env.js';
 export class GameServer {
     private games = new Map<string, Game>();
     private protocol = 'https';
-    private host = env.gameNodeHost;
+    private host = env.domain;
     private zmqSocket: ZmqSocket;
     private io: socketio.Server;
     private titleCardData: any;
@@ -61,10 +61,8 @@ export class GameServer {
 
         server.listen(env.gameNodeSocketIoPort);
 
-        // Configure CORS - use specified origins if provided, otherwise allow all origins
-        // Socket.io v4 requires explicit CORS configuration for cross-origin requests
-        const corsConfig = env.gameNodeOrigin
-            ? { origin: env.gameNodeOrigin.split(','), credentials: true }
+        const corsConfig = env.domain
+            ? { origin: [`https://${env.domain}`, `http://${env.domain}`], credentials: true }
             : { origin: true, credentials: true };
 
         this.io = new socketio.Server(server, {
