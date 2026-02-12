@@ -29,8 +29,13 @@ class CardService {
 
             result.forEach(card => {
                 if(options && options.shortForm) {
-                    const { id, name, type, clan, side, deck_limit, elements, is_unique, influence_cost, influence_pool, pack_cards, role_restriction, allowed_clans } = card;
-                    cards[card.id] = { id, name, type, clan, side, deck_limit, elements, is_unique, influence_cost, influence_pool, pack_cards, role_restriction, allowed_clans };
+                    cards[card.id] = {
+                        id: card.id, name: card.name, type: card.type, clan: card.clan,
+                        side: card.side, deck_limit: card.deck_limit, elements: card.elements,
+                        is_unique: card.is_unique, influence_cost: card.influence_cost,
+                        influence_pool: card.influence_pool, pack_cards: card.pack_cards,
+                        role_restriction: card.role_restriction, allowed_clans: card.allowed_clans
+                    };
                 } else {
                     cards[card.id] = card;
                 }

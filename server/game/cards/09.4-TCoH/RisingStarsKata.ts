@@ -1,8 +1,8 @@
 import { CardTypes, Durations } from '../../Constants';
 import { EventRegistrar } from '../../EventRegistrar';
-import AbilityDsl = require('../../abilitydsl');
-import BaseCard = require('../../basecard');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import BaseCard from '../../basecard';
+import DrawCard from '../../drawcard';
 
 export default class RisingStarsKata extends DrawCard {
     static id = 'rising-stars-kata';

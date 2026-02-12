@@ -12,7 +12,7 @@ export default class PublicForum extends ProvinceCard {
             },
             effect: 'add an honor token to {0} instead of breaking it',
             gameAction: AbilityDsl.actions.cancel((context) => ({
-                // @ts-ignore
+                // @ts-expect-error -- cancel action targets the event object, but target type expects a card
                 target: context.event,
                 replacementGameAction: AbilityDsl.actions.addToken({ target: context.source })
             }))

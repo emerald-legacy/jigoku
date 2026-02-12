@@ -1,6 +1,6 @@
 import { Phases } from '../../../Constants';
-import AbilityDsl = require('../../../abilitydsl');
-import DrawCard = require('../../../drawcard');
+import AbilityDsl from '../../../abilitydsl';
+import DrawCard from '../../../drawcard';
 
 export default class MischievousTanuki extends DrawCard {
     static id = 'mischievous-tanuki';
@@ -15,7 +15,7 @@ export default class MischievousTanuki extends DrawCard {
                 message: '{0}{1}{2}{3}',
                 messageArgs: (context) => {
                     if(context.player.showBid % 2 === context.player.opponent.showBid % 2) {
-                        // @ts-ignore
+                        // @ts-expect-error -- fateTaken is dynamically added to context during ability resolution
                         return [context.player, ` takes ${context.fateTaken} fate from `, context.player.opponent, ''];
                     } else if(context.player.showBid % 2 === 0) {
                         return [context.player, ' gains 2 honor and ', context.player.opponent, ' draws 2 cards'];
@@ -27,13 +27,13 @@ export default class MischievousTanuki extends DrawCard {
                     trueGameAction: AbilityDsl.actions.sequential([
                         AbilityDsl.actions.handler((context) => ({
                             handler: () => {
-                                // @ts-ignore
+                                // @ts-expect-error -- fateTaken is dynamically added to context during ability resolution
                                 context.fateTaken = Math.min(2, context.player.opponent.getFate());
                             }
                         })),
                         AbilityDsl.actions.takeFate((context) => ({
                             target: context.player.opponent,
-                            // @ts-ignore
+                            // @ts-expect-error -- fateTaken is dynamically added to context during ability resolution
                             amount: context.fateTaken
                         }))
                     ]),

@@ -1,15 +1,15 @@
 import type { AbilityContext } from './AbilityContext';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext';
 import type { GameAction } from './GameActions/GameAction';
-import type Ring = require('./ring');
-import type BaseCard = require('./basecard');
-import type DrawCard = require('./drawcard');
+import type Ring from './ring';
+import type BaseCard from './basecard';
+import type DrawCard from './drawcard';
 import type { ProvinceCard } from './ProvinceCard';
-import type CardAbility = require('./CardAbility');
+import type CardAbility from './CardAbility';
 import type { DuelProperties } from './GameActions/DuelAction';
 import type { Players, TargetModes, CardTypes, Locations, EventNames, Phases } from './Constants';
 import type { StatusToken } from './StatusToken';
-import type Player = require('./player');
+import type Player from './player';
 
 interface BaseTarget {
     activePromptTitle?: string;
@@ -26,7 +26,7 @@ interface ChoicesInterface {
 
 interface TargetSelect extends BaseTarget {
     mode: TargetModes.Select;
-    choices: (ChoicesInterface | {}) | ((context: AbilityContext) => ChoicesInterface | {});
+    choices: (ChoicesInterface | Record<string, never>) | ((context: AbilityContext) => ChoicesInterface | Record<string, never>);
     condition?: (context: AbilityContext) => boolean;
     targets?: boolean;
 }
@@ -213,7 +213,7 @@ export interface PersistentEffectProps<Source = any> {
     match?: (card: any, context?: AbilityContext<Source>) => boolean;
     targetController?: Players;
     targetLocation?: Locations;
-    effect: Function | Function[];
+    effect: ((...args: any[]) => any) | ((...args: any[]) => any)[];
     createCopies?: boolean;
 }
 

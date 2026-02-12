@@ -1,7 +1,7 @@
-import type BaseCard = require('../basecard');
-import type Game = require('../game');
-import type Player = require('../player');
-import type Ring = require('../ring');
+import type BaseCard from '../basecard';
+import type Game from '../game';
+import type Player from '../player';
+import type Ring from '../ring';
 import type { Step } from './Step';
 
 export class BaseStep implements Step {

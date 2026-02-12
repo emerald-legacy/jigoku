@@ -1,8 +1,8 @@
 import { CardTypes, EventNames, Players } from '../../../Constants';
 import { EventRegistrar } from '../../../EventRegistrar';
-import AbilityDsl = require('../../../abilitydsl');
-import BaseCard = require('../../../basecard');
-import DrawCard = require('../../../drawcard');
+import AbilityDsl from '../../../abilitydsl';
+import BaseCard from '../../../basecard';
+import DrawCard from '../../../drawcard';
 
 export default class KakitasFirstKata extends DrawCard {
     static id = 'kakita-s-first-kata';

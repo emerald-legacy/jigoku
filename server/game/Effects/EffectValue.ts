@@ -5,7 +5,7 @@ export class EffectValue<V> {
     context: AbilityContext = {} as AbilityContext;
 
     constructor(value: V) {
-        // @ts-ignore
+        // @ts-expect-error -- defaults to true when value is nullish; V may not include boolean but this is intentional for the effect system
         this.value = value === null || value === undefined ? true : value;
     }
 

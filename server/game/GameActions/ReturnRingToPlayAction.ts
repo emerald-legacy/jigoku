@@ -3,11 +3,11 @@ import { EventNames } from '../Constants';
 import type Ring from '../ring';
 import { RingAction, type RingActionProperties } from './RingAction';
 
-export interface ReturnRingToPlayProperties extends RingActionProperties {}
+export type ReturnRingToPlayProperties = RingActionProperties;
 
 export class ReturnRingToPlayAction extends RingAction {
     name = 'returnRingToPlay';
-    eventName = EventNames.OnReturnRingtoPlay;
+    eventName = EventNames.OnReturnRingToPlay;
     effect = 'return the {0} to play';
     constructor(properties: ((context: AbilityContext) => ReturnRingToPlayProperties) | ReturnRingToPlayProperties) {
         super(properties);
@@ -25,6 +25,6 @@ export class ReturnRingToPlayAction extends RingAction {
         let ring = event.ring;
         let context = event.context;
 
-        context.game.raiseEvent(EventNames.OnReturnRingtoPlay, { ring: ring }, () => ring.returnRingToPlay());
+        context.game.raiseEvent(EventNames.OnReturnRingToPlay, { ring: ring }, () => ring.returnRingToPlay());
     }
 }

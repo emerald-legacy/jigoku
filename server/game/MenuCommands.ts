@@ -1,10 +1,10 @@
 import { Locations } from './Constants';
 import { Conflict } from './conflict';
-import type BaseCard = require('./basecard');
-import type Game = require('./game');
-import ConflictFlow = require('./gamesteps/conflict/conflictflow');
-import type Player = require('./player');
-import type Ring = require('./ring');
+import type BaseCard from './basecard';
+import type Game from './game';
+import ConflictFlow from './gamesteps/conflict/conflictflow';
+import type Player from './player';
+import type Ring from './ring';
 
 type MenuItem = {
     command: string;

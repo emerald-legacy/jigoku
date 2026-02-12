@@ -48,8 +48,8 @@ module.exports = [
             'no-useless-constructor': 'warn',
             'array-bracket-spacing': ['warn', 'never'],
             'block-spacing': ['error', 'always'],
-            'camelcase': ['warn', { properties: 'never' }],
-            'comma-dangle': 'warn',
+            'camelcase': ['error', { properties: 'never' }],
+            'comma-dangle': 'error',
             'space-before-blocks': 'error',
             'space-in-parens': ['error', 'never'],
             'space-infix-ops': 'error',
@@ -90,22 +90,22 @@ module.exports = [
             }
         },
         rules: {
-            // TypeScript rules (relaxed for gradual migration)
+            // TypeScript rules (disabled for gradual migration — re-enable as codebase improves)
             ...tseslint.configs.recommended.rules,
-            '@typescript-eslint/no-explicit-any': 'warn',
-            '@typescript-eslint/no-unused-vars': ['warn', {
+            '@typescript-eslint/no-explicit-any': 'off',
+            '@typescript-eslint/no-unused-vars': ['error', {
                 argsIgnorePattern: '^_',
                 varsIgnorePattern: '^_'
             }],
-            '@typescript-eslint/no-non-null-assertion': 'warn',
-            '@typescript-eslint/ban-ts-comment': 'warn',
-            '@typescript-eslint/no-require-imports': 'off',
-            '@typescript-eslint/no-empty-object-type': 'warn',
-            '@typescript-eslint/no-unsafe-function-type': 'warn',
-            '@typescript-eslint/no-duplicate-enum-values': 'warn',
-            '@typescript-eslint/no-unused-expressions': 'warn',
-            '@typescript-eslint/no-this-alias': 'warn',
-            'no-redeclare': 'off',
+            '@typescript-eslint/no-non-null-assertion': 'error',
+            '@typescript-eslint/ban-ts-comment': 'error',
+            '@typescript-eslint/no-require-imports': 'error',
+            '@typescript-eslint/no-empty-object-type': 'error',
+            '@typescript-eslint/no-unsafe-function-type': 'error',
+            '@typescript-eslint/no-duplicate-enum-values': 'error',
+            '@typescript-eslint/no-unused-expressions': 'error',
+            '@typescript-eslint/no-this-alias': 'error',
+            'no-redeclare': 'error',
 
             // Jasmine rules
             'jasmine/no-spec-dupes': 'off',
@@ -128,8 +128,8 @@ module.exports = [
             'no-useless-concat': 'warn',
             'array-bracket-spacing': ['warn', 'never'],
             'block-spacing': ['error', 'always'],
-            'camelcase': ['warn', { properties: 'never' }],
-            'comma-dangle': 'warn',
+            'camelcase': ['error', { properties: 'never' }],
+            'comma-dangle': 'error',
             'space-before-blocks': 'error',
             'space-in-parens': ['error', 'never'],
             'space-infix-ops': 'error',
@@ -167,12 +167,12 @@ module.exports = [
             }
         },
         rules: {
-            '@typescript-eslint/no-explicit-any': 'warn',
+            '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/no-unused-vars': ['error', {
                 argsIgnorePattern: '^_',
                 varsIgnorePattern: '^_'
             }],
-            'camelcase': 'off',
+            'camelcase': ['error', { properties: 'never' }],
             'no-invalid-this': 'off'
         }
     },
@@ -187,7 +187,7 @@ module.exports = [
             }
         },
         rules: {
-            'camelcase': 'off',
+            'camelcase': ['error', { properties: 'never' }],
             'no-invalid-this': 'off'
         }
     }

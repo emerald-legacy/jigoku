@@ -1,10 +1,10 @@
 import { GameModes } from '../GameModes';
 import { CardTypes, EffectNames, EventNames, Phases, Players } from './Constants';
 import { ReduceableFateCost } from './costs/ReduceableFateCost';
-import BaseAction = require('./BaseAction');
-import BaseCard = require('./basecard');
+import BaseAction from './BaseAction';
+import BaseCard from './basecard';
 import { AbilityContext } from './AbilityContext';
-import Player = require('./player');
+import Player from './player';
 import { Cost } from './Costs';
 
 function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIntoLocation) {

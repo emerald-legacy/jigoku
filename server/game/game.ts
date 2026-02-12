@@ -873,7 +873,8 @@ class Game extends EventEmitter {
         this.queueStep(new DrawPhase(this));
         this.queueStep(new ConflictPhase(this));
         this.queueStep(new FatePhase(this));
-        this.queueStep(new EndRoundPrompt(this)), this.queueStep(new SimpleStep(this, () => this.roundEnded()));
+        this.queueStep(new EndRoundPrompt(this));
+        this.queueStep(new SimpleStep(this, () => this.roundEnded()));
         this.queueStep(new SimpleStep(this, () => this.beginRound()));
     }
 
@@ -992,19 +993,20 @@ class Game extends EventEmitter {
         if(!context) {
             context = this.getFrameworkContext();
         }
+        const resolvedContext = context;
         const actionPairs = Object.entries(actions);
         const events = actionPairs.reduce((array: Event[], [action, cards]) => {
             action = action === 'break' ? 'breakProvince' : action;
             const gameActionFactory = (GameActions as any)[action];
             if(typeof gameActionFactory === 'function') {
                 const gameAction = gameActionFactory({ target: cards });
-                gameAction.addEventsToArray(array, context);
+                gameAction.addEventsToArray(array, resolvedContext);
             }
             return array;
         }, []);
         if(events.length > 0) {
             this.openEventWindow(events);
-            this.queueSimpleStep(() => context!.refill());
+            this.queueSimpleStep(() => resolvedContext.refill());
         }
         return events;
     }
@@ -1190,7 +1192,9 @@ class Game extends EventEmitter {
                     card.checkForIllegalAttachments();
                 });
                 player.getProvinces().forEach((card: any) => {
-                    card && card.checkForIllegalAttachments();
+                    if(card) {
+                        card.checkForIllegalAttachments();
+                    }
                 });
 
                 if(!player.checkRestrictions('haveImperialFavor') && player.imperialFavor !== '') {

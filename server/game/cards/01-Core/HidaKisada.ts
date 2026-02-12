@@ -1,6 +1,6 @@
 import { AbilityTypes, CardTypes, EventNames, Locations } from '../../Constants';
 import { EventRegistrar } from '../../EventRegistrar';
-import DrawCard = require('../../drawcard');
+import DrawCard from '../../drawcard';
 
 export default class HidaKisada extends DrawCard {
     static id = 'hida-kisada';

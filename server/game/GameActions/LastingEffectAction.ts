@@ -21,14 +21,14 @@ export class LastingEffectAction<P extends LastingEffectProperties = LastingEffe
     name = 'applyLastingEffect';
     eventName = EventNames.OnEffectApplied;
     effect = 'apply a lasting effect';
-    // @ts-ignore
+    // @ts-expect-error -- intentionally narrowing defaultProperties type from base class generic P to LastingEffectProperties
     defaultProperties: LastingEffectProperties = {
         duration: Durations.UntilEndOfConflict,
         effect: [],
         ability: null
     } as LastingEffectProperties;
 
-    // @ts-ignore
+    // @ts-expect-error -- overriding return type to be more specific than base class signature
     getProperties(
         context: AbilityContext,
         additionalProperties = {}

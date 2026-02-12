@@ -48,7 +48,7 @@ export class GainAllAbilities extends EffectValue<BaseCard> {
 
     unapply(target: BaseCard) {
         for(const value of this.abilitiesForTargets[target.uuid].reactions) {
-            // @ts-ignore
+            // @ts-expect-error -- GainAbility values have unregisterEvents at runtime but the type is not declared
             value.unregisterEvents();
         }
         for(const effect of this.persistentEffects) {

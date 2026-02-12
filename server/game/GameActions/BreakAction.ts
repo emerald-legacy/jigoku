@@ -4,7 +4,7 @@ import type { ProvinceCard } from '../ProvinceCard';
 import type BaseCard from '../basecard';
 import { type CardActionProperties, CardGameAction } from './CardGameAction';
 
-export interface BreakProperties extends CardActionProperties {}
+export type BreakProperties = CardActionProperties;
 
 export class BreakAction extends CardGameAction {
     name = 'break';

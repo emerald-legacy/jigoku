@@ -1,5 +1,5 @@
-const AbilityDsl = require('./abilitydsl');
-const { CardTypes, Players } = require('./Constants');
+import AbilityDsl from './abilitydsl';
+import { CardTypes, Players } from './Constants';
 import { InitiateDuel } from './Interfaces';
 
 export const initiateDuel = (game, card, properties) => {

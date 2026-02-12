@@ -3,7 +3,7 @@ import type BaseCard from '../basecard';
 import { CardTypes, EventNames, Locations } from '../Constants';
 import { type CardActionProperties, CardGameAction } from './CardGameAction';
 
-export interface ReadyProperties extends CardActionProperties {}
+export type ReadyProperties = CardActionProperties;
 
 export class ReadyAction extends CardGameAction {
     name = 'ready';

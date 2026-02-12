@@ -3,7 +3,7 @@ import type BaseCard from '../basecard';
 import { CardTypes, EventNames } from '../Constants';
 import { type CardActionProperties, CardGameAction } from './CardGameAction';
 
-export interface MoveConflictProperties extends CardActionProperties {}
+export type MoveConflictProperties = CardActionProperties;
 
 export class MoveConflictAction extends CardGameAction {
     name = 'moveConflict';

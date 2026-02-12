@@ -3,7 +3,7 @@ import type BaseCard from '../basecard';
 import { CardTypes, EventNames, Locations } from '../Constants';
 import { type CardActionProperties, CardGameAction } from './CardGameAction';
 
-export interface DiscardFromPlayProperties extends CardActionProperties {}
+export type DiscardFromPlayProperties = CardActionProperties;
 
 export class DiscardFromPlayAction extends CardGameAction<DiscardFromPlayProperties> {
     name = 'discardFromPlay';

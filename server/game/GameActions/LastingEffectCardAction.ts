@@ -12,12 +12,12 @@ export interface LastingEffectCardProperties extends LastingEffectGeneralPropert
 
 export class LastingEffectCardAction<
     P extends LastingEffectCardProperties = LastingEffectCardProperties
-// @ts-ignore
+// @ts-expect-error -- P extends LastingEffectCardProperties but CardGameAction expects CardGameActionProperties; intentional for lasting effect specialization
 > extends CardGameAction<P> {
     name = 'applyLastingEffect';
     eventName = EventNames.OnEffectApplied;
     effect = 'apply a lasting effect to {0}';
-    // @ts-ignore
+    // @ts-expect-error -- intentionally narrowing defaultProperties type from base class generic P to LastingEffectCardProperties
     defaultProperties: LastingEffectCardProperties = {
         duration: Durations.UntilEndOfConflict,
         canChangeZoneOnce: false,
@@ -26,7 +26,7 @@ export class LastingEffectCardAction<
         ability: null
     };
 
-    // @ts-ignore
+    // @ts-expect-error -- overriding return type to be more specific than base class signature
     getProperties(context: AbilityContext, additionalProperties = {}): LastingEffectCardProperties {
         let properties = super.getProperties(context, additionalProperties) as LastingEffectCardProperties;
         if(!Array.isArray(properties.effect)) {

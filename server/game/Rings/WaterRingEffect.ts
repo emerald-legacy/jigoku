@@ -1,8 +1,8 @@
 import { GameModes } from '../../GameModes';
 import { CardTypes, Locations } from '../Constants';
 import { AbilityContext } from '../AbilityContext';
-import BaseAbility = require('../baseability');
-import DrawCard = require('../drawcard');
+import BaseAbility from '../baseability';
+import DrawCard from '../drawcard';
 
 function cardConditionSkirmish<C extends DrawCard>(card: C, context: AbilityContext) {
     return (

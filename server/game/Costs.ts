@@ -164,7 +164,7 @@ export function discardCard(properties?: SelectCostProperties): Cost {
     return getSelectCost(
         GameActions.discardCard(),
         Object.assign({ location: Locations.Hand, mode: TargetModes.Exactly }, properties),
-        (properties?.numCards ?? 0) > 1 ? `Select ${properties!.numCards} cards to discard` : 'Select card to discard'
+        (properties?.numCards ?? 0) > 1 ? `Select ${properties?.numCards} cards to discard` : 'Select card to discard'
     );
 }
 
@@ -586,7 +586,7 @@ export function chooseFate(type: PlayTypes): Cost {
         resolve(context: TriggeredAbilityContext & { chooseFate: number }, result: Result) {
             context.chooseFate = 0;
 
-            // @ts-ignore
+            // @ts-expect-error -- getReducedCost is defined on subclass but not in Player's type declaration
             let extrafate = context.player.fate - context.player.getReducedCost(type, context.source);
             if(!context.player.checkRestrictions('placeFateWhenPlayingCharacter', context)) {
                 extrafate = 0;
@@ -771,13 +771,13 @@ export function discardHand(): Cost {
 
 export function optional(cost: Cost): Cost {
     const getActionName = (context: TriggeredAbilityContext) =>
-        `optional${cost.getActionName!(context).replace(/^./, (c) => c.toUpperCase())}`;
+        `optional${(cost.getActionName?.(context) ?? '').replace(/^./, (c) => c.toUpperCase())}`;
 
     return {
         promptsPlayer: true,
         canPay: () => true,
         getCostMessage: (context: TriggeredAbilityContext): unknown[] =>
-            context.costs[getActionName(context)] ? cost.getCostMessage!(context) : [],
+            context.costs[getActionName(context)] ? (cost.getCostMessage?.(context) ?? []) : [],
         getActionName: getActionName,
         resolve: (context: TriggeredAbilityContext, result) => {
             if(!cost.canPay(context)) {
@@ -816,7 +816,7 @@ export function optional(cost: Cost): Cost {
             }
 
             const events: Event[] = [];
-            cost.addEventsToArray!(events, context, {});
+            cost.addEventsToArray?.(events, context, {});
             return events;
         }
     };

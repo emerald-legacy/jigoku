@@ -183,7 +183,7 @@ class BaseAbility {
             context.game.queueSimpleStep(() => {
                 if(!results.cancelled) {
                     if(cost.addEventsToArray) {
-                        cost.addEventsToArray(results.events!, context, results);
+                        cost.addEventsToArray(results.events ?? [], context, results);
                     } else {
                         if(cost.resolve) {
                             cost.resolve(context, results);
@@ -195,10 +195,10 @@ class BaseAbility {
                                     : context.game.getEvent('payCost', {}, () => cost.pay?.(context));
                                 if(Array.isArray(newEvents)) {
                                     for(const event of newEvents) {
-                                        results.events!.push(event);
+                                        results.events?.push(event);
                                     }
                                 } else {
-                                    results.events!.push(newEvents);
+                                    results.events?.push(newEvents);
                                 }
                             }
                         });

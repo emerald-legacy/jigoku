@@ -3,7 +3,7 @@ import type BaseCard from '../basecard';
 import { CardTypes, EventNames } from '../Constants';
 import { type CardActionProperties, CardGameAction } from './CardGameAction';
 
-export interface FlipDynastyProperties extends CardActionProperties {}
+export type FlipDynastyProperties = CardActionProperties;
 
 export class FlipDynastyAction extends CardGameAction<FlipDynastyProperties> {
     name = 'reveal';

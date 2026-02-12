@@ -1,4 +1,4 @@
-import DrawCard = require('../../drawcard');
+import DrawCard from '../../drawcard';
 
 export default class MidnightProwler extends DrawCard {
     static id = 'midnight-prowler';

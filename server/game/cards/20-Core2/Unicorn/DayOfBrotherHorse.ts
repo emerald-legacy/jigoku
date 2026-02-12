@@ -18,7 +18,7 @@ function fluff(element: Element): string {
         case 'void':
             return 'with offerings at an open air shrine they celebrate. The Iuchi pay respect to Shinjo-kami, and herd is blessed for a good year!';
         default:
-            '';
+            return '';
     }
 }
 

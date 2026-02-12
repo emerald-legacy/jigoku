@@ -3,7 +3,7 @@ import type BaseCard from '../basecard';
 import { CardTypes, CharacterStatus, EventNames, Locations } from '../Constants';
 import { type CardActionProperties, CardGameAction } from './CardGameAction';
 
-export interface TaintProperties extends CardActionProperties {}
+export type TaintProperties = CardActionProperties;
 
 export class TaintAction extends CardGameAction {
     name = 'taint';

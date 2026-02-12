@@ -1,7 +1,7 @@
 import { AbilityContext } from '../AbilityContext';
 import { CardTypes } from '../Constants';
-import BaseAbility = require('../baseability');
-import DrawCard = require('../drawcard');
+import BaseAbility from '../baseability';
+import DrawCard from '../drawcard';
 
 export class VoidRingEffect extends BaseAbility {
     public title = 'Void Ring Effect';

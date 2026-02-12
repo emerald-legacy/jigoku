@@ -1,10 +1,10 @@
-const AbilityDsl = require('./abilitydsl.js');
-const Effects = require('./effects');
-const EffectSource = require('./EffectSource.js');
-import CardAbility = require('./CardAbility');
-import TriggeredAbility = require('./triggeredability');
-import Game = require('./game');
-import DynastyCardAction = require('./dynastycardaction');
+import AbilityDsl from './abilitydsl.js';
+import Effects from './effects';
+import EffectSource from './EffectSource.js';
+import CardAbility from './CardAbility';
+import TriggeredAbility from './triggeredability';
+import Game from './game';
+import DynastyCardAction from './dynastycardaction';
 
 import { GameModes } from '../GameModes';
 import { AbilityContext } from './AbilityContext';
@@ -33,8 +33,8 @@ import { PlayCharacterAction } from './PlayCharacterAction.js';
 import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction';
 import { StatusToken } from './StatusToken';
 import Player from './player';
-import type DrawCard = require('./drawcard');
-import Ring = require('./ring');
+import type DrawCard from './drawcard';
+import Ring from './ring';
 import type { CardEffect } from './Effects/types';
 import type { GainAllAbilities } from './Effects/Library/gainAllAbilities';
 import type { Duel } from './Duel';

@@ -4,7 +4,7 @@ import { shuffleArray } from '../Utils/helpers';
 import type DrawCard from '../drawcard';
 import type { GameAction } from './GameAction';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction';
-import type Player = require('../player');
+import type Player from '../player';
 
 type Derivable<T> = T | ((context: AbilityContext) => T);
 

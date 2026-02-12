@@ -3,7 +3,7 @@ import { EventNames } from '../Constants';
 import type Ring from '../ring';
 import { RingAction, type RingActionProperties } from './RingAction';
 
-export interface RemoveRingFromPlayProperties extends RingActionProperties {}
+export type RemoveRingFromPlayProperties = RingActionProperties;
 
 export class RemoveRingFromPlayAction extends RingAction {
     name = 'removeRingFromPlay';

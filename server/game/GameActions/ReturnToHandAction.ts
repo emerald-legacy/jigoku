@@ -3,7 +3,7 @@ import { CardTypes, EventNames, Locations } from '../Constants';
 import type DrawCard from '../drawcard';
 import { type CardActionProperties, CardGameAction } from './CardGameAction';
 
-export interface ReturnToHandProperties extends CardActionProperties {}
+export type ReturnToHandProperties = CardActionProperties;
 
 export class ReturnToHandAction extends CardGameAction {
     name = 'returnToHand';

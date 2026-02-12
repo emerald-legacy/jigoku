@@ -57,7 +57,7 @@ export class FateBidAction extends PlayerAction {
                     actions.push(new LoseFateAction({ amount, target: player }));
                 }
                 new JointGameAction(actions).resolve(undefined, context);
-                // @ts-ignore
+                // @ts-expect-error -- fateBidResult is dynamically added to context for downstream ability resolution
                 context.fateBidResult = result;
             })
         );

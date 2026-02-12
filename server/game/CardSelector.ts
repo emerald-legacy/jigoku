@@ -34,22 +34,22 @@ const defaultProperties: CardSelectorProperties = {
 const ModeToSelector: Record<string, (p: CardSelectorProperties) => BaseSelector> = {
     ability: (p) => new SingleCardSelector(p),
     autoSingle: (p) => new SingleCardSelector(p),
-    exactly: (p) => new ExactlyXCardSelector(p.numCards!, p),
-    exactlyVariable: (p) => new ExactlyVariableXCardSelector(p.numCardsFunc!, p),
+    exactly: (p) => new ExactlyXCardSelector(p.numCards ?? 1, p),
+    exactlyVariable: (p) => new ExactlyVariableXCardSelector(p.numCardsFunc ?? (() => 1), p),
     maxStat: (p) => new MaxStatCardSelector(p),
     single: (p) => new SingleCardSelector(p),
     token: (p) => new SingleCardSelector(p),
     elementSymbol: (p) => new SingleCardSelector(p),
     unlimited: (p) => new UnlimitedCardSelector(p),
-    upTo: (p) => new UpToXCardSelector(p.numCards!, p),
-    upToVariable: (p) => new UpToVariableXCardSelector(p.numCardsFunc!, p)
+    upTo: (p) => new UpToXCardSelector(p.numCards ?? 1, p),
+    upToVariable: (p) => new UpToVariableXCardSelector(p.numCardsFunc ?? (() => 1), p)
 };
 
 class CardSelector {
     static for(properties: CardSelectorProperties): BaseSelector {
         properties = CardSelector.getDefaultedProperties(properties);
 
-        const factory = ModeToSelector[properties.mode!];
+        const factory = properties.mode ? ModeToSelector[properties.mode] : undefined;
 
         if(!factory) {
             throw new Error(`Unknown card selector mode of ${properties.mode}`);

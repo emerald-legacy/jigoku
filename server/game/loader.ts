@@ -20,6 +20,7 @@ export = {
             const normalisedPath = path.join(directory, dir);
 
             fs.readdirSync(normalisedPath).forEach((file) => {
+                // eslint-disable-next-line @typescript-eslint/no-require-imports
                 const card = require('./cards/' + basePath + '/' + dir + '/' + file);
 
                 cards[card.id] = card;

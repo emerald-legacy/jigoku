@@ -1,8 +1,8 @@
 import { CardTypes, TargetModes } from '../../Constants';
 import { EventRegistrar } from '../../EventRegistrar';
 import type { StatusToken } from '../../StatusToken';
-import AbilityDsl = require('../../abilitydsl');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard';
 
 export default class DiscipleOfDeception extends DrawCard {
     static id = 'disciple-of-deception';

@@ -2,7 +2,7 @@ import { AbilityContext } from '../AbilityContext';
 import { Players } from '../Constants';
 import { PutIntoPlayAction, PutIntoPlayProperties } from './PutIntoPlayAction';
 
-export interface OpponentPutIntoPlayProperties extends PutIntoPlayProperties {}
+export type OpponentPutIntoPlayProperties = PutIntoPlayProperties;
 
 export class OpponentPutIntoPlayAction extends PutIntoPlayAction {
     defaultProperties: PutIntoPlayProperties = {

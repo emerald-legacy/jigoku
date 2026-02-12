@@ -1,6 +1,6 @@
 import { CardTypes, Locations } from '../../Constants';
 import { BaseOni } from './_BaseOni';
-import AbilityDsl = require('../../abilitydsl');
+import AbilityDsl from '../../abilitydsl';
 
 export default class ScavengingGoblin extends BaseOni {
     static id = 'scavenging-goblin';

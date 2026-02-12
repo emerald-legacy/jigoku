@@ -1,6 +1,6 @@
 import { CardTypes, Players } from '../../Constants';
 import { BaseOni } from './_BaseOni';
-import AbilityDsl = require('../../abilitydsl');
+import AbilityDsl from '../../abilitydsl';
 
 export default class LostSamurai extends BaseOni {
     static id = 'lost-samurai';

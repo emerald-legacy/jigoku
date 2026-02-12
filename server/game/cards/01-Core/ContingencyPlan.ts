@@ -1,6 +1,6 @@
 import { Direction } from '../../GameActions/ModifyBidAction';
-import AbilityDsl = require('../../abilitydsl');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard';
 
 export default class ContingencyPlan extends DrawCard {
     static id = 'contingency-plan';

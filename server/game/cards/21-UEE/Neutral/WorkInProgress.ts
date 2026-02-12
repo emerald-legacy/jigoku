@@ -93,7 +93,7 @@ function testOfSkillCost() {
                 handlers: choices.map((choice) => {
                     return () => {
                         context.costs.testOfSkillCost = choice;
-                        // @ts-expect-error
+                        // @ts-expect-error -- result.value is not declared on the type but is used by the cost resolution system
                         result.value = true;
                         result.resolved = true;
                     };

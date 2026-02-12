@@ -3,7 +3,7 @@ import { EventNames } from '../Constants';
 import type { StatusToken } from '../StatusToken';
 import { TokenAction, TokenActionProperties } from './TokenAction';
 
-export interface DiscardStatusProperties extends TokenActionProperties {}
+export type DiscardStatusProperties = TokenActionProperties;
 
 export class DiscardStatusAction extends TokenAction<DiscardStatusProperties> {
     name = 'discardStatus';

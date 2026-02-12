@@ -129,10 +129,10 @@ export class GameObject {
         if(context.stage === Stages.PreTarget || context.stage === Stages.Cost) {
             //We haven't paid the cost yet, so figure out what it will cost to play this so we can know how much fate we'll have available for targeting
             let fateCost = 0;
-            // @ts-ignore
+            // @ts-expect-error -- getReducedCost exists on play action abilities but is not declared on the base AbilityContext.ability type
             if(context.ability.getReducedCost) {
                 //we only want to consider the ability cost, not the card cost
-                // @ts-ignore
+                // @ts-expect-error -- getReducedCost exists on play action abilities but is not declared on the base AbilityContext.ability type
                 fateCost = context.ability.getReducedCost(context);
             }
             let alternateFate = context.player.getAvailableAlternateFate(context.playType, context);

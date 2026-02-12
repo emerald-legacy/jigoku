@@ -1,6 +1,6 @@
 import { CardTypes } from '../../Constants';
-import AbilityDsl = require('../../abilitydsl');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard';
 
 export default class AsakoMaezawa2 extends DrawCard {
     static id = 'asako-maezawa-2';

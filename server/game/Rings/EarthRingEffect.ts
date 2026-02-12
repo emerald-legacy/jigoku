@@ -1,7 +1,7 @@
 import { GameModes } from '../../GameModes';
 import { TargetModes } from '../Constants';
 import { AbilityContext } from '../AbilityContext';
-import BaseAbility = require('../baseability');
+import BaseAbility from '../baseability';
 
 const DRAW = 'Draw a card';
 const FORCE_DISCARD = 'Opponent discards a card';

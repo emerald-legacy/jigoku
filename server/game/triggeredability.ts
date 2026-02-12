@@ -104,7 +104,7 @@ class TriggeredAbility extends CardAbility {
             const context = this.createContext(player, events);
             if(
                 this.card.reactions.includes(this) &&
-                this.aggregateWhen!(events, context) &&
+                this.aggregateWhen?.(events, context) &&
                 this.meetsRequirements(context) === ''
             ) {
                 window.addChoice(context);
@@ -150,7 +150,7 @@ class TriggeredAbility extends CardAbility {
                 handler: (evt: Event, window: any) => this.eventHandler(evt, window)
             };
             this.game.on(event.name, event.handler);
-            this.events!.push(event);
+            this.events?.push(event);
         });
     }
 

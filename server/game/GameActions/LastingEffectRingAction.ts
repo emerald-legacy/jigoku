@@ -2,8 +2,7 @@ import { RingAction } from './RingAction';
 import { Durations, EventNames } from '../Constants';
 import { LastingEffectGeneralProperties } from './LastingEffectAction';
 
-export interface LastingEffectRingProperties extends LastingEffectGeneralProperties {
-}
+export type LastingEffectRingProperties = LastingEffectGeneralProperties;
 
 export class LastingEffectRingAction extends RingAction {
     name = 'applyLastingEffect';

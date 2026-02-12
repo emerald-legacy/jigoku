@@ -1445,7 +1445,7 @@ class Player extends GameObject {
     }
 
     getTotalIncome(): number {
-        return this.game.gameMode === GameModes.Skirmish ? 6 : this.stronghold!.cardData.fate;
+        return this.game.gameMode === GameModes.Skirmish ? 6 : (this.stronghold?.cardData.fate ?? 0);
     }
 
     getTotalHonor(): number {
@@ -1532,15 +1532,13 @@ class Player extends GameObject {
     }
 
     isTopConflictCardShown(activePlayer?: Player): boolean {
-        if(!activePlayer) {
-            activePlayer = this;
-        }
+        const resolvedPlayer = activePlayer ?? this;
 
-        if(activePlayer.conflictDeck && activePlayer.conflictDeck.size() <= 0) {
+        if(resolvedPlayer.conflictDeck && resolvedPlayer.conflictDeck.size() <= 0) {
             return false;
         }
 
-        if(activePlayer === this) {
+        if(resolvedPlayer === this) {
             return (
                 this.getEffects(EffectNames.ShowTopConflictCard).includes(Players.Any) ||
                 this.getEffects(EffectNames.ShowTopConflictCard).includes(Players.Self)

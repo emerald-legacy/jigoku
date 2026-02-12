@@ -1,7 +1,7 @@
 import { EventNames } from '../../Constants';
 import { EventRegistrar } from '../../EventRegistrar';
-import AbilityDsl = require('../../abilitydsl');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard';
 
 export default class IkomaAnakazu extends DrawCard {
     static id = 'ikoma-anakazu';

@@ -1,7 +1,7 @@
 import { Locations, Players } from '../../Constants';
 import { PlayCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand';
-import AbilityDsl = require('../../abilitydsl');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard';
 
 export default class HiddenMoonDojo extends DrawCard {
     static id = 'hidden-moon-dojo';

@@ -1,7 +1,7 @@
 import { CardTypes, Decks, Elements, Locations, Players, TargetModes } from '../../../Constants';
-import AbilityDsl = require('../../../abilitydsl');
-import BaseCard = require('../../../basecard');
-import DrawCard = require('../../../drawcard');
+import AbilityDsl from '../../../abilitydsl';
+import BaseCard from '../../../basecard';
+import DrawCard from '../../../drawcard';
 
 const ELEMENT_KEY = 'cinder-salamander-fire';
 

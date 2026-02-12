@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext';
 import type Player from '../player';
 import { GameAction, type GameActionProperties } from './GameAction';
 
-export interface PlayerActionProperties extends GameActionProperties {}
+export type PlayerActionProperties = GameActionProperties;
 
 export class PlayerAction<P extends PlayerActionProperties = PlayerActionProperties> extends GameAction<P> {
     targetType = ['player'];

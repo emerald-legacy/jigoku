@@ -11,7 +11,7 @@ export interface CardMenuProperties extends CardActionProperties {
     cards: DrawCard[];
     cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
     choices?: string[];
-    handlers?: Function[];
+    handlers?: ((...args: any[]) => any)[];
     targets?: boolean;
     message?: string;
     messageArgs?: (card: DrawCard, player: Player, cards: DrawCard[]) => any[];

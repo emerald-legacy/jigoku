@@ -1,6 +1,6 @@
-import type Player = require('./player');
-import type BaseCard = require('./basecard');
-import type Ring = require('./ring');
+import type Player from './player';
+import type BaseCard from './basecard';
+import type Ring from './ring';
 import type { Step } from './gamesteps/Step';
 
 type StepFactory = () => Step;

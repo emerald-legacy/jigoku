@@ -3,10 +3,10 @@ import { CardTypes, ConflictTypes, EffectNames, Elements, EventNames, Locations 
 import { GameObject } from './GameObject';
 import { ProvinceCard } from './ProvinceCard';
 import BaseCard from './basecard';
-import Game = require('./game');
-import Player = require('./player');
-import type Ring = require('./ring');
-import DrawCard = require('./drawcard');
+import Game from './game';
+import Player from './player';
+import type Ring from './ring';
+import DrawCard from './drawcard';
 
 type Predicate = (card: DrawCard) => boolean;
 

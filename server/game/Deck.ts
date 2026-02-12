@@ -25,28 +25,28 @@ export class Deck {
         };
 
         //conflict
-        for(const { count, card, pack_id } of this.data.conflictCards ?? []) {
+        for(const { count, card, pack_id: packId } of this.data.conflictCards ?? []) {
             for(let i = 0; i < count; i++) {
                 if(card?.side === 'conflict') {
                     const CardConstructor = cards.get(card.id) ?? DrawCard;
-                    // @ts-ignore
+                    // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                     const conflictCard: DrawCard = new CardConstructor(player, card);
                     conflictCard.location = Locations.ConflictDeck;
-                    conflictCard.packId = pack_id;
+                    conflictCard.packId = packId;
                     result.conflictCards.push(conflictCard);
                 }
             }
         }
 
         //dynasty
-        for(const { count, card, pack_id } of this.data.dynastyCards ?? []) {
+        for(const { count, card, pack_id: packId } of this.data.dynastyCards ?? []) {
             for(let i = 0; i < count; i++) {
                 if(card?.side === 'dynasty') {
                     const CardConstructor = cards.get(card.id) ?? DrawCard;
-                    // @ts-ignore
+                    // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                     const dynastyCard: DrawCard = new CardConstructor(player, card);
                     dynastyCard.location = Locations.DynastyDeck;
-                    dynastyCard.packId = pack_id;
+                    dynastyCard.packId = packId;
                     result.dynastyCards.push(dynastyCard);
                 }
             }
@@ -54,14 +54,14 @@ export class Deck {
 
         //provinces
         if(player.game.gameMode !== GameModes.Skirmish) {
-            for(const { count, card, pack_id } of this.data.provinceCards ?? []) {
+            for(const { count, card, pack_id: packId } of this.data.provinceCards ?? []) {
                 for(let i = 0; i < count; i++) {
                     if(card?.type === CardTypes.Province) {
                         const CardConstructor = cards.get(card.id) ?? ProvinceCard;
-                        // @ts-ignore
+                        // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                         const provinceCard: ProvinceCard = new CardConstructor(player, card);
                         provinceCard.location = Locations.ProvinceDeck;
-                        provinceCard.packId = pack_id;
+                        provinceCard.packId = packId;
                         result.provinceCards.push(provinceCard);
                     }
                 }
@@ -76,25 +76,25 @@ export class Deck {
 
         //stronghold & role
         if(player.game.gameMode !== GameModes.Skirmish) {
-            for(const { count, card, pack_id } of this.data.stronghold ?? []) {
+            for(const { count, card, pack_id: packId } of this.data.stronghold ?? []) {
                 for(let i = 0; i < count; i++) {
                     if(card?.type === CardTypes.Stronghold) {
                         const CardConstructor = cards.get(card.id) ?? StrongholdCard;
-                        // @ts-ignore
+                        // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                         const strongholdCard: StrongholdCard = new CardConstructor(player, card);
                         strongholdCard.location = '' as any;
-                        strongholdCard.packId = pack_id;
+                        strongholdCard.packId = packId;
                         result.stronghold = strongholdCard;
                     }
                 }
             }
-            for(const { count, card, pack_id } of this.data.role ?? []) {
+            for(const { count, card, pack_id: packId } of this.data.role ?? []) {
                 for(let i = 0; i < count; i++) {
                     if(card?.type === CardTypes.Role) {
                         const CardConstructor = cards.get(card.id) ?? RoleCard;
-                        // @ts-ignore
+                        // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                         const roleCard: RoleCard = new CardConstructor(player, card);
-                        roleCard.packId = pack_id;
+                        roleCard.packId = packId;
                         result.role = roleCard;
                     }
                 }
@@ -103,7 +103,7 @@ export class Deck {
 
         for(const cardData of this.data.outsideTheGameCards ?? []) {
             const CardConstructor = cards.get(cardData.id) ?? DrawCard;
-            // @ts-ignore
+            // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
             const card: DrawCard = new CardConstructor(player, cardData);
             card.location = Locations.OutsideTheGame;
             result.outsideTheGameCards.push(card);

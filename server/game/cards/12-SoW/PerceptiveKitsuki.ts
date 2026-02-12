@@ -1,5 +1,5 @@
-import AbilityDsl = require('../../abilitydsl');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard';
 
 export default class PerceptiveKitsuki extends DrawCard {
     static id = 'perceptive-kitsuki';

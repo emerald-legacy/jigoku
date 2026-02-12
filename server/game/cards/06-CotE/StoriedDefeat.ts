@@ -1,9 +1,9 @@
-import CardAbility = require('../../CardAbility');
+import CardAbility from '../../CardAbility';
 import { CardTypes, EventNames } from '../../Constants';
 import { EventRegistrar } from '../../EventRegistrar';
-import AbilityDsl = require('../../abilitydsl');
-import BaseCard = require('../../basecard');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import BaseCard from '../../basecard';
+import DrawCard from '../../drawcard';
 
 export default class StoriedDefeat extends DrawCard {
     static id = 'storied-defeat';

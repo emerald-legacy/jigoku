@@ -37,11 +37,11 @@ export default class RoadToShakyakuMura extends DrawCard {
             gameAction: AbilityDsl.actions.cancel((context) => ({
                 replacementGameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.returnToHand(() => ({
-                        // @ts-ignore
+                        // @ts-expect-error -- event.card.attachments is dynamically typed from the onCardLeavesPlay event
                         target: context.event.card.attachments
                     })),
                     AbilityDsl.actions.putIntoProvince({
-                        // @ts-ignore
+                        // @ts-expect-error -- event.card is dynamically typed from the onCardLeavesPlay event
                         target: context.event.card,
                         canBeStronghold: true,
                         destination: context.costs.captureLocationCost

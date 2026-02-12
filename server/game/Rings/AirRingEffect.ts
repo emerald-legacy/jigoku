@@ -2,7 +2,7 @@ import { GameModes } from '../../GameModes.js';
 import { TargetModes } from '../Constants.js';
 import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
 import { AbilityContext } from '../AbilityContext.js';
-import BaseAbility = require('../baseability.js');
+import BaseAbility from '../baseability.js';
 
 const GAIN_2 = 'Gain 2 Honor';
 const TAKE_1 = 'Take 1 Honor from opponent';

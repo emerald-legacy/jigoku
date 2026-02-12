@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext';
 import { GameAction, type GameActionProperties } from './GameAction';
 import type { StatusToken } from '../StatusToken';
 
-export interface TokenActionProperties extends GameActionProperties {}
+export type TokenActionProperties = GameActionProperties;
 
 export class TokenAction<P extends TokenActionProperties = TokenActionProperties> extends GameAction<P> {
     targetType = ['token'];

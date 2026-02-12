@@ -1,4 +1,4 @@
-import AbilityDsl = require('../../abilitydsl');
+import AbilityDsl from '../../abilitydsl';
 import { BaseOni } from './_BaseOni';
 
 export default class InsatiableGaki extends BaseOni {

@@ -59,7 +59,7 @@ export class FateBidPrompt extends AllPlayerPrompt {
         }
 
         const context = this.game.getFrameworkContext();
-        // @ts-ignore
+        // @ts-expect-error -- fateBidResult is dynamically added to context for downstream bid resolution
         context.fateBidResult = result;
 
         this.game.queueSimpleStep(() => this.bidHandler(result, context));
