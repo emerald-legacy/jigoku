@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const DrawCard = require('../../drawcard.js');
 const AbilityDsl = require('../../abilitydsl');
 const { TargetModes, CardTypes, Elements } = require('../../Constants.js');
@@ -27,9 +26,8 @@ class IsawaTsuke2 extends DrawCard {
                 cardType: CardTypes.Character,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.removeFate((context) => {
-                    let targets = [];
-                    targets = _.flatten(_.values(context.targets));
-                    targets = targets.concat(_.flatten(_.values(context.selects)));
+                    let targets = Object.values(context.targets).flat();
+                    targets = targets.concat(Object.values(context.selects).flat());
 
                     return { target: targets };
                 })

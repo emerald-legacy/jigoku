@@ -1,6 +1,6 @@
 import { CardTypes } from '../Constants';
-import BaseCard = require('../basecard');
-import DrawCard = require('../drawcard');
+import BaseCard from '../basecard';
+import DrawCard from '../drawcard';
 
 export class BattlefieldAttachment extends DrawCard {
     public setupCardAbilities() {
@@ -19,7 +19,7 @@ export class BattlefieldAttachment extends DrawCard {
     }
 
     public canAttach(parent: BaseCard) {
-        if (this.unbrokenOnly() && parent.type === CardTypes.Province && parent.isBroken) {
+        if(this.unbrokenOnly() && parent.type === CardTypes.Province && parent.isBroken) {
             return false;
         }
 

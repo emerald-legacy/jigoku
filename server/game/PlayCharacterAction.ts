@@ -22,29 +22,29 @@ export class PlayCharacterAction extends BaseAction {
     }
 
     public meetsRequirements(context = this.createContext(), ignoredRequirements: string[] = []): string {
-        if (
+        if(
             !ignoredRequirements.includes('phase') &&
             context.game.currentPhase === Phases.Dynasty &&
             !parseGameMode(context.game.gameMode).dynastyPhaseCanPlayConflictCharacters
         ) {
             return 'phase';
         }
-        if (
+        if(
             !ignoredRequirements.includes('location') &&
             !context.player.isCardInPlayableLocation(context.source, PlayTypes.PlayFromHand)
         ) {
             return 'location';
         }
-        if (
+        if(
             !ignoredRequirements.includes('cannotTrigger') &&
             !context.source.canPlay(context, PlayTypes.PlayFromHand)
         ) {
             return 'cannotTrigger';
         }
-        if (context.source.anotherUniqueInPlay(context.player)) {
+        if(context.source.anotherUniqueInPlay(context.player)) {
             return 'unique';
         }
-        if (
+        if(
             !context.player.checkRestrictions('playCharacter', context) ||
             !context.player.checkRestrictions('enterPlay', context)
         ) {
@@ -56,7 +56,7 @@ export class PlayCharacterAction extends BaseAction {
     public executeHandler(context: ExecutionContext): void {
         const legendaryFate = context.source.sumEffects(EffectNames.LegendaryFate);
         let extraFate = context.source.sumEffects(EffectNames.GainExtraFateWhenPlayed);
-        if (!context.source.checkRestrictions('placeFate', context)) {
+        if(!context.source.checkRestrictions('placeFate', context)) {
             extraFate = 0;
         }
         extraFate = extraFate + legendaryFate;
@@ -100,11 +100,11 @@ export class PlayCharacterAction extends BaseAction {
                 cardPlayedEvent
             ]);
         };
-        if (
+        if(
             context.source.allowGameAction('putIntoConflict', context) &&
             this.intoLocation !== PlayCharacterIntoLocation.Home
         ) {
-            if (this.intoLocation === PlayCharacterIntoLocation.Conflict) {
+            if(this.intoLocation === PlayCharacterIntoLocation.Conflict) {
                 return intoConflictHandler();
             }
 

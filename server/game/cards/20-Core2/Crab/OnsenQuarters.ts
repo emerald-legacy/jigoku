@@ -32,8 +32,8 @@ export default class OnsenQuarters extends ProvinceCard {
     }
 
     #ringForRole(context: AbilityContext): Ring | undefined {
-        for (const trait of context.player.role.traits) {
-            if (trait in context.game.rings) {
+        for(const trait of context.player.role.traits) {
+            if(trait in context.game.rings) {
                 return context.game.rings[trait];
             }
         }

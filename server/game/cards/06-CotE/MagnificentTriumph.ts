@@ -31,7 +31,7 @@ export default class MagnificentTriumph extends DrawCard {
                     ]
                 }))
             },
-            effect: "give {0} +2{1}, +2{2}, and prevent them from being targeted by opponent's events",
+            effect: 'give {0} +2{1}, +2{2}, and prevent them from being targeted by opponent\'s events',
             effectArgs: () => ['military', 'political']
         });
     }
@@ -41,7 +41,7 @@ export default class MagnificentTriumph extends DrawCard {
     }
 
     public afterDuel(event: any) {
-        for (const winner of (event.duel as Duel).winner ?? []) {
+        for(const winner of (event.duel as Duel).winner ?? []) {
             this.#duelWinnersThisConflict.add(winner);
         }
     }

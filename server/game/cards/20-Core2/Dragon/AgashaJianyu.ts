@@ -6,8 +6,8 @@ import type { AbilityContext } from '../../../AbilityContext';
 function bonusBase(context: AbilityContext) {
     const elementalTraits = new Set();
     context.player.cardsInPlay.forEach((character: DrawCard) => {
-        for (const trait of character.getTraits()) {
-            switch (trait) {
+        for(const trait of character.getTraits()) {
+            switch(trait) {
                 case 'air':
                 case 'earth':
                 case 'fire':

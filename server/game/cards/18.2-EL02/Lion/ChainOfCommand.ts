@@ -1,8 +1,8 @@
 import { CardTypes, EventNames, Locations, PlayTypes } from '../../../Constants';
 import { EventRegistrar } from '../../../EventRegistrar';
-import AbilityDsl = require('../../../abilitydsl');
-import BaseCard = require('../../../basecard');
-import DrawCard = require('../../../drawcard');
+import AbilityDsl from '../../../abilitydsl';
+import BaseCard from '../../../basecard';
+import DrawCard from '../../../drawcard';
 
 export default class ChainOfCommand extends DrawCard {
     static id = 'chain-of-command';
@@ -33,8 +33,8 @@ export default class ChainOfCommand extends DrawCard {
     }
 
     public onCardPlayed(event: any) {
-        if (event.card === this) {
-            if (this.location !== Locations.RemovedFromGame) {
+        if(event.card === this) {
+            if(this.location !== Locations.RemovedFromGame) {
                 this.game.addMessage('{0} is removed from the game due the effects of {0}', this);
                 this.owner.moveCard(this, Locations.RemovedFromGame);
             }

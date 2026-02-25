@@ -52,31 +52,31 @@ export class PutIntoPlayAction extends CardGameAction {
         let player = this.getPutIntoPlayPlayer(contextCopy);
         let targetSide = properties.side || this.getDefaultSide(contextCopy);
 
-        if (!context || !super.canAffect(card, context)) {
+        if(!context || !super.canAffect(card, context)) {
             return false;
-        } else if (!player || card.anotherUniqueInPlay(player)) {
+        } else if(!player || card.anotherUniqueInPlay(player)) {
             return false;
-        } else if (card.location === Locations.PlayArea || card.isFacedown()) {
+        } else if(card.location === Locations.PlayArea || card.isFacedown()) {
             return false;
-        } else if (!card.checkRestrictions('putIntoPlay', context)) {
+        } else if(!card.checkRestrictions('putIntoPlay', context)) {
             return false;
-        } else if (!player.checkRestrictions('enterPlay', contextCopy)) {
+        } else if(!player.checkRestrictions('enterPlay', contextCopy)) {
             return false;
-        } else if (this.intoConflict) {
+        } else if(this.intoConflict) {
             // There is no current conflict, or no context (cards must be put into play by a player, not a framework event)
-            if (!context.game.currentConflict) {
+            if(!context.game.currentConflict) {
                 return false;
             }
             // card cannot participate in this conflict type
-            if (card.hasDash(context.game.currentConflict.conflictType)) {
+            if(card.hasDash(context.game.currentConflict.conflictType)) {
                 return false;
             }
-            if (!card.checkRestrictions('putIntoConflict', context)) {
+            if(!card.checkRestrictions('putIntoConflict', context)) {
                 return false;
             }
 
             // its being put into play for its controller, & controller is attacking and character can't attack, or controller is defending and character can't defend
-            if (
+            if(
                 (targetSide.isAttackingPlayer() && !card.canParticipateAsAttacker()) ||
                 (targetSide.isDefendingPlayer() && !card.canParticipateAsDefender())
             ) {
@@ -104,38 +104,38 @@ export class PutIntoPlayAction extends CardGameAction {
         let player = this.getPutIntoPlayPlayer(event.context);
         this.checkForRefillProvince(event.card, event, additionalProperties);
         event.card.new = true;
-        if (event.fate) {
+        if(event.fate) {
             event.card.fate = event.fate;
         }
 
         let finalController = event.context.player;
-        if (event.controller === Players.Opponent) {
+        if(event.controller === Players.Opponent) {
             finalController = finalController.opponent;
         }
 
         let targetSide = event.side;
 
-        if (event.status === 'honored') {
+        if(event.status === 'honored') {
             event.card.honor();
-        } else if (event.status === 'dishonored') {
+        } else if(event.status === 'dishonored') {
             event.card.dishonor();
         }
-        if (event.card.hasPrintedKeyword('corrupted')) {
+        if(event.card.hasPrintedKeyword('corrupted')) {
             event.card.taint();
         }
 
         player.moveCard(event.card, Locations.PlayArea);
 
         //moveCard sets all this stuff and only works if the owner is moving cards, so we're switching it around
-        if (event.card.controller !== finalController) {
+        if(event.card.controller !== finalController) {
             event.card.controller = finalController;
             event.card.setDefaultController(event.card.controller);
             event.card.owner.cardsInPlay.splice(event.card.owner.cardsInPlay.indexOf(event.card), 1);
             event.card.controller.cardsInPlay.push(event.card);
         }
 
-        if (event.intoConflict) {
-            if (targetSide.isAttackingPlayer()) {
+        if(event.intoConflict) {
+            if(targetSide.isAttackingPlayer()) {
                 event.context.game.currentConflict.addAttacker(event.card);
             } else {
                 event.context.game.currentConflict.addDefender(event.card);

@@ -25,46 +25,49 @@ export class Deck {
         };
 
         //conflict
-        for (const { count, card } of this.data.conflictCards ?? []) {
-            for (let i = 0; i < count; i++) {
-                if (card?.side === 'conflict') {
+        for(const { count, card, pack_id: packId } of this.data.conflictCards ?? []) {
+            for(let i = 0; i < count; i++) {
+                if(card?.side === 'conflict') {
                     const CardConstructor = cards.get(card.id) ?? DrawCard;
-                    // @ts-ignore
+                    // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                     const conflictCard: DrawCard = new CardConstructor(player, card);
                     conflictCard.location = Locations.ConflictDeck;
+                    conflictCard.packId = packId;
                     result.conflictCards.push(conflictCard);
                 }
             }
         }
 
         //dynasty
-        for (const { count, card } of this.data.dynastyCards ?? []) {
-            for (let i = 0; i < count; i++) {
-                if (card?.side === 'dynasty') {
+        for(const { count, card, pack_id: packId } of this.data.dynastyCards ?? []) {
+            for(let i = 0; i < count; i++) {
+                if(card?.side === 'dynasty') {
                     const CardConstructor = cards.get(card.id) ?? DrawCard;
-                    // @ts-ignore
+                    // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                     const dynastyCard: DrawCard = new CardConstructor(player, card);
                     dynastyCard.location = Locations.DynastyDeck;
+                    dynastyCard.packId = packId;
                     result.dynastyCards.push(dynastyCard);
                 }
             }
         }
 
         //provinces
-        if (player.game.gameMode !== GameModes.Skirmish) {
-            for (const { count, card } of this.data.provinceCards ?? []) {
-                for (let i = 0; i < count; i++) {
-                    if (card?.type === CardTypes.Province) {
+        if(player.game.gameMode !== GameModes.Skirmish) {
+            for(const { count, card, pack_id: packId } of this.data.provinceCards ?? []) {
+                for(let i = 0; i < count; i++) {
+                    if(card?.type === CardTypes.Province) {
                         const CardConstructor = cards.get(card.id) ?? ProvinceCard;
-                        // @ts-ignore
+                        // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                         const provinceCard: ProvinceCard = new CardConstructor(player, card);
                         provinceCard.location = Locations.ProvinceDeck;
+                        provinceCard.packId = packId;
                         result.provinceCards.push(provinceCard);
                     }
                 }
             }
         } else {
-            for (let i = 0; i < 3; i++) {
+            for(let i = 0; i < 3; i++) {
                 const provinceCard = new ProvinceCard(player, this.#makeSkirmishProvinceCardData(i));
                 provinceCard.location = Locations.ProvinceDeck;
                 result.provinceCards.push(provinceCard);
@@ -72,33 +75,35 @@ export class Deck {
         }
 
         //stronghold & role
-        if (player.game.gameMode !== GameModes.Skirmish) {
-            for (const { count, card } of this.data.stronghold ?? []) {
-                for (let i = 0; i < count; i++) {
-                    if (card?.type === CardTypes.Stronghold) {
+        if(player.game.gameMode !== GameModes.Skirmish) {
+            for(const { count, card, pack_id: packId } of this.data.stronghold ?? []) {
+                for(let i = 0; i < count; i++) {
+                    if(card?.type === CardTypes.Stronghold) {
                         const CardConstructor = cards.get(card.id) ?? StrongholdCard;
-                        // @ts-ignore
+                        // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                         const strongholdCard: StrongholdCard = new CardConstructor(player, card);
                         strongholdCard.location = '' as any;
+                        strongholdCard.packId = packId;
                         result.stronghold = strongholdCard;
                     }
                 }
             }
-            for (const { count, card } of this.data.role ?? []) {
-                for (let i = 0; i < count; i++) {
-                    if (card?.type === CardTypes.Role) {
+            for(const { count, card, pack_id: packId } of this.data.role ?? []) {
+                for(let i = 0; i < count; i++) {
+                    if(card?.type === CardTypes.Role) {
                         const CardConstructor = cards.get(card.id) ?? RoleCard;
-                        // @ts-ignore
+                        // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                         const roleCard: RoleCard = new CardConstructor(player, card);
+                        roleCard.packId = packId;
                         result.role = roleCard;
                     }
                 }
             }
         }
 
-        for (const cardData of this.data.outsideTheGameCards ?? []) {
+        for(const cardData of this.data.outsideTheGameCards ?? []) {
             const CardConstructor = cards.get(cardData.id) ?? DrawCard;
-            // @ts-ignore
+            // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
             const card: DrawCard = new CardConstructor(player, cardData);
             card.location = Locations.OutsideTheGame;
             result.outsideTheGameCards.push(card);
@@ -106,10 +111,10 @@ export class Deck {
 
         result.allCards.push(...result.provinceCards, ...result.conflictCards, ...result.dynastyCards);
 
-        if (result.stronghold) {
+        if(result.stronghold) {
             result.allCards.push(result.stronghold);
         }
-        if (result.role) {
+        if(result.role) {
             result.allCards.push(result.role);
         }
 

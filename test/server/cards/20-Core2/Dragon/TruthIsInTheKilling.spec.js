@@ -58,7 +58,7 @@ describe('Truth is in the Killing', function () {
                     'player1 plays Truth Is In the Killing to initiate a military duel : Borderlands Defender vs. Kakita Toshimoko'
                 );
                 expect(this.getChatLogs(10)).toContain(
-                    "Duel Effect: return all fate on Kakita Toshimoko to player2's fate pool"
+                    'Duel Effect: return all fate on Kakita Toshimoko to player2\'s fate pool'
                 );
             });
         });
@@ -93,7 +93,7 @@ describe('Truth is in the Killing', function () {
                     'player1 plays Truth Is In the Killing to initiate a military duel : Doji Challenger vs. Kakita Toshimoko'
                 );
                 expect(this.getChatLogs(10)).toContain(
-                    "Duel Effect: return all fate on Kakita Toshimoko to player2's fate pool and discard them"
+                    'Duel Effect: return all fate on Kakita Toshimoko to player2\'s fate pool and discard them'
                 );
             });
 
@@ -127,7 +127,7 @@ describe('Truth is in the Killing', function () {
                     'player1 plays Truth Is In the Killing to initiate a military duel : Doji Challenger vs. Kakita Toshimoko'
                 );
                 expect(this.getChatLogs(10)).toContain(
-                    "Duel Effect: return all fate on Doji Challenger to player1's fate pool and discard them"
+                    'Duel Effect: return all fate on Doji Challenger to player1\'s fate pool and discard them'
                 );
             });
 
@@ -176,7 +176,7 @@ describe('Truth is in the Killing', function () {
                 expect(this.toshimoko.location).toBe('dynasty discard pile');
                 expect(this.diplomat.location).toBe('dynasty discard pile');
                 expect(this.getChatLogs(10)).toContain(
-                    "Duel Effect: return all fate on Kakita Toshimoko and Doji Diplomat to player2's fate pool and discard them"
+                    'Duel Effect: return all fate on Kakita Toshimoko and Doji Diplomat to player2\'s fate pool and discard them'
                 );
             });
         });

@@ -4,6 +4,9 @@ export class Spectator {
     name: string;
     emailHash: string;
     lobbyId?: string;
+    left: boolean = false;
+    disconnected: boolean = false;
+    socket: any;
 
     constructor(
         public id: string,

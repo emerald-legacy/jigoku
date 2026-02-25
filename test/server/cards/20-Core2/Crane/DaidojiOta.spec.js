@@ -197,7 +197,7 @@ describe('Daidoji Ota', function () {
                     defenders: [this.mitsu]
                 });
 
-                let fate = this.player1.fate;
+                let _fate = this.player1.fate;
                 let fate2 = this.player2.fate;
 
                 this.player2.pass();

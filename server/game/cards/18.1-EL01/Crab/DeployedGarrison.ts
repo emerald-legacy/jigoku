@@ -35,14 +35,14 @@ export default class DeployedGarrison extends DrawCard {
     }
 
     #conflictNearHolding(context: AbilityContext) {
-        if (!context.player.isDefendingPlayer()) {
+        if(!context.player.isDefendingPlayer()) {
             return false;
         }
 
         const attackedProvinces = (context.game.currentConflict as Conflict).getConflictProvinces();
         const nearbyProvinces: ProvinceCard[] = context.player.getProvinces((province: ProvinceCard) => {
-            for (const attackedProvince of attackedProvinces) {
-                if (
+            for(const attackedProvince of attackedProvinces) {
+                if(
                     attackedProvince === province ||
                     context.player.areLocationsAdjacent(attackedProvince.location, province.location)
                 ) {
@@ -52,9 +52,9 @@ export default class DeployedGarrison extends DrawCard {
             return false;
         });
 
-        for (const province of nearbyProvinces) {
-            for (const card of context.player.getDynastyCardsInProvince(province.location) as BaseCard[]) {
-                if (card.isFaceup() && card.type === CardTypes.Holding) {
+        for(const province of nearbyProvinces) {
+            for(const card of context.player.getDynastyCardsInProvince(province.location) as BaseCard[]) {
+                if(card.isFaceup() && card.type === CardTypes.Holding) {
                     return true;
                 }
             }

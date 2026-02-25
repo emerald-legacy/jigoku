@@ -1,7 +1,7 @@
 import { EventNames } from '../../Constants';
 import { EventRegistrar } from '../../EventRegistrar';
-import AbilityDsl = require('../../abilitydsl');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard';
 
 export default class IkomaAnakazu extends DrawCard {
     static id = 'ikoma-anakazu';
@@ -27,7 +27,7 @@ export default class IkomaAnakazu extends DrawCard {
     }
 
     public onBreakProvince(event: any) {
-        if (event.conflict && event.conflict.attackingPlayer) {
+        if(event.conflict && event.conflict.attackingPlayer) {
             const oldValue = this.brokenProvincesThisPhase.get(event.conflict.attackingPlayer.name) || 0;
             this.brokenProvincesThisPhase.set(event.conflict.attackingPlayer.name, oldValue + 1);
         }

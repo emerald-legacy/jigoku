@@ -6,7 +6,7 @@ export default class Kuro extends DrawCard {
     static id = 'kuro';
 
     public allowAttachment(attachment: DrawCard) {
-        if (attachment.printedCost < 1) {
+        if(attachment.printedCost < 1) {
             return false;
         }
         return super.allowAttachment(attachment);
@@ -45,7 +45,7 @@ export default class Kuro extends DrawCard {
                     }))
                 ])
             },
-            effect: "seek the lost treasure '{1}'. {2}",
+            effect: 'seek the lost treasure \'{1}\'. {2}',
             effectArgs: (context) => [
                 context.target,
                 context.source.isParticipating()

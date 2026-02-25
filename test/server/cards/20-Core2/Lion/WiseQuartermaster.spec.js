@@ -69,7 +69,7 @@ describe('Wise Quartermaster', function () {
             this.player1.clickCard(this.wiseQuartermaster);
             this.player1.clickCard(this.theLionsShadow);
             expect(this.getChatLogs(2)).toContain(
-                "player1 uses Wise Quartermaster to move The Lion's Shadow to another character"
+                'player1 uses Wise Quartermaster to move The Lion\'s Shadow to another character'
             );
             expect(this.player1).toHavePrompt('Choose a character');
             expect(this.player1).toBeAbleToSelect(this.wiseQuartermaster);
@@ -84,7 +84,7 @@ describe('Wise Quartermaster', function () {
             this.player1.clickCard(this.wiseQuartermaster);
             expect(this.wiseQuartermaster.attachments).toContain(this.theLionsShadow);
             expect(this.meticulousScout.attachments).not.toContain(this.theLionsShadow);
-            expect(this.getChatLogs(2)).toContain("player1 moves The Lion's Shadow to Wise Quartermaster");
+            expect(this.getChatLogs(2)).toContain('player1 moves The Lion\'s Shadow to Wise Quartermaster');
         });
     });
 });

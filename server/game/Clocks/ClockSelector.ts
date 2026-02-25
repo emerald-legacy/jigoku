@@ -20,7 +20,7 @@ export function clockFor(player: Player, details?: ClockConfig): ClockInterface 
     const time = (details?.time ?? 0) * 60;
     const periods = details?.periods ?? 0;
     const timePeriod = details?.timePeriod ?? 0;
-    switch (details?.type) {
+    switch(details?.type) {
         case ClockType.TIMER:
             return new Timer(player, time, periods);
         case ClockType.CHESS:

@@ -1,5 +1,3 @@
-const _ = require('underscore');
-
 const ForcedTriggeredAbilityWindow = require('./forcedtriggeredabilitywindow.js');
 const { TriggeredAbilityWindowTitle } = require('./TriggeredAbilityWindowTitle');
 
@@ -19,7 +17,7 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
             return true;
         }
         // Show a bluff prompt if we're in Step 6, the player has the approriate setting, and there's an event for the other player
-        return this.abilityType === AbilityTypes.WouldInterrupt && player.timerSettings.events && _.any(this.events, event => (
+        return this.abilityType === AbilityTypes.WouldInterrupt && player.timerSettings.events && this.events.some(event => (
             event.name === EventNames.OnInitiateAbilityEffects &&
             event.card.type === CardTypes.Event && event.context.player !== player
         ));
@@ -72,7 +70,7 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
         }
 
         // if the current player has no available choices in this window, check to see if they should get a bluff prompt
-        if(!_.any(this.choices, context => context.player === this.currentPlayer && context.ability.isInValidLocation(context))) {
+        if(!this.choices.some(context => context.player === this.currentPlayer && context.ability.isInValidLocation(context))) {
             if(this.showBluffPrompt(this.currentPlayer)) {
                 this.promptWithBluffPrompt(this.currentPlayer);
                 return false;
@@ -83,7 +81,7 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
         }
 
         // Filter choices for current player, and prompt
-        this.choices = _.filter(this.choices, context => context.player === this.currentPlayer && context.ability.isInValidLocation(context));
+        this.choices = this.choices.filter(context => context.player === this.currentPlayer && context.ability.isInValidLocation(context));
         this.promptBetweenSources(this.choices);
         return false;
     }
@@ -100,7 +98,7 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
     }
 
     getPromptForSelectProperties() {
-        return _.extend(super.getPromptForSelectProperties(), {
+        return Object.assign({}, super.getPromptForSelectProperties(), {
             selectCard: this.currentPlayer.optionSettings.markCardsUnselectable,
             buttons: [{ text: 'Pass', arg: 'pass' }],
             onMenuCommand: (player, arg) => {

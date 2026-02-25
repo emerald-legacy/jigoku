@@ -6,7 +6,7 @@ export class SuppressEffect extends EffectValue<any[]> {
     }
 
     recalculate() {
-        if (typeof this.predicate !== 'function') {
+        if(typeof this.predicate !== 'function') {
             return false;
         }
         const oldValue = this.value;

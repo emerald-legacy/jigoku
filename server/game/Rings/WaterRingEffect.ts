@@ -1,8 +1,8 @@
 import { GameModes } from '../../GameModes';
 import { CardTypes, Locations } from '../Constants';
 import { AbilityContext } from '../AbilityContext';
-import BaseAbility = require('../baseability');
-import DrawCard = require('../drawcard');
+import BaseAbility from '../baseability';
+import DrawCard from '../drawcard';
 
 function cardConditionSkirmish<C extends DrawCard>(card: C, context: AbilityContext) {
     return (
@@ -28,13 +28,13 @@ export class WaterRingEffect extends BaseAbility {
     constructor(
         optional: boolean,
         gameMode: GameModes,
-        private onResolution = (resolved: boolean) => {}
+        private onResolution = (_resolved: boolean) => {}
     ) {
         super({
             target: {
                 activePromptTitle: 'Choose character to bow or unbow',
                 source: 'Water Ring',
-                buttons: optional ? [{ text: "Don't resolve", arg: 'dontResolve' }] : [],
+                buttons: optional ? [{ text: 'Don\'t resolve', arg: 'dontResolve' }] : [],
                 cardType: CardTypes.Character,
                 cardCondition: gameMode === GameModes.Skirmish ? cardConditionSkirmish : cardConditionDefault
             }
@@ -42,12 +42,12 @@ export class WaterRingEffect extends BaseAbility {
     }
 
     public executeHandler(context: AbilityContext) {
-        if (!context.target) {
+        if(!context.target) {
             context.game.addMessage('{0} chooses not to resolve the {1} ring', context.player, 'water');
             this.onResolution(false);
             return;
         }
-        if (context.target.bowed) {
+        if(context.target.bowed) {
             context.game.addMessage('{0} resolves the {1} ring, readying {2}', context.player, 'water', context.target);
             this.onResolution(true);
             context.game.applyGameAction(context, { ready: context.target });

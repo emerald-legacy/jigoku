@@ -6,10 +6,11 @@
         "sourceMap": true,
         "outDir": "build",
         "allowJs": true,
-        "checkJs": true,
+        "checkJs": false,
         "lib": ["ES2020", "ES2021.Intl"],
         "esModuleInterop": true,
         "strictBindCallApply": true,
+        "strictFunctionTypes": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
     },

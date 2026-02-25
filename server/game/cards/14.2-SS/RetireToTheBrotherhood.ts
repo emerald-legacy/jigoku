@@ -50,10 +50,10 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
                             .map((a) => a.card);
                         let myEnter = enteredPlay.filter((a) => a.controller === context.player);
                         let oppEnter = enteredPlay.filter((a) => a.controller === context.player.opponent);
-                        if (myEnter.length > 0) {
+                        if(myEnter.length > 0) {
                             this.game.addMessage('{0} puts {1} into play', context.player, myEnter);
                         }
-                        if (oppEnter.length > 0) {
+                        if(oppEnter.length > 0) {
                             this.game.addMessage('{0} puts {1} into play', context.player.opponent, oppEnter);
                         }
                     }
@@ -73,7 +73,7 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
     }
 
     getBrotherhoodCards(context, player) {
-        if (!player) {
+        if(!player) {
             let def = [];
             def.push([]);
             def.push([]);
@@ -87,9 +87,9 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
         let deck = player.dynastyDeck.value();
         let revealedCards = [];
         let characters = [];
-        for (let i = 0; i < deck.length && characters.length < cards.length; i++) {
+        for(let i = 0; i < deck.length && characters.length < cards.length; i++) {
             revealedCards.push(deck[i]);
-            if (deck[i].type === CardTypes.Character) {
+            if(deck[i].type === CardTypes.Character) {
                 characters.push(deck[i]);
             }
         }

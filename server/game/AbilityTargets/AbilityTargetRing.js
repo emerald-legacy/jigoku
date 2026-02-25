@@ -1,5 +1,3 @@
-const _ = require('underscore');
-
 const { Stages, Players } = require('../Constants.js');
 
 class AbilityTargetRing {
@@ -34,7 +32,7 @@ class AbilityTargetRing {
     }
 
     hasLegalTarget(context) {
-        return _.any(context.game.rings, ring => this.properties.optional || this.ringCondition(ring, context));
+        return Object.values(context.game.rings).some(ring => this.properties.optional || this.ringCondition(ring, context));
     }
 
     getGameAction(context) {
@@ -42,7 +40,7 @@ class AbilityTargetRing {
     }
 
     getAllLegalTargets(context) {
-        return _.filter(context.game.rings, ring => this.ringCondition(ring, context));
+        return Object.values(context.game.rings).filter(ring => this.ringCondition(ring, context));
     }
 
     resolve(context, targetResults) {
@@ -90,7 +88,7 @@ class AbilityTargetRing {
                 return true;
             }
         };
-        context.game.promptForRingSelect(player, _.extend(promptProperties, this.properties));
+        context.game.promptForRingSelect(player, Object.assign({}, promptProperties, this.properties));
     }
 
     checkTarget(context) {

@@ -22,7 +22,7 @@ export default class MasterTactician extends DrawCard {
             effect: AbilityDsl.effects.delayedEffect({
                 when: {
                     onCardPlayed: (event: any, context: AbilityContext) => {
-                        if (this.cardsPlayedThisRound >= MAXIMUM_CARDS_ALLOWED) {
+                        if(this.cardsPlayedThisRound >= MAXIMUM_CARDS_ALLOWED) {
                             return false;
                         }
                         this.mostRecentEvent = event;
@@ -40,13 +40,13 @@ export default class MasterTactician extends DrawCard {
                 },
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) => {
-                        if (
+                        if(
                             this.mostRecentEvent.sourceOfCardPlayedFromConflictDeck &&
                             this.mostRecentEvent.sourceOfCardPlayedFromConflictDeck !== this
                         ) {
                             return;
                         }
-                        if (!this.cardsPlayedThisRound || this.cardsPlayedThisRound < 0) {
+                        if(!this.cardsPlayedThisRound || this.cardsPlayedThisRound < 0) {
                             this.cardsPlayedThisRound = 0;
                         }
                         this.mostRecentEvent.sourceOfCardPlayedFromConflictDeck = this;
@@ -94,7 +94,7 @@ export default class MasterTactician extends DrawCard {
     }
 
     public onCharacterEntersPlay(event: any) {
-        if (event.card === this) {
+        if(event.card === this) {
             this.cardsPlayedThisRound = 0;
         }
     }

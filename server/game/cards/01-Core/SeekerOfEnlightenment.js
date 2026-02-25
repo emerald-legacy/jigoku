@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const DrawCard = require('../../drawcard.js');
 
 class SeekerOfEnlightenment extends DrawCard {
@@ -9,7 +8,7 @@ class SeekerOfEnlightenment extends DrawCard {
     }
 
     getFateOnRings() {
-        return _.reduce(this.game.rings, (fate, ring) => {
+        return Object.values(this.game.rings).reduce((fate, ring) => {
             if(ring.isUnclaimed()) {
                 return fate + ring.fate;
             }

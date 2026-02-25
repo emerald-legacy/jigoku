@@ -1,7 +1,7 @@
 const DrawCard = require('../../drawcard.js');
 
 class HeroicResolve extends DrawCard {
-    setupCardAbilities(ability) { // eslint-disable-line no-unused-vars
+    setupCardAbilities(ability) {
         this.action({
             title: 'Ready attached character',
             condition: context => context.player.getClaimedRings().length >= 2,

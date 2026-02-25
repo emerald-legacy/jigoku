@@ -1,5 +1,3 @@
-const _ = require('underscore');
-
 const { AbilityContext } = require('../AbilityContext.js');
 const CardSelector = require('../CardSelector.js');
 const EffectSource = require('../EffectSource.js');
@@ -52,7 +50,7 @@ class SelectCardPrompt extends UiPrompt {
         super(game);
 
         this.choosingPlayer = choosingPlayer;
-        if(_.isString(properties.source)) {
+        if(typeof properties.source === 'string') {
             properties.source = new EffectSource(game, properties.source);
         } else if(properties.context && properties.context.source) {
             properties.source = properties.context.source;
@@ -66,7 +64,13 @@ class SelectCardPrompt extends UiPrompt {
 
         this.properties = properties;
         this.context = properties.context || new AbilityContext({ game: game, player: choosingPlayer, source: properties.source });
-        _.defaults(this.properties, this.defaultProperties());
+        // Apply defaults for missing properties
+        const defaults = this.defaultProperties();
+        for(const key in defaults) {
+            if(this.properties[key] === undefined) {
+                this.properties[key] = defaults[key];
+            }
+        }
         if(properties.gameAction) {
             if(!Array.isArray(properties.gameAction)) {
                 this.properties.gameAction = [properties.gameAction];
@@ -207,7 +211,7 @@ class SelectCardPrompt extends UiPrompt {
         if(!this.selectedCards.includes(card)) {
             this.selectedCards.push(card);
         } else {
-            this.selectedCards = _.reject(this.selectedCards, c => c === card);
+            this.selectedCards = this.selectedCards.filter(c => c !== card);
         }
         this.choosingPlayer.setSelectedCards(this.selectedCards);
 

@@ -1,5 +1,3 @@
-const _ = require('underscore');
-
 const { BaseStep } = require('./BaseStep');
 const { TriggeredAbilityWindowTitle } = require('./TriggeredAbilityWindowTitle');
 const { Locations } = require('../Constants');
@@ -44,7 +42,9 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
             this.resolveAbility(this.choices[0]);
             return false;
         }
-        if(_.uniq(this.choices, context => context.source).length === 1) {
+        // Check if all choices share a source
+        const uniqueSources = new Set(this.choices.map(context => context.source));
+        if(uniqueSources.size === 1) {
             // All choices share a source
             this.promptBetweenAbilities(this.choices, false);
         } else {
@@ -55,8 +55,8 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
     }
 
     promptBetweenSources(choices) {
-        this.game.promptForSelect(this.currentPlayer, _.extend(this.getPromptForSelectProperties(), {
-            cardCondition: card => _.any(choices, context => context.source === card),
+        this.game.promptForSelect(this.currentPlayer, Object.assign({}, this.getPromptForSelectProperties(), {
+            cardCondition: card => choices.some(context => context.source === card),
             onSelect: (player, card) => {
                 this.promptBetweenAbilities(choices.filter(context => context.source === card));
                 return true;
@@ -91,7 +91,7 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
                 } else if(event.card) {
                     targets = targets.concat(event.card);
                 }
-                map.set(event.context.source, _.uniq(targets));
+                map.set(event.context.source, [...new Set(targets)]);
             }
         }
         return [...map.entries()].map(([source, targets]) => ({
@@ -102,7 +102,7 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
     }
 
     promptBetweenAbilities(choices, addBackButton = true) {
-        let menuChoices = _.uniq(choices.map(context => context.ability.title));
+        let menuChoices = [...new Set(choices.map(context => context.ability.title))];
         if(menuChoices.length === 1) {
             // this card has only one ability which can be triggered
             this.promptBetweenEventCards(choices, addBackButton);
@@ -114,7 +114,7 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
             menuChoices.push('Back');
             handlers.push(() => this.promptBetweenSources(this.choices));
         }
-        this.game.promptWithHandlerMenu(this.currentPlayer, _.extend(this.getPromptProperties(), {
+        this.game.promptWithHandlerMenu(this.currentPlayer, Object.assign({}, this.getPromptProperties(), {
             activePromptTitle: 'Which ability would you like to use?',
             choices: menuChoices,
             handlers: handlers
@@ -126,15 +126,18 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
             // This ability only triggers once for all events in this window
             this.resolveAbility(choices[0]);
             return;
-        } else if(_.uniq(choices, context => context.event.card).length === 1) {
+        }
+        // Check if events only affect a single card
+        const uniqueEventCards = new Set(choices.map(context => context.event.card));
+        if(uniqueEventCards.size === 1) {
             // The events which this ability can respond to only affect a single card
             this.promptBetweenEvents(choices, addBackButton);
             return;
         }
         // Several cards could be affected by this ability - prompt the player to choose which they want to affect
-        this.game.promptForSelect(this.currentPlayer, _.extend(this.getPromptForSelectProperties(), {
+        this.game.promptForSelect(this.currentPlayer, Object.assign({}, this.getPromptForSelectProperties(), {
             activePromptTitle: 'Select a card to affect',
-            cardCondition: card => _.any(choices, context => context.event.card === card),
+            cardCondition: card => choices.some(context => context.event.card === card),
             buttons: addBackButton ? [{ text: 'Back', arg: 'back' }] : [],
             onSelect: (player, card) => {
                 this.promptBetweenEvents(choices.filter(context => context.event.card === card));
@@ -150,7 +153,15 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
     }
 
     promptBetweenEvents(choices, addBackButton = true) {
-        choices = _.uniq(choices, context => context.event);
+        // Get unique choices by event
+        const seenEvents = new Set();
+        choices = choices.filter(context => {
+            if(seenEvents.has(context.event)) {
+                return false;
+            }
+            seenEvents.add(context.event);
+            return true;
+        });
         if(choices.length === 1) {
             // This card is only being affected by a single event which the chosen ability can respond to
             this.resolveAbility(choices[0]);
@@ -163,7 +174,7 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
             menuChoices.push('Back');
             handlers.push(() => this.promptBetweenSources(this.choices));
         }
-        this.game.promptWithHandlerMenu(this.currentPlayer, _.extend(this.getPromptProperties(), {
+        this.game.promptWithHandlerMenu(this.currentPlayer, Object.assign({}, this.getPromptProperties(), {
             activePromptTitle: 'Choose an event to respond to',
             choices: menuChoices,
             handlers: handlers
@@ -189,8 +200,8 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
 
     emitEvents() {
         this.choices = [];
-        this.events = _.difference(this.eventWindow.events, this.eventsToExclude);
-        _.each(this.events, event => {
+        this.events = this.eventWindow.events.filter(e => !this.eventsToExclude.includes(e));
+        this.events.forEach(event => {
             this.game.emit(event.name + ':' + this.abilityType, event, this);
         });
         this.game.emit('aggregateEvent:' + this.abilityType, this.events, this);

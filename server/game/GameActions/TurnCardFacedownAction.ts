@@ -3,7 +3,7 @@ import type BaseCard from '../basecard';
 import { CardTypes, EventNames } from '../Constants';
 import { CardGameAction, type CardActionProperties } from './CardGameAction';
 
-export interface TurnCardFacedownProperties extends CardActionProperties {}
+export type TurnCardFacedownProperties = CardActionProperties;
 
 export class TurnCardFacedownAction extends CardGameAction {
     name = 'turnFacedown';
@@ -17,12 +17,12 @@ export class TurnCardFacedownAction extends CardGameAction {
     }
 
     eventHandler(event): void {
-        if (event.card.controller !== event.card.owner) {
+        if(event.card.controller !== event.card.owner) {
             event.card.owner.moveCard(event.card, event.card.location);
         }
 
         event.card.leavesPlay();
-        if (event.card.isConflictProvince()) {
+        if(event.card.isConflictProvince()) {
             event.context.game.addMessage('{0} is immediately revealed again!', event.card);
             event.card.inConflict = true;
 

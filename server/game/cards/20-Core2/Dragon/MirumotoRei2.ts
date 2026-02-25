@@ -38,7 +38,7 @@ export default class MirumotoRei2 extends DrawCard {
                     AbilityDsl.actions.multipleContext(() => {
                         const gameActions = [];
                         duel.loser.forEach((loser) => {
-                            if (loser.getFate() > 0) {
+                            if(loser.getFate() > 0) {
                                 gameActions.push(
                                     AbilityDsl.actions.removeFate({
                                         target: loser,

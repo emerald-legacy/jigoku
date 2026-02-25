@@ -26,12 +26,12 @@ export default class DaidojiAkikore extends DrawCard {
                 message: '{0}{1}{2}',
                 messageArgs: (duel) =>
                     duel.winningPlayer === context.player
-                        ? ['add 3 to ', context.player, "'s side for this conflict"]
+                        ? ['add 3 to ', context.player, '\'s side for this conflict']
                         : ['no effect', '', ''],
                 gameAction: (duel) =>
                     AbilityDsl.actions.conditional({
                         condition: duel.winningPlayer === context.player,
-                        trueGameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
+                        trueGameAction: AbilityDsl.actions.playerLastingEffect((_context) => ({
                             targetController: duel.winningPlayer,
                             effect: AbilityDsl.effects.changePlayerSkillModifier(3)
                         })),

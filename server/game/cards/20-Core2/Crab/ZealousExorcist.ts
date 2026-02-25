@@ -1,4 +1,4 @@
-import { CardTypes, EventNames, Locations } from '../../../Constants';
+import { CardTypes, EventNames } from '../../../Constants';
 import { EventRegistrar } from '../../../EventRegistrar';
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';

@@ -1,5 +1,3 @@
-const _ = require('underscore');
-
 const CardSelector = require('../CardSelector.js');
 const { Stages, Players, EffectNames, TargetModes } = require('../Constants.js');
 
@@ -74,7 +72,7 @@ class AbilityTargetCard {
                 return;
             }
         }
-        let otherProperties = _.omit(this.properties, 'cardCondition', 'player');
+        let { cardCondition: _cardCondition, player: _playerProp, ...otherProperties } = this.properties;
 
         let buttons = [];
         let waitingPromptTitle = '';

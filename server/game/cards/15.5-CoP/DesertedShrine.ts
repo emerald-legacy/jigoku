@@ -18,7 +18,7 @@ export default class DesertedShrine extends ProvinceCard {
                 activePromptTitle: 'Choose a deck',
                 choices: (context) => {
                     const choices: [string, CardGameAction][] = [];
-                    if (context.player.dynastyDeck.size() > 0) {
+                    if(context.player.dynastyDeck.size() > 0) {
                         choices.push([
                             `${context.player.name}'s Dynasty`,
                             AbilityDsl.actions.discardCard((context) => ({
@@ -26,7 +26,7 @@ export default class DesertedShrine extends ProvinceCard {
                             }))
                         ]);
                     }
-                    if (context.player.conflictDeck.size() > 0) {
+                    if(context.player.conflictDeck.size() > 0) {
                         choices.push([
                             `${context.player.name}'s Conflict`,
                             AbilityDsl.actions.discardCard((context) => ({
@@ -34,7 +34,7 @@ export default class DesertedShrine extends ProvinceCard {
                             }))
                         ]);
                     }
-                    if (context.player.opponent?.dynastyDeck.size() > 0) {
+                    if(context.player.opponent?.dynastyDeck.size() > 0) {
                         choices.push([
                             `${context.player.opponent.name}'s Dynasty`,
                             AbilityDsl.actions.discardCard((context) => ({
@@ -42,7 +42,7 @@ export default class DesertedShrine extends ProvinceCard {
                             }))
                         ]);
                     }
-                    if (context.player.opponent?.conflictDeck.size() > 0) {
+                    if(context.player.opponent?.conflictDeck.size() > 0) {
                         choices.push([
                             `${context.player.opponent.name}'s Conflict`,
                             AbilityDsl.actions.discardCard((context) => ({

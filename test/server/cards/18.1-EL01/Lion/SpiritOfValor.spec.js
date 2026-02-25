@@ -55,14 +55,14 @@ describe('Spirit of Valor', function () {
 
                 this.player1.clickCard(this.bushidoAdherent);
                 expect(this.getChatLogs(3)).toContain(
-                    "player1 uses Spirit of Valor, sacrificing Spirit of Valor to copy Bushidō Adherent's abilities onto Akodo Kaede"
+                    'player1 uses Spirit of Valor, sacrificing Spirit of Valor to copy Bushidō Adherent\'s abilities onto Akodo Kaede'
                 );
 
                 this.player2.pass();
                 this.player1.clickCard(this.kaede);
                 this.player1.clickCard(this.kaede);
                 expect(this.getChatLogs(3)).toContain(
-                    "player1 uses Akodo Kaede's gained ability from Bushidō Adherent to honor Akodo Kaede and have player2 draw 1 card"
+                    'player1 uses Akodo Kaede\'s gained ability from Bushidō Adherent to honor Akodo Kaede and have player2 draw 1 card'
                 );
             });
         });

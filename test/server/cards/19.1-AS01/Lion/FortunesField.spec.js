@@ -32,7 +32,7 @@ describe('Fortunes Field', function () {
             expect(this.player1).toBeAbleToSelect(this.field);
             this.player1.clickCard(this.field);
             expect(this.getChatLogs(5)).toContain(
-                "player1 uses Fortune's Field to reduce the cost of their next character or follower this round by 1"
+                'player1 uses Fortune\'s Field to reduce the cost of their next character or follower this round by 1'
             );
         });
 

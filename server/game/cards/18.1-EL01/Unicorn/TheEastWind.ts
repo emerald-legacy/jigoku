@@ -19,8 +19,8 @@ export default class TheEastWind extends StrongholdCard {
                 return {
                     amount: 5,
                     cardCondition: (card) => {
-                        for (const searchedCardTrait of card.getTraits()) {
-                            if (playedCardTraits.has(searchedCardTrait)) {
+                        for(const searchedCardTrait of card.getTraits()) {
+                            if(playedCardTraits.has(searchedCardTrait)) {
                                 return true;
                             }
                         }

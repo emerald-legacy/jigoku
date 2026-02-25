@@ -18,7 +18,7 @@ export default class NezumiInfiltrator extends DrawCard {
         });
 
         this.reaction({
-            title: "Change attacked province's strength",
+            title: 'Change attacked province\'s strength',
             when: {
                 onCharacterEntersPlay: (event, context) => event.card === context.source && this.game.isDuringConflict()
             },
@@ -37,14 +37,14 @@ export default class NezumiInfiltrator extends DrawCard {
                 gameAction: AbilityDsl.actions.chooseAction(() => ({
                     messages: {},
                     options: {
-                        "Raise attacked province's strength by 1": {
+                        'Raise attacked province\'s strength by 1': {
                             action: AbilityDsl.actions.cardLastingEffect(() => ({
                                 targetLocation: Locations.Provinces,
                                 effect: AbilityDsl.effects.modifyProvinceStrength(1)
                             })),
-                            message: "{0} chooses to increase {1}'s strength by 1"
+                            message: '{0} chooses to increase {1}\'s strength by 1'
                         },
-                        "Lower attacked province's strength by 1": {
+                        'Lower attacked province\'s strength by 1': {
                             action: AbilityDsl.actions.cardLastingEffect((context) => ({
                                 targetLocation: Locations.Provinces,
                                 effect:
@@ -52,7 +52,7 @@ export default class NezumiInfiltrator extends DrawCard {
                                         ? AbilityDsl.effects.modifyProvinceStrength(-1)
                                         : []
                             })),
-                            message: "{0} chooses to reduce {1}'s strength by 1"
+                            message: '{0} chooses to reduce {1}\'s strength by 1'
                         }
                     }
                 }))

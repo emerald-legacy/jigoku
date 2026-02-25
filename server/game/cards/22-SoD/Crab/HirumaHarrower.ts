@@ -13,7 +13,7 @@ export default class HirumaHarrower extends DrawCard {
             },
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                 target: context.source,
-                effect: AbilityDsl.effects.modifyMilitarySkill(2),
+                effect: AbilityDsl.effects.modifyMilitarySkill(2)
             })),
             limit: AbilityDsl.limit.unlimitedPerConflict(),
             effect: 'give itself +2{1}',

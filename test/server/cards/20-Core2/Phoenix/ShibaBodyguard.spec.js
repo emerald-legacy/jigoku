@@ -8,7 +8,7 @@ describe('Shiba Bodyguard', function () {
                     fate: 6
                 },
                 player2:{
-                    inPlay: ['doji-whisperer'],
+                    inPlay: ['doji-whisperer']
                 }
             });
             this.shibaBodyguard = this.player1.findCardByName('shiba-bodyguard');
@@ -38,7 +38,7 @@ describe('Shiba Bodyguard', function () {
             expect(this.player1.fate).toBe(5);
             expect(this.adeptOfTheWaves.fate).toBe(2);
             expect(this.getChatLogs(5)).toContain(
-                "player1 uses Shiba Bodyguard to place a fate from player1's fate pool on Adept of the Waves"
+                'player1 uses Shiba Bodyguard to place a fate from player1\'s fate pool on Adept of the Waves'
             );
         });
 
@@ -52,7 +52,7 @@ describe('Shiba Bodyguard', function () {
             expect(this.player1.fate).toBe(5);
             expect(this.adeptOfTheWaves.fate).toBe(2);
             expect(this.getChatLogs(5)).toContain(
-                "player1 uses Shiba Bodyguard to place a fate from player1's fate pool on Adept of the Waves"
+                'player1 uses Shiba Bodyguard to place a fate from player1\'s fate pool on Adept of the Waves'
             );
             expect(this.adeptOfTheWaves.location).toBe('play area');
             expect(this.player1).toHavePrompt('Fate Phase');
@@ -68,7 +68,7 @@ describe('Shiba Bodyguard', function () {
             expect(this.player1.fate).toBe(5);
             expect(this.dojiWhisperer.fate).toBe(1);
             expect(this.getChatLogs(5)).toContain(
-                "player1 uses Shiba Bodyguard to place a fate from player1's fate pool on Doji Whisperer"
+                'player1 uses Shiba Bodyguard to place a fate from player1\'s fate pool on Doji Whisperer'
             );
             expect(this.dojiWhisperer.location).toBe('play area');
             expect(this.player1).toHavePrompt('Fate Phase');
@@ -83,7 +83,7 @@ describe('Shiba Bodyguard', function () {
             expect(this.player1).toHavePrompt('Choose a character');
             this.player1.clickCard(this.solemnScholar);
             expect(this.getChatLogs(5)).toContain(
-                "player1 uses Shiba Bodyguard to place a fate from player1's fate pool on Solemn Scholar"
+                'player1 uses Shiba Bodyguard to place a fate from player1\'s fate pool on Solemn Scholar'
             );
 
             this.player2.clickPrompt('Done');

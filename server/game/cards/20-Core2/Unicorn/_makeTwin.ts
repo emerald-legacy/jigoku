@@ -16,7 +16,7 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                     shuffle: false,
                     activePromptTitle: `Find a copy of ${opt.siblingName}`,
                     selectedCardsHandler: (context, event, cards) => {
-                        if (cards.length === 0) {
+                        if(cards.length === 0) {
                             context.game.addMessage(`{0} finds no copies of ${opt.siblingName}`, event.player);
                             return;
                         }
@@ -41,7 +41,7 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                                 amount: replacedCharacter.fate
                             })
                         );
-                        for (const token of replacedCharacter.statusTokens) {
+                        for(const token of replacedCharacter.statusTokens) {
                             sequence.push(
                                 AbilityDsl.actions.moveStatusToken({ target: token, recipient: newCharacter })
                             );

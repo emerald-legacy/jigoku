@@ -25,7 +25,7 @@ describe('Shiba-sha Heiden', function () {
                 expect(this.dojiWhisperer.location).toBe('province 1');
                 expect(this.dojiWhisperer.facedown).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    "player1 places a card facedown in province 1 due to Shiba-sha Heiden's Thriving"
+                    'player1 places a card facedown in province 1 due to Shiba-sha Heiden\'s Thriving'
                 );
             });
         });

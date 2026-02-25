@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const DrawCard = require('../../drawcard.js');
 const { Locations, TargetModes } = require('../../Constants');
 
@@ -31,7 +30,7 @@ class MagnificentLighthouse extends DrawCard {
                     this.game.addMessage(messages.pop(), context.player, card);
                     context.player.opponent.moveCard(card, destinations.pop());
                     if(messages.length > 0) {
-                        let index = _.indexOf(topThree, card);
+                        let index = topThree.indexOf(card);
                         topThree.splice(index, 1);
                         this.game.promptWithHandlerMenu(context.player, {
                             activePromptTitle: 'Select a card to put on the bottom of the deck',

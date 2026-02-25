@@ -24,7 +24,7 @@ class AppealToSympathy extends DrawCard {
                 context.event.card,
                 context.event.card.isConflict ? ' and place it on the top of ' : '',
                 context.event.card.isConflict ? context.player.opponent : '',
-                context.event.card.isConflict ? "'s conflict deck" : ''
+                context.event.card.isConflict ? '\'s conflict deck' : ''
             ]
         });
     }

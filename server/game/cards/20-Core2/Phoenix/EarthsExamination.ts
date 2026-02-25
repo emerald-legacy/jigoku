@@ -24,7 +24,7 @@ export default class EarthsExamination extends DrawCard {
                     }))
                 ])
             },
-            effect: "reveal {1}'s corruption",
+            effect: 'reveal {1}\'s corruption',
             effectArgs: (context) => [context.target]
         });
     }

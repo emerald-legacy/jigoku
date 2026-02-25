@@ -48,7 +48,7 @@ export default class NaturesWrath extends DrawCard {
                 }
             },
             then: (context) => {
-                if (!context.subResolution) {
+                if(!context.subResolution) {
                     return {
                         target: {
                             mode: TargetModes.Select,

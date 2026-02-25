@@ -62,11 +62,11 @@ describe('Shineko', function () {
                 this.setupTest({
                     phase: 'conflict',
                     player1: {
-                        inPlay: ['shineko', 'matsu-berserker'],
+                        inPlay: ['shineko', 'matsu-berserker']
                     },
                     player2: {
                         inPlay: ['daidoji-ienori'],
-                        hand: ['for-shame','at-any-cost'],
+                        hand: ['for-shame','at-any-cost']
                     }
                 });
 
@@ -106,7 +106,7 @@ describe('Shineko', function () {
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'military',
-                    attackers: [ this.matsuBerserker],
+                    attackers: [this.matsuBerserker],
                     defenders: [this.daidojiIenori]
                 });
                 this.player2.clickCard(this.atAnyCost);
@@ -116,7 +116,7 @@ describe('Shineko', function () {
             });
 
             it('does not work outside conflicts', function () {
-                this.player1.pass()
+                this.player1.pass();
                 this.player2.clickCard(this.atAnyCost);
                 expect(this.player2).toBeAbleToSelect(this.shineko);
                 expect(this.player2).toBeAbleToSelect(this.matsuBerserker);

@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const MulliganDynastyPrompt = require('./mulligandynastyprompt.js');
 const { Locations } = require('../../Constants');
 
@@ -15,7 +14,7 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
     }
 
     highlightSelectableCards() {
-        _.each(this.game.getPlayers(), player => {
+        this.game.getPlayers().forEach(player => {
             if(!this.selectableCards[player.name]) {
                 this.selectableCards[player.name] = player.hand.toArray();
             }
@@ -43,7 +42,7 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
             } else {
                 this.game.addMessage('{0} has kept all conflict cards', player);
             }
-            _.each(this.game.getProvinceArray(false), location => {
+            this.game.getProvinceArray(false).forEach(location => {
                 let cards = player.getDynastyCardsInProvince(location);
                 cards.forEach(card => {
                     if(card) {

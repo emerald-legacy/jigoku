@@ -1,7 +1,7 @@
-import type BaseCard = require('../basecard');
-import type Game = require('../game');
-import type Player = require('../player');
-import type Ring = require('../ring');
+import type BaseCard from '../basecard';
+import type Game from '../game';
+import type Player from '../player';
+import type Ring from '../ring';
 import type { Step } from './Step';
 
 export class BaseStep implements Step {
@@ -11,15 +11,15 @@ export class BaseStep implements Step {
         return undefined;
     }
 
-    public onCardClicked(player: Player, card: BaseCard): boolean {
+    public onCardClicked(_player: Player, _card: BaseCard): boolean {
         return false;
     }
 
-    public onRingClicked(player: Player, ring: Ring): boolean {
+    public onRingClicked(_player: Player, _ring: Ring): boolean {
         return false;
     }
 
-    public onMenuCommand(player: Player, arg: string, uuid: string, method: string): boolean {
+    public onMenuCommand(_player: Player, _arg: string, _uuid: string, _method: string): boolean {
         return false;
     }
 

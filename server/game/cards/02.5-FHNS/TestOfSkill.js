@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const DrawCard = require('../../drawcard.js');
 const { Locations, CardTypes } = require('../../Constants');
 
@@ -14,7 +13,7 @@ const testOfSkillCost = function() {
                 activePromptTitle: 'Select a card type',
                 context: context,
                 choices: choices,
-                handlers: _.map(choices, choice => {
+                handlers: choices.map(choice => {
                     return () => {
                         context.costs.testOfSkillCost = choice;
                         result.value = true;
@@ -41,21 +40,23 @@ class TestOfSkill extends DrawCard {
             cannotBeMirrored: true,
             effect: 'take cards into their hand',
             handler: context => {
-                let [matchingCards, cardsToDiscard] = _.partition(context.costs.reveal, card => card.type === context.costs.testOfSkillCost && card.location === Locations.ConflictDeck);
+                const isMatching = card => card.type === context.costs.testOfSkillCost && card.location === Locations.ConflictDeck;
+                let matchingCards = context.costs.reveal.filter(isMatching);
+                let cardsToDiscard = context.costs.reveal.filter(card => !isMatching(card));
                 //Handle situations where card is played from deck, such as with pillow book
-                matchingCards = _.reject(matchingCards, c=> c.uuid === context.source.uuid);
+                matchingCards = matchingCards.filter(c => c.uuid !== context.source.uuid);
 
                 let discardHandler = () => {
                     cardsToDiscard = cardsToDiscard.concat(matchingCards);
                     this.game.addMessage('{0} discards {1}', context.player, cardsToDiscard);
-                    _.each(cardsToDiscard, card => {
+                    cardsToDiscard.forEach(card => {
                         context.player.moveCard(card, Locations.ConflictDiscardPile);
                     });
                 };
                 let takeCardHandler = card => {
                     this.game.addMessage('{0} adds {1} to their hand', context.player, card);
                     context.player.moveCard(card, Locations.Hand);
-                    return _.reject(matchingCards, c => c.uuid === card.uuid);
+                    return matchingCards.filter(c => c.uuid !== card.uuid);
                 };
                 if(matchingCards.length === 0) {
                     return discardHandler();

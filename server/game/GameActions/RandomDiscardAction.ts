@@ -39,7 +39,7 @@ export class RandomDiscardAction extends PlayerAction {
     eventHandler(event): void {
         let player = event.player;
         let amount = Math.min(event.amount, player.hand.size());
-        if (amount === 0) {
+        if(amount === 0) {
             return;
         }
         let cardsToDiscard = player.hand.shuffle().slice(0, amount);
@@ -47,7 +47,7 @@ export class RandomDiscardAction extends PlayerAction {
         event.discardedCards = cardsToDiscard;
         player.game.addMessage('{0} discards {1} at random', player, cardsToDiscard);
 
-        for (const card of cardsToDiscard) {
+        for(const card of cardsToDiscard) {
             player.moveCard(card, card.isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile);
         }
     }

@@ -2,7 +2,7 @@ const DrawCard = require('../../drawcard.js');
 const { Durations, CardTypes, AbilityTypes } = require('../../Constants');
 
 class Ofushukai extends DrawCard {
-    setupCardAbilities(ability) { // eslint-disable-line no-unused-vars
+    setupCardAbilities(ability) {
         this.attachmentConditions({
             myControl: true,
             unique: true,

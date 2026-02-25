@@ -1,5 +1,5 @@
 const DrawCard = require('../../../drawcard.js');
-const { Players, AbilityTypes } = require('../../../Constants');
+const { AbilityTypes } = require('../../../Constants');
 const AbilityDsl = require('../../../abilitydsl.js');
 
 class TwinSisterBlades extends DrawCard {
@@ -19,7 +19,7 @@ class TwinSisterBlades extends DrawCard {
     }
 
     getNumberOfCards(context) {
-        if (context.source.hasTrait('duelist') && context.game.currentConflict.hasMoreParticipants(context.player.opponent)) {
+        if(context.source.hasTrait('duelist') && context.game.currentConflict.hasMoreParticipants(context.player.opponent)) {
             return 2;
         }
         return 1;

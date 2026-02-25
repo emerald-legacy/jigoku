@@ -1,13 +1,16 @@
-const BaseAction = require('./BaseAction');
-const { Phases, PlayTypes } = require('./Constants');
+import BaseAction from './BaseAction';
+import { Phases, PlayTypes } from './Constants';
+import type { AbilityContext } from './AbilityContext';
+import type BaseCard from './basecard';
 
 class DuplicateUniqueAction extends BaseAction {
-    constructor(card) {
+    title = 'Add fate to a duplicate';
+
+    constructor(card: BaseCard) {
         super(card);
-        this.title = 'Add fate to a duplicate';
     }
 
-    meetsRequirements(context = this.createContext(), ignoredRequirements = []) {
+    meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []): string | undefined {
         if(!ignoredRequirements.includes('facedown') && this.card.isFacedown()) {
             return 'facedown';
         }
@@ -30,15 +33,14 @@ class DuplicateUniqueAction extends BaseAction {
         return super.meetsRequirements(context);
     }
 
-    displayMessage(context) {
+    displayMessage(context: AbilityContext): void {
         context.game.addMessage('{0} discards a duplicate to add 1 fate to {1}', context.player, context.source);
     }
 
-    executeHandler(context) {
-        let duplicate = context.player.getDuplicateInPlay(context.source);
+    executeHandler(context: AbilityContext): void {
+        const duplicate = context.player.getDuplicateInPlay(context.source);
         context.game.applyGameAction(context, { placeFate: duplicate, discardCard: context.source });
     }
 }
 
-module.exports = DuplicateUniqueAction;
-
+export = DuplicateUniqueAction;

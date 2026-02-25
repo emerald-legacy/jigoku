@@ -30,13 +30,13 @@ export default class ThirdWhiskerWarrens extends DrawCard {
     }
 
     private conflictAtKaiuWall(context: AbilityContext) {
-        if (!context.player.isDefendingPlayer()) {
+        if(!context.player.isDefendingPlayer()) {
             return false;
         }
 
-        for (const province of context.game.currentConflict.getConflictProvinces() as ProvinceCard[]) {
-            for (const card of context.player.getDynastyCardsInProvince(province.location) as BaseCard[]) {
-                if (card.isFaceup() && card.type === CardTypes.Holding && card.hasTrait('kaiu-wall')) {
+        for(const province of context.game.currentConflict.getConflictProvinces() as ProvinceCard[]) {
+            for(const card of context.player.getDynastyCardsInProvince(province.location) as BaseCard[]) {
+                if(card.isFaceup() && card.type === CardTypes.Holding && card.hasTrait('kaiu-wall')) {
                     return true;
                 }
             }

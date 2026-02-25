@@ -8,7 +8,7 @@ export default class ShinjoAtagi extends DrawCard {
 
     setupCardAbilities() {
         this.action({
-            title: "Set a participating character's skills",
+            title: 'Set a participating character\'s skills',
             condition: (context) => context.source.isParticipating(),
             target: {
                 cardType: CardTypes.Character,

@@ -3,7 +3,7 @@ import { EventNames } from '../Constants';
 import Player from '../player';
 import { PlayerAction, PlayerActionProperties } from './PlayerAction';
 
-export interface DiscardFavorProperties extends PlayerActionProperties {}
+export type DiscardFavorProperties = PlayerActionProperties;
 
 export class DiscardFavorAction extends PlayerAction<DiscardFavorProperties> {
     name = 'discardFavor';

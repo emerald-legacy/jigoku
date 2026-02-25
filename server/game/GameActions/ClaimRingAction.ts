@@ -15,7 +15,7 @@ export class ClaimRingAction extends RingAction<ClaimRingProperties> {
     defaultProperties: ClaimRingProperties = { takeFate: true, type: ConflictTypes.Military };
 
     canAffect(ring: Ring, context: AbilityContext): boolean {
-        if (!context.player.checkRestrictions('claimRings', context)) {
+        if(!context.player.checkRestrictions('claimRings', context)) {
             return false;
         }
 
@@ -28,7 +28,7 @@ export class ClaimRingAction extends RingAction<ClaimRingProperties> {
         let context = event.context;
         ring.contested = false;
         ring.conflictType = type;
-        if (takeFate && ring.fate > 0 && context.player.checkRestrictions('takeFateFromRings', context)) {
+        if(takeFate && ring.fate > 0 && context.player.checkRestrictions('takeFateFromRings', context)) {
             context.game.addMessage('{0} takes {1} fate from {2}', context.player, ring.fate, ring);
             let fate = ring.fate;
             context.player.modifyFate(ring.fate);

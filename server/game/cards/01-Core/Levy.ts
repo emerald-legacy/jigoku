@@ -1,6 +1,6 @@
 import { Players, TargetModes } from '../../Constants';
-import AbilityDsl = require('../../abilitydsl');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard';
 
 export default class Levy extends DrawCard {
     static id = 'levy';

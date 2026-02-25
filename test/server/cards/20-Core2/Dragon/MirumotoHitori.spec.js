@@ -32,7 +32,7 @@ describe('Truth is in the Killing', function () {
 
             expect(this.game.currentPhase).toBe('dynasty');
             expect(this.hitori.location).toBe('play area');
-            expect(this.getChatLogs(10)).toContain("Mirumoto Hitori is put into play due to Mirumoto Hitori's effect");
+            expect(this.getChatLogs(10)).toContain('Mirumoto Hitori is put into play due to Mirumoto Hitori\'s effect');
         });
     });
 });

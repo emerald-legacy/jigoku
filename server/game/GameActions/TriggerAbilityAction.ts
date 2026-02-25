@@ -25,7 +25,7 @@ export class TriggerAbilityAction extends CardGameAction<TriggerAbilityPropertie
 
     getEffectMessage(context: TriggeredAbilityContext): [string, any[]] {
         let properties = this.getProperties(context);
-        return ["resolve {0}'s {1} ability", [properties.target, properties.ability.title]];
+        return ['resolve {0}\'s {1} ability', [properties.target, properties.ability.title]];
     }
 
     canAffect(card: DrawCard, context: TriggeredAbilityContext, additionalProperties = {}): boolean {
@@ -33,7 +33,7 @@ export class TriggerAbilityAction extends CardGameAction<TriggerAbilityPropertie
         let ability = properties.ability as TriggeredAbility;
         let player = properties.player || context.player;
         let newContextEvent = properties.event;
-        if (
+        if(
             !super.canAffect(card, context) ||
             !ability ||
             (!properties.subResolution && player.isAbilityAtMax(ability.maxIdentifier))

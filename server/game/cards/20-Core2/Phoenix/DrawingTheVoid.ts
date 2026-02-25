@@ -20,7 +20,7 @@ export default class DrawingTheVoid extends DrawCard {
                             message: '{0} reveals {1} from their hand - the void reveals...',
                             messageArgs: (cards) => [context.player.opponent, cards]
                         })),
-                        AbilityDsl.actions.cardMenu((context) => ({
+                        AbilityDsl.actions.cardMenu((_context) => ({
                             activePromptTitle: 'Choose a card to remove from the game',
                             cards: revealedCards,
                             targets: true,

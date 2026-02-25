@@ -37,9 +37,9 @@ export default class WisdomOfTheWind extends DrawCard {
                         }),
                         effect: 'give {0} +2 glory',
                         effectArgs: () => [context.target]
-                    })),
+                    }))
                 ])
-            },
+            }
         });
     }
 }

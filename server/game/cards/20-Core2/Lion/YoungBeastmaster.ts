@@ -2,14 +2,14 @@ import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
 
 function bonusSize(cards?: Array<DrawCard>) {
-    if (!cards) {
+    if(!cards) {
         return 0;
     }
 
     let higherCost = 0;
-    for (const card of cards) {
+    for(const card of cards) {
         const cardCost = card.getCost();
-        if (cardCost > higherCost) {
+        if(cardCost > higherCost) {
             higherCost = cardCost;
         }
     }

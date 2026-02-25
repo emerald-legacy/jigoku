@@ -7,7 +7,7 @@ export default class ShosuroActress extends DrawCard {
 
     setupCardAbilities() {
         this.action({
-            title: `Put an opponent's character into play`,
+            title: 'Put an opponent\'s character into play',
             cost: AbilityDsl.costs.sacrificeSelf(),
             target: {
                 cardType: CardTypes.Character,

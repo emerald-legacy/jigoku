@@ -3,7 +3,7 @@ import type BaseCard from '../basecard';
 import { CardTypes, CharacterStatus, EventNames, Locations } from '../Constants';
 import { type CardActionProperties, CardGameAction } from './CardGameAction';
 
-export interface TaintProperties extends CardActionProperties {}
+export type TaintProperties = CardActionProperties;
 
 export class TaintAction extends CardGameAction {
     name = 'taint';
@@ -13,16 +13,16 @@ export class TaintAction extends CardGameAction {
     effect = 'taint {0}';
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if (card.isTainted) {
+        if(card.isTainted) {
             return false;
         }
-        if (!this.targetType.includes(card.type)) {
+        if(!this.targetType.includes(card.type)) {
             return false;
         }
-        if (card.type === CardTypes.Character && card.location !== Locations.PlayArea) {
+        if(card.type === CardTypes.Character && card.location !== Locations.PlayArea) {
             return false;
         }
-        if (!card.checkRestrictions('receiveTaintedToken', context)) {
+        if(!card.checkRestrictions('receiveTaintedToken', context)) {
             return false;
         }
         return super.canAffect(card, context);

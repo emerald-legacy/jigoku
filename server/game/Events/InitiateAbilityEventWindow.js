@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const EventWindow = require('./EventWindow.js');
 const TriggeredAbilityWindow = require('../gamesteps/triggeredabilitywindow');
 const { EventNames, AbilityTypes } = require('../Constants');
@@ -55,9 +54,9 @@ class InitiateAbilityEventWindow extends EventWindow {
     }
 
     executeHandler() {
-        this.eventsToExecute = _.sortBy(this.events, 'order');
+        this.eventsToExecute = [...this.events].sort((a, b) => a.order - b.order);
 
-        _.each(this.eventsToExecute, event => {
+        this.eventsToExecute.forEach(event => {
             event.checkCondition();
             if(!event.cancelled) {
                 event.executeHandler();
@@ -71,7 +70,7 @@ class InitiateAbilityEventWindow extends EventWindow {
 
     emitEvents() {
         this.eventsToExecute = this.eventsToExecute.filter(event => !event.cancelled);
-        _.each(this.eventsToExecute, event => this.game.emit(event.name, event));
+        this.eventsToExecute.forEach(event => this.game.emit(event.name, event));
     }
 }
 

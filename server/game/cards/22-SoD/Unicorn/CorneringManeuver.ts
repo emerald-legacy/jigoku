@@ -1,4 +1,4 @@
-import { CardTypes, Players, Phases } from '../../../Constants';
+import { CardTypes, Players } from '../../../Constants';
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
 
@@ -12,8 +12,8 @@ export default class CorneringManeuver extends DrawCard {
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card, context) => card.hasTrait('bushi') && card.isParticipatingFor(context.player),
-                gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.modifyMilitarySkill(2),
+                gameAction: AbilityDsl.actions.cardLastingEffect(_context => ({
+                    effect: AbilityDsl.effects.modifyMilitarySkill(2)
                 }))
             },
             effect: 'give {0} +2{1}',
@@ -21,7 +21,7 @@ export default class CorneringManeuver extends DrawCard {
             then: context => ({
                 thenCondition: () => context.game.currentConflict.getNumberOfParticipantsFor(context.player) <= context.game.currentConflict.getNumberOfParticipantsFor(context.player.opponent),
                 gameAction: AbilityDsl.actions.selectCard({
-                    activePromptTitle: "Choose a character to move",
+                    activePromptTitle: 'Choose a character to move',
                     targets: true,
                     optional: false,
                     controller: Players.Self,
@@ -32,8 +32,8 @@ export default class CorneringManeuver extends DrawCard {
                         AbilityDsl.actions.sendHome(),
                         AbilityDsl.actions.moveToConflict()
                     ])
-                }),
-            }),
+                })
+            })
         });
     }
 }

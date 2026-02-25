@@ -28,7 +28,7 @@ export default class KyudenIsawa extends StrongholdCard {
                     playType: PlayTypes.PlayFromHand,
                     postHandler: (spellContext) => {
                         const card = spellContext.source;
-                        context.game.addMessage("{0} is removed from the game by {1}'s ability", card, context.source);
+                        context.game.addMessage('{0} is removed from the game by {1}\'s ability', card, context.source);
                         context.player.moveCard(card, Locations.RemovedFromGame);
                     }
                 })

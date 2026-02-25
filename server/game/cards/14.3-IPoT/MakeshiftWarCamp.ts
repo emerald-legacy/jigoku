@@ -1,5 +1,5 @@
 import { Players, CardTypes } from '../../Constants';
-import AbilityDsl = require('../../abilitydsl');
+import AbilityDsl from '../../abilitydsl';
 import { BattlefieldAttachment } from '../BattlefieldAttachment';
 
 export default class MakeshiftWarCamp extends BattlefieldAttachment {

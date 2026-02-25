@@ -1,9 +1,9 @@
 import { CardTypes, Players, Locations, TargetModes } from '../../../Constants';
 import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand';
 import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand';
-import AbilityDsl = require('../../../abilitydsl');
-import BaseCard = require('../../../basecard');
-import DrawCard = require('../../../drawcard');
+import AbilityDsl from '../../../abilitydsl';
+import BaseCard from '../../../basecard';
+import DrawCard from '../../../drawcard';
 
 export default class ToSowTheEarth extends DrawCard {
     static id = 'to-sow-the-earth';

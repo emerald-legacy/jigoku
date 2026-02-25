@@ -1,5 +1,4 @@
-import { CardTypes, Players, Phases } from '../../../Constants';
-import type { ProvinceCard } from '../../../ProvinceCard';
+import { CardTypes, Players } from '../../../Constants';
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
 
@@ -20,11 +19,11 @@ export default class CampfireCounsel extends DrawCard {
             then: context => ({
                 thenCondition: () => !context.player.isCharacterTraitInPlay('storyteller'),
                 gameAction: AbilityDsl.actions.dishonor({
-                    target: context.target,
+                    target: context.target
                 }),
                 message: '{3} is dishonored',
-                messageArgs: thenContext => [context.target]
-            }),
+                messageArgs: _thenContext => [context.target]
+            })
         });
     }
 }

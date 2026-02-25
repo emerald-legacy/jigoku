@@ -18,7 +18,7 @@ export class SetDialAction extends PlayerAction {
 
     getEffectMessage(context: AbilityContext): [string, any[]] {
         let properties = this.getProperties(context) as SetDialProperties;
-        return ["set {0}'s dial to {1}", [properties.target, properties.value]];
+        return ['set {0}\'s dial to {1}', [properties.target, properties.value]];
     }
 
     canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {

@@ -34,7 +34,7 @@ export default class GloryOfTheFiveRivers extends DrawCard {
                     context.game.queueStep(
                         new FateBidPrompt(context.game, 'Choose an amount of fate', (result, context) => {
                             bidResult = result;
-                            for (const [player, amount] of result.bids) {
+                            for(const [player, amount] of result.bids) {
                                 context.game.addMessage('{0} spends {1} fate', player, amount);
                                 AbilityDsl.actions.loseFate({ amount, target: player }).resolve(player, context);
                             }
@@ -43,8 +43,8 @@ export default class GloryOfTheFiveRivers extends DrawCard {
 
                     context.game.queueStep(
                         new SimpleStep(context.game, () => {
-                            if (bidResult.highest.players.size === 1) {
-                                for (const winner of bidResult.highest.players) {
+                            if(bidResult.highest.players.size === 1) {
+                                for(const winner of bidResult.highest.players) {
                                     resolveActionOnSelection(context, winner, 'dishonor');
                                     resolveActionOnSelection(context, winner, 'honor');
                                 }

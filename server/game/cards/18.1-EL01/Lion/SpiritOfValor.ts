@@ -51,7 +51,7 @@ export default class SpiritOfValor extends DrawCard {
                     effect: AbilityDsl.effects.gainAllAbilities(context.target)
                 }))
             },
-            effect: "copy {0}'s abilities onto {1}",
+            effect: 'copy {0}\'s abilities onto {1}',
             effectArgs: (context) => [receiver(context)]
         });
     }

@@ -87,7 +87,7 @@ export default class NegotiationTable extends DrawCard {
             context.player.cardsInPlay.filter((a) => a.type === CardTypes.Character && a.bowed).length +
             context.player.opponent.cardsInPlay.filter((a) => a.type === CardTypes.Character && a.bowed).length;
 
-        if (bowedCharacters > 0) {
+        if(bowedCharacters > 0) {
             AbilityDsl.actions
                 .selectCard((context) => ({
                     player: Players.Opponent,
@@ -101,7 +101,7 @@ export default class NegotiationTable extends DrawCard {
         }
 
         //This is ugly, but it's needed to not deadlock the game
-        if (bowedCharacters > 1) {
+        if(bowedCharacters > 1) {
             AbilityDsl.actions
                 .selectCard((context) => ({
                     player: Players.Self,

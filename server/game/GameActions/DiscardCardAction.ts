@@ -3,7 +3,7 @@ import { CardTypes, EventNames, Locations } from '../Constants';
 import type DrawCard from '../drawcard';
 import { type CardActionProperties, CardGameAction } from './CardGameAction';
 
-export interface DiscardCardProperties extends CardActionProperties {}
+export type DiscardCardProperties = CardActionProperties;
 
 export class DiscardCardAction extends CardGameAction<DiscardCardProperties> {
     name = 'discardCard';
@@ -22,7 +22,7 @@ export class DiscardCardAction extends CardGameAction<DiscardCardProperties> {
     addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
         let { target } = this.getProperties(context, additionalProperties);
         let cards = (target as DrawCard[]).filter((card) => this.canAffect(card, context));
-        if (cards.length === 0) {
+        if(cards.length === 0) {
             return;
         }
         let event = this.createEvent(null, context, additionalProperties);
@@ -31,10 +31,10 @@ export class DiscardCardAction extends CardGameAction<DiscardCardProperties> {
     }
 
     addPropertiesToEvent(event, cards, context: AbilityContext, additionalProperties): void {
-        if (!cards) {
+        if(!cards) {
             cards = this.getProperties(context, additionalProperties).target;
         }
-        if (!Array.isArray(cards)) {
+        if(!Array.isArray(cards)) {
             cards = [cards];
         }
         event.originalCardStateInfo = cards.map((a) => ({ location: a.location, owner: a.owner }));
@@ -43,7 +43,7 @@ export class DiscardCardAction extends CardGameAction<DiscardCardProperties> {
     }
 
     eventHandler(event, additionalProperties = {}): void {
-        for (const card of event.cards) {
+        for(const card of event.cards) {
             this.checkForRefillProvince(card, event, additionalProperties);
             card.controller.moveCard(
                 card,

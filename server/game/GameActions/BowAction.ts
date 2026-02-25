@@ -3,7 +3,7 @@ import type BaseCard from '../basecard';
 import { CardTypes, EventNames, Locations } from '../Constants';
 import { type CardActionProperties, CardGameAction } from './CardGameAction';
 
-export interface BowActionProperties extends CardActionProperties {}
+export type BowActionProperties = CardActionProperties;
 
 export class BowAction extends CardGameAction<BowActionProperties> {
     name = 'bow';
@@ -13,7 +13,7 @@ export class BowAction extends CardGameAction<BowActionProperties> {
     targetType = [CardTypes.Character, CardTypes.Attachment, CardTypes.Stronghold];
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if ((card.location !== Locations.PlayArea && card.type !== CardTypes.Stronghold) || card.bowed) {
+        if((card.location !== Locations.PlayArea && card.type !== CardTypes.Stronghold) || card.bowed) {
             return false;
         }
         return super.canAffect(card, context);

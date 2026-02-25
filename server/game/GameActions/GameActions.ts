@@ -1,4 +1,3 @@
-import { AbilityContext } from '../AbilityContext';
 import { AddTokenAction, AddTokenProperties } from './AddTokenAction';
 import { AffinityAction, AffinityActionProperties } from './AffinityAction';
 import { AttachAction, AttachActionProperties } from './AttachAction';
@@ -100,7 +99,7 @@ import { TransferHonorAction, TransferHonorProperties } from './TransferHonorAct
 import { TriggerAbilityAction, TriggerAbilityProperties } from './TriggerAbilityAction';
 import { TurnCardFacedownAction, TurnCardFacedownProperties } from './TurnCardFacedownAction';
 
-type PropsFactory<Props> = Props | ((context: AbilityContext) => Props);
+type PropsFactory<Props> = Props | ((context: any) => Props);
 
 //////////////
 // CARD

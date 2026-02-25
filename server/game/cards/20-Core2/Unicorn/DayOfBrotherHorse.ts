@@ -6,19 +6,19 @@ import type Player from '../../../player';
 type Element = 'air' | 'earth' | 'fire' | 'void' | 'water';
 
 function fluff(element: Element): string {
-    switch (element) {
+    switch(element) {
         case 'air':
             return 'with a glorious race they celebrate. A day of games and friendly competition, the herd and the samurai in communion!';
         case 'earth':
             return 'high in the mountains they celebrate. Around a fire, close to the stars, sharing some tasty kumis!';
         case 'fire':
-            return "it's a sunny day filled with celebration. The Moto share tales of the desert!";
+            return 'it\'s a sunny day filled with celebration. The Moto share tales of the desert!';
         case 'water':
             return 'they celebrate at the beach. A day of joyful play for the riders, and the first sight of the sea for a few foals!';
         case 'void':
             return 'with offerings at an open air shrine they celebrate. The Iuchi pay respect to Shinjo-kami, and herd is blessed for a good year!';
         default:
-            '';
+            return '';
     }
 }
 

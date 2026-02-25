@@ -43,9 +43,9 @@ export class PutInProvinceAction extends CardGameAction {
                 ? properties.target[0].controller.opponent
                 : properties.target[0].controller
             : properties.changePlayer
-            ? properties.target.controller.opponent
-            : properties.target.controller;
-        return ["move {0} to {1}'s {2}", [properties.target, destinationController, properties.destination]];
+                ? properties.target.controller.opponent
+                : properties.target.controller;
+        return ['move {0} to {1}\'s {2}', [properties.target, destinationController, properties.destination]];
     }
 
     canAffect(card: BaseCard, context: AbilityContext, additionalProperties = {}): boolean {
@@ -66,27 +66,27 @@ export class PutInProvinceAction extends CardGameAction {
         let card = event.card;
         event.cardStateWhenMoved = card.createSnapshot();
         let properties = this.getProperties(context, additionalProperties) as PutInProvinceProperties;
-        if (properties.switch && properties.switchTarget) {
+        if(properties.switch && properties.switchTarget) {
             let otherCard = properties.switchTarget;
             card.owner.moveCard(otherCard, card.location);
         }
 
         const player = card.owner;
-        if (card.isConflict && [...context.game.getProvinceArray()].includes(properties.destination)) {
-            context.game.addMessage("{0} is discarded instead since it can't enter a province legally!", card);
+        if(card.isConflict && [...context.game.getProvinceArray()].includes(properties.destination)) {
+            context.game.addMessage('{0} is discarded instead since it can\'t enter a province legally!', card);
             properties.destination = Locations.ConflictDiscardPile;
         }
-        if (
+        if(
             properties.discardDestinationCards &&
             context.game.getProvinceArray(false).includes(properties.destination)
         ) {
             let cardsToDiscard = player.getSourceList(properties.destination).filter((card) => card.isDynasty);
-            for (const card of cardsToDiscard) {
+            for(const card of cardsToDiscard) {
                 player.moveCard(card, Locations.DynastyDiscardPile);
             }
         }
         player.moveCard(card, properties.destination);
-        if (properties.faceup) {
+        if(properties.faceup) {
             card.facedown = false;
         }
         card.checkForIllegalAttachments();

@@ -45,7 +45,7 @@ describe('Second Wind', function () {
             this.player2.clickCard(this.masterTactician);
             expect(this.masterTactician.location).toBe('play area');
             expect(this.getChatLogs(10)).toContain(
-                "player2 puts Master Tactician into play. Master Tactician will be put on the bottom of the deck if it's still in play by the end of the conflict"
+                'player2 puts Master Tactician into play. Master Tactician will be put on the bottom of the deck if it\'s still in play by the end of the conflict'
             );
         });
 
@@ -66,7 +66,7 @@ describe('Second Wind', function () {
             this.player2.clickCard(this.masterTactician);
             expect(this.masterTactician.location).toBe('play area');
             expect(this.getChatLogs(10)).toContain(
-                "player2 puts Master Tactician into play. Master Tactician will be put on the bottom of the deck if it's still in play by the end of the conflict"
+                'player2 puts Master Tactician into play. Master Tactician will be put on the bottom of the deck if it\'s still in play by the end of the conflict'
             );
         });
 

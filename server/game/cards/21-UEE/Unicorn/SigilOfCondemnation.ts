@@ -1,7 +1,5 @@
 import AbilityDsl from '../../../abilitydsl';
-import { AbilityTypes } from '../../../Constants';
 import DrawCard from '../../../drawcard';
-import type { ActionProps } from '../../../Interfaces';
 
 export default class SigilOfCondemnation extends DrawCard {
     static id = 'sigil-of-condemnation';

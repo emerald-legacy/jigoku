@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const { UiPrompt } = require('../UiPrompt.js');
 const { Locations, CardTypes } = require('../../Constants');
 const AttackersMatrix = require('./attackersMatrix.js');
@@ -62,7 +61,7 @@ class InitiateConflictPrompt extends UiPrompt {
     }
 
     highlightSelectableRings() {
-        let selectableRings = _.filter(this.game.rings, ring => {
+        let selectableRings = Object.values(this.game.rings).filter(ring => {
             return this.checkRingCondition(ring);
         });
         this.choosingPlayer.setSelectableRings(selectableRings);
@@ -149,13 +148,13 @@ class InitiateConflictPrompt extends UiPrompt {
             ring.contested = true;
         }
 
-        _.each(this.conflict.attackers, card => {
+        this.conflict.attackers.forEach(card => {
             if(!card.canDeclareAsAttacker(ring.conflictType, ring)) {
                 this.removeFromConflict(card);
             }
         });
 
-        _.each(this.attackerMatrix.getForcedAttackers(ring, ring.conflictType, this.conflict.conflictProvince), card => {
+        this.attackerMatrix.getForcedAttackers(ring, ring.conflictType, this.conflict.conflictProvince).forEach(card => {
             if(!this.conflict.attackers.includes(card)) {
                 this.selectCard(card);
             }
@@ -232,7 +231,7 @@ class InitiateConflictPrompt extends UiPrompt {
             }
 
             //Make sure the covert is legal
-            let attackersWithCovert = _.filter(this.conflict.attackers, card => card.isCovert());
+            let attackersWithCovert = this.conflict.attackers.filter(card => card.isCovert());
             let covertContexts = attackersWithCovert.map(card => new AbilityContext({
                 game: this.game,
                 player: this.conflict.attackingPlayer,
@@ -257,8 +256,8 @@ class InitiateConflictPrompt extends UiPrompt {
     }
 
     recalculateCovert() {
-        let attackersWithCovert = _.size(_.filter(this.conflict.attackers, card => card.isCovert()));
-        this.covertRemaining = attackersWithCovert > _.size(this.selectedDefenders);
+        let attackersWithCovert = this.conflict.attackers.filter(card => card.isCovert()).length;
+        this.covertRemaining = attackersWithCovert > this.selectedDefenders.length;
     }
 
     selectCard(card) {
@@ -282,7 +281,7 @@ class InitiateConflictPrompt extends UiPrompt {
                     this.selectedDefenders.push(card);
                     card.covert = true;
                 } else {
-                    this.selectedDefenders = _.reject(this.selectedDefenders, c => c === card);
+                    this.selectedDefenders = this.selectedDefenders.filter(c => c !== card);
                     card.covert = false;
                 }
             }

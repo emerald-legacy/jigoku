@@ -3,7 +3,7 @@ import type BaseCard from '../basecard';
 import { CardTypes, EventNames, Locations } from '../Constants';
 import { type CardActionProperties, CardGameAction } from './CardGameAction';
 
-export interface DiscardFromPlayProperties extends CardActionProperties {}
+export type DiscardFromPlayProperties = CardActionProperties;
 
 export class DiscardFromPlayAction extends CardGameAction<DiscardFromPlayProperties> {
     name = 'discardFromPlay';
@@ -13,7 +13,7 @@ export class DiscardFromPlayAction extends CardGameAction<DiscardFromPlayPropert
 
     constructor(propertyFactory, isSacrifice = false) {
         super(propertyFactory);
-        if (isSacrifice) {
+        if(isSacrifice) {
             this.name = 'sacrifice';
         }
     }
@@ -24,14 +24,14 @@ export class DiscardFromPlayAction extends CardGameAction<DiscardFromPlayPropert
     }
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if (card.type === CardTypes.Holding) {
-            if (this.name === 'sacrifice' && card.facedown) {
+        if(card.type === CardTypes.Holding) {
+            if(this.name === 'sacrifice' && card.facedown) {
                 return false;
             }
-            if (!card.location.includes('province')) {
+            if(!card.location.includes('province')) {
                 return false;
             }
-        } else if (card.location !== Locations.PlayArea) {
+        } else if(card.location !== Locations.PlayArea) {
             return false;
         }
         return super.canAffect(card, context);

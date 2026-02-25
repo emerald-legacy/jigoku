@@ -14,7 +14,7 @@ export class TransferHonorAction extends PlayerAction {
     eventName = EventNames.OnTransferHonor;
     defaultProperties: TransferHonorProperties = { amount: 1, afterBid: false };
 
-    getAmountToTransfer(givingPlayer: Player, receivingPlayer: Player, context: AbilityContext, baseAmount: Number) {
+    getAmountToTransfer(givingPlayer: Player, receivingPlayer: Player, context: AbilityContext, baseAmount: number) {
         let amount = baseAmount;
         const modifyGivenAmount = givingPlayer
             .getEffects(EffectNames.ModifyHonorTransferGiven)
@@ -63,7 +63,9 @@ export class TransferHonorAction extends PlayerAction {
         let properties = this.getProperties(context, additionalProperties) as TransferHonorProperties;
 
         const gainsHonor = properties.amount > 0;
-        if (!gainsHonor) return false;
+        if(!gainsHonor) {
+            return false;
+        }
 
         var [hasLimit, amountToTransfer] = CalculateHonorLimit(
             player.opponent,
@@ -72,7 +74,9 @@ export class TransferHonorAction extends PlayerAction {
             properties.amount
         );
         amountToTransfer = this.getAmountToTransfer(player, player.opponent, context, properties.amount);
-        if (hasLimit && !amountToTransfer) return false;
+        if(hasLimit && !amountToTransfer) {
+            return false;
+        }
 
         return player.opponent && super.canAffect(player, context);
     }
@@ -92,7 +96,7 @@ export class TransferHonorAction extends PlayerAction {
             event.amount
         );
 
-        if (event.player && event.player.opponent) {
+        if(event.player && event.player.opponent) {
             event.player.modifyHonor(-amountToTransfer);
             event.player.opponent.modifyHonor(amountToTransfer);
         }

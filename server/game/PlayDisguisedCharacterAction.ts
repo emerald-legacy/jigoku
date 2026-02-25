@@ -1,10 +1,10 @@
 import { GameModes } from '../GameModes';
 import { CardTypes, EffectNames, EventNames, Phases, Players } from './Constants';
 import { ReduceableFateCost } from './costs/ReduceableFateCost';
-import BaseAction = require('./BaseAction');
-import BaseCard = require('./basecard');
+import BaseAction from './BaseAction';
+import BaseCard from './basecard';
 import { AbilityContext } from './AbilityContext';
-import Player = require('./player');
+import Player from './player';
 import { Cost } from './Costs';
 
 function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIntoLocation) {
@@ -47,7 +47,7 @@ class DisguisedReduceableFateCost extends ReduceableFateCost implements Cost {
     }
 
     getReducedCost(context) {
-        if (context.costs.chooseDisguisedCharacter) {
+        if(context.costs.chooseDisguisedCharacter) {
             return Math.max(super.getReducedCost(context) - context.costs.chooseDisguisedCharacter.getCost(), 0);
         }
         return super.getReducedCost(context);
@@ -71,21 +71,21 @@ export class PlayDisguisedCharacterAction extends BaseAction {
     }
 
     public meetsRequirements(context = this.createContext(), ignoredRequirements: string[] = []): string {
-        if (!ignoredRequirements.includes('phase') && context.game.currentPhase !== Phases.Conflict) {
+        if(!ignoredRequirements.includes('phase') && context.game.currentPhase !== Phases.Conflict) {
             return 'phase';
-        } else if (
+        } else if(
             !ignoredRequirements.includes('location') &&
             !context.player.isCardInPlayableLocation(context.source, context.playType)
         ) {
             return 'location';
-        } else if (
+        } else if(
             !ignoredRequirements.includes('cannotTrigger') &&
             !context.source.canPlay(context, context.playType)
         ) {
             return 'cannotTrigger';
-        } else if (context.source.anotherUniqueInPlay(context.player)) {
+        } else if(context.source.anotherUniqueInPlay(context.player)) {
             return 'unique';
-        } else if (!context.player.checkRestrictions('enterPlay', context)) {
+        } else if(!context.player.checkRestrictions('enterPlay', context)) {
             return 'restriction';
         }
         return super.meetsRequirements(context);
@@ -94,7 +94,7 @@ export class PlayDisguisedCharacterAction extends BaseAction {
     public executeHandler(context) {
         const legendaryFate = context.source.sumEffects(EffectNames.LegendaryFate);
         let extraFate = context.source.sumEffects(EffectNames.GainExtraFateWhenPlayed);
-        if (!context.source.checkRestrictions('placeFate', context)) {
+        if(!context.source.checkRestrictions('placeFate', context)) {
             extraFate = 0;
         }
         extraFate = extraFate + legendaryFate;
@@ -114,7 +114,7 @@ export class PlayDisguisedCharacterAction extends BaseAction {
             })
         ];
         const replacedCharacter = context.costs.chooseDisguisedCharacter;
-        if (!replacedCharacter) {
+        if(!replacedCharacter) {
             return;
         }
         const frameworkKeepsDisguisedInCurrentLocation =
@@ -124,7 +124,7 @@ export class PlayDisguisedCharacterAction extends BaseAction {
             (frameworkKeepsDisguisedInCurrentLocation && replacedCharacter.isParticipating());
 
         let intoConflict = conflictOnly && this.intoLocation !== PlayDisguisedCharacterIntoLocation.Home;
-        if (replacedCharacter.inConflict && !conflictOnly) {
+        if(replacedCharacter.inConflict && !conflictOnly) {
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Where do you wish to play this character?',
                 source: context.source,
@@ -154,12 +154,12 @@ export class PlayDisguisedCharacterAction extends BaseAction {
                             amount: replacedCharacter.fate
                         })
                         .addEventsToArray(moveEvents, context);
-                    for (const attachment of replacedCharacter.attachments) {
+                    for(const attachment of replacedCharacter.attachments) {
                         context.game.actions
                             .attach({ target: context.source, attachment: attachment, viaDisguised: true })
                             .addEventsToArray(moveEvents, context);
                     }
-                    for (const token of replacedCharacter.statusTokens) {
+                    for(const token of replacedCharacter.statusTokens) {
                         context.game.actions
                             .moveStatusToken({ target: token, recipient: context.source })
                             .addEventsToArray(moveEvents, context);

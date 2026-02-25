@@ -27,7 +27,7 @@ class Process {
                 ring.isConsideredClaimed(this.context.player) && !this.#chosenRings.includes(ring),
             onSelect: (_player: Player, ring: Ring) => {
                 this.#chosenRings.push(ring);
-                if (
+                if(
                     Object.values(this.context.game.rings).some(
                         (ring) =>
                             ring.isConsideredClaimed(this.context.player) &&
@@ -69,7 +69,7 @@ class Process {
     }
 
     #promptTitle(): string {
-        switch (this.#chosenRings.length) {
+        switch(this.#chosenRings.length) {
             case 0:
                 return 'Choose the first ring to resolve';
             case 1:

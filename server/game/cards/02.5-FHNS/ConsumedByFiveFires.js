@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const DrawCard = require('../../drawcard.js');
 const GameActions = require('../../GameActions/GameActions');
 const { Locations, CardTypes } = require('../../Constants');
@@ -17,10 +16,10 @@ class ConsumedByFiveFires extends DrawCard {
     }
 
     chooseCard(context, targets, messages) {
-        let fateRemaining = 5 - _.reduce(targets, (totalFate, fateToRemove) => totalFate + fateToRemove, 0);
-        if(fateRemaining === 0 || !context.player.opponent.cardsInPlay.any(card => card.allowGameAction('removeFate', context) && !_.keys(targets).includes(card.uuid))) {
+        let fateRemaining = 5 - Object.values(targets).reduce((totalFate, fateToRemove) => totalFate + fateToRemove, 0);
+        if(fateRemaining === 0 || !context.player.opponent.cardsInPlay.any(card => card.allowGameAction('removeFate', context) && !Object.keys(targets).includes(card.uuid))) {
             this.game.addMessage('{0} chooses to: {1}', context.player, messages);
-            let keys = _.keys(targets);
+            let keys = Object.keys(targets);
             let events = keys.map(key => {
                 let card = context.player.opponent.cardsInPlay.find(c => c.uuid === key);
                 if(card) {
@@ -33,10 +32,11 @@ class ConsumedByFiveFires extends DrawCard {
         this.game.promptForSelect(context.player, {
             context: context,
             cardType: CardTypes.Character,
-            cardCondition: card => card.location === Locations.PlayArea && card.allowGameAction('removeFate', context) && card.controller !== context.player && !_.keys(targets).includes(card.uuid),
+            cardCondition: card => card.location === Locations.PlayArea && card.allowGameAction('removeFate', context) && card.controller !== context.player && !Object.keys(targets).includes(card.uuid),
             onSelect: (player, card) => {
-                let choices = _.range(1, Math.min(fateRemaining, card.getFate()) + 1);
-                let handlers = _.map(choices, choice => {
+                let maxFate = Math.min(fateRemaining, card.getFate());
+                let choices = Array.from({ length: maxFate }, (_, i) => i + 1);
+                let handlers = choices.map(choice => {
                     return () => {
                         targets[card.uuid] = choice;
                         messages.push('take ' + choice.toString() + ' fate from ' + card.name);
@@ -57,9 +57,9 @@ class ConsumedByFiveFires extends DrawCard {
             },
             onCancel: () => {
                 this.game.addMessage('{0} chooses to: {1}', context.player, messages);
-                let keys = _.keys(targets);
+                let keys = Object.keys(targets);
                 let events = this.game.applyGameAction(context, { removeFate: context.player.opponent.cardsInPlay.filter(card => keys.includes(card.uuid)) });
-                _.each(events, event => event.fate = targets[event.card.uuid]);
+                events.forEach(event => event.fate = targets[event.card.uuid]);
                 return true;
             }
         });

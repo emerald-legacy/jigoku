@@ -1,4 +1,4 @@
-describe("Earth's Stagnation", function () {
+describe('Earth\'s Stagnation', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
@@ -42,7 +42,7 @@ describe("Earth's Stagnation", function () {
             this.player2.clickCard(this.stagnation);
             expect(this.tactician.getMilitarySkill()).toBe(tacticianInitialMil - 1);
             expect(this.getChatLogs(3)).toContain(
-                "player2 uses Earth's Stagnation to give -1military and -1political to Master Tactician"
+                'player2 uses Earth\'s Stagnation to give -1military and -1political to Master Tactician'
             );
 
             this.player1.clickCard(this.iconOfFavor);
@@ -50,7 +50,7 @@ describe("Earth's Stagnation", function () {
             this.player2.clickCard(this.stagnation);
             expect(this.tactician.getMilitarySkill()).toBe(tacticianInitialMil - 1);
             expect(this.getChatLogs(3)).not.toContain(
-                "player2 uses Earth's Stagnation to give -1military and -1political to Master Tactician"
+                'player2 uses Earth\'s Stagnation to give -1military and -1political to Master Tactician'
             );
 
             this.player2.pass();
@@ -59,7 +59,7 @@ describe("Earth's Stagnation", function () {
             this.player2.clickCard(this.stagnation);
             expect(this.tactician.getMilitarySkill()).toBe(tacticianInitialMil + 2 - 2);
             expect(this.getChatLogs(3)).toContain(
-                "player2 uses Earth's Stagnation to give -1military and -1political to Master Tactician"
+                'player2 uses Earth\'s Stagnation to give -1military and -1political to Master Tactician'
             );
         });
 
@@ -72,7 +72,7 @@ describe("Earth's Stagnation", function () {
             this.player2.clickCard(this.stagnation);
             expect(this.tactician.getMilitarySkill()).toBe(tacticianInitialMil - 2);
             expect(this.getChatLogs(3)).toContain(
-                "player2 uses Earth's Stagnation to give -2military and -2political to Master Tactician"
+                'player2 uses Earth\'s Stagnation to give -2military and -2political to Master Tactician'
             );
 
             this.player1.clickCard(this.iconOfFavor);
@@ -80,7 +80,7 @@ describe("Earth's Stagnation", function () {
             this.player2.clickCard(this.stagnation);
             expect(this.tactician.getMilitarySkill()).toBe(tacticianInitialMil - 2);
             expect(this.getChatLogs(3)).not.toContain(
-                "player2 uses Earth's Stagnation to give -2military and -2political to Master Tactician"
+                'player2 uses Earth\'s Stagnation to give -2military and -2political to Master Tactician'
             );
 
             this.player2.pass();
@@ -89,7 +89,7 @@ describe("Earth's Stagnation", function () {
             this.player2.clickCard(this.stagnation);
             expect(this.tactician.getMilitarySkill()).toBe(tacticianInitialMil + 2 - 4);
             expect(this.getChatLogs(3)).toContain(
-                "player2 uses Earth's Stagnation to give -2military and -2political to Master Tactician"
+                'player2 uses Earth\'s Stagnation to give -2military and -2political to Master Tactician'
             );
         });
     });

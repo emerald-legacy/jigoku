@@ -1,8 +1,26 @@
-const _ = require('underscore');
+import CardAbility from './CardAbility.js';
+import { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
+import { Stages, CardTypes, EffectNames, AbilityTypes } from './Constants.js';
+import type Game from './game';
+import type BaseCard from './basecard';
+import type Player from './player';
+import type { Event } from './Events/Event';
 
-const CardAbility = require('./CardAbility.js');
-const { TriggeredAbilityContext } = require('./TriggeredAbilityContext.js');
-const { Stages, CardTypes, EffectNames, AbilityTypes } = require('./Constants.js');
+type EventListener = (event: Event, context: TriggeredAbilityContext) => boolean;
+type AggregateWhen = (events: Event[], context: TriggeredAbilityContext) => boolean;
+
+interface TriggeredAbilityProperties {
+    when?: Record<string, EventListener>;
+    aggregateWhen?: AggregateWhen;
+    anyPlayer?: boolean;
+    collectiveTrigger?: boolean;
+    [key: string]: any;
+}
+
+interface RegisteredEvent {
+    name: string;
+    handler: (...args: any[]) => void;
+}
 
 /**
  * Represents a reaction/interrupt ability provided by card text.
@@ -34,7 +52,13 @@ const { Stages, CardTypes, EffectNames, AbilityTypes } = require('./Constants.js
  */
 
 class TriggeredAbility extends CardAbility {
-    constructor(game, card, abilityType, properties) {
+    when?: Record<string, EventListener>;
+    aggregateWhen?: AggregateWhen;
+    anyPlayer: boolean;
+    collectiveTrigger: boolean;
+    events: RegisteredEvent[] | null = null;
+
+    constructor(game: Game, card: BaseCard, abilityType: AbilityTypes, properties: TriggeredAbilityProperties) {
         super(game, card, properties);
         this.when = properties.when;
         this.aggregateWhen = properties.aggregateWhen;
@@ -43,15 +67,15 @@ class TriggeredAbility extends CardAbility {
         this.collectiveTrigger = !!properties.collectiveTrigger;
     }
 
-    meetsRequirements(context, ignoredRequirements = []) {
-        let canOpponentTrigger =
+    meetsRequirements(context: TriggeredAbilityContext, ignoredRequirements: string[] = []): string {
+        const canOpponentTrigger =
             this.card.anyEffect(EffectNames.CanBeTriggeredByOpponent) &&
             this.abilityType !== AbilityTypes.ForcedInterrupt &&
             this.abilityType !== AbilityTypes.ForcedReaction;
-        let canPlayerTrigger = this.anyPlayer || context.player === this.card.controller || canOpponentTrigger;
+        const canPlayerTrigger = this.anyPlayer || context.player === this.card.controller || canOpponentTrigger;
 
-        if (!ignoredRequirements.includes('player') && !canPlayerTrigger) {
-            if (
+        if(!ignoredRequirements.includes('player') && !canPlayerTrigger) {
+            if(
                 this.card.type !== CardTypes.Event ||
                 !context.player.isCardInPlayableLocation(this.card, context.playType)
             ) {
@@ -62,11 +86,10 @@ class TriggeredAbility extends CardAbility {
         return super.meetsRequirements(context, ignoredRequirements);
     }
 
-    eventHandler(event, window) {
-        for (const player of this.game.getPlayers()) {
-            let context = this.createContext(player, event);
-            //console.log(event.name, this.card.name, this.isTriggeredByEvent(event, context), this.meetsRequirements(context));
-            if (
+    eventHandler(event: Event, window: any): void {
+        for(const player of this.game.getPlayers()) {
+            const context = this.createContext(player, event);
+            if(
                 this.card.reactions.includes(this) &&
                 this.isTriggeredByEvent(event, context) &&
                 this.meetsRequirements(context) === ''
@@ -76,13 +99,12 @@ class TriggeredAbility extends CardAbility {
         }
     }
 
-    checkAggregateWhen(events, window) {
-        for (const player of this.game.getPlayers()) {
-            let context = this.createContext(player, events);
-            //console.log(events.map(event => event.name), this.card.name, this.aggregateWhen(events, context), this.meetsRequirements(context));
-            if (
+    checkAggregateWhen(events: Event[], window: any): void {
+        for(const player of this.game.getPlayers()) {
+            const context = this.createContext(player, events);
+            if(
                 this.card.reactions.includes(this) &&
-                this.aggregateWhen(events, context) &&
+                this.aggregateWhen?.(events, context) &&
                 this.meetsRequirements(context) === ''
             ) {
                 window.addChoice(context);
@@ -90,7 +112,7 @@ class TriggeredAbility extends CardAbility {
         }
     }
 
-    createContext(player = this.card.controller, event) {
+    createContext(player: Player = this.card.controller, event?: Event | Event[]): TriggeredAbilityContext {
         return new TriggeredAbilityContext({
             event: event,
             game: this.game,
@@ -101,41 +123,40 @@ class TriggeredAbility extends CardAbility {
         });
     }
 
-    isTriggeredByEvent(event, context) {
-        let listener = this.when[event.name];
-
-        return listener && listener(event, context);
+    isTriggeredByEvent(event: Event, context: TriggeredAbilityContext): boolean {
+        const listener = this.when?.[event.name];
+        return Boolean(listener && listener(event, context));
     }
 
-    registerEvents() {
-        if (this.events) {
+    registerEvents(): void {
+        if(this.events) {
             return;
-        } else if (this.aggregateWhen) {
-            const event = {
+        } else if(this.aggregateWhen) {
+            const event: RegisteredEvent = {
                 name: 'aggregateEvent:' + this.abilityType,
-                handler: (events, window) => this.checkAggregateWhen(events, window)
+                handler: (events: Event[], window: any) => this.checkAggregateWhen(events, window)
             };
             this.events = [event];
             this.game.on(event.name, event.handler);
             return;
         }
 
-        var eventNames = _.keys(this.when);
+        const eventNames = Object.keys(this.when || {});
 
         this.events = [];
-        _.each(eventNames, (eventName) => {
-            var event = {
+        eventNames.forEach((eventName) => {
+            const event: RegisteredEvent = {
                 name: eventName + ':' + this.abilityType,
-                handler: (event, window) => this.eventHandler(event, window)
+                handler: (evt: Event, window: any) => this.eventHandler(evt, window)
             };
             this.game.on(event.name, event.handler);
-            this.events.push(event);
+            this.events?.push(event);
         });
     }
 
-    unregisterEvents() {
-        if (this.events) {
-            _.each(this.events, (event) => {
+    unregisterEvents(): void {
+        if(this.events) {
+            this.events.forEach((event) => {
                 this.game.removeListener(event.name, event.handler);
             });
             this.events = null;
@@ -143,4 +164,4 @@ class TriggeredAbility extends CardAbility {
     }
 }
 
-module.exports = TriggeredAbility;
+export = TriggeredAbility;

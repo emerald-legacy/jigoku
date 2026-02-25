@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
-import { CardTypes, Players } from "../../../Constants";
+import { CardTypes, Players } from '../../../Constants';
 
 export default class TwoFoldVirtue extends DrawCard {
     static id = 'two-folded-virtue';
@@ -16,7 +16,7 @@ export default class TwoFoldVirtue extends DrawCard {
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.cardLastingEffect(context => ({
                         effect: AbilityDsl.effects.modifyMilitarySkill(2),
-                        target: context.target,
+                        target: context.target
                     })),
                     AbilityDsl.actions.playerLastingEffect(context => ({
                         targetController: context.player,

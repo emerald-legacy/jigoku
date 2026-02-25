@@ -1,8 +1,8 @@
 import { CardTypes, EventNames, Locations, Phases } from '../../Constants';
 import { EventRegistrar } from '../../EventRegistrar';
-import AbilityDsl = require('../../abilitydsl');
-import BaseCard = require('../../basecard');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import BaseCard from '../../basecard';
+import DrawCard from '../../drawcard';
 
 export default class SoshiShadowshaper extends DrawCard {
     static id = 'soshi-shadowshaper';
@@ -15,7 +15,7 @@ export default class SoshiShadowshaper extends DrawCard {
         this.eventRegistrar.register([EventNames.OnPhaseStarted, EventNames.OnCharacterEntersPlay]);
 
         this.action({
-            title: "Return a character to owner's hand",
+            title: 'Return a character to owner\'s hand',
             phase: Phases.Conflict,
             cost: AbilityDsl.costs.payHonor(1),
             target: {
@@ -31,7 +31,7 @@ export default class SoshiShadowshaper extends DrawCard {
     }
 
     public onCharacterEntersPlay(event: any) {
-        if (event.originalLocation === Locations.Hand) {
+        if(event.originalLocation === Locations.Hand) {
             this.charactersPlayedThisPhase.add(event.card);
         }
     }

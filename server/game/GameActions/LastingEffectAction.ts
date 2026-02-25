@@ -21,14 +21,14 @@ export class LastingEffectAction<P extends LastingEffectProperties = LastingEffe
     name = 'applyLastingEffect';
     eventName = EventNames.OnEffectApplied;
     effect = 'apply a lasting effect';
-    // @ts-ignore
+    // @ts-expect-error -- intentionally narrowing defaultProperties type from base class generic P to LastingEffectProperties
     defaultProperties: LastingEffectProperties = {
         duration: Durations.UntilEndOfConflict,
         effect: [],
         ability: null
     } as LastingEffectProperties;
 
-    // @ts-ignore
+    // @ts-expect-error -- overriding return type to be more specific than base class signature
     getProperties(
         context: AbilityContext,
         additionalProperties = {}
@@ -36,7 +36,7 @@ export class LastingEffectAction<P extends LastingEffectProperties = LastingEffe
         let properties = super.getProperties(context, additionalProperties) as LastingEffectProperties & {
             effect: Array<any>;
         };
-        if (!Array.isArray(properties.effect)) {
+        if(!Array.isArray(properties.effect)) {
             properties.effect = [properties.effect];
         }
         return properties;
@@ -48,14 +48,14 @@ export class LastingEffectAction<P extends LastingEffectProperties = LastingEffe
     }
 
     addEventsToArray(events: any[], context: AbilityContext, additionalProperties: any): void {
-        if (this.hasLegalTarget(context, additionalProperties)) {
+        if(this.hasLegalTarget(context, additionalProperties)) {
             events.push(this.getEvent(null, context, additionalProperties));
         }
     }
 
     eventHandler(event: any, additionalProperties: any): void {
         let properties = this.getProperties(event.context, additionalProperties);
-        if (!properties.ability) {
+        if(!properties.ability) {
             properties.ability = event.context.ability;
         }
         event.context.source[properties.duration](() => properties);

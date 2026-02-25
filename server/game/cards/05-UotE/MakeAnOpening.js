@@ -2,7 +2,7 @@ const DrawCard = require('../../drawcard.js');
 const { Players, CardTypes } = require('../../Constants');
 
 class MakeAnOpening extends DrawCard {
-    setupCardAbilities(ability) { // eslint-disable-line no-unused-vars
+    setupCardAbilities(ability) {
         this.action({
             title: 'Give -X/-X to opposing character, where X is the difference between current honor dial bid values',
             condition: context =>

@@ -1,8 +1,6 @@
 import AbilityDsl from '../../../abilitydsl';
-import { AbilityTypes, CardTypes } from '../../../Constants';
+import { CardTypes } from '../../../Constants';
 import DrawCard from '../../../drawcard';
-import type { TriggeredAbilityProps } from '../../../Interfaces';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
 
 export default class UtakuTomoe extends DrawCard {
     static id = 'utaku-tomoe';

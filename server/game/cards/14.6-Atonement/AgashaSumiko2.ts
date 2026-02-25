@@ -33,24 +33,24 @@ export default class AgashaSumiko2 extends DrawCard {
 
     private getChatMessage(context: TriggeredAbilityContext) {
         let messages: string[] = [];
-        if (context.player.opponent) {
-            if (context.player.opponent.honor > context.player.honor) {
+        if(context.player.opponent) {
+            if(context.player.opponent.honor > context.player.honor) {
                 messages.push('lose 2 honor');
             }
-            if (context.player.opponent.fate > context.player.fate) {
+            if(context.player.opponent.fate > context.player.fate) {
                 messages.push('lose 2 fate');
             }
-            if (context.player.opponent.hand.size() > context.player.hand.size()) {
+            if(context.player.opponent.hand.size() > context.player.hand.size()) {
                 messages.push('disard 2 cards');
             }
 
-            if (messages.length === 3) {
+            if(messages.length === 3) {
                 return `${messages[0]}, ${messages[1]} and ${messages[2]}`;
             }
-            if (messages.length === 2) {
+            if(messages.length === 2) {
                 return `${messages[0]} and ${messages[1]}`;
             }
-            if (messages.length === 1) {
+            if(messages.length === 1) {
                 return `${messages[0]}`;
             }
         }

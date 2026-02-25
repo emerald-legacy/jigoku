@@ -11,7 +11,7 @@ export class PlayableLocation {
     ) {}
 
     public contains(card: DrawCard) {
-        if (this.cards.size > 0 && !this.cards.has(card)) {
+        if(this.cards.size > 0 && !this.cards.has(card)) {
             return false;
         }
 

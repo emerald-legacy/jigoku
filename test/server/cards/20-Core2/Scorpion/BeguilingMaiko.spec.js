@@ -30,8 +30,8 @@ describe('Beguiling Maiko', function () {
             this.player1.clickCard(this.maiko);
             this.player1.clickPrompt('military');
             expect(this.player1.player.imperialFavor).toBe('military');
-            expect(this.getChatLogs(5)).toContain("player1 claims the Emperor's military favor!");
-            expect(this.getChatLogs(5)).toContain("player1 uses Beguiling Maiko to claim the Emperor's favor");
+            expect(this.getChatLogs(5)).toContain('player1 claims the Emperor\'s military favor!');
+            expect(this.getChatLogs(5)).toContain('player1 uses Beguiling Maiko to claim the Emperor\'s favor');
         });
 
         it('looks at opponent hand when favor is military', function () {

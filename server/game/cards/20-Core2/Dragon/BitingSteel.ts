@@ -9,10 +9,14 @@ function getAttachmentSkill(card: DrawCard) {
     let amount = 0;
 
     const mil = parseInt(card.cardData.military_bonus);
-    if (!isNaN(mil)) amount += mil;
+    if(!isNaN(mil)) {
+        amount += mil;
+    }
 
     const pol = parseInt(card.cardData.political_bonus);
-    if (!isNaN(pol)) amount += pol;
+    if(!isNaN(pol)) {
+        amount += pol;
+    }
 
     return amount;
 }

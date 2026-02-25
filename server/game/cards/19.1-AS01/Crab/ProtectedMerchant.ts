@@ -1,7 +1,7 @@
 import { CardTypes } from '../../../Constants';
-import AbilityDsl = require('../../../abilitydsl');
-import BaseCard = require('../../../basecard');
-import DrawCard = require('../../../drawcard');
+import AbilityDsl from '../../../abilitydsl';
+import BaseCard from '../../../basecard';
+import DrawCard from '../../../drawcard';
 
 export default class ProtectedMerchant extends DrawCard {
     static id = 'protected-merchant';

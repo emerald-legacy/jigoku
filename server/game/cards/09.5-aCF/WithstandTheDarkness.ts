@@ -23,7 +23,7 @@ export default class WithstandTheDarkness extends DrawCard {
         this.reaction({
             when: {
                 onCardPlayed: (event, context) => {
-                    if (event.card.type === CardTypes.Event && event.card.controller === context.player.opponent) {
+                    if(event.card.type === CardTypes.Event && event.card.controller === context.player.opponent) {
                         this.currentTargets = this.getLegalWithstandTargets(event);
                         return this.currentTargets.size > 0;
                     }
@@ -43,8 +43,8 @@ export default class WithstandTheDarkness extends DrawCard {
     }
 
     public onInitiateAbility(event: any) {
-        if (event.card.id === 'banzai') {
-            if (event.context) {
+        if(event.card.id === 'banzai') {
+            if(event.context) {
                 this.extraBanzaiTarget = event.context.targets.target;
             }
         }
@@ -52,32 +52,32 @@ export default class WithstandTheDarkness extends DrawCard {
 
     private getLegalWithstandTargets(event: any) {
         const allTargets = new Set<BaseCard>();
-        if (!event.context) {
+        if(!event.context) {
             return allTargets;
         }
 
-        for (const directTargets of Object.values<BaseCard | BaseCard[]>(event.context.targets)) {
-            if (!Array.isArray(directTargets)) {
+        for(const directTargets of Object.values<BaseCard | BaseCard[]>(event.context.targets)) {
+            if(!Array.isArray(directTargets)) {
                 allTargets.add(directTargets);
                 continue;
             }
-            for (const directTarget of directTargets) {
+            for(const directTarget of directTargets) {
                 allTargets.add(directTarget);
             }
         }
 
-        for (const selectedTargets of Object.values<BaseCard | BaseCard[]>(event.context.selects)) {
-            if (!Array.isArray(selectedTargets)) {
+        for(const selectedTargets of Object.values<BaseCard | BaseCard[]>(event.context.selects)) {
+            if(!Array.isArray(selectedTargets)) {
                 allTargets.add(selectedTargets);
                 continue;
             }
-            for (const selectedTarget of selectedTargets) {
+            for(const selectedTarget of selectedTargets) {
                 allTargets.add(selectedTarget);
             }
         }
 
-        if (event.card.id === 'banzai') {
-            if (this.extraBanzaiTarget) {
+        if(event.card.id === 'banzai') {
+            if(this.extraBanzaiTarget) {
                 allTargets.add(this.extraBanzaiTarget);
             }
             this.extraBanzaiTarget = undefined;

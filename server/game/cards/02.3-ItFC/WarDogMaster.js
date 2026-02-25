@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const DrawCard = require('../../drawcard.js');
 const AbilityDsl = require('../../abilitydsl');
 
@@ -11,10 +10,10 @@ class WarDogMaster extends DrawCard {
             },
             cost: AbilityDsl.costs.discardCardSpecific(context => context.player.dynastyDeck.first()),
             effect: 'give {0} +{1}{2}',
-            effectArgs: context => [context.costs.discardCard && _.isNumber(context.costs.discardCard[0].getCost()) ? context.costs.discardCard[0].getCost() : 0, 'military'],
+            effectArgs: context => [context.costs.discardCard && typeof context.costs.discardCard[0].getCost() === 'number' ? context.costs.discardCard[0].getCost() : 0, 'military'],
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                 effect: AbilityDsl.effects.modifyMilitarySkill(
-                    context.costs.discardCard && _.isNumber(context.costs.discardCard[0].getCost()) ? context.costs.discardCard[0].getCost() : 0
+                    context.costs.discardCard && typeof context.costs.discardCard[0].getCost() === 'number' ? context.costs.discardCard[0].getCost() : 0
                 )
             }))
         });

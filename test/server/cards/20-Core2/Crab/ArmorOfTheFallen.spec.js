@@ -80,7 +80,7 @@ describe('Armor of the Fallen', function () {
             expect(this.stowaway.location).toBe('removed from game');
             expect(this.envoy3.location).toBe('dynasty discard pile');
             expect(this.getChatLogs(5)).toContain(
-                "player1 uses Borderlands Defender's gained ability from Armor of the Fallen, removing Kaiu Envoy, Kaiu Envoy and Stowaway from the game to bow Doji Challenger"
+                'player1 uses Borderlands Defender\'s gained ability from Armor of the Fallen, removing Kaiu Envoy, Kaiu Envoy and Stowaway from the game to bow Doji Challenger'
             );
         });
 

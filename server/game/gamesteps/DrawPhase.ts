@@ -31,7 +31,7 @@ export class DrawPhase extends Phase {
     }
 
     drawConflictCards() {
-        for (let player of this.game.getPlayers()) {
+        for(let player of this.game.getPlayers()) {
             const min = player.honorBid === 0 ? 0 : 1;
             const amount = Math.max(player.honorBid + player.sumEffects(EffectNames.ModifyCardsDrawnInDrawPhase), min);
             this.game.addMessage('{0} draws {1} cards for the draw phase', player, amount);

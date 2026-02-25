@@ -65,10 +65,10 @@ describe('Kakita Blade 2', function () {
             this.player1.clickCard(this.brash);
 
             expect(this.getChatLogs(10)).toContain(
-                "player1 uses Daidōji Ambusher's gained ability from Kakita Blade to take an action at the start of the conflict"
+                'player1 uses Daidōji Ambusher\'s gained ability from Kakita Blade to take an action at the start of the conflict'
             );
             expect(this.getChatLogs(10)).toContain(
-                "player1 uses Brash Samurai's gained ability from Kakita Blade to take an action at the start of the conflict"
+                'player1 uses Brash Samurai\'s gained ability from Kakita Blade to take an action at the start of the conflict'
             );
 
             expect(this.player1).toHavePrompt('Conflict Action Window'); // Attacker first trigger

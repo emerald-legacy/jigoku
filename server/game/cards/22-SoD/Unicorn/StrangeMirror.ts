@@ -23,10 +23,10 @@ export default class StrangeMirror extends DrawCard {
                         duration: Durations.Custom,
                         until: {
                             onRoundEnded: () => true,
-                            onConflictFinished: () => true,
-                        },
+                            onConflictFinished: () => true
+                        }
                     }))
-                },
+                }
             },
             effect: 'turn {1} into a copy of {2}',
             effectArgs: context => [context.targets.myCharacter, context.targets.oppCharacter],
@@ -34,11 +34,11 @@ export default class StrangeMirror extends DrawCard {
             then: context => ({
                 thenCondition: () => context.targets.oppCharacter.isUnique(),
                 gameAction: AbilityDsl.actions.discardFromPlay({
-                    target: context.source,
+                    target: context.source
                 }),
                 message: '{3} is discarded because the chosen characters are unique',
-                messageArgs: thenContext => [context.source]
-            }),
+                messageArgs: _thenContext => [context.source]
+            })
         });
     }
 }

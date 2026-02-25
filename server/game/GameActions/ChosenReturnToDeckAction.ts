@@ -27,7 +27,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
 
     canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
-        if (player.hand.size() === 0 || properties.amount === 0) {
+        if(player.hand.size() === 0 || properties.amount === 0) {
             return false;
         }
         return super.canAffect(player, context);
@@ -35,17 +35,17 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
 
     addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
-        for (let player of properties.target as Player[]) {
+        for(let player of properties.target as Player[]) {
             let amount = Math.min(player.hand.size(), properties.amount);
-            if (amount > 0) {
-                if (amount === player.hand.size()) {
+            if(amount > 0) {
+                if(amount === player.hand.size()) {
                     let event = this.getEvent(player, context) as any;
                     event.cards = player.hand.slice(0, amount);
                     events.push(event);
                     return;
                 }
 
-                if (properties.targets && context.choosingPlayerOverride && context.choosingPlayerOverride !== player) {
+                if(properties.targets && context.choosingPlayerOverride && context.choosingPlayerOverride !== player) {
                     let event = this.getEvent(player, context) as any;
                     event.cards = player.hand.shuffle().slice(0, amount);
                     events.push(event);
@@ -90,13 +90,13 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
         );
         event.discardedCards = event.cards;
         let player = [];
-        for (let card of event.cards) {
+        for(let card of event.cards) {
             card.owner.moveCard(card, Locations.ConflictDeck, event.options);
-            if (!player.includes(card.owner)) {
+            if(!player.includes(card.owner)) {
                 player.push(card.owner);
             }
         }
-        if (event.shuffle) {
+        if(event.shuffle) {
             player.forEach((p) => p.shuffleConflictDeck());
         }
     }

@@ -16,7 +16,7 @@ export class SequentialContextAction extends GameAction {
 
     getProperties(context: AbilityContext, additionalProperties = {}): SequentialContextProperties {
         let properties = super.getProperties(context, additionalProperties) as SequentialContextProperties;
-        for (const gameAction of properties.gameActions) {
+        for(const gameAction of properties.gameActions) {
             gameAction.setDefaultTarget(() => properties.target);
         }
         return properties;
@@ -34,16 +34,16 @@ export class SequentialContextAction extends GameAction {
 
     addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
-        for (const gameAction of properties.gameActions) {
+        for(const gameAction of properties.gameActions) {
             context.game.queueSimpleStep(() => {
-                if (gameAction.hasLegalTarget(context, additionalProperties)) {
+                if(gameAction.hasLegalTarget(context, additionalProperties)) {
                     let eventsForThisAction = [];
                     gameAction.addEventsToArray(eventsForThisAction, context, additionalProperties);
                     context.game.queueSimpleStep(() => {
-                        for (const event of eventsForThisAction) {
+                        for(const event of eventsForThisAction) {
                             events.push(event);
                         }
-                        if (gameAction !== properties.gameActions[properties.gameActions.length - 1]) {
+                        if(gameAction !== properties.gameActions[properties.gameActions.length - 1]) {
                             context.game.openThenEventWindow(eventsForThisAction);
                         }
                     });

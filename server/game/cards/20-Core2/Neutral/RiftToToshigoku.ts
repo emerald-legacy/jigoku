@@ -31,14 +31,14 @@ export default class RiftToToshigoku extends ProvinceCard {
                 cardCondition: (card) => card.isAttacking(),
                 gameAction: AbilityDsl.actions.discardFromPlay()
             },
-            then: (context) => {
+            then: (_context) => {
                 this.shouldCancelRingEffectsHere = true;
             }
         });
     }
 
     public cancelRingEffect(event: any) {
-        if (
+        if(
             event.context.game.currentConflict &&
             this.isConflictProvince() &&
             this.shouldCancelRingEffectsHere &&

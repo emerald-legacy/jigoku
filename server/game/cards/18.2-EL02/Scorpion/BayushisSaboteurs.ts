@@ -16,7 +16,7 @@ export default class BayushisSaboteurs extends DrawCard {
 
     setupCardAbilities() {
         this.reaction({
-            title: "Discard or flip facedown cards in the defender's provinces",
+            title: 'Discard or flip facedown cards in the defender\'s provinces',
             when: {
                 onConflictDeclared: (event, context) => event.attackers.includes(context.source),
                 onDefendersDeclared: (event, context) => event.defenders.includes(context.source),
@@ -47,7 +47,7 @@ export default class BayushisSaboteurs extends DrawCard {
                     }))
                 }
             },
-            effect: "{1} all of {2}'s dynasty cards",
+            effect: '{1} all of {2}\'s dynasty cards',
             effectArgs: (context) => [context.select === DISCARD ? 'discard' : 'flip facedown', defender(context)]
         });
     }

@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const { AllPlayerPrompt } = require('../AllPlayerPrompt.js');
 const { Locations } = require('../../Constants');
 
@@ -28,7 +27,7 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
     }
 
     highlightSelectableCards() {
-        _.each(this.game.getPlayers(), player => {
+        this.game.getPlayers().forEach(player => {
             player.setSelectableCards(this.selectableCards[player.uuid]);
         });
     }
@@ -97,7 +96,13 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
         this.clickedDone[player.uuid] = true;
         this.game.addMessage('{0} has placed their provinces', player);
         player.moveCard(this.strongholdProvince[player.uuid], Locations.StrongholdProvince);
-        let provinces = _.uniq(this.selectedCards[player.uuid].concat(_.shuffle(this.selectableCards[player.uuid])));
+        // Shuffle remaining selectable cards using Fisher-Yates
+        const shuffled = [...this.selectableCards[player.uuid]];
+        for(let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        let provinces = [...new Set(this.selectedCards[player.uuid].concat(shuffled))];
         for(let i = 1; i < 5; i++) {
             let provinceCard = provinces[i - 1];
             if(!provinceCard.startsGameFaceup()) {

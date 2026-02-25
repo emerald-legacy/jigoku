@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const DrawCard = require('../../drawcard.js');
 
 class StayYourHand extends DrawCard {
@@ -8,8 +7,8 @@ class StayYourHand extends DrawCard {
             when: {
                 onDuelInitiated: (event, context) =>
                     event.context.player === context.player.opponent &&
-                    (_.some(event.context.targets, (card) => card.controller === context.player) ||
-                    (event.context.targets.target && _.some(event.context.targets.target, (card) => card.controller === context.player)))
+                    (Object.values(event.context.targets).some((card) => card.controller === context.player) ||
+                    (event.context.targets.target && Object.values(event.context.targets.target).some((card) => card.controller === context.player)))
             },
             cannotBeMirrored: true,
             effect: 'cancel the duel originating from {1}',

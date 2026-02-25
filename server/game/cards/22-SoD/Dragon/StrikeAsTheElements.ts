@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
-import { CardTypes, Players, TargetModes } from "../../../Constants";
+import { CardTypes, Players, TargetModes } from '../../../Constants';
 
 export default class StrikeAsTheElements extends DrawCard {
     static id = 'strike-as-the-elements';
@@ -15,8 +15,8 @@ export default class StrikeAsTheElements extends DrawCard {
                     controller: Players.Self,
                     cardCondition: card => card.isParticipating() && card.hasTrait('monk'),
                     gameAction: AbilityDsl.actions.cardLastingEffect({
-                        effect: AbilityDsl.effects.modifyMilitarySkill(2),
-                    }),
+                        effect: AbilityDsl.effects.modifyMilitarySkill(2)
+                    })
                 },
                 ring: {
                     mode: TargetModes.Ring,

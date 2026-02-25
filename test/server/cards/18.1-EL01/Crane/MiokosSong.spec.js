@@ -1,6 +1,6 @@
 const { GameModes } = require('../../../../../build/server/GameModes');
 
-describe("Mioko's Song", function () {
+describe('Mioko\'s Song', function () {
     integration(function () {
         describe('Static ability', function () {
             beforeEach(function () {

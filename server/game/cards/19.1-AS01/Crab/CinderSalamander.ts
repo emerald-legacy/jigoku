@@ -1,7 +1,7 @@
 import { CardTypes, Decks, Elements, Locations, Players, TargetModes } from '../../../Constants';
-import AbilityDsl = require('../../../abilitydsl');
-import BaseCard = require('../../../basecard');
-import DrawCard = require('../../../drawcard');
+import AbilityDsl from '../../../abilitydsl';
+import BaseCard from '../../../basecard';
+import DrawCard from '../../../drawcard';
 
 const ELEMENT_KEY = 'cinder-salamander-fire';
 
@@ -74,7 +74,7 @@ export default class CinderSalamander extends DrawCard {
         return salamanderCount > 1
             ? salamanderCount + ' salamanders'
             : salamanderCount === 1
-            ? '1 salamander'
-            : 'no salamanders';
+                ? '1 salamander'
+                : 'no salamanders';
     }
 }

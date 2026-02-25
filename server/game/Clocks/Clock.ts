@@ -38,14 +38,14 @@ export class Clock implements ClockInterface {
     public reset() {}
 
     public start() {
-        if (!this.paused && !this.manuallyPaused) {
+        if(!this.paused && !this.manuallyPaused) {
             this.timerStart = Date.now();
             this.updateStateId();
         }
     }
 
     public stop() {
-        if (this.timerStart > 0) {
+        if(this.timerStart > 0) {
             this.updateTimeLeft(Math.floor((Date.now() - this.timerStart) / 1000 + 0.5));
             this.timerStart = 0;
             this.updateStateId();
@@ -65,23 +65,23 @@ export class Clock implements ClockInterface {
     }
 
     protected updateTimeLeft(secs: number) {
-        if (this.timeLeft === 0 || secs < 0) {
+        if(this.timeLeft === 0 || secs < 0) {
             return;
         }
-        if (this.delayToStartClock && secs <= this.delayToStartClock) {
+        if(this.delayToStartClock && secs <= this.delayToStartClock) {
             return;
         }
 
-        if (this.delayToStartClock) {
+        if(this.delayToStartClock) {
             secs = secs - this.delayToStartClock;
         }
-        if (this.mode === 'down') {
+        if(this.mode === 'down') {
             this.modify(-secs);
-            if (this.timeLeft < 0) {
+            if(this.timeLeft < 0) {
                 this.timeLeft = 0;
                 this.timeRanOut();
             }
-        } else if (this.mode === 'up') {
+        } else if(this.mode === 'up') {
             this.modify(secs);
         }
     }

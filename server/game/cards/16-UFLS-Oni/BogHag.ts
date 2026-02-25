@@ -1,4 +1,4 @@
-import AbilityDsl = require('../../abilitydsl');
+import AbilityDsl from '../../abilitydsl';
 import { BaseOni } from './_BaseOni';
 
 export default class BogHag extends BaseOni {
@@ -18,7 +18,7 @@ export default class BogHag extends BaseOni {
             gameAction: AbilityDsl.actions.discardCard((context) => ({
                 target: context.player.opponent.conflictDeck.first(8)
             })),
-            effect: "discard the top 8 cards of {1}'s conflict deck",
+            effect: 'discard the top 8 cards of {1}\'s conflict deck',
             effectArgs: (context) => [context.player.opponent]
         });
     }

@@ -1,4 +1,4 @@
-describe("Sensei's Heirloom", function () {
+describe('Sensei\'s Heirloom', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
@@ -20,7 +20,7 @@ describe("Sensei's Heirloom", function () {
         it('gets a card to hand', function () {
             this.player1.clickCard(this.senseiHeirloom);
             this.player1.clickCard(this.motso);
-            expect(this.player1).toHavePrompt("Any reactions to Sensei's Heirloom being played?");
+            expect(this.player1).toHavePrompt('Any reactions to Sensei\'s Heirloom being played?');
 
             this.player1.clickCard(this.senseiHeirloom);
             expect(this.player1).toHavePrompt('Select a card');

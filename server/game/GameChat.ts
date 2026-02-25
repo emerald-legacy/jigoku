@@ -39,29 +39,29 @@ export class GameChat {
     }
 
     formatMessage(format: string, args: Array<MsgArg>): string | Array<string> {
-        if (!format) {
+        if(!format) {
             return '';
         }
 
         let fragments = format.split(/(\{\d+\})/);
         return fragments.reduce((output, fragment) => {
             let argMatch = fragment.match(/\{(\d+)\}/);
-            if (argMatch && args) {
+            if(argMatch && args) {
                 let arg = args[argMatch[1]];
-                if (arg || arg === 0) {
-                    if (arg.message) {
+                if(arg || arg === 0) {
+                    if(arg.message) {
                         return output.concat(arg.message);
-                    } else if (Array.isArray(arg)) {
-                        if (typeof arg[0] === 'string' && arg[0].includes('{')) {
+                    } else if(Array.isArray(arg)) {
+                        if(typeof arg[0] === 'string' && arg[0].includes('{')) {
                             return output.concat(this.formatMessage(arg[0], arg.slice(1)));
                         }
                         return output.concat(this.formatArray(arg));
-                    } else if (arg.getShortSummary) {
+                    } else if(arg.getShortSummary) {
                         return output.concat(arg.getShortSummary());
                     }
                     return output.concat(arg);
                 }
-            } else if (!argMatch && fragment) {
+            } else if(!argMatch && fragment) {
                 let splitFragment = fragment.split(' ');
                 let lastWord = splitFragment.pop();
                 return splitFragment
@@ -75,7 +75,7 @@ export class GameChat {
     }
 
     formatArray(array: Array<MsgArg>): string | Array<string> {
-        if (array.length === 0) {
+        if(array.length === 0) {
             return [];
         }
 
@@ -83,10 +83,10 @@ export class GameChat {
             array.length === 1
                 ? '{0}'
                 : array.length === 2
-                ? '{0} and {1}'
-                : Array.from({ length: array.length - 1 })
-                      .map((_, idx) => `{${idx}}`)
-                      .join(', ') + ` and {${array.length - 1}}`;
+                    ? '{0} and {1}'
+                    : Array.from({ length: array.length - 1 })
+                        .map((_, idx) => `{${idx}}`)
+                        .join(', ') + ` and {${array.length - 1}}`;
 
         return this.formatMessage(format, array);
     }

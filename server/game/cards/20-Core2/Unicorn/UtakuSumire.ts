@@ -7,7 +7,7 @@ export default class UtakuSumire extends DrawCard {
 
     setupCardAbilities() {
         this.interrupt({
-            title: "Don't play cards. Place fate on up to 2 characters on win",
+            title: 'Don\'t play cards. Place fate on up to 2 characters on win',
             when: {
                 onConflictStarted: (_, context) => context.source.isAttacking()
             },

@@ -32,15 +32,15 @@ export class RemoveFateAction extends CardGameAction {
 
     canAffect(card: BaseCard, context: AbilityContext, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties) as RemoveFateProperties;
-        if (properties.amount === 0 || card.location !== Locations.PlayArea || card.getFate() === 0) {
+        if(properties.amount === 0 || card.location !== Locations.PlayArea || card.getFate() === 0) {
             return false;
         }
         return super.canAffect(card, context) && this.checkRecipient(properties.recipient, context);
     }
 
     checkRecipient(origin: Player | Ring | DrawCard, context: AbilityContext): boolean {
-        if (origin) {
-            if (['player', 'ring'].includes(origin.type)) {
+        if(origin) {
+            if(['player', 'ring'].includes(origin.type)) {
                 return true;
             }
             return origin.allowGameAction('placeFate', context);

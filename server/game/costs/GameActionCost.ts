@@ -5,7 +5,7 @@ import type { GameAction } from '../GameActions/GameAction';
 export class GameActionCost implements Cost {
     constructor(public action: GameAction) {}
 
-    getActionName(context: AbilityContext): string {
+    getActionName(_context: AbilityContext): string {
         return this.action.name;
     }
 
@@ -13,7 +13,7 @@ export class GameActionCost implements Cost {
         return this.action.hasLegalTarget(context);
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, result: Result): void {
+    addEventsToArray(events: any[], context: AbilityContext, _result: Result): void {
         context.costs[this.action.name] = this.action.getProperties(context).target;
         this.action.addEventsToArray(events, context);
     }

@@ -1,49 +1,52 @@
-const BaseAction = require('./BaseAction');
-const Costs = require('./Costs.js');
-const GameActions = require('./GameActions/GameActions');
-const { EffectNames, Phases, PlayTypes, EventNames } = require('./Constants');
+import BaseAction from './BaseAction';
+import * as Costs from './Costs';
+import * as GameActions from './GameActions/GameActions';
+import { EffectNames, Phases, PlayTypes, EventNames } from './Constants';
+import type { AbilityContext } from './AbilityContext';
+import type BaseCard from './basecard';
 
 class DynastyCardAction extends BaseAction {
-    constructor(card) {
+    title = 'Play this character';
+
+    constructor(card: BaseCard) {
         super(card, [Costs.chooseFate(PlayTypes.PlayFromProvince), Costs.payReduceableFateCost()]);
-        this.title = 'Play this character';
     }
 
-    meetsRequirements(context = this.createContext(), ignoredRequirements = []) {
-        if (!ignoredRequirements.includes('facedown') && this.card.isFacedown()) {
+    meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []): string | undefined {
+        if(!ignoredRequirements.includes('facedown') && this.card.isFacedown()) {
             return 'facedown';
-        } else if (!ignoredRequirements.includes('player') && context.player !== this.card.controller) {
+        } else if(!ignoredRequirements.includes('player') && context.player !== this.card.controller) {
             return 'player';
-        } else if (!ignoredRequirements.includes('phase') && context.game.currentPhase !== Phases.Dynasty) {
+        } else if(!ignoredRequirements.includes('phase') && context.game.currentPhase !== Phases.Dynasty) {
             return 'phase';
-        } else if (
+        } else if(
             !ignoredRequirements.includes('location') &&
             !context.player.isCardInPlayableLocation(this.card, PlayTypes.PlayFromProvince)
         ) {
             return 'location';
-        } else if (
+        } else if(
             !ignoredRequirements.includes('cannotTrigger') &&
             !this.card.canPlay(context, PlayTypes.PlayFromProvince)
         ) {
             return 'cannotTrigger';
-        } else if (this.card.anotherUniqueInPlay(context.player)) {
+        } else if(this.card.anotherUniqueInPlay(context.player)) {
             return 'unique';
         }
         return super.meetsRequirements(context);
     }
 
-    displayMessage(context) {
+    displayMessage(context: AbilityContext): void {
         context.game.addMessage(
             '{0} plays {1} with {2} additional fate',
             context.player,
             context.source,
-            context.chooseFate
+            (context as any).chooseFate
         );
-        if (context.source.checkRestrictions('placeFate', context)) {
+        if(context.source.checkRestrictions('placeFate', context)) {
             context.source
                 .getRawEffects()
-                .filter((effect) => effect.type === EffectNames.GainExtraFateWhenPlayed)
-                .map((effect) =>
+                .filter((effect: any) => effect.type === EffectNames.GainExtraFateWhenPlayed)
+                .map((effect: any) =>
                     context.game.addMessage(
                         '{0} enters play with {1} additional fate due to {2}',
                         context.source,
@@ -54,19 +57,19 @@ class DynastyCardAction extends BaseAction {
         }
     }
 
-    executeHandler(context) {
+    executeHandler(context: AbilityContext): void {
         let extraFate = context.source.sumEffects(EffectNames.GainExtraFateWhenPlayed);
-        let legendaryFate = context.source.sumEffects(EffectNames.LegendaryFate);
-        if (!context.source.checkRestrictions('placeFate', context)) {
+        const legendaryFate = context.source.sumEffects(EffectNames.LegendaryFate);
+        if(!context.source.checkRestrictions('placeFate', context)) {
             extraFate = 0;
         }
         extraFate = extraFate + legendaryFate;
         const status = context.source.getEffects(EffectNames.EntersPlayWithStatus)[0] || '';
-        let enterPlayEvent = GameActions.putIntoPlay({ fate: context.chooseFate + extraFate, status }).getEvent(
+        const enterPlayEvent = GameActions.putIntoPlay({ fate: (context as any).chooseFate + extraFate, status }).getEvent(
             context.source,
             context
         );
-        let cardPlayedEvent = context.game.getEvent(EventNames.OnCardPlayed, {
+        const cardPlayedEvent = context.game.getEvent(EventNames.OnCardPlayed, {
             player: context.player,
             card: context.source,
             context: context,
@@ -76,9 +79,9 @@ class DynastyCardAction extends BaseAction {
         context.game.openEventWindow([enterPlayEvent, cardPlayedEvent]);
     }
 
-    isCardPlayed() {
+    isCardPlayed(): boolean {
         return true;
     }
 }
 
-module.exports = DynastyCardAction;
+export = DynastyCardAction;

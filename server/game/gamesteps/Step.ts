@@ -1,7 +1,7 @@
 import type { GamePipeline } from '../GamePipeline';
-import type BaseCard = require('../basecard');
-import type Player = require('../player');
-import type Ring = require('../ring');
+import type BaseCard from '../basecard';
+import type Player from '../player';
+import type Ring from '../ring';
 
 export interface Step {
     continue(): undefined | boolean;

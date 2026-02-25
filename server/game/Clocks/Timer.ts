@@ -6,6 +6,6 @@ export class Timer extends Clock implements ClockInterface {
     name = 'Timer';
 
     protected timeRanOut() {
-        this.player.game.addMessage("{0}'s timer has expired", this.player);
+        this.player.game.addMessage('{0}\'s timer has expired', this.player);
     }
 }

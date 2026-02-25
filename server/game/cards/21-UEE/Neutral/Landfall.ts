@@ -26,7 +26,7 @@ export default class Landfall extends ProvinceCard {
     }
 
     wealthSelectPrompt(context) {
-        if (!this.cards || this.cards.length <= 0 || !this.hasRemainingTarget()) {
+        if(!this.cards || this.cards.length <= 0 || !this.hasRemainingTarget()) {
             context.player.shuffleDynastyDeck();
             return;
         }
@@ -50,7 +50,7 @@ export default class Landfall extends ProvinceCard {
                     currentCard.facedown = false;
                     this.cards = this.cards.filter((a) => a !== currentCard);
 
-                    if (this.cards && this.cards.length > 0 && this.hasRemainingTarget()) {
+                    if(this.cards && this.cards.length > 0 && this.hasRemainingTarget()) {
                         this.game.promptWithHandlerMenu(context.player, {
                             activePromptTitle: 'Select a card to place in a province',
                             context: context,
@@ -84,7 +84,7 @@ export default class Landfall extends ProvinceCard {
 
     hasRemainingTarget() {
         let baseLocations = [Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree];
-        if (this.game.gameMode !== GameModes.Skirmish) {
+        if(this.game.gameMode !== GameModes.Skirmish) {
             baseLocations.push(Locations.ProvinceFour);
         }
 

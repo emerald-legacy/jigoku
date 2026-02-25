@@ -17,7 +17,7 @@ export class HandlerAction extends GameAction {
         return true;
     }
 
-    canAffect(card: DrawCard, context: AbilityContext): boolean {
+    canAffect(_card: DrawCard, _context: AbilityContext): boolean {
         return true;
     }
 

@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const { UiPrompt } = require('./UiPrompt.js');
 
 /**
@@ -30,7 +29,7 @@ class MenuPrompt extends UiPrompt {
 
     activePrompt() {
         let promptTitle = this.properties.promptTitle || (this.properties.source ? this.properties.source.name : undefined);
-        return _.extend({ promptTitle: promptTitle }, this.properties.activePrompt);
+        return Object.assign({ promptTitle: promptTitle }, this.properties.activePrompt);
     }
 
     waitingPrompt() {
@@ -50,7 +49,7 @@ class MenuPrompt extends UiPrompt {
     }
 
     hasMethodButton(method) {
-        return _.any(this.properties.activePrompt.buttons, button => button.method === method);
+        return this.properties.activePrompt.buttons.some(button => button.method === method);
     }
 }
 

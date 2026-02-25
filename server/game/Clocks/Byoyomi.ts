@@ -11,7 +11,7 @@ export class Byoyomi extends ChessClock implements ClockInterface {
     }
 
     reset() {
-        if (this.timeLeft > 0 && this.timeLeft < this.periods * this.timePeriod) {
+        if(this.timeLeft > 0 && this.timeLeft < this.periods * this.timePeriod) {
             this.periods = Math.ceil(this.timeLeft / this.timePeriod);
             this.timeLeft = this.periods * this.timePeriod;
         }

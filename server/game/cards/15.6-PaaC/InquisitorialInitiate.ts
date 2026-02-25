@@ -1,14 +1,14 @@
 import { Locations, Players, TargetModes } from '../../Constants';
-import AbilityDsl = require('../../abilitydsl');
-import type BaseCard = require('../../basecard');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import type BaseCard from '../../basecard';
+import DrawCard from '../../drawcard';
 
 export default class InquisiorialInitiate extends DrawCard {
     static id = 'inquisitorial-initiate';
 
     public setupCardAbilities() {
         this.reaction({
-            title: "Discard an opponent's card",
+            title: 'Discard an opponent\'s card',
             when: {
                 afterConflict: (event, context) =>
                     context.source.isParticipating() &&

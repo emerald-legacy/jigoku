@@ -16,7 +16,7 @@ export class PlayerOrderPrompt extends UiPrompt {
     }
 
     private lazyFetchPlayers(): void {
-        if (!this.players) {
+        if(!this.players) {
             this.players = this.game.getPlayersInFirstPlayerOrder();
         }
     }
@@ -26,7 +26,7 @@ export class PlayerOrderPrompt extends UiPrompt {
         this.players = this.players.filter((p) => !this.skipCondition(p));
     }
 
-    private skipCondition(player: Player): boolean {
+    private skipCondition(_player: Player): boolean {
         return false;
     }
 

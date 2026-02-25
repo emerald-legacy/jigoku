@@ -22,7 +22,7 @@ export class ChooseGameAction extends GameAction {
 
     getProperties(context: AbilityContext, additionalProperties = {}): ChooseActionProperties {
         const properties = super.getProperties(context, additionalProperties) as ChooseActionProperties;
-        for (const opt of Object.values(properties.options)) {
+        for(const opt of Object.values(properties.options)) {
             opt.action.setDefaultTarget(() => properties.target);
         }
         return properties;
@@ -38,7 +38,7 @@ export class ChooseGameAction extends GameAction {
         const legalChoices = Object.entries(properties.options).filter(([_, option]) =>
             option.action.hasLegalTarget(context)
         );
-        if (legalChoices.length === 0) {
+        if(legalChoices.length === 0) {
             return;
         }
 
@@ -47,10 +47,10 @@ export class ChooseGameAction extends GameAction {
         const choiceLabels = legalChoices.map(([label, _]) => label);
         const choiceHandler = (choiceLabel: string): void => {
             const choice = legalChoices.find(([label, _]) => label === choiceLabel)?.[1];
-            if (!choice) {
+            if(!choice) {
                 return;
             }
-            if (choice.message) {
+            if(choice.message) {
                 context.game.addMessage(choice.message, player, properties.target, ...properties.messageArgs);
             }
             context.game.queueSimpleStep(() => choice.action.addEventsToArray(events, context));

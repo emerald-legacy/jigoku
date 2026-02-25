@@ -1,6 +1,6 @@
 import { Locations, Players, PlayTypes } from '../../Constants';
-import AbilityDsl = require('../../abilitydsl');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard';
 
 export default class GraspOfEarth extends DrawCard {
     static id = 'grasp-of-earth';
@@ -19,7 +19,7 @@ export default class GraspOfEarth extends DrawCard {
         });
 
         this.action({
-            title: "Opponent's cards cannot join this conflict",
+            title: 'Opponent\'s cards cannot join this conflict',
             condition: (context) => this.game.isDuringConflict() && context.player.opponent !== undefined,
             cost: AbilityDsl.costs.bowSelf(),
             effect: 'prevent the opponent from bringing characters to the conflict',

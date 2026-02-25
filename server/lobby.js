@@ -1,11 +1,10 @@
 const socketio = require('socket.io');
 const Socket = require('./socket.js');
 const jwt = require('jsonwebtoken');
-const _ = require('underscore');
-const moment = require('moment');
+const { differenceInSeconds } = require('date-fns');
 
 const { logger } = require('./logger');
-const version = moment(require('../version.js'));
+const version = new Date(require('../version.js'));
 const PendingGame = require('./pendinggame.js');
 const GameRouter = require('./gamerouter.js');
 const MessageService = require('./services/MessageService.js');
@@ -31,12 +30,19 @@ class Lobby {
         this.router.on('onNodeReconnected', this.onNodeReconnected.bind(this));
         this.router.on('onWorkerStarted', this.onWorkerStarted.bind(this));
 
-        this.io = options.io || socketio(server, { perMessageDeflate: false });
-        this.io.set('heartbeat timeout', 30000);
+        this.io = options.io || new socketio.Server(server, {
+            perMessageDeflate: false,
+            pingTimeout: 30000,
+            pingInterval: 25000,
+            cors: {
+                origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : '*',
+                credentials: true
+            }
+        });
         this.io.use(this.handshake.bind(this));
         this.io.on('connection', this.onConnection.bind(this));
 
-        this.lastUserBroadcast = moment();
+        this.lastUserBroadcast = new Date();
 
         this.loadCardData();
 
@@ -63,8 +69,8 @@ class Lobby {
     }
 
     debugDump() {
-        var games = _.map(this.games, (game) => {
-            var players = _.map(game.players, (player) => {
+        var games = Object.values(this.games).map((game) => {
+            var players = Object.values(game.players).map((player) => {
                 return {
                     name: player.name,
                     left: player.left,
@@ -73,7 +79,7 @@ class Lobby {
                 };
             });
 
-            var spectators = _.map(game.spectators, (spectator) => {
+            var spectators = Object.values(game.spectators).map((spectator) => {
                 return {
                     name: spectator.name,
                     id: spectator.id
@@ -96,21 +102,21 @@ class Lobby {
         return {
             games: games,
             nodes: nodes,
-            socketCount: _.size(this.sockets),
-            userCount: _.size(this.users)
+            socketCount: Object.keys(this.sockets).length,
+            userCount: Object.keys(this.users).length
         };
     }
 
     // Helpers
     findGameForUser(user) {
-        return _.find(this.games, (game) => {
-            if (game.spectators[user]) {
+        return Object.values(this.games).find((game) => {
+            if(game.spectators[user]) {
                 return true;
             }
 
             var player = game.players[user];
 
-            if (!player || player.left) {
+            if(!player || player.left) {
                 return false;
             }
 
@@ -119,7 +125,7 @@ class Lobby {
     }
 
     getUserList() {
-        let userList = _.map(this.users, function (user) {
+        let userList = Object.values(this.users).map(function (user) {
             return {
                 name: user.username,
                 emailHash: user.emailHash,
@@ -127,9 +133,7 @@ class Lobby {
             };
         });
 
-        userList = _.sortBy(userList, (user) => {
-            return user.name.toLowerCase();
-        });
+        userList = [...userList].sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 
         return userList;
     }
@@ -137,9 +141,11 @@ class Lobby {
     handshake(socket, next) {
         var versionInfo = undefined;
 
-        if (socket.handshake.query.token && socket.handshake.query.token !== 'undefined') {
-            jwt.verify(socket.handshake.query.token, env.secret, function (err, user) {
-                if (err) {
+        // Socket.io v4 uses auth object, v1 used query string
+        const token = socket.handshake.auth?.token || socket.handshake.query?.token;
+        if(token && token !== 'undefined') {
+            jwt.verify(token, env.secret, function (err, user) {
+                if(err) {
                     logger.info(err);
                     return;
                 }
@@ -148,11 +154,12 @@ class Lobby {
             });
         }
 
-        if (socket.handshake.query.version) {
-            versionInfo = moment(socket.handshake.query.version);
+        const clientVersion = socket.handshake.auth?.version || socket.handshake.query?.version;
+        if(clientVersion) {
+            versionInfo = new Date(clientVersion);
         }
 
-        if (!versionInfo || versionInfo < version) {
+        if(!versionInfo || versionInfo < version) {
             socket.emit(
                 'banner',
                 'Your client version is out of date, please refresh or clear your cache to get the latest version'
@@ -164,34 +171,34 @@ class Lobby {
 
     // Actions
     filterGameListWithBlockList(user) {
-        if (!user) {
+        if(!user) {
             return this.games;
         }
 
-        return _.filter(this.games, (game) => {
+        return Object.values(this.games).filter((game) => {
             let userBlockedByOwner = game.isUserBlocked(user);
-            let userHasBlockedPlayer = _.any(game.players, (player) =>
-                _.contains(user.blockList, player.name.toLowerCase())
+            let userHasBlockedPlayer = Object.values(game.players).some((player) =>
+                user.blockList.includes(player.name.toLowerCase())
             );
             return !userBlockedByOwner && !userHasBlockedPlayer;
         });
     }
 
     mapGamesToGameSummaries(games) {
-        return _.chain(games)
+        const gamesArray = Array.isArray(games) ? games : Object.values(games);
+        return gamesArray
             .map((game) => game.getSummary())
-            .sortBy('createdAt')
+            .sort((a, b) => a.createdAt - b.createdAt)
             .reverse()
-            .sortBy('started')
-            .value();
+            .sort((a, b) => (a.started === b.started ? 0 : a.started ? 1 : -1));
     }
 
     sendUserListFilteredWithBlockList(socket, userList) {
         let filteredUsers = userList;
 
-        if (socket.user) {
-            filteredUsers = _.reject(userList, (user) => {
-                return _.contains(socket.user.blockList, user.name.toLowerCase());
+        if(socket.user) {
+            filteredUsers = userList.filter((user) => {
+                return !socket.user.blockList.includes(user.name.toLowerCase());
             });
         }
 
@@ -199,37 +206,37 @@ class Lobby {
     }
 
     broadcastGameList(socket) {
-        let sockets = socket ? [socket] : this.sockets;
-        _.each(sockets, (socket) => {
-            let filteredGames = this.filterGameListWithBlockList(socket.user);
+        let sockets = socket ? [socket] : Object.values(this.sockets);
+        sockets.forEach((s) => {
+            let filteredGames = this.filterGameListWithBlockList(s.user);
             let gameSummaries = this.mapGamesToGameSummaries(filteredGames);
-            socket.send('games', gameSummaries);
+            s.send('games', gameSummaries);
         });
     }
 
     broadcastUserList() {
-        var now = moment();
+        var now = new Date();
 
-        if (now.diff(this.lastUserBroadcast) / 1000 < 60) {
+        if(differenceInSeconds(now, this.lastUserBroadcast) < 60) {
             return;
         }
 
-        this.lastUserBroadcast = moment();
+        this.lastUserBroadcast = new Date();
 
         let users = this.getUserList();
 
-        _.each(this.sockets, (socket) => {
+        Object.values(this.sockets).forEach((socket) => {
             this.sendUserListFilteredWithBlockList(socket, users);
         });
     }
 
     sendGameState(game) {
-        if (game.started) {
+        if(game.started) {
             return;
         }
 
-        _.each(game.getPlayersAndSpectators(), (player) => {
-            if (!this.sockets[player.id]) {
+        Object.values(game.getPlayersAndSpectators()).forEach((player) => {
+            if(!this.sockets[player.id]) {
                 logger.info('Wanted to send to ', player.id, ' but have no socket');
                 return;
             }
@@ -239,8 +246,8 @@ class Lobby {
     }
 
     clearGamesForNode(nodeName) {
-        _.each(this.games, (game) => {
-            if (game.node && game.node.identity === nodeName) {
+        Object.values(this.games).forEach((game) => {
+            if(game.node && game.node.identity === nodeName) {
                 delete this.games[game.id];
             }
         });
@@ -251,24 +258,23 @@ class Lobby {
     clearStaleGames() {
         let now = Date.now();
         const timeout = 60 * 60 * 1000;
-        let stalePendingGames = _.filter(this.games, (game) => !game.started && now - game.createdAt > timeout);
-        let emptyGames = _.filter(
-            this.games,
-            (game) => game.started && now - game.createdAt > timeout && _.isEmpty(game.getPlayers())
+        let stalePendingGames = Object.values(this.games).filter((game) => !game.started && now - game.createdAt > timeout);
+        let emptyGames = Object.values(this.games).filter(
+            (game) => game.started && now - game.createdAt > timeout && Object.keys(game.getPlayers()).length === 0
         );
 
-        _.each(stalePendingGames, (game) => {
+        stalePendingGames.forEach((game) => {
             logger.info('closed pending game', game.id, 'due to inactivity');
             delete this.games[game.id];
         });
 
-        _.each(emptyGames, (game) => {
+        emptyGames.forEach((game) => {
             logger.info('closed started game', game.id, 'due to no active players');
             delete this.games[game.id];
             this.router.closeGame(game);
         });
 
-        if (emptyGames.length > 0 || stalePendingGames.length > 0) {
+        if(emptyGames.length > 0 || stalePendingGames.length > 0) {
             this.broadcastGameList();
         }
     }
@@ -293,7 +299,7 @@ class Lobby {
 
         this.sockets[ioSocket.id] = socket;
 
-        if (socket.user) {
+        if(socket.user) {
             this.users[socket.user.username] = Settings.getUserWithDefaultsSet(socket.user);
 
             this.broadcastUserList();
@@ -308,12 +314,12 @@ class Lobby {
 
         this.broadcastGameList(socket);
 
-        if (!socket.user) {
+        if(!socket.user) {
             return;
         }
 
         var game = this.findGameForUser(socket.user.username);
-        if (game && game.started) {
+        if(game && game.started) {
             socket.send('handoff', {
                 address: game.node.address,
                 port: game.node.port,
@@ -332,28 +338,28 @@ class Lobby {
     }
 
     onSocketDisconnected(socket, reason) {
-        if (!socket) {
+        if(!socket) {
             return;
         }
 
         delete this.sockets[socket.id];
 
-        if (!socket.user) {
+        if(!socket.user) {
             return;
         }
 
         delete this.users[socket.user.username];
 
-        logger.info("user '%s' disconnected from the lobby: %s", socket.user.username, reason);
+        logger.info('user \'%s\' disconnected from the lobby: %s', socket.user.username, reason);
 
         var game = this.findGameForUser(socket.user.username);
-        if (!game) {
+        if(!game) {
             return;
         }
 
         game.disconnect(socket.user.username);
 
-        if (game.isEmpty()) {
+        if(game.isEmpty()) {
             delete this.games[game.id];
         } else {
             this.sendGameState(game);
@@ -364,13 +370,13 @@ class Lobby {
 
     onNewGame(socket, gameDetails) {
         var existingGame = this.findGameForUser(socket.user.username);
-        if (existingGame) {
+        if(existingGame) {
             return;
         }
 
         let game = new PendingGame(socket.user, gameDetails);
         game.newGame(socket.id, socket.user, gameDetails.password, (err, message) => {
-            if (err) {
+            if(err) {
                 logger.info('game failed to create', err, message);
 
                 return;
@@ -386,17 +392,17 @@ class Lobby {
 
     onJoinGame(socket, gameId, password) {
         var existingGame = this.findGameForUser(socket.user.username);
-        if (existingGame) {
+        if(existingGame) {
             return;
         }
 
         var game = this.games[gameId];
-        if (!game) {
+        if(!game) {
             return;
         }
 
         game.join(socket.id, socket.user, password, (err, message) => {
-            if (err) {
+            if(err) {
                 socket.send('passworderror', message);
 
                 return;
@@ -413,24 +419,24 @@ class Lobby {
     onStartGame(socket, gameId) {
         var game = this.games[gameId];
 
-        if (!game || game.started) {
+        if(!game || game.started) {
             return;
         }
 
-        if (
-            _.any(game.getPlayers(), function (player) {
+        if(
+            Object.values(game.getPlayers()).some(function (player) {
                 return !player.deck;
             })
         ) {
             return;
         }
 
-        if (!game.isOwner(socket.user.username)) {
+        if(!game.isOwner(socket.user.username)) {
             return;
         }
 
         var gameNode = this.router.startGame(game);
-        if (!gameNode) {
+        if(!gameNode) {
             return;
         }
 
@@ -449,17 +455,17 @@ class Lobby {
 
     onWatchGame(socket, gameId, password) {
         var existingGame = this.findGameForUser(socket.user.username);
-        if (existingGame) {
+        if(existingGame) {
             return;
         }
 
         var game = this.games[gameId];
-        if (!game) {
+        if(!game) {
             return;
         }
 
         game.watch(socket.id, socket.user, password, (err, message) => {
-            if (err) {
+            if(err) {
                 socket.send('passworderror', message);
 
                 return;
@@ -467,7 +473,7 @@ class Lobby {
 
             socket.joinChannel(game.id);
 
-            if (game.started) {
+            if(game.started) {
                 this.router.addSpectator(game, socket.user);
                 socket.send('handoff', {
                     address: game.node.address,
@@ -483,7 +489,7 @@ class Lobby {
 
     onLeaveGame(socket) {
         var game = this.findGameForUser(socket.user.username);
-        if (!game) {
+        if(!game) {
             return;
         }
 
@@ -491,7 +497,7 @@ class Lobby {
         socket.send('cleargamestate');
         socket.leaveChannel(game.id);
 
-        if (game.isEmpty()) {
+        if(game.isEmpty()) {
             delete this.games[game.id];
         } else {
             this.sendGameState(game);
@@ -502,7 +508,7 @@ class Lobby {
 
     onPendingGameChat(socket, message) {
         var game = this.findGameForUser(socket.user.username);
-        if (!game) {
+        if(!game) {
             return;
         }
 
@@ -521,8 +527,8 @@ class Lobby {
             time: new Date()
         };
 
-        _.each(this.sockets, (s) => {
-            if (s.user && _.contains(s.user.blockList, chatMessage.user.username.toLowerCase())) {
+        Object.values(this.sockets).forEach((s) => {
+            if(s.user && s.user.blockList.includes(chatMessage.user.username.toLowerCase())) {
                 return;
             }
 
@@ -533,38 +539,48 @@ class Lobby {
     }
 
     onSelectDeck(socket, gameId, deckId) {
-        if (_.isObject(deckId)) {
+        if(typeof deckId === 'object' && deckId !== null) {
             deckId = deckId._id;
         }
 
         var game = this.games[gameId];
-        if (!game) {
+        if(!game) {
             return;
         }
 
         Promise.all([this.cardService.getAllCards(), this.cardService.getAllPacks(), this.deckService.getById(deckId)])
             .then((results) => {
-                let [cards, _, deck] = results;
+                let [cards, , deck] = results;
 
-                _.each(deck.stronghold, (stronghold) => {
-                    stronghold.card = cards[stronghold.card.id];
-                });
+                if(deck.stronghold) {
+                    deck.stronghold.forEach((stronghold) => {
+                        stronghold.card = cards[stronghold.card.id];
+                    });
+                }
 
-                _.each(deck.role, (role) => {
-                    role.card = cards[role.card.id];
-                });
+                if(deck.role) {
+                    deck.role.forEach((role) => {
+                        role.card = cards[role.card.id];
+                    });
+                }
 
-                _.each(deck.provinceCards, (province) => {
-                    province.card = cards[province.card.id];
-                });
+                if(deck.provinceCards) {
+                    deck.provinceCards.forEach((province) => {
+                        province.card = cards[province.card.id];
+                    });
+                }
 
-                _.each(deck.conflictCards, (conflict) => {
-                    conflict.card = cards[conflict.card.id];
-                });
+                if(deck.conflictCards) {
+                    deck.conflictCards.forEach((conflict) => {
+                        conflict.card = cards[conflict.card.id];
+                    });
+                }
 
-                _.each(deck.dynastyCards, (dynasty) => {
-                    dynasty.card = cards[dynasty.card.id];
-                });
+                if(deck.dynastyCards) {
+                    deck.dynastyCards.forEach((dynasty) => {
+                        dynasty.card = cards[dynasty.card.id];
+                    });
+                }
 
                 game.selectDeck(socket.user.username, deck);
 
@@ -579,27 +595,27 @@ class Lobby {
 
     onConnectFailed(socket) {
         var game = this.findGameForUser(socket.user.username);
-        if (!game) {
+        if(!game) {
             return;
         }
 
-        logger.info("user '%s' failed to handoff to game server", socket.user.username);
+        logger.info('user \'%s\' failed to handoff to game server', socket.user.username);
         this.router.notifyFailedConnect(game, socket.user.username);
     }
 
     onRemoveGame(socket, gameId) {
-        if (!socket.user.admin) {
+        if(!socket.user.admin) {
             return;
         }
 
         var game = this.games[gameId];
-        if (!game) {
+        if(!game) {
             return;
         }
 
         logger.info(socket.user.username, 'closed game', game.id, '(' + game.name + ') forcefully');
 
-        if (!game.started) {
+        if(!game.started) {
             delete this.games[game.id];
         } else {
             this.router.closeGame(game);
@@ -610,7 +626,7 @@ class Lobby {
     onGameClosed(gameId) {
         var game = this.games[gameId];
 
-        if (!game) {
+        if(!game) {
             return;
         }
 
@@ -622,13 +638,13 @@ class Lobby {
     onPlayerLeft(gameId, player) {
         var game = this.games[gameId];
 
-        if (!game) {
+        if(!game) {
             return;
         }
 
         game.leave(player);
 
-        if (game.isEmpty()) {
+        if(game.isEmpty()) {
             delete this.games[gameId];
         }
 
@@ -647,7 +663,7 @@ class Lobby {
     }
 
     onNodeReconnected(nodeName, games) {
-        _.each(games, (game) => {
+        games.forEach((game) => {
             let syncGame = new PendingGame(
                 { username: game.owner },
                 { spectators: game.allowSpectators, name: game.name }
@@ -659,7 +675,7 @@ class Lobby {
             syncGame.gameType = game.gameType;
             syncGame.password = game.password;
 
-            _.each(game.players, (player) => {
+            Object.values(game.players).forEach((player) => {
                 syncGame.players[player.name] = {
                     id: player.id,
                     name: player.name,
@@ -669,7 +685,7 @@ class Lobby {
                 };
             });
 
-            _.each(game.spectators, (player) => {
+            Object.values(game.spectators).forEach((player) => {
                 syncGame.spectators[player.name] = {
                     id: player.id,
                     name: player.name,
@@ -680,16 +696,16 @@ class Lobby {
             this.games[syncGame.id] = syncGame;
         });
 
-        _.each(this.games, (game) => {
-            if (
+        Object.values(this.games).forEach((game) => {
+            if(
                 game.node &&
                 game.node.identity === nodeName &&
-                _.find(games, (nodeGame) => {
+                games.find((nodeGame) => {
                     return nodeGame.id === game.id;
                 })
             ) {
                 this.games[game.id] = game;
-            } else if (game.node && game.node.identity === nodeName) {
+            } else if(game.node && game.node.identity === nodeName) {
                 delete this.games[game.id];
             }
         });

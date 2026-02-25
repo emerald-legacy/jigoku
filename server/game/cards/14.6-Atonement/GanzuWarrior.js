@@ -14,7 +14,7 @@ class GanzuWarrior extends DrawCard {
                 activePromptTitle: 'Choose a ring effect to resolve',
                 player: Players.Self,
                 targets: false,
-                message: "{0} resolves the {1}'s effect",
+                message: '{0} resolves the {1}\'s effect',
                 ringCondition: (ring) =>
                     // @ts-ignore
                     context.event.card.element.includes(ring.element),

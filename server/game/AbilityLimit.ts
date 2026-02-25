@@ -30,7 +30,7 @@ class UnlimitedAbilityLimit {
         return true;
     }
 
-    public isAtMax(player: Player): boolean {
+    public isAtMax(_player: Player): boolean {
         return false;
     }
 
@@ -43,16 +43,16 @@ class UnlimitedAbilityLimit {
         this.#useCount.clear();
     }
 
-    public registerEvents(eventEmitter: EventEmitter): void {}
+    public registerEvents(_eventEmitter: EventEmitter): void {}
 
-    public unregisterEvents(eventEmitter: EventEmitter): void {}
+    public unregisterEvents(_eventEmitter: EventEmitter): void {}
 
     public currentForPlayer(player: Player) {
         return this.#useCount.get(this.#getKey(player.name)) ?? 0;
     }
 
     #getKey(player: string): string {
-        if (this.currentUser) {
+        if(this.currentUser) {
             return player + this.currentUser;
         }
         return player;
@@ -87,16 +87,16 @@ class FixedAbilityLimit {
         this.#useCount.clear();
     }
 
-    public registerEvents(eventEmitter: EventEmitter): void {}
+    public registerEvents(_eventEmitter: EventEmitter): void {}
 
-    public unregisterEvents(eventEmitter: EventEmitter): void {}
+    public unregisterEvents(_eventEmitter: EventEmitter): void {}
 
     public currentForPlayer(player: Player) {
         return this.#useCount.get(this.#getKey(player.name)) ?? 0;
     }
 
     #getKey(player: string): string {
-        if (this.currentUser) {
+        if(this.currentUser) {
             return player + this.currentUser;
         }
         return player;
@@ -124,13 +124,13 @@ class RepeatableAbilityLimit extends FixedAbilityLimit {
     }
 
     public registerEvents(eventEmitter: EventEmitter): void {
-        for (const eventN of this.eventName) {
+        for(const eventN of this.eventName) {
             eventEmitter.on(eventN, () => this.reset());
         }
     }
 
     public unregisterEvents(eventEmitter: EventEmitter): void {
-        for (const eventN of this.eventName) {
+        for(const eventN of this.eventName) {
             eventEmitter.removeListener(eventN, () => this.reset());
         }
     }

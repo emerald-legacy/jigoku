@@ -6,7 +6,7 @@ describe('Talisman of the Sun', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['shrine-maiden'],
-                        provinces: ['manicured-garden'],
+                        provinces: ['manicured-garden']
                     },
                     player2: {
                         provinces: ['public-forum', 'sanpuku-seido'],

@@ -146,7 +146,7 @@ const leavePlayTypes = new Set(['discardFromPlay', 'sacrifice', 'returnToHand', 
 class Restriction extends EffectValue {
     constructor(properties) {
         super();
-        if (typeof properties === 'string') {
+        if(typeof properties === 'string') {
             this.type = properties;
         } else {
             this.type = properties.type;
@@ -162,7 +162,7 @@ class Restriction extends EffectValue {
     }
 
     isMatch(type, context, card) {
-        if (this.type === 'leavePlay') {
+        if(this.type === 'leavePlay') {
             return leavePlayTypes.has(type) && this.checkCondition(context, card);
         }
 
@@ -170,7 +170,7 @@ class Restriction extends EffectValue {
     }
 
     checkCondition(context, card) {
-        if (Array.isArray(this.restriction)) {
+        if(Array.isArray(this.restriction)) {
             const vals = this.restriction.map((a) => this.checkRestriction(a, context, card));
             return vals.every((a) => a);
         }
@@ -179,13 +179,13 @@ class Restriction extends EffectValue {
     }
 
     checkRestriction(restriction, context, card) {
-        if (!restriction) {
+        if(!restriction) {
             return true;
-        } else if (!context) {
+        } else if(!context) {
             throw new Error('checkCondition called without a context');
-        } else if (typeof restriction === 'function') {
+        } else if(typeof restriction === 'function') {
             return restriction(context, this, card);
-        } else if (!checkRestrictions[restriction]) {
+        } else if(!checkRestrictions[restriction]) {
             return context.source.hasTrait(restriction);
         }
         return checkRestrictions[restriction](context, this, card);

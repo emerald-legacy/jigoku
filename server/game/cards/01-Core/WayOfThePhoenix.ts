@@ -1,7 +1,7 @@
 import { Durations, TargetModes } from '../../Constants';
-import AbilityDsl = require('../../abilitydsl');
-import DrawCard = require('../../drawcard');
-import type Player = require('../../player');
+import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard';
+import type Player from '../../player';
 
 type Element = 'air' | 'earth' | 'fire' | 'void' | 'water';
 

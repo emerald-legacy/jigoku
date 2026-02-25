@@ -25,8 +25,8 @@ export class RallyAbility extends TriggeredAbility {
             title: `${card.name}'s Rally`,
             printedAbility: false,
             message: gameMode.rallyHasEffect
-                ? "{0} places {1} faceup in {2} due to {3}'s Rally"
-                : "{3}'s Rally effect is suppressed due to the power of the Jade Edict!",
+                ? '{0} places {1} faceup in {2} due to {3}\'s Rally'
+                : '{3}\'s Rally effect is suppressed due to the power of the Jade Edict!',
             messageArgs: (context: TriggeredAbilityContext) => [
                 context.player,
                 context.player.dynastyDeck.first() ? context.player.dynastyDeck.first() : 'a card',
@@ -36,7 +36,7 @@ export class RallyAbility extends TriggeredAbility {
                 context.source
             ],
             handler: (context: TriggeredAbilityContext) => {
-                if (gameMode.rallyHasEffect) {
+                if(gameMode.rallyHasEffect) {
                     context.player.putTopDynastyCardInProvince(context.source.location);
                 }
             }

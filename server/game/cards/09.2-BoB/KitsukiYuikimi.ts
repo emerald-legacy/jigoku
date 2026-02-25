@@ -1,12 +1,12 @@
-import AbilityDsl = require('../../abilitydsl');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard';
 
 export default class KitsukiYuikimi extends DrawCard {
     static id = 'kitsuki-yuikimi';
 
     public setupCardAbilities() {
         this.reaction({
-            title: "Cannot be targeted by opponent's triggered abilities",
+            title: 'Cannot be targeted by opponent\'s triggered abilities',
             when: {
                 onMoveFate: (event, context) =>
                     context.source.isParticipating() &&
@@ -21,7 +21,7 @@ export default class KitsukiYuikimi extends DrawCard {
                     applyingPlayer: context.player
                 })
             })),
-            effect: "prevent {0} from being chosen as the target of {1}'s triggered abilities until the end of the conflict",
+            effect: 'prevent {0} from being chosen as the target of {1}\'s triggered abilities until the end of the conflict',
             effectArgs: (context) => [context.player.opponent]
         });
     }

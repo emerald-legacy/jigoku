@@ -15,7 +15,7 @@ export default class SneakAttack extends DrawCard {
             effect: 'give {1} the first action in this conflict{2}',
             effectArgs: (context) => [
                 context.player,
-                context.player.opponent.hand.size() > 0 ? " and sets aside opponent's cards" : ''
+                context.player.opponent.hand.size() > 0 ? ' and sets aside opponent\'s cards' : ''
             ],
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.conditional({
@@ -24,7 +24,7 @@ export default class SneakAttack extends DrawCard {
                     trueGameAction: AbilityDsl.actions.sequentialContext((context) => {
                         const opponent = context.player.opponent;
                         const setAsideCards: DrawCard[] = opponent?.hand.shuffle().slice(0, 2);
-                        if (setAsideCards.length === 0) {
+                        if(setAsideCards.length === 0) {
                             return { gameActions: [AbilityDsl.actions.noAction()] };
                         }
 
@@ -33,7 +33,7 @@ export default class SneakAttack extends DrawCard {
                                 AbilityDsl.actions.handler({
                                     handler: () => {
                                         this.game.addMessage('{0} sets aside {1}', opponent, setAsideCards);
-                                        for (const card of setAsideCards) {
+                                        for(const card of setAsideCards) {
                                             opponent.moveCard(card, Locations.RemovedFromGame);
                                         }
                                     }
@@ -47,7 +47,7 @@ export default class SneakAttack extends DrawCard {
                                         gameAction: AbilityDsl.actions.handler({
                                             handler: (context) => {
                                                 context.game.addMessage('{0} picks back their cards', opponent);
-                                                for (const card of setAsideCards) {
+                                                for(const card of setAsideCards) {
                                                     opponent.moveCard(card, Locations.Hand);
                                                 }
                                             }

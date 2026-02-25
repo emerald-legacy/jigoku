@@ -64,7 +64,7 @@ describe('Palace of Knowledge', function () {
             this.noMoreActions();
             this.player1.clickPrompt('No');
             expect(this.player1).toHavePrompt('Water Ring');
-            this.player1.clickPrompt("Don't resolve");
+            this.player1.clickPrompt('Don\'t resolve');
             expect(this.getChatLogs(3)).toContain('player1 chooses not to resolve the water ring');
             expect(this.player1).not.toHavePrompt('Any reactions?');
         });

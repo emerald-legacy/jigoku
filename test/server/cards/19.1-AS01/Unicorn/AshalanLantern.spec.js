@@ -61,7 +61,7 @@ describe('Ashalan Lantern', function () {
             expect(this.game.currentConflict.defenders).not.toContain(this.brash);
             expect(this.player1.fate).toBe(p1InitialFate - 2);
             expect(this.getChatLogs(10)).toContain(
-                "player1 uses Ashalan Lantern, naming Good Omen to look for a character on the top of player2's dynasty deck. They reveal Tengu Sensei, Courtly Challenger and Brash Samurai"
+                'player1 uses Ashalan Lantern, naming Good Omen to look for a character on the top of player2\'s dynasty deck. They reveal Tengu Sensei, Courtly Challenger and Brash Samurai'
             );
             expect(this.lantern.location).toBe('conflict discard pile');
         });
@@ -102,11 +102,11 @@ describe('Ashalan Lantern', function () {
             expect(this.game.currentConflict.defenders).not.toContain(this.tengu);
             expect(this.player1.fate).toBe(p1InitialFate - 2);
             expect(this.getChatLogs(10)).toContain(
-                "player1 uses Ashalan Lantern, naming Tengu Sensei to look for a character on the top of player2's dynasty deck. They reveal Tengu Sensei, Courtly Challenger and Brash Samurai"
+                'player1 uses Ashalan Lantern, naming Tengu Sensei to look for a character on the top of player2\'s dynasty deck. They reveal Tengu Sensei, Courtly Challenger and Brash Samurai'
             );
             expect(this.getChatLogs(10)).toContain('player1 compels Tengu Sensei into service');
             expect(this.getChatLogs(10)).toContain(
-                "player1 puts Courtly Challenger and Brash Samurai on the top of player2' dynasty deck"
+                'player1 puts Courtly Challenger and Brash Samurai on the top of player2\' dynasty deck'
             );
         });
 
@@ -135,7 +135,7 @@ describe('Ashalan Lantern', function () {
             expect(this.player1).toHavePromptButton('Take nothing');
 
             expect(this.getChatLogs(10)).toContain(
-                "player1 uses Ashalan Lantern, naming Good Omen to look for a character on the top of player2's dynasty deck. They reveal Tengu Sensei, Courtly Challenger and Brash Samurai"
+                'player1 uses Ashalan Lantern, naming Good Omen to look for a character on the top of player2\'s dynasty deck. They reveal Tengu Sensei, Courtly Challenger and Brash Samurai'
             );
             this.player1.clickPrompt('Take nothing');
             expect(this.lantern.location).toBe('play area');

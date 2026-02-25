@@ -44,11 +44,11 @@ describe('Kitsuki Sano', function() {
                 expect(this.getChatLogs(5)).toContain('player1 uses Kitsuki Sano to draw 2 cards');
                 expect(this.fineKatana.location).toBe('conflict discard pile');
                 expect(this.courtGames.location).toBe('conflict discard pile');
-                expect(this.player1.hand.length).toBe(initialHand -2 + 2);
+                expect(this.player1.hand.length).toBe(initialHand - 2 + 2);
             });
 
             it('does not work when opposed', function() {
-                const initialHand = this.player1.hand.length;
+                const _initialHand = this.player1.hand.length;
                 this.initiateConflict({
                     attackers: [this.kitsukiSano],
                     defenders: [this.miyaMystic]

@@ -31,14 +31,14 @@ class Subterfuge extends DrawCard {
                             }),
                             AbilityDsl.actions.handler({
                                 handler: (context) => {
-                                    if (!this.messageShown) {
+                                    if(!this.messageShown) {
                                         // for some reason, it shows the message twice
                                         context.game.addMessage(
                                             '{0} discards {1}',
                                             context.player.opponent,
                                             cardsToDiscard
                                         );
-                                        if (drawAmount > 0) {
+                                        if(drawAmount > 0) {
                                             context.game.addMessage(
                                                 '{0} draws {1} card{2}',
                                                 context.player.opponent,

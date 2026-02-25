@@ -26,7 +26,7 @@ export default class KitsuSpiritcaller2 extends DrawCard {
                         when: {
                             onConflictFinished: () => true
                         },
-                        message: "{0} returns to the bottom of the deck due to {1}'s effect",
+                        message: '{0} returns to the bottom of the deck due to {1}\'s effect',
                         messageArgs: [context.target, context.source],
                         gameAction: AbilityDsl.actions.returnToDeck({ bottom: true })
                     })

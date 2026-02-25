@@ -1,4 +1,4 @@
-import { AbilityTypes, EventNames, CardTypes, Locations, Durations } from '../../../Constants';
+import { AbilityTypes, EventNames, CardTypes, Locations } from '../../../Constants';
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
 import BaseCard from '../../../basecard';
@@ -50,12 +50,12 @@ export default class CastleOfAir extends DrawCard {
                     }),
                     falseGameAction: AbilityDsl.actions.noAction()
                 }))
-            ]),
+            ])
         });
     }
 
     onHonorLoss(event: any) {
-        if (
+        if(
             event.context.game.currentConflict &&
             event.dueToUnopposed &&
             !!this.playersTriggered.get(event.context.player.uuid) &&

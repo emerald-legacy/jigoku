@@ -28,9 +28,9 @@ export default class UtakuTakeko extends DrawCard {
                         playType: PlayTypes.PlayFromHand,
                         playAction: target
                             ? [
-                                  new PlayCharacterAsIfFromHandAtHome(target),
-                                  new PlayDisguisedCharacterAsIfFromHandAtHome(target)
-                              ]
+                                new PlayCharacterAsIfFromHandAtHome(target),
+                                new PlayDisguisedCharacterAsIfFromHandAtHome(target)
+                            ]
                             : undefined,
                         ignoredRequirements: ['phase']
                     };
@@ -53,11 +53,11 @@ export default class UtakuTakeko extends DrawCard {
     }
 
     #msgArticle(card: DrawCard): string {
-        if (card.hasTrait('army')) {
+        if(card.hasTrait('army')) {
             return 'in the';
         }
 
-        switch (card.name[0]) {
+        switch(card.name[0]) {
             case 'A':
             case 'E':
             case 'I':

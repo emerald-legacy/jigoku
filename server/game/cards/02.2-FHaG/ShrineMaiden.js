@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const DrawCard = require('../../drawcard.js');
 const { Locations } = require('../../Constants');
 
@@ -12,15 +11,15 @@ class ShrineMaiden extends DrawCard {
             cost: ability.costs.reveal(context => context.player.conflictDeck.first(3)),
             effect: 'take any revealed spells into their hand',
             handler: context => {
-                let [toHand, toDiscard] = _.partition(context.player.conflictDeck.first(3), card => {
-                    return card.hasTrait('kiho') || card.hasTrait('spell');
-                });
+                const cards = context.player.conflictDeck.first(3);
+                const toHand = cards.filter(card => card.hasTrait('kiho') || card.hasTrait('spell'));
+                const toDiscard = cards.filter(card => !card.hasTrait('kiho') && !card.hasTrait('spell'));
 
-                _.each(toHand, card => {
+                toHand.forEach(card => {
                     context.player.moveCard(card, Locations.Hand);
                 });
 
-                _.each(toDiscard, card => {
+                toDiscard.forEach(card => {
                     context.player.moveCard(card, Locations.ConflictDiscardPile);
                 });
 

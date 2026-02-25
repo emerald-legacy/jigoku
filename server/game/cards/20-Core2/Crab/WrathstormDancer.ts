@@ -1,6 +1,4 @@
-import { CardTypes } from '../../../Constants';
 import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
 import DrawCard from '../../../drawcard';
 
 export default class WrathstormDancer extends DrawCard {

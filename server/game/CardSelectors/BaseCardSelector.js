@@ -1,5 +1,4 @@
 const { Locations, Players } = require('../Constants');
-const _ = require('underscore');
 
 class BaseCardSelector {
     constructor(properties) {
@@ -48,7 +47,7 @@ class BaseCardSelector {
             } else if(controllerProp === Players.Opponent) {
                 return context.game.allCards.filter((card) => card.controller === context.player.opponent);
             }
-            return context.game.allCards.toArray();
+            return context.game.allCards;
         }
         let attachments = context.player.cardsInPlay.reduce((array, card) => array.concat(card.attachments), []);
         let allProvinceAttachments = context.player
@@ -65,7 +64,7 @@ class BaseCardSelector {
 
         if(context.source.game.rings) {
             let rings = Object.values(context.source.game.rings);
-            let allRingAttachments = _.flatten(rings.map((ring) => ring.attachments));
+            let allRingAttachments = rings.map((ring) => ring.attachments).flat();
             attachments = attachments.concat(allRingAttachments);
         }
         if(context.player.opponent) {

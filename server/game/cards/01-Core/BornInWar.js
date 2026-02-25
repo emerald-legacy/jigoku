@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const DrawCard = require('../../drawcard.js');
 const AbilityDsl = require('../../abilitydsl');
 
@@ -9,7 +8,7 @@ class BornInWar extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.attachmentMilitarySkillModifier((card, context) => _.size(_.filter(context.game.rings, ring => ring.isUnclaimed())))
+            effect: AbilityDsl.effects.attachmentMilitarySkillModifier((card, context) => Object.values(context.game.rings).filter(ring => ring.isUnclaimed()).length)
         });
     }
 }

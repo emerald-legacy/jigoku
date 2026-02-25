@@ -1,4 +1,4 @@
-describe(`Border's Edge Barracks`, function () {
+describe('Border\'s Edge Barracks', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({

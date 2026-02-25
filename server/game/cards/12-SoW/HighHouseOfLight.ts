@@ -36,7 +36,7 @@ export default class HighHouseOfLight extends StrongholdCard {
                     })
                 ])
             },
-            effect: "make {0} unable to be targeted by opponent's events"
+            effect: 'make {0} unable to be targeted by opponent\'s events'
         });
     }
 }

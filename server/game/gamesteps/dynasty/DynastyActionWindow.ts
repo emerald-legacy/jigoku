@@ -19,12 +19,12 @@ export class DynastyActionWindow extends ActionWindow {
     pass() {
         this.currentPlayer.passDynasty();
 
-        if (this.#opponentPassed()) {
+        if(this.#opponentPassed()) {
             this.#handleSimplePass();
             return this.complete();
         }
 
-        if (parseGameMode(this.game.gameMode).dynastyPhasePassingFate) {
+        if(parseGameMode(this.game.gameMode).dynastyPhasePassingFate) {
             this.#handlePassingFate();
         } else {
             this.#handleSimplePass();
@@ -37,7 +37,7 @@ export class DynastyActionWindow extends ActionWindow {
         this.#checkPhaseRestart();
 
         const otherPlayer = this.currentPlayer.opponent;
-        if (otherPlayer && !otherPlayer.passedDynasty) {
+        if(otherPlayer && !otherPlayer.passedDynasty) {
             this.currentPlayer = otherPlayer;
         }
     }
@@ -61,7 +61,7 @@ export class DynastyActionWindow extends ActionWindow {
     }
 
     #checkPhaseRestart() {
-        if (
+        if(
             this.currentPlayer.anyEffect(EffectNames.RestartDynastyPhase) ||
             this.currentPlayer.opponent?.anyEffect?.(EffectNames.RestartDynastyPhase)
         ) {

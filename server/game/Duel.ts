@@ -73,15 +73,15 @@ export class Duel extends GameObject {
     }
 
     public playerCanTriggerChallenge(player: Player): boolean {
-        return !this.#modifiers.get(player)?.challenge ?? false;
+        return !(this.#modifiers.get(player)?.challenge ?? false);
     }
 
     public playerCanTriggerFocus(player: Player): boolean {
-        return !this.#modifiers.get(player)?.focus ?? false;
+        return !(this.#modifiers.get(player)?.focus ?? false);
     }
 
     public playerCanTriggerStrike(player: Player): boolean {
-        return !this.#modifiers.get(player)?.strike ?? false;
+        return !(this.#modifiers.get(player)?.strike ?? false);
     }
 
     addTargetToDuel(card: DrawCard) {
@@ -139,43 +139,43 @@ export class Duel extends GameObject {
 
         this.#setDuelDifference();
 
-        if (challengerWins) {
+        if(challengerWins) {
             this.#setWinner(DuelParticipants.Challenger);
             this.#setLoser(DuelParticipants.Target);
         } else {
             const challengerStats = this.#getStatsTotal([this.challenger], this.challengingPlayer);
             const targetStats = this.#getStatsTotal(this.targets, this.challengingPlayer.opponent);
-            if (challengerStats === InvalidStats) {
-                if (targetStats !== InvalidStats && targetStats > 0) {
+            if(challengerStats === InvalidStats) {
+                if(targetStats !== InvalidStats && targetStats > 0) {
                     // Challenger dead, target alive
                     this.#setWinner(DuelParticipants.Target);
                 }
                 // Both dead
-            } else if (targetStats === InvalidStats) {
+            } else if(targetStats === InvalidStats) {
                 // Challenger alive, target dead
-                if (challengerStats > 0) {
+                if(challengerStats > 0) {
                     this.#setWinner(DuelParticipants.Challenger);
                 }
             } else {
                 const [challengerStats2, targetStats2] = this.#getTotals(challengerStats, targetStats);
 
-                if (challengerStats2 > targetStats2) {
+                if(challengerStats2 > targetStats2) {
                     // Both alive, challenger wins
                     this.#setWinner(DuelParticipants.Challenger);
                     this.#setLoser(DuelParticipants.Target);
-                } else if (challengerStats2 < targetStats2) {
+                } else if(challengerStats2 < targetStats2) {
                     // Both alive, target wins
                     this.#setWinner(DuelParticipants.Target);
                     this.#setLoser(DuelParticipants.Challenger);
                 } else {
                     // tie
-                    if (challengerWinsTies || targetWinsTies) {
-                        if (challengerWinsTies) {
+                    if(challengerWinsTies || targetWinsTies) {
+                        if(challengerWinsTies) {
                             this.#setWinner(DuelParticipants.Challenger);
                         } else {
                             this.#setLoser(DuelParticipants.Challenger);
                         }
-                        if (targetWinsTies) {
+                        if(targetWinsTies) {
                             this.#setWinner(DuelParticipants.Target);
                         } else {
                             this.#setLoser(DuelParticipants.Target);
@@ -187,15 +187,15 @@ export class Duel extends GameObject {
 
         const losers =
             this.loser?.filter((card) => card.checkRestrictions('loseDuels', card.game.getFrameworkContext())) ?? [];
-        if (losers.length > 0) {
+        if(losers.length > 0) {
             this.loser = losers;
         } else {
             this.loser = undefined;
             this.losingPlayer = undefined;
         }
 
-        if ((this.winner?.length ?? 0) > 0) {
-            this.winner = this.winner;
+        if((this.winner?.length ?? 0) > 0) {
+            // winner is already set, keep it
         } else {
             this.winner = undefined;
             this.winningPlayer = undefined;
@@ -207,18 +207,18 @@ export class Duel extends GameObject {
         const ignoreSkill = this.participants.filter((card) => card.anyEffect(EffectNames.IgnoreDuelSkill)).length > 0;
         const duelLevelModifier = this.getRawEffects().filter((effect) => effect.type === EffectNames.ModifyDuelSkill);
 
-        for (const effect of duelLevelModifier) {
+        for(const effect of duelLevelModifier) {
             const effectProps = effect.value.value;
-            if (effectProps.player === player) {
+            if(effectProps.player === player) {
                 result += effectProps.amount;
             }
         }
 
-        for (const card of charactersOnSameSide) {
-            if (card.location !== Locations.PlayArea) {
+        for(const card of charactersOnSameSide) {
+            if(card.location !== Locations.PlayArea) {
                 return InvalidStats;
             }
-            if (!ignoreSkill) {
+            if(!ignoreSkill) {
                 result += this.getSkillStatistic(card);
             }
             result += this.#getDuelModifiers(card);
@@ -232,7 +232,7 @@ export class Duel extends GameObject {
 
         rawEffects.forEach((effect) => {
             const props = effect.getValue();
-            if (props.duel === this) {
+            if(props.duel === this) {
                 effectModifier += props.value;
             }
         });
@@ -241,7 +241,7 @@ export class Duel extends GameObject {
     }
 
     #deriveBaseStatistic(card: DrawCard): number {
-        switch (this.duelType) {
+        switch(this.duelType) {
             case DuelTypes.Military:
                 return this.gameModeOpts.duelRules === 'printedSkill'
                     ? card.printedMilitarySkill
@@ -256,22 +256,22 @@ export class Duel extends GameObject {
     }
 
     getSkillStatistic(card: DrawCard): number {
-        if (typeof this.statistic === 'function') {
+        if(typeof this.statistic === 'function') {
             return this.statistic(card, this.gameModeOpts.duelRules);
         }
 
         let baseStatistic = this.#deriveBaseStatistic(card);
 
         // Some effects for the new duel framework
-        if (this.gameModeOpts.duelRules === 'printedSkill') {
+        if(this.gameModeOpts.duelRules === 'printedSkill') {
             let statusTokenBonus = 0;
             const useStatusTokens = this.getEffects(EffectNames.ApplyStatusTokensToDuel).length > 0;
             const ignorePrintedSkill = this.getEffects(EffectNames.DuelIgnorePrintedSkill).length > 0;
 
-            if (ignorePrintedSkill) {
+            if(ignorePrintedSkill) {
                 baseStatistic = 0;
             }
-            if (useStatusTokens) {
+            if(useStatusTokens) {
                 statusTokenBonus = card.getStatusTokenSkill();
             }
             return baseStatistic + statusTokenBonus;
@@ -281,11 +281,11 @@ export class Duel extends GameObject {
     }
 
     #getTotals(challengerStats: number, targetStats: number): [number, number] {
-        if (this.gameModeOpts.duelRules === 'skirmish') {
-            if (challengerStats > targetStats) {
+        if(this.gameModeOpts.duelRules === 'skirmish') {
+            if(challengerStats > targetStats) {
                 challengerStats = 1;
                 targetStats = 0;
-            } else if (challengerStats < targetStats) {
+            } else if(challengerStats < targetStats) {
                 challengerStats = 0;
                 targetStats = 1;
             } else {
@@ -294,9 +294,9 @@ export class Duel extends GameObject {
             }
         }
 
-        if (this.#bidFinished) {
+        if(this.#bidFinished) {
             challengerStats += this.challengingPlayer.honorBid;
-            if (this.targets?.length > 0) {
+            if(this.targets?.length > 0) {
                 targetStats += this.challengingPlayer.opponent.honorBid;
             }
         }
@@ -309,7 +309,7 @@ export class Duel extends GameObject {
     }
 
     #setWinner(winner: DuelParticipants) {
-        switch (winner) {
+        switch(winner) {
             case DuelParticipants.Challenger: {
                 this.winner = [this.challenger];
                 this.winningPlayer = this.challengingPlayer;
@@ -324,7 +324,7 @@ export class Duel extends GameObject {
     }
 
     #setLoser(loser: DuelParticipants) {
-        switch (loser) {
+        switch(loser) {
             case DuelParticipants.Challenger: {
                 this.loser = [this.challenger];
                 this.losingPlayer = this.challengingPlayer;
@@ -361,7 +361,7 @@ export class Duel extends GameObject {
             focus: false,
             strike: false
         });
-        if (challengingPlayer.opponent) {
+        if(challengingPlayer.opponent) {
             this.#modifiers.set(challengingPlayer.opponent, {
                 challenge: false,
                 focus: false,
@@ -379,16 +379,16 @@ export class Duel extends GameObject {
     }: {
         context: { event?: { duel?: Duel; name: EventNames }; player: Player };
     }): void {
-        if (event?.duel !== this) {
+        if(event?.duel !== this) {
             return;
         }
 
         const playersModifiers = this.#modifiers.get(player);
-        if (!playersModifiers) {
+        if(!playersModifiers) {
             return;
         }
 
-        switch (event.name) {
+        switch(event.name) {
             case EventNames.OnDuelChallenge:
                 playersModifiers.challenge = true;
                 break;

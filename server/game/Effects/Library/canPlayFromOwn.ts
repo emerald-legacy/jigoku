@@ -14,14 +14,14 @@ export function canPlayFromOwn(
 ) {
     return EffectBuilder.player.detached(EffectNames.CanPlayFromOwn, {
         apply(player: Player) {
-            for (const card of cards) {
-                if (card.type === CardTypes.Event && card.location === location) {
-                    for (const reaction of card.reactions) {
+            for(const card of cards) {
+                if(card.type === CardTypes.Event && card.location === location) {
+                    for(const reaction of card.reactions) {
                         reaction.registerEvents();
                     }
                 }
 
-                if (!card.fromOutOfPlaySource) {
+                if(!card.fromOutOfPlaySource) {
                     card.fromOutOfPlaySource = [];
                 }
                 card.fromOutOfPlaySource.push(sourceOfEffect);
@@ -31,8 +31,8 @@ export function canPlayFromOwn(
         },
         unapply(player: Player, context: AbilityContext, location: PlayableLocation) {
             player.removePlayableLocation(location);
-            for (const card of location.cards) {
-                if (Array.isArray(card.fromOutOfPlaySource)) {
+            for(const card of location.cards) {
+                if(Array.isArray(card.fromOutOfPlaySource)) {
                     // @TODO - The following commented line does nothing
                     // It might need a new implementation for cleaning up this property
                     // If we update the fromOutOfPlaySource property, it impacts
@@ -40,7 +40,7 @@ export function canPlayFromOwn(
                     // A possible solution is to mark on the OnCardPlayed event
                     // what is allowing the card to be played
                     // card.fromOutOfPlaySource.filter((a) => a !== context.source);
-                    if (card.fromOutOfPlaySource.length === 0) {
+                    if(card.fromOutOfPlaySource.length === 0) {
                         delete card.fromOutOfPlaySource;
                     }
                 }

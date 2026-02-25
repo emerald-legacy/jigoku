@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const { AbilityContext } = require('../AbilityContext.js');
 const EffectSource = require('../EffectSource.js');
 const { UiPrompt } = require('./UiPrompt.js');
@@ -29,7 +28,7 @@ class SelectRingPrompt extends UiPrompt {
         super(game);
 
         this.choosingPlayer = choosingPlayer;
-        if(_.isString(properties.source)) {
+        if(typeof properties.source === 'string') {
             properties.source = new EffectSource(game, properties.source);
         } else if(properties.context && properties.context.source) {
             properties.source = properties.context.source;
@@ -42,7 +41,13 @@ class SelectRingPrompt extends UiPrompt {
 
         this.properties = properties;
         this.context = properties.context || new AbilityContext({ game: game, player: choosingPlayer, source: properties.source });
-        _.defaults(this.properties, this.defaultProperties());
+        // Apply defaults for missing properties
+        const defaults = this.defaultProperties();
+        for(const key in defaults) {
+            if(this.properties[key] === undefined) {
+                this.properties[key] = defaults[key];
+            }
+        }
         this.selectedRing = null;
     }
 
@@ -95,7 +100,7 @@ class SelectRingPrompt extends UiPrompt {
     }
 
     getSelectableRings() {
-        let selectableRings = _.filter(this.game.rings, ring => {
+        let selectableRings = Object.values(this.game.rings).filter(ring => {
             return this.properties.ringCondition(ring, this.context);
         });
 
@@ -107,7 +112,7 @@ class SelectRingPrompt extends UiPrompt {
         if(this.properties.optional) {
             buttons.push({ text: 'Done', arg: 'done' });
         }
-        if(this.game.manualMode && !_.any(buttons, button => button.arg === 'cancel')) {
+        if(this.game.manualMode && !buttons.some(button => button.arg === 'cancel')) {
             buttons.push({ text: 'Cancel Prompt', arg: 'cancel' });
         }
         return {

@@ -1,7 +1,7 @@
 import { AbilityContext } from '../AbilityContext';
 import { CardTypes } from '../Constants';
-import BaseAbility = require('../baseability');
-import DrawCard = require('../drawcard');
+import BaseAbility from '../baseability';
+import DrawCard from '../drawcard';
 
 export class VoidRingEffect extends BaseAbility {
     public title = 'Void Ring Effect';
@@ -10,13 +10,13 @@ export class VoidRingEffect extends BaseAbility {
 
     constructor(
         optional: boolean,
-        private onResolution = (resolved: boolean) => {}
+        private onResolution = (_resolved: boolean) => {}
     ) {
         super({
             target: {
                 activePromptTitle: 'Choose character to remove fate from',
                 source: 'Void Ring',
-                buttons: optional ? [{ text: "Don't resolve", arg: 'dontResolve' }] : [],
+                buttons: optional ? [{ text: 'Don\'t resolve', arg: 'dontResolve' }] : [],
                 cardType: CardTypes.Character,
 
                 cardCondition: <C extends DrawCard>(card: C, context: AbilityContext) =>
@@ -26,7 +26,7 @@ export class VoidRingEffect extends BaseAbility {
     }
 
     public executeHandler(context: AbilityContext): void {
-        if (context.target) {
+        if(context.target) {
             context.game.addMessage(
                 '{0} resolves the {1} ring, removing a fate from {2}',
                 context.player,

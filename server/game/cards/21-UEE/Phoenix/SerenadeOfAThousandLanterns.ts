@@ -16,7 +16,7 @@ export default class SerenadeOfAThousandLanterns extends DrawCard {
                 cardStat: (card) => card.getCost(),
                 maxStat: () => 4,
                 cardType: CardTypes.Character,
-                cardCondition: (card, context) => card.isParticipating() && !card.isUnique(),
+                cardCondition: (card, _context) => card.isParticipating() && !card.isUnique(),
                 gameAction: AbilityDsl.actions.sendHome()
             },
             max: AbilityDsl.limit.perConflict(1),
@@ -28,7 +28,7 @@ export default class SerenadeOfAThousandLanterns extends DrawCard {
                         amount: 1
                     })),
                     effect: 'gain 1 honor'
-                }),
+                })
             })
         });
     }

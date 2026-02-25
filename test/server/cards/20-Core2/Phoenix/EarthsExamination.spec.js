@@ -1,4 +1,4 @@
-describe("Earth's Examination", function () {
+describe('Earth\'s Examination', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
@@ -46,7 +46,7 @@ describe("Earth's Examination", function () {
                 expect(this.player2).not.toHavePrompt('Bow that character?');
                 expect(this.prodigy.isTainted).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    "player2 plays Earth's Examination to reveal Prodigy of the Waves's corruption"
+                    'player2 plays Earth\'s Examination to reveal Prodigy of the Waves\'s corruption'
                 );
             });
 
@@ -80,7 +80,7 @@ describe("Earth's Examination", function () {
                 this.player2.clickPrompt('No');
                 expect(this.prodigy.isTainted).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    "player2 plays Earth's Examination to reveal Prodigy of the Waves's corruption"
+                    'player2 plays Earth\'s Examination to reveal Prodigy of the Waves\'s corruption'
                 );
             });
 
@@ -107,7 +107,7 @@ describe("Earth's Examination", function () {
                 expect(this.prodigy.isTainted).toBe(true);
                 expect(this.prodigy.bowed).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    "player2 plays Earth's Examination to reveal Prodigy of the Waves's corruption"
+                    'player2 plays Earth\'s Examination to reveal Prodigy of the Waves\'s corruption'
                 );
 
                 expect(this.getChatLogs(5)).toContain(

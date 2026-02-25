@@ -4,7 +4,7 @@ describe('Master of Bindings', function () {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['master-of-bindings'],
+                    inPlay: ['master-of-bindings']
                 },
                 player2: {
                     inPlay: ['isawa-tadaka', 'solemn-scholar'],

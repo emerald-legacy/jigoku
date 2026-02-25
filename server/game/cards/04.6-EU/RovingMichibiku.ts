@@ -1,12 +1,12 @@
-import AbilityDsl = require('../../abilitydsl');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard';
 
 export default class RovingMichibiku extends DrawCard {
     static id = 'roving-michibiku';
 
     public setupCardAbilities() {
         this.reaction({
-            title: "Take a ring from opponent's claimed pool",
+            title: 'Take a ring from opponent\'s claimed pool',
             when: {
                 afterConflict: (event, context) =>
                     context.source.isAttacking() &&

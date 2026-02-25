@@ -3,7 +3,7 @@ import type BaseCard from '../basecard';
 import { CardTypes, EventNames } from '../Constants';
 import { type CardActionProperties, CardGameAction } from './CardGameAction';
 
-export interface MoveConflictProperties extends CardActionProperties {}
+export type MoveConflictProperties = CardActionProperties;
 
 export class MoveConflictAction extends CardGameAction {
     name = 'moveConflict';
@@ -17,7 +17,7 @@ export class MoveConflictAction extends CardGameAction {
     }
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if (
+        if(
             !card ||
             !context.game.isDuringConflict() ||
             card.type !== CardTypes.Province ||
@@ -30,14 +30,14 @@ export class MoveConflictAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event, additionalProperties): void {
+    eventHandler(event, _additionalProperties): void {
         let context = event.context;
         let newProvince = event.card;
 
         newProvince.inConflict = true;
         context.game.currentConflict.conflictProvince.inConflict = false;
         context.game.currentConflict.conflictProvince = newProvince;
-        if (newProvince.isFacedown()) {
+        if(newProvince.isFacedown()) {
             const revealEvent = event.context.game.actions
                 .reveal()
                 .getEvent(newProvince, event.context.game.getFrameworkContext());

@@ -43,13 +43,13 @@ class Socket extends EventEmitter {
 
     // Events
     onSocketEvent(callback, ...args) {
-        if (!this.user) {
+        if(!this.user) {
             return;
         }
 
         try {
             callback(this, ...args);
-        } catch (err) {
+        } catch(err) {
             logger.info(err);
             captureException(err, { args });
         }
@@ -57,7 +57,7 @@ class Socket extends EventEmitter {
 
     onAuthenticate(token) {
         jwt.verify(token, env.secret, (err, user) => {
-            if (err) {
+            if(err) {
                 logger.info(err);
                 return;
             }

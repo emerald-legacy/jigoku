@@ -67,7 +67,7 @@ export default class TheEmptyCity extends ProvinceCard {
     }
 
     public onCardLeavesPlay(event: any) {
-        if (this.invokedSpirit && this.invokedSpirit === event.card && this.location !== Locations.RemovedFromGame) {
+        if(this.invokedSpirit && this.invokedSpirit === event.card && this.location !== Locations.RemovedFromGame) {
             this.game.addMessage(
                 '{1} is removed from the game, as it was invoked by the {0} this round',
                 this,

@@ -1,4 +1,4 @@
-describe("Bayushi's Saboteurs", function () {
+describe('Bayushi\'s Saboteurs', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
@@ -140,7 +140,7 @@ describe("Bayushi's Saboteurs", function () {
             expect(this.makoto.location).not.toBe('dynasty discard pile');
 
             expect(this.getChatLogs(10)).toContain(
-                "player1 uses Bayushi's Saboteurs to discard all of player1's dynasty cards"
+                'player1 uses Bayushi\'s Saboteurs to discard all of player1\'s dynasty cards'
             );
         });
 
@@ -190,7 +190,7 @@ describe("Bayushi's Saboteurs", function () {
             expect(this.makoto.location).toBe('dynasty discard pile');
 
             expect(this.getChatLogs(10)).toContain(
-                "player1 uses Bayushi's Saboteurs to discard all of player2's dynasty cards"
+                'player1 uses Bayushi\'s Saboteurs to discard all of player2\'s dynasty cards'
             );
         });
 
@@ -219,7 +219,7 @@ describe("Bayushi's Saboteurs", function () {
             expect(this.makoto.facedown).toBe(false);
 
             expect(this.getChatLogs(10)).toContain(
-                "player1 uses Bayushi's Saboteurs to flip facedown all of player1's dynasty cards"
+                'player1 uses Bayushi\'s Saboteurs to flip facedown all of player1\'s dynasty cards'
             );
         });
 
@@ -246,7 +246,7 @@ describe("Bayushi's Saboteurs", function () {
             expect(this.makoto.facedown).toBe(true);
 
             expect(this.getChatLogs(10)).toContain(
-                "player1 uses Bayushi's Saboteurs to flip facedown all of player2's dynasty cards"
+                'player1 uses Bayushi\'s Saboteurs to flip facedown all of player2\'s dynasty cards'
             );
         });
     });

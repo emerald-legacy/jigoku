@@ -4,7 +4,7 @@ import type { ProvinceCard } from '../ProvinceCard';
 import type BaseCard from '../basecard';
 import { type CardActionProperties, CardGameAction } from './CardGameAction';
 
-export interface BreakProperties extends CardActionProperties {}
+export type BreakProperties = CardActionProperties;
 
 export class BreakAction extends CardGameAction {
     name = 'break';
@@ -14,7 +14,7 @@ export class BreakAction extends CardGameAction {
     effect = 'break {0}';
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if (!card.isProvince || card.isBroken) {
+        if(!card.isProvince || card.isBroken) {
             return false;
         }
         return super.canAffect(card, context);

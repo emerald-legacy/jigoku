@@ -1,4 +1,4 @@
-describe("Lord's Ascendancy", function() {
+describe('Lord\'s Ascendancy', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({

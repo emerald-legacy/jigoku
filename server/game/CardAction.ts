@@ -59,12 +59,12 @@ export class CardAction extends CardAbility {
     }
 
     #passDynastyPhaseRequirements() {
-        if (this.phase === Phases.Dynasty || this.evenDuringDynasty) {
+        if(this.phase === Phases.Dynasty || this.evenDuringDynasty) {
             return true;
         }
 
         const gameMode = parseGameMode(this.game.gameMode);
-        switch (this.card.type) {
+        switch(this.card.type) {
             case CardTypes.Holding:
                 return gameMode.dynastyPhaseActionsFromCardsInPlay;
 
@@ -81,19 +81,19 @@ export class CardAction extends CardAbility {
     }
 
     meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements = []) {
-        if (!ignoredRequirements.includes('location') && !this.isInValidLocation(context)) {
+        if(!ignoredRequirements.includes('location') && !this.isInValidLocation(context)) {
             return 'location';
         }
 
-        if (!ignoredRequirements.includes('province') && !this.checkProvinceCondition(context)) {
+        if(!ignoredRequirements.includes('province') && !this.checkProvinceCondition(context)) {
             return 'province';
         }
 
-        if (!ignoredRequirements.includes('phase') && this.phase !== 'any' && this.phase !== this.game.currentPhase) {
+        if(!ignoredRequirements.includes('phase') && this.phase !== 'any' && this.phase !== this.game.currentPhase) {
             return 'phase';
         }
 
-        if (
+        if(
             !ignoredRequirements.includes('phase') &&
             this.game.currentPhase === Phases.Dynasty &&
             !this.#passDynastyPhaseRequirements()
@@ -106,11 +106,11 @@ export class CardAction extends CardAbility {
             this.abilityType !== AbilityTypes.ForcedInterrupt &&
             this.abilityType !== AbilityTypes.ForcedReaction;
         const canPlayerTrigger = this.anyPlayer || context.player === this.card.controller || canOpponentTrigger;
-        if (!ignoredRequirements.includes('player') && this.card.type !== CardTypes.Event && !canPlayerTrigger) {
+        if(!ignoredRequirements.includes('player') && this.card.type !== CardTypes.Event && !canPlayerTrigger) {
             return 'player';
         }
 
-        if (!ignoredRequirements.includes('condition') && this.condition && !this.condition(context)) {
+        if(!ignoredRequirements.includes('condition') && this.condition && !this.condition(context)) {
             return 'condition';
         }
 

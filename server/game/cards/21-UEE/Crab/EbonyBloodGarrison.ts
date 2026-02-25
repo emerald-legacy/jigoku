@@ -2,7 +2,7 @@ import { CardTypes, Locations, Phases, Players } from '../../../Constants';
 import type { ProvinceCard } from '../../../ProvinceCard';
 import { StrongholdCard } from '../../../StrongholdCard';
 import AbilityDsl from '../../../abilitydsl';
-import ThenAbility from '../../../ThenAbility';
+
 import { SimpleStep } from '../../../gamesteps/SimpleStep';
 
 const MY_PROVINCE = 'myProvince';

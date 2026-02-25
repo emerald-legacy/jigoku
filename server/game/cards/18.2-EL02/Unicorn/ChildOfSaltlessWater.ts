@@ -31,7 +31,7 @@ export default class ChildOfSaltlessWater extends DrawCard {
                 target: context.source,
                 effect: AbilityDsl.effects.setMilitarySkill(context.target.printedStrength)
             })),
-            effect: "set it's {1} to {2}",
+            effect: 'set it\'s {1} to {2}',
             effectArgs: (context) => ['military', context.target.printedStrength]
         });
     }

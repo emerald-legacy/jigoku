@@ -1,9 +1,9 @@
 import { GamePipeline } from '../GamePipeline';
 import { BaseStep } from './BaseStep';
 import type { Step } from './Step';
-import type BaseCard = require('../basecard');
-import type Player = require('../player');
-import type Ring = require('../ring');
+import type BaseCard from '../basecard';
+import type Player from '../player';
+import type Ring from '../ring';
 
 export class BaseStepWithPipeline extends BaseStep implements Step {
     pipeline = new GamePipeline();
@@ -35,7 +35,7 @@ export class BaseStepWithPipeline extends BaseStep implements Step {
     continue() {
         try {
             return this.pipeline.continue();
-        } catch (e) {
+        } catch(e) {
             this.game.reportError(e);
             return true;
         }

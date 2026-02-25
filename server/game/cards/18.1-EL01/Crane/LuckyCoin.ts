@@ -28,13 +28,13 @@ export default class LuckyCoin extends DrawCard {
                 handler: ({ player, game }) => {
                     const cardsToMulligan = player.getDynastyCardsInProvince(Locations.Provinces);
 
-                    for (const nonStrongholdProvince of parseGameMode(game.gameMode).setupNonStrongholdProvinces) {
-                        if (player.dynastyDeck.size() > 0) {
+                    for(const nonStrongholdProvince of parseGameMode(game.gameMode).setupNonStrongholdProvinces) {
+                        if(player.dynastyDeck.size() > 0) {
                             player.moveCard(player.dynastyDeck.first(), nonStrongholdProvince);
                         }
                     }
 
-                    for (const card of cardsToMulligan) {
+                    for(const card of cardsToMulligan) {
                         const originalLocation = card.location;
                         player.moveCard(card, 'dynasty deck bottom');
                         player.replaceDynastyCard(originalLocation);

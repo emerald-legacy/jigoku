@@ -27,13 +27,13 @@ describe('Emerald Core Duels', function() {
                         cardCondition: (card, context) => context.event.duel.isInvolved(card),
                         gameAction: AbilityDsl.actions.honor()
                     }
-                })
+                });
 
                 this.duelEffect2 = this.player1.findCardByName('desolation');
                 this.duelEffect2.duelChallenge({
                     title: 'Gain a fate',
                     gameAction: AbilityDsl.actions.gainFate(context => ({ target: context.player}))
-                })
+                });
 
                 for(const reaction of this.duelEffect.reactions) {
                     reaction.registerEvents();
@@ -41,7 +41,7 @@ describe('Emerald Core Duels', function() {
                 for(const reaction of this.duelEffect2.reactions) {
                     reaction.registerEvents();
                 }
-                
+
                 this.toshimoko = this.player2.findCardByName('kakita-toshimoko');
                 this.challenger = this.player1.findCardByName('doji-challenger');
                 this.pd = this.player2.findCardByName('policy-debate');
@@ -117,13 +117,13 @@ describe('Emerald Core Duels', function() {
                         cardCondition: (card, context) => context.event.duel.isInvolved(card),
                         gameAction: AbilityDsl.actions.honor()
                     }
-                })
+                });
 
                 this.duelEffect2 = this.player1.findCardByName('desolation');
                 this.duelEffect2.duelFocus({
                     title: 'Gain a fate',
                     gameAction: AbilityDsl.actions.gainFate(context => ({ target: context.player}))
-                })
+                });
 
                 for(const reaction of this.duelEffect.reactions) {
                     reaction.registerEvents();
@@ -131,7 +131,7 @@ describe('Emerald Core Duels', function() {
                 for(const reaction of this.duelEffect2.reactions) {
                     reaction.registerEvents();
                 }
-                
+
                 this.manipulator = this.player1.findCardByName('bayushi-manipulator');
                 this.toshimoko = this.player2.findCardByName('kakita-toshimoko');
                 this.challenger = this.player1.findCardByName('doji-challenger');
@@ -210,7 +210,7 @@ describe('Emerald Core Duels', function() {
                 expect(this.player1).toBeAbleToSelect(this.manipulator);
                 expect(this.player1).not.toBeAbleToSelect(this.duelEffect);
                 expect(this.player1).not.toBeAbleToSelect(this.duelEffect2);
-                
+
                 this.player1.pass();
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).not.toBeAbleToSelect(this.manipulator);
@@ -249,13 +249,13 @@ describe('Emerald Core Duels', function() {
                         cardCondition: (card, context) => context.event.duel.isInvolved(card),
                         gameAction: AbilityDsl.actions.honor()
                     }
-                })
+                });
 
                 this.duelEffect2 = this.player1.findCardByName('desolation');
                 this.duelEffect2.duelStrike({
                     title: 'Gain a fate',
                     gameAction: AbilityDsl.actions.gainFate(context => ({ target: context.player}))
-                })
+                });
 
                 for(const reaction of this.duelEffect.reactions) {
                     reaction.registerEvents();
@@ -263,7 +263,7 @@ describe('Emerald Core Duels', function() {
                 for(const reaction of this.duelEffect2.reactions) {
                     reaction.registerEvents();
                 }
-                
+
                 this.toshimoko = this.player2.findCardByName('kakita-toshimoko');
                 this.challenger = this.player1.findCardByName('doji-challenger');
                 this.pd = this.player2.findCardByName('policy-debate');
@@ -349,19 +349,19 @@ describe('Emerald Core Duels', function() {
                         cardCondition: (card, context) => context.event.duel.isInvolved(card),
                         gameAction: AbilityDsl.actions.honor()
                     }
-                })
+                });
 
                 this.duelEffect2 = this.player1.findCardByName('desolation');
                 this.duelEffect2.duelFocus({
                     title: 'Gain a fate',
                     gameAction: AbilityDsl.actions.gainFate(context => ({ target: context.player}))
-                })
+                });
 
                 this.duelEffect3 = this.player1.findCardByName('let-go');
                 this.duelEffect3.duelStrike({
                     title: 'Gain an honor',
                     gameAction: AbilityDsl.actions.gainHonor(context => ({ target: context.player}))
-                })
+                });
 
                 for(const reaction of this.duelEffect.reactions) {
                     reaction.registerEvents();
@@ -372,7 +372,7 @@ describe('Emerald Core Duels', function() {
                 for(const reaction of this.duelEffect3.reactions) {
                     reaction.registerEvents();
                 }
-                
+
                 this.toshimoko = this.player2.findCardByName('kakita-toshimoko');
                 this.challenger = this.player1.findCardByName('doji-challenger');
                 this.pd = this.player2.findCardByName('policy-debate');

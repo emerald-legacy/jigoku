@@ -5,8 +5,8 @@ export class EffectValue<V> {
     context: AbilityContext = {} as AbilityContext;
 
     constructor(value: V) {
-        // @ts-ignore
-        this.value = value == null ? true : value;
+        // @ts-expect-error -- defaults to true when value is nullish; V may not include boolean but this is intentional for the effect system
+        this.value = value === null || value === undefined ? true : value;
     }
 
     public setContext(context: AbilityContext): void {
@@ -27,7 +27,7 @@ export class EffectValue<V> {
 
     public reset(): void {}
 
-    public apply(target): void {}
+    public apply(_target): void {}
 
-    public unapply(target): void {}
+    public unapply(_target): void {}
 }

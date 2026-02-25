@@ -1,14 +1,13 @@
-import * as Sentry from '@sentry/node';
-import * as env from './env.js';
-
-if (env.sentryDsn) {
-    Sentry.init({ dsn: env.sentryDsn, tracesSampleRate: 0 });
-}
+// Error monitoring - logs errors to console
+// Previously used Sentry, now simplified to console logging
 
 export function captureException(exception: any, extra?: Record<string, unknown>): void {
-    Sentry.captureException(exception, { extra });
+    console.error('Error captured:', exception);
+    if(extra) {
+        console.error('Extra context:', extra);
+    }
 }
 
-export const requestHandler = Sentry.Handlers.requestHandler();
-
-export const errorHandler = Sentry.Handlers.errorHandler();
+// No-op middleware for compatibility
+export const requestHandler = (_req: any, _res: any, next: () => void) => next();
+export const errorHandler = (err: any, _req: any, _res: any, next: (err: any) => void) => next(err);

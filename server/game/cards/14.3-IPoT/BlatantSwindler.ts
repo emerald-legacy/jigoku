@@ -1,6 +1,6 @@
 import { Players, CardTypes } from '../../Constants';
-import AbilityDsl = require('../../abilitydsl');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard';
 
 export default class BlatantSwindler extends DrawCard {
     static id = 'blatant-swindler';

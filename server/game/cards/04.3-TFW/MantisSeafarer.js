@@ -1,7 +1,7 @@
 const DrawCard = require('../../drawcard.js');
 
 class MantisSeafarer extends DrawCard {
-    setupCardAbilities(ability) { // eslint-disable-line no-unused-vars
+    setupCardAbilities(ability) {
         this.reaction({
             title: 'Gain a fate',
             when: {

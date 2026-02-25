@@ -18,23 +18,23 @@ export class MoveToConflictAction extends CardGameAction {
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
         let properties = this.getProperties(context) as MoveToConflictProperties;
-        if (!super.canAffect(card, context)) {
+        if(!super.canAffect(card, context)) {
             return false;
         }
-        if (!context.game.currentConflict || card.isParticipating()) {
+        if(!context.game.currentConflict || card.isParticipating()) {
             return false;
         }
 
         const player = properties.side || card.controller;
 
-        if (player.isAttackingPlayer()) {
-            if (!card.canParticipateAsAttacker()) {
+        if(player.isAttackingPlayer()) {
+            if(!card.canParticipateAsAttacker()) {
                 return false;
             }
-        } else if (!card.canParticipateAsDefender()) {
+        } else if(!card.canParticipateAsDefender()) {
             return false;
         }
-        if (card.anyEffect(EffectNames.ParticipatesFromHome)) {
+        if(card.anyEffect(EffectNames.ParticipatesFromHome)) {
             return false;
         }
 
@@ -50,7 +50,7 @@ export class MoveToConflictAction extends CardGameAction {
     eventHandler(event): void {
         const player = event.side;
 
-        if (player.isAttackingPlayer()) {
+        if(player.isAttackingPlayer()) {
             event.context.game.currentConflict.addAttacker(event.card);
         } else {
             event.context.game.currentConflict.addDefender(event.card);

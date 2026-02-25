@@ -1,8 +1,8 @@
 import { CardTypes, Elements, Players } from '../../../Constants';
 import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment';
-import PlayerEffect = require('../../../Effects/PlayerEffect');
-import AbilityDsl = require('../../../abilitydsl');
-import DrawCard = require('../../../drawcard');
+import PlayerEffect from '../../../Effects/PlayerEffect';
+import AbilityDsl from '../../../abilitydsl';
+import DrawCard from '../../../drawcard';
 
 const ELEMENT_KEY = 'jealous-ancestor-void';
 
@@ -14,7 +14,7 @@ export default class JealousAncestor extends DrawCard {
 
         this.whileAttached({ effect: AbilityDsl.effects.addTrait('shadowlands') });
         this.persistentEffect({
-            condition: (context) => context.source.parent,
+            condition: (context) => !!context.source.parent,
             effect: AbilityDsl.effects.immunity({ restricts: 'events' })
         });
 

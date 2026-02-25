@@ -65,7 +65,7 @@ type User = {
 };
 
 export function getUserWithDefaultsSet(user?: Partial<User> & Pick<User, 'username'>) {
-    if (!user) {
+    if(!user) {
         return undefined;
     }
 

@@ -23,7 +23,7 @@ class PlayCardResolver extends AbilityResolver {
     }
 
     resolveEarlyTargets() {
-        if (this.gameActionProperties.playCardTarget) {
+        if(this.gameActionProperties.playCardTarget) {
             this.context.stage = Stages.PreTarget;
             this.targetResults = {
                 canIgnoreAllCosts: false,
@@ -39,42 +39,42 @@ class PlayCardResolver extends AbilityResolver {
 
     checkForCancel() {
         super.checkForCancel();
-        if (this.cancelled && this.gameActionProperties.resetOnCancel) {
+        if(this.cancelled && this.gameActionProperties.resetOnCancel) {
             this.playGameAction.cancelAction(this.gameActionContext, this.gameActionProperties);
             this.cancelPressed = true;
         }
     }
 
     resolveCosts() {
-        if (this.gameActionProperties.payCosts) {
+        if(this.gameActionProperties.payCosts) {
             super.resolveCosts();
         }
     }
 
     payCosts() {
-        if (this.gameActionProperties.payCosts) {
+        if(this.gameActionProperties.payCosts) {
             super.payCosts();
         }
-        if (this.cancelled && this.gameActionProperties.resetOnCancel) {
+        if(this.cancelled && this.gameActionProperties.resetOnCancel) {
             this.playGameAction.cancelAction(this.gameActionContext, this.gameActionProperties);
             this.cancelPressed = true;
         }
     }
 
     moveEventCardToDiscard() {
-        if (this.context.source.location === Locations.BeingPlayed) {
+        if(this.context.source.location === Locations.BeingPlayed) {
             const location =
                 (this.initiateAbility && this.gameActionProperties.destination) || Locations.ConflictDiscardPile;
-            if (location === Locations.RemovedFromGame) {
+            if(location === Locations.RemovedFromGame) {
                 this.game.addMessage(
-                    "{0} is removed from the game by {1}'s effect",
+                    '{0} is removed from the game by {1}\'s effect',
                     this.context.source,
                     this.gameActionContext.source
                 );
             }
-            if (location === Locations.ConflictDeck && this.gameActionProperties.destinationOptions.bottom) {
+            if(location === Locations.ConflictDeck && this.gameActionProperties.destinationOptions.bottom) {
                 this.game.addMessage(
-                    "{0} is placed on the bottom of {1}'s deck by {2}'s effect",
+                    '{0} is placed on the bottom of {1}\'s deck by {2}\'s effect',
                     this.context.source,
                     this.context.player,
                     this.gameActionContext.source
@@ -86,7 +86,7 @@ class PlayCardResolver extends AbilityResolver {
 
     refillProvinces() {
         super.refillProvinces();
-        if (!this.cancelPressed) {
+        if(!this.cancelPressed) {
             this.game.queueSimpleStep(() => this.gameActionProperties.postHandler(this.context));
         }
     }
@@ -131,7 +131,7 @@ export class PlayCardAction extends CardGameAction {
     }
 
     canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
-        if (!super.canAffect(card, context)) {
+        if(!super.canAffect(card, context)) {
             return false;
         }
         const properties = this.getProperties(context, additionalProperties);
@@ -146,7 +146,7 @@ export class PlayCardAction extends CardGameAction {
 
         return legalAbilities.filter((ability) => {
             const ignoredRequirements = ['location', 'player', ...properties.ignoredRequirements];
-            if (!properties.payCosts) {
+            if(!properties.payCosts) {
                 ignoredRequirements.push('cost');
             }
             let newContext = ability.createContext(context.player);
@@ -158,9 +158,9 @@ export class PlayCardAction extends CardGameAction {
     }
 
     getLegalActions(card: DrawCard, context: AbilityContext, properties: PlayCardProperties) {
-        if (properties.playAction) {
+        if(properties.playAction) {
             let actions = properties.playAction;
-            if (!Array.isArray(actions)) {
+            if(!Array.isArray(actions)) {
                 actions = [actions];
             }
             return actions;
@@ -169,7 +169,7 @@ export class PlayCardAction extends CardGameAction {
     }
 
     getLegalReactions(card: DrawCard, context: AbilityContext, properties: PlayCardProperties) {
-        if (!properties.allowReactions) {
+        if(!properties.allowReactions) {
             return [];
         }
         return card.getReactions();
@@ -185,7 +185,7 @@ export class PlayCardAction extends CardGameAction {
     }
 
     cancelAction(context: AbilityContext, properties: PlayCardProperties): number {
-        if (properties.parentAction) {
+        if(properties.parentAction) {
             properties.parentAction.resolve(null, context);
         }
         return 0;
@@ -193,12 +193,12 @@ export class PlayCardAction extends CardGameAction {
 
     addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
-        if ((properties.target as DrawCard[]).length === 0) {
+        if((properties.target as DrawCard[]).length === 0) {
             return;
         }
         let card = properties.target[0];
         let abilities = this.getLegalAbilities(card, context, properties);
-        if (abilities.length === 1) {
+        if(abilities.length === 1) {
             events.push(
                 this.getPlayCardEvent(card, context, abilities[0].createContext(context.player), additionalProperties)
             );
@@ -246,7 +246,7 @@ export class PlayCardAction extends CardGameAction {
     }
 
     updateForDragonTattoo_DYH(context: AbilityContext, actionContext: AbilityContext) {
-        if ((context as TriggeredAbilityContext).event && (context as TriggeredAbilityContext).event.context) {
+        if((context as TriggeredAbilityContext).event && (context as TriggeredAbilityContext).event.context) {
             (actionContext as TriggeredAbilityContext).event = (context as TriggeredAbilityContext).event.context.event;
         }
     }

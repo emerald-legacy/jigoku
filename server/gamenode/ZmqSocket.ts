@@ -1,25 +1,46 @@
 import EventEmitter from 'events';
-import zmq from 'zeromq';
+import { Dealer } from 'zeromq';
 import { z } from 'zod';
 import * as env from '../env.js';
 import { logger } from '../logger';
 
 export class ZmqSocket extends EventEmitter {
-    private socket = zmq.socket('dealer');
+    private socket: Dealer;
+    private running = false;
 
     constructor(private listenAddress: string, private protocol: string) {
         super();
 
-        // @ts-ignore
-        this.socket.identity = env.gameNodeName;
-        this.socket.monitor(500, 0);
+        this.socket = new Dealer({ routingId: env.gameNodeName });
         this.socket.connect(env.mqUrl);
-        this.socket.on('connect', this.onConnect.bind(this));
-        this.socket.on('message', this.onMessage.bind(this));
+        this.running = true;
+
+        // Start receiving messages
+        this.receiveMessages();
+
+        // Connection is immediate in v6, emit connect event on next tick
+        setImmediate(() => this.onConnect());
+    }
+
+    private async receiveMessages() {
+        while(this.running) {
+            try {
+                // Dealer receives [delimiter, message] - the router adds identity automatically
+                const [delimiter, msg] = await this.socket.receive();
+                this.onMessage(delimiter, msg.toString());
+            } catch(err) {
+                if(this.running) {
+                    logger.error('Error receiving message:', err);
+                }
+            }
+        }
     }
 
     public send(command: string, arg?: unknown) {
-        this.socket.send(JSON.stringify({ command: command, arg: arg }));
+        // Dealer sends [delimiter, message] - router will add routing based on identity
+        this.socket.send(['', JSON.stringify({ command, arg })]).catch(err => {
+            logger.error('Error sending message:', err);
+        });
     }
 
     private onConnect() {
@@ -45,16 +66,20 @@ export class ZmqSocket extends EventEmitter {
                     arg: z.any()
                 })
                 .parse(JSON.parse(msg.toString()));
-        } catch (e) {
+        } catch(e) {
             logger.info(e);
             return;
         }
     }
 
-    private onMessage(x: unknown, msg: string) {
+    private onMessage(delimiter: unknown, msg: string) {
         const message = this.parseMsg(msg);
 
-        switch (message.command) {
+        if(!message) {
+            return;
+        }
+
+        switch(message.command) {
             case 'PING':
                 this.send('PONG');
                 break;
@@ -74,5 +99,10 @@ export class ZmqSocket extends EventEmitter {
                 this.emit('onCardData', message.arg);
                 break;
         }
+    }
+
+    public close() {
+        this.running = false;
+        this.socket.close();
     }
 }

@@ -1,12 +1,12 @@
-import AbilityDsl = require('../../abilitydsl');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard';
 
 export default class AkodoKage extends DrawCard {
     static id = 'akodo-kage';
 
     setupCardAbilities() {
         this.reaction({
-            title: "Set your opponent's dial to equal yours",
+            title: 'Set your opponent\'s dial to equal yours',
             when: {
                 onHonorDialsRevealed: (event, context) =>
                     event.isHonorBid &&

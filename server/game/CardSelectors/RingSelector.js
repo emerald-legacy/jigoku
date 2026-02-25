@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const BaseCardSelector = require('./BaseCardSelector.js');
 
 class RingSelector extends BaseCardSelector {
@@ -9,7 +8,7 @@ class RingSelector extends BaseCardSelector {
     }
 
     hasEnoughTargets(context) {
-        return _.any(context.game.rings, ring => this.ringCondition(ring, context));
+        return Object.values(context.game.rings).some(ring => this.ringCondition(ring, context));
     }
 
     defaultActivePromptTitle() {

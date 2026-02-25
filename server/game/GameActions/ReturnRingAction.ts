@@ -3,7 +3,7 @@ import { EventNames } from '../Constants';
 import type Ring from '../ring';
 import { RingAction, type RingActionProperties } from './RingAction';
 
-export interface ReturnRingProperties extends RingActionProperties {}
+export type ReturnRingProperties = RingActionProperties;
 
 export class ReturnRingAction extends RingAction {
     name = 'returnRing';

@@ -5,7 +5,7 @@ import type Player from '../player';
 import { Phase } from './Phase';
 import { SimpleStep } from './SimpleStep';
 import ActionWindow from './actionwindow';
-import { EndRoundPrompt } from './regroup/EndRoundPrompt'
+import { EndRoundPrompt } from './regroup/EndRoundPrompt';
 
 /**
  * V Regroup Phase
@@ -37,7 +37,7 @@ export class RegroupPhase extends Phase {
     }
 
     discardFromProvinces() {
-        for (const player of this.game.getPlayersInFirstPlayerOrder()) {
+        for(const player of this.game.getPlayersInFirstPlayerOrder()) {
             this.game.queueSimpleStep(() => this.discardFromProvincesForPlayer(player));
         }
     }
@@ -45,12 +45,12 @@ export class RegroupPhase extends Phase {
     discardFromProvincesForPlayer(player: Player) {
         let cardsToDiscard = [];
         let cardsOnUnbrokenProvinces = [];
-        for (const location of this.game.getProvinceArray()) {
+        for(const location of this.game.getProvinceArray()) {
             const provinceCard = player.getProvinceCardInProvince(location);
             const province = player.getSourceList(location);
             const dynastyCards = province.filter((card) => card.isDynasty && card.isFaceup());
-            if (dynastyCards.length > 0 && provinceCard) {
-                if (provinceCard.isBroken) {
+            if(dynastyCards.length > 0 && provinceCard) {
+                if(provinceCard.isBroken) {
                     cardsToDiscard = cardsToDiscard.concat(dynastyCards);
                 } else {
                     cardsOnUnbrokenProvinces = cardsOnUnbrokenProvinces.concat(dynastyCards);
@@ -58,7 +58,7 @@ export class RegroupPhase extends Phase {
             }
         }
 
-        if (cardsOnUnbrokenProvinces.length > 0) {
+        if(cardsOnUnbrokenProvinces.length > 0) {
             this.game.promptForSelect(player, {
                 source: 'Discard Dynasty Cards',
                 numCards: 0,
@@ -71,27 +71,27 @@ export class RegroupPhase extends Phase {
                 cardCondition: (card) => cardsOnUnbrokenProvinces.includes(card),
                 onSelect: (player, cards) => {
                     cardsToDiscard = cardsToDiscard.concat(cards);
-                    if (cardsToDiscard.length > 0) {
+                    if(cardsToDiscard.length > 0) {
                         this.game.addMessage('{0} discards {1} from their provinces', player, cardsToDiscard);
                         this.game.applyGameAction(this.game.getFrameworkContext(), { discardCard: cardsToDiscard });
                     }
                     return true;
                 },
                 onCancel: () => {
-                    if (cardsToDiscard.length > 0) {
+                    if(cardsToDiscard.length > 0) {
                         this.game.addMessage('{0} discards {1} from their provinces', player, cardsToDiscard);
                         this.game.applyGameAction(this.game.getFrameworkContext(), { discardCard: cardsToDiscard });
                     }
                     return true;
                 }
             });
-        } else if (cardsToDiscard.length > 0) {
+        } else if(cardsToDiscard.length > 0) {
             this.game.addMessage('{0} discards {1} from their provinces', player, cardsToDiscard);
             this.game.applyGameAction(this.game.getFrameworkContext(), { discardCard: cardsToDiscard });
         }
 
         this.game.queueSimpleStep(() => {
-            for (const location of this.game.getProvinceArray(false)) {
+            for(const location of this.game.getProvinceArray(false)) {
                 this.game.queueSimpleStep(() => {
                     player.replaceDynastyCard(location);
                     return true;
@@ -108,7 +108,7 @@ export class RegroupPhase extends Phase {
     passFirstPlayer() {
         const firstPlayer = this.game.getFirstPlayer();
         const otherPlayer = this.game.getOtherPlayer(firstPlayer);
-        if (otherPlayer) {
+        if(otherPlayer) {
             this.game.raiseEvent(EventNames.OnPassFirstPlayer, { player: otherPlayer }, () =>
                 this.game.setFirstPlayer(otherPlayer)
             );

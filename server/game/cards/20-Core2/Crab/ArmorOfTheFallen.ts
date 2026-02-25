@@ -30,7 +30,7 @@ export default class ArmorOfTheFallen extends DrawCard {
     }
 
     #maxCostReachable(context: AbilityContext) {
-        if (context.costs.removeFromGame) {
+        if(context.costs.removeFromGame) {
             return context.costs.removeFromGame.length;
         }
 

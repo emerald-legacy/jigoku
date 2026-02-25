@@ -7,7 +7,7 @@ export default class ImperialAdjutant extends DrawCard {
 
     setupCardAbilities() {
         this.attachmentConditions({
-            myControl: true,
+            myControl: true
         });
 
         this.action({
@@ -26,14 +26,14 @@ export default class ImperialAdjutant extends DrawCard {
                     player: Players.Opponent,
                     choices: {
                         'Move this character to the conflict': AbilityDsl.actions.moveToConflict(context => ({
-                            target: context.targets.character,
+                            target: context.targets.character
                         })),
                         'Dishonor this character': AbilityDsl.actions.dishonor(context => ({
                             target: context.targets.character
                         }))
                     }
-                },
-            },
+                }
+            }
         });
     }
 }

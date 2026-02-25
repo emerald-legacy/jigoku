@@ -1,8 +1,6 @@
 import AbilityDsl from '../../../abilitydsl';
-import BaseCard from '../../../basecard';
 import { CardTypes } from '../../../Constants';
 import DrawCard from '../../../drawcard';
-import Ring from '../../../ring';
 
 export default class KeeperOfInnerPeace extends DrawCard {
     static id = 'keeper-of-inner-peace';

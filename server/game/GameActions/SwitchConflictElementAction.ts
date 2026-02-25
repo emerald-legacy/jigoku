@@ -3,7 +3,7 @@ import { EventNames } from '../Constants';
 import type Ring from '../ring';
 import { RingAction, type RingActionProperties } from './RingAction';
 
-export interface SwitchConflictElementProperties extends RingActionProperties {}
+export type SwitchConflictElementProperties = RingActionProperties;
 
 export class SwitchConflictElementAction extends RingAction {
     name = 'switchConflictElement';

@@ -38,7 +38,6 @@ export default class IronMountainCastle extends StrongholdCard {
                 targetController: context.player,
                 effect: AbilityDsl.effects.reduceNextPlayedCardCost(
                     1,
-                    // @ts-ignore
                     (card: DrawCard) => card === context.event.context.source
                 )
             }))

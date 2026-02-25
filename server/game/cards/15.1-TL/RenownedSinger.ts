@@ -1,6 +1,6 @@
 import { CardTypes, Locations, Players, TargetModes } from '../../Constants';
-import AbilityDsl = require('../../abilitydsl');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard';
 
 export default class RenownedSinger extends DrawCard {
     static id = 'renowned-singer';
@@ -21,13 +21,13 @@ export default class RenownedSinger extends DrawCard {
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) =>
                         this.game.promptWithHandlerMenu(context.player.opponent, {
-                            activePromptTitle: "Choose a card to add to your opponent's hand",
+                            activePromptTitle: 'Choose a card to add to your opponent\'s hand',
                             context: context,
                             cards: context.target,
                             cardHandler: (handCard: DrawCard) => {
                                 let bottomCard = context.target.filter((a: DrawCard) => a !== handCard);
                                 context.game.addMessage(
-                                    "{0} chooses {1} to be put into {2}'s hand. {3} is put on the bottom of {2}'s conflict deck",
+                                    '{0} chooses {1} to be put into {2}\'s hand. {3} is put on the bottom of {2}\'s conflict deck',
                                     context.player.opponent,
                                     handCard,
                                     context.player,
@@ -52,7 +52,7 @@ export default class RenownedSinger extends DrawCard {
                         })
                 })
             },
-            effect: "have {1} return one of {2} to {3}'s hand",
+            effect: 'have {1} return one of {2} to {3}\'s hand',
             effectArgs: (context) => [context.player.opponent, context.target, context.player]
         });
     }

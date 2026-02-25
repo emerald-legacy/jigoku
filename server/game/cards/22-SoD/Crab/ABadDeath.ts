@@ -1,17 +1,17 @@
-import { CardTypes, Locations, TargetModes } from '../../../Constants';
-import AbilityDsl = require('../../../abilitydsl');
-import DrawCard = require('../../../drawcard');
+import { CardTypes } from '../../../Constants';
+import AbilityDsl from '../../../abilitydsl';
+import DrawCard from '../../../drawcard';
 
 export default class ABadDeath extends DrawCard {
     static id = 'a-bad-death';
 
     private getMil(card) {
-        if (!card) {
+        if(!card) {
             return 1;
         }
 
         let amountOfCards = card.printedMilitarySkill;
-        if (card.hasTrait('berserker')) {
+        if(card.hasTrait('berserker')) {
             amountOfCards = card.getMilitarySkill();
         }
         return amountOfCards;
@@ -49,7 +49,7 @@ export default class ABadDeath extends DrawCard {
                     ]
                 };
             }),
-            effect: "look at {1} random card{3} in {2}'s hand",
+            effect: 'look at {1} random card{3} in {2}\'s hand',
             effectArgs: (context) => [
                 this.getMil(context.costs.dishonorAndSacrificeStateWhenChosen),
                 context.player.opponent,

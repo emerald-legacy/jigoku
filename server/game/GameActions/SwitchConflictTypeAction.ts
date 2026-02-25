@@ -25,8 +25,8 @@ export class SwitchConflictTypeAction extends RingAction<SwitchConflictTypePrope
         return ['switch the conflict type from {0} to {1}', [currentConflictType, newConflictType]];
     }
 
-    canAffect(ring: Ring, context: AbilityContext, additionalProperties = {}) {
-        if (!context.game.currentConflict) {
+    canAffect(ring: Ring, context: AbilityContext, _additionalProperties = {}) {
+        if(!context.game.currentConflict) {
             return false;
         }
         let { targetConflictType } = this.getProperties(context);

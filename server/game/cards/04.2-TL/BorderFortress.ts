@@ -14,7 +14,7 @@ export default class BorderFortress extends ProvinceCard {
                 cardCondition: (card) => card.isFacedown(),
                 gameAction: AbilityDsl.actions.reveal({ chatMessage: true })
             },
-            effect: "reveal {1}'s facedown province in their {2}",
+            effect: 'reveal {1}\'s facedown province in their {2}',
             effectArgs: (context) => [context.target.controller, context.target.location]
         });
     }

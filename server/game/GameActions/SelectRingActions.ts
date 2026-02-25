@@ -35,7 +35,7 @@ export class SelectRingAction extends RingAction {
 
     canAffect(ring: Ring, context: AbilityContext, additionalProperties = {}): boolean {
         let properties = super.getProperties(context, additionalProperties) as SelectRingProperties;
-        if (properties.player === Players.Opponent && !context.player.opponent) {
+        if(properties.player === Players.Opponent && !context.player.opponent) {
             return false;
         }
         return (
@@ -56,17 +56,17 @@ export class SelectRingAction extends RingAction {
 
     addEventsToArray(events, context: AbilityContext, additionalProperties = {}): void {
         let properties = super.getProperties(context, additionalProperties) as SelectRingProperties;
-        if (properties.player === Players.Opponent && !context.player.opponent) {
+        if(properties.player === Players.Opponent && !context.player.opponent) {
             return;
-        } else if (
+        } else if(
             !Object.values(context.game.rings).some((ring: Ring): boolean => properties.ringCondition(ring, context))
         ) {
             return;
-        } else if (!this.hasLegalTarget(context, additionalProperties)) {
+        } else if(!this.hasLegalTarget(context, additionalProperties)) {
             return;
         }
         let player = properties.player === Players.Opponent ? context.player.opponent : context.player;
-        if (properties.targets && context.choosingPlayerOverride) {
+        if(properties.targets && context.choosingPlayerOverride) {
             player = context.choosingPlayerOverride;
         }
         let defaultProperties = {
@@ -74,7 +74,7 @@ export class SelectRingAction extends RingAction {
             buttons: properties.cancelHandler ? [{ text: 'Cancel', arg: 'cancel' }] : [],
             onCancel: properties.cancelHandler,
             onSelect: (player, ring) => {
-                if (properties.message) {
+                if(properties.message) {
                     context.game.addMessage(properties.message, ...properties.messageArgs(ring, player));
                 }
                 properties.gameAction.addEventsToArray(

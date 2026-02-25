@@ -8,7 +8,7 @@ export default class ObstinateWitchHunter extends DrawCard {
 
     public setupCardAbilities() {
         this.forcedReaction({
-            title: "Can't be discarded or remove fate",
+            title: 'Can\'t be discarded or remove fate',
             when: {
                 onPhaseStarted: (event, context) =>
                     event.phase === Phases.Fate &&

@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext';
-import { Players, CardTypes, Locations } from '../../../Constants';
+import { CardTypes, Locations } from '../../../Constants';
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
 import type { Cost } from '../../../Costs';
@@ -37,11 +37,9 @@ export default class RoadToShakyakuMura extends DrawCard {
             gameAction: AbilityDsl.actions.cancel((context) => ({
                 replacementGameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.returnToHand(() => ({
-                        // @ts-ignore
                         target: context.event.card.attachments
                     })),
                     AbilityDsl.actions.putIntoProvince({
-                        // @ts-ignore
                         target: context.event.card,
                         canBeStronghold: true,
                         destination: context.costs.captureLocationCost

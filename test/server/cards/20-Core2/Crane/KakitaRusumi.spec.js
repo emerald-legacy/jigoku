@@ -130,10 +130,10 @@ describe('Kakita Rusumi', function () {
                 expect(this.whisperer.isHonored).toBe(false);
 
                 this.noMoreActions();
-                this.player1.clickPrompt("Don't Resolve");
+                this.player1.clickPrompt('Don\'t Resolve');
                 expect(this.whisperer.location).toBe('dynasty discard pile');
                 expect(this.getChatLogs(5)).toContain(
-                    "Doji Whisperer is discarded from play due to Kakita Rusumi's effect"
+                    'Doji Whisperer is discarded from play due to Kakita Rusumi\'s effect'
                 );
             });
         });

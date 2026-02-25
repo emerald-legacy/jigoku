@@ -14,7 +14,7 @@ export default class FukurokushisBlessing extends DrawCard {
                     card.isConflictProvince() &&
                     (context.source as this).controller.isAttackingPlayer()
             },
-            effect: "cancel the effects of {1}'s ability",
+            effect: 'cancel the effects of {1}\'s ability',
             effectArgs: (context) => context.event.card,
             gameAction: AbilityDsl.actions.cancel(),
             max: AbilityDsl.limit.perRound(1)

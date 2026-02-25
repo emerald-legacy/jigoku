@@ -10,7 +10,7 @@ export default class ToConnectThePeople extends DrawCard {
 
     public setupCardAbilities() {
         this.action({
-            title: "Play a character from your opponent's discard pile",
+            title: 'Play a character from your opponent\'s discard pile',
             condition: (context) =>
                 !context.game.isDuringConflict() &&
                 (context.player.cardsInPlay as DrawCard[]).some(

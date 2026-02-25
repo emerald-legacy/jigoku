@@ -20,7 +20,7 @@ function currentObjectionCost(player: Player): number {
 
 function increaseObjectionCost(player: Player) {
     const gameTracker = GLOBAL_TRACKER.get(player.game);
-    if (!gameTracker) {
+    if(!gameTracker) {
         GLOBAL_TRACKER.set(player.game, new WeakMap([[player, 1]]));
         return;
     }
@@ -39,7 +39,7 @@ class ObjectionCost implements Cost {
 
     pay(context: TriggeredAbilityContext): void {
         const fateCost = currentObjectionCost(context.player);
-        if (fateCost > 0) {
+        if(fateCost > 0) {
             AbilityDsl.actions.loseFate({ target: context.player, amount: fateCost }).resolve(context.player, context);
         }
 

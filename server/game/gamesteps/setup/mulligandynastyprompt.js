@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const { AllPlayerPrompt } = require('../AllPlayerPrompt.js');
 
 class MulliganDynastyPrompt extends AllPlayerPrompt {
@@ -6,7 +5,7 @@ class MulliganDynastyPrompt extends AllPlayerPrompt {
         super(game);
         this.selectedCards = {};
         this.selectableCards = {};
-        _.each(game.getPlayers(), player => this.selectedCards[player.name] = []);
+        game.getPlayers().forEach(player => this.selectedCards[player.name] = []);
     }
 
     completionCondition(player) {
@@ -22,9 +21,9 @@ class MulliganDynastyPrompt extends AllPlayerPrompt {
     }
 
     highlightSelectableCards() {
-        _.each(this.game.getPlayers(), player => {
+        this.game.getPlayers().forEach(player => {
             if(!this.selectableCards[player.name]) {
-                this.selectableCards[player.name] = _.flatten(this.game.getProvinceArray(false).map(location => player.getDynastyCardsInProvince(location)));
+                this.selectableCards[player.name] = this.game.getProvinceArray(false).map(location => player.getDynastyCardsInProvince(location)).flat();
             }
             player.setSelectableCards(this.selectableCards[player.name]);
         });

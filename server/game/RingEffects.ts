@@ -5,15 +5,8 @@ import { FireRingEffect } from './Rings/FireRingEffect';
 import { VoidRingEffect } from './Rings/VoidRingEffect';
 import { WaterRingEffect } from './Rings/WaterRingEffect';
 import { AbilityContext } from './AbilityContext';
-import BaseAbility = require('./baseability');
-import Player = require('./player');
-
-type Element = 'air' | 'earth' | 'fire' | 'void' | 'water';
-
-type RingProps = {
-    name: string;
-    factory: (optional: boolean, gameMode: GameModes) => RingAbility;
-};
+import BaseAbility from './baseability';
+import Player from './player';
 
 interface RingAbility extends BaseAbility {
     title: string;
@@ -25,7 +18,7 @@ interface RingAbility extends BaseAbility {
 type ResolutionCb = (resolved: boolean) => void;
 
 function ringForElement(element: string) {
-    switch (element) {
+    switch(element) {
         case 'air':
             return (optional: boolean, gameMode: GameModes, onResolution: ResolutionCb) =>
                 new AirRingEffect(optional, gameMode, onResolution);
@@ -62,7 +55,7 @@ export class RingEffects {
     }
 
     static getRingName(element: string) {
-        switch (element) {
+        switch(element) {
             case 'air':
                 return 'Air Ring';
             case 'earth':

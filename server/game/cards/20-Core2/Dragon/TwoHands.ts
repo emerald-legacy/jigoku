@@ -59,7 +59,7 @@ export default class TwoHands extends DrawCard {
 
 function calcTwoHandsEffect(context: AbilityContext) {
     const targets = Array.isArray(context.target) ? context.target : context.target ? [context.target] : [];
-    if ((context.game.currentConflict as Conflict).conflictType === ConflictTypes.Military) {
+    if((context.game.currentConflict as Conflict).conflictType === ConflictTypes.Military) {
         return {
             targets,
             type: 'military',

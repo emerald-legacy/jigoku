@@ -107,7 +107,7 @@ describe('There Are No Secrets', function () {
                 });
             });
 
-            it("should give Embrace the Void's controller all fate when the character is assassinated", function () {
+            it('should give Embrace the Void\'s controller all fate when the character is assassinated', function () {
                 this.player2.clickCard('assassination');
                 this.player2.clickCard(this.adeptOfTheWaves);
                 expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -144,7 +144,7 @@ describe('There Are No Secrets', function () {
                 });
             });
 
-            it("should give Embrace the Void's controller the fate but still let A Legion Of One trigger a second time", function () {
+            it('should give Embrace the Void\'s controller the fate but still let A Legion Of One trigger a second time', function () {
                 this.milStat = this.adept.getMilitarySkill();
                 this.polStat = this.adept.getMilitarySkill();
                 this.fateStat = this.adept.fate;

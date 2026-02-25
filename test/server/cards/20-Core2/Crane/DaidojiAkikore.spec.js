@@ -63,7 +63,7 @@ describe('Daidoji Akikore', function () {
             this.player2.clickPrompt('1');
 
             expect(this.getChatLogs(10)).toContain('Daidōji Akikore: 6 vs 5: Kakita Toshimoko');
-            expect(this.getChatLogs(10)).toContain("Duel Effect: add 3 to player1's side for this conflict");
+            expect(this.getChatLogs(10)).toContain('Duel Effect: add 3 to player1\'s side for this conflict');
             expect(this.getChatLogs(10)).toContain('Military Air conflict - Attacker: 8 Defender: 4');
         });
 
@@ -92,7 +92,7 @@ describe('Daidoji Akikore', function () {
             expect(this.getChatLogs(10)).toContain('player1 uses Daidōji Akikore to add 1 to their duel total');
 
             expect(this.getChatLogs(10)).toContain('Daidōji Akikore: 7 vs 5: Kakita Toshimoko');
-            expect(this.getChatLogs(10)).toContain("Duel Effect: add 3 to player1's side for this conflict");
+            expect(this.getChatLogs(10)).toContain('Duel Effect: add 3 to player1\'s side for this conflict');
             expect(this.getChatLogs(10)).toContain('Political Air conflict - Attacker: 7 Defender: 3');
         });
 

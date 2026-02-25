@@ -21,7 +21,7 @@ export class RevealAction extends CardGameAction {
     }
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if (!card.isFacedown() && (card.isInProvince() || card.location === Locations.PlayArea)) {
+        if(!card.isFacedown() && (card.isInProvince() || card.location === Locations.PlayArea)) {
             return false;
         }
         return super.canAffect(card, context);
@@ -35,7 +35,7 @@ export class RevealAction extends CardGameAction {
 
     eventHandler(event, additionalProperties): void {
         let properties = this.getProperties(event.context, additionalProperties) as RevealProperties;
-        if (properties.chatMessage) {
+        if(properties.chatMessage) {
             event.context.game.addMessage(
                 '{0} reveals {1} due to {2}',
                 properties.player || event.context.player,

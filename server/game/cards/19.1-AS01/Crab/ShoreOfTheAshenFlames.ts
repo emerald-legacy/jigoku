@@ -13,20 +13,20 @@ export default class ShoreOfTheAshenFlames extends ProvinceCard {
             targetController: Players.Opponent,
             effect: AbilityDsl.effects.changeConflictSkillFunctionPlayer((card: BaseCard, conflict: Conflict) => {
                 const exclusionFunction = (effect: any) => {
-                    if (effect.type === EffectNames.AttachmentMilitarySkillModifier) {
+                    if(effect.type === EffectNames.AttachmentMilitarySkillModifier) {
                         const value = effect.getValue(card);
                         return value > 0;
                     }
-                    if (effect.type === EffectNames.AttachmentPoliticalSkillModifier) {
+                    if(effect.type === EffectNames.AttachmentPoliticalSkillModifier) {
                         const value = effect.getValue(card);
                         return value > 0;
                     }
-                    if (
+                    if(
                         effect.type === EffectNames.ModifyMilitarySkill ||
                         effect.type === EffectNames.ModifyPoliticalSkill ||
                         effect.type === EffectNames.ModifyBothSkills
                     ) {
-                        if (effect.context && effect.context.source) {
+                        if(effect.context && effect.context.source) {
                             const source = effect.context.source;
                             return source && source.type === CardTypes.Attachment;
                         }
@@ -34,7 +34,7 @@ export default class ShoreOfTheAshenFlames extends ProvinceCard {
                     }
                 };
 
-                if (conflict.conflictType === ConflictTypes.Military) {
+                if(conflict.conflictType === ConflictTypes.Military) {
                     return card.getMilitarySkillExcludingModifiers(exclusionFunction);
                 }
                 return card.getPoliticalSkillExcludingModifiers(exclusionFunction);

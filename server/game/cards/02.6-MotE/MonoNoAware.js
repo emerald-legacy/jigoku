@@ -1,7 +1,7 @@
 const DrawCard = require('../../drawcard.js');
 
 class MonoNoAware extends DrawCard {
-    setupCardAbilities(ability) { // eslint-disable-line no-unused-vars
+    setupCardAbilities(ability) {
         this.action({
             title: 'Remove 1 fate from each character. Draw 1 card.',
             effect: 'remove a fate from each character and draw a card',

@@ -8,7 +8,7 @@ const conduitOfHeroesCost = function () {
         getActionName(context) { // eslint-disable-line no-unused-vars
             return 'conduitOfHeroesCost';
         },
-        getCostMessage: function (context) { // eslint-disable-line no-unused-vars
+        getCostMessage: function (context) {
             if(context.player.opponent && context.player.honor >= context.player.opponent.honor + 5) {
                 return undefined;
             }

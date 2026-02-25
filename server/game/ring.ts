@@ -1,6 +1,8 @@
-const _ = require('underscore');
-const EffectSource = require('./EffectSource');
-const { EffectNames } = require('./Constants');
+import EffectSource from './EffectSource';
+import { ConflictTypes, EffectNames, Elements } from './Constants';
+import type Game from './game';
+import type Player from './player';
+import type DrawCard from './drawcard';
 
 class Ring extends EffectSource {
     menu = [
@@ -14,75 +16,78 @@ class Ring extends EffectSource {
         { command: 'conflict', text: 'Initiate Conflict' }
     ];
 
-    constructor(game, element, type) {
+    printedType = 'ring';
+    claimed = false;
+    claimedBy = '';
+    conflictType: ConflictTypes;
+    contested = false;
+    element: Elements;
+    fate = 0;
+    attachments: DrawCard[] = [];
+    removedFromGame = false;
+
+    constructor(game: Game, element: Elements, type: ConflictTypes) {
         super(game, element.replace(/\b\w/g, (l) => l.toUpperCase()) + ' Ring');
-        this.printedType = 'ring';
-        this.claimed = false;
-        this.claimedBy = '';
         this.conflictType = type;
-        this.contested = false;
         this.element = element;
-        this.fate = 0;
-        this.attachments = [];
-        this.removedFromGame = false;
     }
 
-    isConsideredClaimed(player = null) {
-        let check = (player) =>
-            this.getEffects(EffectNames.ConsiderRingAsClaimed).some((match) => match(player)) ||
-            this.claimedBy === player.name;
-        if (player) {
+    isConsideredClaimed(player: Player | null = null): boolean {
+        const check = (p: Player) =>
+            this.getEffects(EffectNames.ConsiderRingAsClaimed).some((match: (player: Player) => boolean) => match(p)) ||
+            this.claimedBy === p.name;
+        if(player) {
             return check(player);
         }
-        return this.game.getPlayers().some((player) => check(player));
+        return this.game.getPlayers().some((p: Player) => check(p));
     }
 
-    isConflictType(type) {
+    isConflictType(type: ConflictTypes): boolean {
         return !this.isUnclaimed() && type === this.conflictType;
     }
 
-    canDeclare(player) {
+    canDeclare(player: Player): boolean {
         return (
-            !this.getEffects(EffectNames.CannotDeclareRing).some((match) => match(player)) &&
+            !this.getEffects(EffectNames.CannotDeclareRing).some((match: (player: Player) => boolean) => match(player)) &&
             !this.claimed &&
             !this.removedFromGame
         );
     }
 
-    isUnclaimed() {
+    isUnclaimed(): boolean {
         return !this.contested && !this.claimed && !this.removedFromGame;
     }
 
-    isContested() {
+    isContested(): boolean {
         return this.contested;
     }
 
-    isClaimed() {
+    isClaimed(): boolean {
         return this.claimed;
     }
 
-    isRemovedFromGame() {
+    isRemovedFromGame(): boolean {
         return this.removedFromGame;
     }
 
-    flipConflictType() {
-        if (this.conflictType === 'military') {
-            this.conflictType = 'political';
+    flipConflictType(): void {
+        if(this.conflictType === ConflictTypes.Military) {
+            this.conflictType = ConflictTypes.Political;
         } else {
-            this.conflictType = 'military';
+            this.conflictType = ConflictTypes.Military;
         }
     }
 
-    getElements() {
-        let elements = this.getEffects(EffectNames.AddElement).concat([this.element]);
-        if (this.game.isDuringConflict()) {
-            if (this.isContested()) {
+    getElements(): Elements[] {
+        let elements: Elements[] = this.getEffects(EffectNames.AddElement).concat([this.element]);
+        if(this.game.isDuringConflict()) {
+            if(this.isContested()) {
                 elements = elements.concat(
                     ...this.game.currentConflict
                         .getAttackers()
-                        .map((card) =>
+                        .map((card: DrawCard) =>
                             card.attachments.reduce(
-                                (array, attachment) =>
+                                (array: Elements[], attachment: DrawCard) =>
                                     array.concat(attachment.getEffects(EffectNames.AddElementAsAttacker)),
                                 card.getEffects(EffectNames.AddElementAsAttacker)
                             )
@@ -90,19 +95,22 @@ class Ring extends EffectSource {
                 );
             }
         }
-        return _.uniq(_.flatten(elements));
+        return [...new Set(elements.flat())];
     }
 
-    hasElement(element) {
+    hasElement(element: Elements | 'none'): boolean {
+        if(element === 'none') {
+            return false;
+        }
         return this.getElements().includes(element);
     }
 
-    getFate() {
+    getFate(): number {
         return this.fate;
     }
 
-    getMenu() {
-        if (this.menu.length === 0 || !this.game.manualMode) {
+    getMenu(): Array<{ command: string; text: string }> | undefined {
+        if(this.menu.length === 0 || !this.game.manualMode) {
             return undefined;
         }
 
@@ -110,39 +118,39 @@ class Ring extends EffectSource {
     }
 
     /**
-     * @param {Number} fate - the amount of fate to modify this card's fate total by
+     * @param fate - the amount of fate to modify this card's fate total by
      */
-    modifyFate(fate) {
+    modifyFate(fate: number): void {
         this.fate = Math.max(this.fate + fate, 0);
     }
 
-    removeFate() {
+    removeFate(): void {
         this.fate = 0;
     }
 
-    claimRing(player) {
+    claimRing(player: Player): void {
         this.claimed = true;
         this.claimedBy = player.name;
     }
 
-    resetRing() {
+    resetRing(): void {
         this.claimed = false;
         this.claimedBy = '';
         this.contested = false;
     }
 
-    removeRingFromPlay() {
+    removeRingFromPlay(): void {
         this.removedFromGame = true;
     }
 
-    returnRingToPlay() {
+    returnRingToPlay(): void {
         this.removedFromGame = false;
     }
 
-    getState(activePlayer) {
+    getState(activePlayer?: Player): Record<string, any> {
         let selectionState = {};
 
-        if (activePlayer) {
+        if(activePlayer) {
             selectionState = activePlayer.getRingSelectionState(this);
         }
 
@@ -164,13 +172,13 @@ class Ring extends EffectSource {
         return Object.assign(state, selectionState);
     }
 
-    getShortSummary() {
+    override getShortSummary() {
         return Object.assign(super.getShortSummary(), { element: this.element, conflictType: this.conflictType });
     }
 
-    removeAttachment(card) {
+    removeAttachment(card: DrawCard): void {
         this.attachments = this.attachments.filter((attachment) => attachment.uuid !== card.uuid);
     }
 }
 
-module.exports = Ring;
+export = Ring;

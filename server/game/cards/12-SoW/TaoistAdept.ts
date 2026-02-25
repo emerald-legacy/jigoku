@@ -22,7 +22,7 @@ export default class TaoistAdept extends DrawCard {
                         gameAction: AbilityDsl.actions.placeFateOnRing(),
                         optional: true,
                         onMenuCommand: (player: Player, arg: string) => {
-                            if (arg === 'done') {
+                            if(arg === 'done') {
                                 this.game.addMessage(player.name + ' chooses not to place a fate on a ring');
                             }
                             return true;

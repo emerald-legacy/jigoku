@@ -3,7 +3,7 @@ import type BaseCard from '../basecard';
 import { CardTypes, CharacterStatus, EventNames, Locations } from '../Constants';
 import { type CardActionProperties, CardGameAction } from './CardGameAction';
 
-export interface HonorProperties extends CardActionProperties {}
+export type HonorProperties = CardActionProperties;
 
 export class HonorAction extends CardGameAction {
     name = 'honor';
@@ -13,9 +13,9 @@ export class HonorAction extends CardGameAction {
     effect = 'honor {0}';
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if (card.location !== Locations.PlayArea || card.type !== CardTypes.Character || card.isHonored) {
+        if(card.location !== Locations.PlayArea || card.type !== CardTypes.Character || card.isHonored) {
             return false;
-        } else if (!card.isDishonored && !card.checkRestrictions('receiveHonorToken', context)) {
+        } else if(!card.isDishonored && !card.checkRestrictions('receiveHonorToken', context)) {
             return false;
         }
         return super.canAffect(card, context);
@@ -23,7 +23,7 @@ export class HonorAction extends CardGameAction {
 
     eventHandler(event): void {
         event.card.honor();
-        if (event.card.isHonored) {
+        if(event.card.isHonored) {
             event.card.game.raiseEvent(EventNames.OnStatusTokenGained, {
                 token: event.card.getStatusToken(CharacterStatus.Honored),
                 card: event.card

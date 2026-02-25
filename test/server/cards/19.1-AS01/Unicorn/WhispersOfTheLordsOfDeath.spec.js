@@ -109,7 +109,7 @@ describe('Whispers of the Lords of Death', function () {
                 expect(this.getChatLogs(5)).toContain(
                     'player1 uses Whispers of the Lords of Death to put Whispers of the Lords of Death into play and claim the Imperial Favor'
                 );
-                expect(this.getChatLogs(5)).toContain("player1 claims the Emperor's military favor!");
+                expect(this.getChatLogs(5)).toContain('player1 claims the Emperor\'s military favor!');
             });
 
             it('trigger on own character leaving play due to opponent action', function () {
@@ -131,7 +131,7 @@ describe('Whispers of the Lords of Death', function () {
                 expect(this.getChatLogs(5)).toContain(
                     'player1 uses Whispers of the Lords of Death to put Whispers of the Lords of Death into play and claim the Imperial Favor'
                 );
-                expect(this.getChatLogs(5)).toContain("player1 claims the Emperor's military favor!");
+                expect(this.getChatLogs(5)).toContain('player1 claims the Emperor\'s military favor!');
             });
         });
     });

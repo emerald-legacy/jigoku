@@ -21,7 +21,7 @@ export default class TennyosBlessing extends DrawCard {
                     shuffle: true,
                     deck: Decks.DynastyDeck,
                     selectedCardsHandler: (context, event, cards) => {
-                        if (cards.length > 0) {
+                        if(cards.length > 0) {
                             context.game.addMessage(
                                 '{0} selects {1} and puts {2} into {3}',
                                 event.player,

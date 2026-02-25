@@ -5,11 +5,11 @@ import AbilityDsl from '../../../abilitydsl';
 
 const maelstromCost = function (): Cost {
     return {
-        getActionName(context) {
+        getActionName(_context) {
             return 'maelstromCost';
         },
         getCostMessage: function (context) {
-            if (context.costs.maelstromCostPaid) {
+            if(context.costs.maelstromCostPaid) {
                 return ['discarding {0}'];
             }
             return undefined;
@@ -19,12 +19,12 @@ const maelstromCost = function (): Cost {
         },
         resolve: function (context, result) {
             let cardAvailable = true;
-            if (!context.game.actions.chosenDiscard().canAffect(context.player, context)) {
+            if(!context.game.actions.chosenDiscard().canAffect(context.player, context)) {
                 cardAvailable = false;
             }
 
             context.costs.maelstromCostPaid = false;
-            if (cardAvailable) {
+            if(cardAvailable) {
                 context.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Discard a card?',
                     source: context.source,
@@ -55,7 +55,7 @@ const maelstromCost = function (): Cost {
             }
         },
         payEvent: function (context) {
-            if (context.costs.maelstromCostPaid) {
+            if(context.costs.maelstromCostPaid) {
                 let events = [];
 
                 let discardAction = context.game.actions.discardCard({ target: context.costs.maelstromCost });
@@ -103,7 +103,7 @@ export default class Maelstrom extends ProvinceCard {
                                             target.isParticipating() &&
                                             target.controller === context.player
                                     },
-                                    message: "{0} is honored due to {1}'s effect",
+                                    message: '{0} is honored due to {1}\'s effect',
                                     messageArgs: [target, context.source],
                                     gameAction: AbilityDsl.actions.honor()
                                 })

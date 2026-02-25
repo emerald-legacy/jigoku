@@ -1,4 +1,4 @@
-describe("Ankoku's Blessing", function () {
+describe('Ankoku\'s Blessing', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
@@ -31,7 +31,7 @@ describe("Ankoku's Blessing", function () {
             expect(this.letGo.location).toBe('conflict discard pile');
 
             expect(this.getChatLogs(5)).toContain(
-                "player1 plays Ankoku's Blessing, discarding Let Go to draw 2 cards and gain 2 fate"
+                'player1 plays Ankoku\'s Blessing, discarding Let Go to draw 2 cards and gain 2 fate'
             );
         });
     });

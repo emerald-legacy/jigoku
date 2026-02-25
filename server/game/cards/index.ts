@@ -4,15 +4,15 @@ import { join, sep } from 'path';
 function allJsFiles(path: string): string[] {
     const files = [];
 
-    for (const file of readdirSync(path)) {
-        if (file.startsWith('_')) {
+    for(const file of readdirSync(path)) {
+        if(file.startsWith('_')) {
             continue;
         }
 
         const filepath = join(path, file);
-        if (lstatSync(filepath).isDirectory()) {
+        if(lstatSync(filepath).isDirectory()) {
             files.push(...allJsFiles(filepath));
-        } else if (file.endsWith('.js') && !path.endsWith(`${sep}cards`)) {
+        } else if(file.endsWith('.js') && !path.endsWith(`${sep}cards`)) {
             files.push(filepath);
         }
     }
@@ -20,13 +20,14 @@ function allJsFiles(path: string): string[] {
 }
 
 const cardsMap = new Map<string, unknown>();
-for (const filepath of allJsFiles(__dirname)) {
+for(const filepath of allJsFiles(__dirname)) {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const fileImported = require(filepath);
     const card = 'default' in fileImported ? fileImported.default : fileImported;
-    if (!card.id) {
+    if(!card.id) {
         throw Error('Importing card class without id!');
     }
-    if (cardsMap.has(card.id)) {
+    if(cardsMap.has(card.id)) {
         throw Error(`Importing card class with repeated id!: ${card}`);
     }
     cardsMap.set(card.id, card);

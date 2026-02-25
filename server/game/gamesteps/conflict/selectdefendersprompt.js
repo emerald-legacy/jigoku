@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const { UiPrompt } = require('../UiPrompt.js');
 const { CardTypes, EffectNames, EventNames } = require('../../Constants');
 
@@ -73,7 +72,7 @@ class SelectDefendersPrompt extends UiPrompt {
     }
 
     selectCard(card) {
-        if(this.conflict.maxAllowedDefenders > -1 && this.conflict.defenders.length >= this.conflict.maxAllowedDefenders && !_.contains(this.conflict.defenders, card)) {
+        if(this.conflict.maxAllowedDefenders > -1 && this.conflict.defenders.length >= this.conflict.maxAllowedDefenders && !this.conflict.defenders.includes(card)) {
             return false;
         }
 
@@ -89,7 +88,7 @@ class SelectDefendersPrompt extends UiPrompt {
     }
 
     menuCommand() {
-        _.each(this.conflict.defenders, card => card.covert = false);
+        this.conflict.defenders.forEach(card => card.covert = false);
         this.conflict.setDefendersChosen(true);
         this.complete();
         this.game.raiseEvent(EventNames.OnDefendersDeclared, { conflict: this.conflict, defenders: this.conflict.defenders.slice() });

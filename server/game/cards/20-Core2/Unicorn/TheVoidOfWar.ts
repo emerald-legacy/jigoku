@@ -22,7 +22,7 @@ export default class TheVoidOfWar extends DrawCard {
                 target: {
                     player: context.player.opponent ? Players.Opponent : Players.Self,
                     mode: TargetModes.Select,
-                    activePromptTitle: "Resolve The Void of War's ability again?",
+                    activePromptTitle: 'Resolve The Void of War\'s ability again?',
                     choices: {
                         Yes: AbilityDsl.actions.resolveAbility({
                             ability: context.ability as CardAbility,
@@ -33,7 +33,7 @@ export default class TheVoidOfWar extends DrawCard {
                         No: () => true
                     }
                 },
-                message: "{3} chooses {4}to resolve {1}'s ability again",
+                message: '{3} chooses {4}to resolve {1}\'s ability again',
                 messageArgs: (thenContext) => [
                     context.player.opponent ? context.player.opponent : context.player,
                     thenContext.select === 'No' ? 'not ' : ''

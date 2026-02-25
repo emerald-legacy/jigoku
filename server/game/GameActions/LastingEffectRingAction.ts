@@ -2,8 +2,7 @@ import { RingAction } from './RingAction';
 import { Durations, EventNames } from '../Constants';
 import { LastingEffectGeneralProperties } from './LastingEffectAction';
 
-export interface LastingEffectRingProperties extends LastingEffectGeneralProperties {
-}
+export type LastingEffectRingProperties = LastingEffectGeneralProperties;
 
 export class LastingEffectRingAction extends RingAction {
     name = 'applyLastingEffect';
@@ -17,7 +16,7 @@ export class LastingEffectRingAction extends RingAction {
 
     eventHandler(event, additionalProperties): void {
         let properties = this.getProperties(event.context, additionalProperties) as LastingEffectRingProperties;
-        if (!properties.ability) {
+        if(!properties.ability) {
             properties.ability = event.context.ability;
         }
         event.context.source[properties.duration](() => Object.assign({ match: event.ring }, properties));

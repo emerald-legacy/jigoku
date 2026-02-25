@@ -29,7 +29,7 @@ export default class StarlitSkies extends DrawCard {
                     Object.entries(possibleChoices).map(([name, { condition }]) => [name, condition])
                 )
             },
-            effect: "look at the top 3 cards of {1}'s {2}",
+            effect: 'look at the top 3 cards of {1}\'s {2}',
             effectArgs: (context) => [context.player, context.select.toLowerCase()],
             handler: (context) => {
                 const choice = possibleChoices[context.select as keyof typeof possibleChoices];
@@ -44,7 +44,7 @@ export default class StarlitSkies extends DrawCard {
                 const cardHandler = (card: DrawCard) => {
                     context.game.addMessage(messages.pop(), context.player, card);
                     choice.player(context).moveCard(card, destinations.pop());
-                    if (messages.length > 0) {
+                    if(messages.length > 0) {
                         const index = topThree.findIndex((x) => x === card);
                         topThree.splice(index, 1);
                         context.game.promptWithHandlerMenu(context.player, {
@@ -57,16 +57,16 @@ export default class StarlitSkies extends DrawCard {
                         });
                     }
                 };
-                if (topThree.length < 3) {
+                if(topThree.length < 3) {
                     choices = ['None'];
                     handlers.push(() => {
-                        if (topThree.length === 2) {
+                        if(topThree.length === 2) {
                             choices.pop();
                             handlers.pop();
                         }
                         messages.pop();
                         destinations.pop();
-                        if (messages.length > 0) {
+                        if(messages.length > 0) {
                             context.game.promptWithHandlerMenu(context.player, {
                                 activePromptTitle: 'Select a card to put on the bottom of the deck',
                                 context: context,

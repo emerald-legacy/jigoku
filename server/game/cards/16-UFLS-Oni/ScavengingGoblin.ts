@@ -1,6 +1,6 @@
 import { CardTypes, Locations } from '../../Constants';
 import { BaseOni } from './_BaseOni';
-import AbilityDsl = require('../../abilitydsl');
+import AbilityDsl from '../../abilitydsl';
 
 export default class ScavengingGoblin extends BaseOni {
     static id = 'scavenging-goblin';
@@ -16,19 +16,19 @@ export default class ScavengingGoblin extends BaseOni {
                     context.player.opponent &&
                     context.player.opponent.conflictDeck.size() > 0
             },
-            effect: "remove the top 3 cards of {1}'s conflict deck from the game as well as any matching attachments",
+            effect: 'remove the top 3 cards of {1}\'s conflict deck from the game as well as any matching attachments',
             effectArgs: (context) => [context.player.opponent],
             gameAction: AbilityDsl.actions.multipleContext((context) => {
                 const cardsToRemove = context.player.opponent.conflictDeck.first(3);
                 let cardNames = cardsToRemove.map((card) => card.name);
                 const attachmentsToRemove = this.game.allCards.filter((card) => {
-                    if (card.location !== 'play area') {
+                    if(card.location !== 'play area') {
                         return false;
                     }
-                    if (card.type !== CardTypes.Attachment) {
+                    if(card.type !== CardTypes.Attachment) {
                         return false;
                     }
-                    if (card.controller === context.player) {
+                    if(card.controller === context.player) {
                         return false;
                     }
                     return cardNames.includes(card.name);
@@ -46,15 +46,15 @@ export default class ScavengingGoblin extends BaseOni {
                         }),
                         AbilityDsl.actions.handler({
                             handler: (context) => {
-                                if (!this.messageShown) {
+                                if(!this.messageShown) {
                                     // for some reason, it shows the message twice
                                     context.game.addMessage(
-                                        "{0} {1} removed from the game from the top of {2}'s conflict deck",
+                                        '{0} {1} removed from the game from the top of {2}\'s conflict deck',
                                         cardsToRemove,
                                         cardsToRemove.length > 1 ? 'are' : 'is',
                                         context.player.opponent
                                     );
-                                    if (attachmentsToRemove.length > 0) {
+                                    if(attachmentsToRemove.length > 0) {
                                         context.game.addMessage(
                                             '{0} {1} removed from the game due to sharing a name with a card that was removed from the deck',
                                             attachmentsToRemove,

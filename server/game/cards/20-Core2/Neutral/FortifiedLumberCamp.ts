@@ -1,4 +1,4 @@
-import { CardTypes, Locations, Phases } from '../../../Constants';
+import { CardTypes, Locations } from '../../../Constants';
 import type { ProvinceCard } from '../../../ProvinceCard';
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';

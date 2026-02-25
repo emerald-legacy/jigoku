@@ -1,6 +1,6 @@
 import { CardTypes, Locations, TargetModes } from '../../Constants';
-import AbilityDsl = require('../../abilitydsl');
-import DrawCard = require('../../drawcard');
+import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard';
 
 export default class IsawaTadaka2 extends DrawCard {
     static id = 'isawa-tadaka-2';
@@ -34,7 +34,7 @@ export default class IsawaTadaka2 extends DrawCard {
                     ]
                 };
             }),
-            effect: "look at {1} random card{3} in {2}'s hand",
+            effect: 'look at {1} random card{3} in {2}\'s hand',
             effectArgs: (context) => [
                 context.costs.removeFromGame.length,
                 context.player.opponent,

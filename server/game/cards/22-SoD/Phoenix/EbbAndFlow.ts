@@ -1,4 +1,4 @@
-import { CardTypes, Durations, Players, TargetModes } from '../../../Constants';
+import { CardTypes, Durations, Players } from '../../../Constants';
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
 
@@ -14,7 +14,7 @@ export default class EbbAndFlow extends DrawCard {
                     cardType: CardTypes.Character,
                     controller: Players.Self,
                     cardCondition: card => card.isParticipating() && card.hasTrait('shugenja'),
-                    gameAction: AbilityDsl.actions.noAction(),
+                    gameAction: AbilityDsl.actions.noAction()
                 },
                 opponents: {
                     cardType: CardTypes.Character,

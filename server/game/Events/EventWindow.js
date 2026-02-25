@@ -1,5 +1,3 @@
-const _ = require('underscore');
-
 const { BaseStepWithPipeline } = require('../gamesteps/BaseStepWithPipeline.js');
 const ForcedTriggeredAbilityWindow = require('../gamesteps/forcedtriggeredabilitywindow.js');
 const { SimpleStep } = require('../gamesteps/SimpleStep.js');
@@ -14,7 +12,7 @@ class EventWindow extends BaseStepWithPipeline {
         this.events = [];
         this.thenAbilities = [];
         this.provincesToRefill = [];
-        _.each(events, event => {
+        events.forEach(event => {
             if(!event.cancelled) {
                 this.addEvent(event);
             }
@@ -52,7 +50,7 @@ class EventWindow extends BaseStepWithPipeline {
     }
 
     removeEvent(event) {
-        this.events = _.reject(this.events, e => e === event);
+        this.events = this.events.filter(e => e !== event);
         return event;
     }
 
@@ -66,11 +64,11 @@ class EventWindow extends BaseStepWithPipeline {
     }
 
     checkEventCondition() {
-        _.each(this.events, event => event.checkCondition());
+        this.events.forEach(event => event.checkCondition());
     }
 
     openWindow(abilityType) {
-        if(_.isEmpty(this.events)) {
+        if(this.events.length === 0) {
             return;
         }
 
@@ -84,29 +82,29 @@ class EventWindow extends BaseStepWithPipeline {
     // This is primarily for LeavesPlayEvents
     createContingentEvents() {
         let contingentEvents = [];
-        _.each(this.events, event => {
+        this.events.forEach(event => {
             contingentEvents = contingentEvents.concat(event.createContingentEvents());
         });
         if(contingentEvents.length > 0) {
             // Exclude current events from the new window, we just want to give players opportunities to respond to the contingent events
             this.queueStep(new TriggeredAbilityWindow(this.game, AbilityTypes.WouldInterrupt, this, this.events.slice(0)));
-            _.each(contingentEvents, event => this.addEvent(event));
+            contingentEvents.forEach(event => this.addEvent(event));
         }
     }
 
     // This catches any persistent/delayed effect cancels
     checkForOtherEffects() {
-        _.each(this.events, event => this.game.emit(event.name + ':' + AbilityTypes.OtherEffects, event));
+        this.events.forEach(event => this.game.emit(event.name + ':' + AbilityTypes.OtherEffects, event));
     }
 
     preResolutionEffects() {
-        _.each(this.events, event => event.preResolutionEffect());
+        this.events.forEach(event => event.preResolutionEffect());
     }
 
     executeHandler() {
-        this.eventsToExecute = _.sortBy(this.events, 'order');
+        this.eventsToExecute = [...this.events].sort((a, b) => a.order - b.order);
 
-        _.each(this.eventsToExecute, event => {
+        this.eventsToExecute.forEach(event => {
             // need to checkCondition here to ensure the event won't fizzle due to another event's resolution (e.g. double honoring an ordinary character with YR etc.)
             event.checkCondition();
             if(!event.cancelled) {
@@ -118,11 +116,11 @@ class EventWindow extends BaseStepWithPipeline {
 
     checkGameState() {
         this.eventsToExecute = this.eventsToExecute.filter(event => !event.cancelled);
-        this.game.checkGameState(_.any(this.eventsToExecute, event => event.handler), this.eventsToExecute);
+        this.game.checkGameState(this.eventsToExecute.some(event => event.handler), this.eventsToExecute);
     }
 
     checkKeywordAbilities(abilityType) {
-        if(_.isEmpty(this.events)) {
+        if(this.events.length === 0) {
             return;
         }
 

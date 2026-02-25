@@ -12,7 +12,7 @@ class GainAllAbilitiesDynamic extends EffectValue {
     }
 
     _setAbilities(cards, target) {
-        if (!Array.isArray(cards)) {
+        if(!Array.isArray(cards)) {
             cards = [cards];
         }
 
@@ -37,7 +37,7 @@ class GainAllAbilitiesDynamic extends EffectValue {
 
     getAbility(abilityType, ability, target) {
         const id = this.getAbilityIdentifier(ability);
-        if (!this.createdAbilities[id]) {
+        if(!this.createdAbilities[id]) {
             const res = new GainAbility(abilityType, ability);
             this.createdAbilities[id] = res;
             this.createdAbilities[id].apply(target);
@@ -47,7 +47,7 @@ class GainAllAbilitiesDynamic extends EffectValue {
 
     calculate(target, context) {
         let cards = [];
-        if (typeof this.match === 'function') {
+        if(typeof this.match === 'function') {
             cards = this.match(target, context);
         } else {
             cards = this.match;
@@ -67,8 +67,8 @@ class GainAllAbilitiesDynamic extends EffectValue {
     }
 
     _applyAbilities(target) {
-        if (this.abilitiesForTargets[target.uuid]) {
-            for (const value of this.abilitiesForTargets[target.uuid].reactions) {
+        if(this.abilitiesForTargets[target.uuid]) {
+            for(const value of this.abilitiesForTargets[target.uuid].reactions) {
                 value.registerEvents();
             }
         }
@@ -79,22 +79,22 @@ class GainAllAbilitiesDynamic extends EffectValue {
     }
 
     unapply(target) {
-        if (this.abilitiesForTargets[target.uuid]) {
-            for (const value of this.abilitiesForTargets[target.uuid].reactions) {
+        if(this.abilitiesForTargets[target.uuid]) {
+            for(const value of this.abilitiesForTargets[target.uuid].reactions) {
                 value.unregisterEvents();
             }
         }
     }
 
     getActions(target) {
-        if (this.abilitiesForTargets[target.uuid]) {
+        if(this.abilitiesForTargets[target.uuid]) {
             return this.abilitiesForTargets[target.uuid].actions;
         }
         return [];
     }
 
     getReactions(target) {
-        if (this.abilitiesForTargets[target.uuid]) {
+        if(this.abilitiesForTargets[target.uuid]) {
             return this.abilitiesForTargets[target.uuid].reactions;
         }
         return [];

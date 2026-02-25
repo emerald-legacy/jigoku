@@ -214,11 +214,11 @@ describe('SoD - Dragon', function () {
                         stronghold: ['temple-of-the-fivefold-path'],
                         hand: ['good-omen', 'good-omen'],
                         dynastyDiscard: ['adorned-temple'],
-                        provinces: ['sacred-sanctuary'],
+                        provinces: ['sacred-sanctuary']
                     },
                     player2: {
                         inPlay: ['keeper-initiate', 'doji-diplomat'],
-                        hand: ['assassination', 'let-go', 'duelist-training'],
+                        hand: ['assassination', 'let-go', 'duelist-training']
                     }
                 });
 

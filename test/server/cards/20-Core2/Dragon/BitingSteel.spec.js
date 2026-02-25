@@ -23,7 +23,7 @@ describe('Bitting Steel', function () {
                 this.katana = this.player2.findCardByName('fine-katana');
             });
 
-            it("shouldn't attach if you don't have a weapon", function () {
+            it('shouldn\'t attach if you don\'t have a weapon', function () {
                 this.player1.pass();
                 expect(this.player2).toHavePrompt('Action Window');
                 this.player2.clickCard(this.bitingSteel);

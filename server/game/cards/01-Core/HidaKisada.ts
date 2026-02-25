@@ -1,6 +1,6 @@
 import { AbilityTypes, CardTypes, EventNames, Locations } from '../../Constants';
 import { EventRegistrar } from '../../EventRegistrar';
-import DrawCard = require('../../drawcard');
+import DrawCard from '../../drawcard';
 
 export default class HidaKisada extends DrawCard {
     static id = 'hida-kisada';
@@ -26,7 +26,7 @@ export default class HidaKisada extends DrawCard {
     }
 
     public onInitiateAbilityEffectsWouldInterrupt(event: any) {
-        if (
+        if(
             !this.firstActionEvent.has(event.context.player.uuid) &&
             this.game.isDuringConflict() &&
             event.context.ability.abilityType === 'action' &&
@@ -38,7 +38,7 @@ export default class HidaKisada extends DrawCard {
     }
 
     public onInitiateAbilityEffectsOtherEffects(event: any) {
-        if (
+        if(
             this.firstActionEvent.get(event.context.player.uuid) === event &&
             event.context.player === this.controller.opponent &&
             !event.cancelled &&
@@ -51,7 +51,7 @@ export default class HidaKisada extends DrawCard {
                 '{0} attempts to initiate {1}{2}, but {3} cancels it',
                 event.context.player,
                 event.card,
-                event.card.type === CardTypes.Event ? '' : "'s ability",
+                event.card.type === CardTypes.Event ? '' : '\'s ability',
                 this
             );
         }

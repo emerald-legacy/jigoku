@@ -1,30 +1,28 @@
-const monk = require('monk');
-const env = require('../env.js');
+const db = require('../db.js');
 const DeckService = require('../services/DeckService.js');
 const { wrapAsync } = require('../util.js');
 
-let db = monk(env.dbPath);
-let deckService = new DeckService(db);
-
 module.exports.init = function (server) {
+    const deckService = new DeckService(db.getDb());
+
     server.get(
         '/api/decks/:id',
         wrapAsync(async function (req, res) {
-            if (!req.user) {
+            if(!req.user) {
                 return res.status(401).send({ message: 'Unauthorized' });
             }
 
-            if (!req.params.id || req.params.id === '') {
+            if(!req.params.id || req.params.id === '') {
                 return res.status(404).send({ message: 'No such deck' });
             }
 
             let deck = await deckService.getById(req.params.id);
 
-            if (!deck) {
+            if(!deck) {
                 return res.status(404).send({ message: 'No such deck' });
             }
 
-            if (deck.username !== req.user.username) {
+            if(deck.username !== req.user.username) {
                 return res.status(401).send({ message: 'Unauthorized' });
             }
 
@@ -35,7 +33,7 @@ module.exports.init = function (server) {
     server.get(
         '/api/decks',
         wrapAsync(async function (req, res) {
-            if (!req.user) {
+            if(!req.user) {
                 return res.status(401).send({ message: 'Unauthorized' });
             }
 
@@ -47,23 +45,23 @@ module.exports.init = function (server) {
     server.put(
         '/api/decks/:id',
         wrapAsync(async function (req, res) {
-            if (!req.user) {
+            if(!req.user) {
                 return res.status(401).send({ message: 'Unauthorized' });
             }
 
             let deck = await deckService.getById(req.params.id);
 
-            if (!deck) {
+            if(!deck) {
                 return res.status(404).send({ message: 'No such deck' });
             }
 
-            if (deck.username !== req.user.username) {
+            if(deck.username !== req.user.username) {
                 return res.status(401).send({ message: 'Unauthorized' });
             }
 
             let data = Object.assign({ id: req.params.id }, JSON.parse(req.body.data));
 
-            deckService.update(data);
+            await deckService.update(data);
 
             res.send({ success: true, message: 'Saved' });
         })
@@ -72,7 +70,7 @@ module.exports.init = function (server) {
     server.post(
         '/api/decks',
         wrapAsync(async function (req, res) {
-            if (!req.user) {
+            if(!req.user) {
                 return res.status(401).send({ message: 'Unauthorized' });
             }
 
@@ -85,7 +83,7 @@ module.exports.init = function (server) {
     server.delete(
         '/api/decks/:id',
         wrapAsync(async function (req, res) {
-            if (!req.user) {
+            if(!req.user) {
                 return res.status(401).send({ message: 'Unauthorized' });
             }
 
@@ -93,11 +91,11 @@ module.exports.init = function (server) {
 
             let deck = await deckService.getById(id);
 
-            if (!deck) {
+            if(!deck) {
                 return res.status(404).send({ success: false, message: 'No such deck' });
             }
 
-            if (deck.username !== req.user.username) {
+            if(deck.username !== req.user.username) {
                 return res.status(401).send({ message: 'Unauthorized' });
             }
 

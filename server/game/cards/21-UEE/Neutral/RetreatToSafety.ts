@@ -25,7 +25,7 @@ export default class RetreatToSafety extends DrawCard {
                         cardType: CardTypes.Character,
                         cardCondition: (card) => parentContext.target.includes(card),
                         gameAction: AbilityDsl.actions.ready(),
-                        message: "{0} is readied due to {1}'s superior leadership",
+                        message: '{0} is readied due to {1}\'s superior leadership',
                         messageArgs: (card, player) => [card, player]
                     })
                 })

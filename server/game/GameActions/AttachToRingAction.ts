@@ -20,9 +20,9 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
 
     canAffect(ring: Ring, context: AbilityContext, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
-        if (!context || !context.player || !ring) {
+        if(!context || !context.player || !ring) {
             return false;
-        } else if (
+        } else if(
             !properties.attachment ||
             properties.attachment.anotherUniqueInPlay(context.player) ||
             !properties.attachment.canAttach(ring)
@@ -50,7 +50,7 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
     }
 
     eventHandler(event): void {
-        if (event.card.location === Locations.PlayArea && event.card.parent) {
+        if(event.card.location === Locations.PlayArea && event.card.parent) {
             event.card.parent.removeAttachment(event.card);
         } else {
             event.card.controller.removeCardFromPile(event.card);
@@ -65,7 +65,7 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
 
         event.parent.attachments.push(event.card);
         event.card.parent = event.parent;
-        if (event.card.controller !== event.context.player) {
+        if(event.card.controller !== event.context.player) {
             event.card.controller = event.context.player;
             event.card.updateEffectContexts();
         }

@@ -44,13 +44,13 @@ export class MoveCardAction extends CardGameAction {
                 ? properties.target[0].controller.opponent
                 : properties.target[0].controller
             : properties.changePlayer
-            ? properties.target.controller.opponent
-            : properties.target.controller;
-        if (properties.shuffle) {
-            return ["shuffle {0} into {1}'s {2}", [properties.target, destinationController, properties.destination]];
+                ? properties.target.controller.opponent
+                : properties.target.controller;
+        if(properties.shuffle) {
+            return ['shuffle {0} into {1}\'s {2}', [properties.target, destinationController, properties.destination]];
         }
         return [
-            'move {0} to ' + (properties.bottom ? 'the bottom of ' : '') + "{1}'s {2}",
+            'move {0} to ' + (properties.bottom ? 'the bottom of ' : '') + '{1}\'s {2}',
             [properties.target, destinationController, properties.destination]
         ];
     }
@@ -72,31 +72,31 @@ export class MoveCardAction extends CardGameAction {
         let card = event.card;
         event.cardStateWhenMoved = card.createSnapshot();
         let properties = this.getProperties(context, additionalProperties) as MoveCardProperties;
-        if (properties.switch && properties.switchTarget) {
+        if(properties.switch && properties.switchTarget) {
             let otherCard = properties.switchTarget;
             card.owner.moveCard(otherCard, card.location);
         } else {
             this.checkForRefillProvince(card, event, additionalProperties);
         }
         const player = properties.changePlayer && card.controller.opponent ? card.controller.opponent : card.controller;
-        if (
+        if(
             properties.discardDestinationCards &&
             context.game.getProvinceArray(false).includes(properties.destination)
         ) {
             let cardsToDiscard = player.getSourceList(properties.destination).filter((card) => card.isDynasty);
-            for (const card of cardsToDiscard) {
+            for(const card of cardsToDiscard) {
                 player.moveCard(card, Locations.DynastyDiscardPile);
             }
         }
         player.moveCard(card, properties.destination, { bottom: !!properties.bottom });
         let target = properties.target;
-        if (properties.shuffle && (target.length === 0 || card === target[target.length - 1])) {
-            if (properties.destination === Locations.ConflictDeck) {
+        if(properties.shuffle && (target.length === 0 || card === target[target.length - 1])) {
+            if(properties.destination === Locations.ConflictDeck) {
                 card.owner.shuffleConflictDeck();
-            } else if (properties.destination === Locations.DynastyDeck) {
+            } else if(properties.destination === Locations.DynastyDeck) {
                 card.owner.shuffleDynastyDeck();
             }
-        } else if (properties.faceup) {
+        } else if(properties.faceup) {
             card.facedown = false;
         }
         card.checkForIllegalAttachments();

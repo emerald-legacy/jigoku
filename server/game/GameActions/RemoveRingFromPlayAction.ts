@@ -3,7 +3,7 @@ import { EventNames } from '../Constants';
 import type Ring from '../ring';
 import { RingAction, type RingActionProperties } from './RingAction';
 
-export interface RemoveRingFromPlayProperties extends RingActionProperties {}
+export type RemoveRingFromPlayProperties = RingActionProperties;
 
 export class RemoveRingFromPlayAction extends RingAction {
     name = 'removeRingFromPlay';
@@ -16,14 +16,14 @@ export class RemoveRingFromPlayAction extends RingAction {
     }
 
     canAffect(ring: Ring, context: AbilityContext): boolean {
-        if (ring.removedFromGame) {
+        if(ring.removedFromGame) {
             return false;
         }
 
         return super.canAffect(ring, context);
     }
 
-    eventHandler(event, additionalProperties): void {
+    eventHandler(event, _additionalProperties): void {
         let ring = event.ring;
         let context = event.context;
 

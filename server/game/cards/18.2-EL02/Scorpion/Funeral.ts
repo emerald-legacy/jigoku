@@ -43,8 +43,8 @@ export default class Funeral extends DrawCard {
     }
 
     public onCardPlayed(event: any) {
-        if (event.card === this) {
-            if (this.location !== Locations.RemovedFromGame) {
+        if(event.card === this) {
+            if(this.location !== Locations.RemovedFromGame) {
                 this.game.addMessage('{0} is removed from the game due the effects of {0}', this);
                 this.owner.moveCard(this, Locations.RemovedFromGame);
             }

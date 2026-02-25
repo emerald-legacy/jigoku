@@ -59,9 +59,9 @@ const AbilityTypeToWord = new Map([
 
 function FormatTitles(titles: string[]) {
     return titles.reduce((string, title, index) => {
-        if (index === 0) {
+        if(index === 0) {
             return title;
-        } else if (index === 1) {
+        } else if(index === 1) {
             return title + ' or ' + string;
         }
         return title + ', ' + string;
@@ -79,19 +79,19 @@ export const TriggeredAbilityWindowTitle = {
         const titles = events
             .map((event) => {
                 let func = EventToTitleFunc[event.name];
-                if (func) {
+                if(func) {
                     return func(event);
                 }
             })
             .filter(Boolean);
 
-        if (abilityType === AbilityTypes.ForcedReaction || abilityType === AbilityTypes.ForcedInterrupt) {
+        if(abilityType === AbilityTypes.ForcedReaction || abilityType === AbilityTypes.ForcedInterrupt) {
             return titles.length > 0
                 ? `Choose ${abilityWord} order for ${FormatTitles(titles)}`
                 : `Choose ${abilityWord} order`;
         }
 
-        if (titles.length > 0) {
+        if(titles.length > 0) {
             return `Any ${abilityWord}s to ${FormatTitles(titles)}?`;
         }
 
@@ -99,7 +99,7 @@ export const TriggeredAbilityWindowTitle = {
     },
     getAction(event: Event) {
         let func = EventToTitleFunc[event.name];
-        if (func) {
+        if(func) {
             return func(event);
         }
         return event.name;

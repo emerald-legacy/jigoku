@@ -43,7 +43,7 @@ export default class WeightOfDuty extends ProvinceCard {
     }
 
     #hasValidTarget(card: DrawCard, context: AbilityContext) {
-        if (card.isUnique()) {
+        if(card.isUnique()) {
             //uniques will always have a valid target based on the targeting check
             return true;
         }

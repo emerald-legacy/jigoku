@@ -22,8 +22,8 @@ export default class SandRoadMerchant extends DrawCard {
         });
 
         this.reaction({
-            title: "Look at your opponent's conflict deck",
-            effect: "look at the top two cards of their opponent's conflict deck",
+            title: 'Look at your opponent\'s conflict deck',
+            effect: 'look at the top two cards of their opponent\'s conflict deck',
             when: {
                 onConflictDeclared: (event, context) =>
                     event.attackers.includes(context.source) && context.player.opponent !== undefined,

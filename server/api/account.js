@@ -5,21 +5,17 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const util = require('../util.js');
 const nodemailer = require('nodemailer');
-const moment = require('moment');
-const monk = require('monk');
+const { addHours, format } = require('date-fns');
+const db = require('../db.js');
 const UserService = require('../services/UserService.js');
 const Settings = require('../settings.js');
-const _ = require('underscore');
 const { wrapAsync } = require('../util.js');
 const env = require('../env.js');
-
-let db = monk(env.dbPath);
-let userService = new UserService(db);
 
 function hashPassword(password, rounds) {
     return new Promise((resolve, reject) => {
         bcrypt.hash(password, rounds, function (err, hash) {
-            if (err) {
+            if(err) {
                 return reject(err);
             }
 
@@ -31,7 +27,7 @@ function hashPassword(password, rounds) {
 function loginUser(request, user) {
     return new Promise((resolve, reject) => {
         request.login(user, function (err) {
-            if (err) {
+            if(err) {
                 return reject(err);
             }
 
@@ -52,7 +48,7 @@ function sendEmail(address, email) {
                 text: email
             },
             function (error) {
-                if (error) {
+                if(error) {
                     reject(error);
                 }
 
@@ -63,20 +59,43 @@ function sendEmail(address, email) {
 }
 
 module.exports.init = function (server) {
+    const userService = new UserService(db.getDb());
+
+    async function checkAuth(req, res) {
+        let user = await userService.getUserByUsername(req.params.username);
+
+        if(!req.user) {
+            res.status(401).send({ message: 'Unauthorized' });
+            return null;
+        }
+
+        if(req.user.username !== req.params.username) {
+            res.status(403).send({ message: 'Unauthorized' });
+            return null;
+        }
+
+        if(!user) {
+            res.status(404).send({ message: 'Not found' });
+            return null;
+        }
+
+        return user;
+    }
+
     server.post('/api/account/register', function (req, res) {
-        if (!req.body.password) {
+        if(!req.body.password) {
             res.send({ success: false, message: 'No password specified' });
 
             return Promise.reject('No password');
         }
 
-        if (!req.body.email) {
+        if(!req.body.email) {
             res.send({ success: false, message: 'No email specified' });
 
             return Promise.reject('No email');
         }
 
-        if (!req.body.username) {
+        if(!req.body.username) {
             res.send({ success: false, message: 'No username specified' });
 
             return Promise.reject('No username');
@@ -85,7 +104,7 @@ module.exports.init = function (server) {
         userService
             .getUserByEmail(req.body.email)
             .then((user) => {
-                if (user) {
+                if(user) {
                     res.send({
                         success: false,
                         message: 'An account with that email already exists, please use another'
@@ -97,7 +116,7 @@ module.exports.init = function (server) {
                 return userService.getUserByUsername(req.body.username);
             })
             .then((user) => {
-                if (user) {
+                if(user) {
                     res.send({
                         success: false,
                         message: 'An account with that name already exists, please choose another'
@@ -139,7 +158,7 @@ module.exports.init = function (server) {
         userService
             .getUserByUsername(req.body.username)
             .then((user) => {
-                if (user) {
+                if(user) {
                     return res.send({
                         success: true,
                         message: 'An account with that name already exists, please choose another'
@@ -154,9 +173,13 @@ module.exports.init = function (server) {
     });
 
     server.post('/api/account/logout', function (req, res) {
-        req.logout();
-
-        res.send({ success: true });
+        req.logout(function(err) {
+            if(err) {
+                logger.error('Logout error:', err);
+                return res.send({ success: false, message: 'Error during logout' });
+            }
+            res.send({ success: true });
+        });
     });
 
     server.post('/api/account/login', passport.authenticate('local'), function (req, res) {
@@ -166,18 +189,18 @@ module.exports.init = function (server) {
     server.post('/api/account/password-reset-finish', function (req, res) {
         let resetUser;
 
-        if (!req.body.id || !req.body.token || !req.body.newPassword) {
+        if(!req.body.id || !req.body.token || !req.body.newPassword) {
             return res.send({ success: false, message: 'Invalid parameters' });
         }
 
         userService
             .getUserById(req.body.id)
             .then((user) => {
-                if (!user) {
+                if(!user) {
                     return Promise.reject('User not found');
                 }
 
-                if (!user.resetToken) {
+                if(!user.resetToken) {
                     logger.error('Got unexpected reset request for user', user.username);
 
                     res.send({
@@ -189,9 +212,9 @@ module.exports.init = function (server) {
                     return Promise.reject('No reset token');
                 }
 
-                let now = moment();
+                let now = new Date();
 
-                if (user.tokenExpires < now) {
+                if(new Date(user.tokenExpires) < now) {
                     res.send({ success: false, message: 'The reset token you have provided has expired' });
 
                     logger.error('Token expired', user.username);
@@ -202,7 +225,7 @@ module.exports.init = function (server) {
                 let hmac = crypto.createHmac('sha512', env.hmacSecret);
                 let resetToken = hmac.update('RESET ' + user.username + ' ' + user.tokenExpires).digest('hex');
 
-                if (resetToken !== req.body.token) {
+                if(resetToken !== req.body.token) {
                     logger.error('Invalid reset token', user.username, req.body.token);
 
                     res.send({
@@ -248,7 +271,7 @@ module.exports.init = function (server) {
             .then((response) => {
                 let answer = JSON.parse(response);
 
-                if (!answer.success) {
+                if(!answer.success) {
                     return res.send({ success: false, message: 'Please complete the captcha correctly' });
                 }
 
@@ -259,14 +282,14 @@ module.exports.init = function (server) {
                 return userService.getUserByUsername(req.body.username);
             })
             .then((user) => {
-                if (!user) {
+                if(!user) {
                     logger.error('Username not found for password reset', req.body.username);
 
                     return Promise.reject('Username not found');
                 }
 
-                let expiration = moment().add(4, 'hours');
-                let formattedExpiration = expiration.format('YYYYMMDD-HH:mm:ss');
+                let expiration = addHours(new Date(), 4);
+                let formattedExpiration = format(expiration, 'yyyyMMdd-HH:mm:ss');
                 let hmac = crypto.createHmac('sha512', env.hmacSecret);
 
                 resetToken = hmac.update('RESET ' + user.username + ' ' + formattedExpiration).digest('hex');
@@ -290,7 +313,7 @@ module.exports.init = function (server) {
             .catch((err) => {
                 logger.error(err);
 
-                if (!captchaDone) {
+                if(!captchaDone) {
                     return res.send({
                         success: false,
                         message: 'There was a problem verifying the capthca, please try again'
@@ -327,18 +350,18 @@ module.exports.init = function (server) {
         let userToSet = JSON.parse(req.body.data);
         let existingUser;
 
-        if (!req.user) {
+        if(!req.user) {
             return res.status(401).send({ message: 'Unauthorized' });
         }
 
-        if (req.user.username !== req.params.username) {
+        if(req.user.username !== req.params.username) {
             return res.status(403).send({ message: 'Unauthorized' });
         }
 
         userService
             .getUserByUsername(req.params.username)
             .then((user) => {
-                if (!user) {
+                if(!user) {
                     return res.status(404).send({ message: 'Not found' });
                 }
 
@@ -348,14 +371,14 @@ module.exports.init = function (server) {
 
                 existingUser = user;
 
-                if (userToSet.password && userToSet.password !== '') {
+                if(userToSet.password && userToSet.password !== '') {
                     return hashPassword(userToSet.password, 10);
                 }
 
                 return updateUser(res, user);
             })
             .then((passwordHash) => {
-                if (!passwordHash) {
+                if(!passwordHash) {
                     return;
                 }
 
@@ -373,7 +396,7 @@ module.exports.init = function (server) {
         wrapAsync(async (req, res) => {
             let user = await checkAuth(req, res);
 
-            if (!user) {
+            if(!user) {
                 return;
             }
 
@@ -386,19 +409,15 @@ module.exports.init = function (server) {
         wrapAsync(async (req, res) => {
             let user = await checkAuth(req, res);
 
-            if (!user) {
+            if(!user) {
                 return;
             }
 
-            if (!user.blockList) {
+            if(!user.blockList) {
                 user.blockList = [];
             }
 
-            if (
-                _.find(user.blockList, (user) => {
-                    return user === req.body.username.toLowerCase();
-                })
-            ) {
+            if(user.blockList.find(u => u === req.body.username.toLowerCase())) {
                 return res.send({ success: false, message: 'Entry already on block list' });
             }
 
@@ -419,29 +438,23 @@ module.exports.init = function (server) {
         wrapAsync(async (req, res) => {
             let user = await checkAuth(req, res);
 
-            if (!user) {
+            if(!user) {
                 return;
             }
 
-            if (!req.params.entry) {
+            if(!req.params.entry) {
                 return res.send({ success: false, message: 'Parameter "entry" is required' });
             }
 
-            if (!user.blockList) {
+            if(!user.blockList) {
                 user.blockList = [];
             }
 
-            if (
-                !_.find(user.blockList, (user) => {
-                    return user === req.params.entry.toLowerCase();
-                })
-            ) {
+            if(!user.blockList.find(u => u === req.params.entry.toLowerCase())) {
                 return res.status(404).send({ message: 'Not found' });
             }
 
-            user.blockList = _.reject(user.blockList, (user) => {
-                return user === req.params.entry.toLowerCase();
-            });
+            user.blockList = user.blockList.filter(u => u !== req.params.entry.toLowerCase());
 
             await userService.updateBlockList(user);
 
@@ -453,27 +466,3 @@ module.exports.init = function (server) {
         })
     );
 };
-
-async function checkAuth(req, res) {
-    let user = await userService.getUserByUsername(req.params.username);
-
-    if (!req.user) {
-        res.status(401).send({ message: 'Unauthorized' });
-
-        return null;
-    }
-
-    if (req.user.username !== req.params.username) {
-        res.status(403).send({ message: 'Unauthorized' });
-
-        return null;
-    }
-
-    if (!user) {
-        res.status(404).send({ message: 'Not found' });
-
-        return null;
-    }
-
-    return user;
-}

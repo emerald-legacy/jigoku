@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const DrawCard = require('../../drawcard.js');
 const { Locations, Players } = require('../../Constants');
 
@@ -18,7 +17,7 @@ class MiyaSatoshi extends DrawCard {
                 let index = context.player.dynastyDeck.indexOf(firstImperial);
                 let discardedCards = context.player.dynastyDeck.first(index + 1);
                 this.game.addMessage('{0} discards {1} while searching for an Imperial card', context.player, discardedCards);
-                _.each(discardedCards, card => context.player.moveCard(card, Locations.DynastyDiscardPile));
+                discardedCards.forEach(card => context.player.moveCard(card, Locations.DynastyDiscardPile));
                 this.game.promptForSelect(context.player, {
                     activePromptTitle: 'Choose a card to discard',
                     context: context,

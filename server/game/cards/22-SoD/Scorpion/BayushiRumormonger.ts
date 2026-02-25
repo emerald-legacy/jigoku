@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl';
-import { TargetModes, Players, CardTypes, Locations, Durations } from '../../../Constants';
+import { Players, CardTypes } from '../../../Constants';
 import DrawCard from '../../../drawcard';
 
 export default class BayushiRumormonger extends DrawCard {
@@ -19,8 +19,8 @@ export default class BayushiRumormonger extends DrawCard {
                     cardType: CardTypes.Character,
                     controller: Players.Opponent,
                     cardCondition: card => {
-                        const discardCard = (context.events as any)?.[0].cards?.[0]
-                        if (!discardCard) {
+                        const discardCard = (context.events as any)?.[0].cards?.[0];
+                        if(!discardCard) {
                             return false;
                         }
 

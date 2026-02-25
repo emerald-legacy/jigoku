@@ -61,7 +61,7 @@ describe('Malicious Timekeeper', function () {
             this.player2.pass();
             this.player1.pass();
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
-            this.player1.clickPrompt("Don't Resolve");
+            this.player1.clickPrompt('Don\'t Resolve');
             expect(this.player2.honor).toBe(honor);
         });
 

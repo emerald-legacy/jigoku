@@ -16,7 +16,7 @@ export class JointGameAction extends GameAction {
 
     getProperties(context: AbilityContext, additionalProperties = {}): JointGameProperties {
         let properties = super.getProperties(context, additionalProperties) as JointGameProperties;
-        for (const gameAction of properties.gameActions) {
+        for(const gameAction of properties.gameActions) {
             gameAction.setDefaultTarget(() => properties.target);
         }
         return properties;
@@ -36,8 +36,8 @@ export class JointGameAction extends GameAction {
 
     addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
-        if (this.hasLegalTarget(context, additionalProperties)) {
-            for (const gameAction of properties.gameActions) {
+        if(this.hasLegalTarget(context, additionalProperties)) {
+            for(const gameAction of properties.gameActions) {
                 gameAction.addEventsToArray(events, context, additionalProperties);
             }
         }

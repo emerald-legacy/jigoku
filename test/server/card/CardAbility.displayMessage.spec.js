@@ -56,7 +56,7 @@ describe('CardAbility displayMessage', function () {
             expect(this.args[1]).toBe(this.player);
         });
 
-        it("should have 'plays' as the second arg", function () {
+        it('should have \'plays\' as the second arg', function () {
             expect(this.args[2]).toBe(' plays ');
         });
 
@@ -76,7 +76,7 @@ describe('CardAbility displayMessage', function () {
             expect(this.args[7][0].message[4]).toBe('honor');
         });
 
-        it("should have 'to' as the eighth arg", function () {
+        it('should have \'to\' as the eighth arg', function () {
             expect(this.args[8]).toBe(' to ');
         });
 
@@ -124,7 +124,7 @@ describe('CardAbility displayMessage', function () {
             expect(this.args[1]).toBe(this.player);
         });
 
-        it("should have 'plays' as the second arg", function () {
+        it('should have \'plays\' as the second arg', function () {
             expect(this.args[2]).toBe(' plays ');
         });
 
@@ -142,7 +142,7 @@ describe('CardAbility displayMessage', function () {
             expect(this.args[7][0].message[2]).toBe(this.courtier);
         });
 
-        it("should have 'to' as the eighth arg", function () {
+        it('should have \'to\' as the eighth arg', function () {
             expect(this.args[8]).toBe(' to ');
         });
 
@@ -209,7 +209,7 @@ describe('CardAbility displayMessage', function () {
             expect(this.args[1]).toBe(this.player);
         });
 
-        it("should have 'uses' as the second arg", function () {
+        it('should have \'uses\' as the second arg', function () {
             expect(this.args[2]).toBe(' uses ');
         });
 
@@ -227,7 +227,7 @@ describe('CardAbility displayMessage', function () {
             expect(this.args[7][0].message[2]).toBe(this.cardSpy);
         });
 
-        it("should have 'to' as the eighth arg", function () {
+        it('should have \'to\' as the eighth arg', function () {
             expect(this.args[8]).toBe(' to ');
         });
 

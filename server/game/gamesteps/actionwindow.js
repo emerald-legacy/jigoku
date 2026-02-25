@@ -70,12 +70,12 @@ class ActionWindow extends UiPrompt {
     }
 
     continue() {
-        if (this.currentPlayer.opponent) {
-            if (this.currentPlayer.opponent.actionPhasePriority && this.currentPlayer.actionPhasePriority) {
+        if(this.currentPlayer.opponent) {
+            if(this.currentPlayer.opponent.actionPhasePriority && this.currentPlayer.actionPhasePriority) {
                 // Both players have action phase priority, don't do anything, it'll clear on its own
-            } else if (this.currentPlayer.opponent.actionPhasePriority && !this.currentPlayer.actionPhasePriority) {
+            } else if(this.currentPlayer.opponent.actionPhasePriority && !this.currentPlayer.actionPhasePriority) {
                 this.currentPlayer = this.currentPlayer.opponent;
-            } else if (this.currentPlayer.isDefendingPlayer()) {
+            } else if(this.currentPlayer.isDefendingPlayer()) {
                 this.currentPlayer.actionPhasePriority = false;
             }
         } else {
@@ -139,15 +139,15 @@ class ActionWindow extends UiPrompt {
     }
 
     getCurrentPlayerConsecutiveActions() {
-        let allowableConsecutiveActions = this.currentPlayer.sumEffects(EffectNames.AdditionalAction); 
-        if (this.bonusActions) {
+        let allowableConsecutiveActions = this.currentPlayer.sumEffects(EffectNames.AdditionalAction);
+        if(this.bonusActions) {
             const bonusActions = this.bonusActions[this.currentPlayer.uuid];
-            if (!bonusActions.actionsTaken && bonusActions.takingActions && bonusActions.actionCount > 0) {
+            if(!bonusActions.actionsTaken && bonusActions.takingActions && bonusActions.actionCount > 0) {
                 allowableConsecutiveActions = allowableConsecutiveActions + (bonusActions?.actionCount - 1);
             }
         }
-        if (this.currentPlayer.actionPhasePriority) {
-            if (allowableConsecutiveActions > 0) {
+        if(this.currentPlayer.actionPhasePriority) {
+            if(allowableConsecutiveActions > 0) {
                 allowableConsecutiveActions--;
             }
         }
@@ -155,7 +155,7 @@ class ActionWindow extends UiPrompt {
     }
 
     markBonusActionsTaken() {
-        if (this.bonusActions) {
+        if(this.bonusActions) {
             this.bonusActions[this.currentPlayer.uuid].actionsTaken = true;
             this.bonusActions[this.currentPlayer.uuid].takingActions = false;
         }
@@ -180,18 +180,18 @@ class ActionWindow extends UiPrompt {
     }
 
     attemptComplete() {
-        if (!this.currentPlayer.opponent) {
+        if(!this.currentPlayer.opponent) {
             this.complete();
         }
 
-        if (!this.checkBonusActions()) {
+        if(!this.checkBonusActions()) {
             this.complete();
         }
     }
 
     checkBonusActions() {
-        if (!this.bonusActions) {
-            if (!this.setupBonusActions()) {
+        if(!this.bonusActions) {
+            if(!this.setupBonusActions()) {
                 return false;
             }
         }
@@ -202,24 +202,24 @@ class ActionWindow extends UiPrompt {
         const p1 = this.bonusActions[player1.uuid];
         const p2 = this.bonusActions[player2.uuid];
 
-        if (p1.actionCount > 0) {
-            if (!p1.actionsTaken) {
+        if(p1.actionCount > 0) {
+            if(!p1.actionsTaken) {
                 this.game.addMessage('{0} has a bonus action during resolution!', player1);
                 this.prevPlayerPassed = false;
                 // Set the current player to player1
-                if (this.currentPlayer !== player1) {
+                if(this.currentPlayer !== player1) {
                     this.currentPlayer = player1;
                 }
                 p1.takingActions = true;
                 return true;
             }
         }
-        if (p2.actionCount > 0) {
-            if (!p2.actionsTaken) {
+        if(p2.actionCount > 0) {
+            if(!p2.actionsTaken) {
                 this.game.addMessage('{0} has a bonus action during resolution!', player2);
                 this.prevPlayerPassed = false;
                 // Set the current player to player1
-                if (this.currentPlayer !== player2) {
+                if(this.currentPlayer !== player2) {
                     this.currentPlayer = player2;
                 }
                 p2.takingActions = true;
@@ -246,8 +246,8 @@ class ActionWindow extends UiPrompt {
                 actionCount: p2ActionsPostWindow,
                 actionsTaken: false,
                 takingActions: false
-            },
-        }
+            }
+        };
 
         return p1ActionsPostWindow + p2ActionsPostWindow > 0;
     }

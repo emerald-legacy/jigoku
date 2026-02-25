@@ -28,7 +28,7 @@ export class TakeControlAction extends LastingEffectCardAction {
 
     getProperties(context: AbilityContext, additionalProperties = {}) {
         const properties = super.getProperties(context, additionalProperties);
-        if (properties.effect.length === 0 || !properties.effect[0]) {
+        if(properties.effect.length === 0 || !properties.effect[0]) {
             properties.effect = [Effects.takeControl(context.player)];
         }
         return properties;

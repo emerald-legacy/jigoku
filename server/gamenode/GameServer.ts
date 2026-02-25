@@ -3,7 +3,7 @@ import fs from 'fs';
 import http from 'http';
 import https from 'https';
 import jwt from 'jsonwebtoken';
-import socketio from 'socket.io';
+import * as socketio from 'socket.io';
 
 import { captureException } from '../ErrorMonitoring';
 import Game from '../game/game';
@@ -18,7 +18,7 @@ import * as env from '../env.js';
 export class GameServer {
     private games = new Map<string, Game>();
     private protocol = 'https';
-    private host = env.gameNodeHost;
+    private host = env.domain;
     private zmqSocket: ZmqSocket;
     private io: socketio.Server;
     private titleCardData: any;
@@ -30,7 +30,7 @@ export class GameServer {
         try {
             privateKey = fs.readFileSync(env.gameNodeKeyPath).toString();
             certificate = fs.readFileSync(env.gameNodeCertPath).toString();
-        } catch (e) {
+        } catch{
             this.protocol = 'http';
         }
 
@@ -42,34 +42,45 @@ export class GameServer {
         this.zmqSocket.on('onCloseGame', this.onCloseGame.bind(this));
         this.zmqSocket.on('onCardData', this.onCardData.bind(this));
 
+        // HTTP request handler for health checks
+        const requestHandler = (req: http.IncomingMessage, res: http.ServerResponse) => {
+            if(req.url === '/health') {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    status: 'ok',
+                    timestamp: Date.now(),
+                    games: this.games.size
+                }));
+            }
+        };
+
         const server =
             !privateKey || !certificate
-                ? http.createServer()
-                : https.createServer({ key: privateKey, cert: certificate });
+                ? http.createServer(requestHandler)
+                : https.createServer({ key: privateKey, cert: certificate }, requestHandler);
 
         server.listen(env.gameNodeSocketIoPort);
 
-        this.io = socketio(server, {
+        const corsConfig = env.domain
+            ? { origin: [`https://${env.domain}`, `http://${env.domain}`], credentials: true }
+            : { origin: true, credentials: true };
+
+        this.io = new socketio.Server(server, {
             perMessageDeflate: false,
-            path: `/${env.gameNodeName}/socket.io`
+            path: `/${env.gameNodeName}/socket.io`,
+            pingTimeout: 30000,
+            pingInterval: 25000,
+            cors: corsConfig
         });
-        // @ts-ignore
-        this.io.set('heartbeat timeout', 30000);
         this.io.use(this.handshake.bind(this));
-
-        if (env.gameNodeOrigin) {
-            // @ts-ignore
-            this.io.set('origins', env.gameNodeOrigin);
-        }
-
         this.io.on('connection', this.onConnection.bind(this));
     }
 
     public debugDump() {
         const games = [];
-        for (const game of this.games.values()) {
+        for(const game of this.games.values()) {
             const players = [];
-            for (const player of Object.values<any>(game.playersAndSpectators)) {
+            for(const player of Object.values<any>(game.playersAndSpectators)) {
                 return {
                     name: player.name,
                     left: player.left,
@@ -99,7 +110,7 @@ export class GameServer {
         let gameState = game.getState();
         let debugData: any = {};
 
-        if (e.message.includes('Maximum call stack')) {
+        if(e.message.includes('Maximum call stack')) {
             debugData.badSerializaton = detectBinary(gameState);
         } else {
             debugData.game = gameState;
@@ -111,14 +122,14 @@ export class GameServer {
             debugData.pipeline = game.pipeline.getDebugInfo();
             debugData.effectEngine = game.effectEngine.getDebugInfo();
 
-            for (const player of game.getPlayers()) {
+            for(const player of game.getPlayers()) {
                 debugData[player.name] = player.getState(player);
             }
         }
 
         captureException(e, { extra: debugData });
 
-        if (game) {
+        if(game) {
             game.addMessage(
                 'A Server error has occured processing your game state, apologies.  Your game may now be in an inconsistent state, or you may be able to continue.  The error has been logged.'
             );
@@ -128,7 +139,7 @@ export class GameServer {
     runAndCatchErrors(game: Game, func: () => void) {
         try {
             func();
-        } catch (e) {
+        } catch(e) {
             this.handleError(game, e);
 
             this.sendGameState(game);
@@ -136,35 +147,38 @@ export class GameServer {
     }
 
     findGameForUser(username: string): undefined | Game {
-        for (const game of this.games.values()) {
+        for(const game of this.games.values()) {
             const player = game.playersAndSpectators[username];
-            if (player && !player.left) {
+            if(player && !player.left) {
                 return game;
             }
         }
     }
 
     sendGameState(game: Game): void {
-        for (const player of Object.values<Player>(game.getPlayersAndSpectators())) {
-            if (player.socket && !player.left && !player.disconnected) {
+        for(const player of Object.values(game.getPlayersAndSpectators()) as any[]) {
+            if(player.socket && !player.left && !player.disconnected) {
                 player.socket.send('gamestate', game.getState(player.name));
             }
         }
     }
 
-    handshake(socket: socketio.Socket, next: () => void) {
-        if (socket.handshake.query.token && socket.handshake.query.token !== 'undefined') {
-            jwt.verify(socket.handshake.query.token, env.secret, function (err, user) {
-                if (err) {
+    handshake(socket: socketio.Socket, next: (err?: Error) => void) {
+        // Socket.io v4 uses auth object, v1 used query string
+        const token = (socket.handshake.auth as any)?.token || socket.handshake.query?.token;
+        if(token && token !== 'undefined') {
+            jwt.verify(token as string, env.secret, function (err, user) {
+                if(err) {
                     logger.info(err);
-                    return;
+                    return next();
                 }
 
-                socket.request.user = user;
+                (socket.request as any).user = user;
+                next();
             });
+        } else {
+            next();
         }
-
-        next();
     }
 
     gameWon(game: Game, reason: string, winner: Player): void {
@@ -180,11 +194,11 @@ export class GameServer {
     }
 
     onStartGame(pendingGame: PendingGame): void {
-        const game = new Game(pendingGame, { router: this, shortCardData: this.shortCardData });
+        const game = new Game(pendingGame as any, { router: this, shortCardData: this.shortCardData });
         this.games.set(pendingGame.id, game);
 
         game.started = true;
-        for (const player of Object.values<Player>(pendingGame.players)) {
+        for(const player of Object.values<Player>(pendingGame.players)) {
             game.selectDeck(player.name, player.deck);
         }
 
@@ -193,7 +207,7 @@ export class GameServer {
 
     onSpectator(pendingGame: PendingGame, user) {
         const game = this.games.get(pendingGame.id);
-        if (!game) {
+        if(!game) {
             return;
         }
 
@@ -204,9 +218,9 @@ export class GameServer {
 
     onGameSync(callback) {
         const gameSummaries = [];
-        for (const game of this.games.values()) {
+        for(const game of this.games.values()) {
             const retGame = game.getSummary();
-            if (retGame) {
+            if(retGame) {
                 retGame.password = game.password;
             }
             return gameSummaries.push(retGame);
@@ -219,13 +233,13 @@ export class GameServer {
 
     onFailedConnect(gameId, username) {
         const game = this.findGameForUser(username);
-        if (!game || game.id !== gameId) {
+        if(!game || game.id !== gameId) {
             return;
         }
 
         game.failedConnect(username);
 
-        if (game.isEmpty()) {
+        if(game.isEmpty()) {
             this.games.delete(game.id);
             this.zmqSocket.send('GAMECLOSED', { game: game.id });
         }
@@ -235,7 +249,7 @@ export class GameServer {
 
     onCloseGame(gameId) {
         const game = this.games.get(gameId);
-        if (!game) {
+        if(!game) {
             return;
         }
 
@@ -249,14 +263,14 @@ export class GameServer {
     }
 
     onConnection(ioSocket) {
-        if (!ioSocket.request.user) {
+        if(!ioSocket.request.user) {
             logger.info('socket connected with no user, disconnecting');
             ioSocket.disconnect();
             return;
         }
 
         const game = this.findGameForUser(ioSocket.request.user.username);
-        if (!game) {
+        if(!game) {
             logger.info('No game for', ioSocket.request.user.username, 'disconnecting');
             ioSocket.disconnect();
             return;
@@ -265,14 +279,14 @@ export class GameServer {
         const socket = new Socket(ioSocket);
 
         const player = game.playersAndSpectators[socket.user.username];
-        if (!player) {
+        if(!player) {
             return;
         }
 
         player.lobbyId = player.id;
         player.id = socket.id;
-        if (player.disconnected) {
-            logger.info("user '%s' reconnected to game", socket.user.username);
+        if(player.disconnected) {
+            logger.info('user \'%s\' reconnected to game', socket.user.username);
             game.reconnect(socket, player.name);
         }
 
@@ -280,7 +294,7 @@ export class GameServer {
 
         player.socket = socket;
 
-        if (!game.isSpectator(player)) {
+        if(!game.isSpectator(player)) {
             game.addMessage('{0} has connected to the game server', player);
         }
 
@@ -292,21 +306,21 @@ export class GameServer {
 
     onSocketDisconnected(socket, reason) {
         const game = this.findGameForUser(socket.user.username);
-        if (!game) {
+        if(!game) {
             return;
         }
 
-        logger.info("user '%s' disconnected from a game: %s", socket.user.username, reason);
+        logger.info('user \'%s\' disconnected from a game: %s', socket.user.username, reason);
 
         const isSpectator = game.isSpectator(game.playersAndSpectators[socket.user.username]);
 
         game.disconnect(socket.user.username);
 
-        if (game.isEmpty()) {
+        if(game.isEmpty()) {
             this.games.delete(game.id);
 
             this.zmqSocket.send('GAMECLOSED', { game: game.id });
-        } else if (isSpectator) {
+        } else if(isSpectator) {
             this.zmqSocket.send('PLAYERLEFT', {
                 gameId: game.id,
                 game: game.getSaveState(),
@@ -320,7 +334,7 @@ export class GameServer {
 
     onLeaveGame(socket) {
         const game = this.findGameForUser(socket.user.username);
-        if (!game) {
+        if(!game) {
             return;
         }
 
@@ -338,7 +352,7 @@ export class GameServer {
         socket.send('cleargamestate');
         socket.leaveChannel(game.id);
 
-        if (game.isEmpty()) {
+        if(game.isEmpty()) {
             this.games.delete(game.id);
 
             this.zmqSocket.send('GAMECLOSED', { game: game.id });
@@ -350,15 +364,15 @@ export class GameServer {
     onGameMessage(socket, command, ...args) {
         const game = this.findGameForUser(socket.user.username);
 
-        if (!game) {
+        if(!game) {
             return;
         }
 
-        if (command === 'leavegame') {
+        if(command === 'leavegame') {
             return this.onLeaveGame(socket);
         }
 
-        if (!game[command] || typeof game[command] !== 'function') {
+        if(!game[command] || typeof game[command] !== 'function') {
             return;
         }
 

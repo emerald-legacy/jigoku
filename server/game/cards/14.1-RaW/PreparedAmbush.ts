@@ -1,6 +1,6 @@
 import { Locations } from '../../Constants';
 import { PlayCharacterAsIfFromHandIntoConflict } from '../../PlayCharacterAsIfFromHand';
-import AbilityDsl = require('../../abilitydsl');
+import AbilityDsl from '../../abilitydsl';
 import { BattlefieldAttachment } from '../BattlefieldAttachment';
 
 export default class PreparedAmbush extends BattlefieldAttachment {

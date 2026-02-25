@@ -16,7 +16,7 @@ export default class KuniJuurou extends DrawCard {
 
         this.action({
             title: 'Taint a character',
-            effect: "identify the source of Crab's misfortune… it is {0}! {0} is tainted.",
+            effect: 'identify the source of Crab\'s misfortune… it is {0}! {0} is tainted.',
             phase: Phases.Conflict,
             condition: (context) =>
                 context.player.opponent && context.player.hand.size() <= context.player.opponent.hand.size(),

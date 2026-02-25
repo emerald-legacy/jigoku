@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
 import { CardTypes, Locations, Players } from '../../../Constants';
 import DrawCard from '../../../drawcard';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';

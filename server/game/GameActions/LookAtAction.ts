@@ -17,7 +17,7 @@ export class LookAtAction extends CardGameAction {
     };
 
     canAffect(card: BaseCard, context: AbilityContext) {
-        if (!card.isFacedown() && (card.isInProvince() || card.location === Locations.PlayArea)) {
+        if(!card.isFacedown() && (card.isInProvince() || card.location === Locations.PlayArea)) {
             return false;
         }
         return super.canAffect(card, context);
@@ -26,7 +26,7 @@ export class LookAtAction extends CardGameAction {
     addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
         let { target } = this.getProperties(context, additionalProperties);
         let cards = (target as BaseCard[]).filter((card) => this.canAffect(card, context));
-        if (cards.length === 0) {
+        if(cards.length === 0) {
             return;
         }
         let event = this.createEvent(null, context, additionalProperties);
@@ -35,14 +35,14 @@ export class LookAtAction extends CardGameAction {
     }
 
     addPropertiesToEvent(event, cards, context: AbilityContext, additionalProperties): void {
-        if (!cards) {
+        if(!cards) {
             cards = this.getProperties(context, additionalProperties).target;
         }
-        if (!Array.isArray(cards)) {
+        if(!Array.isArray(cards)) {
             cards = [cards];
         }
         event.cards = cards;
-        let obj = { a: cards, b: context };
+        let _obj = { a: cards, b: context };
         event.stateBeforeResolution = cards.map((a) => {
             return { card: a, location: a.location };
         });
@@ -57,7 +57,7 @@ export class LookAtAction extends CardGameAction {
     }
 
     getMessage(message, context): string {
-        if (typeof message === 'function') {
+        if(typeof message === 'function') {
             return message(context);
         }
         return message;

@@ -52,8 +52,8 @@ describe('Isawa Hifumi', function () {
             expect(this.getChatLogs(6)).toContain(
                 'player1 uses Isawa Hifumi to play an event from their discard pile (the next time it is used this round will cost 1 fate from player1 characters)'
             );
-            expect(this.getChatLogs(6)).toContain("player1 plays Soshi's Memory from their conflict discard pile");
-            expect(this.getChatLogs(6)).toContain("Soshi's Memory is removed from the game by Isawa Hifumi's ability");
+            expect(this.getChatLogs(6)).toContain('player1 plays Soshi\'s Memory from their conflict discard pile');
+            expect(this.getChatLogs(6)).toContain('Soshi\'s Memory is removed from the game by Isawa Hifumi\'s ability');
         });
 
         it('pays increasing fate costs for following triggers', function () {
@@ -77,8 +77,8 @@ describe('Isawa Hifumi', function () {
             expect(this.getChatLogs(6)).toContain(
                 'player1 uses Isawa Hifumi to play an event from their discard pile (the next time it is used this round will cost 1 fate from player1 characters)'
             );
-            expect(this.getChatLogs(6)).toContain("player1 plays Soshi's Memory from their conflict discard pile");
-            expect(this.getChatLogs(6)).toContain("Soshi's Memory is removed from the game by Isawa Hifumi's ability");
+            expect(this.getChatLogs(6)).toContain('player1 plays Soshi\'s Memory from their conflict discard pile');
+            expect(this.getChatLogs(6)).toContain('Soshi\'s Memory is removed from the game by Isawa Hifumi\'s ability');
 
             /**
              * SECOND HIFUMI
@@ -108,7 +108,7 @@ describe('Isawa Hifumi', function () {
             );
             expect(this.getChatLogs(6)).toContain('player1 plays Against the Waves from their conflict discard pile');
             expect(this.getChatLogs(6)).toContain(
-                "Against the Waves is removed from the game by Isawa Hifumi's ability"
+                'Against the Waves is removed from the game by Isawa Hifumi\'s ability'
             );
 
             /**
@@ -137,7 +137,7 @@ describe('Isawa Hifumi', function () {
                 'player1 uses Isawa Hifumi to play an event from their discard pile (the next time it is used this round will cost 3 fate from player1 characters)'
             );
             expect(this.getChatLogs(6)).toContain('player1 plays Let Go from their conflict discard pile');
-            expect(this.getChatLogs(6)).toContain("Let Go is removed from the game by Isawa Hifumi's ability");
+            expect(this.getChatLogs(6)).toContain('Let Go is removed from the game by Isawa Hifumi\'s ability');
         });
     });
 });

@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const DrawCard = require('../../drawcard.js');
 const { Phases } = require('../../Constants');
 
@@ -15,7 +14,7 @@ class ShibaTsukune extends DrawCard {
                 context: context,
                 ringCondition: ring => ring.isUnclaimed(),
                 onSelect: (player, firstRing) => {
-                    if(_.size(_.filter(this.game.rings, ring => ring.isUnclaimed())) > 1) {
+                    if(Object.values(this.game.rings).filter(ring => ring.isUnclaimed()).length > 1) {
                         this.game.promptForRingSelect(player, {
                             activePromptTitle: 'Choose a second ring to resolve, or click Done',
                             ringCondition: ring => ring.isUnclaimed() && ring !== firstRing,

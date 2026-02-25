@@ -1,4 +1,4 @@
-describe("SoD - Crane", function () {
+describe('SoD - Crane', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
@@ -55,10 +55,10 @@ describe("SoD - Crane", function () {
                 this.player1.clickCard(this.momoko);
                 expect(this.pilgrimage.getStrength()).toBe(9);
                 expect(this.getChatLogs(5)).toContain(
-                    "player1 plays Castle of Air, bowing Asahina Momoko to increase the strength of an attacked province by 4 and prevent unopposed honor loss"
+                    'player1 plays Castle of Air, bowing Asahina Momoko to increase the strength of an attacked province by 4 and prevent unopposed honor loss'
                 );
                 expect(this.getChatLogs(5)).toContain(
-                    "player1 increases the strength of Pilgrimage"
+                    'player1 increases the strength of Pilgrimage'
                 );
 
                 expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -66,7 +66,7 @@ describe("SoD - Crane", function () {
                 this.player1.clickCard(this.momoko);
                 expect(this.player1.honor).toBe(honor + 1);
                 expect(this.getChatLogs(5)).toContain(
-                    "player1 uses Asahina Momoko to gain 1 honor"
+                    'player1 uses Asahina Momoko to gain 1 honor'
                 );
 
                 this.player2.pass();
@@ -75,7 +75,7 @@ describe("SoD - Crane", function () {
                 expect(this.player1.honor).toBe(honor + 1);
 
                 expect(this.getChatLogs(5)).toContain(
-                    "Castle of Air cancels the honor loss"
+                    'Castle of Air cancels the honor loss'
                 );
             });
 
@@ -102,10 +102,10 @@ describe("SoD - Crane", function () {
                 this.player1.clickCard(this.momoko);
                 expect(this.pilgrimage.getStrength()).toBe(9);
                 expect(this.getChatLogs(5)).toContain(
-                    "player1 plays Castle of Air, bowing Asahina Momoko to increase the strength of an attacked province by 4 and prevent unopposed honor loss"
+                    'player1 plays Castle of Air, bowing Asahina Momoko to increase the strength of an attacked province by 4 and prevent unopposed honor loss'
                 );
                 expect(this.getChatLogs(5)).toContain(
-                    "player1 increases the strength of Pilgrimage"
+                    'player1 increases the strength of Pilgrimage'
                 );
 
                 expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -113,7 +113,7 @@ describe("SoD - Crane", function () {
                 this.player1.clickCard(this.momoko);
                 expect(this.player1.honor).toBe(honor + 1);
                 expect(this.getChatLogs(5)).toContain(
-                    "player1 uses Asahina Momoko to gain 1 honor"
+                    'player1 uses Asahina Momoko to gain 1 honor'
                 );
 
                 this.player2.clickCard(this.assassination);
@@ -125,7 +125,7 @@ describe("SoD - Crane", function () {
                 expect(this.player1.honor).toBe(honor + 1);
 
                 expect(this.getChatLogs(5)).toContain(
-                    "Castle of Air cancels the honor loss"
+                    'Castle of Air cancels the honor loss'
                 );
             });
 
@@ -152,10 +152,10 @@ describe("SoD - Crane", function () {
                 this.player1.clickCard(this.doomed);
                 expect(this.pilgrimage.getStrength()).toBe(9);
                 expect(this.getChatLogs(5)).toContain(
-                    "player1 plays Castle of Air, bowing Doomed Shugenja to increase the strength of an attacked province by 4"
+                    'player1 plays Castle of Air, bowing Doomed Shugenja to increase the strength of an attacked province by 4'
                 );
                 expect(this.getChatLogs(5)).toContain(
-                    "player1 increases the strength of Pilgrimage"
+                    'player1 increases the strength of Pilgrimage'
                 );
 
                 this.player2.pass();
@@ -164,7 +164,7 @@ describe("SoD - Crane", function () {
                 expect(this.player1.honor).toBe(honor - 1);
 
                 expect(this.getChatLogs(5)).not.toContain(
-                    "Castle of Air cancels the honor loss"
+                    'Castle of Air cancels the honor loss'
                 );
             });
         });
@@ -193,14 +193,14 @@ describe("SoD - Crane", function () {
                 expect(this.player1).toHavePromptButton('Spend 1 honor');
                 expect(this.player1).toHavePromptButton('Spend 1 fate');
 
-                this.player1.clickPrompt("Spend 1 fate");
+                this.player1.clickPrompt('Spend 1 fate');
 
                 expect(this.kuwanan.isTainted).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    "player1 plays Eyes of the Serpent, paying 1 fate to taint Doji Kuwanan"
+                    'player1 plays Eyes of the Serpent, paying 1 fate to taint Doji Kuwanan'
                 );
                 expect(this.getChatLogs(5)).toContain(
-                    "player1 channels their air affinity to gain 1 honor"
+                    'player1 channels their air affinity to gain 1 honor'
                 );
 
                 expect(this.player1.fate).toBe(fate - 1);
@@ -223,13 +223,13 @@ describe("SoD - Crane", function () {
 
                 this.player1.clickCard(this.serpent);
                 this.player1.clickCard(this.kuwanan);
-                this.player1.clickPrompt("Spend 1 honor");
+                this.player1.clickPrompt('Spend 1 honor');
                 expect(this.kuwanan.isTainted).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    "player1 plays Eyes of the Serpent, paying 1 honor to taint Doji Kuwanan"
+                    'player1 plays Eyes of the Serpent, paying 1 honor to taint Doji Kuwanan'
                 );
                 expect(this.getChatLogs(5)).toContain(
-                    "player1 channels their air affinity to gain 1 honor"
+                    'player1 channels their air affinity to gain 1 honor'
                 );
 
                 expect(this.player1.fate).toBe(fate);

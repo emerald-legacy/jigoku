@@ -42,7 +42,7 @@ export default class LastJudgementPlains extends ProvinceCard {
 
     #createChoiceArray(fate: number): string[] {
         const choices: string[] = [];
-        for (let i = 1; i <= fate; i++) {
+        for(let i = 1; i <= fate; i++) {
             choices.push(i.toString());
         }
         return choices;

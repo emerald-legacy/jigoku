@@ -10,7 +10,7 @@ export default class GoldenEagle extends DrawCard {
         this.abilities.playActions.push(new PlayCharacterAsAttachment(this));
 
         this.persistentEffect({
-            condition: (context) => context.source.parent != null,
+            condition: (context) => context.source.parent !== null,
             targetController: Players.Opponent,
             targetLocation: Locations.PlayArea,
             match: (card) => card.type === CardTypes.Character,

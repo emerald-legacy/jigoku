@@ -81,7 +81,7 @@ describe('Keeper of Inner Peace', function () {
                 type: 'military',
                 ring: 'void',
                 attackers: [this.matsuBerserker],
-                defenders: [ this.motoYouth]
+                defenders: [this.motoYouth]
             });
 
             this.player2.clickCard(this.legionOfOne);

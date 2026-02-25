@@ -1,7 +1,6 @@
-import { CardTypes, Players, Durations, TargetModes } from '../../../Constants';
+import { CardTypes, Players, TargetModes } from '../../../Constants';
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
-import CardAbility from '../../../CardAbility';
 
 export default class DeedsNotWords extends DrawCard {
     static id = 'deeds-not-words';
@@ -13,9 +12,9 @@ export default class DeedsNotWords extends DrawCard {
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,
-                cardCondition: (card, context) => card.isParticipating(),
+                cardCondition: (card, _context) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.cardLastingEffect(context => ({
+                    AbilityDsl.actions.cardLastingEffect(_context => ({
                         effect: AbilityDsl.effects.modifyMilitarySkill(2)
                     })),
                     AbilityDsl.actions.playerLastingEffect(context => ({
@@ -29,11 +28,11 @@ export default class DeedsNotWords extends DrawCard {
                             message: '{0} claims the Imperial Favor to the delayed effect of {1}',
                             messageArgs: [context.player, context.source]
                         })
-                    })),
-                ]),
+                    }))
+                ])
             },
             then: context => ({
-                thenCondition: () => context.player.imperialFavor !== "",
+                thenCondition: () => context.player.imperialFavor !== '',
                 target: {
                     mode: TargetModes.Select,
                     choices: {
@@ -51,15 +50,15 @@ export default class DeedsNotWords extends DrawCard {
                                 messageArgs: (card) => [context.player, card, 'military'],
                                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
                                     effect: AbilityDsl.effects.modifyMilitarySkill(2)
-                                })),
+                                }))
                             }))
                         ]),
                         'Done': () => true
                     }
-                },
+                }
             }),
             effect: 'give {0} +2{1}',
-            effectArgs: context => ['miliary']
+            effectArgs: _context => ['miliary']
         });
     }
 }

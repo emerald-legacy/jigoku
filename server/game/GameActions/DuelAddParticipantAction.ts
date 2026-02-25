@@ -20,14 +20,14 @@ export class DuelAddParticipantAction extends CardGameAction<DuelAddParticipantP
     canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
 
-        if (card.type !== CardTypes.Character) {
+        if(card.type !== CardTypes.Character) {
             return false;
         }
-        if (card.location !== Locations.PlayArea) {
+        if(card.location !== Locations.PlayArea) {
             return false;
         }
 
-        if (!card.allowGameAction('duel', context)) {
+        if(!card.allowGameAction('duel', context)) {
             return false;
         }
 

@@ -7,7 +7,7 @@ import { ProvinceCard } from '../../../ProvinceCard';
 type ConflictRecord = {
     attackingPlayer: Player;
     winner?: Player;
-    declaredType: ConflictTypes;
+    declaredType: ConflictTypes | string;
     passed: boolean;
     uuid: string;
 };

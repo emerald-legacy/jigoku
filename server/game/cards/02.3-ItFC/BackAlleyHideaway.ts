@@ -14,7 +14,7 @@ const backAlleyPersistentEffect = {
         card.backAlleyActionLimit.registerEvents(card.game);
     },
     unapply: (card) => {
-        for (const character of card.attachments) {
+        for(const character of card.attachments) {
             // move all attachments to the correct discard pile
             character.owner.moveCard(
                 character,
@@ -49,19 +49,19 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
     }
 
     meetsRequirements(context = this.createContext()) {
-        if (context.game.currentPhase !== Phases.Dynasty) {
+        if(context.game.currentPhase !== Phases.Dynasty) {
             return 'phase';
         }
-        if (context.source.location !== 'backalley hideaway') {
+        if(context.source.location !== 'backalley hideaway') {
             return 'location';
         }
-        if (
+        if(
             !context.source.canPlay(context, PlayTypes.PlayFromProvince) ||
             !context.source.parent.canTriggerAbilities(context)
         ) {
             return 'cannotTrigger';
         }
-        if (!this.canPayCosts(context)) {
+        if(!this.canPayCosts(context)) {
             return 'cost';
         }
         return '';

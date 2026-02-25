@@ -1,7 +1,7 @@
 import { EventNames, Locations, Phases } from '../../../Constants';
 import { EventRegistrar } from '../../../EventRegistrar';
-import AbilityDsl = require('../../../abilitydsl');
-import DrawCard = require('../../../drawcard');
+import AbilityDsl from '../../../abilitydsl';
+import DrawCard from '../../../drawcard';
 
 const MAXIMUM_RESSURRECTIONS = 1;
 
@@ -38,7 +38,7 @@ export default class RelentlessGloryseeker extends DrawCard {
     }
 
     public onCardLeavesPlay(event: any) {
-        if (
+        if(
             event.card === this &&
             this.location !== Locations.RemovedFromGame &&
             this.ressurrectionsThisRound >= MAXIMUM_RESSURRECTIONS

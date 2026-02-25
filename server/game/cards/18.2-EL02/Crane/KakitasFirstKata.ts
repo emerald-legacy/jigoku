@@ -1,8 +1,8 @@
 import { CardTypes, EventNames, Players } from '../../../Constants';
 import { EventRegistrar } from '../../../EventRegistrar';
-import AbilityDsl = require('../../../abilitydsl');
-import BaseCard = require('../../../basecard');
-import DrawCard = require('../../../drawcard');
+import AbilityDsl from '../../../abilitydsl';
+import BaseCard from '../../../basecard';
+import DrawCard from '../../../drawcard';
 
 export default class KakitasFirstKata extends DrawCard {
     static id = 'kakita-s-first-kata';
@@ -15,7 +15,7 @@ export default class KakitasFirstKata extends DrawCard {
         this.eventRegistrar.register([EventNames.OnConflictFinished, EventNames.OnCardBowed]);
 
         this.action({
-            title: "Prevent opponent's bow and move effects",
+            title: 'Prevent opponent\'s bow and move effects',
             condition: (context) => context.game.isDuringConflict(),
             target: {
                 cardType: CardTypes.Character,
@@ -50,7 +50,7 @@ export default class KakitasFirstKata extends DrawCard {
                     })
                 ])
             },
-            effect: "{1}prevent opponents' actions from bowing or moving {0}",
+            effect: '{1}prevent opponents\' actions from bowing or moving {0}',
             effectArgs: (context) => (this.bowedCharactersThisConflict.has(context.target) ? 'ready and ' : '')
         });
     }

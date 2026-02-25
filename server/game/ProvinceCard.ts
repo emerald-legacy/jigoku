@@ -49,7 +49,7 @@ export class ProvinceCard extends BaseCard {
     }
 
     getStrength(): number {
-        if (this.anyEffect(EffectNames.SetProvinceStrength)) {
+        if(this.anyEffect(EffectNames.SetProvinceStrength)) {
             return this.mostRecentEffect(EffectNames.SetProvinceStrength);
         }
 
@@ -74,7 +74,7 @@ export class ProvinceCard extends BaseCard {
     }
 
     getBaseStrength(): number {
-        if (this.anyEffect(EffectNames.SetBaseProvinceStrength)) {
+        if(this.anyEffect(EffectNames.SetBaseProvinceStrength)) {
             return this.mostRecentEffect(EffectNames.SetBaseProvinceStrength);
         }
         return (
@@ -89,7 +89,7 @@ export class ProvinceCard extends BaseCard {
 
         return province.reduce((bonus, card) => {
             let s = card.getProvinceStrengthBonus();
-            if (!canBeIncreased && s > 0) {
+            if(!canBeIncreased && s > 0) {
                 s = 0;
             }
             return bonus + s;
@@ -104,7 +104,7 @@ export class ProvinceCard extends BaseCard {
         const symbols = this.getCurrentElementSymbols();
         const elementArray = [];
         symbols.forEach((symbol) => {
-            if (symbol.key.startsWith('province-element')) {
+            if(symbol.key.startsWith('province-element')) {
                 elementArray.push(symbol.element);
             }
         });
@@ -122,13 +122,13 @@ export class ProvinceCard extends BaseCard {
 
     getPrintedElementSymbols() {
         const symbols = [];
-        if (this.hasElementSymbols()) {
+        if(this.hasElementSymbols()) {
             const elements =
                 this.cardData.elements === 'all' ? ['air', 'earth', 'fire', 'void', 'water'] : this.cardData.elements;
             elements.forEach((element, index) => {
                 symbols.push({
                     key: `province-element-${index}`,
-                    prettyName: "The Province's Element",
+                    prettyName: 'The Province\'s Element',
                     element: element
                 });
             });
@@ -168,7 +168,7 @@ export class ProvinceCard extends BaseCard {
         );
     }
 
-    canDeclare(type, ring) {
+    canDeclare(type, _ring) {
         return this.canBeAttacked() && !this.getEffects(EffectNames.CannotHaveConflictsDeclaredOfType).includes(type);
     }
 
@@ -188,13 +188,13 @@ export class ProvinceCard extends BaseCard {
     breakProvince(): void {
         this.isBroken = true;
         this.removeAllTokens();
-        if (!this.controller.opponent) {
+        if(!this.controller.opponent) {
             return;
         }
 
         this.game.addMessage('{0} has broken {1}!', this.controller.opponent, this);
 
-        if (
+        if(
             this.location === Locations.StrongholdProvince ||
             (this.game.gameMode === GameModes.Skirmish &&
                 this.controller.getProvinces((card: ProvinceCard) => card.isBroken).length > 2)
@@ -203,10 +203,12 @@ export class ProvinceCard extends BaseCard {
             return;
         }
 
-        if (!this.game.isDuringConflict()) return
+        if(!this.game.isDuringConflict()) {
+            return;
+        }
 
-        for (const dynastyCard of this.cardsInSelf()) {
-            if (!dynastyCard) {
+        for(const dynastyCard of this.cardsInSelf()) {
+            if(!dynastyCard) {
                 // Why?
                 continue;
             }
@@ -261,8 +263,8 @@ export class ProvinceCard extends BaseCard {
     getMenu() {
         const menu = super.getMenu();
 
-        if (menu) {
-            if (
+        if(menu) {
+            if(
                 this.game.isDuringConflict() &&
                 !this.isConflictProvince() &&
                 this.canBeAttacked() &&
@@ -271,7 +273,7 @@ export class ProvinceCard extends BaseCard {
                 menu.push({ command: 'move_conflict', text: 'Move Conflict' });
             }
 
-            if (this.cardsInSelf().length <= 0) {
+            if(this.cardsInSelf().length <= 0) {
                 menu.push({ command: 'refill', text: 'Refill Province' });
             }
         }
@@ -290,7 +292,7 @@ export class ProvinceCard extends BaseCard {
     }
 
     allowAttachment(attachment: DrawCard): boolean {
-        if (this.allowedAttachmentTraits.some((trait) => attachment.hasTrait(trait))) {
+        if(this.allowedAttachmentTraits.some((trait) => attachment.hasTrait(trait))) {
             return true;
         }
 
@@ -303,7 +305,7 @@ export class ProvinceCard extends BaseCard {
     }
 
     isFaceup(): boolean {
-        if (this.game.gameMode === GameModes.Skirmish) {
+        if(this.game.gameMode === GameModes.Skirmish) {
             return false;
         }
         return super.isFaceup();

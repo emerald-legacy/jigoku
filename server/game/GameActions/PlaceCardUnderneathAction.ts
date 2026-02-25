@@ -47,7 +47,7 @@ export class PlaceCardUnderneathAction extends CardGameAction {
         context.player.moveCard(card, destination);
         card.controller = context.source.controller;
         card.facedown = false;
-        if (properties.hideWhenFaceup) {
+        if(properties.hideWhenFaceup) {
             card.lastingEffect(() => ({
                 until: {
                     onCardMoved: (event) => event.card === card && event.originalLocation === destination
