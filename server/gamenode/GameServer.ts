@@ -31,7 +31,9 @@ export class GameServer {
             privateKey = fs.readFileSync(env.gameNodeKeyPath).toString();
             certificate = fs.readFileSync(env.gameNodeCertPath).toString();
         } catch{
-            this.protocol = 'http';
+            // No local certs — if HTTPS is enabled (e.g. via nginx proxy), still
+            // advertise https to clients so they connect over the proxy.
+            this.protocol = env.https === 'true' ? 'https' : 'http';
         }
 
         this.zmqSocket = new ZmqSocket(this.host, this.protocol);
