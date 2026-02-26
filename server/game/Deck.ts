@@ -11,6 +11,10 @@ import Player from './player';
 export class Deck {
     constructor(public data: any) {}
 
+    private resolvePackId(packId: string | undefined, card: any): string | undefined {
+        return packId ?? card?.versions?.[0]?.pack_id;
+    }
+
     prepare(player: Player) {
         const result = {
             faction: this.data.faction,
@@ -32,7 +36,7 @@ export class Deck {
                     // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                     const conflictCard: DrawCard = new CardConstructor(player, card);
                     conflictCard.location = Locations.ConflictDeck;
-                    conflictCard.packId = packId;
+                    conflictCard.packId = this.resolvePackId(packId, card);
                     result.conflictCards.push(conflictCard);
                 }
             }
@@ -46,7 +50,7 @@ export class Deck {
                     // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                     const dynastyCard: DrawCard = new CardConstructor(player, card);
                     dynastyCard.location = Locations.DynastyDeck;
-                    dynastyCard.packId = packId;
+                    dynastyCard.packId = this.resolvePackId(packId, card);
                     result.dynastyCards.push(dynastyCard);
                 }
             }
@@ -61,7 +65,7 @@ export class Deck {
                         // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                         const provinceCard: ProvinceCard = new CardConstructor(player, card);
                         provinceCard.location = Locations.ProvinceDeck;
-                        provinceCard.packId = packId;
+                        provinceCard.packId = this.resolvePackId(packId, card);
                         result.provinceCards.push(provinceCard);
                     }
                 }
@@ -83,7 +87,7 @@ export class Deck {
                         // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                         const strongholdCard: StrongholdCard = new CardConstructor(player, card);
                         strongholdCard.location = '' as any;
-                        strongholdCard.packId = packId;
+                        strongholdCard.packId = this.resolvePackId(packId, card);
                         result.stronghold = strongholdCard;
                     }
                 }
@@ -94,7 +98,7 @@ export class Deck {
                         const CardConstructor = cards.get(card.id) ?? RoleCard;
                         // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                         const roleCard: RoleCard = new CardConstructor(player, card);
-                        roleCard.packId = packId;
+                        roleCard.packId = this.resolvePackId(packId, card);
                         result.role = roleCard;
                     }
                 }
