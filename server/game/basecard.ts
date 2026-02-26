@@ -1308,6 +1308,13 @@ class BaseCard extends EffectSource {
         return 'none';
     }
 
+    public override getShortSummary() {
+        return {
+            ...super.getShortSummary(),
+            packId: this.packId
+        };
+    }
+
     public getShortSummaryForControls(activePlayer: Player) {
         if(this.isFacedown() && (activePlayer !== this.controller || this.hideWhenFacedown())) {
             return { facedown: true, isDynasty: this.isDynasty, isConflict: this.isConflict };
