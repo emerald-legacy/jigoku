@@ -18,6 +18,9 @@ RUN npm ci
 
 COPY . .
 
+ARG BUILD_VERSION=LOCAL
+ENV BUILD_VERSION=$BUILD_VERSION
+
 RUN mkdir -p server/logs && npx tsc
 
 # Production stage
@@ -39,7 +42,9 @@ COPY --from=builder /app/package.json ./
 # Create logs directory and set ownership for node user
 RUN mkdir -p /app/build/server/logs && chown -R node:node /app/build/server/logs
 
+ARG BUILD_VERSION=LOCAL
 ENV NODE_ENV=production
+ENV BUILD_VERSION=$BUILD_VERSION
 
 USER node
 

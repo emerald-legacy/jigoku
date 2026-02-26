@@ -54,6 +54,7 @@ export class ZmqSocket extends EventEmitter {
             address: this.listenAddress,
             port: port,
             protocol: this.protocol,
+            version: env.buildVersion,
             games: games
         });
     }

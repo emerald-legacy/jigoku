@@ -19,7 +19,8 @@ const parsedEnv = z
         MAX_GAMES: z.coerce.number().int().optional(),
         MQ_URL: z.string(),
         SECRET: z.string(),
-        SENTRY_DSN: z.string().optional()
+        SENTRY_DSN: z.string().optional(),
+        BUILD_VERSION: z.string().optional()
     })
     .safeParse(process.env);
 
@@ -45,3 +46,4 @@ export const maxGames = parsedEnv.data.MAX_GAMES;
 export const mqUrl = parsedEnv.data.MQ_URL;
 export const secret = parsedEnv.data.SECRET;
 export const sentryDsn = parsedEnv.data.SENTRY_DSN;
+export const buildVersion = parsedEnv.data.BUILD_VERSION ?? 'LOCAL';
