@@ -225,7 +225,7 @@ export class GameServer {
             if(retGame) {
                 retGame.password = game.password;
             }
-            return gameSummaries.push(retGame);
+            gameSummaries.push(retGame);
         }
 
         logger.info('syncing', gameSummaries.length, ' games');
