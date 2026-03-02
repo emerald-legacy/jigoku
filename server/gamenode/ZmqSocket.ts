@@ -7,6 +7,7 @@ import { logger } from '../logger';
 export class ZmqSocket extends EventEmitter {
     private socket: Dealer;
     private running = false;
+    private registered = false;
     private heartbeatInterval: ReturnType<typeof setInterval>;
 
     constructor(private listenAddress: string, private protocol: string) {
@@ -23,12 +24,18 @@ export class ZmqSocket extends EventEmitter {
         // Connection is immediate in v6, emit connect event on next tick
         setImmediate(() => this.onConnect());
 
-        // Send periodic heartbeat so the lobby can discover us after a restart.
-        // The lobby's Router only learns our identity when we send a message.
+        // Send periodic heartbeat. If we're not registered with the lobby yet
+        // (e.g. HELLO was lost, or lobby didn't respond to REGISTER), re-send
+        // HELLO instead of a bare heartbeat so registration is retried.
         this.heartbeatInterval = setInterval(() => {
-            logger.debug(`${env.gameNodeName} sending HEARTBEAT`);
-            this.send('HEARTBEAT');
-        }, 30_000);
+            if(this.registered) {
+                logger.debug(`${env.gameNodeName} sending HEARTBEAT`);
+                this.send('HEARTBEAT');
+            } else {
+                logger.info(`${env.gameNodeName} not registered, re-sending HELLO`);
+                this.emit('onGameSync', this.onGameSync.bind(this));
+            }
+        }, 10_000);
     }
 
     private async receiveMessages() {
@@ -96,12 +103,16 @@ export class ZmqSocket extends EventEmitter {
             logger.info(`${env.gameNodeName} received ${message.command} from lobby`);
         }
 
+        // Any message from the lobby means we're registered
+        this.registered = true;
+
         switch(message.command) {
             case 'PING':
                 this.send('PONG');
                 break;
             case 'REGISTER':
                 logger.info('Lobby requested re-registration');
+                this.registered = false;
                 this.emit('onGameSync', this.onGameSync.bind(this));
                 break;
             case 'STARTGAME':
