@@ -4,6 +4,8 @@ import { z } from 'zod';
 import * as env from '../env.js';
 import { logger } from '../logger';
 
+const TEN_SECONDS = 10_000;
+
 export class ZmqSocket extends EventEmitter {
     private socket: Dealer;
     private running = false;
@@ -35,7 +37,7 @@ export class ZmqSocket extends EventEmitter {
                 logger.info(`${env.gameNodeName} not registered, re-sending HELLO`);
                 this.emit('onGameSync', this.onGameSync.bind(this));
             }
-        }, 10_000);
+        }, TEN_SECONDS);
     }
 
     private async receiveMessages() {
