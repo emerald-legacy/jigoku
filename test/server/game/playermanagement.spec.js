@@ -3,7 +3,18 @@ const Game = require('../../../build/server/game/game.js');
 describe('Game - Player Management', function() {
     beforeEach(function() {
         this.gameRouter = jasmine.createSpyObj('gameRouter', ['playerLeft']);
-        this.game = new Game({ allowSpectators: true }, { router: this.gameRouter });
+        this.game = new Game({
+            id: '1',
+            name: 'Test Game',
+            allowSpectators: true,
+            spectatorSquelch: false,
+            owner: 'player1',
+            gameType: 'casual',
+            gameMode: 'stronghold',
+            clocks: null,
+            players: {},
+            spectators: {}
+        }, { router: this.gameRouter });
     });
 
     describe('join()', function() {

@@ -12,7 +12,18 @@ describe('the Game', () => {
 
     beforeEach(() => {
         var gameService = jasmine.createSpyObj('gameService', ['save']);
-        game = new Game({ name: 'Test Game' }, { gameService: gameService });
+        game = new Game({
+            id: '1',
+            name: 'Test Game',
+            allowSpectators: false,
+            spectatorSquelch: false,
+            owner: 'player1',
+            gameType: 'casual',
+            gameMode: 'stronghold',
+            clocks: null,
+            players: {},
+            spectators: {}
+        }, { gameService: gameService });
     });
 
     describe('getSummary function', () => {
