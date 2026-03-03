@@ -33,5 +33,13 @@ jobs:
       - name: TypeScript compile
         run: npx tsc
 
+      - name: Fetch card data
+        run: node bin/fetchdata.js prod
+
+      - name: Test
+        run: npx jasmine
+        env:
+          JASMINE_CONFIG_PATH: ./jasmine.json
+
       - name: Lint
         run: npm run lint
