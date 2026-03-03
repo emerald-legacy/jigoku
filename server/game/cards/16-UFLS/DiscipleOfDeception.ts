@@ -8,10 +8,9 @@ export default class DiscipleOfDeception extends DrawCard {
     static id = 'disciple-of-deception';
 
     private eventRegistrar?: EventRegistrar;
-    private tokensChanged?: StatusToken[];
+    private tokensChanged: StatusToken[] = [];
 
     public setupCardAbilities() {
-        this.tokensChanged = [];
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register(['onConflictFinished']);
 
