@@ -10,7 +10,7 @@ class UjiakisOffer extends DrawCard {
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card, context) => card.isParticipating() && context.player.cardsInPlay.some(myCard => (
-                    myCard.isParticipating() && myCard.printedCost >= card.printedCost)),
+                    myCard !== card && myCard.isParticipating() && myCard.printedCost >= card.printedCost)),
                 gameAction: AbilityDsl.actions.placeFate()
             },
             then: context => ({
