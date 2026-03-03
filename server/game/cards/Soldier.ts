@@ -33,7 +33,7 @@ export default class Soldier<D extends DrawCard> extends DrawCard {
         this.owner.moveCard(this.facedownCard, destination);
         this.game.queueSimpleStep(() => {
             this.owner.removeCardFromPile(this);
-            this.game.allCards = this.owner.removeCardByUuid(this.game.allCards, this.uuid);
+            this.game.allCards = this.game.allCards.filter((card) => card.uuid !== this.uuid);
         });
         super.leavesPlay();
     }
