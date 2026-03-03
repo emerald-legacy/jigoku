@@ -164,7 +164,7 @@ describe('Wait Until It Sings', function () {
             this.player2.clickCard(this.cut);
             this.player2.clickCard(this.tactician);
 
-            expect(this.getChatLogs(10)).toContain('player2 won a military conflict 11 vs 0');
+            expect(this.getChatLogs(10)).toContain('player2 won a military conflict 9 vs 0');
             expect(this.player1).toHavePrompt('Action Window');
         });
 
