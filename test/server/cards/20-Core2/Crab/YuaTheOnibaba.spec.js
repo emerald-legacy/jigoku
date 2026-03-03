@@ -114,7 +114,7 @@ describe('Yua, the Onibaba', function () {
                 this.player1.clickCard(this.yuaTheOnibaba);
 
                 expect(this.yuaTheOnibaba.getMilitarySkill()).toBe(6);
-                expect(this.yuaTheOnibaba.getPoliticalSkill()).toBe(2);
+                expect(this.yuaTheOnibaba.getPoliticalSkill()).toBe(3);
                 expect(this.unleashedExperiment.getMilitarySkill()).toBe(3);
                 expect(this.unleashedExperiment.getPoliticalSkill()).toBe(2);
                 expect(this.borderlandsDefender.getMilitarySkill()).toBe(4);
