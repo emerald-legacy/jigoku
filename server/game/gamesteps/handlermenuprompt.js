@@ -35,6 +35,7 @@ class HandlerMenuPrompt extends UiPrompt {
             properties.source = new EffectSource(game);
         }
         this.properties = properties;
+        this.properties.choices = properties.choices || [];
         this.cardCondition = properties.cardCondition || (() => true);
         this.context = properties.context || new AbilityContext({ game: game, player: player, source: properties.source });
     }
