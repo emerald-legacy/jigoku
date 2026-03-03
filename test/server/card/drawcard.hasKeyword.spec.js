@@ -47,8 +47,22 @@ describe('the DrawCard', function () {
         const Player = require('../../../build/server/game/player.js');
 
         beforeEach(function () {
-            this.gameService = jasmine.createSpyObj('gameService', ['save']);
-            this.game = new Game({}, { gameService: this.gameService });
+            this.gameRouter = jasmine.createSpyObj('gameRouter', ['gameWon', 'playerLeft', 'handleError']);
+            this.gameRouter.handleError.and.callFake((game, error) => {
+                throw error;
+            });
+            this.game = new Game({
+                id: '1',
+                name: 'Test Game',
+                allowSpectators: false,
+                spectatorSquelch: false,
+                owner: 'foo',
+                gameType: 'casual',
+                gameMode: 'stronghold',
+                clocks: null,
+                players: {},
+                spectators: {}
+            }, { router: this.gameRouter });
             this.spy = spyOn(this.game, 'checkWinCondition');
 
             this.player = new Player(1, { username: 'foo', settings: { optionSettings: {} } }, false, this.game);
