@@ -202,21 +202,20 @@ export class EffectEngine {
     }
 
     unapplyAndRemove(match: (effect: Effect) => boolean) {
-        let removedEffect = false;
-        const remainingEffects = [];
+        const toRemove: Effect[] = [];
         for(const effect of this.effects) {
             if(match(effect)) {
-                removedEffect = true;
+                toRemove.push(effect);
                 effect.cancel();
                 if(effect.duration === Durations.Custom) {
                     this.unregisterCustomDurationEvents(effect);
                 }
-            } else {
-                remainingEffects.push(effect);
             }
         }
-        this.effects = remainingEffects;
-        return removedEffect;
+        if(toRemove.length > 0) {
+            this.effects = this.effects.filter((effect) => !toRemove.includes(effect));
+        }
+        return toRemove.length > 0;
     }
 
     getDebugInfo() {
