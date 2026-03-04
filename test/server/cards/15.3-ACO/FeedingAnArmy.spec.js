@@ -53,18 +53,15 @@ describe('Feeding an Army', function() {
 
             });
 
-            it('should give your opponent the option to discard cards in the province you broke', function() {
+            it('should break the province (no discard prompt outside of conflict)', function() {
                 this.noMoreActions();
                 this.player1.clickCard(this.feeding);
                 this.player1.clickCard(this.garden);
-                expect(this.player2).toHavePrompt('Break Manicured Garden');
-                this.player2.clickPrompt('No');
                 expect(this.garden.isBroken).toBe(true);
             });
 
 
             it('should trigger on break provinces that you break as a cost', function() {
-
                 this.noMoreActions();
                 this.player1.clickCard(this.feeding);
                 this.player1.clickCard(this.throne);
@@ -76,14 +73,12 @@ describe('Feeding an Army', function() {
                 this.player1.clickCard(this.throne);
                 expect(this.player1.honor).toBe(p1Honor + 2);
                 expect(this.player2.honor).toBe(p2Honor - 2);
-                this.player2.clickPrompt('No');
             });
 
             it('should give a fate to all characters with less than 1 fate', function() {
                 this.noMoreActions();
                 this.player1.clickCard(this.feeding);
                 this.player1.clickCard(this.garden);
-                this.player2.clickPrompt('No');
                 expect(this.dreamer.fate).toBe(1);
                 expect(this.challenger.fate).toBe(1);
                 expect(this.mitsu.fate).toBe(0);

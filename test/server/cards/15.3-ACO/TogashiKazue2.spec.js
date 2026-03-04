@@ -248,7 +248,7 @@ describe('Togashi Kazue 2', function() {
             expect(this.player1.fate).toBe(fate + 1);
         });
 
-        it('should not allow provinces to trigger abilities twice', function() {
+        it('should not allow provinces to trigger abilities twice (verification)', function() {
             this.noMoreActions();
             this.player1.passConflict();
             this.noMoreActions();

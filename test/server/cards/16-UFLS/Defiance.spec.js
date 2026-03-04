@@ -76,7 +76,7 @@ describe('Defiance', function() {
             expect(this.getChatLogs(5)).toContain('player2 plays Defiance to give Daidoji Uji +3military/+3political');
         });
 
-        it('should allow targeting a character and give them +X/+X', function() {
+        it('should allow targeting a character and give them +X/+X (player 1 playing)', function() {
             this.player1.moveCard(this.katana1, 'conflict discard pile');
             this.noMoreActions();
             this.initiateConflict({

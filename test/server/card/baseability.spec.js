@@ -1,5 +1,3 @@
-const _ = require('underscore');
-
 const BaseAbility = require('../../../build/server/game/baseability.js');
 const { Stages } = require('../../../build/server/game/Constants.js');
 
@@ -9,8 +7,7 @@ describe('BaseAbility', function () {
         this.gameSpy.queueSimpleStep.and.callFake((handler) => {
             handler();
         });
-        this.allCardsSpy = jasmine.createSpyObj('allCards', ['toArray']);
-        this.gameSpy.allCards = this.allCardsSpy;
+        this.gameSpy.allCards = [];
         this.properties = { game: this.gameSpy };
     });
 
@@ -174,7 +171,7 @@ describe('BaseAbility', function () {
             this.card2.checkRestrictions.and.returnValue(true);
             this.card2.canBeTargeted.and.returnValue(true);
             this.card2.getType.and.returnValue('holding');
-            let game = { allCards: _([this.card1, this.card2]) };
+            let game = { allCards: [this.card1, this.card2] };
             this.context = { game: game, stage: Stages.Target, targets: {} };
             this.context.copy = () => this.context;
         });
@@ -239,7 +236,7 @@ describe('BaseAbility', function () {
 
             this.context = { game: this.gameSpy, player: this.player, source: this.source, ability: this.ability, stage: 'target', targets: {} };
             this.context.copy = () => this.context;
-            this.allCardsSpy.toArray.and.returnValue([this.card1, this.card2]);
+            this.gameSpy.allCards = [this.card1, this.card2];
         });
 
         it('should prompt the player to select each target', function() {

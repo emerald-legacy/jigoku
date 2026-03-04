@@ -1,4 +1,4 @@
-describe('Master of Bindings', function () {
+describe('Obstinate Witch Hunter', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({

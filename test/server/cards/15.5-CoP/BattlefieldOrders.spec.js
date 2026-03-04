@@ -1,4 +1,4 @@
-describe('Battle Meditation', function() {
+describe('Battlefield Orders', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({
@@ -94,7 +94,7 @@ describe('Battle Meditation', function() {
             expect(this.getChatLogs(10)).toContain('player1 resolves Doji Kuwanan to bow Beloved Advisor');
         });
 
-        it('should let the characters controller resolve the ability', function() {
+        it('should let the characters controller resolve the ability (draw ability)', function() {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.vice, this.kuwanan, this.shoju, this.warrior, this.adept],

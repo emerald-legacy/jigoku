@@ -4,7 +4,7 @@ describe('Diplomat of the Steppes', function () {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['arbiter-of-authority']
+                    inPlay: ['arbiter-of-authority', 'doji-whisperer']
                 },
                 player2: {
                     inPlay: ['diplomat-of-the-steppes', 'wandering-ronin', 'golden-eagle'],
@@ -13,17 +13,18 @@ describe('Diplomat of the Steppes', function () {
             });
 
             this.arbiterOfAuthority = this.player1.findCardByName('arbiter-of-authority');
+            this.dojiWhisperer = this.player1.findCardByName('doji-whisperer');
             this.diplomatOfTheSteppes = this.player2.findCardByName('diplomat-of-the-steppes');
             this.wanderingRonin = this.player2.findCardByName('wandering-ronin');
             this.goldenEagle = this.player2.findCardByName('golden-eagle');
             this.noMoreActions();
         });
 
-        it('does not trigger unless winning on political', function () {
+        it('does not trigger unless equal or more political skill', function () {
             let honor = this.player2.player.honor;
             this.initiateConflict({
                 type: 'political',
-                attackers: [this.arbiterOfAuthority],
+                attackers: [this.arbiterOfAuthority, this.dojiWhisperer],
                 defenders: [this.diplomatOfTheSteppes]
             });
             expect(this.game.currentConflict.conflictType).toBe('political');

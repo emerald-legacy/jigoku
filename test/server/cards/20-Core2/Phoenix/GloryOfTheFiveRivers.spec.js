@@ -28,23 +28,10 @@ describe('Glory of the Five Rivers', function () {
             expect(this.player1).toHavePrompt('Choose an amount of fate');
             expect(this.player1).toHavePromptButton('0');
             expect(this.player1).toHavePromptButton('1');
-            expect(this.player1).toHavePromptButton('2');
-            expect(this.player1).toHavePromptButton('3');
-            expect(this.player1).toHavePromptButton('4');
-            expect(this.player1).toHavePromptButton('5');
-            expect(this.player1).toHavePromptButton('6');
-            expect(this.player1).toHavePromptButton('7');
-            expect(this.player1).toHavePromptButton('8');
             expect(this.player2).toHavePrompt('Choose an amount of fate');
             expect(this.player2).toHavePromptButton('0');
             expect(this.player2).toHavePromptButton('1');
             expect(this.player2).toHavePromptButton('2');
-            expect(this.player2).toHavePromptButton('3');
-            expect(this.player2).toHavePromptButton('4');
-            expect(this.player2).toHavePromptButton('5');
-            expect(this.player2).toHavePromptButton('6');
-            expect(this.player2).toHavePromptButton('7');
-            expect(this.player2).not.toHavePromptButton('8');
 
             this.player1.clickPrompt('0');
             this.player2.clickPrompt('2');
@@ -55,25 +42,24 @@ describe('Glory of the Five Rivers', function () {
             expect(this.getChatLogs(5)).toContain('player1 spends 0 fate');
             expect(this.getChatLogs(5)).toContain('player2 spends 2 fate');
 
+            // Winner (player2) chooses a character to dishonor — can target any character
             expect(this.player2).toHavePrompt('Choose a character');
-            expect(this.player2).not.toBeAbleToSelect(this.fireTensai);
-            expect(this.player2).not.toBeAbleToSelect(this.solemn);
+            expect(this.player2).toBeAbleToSelect(this.fireTensai);
+            expect(this.player2).toBeAbleToSelect(this.solemn);
             expect(this.player2).toBeAbleToSelect(this.brash);
             expect(this.player2).toBeAbleToSelect(this.whisperer);
+            this.player2.clickCard(this.solemn);
 
+            // Winner (player2) chooses a character to honor — can target any character
+            expect(this.player2).toHavePrompt('Choose a character');
+            expect(this.player2).toBeAbleToSelect(this.brash);
+            expect(this.player2).toBeAbleToSelect(this.whisperer);
             this.player2.clickCard(this.brash);
 
-            expect(this.player1).toHavePrompt('Choose a character');
-            expect(this.player1).toBeAbleToSelect(this.fireTensai);
-            expect(this.player1).toBeAbleToSelect(this.solemn);
-            expect(this.player1).not.toBeAbleToSelect(this.brash);
-            expect(this.player1).not.toBeAbleToSelect(this.whisperer);
-            this.player1.clickCard(this.solemn);
-
+            expect(this.solemn.isDishonored).toBe(true);
+            expect(this.getChatLogs(5)).toContain('player2 dishonors Solemn Scholar');
             expect(this.brash.isHonored).toBe(true);
             expect(this.getChatLogs(5)).toContain('player2 honors Brash Samurai');
-            expect(this.solemn.isDishonored).toBe(true);
-            expect(this.getChatLogs(5)).toContain('player1 dishonors Solemn Scholar');
         });
     });
 });

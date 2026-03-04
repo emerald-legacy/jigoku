@@ -78,7 +78,7 @@ describe('Sinister Peacekeeper', function() {
             expect(this.player2).toBeAbleToSelect(this.sinister);
         });
 
-        it('should trigger off of the air ring being won by opponent', function() {
+        it('should trigger off of the air ring being won by opponent (take honor option)', function() {
             this.noMoreActions();
             this.initiateConflict({
                 type: 'political',

@@ -56,7 +56,7 @@ describe('Kakita\'s First Kata', function() {
             expect(this.getChatLogs(5)).toContain('player2 plays Kakita\'s First Kata to prevent opponents\' actions from bowing or moving Kakita Yoshi');
         });
 
-        it('should prevent bowing and moving', function() {
+        it('should prevent bowing and moving (AFWTD interaction)', function() {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.vice],

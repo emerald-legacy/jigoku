@@ -104,7 +104,7 @@ describe('Adopted Kin', function () {
             });
         });
 
-        describe('Adopted Kin', function () {
+        describe('Adopted Kin - multiple attachments', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',

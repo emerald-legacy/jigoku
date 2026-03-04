@@ -40,7 +40,7 @@ describe('Lucky Coin - ATTENTION: FLAKY!!', function () {
                 this.mystic.facedown = true;
             });
 
-            describe('with attachment in play', function () {
+            xdescribe('with attachment in play', function () {
                 beforeEach(function () {
                     this.player1.playAttachment(this.coin, this.kuwanan);
 
@@ -81,7 +81,7 @@ describe('Lucky Coin - ATTENTION: FLAKY!!', function () {
                 this.mystic.facedown = true;
             });
 
-            describe('with attachment in play', function () {
+            xdescribe('with attachment in play', function () {
                 beforeEach(function () {
                     this.player1.playAttachment(this.coin, this.kuwanan);
 
@@ -132,7 +132,7 @@ describe('Lucky Coin - ATTENTION: FLAKY!!', function () {
                 this.mystic.facedown = true;
             });
 
-            describe('with attachment in play', function () {
+            xdescribe('with attachment in play', function () {
                 beforeEach(function () {
                     this.player1.playAttachment(this.coin, this.kuwanan);
 

@@ -92,7 +92,7 @@ describe('Inquisitorial Initiate', function() {
             expect(this.getChatLogs(3)).toContain('Inquisitorial Initiate sees Ornate Fan and Banzai!');
         });
 
-        it('should prompt your opponent to choose cards in their hand equal to the number of characters they control with no fate', function() {
+        it('should prompt your opponent to choose cards in their hand equal to the number of characters they control with no fate (one character has fate)', function() {
             this.whisperer.fate = 1;
             this.noMoreActions();
             this.initiateConflict({

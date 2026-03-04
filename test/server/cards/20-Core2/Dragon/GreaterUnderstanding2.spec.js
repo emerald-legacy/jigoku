@@ -31,6 +31,7 @@ describe('Greater Understanding 2', function () {
             this.player1.clickRing('fire');
 
             this.player2.clickCard(this.t5p);
+            this.player2.clickPrompt('Place fate on a ring without fate');
             this.player2.clickRing('fire');
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.greaterUnderstanding);
@@ -55,6 +56,7 @@ describe('Greater Understanding 2', function () {
             this.player1.clickRing('fire');
 
             this.player2.clickCard(this.t5p);
+            this.player2.clickPrompt('Place fate on a ring without fate');
             this.player2.clickRing('fire');
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.greaterUnderstanding);

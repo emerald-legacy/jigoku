@@ -134,7 +134,7 @@ describe('Bayushi Traitor', function() {
                 expect(this.traitor.controller.name).toBe(this.player2.name);
             });
 
-            it('should not be allowed to participate against its owner (attacking)', function() {
+            it('should not be allowed to participate against its owner (attacking, with blackmail interaction)', function() {
                 this.player1.clickCard(this.traitor);
                 this.player1.clickPrompt('1');
                 this.noMoreActions();

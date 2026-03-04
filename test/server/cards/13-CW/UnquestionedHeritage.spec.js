@@ -134,7 +134,7 @@ describe('Unquestioned Heritage', function () {
             expect(this.getChatLogs(2)).toContain('player1 moves Force of the River to Doji Kuwanan');
         });
 
-        it('should discard newly illegal attachments', function () {
+        it('should discard newly illegal attachments (Finger of Jade)', function () {
             this.player1.claimRing('air');
             this.player1.clickCard(this.heritage);
             this.player1.clickCard(this.finger);

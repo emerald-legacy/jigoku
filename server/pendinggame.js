@@ -110,7 +110,7 @@ class PendingGame {
     }
 
     isUserBlocked(user) {
-        return this.owner.blockList.includes(user.username.toLowerCase());
+        return (this.owner.blockList || []).includes(user.username.toLowerCase());
     }
 
     join(id, user, password, callback) {

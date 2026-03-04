@@ -1,4 +1,4 @@
-describe('Togashi Yokuni', function() {
+describe('Kitsuki Investigator', function() {
     integration(function() {
         describe('Togashi Yokuni and max abilities', function() {
             beforeEach(function() {

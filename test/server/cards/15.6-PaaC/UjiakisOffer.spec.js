@@ -54,12 +54,13 @@ describe('Ujiaki\'s Offer', function() {
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'political',
-                    attackers: [this.shoju],
+                    attackers: [this.adept, this.shoju],
                     defenders: [this.toshimoko]
                 });
-                expect(this.player2).toHavePrompt('Conflict Action Window');
                 this.player2.clickCard(this.offer);
                 expect(this.player2).toHavePrompt('Choose a character');
+                expect(this.player2).toBeAbleToSelect(this.adept);
+                expect(this.player2).not.toBeAbleToSelect(this.shoju);
             });
         });
     });

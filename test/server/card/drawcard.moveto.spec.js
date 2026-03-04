@@ -1,6 +1,6 @@
 const DrawCard = require('../../../build/server/game/drawcard.js');
 
-describe('DrawCard', function () {
+describe('DrawCard - moveTo', function () {
     beforeEach(function () {
         this.testCard = { code: '111', label: 'test 1(some pack)', name: 'test 1' };
         this.gameSpy = jasmine.createSpyObj('game', ['emitEvent', 'getProvinceArray']);

@@ -158,7 +158,7 @@ describe('SoD - Dragon', function () {
                 expect(this.getChatLogs(5)).toContain('player1 plays The Hundred Hand Strike to give Togashi Yokuni -4military and -4political');
             });
 
-            it('should give a penalty and then potentially injure', function () {
+            it('should give a penalty and then potentially injure (two rings with fate)', function () {
                 this.game.rings.fire.fate = 1;
                 this.game.rings.void.fate = 1;
                 this.yokuni.fate = 1;
@@ -181,7 +181,7 @@ describe('SoD - Dragon', function () {
                 expect(this.getChatLogs(5)).toContain('Togashi Yokuni is injured because it is not contributing skill to the current conflict');
             });
 
-            it('should give a penalty and then potentially injure', function () {
+            it('should give a penalty and then potentially injure (bowed target)', function () {
                 this.yokuni.fate = 1;
 
                 this.noMoreActions();

@@ -114,7 +114,7 @@ describe('Agasha Sumiko 2', function() {
             expect(this.fan2.location).toBe('conflict discard pile');
         });
 
-        it('should cause opponent to lose 2 fate if they have more fate', function() {
+        it('should cause opponent to lose 2 fate if they have more fate (combined with honor and cards)', function() {
             this.player2.honor = 11;
             this.player1.honor = 10;
             this.player2.fate = 13;

@@ -1,4 +1,4 @@
-describe('Dragons Claw', function() {
+describe('Dragon\'s Fang', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({

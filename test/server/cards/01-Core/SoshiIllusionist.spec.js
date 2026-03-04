@@ -57,7 +57,7 @@ describe('Soshi Illusionst', function() {
             expect(this.getChatLogs(3)).toContain('player1 discards Honored Token');
         });
 
-        it('Should prompt you to pick which token to discard if a character has two, then discard it', function() {
+        it('Should prompt you to pick which token to discard if a character has two, then discard it (choosing tainted)', function() {
             this.whisperer.taint();
             this.player1.clickCard(this.illusionist);
             this.player1.clickCard(this.whisperer);

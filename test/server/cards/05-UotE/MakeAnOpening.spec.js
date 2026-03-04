@@ -35,7 +35,7 @@ describe('Make An Opening', function() {
                     { p1: 5, p2: 3, diff: 2 },
                     { p1: 1, p2: 5, diff: 4 }
                 ].forEach(function(bids) {
-                    it('should apply absolute diff of honor dial to military and political skill of target character', function() {
+                    it(`should apply absolute diff of honor dial to military and political skill of target character (bids ${bids.p1} vs ${bids.p2})`, function() {
                         this.player1.player.showBid = bids.p1;
                         this.player2.player.showBid = bids.p2;
                         this.player2.pass();

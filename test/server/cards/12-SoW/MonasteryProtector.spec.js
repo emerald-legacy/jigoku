@@ -348,7 +348,7 @@ describe('Monastery Protector', function() {
             expect(this.player2.fate).toBe(0);
         });
 
-        it('should spend a fate even if opponent chooses targets (target chosen after costs)', function() {
+        it('should spend a fate even if opponent chooses targets (target chosen after costs, verification)', function() {
             this.player1.fate = 10;
             this.player2.fate = 1;
             this.noMoreActions();

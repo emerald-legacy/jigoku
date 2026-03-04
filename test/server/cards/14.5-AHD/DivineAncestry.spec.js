@@ -50,7 +50,7 @@ describe('Divine Ancestry', function() {
     });
 });
 
-describe('Divine Ancestry', function() {
+describe('Divine Ancestry - Reactions', function() {
     integration(function() {
         describe('Divine Ancestry\'s ability - conflict phase', function() {
             beforeEach(function() {

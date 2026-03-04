@@ -105,7 +105,7 @@ describe('Cultured Facade', function() {
             expect(this.player2).not.toBeAbleToSelect(this.toshimoko);
         });
 
-        it('should prevent targeting opponent\'s characters if your bid is higher', function() {
+        it('should prevent targeting opponent\'s characters if your bid is higher (player 2 bid higher)', function() {
             this.player1.player.showBid = 3;
             this.player2.player.showBid = 5;
 

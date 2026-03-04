@@ -1,4 +1,4 @@
-describe('Butcher of the Fallen', function() {
+describe('Suffer the Consequences', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({

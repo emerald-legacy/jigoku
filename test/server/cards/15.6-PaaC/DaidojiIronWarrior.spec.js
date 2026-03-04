@@ -90,7 +90,7 @@ describe('Daidoji Iron Warrior', function() {
             expect(this.player1).toBeAbleToSelect(this.warrior);
         });
 
-        it('should not trigger on losing a conflict on attack', function() {
+        it('should not trigger on losing a conflict on defense', function() {
             this.kageyu.honor();
             this.noMoreActions();
             this.player1.passConflict();

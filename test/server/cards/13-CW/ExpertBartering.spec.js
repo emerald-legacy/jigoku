@@ -257,7 +257,9 @@ describe('Expert Bartering', function () {
             expect(this.player1).toHavePrompt('Action Window');
         });
     });
+});
 
+describe('Expert Bartering - attachment interactions', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({

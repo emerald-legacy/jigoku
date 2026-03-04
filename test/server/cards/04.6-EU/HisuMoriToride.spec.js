@@ -1,4 +1,4 @@
-describe('Hisu Mori Toride', function() {
+describe('Hisu Mori Toride Unicorn', function() {
     integration(function() {
         describe('Hisu Mori Toride\'s ability', function() {
             beforeEach(function() {

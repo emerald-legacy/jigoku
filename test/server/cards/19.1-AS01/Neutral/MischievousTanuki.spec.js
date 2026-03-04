@@ -60,7 +60,7 @@ describe('Mischievous Tanuki', function () {
             });
         });
 
-        describe('Tanuki ability - during conflict phase', function () {
+        describe('Tanuki ability - during conflict phase (attachment interaction)', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',

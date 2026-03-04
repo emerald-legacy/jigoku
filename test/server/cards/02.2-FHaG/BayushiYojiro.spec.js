@@ -62,7 +62,7 @@ describe('Bayushi Yojiro', function() {
                 expect(this.youngHarrier.getPoliticalSkill()).toBe(1);
             });
 
-            it('should stop dishonor status modifying both skills', function() {
+            it('should stop honor status modifying both skills and show modifier name', function() {
                 this.initiateConflict({
                     attackers: [this.bayushiYojiro, this.bayushiAramoro],
                     defenders: [this.youngHarrier]

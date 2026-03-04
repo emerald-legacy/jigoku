@@ -68,7 +68,7 @@ describe('Shinjo Gunso', function () {
                 );
             });
 
-            it('should allow you to put a character into play from the top 5 cards', function () {
+            it('should allow you to put a character into play from the top 5 cards (verification)', function () {
                 this.player1.clickCard(this.gunso);
                 this.player1.clickPrompt('0');
                 this.player1.clickCard(this.gunso);

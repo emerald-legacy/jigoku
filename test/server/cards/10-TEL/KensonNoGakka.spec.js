@@ -1,4 +1,4 @@
-describe('Conflict Between Kin', function() {
+describe('Kenson no Gakka', function() {
     integration(function() {
         describe('Conflict Between Kin\'s constant ability', function() {
             beforeEach(function() {

@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "npm run jasmine",
-        "jasmine": "tsc && cross-env JASMINE_CONFIG_PATH=./jasmine.json jasmine",
+        "jasmine": "tsc && cross-env JASMINE_CONFIG_PATH=./jasmine.json DB_PATH=mongodb://localhost:27017/test DOMAIN=localhost ENVIRONMENT=test GAME_NODE_NAME=test GAME_NODE_SOCKET_IO_PORT=9500 HTTPS=false LOBBY_PORT=4000 MQ_URL=tcp://localhost:6000 SECRET=testsecret jasmine",
         "lint": "eslint server/ test/server/",
         "typecheck": "tsc --noEmit",
         "typecheck:strict": "tsc --noEmit -p tsconfig.strict.json"

@@ -435,7 +435,7 @@ describe('Shosuro Deceiver -  Two Deceivers', function() {
             expect(this.getChatLogs(5)).toContain('player1 uses Shosuro Deceiver\'s gained ability from Beloved Advisor to draw 1 card');
         });
 
-        it('should not gain abilities from other deceivers', function() {
+        it('should not gain abilities from other deceivers (reaction abilities)', function() {
             this.advisor.dishonor();
             this.deceiver1.dishonor();
             this.deceiver2.dishonor();

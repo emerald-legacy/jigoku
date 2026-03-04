@@ -75,7 +75,7 @@ describe('Skirmish Provinces', function() {
             expect(this.player2).toHavePrompt('Action Window');
         });
 
-        it('No provinces should be face down - cannot target a facedown province', function () {
+        it('No provinces should be face down - cannot target a facedown province (verification)', function () {
             this.player1.clickCard(this.wayfinder);
             this.player1.clickPrompt('0');
             expect(this.player2).toHavePrompt('Action Window');

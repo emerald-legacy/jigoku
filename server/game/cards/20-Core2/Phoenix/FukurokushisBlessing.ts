@@ -9,10 +9,7 @@ export default class FukurokushisBlessing extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel conflict province ability',
             when: {
-                onInitiateAbilityEffects: ({ card }, context) =>
-                    card instanceof ProvinceCard &&
-                    card.isConflictProvince() &&
-                    (context.source as this).controller.isAttackingPlayer()
+                onInitiateAbilityEffects: ({ card }) => card instanceof ProvinceCard
             },
             effect: 'cancel the effects of {1}\'s ability',
             effectArgs: (context) => context.event.card,

@@ -1,4 +1,4 @@
-describe('Akodo Kaede', function() {
+describe('Inscribed Tanto', function() {
     integration(function() {
         describe('Akodo Kaede\'s ability', function() {
             beforeEach(function () {

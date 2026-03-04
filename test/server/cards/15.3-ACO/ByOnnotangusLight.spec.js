@@ -169,7 +169,7 @@ describe('By Onnotangu\'s Light', function() {
                 expect(this.player2).toHavePrompt('Consumed by Five Fires');
             });
 
-            it('CBFF - should work if not in conflict', function() {
+            it('CBFF - should work during a conflict at a different province', function() {
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'military',

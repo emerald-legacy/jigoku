@@ -1,7 +1,7 @@
 const { BaseStep } = require('../../../build/server/game/gamesteps/BaseStep.js');
 const { GamePipeline } = require('../../../build/server/game/GamePipeline.js');
 
-describe('the GamePipeline', function() {
+describe('GamePipeline - continue', function() {
     beforeEach(function() {
         this.pipeline = new GamePipeline();
         this.step1 = new BaseStep(null);

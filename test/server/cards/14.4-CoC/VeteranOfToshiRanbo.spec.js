@@ -1,4 +1,4 @@
-describe('Local Daimyo\'s Retainer', function() {
+describe('Veteran of Toshi Ranbo', function() {
     integration(function() {
         describe('Conflict Phase', function() {
             beforeEach(function() {

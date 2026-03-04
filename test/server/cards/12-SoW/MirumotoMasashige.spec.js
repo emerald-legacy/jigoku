@@ -52,7 +52,7 @@ describe('Mirumoto Masashige', function() {
             expect(this.game.currentPhase).toBe('conflict');
         });
 
-        it('should allow honoring a character you control at the start of the conflict phase if you control less characters', function() {
+        it('should allow honoring a character you control at the start of the conflict phase if you control less characters (verification)', function() {
             this.player2.moveCard(this.callow, 'play area');
             this.player2.moveCard(this.toturi, 'play area');
 

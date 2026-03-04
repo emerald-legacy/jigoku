@@ -51,7 +51,7 @@ describe('SoD - Crab', function () {
                 expect(this.getChatLogs(5)).toContain('A Bad Death sees ' + matchingButtons[0].text);
             });
 
-            it('should prompt to choose a card to discard from randomly chosen cards in your opponent\'s hand', function () {
+            it('should prompt to choose a card to discard from randomly chosen cards in your opponent\'s hand (3 mil difference)', function () {
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.skirmisher, this.swordsmith],

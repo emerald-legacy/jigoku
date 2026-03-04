@@ -124,7 +124,7 @@ describe('Bayushi Dairu', function() {
                     expect(this.getChatLogs(8)).toContain('player1 uses Bayushi Dairu to move Young Rumormonger\'s Tainted Token to Bayushi Dairu');
                 });
 
-                it('should allow choosing a token if there are multiples', function() {
+                it('should allow choosing a token if there are multiples (choosing dishonored)', function() {
                     this.youngRumormonger.taint();
                     this.player2.pass();
 

@@ -5,8 +5,22 @@ const Settings = require('../../../build/server/settings.js');
 
 describe('ActionWindow', function() {
     beforeEach(function() {
-        this.gameService = jasmine.createSpyObj('gameService', ['save']);
-        this.game = new Game('1', 'Test Game', { gameService: this.gameService });
+        this.gameRouter = jasmine.createSpyObj('gameRouter', ['gameWon', 'playerLeft', 'handleError']);
+        this.gameRouter.handleError.and.callFake((game, error) => {
+            throw error;
+        });
+        this.game = new Game({
+            id: '1',
+            name: 'Test Game',
+            allowSpectators: false,
+            spectatorSquelch: false,
+            owner: 'player1',
+            gameType: 'casual',
+            gameMode: 'stronghold',
+            clocks: null,
+            players: {},
+            spectators: {}
+        }, { router: this.gameRouter });
         this.player1 = new Player('1', Settings.getUserWithDefaultsSet({ username: 'Player 1' }), true, this.game);
         this.player2 = new Player('2', Settings.getUserWithDefaultsSet({ username: 'Player 2' }), false, this.game);
         this.player2.firstPlayer = true;

@@ -1268,7 +1268,7 @@ describe('The Skin of Fu Leng', function () {
                         expect(this.yakamo.bowed).toBe(false);
                     });
 
-                    it('Yakamo Should use opponent\'s honor to determine "cannot lose a duel"', function () {
+                    it('Yakamo Should use opponent\'s honor to determine "cannot lose a duel" (opponent has more honor)', function () {
                         this.noMoreActions();
                         this.initiateConflict({
                             type: 'military',
@@ -1393,7 +1393,7 @@ describe('The Skin of Fu Leng', function () {
                         expect(this.player2).toHavePrompt('Do you want to trigger a province ability?');
                     });
 
-                    it('should allow the "controller of the winning character" to trigger the province', function () {
+                    it('should allow the "controller of the winning character" to trigger the province (opponent wins duel)', function () {
                         this.noMoreActions();
                         this.initiateConflict({
                             type: 'military',

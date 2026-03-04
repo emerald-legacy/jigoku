@@ -244,7 +244,7 @@ describe('Covert - Emerald Bug Checking', function() {
             expect(this.player2).toHavePrompt('Choose defenders');
         });
 
-        it('Reactions to declaration', function() {
+        it('Reactions to declaration (Retire to the Brotherhood)', function() {
             this.noMoreActions();
             this.player1.clickRing('air');
             this.player1.clickCard(this.retire);

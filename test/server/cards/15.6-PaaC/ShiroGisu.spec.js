@@ -43,7 +43,7 @@ describe('Shiro Gisu', function() {
             expect(this.player1).not.toHavePromptButton('Banzai!');
         });
 
-        it('should show you a number of cards equal to characters without fate (2)', function() {
+        it('should show you a number of cards equal to characters without fate (1 char with fate, shows 2)', function() {
             this.challenger.fate = 1;
             this.player1.clickCard(this.gisu);
             expect(this.player1).toHavePrompt('Choose a card to put in your hand');

@@ -1,4 +1,4 @@
-describe('Revered Ikoma', function() {
+describe('Renowned Singer', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({

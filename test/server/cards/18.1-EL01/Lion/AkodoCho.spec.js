@@ -1,4 +1,4 @@
-describe('Spearhead', function () {
+describe('Akodo Cho', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({

@@ -64,7 +64,7 @@ describe('Iaijutsu Sensei', function () {
             expect(this.getChatLogs(10)).toContain('Military Air conflict - Attacker: 6 Defender: 0');
         });
 
-        it('duel should prevent contribution from loser', function () {
+        it('duel should prevent contribution from loser (sensei loses)', function () {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.sensei, this.brash],

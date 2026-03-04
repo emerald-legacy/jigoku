@@ -217,7 +217,7 @@ describe('Vine Tattoo', function() {
             expect(this.getChatLogs(4)).toContain('player1 uses Tengu Sensei to prevent Master Alchemist from attacking this phase');
         });
 
-        it('Covert Test - reaction to covert should be on the right target (causes an issue, so we default to manual)', function() {
+        it('Covert Test - reaction to covert should be on the right target (reversed covert order)', function() {
             this.noMoreActions();
             this.player1.clickRing('air');
             this.player1.clickCard(this.shameful);

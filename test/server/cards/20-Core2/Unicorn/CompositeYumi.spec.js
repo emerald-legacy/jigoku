@@ -50,7 +50,7 @@ describe('Composite Yumi', function () {
             expect(this.player1).toBeAbleToSelect(this.compositeYumi);
         });
 
-        it('should trigger when a friendly character moves home', function () {
+        it('should not trigger when a friendly character moves home', function () {
             this.initiateConflict({
                 attackers: [this.wanderingRonin, this.scout],
                 defenders: []
@@ -58,8 +58,7 @@ describe('Composite Yumi', function () {
             this.player2.pass();
             this.player1.clickCard(this.fg);
             this.player1.clickCard(this.scout);
-            expect(this.player1).toHavePrompt('Triggered Abilities');
-            expect(this.player1).toBeAbleToSelect(this.compositeYumi);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
         });
 
         it('should trigger when an opposing character moves to the conflict', function () {

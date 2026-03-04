@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants';
+import { CardTypes, Locations, Players } from '../../../Constants';
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
 import { AbilityContext } from '../../../AbilityContext';
@@ -17,13 +17,18 @@ export default class WiseQuartermaster extends DrawCard {
             target: {
                 cardType: CardTypes.Attachment,
                 controller: Players.Self,
-                gameAction: AbilityDsl.actions.selectCard((context) => ({
-                    cardCondition: (card) =>
-                        card !== context.target.parent && card.controller === context.target.parent.controller,
-                    message: '{0} moves {1} to {2}',
-                    messageArgs: (card) => [context.player, context.target, card],
-                    gameAction: AbilityDsl.actions.attach({ attachment: context.target })
-                }))
+                gameAction: AbilityDsl.actions.selectCard((context) => {
+                    const isOnProvince = attachedToType(context) === CardTypes.Province;
+                    return {
+                        cardType: isOnProvince ? CardTypes.Province : CardTypes.Character,
+                        location: isOnProvince ? Locations.Provinces : Locations.PlayArea,
+                        cardCondition: (card) =>
+                            card !== context.target.parent && card.controller === context.target.parent.controller,
+                        message: '{0} moves {1} to {2}',
+                        messageArgs: (card) => [context.player, context.target, card],
+                        gameAction: AbilityDsl.actions.attach({ attachment: context.target })
+                    };
+                })
             },
             effect: 'move {0} to another {1}',
             effectArgs: (context) => [attachedToType(context) === CardTypes.Province ? 'province' : 'character']

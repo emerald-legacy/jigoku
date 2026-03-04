@@ -88,7 +88,7 @@ describe('Unveiled Destiny', function() {
                 expect(this.shrineMaiden.fate).toBe(0);
             });
 
-            it('should allow defend the wall to resolve the attackers role element.', function() {
+            it('should allow display of power to resolve the attackers role element.', function() {
                 this.player2.pass();
                 this.player1.clickCard('assassination');
                 this.player1.clickCard('shinjo-outrider', 'any', 'opponent');

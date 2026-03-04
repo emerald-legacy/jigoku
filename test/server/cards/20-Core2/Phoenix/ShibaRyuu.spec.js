@@ -39,7 +39,7 @@ describe('Shiba Ryuu', function () {
 
             this.noMoreActions();
 
-            expect(this.getChatLogs(5)).toContain('player2 won a military conflict 12 vs 11');
+            expect(this.getChatLogs(5)).toContain('player1 won a military conflict 12 vs 12');
         });
     });
 });

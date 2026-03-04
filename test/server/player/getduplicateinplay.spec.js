@@ -1,7 +1,7 @@
 const Player = require('../../../build/server/game/player.js');
 const DrawCard = require('../../../build/server/game/drawcard.js');
 
-describe('Player', function () {
+describe('Player - getDuplicateInPlay', function () {
     describe('getDuplicateInPlay', function () {
         beforeEach(function () {
             this.game = jasmine.createSpyObj('game', [

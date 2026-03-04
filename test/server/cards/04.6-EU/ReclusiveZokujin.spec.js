@@ -139,7 +139,7 @@ describe('Reclusive Zokujin', function() {
                 this.player1.clickPrompt('Home');
             });
 
-            it('should not be affected by opposing constant abilities', function() {
+            it('should not be affected by opposing constant abilities (with Cloud the Mind)', function() {
                 this.player1.pass();
                 this.ornateFan = this.player2.playAttachment('ornate-fan', this.bayushiLiar);
                 this.player1.pass();

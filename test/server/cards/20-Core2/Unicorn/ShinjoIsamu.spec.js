@@ -93,7 +93,7 @@ describe('Shinjo Isamu', function () {
             expect(this.getChatLogs(5)).toContain('player1 uses Shinjo Isamu to resolve the Fire Ring effect');
         });
 
-        it('does not resolve ring of conflict', function () {
+        it('can resolve ring matching province even if it matches the conflict ring', function () {
             this.initiateConflict({
                 type: 'military',
                 ring: 'void',
@@ -104,8 +104,12 @@ describe('Shinjo Isamu', function () {
             this.player2.pass();
             this.player1.clickCard(this.favorableGround);
             this.player1.clickCard(this.shinjoIsamu);
-            expect(this.player1).not.toHavePrompt('Triggered Abilities');
-            expect(this.player1).not.toBeAbleToSelect(this.shinjoIsamu);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.shinjoIsamu);
+
+            this.player1.clickCard(this.shinjoIsamu);
+            expect(this.player1).toHavePrompt('Choose a ring');
+            expect(this.player1).toBeAbleToSelectRing('void');
         });
     });
 });

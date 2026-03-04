@@ -51,7 +51,7 @@
                 expect(this.player1).not.toBeAbleToSelect(this.wanderingRonin);
             });
 
-            it('should prompt you to choose a participating character', function() {
+            it('should prompt you to choose a participating character (verification)', function() {
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.guardianKami],

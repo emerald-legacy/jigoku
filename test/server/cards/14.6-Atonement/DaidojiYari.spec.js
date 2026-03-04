@@ -1,4 +1,4 @@
-describe('Kuni Wasteland', function() {
+describe('Daidoji Yari', function() {
     integration(function() {
         describe('Kuni Wasteland\'s constant ability', function() {
             beforeEach(function() {

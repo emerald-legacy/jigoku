@@ -98,7 +98,7 @@ describe('Persuasive Counselor', function() {
                 expect(this.getChatLogs(3)).toContain('The duel has no effect');
             });
 
-            it('effect should allow DYH to be played, but it wont cancel the event', function() {
+            it('effect should allow DYH to be played, but it wont cancel the event (counselor as duel target)', function() {
                 this.player1.moveCard(this.dyh, 'hand');
                 this.player2.clickCard(this.counselor);
                 expect(this.getChatLogs(3)).toContain('player2 uses Persuasive Counselor to prevent their events from being cancelled this conflict');
@@ -130,7 +130,7 @@ describe('Persuasive Counselor', function() {
                 expect(this.tadaka.getPoliticalSkill()).toBe(pol);
             });
 
-            it('character abilities should cancel as normal', function() {
+            it('character abilities should cancel as normal (Shoju interaction)', function() {
                 let pol = this.whisperer.getPoliticalSkill();
                 this.player2.clickCard(this.counselor);
                 this.player1.pass();
@@ -156,7 +156,7 @@ describe('Persuasive Counselor', function() {
                 expect(this.tadaka.fate).toBe(fate);
             });
 
-            it('attachment abilities should cancel as normal', function() {
+            it('attachment abilities should cancel as normal (Tetsubo interaction)', function() {
                 let fate = this.whisperer.fate;
                 this.player2.clickCard(this.counselor);
                 this.player1.pass();

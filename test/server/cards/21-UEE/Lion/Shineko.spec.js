@@ -57,7 +57,7 @@ describe('Shineko', function () {
             });
         });
 
-        describe('Discount ability', function () {
+        describe('Discount ability - conflict phase', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',

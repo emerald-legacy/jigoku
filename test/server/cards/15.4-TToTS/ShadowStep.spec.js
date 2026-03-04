@@ -166,7 +166,7 @@ describe('Shadow Step - Netsu', function() {
     });
 });
 
-describe('Expert Interpreter', function() {
+describe('Shadow Step - Expert Interpreter interaction', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({

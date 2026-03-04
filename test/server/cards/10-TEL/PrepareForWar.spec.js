@@ -147,7 +147,7 @@ describe('Prepare for War', function() {
             expect(this.akodoZentaro.isHonored).toBe(true);
         });
 
-        it('should prompt to discard each the status token from the character', function() {
+        it('should prompt to discard each the status token from the character (keeping tainted)', function() {
             this.akodoZentaro.dishonor();
             this.akodoZentaro.taint();
             this.player1.clickCard(this.prepareForWar);

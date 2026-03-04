@@ -235,7 +235,7 @@ describe('SoD - Scorpion', function () {
                 expect(this.getChatLogs(5)).toContain('player2 discards a card at random due to the delayed effect of Disputed Lineage');
             });
 
-            it('should work on defenders', function () {
+            it('should not discard when target is not defending', function () {
                 this.player1.clickCard(this.lineage);
                 this.player1.clickCard(this.keeper);
 

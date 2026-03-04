@@ -64,7 +64,7 @@ describe('Winds Path', function() {
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
 
-            it('should work during any conflict', function() {
+            it('should work during any conflict (opponent attacking)', function() {
                 this.noMoreActions();
                 this.player1.passConflict();
                 this.noMoreActions();

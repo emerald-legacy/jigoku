@@ -1,6 +1,6 @@
 const { GamePipeline } = require('../../../build/server/game/GamePipeline.js');
 
-describe('the GamePipeline', function() {
+describe('GamePipeline - queueStep', function() {
     beforeEach(function() {
         this.step = {};
         this.pipeline = new GamePipeline();

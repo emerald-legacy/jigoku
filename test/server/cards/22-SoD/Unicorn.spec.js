@@ -196,19 +196,19 @@ describe('SoD - Unicorn', function () {
                 this.player2.pass();
 
                 expect(this.game.currentConflict.attackerSkill).toBe(4);
-                expect(this.game.currentConflict.defenderSkill).toBe(1);
+                expect(this.game.currentConflict.defenderSkill).toBe(2);
 
                 this.player1.clickCard(this.defeat);
                 this.player1.clickCard(this.moto);
 
                 expect(this.game.currentConflict.attackerSkill).toBe(4);
-                expect(this.game.currentConflict.defenderSkill).toBe(1);
+                expect(this.game.currentConflict.defenderSkill).toBe(2);
                 expect(this.moto.bowed).toBe(true);
 
                 this.toshimoko.bowed = true;
                 this.game.checkGameState(true);
                 expect(this.game.currentConflict.attackerSkill).toBe(0);
-                expect(this.game.currentConflict.defenderSkill).toBe(1);
+                expect(this.game.currentConflict.defenderSkill).toBe(2);
             });
 
             it('should move in after event', function () {

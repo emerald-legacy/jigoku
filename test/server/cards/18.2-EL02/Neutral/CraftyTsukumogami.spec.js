@@ -105,7 +105,7 @@ describe('Crafty Tsukumogami', function() {
             expect(this.player2).toHavePrompt('Choose defenders');
         });
 
-        it('should force players who attack with the ring to discard a card', function() {
+        it('should force players who attack with the ring to discard a card (opponent attacking)', function() {
             this.player1.clickCard(this.crafty);
             this.player1.clickRing('fire');
             this.noMoreActions();

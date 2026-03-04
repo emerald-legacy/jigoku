@@ -35,20 +35,22 @@ describe('Drawing the Void', function () {
             expect(this.player2).toHavePrompt('Initiate an action');
         });
 
-        it('reveals two cards and remove one from the game, without affinity the opponent chooses the card', function () {
+        it('reveals two cards and remove one from the game, without affinity player still chooses but does not draw', function () {
             this.player1.moveCard(this.akodoKaede, 'dynasty deck');
 
             this.player1.clickCard(this.drawingTheVoid);
             expect(this.getChatLogs(5)).toContain(
                 'player2 reveals Regal Bearing and Reprieve from their hand - the void reveals...'
             );
-            expect(this.player2).toHavePrompt('Choose a card to remove from the game');
-            expect(this.player2).toHavePromptButton('Regal Bearing');
-            expect(this.player2).toHavePromptButton('Reprieve');
+            expect(this.player1).toHavePrompt('Choose a card to remove from the game');
+            expect(this.player1).toHavePromptButton('Regal Bearing');
+            expect(this.player1).toHavePromptButton('Reprieve');
 
-            this.player2.clickPrompt('Regal Bearing');
-            expect(this.getChatLogs(5)).toContain('player2 removes Regal Bearing from the game - the void consumes!');
+            this.player1.clickPrompt('Regal Bearing');
+            expect(this.getChatLogs(5)).toContain('player1 removes Regal Bearing from the game - the void consumes!');
             expect(this.regalBearing.location).toBe('removed from game');
+            // Without affinity, no card is drawn
+            expect(this.player1.hand.length).toBe(0);
 
             expect(this.player2).toHavePrompt('Initiate an action');
         });

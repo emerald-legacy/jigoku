@@ -1,9 +1,20 @@
 const Game = require('../../../build/server/game/game.js');
 
-describe('Game', function() {
+describe('Game - getPlayers', function() {
     beforeEach(function() {
         this.gameService = jasmine.createSpyObj('gameService', ['save']);
-        this.game = new Game('1', 'Test Game', { gameService: this.gameService });
+        this.game = new Game({
+            id: '1',
+            name: 'Test Game',
+            allowSpectators: false,
+            spectatorSquelch: false,
+            owner: 'player1',
+            gameType: 'casual',
+            gameMode: 'stronghold',
+            clocks: null,
+            players: {},
+            spectators: {}
+        }, { gameService: this.gameService });
 
         this.notSetPlayer1 = { id: '1', name: 'test' };
         this.notSetPlayer2 = { id: '2', name: 'test2' };

@@ -59,7 +59,7 @@ describe('Onsen Quarter', function() {
             expect(this.onsen.strength).toBe(onsenFriendlyBaseStr);
         });
 
-        it('should not raise own strength by 1', function() {
+        it('should not raise own strength by 1 (verification)', function() {
             this.onsen.facedown = false;
             this.game.checkGameState();
 

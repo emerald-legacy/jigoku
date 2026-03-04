@@ -1,7 +1,7 @@
 const { BaseStep } = require('../../../build/server/game/gamesteps/BaseStep.js');
 const { GamePipeline } = require('../../../build/server/game/GamePipeline.js');
 
-describe('the GamePipeline', function() {
+describe('GamePipeline - handleMenuCommand', function() {
     var pipeline;
     var step = new BaseStep(null);
     var player = {};

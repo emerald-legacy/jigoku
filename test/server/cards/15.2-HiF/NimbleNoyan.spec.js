@@ -1,4 +1,4 @@
-describe('Superior Authority', function() {
+describe('Nimble Noyan', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({

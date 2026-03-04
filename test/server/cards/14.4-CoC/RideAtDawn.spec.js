@@ -1,4 +1,4 @@
-describe('Dispatch To Nowhere', function() {
+describe('Ride at Dawn', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({

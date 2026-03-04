@@ -33,7 +33,7 @@ describe('Ashigaru Levy', function() {
                 expect(this.ashigaruLevy2.location).toBe('play area');
             });
 
-            it('should allow you to fetch another levy from the province row', function () {
+            it('should allow you to fetch another levy from the discard pile', function () {
                 this.player1.clickCard(this.ashigaruLevy1);
                 this.player1.clickPrompt('0');
 
@@ -46,7 +46,7 @@ describe('Ashigaru Levy', function() {
                 expect(this.ashigaruLevy3.location).toBe('play area');
             });
 
-            it('should allow you to fetch another levy from the province row', function () {
+            it('should allow you to chain fetching multiple levies', function () {
                 this.player1.clickCard(this.ashigaruLevy1);
                 this.player1.clickPrompt('0');
 

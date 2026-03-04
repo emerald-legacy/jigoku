@@ -121,7 +121,7 @@ describe('Kakita Toshimoko', function() {
             });
         });
 
-        describe('Kakita Toshimoko\'s ability', function() {
+        describe('Kakita Toshimoko\'s ability (duel cancellation interactions)', function() {
             beforeEach(function() {
                 this.setupTest({
                     phase: 'conflict',

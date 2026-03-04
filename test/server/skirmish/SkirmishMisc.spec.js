@@ -148,7 +148,7 @@ describe('Skirmish Win Conditions', function() {
             expect(this.getChatLogs(5)).not.toContain('player1 has won the game');
         });
 
-        it('conquest win is at 3rd break - not the 3rd break', function() {
+        it('conquest win is at 3rd break - win with 2 prior breaks', function() {
             this.player2.player.getProvinceCardInProvince('province 2').isBroken = true;
             this.player2.player.getProvinceCardInProvince('province 3').isBroken = true;
             this.player1.pass();

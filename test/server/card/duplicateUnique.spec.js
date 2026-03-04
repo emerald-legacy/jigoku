@@ -1,4 +1,4 @@
-describe('Perfect Guest', function() {
+describe('Duplicate Unique', function() {
     integration(function() {
         describe('Perfect Guest\'s ability', function() {
             beforeEach(function() {

@@ -51,7 +51,7 @@ describe('Lord\'s Ascendancy', function() {
             expect(this.getChatLogs(5)).toContain('player2 uses Lord\'s Ascendancy to place a fate from player1\'s fate pool on Adept of Shadows');
         });
 
-        it('should move a fate from the controllers pool to the character (opponent)', function() {
+        it('should move a fate from the controllers pool to the character (own character)', function() {
             let p1fate = this.player1.fate;
             let p2fate = this.player2.fate;
 

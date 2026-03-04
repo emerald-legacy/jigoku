@@ -1,4 +1,4 @@
-describe('Daidoji Harrier', function() {
+describe('Golden Plains Raider', function() {
     integration(function() {
         describe('Daidoji Harrier\'s ability', function() {
             beforeEach(function() {

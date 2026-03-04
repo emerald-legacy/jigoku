@@ -43,7 +43,7 @@ describe('Destiny Revealed', function () {
                 expect(this.player1).toBeAbleToSelect(this.destiny);
             });
 
-            it('should react if you win', function () {
+            it('should react if you win and place fate', function () {
                 const initialPlayerFate = this.player1.fate;
                 this.noMoreActions();
                 this.initiateConflict({

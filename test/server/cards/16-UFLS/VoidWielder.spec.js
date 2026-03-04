@@ -132,7 +132,7 @@ describe('Void Wielder', function() {
             expect(this.getChatLogs(3)).toContain('player2 discards Tainted Token');
         });
 
-        it('discard status token - multiple tokens', function() {
+        it('discard status token - multiple tokens (own character)', function() {
             this.noMoreActions();
             this.initiateConflict({
                 type: 'military',

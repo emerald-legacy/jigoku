@@ -1,6 +1,6 @@
 const { GamePipeline } = require('../../../build/server/game/GamePipeline.js');
 
-describe('the GamePipeline', function() {
+describe('GamePipeline - cancelStep', function() {
     beforeEach(function() {
         this.pipeline = new GamePipeline();
     });

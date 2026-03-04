@@ -1,4 +1,4 @@
-describe('Shadowed Village', function() {
+describe('Adorned Temple', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({

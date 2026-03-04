@@ -1,4 +1,4 @@
-describe('Cloak of Night', function() {
+describe('Shepherd of Visages', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({

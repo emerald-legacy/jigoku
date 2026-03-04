@@ -40,7 +40,7 @@ describe('Negotiation Table', function() {
             expect(this.player2).toHavePromptButton('Done');
         });
 
-        it('should prompt opponent to make a choice', function() {
+        it('should prompt opponent to make a choice (player 2 using table)', function() {
             this.player1.pass();
             this.player2.clickCard(this.table2);
             expect(this.player1).toHavePrompt('Negotiation Table');

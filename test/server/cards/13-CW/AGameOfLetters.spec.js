@@ -97,7 +97,7 @@ describe('A Game of Letters', function() {
             expect(this.dojiWhisperer.isDishonored).toBe(false);
         });
 
-        it('should apply the same effect as the token', function() {
+        it('should apply the same effect as the token (non-participating target)', function() {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.yoshi, this.fumiki, this.keepsakes],

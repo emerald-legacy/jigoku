@@ -36,6 +36,7 @@ describe('Wrathstorm Dancer', function () {
                 defenders: []
             });
             this.noMoreActions();
+            this.player1.clickPrompt('Yes');
             this.player1.clickPrompt('Don\'t resolve');
             expect(this.player1).toHavePrompt('Action Window');
             expect(this.dancer.bowed).toBe(true);

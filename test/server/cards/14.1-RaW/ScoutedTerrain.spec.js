@@ -109,7 +109,7 @@ describe('Scouted Terrain', function() {
             expect(this.player2).not.toBeAbleToSelect(this.pStronghold);
         });
 
-        it('should allow moving the conflict to the stronghold', function() {
+        it('should allow moving the conflict to the stronghold (using Agetoki ability)', function() {
             this.p1.facedown = false;
             this.p2.facedown = false;
             this.p3.facedown = false;

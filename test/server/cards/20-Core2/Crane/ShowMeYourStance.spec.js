@@ -164,7 +164,7 @@ describe('Show Me Your Stance', function () {
                 expect(this.getChatLogs(5)).toContain('player1 plays Show Me Your Stance to send Doji Challenger home');
             });
 
-            it('should let you pick an attacking character with glory equal to or less than a participating duelist you control and send them home', function () {
+            it('should let you pick an attacking character with glory equal to or less than a participating duelist you control and send them home (on defense)', function () {
                 this.noMoreActions();
                 this.player1.passConflict();
                 this.noMoreActions();

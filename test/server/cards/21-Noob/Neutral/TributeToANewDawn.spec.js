@@ -41,7 +41,7 @@ describe('Tribute to a New Dawn', function () {
 
         it('discards multiple attachments', function () {
             this.player2.clickCard(this.tributeToANewDawn);
-            expect(this.player1).toHavePrompt('Choose up to 3 attachments to keep');
+            expect(this.player1).toHavePrompt('Choose up to 2 attachments to keep');
             expect(this.player1).toBeAbleToSelect(this.fineKatana);
             expect(this.player1).toBeAbleToSelect(this.ornateFan);
             expect(this.player1).toBeAbleToSelect(this.compass);
@@ -57,10 +57,9 @@ describe('Tribute to a New Dawn', function () {
 
             this.player1.clickCard(this.fineKatana);
             this.player1.clickCard(this.ornateFan);
-            this.player1.clickCard(this.compass);
             this.player1.clickPrompt('Done');
 
-            expect(this.player2).toHavePrompt('Choose up to 3 attachments to keep');
+            expect(this.player2).toHavePrompt('Choose up to 2 attachments to keep');
             expect(this.player2).not.toBeAbleToSelect(this.fineKatana);
             expect(this.player2).not.toBeAbleToSelect(this.ornateFan);
             expect(this.player2).not.toBeAbleToSelect(this.compass);
@@ -76,21 +75,20 @@ describe('Tribute to a New Dawn', function () {
 
             this.player2.clickCard(this.cloudTheMind);
             this.player2.clickCard(this.sato);
-            this.player2.clickCard(this.pacifism);
             this.player2.clickPrompt('Done');
 
-            expect(this.fanOfCommand.location).toBe('conflict discard pile');
-            expect(this.guardDuty.location).toBe('conflict discard pile');
-            expect(this.magnificientKimono.location).toBe('conflict discard pile');
+            expect(this.compass.location).toBe('removed from game');
+            expect(this.fanOfCommand.location).toBe('removed from game');
+            expect(this.guardDuty.location).toBe('removed from game');
+            expect(this.magnificientKimono.location).toBe('removed from game');
+            expect(this.pacifism.location).toBe('removed from game');
             expect(this.fineKatana.location).toBe('play area');
             expect(this.ornateFan.location).toBe('play area');
-            expect(this.compass.location).toBe('play area');
             expect(this.cloudTheMind.location).toBe('play area');
             expect(this.sato.location).toBe('play area');
-            expect(this.pacifism.location).toBe('play area');
 
             expect(this.getChatLogs(3)).toContain(
-                'player2 plays Tribute to a New Dawn to discard Fan of Command, Guard Duty and Magnificent Kimono'
+                'player2 plays Tribute to a New Dawn to remove Compass, Fan of Command, Guard Duty, Magnificent Kimono and Pacifism from the game'
             );
         });
     });

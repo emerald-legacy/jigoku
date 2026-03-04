@@ -16,10 +16,16 @@ class GameFlowWrapper {
             id: 12345,
             owner: 'player1',
             saveGameId: 12345,
+            allowSpectators: false,
+            spectatorSquelch: false,
+            gameType: 'casual',
+            gameMode: 'stronghold',
+            clocks: null,
             players: [
                 { id: '111', user: Settings.getUserWithDefaultsSet({ username: 'player1' }) },
                 { id: '222', user: Settings.getUserWithDefaultsSet({ username: 'player2' }) }
-            ]
+            ],
+            spectators: {}
         };
         this.game = new Game(details, { router: gameRouter });
         this.game.started = true;

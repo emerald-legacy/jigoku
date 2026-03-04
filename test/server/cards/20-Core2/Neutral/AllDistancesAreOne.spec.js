@@ -1,6 +1,6 @@
-describe('Talisman of the Sun', function () {
+describe('All Distances Are One', function () {
     integration(function () {
-        describe('Talisman of the Sun\'s ability', function () {
+        describe('All Distances Are One\'s ability', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',

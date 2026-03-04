@@ -223,7 +223,7 @@ describe('Bayushi\'s Saboteurs', function () {
             );
         });
 
-        it('discard - player 2', function () {
+        it('flip facedown - player 2', function () {
             this.noMoreActions();
             this.player1.clickRing('air');
             this.player1.clickCard(this.shameful);
