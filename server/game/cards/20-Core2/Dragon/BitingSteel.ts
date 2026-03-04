@@ -33,7 +33,7 @@ export default class BitingSteel extends DrawCard {
             target: {
                 cardType: CardTypes.Attachment,
                 cardCondition: (card: DrawCard, context) =>
-                    card.parent && card.parent === context.source.parent && getAttachmentSkill(card) !== 0,
+                    card.parent && card.parent === context.source.parent && card.hasTrait('weapon') && getAttachmentSkill(card) !== 0,
                 gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                     target: context.target.parent,
                     effect: AbilityDsl.effects.modifyDuelistSkill(
