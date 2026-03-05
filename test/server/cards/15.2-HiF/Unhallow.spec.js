@@ -179,9 +179,9 @@ describe('Unhallow', function () {
                 defenders: [this.adept],
                 province: this.sd1
             });
+            expect(this.getChatLog(5)).toContain('player2 loses 1 honor in order to declare defending characters');
+            expect(this.getChatLog(4)).toContain('player2 loses 1 honor in order to declare defending characters');
             expect(this.getChatLog(3)).toContain('player2 loses 1 honor in order to declare defending characters');
-            expect(this.getChatLog(2)).toContain('player2 loses 1 honor in order to declare defending characters');
-            expect(this.getChatLog(1)).toContain('player2 loses 1 honor in order to declare defending characters');
 
             expect(this.player2.honor).toBe(honor - 3);
         });

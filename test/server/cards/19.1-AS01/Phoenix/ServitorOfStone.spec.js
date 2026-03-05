@@ -100,7 +100,7 @@ describe('Servitor of Stone', function () {
                 expect(this.servitorOfStone.location).toBe(
                     'conflict discard pile'
                 );
-                expect(this.getChatLogs(5)).toContain(
+                expect(this.getChatLogs(7)).toContain(
                     'Servitor of Stone is discarded from play because player1 controls no Shugenja at their location'
                 );
             });

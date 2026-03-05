@@ -35,7 +35,7 @@ describe('Temple of The Thunders', function() {
                 });
 
                 this.player2.clickPrompt('Done');
-                expect(this.getChatLogs(3)).toContain('player2 uses Temple of the Thunders to place 1 fate on Fire Ring');
+                expect(this.getChatLogs(5)).toContain('player2 uses Temple of the Thunders to place 1 fate on Fire Ring');
                 expect(this.game.rings.fire.fate).toBe(fate + 1);
             });
 

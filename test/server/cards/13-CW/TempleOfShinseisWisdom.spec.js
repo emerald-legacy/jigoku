@@ -34,7 +34,7 @@ describe('Temple of Shinseis Wisdom', function() {
                 });
 
                 this.player2.clickPrompt('Done');
-                expect(this.getChatLogs(3)).toContain('player2 uses Temple of Shinsei\'s Wisdom to place 1 fate on Void Ring');
+                expect(this.getChatLogs(5)).toContain('player2 uses Temple of Shinsei\'s Wisdom to place 1 fate on Void Ring');
                 expect(this.game.rings.void.fate).toBe(fate + 1);
             });
 

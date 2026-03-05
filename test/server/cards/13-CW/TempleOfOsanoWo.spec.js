@@ -34,7 +34,7 @@ describe('Temple of Osano-Wo', function() {
                 });
 
                 this.player2.clickPrompt('Done');
-                expect(this.getChatLogs(3)).toContain('player2 uses Temple of Osano-wo to place 1 fate on Earth Ring');
+                expect(this.getChatLogs(5)).toContain('player2 uses Temple of Osano-wo to place 1 fate on Earth Ring');
                 expect(this.game.rings.earth.fate).toBe(fate + 1);
             });
 

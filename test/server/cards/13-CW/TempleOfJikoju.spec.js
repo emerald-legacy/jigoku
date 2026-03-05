@@ -35,7 +35,7 @@ describe('Temple of Jikoju', function() {
                 });
 
                 this.player2.clickPrompt('Done');
-                expect(this.getChatLogs(3)).toContain('player2 uses Temple of Jikoju to place 1 fate on Air Ring');
+                expect(this.getChatLogs(5)).toContain('player2 uses Temple of Jikoju to place 1 fate on Air Ring');
                 expect(this.game.rings.air.fate).toBe(fate + 1);
             });
 

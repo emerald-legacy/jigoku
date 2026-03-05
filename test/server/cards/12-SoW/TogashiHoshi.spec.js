@@ -113,7 +113,7 @@ describe('Togashi Hoshi', function () {
                 type: 'military'
             });
 
-            expect(this.getChatLogs(2)).toContain('player1 has initiated a military conflict with skill 1');
+            expect(this.getChatLogs(4)).toContain('player1 has initiated a military conflict with skill 1');
         });
 
         it('should contribute skill equal to printed modifiers (pol)', function () {
@@ -128,7 +128,7 @@ describe('Togashi Hoshi', function () {
                 type: 'political'
             });
 
-            expect(this.getChatLogs(2)).toContain('player1 has initiated a political conflict with skill 1');
+            expect(this.getChatLogs(4)).toContain('player1 has initiated a political conflict with skill 1');
         });
 
         it('should be able to have negative base skill', function () {
@@ -143,14 +143,14 @@ describe('Togashi Hoshi', function () {
                 type: 'military'
             });
 
-            expect(this.getChatLogs(2)).toContain('player1 has initiated a military conflict with skill 0');
+            expect(this.getChatLogs(4)).toContain('player1 has initiated a military conflict with skill 0');
             this.player2.pass();
             this.player1.clickCard(this.banzai);
             this.player1.clickCard(this.madness);
             this.player1.clickPrompt('Lose 1 honor to resolve this ability again');
             this.player1.clickCard(this.madness);
             this.player1.clickPrompt('Done');
-            expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 2 Defender: 0');
+            expect(this.getChatLogs(4)).toContain('Military Air conflict - Attacker: 2 Defender: 0');
         });
 
         it('should not allow using abilities that refer to the parent', function () {

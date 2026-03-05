@@ -233,8 +233,8 @@ describe('SoD - Crab', function () {
                 expect(this.yokuni.bowed).toBe(true);
                 expect(this.challenger.bowed).toBe(true);
 
-                expect(this.getChatLogs(5)).toContain('player1 plays Reckless Assault to bow Togashi Yokuni and Doji Challenger if neither of them defend');
-                expect(this.getChatLogs(5)).toContain('Togashi Yokuni and Doji Challenger are bowed due to the delayed effect of Reckless Assault');
+                expect(this.getChatLogs(7)).toContain('player1 plays Reckless Assault to bow Togashi Yokuni and Doji Challenger if neither of them defend');
+                expect(this.getChatLogs(7)).toContain('Togashi Yokuni and Doji Challenger are bowed due to the delayed effect of Reckless Assault');
             });
 
             it('should not bow', function () {

@@ -268,7 +268,7 @@ describe('SoD - Scorpion', function () {
 
 
                 expect(this.player2.hand.length).toBe(hand - 1);
-                expect(this.getChatLogs(5)).toContain('player2 discards a card at random due to the delayed effect of Disputed Lineage');
+                expect(this.getChatLogs(7)).toContain('player2 discards a card at random due to the delayed effect of Disputed Lineage');
             });
 
             it('should work on second conflict', function () {
@@ -298,7 +298,7 @@ describe('SoD - Scorpion', function () {
 
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 expect(this.player2.hand.length).toBe(hand - 1);
-                expect(this.getChatLogs(5)).toContain('player2 discards a card at random due to the delayed effect of Disputed Lineage');
+                expect(this.getChatLogs(7)).toContain('player2 discards a card at random due to the delayed effect of Disputed Lineage');
             });
 
             it('should only work once per round', function () {

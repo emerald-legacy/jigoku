@@ -34,7 +34,7 @@ describe('Temple of Daikoku', function() {
                 });
 
                 this.player2.clickPrompt('Done');
-                expect(this.getChatLogs(3)).toContain('player2 uses Temple of Daikoku to place 1 fate on Water Ring');
+                expect(this.getChatLogs(5)).toContain('player2 uses Temple of Daikoku to place 1 fate on Water Ring');
                 expect(this.game.rings.water.fate).toBe(fate + 1);
             });
 

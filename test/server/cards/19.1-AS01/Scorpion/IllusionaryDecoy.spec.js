@@ -113,10 +113,10 @@ describe('Illusionary Decoy', function () {
             expect(this.decoy.location).toBe('play area');
             expect(this.decoy.isParticipating()).toBe(true);
             expect(this.challenger.isParticipating()).toBe(false);
-            expect(this.getChatLogs(3)).toContain(
+            expect(this.getChatLogs(5)).toContain(
                 'player2 uses Illusionary Decoy to put Illusionary Decoy into play in the conflict'
             );
-            expect(this.getChatLogs(3)).toContain(
+            expect(this.getChatLogs(5)).toContain(
                 'player2 moves home Doji Challenger - they were an Illusionary Decoy!'
             );
         });
