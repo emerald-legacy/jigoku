@@ -16,7 +16,7 @@ export default class ScoutsSteed extends DrawCard {
             target: {
                 cardType: CardTypes.Province,
                 location: Locations.Provinces,
-                cardCondition: (card) => card.isFacedown() && card.canBeAttacked()
+                cardCondition: (card, context) => card.isFacedown() && card.canBeAttacked() && card.controller !== context.player
             },
             gameAction: AbilityDsl.actions.sequentialContext(
                 ({ player, target: province, source: { parent: character } }) => ({

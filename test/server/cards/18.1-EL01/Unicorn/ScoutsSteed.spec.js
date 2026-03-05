@@ -25,6 +25,20 @@ describe('Scouts Steed', function () {
             this.fertileFacedown.facedown = true;
         });
 
+        it('should not allow targeting own provinces', function () {
+            this.player1Province = this.player1.findCardByName('shameful-display', 'province 1');
+            this.player1Province.facedown = true;
+
+            this.player1.clickCard(this.scoutsSteed);
+            this.player1.clickCard(this.shinjoArcher);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+
+            this.player1.clickCard(this.scoutsSteed);
+            expect(this.player1).toHavePrompt('Choose a province');
+            expect(this.player1).not.toBeAbleToSelect(this.player1Province);
+            expect(this.player1).toBeAbleToSelect(this.fertileFacedown);
+        });
+
         it('readies the character and declare an attack with them', function () {
             this.player1.clickCard(this.scoutsSteed);
             this.player1.clickCard(this.shinjoArcher);
