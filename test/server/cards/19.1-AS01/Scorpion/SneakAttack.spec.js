@@ -1,4 +1,4 @@
-xdescribe('Sneak Attack', function () {
+describe('Sneak Attack', function () {
     integration(function () {
         describe('With a normal stronghold', function () {
             beforeEach(function () {
@@ -23,7 +23,7 @@ xdescribe('Sneak Attack', function () {
                 this.letGo = this.player2.findCardByName('let-go');
             });
 
-            it('should give the attacking player the first action opportunity and peak at opponent hand', function () {
+            it('should give the attacking player the first action opportunity and set aside opponent cards', function () {
                 let player1StartingHonor = this.player1.honor;
                 this.noMoreActions();
                 this.initiateConflict({
@@ -41,9 +41,16 @@ xdescribe('Sneak Attack', function () {
                 expect(this.player2).toHavePrompt('Waiting for opponent to take an action or pass');
 
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Sneak Attack, losing 1 honor to give player1 the first action in this conflict and peak at their opponent\'s hand'
+                    'player1 plays Sneak Attack, losing 1 honor to give player1 the first action in this conflict and sets aside opponent\'s cards'
                 );
-                expect(this.getChatLogs(5)).toContain('player1 sees For Shame! and Let Go in player2\'s hand');
+                const logs = this.getChatLogs(5);
+                const setAsideLogs = logs.filter(l => l.startsWith('player2 sets aside'));
+                expect(setAsideLogs.length).toBe(1);
+                expect(setAsideLogs[0]).toMatch(/player2 sets aside (For Shame! and Let Go|Let Go and For Shame!)/);
+
+                // Verify cards are removed from game
+                expect(this.forShame.location).toBe('removed from game');
+                expect(this.letGo.location).toBe('removed from game');
             });
         });
 
