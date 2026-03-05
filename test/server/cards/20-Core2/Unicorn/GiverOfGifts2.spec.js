@@ -1,149 +1,99 @@
-xdescribe('Giver of Gifts 2', function () {
+describe('Giver of Gifts 2', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['doji-kuwanan', 'doomed-shugenja'],
-                    hand: [
-                        'fine-katana',
-                        'cloud-the-mind',
-                        'finger-of-jade',
-                        'height-of-fashion',
-                        'force-of-the-river',
-                        'talisman-of-the-sun'
-                    ]
+                    inPlay: ['giver-of-gifts-2', 'shinjo-outrider', 'moto-youth', 'doomed-shugenja'],
+                    hand: ['fine-katana', 'force-of-the-river', 'ornate-fan']
                 },
                 player2: {
-                    inPlay: ['giver-of-gifts-2', 'hida-kisada'],
-                    hand: ['ornate-fan', 'calling-in-favors', 'talisman-of-the-sun']
+                    inPlay: ['bayushi-liar'],
+                    hand: ['pacifism']
                 }
             });
 
-            this.giverOfGifts = this.player2.findCardByName('giver-of-gifts-2');
-            this.kisada = this.player2.findCardByName('hida-kisada');
-            this.fan = this.player2.findCardByName('ornate-fan');
-            this.calling = this.player2.findCardByName('calling-in-favors');
-
-            this.talismanP2 = this.player2.findCardByName('talisman-of-the-sun');
-
-            this.kuwanan = this.player1.findCardByName('doji-kuwanan');
-            this.doomed = this.player1.findCardByName('doomed-shugenja');
-            this.cloud = this.player1.findCardByName('cloud-the-mind');
+            this.giverOfGifts = this.player1.findCardByName('giver-of-gifts-2');
+            this.outrider = this.player1.findCardByName('shinjo-outrider');
+            this.youth = this.player1.findCardByName('moto-youth');
             this.katana = this.player1.findCardByName('fine-katana');
-            this.finger = this.player1.findCardByName('finger-of-jade');
-            this.fashion = this.player1.findCardByName('height-of-fashion');
             this.river = this.player1.findCardByName('force-of-the-river');
+            this.fan = this.player1.findCardByName('ornate-fan');
+            this.doomed = this.player1.findCardByName('doomed-shugenja');
 
-            this.talismanP1 = this.player1.findCardByName('talisman-of-the-sun');
+            this.liar = this.player2.findCardByName('bayushi-liar');
+            this.pacifism = this.player2.findCardByName('pacifism');
 
-            this.player1.playAttachment(this.katana, this.doomed);
-            this.player2.playAttachment(this.fan, this.doomed);
-            this.player1.playAttachment(this.finger, this.kuwanan);
+            this.player1.playAttachment(this.katana, this.outrider);
             this.player2.pass();
-            this.player1.playAttachment(this.cloud, this.kisada);
-            this.player2.pass();
-            this.player1.playAttachment(this.fashion, this.kuwanan);
-            this.player2.pass();
-            this.player1.playAttachment(this.river, this.doomed);
+            this.player1.playAttachment(this.fan, this.giverOfGifts);
         });
 
-        it('should only allow targeting an attachment with cost 1 or less controlled by opponent', function () {
-            this.player2.clickCard(this.giverOfGifts);
-            expect(this.player2).toBeAbleToSelect(this.cloud);
-            expect(this.player2).toBeAbleToSelect(this.finger);
-            expect(this.player2).not.toBeAbleToSelect(this.fan);
-            expect(this.player2).toBeAbleToSelect(this.katana);
-            expect(this.player2).not.toBeAbleToSelect(this.fashion);
-            expect(this.player2).toBeAbleToSelect(this.river);
+        it('should only allow targeting attachments you control', function () {
+            this.player2.playAttachment(this.pacifism, this.outrider);
+
+            this.player1.clickCard(this.giverOfGifts);
+            expect(this.player1).toBeAbleToSelect(this.katana);
+            expect(this.player1).toBeAbleToSelect(this.fan);
+            expect(this.player1).not.toBeAbleToSelect(this.pacifism);
         });
 
-        it('should not allow targeting an attachment that has changed control', function () {
-            this.player2.clickCard(this.calling);
-            this.player2.clickCard(this.katana);
-            this.player2.clickCard(this.giverOfGifts);
+        it('should allow moving attachment to another character controlled by the same player', function () {
+            this.player2.pass();
 
-            this.player1.pass();
+            this.player1.clickCard(this.giverOfGifts);
+            this.player1.clickCard(this.katana);
+            expect(this.player1).toBeAbleToSelect(this.giverOfGifts);
+            expect(this.player1).toBeAbleToSelect(this.youth);
+            expect(this.player1).not.toBeAbleToSelect(this.outrider);
+            expect(this.player1).not.toBeAbleToSelect(this.liar);
 
-            this.player2.clickCard(this.giverOfGifts);
-            expect(this.player2).toBeAbleToSelect(this.cloud);
-            expect(this.player2).toBeAbleToSelect(this.finger);
-            expect(this.player2).not.toBeAbleToSelect(this.fan);
-            expect(this.player2).not.toBeAbleToSelect(this.katana);
-        });
-
-        it('should allow moving the attachment to another character controlled by the attachment parent', function () {
-            this.player2.clickCard(this.giverOfGifts);
-            this.player2.clickCard(this.cloud);
-            expect(this.player2).toBeAbleToSelect(this.giverOfGifts);
-            expect(this.player2).not.toBeAbleToSelect(this.kisada);
-            expect(this.player2).not.toBeAbleToSelect(this.kuwanan);
-            expect(this.player2).not.toBeAbleToSelect(this.doomed);
-
-            this.player2.clickCard(this.giverOfGifts);
-            expect(this.giverOfGifts.attachments).toContain(this.cloud);
-            expect(this.kisada.attachments).not.toContain(this.cloud);
+            this.player1.clickCard(this.youth);
+            expect(this.youth.attachments).toContain(this.katana);
+            expect(this.outrider.attachments).not.toContain(this.katana);
 
             expect(this.getChatLogs(2)).toContain(
-                'player2 uses Iuchi Rimei to move Cloud the Mind to another character'
+                'player1 uses Giver of Gifts to move Fine Katana to another character'
             );
-            expect(this.getChatLogs(1)).toContain('player2 moves Cloud the Mind to Iuchi Rimei');
+            expect(this.getChatLogs(1)).toContain('player1 moves Fine Katana to Moto Youth');
         });
 
-        it('should allow moving an attachment that can only be attached to \'characters you control\'', function () {
-            this.player2.clickCard(this.giverOfGifts);
-            this.player2.clickCard(this.finger);
-            expect(this.player2).not.toBeAbleToSelect(this.giverOfGifts);
-            expect(this.player2).not.toBeAbleToSelect(this.kisada);
-            expect(this.player2).not.toBeAbleToSelect(this.kuwanan);
-            expect(this.player2).toBeAbleToSelect(this.doomed);
-            this.player2.clickCard(this.doomed);
-
-            expect(this.kuwanan.attachments).not.toContain(this.finger);
-            expect(this.doomed.attachments).toContain(this.finger);
-
-            expect(this.finger.location).toBe('play area');
+        it('should not target an attachment controlled by opponent (even if on your character)', function () {
+            this.player2.playAttachment(this.pacifism, this.outrider);
+            // Pacifism is owned and controlled by player2, even though it's on player1's character
+            this.player1.clickCard(this.giverOfGifts);
+            expect(this.player1).not.toBeAbleToSelect(this.pacifism);
         });
 
-        it('finger of jade should not stop', function () {
-            this.player2.clickCard(this.giverOfGifts);
-            this.player2.clickCard(this.katana);
-            expect(this.player2).toBeAbleToSelect(this.kuwanan);
-            this.player2.clickCard(this.kuwanan);
-            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+        it('should not allow moving attachment to a character controlled by a different player', function () {
+            this.player2.pass();
 
-            expect(this.kuwanan.attachments).toContain(this.katana);
-            expect(this.doomed.attachments).not.toContain(this.katana);
+            this.player1.clickCard(this.giverOfGifts);
+            this.player1.clickCard(this.fan);
+            expect(this.player1).not.toBeAbleToSelect(this.liar);
+            expect(this.player1).toBeAbleToSelect(this.outrider);
+            expect(this.player1).toBeAbleToSelect(this.youth);
         });
 
-        it('should discard newly illegal attachments', function () {
-            this.player2.clickCard(this.giverOfGifts);
-            this.player2.clickCard(this.river);
-            expect(this.player2).toBeAbleToSelect(this.kuwanan);
-            this.player2.clickCard(this.kuwanan);
-            expect(this.river.location).toBe('conflict discard pile');
-            expect(this.getChatLogs(3)).toContain(
-                'player2 uses Iuchi Rimei to move Force of the River to another character'
-            );
-            expect(this.getChatLogs(2)).toContain('player2 moves Force of the River to Doji Kuwanan');
+        it('should not allow selecting the character the attachment is already on', function () {
+            this.player2.pass();
+
+            this.player1.clickCard(this.giverOfGifts);
+            this.player1.clickCard(this.katana);
+            expect(this.player1).not.toBeAbleToSelect(this.outrider);
         });
 
-        it('should not discard a unique attachment controlled by both players (moving from opponent character)', function () {
-            this.player2.playAttachment(this.talismanP2, this.giverOfGifts);
-            this.player1.playAttachment(this.talismanP1, this.kuwanan);
+        it('should respect attachment restrictions when choosing a destination', function () {
+            this.player2.pass();
+            this.player1.playAttachment(this.river, this.doomed);
 
-            this.player2.clickCard(this.giverOfGifts);
-            this.player2.clickCard(this.talismanP1);
-            expect(this.player2).toBeAbleToSelect(this.doomed);
-            this.player2.clickCard(this.doomed);
-            expect(this.kuwanan.attachments).not.toContain(this.talismanP1);
-            expect(this.doomed.attachments).toContain(this.talismanP1);
-            expect(this.talismanP1.location).toBe('play area');
-
-            expect(this.getChatLogs(5)).toContain(
-                'player2 uses Iuchi Rimei to move Talisman of the Sun to another character'
-            );
-            expect(this.getChatLogs(4)).toContain('player2 moves Talisman of the Sun to Doomed Shugenja');
+            this.player2.pass();
+            this.player1.clickCard(this.giverOfGifts);
+            this.player1.clickCard(this.river);
+            // Force of the River requires Shugenja - only doomed is valid, but it's the current parent
+            // So no valid targets and it should not prompt for a destination
+            expect(this.player1).not.toBeAbleToSelect(this.outrider);
+            expect(this.player1).not.toBeAbleToSelect(this.giverOfGifts);
         });
     });
 });
