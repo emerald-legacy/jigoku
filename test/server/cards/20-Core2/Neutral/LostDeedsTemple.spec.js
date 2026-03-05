@@ -1,4 +1,4 @@
-xdescribe('Lost Deeds Temple', function () {
+describe('Lost Deeds Temple', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
@@ -9,7 +9,7 @@ xdescribe('Lost Deeds Temple', function () {
                 },
                 player2: {
                     inPlay: ['togashi-initiate', 'togashi-yokuni', 'doomed-shugenja'],
-                    hand: ['smoke', 'jade-masterpiece', 'seiji-s-fate'],
+                    hand: ['smoke', 'jade-masterpiece'],
                     provinces: ['lost-deeds-temple']
                 }
             });
@@ -26,7 +26,6 @@ xdescribe('Lost Deeds Temple', function () {
             this.doomedShugenja = this.player2.findCardByName('doomed-shugenja');
             this.smoke = this.player2.findCardByName('smoke');
             this.jadeMasterpiece = this.player2.findCardByName('jade-masterpiece');
-            this.seijisFate = this.player2.findCardByName('seiji-s-fate');
 
             this.lostDeedsTemple = this.player2.findCardByName('lost-deeds-temple', 'province 1');
 
@@ -35,10 +34,9 @@ xdescribe('Lost Deeds Temple', function () {
             this.player1.playAttachment(this.ornateFan, this.rimei);
             this.player2.playAttachment(this.jadeMasterpiece, this.initiate);
             this.player1.playAttachment(this.cloudTheMind, this.yokuni);
-            this.player2.playAttachment(this.seijisFate, this.wordlyShiotome);
         });
 
-        it('removes all attachments from a participating character', function () {
+        it('should target an attachment on a participating character', function () {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.aggressiveMoto, this.wordlyShiotome],
@@ -47,18 +45,28 @@ xdescribe('Lost Deeds Temple', function () {
             });
 
             this.player2.clickCard(this.lostDeedsTemple);
-            expect(this.player2).toBeAbleToSelect(this.aggressiveMoto);
-            expect(this.player2).toBeAbleToSelect(this.wordlyShiotome);
-            expect(this.player2).not.toBeAbleToSelect(this.rimei); // at home
-            expect(this.player2).toBeAbleToSelect(this.initiate);
-            expect(this.player2).toBeAbleToSelect(this.yokuni);
-            expect(this.player2).not.toBeAbleToSelect(this.doomedShugenja); // no attachments
+            // Attachments on participating characters
+            expect(this.player2).toBeAbleToSelect(this.fineKatana); // on attacking aggressive-moto
+            expect(this.player2).toBeAbleToSelect(this.smoke); // on defending yokuni
+            expect(this.player2).toBeAbleToSelect(this.cloudTheMind); // on defending yokuni
+            expect(this.player2).toBeAbleToSelect(this.jadeMasterpiece); // on defending initiate
 
-            this.player2.clickCard(this.aggressiveMoto);
+            // Attachment on non-participating character (at home)
+            expect(this.player2).not.toBeAbleToSelect(this.ornateFan); // on rimei, at home
+        });
+
+        it('should discard the chosen attachment', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.aggressiveMoto, this.wordlyShiotome],
+                defenders: [this.yokuni, this.initiate],
+                province: this.lostDeedsTemple
+            });
+
+            this.player2.clickCard(this.lostDeedsTemple);
+            this.player2.clickCard(this.fineKatana);
             expect(this.fineKatana.location).toBe('conflict discard pile');
-            expect(this.getChatLogs(3)).toContain(
-                'player2 uses Lost Deeds Temple to remove all attachments from Aggressive Moto'
-            );
+            expect(this.aggressiveMoto.attachments).not.toContain(this.fineKatana);
         });
     });
 });

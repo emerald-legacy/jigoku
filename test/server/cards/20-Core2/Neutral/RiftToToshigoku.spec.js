@@ -1,4 +1,4 @@
-xdescribe('Rift to Toshigoku', function () {
+describe('Rift to Toshigoku', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
@@ -18,9 +18,34 @@ xdescribe('Rift to Toshigoku', function () {
             this.riftToToshigoku = this.player2.findCardByName('rift-to-toshigoku', 'province 1');
         });
 
-        it('a lot of stuff', function () {
-            this.aggressiveMoto.fate = 1;
+        it('should trigger when attacked, break itself, and opponent discards an attacking character', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.aggressiveMoto, this.tetsuko],
+                province: this.riftToToshigoku,
+                type: 'military',
+                ring: 'air'
+            });
 
+            // Reaction triggers after attack is declared
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.riftToToshigoku);
+            this.player2.clickCard(this.riftToToshigoku);
+            this.player1.clickPrompt('No'); // Don't discard the card in the province
+
+            // Province breaks as cost
+            expect(this.riftToToshigoku.isBroken).toBe(true);
+
+            // Opponent (player1) chooses an attacking character to discard
+            expect(this.player1).toBeAbleToSelect(this.aggressiveMoto);
+            expect(this.player1).toBeAbleToSelect(this.tetsuko);
+            expect(this.player1).not.toBeAbleToSelect(this.initiate);
+
+            this.player1.clickCard(this.aggressiveMoto);
+            expect(this.aggressiveMoto.location).toBe('dynasty discard pile');
+        });
+
+        it('should only allow targeting attacking characters', function () {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.aggressiveMoto],
@@ -29,24 +54,15 @@ xdescribe('Rift to Toshigoku', function () {
                 ring: 'air'
             });
 
-            expect(this.player2).toHavePrompt('Any reactions?');
-
             this.player2.clickCard(this.riftToToshigoku);
             this.player1.clickPrompt('No'); // Don't discard the card in the province
 
+            // Only attacking characters are valid
             expect(this.player1).toBeAbleToSelect(this.aggressiveMoto);
-            expect(this.player1).not.toBeAbleToSelect(this.tetsuko);
-            expect(this.player1).not.toBeAbleToSelect(this.initiate);
+            expect(this.player1).not.toBeAbleToSelect(this.tetsuko); // at home
 
             this.player1.clickCard(this.aggressiveMoto);
-            expect(this.aggressiveMoto.fate).toBe(0);
-
-            // this.player2.clickPrompt('Done'); // No defenders
-
-            expect(this.player1.claimedRings.includes('air')).toBe(false);
-            expect(this.player2).toHavePrompt('Action Window');
-
-            // expect(this.getChatLogs(5)).toContain('asdasd');
+            expect(this.aggressiveMoto.location).toBe('dynasty discard pile');
         });
     });
 });
