@@ -33,6 +33,10 @@ class InitiateConflictPrompt extends UiPrompt {
             }
         }
 
+        if(this.conflict.conflictProvince) {
+            this.conflict.conflictProvince.inConflict = true;
+        }
+
         this.checkForMustSelect();
     }
 

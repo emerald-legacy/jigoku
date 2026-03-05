@@ -352,6 +352,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                 if(this.conflict.attackers.some((a) => a.location === Locations.PlayArea)) {
                     this.game.updateCurrentConflict(this.conflict);
                     this.conflict.declaredProvince = this.conflict.conflictProvince;
+                    this.conflict.conflictProvince.inConflict = true;
                     this.conflict.attackers.forEach((card) => (card.inConflict = true));
                     this.game.recordConflict(this.conflict);
                     const events = [];
