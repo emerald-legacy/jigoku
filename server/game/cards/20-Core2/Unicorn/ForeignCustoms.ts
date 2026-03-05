@@ -27,7 +27,11 @@ export default class ForeignCustoms extends DrawCard {
             title: 'Ready a non-unicorn character',
             condition: (context) =>
                 context.player.stronghold?.isFaction('unicorn') ||
-                context.player.cardsInPlay.some((card: DrawCard) => card.isFaction('unicorn')),
+                context.player.cardsInPlay.some(
+                    (card: DrawCard) =>
+                        card.isFaction('unicorn') ||
+                        card.attachments?.some((a: DrawCard) => a.isFaction('unicorn'))
+                ),
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card) => card.isAtHome() && (!card.isFaction('unicorn') || card.hasTrait('gaijin')),

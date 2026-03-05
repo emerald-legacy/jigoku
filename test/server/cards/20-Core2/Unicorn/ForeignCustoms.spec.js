@@ -34,6 +34,39 @@ describe('Foreign Customs', function () {
             });
         });
 
+        describe('action - unicorn attachment satisfies condition', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        hand: ['foreign-customs', 'composite-yumi'],
+                        inPlay: ['adept-of-the-waves', 'wandering-ronin']
+                    }
+                });
+
+                this.foreignCustoms = this.player1.findCardByName('foreign-customs');
+                this.compositeYumi = this.player1.findCardByName('composite-yumi');
+                this.adept = this.player1.findCardByName('adept-of-the-waves');
+                this.ronin = this.player1.findCardByName('wandering-ronin');
+                this.adept.bow();
+            });
+
+            it('is playable when only unicorn card is an attachment', function () {
+                this.player1.playAttachment(this.compositeYumi, this.ronin);
+                this.player2.pass();
+                this.player1.clickCard(this.foreignCustoms);
+                expect(this.player1).toHavePrompt('Choose a character');
+                expect(this.player1).toBeAbleToSelect(this.adept);
+                this.player1.clickCard(this.adept);
+                expect(this.adept.bowed).toBe(false);
+            });
+
+            it('is not playable without any unicorn cards', function () {
+                this.player1.clickCard(this.foreignCustoms);
+                expect(this.player1).not.toHavePrompt('Choose a character');
+            });
+        });
+
         describe('Duel effect', function () {
             beforeEach(function () {
                 this.setupTest({
