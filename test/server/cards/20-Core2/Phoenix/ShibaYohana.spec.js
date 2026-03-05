@@ -97,6 +97,16 @@ describe('Shiba Yohana', function () {
                 );
             });
 
+            it('gains spirit trait and can be targeted by Marvelous Beings', function () {
+                this.player2.clickCard(this.nobleSacrifice);
+                this.player2.clickCard(this.shibaYohana);
+                this.player2.clickCard(this.kuwananHonored);
+                this.player1.clickCard(this.shibaYohana);
+
+                expect(this.shibaYohana.hasTrait('spirit')).toBe(true);
+                expect(this.shibaYohana.hasTrait('bushi')).toBe(true);
+            });
+
             it('survives fate phase', function () {
                 this.flow.nextPhase();
                 expect(this.player1).toHavePrompt('Fate Phase');
@@ -111,6 +121,57 @@ describe('Shiba Yohana', function () {
                 expect(this.getChatLogs(5)).toContain(
                     'player1 uses Shiba Yohana to prevent Shiba Yohana from leaving play - vengeance and destruction sustains her in a damned existence'
                 );
+            });
+        });
+
+        describe('Spirit trait interaction with Marvelous Beings', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['shiba-yohana', 'ikoma-prodigy'],
+                        hand: ['marvelous-beings']
+                    },
+                    player2: {
+                        hand: ['noble-sacrifice'],
+                        inPlay: ['doji-kuwanan']
+                    }
+                });
+
+                this.shibaYohana = this.player1.findCardByName('shiba-yohana');
+                this.shibaYohana.dishonor();
+                this.prodigy = this.player1.findCardByName('ikoma-prodigy');
+                this.marvelousBeings = this.player1.findCardByName('marvelous-beings');
+                this.nobleSacrifice = this.player2.findCardByName('noble-sacrifice');
+                this.kuwananHonored = this.player2.findCardByName('doji-kuwanan');
+                this.kuwananHonored.honor();
+
+                // Kill Yohana so she gains spirit
+                this.player1.pass();
+                this.player2.clickCard(this.nobleSacrifice);
+                this.player2.clickCard(this.shibaYohana);
+                this.player2.clickCard(this.kuwananHonored);
+                this.player1.clickCard(this.shibaYohana);
+            });
+
+            it('Yohana gains spirit trait after surviving', function () {
+                expect(this.shibaYohana.hasTrait('spirit')).toBe(true);
+                expect(this.shibaYohana.hasTrait('bushi')).toBe(true);
+            });
+
+            it('Marvelous Beings can target Yohana as a spirit', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.prodigy],
+                    defenders: [],
+                    ring: 'air',
+                    type: 'political'
+                });
+
+                this.player2.pass();
+                this.player1.clickCard(this.marvelousBeings);
+                expect(this.player1).toHavePrompt('Select card to move to the conflict');
+                expect(this.player1).toBeAbleToSelect(this.shibaYohana);
             });
         });
     });
