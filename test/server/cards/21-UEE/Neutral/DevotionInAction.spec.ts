@@ -84,7 +84,7 @@ describe('Devotion in Action', () => {
       );
     });
 
-    it('the character is discarded when the conflict is over', function () {
+    it('the character stays in play after the conflict ends', function () {
       this.initiateConflict({
         attackers: [this.ikomaProdigy],
         defenders: [this.bayushiManipulator, this.courtNovice],
@@ -96,10 +96,7 @@ describe('Devotion in Action', () => {
 
       this.player1.clickPrompt("Don't resolve");
       expect(this.player1).toHavePrompt('Action Window');
-      expect(this.matsuSakura.location).toBe('dynasty discard pile');
-      expect(this.getChatLogs(5)).toContain(
-        'Matsu Sakura is discarded from play due to the delayed effect of Devotion in Action - their duty is over',
-      );
+      expect(this.matsuSakura.location).toBe('play area');
     });
   });
 });
