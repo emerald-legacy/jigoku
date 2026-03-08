@@ -13,9 +13,11 @@ type Predicate = (card: DrawCard) => boolean;
 export class Conflict extends GameObject {
     #attackerCardsPlayed = new Set<DrawCard>();
     #attackers = new Set<DrawCard>();
+    #attackersCache: DrawCard[] | null = null;
     #declarationComplete = false;
     #defenderCardsPlayed = new Set<DrawCard>();
     #defenders = new Set<DrawCard>();
+    #defendersCache: DrawCard[] | null = null;
     attackerSkill = 0;
     conflictFailedToInitiate = false;
     conflictPassed = false;
@@ -52,19 +54,27 @@ export class Conflict extends GameObject {
     }
 
     get attackers() {
-        return Array.from(this.#attackers);
+        if(!this.#attackersCache) {
+            this.#attackersCache = Array.from(this.#attackers);
+        }
+        return this.#attackersCache;
     }
 
     set attackers(characters: DrawCard[]) {
         this.#attackers = new Set(characters);
+        this.#attackersCache = null;
     }
 
     get defenders() {
-        return Array.from(this.#defenders);
+        if(!this.#defendersCache) {
+            this.#defendersCache = Array.from(this.#defenders);
+        }
+        return this.#defendersCache;
     }
 
     set defenders(characters: DrawCard[]) {
         this.#defenders = new Set(characters);
+        this.#defendersCache = null;
     }
 
     getConflictProvinces(): ProvinceCard[] {
@@ -152,6 +162,7 @@ export class Conflict extends GameObject {
     addAttacker(attacker: DrawCard): void {
         attacker.inConflict = true;
         this.#attackers.add(attacker);
+        this.#attackersCache = null;
     }
 
     addDefenders(defenders: DrawCard[]): void {
@@ -163,6 +174,7 @@ export class Conflict extends GameObject {
     addDefender(defender: DrawCard): void {
         defender.inConflict = true;
         this.#defenders.add(defender);
+        this.#defendersCache = null;
     }
 
     hasElement(element: Elements) {
@@ -235,17 +247,29 @@ export class Conflict extends GameObject {
 
     removeFromConflict(card: DrawCard): void {
         card.inConflict = false;
-        if(!this.#attackers.delete(card)) {
-            this.#defenders.delete(card);
+        if(this.#attackers.delete(card)) {
+            this.#attackersCache = null;
+        } else if(this.#defenders.delete(card)) {
+            this.#defendersCache = null;
         }
     }
 
     isAttacking(card: DrawCard) {
-        return this.getAttackers().includes(card);
+        return this.#attackers.has(card) || (
+            card.anyEffect(EffectNames.ParticipatesFromHome) &&
+            card.canParticipateAsAttacker(this.conflictType) &&
+            card.isAtHome() &&
+            card.controller === this.attackingPlayer
+        );
     }
 
     isDefending(card: DrawCard) {
-        return this.getDefenders().includes(card);
+        return this.#defenders.has(card) || (
+            card.anyEffect(EffectNames.ParticipatesFromHome) &&
+            card.canParticipateAsDefender(this.conflictType) &&
+            card.isAtHome() &&
+            card.controller === this.defendingPlayer
+        );
     }
 
     isParticipating(card: DrawCard): boolean {
