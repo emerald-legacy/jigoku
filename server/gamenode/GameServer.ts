@@ -66,8 +66,12 @@ export class GameServer {
             logger.info(`${env.gameNodeName} listening on port ${env.gameNodeSocketIoPort} (proxy port ${env.gameNodeProxyPort ?? 'none'}, protocol ${this.protocol})`);
         });
 
+        const lobbyOrigins = [`https://${env.domain}`, `http://${env.domain}`];
+        if(env.lobbyPort && env.lobbyPort !== 80 && env.lobbyPort !== 443) {
+            lobbyOrigins.push(`https://${env.domain}:${env.lobbyPort}`, `http://${env.domain}:${env.lobbyPort}`);
+        }
         const corsConfig = env.domain
-            ? { origin: [`https://${env.domain}`, `http://${env.domain}`], credentials: true }
+            ? { origin: lobbyOrigins, credentials: true }
             : { origin: true, credentials: true };
 
         this.io = new socketio.Server(server, {
