@@ -221,20 +221,46 @@ class DrawCard extends BaseCard {
     }
 
     createSnapshot(): DrawCard {
-        const clone = new DrawCard(this.owner, this.cardData);
+        // Use Object.create to skip expensive constructor (setupCardAbilities, parseKeywords, uuid generation)
+        const clone = Object.create(DrawCard.prototype) as DrawCard;
 
-        clone.attachments = this.attachments.map((attachment: DrawCard) => attachment.createSnapshot());
-        clone.childCards = this.childCards.map((card: DrawCard) => card.createSnapshot());
-        clone.effects = [...this.effects];
+        // Copy base identity properties
+        clone.owner = this.owner;
+        clone.cardData = this.cardData;
+        clone.game = this.game;
+        clone.id = this.id;
+        clone.printedName = this.printedName;
+        clone.printedType = this.printedType;
+        clone.printedFaction = this.printedFaction;
+        clone.uuid = this.uuid;
+
+        // Copy game state
         clone.controller = this.controller;
-        clone.bowed = this.bowed;
-        clone.statusTokens = [...this.statusTokens];
         clone.location = this.location;
-        clone.parent = this.parent;
+        clone.bowed = this.bowed;
         clone.fate = this.fate;
         clone.inConflict = this.inConflict;
+        clone.parent = this.parent;
+        clone.facedown = this.facedown;
+
+        // Copy printed stats
+        clone.printedMilitarySkill = this.printedMilitarySkill;
+        clone.printedPoliticalSkill = this.printedPoliticalSkill;
+        clone.printedCost = this.printedCost;
+        clone.printedGlory = this.printedGlory;
+        clone.printedStrengthBonus = this.printedStrengthBonus;
+
+        // Shallow copy arrays
+        clone.effects = [...this.effects];
+        clone.statusTokens = [...this.statusTokens];
         clone.traits = Array.from(this.getTraits());
-        clone.uuid = this.uuid;
+        clone.tokens = Object.assign({}, this.tokens);
+        clone.printedKeywords = this.printedKeywords;
+
+        // Recursive snapshot for nested cards
+        clone.attachments = this.attachments.map((attachment: DrawCard) => attachment.createSnapshot());
+        clone.childCards = this.childCards.map((card: DrawCard) => card.createSnapshot());
+
         return clone;
     }
 
