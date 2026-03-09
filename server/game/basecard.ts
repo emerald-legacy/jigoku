@@ -560,7 +560,10 @@ class BaseCard extends EffectSource {
         const copyEffect = this.mostRecentEffect(EffectNames.CopyCharacter);
         const cardFaction: Faction = copyEffect ? copyEffect.printedFaction : this.printedFaction;
         const addedFactions: Faction[] = this.getEffects(EffectNames.AddFaction);
-        return new Set([...addedFactions, cardFaction]);
+        const lostFactions: Faction[] = this.getEffects(EffectNames.LoseFaction);
+        const factionArray = [...addedFactions, cardFaction].filter(faction => !lostFactions.includes(faction))
+
+        return new Set(factionArray);
     }
 
     isInProvince(): boolean {

@@ -36,7 +36,7 @@ export class LastingEffectCardAction<
     // @ts-expect-error -- overriding return type to be more specific than base class signature
     getProperties(context: AbilityContext, additionalProperties = {}): LastingEffectCardProperties {
         let properties = super.getProperties(context, additionalProperties) as LastingEffectCardProperties;
-        if (!Array.isArray(properties.effect)) {
+        if(!Array.isArray(properties.effect)) {
             properties.effect = [properties.effect];
         }
         return properties;
@@ -71,7 +71,7 @@ export class LastingEffectCardAction<
 
     eventHandler(event, additionalProperties): void {
         let properties = this.getProperties(event.context, additionalProperties);
-        if (!properties.ability) {
+        if(!properties.ability) {
             properties.ability = event.context.ability;
         }
 
@@ -86,7 +86,7 @@ export class LastingEffectCardAction<
                 props.effect.canBeApplied(event.card) &&
                 !lastingEffectRestrictions.some((condition) => condition(props.effect))
         );
-        for (const effect of effects) {
+        for(const effect of effects) {
             event.context.game.effectEngine.add(effect);
         }
     }

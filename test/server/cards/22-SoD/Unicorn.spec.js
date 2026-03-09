@@ -219,7 +219,7 @@ describe('SoD - Unicorn', function () {
                 this.setupTest({
                     phase: 'conflict',
                     player1: {
-                        inPlay: ['kakita-toshimoko'],
+                        inPlay: ['togashi-yokuni'],
                         hand: ['admit-defeat']
                     },
                     player2: {
@@ -231,59 +231,69 @@ describe('SoD - Unicorn', function () {
                 this.tomoe = this.player2.findCardByName('utaku-tomoe');
                 this.youth = this.player2.findCardByName('moto-youth');
                 this.horde = this.player2.findCardByName('moto-horde');
-                this.toshimoko = this.player1.findCardByName('kakita-toshimoko');
-                this.dispatch = this.player2.findCardByName('dispatch');
-
-                this.youth.bow();
-                this.horde.bow();
+                this.yokuni = this.player1.findCardByName('togashi-yokuni');
             });
 
-            it('should work', function () {
+            it('when winning should gain honor', function () {
+                let honor = this.player2.honor;
+
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'military',
-                    attackers: [this.toshimoko],
-                    defenders: []
+                    attackers: [this.yokuni],
+                    defenders: [this.tomoe, this.youth, this.horde]
                 });
 
-                this.player2.clickCard(this.dispatch);
-                this.player2.clickCard(this.youth);
+                this.player2.pass();
+                this.player1.pass();
 
                 expect(this.player2).toHavePrompt('Triggered Abilities');
                 expect(this.player2).toBeAbleToSelect(this.tomoe);
 
                 this.player2.clickCard(this.tomoe);
-                expect(this.youth.bowed).toBe(false);
-
-                expect(this.getChatLogs(5)).toContain('player2 uses Utaku Tomoe to ready Moto Youth');
+                expect(this.player2.honor).toBe(honor + 2);
+                expect(this.tomoe.bowed).toBe(true);
+                expect(this.getChatLogs(5)).toContain('player2 uses Utaku Tomoe to gain 2 honor');
             });
 
-            it('cost too high', function () {
+            it('when losing should ready', function () {
+                let honor = this.player2.honor;
+
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'military',
-                    attackers: [this.toshimoko],
-                    defenders: []
+                    attackers: [this.yokuni],
+                    defenders: [this.tomoe]
                 });
 
-                this.player2.clickCard(this.dispatch);
-                this.player2.clickCard(this.horde);
+                this.player2.pass();
+                this.player1.pass();
 
-                expect(this.player1).toHavePrompt('Conflict Action Window');
-            });
+                this.player1.clickPrompt('Gain 2 honor');
 
-            it('not bowed', function () {
-                this.noMoreActions();
-                this.initiateConflict({
-                    type: 'military',
-                    attackers: [this.toshimoko],
-                    defenders: []
-                });
+                expect(this.player2).toHavePrompt('Triggered Abilities');
+                expect(this.player2).toBeAbleToSelect(this.tomoe);
 
-                this.player2.clickCard(this.dispatch);
                 this.player2.clickCard(this.tomoe);
+                expect(this.player2.honor).toBe(honor);
+                expect(this.tomoe.bowed).toBe(false);
+                expect(this.getChatLogs(5)).toContain('player2 uses Utaku Tomoe to ready Utaku Tomoe');
+            });
 
-                expect(this.player1).toHavePrompt('Conflict Action Window');
+            it('when character was not participating', function () {
+                let honor = this.player2.honor;
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.yokuni],
+                    defenders: [this.horde, this.youth]
+                });
+
+                this.player2.pass();
+                this.player1.pass();
+
+                expect(this.player1).toHavePrompt('Action Window');
             });
         });
 
@@ -296,73 +306,45 @@ describe('SoD - Unicorn', function () {
                         hand: ['strange-mirror']
                     },
                     player2: {
-                        inPlay: ['utaku-tomoe', 'moto-youth'],
+                        inPlay: ['doji-challenger', 'moto-youth'],
+                        dynastyDiscard: ['moto-youth'],
                         hand: ['dispatch']
                     }
                 });
 
                 this.mirror = this.player1.findCardByName('strange-mirror');
-                this.tomoe = this.player2.findCardByName('utaku-tomoe');
-                this.youth = this.player2.findCardByName('moto-youth');
+                this.challenger = this.player2.findCardByName('doji-challenger');
+                this.youth = this.player2.findCardByName('moto-youth', 'play area');
+                this.youth2 = this.player2.findCardByName('moto-youth', 'dynasty discard pile');
                 this.toshimoko = this.player1.findCardByName('kakita-toshimoko');
                 this.keeper = this.player1.findCardByName('keeper-initiate');
 
                 this.player1.playAttachment(this.mirror, this.toshimoko);
-                this.player2.pass();
             });
 
             it('should work', function () {
-                this.player1.clickCard(this.mirror);
-                expect(this.player1).toBeAbleToSelect(this.tomoe);
-                expect(this.player1).toBeAbleToSelect(this.youth);
-                expect(this.player1).not.toBeAbleToSelect(this.toshimoko);
-                expect(this.player1).not.toBeAbleToSelect(this.keeper);
-
-                this.player1.clickCard(this.youth);
-                expect(this.player1).not.toBeAbleToSelect(this.toshimoko);
-                expect(this.player1).toBeAbleToSelect(this.keeper);
-
-                this.player1.clickCard(this.keeper);
-                expect(this.keeper.name).toBe(this.youth.name);
-                expect(this.keeper.getCost()).toBe(this.youth.getCost());
-                expect(this.keeper.getBaseMilitarySkill()).toBe(this.youth.printedMilitarySkill);
-                expect(this.keeper.getPoliticalSkill()).toBe(this.youth.printedPoliticalSkill);
-                expect(this.keeper.getTraits()).toContain('bushi');
-                expect(this.keeper.getTraits()).not.toContain('monk');
-
-                expect(this.mirror.location).toBe('play area');
-
-                expect(this.getChatLogs(5)).toContain('player1 uses Strange Mirror to turn Keeper Initiate into a copy of Moto Youth');
-
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'military',
-                    attackers: [this.keeper],
-                    defenders: [this.tomoe, this.youth]
+                    attackers: [this.toshimoko],
+                    defenders: [this.challenger, this.youth]
                 });
 
-                this.noMoreActions();
-
-                expect(this.keeper.name).toBe(this.keeper.printedName);
-                expect(this.keeper.getCost()).toBe(this.keeper.printedCost);
-                expect(this.keeper.getBaseMilitarySkill()).toBe(this.keeper.printedMilitarySkill);
-                expect(this.keeper.getPoliticalSkill()).toBe(this.keeper.printedPoliticalSkill);
-                expect(this.keeper.getTraits()).not.toContain('bushi');
-                expect(this.keeper.getTraits()).toContain('monk');
-            });
-
-            it('uniques', function () {
-                this.player1.clickCard(this.mirror);
-                this.player1.clickCard(this.tomoe);
-                expect(this.player1).toBeAbleToSelect(this.toshimoko);
-                expect(this.player1).not.toBeAbleToSelect(this.keeper);
-
+                this.player2.pass();
                 this.player1.clickCard(this.toshimoko);
-                expect(this.toshimoko.name).toBe(this.tomoe.name);
-                expect(this.mirror.location).toBe('conflict discard pile');
+                expect(this.player1).toBeAbleToSelect(this.youth);
+                expect(this.player1).not.toBeAbleToSelect(this.challenger);
+                this.player1.clickCard(this.youth);
+                expect(this.player1).toBeAbleToSelect(this.youth2);
+                this.player1.clickCard(this.youth2);
+                expect(this.youth2.location).toBe('play area');
+                expect(this.youth2.controller).toBe(this.player1.player);
+                expect(this.getChatLogs(5)).toContain('player1 uses Kakita Toshimoko\'s gained ability from Strange Mirror to put Moto Youth into play in the conflict, removing it from the game when the conflict ends');
 
-                expect(this.getChatLogs(5)).toContain('player1 uses Strange Mirror to turn Kakita Toshimoko into a copy of Utaku Tomoe');
-                expect(this.getChatLogs(5)).toContain('Strange Mirror is discarded because the chosen characters are unique');
+                this.noMoreActions();
+                this.player1.clickPrompt('Gain 2 honor');
+                expect(this.youth2.location).toBe('removed from game');
+                expect(this.getChatLogs(5)).toContain('Moto Youth is removed from the game due to the delayed effect of Kakita Toshimoko');
             });
         });
 

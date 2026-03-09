@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext';
 import type BaseCard from '../basecard';
-import { CardTypes, CharacterStatus, EventNames, Locations } from '../Constants';
+import { CardTypes, CharacterStatus, EventNames, Locations, EffectNames } from '../Constants';
 import { type CardActionProperties, CardGameAction } from './CardGameAction';
 
 export type HonorProperties = CardActionProperties;
@@ -16,6 +16,9 @@ export class HonorAction extends CardGameAction {
         if(card.location !== Locations.PlayArea || card.type !== CardTypes.Character || card.isHonored) {
             return false;
         } else if(!card.isDishonored && !card.checkRestrictions('receiveHonorToken', context)) {
+            return false;
+        }
+        if(!context.player.checkRestrictions('honor', context)) {
             return false;
         }
         return super.canAffect(card, context);

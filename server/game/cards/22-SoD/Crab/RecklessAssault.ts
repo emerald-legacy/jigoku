@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
-import { EffectNames, TargetModes, Locations, CardTypes, Players, Durations } from '../../../Constants';
+import { Durations } from '../../../Constants';
 
 export default class RecklessAssault extends DrawCard {
     static id = 'reckless-assault';
@@ -27,7 +27,7 @@ export default class RecklessAssault extends DrawCard {
     }
 
     getCharacters(context) {
-        const cards = context.player.opponent && context.player.opponent.cardsInPlay.filter(card => card.getMilitarySkill() < 3)
+        const cards = context.player.opponent && context.player.opponent.cardsInPlay.filter(card => card.getMilitarySkill() < 3);
         return cards;
     }
 }

@@ -11,25 +11,32 @@ export default class DisputedLineage extends DrawCard {
             title: 'Choose a character',
             target: {
                 cardType: CardTypes.Character,
-                controller: Players.Opponent,
-                gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.delayedEffect({
-                        when: {
-                            onConflictDeclared: (event) => event.attackers.includes(context.target),
-                            onDefendersDeclared: (event) => event.defenders.includes(context.target)
-                        },
-                        onlyRemoveOnSuccess: true,
-                        gameAction: AbilityDsl.actions.discardAtRandom({
-                            target: context.player.opponent
-                        }),
-                        message: '{0} discards a card at random due to the delayed effect of {1}',
-                        messageArgs: [context.player.opponent, context.source]
-                    }),
-                    duration: Durations.UntilEndOfRound
-                }))
+                gameAction: AbilityDsl.actions.multiple([
+                    AbilityDsl.actions.cardLastingEffect(context => ({
+                        effect: AbilityDsl.effects.loseFaction(context.target.printedFaction),
+                        duration: Durations.UntilEndOfRound
+                    })),
+                    AbilityDsl.actions.playerLastingEffect(context => ({
+                        duration: Durations.UntilEndOfPhase,
+                        targetController: context.target.controller,
+                        condition: () => context.target.isParticipating(),
+                        effect: AbilityDsl.effects.playerCannot({
+                            cannot: 'honor',
+                        })
+                    }))
+                ])
             },
-            effect: 'make {1} discard a card the next time {0} commits to a conflict',
-            effectArgs: (context) => [context.player.opponent]
+            effect: 'remove {0}\'s printed faction and prevent {1} from honoring characters while {0} is participating in a conflict',
+            effectArgs: (context) => [context.player.opponent],
+            then: context => ({
+                thenCondition: () => context.player.imperialFavor !== '',
+                message: '{0} draws a card',
+                gameAction: AbilityDsl.actions.draw({
+                    target: context.player,
+                    amount: 1
+                })
+            }),
+
         });
     }
 

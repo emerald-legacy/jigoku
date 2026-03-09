@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl';
-import { CardTypes } from '../../../Constants';
 import DrawCard from '../../../drawcard';
 
 export default class UtakuTomoe extends DrawCard {
@@ -7,18 +6,17 @@ export default class UtakuTomoe extends DrawCard {
 
     setupCardAbilities() {
         this.reaction({
-            title: 'Ready a character',
+            title: 'Ready a character or gain honor',
             when: {
-                onMoveToConflict: (event, context) =>
-                    event.card.type === CardTypes.Character &&
-                    // printed cost 3 or less
-                    event.card.printedCost <= 3 &&
-                    // by your card effect
-                    context.player === event.context.player &&
-                    event.context.source.type !== 'ring'
-
+                onReturnHome: (event, context) => {
+                    return event.conflict.attackingPlayer === context.player.opponent && event.card === context.source;
+                }
             },
-            gameAction: AbilityDsl.actions.ready((context) => ({ target: (context as any).event.card }))
+            gameAction: AbilityDsl.actions.conditional(context => ({
+                condition: context.event.conflict.winner === context.source.controller,
+                trueGameAction: AbilityDsl.actions.gainHonor({ target: context.player, amount: 2 }),
+                falseGameAction: AbilityDsl.actions.ready({ target: context.source }),
+            }))
         });
     }
 }

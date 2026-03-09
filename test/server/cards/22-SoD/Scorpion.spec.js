@@ -206,11 +206,11 @@ describe('SoD - Scorpion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['bayushi-rumormonger'],
-                        hand: ['disputed-lineage']
+                        hand: ['disputed-lineage', 'soul-beyond-reproach']
                     },
                     player2: {
-                        inPlay: ['keeper-initiate', 'doji-diplomat'],
-                        hand: ['assassination', 'let-go', 'duelist-training', 'favored-mount']
+                        inPlay: ['keeper-initiate', 'doji-diplomat', 'doji-challenger'],
+                        hand: ['way-of-the-crane', 'kakita-s-first-kata']
                     }
                 });
 
@@ -218,120 +218,55 @@ describe('SoD - Scorpion', function () {
                 this.rumormonger = this.player1.findCardByName('bayushi-rumormonger');
                 this.keeper = this.player2.findCardByName('keeper-initiate');
                 this.diplomat = this.player2.findCardByName('doji-diplomat');
-                this.training = this.player2.findCardByName('duelist-training');
+                this.sbr = this.player1.findCardByName('soul-beyond-reproach');
+                this.crane = this.player2.findCardByName('way-of-the-crane');
+                this.challenger = this.player2.findCardByName('doji-challenger');
+                this.kata = this.player2.findCardByName('kakita-s-first-kata');
             });
 
-            it('should work on defenders', function () {
+            it('should remove clan alignment', function () {
                 this.player1.clickCard(this.lineage);
-                this.player1.clickCard(this.keeper);
+                this.player1.clickCard(this.diplomat);
 
-                let hand = this.player2.hand.length;
+                expect(this.diplomat.getFactions().size).toBe(0);
+                this.player2.clickCard(this.crane);
+                expect(this.player2).toBeAbleToSelect(this.challenger);
+                expect(this.player2).not.toBeAbleToSelect(this.diplomat);
+
+                this.player2.clickCard(this.challenger);
+                expect(this.challenger.isHonored).toBe(true);
+            });
+
+            it('should prevent honoring if participating', function () {
+                let hand = this.player1.hand.length;
+
+                this.player1.clickCard(this.lineage);
+                this.player1.clickCard(this.diplomat);
+
+                expect(this.player1.hand.length).toBe(hand - 1);
 
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'military',
                     attackers: [this.rumormonger],
-                    defenders: [this.keeper, this.diplomat]
+                    defenders: [this.diplomat, this.challenger]
                 });
 
-                expect(this.player2.hand.length).toBe(hand - 1);
-                expect(this.getChatLogs(5)).toContain('player2 discards a card at random due to the delayed effect of Disputed Lineage');
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                this.player2.clickCard(this.crane);
+                expect(this.player2).toHavePrompt('Conflict Action Window');
             });
 
-            it('should not discard when target is not defending', function () {
+            it('should draw with favor', function () {
+                let hand = this.player1.hand.length;
+                this.player1.player.imperialFavor = 'military';
+                this.game.checkGameState(true);
                 this.player1.clickCard(this.lineage);
-                this.player1.clickCard(this.keeper);
+                this.player1.clickCard(this.diplomat);
 
-                let hand = this.player2.hand.length;
-
-                this.noMoreActions();
-                this.initiateConflict({
-                    type: 'military',
-                    attackers: [this.rumormonger],
-                    defenders: [this.diplomat]
-                });
-
-                expect(this.player2.hand.length).toBe(hand);
-            });
-
-            it('should work on attackers', function () {
-                this.player1.clickCard(this.lineage);
-                this.player1.clickCard(this.keeper);
-
-                let hand = this.player2.hand.length;
-
-                this.noMoreActions();
-                this.player1.passConflict();
-                this.noMoreActions();
-                this.initiateConflict({
-                    type: 'military',
-                    attackers: [this.keeper, this.diplomat],
-                    defenders: []
-                });
-
-
-                expect(this.player2.hand.length).toBe(hand - 1);
-                expect(this.getChatLogs(7)).toContain('player2 discards a card at random due to the delayed effect of Disputed Lineage');
-            });
-
-            it('should work on second conflict', function () {
-                this.player1.clickCard(this.lineage);
-                this.player1.clickCard(this.keeper);
-
-                let hand = this.player2.hand.length;
-                this.noMoreActions();
-                this.initiateConflict({
-                    type: 'military',
-                    attackers: [this.rumormonger],
-                    defenders: [this.diplomat]
-                });
-
-                expect(this.player2.hand.length).toBe(hand);
-
-                this.rumormonger.bow();
-                this.noMoreActions();
-
-                this.noMoreActions();
-                this.initiateConflict({
-                    type: 'military',
-                    attackers: [this.keeper],
-                    defenders: [],
-                    ring: 'earth'
-                });
-
-                expect(this.player1).toHavePrompt('Conflict Action Window');
-                expect(this.player2.hand.length).toBe(hand - 1);
-                expect(this.getChatLogs(7)).toContain('player2 discards a card at random due to the delayed effect of Disputed Lineage');
-            });
-
-            it('should only work once per round', function () {
-                this.player1.clickCard(this.lineage);
-                this.player1.clickCard(this.keeper);
-
-                let hand = this.player2.hand.length;
-
-                this.noMoreActions();
-                this.initiateConflict({
-                    type: 'military',
-                    attackers: [this.rumormonger],
-                    defenders: [this.keeper, this.diplomat]
-                });
-
-                expect(this.player2.hand.length).toBe(hand - 1);
-
-                this.rumormonger.bow();
-                this.noMoreActions();
-                this.keeper.ready();
-                this.noMoreActions();
-
-                this.initiateConflict({
-                    type: 'military',
-                    attackers: [this.keeper],
-                    defenders: [],
-                    ring: 'fire'
-                });
-
-                expect(this.player2.hand.length).toBe(hand - 1);
+                expect(this.player1.hand.length).toBe(hand);
+                expect(this.getChatLogs(5)).toContain('player1 plays Disputed Lineage to remove Doji Diplomat\'s printed faction and prevent player2 from honoring characters while Doji Diplomat is participating in a conflict');
+                expect(this.getChatLogs(5)).toContain('player1 draws a card');
             });
         });
 
