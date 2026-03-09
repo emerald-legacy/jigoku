@@ -124,6 +124,9 @@ class HandlerMenuPrompt extends UiPrompt {
             }
             let card = this.properties.cards && this.properties.cards.find(card => card.id === arg);
             if(card && this.properties.cardHandler) {
+                if(!this.cardCondition(card, this.context)) {
+                    return false;
+                }
                 this.properties.cardHandler(card);
                 this.complete();
                 return true;
