@@ -949,7 +949,7 @@ class BaseCard extends EffectSource {
         }
 
         const frameworkLimitsAttachmentsWithRepeatedNames =
-            this.game.gameMode === GameModes.Emerald || this.game.gameMode === GameModes.Obsidian;
+            this.game.gameMode === GameModes.Emerald || this.game.gameMode === GameModes.Obsidian || this.game.gameMode === GameModes.Sanctuary;
         if(frameworkLimitsAttachmentsWithRepeatedNames) {
             for(const card of this.attachments) {
                 const matchingAttachments = this.attachments.filter(

@@ -1197,7 +1197,7 @@ class DrawCard extends BaseCard {
 
     allowAttachment(attachment: BaseCard | DrawCard): boolean {
         const frameworkLimitsAttachmentsWithRepeatedNames =
-            this.game.gameMode === GameModes.Emerald || this.game.gameMode === GameModes.Obsidian;
+            this.game.gameMode === GameModes.Emerald || this.game.gameMode === GameModes.Obsidian || this.game.gameMode === GameModes.Sanctuary;
         if(frameworkLimitsAttachmentsWithRepeatedNames && this.type === CardTypes.Character) {
             if(
                 this.attachments
