@@ -4,7 +4,7 @@ describe('Ramshackle Facade', function() {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['doji-hotaru', 'togashi-initiate', 'doji-challenger', 'doji-whisperer'],
+                    inPlay: ['doji-hotaru', 'togashi-initiate', 'doji-challenger', 'doji-whisperer', 'asahina-storyteller'],
                     hand: ['ramshackle-facade'],
                     dynastyDiscard: ['northern-curtain-wall', 'seventh-tower', 'funeral-pyre']
                 },
@@ -17,6 +17,7 @@ describe('Ramshackle Facade', function() {
             this.initiate = this.player1.findCardByName('togashi-initiate');
             this.whisperer = this.player1.findCardByName('doji-whisperer');
             this.challenger = this.player1.findCardByName('doji-challenger');
+            this.storyteller = this.player1.findCardByName('asahina-storyteller');
             this.brash = this.player2.findCardByName('brash-samurai');
             this.pyre = this.player1.findCardByName('funeral-pyre');
             this.wall = this.player1.findCardByName('northern-curtain-wall');
@@ -35,7 +36,7 @@ describe('Ramshackle Facade', function() {
         it('should sac a holding and prompt you to select an attacking character with printed cost <= 3', function() {
             this.noMoreActions();
             this.initiateConflict({
-                attackers: [this.initiate, this.hotaru, this.challenger],
+                attackers: [this.initiate, this.hotaru, this.challenger, this.storyteller],
                 defenders: [this.brash]
             });
             this.player2.pass();
@@ -44,6 +45,7 @@ describe('Ramshackle Facade', function() {
             expect(this.player1).toBeAbleToSelect(this.initiate);
             expect(this.player1).not.toBeAbleToSelect(this.hotaru);
             expect(this.player1).toBeAbleToSelect(this.challenger);
+            expect(this.player1).not.toBeAbleToSelect(this.storyteller);
             expect(this.player1).not.toBeAbleToSelect(this.brash);
 
             this.player1.clickCard(this.challenger);
