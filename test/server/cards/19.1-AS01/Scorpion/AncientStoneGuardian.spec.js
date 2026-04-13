@@ -140,6 +140,34 @@ describe('Ancient Stone Guardian', function () {
                 );
             });
 
+            it('lets both players skip the prompt (both click Done)', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.shinjoArcher],
+                    defenders: [this.solemnScholar],
+                    type: 'military'
+                });
+
+                this.player2.clickCard(this.assassination);
+                this.player2.clickCard(this.stoneGuardian);
+
+                const p1HandSizeInit = this.player1.hand.length;
+                const p2HandSizeInit = this.player2.hand.length;
+
+                expect(this.player1).toHavePrompt('Choose a character');
+                expect(this.player1).toHavePromptButton('Done');
+                this.player1.clickPrompt('Done');
+
+                expect(this.player2).toHavePrompt('Choose a character');
+                expect(this.player2).toHavePromptButton('Done');
+                this.player2.clickPrompt('Done');
+
+                expect(this.shinjoArcher.isDishonored).toBe(false);
+                expect(this.solemnScholar.isDishonored).toBe(false);
+                expect(this.player1.hand.length).toBe(p1HandSizeInit);
+                expect(this.player2.hand.length).toBe(p2HandSizeInit);
+            });
+
             it('skips a player prompt if they have no character to dishonor', function () {
                 this.shinjoArcher.dishonor();
 

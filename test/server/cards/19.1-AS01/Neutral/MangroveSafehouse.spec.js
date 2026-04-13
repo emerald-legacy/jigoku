@@ -191,6 +191,26 @@ describe('Mangrove Safehouse', function () {
                             );
                         });
                     });
+
+                    describe('if a Mantis character is selected but opponent has 0 fate', function () {
+                        beforeEach(function () {
+                            this.player2.player.fate = 0;
+                            this.p2FateBefore = 0;
+                            this.player1.clickCard(this.kudaka);
+                        });
+
+                        it('moves the target home and does not steal fate', function () {
+                            expect(this.kudaka.inConflict).toBe(false);
+                            expect(
+                                this.game.currentConflict.attackers
+                            ).not.toContain(this.kudaka);
+                            expect(this.player1.fate).toBe(this.p1FateBefore);
+                            expect(this.player2.fate).toBe(0);
+                            expect(this.getChatLogs(3)).toContain(
+                                'player1 uses Mangrove Safehouse to move Kudaka home'
+                            );
+                        });
+                    });
                 });
             });
         });
