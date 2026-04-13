@@ -21,7 +21,7 @@ export default class HonestAssessment extends DrawCard {
                 const cards = hand.slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
                 return {
                     gameActions: [
-                        AbilityDsl.actions.reveal({ target: cards, chatMessage: true }),
+                        AbilityDsl.actions.reveal({ target: cards, chatMessage: true, player: context.player.opponent }),
                         AbilityDsl.actions.discardMatching({
                             target: context.player.opponent,
                             cards,

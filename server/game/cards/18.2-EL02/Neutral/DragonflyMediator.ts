@@ -22,7 +22,7 @@ class DragonflyMediator extends DrawCard {
                     player: Players.Opponent,
                     location: Locations.Hand,
                     controller: Players.Opponent,
-                    gameAction: AbilityDsl.actions.reveal({ chatMessage: true })
+                    gameAction: AbilityDsl.actions.reveal(context => ({ chatMessage: true, player: context.player.opponent }))
                 }
             },
             effect: 'have each player reveal cards from their hand'
