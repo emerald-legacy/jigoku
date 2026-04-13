@@ -56,9 +56,11 @@ describe('Honest Assessment', function() {
             this.player2.chooseCardInPrompt(this.ornateFan.name, 'card-name');
 
             expect(this.player1.hand.length).toBe(hand - 2);
-            expect(this.getChatLogs(10)).toContain('player2 uses Honest Assessment, naming Ornate Fan to look at 4 random cards in player1\'s hand and discard all cards named Ornate Fan');
-            expect(this.getChatLogs(10)).toContain('Honest Assessment sees Banzai!, Fine Katana, Ornate Fan and Ornate Fan');
-            expect(this.getChatLogs(10)).toContain('player1 discards Ornate Fan and Ornate Fan');
+            expect(this.getChatLogs(15)).toContain('player2 uses Honest Assessment, naming Ornate Fan to reveal 4 random cards from player1\'s hand and discard all copies of Ornate Fan');
+            expect(this.getChatLogs(15)).toContain('player1 reveals Banzai! due to Honest Assessment');
+            expect(this.getChatLogs(15)).toContain('player1 reveals Fine Katana due to Honest Assessment');
+            expect(this.getChatLogs(15)).toContain('player1 reveals Ornate Fan due to Honest Assessment');
+            expect(this.getChatLogs(15)).toContain('player1 discards Ornate Fan and Ornate Fan');
         });
 
         it('hand has no matching cards', function() {
@@ -70,9 +72,9 @@ describe('Honest Assessment', function() {
             this.player2.chooseCardInPrompt(this.letGo.name, 'card-name');
 
             expect(this.player1.hand.length).toBe(hand);
-            expect(this.getChatLogs(10)).toContain('player2 uses Honest Assessment, naming Let Go to look at 4 random cards in player1\'s hand and discard all cards named Let Go');
-            expect(this.getChatLogs(10)).toContain('Honest Assessment sees Banzai!, Fine Katana, Ornate Fan and Ornate Fan');
-            expect(this.getChatLogs(10)).toContain('player1 does not discard anything');
+            expect(this.getChatLogs(15)).toContain('player2 uses Honest Assessment, naming Let Go to reveal 4 random cards from player1\'s hand and discard all copies of Let Go');
+            expect(this.getChatLogs(15)).toContain('player1 reveals Banzai! due to Honest Assessment');
+            expect(this.getChatLogs(15)).toContain('player1 does not discard anything');
         });
 
         it('shoud work with less than 4 cards', function() {
@@ -85,9 +87,9 @@ describe('Honest Assessment', function() {
             this.player2.chooseCardInPrompt(this.letGo.name, 'card-name');
 
             expect(this.player1.hand.length).toBe(hand);
-            expect(this.getChatLogs(10)).toContain('player2 uses Honest Assessment, naming Let Go to look at 4 random cards in player1\'s hand and discard all cards named Let Go');
-            expect(this.getChatLogs(10)).toContain('Honest Assessment sees Banzai!, Fine Katana and Ornate Fan');
-            expect(this.getChatLogs(10)).toContain('player1 does not discard anything');
+            expect(this.getChatLogs(15)).toContain('player2 uses Honest Assessment, naming Let Go to reveal 4 random cards from player1\'s hand and discard all copies of Let Go');
+            expect(this.getChatLogs(15)).toContain('player1 reveals Banzai! due to Honest Assessment');
+            expect(this.getChatLogs(15)).toContain('player1 does not discard anything');
         });
     });
 });

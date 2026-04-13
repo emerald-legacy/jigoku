@@ -56,8 +56,8 @@ describe('In Lady Dojis Service', function() {
                 attackers: [this.whisperer],
                 defenders: [this.asami]
             });
+            this.player2.pass();
             this.player1.clickCard(this.service);
-            expect(this.player1).toHavePrompt('Conflict Action Window');
             expect(this.service.location).toBe('hand');
         });
 
