@@ -22,7 +22,7 @@ export default class SecondWind extends DrawCard {
                     location: Locations.DynastyDiscardPile,
                     cardType: CardTypes.Character,
                     cardCondition: (card) => !card.isUnique(),
-                    cntroller: Players.Self,
+                    controller: Players.Self,
                     targets: true,
                     gameAction: AbilityDsl.actions.multiple([
                         AbilityDsl.actions.putIntoConflict(),
