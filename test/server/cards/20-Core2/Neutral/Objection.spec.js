@@ -19,7 +19,7 @@ describe('Objection', function () {
                 }
             });
 
-            this.player1.player.imperialFavor = 'miiltary';
+            this.player1.player.imperialFavor = 'military';
 
             this.miyaMystic = this.player1.findCardByName('miya-mystic');
             this.tadaka = this.player2.findCardByName('isawa-tadaka-2');
