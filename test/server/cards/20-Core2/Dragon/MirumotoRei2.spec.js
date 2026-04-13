@@ -32,7 +32,7 @@ describe('Mirumoto Rei 2', function () {
         it('should discard the loser if they have no fate', function () {
             this.noMoreActions();
             this.initiateConflict({
-                attackers: [this.rei, this.yoshi],
+                attackers: [this.rei, this.uji],
                 defenders: [this.tsukune, this.toshimoko]
             });
 
@@ -53,7 +53,7 @@ describe('Mirumoto Rei 2', function () {
         it('should remove a fate if the loser has a fate', function () {
             this.noMoreActions();
             this.initiateConflict({
-                attackers: [this.rei, this.yoshi],
+                attackers: [this.rei, this.uji],
                 defenders: [this.tsukune, this.toshimoko]
             });
 
@@ -78,7 +78,7 @@ describe('Mirumoto Rei 2', function () {
 
             this.noMoreActions();
             this.initiateConflict({
-                attackers: [this.rei, this.yoshi],
+                attackers: [this.rei, this.uji],
                 defenders: [this.diplomat, this.toshimoko]
             });
 
@@ -104,7 +104,7 @@ describe('Mirumoto Rei 2', function () {
         it('should not work in pol conflicts', function () {
             this.noMoreActions();
             this.initiateConflict({
-                attackers: [this.rei, this.yoshi],
+                attackers: [this.rei, this.uji],
                 defenders: [this.tsukune, this.toshimoko],
                 type: 'political'
             });
@@ -123,7 +123,7 @@ describe('Mirumoto Rei 2', function () {
 
             this.noMoreActions();
             this.initiateConflict({
-                attackers: [this.rei, this.yoshi],
+                attackers: [this.rei, this.uji],
                 defenders: [this.tsukune, this.toshimoko]
             });
 

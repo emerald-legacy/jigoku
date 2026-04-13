@@ -23,7 +23,7 @@ describe('Isawa Hifumi', function () {
             this.fineKatana = this.player1.findCardByName('fine-katana');
             this.skirmisher = this.player1.findCardByName('hiruma-skirmisher');
             this.soshisMemory = this.player1.findCardByName('soshi-s-memory');
-            this.ornateFan = this.player1.findCardByName('soshi-s-memory');
+            this.ornateFan = this.player1.findCardByName('ornate-fan');
             this.againstTheWaves = this.player1.findCardByName('against-the-waves');
 
             this.matsuBerserker = this.player2.findCardByName('matsu-berserker');
@@ -32,6 +32,7 @@ describe('Isawa Hifumi', function () {
             this.player1.playAttachment(this.fineKatana, this.isawaHifumi);
             this.player2.pass();
             this.player1.playAttachment(this.ornateFan, this.isawaHifumi);
+            this.player2.pass();
         });
 
         it('replays an event for free the first time', function () {
