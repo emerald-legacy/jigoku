@@ -7,7 +7,7 @@ export default class TheSunWillRiseAgain extends DrawCard {
 
     setupCardAbilities() {
         this.reaction({
-            title: 'Gain an additional coflict',
+            title: 'Gain an additional conflict',
             when: {
                 afterConflict: (event, context) =>
                     event.conflict.attackingPlayer === context.player &&
