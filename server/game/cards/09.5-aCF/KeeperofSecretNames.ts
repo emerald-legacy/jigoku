@@ -12,7 +12,7 @@ class KeeperOfSecretNames extends DrawCard {
             target: {
                 cardType: CardTypes.Province,
                 location: Locations.Provinces,
-                cardCondition: card => card.abilities.actions.length > 0,
+                cardCondition: card => card.abilities.actions.length > 0 && !card.isBroken,
                 gameAction: AbilityDsl.actions.resolveAbility(context => ({
                     target: context.target,
                     ability: context.target.abilities.actions[0],
