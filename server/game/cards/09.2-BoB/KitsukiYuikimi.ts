@@ -12,6 +12,7 @@ export default class KitsukiYuikimi extends DrawCard {
                     context.source.isParticipating() &&
                     event.origin &&
                     event.origin.type === 'ring' &&
+                    event.recipient === context.player &&
                     context.player.opponent !== undefined
             },
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
