@@ -11,10 +11,11 @@ class DisparagingChallenge extends DrawCard {
             initiateDuel: {
                 type: DuelTypes.Political,
                 targetCondition: card => !card.isParticipating(),
-                gameAction: duel => AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.sendHome({ target: duel.loser }),
-                    AbilityDsl.actions.moveToConflict({ target: duel.loser })
-                ])
+                gameAction: duel => AbilityDsl.actions.conditional({
+                    condition: () => !duel.loser?.[0]?.isParticipating(),
+                    trueGameAction: AbilityDsl.actions.moveToConflict({ target: duel.loser }),
+                    falseGameAction: AbilityDsl.actions.sendHome({ target: duel.loser })
+                })
             }
         });
     }
