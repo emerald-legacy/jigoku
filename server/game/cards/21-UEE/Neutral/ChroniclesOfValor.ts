@@ -7,7 +7,7 @@ export default class ChroniclesOfValor extends DrawCard {
 
     setupCardAbilities() {
         this.reaction({
-            title: 'Discard a character',
+            title: 'Take honor from your opponent',
             when: {
                 afterConflict: ({ conflict }: { conflict: Conflict }, context) =>
                     conflict.winner === context.player && conflict.attackerSkill + conflict.defenderSkill >= 25

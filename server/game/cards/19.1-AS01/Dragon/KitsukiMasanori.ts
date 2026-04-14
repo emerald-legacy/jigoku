@@ -38,8 +38,7 @@ export default class KitsukiMasanori extends DrawCard {
                                 ),
                                 subActionProperties: (card) => ({
                                     attachment: card,
-                                    target: context.source,
-                                    bisteca: 33
+                                    target: context.source
                                 }),
                                 gameAction: AbilityDsl.actions.attach(),
                                 message: '{0} takes {1} and attaches it to {2}',

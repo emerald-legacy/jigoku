@@ -50,6 +50,17 @@ describe('In Lady Dojis Service', function() {
             expect(this.player2).toHavePromptButton('Initiate Conflict');
         });
 
+        it('should not be playable during a conflict (Peaceful)', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.whisperer],
+                defenders: [this.asami]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.service);
+            expect(this.service.location).toBe('hand');
+        });
+
         it('should prevent the targeted character from being declared as a defender until the end of the round', function () {
             this.player1.clickCard(this.service);
             this.player1.clickCard(this.asami);

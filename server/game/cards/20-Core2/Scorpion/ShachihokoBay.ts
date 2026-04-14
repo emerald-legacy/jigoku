@@ -110,7 +110,6 @@ class Process {
 
     private reorderCardsAndContinue() {
         if(this.newTopOrder.length === 0) {
-            console.log('OI');
             return;
         }
         this.context.game.addMessage(

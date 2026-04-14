@@ -224,6 +224,45 @@ describe('Retribution', function () {
             this.player1.clickPrompt('Done');
         });
 
+        it('should only trigger once per round', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.diplomat],
+                defenders: [],
+                type: 'political',
+                ring: 'void'
+            });
+
+            this.noMoreActions();
+            this.player1.clickCard(this.uji);
+            this.player2.clickCard(this.retribution);
+            this.player2.clickCard(this.uji);
+
+            this.player2.clickRing('earth');
+            this.player2.clickCard(this.sd);
+            this.player2.clickPrompt('Initiate Conflict');
+
+            this.player1.clickCard(this.kageyu);
+            this.player1.clickPrompt('Done');
+
+            this.uji.bow();
+            this.noMoreActions();
+            this.uji.ready();
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger, this.adept],
+                defenders: [],
+                type: 'military',
+                ring: 'air'
+            });
+            this.player1.pass();
+            this.player2.pass();
+
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).not.toBeAbleToSelect(this.retribution);
+        });
+
         it('should not mess up conflict declaration on subsequent conflicts', function () {
             this.noMoreActions();
             this.initiateConflict({

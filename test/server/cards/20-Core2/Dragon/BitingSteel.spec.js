@@ -1,6 +1,6 @@
 const { GameModes } = require('../../../../../build/server/GameModes');
 
-describe('Bitting Steel', function () {
+describe('Biting Steel', function () {
     integration(function () {
         describe('Duel Effect', function () {
             beforeEach(function () {

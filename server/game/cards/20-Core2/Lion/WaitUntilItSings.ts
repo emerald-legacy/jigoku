@@ -7,7 +7,7 @@ export default class WaitUntilItSings extends DrawCard {
 
     setupCardAbilities() {
         this.action({
-            title: 'Take an action during conflict resolutino',
+            title: 'Take an action during conflict resolution',
             condition: context => context.game.currentConflict.getParticipants().some(p => p.controller === context.player && p.hasTrait('commander')),
             gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
                 targetController: context.player,

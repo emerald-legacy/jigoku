@@ -21,7 +21,7 @@ export default class HonestAssessment extends DrawCard {
                 const cards = hand.slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
                 return {
                     gameActions: [
-                        AbilityDsl.actions.lookAt({ target: cards }),
+                        AbilityDsl.actions.reveal({ target: cards, chatMessage: true, player: context.player.opponent }),
                         AbilityDsl.actions.discardMatching({
                             target: context.player.opponent,
                             cards,
@@ -32,7 +32,7 @@ export default class HonestAssessment extends DrawCard {
                     ]
                 };
             }),
-            effect: 'look at 4 random cards in {1}\'s hand and discard all cards named {2}',
+            effect: 'reveal 4 random cards from {1}\'s hand and discard all copies of {2}',
             effectArgs: (context) => [context.player.opponent, context.costs.nameCardCost]
         });
     }

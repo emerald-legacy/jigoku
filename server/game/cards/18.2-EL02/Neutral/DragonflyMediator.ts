@@ -13,10 +13,7 @@ class DragonflyMediator extends DrawCard {
                     activePromptTitle: 'Choose a card to reveal',
                     location: Locations.Hand,
                     controller: Players.Self,
-                    gameAction: AbilityDsl.actions.lookAt(context => ({
-                        message: '{0} sees {1} from {2}',
-                        messageArgs: cards => [context.source, cards, context.player]
-                    }))
+                    gameAction: AbilityDsl.actions.reveal({ chatMessage: true })
                 },
                 oppCard: {
                     activePromptTitle: 'Choose three cards to reveal',
@@ -25,10 +22,7 @@ class DragonflyMediator extends DrawCard {
                     player: Players.Opponent,
                     location: Locations.Hand,
                     controller: Players.Opponent,
-                    gameAction: AbilityDsl.actions.lookAt(context => ({
-                        message: '{0} sees {1} from {2}',
-                        messageArgs: cards => [context.source, cards, context.player.opponent]
-                    }))
+                    gameAction: AbilityDsl.actions.reveal(context => ({ chatMessage: true, player: context.player.opponent }))
                 }
             },
             effect: 'have each player reveal cards from their hand'
