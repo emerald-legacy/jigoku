@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard';
 import AbilityDsl from '../../abilitydsl';
 
-class TetsuboOfBlod extends DrawCard {
+class TetsuboOfBlood extends DrawCard {
     static id = 'tetsubo-of-blood';
 
     setupCardAbilities() {
@@ -16,4 +16,4 @@ class TetsuboOfBlod extends DrawCard {
 }
 
 
-export default TetsuboOfBlod;
+export default TetsuboOfBlood;
