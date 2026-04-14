@@ -27,11 +27,11 @@ class Aranat extends DrawCard {
             }),
             then: {
                 message: '{3} has {4} facedown provinces so {4} fate is placed on {1}',
-                messageArgs: context => [context.player.opponent, 5 - context.player.getNumberOfOpponentsFaceupProvinces()],
+                messageArgs: context => [context.player.opponent, context.player.getNumberOfOpponentsFacedownProvinces()],
                 thenCondition: () => true,
                 gameAction: AbilityDsl.actions.placeFate(context => ({
                     target: context.source,
-                    amount: 5 - context.player.getNumberOfOpponentsFaceupProvinces()
+                    amount: context.player.getNumberOfOpponentsFacedownProvinces()
                 }))
             }
         });
