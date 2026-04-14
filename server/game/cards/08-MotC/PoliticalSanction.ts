@@ -13,8 +13,8 @@ class PoliticalSanction extends DrawCard {
     canPlay(context, playType) {
         if(context.game.isDuringConflict('political')) {
             let diff = this.game.currentConflict.attackerSkill - this.game.currentConflict.defenderSkill;
-            return context.player.isAttackingPlayer() ? diff > 0 : diff < 0 &&
-                super.canPlay(context, playType);
+            const hasSkillAdvantage = context.player.isAttackingPlayer() ? diff > 0 : diff < 0;
+            return hasSkillAdvantage && super.canPlay(context, playType);
         }
 
         return false;
