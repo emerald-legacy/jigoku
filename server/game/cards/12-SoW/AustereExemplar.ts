@@ -8,6 +8,7 @@ class AustereExemplar extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Take three actions',
+            limit: AbilityDsl.limit.perConflict(1),
             cost: AbilityDsl.costs.payFateToRing(),
             condition: (context) => context.source.isAttacking(),
             effect: 'take three actions',
