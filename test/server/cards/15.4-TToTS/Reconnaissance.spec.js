@@ -49,7 +49,7 @@ describe('Reconnaissance', function() {
 
             it('should let you select facedown provinces', function () {
                 this.player1.clickCard(this.reconnaissance);
-                expect(this.player1).toHavePrompt('Choose up to 3 provinces');
+                expect(this.player1).toHavePrompt('Choose 3 provinces');
                 expect(this.player1).toBeAbleToSelect(this.revels);
                 expect(this.player1).toBeAbleToSelect(this.garden);
                 expect(this.player1).toBeAbleToSelect(this.fields);
@@ -60,7 +60,7 @@ describe('Reconnaissance', function() {
 
             it('should let you choose 3 provinces', function () {
                 this.player1.clickCard(this.reconnaissance);
-                expect(this.player1).toHavePrompt('Choose up to 3 provinces');
+                expect(this.player1).toHavePrompt('Choose 3 provinces');
                 this.player1.clickCard(this.revels);
                 this.player1.clickCard(this.garden);
                 this.player1.clickCard(this.fields);
@@ -70,21 +70,6 @@ describe('Reconnaissance', function() {
                 expect(this.player1.player.promptState.selectedCards).toContain(this.garden);
                 expect(this.player1.player.promptState.selectedCards).toContain(this.fields);
                 expect(this.player1.player.promptState.selectedCards).not.toContain(this.feast);
-            });
-
-            it('should look at the chosen provinces (1 province)', function () {
-                this.player1.clickCard(this.reconnaissance);
-                this.player1.clickCard(this.garden);
-                this.player1.clickPrompt('Done');
-                expect(this.getChatLogs(5)).toContain('Reconnaissance sees Manicured Garden in province 1');
-            });
-
-            it('should look at the chosen provinces (2 provinces)', function () {
-                this.player1.clickCard(this.reconnaissance);
-                this.player1.clickCard(this.garden);
-                this.player1.clickCard(this.fields);
-                this.player1.clickPrompt('Done');
-                expect(this.getChatLogs(5)).toContain('Reconnaissance sees Manicured Garden in province 1 and Fertile Fields in province 2');
             });
 
             it('should look at the chosen provinces (3 provinces)', function () {
@@ -148,7 +133,7 @@ describe('Reconnaissance', function() {
 
             it('should let you select facedown or faceup provinces', function () {
                 this.player1.clickCard(this.reconnaissance);
-                expect(this.player1).toHavePrompt('Choose up to 3 provinces');
+                expect(this.player1).toHavePrompt('Choose 3 provinces');
                 expect(this.player1).toBeAbleToSelect(this.revels);
                 expect(this.player1).toBeAbleToSelect(this.garden);
                 expect(this.player1).toBeAbleToSelect(this.fields);
@@ -159,7 +144,7 @@ describe('Reconnaissance', function() {
 
             it('should let you choose 3 provinces', function () {
                 this.player1.clickCard(this.reconnaissance);
-                expect(this.player1).toHavePrompt('Choose up to 3 provinces');
+                expect(this.player1).toHavePrompt('Choose 3 provinces');
                 this.player1.clickCard(this.revels);
                 this.player1.clickCard(this.garden);
                 this.player1.clickCard(this.fields);

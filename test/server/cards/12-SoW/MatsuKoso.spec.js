@@ -41,7 +41,7 @@ describe('Matsu Koso', function() {
             expect(this.solemnScholar.getMilitarySkill()).toBe(this.solemnScholar.printedMilitarySkill - this.solemnScholar.printedPoliticalSkill);
             expect(this.shibaTsukune.getMilitarySkill()).toBe(this.shibaTsukune.printedMilitarySkill - this.shibaTsukune.printedPoliticalSkill);
             expect(this.isawaUona.getMilitarySkill()).toBe(this.isawaUona.printedMilitarySkill); // Printed pol is NaN
-            expect(this.getChatLogs(5)).toContain('player1 uses Matsu Koso to lower the military skill of Kitsu Motso, Matsu Koso, Matsu Berserker, Solemn Scholar, Shiba Tsukune and Isawa Uona by their respective pirnted political skill');
+            expect(this.getChatLogs(5)).toContain('player1 uses Matsu Koso to lower the military skill of Kitsu Motso, Matsu Koso, Matsu Berserker, Solemn Scholar, Shiba Tsukune and Isawa Uona by their respective printed political skill');
         });
 
         it('should decrease each participating characters military skill by their printed base political skill on both sides (Koso defending)', function() {
@@ -64,7 +64,7 @@ describe('Matsu Koso', function() {
             expect(this.solemnScholar.getMilitarySkill()).toBe(this.solemnScholar.printedMilitarySkill - this.solemnScholar.printedPoliticalSkill);
             expect(this.shibaTsukune.getMilitarySkill()).toBe(this.shibaTsukune.printedMilitarySkill - this.shibaTsukune.printedPoliticalSkill);
             expect(this.isawaUona.getMilitarySkill()).toBe(this.isawaUona.printedMilitarySkill); // Printed pol is NaN
-            expect(this.getChatLogs(5)).toContain('player1 uses Matsu Koso to lower the military skill of Solemn Scholar, Shiba Tsukune, Isawa Uona, Kitsu Motso, Matsu Koso and Matsu Berserker by their respective pirnted political skill');
+            expect(this.getChatLogs(5)).toContain('player1 uses Matsu Koso to lower the military skill of Solemn Scholar, Shiba Tsukune, Isawa Uona, Kitsu Motso, Matsu Koso and Matsu Berserker by their respective printed political skill');
         });
 
         it('should take into account printed, not base political', function() {
