@@ -5,7 +5,7 @@ describe('Disloyal Oathkeeper', function () {
                 phase: 'conflict',
                 player1: {
                     inPlay: ['doji-whisperer', 'isawa-tadaka'],
-                    hand: ['way-of-the-crane', 'against-the-waves', 'fine-katana', 'political-rival']
+                    hand: ['way-of-the-crane', 'against-the-waves', 'fine-katana', 'political-rival', 'levy-2']
                 },
                 player2: {
                     inPlay: ['disloyal-oathkeeper', 'doji-challenger'],
@@ -20,6 +20,7 @@ describe('Disloyal Oathkeeper', function () {
             this.katana = this.player1.findCardByName('fine-katana');
             this.rival = this.player1.findCardByName('political-rival');
 
+            this.levy = this.player1.findCardByName('levy-2');
             this.oathkeeper = this.player2.findCardByName('disloyal-oathkeeper');
             this.challenger = this.player2.findCardByName('doji-challenger');
             this.dragon = this.player2.findCardByName('way-of-the-dragon');
@@ -66,6 +67,14 @@ describe('Disloyal Oathkeeper', function () {
             this.player1.clickCard(this.waves);
             this.player1.clickCard(this.isawaTadaka);
             expect(this.player2).toHavePrompt('Action Window');
+        });
+
+        it('should not react to an opponent\'s ephemeral event', function () {
+            this.player1.clickCard(this.levy);
+            this.player2.clickPrompt('Give your opponent 1 fate');
+
+            expect(this.player2).toHavePrompt('Action Window');
+            expect(this.levy.location).toBe('removed from game');
         });
 
         it('should not react to an opponent\'s attachment', function () {
