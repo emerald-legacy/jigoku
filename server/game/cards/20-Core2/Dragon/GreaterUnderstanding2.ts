@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl';
 import type BaseCard from '../../../basecard';
-import { CardTypes, Players } from '../../../Constants';
+import { CardTypes, Locations, Players } from '../../../Constants';
 import DrawCard from '../../../drawcard';
 import type Ring from '../../../ring';
 
@@ -9,6 +9,7 @@ export default class GreaterUnderstanding extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
+            targetLocation: Locations.Any,
             effect: AbilityDsl.effects.immunity({
                 restricts: 'opponentsCardEffects'
             })
