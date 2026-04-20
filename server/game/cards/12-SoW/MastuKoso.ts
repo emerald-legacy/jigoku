@@ -16,7 +16,7 @@ class MatsuKoso extends DrawCard {
                     isNaN(card.printedPoliticalSkill) ? 0 : -card.printedPoliticalSkill
                 )
             })),
-            effect: 'lower the military skill of {1} by their respective pirnted political skill',
+            effect: 'lower the military skill of {1} by their respective printed political skill',
             effectArgs: (context) => [context.game.currentConflict.getParticipants()]
         });
     }

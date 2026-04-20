@@ -13,9 +13,9 @@ class Reconnaissance extends DrawCard {
             },
             effect: 'look at 3 provinces',
             target: {
-                mode: TargetModes.UpTo,
+                mode: TargetModes.Exactly,
                 numCards: 3,
-                activePromptTitle: 'Choose up to 3 provinces',
+                activePromptTitle: 'Choose 3 provinces',
                 location: Locations.Provinces,
                 cardType: CardTypes.Province,
                 controller: Players.Any,

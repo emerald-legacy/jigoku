@@ -47,7 +47,7 @@ class MiyaLibrary extends DrawCard {
                 } else if(promptCards.length === 1) {
                     orderedCards.push(promptCards[0]);
                 }
-                context.player.dynastyDeck.splice(0, 5, ...orderedCards);
+                context.player.dynastyDeck.splice(0, orderedCards.length, ...orderedCards);
             }
         });
     }

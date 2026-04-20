@@ -12,7 +12,7 @@ export default class SevenFoldPalace extends StrongholdCard {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.player &&
                     context.player.isAttackingPlayer() &&
-                    event.conflict.getAttackers().some((card) => card.isHonored)
+                    event.conflict.getAttackers().some((card) => card.isHonored && card.controller === context.player)
             },
             gameAction: AbilityDsl.actions.gainHonor(() => ({ amount: 2 }))
         });

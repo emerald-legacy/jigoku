@@ -1,5 +1,5 @@
 import DrawCard from '../../drawcard';
-import { CardTypes, Locations, Players, PlayTypes } from '../../Constants';
+import { CardTypes, Locations, Phases, Players, PlayTypes } from '../../Constants';
 import AbilityDsl from '../../abilitydsl';
 
 class WayfarersCamp extends DrawCard {
@@ -8,6 +8,7 @@ class WayfarersCamp extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Play two characters',
+            phase: Phases.Dynasty,
             effect: 'play two cards from their provinces',
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.selectCard({

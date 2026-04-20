@@ -12,7 +12,7 @@ class FrontlineEngineer extends DrawCard {
 
         this.action({
             title: 'Place a holding from your deck faceup in the defending province',
-            condition: context => context.player.dynastyDeck.size() > 0 && context.player.isDefendingPlayer(),
+            condition: context => context.player.dynastyDeck.size() > 0 && context.source.isDefending(),
             effect: 'look at the top five cards of their dynasty deck',
             gameAction: AbilityDsl.actions.selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',

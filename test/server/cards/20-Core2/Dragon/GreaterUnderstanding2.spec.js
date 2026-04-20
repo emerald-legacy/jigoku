@@ -8,7 +8,8 @@ describe('Greater Understanding 2', function () {
                     hand: ['greater-understanding-2']
                 },
                 player2: {
-                    stronghold: 'temple-of-the-fivefold-path'
+                    stronghold: 'temple-of-the-fivefold-path',
+                    hand: ['disarm']
                 }
             });
 
@@ -18,6 +19,7 @@ describe('Greater Understanding 2', function () {
             this.togashiYokuni.bow();
 
             this.t5p = this.player2.findCardByName('temple-of-the-fivefold-path');
+            this.disarm = this.player2.findCardByName('disarm');
 
             this.game.rings.air.fate = 2;
             this.game.rings.earth.fate = 1;
@@ -46,6 +48,14 @@ describe('Greater Understanding 2', function () {
             expect(this.getChatLogs(5)).toContain(
                 'player2 moves Greater Understanding to Void Ring - enlightenment is elusive'
             );
+        });
+
+        it('cannot be targeted by opponent card abilities such as Disarm', function () {
+            this.player1.clickCard(this.greaterUnderstanding);
+            this.player1.clickRing('fire');
+
+            this.player2.clickCard(this.disarm);
+            expect(this.player2).not.toBeAbleToSelect(this.greaterUnderstanding);
         });
 
         it('resolve a ring effect then stays on same ring if no targets to move', function () {

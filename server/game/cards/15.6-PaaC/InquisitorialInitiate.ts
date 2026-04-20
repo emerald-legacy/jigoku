@@ -3,7 +3,7 @@ import AbilityDsl from '../../abilitydsl';
 import type BaseCard from '../../basecard';
 import DrawCard from '../../drawcard';
 
-export default class InquisiorialInitiate extends DrawCard {
+export default class InquisitorialInitiate extends DrawCard {
     static id = 'inquisitorial-initiate';
 
     public setupCardAbilities() {

@@ -1,7 +1,7 @@
 import DrawCard from '../../drawcard';
 import AbilityDsl from '../../abilitydsl';
 
-class TeasuredGift extends DrawCard {
+class TreasuredGift extends DrawCard {
     static id = 'treasured-gift';
 
     setupCardAbilities() {
@@ -16,5 +16,5 @@ class TeasuredGift extends DrawCard {
 }
 
 
-export default TeasuredGift;
+export default TreasuredGift;
 

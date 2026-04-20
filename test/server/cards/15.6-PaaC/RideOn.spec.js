@@ -53,6 +53,7 @@ describe('Ride On', function () {
             this.player1.clickCard(this.rideOn);
             expect(this.youth.inConflict).toBe(false);
             this.player1.clickCard(this.youth);
+            this.player1.clickPrompt('Move to conflict');
             expect(this.youth.inConflict).toBe(true);
             expect(this.getChatLogs(5)).toContain('player1 plays Ride On to move Moto Youth into the conflict');
         });
@@ -69,6 +70,7 @@ describe('Ride On', function () {
             this.player1.clickCard(this.rideOn);
             expect(this.rider.inConflict).toBe(true);
             this.player1.clickCard(this.rider);
+            this.player1.clickPrompt('Move home');
             expect(this.rider.inConflict).toBe(false);
             expect(this.getChatLogs(5)).toContain('player1 plays Ride On to send Border Rider home');
         });
