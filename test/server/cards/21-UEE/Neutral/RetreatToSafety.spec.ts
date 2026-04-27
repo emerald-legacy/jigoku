@@ -1,6 +1,17 @@
-describe('Retreat to Safety', function () {
-    integration(function () {
-        beforeEach(function () {
+describe('Retreat to Safety', () => {
+    integration(() => {
+        let player1: any;
+        let player2: any;
+        let borderRider: any;
+        let matsuBerserker: any;
+        let kitsuMotso: any;
+        let ikomaProdigy: any;
+        let retreatToSafety: any;
+        let initiateConflict: (config: any) => void;
+        let noMoreActions: () => void;
+        let getChatLogs: (n: number) => string[];
+
+        beforeEach(function(this: any) {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
@@ -12,46 +23,52 @@ describe('Retreat to Safety', function () {
                 }
             });
 
-            this.borderRider = this.player1.findCardByName('border-rider');
-            this.matsuBerserker = this.player2.findCardByName('matsu-berserker');
-            this.kitsuMotso = this.player2.findCardByName('kitsu-motso');
-            this.ikomaProdigy = this.player2.findCardByName('ikoma-prodigy');
-            this.retreatToSafety = this.player2.findCardByName('retreat-to-safety');
-            this.ikomaProdigy.bowed = true;
+            player1 = this.player1;
+            player2 = this.player2;
+            initiateConflict = (config) => this.initiateConflict(config);
+            noMoreActions = () => this.noMoreActions();
+            getChatLogs = (n) => this.getChatLogs(n);
+
+            borderRider = player1.findCardByName('border-rider');
+            matsuBerserker = player2.findCardByName('matsu-berserker');
+            kitsuMotso = player2.findCardByName('kitsu-motso');
+            ikomaProdigy = player2.findCardByName('ikoma-prodigy');
+            retreatToSafety = player2.findCardByName('retreat-to-safety');
+            ikomaProdigy.bowed = true;
         });
 
-        it('sends defenders home', function () {
-            this.noMoreActions();
-            this.initiateConflict({
-                attackers: [this.borderRider],
-                defenders: [this.matsuBerserker, this.kitsuMotso]
+        it('sends defenders home', () => {
+            noMoreActions();
+            initiateConflict({
+                attackers: [borderRider],
+                defenders: [matsuBerserker, kitsuMotso]
             });
-            this.matsuBerserker.bowed = true;
-            this.kitsuMotso.bowed = true;
+            matsuBerserker.bowed = true;
+            kitsuMotso.bowed = true;
 
-            this.player2.clickCard(this.retreatToSafety);
-            expect(this.player2).toHavePrompt('Retreat to Safety');
-            expect(this.player2).toBeAbleToSelect(this.matsuBerserker);
-            expect(this.player2).toBeAbleToSelect(this.kitsuMotso);
+            player2.clickCard(retreatToSafety);
+            expect(player2).toHavePrompt('Retreat to Safety');
+            expect(player2).toBeAbleToSelect(matsuBerserker);
+            expect(player2).toBeAbleToSelect(kitsuMotso);
 
-            this.player2.clickCard(this.matsuBerserker);
-            this.player2.clickCard(this.kitsuMotso);
-            this.player2.clickPrompt('Done');
-            expect(this.matsuBerserker.isParticipating()).toBe(false);
-            expect(this.kitsuMotso.isParticipating()).toBe(false);
-            expect(this.getChatLogs(3)).toContain(
+            player2.clickCard(matsuBerserker);
+            player2.clickCard(kitsuMotso);
+            player2.clickPrompt('Done');
+            expect(matsuBerserker.isParticipating()).toBe(false);
+            expect(kitsuMotso.isParticipating()).toBe(false);
+            expect(getChatLogs(3)).toContain(
                 'player2 plays Retreat to Safety to send Matsu Berserker and Kitsu Motso home'
             );
 
-            expect(this.player2).toHavePrompt('Choose a character to ready');
-            expect(this.player2).toBeAbleToSelect(this.matsuBerserker);
-            expect(this.player2).toBeAbleToSelect(this.kitsuMotso);
-            expect(this.player2).not.toBeAbleToSelect(this.ikomaProdigy);
+            expect(player2).toHavePrompt('Choose a character to ready');
+            expect(player2).toBeAbleToSelect(matsuBerserker);
+            expect(player2).toBeAbleToSelect(kitsuMotso);
+            expect(player2).not.toBeAbleToSelect(ikomaProdigy);
 
-            this.player2.clickCard(this.matsuBerserker);
-            expect(this.getChatLogs(3)).toContain("Matsu Berserker is readied due to player2's superior leadership");
-            expect(this.matsuBerserker.bowed).toBe(false);
-            expect(this.kitsuMotso.bowed).toBe(true);
+            player2.clickCard(matsuBerserker);
+            expect(getChatLogs(3)).toContain("Matsu Berserker is readied due to player2's superior leadership");
+            expect(matsuBerserker.bowed).toBe(false);
+            expect(kitsuMotso.bowed).toBe(true);
         });
     });
 });
