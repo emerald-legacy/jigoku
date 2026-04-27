@@ -1,11 +1,61 @@
-const uuid = require('uuid');
-const bcrypt = require('bcrypt');
+import * as uuid from 'uuid';
+import * as bcrypt from 'bcrypt';
+import { logger } from './logger';
+import { GameChat } from './game/GameChat';
 
-const { logger } = require('./logger');
-const { GameChat } = require('./game/GameChat');
+interface PendingGameDetails {
+    name: string;
+    spectators: boolean;
+    spectatorSquelch: boolean;
+    gameType: string;
+    clocks: any;
+}
+
+interface PendingPlayer {
+    id: string;
+    name: string;
+    user: any;
+    emailHash: string;
+    owner: boolean;
+    left?: boolean;
+    disconnected?: boolean;
+    deck?: any;
+    faction?: any;
+    agenda?: any;
+}
+
+interface PendingSpectator {
+    id: string;
+    name: string;
+    user: any;
+    emailHash: string;
+    settings?: any;
+}
+
+interface PendingGameSaveState {
+    gameId: string;
+    gameType: string;
+    players: Array<{ faction: string; name: string }>;
+    startedAt: Date;
+}
 
 class PendingGame {
-    constructor(owner, details) {
+    owner: any;
+    players: { [username: string]: PendingPlayer };
+    spectators: { [username: string]: PendingSpectator };
+    id: string;
+    name: string;
+    allowSpectators: boolean;
+    spectatorSquelch: boolean;
+    gameType: string;
+    clocks: any;
+    createdAt: Date;
+    gameChat: GameChat;
+    node: any;
+    started: boolean;
+    password?: string;
+
+    constructor(owner: any, details: PendingGameDetails) {
         this.owner = owner;
         this.players = {};
         this.spectators = {};
@@ -22,26 +72,26 @@ class PendingGame {
     }
 
     // Getters
-    getPlayersAndSpectators() {
+    getPlayersAndSpectators(): { [name: string]: PendingPlayer | PendingSpectator } {
         return Object.assign({}, this.players, this.spectators);
     }
 
-    getPlayers() {
+    getPlayers(): { [username: string]: PendingPlayer } {
         return this.players;
     }
 
-    getPlayerOrSpectator(playerName) {
+    getPlayerOrSpectator(playerName: string): PendingPlayer | PendingSpectator | undefined {
         return this.getPlayersAndSpectators()[playerName];
     }
 
-    getPlayerByName(playerName) {
+    getPlayerByName(playerName: string): PendingPlayer | undefined {
         return this.players[playerName];
     }
 
-    getSaveState() {
-        var players = Object.values(this.getPlayers()).map((player) => {
+    getSaveState(): PendingGameSaveState {
+        const players = Object.values(this.getPlayers()).map((player) => {
             return {
-                faction: player.faction.name,
+                faction: player.faction?.name ?? '',
                 name: player.name
             };
         });
@@ -55,18 +105,17 @@ class PendingGame {
     }
 
     // Helpers
-    setupFaction(player, faction) {
+    setupFaction(player: PendingPlayer, faction: any): void {
         player.faction = {};
         player.faction = faction;
     }
 
     // Actions
-    addMessage() {
-        // @ts-ignore
-        this.gameChat.addMessage(...arguments);
+    addMessage(message: string, ...args: any[]): void {
+        this.gameChat.addMessage(message, ...args);
     }
 
-    addPlayer(id, user) {
+    addPlayer(id: string, user: any): void {
         this.players[user.username] = {
             id: id,
             name: user.username,
@@ -76,7 +125,7 @@ class PendingGame {
         };
     }
 
-    addSpectator(id, user) {
+    addSpectator(id: string, user: any): void {
         this.spectators[user.username] = {
             id: id,
             name: user.username,
@@ -85,15 +134,12 @@ class PendingGame {
         };
     }
 
-    newGame(id, user, password, callback) {
+    newGame(id: string, user: any, password: string | undefined, callback: (err?: Error) => void): void {
         if(password) {
-            bcrypt.hash(password, 10, (err, hash) => {
+            bcrypt.hash(password, 10, (err: Error | null, hash: string) => {
                 if(err) {
-                    // @ts-ignore
-                    logger.info(err);
-
+                    logger.info(err.message);
                     callback(err);
-
                     return;
                 }
 
@@ -104,26 +150,27 @@ class PendingGame {
             });
         } else {
             this.addPlayer(id, user);
-
             callback();
         }
     }
 
-    isUserBlocked(user) {
+    isUserBlocked(user: any): boolean {
         return (this.owner.blockList || []).includes(user.username.toLowerCase());
     }
 
-    join(id, user, password, callback) {
+    join(id: string, user: any, password: string | undefined, callback: (err?: Error, msg?: string) => void): void {
         if(Object.keys(this.players).length === 2 || this.started) {
+            callback(new Error('Game is full or has already started'));
             return;
         }
 
         if(this.isUserBlocked(user)) {
+            callback(new Error('You have been blocked by the owner of this game'));
             return;
         }
 
         if(this.password) {
-            bcrypt.compare(password, this.password, (err, valid) => {
+            bcrypt.compare(password, this.password, (err: Error | null, valid: boolean) => {
                 if(err) {
                     return callback(new Error('Bad password'), 'Incorrect game password');
                 }
@@ -133,29 +180,27 @@ class PendingGame {
                 }
 
                 this.addPlayer(id, user);
-
                 callback();
             });
         } else {
             this.addPlayer(id, user);
-
             callback();
         }
     }
 
-    watch(id, user, password, callback) {
+    watch(id: string, user: any, password: string | undefined, callback: (err?: Error, msg?: string) => void): void {
         if(!this.allowSpectators) {
             callback(new Error('Join not permitted'));
-
             return;
         }
 
         if(this.isUserBlocked(user)) {
+            callback(new Error('You have been blocked by the owner of this game'));
             return;
         }
 
         if(this.password) {
-            bcrypt.compare(password, this.password, (err, valid) => {
+            bcrypt.compare(password, this.password, (err: Error | null, valid: boolean) => {
                 if(err) {
                     return callback(new Error('Bad password'), 'Incorrect game password');
                 }
@@ -165,21 +210,18 @@ class PendingGame {
                 }
 
                 this.addSpectator(id, user);
-
                 this.addMessage('{0} has joined the game as a spectator', user.username);
                 callback();
             });
         } else {
             this.addSpectator(id, user);
-
             this.addMessage('{0} has joined the game as a spectator', user.username);
-
             callback();
         }
     }
 
-    leave(playerName) {
-        var player = this.getPlayerOrSpectator(playerName);
+    leave(playerName: string): void {
+        const player = this.getPlayerOrSpectator(playerName);
         if(!player) {
             return;
         }
@@ -201,8 +243,8 @@ class PendingGame {
         }
     }
 
-    disconnect(playerName) {
-        var player = this.getPlayerOrSpectator(playerName);
+    disconnect(playerName: string): void {
+        const player = this.getPlayerOrSpectator(playerName);
         if(!player) {
             return;
         }
@@ -220,8 +262,8 @@ class PendingGame {
         }
     }
 
-    chat(playerName, message) {
-        var player = this.getPlayerOrSpectator(playerName);
+    chat(playerName: string, message: string): void {
+        const player = this.getPlayerOrSpectator(playerName);
         if(!player) {
             return;
         }
@@ -229,8 +271,8 @@ class PendingGame {
         this.addMessage('{0} {1}', player, message);
     }
 
-    selectDeck(playerName, deck) {
-        var player = this.getPlayerByName(playerName);
+    selectDeck(playerName: string, deck: any): void {
+        const player = this.getPlayerByName(playerName);
         if(!player) {
             return;
         }
@@ -245,13 +287,13 @@ class PendingGame {
         this.setupFaction(player, deck.faction);
     }
 
-    // interrogators
-    isEmpty() {
-        return !Object.values(this.getPlayersAndSpectators()).some((player) => this.hasActivePlayer(player.name));
+    // Interrogators
+    isEmpty(): boolean {
+        return !Object.values(this.getPlayersAndSpectators()).some((player) => this.hasActivePlayer((player as any).name));
     }
 
-    isOwner(playerName) {
-        var player = this.players[playerName];
+    isOwner(playerName: string): boolean {
+        const player = this.players[playerName];
 
         if(!player || !player.owner) {
             return false;
@@ -260,20 +302,20 @@ class PendingGame {
         return true;
     }
 
-    hasActivePlayer(playerName) {
-        return (
+    hasActivePlayer(playerName: string): boolean {
+        return !!(
             (this.players[playerName] && !this.players[playerName].left && !this.players[playerName].disconnected) ||
             this.spectators[playerName]
         );
     }
 
     // Summary
-    getSummary(activePlayer) {
-        var playerSummaries = {};
-        var playersInGame = Object.values(this.players).filter((player) => !player.left);
+    getSummary(activePlayer: string | undefined): any {
+        const playerSummaries: { [name: string]: any } = {};
+        const playersInGame = Object.values(this.players).filter((player) => !player.left);
 
         playersInGame.forEach((player) => {
-            var deck = undefined;
+            let deck: any;
 
             if(activePlayer === player.name && player.deck) {
                 deck = { name: player.deck.name, selected: player.deck.selected, status: player.deck.status };
@@ -322,4 +364,8 @@ class PendingGame {
     }
 }
 
-module.exports = PendingGame;
+declare namespace PendingGame {
+    export type { PendingGameDetails, PendingPlayer, PendingSpectator, PendingGameSaveState };
+}
+
+export = PendingGame;

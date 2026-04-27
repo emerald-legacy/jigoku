@@ -1,33 +1,57 @@
-const { WebSocketServer } = require('ws');
-const { logger } = require('./logger');
-const db = require('./db.js');
-const EventEmitter = require('events');
-const GameService = require('./services/GameService.js');
-const env = require('./env.js');
-const url = require('url');
+import { WebSocketServer, WebSocket } from 'ws';
+import { EventEmitter } from 'events';
+import { IncomingMessage } from 'http';
+import * as urlModule from 'url';
+import { logger } from './logger';
+import * as db from './db';
+import GameService = require('./services/GameService');
+import { lobbyWsUrl } from './env';
+
+interface GameNode {
+    identity: string;
+    maxGames: number;
+    numGames: number;
+    address: string;
+    port: number;
+    protocol: string;
+    disabled?: boolean;
+    pingSent?: number;
+    lastMessage?: number;
+}
 
 class GameRouter extends EventEmitter {
+    workers: { [identity: string]: GameNode };
+    private _gameService: InstanceType<typeof GameService> | null = null;
+    connections: Map<string, WebSocket>;
+    wss!: InstanceType<typeof WebSocketServer>;
+
+    private get gameService(): InstanceType<typeof GameService> {
+        if(!this._gameService) {
+            this._gameService = new GameService(db.getDb());
+        }
+        return this._gameService;
+    }
+
     constructor() {
         super();
 
         this.workers = {};
-        this.gameService = new GameService(db.getDb());
         this.connections = new Map();
 
-        this.init(env.lobbyWsUrl);
+        this.init(lobbyWsUrl);
         setInterval(this.checkTimeouts.bind(this), 1000 * 60);
     }
 
-    init(listenUrl) {
+    init(listenUrl: string): void {
         const parsed = new URL(listenUrl);
         const port = parseInt(parsed.port, 10) || 6000;
 
         this.wss = new WebSocketServer({ port });
         logger.info(`GameRouter listening on ws://0.0.0.0:${port}`);
 
-        this.wss.on('connection', (ws, req) => {
-            const parsed = url.parse(req.url, true);
-            const identity = parsed.query.identity;
+        this.wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
+            const parsedUrl = urlModule.parse(req.url || '', true);
+            const identity = parsedUrl.query.identity as string | undefined;
 
             if(!identity) {
                 logger.error('WebSocket connection without identity, closing');
@@ -38,7 +62,7 @@ class GameRouter extends EventEmitter {
             logger.info(`Game node connected: ${identity}`);
             this.connections.set(identity, ws);
 
-            ws.on('message', (data) => {
+            ws.on('message', (data: any) => {
                 this.onMessage(identity, data);
             });
 
@@ -47,22 +71,24 @@ class GameRouter extends EventEmitter {
                 this.connections.delete(identity);
             });
 
-            ws.on('error', (err) => {
+            ws.on('error', (err: Error) => {
                 logger.error(`WebSocket error from ${identity}: ${err.message}`);
             });
         });
     }
 
     // External methods
-    startGame(game) {
-        var node = this.getNextAvailableGameNode();
+    startGame(game: any): GameNode | undefined {
+        const node = this.getNextAvailableGameNode();
 
         if(!node) {
             logger.error('Could not find new node for game');
             return;
         }
 
-        this.gameService.create(game.getSaveState());
+        this.gameService.create(game.getSaveState()).catch((err: Error) => {
+            logger.error(`Failed to save game state: ${err.message}`);
+        });
 
         node.numGames++;
 
@@ -70,17 +96,17 @@ class GameRouter extends EventEmitter {
         return node;
     }
 
-    addSpectator(game, user) {
+    addSpectator(game: any, user: any): void {
         this.sendCommand(game.node.identity, 'SPECTATOR', { game: game, user: user });
     }
 
-    getNextAvailableGameNode() {
+    getNextAvailableGameNode(): GameNode | undefined {
         const workerList = Object.values(this.workers);
         if(workerList.length === 0) {
             return undefined;
         }
 
-        var returnedWorker = undefined;
+        let returnedWorker: GameNode | undefined = undefined;
 
         workerList.forEach(worker => {
             if(worker.numGames >= worker.maxGames || worker.disabled) {
@@ -95,7 +121,7 @@ class GameRouter extends EventEmitter {
         return returnedWorker;
     }
 
-    getNodeStatus() {
+    getNodeStatus(): Array<{ name: string; numGames: number; status: string }> {
         return Object.values(this.workers).map(worker => {
             return {
                 name: worker.identity,
@@ -105,8 +131,8 @@ class GameRouter extends EventEmitter {
         });
     }
 
-    disableNode(nodeName) {
-        var worker = this.workers[nodeName];
+    disableNode(nodeName: string): boolean {
+        const worker = this.workers[nodeName];
         if(!worker) {
             return false;
         }
@@ -116,8 +142,8 @@ class GameRouter extends EventEmitter {
         return true;
     }
 
-    enableNode(nodeName) {
-        var worker = this.workers[nodeName];
+    enableNode(nodeName: string): boolean {
+        const worker = this.workers[nodeName];
         if(!worker) {
             return false;
         }
@@ -127,7 +153,7 @@ class GameRouter extends EventEmitter {
         return true;
     }
 
-    notifyFailedConnect(game, username) {
+    notifyFailedConnect(game: any, username: string): void {
         if(!game.node) {
             return;
         }
@@ -135,7 +161,7 @@ class GameRouter extends EventEmitter {
         this.sendCommand(game.node.identity, 'CONNECTFAILED', { gameId: game.id, username: username });
     }
 
-    closeGame(game) {
+    closeGame(game: any): void {
         if(!game.node) {
             return;
         }
@@ -144,12 +170,10 @@ class GameRouter extends EventEmitter {
     }
 
     // Events
-    onMessage(identity, data) {
-        var identityStr = identity.toString();
+    onMessage(identity: string, data: any): void {
+        let worker = this.workers[identity];
 
-        var worker = this.workers[identityStr];
-
-        var message = undefined;
+        let message: any;
 
         try {
             message = JSON.parse(data.toString());
@@ -160,20 +184,18 @@ class GameRouter extends EventEmitter {
 
         switch(message.command) {
             case 'HELLO':
-                this.emit('onWorkerStarted', identityStr);
-                this.workers[identityStr] = {
-                    identity: identityStr,
+                worker = {
+                    identity: identity,
                     maxGames: message.arg.maxGames,
-                    numGames: 0,
+                    numGames: Object.keys(message.arg.games).length,
                     address: message.arg.address,
                     port: message.arg.port,
                     protocol: message.arg.protocol
                 };
-                worker = this.workers[identityStr];
+                this.workers[identity] = worker;
 
-                this.emit('onNodeReconnected', identityStr, message.arg.games);
-
-                worker.numGames = Object.keys(message.arg.games).length;
+                this.emit('onWorkerStarted', identity);
+                this.emit('onNodeReconnected', identity, message.arg.games);
 
                 break;
             case 'PONG':
@@ -184,7 +206,9 @@ class GameRouter extends EventEmitter {
                 }
                 break;
             case 'GAMEWIN':
-                this.gameService.update(message.arg.game);
+                this.gameService.update(message.arg.game).catch((err: Error) => {
+                    logger.error(`Failed to update game win state: ${err.message}`);
+                });
                 break;
             case 'GAMECLOSED':
                 if(worker) {
@@ -198,7 +222,9 @@ class GameRouter extends EventEmitter {
                 break;
             case 'PLAYERLEFT':
                 if(!message.arg.spectator) {
-                    this.gameService.update(message.arg.game);
+                    this.gameService.update(message.arg.game).catch((err: Error) => {
+                        logger.error(`Failed to update game on player left: ${err.message}`);
+                    });
                 }
 
                 this.emit('onPlayerLeft', message.arg.gameId, message.arg.player);
@@ -212,9 +238,9 @@ class GameRouter extends EventEmitter {
     }
 
     // Internal methods
-    sendCommand(identity, command, arg) {
+    sendCommand(identity: string, command: string, arg?: any): void {
         const ws = this.connections.get(identity);
-        if(!ws || ws.readyState !== 1) {
+        if(!ws || ws.readyState !== WebSocket.OPEN) {
             logger.error(`Cannot send ${command} to ${identity}: not connected`);
             return;
         }
@@ -226,8 +252,8 @@ class GameRouter extends EventEmitter {
         }
     }
 
-    checkTimeouts() {
-        var currentTime = Date.now();
+    checkTimeouts(): void {
+        const currentTime = Date.now();
         const pingTimeout = 1 * 60 * 1000;
 
         Object.values(this.workers).forEach(worker => {
@@ -236,7 +262,7 @@ class GameRouter extends EventEmitter {
                 delete this.workers[worker.identity];
                 this.emit('onWorkerTimedOut', worker.identity);
             } else if(!worker.pingSent) {
-                if(currentTime - worker.lastMessage > pingTimeout) {
+                if(currentTime - (worker.lastMessage || 0) > pingTimeout) {
                     worker.pingSent = currentTime;
                     this.sendCommand(worker.identity, 'PING');
                 }
@@ -244,11 +270,15 @@ class GameRouter extends EventEmitter {
         });
     }
 
-    close() {
+    close(): void {
         if(this.wss) {
             this.wss.close();
         }
     }
 }
 
-module.exports = GameRouter;
+declare namespace GameRouter {
+    export type { GameNode };
+}
+
+export = GameRouter;
