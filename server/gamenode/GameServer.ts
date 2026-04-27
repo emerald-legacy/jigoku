@@ -336,14 +336,14 @@ export class GameServer {
     }
 
     onStartGame(pendingGame: PendingGame): void {
-        const playerNames = Object.values<Player>(pendingGame.players).map(p => p.name).join(' vs ');
+        const playerNames = Object.values(pendingGame.players as any).map((p: any) => p.name).join(' vs ');
         logger.info(`Starting game ${pendingGame.id} (${playerNames}), total games: ${this.games.size + 1}`);
         const game = new Game(pendingGame as any, { router: this, shortCardData: this.shortCardData });
         this.games.set(pendingGame.id, game);
         this.registerUsersForGame(game);
 
         game.started = true;
-        for(const player of Object.values<Player>(pendingGame.players)) {
+        for(const player of Object.values(pendingGame.players as any) as Player[]) {
             game.selectDeck(player.name, player.deck);
         }
 
