@@ -12,10 +12,10 @@ describe('Devotion in Action', () => {
         let player1: any;
         let player2: any;
         let noMoreActions: () => void;
-        let initiateConflict: (config: any) => void;
-        let getChatLogs: (n: number) => string[];
+        let initiateConflict: (_config: any) => void;
+        let getChatLogs: (_n: number) => string[];
 
-        beforeEach(function(this: any) {
+        beforeEach(function() {
             this.setupTest({
                 phase: 'conflict',
                 player1: {

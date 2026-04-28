@@ -1,20 +1,5 @@
 import PendingGame from '../../server/pendinggame';
 
-// Mocks
-const mockUuid = { v1: jasmine.createSpy('uuid.v1').and.returnValue('test-uuid-1234') };
-const mockBcrypt = {
-    hash: jasmine.createSpy('bcrypt.hash'),
-    compare: jasmine.createSpy('bcrypt.compare')
-};
-const mockGameChatInstance = {
-    addMessage: jasmine.createSpy('addMessage'),
-    messages: []
-};
-const MockGameChat = jasmine.createSpy('GameChat').and.returnValue(mockGameChatInstance);
-
-// Module-level mocks via jasmine spies aren't available before import; use the require/proxyquire pattern
-// Since we compile to CJS, we can swap via require cache after import by re-requiring with spies.
-// Instead, we test the real module but spy on side effects where needed.
 
 function makeOwner(overrides?: any) {
     return {

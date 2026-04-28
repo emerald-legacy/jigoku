@@ -4,7 +4,7 @@ import { IncomingMessage } from 'http';
 import * as urlModule from 'url';
 import { logger } from './logger';
 import * as db from './db';
-import GameService = require('./services/GameService');
+import GameService from './services/GameService';
 import { lobbyWsUrl } from './env';
 
 interface GameNode {
@@ -275,10 +275,6 @@ class GameRouter extends EventEmitter {
             this.wss.close();
         }
     }
-}
-
-declare namespace GameRouter {
-    export type { GameNode };
 }
 
 export = GameRouter;

@@ -7,11 +7,11 @@ describe('Retreat to Safety', () => {
         let kitsuMotso: any;
         let ikomaProdigy: any;
         let retreatToSafety: any;
-        let initiateConflict: (config: any) => void;
+        let initiateConflict: (_config: any) => void;
         let noMoreActions: () => void;
-        let getChatLogs: (n: number) => string[];
+        let getChatLogs: (_n: number) => string[];
 
-        beforeEach(function(this: any) {
+        beforeEach(function() {
             this.setupTest({
                 phase: 'conflict',
                 player1: {

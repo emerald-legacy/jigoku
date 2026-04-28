@@ -364,8 +364,4 @@ class PendingGame {
     }
 }
 
-declare namespace PendingGame {
-    export type { PendingGameDetails, PendingPlayer, PendingSpectator, PendingGameSaveState };
-}
-
 export = PendingGame;

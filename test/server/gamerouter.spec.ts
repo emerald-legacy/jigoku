@@ -46,7 +46,6 @@ const origGs = (require.cache as any)[gsPath];
 // Force fresh load of gamerouter so it captures our stubs (not a previously cached version)
 delete (require.cache as any)[grPath];
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const GameRouter = require('../../server/gamerouter') as any;
 
 // Restore cache
