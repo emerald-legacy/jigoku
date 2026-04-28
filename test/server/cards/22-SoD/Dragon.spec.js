@@ -264,6 +264,54 @@ describe('SoD - Dragon', function () {
             });
         });
 
+        describe('Tattooed Man', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        stronghold: ['temple-of-the-fivefold-path'],
+                        inPlay: ['tattooed-man']
+                    },
+                    player2: {
+                        inPlay: ['nimble-noyan'],
+                        hand: ['i-am-ready']
+                    }
+                });
+
+                this.tattooedMan = this.player1.findCardByName('tattooed-man');
+                this.temple = this.player1.findCardByName('temple-of-the-fivefold-path');
+                this.nimbleNoyan = this.player2.findCardByName('nimble-noyan');
+                this.iAmReady = this.player2.findCardByName('i-am-ready');
+            });
+
+            it('should ready when a card ability moves fate to a ring', function () {
+                this.tattooedMan.bow();
+                this.player1.clickCard(this.temple);
+                this.player1.clickRing('air');
+
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                expect(this.player1).toBeAbleToSelect(this.tattooedMan);
+                this.player1.clickCard(this.tattooedMan);
+
+                expect(this.tattooedMan.bowed).toBe(false);
+                expect(this.getChatLogs(3)).toContain('player1 uses Tattooed Man to ready Tattooed Man');
+            });
+
+            it('should not trigger or crash when fate is removed from a character without a recipient', function () {
+                this.nimbleNoyan.fate = 1;
+                this.nimbleNoyan.bow();
+                this.noMoreActions();
+                this.initiateConflict({ attackers: [this.tattooedMan], defenders: [] });
+
+                this.player2.clickCard(this.iAmReady);
+                this.player2.clickCard(this.nimbleNoyan);
+
+                expect(this.nimbleNoyan.fate).toBe(0);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            });
+        });
+
         describe('Kayo', function () {
             beforeEach(function () {
                 this.setupTest({

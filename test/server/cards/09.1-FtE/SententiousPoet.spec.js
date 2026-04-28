@@ -140,5 +140,41 @@ describe('Sententious Poet', function() {
                 expect(this.getChatLogs(3)).toContain('player1 uses Sententious Poet to gain 1 fate');
             });
         });
+
+        describe('Sententious Poet onMoveFate crash guard', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['sententious-poet']
+                    },
+                    player2: {
+                        inPlay: ['nimble-noyan'],
+                        hand: ['i-am-ready']
+                    }
+                });
+                this.sententiousPoet = this.player1.findCardByName('sententious-poet');
+                this.nimbleNoyan = this.player2.findCardByName('nimble-noyan');
+                this.iAmReady = this.player2.findCardByName('i-am-ready');
+            });
+
+            it('should not trigger or crash when the opponent pays a removeFate cost while playing an event', function() {
+                this.nimbleNoyan.fate = 1;
+                this.nimbleNoyan.bow();
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.sententiousPoet],
+                    defenders: []
+                });
+
+                this.player2.clickCard(this.iAmReady);
+                this.player2.clickCard(this.nimbleNoyan);
+
+                expect(this.nimbleNoyan.bowed).toBe(false);
+                expect(this.nimbleNoyan.fate).toBe(0);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            });
+        });
     });
 });
