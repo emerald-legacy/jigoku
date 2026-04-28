@@ -6,9 +6,9 @@ class SpiritOfTheRiver extends DrawCard {
         super(facedownCard.owner, {
             clan: 'neutral',
             cost: null,
-            glory: 0,
+            glory: '0',
             id: 'spirit-of-the-river',
-            military: 1,
+            military: '1',
             name: 'Spirit of the River',
             political: null,
             side: 'dynasty',

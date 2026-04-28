@@ -5,15 +5,7 @@ import BaseCard from './basecard';
 import type Player from './player';
 import type DrawCard from './drawcard';
 import StatModifier from './StatModifier';
-
-type CardData = {
-    strength: number;
-    element: string[];
-    type: 'province';
-    side: 'province';
-    name: string;
-    id: string;
-};
+import type { CardData } from './types/CardData';
 
 export class ProvinceCard extends BaseCard {
     isProvince = true;
@@ -30,7 +22,7 @@ export class ProvinceCard extends BaseCard {
         owner: Player,
         cardData: CardData = {
             strength: 3,
-            element: [],
+            elements: [],
             type: 'province',
             side: 'province',
             name: 'Skirmish Province',
@@ -70,7 +62,7 @@ export class ProvinceCard extends BaseCard {
     }
 
     get printedStrength() {
-        const parsed = parseInt(this.cardData.strength, 10);
+        const parsed = parseInt(String(this.cardData.strength ?? ''), 10);
         return isNaN(parsed) ? 0 : parsed;
     }
 
@@ -80,7 +72,7 @@ export class ProvinceCard extends BaseCard {
         }
         return (
             this.sumEffects(EffectNames.ModifyBaseProvinceStrength) +
-            (parseInt(this.cardData.strength) ? parseInt(this.cardData.strength) : 0)
+            (parseInt(String(this.cardData.strength ?? '')) || 0)
         );
     }
 

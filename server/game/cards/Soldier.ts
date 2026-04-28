@@ -4,7 +4,7 @@ import Player from '../player';
 
 export default class Soldier<D extends DrawCard> extends DrawCard {
     static createDummy(owner: Player) {
-        const dummyCard = new DrawCard(owner, {});
+        const dummyCard = new DrawCard(owner, { id: '', name: '', type: '' });
         return new Soldier(dummyCard);
     }
 

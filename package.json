@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "npm run jasmine",
-        "jasmine": "tsc && cross-env JASMINE_CONFIG_PATH=./jasmine.json DB_PATH=mongodb://localhost:27017/test DOMAIN=localhost ENVIRONMENT=test GAME_NODE_NAME=test GAME_NODE_SOCKET_IO_PORT=9500 HTTPS=false LOBBY_PORT=4000 LOBBY_WS_URL=ws://localhost:6000 SECRET=testsecret jasmine",
+        "jasmine": "tsc -p tsconfig.test.json && cross-env JASMINE_CONFIG_PATH=./jasmine.json DB_PATH=mongodb://localhost:27017/test DOMAIN=localhost ENVIRONMENT=test GAME_NODE_NAME=test GAME_NODE_SOCKET_IO_PORT=9500 HTTPS=false LOBBY_PORT=4000 LOBBY_WS_URL=ws://localhost:6000 SECRET=testsecret jasmine",
         "lint": "eslint server/ test/server/",
         "typecheck": "tsc --noEmit",
         "typecheck:strict": "tsc --noEmit -p tsconfig.strict.json"
@@ -61,15 +61,16 @@
     "devDependencies": {
         "@eslint/js": "10.0.1",
         "@types/bcrypt": "6.0.0",
+        "@types/jasmine": "6.0.0",
         "@types/jsonwebtoken": "9.0.10",
         "@types/node": "25.3.5",
+        "@types/ws": "8.5.13",
         "@typescript-eslint/eslint-plugin": "8.56.1",
         "@typescript-eslint/parser": "8.56.1",
         "eslint": "10.0.3",
         "eslint-plugin-jasmine": "4.2.2",
         "globals": "17.4.0",
         "jasmine": "6.1.0",
-        "@types/ws": "8.5.13",
         "prettier": "3.8.1",
         "typescript": "5.9.3"
     },

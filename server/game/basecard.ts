@@ -41,6 +41,7 @@ import Ring from './ring';
 import type { CardEffect } from './Effects/types';
 import type { GainAllAbilities } from './Effects/Library/gainAllAbilities';
 import type { Duel } from './Duel';
+import type { CardData } from './types/CardData';
 
 type Faction = 'neutral' | 'crab' | 'crane' | 'dragon' | 'lion' | 'phoenix' | 'scorpion' | 'unicorn' | 'shadowlands';
 
@@ -98,7 +99,7 @@ class BaseCard extends EffectSource {
 
     constructor(
         public owner: Player,
-        public cardData: any
+        public cardData: CardData
     ) {
         super(owner.game);
         this.controller = owner;

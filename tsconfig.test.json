@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "allowJs": false,
+        "types": ["jasmine", "node"]
+    },
+    "include": ["server/**/*", "test/server/**/*", "test/types/**/*"],
+    "exclude": ["client/**/*"]
+}
