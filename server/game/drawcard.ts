@@ -13,6 +13,7 @@ import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility';
 import type Player from './player';
 import type Ring from './ring';
 import type { AbilityContext } from './AbilityContext';
+import type { CardData } from './types/CardData';
 
 interface MenuItem {
     command: string;
@@ -50,7 +51,7 @@ class DrawCard extends BaseCard {
     inConflict: boolean = false;
     new: boolean = false;
 
-    constructor(owner: Player, cardData: any) {
+    constructor(owner: Player, cardData: CardData) {
         super(owner, cardData);
 
         this.defaultController = owner;

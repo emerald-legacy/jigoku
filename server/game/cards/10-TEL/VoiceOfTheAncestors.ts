@@ -7,7 +7,7 @@ class VoiceOfTheAncestors extends DrawCard {
 
     setupCardAbilities() {
         const DummySpiritAttachment = new DrawCard(this.owner, {
-            cost: 0,
+            cost: '0',
             glory: '0',
             side: 'dynasty',
             text: '',
