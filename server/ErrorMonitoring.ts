@@ -6,7 +6,7 @@ import { inspect } from 'util';
 export function captureException(exception: any, extra?: Record<string, unknown>): void {
     console.error('Error captured:', exception);
     if(extra) {
-        console.error('Extra context:', inspect(extra, { depth: 4, colors: true }));
+        console.error('Extra context:', inspect(extra, { depth: 6, colors: true }));
     }
 }
 
