@@ -65,5 +65,8 @@ export class GainHonorAction extends PlayerAction<GainHonorProperties> {
             event.amount
         );
         event.player.modifyHonor(amountToTransfer);
+        if(amountToTransfer && event.context?.game) {
+            event.context.game.addAnimation({ type: 'honor', playerName: event.player.name, amount: amountToTransfer });
+        }
     }
 }

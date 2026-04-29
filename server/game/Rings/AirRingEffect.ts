@@ -61,6 +61,7 @@ export class AirRingEffect extends BaseAbility {
                 amountToTransfer
             );
             this.onResolution(true);
+            context.game.addAnimation({ type: 'air', playerName: context.player.name, effect: 'gain-honor' });
             return context.game.actions.gainHonor({ amount: 2 }).resolve(context.player, context);
         }
         if(context.select === TAKE_1) {
@@ -71,6 +72,7 @@ export class AirRingEffect extends BaseAbility {
                 context.player.opponent
             );
             this.onResolution(true);
+            context.game.addAnimation({ type: 'air', playerName: context.player.name, effect: 'take-honor' });
             return context.game.actions.takeHonor().resolve(context.player.opponent, context);
         }
         if(!context.game.currentConflict || context.game.currentConflict.element === 'air') {

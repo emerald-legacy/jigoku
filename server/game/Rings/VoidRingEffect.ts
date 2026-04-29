@@ -34,6 +34,7 @@ export class VoidRingEffect extends BaseAbility {
                 context.target
             );
             this.onResolution(true);
+            context.game.addAnimation({ type: 'void', targetUuid: context.target.uuid, effect: 'remove-fate' });
             context.game.applyGameAction(context, { removeFate: context.target });
         } else {
             context.game.addMessage('{0} chooses not to resolve the {1} ring', context.player, 'void');

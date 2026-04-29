@@ -1326,6 +1326,28 @@ class BaseCard extends EffectSource {
         return super.getShortSummaryForControls(activePlayer);
     }
 
+    private getAbilityLimitSummary(): Array<{ max: number; current: number; exhausted: boolean }> | undefined {
+        if(!this.controller) {
+            return undefined;
+        }
+        const seen = new Set();
+        const limits: Array<{ max: number; current: number; exhausted: boolean }> = [];
+        for(const ability of [...this.abilities.actions, ...this.abilities.reactions]) {
+            const limit = ability.limit;
+            if(!limit || seen.has(limit)) {
+                continue;
+            }
+            seen.add(limit);
+            if(limit.max !== undefined && isFinite(limit.max)) {
+                const current = limit.currentForPlayer(this.controller);
+                if(current > 0) {
+                    limits.push({ max: limit.max, current, exhausted: limit.isAtMax(this.controller) });
+                }
+            }
+        }
+        return limits.length > 0 ? limits : undefined;
+    }
+
     getSummary(activePlayer: Player, hideWhenFaceup: boolean) {
         let isActivePlayer = activePlayer === this.controller;
         let selectionState = activePlayer.getCardSelectionState(this);
@@ -1364,7 +1386,8 @@ class BaseCard extends EffectSource {
             isDishonored: this.isDishonored,
             isHonored: this.isHonored,
             isTainted: !!this.isTainted,
-            uuid: this.uuid
+            uuid: this.uuid,
+            abilityLimits: this.getAbilityLimitSummary()
         };
 
         return Object.assign(state, selectionState);

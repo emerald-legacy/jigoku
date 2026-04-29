@@ -56,6 +56,7 @@ export class EarthRingEffect extends BaseAbility {
                 context.player.opponent
             );
             this.onResolution(true);
+            context.game.addAnimation({ type: 'earth', playerName: context.player.name, effect: 'force-discard' });
             context.game.actions.discardAtRandom().resolve(context.player.opponent, context);
         } else if(context.select === DRAW_AND_FORCE_DISCARD && context.player.opponent) {
             context.game.addMessage(
@@ -65,10 +66,12 @@ export class EarthRingEffect extends BaseAbility {
                 context.player.opponent
             );
             this.onResolution(true);
+            context.game.addAnimation({ type: 'earth', playerName: context.player.name, effect: 'draw-discard' });
             context.game.applyGameAction(context, { draw: context.player, discardAtRandom: context.player.opponent });
         } else if(context.select === DRAW) {
             context.game.addMessage('{0} resolves the {1} ring, drawing a card', context.player, 'earth');
             this.onResolution(true);
+            context.game.addAnimation({ type: 'earth', playerName: context.player.name, effect: 'draw' });
             context.game.applyGameAction(context, { draw: context.player });
         }
     }

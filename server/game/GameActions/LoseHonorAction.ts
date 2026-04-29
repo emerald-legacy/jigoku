@@ -39,6 +39,9 @@ export class LoseHonorAction extends PlayerAction<LoseHonorProperties> {
     eventHandler(event): void {
         if(event.player) {
             event.player.modifyHonor(event.amount);
+            if(event.context?.game) {
+                event.context.game.addAnimation({ type: 'honor', playerName: event.player.name, amount: event.amount });
+            }
         }
     }
 }

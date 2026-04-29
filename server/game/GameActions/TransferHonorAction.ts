@@ -99,6 +99,10 @@ export class TransferHonorAction extends PlayerAction {
         if(event.player && event.player.opponent) {
             event.player.modifyHonor(-amountToTransfer);
             event.player.opponent.modifyHonor(amountToTransfer);
+            if(amountToTransfer && event.context?.game) {
+                event.context.game.addAnimation({ type: 'honor', playerName: event.player.name, amount: -amountToTransfer });
+                event.context.game.addAnimation({ type: 'honor', playerName: event.player.opponent.name, amount: amountToTransfer });
+            }
         }
     }
 }
