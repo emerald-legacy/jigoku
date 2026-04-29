@@ -50,10 +50,12 @@ export class WaterRingEffect extends BaseAbility {
         if(context.target.bowed) {
             context.game.addMessage('{0} resolves the {1} ring, readying {2}', context.player, 'water', context.target);
             this.onResolution(true);
+            context.game.addAnimation({ type: 'water', targetUuid: context.target.uuid, effect: 'ready' });
             context.game.applyGameAction(context, { ready: context.target });
         } else {
             context.game.addMessage('{0} resolves the {1} ring, bowing {2}', context.player, 'water', context.target);
             this.onResolution(true);
+            context.game.addAnimation({ type: 'water', targetUuid: context.target.uuid, effect: 'bow' });
             context.game.applyGameAction(context, { bow: context.target });
         }
     }

@@ -43,6 +43,7 @@ export class FireRingEffect extends BaseAbility {
                     context.target
                 );
                 this.onResolution(true);
+                context.game.addAnimation({ type: 'fire', targetUuid: context.target.uuid, effect: 'honor' });
                 context.game.applyGameAction(context, { honor: context.target });
             });
         }
@@ -57,6 +58,7 @@ export class FireRingEffect extends BaseAbility {
                     context.target
                 );
                 this.onResolution(true);
+                context.game.addAnimation({ type: 'fire', targetUuid: context.target.uuid, effect: 'dishonor' });
                 context.game.applyGameAction(context, { dishonor: context.target });
             });
         }

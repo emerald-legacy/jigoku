@@ -40,6 +40,7 @@ import { GameModes } from '../GameModes.js';
 import { resolvePackId } from './CardPackUtil';
 import type BaseCard from './basecard';
 import type DrawCard from './drawcard';
+import type { AnimationEvent } from './AnimationEvent';
 
 interface GameDetails {
     id: string;
@@ -113,6 +114,7 @@ class Game extends EventEmitter {
     startedAt?: Date;
     private _playersCache: Player[] | null = null;
     private _spectatorsCache: Spectator[] | null = null;
+    pendingAnimations: AnimationEvent[] = [];
 
     constructor(details: GameDetails, options: GameOptions = {}) {
         super();
@@ -181,6 +183,14 @@ class Game extends EventEmitter {
      */
     reportError(e: Error): void {
         this.router.handleError(this, e);
+    }
+
+    addAnimation(event: AnimationEvent): void {
+        this.pendingAnimations.push(event);
+    }
+
+    clearAnimations(): void {
+        this.pendingAnimations = [];
     }
 
     /**
@@ -1370,7 +1380,8 @@ class Game extends EventEmitter {
             }),
             started: this.started,
             gameMode: this.gameMode,
-            winner: this.winner ? this.winner.name : undefined
+            winner: this.winner ? this.winner.name : undefined,
+            animations: this.pendingAnimations.slice()
         };
     }
 

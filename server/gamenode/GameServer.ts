@@ -243,6 +243,8 @@ export class GameServer {
             }
         }
 
+        game.clearAnimations();
+
         if(profile) {
             const total = this.profiler.now() - t0;
             this.profiler.record({
