@@ -1641,12 +1641,16 @@ class Player extends GameObject {
             state.stronghold = this.stronghold.getSummary(activePlayer);
         }
 
-        if(this.isTopConflictCardShown(activePlayer) && this.conflictDeck[0]) {
-            state.conflictDeckTopCard = this.conflictDeck[0].getSummary(activePlayer);
+        if(this.conflictDeck[0]) {
+            state.conflictDeckTopCard = this.isTopConflictCardShown(activePlayer)
+                ? this.conflictDeck[0].getSummary(activePlayer)
+                : { facedown: true, ...activePlayer.getCardSelectionState(this.conflictDeck[0]) };
         }
 
-        if(this.isTopDynastyCardShown(activePlayer) && this.dynastyDeck[0]) {
-            state.dynastyDeckTopCard = this.dynastyDeck[0].getSummary(activePlayer);
+        if(this.dynastyDeck[0]) {
+            state.dynastyDeckTopCard = this.isTopDynastyCardShown(activePlayer)
+                ? this.dynastyDeck[0].getSummary(activePlayer)
+                : { facedown: true, ...activePlayer.getCardSelectionState(this.dynastyDeck[0]) };
         }
 
         if(this.clock) {
