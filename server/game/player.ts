@@ -1,4 +1,6 @@
 import { shuffle } from './utils/shuffle';
+import { HonorTracker } from './HonorTracker';
+import { PlayerZones } from './PlayerZones';
 
 import { GameObject } from './GameObject';
 import { Deck } from './Deck.js';
@@ -43,21 +45,7 @@ class Player extends GameObject {
     left: boolean;
     lobbyId: string | null;
 
-    dynastyDeck: DrawCard[];
-    conflictDeck: DrawCard[];
-    provinceDeck: BaseCard[];
-    hand: DrawCard[];
-    cardsInPlay: DrawCard[];
-    strongholdProvince: BaseCard[];
-    provinceOne: BaseCard[];
-    provinceTwo: BaseCard[];
-    provinceThree: BaseCard[];
-    provinceFour: BaseCard[];
-    dynastyDiscardPile: DrawCard[];
-    conflictDiscardPile: DrawCard[];
-    removedFromGame: BaseCard[];
-    additionalPiles: Record<string, any>;
-    underneathStronghold: BaseCard[];
+    readonly zones: PlayerZones = new PlayerZones();
 
     faction: any;
     stronghold: StrongholdCard | null;
@@ -85,14 +73,13 @@ class Player extends GameObject {
     timerSettings: Record<string, any>;
     optionSettings: Record<string, any>;
     resetTimerAtEndOfRound: boolean;
-    honorEvents: Array<{ amount: number; phase: string; round: number }>;
+    private honorTracker: HonorTracker = new HonorTracker();
 
     promptState: PlayerPromptState;
     opponent?: Player;
     preparedDeck: any;
     outsideTheGameCards: any;
     fate: number = 0;
-    honor: number = 0;
     readyToStart: boolean = false;
     maxLimited: number = 1;
     firstPlayer: boolean = false;
@@ -111,22 +98,6 @@ class Player extends GameObject {
         this.disconnected = false;
         this.left = false;
         this.lobbyId = null;
-
-        this.dynastyDeck = [];
-        this.conflictDeck = [];
-        this.provinceDeck = [];
-        this.hand = [];
-        this.cardsInPlay = [];
-        this.strongholdProvince = [];
-        this.provinceOne = [];
-        this.provinceTwo = [];
-        this.provinceThree = [];
-        this.provinceFour = [];
-        this.dynastyDiscardPile = [];
-        this.conflictDiscardPile = [];
-        this.removedFromGame = [];
-        this.additionalPiles = {};
-        this.underneathStronghold = [];
 
         this.faction = {};
         this.stronghold = null;
@@ -183,9 +154,84 @@ class Player extends GameObject {
         this.timerSettings.windowTimer = user.settings.windowTimer;
         this.optionSettings = user.settings.optionSettings;
         this.resetTimerAtEndOfRound = false;
-        this.honorEvents = [];
-
         this.promptState = new PlayerPromptState(this);
+    }
+
+    get honor(): number {
+        return this.honorTracker.honor;
+    }
+
+    set honor(value: number) {
+        this.honorTracker.honor = value;
+    }
+
+    get dynastyDeck(): DrawCard[] { return this.zones.dynastyDeck; }
+    set dynastyDeck(v: DrawCard[]) { this.zones.dynastyDeck = v; }
+
+    get conflictDeck(): DrawCard[] { return this.zones.conflictDeck; }
+    set conflictDeck(v: DrawCard[]) { this.zones.conflictDeck = v; }
+
+    get provinceDeck(): BaseCard[] { return this.zones.provinceDeck; }
+    set provinceDeck(v: BaseCard[]) { this.zones.provinceDeck = v; }
+
+    get hand(): DrawCard[] { return this.zones.hand; }
+    set hand(v: DrawCard[]) { this.zones.hand = v; }
+
+    get cardsInPlay(): DrawCard[] { return this.zones.cardsInPlay; }
+    set cardsInPlay(v: DrawCard[]) { this.zones.cardsInPlay = v; }
+
+    get strongholdProvince(): BaseCard[] { return this.zones.strongholdProvince; }
+    set strongholdProvince(v: BaseCard[]) { this.zones.strongholdProvince = v; }
+
+    get provinceOne(): BaseCard[] { return this.zones.provinceOne; }
+    set provinceOne(v: BaseCard[]) { this.zones.provinceOne = v; }
+
+    get provinceTwo(): BaseCard[] { return this.zones.provinceTwo; }
+    set provinceTwo(v: BaseCard[]) { this.zones.provinceTwo = v; }
+
+    get provinceThree(): BaseCard[] { return this.zones.provinceThree; }
+    set provinceThree(v: BaseCard[]) { this.zones.provinceThree = v; }
+
+    get provinceFour(): BaseCard[] { return this.zones.provinceFour; }
+    set provinceFour(v: BaseCard[]) { this.zones.provinceFour = v; }
+
+    get dynastyDiscardPile(): DrawCard[] { return this.zones.dynastyDiscardPile; }
+    set dynastyDiscardPile(v: DrawCard[]) { this.zones.dynastyDiscardPile = v; }
+
+    get conflictDiscardPile(): DrawCard[] { return this.zones.conflictDiscardPile; }
+    set conflictDiscardPile(v: DrawCard[]) { this.zones.conflictDiscardPile = v; }
+
+    get removedFromGame(): BaseCard[] { return this.zones.removedFromGame; }
+    set removedFromGame(v: BaseCard[]) { this.zones.removedFromGame = v; }
+
+    get additionalPiles(): Record<string, any> { return this.zones.additionalPiles; }
+    set additionalPiles(v: Record<string, any>) { this.zones.additionalPiles = v; }
+
+    get underneathStronghold(): BaseCard[] { return this.zones.underneathStronghold; }
+    set underneathStronghold(v: BaseCard[]) { this.zones.underneathStronghold = v; }
+
+    getSourceList(source: string): any[] {
+        return this.zones.getSourceList(source);
+    }
+
+    updateSourceList(source: string, targetList: any[]): void {
+        this.zones.updateSourceList(source, targetList);
+    }
+
+    createAdditionalPile(name: string, properties?: any): void {
+        this.zones.createAdditionalPile(name, properties);
+    }
+
+    getDynastyCardInProvince(location: string): DrawCard | undefined {
+        return this.zones.getDynastyCardInProvince(location);
+    }
+
+    getDynastyCardsInProvince(location: string): DrawCard[] {
+        return this.zones.getDynastyCardsInProvince(location);
+    }
+
+    getProvinceCardInProvince(location: string): BaseCard | undefined {
+        return this.zones.getProvinceCardInProvince(location);
     }
 
     startClock(): void {
@@ -314,25 +360,6 @@ class Player extends GameObject {
             default:
                 return false;
         }
-    }
-
-    getDynastyCardInProvince(location: string): DrawCard | undefined {
-        const province = this.getSourceList(location);
-        return province.find((card: any) => card.isDynasty);
-    }
-
-    getDynastyCardsInProvince(location: string): DrawCard[] {
-        const province = this.getSourceList(location);
-        let cards = province.filter((card: any) => card.isDynasty);
-        if(!Array.isArray(cards)) {
-            cards = [cards];
-        }
-        return cards;
-    }
-
-    getProvinceCardInProvince(location: string): BaseCard | undefined {
-        const province = this.getSourceList(location);
-        return province.find((card: any) => card.isProvince);
     }
 
     getProvinceCards(): BaseCard[] {
@@ -1009,109 +1036,6 @@ class Player extends GameObject {
         this.showDynasty = true;
     }
 
-    getSourceList(source: string): any[] {
-        switch(source) {
-            case Locations.Hand:
-                return this.hand;
-            case Locations.ConflictDeck:
-                return this.conflictDeck;
-            case Locations.DynastyDeck:
-                return this.dynastyDeck;
-            case Locations.ConflictDiscardPile:
-                return this.conflictDiscardPile;
-            case Locations.DynastyDiscardPile:
-                return this.dynastyDiscardPile;
-            case Locations.RemovedFromGame:
-                return this.removedFromGame;
-            case Locations.PlayArea:
-                return this.cardsInPlay;
-            case Locations.ProvinceOne:
-                return this.provinceOne;
-            case Locations.ProvinceTwo:
-                return this.provinceTwo;
-            case Locations.ProvinceThree:
-                return this.provinceThree;
-            case Locations.ProvinceFour:
-                return this.provinceFour;
-            case Locations.StrongholdProvince:
-                return this.strongholdProvince;
-            case Locations.ProvinceDeck:
-                return this.provinceDeck;
-            case Locations.Provinces:
-                return ([] as any[]).concat(
-                    this.provinceOne,
-                    this.provinceTwo,
-                    this.provinceThree,
-                    this.provinceFour,
-                    this.strongholdProvince
-                );
-            case Locations.UnderneathStronghold:
-                return this.underneathStronghold;
-            default:
-                if(source) {
-                    if(!this.additionalPiles[source]) {
-                        this.createAdditionalPile(source);
-                    }
-                    return this.additionalPiles[source].cards;
-                }
-                return [];
-        }
-    }
-
-    createAdditionalPile(name: string, properties?: any): void {
-        this.additionalPiles[name] = Object.assign({ cards: [] }, properties);
-    }
-
-    updateSourceList(source: string, targetList: any[]): void {
-        switch(source) {
-            case Locations.Hand:
-                this.hand = targetList;
-                break;
-            case Locations.ConflictDeck:
-                this.conflictDeck = targetList;
-                break;
-            case Locations.DynastyDeck:
-                this.dynastyDeck = targetList;
-                break;
-            case Locations.ConflictDiscardPile:
-                this.conflictDiscardPile = targetList;
-                break;
-            case Locations.DynastyDiscardPile:
-                this.dynastyDiscardPile = targetList;
-                break;
-            case Locations.RemovedFromGame:
-                this.removedFromGame = targetList;
-                break;
-            case Locations.PlayArea:
-                this.cardsInPlay = targetList;
-                break;
-            case Locations.ProvinceOne:
-                this.provinceOne = targetList;
-                break;
-            case Locations.ProvinceTwo:
-                this.provinceTwo = targetList;
-                break;
-            case Locations.ProvinceThree:
-                this.provinceThree = targetList;
-                break;
-            case Locations.ProvinceFour:
-                this.provinceFour = targetList;
-                break;
-            case Locations.StrongholdProvince:
-                this.strongholdProvince = targetList;
-                break;
-            case Locations.ProvinceDeck:
-                this.provinceDeck = targetList;
-                break;
-            case Locations.UnderneathStronghold:
-                this.underneathStronghold = targetList;
-                break;
-            default:
-                if(this.additionalPiles[source]) {
-                    this.additionalPiles[source].cards = targetList;
-                }
-        }
-    }
 
     drop(cardId: string, source: string, target: string): void {
         const sourceList = this.getSourceList(source);
@@ -1236,11 +1160,7 @@ class Player extends GameObject {
     }
 
     honorGained(round: number | null = null, phase: string | null = null, onlyPositive: boolean = false): number {
-        return this.honorEvents
-            .filter((event) => !round || event.round === round)
-            .filter((event) => !phase || event.phase === phase)
-            .filter((event) => !onlyPositive || event.amount > 0)
-            .reduce((total, event) => total + event.amount, 0);
+        return this.honorTracker.honorGained(round, phase, onlyPositive);
     }
 
     modifyFate(amount: number): void {
@@ -1248,16 +1168,11 @@ class Player extends GameObject {
     }
 
     modifyHonor(amount: number): void {
-        this.honor = Math.max(0, this.honor + amount);
-        this.honorEvents.push({
-            amount,
-            phase: this.game.currentPhase,
-            round: this.game.roundNumber
-        });
+        this.honorTracker.modifyHonor(amount, this.game.currentPhase, this.game.roundNumber);
     }
 
     resetHonorEvents(round: number, phase: string): void {
-        this.honorEvents = this.honorEvents.filter((event) => event.round !== round && event.phase !== phase);
+        this.honorTracker.resetHonorEvents(round, phase);
     }
 
     isMoreHonorable(): boolean {
@@ -1444,7 +1359,7 @@ class Player extends GameObject {
     }
 
     getTotalHonor(): number {
-        return this.honor;
+        return this.honorTracker.getTotalHonor();
     }
 
     getFate(): number {
