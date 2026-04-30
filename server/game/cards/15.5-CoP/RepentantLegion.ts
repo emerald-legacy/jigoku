@@ -13,19 +13,19 @@ class RepentantLegion extends DrawCard {
             },
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.moveCard(context => ({
-                    target: context.player.dynastyDeck.first(),
+                    target: context.player.dynastyDeck[0],
                     destination: Locations.ProvinceOne
                 })),
                 AbilityDsl.actions.moveCard(context => ({
-                    target: context.player.dynastyDeck.first(),
+                    target: context.player.dynastyDeck[0],
                     destination: Locations.ProvinceTwo
                 })),
                 AbilityDsl.actions.moveCard(context => ({
-                    target: context.player.dynastyDeck.first(),
+                    target: context.player.dynastyDeck[0],
                     destination: Locations.ProvinceThree
                 })),
                 AbilityDsl.actions.moveCard(context => ({
-                    target: context.player.dynastyDeck.first(),
+                    target: context.player.dynastyDeck[0],
                     destination: Locations.ProvinceFour
                 }))
             ]),

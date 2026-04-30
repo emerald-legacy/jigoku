@@ -15,12 +15,12 @@ export default class UnyieldingTerms extends DrawCard {
                 refuseGameAction: AbilityDsl.actions.chosenDiscard((context) => ({
                     targets: false,
                     target: context.player.opponent,
-                    amount: Math.floor(context.player.opponent.hand.value().length / 2)
+                    amount: Math.floor(context.player.opponent.hand.length / 2)
                 })),
                 refusalMessage: '{0} chooses to refuse the duel and discard {1} cards from their hand',
                 refusalMessageArgs: (context) => [
                     context.player.opponent,
-                    Math.floor(context.player.opponent.hand.value().length / 2)
+                    Math.floor(context.player.opponent.hand.length / 2)
                 ],
                 gameAction: (duel) =>
                     AbilityDsl.actions.multiple([

@@ -80,7 +80,7 @@ describe('Hida Sugi', function() {
                 this.player1.clickCard(this.favorableGround);
                 expect(this.favorableGround.location).toBe('dynasty deck');
                 expect(this.getChatLogs(2)).toContain('player1 uses Hida Sugi to move Favorable Ground to bottom of player2\'s dynasty deck');
-                expect(this.player2.player.dynastyDeck.last()).toBe(this.favorableGround);
+                expect(this.player2.player.dynastyDeck.at(-1)).toBe(this.favorableGround);
             });
         });
     });

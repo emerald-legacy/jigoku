@@ -12,7 +12,7 @@ class ShinjoAltansarnai2 extends DrawCard {
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose a character that costs 3 or less',
-                    cards: context.player.dynastyDeck.first(8),
+                    cards: context.player.dynastyDeck.slice(0, 8),
                     cardCondition: (card) =>
                         card.type === CardTypes.Character &&
                         card.printedCost <= 3 &&

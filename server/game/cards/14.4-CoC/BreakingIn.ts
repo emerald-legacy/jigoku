@@ -14,7 +14,7 @@ export default class BreakingIn extends ProvinceCard {
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Select a card:',
                     context: context,
-                    cards: context.player.dynastyDeck.first(8).filter((card) => card.type === CardTypes.Character),
+                    cards: context.player.dynastyDeck.slice(0, 8).filter((card) => card.type === CardTypes.Character),
                     choices: ['Select nothing'],
                     handlers: [() => this.game.addMessage('{0} selects nothing from their deck', context.player)],
                     cardHandler: (cardFromDeck) => {

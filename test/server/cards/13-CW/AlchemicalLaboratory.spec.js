@@ -55,10 +55,10 @@ describe('Alchemical Laboratory', function() {
 
             it('should return other attachments to hand when an opponents character is discarded', function() {
                 this.player1.claimRing('fire');
-                expect(this.player1.player.hand.size()).toBe(0);
+                expect(this.player1.player.hand.length).toBe(0);
                 this.player2.clickCard(this.mystic);
                 this.player2.clickCard(this.reprieve);
-                expect(this.player1.player.hand.size()).toBe(3);
+                expect(this.player1.player.hand.length).toBe(3);
                 expect(this.reprieve.location).toBe('conflict discard pile');
                 expect(this.katana.location).toBe('hand');
                 expect(this.fan.location).toBe('hand');

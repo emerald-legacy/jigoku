@@ -9,7 +9,7 @@ export default class BayushiRumormonger extends DrawCard {
         this.action({
             title: 'Discard the top card of your opponents conflict deck',
             gameAction: AbilityDsl.actions.discardCard(context => ({
-                target: context.player.opponent ? context.player.opponent.conflictDeck.first() : []
+                target: context.player.opponent ? context.player.opponent.conflictDeck[0] : []
             })),
             then: context => ({
                 gameAction: AbilityDsl.actions.selectCard(({

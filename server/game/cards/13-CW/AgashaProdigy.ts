@@ -9,14 +9,14 @@ class AgashaProdigys extends DrawCard {
         this.action({
             title: 'Discard a card to try and attach it to a character',
             cost: AbilityDsl.costs.optionalHonorTransferFromOpponentCost(context => {
-                return context.player.opponent && context.player.opponent.conflictDeck.size() > 0;
+                return context.player.opponent && context.player.opponent.conflictDeck.length > 0;
             }),
             targets: {
                 myCharacter: {
                     cardType: CardTypes.Character,
                     gameAction: AbilityDsl.actions.sequential([
                         AbilityDsl.actions.discardCard(context => ({
-                            target: context.player.conflictDeck.first()
+                            target: context.player.conflictDeck[0]
                         })),
                         AbilityDsl.actions.ifAble(context => ({
                             ifAbleAction: AbilityDsl.actions.attach({
@@ -35,7 +35,7 @@ class AgashaProdigys extends DrawCard {
                     cardCondition: (card, context) => context.costs.optionalHonorTransferFromOpponentCostPaid,
                     gameAction: AbilityDsl.actions.sequential([
                         AbilityDsl.actions.discardCard(context => ({
-                            target: context.targets.oppCharacter ? context.player.opponent.conflictDeck.first() : []
+                            target: context.targets.oppCharacter ? context.player.opponent.conflictDeck[0] : []
                         })),
                         AbilityDsl.actions.ifAble(context => ({
                             ifAbleAction: AbilityDsl.actions.attach({

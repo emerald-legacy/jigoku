@@ -37,7 +37,7 @@ describe('Restoration of Balance', function() {
                 this.charge = this.player1.clickCard('charge');
                 this.banzai = this.player1.clickCard('banzai');
                 this.player1.clickPrompt('Done');
-                expect(this.player1.player.conflictDiscardPile.toArray()).toContain(this.assassination, this.fineKatana, this.charge, this.banzai);
+                expect(this.player1.player.conflictDiscardPile.slice()).toContain(this.assassination, this.fineKatana, this.charge, this.banzai);
             });
         });
     });

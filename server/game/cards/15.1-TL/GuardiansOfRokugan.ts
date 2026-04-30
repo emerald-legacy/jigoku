@@ -17,7 +17,7 @@ class GuardiansOfRokugan extends DrawCard {
                 deck: Decks.DynastyDeck,
                 cardCondition: (card, context) => card.type === CardTypes.Character && AbilityDsl.actions.putIntoPlay().canAffect(card, context) && card.costLessThan(context.game.currentConflict.skillDifference + 1),
                 gameAction: AbilityDsl.actions.putIntoPlay(),
-                shuffle: context => context.game.currentConflict.skillDifference >= context.player.dynastyDeck.size()
+                shuffle: context => context.game.currentConflict.skillDifference >= context.player.dynastyDeck.length
             })),
             effect: 'look at the top {1} cards of their deck for a character costing {1} or less to put into play',
             effectArgs: context => [context.game.currentConflict.skillDifference]

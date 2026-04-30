@@ -31,7 +31,7 @@ class CloakOfNight extends DrawCard {
     }
 
     canPlay(context, playType) {
-        if(!context.player.cardsInPlay.any(card => card.getType() === CardTypes.Character && card.hasTrait('shugenja'))) {
+        if(!context.player.cardsInPlay.some(card => card.getType() === CardTypes.Character && card.hasTrait('shugenja'))) {
             return false;
         }
 

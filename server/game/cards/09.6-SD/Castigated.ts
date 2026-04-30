@@ -21,7 +21,7 @@ class Castigated extends DrawCard {
     }
 
     canPlay(context, playType) {
-        if(!context.game.isDuringConflict('political') || !context.player.cardsInPlay.any(card => card.getType() === CardTypes.Character && card.hasTrait('imperial'))) {
+        if(!context.game.isDuringConflict('political') || !context.player.cardsInPlay.some(card => card.getType() === CardTypes.Character && card.hasTrait('imperial'))) {
             return false;
         }
 

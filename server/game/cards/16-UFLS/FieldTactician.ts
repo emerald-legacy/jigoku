@@ -23,7 +23,7 @@ class FieldTactician extends DrawCard {
                         player.moveCard(card, Locations.ConflictDeck);
                         const index = player.conflictDeck.indexOf(card);
                         player.conflictDeck.splice(index, 1);
-                        const orderedCards = player.conflictDeck.first(2);
+                        const orderedCards = player.conflictDeck.slice(0, 2);
                         orderedCards.push(card);
                         player.conflictDeck.splice(0, 2, ...orderedCards);
                     }

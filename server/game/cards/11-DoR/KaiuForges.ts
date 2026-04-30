@@ -17,7 +17,7 @@ class KaiuForges extends DrawCard {
                 activePromptTitle: 'Choose a holding to swap with a Kaiu Wall',
                 context: context,
                 cardCondition: card => card.getType() === CardTypes.Holding,
-                cards: context.player.dynastyDeck.first(10),
+                cards: context.player.dynastyDeck.slice(0, 10),
                 choices: ['Take nothing'],
                 handlers: [() => {
                     this.game.addMessage('{0} takes nothing', context.player);

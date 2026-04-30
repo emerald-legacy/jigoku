@@ -7,17 +7,17 @@ class MiyaSatoshi extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Discard dynasty cards until you find an Imperial',
-            condition: context => context.player.dynastyDeck.size() > 0,
+            condition: context => context.player.dynastyDeck.length > 0,
             effect: 'search for an Imperial card and place it in a province',
             handler: context => {
                 let firstImperial = context.player.dynastyDeck.find(card => card.hasTrait('imperial'));
                 if(!firstImperial) {
-                    this.game.addMessage('{0} discards their entire dynasty deck: {1}', context.player, context.player.dynastyDeck.toArray());
-                    context.player.dynastyDeck.each(card => context.player.moveCard(card, Locations.DynastyDiscardPile));
+                    this.game.addMessage('{0} discards their entire dynasty deck: {1}', context.player, context.player.dynastyDeck.slice());
+                    context.player.dynastyDeck.forEach(card => context.player.moveCard(card, Locations.DynastyDiscardPile));
                     return;
                 }
                 let index = context.player.dynastyDeck.indexOf(firstImperial);
-                let discardedCards = context.player.dynastyDeck.first(index + 1);
+                let discardedCards = context.player.dynastyDeck.slice(0, index + 1);
                 this.game.addMessage('{0} discards {1} while searching for an Imperial card', context.player, discardedCards);
                 discardedCards.forEach(card => context.player.moveCard(card, Locations.DynastyDiscardPile));
                 this.game.promptForSelect(context.player, {

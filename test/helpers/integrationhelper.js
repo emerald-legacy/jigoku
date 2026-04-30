@@ -1,7 +1,6 @@
 /* global describe, beforeEach, jasmine */
 /* eslint camelcase: 0, no-invalid-this: 0 */
 
-const _ = require('underscore');
 const { GameModes } = require('../../build/server/GameModes.js');
 
 require('./objectformatters.js');
@@ -51,16 +50,14 @@ var customMatchers = {
                 var buttons = actual.currentPrompt().buttons;
                 var result = {};
 
-                result.pass = _.any(
-                    buttons,
+                result.pass = buttons.some(
                     (button) => !button.disabled && util.equals(button.text, expected, customEqualityMatchers)
                 );
 
                 if(result.pass) {
                     result.message = `Expected ${actual.name} not to have enabled prompt button "${expected}" but it did.`;
                 } else {
-                    var buttonText = _.map(
-                        buttons,
+                    var buttonText = buttons.map(
                         (button) => '[' + button.text + (button.disabled ? ' (disabled) ' : '') + ']'
                     ).join('\n');
                     result.message = `Expected ${actual.name} to have enabled prompt button "${expected}" but it had buttons:\n${buttonText}`;
@@ -76,16 +73,14 @@ var customMatchers = {
                 var buttons = actual.currentPrompt().buttons;
                 var result = {};
 
-                result.pass = _.any(
-                    buttons,
+                result.pass = buttons.some(
                     (button) => button.disabled && util.equals(button.text, expected, customEqualityMatchers)
                 );
 
                 if(result.pass) {
                     result.message = `Expected ${actual.name} not to have disabled prompt button "${expected}" but it did.`;
                 } else {
-                    var buttonText = _.map(
-                        buttons,
+                    var buttonText = buttons.map(
                         (button) => '[' + button.text + (button.disabled ? ' (disabled) ' : '') + ']'
                     ).join('\n');
                     result.message = `Expected ${actual.name} to have disabled prompt button "${expected}" but it had buttons:\n${buttonText}`;
@@ -98,7 +93,7 @@ var customMatchers = {
     toBeAbleToSelect: function () {
         return {
             compare: function (player, card) {
-                if(_.isString(card)) {
+                if(typeof card === 'string') {
                     card = player.findCardByName(card);
                 }
                 let result = {};
@@ -118,7 +113,7 @@ var customMatchers = {
     toBeAbleToSelectRing: function () {
         return {
             compare: function (player, ring) {
-                if(_.isString(ring)) {
+                if(typeof ring === 'string') {
                     ring = player.game.rings[ring];
                 }
                 let result = {};
@@ -152,7 +147,7 @@ global.integration = function (definitions) {
             this.player1 = this.flow.player1;
             this.player2 = this.flow.player2;
 
-            _.each(ProxiedGameFlowWrapperMethods, (method) => {
+            ProxiedGameFlowWrapperMethods.forEach((method) => {
                 this[method] = (...args) => this.flow[method].apply(this.flow, args);
             });
 
@@ -221,10 +216,10 @@ global.integration = function (definitions) {
 
                 //Set state
                 if(options.player1.rings) {
-                    _.each(options.player1.rings, (ring) => this.player1.claimRing(ring));
+                    options.player1.rings.forEach((ring) => this.player1.claimRing(ring));
                 }
                 if(options.player2.rings) {
-                    _.each(options.player2.rings, (ring) => this.player2.claimRing(ring));
+                    options.player2.rings.forEach((ring) => this.player2.claimRing(ring));
                 }
                 //Player stats
                 this.player1.fate = options.player1.fate;

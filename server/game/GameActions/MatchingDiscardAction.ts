@@ -30,7 +30,7 @@ export class MatchingDiscardAction extends PlayerAction {
     }
 
     canAffect(player: Player, context: AbilityContext, _additionalProperties = {}): boolean {
-        return player.hand.size() > 0 && super.canAffect(player, context);
+        return player.hand.length > 0 && super.canAffect(player, context);
     }
 
     addPropertiesToEvent(event, player: Player, context: AbilityContext, additionalProperties): void {
@@ -48,9 +48,9 @@ export class MatchingDiscardAction extends PlayerAction {
     eventHandler(event): void {
         let context = event.context;
         let player = event.player;
-        let amount = Math.min(event.amount, player.hand.size());
+        let amount = Math.min(event.amount, player.hand.length);
         if(amount < 0) {
-            amount = player.hand.size(); //ensure we discard all matching copies
+            amount = player.hand.length;
         }
 
         if(amount === 0) {

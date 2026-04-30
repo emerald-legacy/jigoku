@@ -18,7 +18,7 @@ class DragonflyMediator extends DrawCard {
                 oppCard: {
                     activePromptTitle: 'Choose three cards to reveal',
                     mode: TargetModes.ExactlyVariable,
-                    numCardsFunc: context => Math.min(3, context.player.opponent.hand.size()),
+                    numCardsFunc: context => Math.min(3, context.player.opponent.hand.length),
                     player: Players.Opponent,
                     location: Locations.Hand,
                     controller: Players.Opponent,

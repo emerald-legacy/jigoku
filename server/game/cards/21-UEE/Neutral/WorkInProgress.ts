@@ -9,12 +9,12 @@ export default class WorkInProgress extends DrawCard {
         this.action({
             title: 'Reveal cards and take ones matching named type',
             condition: (context) =>
-                context.player.conflictDeck.size() >=
+                context.player.conflictDeck.length >=
         (context.player.cardsInPlay.some((card) => card.hasTrait('artisan')) ? 4 : 3),
             cost: [
                 AbilityDsl.costs.reveal((context) =>
-                    context.player.conflictDeck.first(
-                        context.player.cardsInPlay.some((card) => card.hasTrait('artisan')) ? 4 : 3
+                    context.player.conflictDeck.slice(
+                        0, context.player.cardsInPlay.some((card) => card.hasTrait('artisan')) ? 4 : 3
                     )
                 ),
                 testOfSkillCost()

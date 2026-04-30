@@ -13,7 +13,7 @@ class UnveiledCorruption extends DrawCard {
             }}),
             gameAction: AbilityDsl.actions.chosenDiscard(context => ({
                 target: context.player.opponent,
-                amount: Math.max(0, context.player.opponent.hand.size() - context.player.hand.filter(card => card !== context.source).length)
+                amount: Math.max(0, context.player.opponent.hand.length - context.player.hand.filter(card => card !== context.source).length)
             }))
         });
     }

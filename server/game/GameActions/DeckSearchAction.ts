@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext';
 import { Decks, EventNames, Locations, TargetModes } from '../Constants';
-import { shuffleArray } from '../Utils/helpers';
+import { shuffle } from '../utils/shuffle';
 import type DrawCard from '../drawcard';
 import type { GameAction } from './GameAction';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction';
@@ -122,9 +122,9 @@ export class DeckSearchAction extends PlayerAction {
     #getDeck(player: Player, properties: DeckSearchProperties): DrawCard[] {
         switch(properties.deck) {
             case Decks.DynastyDeck:
-                return player.dynastyDeck.toArray();
+                return player.dynastyDeck.slice();
             case Decks.ConflictDeck:
-                return player.conflictDeck.toArray();
+                return player.conflictDeck.slice();
         }
     }
 
@@ -232,8 +232,7 @@ export class DeckSearchAction extends PlayerAction {
         if(properties.placeOnBottomInRandomOrder) {
             const cardsToMove = allCards.filter((card) => !selectedCards.has(card));
             if(cardsToMove.length > 0) {
-                shuffleArray(cardsToMove);
-                for(const card of cardsToMove) {
+                for(const card of shuffle(cardsToMove)) {
                     event.player.moveCard(card, Locations.ConflictDeck, { bottom: true });
                 }
                 context.game.addMessage(

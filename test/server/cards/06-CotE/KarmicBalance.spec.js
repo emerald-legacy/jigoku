@@ -41,10 +41,10 @@ describe('Karmic Balance', function() {
                 });
 
                 it('should shuffle both player\'s hand and conflict discard pile into their conflict deck and draw 4 new cards', function() {
-                    expect(this.player1.player.hand.size()).toBe(4);
-                    expect(this.player1.player.conflictDiscardPile.size()).toBe(0);
-                    expect(this.player2.player.hand.size()).toBe(4);
-                    expect(this.player2.player.conflictDiscardPile.size()).toBe(0);
+                    expect(this.player1.player.hand.length).toBe(4);
+                    expect(this.player1.player.conflictDiscardPile.length).toBe(0);
+                    expect(this.player2.player.hand.length).toBe(4);
+                    expect(this.player2.player.conflictDiscardPile.length).toBe(0);
                     expect(this.chat).toHaveBeenCalledWith('{0} is shuffling their conflict deck', this.player1.player);
                     expect(this.chat).toHaveBeenCalledWith('{0} is shuffling their conflict deck', this.player2.player);
                 });

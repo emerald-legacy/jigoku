@@ -12,7 +12,7 @@ export default class RestorationOfBalance extends ProvinceCard {
                     event.card === context.source && context.player.opponent !== undefined
             },
             gameAction: AbilityDsl.actions.chosenDiscard((context) => ({
-                amount: Math.max(0, context.player.opponent.hand.size() - 4)
+                amount: Math.max(0, context.player.opponent.hand.length - 4)
             }))
         });
     }

@@ -41,7 +41,6 @@ describe('the DrawCard', function () {
     });
 
     describe('integration', function () {
-        const _ = require('underscore');
 
         const Game = require('../../../build/server/game/game.js');
         const Player = require('../../../build/server/game/player.js');
@@ -91,7 +90,7 @@ describe('the DrawCard', function () {
                         text: 'Each <i>Covert</i> character you control cannot be bypassed by covert.'
                     });
                     this.card.location = 'hand';
-                    this.player.hand = _([this.card]);
+                    this.player.hand = [this.card];
                     //this.player.initiateCardAction(this.card);
                     // Resolve events in pipeline.
                     this.game.continue();
@@ -111,8 +110,8 @@ describe('the DrawCard', function () {
                         text: 'Covert.\nSomestuff. Restricted.\nNotarealkeyword.\nExtra text because we need stuff here.'
                     });
                     this.card.location = 'province 1';
-                    this.player.provinceOne = _([this.card]);
-                    this.player.dynastyDeck = _([new DrawCard(this.player, {})]);
+                    this.player.provinceOne = [this.card];
+                    this.player.dynastyDeck = [new DrawCard(this.player, {})];
                     this.player.moveCard(this.card, 'play area');
                     // Resolve events in pipeline.
                     this.game.continue();

@@ -58,7 +58,7 @@ describe('Ide Trader', function () {
                 expect(this.player1.currentButtons).toContain('Gain 1 fate');
                 expect(this.player1.currentButtons).toContain('Draw 1 card');
                 this.player1.clickPrompt('Draw 1 card');
-                expect(this.player1.player.hand.size()).toBe(2);
+                expect(this.player1.player.hand.length).toBe(2);
             });
 
             it('should trigger when an opposing character joins the conflict', function () {

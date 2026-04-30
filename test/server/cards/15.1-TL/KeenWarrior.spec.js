@@ -92,7 +92,7 @@ describe('Keen Warrior', function() {
 
             this.player2.clickCard(this.testimony);
             expect(this.testimony.location).toBe('conflict deck');
-            expect(this.player2.player.conflictDeck.last()).toBe(this.testimony);
+            expect(this.player2.player.conflictDeck.at(-1)).toBe(this.testimony);
         });
 
         it('specific reveals - Tadaka', function() {

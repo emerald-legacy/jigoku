@@ -16,7 +16,7 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
         this.selectableCards = {};
         for(let player of game.getPlayers()) {
             this.selectedCards[player.uuid] = [];
-            this.selectableCards[player.uuid] = player.provinceDeck.toArray();
+            this.selectableCards[player.uuid] = player.provinceDeck.slice();
         }
     }
 
@@ -92,7 +92,7 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
         if(arg === 'change' || !this.strongholdProvince[player.uuid]) {
             this.strongholdProvince[player.uuid].inConflict = false;
             this.strongholdProvince[player.uuid] = null;
-            this.selectableCards[player.uuid] = (player as any).provinceDeck.toArray();
+            this.selectableCards[player.uuid] = (player as any).provinceDeck.slice();
             this.selectedCards[player.uuid] = [];
             return true;
         } else if(arg !== 'done') {

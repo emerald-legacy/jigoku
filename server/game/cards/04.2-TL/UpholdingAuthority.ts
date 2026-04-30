@@ -44,18 +44,18 @@ export default class UpholdingAuthority extends ProvinceCard {
                     event.card === context.source &&
                     context.game.currentConflict &&
                     context.game.currentConflict.attackingPlayer &&
-                    context.game.currentConflict.attackingPlayer.hand.size() > 0
+                    context.game.currentConflict.attackingPlayer.hand.length > 0
             },
             effect: 'look at the attacking player\'s hand and choose a card to be discarded',
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.lookAt((context) => ({
-                    target: context.game.currentConflict.attackingPlayer.hand.sortBy((card) => card.name),
+                    target: context.game.currentConflict.attackingPlayer.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)),
                     message: '{0} reveals their hand: {1}',
                     messageArgs: (cards) => [context.game.currentConflict.attackingPlayer, cards]
                 })),
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to discard',
-                    cards: context.game.currentConflict.attackingPlayer.hand.sortBy((card) => card.name),
+                    cards: context.game.currentConflict.attackingPlayer.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)),
                     targets: true,
                     gameAction: gameAction,
                     choices: context.choosingPlayerOverride ? [] : ['Don\'t discard anything'],

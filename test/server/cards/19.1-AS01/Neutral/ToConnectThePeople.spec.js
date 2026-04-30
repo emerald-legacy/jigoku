@@ -49,10 +49,10 @@ describe('To Connect the People', function () {
             });
 
             it('discards a few cards from the opponents dynasty deck', function () {
-                let initialDiscardPile = this.player2.player.dynastyDiscardPile.size();
+                let initialDiscardPile = this.player2.player.dynastyDiscardPile.length;
 
                 this.player1.clickCard(this.toConnectThePeople);
-                expect(this.player2.player.dynastyDiscardPile.size()).toBe(initialDiscardPile + 3);
+                expect(this.player2.player.dynastyDiscardPile.length).toBe(initialDiscardPile + 3);
                 expect(this.getChatLogs(5)).toContain(
                     'player1 plays To Connect the People to discard the top 3 cards of player2\'s dynasty deck'
                 );

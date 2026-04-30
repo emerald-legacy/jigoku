@@ -13,7 +13,7 @@ class LicensedQuarter extends DrawCard {
             effect: 'discard the top card of {1}\'s conflict deck',
             effectArgs: context => context.player.opponent,
             gameAction: AbilityDsl.actions.discardCard(context => ({
-                target: context.player.opponent && context.player.opponent.conflictDeck.first()
+                target: context.player.opponent && context.player.opponent.conflictDeck[0]
             })),
             limit: AbilityDsl.limit.unlimitedPerConflict()
         });

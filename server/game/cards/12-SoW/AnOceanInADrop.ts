@@ -1,6 +1,7 @@
 import DrawCard from '../../drawcard';
 import { Locations, TargetModes } from '../../Constants';
 import AbilityDsl from '../../abilitydsl';
+import { shuffle } from '../../utils/shuffle';
 
 class AnOceanInADrop extends DrawCard {
     static id = 'an-ocean-in-a-drop';
@@ -20,8 +21,8 @@ class AnOceanInADrop extends DrawCard {
             },
             effect: 'place {1}\'s hand on the bottom of their deck and have them draw {2} cards',
             effectArgs: (context) => (context.select === this.owner.name || !this.owner.opponent) ?
-                [this.owner.name, context.player.hand.value().length] :
-                [this.owner.opponent.name, context.player.opponent.hand.value().length]
+                [this.owner.name, context.player.hand.length] :
+                [this.owner.opponent.name, context.player.opponent.hand.length]
         });
     }
 
@@ -34,7 +35,7 @@ class AnOceanInADrop extends DrawCard {
                 shuffle: false,
                 bottom: true,
                 destination: Locations.ConflictDeck,
-                target: player.hand.shuffle()
+                target: shuffle(player.hand)
             })),
             AbilityDsl.actions.draw((context) => ({ target: player, amount: context.events.length }))
         ];

@@ -34,7 +34,7 @@ export default class CeremonialRobes extends DrawCard {
                 controller: Players.Self
             },
             handler: (context) => {
-                const top3Cards = context.player.dynastyDeck.first(3);
+                const top3Cards = context.player.dynastyDeck.slice(0, 3);
                 const steps: HandlerStep[] = [
                     {
                         activePromptTitle: 'Select a card to put into the province faceup',

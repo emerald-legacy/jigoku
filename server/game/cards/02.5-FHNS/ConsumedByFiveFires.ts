@@ -9,8 +9,8 @@ class ConsumedByFiveFires extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Remove up to 5 fate from characters',
-            condition: context => context.player.cardsInPlay.any(card => card.hasTrait('shugenja')) && context.player.opponent &&
-                                  context.player.opponent.cardsInPlay.any(card => card.allowGameAction('removeFate', context)),
+            condition: context => context.player.cardsInPlay.some(card => card.hasTrait('shugenja')) && context.player.opponent &&
+                                  context.player.opponent.cardsInPlay.some(card => card.allowGameAction('removeFate', context)),
             effect: 'remove fate from {1}\'s characters',
             effectArgs: context => context.player.opponent,
             handler: context => this.chooseCard(context, {}, [])
@@ -20,7 +20,7 @@ class ConsumedByFiveFires extends DrawCard {
     chooseCard(context, targets, messages) {
         // @ts-expect-error targets values are dynamic runtime numbers, TS infers unknown[]
         let fateRemaining = 5 - Object.values(targets).reduce((totalFate, fateToRemove) => totalFate + fateToRemove, 0);
-        if(fateRemaining === 0 || !context.player.opponent.cardsInPlay.any(card => card.allowGameAction('removeFate', context) && !Object.keys(targets).includes(card.uuid))) {
+        if(fateRemaining === 0 || !context.player.opponent.cardsInPlay.some(card => card.allowGameAction('removeFate', context) && !Object.keys(targets).includes(card.uuid))) {
             this.game.addMessage('{0} chooses to: {1}', context.player, messages);
             let keys = Object.keys(targets);
             let events = keys.map(key => {

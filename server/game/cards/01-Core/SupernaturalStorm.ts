@@ -7,7 +7,7 @@ class SupernaturalStorm extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Increase the skill of one character',
-            condition: () => this.controller.cardsInPlay.any(card => card.hasTrait('shugenja')),
+            condition: () => this.controller.cardsInPlay.some(card => card.hasTrait('shugenja')),
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: card => card.isParticipating(),

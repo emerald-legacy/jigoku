@@ -29,10 +29,10 @@ describe('Secret Cache', function() {
             });
 
             it('should put the card in the player\'s hand, and display an anonymous message', function() {
-                let handsize = this.player2.player.hand.size();
+                let handsize = this.player2.player.hand.length;
                 this.player2.clickCard('secret-cache');
                 this.player2.clickPrompt('Supernatural Storm (5)');
-                expect(this.player2.player.hand.size()).toBe(handsize + 1);
+                expect(this.player2.player.hand.length).toBe(handsize + 1);
                 expect(this.getChatLogs(4)).toContain('player2 uses Secret Cache to look at the top 5 cards of their conflict deck');
                 expect(this.getChatLogs(3)).toContain('player2 takes 1 card');
                 expect(this.getChatLogs(2)).toContain('player2 is shuffling their conflict deck');

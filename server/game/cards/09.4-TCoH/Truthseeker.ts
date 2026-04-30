@@ -16,13 +16,13 @@ class Truthseeker extends DrawCard {
                 activePromptTitle: 'Choose which deck to look at:',
                 choices: {
                     [this.getChoiceName('OppDynasty')]: (context) =>
-                        context.player.opponent && context.player.opponent.dynastyDeck.size() > 0,
+                        context.player.opponent && context.player.opponent.dynastyDeck.length > 0,
                     [this.getChoiceName('OppConflict')]: (context) =>
-                        context.player.opponent && context.player.opponent.conflictDeck.size() > 0,
+                        context.player.opponent && context.player.opponent.conflictDeck.length > 0,
                     [this.getChoiceName('MyDynasty')]: (context) =>
-                        context.player && context.player.dynastyDeck.size() > 0,
+                        context.player && context.player.dynastyDeck.length > 0,
                     [this.getChoiceName('MyConflict')]: (context) =>
-                        context.player && context.player.conflictDeck.size() > 0
+                        context.player && context.player.conflictDeck.length > 0
                 }
             },
             effect: 'look at the top 3 cards of {1}\'s {2}',
@@ -74,13 +74,13 @@ class Truthseeker extends DrawCard {
     mapChoiceToCards(context) {
         switch(context.select) {
             case this.getChoiceName('OppDynasty'):
-                return this.owner.opponent.dynastyDeck.first(3);
+                return this.owner.opponent.dynastyDeck.slice(0, 3);
             case this.getChoiceName('OppConflict'):
-                return this.owner.opponent.conflictDeck.first(3);
+                return this.owner.opponent.conflictDeck.slice(0, 3);
             case this.getChoiceName('MyDynasty'):
-                return this.owner.dynastyDeck.first(3);
+                return this.owner.dynastyDeck.slice(0, 3);
             case this.getChoiceName('MyConflict'):
-                return this.owner.conflictDeck.first(3);
+                return this.owner.conflictDeck.slice(0, 3);
         }
     }
 

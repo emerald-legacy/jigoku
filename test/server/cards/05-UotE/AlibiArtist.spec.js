@@ -19,7 +19,7 @@ describe('Alibi Artist', function() {
 
             describe('if the conflict deck is empty', function () {
                 beforeEach(function () {
-                    this.player1.player.conflictDeck.each(card => {
+                    this.player1.player.conflictDeck.forEach(card => {
                         this.player1.player.moveCard(card, 'conflict discard pile');
                     });
                 });
@@ -46,11 +46,11 @@ describe('Alibi Artist', function() {
                 });
 
                 it('should leave the card in the deck if the \'Take Nothing\' option is chosen', function() {
-                    let handSize = this.player1.player.hand.size();
+                    let handSize = this.player1.player.hand.length;
                     this.player1.clickCard('alibi-artist');
                     this.player1.clickPrompt('Take nothing');
                     expect(this.player1.conflictDeck.length).toBe(1);
-                    expect(this.player1.player.hand.size()).toBe(handSize);
+                    expect(this.player1.player.hand.length).toBe(handSize);
                     expect(this.getChatLogs(2)).not.toContain('player1 takes 1 card');
                     expect(this.getChatLogs(1)).toContain('player1 puts 1 card on the bottom of their conflict deck');
                 });
@@ -103,7 +103,7 @@ describe('Alibi Artist', function() {
                 expect(this.player1).not.toHavePromptButton('Take Nothing');
                 this.player1.clickPrompt('Ornate Fan');
                 expect(this.fan.location).toBe('hand');
-                expect(this.player1.player.conflictDeck.last()).toBe(this.reprieve);
+                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.reprieve);
                 expect(this.getChatLogs(2)).toContain('player1 takes 1 card');
                 expect(this.getChatLogs(1)).toContain('player1 puts 1 card on the bottom of their conflict deck');
             });

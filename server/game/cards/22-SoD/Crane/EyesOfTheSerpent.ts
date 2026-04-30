@@ -95,7 +95,7 @@ export default class EyesOfTheSerpent extends DrawCard {
 
     canPlay(context: TriggeredAbilityContext, playType: string) {
         return (
-            context.player.cardsInPlay.any(
+            context.player.cardsInPlay.some(
                 (card) => card.getType() === CardTypes.Character && card.hasTrait('shugenja')
             ) && super.canPlay(context, playType)
         );

@@ -11,7 +11,7 @@ class KitsuMotso extends DrawCard {
             condition: (context) =>
                 context.source.isParticipating() &&
                 context.player.opponent &&
-                context.player.hand.size() < context.player.opponent.hand.size(),
+                context.player.hand.length < context.player.opponent.hand.length,
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Opponent,

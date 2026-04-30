@@ -28,7 +28,7 @@ export default class DisloyalOathkeeper extends DrawCard {
                     event.player === context.player.opponent &&
                     event.card.type === CardTypes.Event &&
                     !event.card.hasEphemeral() &&
-                    context.source.controller.getSourceList(this.uuid).size() === 0
+                    context.source.controller.getSourceList(this.uuid).length === 0
             },
             gameAction: AbilityDsl.actions.placeCardUnderneath((context) => ({
                 target: (context as any).event.card,

@@ -10,7 +10,7 @@ class TheWesternWind extends DrawCard {
             title: 'Look at your dynasty deck',
             condition: context => context.player.opponent &&
                 context.player.getNumberOfOpponentsFaceupProvinces(province => province.location !== Locations.StrongholdProvince) > 0 &&
-                context.player.dynastyDeck.size() > 0,
+                context.player.dynastyDeck.length > 0,
             target: {
                 cardType: CardTypes.Province,
                 location: Locations.Provinces,

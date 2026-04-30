@@ -49,7 +49,7 @@ describe('Retire To The Brotherhood', function() {
             this.chagatai = this.player2.findCardByName('moto-chagatai');
 
             this.player2.reduceDeckToNumber('dynasty deck', 0);
-            this.player2.player.dynastyDiscardPile.each(a => this.player2.moveCard(a, 'dynasty deck'));
+            this.player2.player.dynastyDiscardPile.forEach(a => this.player2.moveCard(a, 'dynasty deck'));
         });
 
         it('base case', function() {
@@ -248,7 +248,7 @@ describe('Retire To The Brotherhood with Stoke Insurrection', function() {
             this.stoke = this.player2.findCardByName('stoke-insurrection');
 
             this.player2.reduceDeckToNumber('dynasty deck', 0);
-            this.player2.player.dynastyDiscardPile.each(a => this.player2.moveCard(a, 'dynasty deck'));
+            this.player2.player.dynastyDiscardPile.forEach(a => this.player2.moveCard(a, 'dynasty deck'));
         });
 
         it('Should consider characters you control as belonging to you', function() {

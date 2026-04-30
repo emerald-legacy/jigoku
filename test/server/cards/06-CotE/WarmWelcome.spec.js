@@ -63,7 +63,7 @@ describe('Warm Welcome', function() {
                 this.player1.clickPrompt('Done');
                 expect(this.nitenMaster.militarySkill).toBe(5);
                 expect(this.player1).toHavePrompt('Waiting for opponent to take an action or pass');
-                expect(this.player1.player.conflictDeck.last()).toBe(this.banzai);
+                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.banzai);
             });
 
             it('should allow placing an event on the bottom of the conflict deck even if it cannot be played', function() {
@@ -73,7 +73,7 @@ describe('Warm Welcome', function() {
                 this.player1.clickCard(this.hurricanePunch);
                 expect(this.nitenMaster.militarySkill).toBe(3);
                 expect(this.player1).toHavePrompt('Waiting for opponent to take an action or pass');
-                expect(this.player1.player.conflictDeck.last()).toBe(this.hurricanePunch);
+                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.hurricanePunch);
             });
         });
 

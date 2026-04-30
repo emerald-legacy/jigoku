@@ -84,11 +84,11 @@ describe('Menacing Iron Warrior', function() {
                 });
 
                 it('should not prevent higher military skill chars from triggering abilities', function() {
-                    const originalHandSize = this.player1.player.hand.size();
+                    const originalHandSize = this.player1.player.hand.length;
                     expect(this.player2).toHavePrompt('Waiting for opponent to take an action or pass');
                     this.player1.clickCard(this.kakitaYoshi);
                     expect(this.player1.player.imperialFavor).toBe('');
-                    expect(this.player1.player.hand.size()).toBe(originalHandSize + 3);
+                    expect(this.player1.player.hand.length).toBe(originalHandSize + 3);
                 });
 
                 it('should not prevent own chars from triggering abilities', function() {
@@ -126,10 +126,10 @@ describe('Menacing Iron Warrior', function() {
                         attackers: [this.kakitaKaezin],
                         defenders: [this.kakitaYoshi]
                     });
-                    const originalHandSize = this.player1.player.hand.size();
+                    const originalHandSize = this.player1.player.hand.length;
                     this.player1.clickCard(this.kakitaYoshi);
                     expect(this.player1.player.imperialFavor).toBe('');
-                    expect(this.player1.player.hand.size()).toBe(originalHandSize + 3);
+                    expect(this.player1.player.hand.length).toBe(originalHandSize + 3);
                 });
             });
         });

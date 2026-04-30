@@ -10,7 +10,7 @@ class HeroOfThreeTrees extends DrawCard {
             title: 'Gain 1 honor or reduce the attacked province strength',
             condition: context => context.source.isParticipating()
                 && context.player.opponent
-                && context.player.hand.size() < context.player.opponent.hand.size(),
+                && context.player.hand.length < context.player.opponent.hand.length,
             target: {
                 mode: TargetModes.Select,
                 choices: {

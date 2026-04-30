@@ -67,7 +67,7 @@ describe('Slovenly Scavenger', function() {
                 this.player1.clickPrompt('player1\'s Dynasty');
                 expect(this.storehouseP1.location).toBe('dynasty deck');
                 expect(this.kisadaP1.location).toBe('dynasty deck');
-                expect(this.player1.player.dynastyDiscardPile.size()).toBe(0);
+                expect(this.player1.player.dynastyDiscardPile.length).toBe(0);
                 expect(this.player1.dynastyDeck.length).toBe(size + 2);
                 expect(this.getChatLogs(3)).toContain('player1 uses Slovenly Scavenger, sacrificing Slovenly Scavenger to shuffle player1\'s dynasty discard pile into their deck');
                 expect(this.getChatLogs(2)).toContain('player1 is shuffling their dynasty deck');
@@ -89,7 +89,7 @@ describe('Slovenly Scavenger', function() {
                 expect(this.letGoP1.location).toBe('conflict deck');
                 expect(this.assassinationP1.location).toBe('conflict deck');
                 expect(this.scavengerP1.location).toBe('conflict deck');
-                expect(this.player1.player.conflictDiscardPile.size()).toBe(0);
+                expect(this.player1.player.conflictDiscardPile.length).toBe(0);
                 expect(this.player1.conflictDeck.length).toBe(size + 3);
 
                 expect(this.getChatLogs(3)).toContain('player1 uses Slovenly Scavenger, sacrificing Slovenly Scavenger to shuffle player1\'s conflict discard pile into their deck');
@@ -111,7 +111,7 @@ describe('Slovenly Scavenger', function() {
                 expect(this.storehouseP2.location).toBe('dynasty deck');
                 expect(this.kisadaP2.location).toBe('dynasty deck');
                 expect(this.emperor.location).toBe('dynasty deck');
-                expect(this.player2.player.dynastyDiscardPile.size()).toBe(0);
+                expect(this.player2.player.dynastyDiscardPile.length).toBe(0);
                 expect(this.player2.dynastyDeck.length).toBe(size + 3);
 
                 expect(this.getChatLogs(3)).toContain('player1 uses Slovenly Scavenger, sacrificing Slovenly Scavenger to shuffle player2\'s dynasty discard pile into their deck');
@@ -134,7 +134,7 @@ describe('Slovenly Scavenger', function() {
                 expect(this.storehouseP2.location).toBe('dynasty discard pile');
                 expect(this.letGoP2.location).toBe('conflict deck');
                 expect(this.assassinationP2.location).toBe('conflict deck');
-                expect(this.player2.player.conflictDiscardPile.size()).toBe(0);
+                expect(this.player2.player.conflictDiscardPile.length).toBe(0);
                 expect(this.player2.conflictDeck.length).toBe(size + 2);
 
                 expect(this.getChatLogs(3)).toContain('player1 uses Slovenly Scavenger, sacrificing Slovenly Scavenger to shuffle player2\'s conflict discard pile into their deck');
@@ -159,7 +159,7 @@ describe('Slovenly Scavenger', function() {
                 expect(this.assassinationP2.location).toBe('conflict deck');
                 expect(this.scavengerP2.location).toBe('conflict deck');
                 expect(this.newName.location).toBe('conflict deck');
-                expect(this.player2.player.conflictDiscardPile.size()).toBe(0);
+                expect(this.player2.player.conflictDiscardPile.length).toBe(0);
                 expect(this.player2.conflictDeck.length).toBe(size + 4);
             });
 
@@ -212,7 +212,7 @@ describe('Slovenly Scavenger', function() {
                 expect(this.storehouseP2.location).toBe('dynasty discard pile');
                 expect(this.letGoP2.location).toBe('conflict deck');
                 expect(this.assassinationP2.location).toBe('conflict deck');
-                expect(this.player2.player.conflictDiscardPile.size()).toBe(0);
+                expect(this.player2.player.conflictDiscardPile.length).toBe(0);
                 expect(this.player2.conflictDeck.length).toBe(size + 2);
 
                 expect(this.getChatLogs(3)).toContain('player1 uses Slovenly Scavenger, sacrificing Slovenly Scavenger to shuffle player2\'s conflict discard pile into their deck');

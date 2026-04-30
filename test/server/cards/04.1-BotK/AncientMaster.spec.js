@@ -49,7 +49,7 @@ describe('Ancient Master', function () {
                 this.player1.clickPrompt('Play Ancient Master as an attachment');
                 this.player1.clickCard(this.nitenMaster);
                 this.noMoreActions();
-                let handsize = this.player1.player.hand.size();
+                let handsize = this.player1.player.hand.length;
                 this.initiateConflict({
                     attackers: [this.nitenMaster]
                 });
@@ -58,7 +58,7 @@ describe('Ancient Master', function () {
                 this.player1.clickCard(this.ancientMaster);
                 expect(this.player1).toHavePrompt('Ancient Master');
                 this.player1.clickPrompt('Hurricane Punch');
-                expect(this.player1.player.hand.size()).toBe(handsize + 1);
+                expect(this.player1.player.hand.length).toBe(handsize + 1);
             });
 
             it('should trigger its reaction and find tattoos', function () {
@@ -66,7 +66,7 @@ describe('Ancient Master', function () {
                 this.player1.clickPrompt('Play Ancient Master as an attachment');
                 this.player1.clickCard(this.nitenMaster);
                 this.noMoreActions();
-                let handsize = this.player1.player.hand.size();
+                let handsize = this.player1.player.hand.length;
                 this.initiateConflict({
                     attackers: [this.nitenMaster]
                 });
@@ -75,7 +75,7 @@ describe('Ancient Master', function () {
                 this.player1.clickCard(this.ancientMaster);
                 expect(this.player1).toHavePrompt('Ancient Master');
                 this.player1.clickPrompt('Centipede Tattoo');
-                expect(this.player1.player.hand.size()).toBe(handsize + 1);
+                expect(this.player1.player.hand.length).toBe(handsize + 1);
             });
 
             it('should not trigger the reaction when not played as an attachment', function () {

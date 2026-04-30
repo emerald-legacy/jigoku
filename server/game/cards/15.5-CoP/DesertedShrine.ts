@@ -18,35 +18,35 @@ export default class DesertedShrine extends ProvinceCard {
                 activePromptTitle: 'Choose a deck',
                 choices: (context) => {
                     const choices: [string, CardGameAction][] = [];
-                    if(context.player.dynastyDeck.size() > 0) {
+                    if(context.player.dynastyDeck.length > 0) {
                         choices.push([
                             `${context.player.name}'s Dynasty`,
                             AbilityDsl.actions.discardCard((context) => ({
-                                target: context.player.dynastyDeck.first(10)
+                                target: context.player.dynastyDeck.slice(0, 10)
                             }))
                         ]);
                     }
-                    if(context.player.conflictDeck.size() > 0) {
+                    if(context.player.conflictDeck.length > 0) {
                         choices.push([
                             `${context.player.name}'s Conflict`,
                             AbilityDsl.actions.discardCard((context) => ({
-                                target: context.player.conflictDeck.first(10)
+                                target: context.player.conflictDeck.slice(0, 10)
                             }))
                         ]);
                     }
-                    if(context.player.opponent?.dynastyDeck.size() > 0) {
+                    if(context.player.opponent?.dynastyDeck.length > 0) {
                         choices.push([
                             `${context.player.opponent.name}'s Dynasty`,
                             AbilityDsl.actions.discardCard((context) => ({
-                                target: context.player.opponent.dynastyDeck.first(10)
+                                target: context.player.opponent.dynastyDeck.slice(0, 10)
                             }))
                         ]);
                     }
-                    if(context.player.opponent?.conflictDeck.size() > 0) {
+                    if(context.player.opponent?.conflictDeck.length > 0) {
                         choices.push([
                             `${context.player.opponent.name}'s Conflict`,
                             AbilityDsl.actions.discardCard((context) => ({
-                                target: context.player.opponent.conflictDeck.first(10)
+                                target: context.player.opponent.conflictDeck.slice(0, 10)
                             }))
                         ]);
                     }

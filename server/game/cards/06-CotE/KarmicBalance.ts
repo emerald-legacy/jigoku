@@ -11,12 +11,12 @@ class KarmicBalance extends DrawCard {
                 ability.actions.moveCard(context => ({
                     shuffle: true,
                     destination: Locations.ConflictDeck,
-                    target: context.player.conflictDiscardPile.union(context.player.hand.value())
+                    target: [...context.player.conflictDiscardPile, ...context.player.hand]
                 })),
                 ability.actions.moveCard(context => ({
                     shuffle: true,
                     destination: Locations.ConflictDeck,
-                    target: context.player.opponent.conflictDiscardPile.union(context.player.opponent.hand.value())
+                    target: [...context.player.opponent.conflictDiscardPile, ...context.player.opponent.hand]
                 })),
                 ability.actions.draw(context => ({ target: context.game.getPlayers(), amount: 4 })),
                 ability.actions.moveCard(context => ({ target: context.source, destination: Locations.RemovedFromGame }))

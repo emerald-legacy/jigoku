@@ -80,11 +80,11 @@ describe('Isawa Tadaka 2', function() {
                 );
                 expect(matchingButtons.length).toBe(2);
                 expect(this.player1.currentPrompt().buttons.length).toBe(2);
-                let conflictDiscardPileSize = this.player2.player.conflictDiscardPile.size();
-                let hand = this.player2.player.hand.size();
+                let conflictDiscardPileSize = this.player2.player.conflictDiscardPile.length;
+                let hand = this.player2.player.hand.length;
                 this.player1.clickPrompt(matchingButtons[0].text);
-                expect(this.player2.player.conflictDiscardPile.size()).toBe(conflictDiscardPileSize + 1);
-                expect(this.player2.player.hand.size()).toBe(hand - 1);
+                expect(this.player2.player.conflictDiscardPile.length).toBe(conflictDiscardPileSize + 1);
+                expect(this.player2.player.hand.length).toBe(hand - 1);
                 expect(this.getChatLogs(5)).toContain('player1 chooses ' + matchingButtons[0].text + ' to be discarded');
                 expect(this.getChatLogs(5)).toContain('Isawa Tadaka sees ' + matchingButtons[0].text + ' and ' + matchingButtons[1].text);
             });

@@ -25,7 +25,7 @@ class MasterWhisperer extends DrawCard {
             effect: 'make {1}{2} draw 3 cards',
             effectArgs: context => {
                 let player = context.select === this.owner.name ? this.owner : this.owner.opponent;
-                let handSize = player.hand.size();
+                let handSize = player.hand.length;
                 let amountDiscarded = Math.min(3, handSize);
                 return [player, amountDiscarded > 0 ? ' discard ' + amountDiscarded + ' cards and' : ''];
             }

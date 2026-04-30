@@ -1,6 +1,7 @@
 import { Durations, Locations } from '../../../Constants';
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
+import { shuffle } from '../../../utils/shuffle';
 
 export default class SneakAttack extends DrawCard {
     static id = 'sneak-attack';
@@ -17,17 +18,17 @@ export default class SneakAttack extends DrawCard {
             effect: 'give {1} the first action in this conflict{2}',
             effectArgs: (context) => [
                 context.player,
-                context.player.opponent.hand.size() > 0 ? ' and sets aside opponent\'s cards' : ''
+                context.player.opponent.hand.length > 0 ? ' and sets aside opponent\'s cards' : ''
             ],
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.handler({
                     handler: (context) => {
                         const opponent = context.player.opponent;
-                        if(!opponent || opponent.hand.size() === 0) {
+                        if(!opponent || opponent.hand.length === 0) {
                             return;
                         }
 
-                        this.setAsideCards = opponent.hand.shuffle().slice(0, 2);
+                        this.setAsideCards = shuffle(opponent.hand).slice(0, 2);
                         if(this.setAsideCards.length === 0) {
                             return;
                         }

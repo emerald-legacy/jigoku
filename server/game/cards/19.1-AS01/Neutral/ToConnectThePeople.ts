@@ -21,7 +21,7 @@ export default class ToConnectThePeople extends DrawCard {
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.handler({
                     handler: (context) => {
-                        const cards = context.player.opponent?.dynastyDeck.first(3) ?? [];
+                        const cards = context.player.opponent?.dynastyDeck.slice(0, 3) ?? [];
                         for(const card of cards) {
                             const destination = card.isDynasty
                                 ? Locations.DynastyDiscardPile

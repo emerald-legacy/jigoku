@@ -33,7 +33,7 @@ describe('Artisan Academy', function () {
 
             it('should make the top card playable if it\'s an attachment', function () {
                 this.ornateFan = this.player1.moveCard('ornate-fan', 'conflict deck');
-                expect(this.player1.player.conflictDeck.first()).toBe(this.ornateFan);
+                expect(this.player1.player.conflictDeck[0]).toBe(this.ornateFan);
                 this.player1.clickCard(this.artisanAcademy);
                 this.player2.clickPrompt('Pass');
                 this.player1.clickCard(this.ornateFan);
@@ -56,7 +56,7 @@ describe('Artisan Academy', function () {
 
             it('should stop the top card being visible once it has been played', function () {
                 this.ornateFan = this.player1.moveCard('ornate-fan', 'conflict deck');
-                expect(this.player1.player.conflictDeck.first()).toBe(this.ornateFan);
+                expect(this.player1.player.conflictDeck[0]).toBe(this.ornateFan);
                 this.player1.clickCard(this.artisanAcademy);
                 this.player2.clickPrompt('Pass');
                 this.player1.clickCard(this.ornateFan);
@@ -71,7 +71,7 @@ describe('Artisan Academy', function () {
             it('should stop the top card being visible if the deck is shuffled', function () {
                 this.ornateFan = this.player1.moveCard('ornate-fan', 'conflict deck');
                 this.steward = this.player1.moveCard('steward-of-law', 'conflict deck');
-                expect(this.player1.player.conflictDeck.first()).toBe(this.steward);
+                expect(this.player1.player.conflictDeck[0]).toBe(this.steward);
                 this.player1.clickCard(this.artisanAcademy);
                 this.player2.clickPrompt('Pass');
                 this.player1.clickCard('agasha-swordsmith');

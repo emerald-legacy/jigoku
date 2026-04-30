@@ -10,7 +10,7 @@ class Process {
     private newTopOrder: Array<DrawCard> = [];
 
     public constructor(private context: AbilityContext) {
-        this.topCards = new Set(context.player.opponent.conflictDeck.first(6));
+        this.topCards = new Set(context.player.opponent.conflictDeck.slice(0, 6));
     }
 
     public start() {

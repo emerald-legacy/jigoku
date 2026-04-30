@@ -8,18 +8,18 @@ class WalkingTheWay extends DrawCard {
         this.persistentEffect({
             location: Locations.Any,
             targetController: Players.Any,
-            match: player => player.cardsInPlay.any(card => card.hasTrait('shugenja')),
+            match: player => player.cardsInPlay.some(card => card.hasTrait('shugenja')),
             effect: ability.effects.reduceCost({ match: (card, source) => card === source })
         });
 
         this.action({
             title: 'Place a card from your deck faceup on a province',
-            condition: context => context.player.dynastyDeck.size() > 0,
+            condition: context => context.player.dynastyDeck.length > 0,
             effect: 'look at the top three cards of their dynasty deck',
             handler: context => this.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Choose a card to place in a province',
                 context: context,
-                cards: context.player.dynastyDeck.first(3),
+                cards: context.player.dynastyDeck.slice(0, 3),
                 cardHandler: cardFromDeck => this.game.promptForSelect(context.player, {
                     activePromptTitle: 'Choose a card to replace with ' + cardFromDeck.name,
                     context: context,

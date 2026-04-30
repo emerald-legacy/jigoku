@@ -15,7 +15,7 @@ export default class SceneOfTheCrime extends ProvinceCard {
             effect: 'look at {1}\'s hand',
             effectArgs: (context) => context.player.opponent,
             gameAction: AbilityDsl.actions.lookAt((context) => ({
-                target: context.player.opponent.hand.sortBy((card: DrawCard) => card.name),
+                target: context.player.opponent.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
                 chatMessage: true
             }))
         });

@@ -4,13 +4,13 @@ import DrawCard from '../../../drawcard';
 
 const possibleChoices = {
     'Your Dynasty Deck': {
-        condition: (context: AbilityContext) => (context.player?.dynastyDeck.size() ?? 0) > 0,
-        cards: (context: AbilityContext): Array<DrawCard> => context.player.dynastyDeck.first(3),
+        condition: (context: AbilityContext) => (context.player?.dynastyDeck.length ?? 0) > 0,
+        cards: (context: AbilityContext): Array<DrawCard> => context.player.dynastyDeck.slice(0, 3),
         player: (context: AbilityContext) => context.player
     },
     'Your Conflict Deck': {
-        condition: (context: AbilityContext) => (context.player?.conflictDeck.size() ?? 0) > 0,
-        cards: (context: AbilityContext): Array<DrawCard> => context.player.conflictDeck.first(3),
+        condition: (context: AbilityContext) => (context.player?.conflictDeck.length ?? 0) > 0,
+        cards: (context: AbilityContext): Array<DrawCard> => context.player.conflictDeck.slice(0, 3),
         player: (context: AbilityContext) => context.player
     }
 } as const;

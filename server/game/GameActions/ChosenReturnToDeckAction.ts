@@ -2,6 +2,7 @@ import type { AbilityContext } from '../AbilityContext';
 import { EventNames, Locations, Players, TargetModes } from '../Constants';
 import type Player from '../player';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction';
+import { shuffle } from '../utils/shuffle';
 
 export interface ChosenReturnToDeckProperties extends PlayerActionProperties {
     amount?: number;
@@ -27,7 +28,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
 
     canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
-        if(player.hand.size() === 0 || properties.amount === 0) {
+        if(player.hand.length === 0 || properties.amount === 0) {
             return false;
         }
         return super.canAffect(player, context);
@@ -36,9 +37,9 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
     addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
         for(let player of properties.target as Player[]) {
-            let amount = Math.min(player.hand.size(), properties.amount);
+            let amount = Math.min(player.hand.length, properties.amount);
             if(amount > 0) {
-                if(amount === player.hand.size()) {
+                if(amount === player.hand.length) {
                     let event = this.getEvent(player, context) as any;
                     event.cards = player.hand.slice(0, amount);
                     events.push(event);
@@ -47,7 +48,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
 
                 if(properties.targets && context.choosingPlayerOverride && context.choosingPlayerOverride !== player) {
                     let event = this.getEvent(player, context) as any;
-                    event.cards = player.hand.shuffle().slice(0, amount);
+                    event.cards = shuffle(player.hand).slice(0, amount);
                     events.push(event);
                     return;
                 }

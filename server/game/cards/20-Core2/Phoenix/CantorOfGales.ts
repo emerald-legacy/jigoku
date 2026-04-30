@@ -8,7 +8,7 @@ export default class CantorOfGales extends DrawCard {
         this.persistentEffect({
             condition: (context) =>
                 context.source.isAtHome() &&
-                context.player.cardsInPlay.any((card: DrawCard) => card.isParticipating() && card.isHonored),
+                context.player.cardsInPlay.some((card: DrawCard) => card.isParticipating() && card.isHonored),
             effect: AbilityDsl.effects.changePlayerSkillModifier(2)
         });
     }

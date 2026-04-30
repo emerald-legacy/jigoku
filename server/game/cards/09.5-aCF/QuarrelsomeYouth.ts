@@ -12,7 +12,7 @@ class QuarrelsomeYouth extends DrawCard {
                     event.conflict.loser === context.player &&
                     context.source.isAttacking() &&
                     context.player.opponent &&
-                    context.player.hand.size() < context.player.opponent.hand.size()
+                    context.player.hand.length < context.player.opponent.hand.length
             },
             gameAction: AbilityDsl.actions.discardAtRandom({ amount: 1 })
         });

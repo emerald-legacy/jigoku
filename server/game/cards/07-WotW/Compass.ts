@@ -11,26 +11,26 @@ class Compass extends DrawCard {
                 onCardRevealed: (event, context) =>
                     event.card && event.card.type === CardTypes.Province && event.card.controller === context.player.opponent &&
                     context.source && context.source.parent && context.source.parent.isParticipating() &&
-                    (context.player.dynastyDeck.size() > 0 || context.player.conflictDeck.size() > 0)
+                    (context.player.dynastyDeck.length > 0 || context.player.conflictDeck.length > 0)
             },
             effect: 'look at the top 3 cards of one of their decks',
             handler: context => {
                 let cards = [];
                 let choices = [];
                 let handlers = [];
-                if(context.player.dynastyDeck.size() > 0) {
+                if(context.player.dynastyDeck.length > 0) {
                     choices.push('Dynasty Deck');
                     handlers.push(() => {
                         this.game.addMessage('{0} chooses to look at the top 3 cards of their dynasty deck', context.player);
-                        cards = context.player.dynastyDeck.first(3);
+                        cards = context.player.dynastyDeck.slice(0, 3);
                         this.moveToBottomHandler(context, cards, 'dynasty deck');
                     });
                 }
-                if(context.player.conflictDeck.size() > 0) {
+                if(context.player.conflictDeck.length > 0) {
                     choices.push('Conflict Deck');
                     handlers.push(() => {
                         this.game.addMessage('{0} chooses to look at the top 3 cards of their conflict deck', context.player);
-                        cards = context.player.conflictDeck.first(3);
+                        cards = context.player.conflictDeck.slice(0, 3);
                         this.moveToBottomHandler(context, cards, 'conflict deck');
                     });
                 }

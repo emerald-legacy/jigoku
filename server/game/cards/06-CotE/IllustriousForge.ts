@@ -10,13 +10,13 @@ export default class IllustriousForge extends ProvinceCard {
             title: 'Search for an attachment',
             when: {
                 onCardRevealed: (event, context) =>
-                    event.card === context.source && context.player.conflictDeck.size() > 0
+                    event.card === context.source && context.player.conflictDeck.length > 0
             },
             effect: 'search the top 5 cards of their conflict deck for an attachment and put it into play',
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose an attachment',
-                    cards: context.player.conflictDeck.first(5),
+                    cards: context.player.conflictDeck.slice(0, 5),
                     cardCondition: (card) => card.type === CardTypes.Attachment,
                     choices: ['Take nothing'],
                     handlers: [

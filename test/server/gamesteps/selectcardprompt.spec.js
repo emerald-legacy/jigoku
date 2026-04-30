@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const { default: SelectCardPrompt } = require('../../../build/server/game/gamesteps/selectcardprompt.js');
 
 describe('the SelectCardPrompt', function() {
@@ -6,7 +5,7 @@ describe('the SelectCardPrompt', function() {
         let card = jasmine.createSpyObj('card', ['allowGameAction', 'getType']);
         card.getType.and.returnValue('character');
         card.allowGameAction.and.returnValue(true);
-        _.extend(card, properties);
+        Object.assign(card, properties);
         return card;
     }
 
@@ -16,7 +15,7 @@ describe('the SelectCardPrompt', function() {
         this.game.getCurrentAbilityContext.and.returnValue({ source: 'framework', card: null, stage: 'framework' });
 
         this.player = jasmine.createSpyObj('player1', ['setPrompt', 'cancelPrompt', 'clearSelectableCards', 'clearSelectedCards', 'setSelectableCards', 'setSelectedCards', 'clearSelectableRings', 'startClock', 'stopClock', 'resetClock']);
-        this.player.cardsInPlay = _([]);
+        this.player.cardsInPlay = [];
         this.player.playableLocations = [];
         this.player.findPlayType = () => undefined;
         this.otherPlayer = jasmine.createSpyObj('player2', ['setPrompt', 'cancelPrompt', 'clearSelectableCards', 'clearSelectedCards', 'setSelectableCards', 'setSelectedCards', 'startClock', 'stopClock', 'resetClock']);

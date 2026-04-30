@@ -1,6 +1,6 @@
 import { GameModes } from '../../GameModes';
 import { Locations } from '../Constants';
-import { randomItem } from '../Utils/helpers';
+import { randomItem } from '../utils/helpers';
 import type BaseCard from '../basecard';
 import type Game from '../game';
 import { Phase } from './Phase';
@@ -89,9 +89,9 @@ export class SetupPhase extends Phase {
     setupProvinces() {
         if(this.game.gameMode === GameModes.Skirmish) {
             for(const player of this.game.getPlayers()) {
-                player.moveCard(player.provinceDeck.first(), Locations.ProvinceOne);
-                player.moveCard(player.provinceDeck.first(), Locations.ProvinceTwo);
-                player.moveCard(player.provinceDeck.first(), Locations.ProvinceThree);
+                player.moveCard(player.provinceDeck[0], Locations.ProvinceOne);
+                player.moveCard(player.provinceDeck[0], Locations.ProvinceTwo);
+                player.moveCard(player.provinceDeck[0], Locations.ProvinceThree);
                 player.hideProvinceDeck = true;
             }
         } else {
@@ -106,7 +106,7 @@ export class SetupPhase extends Phase {
         }
         for(const player of this.game.getPlayers()) {
             for(const province of provinces) {
-                const card = player.dynastyDeck.first();
+                const card = player.dynastyDeck[0];
                 if(card) {
                     player.moveCard(card, province);
                     card.facedown = false;

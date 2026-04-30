@@ -20,18 +20,18 @@ export default class PatronOfTheTradingCouncil extends DrawCard {
             effect: 'give each player a valuable good',
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.lookAt((context) => ({
-                    target: context.player.conflictDeck.first(2),
+                    target: context.player.conflictDeck.slice(0, 2),
                     message: '{0} reveals the top {1} from their conflict deck: {2}',
                     messageArgs: (cards) => [context.player, cards.length, cards]
                 })),
                 AbilityDsl.actions.lookAt((context) => ({
-                    target: context.player.opponent ? context.player.opponent.conflictDeck.first(2) : [],
+                    target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 2) : [],
                     message: '{0} reveals the top {1} from their conflict deck: {2}',
                     messageArgs: (cards) => [context.player.opponent, cards.length, cards]
                 })),
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to give to yourself',
-                    cards: context.player.conflictDeck.first(2),
+                    cards: context.player.conflictDeck.slice(0, 2),
                     targets: true,
                     message: '{0} chooses {1} to give to {2}',
                     messageArgs: (card, player) => [player, card, context.player],
@@ -39,7 +39,7 @@ export default class PatronOfTheTradingCouncil extends DrawCard {
                 })),
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to give your opponent',
-                    cards: context.player.opponent ? context.player.opponent.conflictDeck.first(2) : [],
+                    cards: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 2) : [],
                     targets: true,
                     message: '{0} chooses {1} to give to {2}',
                     messageArgs: (card, player) => [player, card, context.player.opponent],

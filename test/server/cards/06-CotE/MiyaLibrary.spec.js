@@ -70,13 +70,13 @@ describe('Miya Library', function () {
                 this.player1.clickPrompt('Adept of the Waves');
                 expect(this.player1).toHavePrompt('Which card do you want to be the third card?');
                 this.player1.clickPrompt('Kudaka');
-                this.player1.moveCard(this.player1.player.dynastyDeck.first(), 'dynasty discard pile');
+                this.player1.moveCard(this.player1.player.dynastyDeck[0], 'dynasty discard pile');
                 expect(this.kanjo.location).toBe('dynasty discard pile');
-                this.player1.moveCard(this.player1.player.dynastyDeck.first(), 'dynasty discard pile');
+                this.player1.moveCard(this.player1.player.dynastyDeck[0], 'dynasty discard pile');
                 expect(this.adept.location).toBe('dynasty discard pile');
-                this.player1.moveCard(this.player1.player.dynastyDeck.first(), 'dynasty discard pile');
+                this.player1.moveCard(this.player1.player.dynastyDeck[0], 'dynasty discard pile');
                 expect(this.kudaka.location).toBe('dynasty discard pile');
-                this.player1.moveCard(this.player1.player.dynastyDeck.first(), 'dynasty discard pile');
+                this.player1.moveCard(this.player1.player.dynastyDeck[0], 'dynasty discard pile');
                 expect(this.miyaLibrary.location).toBe('dynasty discard pile');
             });
 

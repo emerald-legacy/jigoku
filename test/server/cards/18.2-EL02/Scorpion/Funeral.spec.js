@@ -48,7 +48,7 @@ describe('Funeral', function() {
 
         it('should not trigger when favor not claimed', function() {
             this.advancePhases('conflict');
-            this.player1.player.dynastyDeck.each(card => {
+            this.player1.player.dynastyDeck.forEach(card => {
                 this.player1.player.moveCard(card, 'dynasty discard pile');
             });
             this.imperialStorehouse.facedown = true;
@@ -71,7 +71,7 @@ describe('Funeral', function() {
         it('should not trigger when favor military', function() {
             this.player1.player.imperialFavor = 'military';
             this.advancePhases('conflict');
-            this.player1.player.dynastyDeck.each(card => {
+            this.player1.player.dynastyDeck.forEach(card => {
                 this.player1.player.moveCard(card, 'dynasty discard pile');
             });
             this.imperialStorehouse.facedown = true;
@@ -94,7 +94,7 @@ describe('Funeral', function() {
         it('should trigger when losing due to running out of dynasty cards and remove self from game', function() {
             this.player2.player.imperialFavor = 'political';
             this.advancePhases('conflict');
-            this.player1.player.dynastyDeck.each(card => {
+            this.player1.player.dynastyDeck.forEach(card => {
                 this.player1.player.moveCard(card, 'dynasty discard pile');
             });
             this.imperialStorehouse.facedown = true;
@@ -123,7 +123,7 @@ describe('Funeral', function() {
         it('should trigger when losing due to running out of conflict cards', function() {
             this.player2.player.imperialFavor = 'political';
             this.advancePhases('conflict');
-            this.player1.player.conflictDeck.each(card => {
+            this.player1.player.conflictDeck.forEach(card => {
                 this.player1.player.moveCard(card, 'conflict discard pile');
             });
             let hand = this.player1.hand.length;

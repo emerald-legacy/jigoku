@@ -44,12 +44,12 @@ class UnderSiege extends DrawCard {
                     })
                 })),
                 AbilityDsl.actions.conditional(({
-                    condition: context => context.game.currentConflict.defendingPlayer.hand.size() > 0,
+                    condition: context => context.game.currentConflict.defendingPlayer.hand.length > 0,
                     trueGameAction: AbilityDsl.actions.sequential([
                         AbilityDsl.actions.handler({
                             handler: context => {
                                 const player = context.game.currentConflict.defendingPlayer;
-                                const setAsideCards = [...player.hand.value()];
+                                const setAsideCards = [...player.hand];
                                 this.targetPlayer = player;
                                 this.setAsideCards = setAsideCards;
                                 this.game.addMessage('{0} sets their hand aside and draws 5 cards', player);

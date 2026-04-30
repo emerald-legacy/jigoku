@@ -9,7 +9,7 @@ class DojiKuwanan extends DrawCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
                 condition: (context) =>
-                    context.player && context.player.cardsInPlay.toArray().find((card) => card.name === 'Doji Hotaru'),
+                    context.player && context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru'),
                 message: '{1} is discarded from play as its controller controls {0}',
                 messageArgs: (context) => [
                     context.source,

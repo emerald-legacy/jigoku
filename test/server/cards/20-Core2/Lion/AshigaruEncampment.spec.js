@@ -13,7 +13,7 @@ describe('Ashigaru Encampment', function () {
 
         it('puts an Ashigaru into play', function () {
             this.player1.clickCard(this.ashigaruEncampment);
-            const ashigaru = this.player1.player.cardsInPlay.first();
+            const ashigaru = this.player1.player.cardsInPlay[0];
             expect(ashigaru.name).toBe('Ashigaru Recruit');
             expect(ashigaru.militarySkill).toBe(1);
             expect(ashigaru.politicalSkill).toBe(0);

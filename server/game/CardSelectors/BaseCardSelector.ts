@@ -92,7 +92,7 @@ class BaseCardSelector {
         let possibleCards: any[] = [];
         if(controllerProp !== Players.Opponent) {
             possibleCards = this.location.reduce((array: any[], location: any) => {
-                let cards = context.player.getSourceList(location).toArray();
+                let cards = context.player.getSourceList(location).slice();
                 if(location === Locations.PlayArea) {
                     return array.concat(
                         cards,
@@ -104,7 +104,7 @@ class BaseCardSelector {
         }
         if(controllerProp !== Players.Self && context.player.opponent) {
             possibleCards = this.location.reduce((array: any[], location: any) => {
-                let cards = context.player.opponent.getSourceList(location).toArray();
+                let cards = context.player.opponent.getSourceList(location).slice();
                 if(location === Locations.PlayArea) {
                     return array.concat(
                         cards,

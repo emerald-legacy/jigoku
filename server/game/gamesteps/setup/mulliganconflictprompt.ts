@@ -17,7 +17,7 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
     highlightSelectableCards(): void {
         this.game.getPlayers().forEach((player: Player) => {
             if(!this.selectableCards[player.name]) {
-                this.selectableCards[player.name] = (player as any).hand.toArray();
+                this.selectableCards[player.name] = (player as any).hand.slice();
             }
             player.setSelectableCards(this.selectableCards[player.name]);
         });

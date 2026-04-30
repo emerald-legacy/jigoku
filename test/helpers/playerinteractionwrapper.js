@@ -1,5 +1,3 @@
-const _ = require('underscore');
-
 const { matchCardByNameAndPack } = require('./cardutil.js');
 const { detectBinary } = require('../../build/server/util');
 const { GameModes } = require('../../build/server/GameModes.js');
@@ -40,7 +38,7 @@ class PlayerInteractionWrapper {
     }
 
     get hand() {
-        return this.player.hand.value();
+        return this.player.hand;
     }
 
     /**
@@ -51,13 +49,13 @@ class PlayerInteractionWrapper {
     set hand(cards = []) {
         //Move all cards in hand to the deck
         var cardsInHand = this.hand;
-        _.each(cardsInHand, (card) => this.moveCard(card, 'conflict deck'));
+        cardsInHand.forEach((card) => this.moveCard(card, 'conflict deck'));
         cards = this.mixedListToCardList(cards, 'conflict deck');
-        _.each(cards, (card) => this.moveCard(card, 'hand'));
+        cards.forEach((card) => this.moveCard(card, 'hand'));
     }
 
     get stronghold() {
-        return this.player.strongholdProvince.value();
+        return this.player.strongholdProvince;
     }
 
     /**
@@ -65,26 +63,26 @@ class PlayerInteractionWrapper {
      * @return {Object} contents of provinces 1,2,3,4
      */
     get provinces() {
-        var provinceOne = this.player.provinceOne.value();
-        var provinceTwo = this.player.provinceTwo.value();
-        var provinceThree = this.player.provinceThree.value();
-        var provinceFour = this.player.provinceFour.value();
+        var provinceOne = this.player.provinceOne;
+        var provinceTwo = this.player.provinceTwo;
+        var provinceThree = this.player.provinceThree;
+        var provinceFour = this.player.provinceFour;
         return {
             'province 1': {
-                provinceCard: _.find(provinceOne, (card) => card.isProvince),
-                dynastyCards: _.reject(provinceOne, (card) => card.isProvince)
+                provinceCard: provinceOne.find((card) => card.isProvince),
+                dynastyCards: provinceOne.filter((card) => !card.isProvince)
             },
             'province 2': {
-                provinceCard: _.find(provinceTwo, (card) => card.isProvince),
-                dynastyCards: _.reject(provinceTwo, (card) => card.isProvince)
+                provinceCard: provinceTwo.find((card) => card.isProvince),
+                dynastyCards: provinceTwo.filter((card) => !card.isProvince)
             },
             'province 3': {
-                provinceCard: _.find(provinceThree, (card) => card.isProvince),
-                dynastyCards: _.reject(provinceThree, (card) => card.isProvince)
+                provinceCard: provinceThree.find((card) => card.isProvince),
+                dynastyCards: provinceThree.filter((card) => !card.isProvince)
             },
             'province 4': {
-                provinceCard: _.find(provinceFour, (card) => card.isProvince),
-                dynastyCards: _.reject(provinceFour, (card) => card.isProvince)
+                provinceCard: provinceFour.find((card) => card.isProvince),
+                dynastyCards: provinceFour.filter((card) => !card.isProvince)
             }
         };
     }
@@ -110,22 +108,22 @@ class PlayerInteractionWrapper {
         if(!newProvinceState) {
             return;
         }
-        if(_.isArray(newProvinceState)) {
+        if(Array.isArray(newProvinceState)) {
             var provinceObject = {};
             // Convert to an object
-            _.each(newProvinceState, (card, index) => {
+            newProvinceState.forEach((card, index) => {
                 provinceObject[`province ${index + 1}`] = { provinceCard: card };
             });
             newProvinceState = provinceObject;
         }
         //Move all province cards to province deck
-        var allProvinceLocations = _.keys(this.provinces);
-        _.each(this.provinces, (contents) => {
+        var allProvinceLocations = Object.keys(this.provinces);
+        Object.values(this.provinces).forEach((contents) => {
             this.moveCard(contents.provinceCard, 'province deck');
         });
         //Fill the specified provinces
-        _.each(newProvinceState, (state, location) => {
-            if(!_.contains(allProvinceLocations, location)) {
+        Object.entries(newProvinceState).forEach(([location, state]) => {
+            if(!allProvinceLocations.includes(location)) {
                 throw new Error(`${location} is not a valid province`);
             }
             var provinceCard = state.provinceCard;
@@ -137,11 +135,11 @@ class PlayerInteractionWrapper {
             if(dynastyCards) {
                 dynastyCards = this.mixedListToCardList(dynastyCards, 'dynasty deck');
                 // WIP: Not sure if possible to have >1 dynasty card in a province
-                _.each(dynastyCards, (card) => this.placeCardInProvince(card, location));
+                dynastyCards.forEach((card) => this.placeCardInProvince(card, location));
             }
         });
         //Assign the rest of province cards
-        _.each(this.provinces, (state, location) => {
+        Object.entries(this.provinces).forEach(([location, state]) => {
             var provinceCard = state.provinceCard;
             if(!provinceCard) {
                 provinceCard = this.provinceDeck[0];
@@ -173,7 +171,7 @@ class PlayerInteractionWrapper {
      */
     set inPlay(newState = []) {
         // First, move all cards in play back to the appropriate decks
-        _.each(this.inPlay, (card) => {
+        this.inPlay.forEach((card) => {
             if(card.isDynasty) {
                 this.moveCard(card, 'dynasty deck');
             }
@@ -182,9 +180,9 @@ class PlayerInteractionWrapper {
             }
         });
         // Set up each of the cards
-        _.each(newState, (options) => {
+        newState.forEach((options) => {
             //TODO: Optionally, accept just a string as a parameter???
-            if(_.isString(options)) {
+            if(typeof options === 'string') {
                 options = {
                     card: options
                 };
@@ -221,12 +219,12 @@ class PlayerInteractionWrapper {
             // Get the attachments
             if(options.attachments) {
                 var attachments = [];
-                _.each(options.attachments, (card) => {
+                options.attachments.forEach((card) => {
                     var attachment = this.findCardByName(card, ['conflict deck', 'hand']);
                     attachments.push(attachment);
                 });
                 // Attach to the card
-                _.each(attachments, (attachment) => {
+                attachments.forEach((attachment) => {
                     this.player.attach(attachment, card);
                 });
             }
@@ -234,11 +232,11 @@ class PlayerInteractionWrapper {
     }
 
     get conflictDeck() {
-        return this.player.conflictDeck.value();
+        return this.player.conflictDeck;
     }
 
     get conflictDiscard() {
-        return this.player.conflictDiscardPile.value();
+        return this.player.conflictDiscardPile;
     }
 
     /**
@@ -247,25 +245,23 @@ class PlayerInteractionWrapper {
      */
     set conflictDiscard(newContents = []) {
         //  Move cards to the deck
-        _.each(this.conflictDiscard, (card) => {
+        this.conflictDiscard.slice().forEach((card) => {
             this.moveCard(card, 'conflict deck');
         });
         // Move cards to the discard in reverse order
         // (helps with referring to cards by index)
-        _.chain(newContents)
-            .reverse()
-            .each((name) => {
-                var card = this.findCardByName(name, 'conflict deck');
-                this.moveCard(card, 'conflict discard pile');
-            });
+        newContents.slice().reverse().forEach((name) => {
+            var card = this.findCardByName(name, 'conflict deck');
+            this.moveCard(card, 'conflict discard pile');
+        });
     }
 
     get dynastyDeck() {
-        return this.player.dynastyDeck.value();
+        return this.player.dynastyDeck;
     }
 
     get dynastyDiscard() {
-        return this.player.dynastyDiscardPile.value();
+        return this.player.dynastyDiscardPile;
     }
 
     /**
@@ -277,21 +273,19 @@ class PlayerInteractionWrapper {
             return;
         }
         // Move cards to the deck
-        _.each(this.dynastyDiscard, (card) => {
+        this.dynastyDiscard.slice().forEach((card) => {
             this.moveCard(card, 'dynasty deck');
         });
         // Move cards to the discard in reverse order
         // (helps with referencing cards in tests by index)
-        _.chain(newContents)
-            .reverse()
-            .each((name) => {
-                var card = this.findCardByName(name, ['dynasty deck', 'provinces']);
-                this.moveCard(card, 'dynasty discard pile');
-            });
+        newContents.slice().reverse().forEach((name) => {
+            var card = this.findCardByName(name, ['dynasty deck', 'provinces']);
+            this.moveCard(card, 'dynasty discard pile');
+        });
     }
 
     get provinceDeck() {
-        return this.player.provinceDeck.value();
+        return this.player.provinceDeck;
     }
 
     get firstPlayer() {
@@ -308,7 +302,7 @@ class PlayerInteractionWrapper {
 
     get currentButtons() {
         var buttons = this.currentPrompt().buttons;
-        return _.map(buttons, (button) => button.text.toString());
+        return buttons.map((button) => button.text.toString());
     }
 
     /**
@@ -354,11 +348,11 @@ class PlayerInteractionWrapper {
         return (
             prompt.menuTitle +
             '\n' +
-            _.map(prompt.buttons, (button) => '[ ' + button.text + (button.disabled ? ' (disabled)' : '') + ' ]').join(
+            prompt.buttons.map((button) => '[ ' + button.text + (button.disabled ? ' (disabled)' : '') + ' ]').join(
                 '\n'
             ) +
             '\n' +
-            _.pluck(selectableCards, 'name').join('\n')
+            selectableCards.map((c) => c.name).join('\n')
         );
     }
 
@@ -380,12 +374,12 @@ class PlayerInteractionWrapper {
         var matchFunc = matchCardByNameAndPack(name);
         // So that function can accept either lists or single locations
         if(locations !== 'any') {
-            if(!_.isArray(locations)) {
+            if(!Array.isArray(locations)) {
                 locations = [locations];
             }
             // 'provinces' = ['province 1', 'province 2', etc.]
-            if(_.contains(locations, 'provinces')) {
-                locations = _.reject(locations, (elem) => elem === 'provinces').concat(
+            if(locations.includes('provinces')) {
+                locations = locations.filter((elem) => elem !== 'provinces').concat(
                     'province 1',
                     'province 2',
                     'province 3',
@@ -395,7 +389,7 @@ class PlayerInteractionWrapper {
         }
         try {
             var cards = this.filterCards(
-                (card) => matchFunc(card.cardData) && (locations === 'any' || _.contains(locations, card.location)),
+                (card) => matchFunc(card.cardData) && (locations === 'any' || locations.includes(card.location)),
                 side
             );
         } catch(e) {
@@ -427,10 +421,10 @@ class PlayerInteractionWrapper {
     }
 
     placeCardInProvince(card, location = 'province 1') {
-        if(_.isString(card)) {
+        if(typeof card === 'string') {
             card = this.findCardByName(card);
         }
-        if(!_.contains(['province 1', 'province 2', 'province 3', 'province 4'], location)) {
+        if(!['province 1', 'province 2', 'province 3', 'province 4'].includes(location)) {
             throw new Error(`${location} is not a valid province`);
         }
         if(card.location !== location) {
@@ -449,7 +443,7 @@ class PlayerInteractionWrapper {
     }
 
     putIntoPlay(card) {
-        if(_.isString(card)) {
+        if(typeof card === 'string') {
             card = this.findCardByName(card);
         }
         if(card.location !== 'play area') {
@@ -475,8 +469,7 @@ class PlayerInteractionWrapper {
     clickPrompt(text) {
         text = text.toString();
         var currentPrompt = this.player.currentPrompt();
-        var promptButton = _.find(
-            currentPrompt.buttons,
+        var promptButton = currentPrompt.buttons.find(
             (button) => button.text.toString().toLowerCase() === text.toLowerCase()
         );
 
@@ -520,8 +513,7 @@ class PlayerInteractionWrapper {
     chooseCardInPrompt(cardName, controlName) {
         var currentPrompt = this.player.currentPrompt();
 
-        let promptControl = _.find(
-            currentPrompt.controls,
+        let promptControl = currentPrompt.controls.find(
             (control) => control.name.toLowerCase() === controlName.toLowerCase()
         );
 
@@ -539,7 +531,7 @@ class PlayerInteractionWrapper {
     }
 
     clickCard(card, location = 'any', side) {
-        if(_.isString(card)) {
+        if(typeof card === 'string') {
             card = this.findCardByName(card, location, side);
         }
         this.game.cardClicked(this.player.name, card.uuid);
@@ -555,7 +547,7 @@ class PlayerInteractionWrapper {
     }
 
     clickMenu(card, menuText) {
-        if(_.isString(card)) {
+        if(typeof card === 'string') {
             card = this.findCardByName(card);
         }
 
@@ -584,7 +576,7 @@ class PlayerInteractionWrapper {
      * card object, if card parameter is a String
      */
     moveCard(card, targetLocation, searchLocations = 'any') {
-        if(_.isString(card)) {
+        if(typeof card === 'string') {
             card = this.mixedListToCardList([card], searchLocations)[0];
         }
         this.player.moveCard(card, targetLocation);
@@ -600,7 +592,7 @@ class PlayerInteractionWrapper {
         if(!element) {
             return;
         }
-        if(!_.includes(['fire', 'earth', 'water', 'air', 'void'], element)) {
+        if(!['fire', 'earth', 'water', 'air', 'void'].includes(element)) {
             throw new Error(`${element} is not a valid ring selection`);
         }
         this.game.rings[element].claimRing(this.player);
@@ -663,7 +655,7 @@ class PlayerInteractionWrapper {
      * @param {number} [honoramt = 1] - amount of honor to be bid
      */
     bidHonor(honoramt = 1) {
-        if(!_.contains(this.currentButtons, honoramt.toString())) {
+        if(!this.currentButtons.includes(honoramt.toString())) {
             throw new Error(`${honoramt} is not a valid selection for ${this.name}`);
         }
         if(honoramt > this.player.deck.conflictCards.length) {
@@ -691,13 +683,13 @@ class PlayerInteractionWrapper {
         }
         var candidates = this.filterCardsByName(card, 'provinces');
         //Remove any face-down cards
-        candidates = _.reject(candidates, (card) => card.isFacedown());
+        candidates = candidates.filter((card) => !card.isFacedown());
         if(candidates.length === 0) {
             throw new Error(`${this.name} cannot play the specified card from the provinces`);
         }
         card = candidates[0];
         this.clickCard(card, 'provinces');
-        if(!_.contains(this.currentButtons, fate.toString())) {
+        if(!this.currentButtons.includes(fate.toString())) {
             this.clickPrompt('Cancel');
             throw new Error(`Player ${this.name} does not have enough fate to place ${fate} tokens.`);
         }
@@ -714,7 +706,7 @@ class PlayerInteractionWrapper {
     }
 
     playCharacterFromHand(card, fate = 0) {
-        if(_.isString(card)) {
+        if(typeof card === 'string') {
             card = this.findCardByName(card, 'hand');
         }
         this.clickCard(card, 'hand');
@@ -734,10 +726,10 @@ class PlayerInteractionWrapper {
         ids, or card objects
      */
     declareConflict(conflictType, province, attackers, ring = 'void') {
-        if(!ring || !_.contains(['void', 'fire', 'water', 'air', 'earth'], ring)) {
+        if(!ring || !['void', 'fire', 'water', 'air', 'earth'].includes(ring)) {
             throw new Error(`${ring} is not a valid ring selection`);
         }
-        if(_.isString(province)) {
+        if(typeof province === 'string') {
             province = this.findCardByName(province, 'any', 'opponent');
         } else if(!province) {
             province = this.findCard((card) => card.isProvince && card.location === 'province 1', 'opponent');
@@ -745,7 +737,7 @@ class PlayerInteractionWrapper {
         if(province.isBroken) {
             throw new Error(`Cannot initiate conflict on ${province.name} because it is broken`);
         }
-        if(!conflictType || !_.contains(['military', 'political'], conflictType)) {
+        if(!conflictType || !['military', 'political'].includes(conflictType)) {
             throw new Error(`${conflictType} is not a valid conflict type`);
         }
         //Turn to list of card objects
@@ -759,7 +751,7 @@ class PlayerInteractionWrapper {
         }
         this.clickCard(province);
         if(attackers.length > 0) {
-            _.each(attackers, (card) => this.clickCard(card));
+            attackers.forEach((card) => this.clickCard(card));
             this.clickPrompt('Initiate Conflict');
             if(this.hasPrompt('You still have unused Covert - are you sure?')) {
                 this.clickPrompt('Yes');
@@ -783,7 +775,7 @@ class PlayerInteractionWrapper {
                 throw new Error(`None of the specified attackers can participate in ${conflictType} conflicts`);
             }
 
-            _.each(defenders, (card) => {
+            defenders.forEach((card) => {
                 this.clickCard(card);
             });
         }
@@ -800,12 +792,12 @@ class PlayerInteractionWrapper {
             return [];
         }
         // Yank all the non-string cards
-        var cardList = _.reject(mixed, (card) => _.isString(card));
-        mixed = _.filter(mixed, (card) => _.isString(card));
+        var cardList = mixed.filter((card) => typeof card !== 'string');
+        mixed = mixed.filter((card) => typeof card === 'string');
         // Find cards objects for the rest
-        _.each(mixed, (card) => {
+        mixed.forEach((card) => {
             //Find only those cards that aren't already in the list
-            var cardObject = this.filterCardsByName(card, locations).find((card) => !_.contains(cardList, card));
+            var cardObject = this.filterCardsByName(card, locations).find((card) => !cardList.includes(card));
             if(!cardObject) {
                 throw new Error(`Could not find card named ${card}`);
             }
@@ -821,7 +813,7 @@ class PlayerInteractionWrapper {
      * @param {String} type - type of conflict 'military' or 'political'
      */
     filterUnableToParticipate(cardList, type) {
-        return _.filter(cardList, (card) => {
+        return cardList.filter((card) => {
             if(!card) {
                 return false;
             }

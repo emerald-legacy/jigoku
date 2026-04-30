@@ -66,7 +66,7 @@ export class PlayCharacterAction extends BaseAction {
             context: context,
             originalLocation: context.source.location,
             originallyOnTopOfConflictDeck:
-                context.player && context.player.conflictDeck && context.player.conflictDeck.first() === context.source,
+                context.player && context.player.conflictDeck && context.player.conflictDeck[0] === context.source,
             onPlayCardSource: context.onPlayCardSource,
             playType: PlayTypes.PlayFromHand
         });

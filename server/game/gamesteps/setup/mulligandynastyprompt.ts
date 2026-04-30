@@ -75,8 +75,8 @@ class MulliganDynastyPrompt extends AllPlayerPrompt {
         if(arg === 'done') {
             if(this.selectedCards[player.name].length > 0) {
                 for(const card of this.selectedCards[player.name]) {
-                    if((player as any).dynastyDeck.size() > 0) {
-                        (player as any).moveCard((player as any).dynastyDeck.first(), card.location);
+                    if((player as any).dynastyDeck.length > 0) {
+                        (player as any).moveCard((player as any).dynastyDeck[0], card.location);
                     }
                 }
                 for(const card of this.selectedCards[player.name]) {

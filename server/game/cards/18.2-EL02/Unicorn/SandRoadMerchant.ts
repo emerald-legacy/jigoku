@@ -43,7 +43,7 @@ export default class SandRoadMerchant extends DrawCard {
                         reveal: true
                     })),
                     AbilityDsl.actions.chooseAction(() => {
-                        let topCard = context.player.opponent.conflictDeck.first();
+                        let topCard = context.player.opponent.conflictDeck[0];
                         return {
                             activePromptTitle: topCard && 'Choose an action for ' + topCard.name,
                             player: Players.Opponent,

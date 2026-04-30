@@ -193,7 +193,7 @@ describe('Void Fist', function() {
             });
 
             it('should be able to be played twice (Mitsu first) in the same conflict', function() {
-                for(const card of this.player1.player.conflictDeck.toArray()) {
+                for(const card of this.player1.player.conflictDeck.slice()) {
                     this.player1.moveCard(card, 'conflict discard pile');
                 }
                 this.voidFist = this.player1.findCardByName('void-fist');

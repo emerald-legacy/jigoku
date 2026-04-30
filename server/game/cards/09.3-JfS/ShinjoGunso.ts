@@ -16,7 +16,7 @@ export default class ShinjoGunso extends DrawCard {
             },
             effect: 'search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play',
             gameAction: AbilityDsl.actions.sequentialContext((context) => {
-                const topFive = context.player.dynastyDeck.first(5);
+                const topFive = context.player.dynastyDeck.slice(0, 5);
                 return {
                     gameActions: [
                         AbilityDsl.actions.deckSearch(() => ({

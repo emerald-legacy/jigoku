@@ -4,7 +4,7 @@ import DrawCard from '../../../drawcard';
 import type { AbilityContext } from '../../../AbilityContext';
 
 function cardsToDiscard(context: AbilityContext) {
-    return context.player.dynastyDeck.first(4);
+    return context.player.dynastyDeck.slice(0, 4);
 }
 
 export default class SecondWind extends DrawCard {

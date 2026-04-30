@@ -23,7 +23,7 @@ describe('Ki Alignment', function() {
             this.HP2 = this.player1.filterCardsByName('hurricane-punch')[1];
 
             this.player1.reduceDeckToNumber('conflict deck', 0);
-            this.player1.player.conflictDiscardPile.each(a => this.player1.moveCard(a, 'conflict deck'));
+            this.player1.player.conflictDiscardPile.forEach(a => this.player1.moveCard(a, 'conflict deck'));
             this.noMoreActions();
         });
 

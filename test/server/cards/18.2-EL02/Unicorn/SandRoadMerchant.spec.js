@@ -57,7 +57,7 @@ describe('Sand Road Merchant', function() {
             expect(this.player2).toHavePromptButton('Put on the bottom of your deck');
 
             this.player2.clickPrompt('Leave on top of your deck');
-            expect(this.player2.player.conflictDeck.first()).toBe(this.katana);
+            expect(this.player2.player.conflictDeck[0]).toBe(this.katana);
             expect(this.getChatLogs(5)).toContain('player2 chooses to put Fine Katana on top of their deck');
 
             this.player2.clickCard(this.yoshi);
@@ -94,7 +94,7 @@ describe('Sand Road Merchant', function() {
             expect(this.player2).toHavePromptButton('Put on the bottom of your deck');
 
             this.player2.clickPrompt('Put on the bottom of your deck');
-            expect(this.player2.player.conflictDeck.last()).toBe(this.katana);
+            expect(this.player2.player.conflictDeck.at(-1)).toBe(this.katana);
             expect(this.getChatLogs(5)).toContain('player2 chooses to put Fine Katana on the bottom of their deck');
 
             this.player2.clickCard(this.yoshi);
@@ -133,8 +133,8 @@ describe('Sand Road Merchant', function() {
 
             this.player2.clickPrompt('Let Go');
             expect(this.policyDebate.location).toBe('conflict discard pile');
-            expect(this.player2.player.conflictDiscardPile.toArray()).toContain(this.policyDebate);
-            expect(this.player1.player.conflictDiscardPile.toArray()).not.toContain(this.policyDebate);
+            expect(this.player2.player.conflictDiscardPile.slice()).toContain(this.policyDebate);
+            expect(this.player1.player.conflictDiscardPile.slice()).not.toContain(this.policyDebate);
         });
 
         it('should react to declaring as a defender', function() {

@@ -16,7 +16,7 @@ export default class BayushiTruthseeker extends DrawCard {
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Which card do you want to discard?',
                     context: context,
-                    cards: context.player.opponent.conflictDeck.first(2),
+                    cards: context.player.opponent.conflictDeck.slice(0, 2),
                     choices: ['Do not discard either card.'],
                     handlers: [() => true],
                     cardHandler: (card: DrawCard) => {

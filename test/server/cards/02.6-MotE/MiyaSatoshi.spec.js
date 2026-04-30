@@ -18,7 +18,7 @@ describe('Miya Satoshi', function() {
             });
 
             it('should discard cards until Kanjo District is the last card discarded', function() {
-                expect(this.player1.player.dynastyDiscardPile.first()).toBe(this.kanjoDistrict);
+                expect(this.player1.player.dynastyDiscardPile[0]).toBe(this.kanjoDistrict);
             });
 
             it('should prompt the player to choose where to put Kanjo District', function() {
