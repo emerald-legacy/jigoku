@@ -1,5 +1,5 @@
 const Player = require('../../../build/server/game/player.js');
-const { shuffle } = require('../../../build/server/game/Utils/shuffle.js');
+const { shuffle } = require('../../../build/server/game/utils/shuffle.js');
 
 describe('Player zone initialisation', function() {
     beforeEach(function() {
