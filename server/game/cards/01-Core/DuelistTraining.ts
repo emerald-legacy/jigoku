@@ -35,7 +35,7 @@ class DuelistTraining extends DrawCard {
         } else if(difference === 0) {
             return;
         }
-        if(lowBidder.hand.size() < difference) {
+        if(lowBidder.hand.length < difference) {
             prompt.transferHonorAfterBid(context);
             return;
         }

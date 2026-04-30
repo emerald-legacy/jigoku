@@ -84,7 +84,7 @@ describe('Ancestral Sight', function() {
             expect(this.player1.fate).toBe(pfate - 1);
             expect(this.toshimoko.fate).toBe(fate + 1);
             expect(this.toshimoko2.location).toBe('dynasty deck');
-            expect(this.player1.player.dynastyDeck.last()).toBe(this.toshimoko2);
+            expect(this.player1.player.dynastyDeck.at(-1)).toBe(this.toshimoko2);
             expect(this.getChatLogs(5)).toContain('player1 uses Kitsu Spiritcaller\'s gained ability from Ancestral Sight, returning Kakita Toshimoko to the bottom of the dynasty deck to place 1 fate on Kakita Toshimoko');
         });
 

@@ -108,7 +108,7 @@ export class PlayDisguisedCharacterAction extends BaseAction {
                 originallyOnTopOfConflictDeck:
                     context.player &&
                     context.player.conflictDeck &&
-                    context.player.conflictDeck.first() === context.source,
+                    context.player.conflictDeck[0] === context.source,
                 onPlayCardSource: context.onPlayCardSource,
                 playType: context.playType
             })

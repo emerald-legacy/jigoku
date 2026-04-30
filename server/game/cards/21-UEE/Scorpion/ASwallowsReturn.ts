@@ -13,8 +13,8 @@ export default class ASwallowsReturn extends DrawCard {
             condition: (context) =>
                 context.game.currentConflict !== null &&
         context.player.opponent !== null &&
-        context.player.opponent.conflictDeck.size() >= CARD_COUNT,
-            cost: AbilityDsl.costs.reveal((context) => context.player.opponent.conflictDeck.first(CARD_COUNT)),
+        context.player.opponent.conflictDeck.length >= CARD_COUNT,
+            cost: AbilityDsl.costs.reveal((context) => context.player.opponent.conflictDeck.slice(0, CARD_COUNT)),
             cannotBeMirrored: true,
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardMenu((context) => ({

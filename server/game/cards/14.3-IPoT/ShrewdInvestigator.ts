@@ -1,5 +1,6 @@
 import AbilityDsl from '../../abilitydsl';
 import DrawCard from '../../drawcard';
+import { shuffle } from '../../utils/shuffle';
 
 export default class ShrewdInvestigator extends DrawCard {
     static id = 'shrewd-investigator';
@@ -9,9 +10,8 @@ export default class ShrewdInvestigator extends DrawCard {
             title: 'Look at random cards from your opponent\'s hand',
             condition: (context) => context.source.isParticipating() && context.player.opponent !== undefined,
             gameAction: AbilityDsl.actions.lookAt((context) => ({
-                target: context.player.opponent.hand
-                    .shuffle()
-                    .slice(0, context.player.getNumberOfFacedownProvinces())
+                target: (shuffle(context.player.opponent.hand as DrawCard[])
+                    .slice(0, context.player.getNumberOfFacedownProvinces()) as DrawCard[])
                     .sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name))
             })),
             effect: 'look at {1} random card{3} in {2}\'s hand',

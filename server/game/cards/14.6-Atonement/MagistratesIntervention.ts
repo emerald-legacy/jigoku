@@ -30,7 +30,7 @@ class MagistratesIntervention extends DrawCard {
     }
 
     canPlay(context, playType) {
-        if(!context.player.cardsInPlay.any(card => card.getType() === CardTypes.Character && (card.hasTrait('courtier') || card.hasTrait('magistrate')))) {
+        if(!context.player.cardsInPlay.some(card => card.getType() === CardTypes.Character && (card.hasTrait('courtier') || card.hasTrait('magistrate')))) {
             return false;
         }
 

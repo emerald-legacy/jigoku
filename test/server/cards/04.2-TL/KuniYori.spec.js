@@ -95,10 +95,10 @@ describe('Kuni Yori', function() {
                     });
 
                     it('should discard 1 card at random from the chosen player\'s hand', function() {
-                        let handSize = this.player2.player.hand.size();
+                        let handSize = this.player2.player.hand.length;
                         this.player1.clickCard(this.kuniYori);
                         this.player1.clickPrompt('player2');
-                        expect(this.player2.player.hand.size()).toBe(handSize - 1);
+                        expect(this.player2.player.hand.length).toBe(handSize - 1);
                     });
                 });
             });

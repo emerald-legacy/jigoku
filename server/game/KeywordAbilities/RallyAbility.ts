@@ -25,7 +25,7 @@ export class RallyAbility extends TriggeredAbility {
             message: '{0} places {1} faceup in {2} due to {3}\'s Rally',
             messageArgs: (context: TriggeredAbilityContext) => [
                 context.player,
-                context.player.dynastyDeck.first() ? context.player.dynastyDeck.first() : 'a card',
+                context.player.dynastyDeck[0] ? context.player.dynastyDeck[0] : 'a card',
                 context.player.getProvinceCardInProvince(context.source.location).isFacedown()
                     ? context.source.location
                     : context.player.getProvinceCardInProvince(context.source.location),

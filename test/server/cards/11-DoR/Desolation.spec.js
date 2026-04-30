@@ -89,9 +89,9 @@ describe('Desolation', function() {
                     attackers: [this.brashSamurai],
                     defenders: []
                 });
-                expect(this.player2.player.hand.size()).toBe(1);
+                expect(this.player2.player.hand.length).toBe(1);
                 this.player2.clickCard('fertile-fields');
-                expect(this.player2.player.hand.size()).toBe(1);
+                expect(this.player2.player.hand.length).toBe(1);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
 

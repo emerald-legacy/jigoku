@@ -9,7 +9,7 @@ export default class ShiroGisu extends StrongholdCard {
         this.action({
             title: 'Draw a card',
             cost: AbilityDsl.costs.bowSelf(),
-            condition: (context) => this.getCharactersWithoutFate(context) && context.player.conflictDeck.size() > 0,
+            condition: (context) => this.getCharactersWithoutFate(context) && context.player.conflictDeck.length > 0,
             effect: 'look at the top {1} cards of their conflict deck',
             effectArgs: (context) => this.getCharactersWithoutFate(context),
             gameAction: AbilityDsl.actions.deckSearch({

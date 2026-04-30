@@ -691,7 +691,7 @@ class ConflictFlow extends BaseStepWithPipeline {
         }
 
         this.conflict.defenders.forEach((card: any) => (card.inConflict = true));
-        this.conflict.defendingPlayer.cardsInPlay.each((card: any) => (card.covert = false));
+        this.conflict.defendingPlayer.cardsInPlay.forEach((card: any) => (card.covert = false));
 
         if(this.conflict.defenders.length > 0) {
             this.game.addMessage(

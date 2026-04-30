@@ -12,7 +12,7 @@ class FrontlineEngineer extends DrawCard {
 
         this.action({
             title: 'Place a holding from your deck faceup in the defending province',
-            condition: context => context.player.dynastyDeck.size() > 0 && context.source.isDefending(),
+            condition: context => context.player.dynastyDeck.length > 0 && context.source.isDefending(),
             effect: 'look at the top five cards of their dynasty deck',
             gameAction: AbilityDsl.actions.selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
@@ -29,7 +29,7 @@ class FrontlineEngineer extends DrawCard {
                         activePromptTitle: 'Choose a holding',
                         context: context,
                         cardCondition: card => card.getType() === CardTypes.Holding,
-                        cards: context.player.dynastyDeck.first(5),
+                        cards: context.player.dynastyDeck.slice(0, 5),
                         choices: ['Take nothing'],
                         handlers: [() => {
                             this.game.addMessage('{0} takes nothing', context.player);

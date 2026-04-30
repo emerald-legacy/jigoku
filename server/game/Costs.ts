@@ -8,7 +8,7 @@ import { HandlerAction } from './GameActions/HandlerAction';
 import { ReturnToDeckProperties } from './GameActions/ReturnToDeckAction';
 import { SelectCardProperties } from './GameActions/SelectCardAction';
 import { TriggeredAbilityContext } from './TriggeredAbilityContext';
-import { Derivable, derive } from './Utils/helpers';
+import { Derivable, derive } from './utils/helpers';
 import BaseCard from './basecard';
 import { GameActionCost } from './costs/GameActionCost';
 import { MetaActionCost } from './costs/MetaActionCost';
@@ -146,7 +146,7 @@ export function shuffleIntoDeck(properties: SelectCostProperties): Cost {
 /**
  * Cost that requires discarding a specific card.
  */
-export function discardCardSpecific(cardFunc: (context: AbilityContext) => DrawCard): Cost {
+export function discardCardSpecific(cardFunc: (context: AbilityContext) => DrawCard | DrawCard[]): Cost {
     return new GameActionCost(GameActions.discardCard((context) => ({ target: cardFunc(context) })));
 }
 
@@ -178,9 +178,9 @@ export function discardTopCardsFromDeck(properties: { amount: number; deck: Deck
     return {
         getActionName: (_context) => 'discardTopCardsFromDeck',
         getCostMessage: (_context) => ['discarding {0}'],
-        canPay: (context) => getDeck(context).size() >= 4,
+        canPay: (context) => getDeck(context).length >= 4,
         resolve: (context) => {
-            context.costs.discardTopCardsFromDeck = getDeck(context).first(4);
+            context.costs.discardTopCardsFromDeck = getDeck(context).slice(0, 4);
         },
         pay: (context) => {
             for(const card of context.costs.discardTopCardsFromDeck as DrawCard[]) {
@@ -680,7 +680,7 @@ export function discardCardsUpToVariableX(amountDerivable: Derivable<number, Tri
         },
         resolve(context: TriggeredAbilityContext, result) {
             const amount = derive(amountDerivable, context);
-            const max = Math.min(amount, context.player.hand.size());
+            const max = Math.min(amount, context.player.hand.length);
             context.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose up to ' + max + ' card' + (amount === 1 ? '' : 's') + ' to discard',
                 context: context,
@@ -759,7 +759,7 @@ export function discardHand(): Cost {
             return context.game.actions.chosenDiscard().canAffect(context.player, context);
         },
         resolve(context: TriggeredAbilityContext, _result) {
-            context.costs.discardHand = context.player.hand.value();
+            context.costs.discardHand = context.player.hand.slice();
         },
         payEvent(context: TriggeredAbilityContext) {
             const action = context.game.actions.discardCard({ target: context.costs.discardHand });

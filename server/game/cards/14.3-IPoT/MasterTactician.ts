@@ -71,7 +71,7 @@ export default class MasterTactician extends DrawCard {
             targetLocation: Locations.ConflictDeck,
             targetController: Players.Self,
             match: (card, context) =>
-                context && context.player.conflictDeck.size() > 0 && card === context.player.conflictDeck.first(),
+                context && context.player.conflictDeck.length > 0 && card === context.player.conflictDeck[0],
             effect: AbilityDsl.effects.canPlayFromOutOfPlay(
                 (player: Player, card: BaseCard) => player === card.owner,
                 PlayTypes.PlayFromHand

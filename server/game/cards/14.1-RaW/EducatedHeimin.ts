@@ -17,9 +17,9 @@ class EducatedHeimin extends DrawCard {
             effect: AbilityDsl.effects.customRefillProvince((player, province) => {
                 let cards = [];
                 if(province.isFacedown()) {
-                    cards = player.dynastyDeck.first(4);
+                    cards = player.dynastyDeck.slice(0, 4);
                 } else {
-                    cards = player.dynastyDeck.first(2);
+                    cards = player.dynastyDeck.slice(0, 2);
                 }
 
                 this.game.promptWithHandlerMenu(player, {

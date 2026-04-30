@@ -13,7 +13,7 @@ class UnifiedCompany extends DrawCard {
                     return event.conflict.winner === context.source.controller &&
                         context.source.isParticipating() &&
                         context.player.opponent &&
-                        context.player.hand.size() < context.player.opponent.hand.size();
+                        context.player.hand.length < context.player.opponent.hand.length;
                 }
             },
             gameAction: AbilityDsl.actions.selectCard(() => ({

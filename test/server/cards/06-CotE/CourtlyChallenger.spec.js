@@ -68,12 +68,12 @@ describe('Courtly Challenger', function() {
             });
 
             it('the duel should still successfully resolve', function() {
-                let handSize = this.player1.player.hand.size();
+                let handSize = this.player1.player.hand.length;
                 this.player1.clickCard(this.courtlyChallenger);
                 this.player1.clickCard(this.obstinateRecruit);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('2');
-                expect(this.player1.player.hand.size()).toBe(handSize + 2);
+                expect(this.player1.player.hand.length).toBe(handSize + 2);
                 expect(this.courtlyChallenger.isHonored).toBe(true);
                 expect(this.obstinateRecruit.location).toBe('dynasty discard pile');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
@@ -108,12 +108,12 @@ describe('Courtly Challenger', function() {
                     type: 'political'
                 });
                 this.player2.pass();
-                let handSize = this.player2.player.hand.size();
+                let handSize = this.player2.player.hand.length;
                 this.player1.clickCard(this.courtlyChallenger);
                 this.player1.clickCard(this.mirumotoRaitsugu);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('5');
-                expect(this.player2.player.hand.size()).toBe(handSize + 2);
+                expect(this.player2.player.hand.length).toBe(handSize + 2);
             });
 
         });

@@ -1,6 +1,7 @@
 import AbilityDsl from '../../../abilitydsl';
 import { Locations } from '../../../Constants';
 import DrawCard from '../../../drawcard';
+import { shuffle } from '../../../utils/shuffle';
 
 export default class HonestAssessment extends DrawCard {
     static id = 'honest-assessment';
@@ -17,7 +18,7 @@ export default class HonestAssessment extends DrawCard {
             cost: AbilityDsl.costs.nameCard(),
             max: AbilityDsl.limit.perRound(1),
             gameAction: AbilityDsl.actions.multipleContext((context) => {
-                const hand: Array<DrawCard> = context.player.opponent.hand.shuffle();
+                const hand: Array<DrawCard> = shuffle(context.player.opponent.hand);
                 const cards = hand.slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
                 return {
                     gameActions: [

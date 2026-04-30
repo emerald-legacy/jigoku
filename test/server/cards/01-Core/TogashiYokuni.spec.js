@@ -191,7 +191,7 @@ describe('Togashi Yokuni', function() {
                 this.player1.clickRing('fire');
                 this.player1.clickPrompt('Banzai! (2)');
                 expect(this.game.rings.fire.fate).toBe(2);
-                expect(this.player2.player.hand.size()).toBe(1);
+                expect(this.player2.player.hand.length).toBe(1);
             });
 
             it('should not allow Kitsuki Investigator to use its ability twice with Way of the Dragon', function() {
@@ -205,7 +205,7 @@ describe('Togashi Yokuni', function() {
                 this.player1.clickCard(this.kitsukiInvestigator);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 expect(this.game.rings.fire.fate).toBe(1);
-                expect(this.player2.player.hand.size()).toBe(2);
+                expect(this.player2.player.hand.length).toBe(2);
             });
 
             it('should not allow Togashi Yokuni to use its ability twice with Way of the Dragon', function() {
@@ -219,7 +219,7 @@ describe('Togashi Yokuni', function() {
                 this.player1.clickCard(this.togashiYokuni);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 expect(this.game.rings.fire.fate).toBe(1);
-                expect(this.player2.player.hand.size()).toBe(2);
+                expect(this.player2.player.hand.length).toBe(2);
             });
         });
 

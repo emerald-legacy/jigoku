@@ -107,7 +107,7 @@ describe('Renowned Singer', function() {
             this.player2.clickPrompt('Assassination');
             expect(this.assassination.location).toBe('hand');
             expect(this.skirmisher.location).toBe('conflict deck');
-            expect(this.player1.player.conflictDeck.last()).toBe(this.skirmisher);
+            expect(this.player1.player.conflictDeck.at(-1)).toBe(this.skirmisher);
             expect(this.player1.hand.length).toBe(hand + 1);
             expect(this.player1.conflictDeck.length).toBe(deck + 1);
 

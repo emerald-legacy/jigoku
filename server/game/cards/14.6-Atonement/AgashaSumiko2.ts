@@ -23,7 +23,7 @@ export default class AgashaSumiko2 extends DrawCard {
                 })),
                 AbilityDsl.actions.chosenDiscard((context) => ({
                     target: context.player.opponent,
-                    amount: context.player.opponent.hand.size() > context.player.hand.size() ? 2 : 0
+                    amount: context.player.opponent.hand.length > context.player.hand.length ? 2 : 0
                 }))
             ]),
             effect: 'make {1} {2}',
@@ -40,7 +40,7 @@ export default class AgashaSumiko2 extends DrawCard {
             if(context.player.opponent.fate > context.player.fate) {
                 messages.push('lose 2 fate');
             }
-            if(context.player.opponent.hand.size() > context.player.hand.size()) {
+            if(context.player.opponent.hand.length > context.player.hand.length) {
                 messages.push('disard 2 cards');
             }
 

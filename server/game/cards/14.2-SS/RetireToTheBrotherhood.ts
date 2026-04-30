@@ -84,7 +84,7 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
         let cards = allCards.filter((a) => a.controller === player);
 
         //Figure out how many cards to reveal and which characters to put into play
-        let deck = player.dynastyDeck.value();
+        let deck = player.dynastyDeck.slice();
         let revealedCards = [];
         let characters = [];
         for(let i = 0; i < deck.length && characters.length < cards.length; i++) {

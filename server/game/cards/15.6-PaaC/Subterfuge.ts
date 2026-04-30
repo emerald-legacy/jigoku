@@ -21,7 +21,7 @@ class Subterfuge extends DrawCard {
             gameAction: AbilityDsl.actions.cancel((context) => ({
                 replacementGameAction: AbilityDsl.actions.sequentialContext(() => {
                     const discardAmount = Math.min(context.event.amount, 3);
-                    const cardsToDiscard = context.player.opponent.conflictDeck.first(discardAmount);
+                    const cardsToDiscard = context.player.opponent.conflictDeck.slice(0, discardAmount);
                     const drawAmount = context.event.amount - discardAmount;
                     this.messageShown = false;
                     return {

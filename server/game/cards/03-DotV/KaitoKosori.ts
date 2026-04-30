@@ -10,7 +10,7 @@ class KaitoKosori extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context =>
-                context.player.cardsInPlay.any(card => card.isParticipating()) &&
+                context.player.cardsInPlay.some(card => card.isParticipating()) &&
                 this.game.currentConflict.hasElement(this.getCurrentElementSymbol(elementKey)) && !context.source.isParticipating(),
             effect: AbilityDsl.effects.contributeToConflict((card, context) => context.player)
         });

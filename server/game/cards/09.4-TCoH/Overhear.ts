@@ -3,6 +3,7 @@ import AbilityDsl from '../../abilitydsl';
 import CardAbility from '../../CardAbility';
 import { Locations, TargetModes } from '../../Constants';
 import DrawCard from '../../drawcard';
+import { shuffle } from '../../utils/shuffle';
 
 export default class Overhear extends DrawCard {
     static id = 'overhear';
@@ -13,7 +14,7 @@ export default class Overhear extends DrawCard {
             effect: 'reveal a random card from {1}\'s hand and place it on top of {1}\'s deck',
             effectArgs: (context) => [context.player.opponent],
             gameAction: AbilityDsl.actions.multipleContext((context) => {
-                let card = context.player.opponent && context.player.opponent.hand.shuffle().slice(0, 1);
+                let card: DrawCard[] = context.player.opponent ? (shuffle(context.player.opponent.hand) as DrawCard[]).slice(0, 1) : [];
                 return {
                     gameActions: [
                         AbilityDsl.actions.lookAt(() => ({

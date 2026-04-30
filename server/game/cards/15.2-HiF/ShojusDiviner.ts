@@ -10,11 +10,11 @@ class ShojusDiviner extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
                 title: 'Divine your conflict deck',
                 printedAbility: false,
-                condition: context => context.player.conflictDeck.size() > 0,
+                condition: context => context.player.conflictDeck.length > 0,
                 effect: 'look at the top 8 cards of their conflict deck',
                 gameAction: AbilityDsl.actions.handler({
                     handler: context => {
-                        const cards = context.player.conflictDeck.first(8);
+                        const cards = context.player.conflictDeck.slice(0, 8);
                         const chosenCards = [];
 
                         this.selectPrompt(context, cards, chosenCards);

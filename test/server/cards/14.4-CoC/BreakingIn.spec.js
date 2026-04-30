@@ -68,7 +68,7 @@ describe('Breaking In', function() {
 
         it('if Cavalry, should let you pick the province', function() {
             this.noMoreActions();
-            const cardsInDiscard = this.player2.player.dynastyDiscardPile.size();
+            const cardsInDiscard = this.player2.player.dynastyDiscardPile.length;
             this.player1.clickCard(this.brashSamurai);
             this.player1.clickRing('fire');
             this.player1.clickCard(this.breaking);
@@ -79,14 +79,14 @@ describe('Breaking In', function() {
             this.player2.clickCard(this.shamefulDisplay);
             expect(this.chagatai.location).toBe('province 2');
             expect(this.chagatai.facedown).toBe(false);
-            expect(this.player2.player.dynastyDiscardPile.size()).toBe(cardsInDiscard);
+            expect(this.player2.player.dynastyDiscardPile.length).toBe(cardsInDiscard);
             expect(this.getChatLogs(3)).toContain('player2 places Moto Chagatai in province 2');
             expect(this.getChatLogs(3)).toContain('player2 is shuffling their dynasty deck');
         });
 
         it('if not Cavalry, should not let you pick the province', function() {
             this.noMoreActions();
-            const cardsInDiscard = this.player2.player.dynastyDiscardPile.size();
+            const cardsInDiscard = this.player2.player.dynastyDiscardPile.length;
             this.player1.clickCard(this.brashSamurai);
             this.player1.clickRing('fire');
             this.player1.clickCard(this.breaking);
@@ -95,7 +95,7 @@ describe('Breaking In', function() {
             this.player2.clickPrompt('Mirumoto Raitsugu');
             expect(this.mirumotoRaitsugu.location).toBe('province 1');
             expect(this.mirumotoRaitsugu.facedown).toBe(false);
-            expect(this.player2.player.dynastyDiscardPile.size()).toBe(cardsInDiscard);
+            expect(this.player2.player.dynastyDiscardPile.length).toBe(cardsInDiscard);
             expect(this.getChatLogs(3)).toContain('player2 places Mirumoto Raitsugu in Breaking In');
             expect(this.getChatLogs(3)).toContain('player2 is shuffling their dynasty deck');
         });

@@ -9,23 +9,23 @@ class MiyaLibrary extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Replace Miya Library for a faceup imperial character',
-            condition: context => context.player.dynastyDeck.size() > 0,
+            condition: context => context.player.dynastyDeck.length > 0,
             effect: 'Search the top four card for your dynasty deck for an imperial character',
             handler: context => {
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'select an imperial character to replace miya library',
                     context: context,
                     cardCondition: card => card.hasTrait('imperial') && card.getType() === CardTypes.Character,
-                    cards: context.player.dynastyDeck.first(4),
+                    cards: context.player.dynastyDeck.slice(0, 4),
                     choices: ['Do not replace Miya Library'],
-                    handlers: [() => this.miyaLibraryPrompt(context, context.player.dynastyDeck.first(4), [], 'Select the card you would like to place on top of your dynasty deck')],
+                    handlers: [() => this.miyaLibraryPrompt(context, context.player.dynastyDeck.slice(0, 4), [], 'Select the card you would like to place on top of your dynasty deck')],
                     cardHandler: (card) => {
                         if(card.hasTrait('imperial') && card.getType() === CardTypes.Character) {
                             context.player.moveCard(card, context.source.location);
                             card.facedown = false;
                             context.player.moveCard(context.source, Locations.DynastyDeck);
                         }
-                        this.miyaLibraryPrompt(context, context.player.dynastyDeck.first(4), [], 'Select the card you would like to place on top of your dynasty deck');
+                        this.miyaLibraryPrompt(context, context.player.dynastyDeck.slice(0, 4), [], 'Select the card you would like to place on top of your dynasty deck');
                     }
                 });
             }

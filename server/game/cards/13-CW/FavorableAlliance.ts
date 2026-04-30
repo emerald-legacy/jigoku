@@ -10,20 +10,20 @@ class FavorableAlliance extends DrawCard {
             title: 'Draw cards',
             cost: AbilityDsl.costs.variableFateCost({
                 minAmount: 1,
-                maxAmount: (context) => context.player.conflictDeck.size(),
+                maxAmount: (context) => context.player.conflictDeck.length,
                 activePromptTitle: 'Choose a value for X'
             }),
             effect: 'set aside {1} card{2}',
             effectArgs: (context) => [context.costs.variableFateCost, context.costs.variableFateCost > 1 ? 's' : ''],
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.lookAt((context) => ({
-                    target: context.player.conflictDeck.first(context.costs.variableFateCost),
+                    target: context.player.conflictDeck.slice(0, context.costs.variableFateCost),
                     message: '{0} sets aside the top {1} card{3} from their conflict deck: {2}',
                     messageArgs: (cards) => [context.player, cards.length, cards, cards.length > 1 ? 's' : '']
                 })),
                 AbilityDsl.actions.handler({
                     handler: (context) => {
-                        let cards = context.player.conflictDeck.first(context.costs.variableFateCost);
+                        let cards = context.player.conflictDeck.slice(0, context.costs.variableFateCost);
                         cards.forEach((card) => {
                             card.owner.removeCardFromPile(card);
                             card.moveTo(Locations.RemovedFromGame);

@@ -11,7 +11,7 @@ export default class Infiltrator extends DrawCard {
             condition: () => this.game.isDuringConflict(),
             effect: 'look at the top card of an opponent\'s deck and play or discard it',
             gameAction: AbilityDsl.actions.chooseAction((context) => {
-                const topCard = context.player.opponent?.conflictDeck.first();
+                const topCard = context.player.opponent?.conflictDeck[0];
                 return {
                     activePromptTitle: topCard && 'Choose an action for ' + topCard.name,
                     options: {

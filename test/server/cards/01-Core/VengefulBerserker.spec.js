@@ -23,13 +23,13 @@ describe('Vengeful Berserker', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.funeralPyre);
                 this.player1.clickCard('kaiu-envoy');
-                expect(this.player1.player.hand.size()).toBe(3);
+                expect(this.player1.player.hand.length).toBe(3);
                 expect(this.player1.fate).toBe(1);
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect('vengeful-berserker');
                 this.vengefulBerserker = this.player1.clickCard('vengeful-berserker');
                 expect(this.vengefulBerserker.militarySkill).toBe(6);
-                expect(this.player1.player.hand.size()).toBe(4);
+                expect(this.player1.player.hand.length).toBe(4);
             });
         });
     });

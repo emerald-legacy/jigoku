@@ -9,10 +9,10 @@ class ArtisanAcademy extends DrawCard {
         this.action({
             title: 'Make top card of conflict deck playable',
             phase: Phases.Conflict,
-            condition: context => context.player.conflictDeck.size() > 0,
+            condition: context => context.player.conflictDeck.length > 0,
             effect: 'reveal the top card of their conflict deck',
             gameAction: AbilityDsl.actions.playerLastingEffect(context => {
-                let topCard = context.player.conflictDeck.first();
+                let topCard = context.player.conflictDeck[0];
                 return {
                     targetController: context.player,
                     duration: Durations.Custom,

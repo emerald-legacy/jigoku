@@ -27,7 +27,7 @@ export default class JadeInfusedArrows extends DrawCard {
     }
 
     #isAgainstEvil(context: AbilityContext): boolean {
-        return context.player.opponent?.cardsInPlay.any(
+        return context.player.opponent?.cardsInPlay.some(
             (card: DrawCard) =>
                 card.getType() === CardTypes.Character &&
                 card.isParticipating() &&

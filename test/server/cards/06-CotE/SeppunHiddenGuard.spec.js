@@ -30,13 +30,13 @@ describe('Seppun Hidden Guard', function() {
             });
 
             it('it should be able to cancel Raitsugu\'s duel', function() {
-                let handSize = this.player2.player.hand.size();
+                let handSize = this.player2.player.hand.length;
                 this.player2.clickCard(this.mirumotoRaitsugu);
                 this.player2.clickCard(this.kudaka);
                 this.player1.clickCard(this.seppunHiddenGuard);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 expect(this.seppunHiddenGuard.location).toBe('dynasty discard pile');
-                expect(this.player2.player.hand.size()).toBe(handSize - 1);
+                expect(this.player2.player.hand.length).toBe(handSize - 1);
             });
 
             it('shouldn\'t trigger for non-unique characters', function() {
@@ -55,14 +55,14 @@ describe('Seppun Hidden Guard', function() {
             });
 
             it('it should be able to cancel your own character\'s abilities', function() {
-                let handSize = this.player1.player.hand.size();
+                let handSize = this.player1.player.hand.length;
                 this.player2.pass();
                 this.player1.clickCard(this.adeptOfTheWaves);
                 this.player1.clickCard(this.kudaka);
                 this.player1.clickCard(this.seppunHiddenGuard);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 expect(this.seppunHiddenGuard.location).toBe('dynasty discard pile');
-                expect(this.player1.player.hand.size()).toBe(handSize - 1);
+                expect(this.player1.player.hand.length).toBe(handSize - 1);
             });
         });
     });

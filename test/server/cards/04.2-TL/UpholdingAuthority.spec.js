@@ -125,7 +125,7 @@ describe('Upholding Authority', function() {
             });
 
             it('should not be able to be triggered', function() {
-                expect(this.player1.player.hand.size()).toBe(0);
+                expect(this.player1.player.hand.length).toBe(0);
                 expect(this.player2).not.toHavePrompt('Triggered Abilities');
                 this.upholdingAuthority = this.player2.clickCard('upholding-authority');
             });

@@ -12,8 +12,8 @@ describe('Forged Edict', function() {
                         hand: ['assassination']
                     }
                 });
-                [this.youngRumormonger1, this.youngRumormonger2] = this.player1.player.cardsInPlay.toArray();
-                [this.forgedEdict1, this.forgedEdict2] = this.player1.player.hand.toArray();
+                [this.youngRumormonger1, this.youngRumormonger2] = this.player1.player.cardsInPlay.slice();
+                [this.forgedEdict1, this.forgedEdict2] = this.player1.player.hand.slice();
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: ['young-rumormonger'],

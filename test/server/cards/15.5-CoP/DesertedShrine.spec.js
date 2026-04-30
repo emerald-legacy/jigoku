@@ -114,9 +114,9 @@ describe('Deserted Shrine', function() {
             });
             this.player2.clickCard(this.shrine);
 
-            let size = this.player1.player.dynastyDiscardPile.size();
+            let size = this.player1.player.dynastyDiscardPile.length;
             this.player2.clickPrompt('player1\'s Dynasty');
-            expect(this.player1.player.dynastyDiscardPile.size()).toBe(size + 10);
+            expect(this.player1.player.dynastyDiscardPile.length).toBe(size + 10);
             this.d.forEach((cards, i) => {
                 if(i === 0) {
                     expect(cards[0].location).toBe('dynasty deck');
@@ -136,9 +136,9 @@ describe('Deserted Shrine', function() {
             });
             this.player2.clickCard(this.shrine);
 
-            let size = this.player1.player.conflictDiscardPile.size();
+            let size = this.player1.player.conflictDiscardPile.length;
             this.player2.clickPrompt('player1\'s Conflict');
-            expect(this.player1.player.conflictDiscardPile.size()).toBe(size + 10);
+            expect(this.player1.player.conflictDiscardPile.length).toBe(size + 10);
             this.c.forEach((cards, i) => {
                 if(i === 0) {
                     expect(cards[0].location).toBe('conflict deck');
@@ -157,9 +157,9 @@ describe('Deserted Shrine', function() {
             });
             this.player2.clickCard(this.shrine);
 
-            let size = this.player2.player.dynastyDiscardPile.size();
+            let size = this.player2.player.dynastyDiscardPile.length;
             this.player2.clickPrompt('player2\'s Dynasty');
-            expect(this.player2.player.dynastyDiscardPile.size()).toBe(size + 10);
+            expect(this.player2.player.dynastyDiscardPile.length).toBe(size + 10);
             this.d.forEach((cards, i) => {
                 if(i === 0) {
                     expect(cards[1].location).toBe('dynasty deck');
@@ -178,9 +178,9 @@ describe('Deserted Shrine', function() {
             });
             this.player2.clickCard(this.shrine);
 
-            let size = this.player2.player.conflictDiscardPile.size();
+            let size = this.player2.player.conflictDiscardPile.length;
             this.player2.clickPrompt('player2\'s Conflict');
-            expect(this.player2.player.conflictDiscardPile.size()).toBe(size + 10);
+            expect(this.player2.player.conflictDiscardPile.length).toBe(size + 10);
             this.c.forEach((cards, i) => {
                 if(i === 0) {
                     expect(cards[1].location).toBe('conflict deck');
@@ -201,9 +201,9 @@ describe('Deserted Shrine', function() {
             expect(this.player1).toHavePrompt('Triggered Abilities');
             this.player1.clickCard(this.shrine);
 
-            let size = this.player2.player.conflictDiscardPile.size();
+            let size = this.player2.player.conflictDiscardPile.length;
             this.player1.clickPrompt('player2\'s Conflict');
-            expect(this.player2.player.conflictDiscardPile.size()).toBe(size + 10);
+            expect(this.player2.player.conflictDiscardPile.length).toBe(size + 10);
             this.c.forEach((cards, i) => {
                 if(i === 0) {
                     expect(cards[1].location).toBe('conflict deck');
@@ -224,9 +224,9 @@ describe('Deserted Shrine', function() {
             expect(this.player1).toHavePrompt('Triggered Abilities');
             this.player1.clickCard(this.shrine);
 
-            let size = this.player1.player.dynastyDiscardPile.size();
+            let size = this.player1.player.dynastyDiscardPile.length;
             this.player1.clickPrompt('player1\'s Dynasty');
-            expect(this.player1.player.dynastyDiscardPile.size()).toBe(size + 10);
+            expect(this.player1.player.dynastyDiscardPile.length).toBe(size + 10);
             this.d.forEach((cards, i) => {
                 if(i === 0) {
                     expect(cards[0].location).toBe('dynasty deck');

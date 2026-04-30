@@ -4,7 +4,7 @@ import AbilityDsl from '../../../abilitydsl';
 import type { AbilityContext } from '../../../AbilityContext';
 
 function cardDifference(context: AbilityContext): number {
-    return Math.max(0, Math.min(5, context.player.opponent.hand.size() - context.player.hand.size()));
+    return Math.max(0, Math.min(5, context.player.opponent.hand.length - context.player.hand.length));
 }
 
 export default class GladeOfContemplation extends ProvinceCard {
@@ -17,7 +17,7 @@ export default class GladeOfContemplation extends ProvinceCard {
                 onConflictDeclared: (event, context) =>
                     event.conflict.declaredProvince === context.source &&
                     context.player.opponent &&
-                    context.player.hand.size() < context.player.opponent.hand.size()
+                    context.player.hand.length < context.player.opponent.hand.length
             },
             target: {
                 mode: TargetModes.Select,

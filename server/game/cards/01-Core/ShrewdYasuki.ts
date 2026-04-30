@@ -8,7 +8,7 @@ class ShrewdYasuki extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Look at top 2 cards of conflict deck',
-            condition: context => context.player.conflictDeck.size() > 0 && context.source.isParticipating() &&
+            condition: context => context.player.conflictDeck.length > 0 && context.source.isParticipating() &&
                                   this.game.allCards.some(card => card.type === CardTypes.Holding && card.location.includes('province') && card.isFaceup()),
             effect: 'look at the top two cards of their conflict deck',
             gameAction: AbilityDsl.actions.deckSearch({

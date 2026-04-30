@@ -32,13 +32,13 @@ describe('Duty', function() {
                 this.duty = this.player1.clickCard('duty');
                 expect(this.player1.honor).toBe(4);
                 expect(this.player2.honor).toBe(11);
-                expect(this.player1.player.hand.size()).toBe(8);
-                expect(this.player2.player.hand.size()).toBe(2);
+                expect(this.player1.player.hand.length).toBe(8);
+                expect(this.player2.player.hand.length).toBe(2);
                 expect(this.duty.location).toBe('conflict discard pile');
             });
 
             it('should trigger when losing due to running out of conflict cards', function() {
-                this.player1.player.conflictDeck.each(card => {
+                this.player1.player.conflictDeck.forEach(card => {
                     this.player1.player.moveCard(card, 'conflict discard pile');
                 });
                 this.player1.clickPrompt('1');
@@ -48,8 +48,8 @@ describe('Duty', function() {
                 this.duty = this.player1.clickCard('duty');
                 expect(this.player1.honor).toBe(4);
                 expect(this.player2.honor).toBe(11);
-                expect(this.player1.player.hand.size()).toBe(4);
-                expect(this.player2.player.hand.size()).toBe(2);
+                expect(this.player1.player.hand.length).toBe(4);
+                expect(this.player2.player.hand.length).toBe(2);
             });
 
             it('should not trigger when losing due paying a cost', function() {
@@ -69,7 +69,7 @@ describe('Duty', function() {
             });
 
             it('should trigger when losing due to running out of dynasty cards', function() {
-                this.player1.player.dynastyDeck.each(card => {
+                this.player1.player.dynastyDeck.forEach(card => {
                     this.player1.player.moveCard(card, 'dynasty discard pile');
                 });
                 this.imperialStorehouse.facedown = true;
@@ -145,7 +145,7 @@ describe('Duty', function() {
             });
 
             it('should not trigger when its the last card in the deck and 5 cards are drawn', function() {
-                this.player1.player.conflictDeck.each(card => {
+                this.player1.player.conflictDeck.forEach(card => {
                     this.player1.player.moveCard(card, 'conflict discard pile');
                 });
                 this.player1.moveCard('duty', 'conflict deck');

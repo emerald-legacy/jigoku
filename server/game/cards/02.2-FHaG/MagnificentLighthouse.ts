@@ -11,8 +11,8 @@ class MagnificentLighthouse extends DrawCard {
                 mode: TargetModes.Select,
                 activePromptTitle: 'Choose which deck to look at:',
                 choices: {
-                    'Dynasty Deck': context => context.player.opponent && context.player.opponent.dynastyDeck.size() > 0,
-                    'Conflict Deck': context => context.player.opponent && context.player.opponent.conflictDeck.size() > 0
+                    'Dynasty Deck': context => context.player.opponent && context.player.opponent.dynastyDeck.length > 0,
+                    'Conflict Deck': context => context.player.opponent && context.player.opponent.conflictDeck.length > 0
                 }
             },
             effect: 'look at the top 3 cards of {1}\'s {2}',
@@ -20,9 +20,9 @@ class MagnificentLighthouse extends DrawCard {
             handler: context => {
                 let topThree = [];
                 if(context.select === 'Dynasty Deck') {
-                    topThree = context.player.opponent.dynastyDeck.first(3);
+                    topThree = context.player.opponent.dynastyDeck.slice(0, 3);
                 } else {
-                    topThree = context.player.opponent.conflictDeck.first(3);
+                    topThree = context.player.opponent.conflictDeck.slice(0, 3);
                 }
                 let messages = ['{0} places a card on the bottom of the deck', '{0} chooses to discard {1}'];
                 let destinations = [topThree[0].isDynasty ? 'dynasty deck bottom' : 'conflict deck bottom', topThree[0].isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile];

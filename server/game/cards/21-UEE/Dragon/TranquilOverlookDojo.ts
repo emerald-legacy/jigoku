@@ -2,6 +2,7 @@ import AbilityDsl from '../../../abilitydsl';
 import { DuelTypes, Players } from '../../../Constants';
 import DrawCard from '../../../drawcard';
 import { StrongholdCard } from '../../../StrongholdCard';
+import { shuffle } from '../../../utils/shuffle';
 import type { AbilityLimit } from '../../../AbilityLimit';
 
 export default class TranquilOverlookDojo extends StrongholdCard {
@@ -27,7 +28,7 @@ function actionVersion(self: TranquilOverlookDojo, limit: AbilityLimit, type: Du
                     condition: (context) => duel.winningPlayer === context.player,
                     falseGameAction: AbilityDsl.actions.noAction(),
                     trueGameAction: AbilityDsl.actions.sequentialContext((context) => {
-                        const revealedCards = (context.player.opponent.hand.shuffle() as Array<DrawCard>)
+                        const revealedCards = (shuffle(context.player.opponent.hand) as Array<DrawCard>)
                             .slice(0, 2)
                             .sort((a, b) => a.name.localeCompare(b.name));
                         return {

@@ -64,7 +64,7 @@ export default class AshalanLantern extends DrawCard {
                 }))
             ]),
             effect: 'look for a character on the top of {1}\'s dynasty deck. They reveal {2}',
-            effectArgs: (context) => [context.player.opponent, context.player.opponent.dynastyDeck.first(3)]
+            effectArgs: (context) => [context.player.opponent, context.player.opponent.dynastyDeck.slice(0, 3)]
         });
     }
 }

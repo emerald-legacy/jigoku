@@ -44,7 +44,7 @@ describe('conflict phase', function() {
             it('should allow holding abilities to be used', function() {
                 this.imperialStorehouse = this.player1.placeCardInProvince('imperial-storehouse', 'province 1');
                 this.player1.clickCard(this.imperialStorehouse);
-                expect(this.player1.player.hand.size()).toBe(3);
+                expect(this.player1.player.hand.length).toBe(3);
             });
 
             it('should allow events to be played', function() {

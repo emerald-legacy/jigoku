@@ -45,10 +45,10 @@ describe('Quarrelsome Youth', function() {
                 this.player1.pass();
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.youth);
-                let player2hand = this.player2.player.hand.size();
+                let player2hand = this.player2.player.hand.length;
                 this.player1.clickCard(this.youth);
                 expect(this.player2).not.toHavePrompt('Choose a card to discard');
-                expect(this.player2.player.hand.size()).toBe(player2hand - 1);
+                expect(this.player2.player.hand.length).toBe(player2hand - 1);
                 expect(this.getChatLog(1)).toContain('player1 uses Quarrelsome Youth to make player2 discard 1 card at random');
             });
 
@@ -57,8 +57,8 @@ describe('Quarrelsome Youth', function() {
                 this.player1.clickCard(this.yoshi);
                 this.noMoreActions();
                 expect(this.player1).not.toBeAbleToSelect(this.youth);
-                let player2hand = this.player2.player.hand.size();
-                expect(this.player2.player.hand.size()).toBe(player2hand);
+                let player2hand = this.player2.player.hand.length;
+                expect(this.player2.player.hand.length).toBe(player2hand);
             });
 
             it('should not make your opponent discard a card at random if you have equal cards when youth loses conflict as an attacker', function() {
@@ -69,8 +69,8 @@ describe('Quarrelsome Youth', function() {
                 this.player1.clickCard(this.yoshi);
                 this.noMoreActions();
                 expect(this.player1).not.toBeAbleToSelect(this.youth);
-                let player2hand = this.player2.player.hand.size();
-                expect(this.player2.player.hand.size()).toBe(player2hand);
+                let player2hand = this.player2.player.hand.length;
+                expect(this.player2.player.hand.length).toBe(player2hand);
             });
 
             it('should not make your opponent discard a card at random if youth wins conflict as an attacker', function() {
@@ -78,8 +78,8 @@ describe('Quarrelsome Youth', function() {
                 this.player1.clickCard(this.mount);
                 this.noMoreActions();
                 expect(this.player1).not.toBeAbleToSelect(this.youth);
-                let player2hand = this.player2.player.hand.size();
-                expect(this.player2.player.hand.size()).toBe(player2hand);
+                let player2hand = this.player2.player.hand.length;
+                expect(this.player2.player.hand.length).toBe(player2hand);
             });
 
             it('should not make your opponent discard a card at random if youth loses conflict as a defender', function() {
@@ -103,8 +103,8 @@ describe('Quarrelsome Youth', function() {
                 this.noMoreActions();
 
                 expect(this.player1).not.toBeAbleToSelect(this.youth);
-                let player2hand = this.player2.player.hand.size();
-                expect(this.player2.player.hand.size()).toBe(player2hand);
+                let player2hand = this.player2.player.hand.length;
+                expect(this.player2.player.hand.length).toBe(player2hand);
             });
         });
     });

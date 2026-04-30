@@ -1,6 +1,7 @@
 import { CardTypes, Locations, TargetModes } from '../../Constants';
 import AbilityDsl from '../../abilitydsl';
 import DrawCard from '../../drawcard';
+import { shuffle } from '../../utils/shuffle';
 
 export default class IsawaTadaka2 extends DrawCard {
     static id = 'isawa-tadaka-2';
@@ -17,15 +18,15 @@ export default class IsawaTadaka2 extends DrawCard {
             gameAction: AbilityDsl.actions.multipleContext((context) => {
                 let cards =
                     context.player.opponent && context.costs.removeFromGame
-                        ? context.player.opponent.hand.shuffle().slice(0, context.costs.removeFromGame.length)
+                        ? shuffle(context.player.opponent.hand).slice(0, context.costs.removeFromGame.length)
                         : [context.source];
                 return {
                     gameActions: [
                         AbilityDsl.actions.lookAt(() => ({
-                            target: cards.sort((card: DrawCard) => card.name)
+                            target: cards.slice().sort((a, b) => a.name.localeCompare(b.name))
                         })),
                         AbilityDsl.actions.cardMenu((context) => ({
-                            cards: cards.sort((card: DrawCard) => card.name),
+                            cards: cards.slice().sort((a, b) => a.name.localeCompare(b.name)),
                             targets: true,
                             message: '{0} chooses {1} to be discarded',
                             messageArgs: (card) => [context.player, card],

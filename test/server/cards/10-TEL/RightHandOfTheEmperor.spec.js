@@ -93,7 +93,7 @@ describe('Right Hand of the Emperor', function() {
                 expect(this.player1).toHavePromptButton('Done');
                 this.player1.clickPrompt('Done');
                 expect(this.getChatLogs(1)).toContain('player1 plays Right Hand of the Emperor to ready no one.  Right Hand of the Emperor is placed on the bottom of player1\'s conflict deck');
-                expect(this.player1.player.conflictDeck.last()).toBe(this.rightHandOfTheEmperor);
+                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.rightHandOfTheEmperor);
             });
 
             it('should not allow you to target characters greater than a total of 6 fate cost', function() {
@@ -136,7 +136,7 @@ describe('Right Hand of the Emperor', function() {
                 expect(this.brashSamurai.bowed).toBe(false);
                 expect(this.motoYouth.bowed).toBe(false);
                 expect(this.getChatLogs(1)).toContain('player1 plays Right Hand of the Emperor to ready Doji Challenger, Brash Samurai and Moto Youth.  Right Hand of the Emperor is placed on the bottom of player1\'s conflict deck');
-                expect(this.player1.player.conflictDeck.last()).toBe(this.rightHandOfTheEmperor);
+                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.rightHandOfTheEmperor);
             });
 
             it('should go to the discard pile if cancelled', function() {
@@ -183,7 +183,7 @@ describe('Right Hand of the Emperor', function() {
                 this.player1.clickPrompt('Done');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 expect(this.brashSamurai.bowed).toBe(false);
-                expect(this.player1.player.conflictDeck.last()).toBe(this.rightHandOfTheEmperor);
+                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.rightHandOfTheEmperor);
             });
 
             it('should not be playable from discard if equally honorable', function() {
@@ -271,7 +271,7 @@ describe('Right Hand of the Emperor', function() {
                 expect(this.player1).toHavePromptButton('Done');
                 this.player1.clickPrompt('Done');
                 expect(this.brashSamurai.bowed).toBe(false);
-                expect(this.player1.player.conflictDeck.last()).toBe(this.rightHandOfTheEmperor);
+                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.rightHandOfTheEmperor);
             });
 
             it('same copy should be playable from discard if cancelled from discard', function() {
@@ -315,7 +315,7 @@ describe('Right Hand of the Emperor', function() {
                 expect(this.player1).toHavePromptButton('Done');
                 this.player1.clickPrompt('Done');
                 expect(this.brashSamurai.bowed).toBe(false);
-                expect(this.player1.player.conflictDeck.last()).toBe(this.rightHandOfTheEmperor);
+                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.rightHandOfTheEmperor);
             });
         });
 
@@ -374,7 +374,7 @@ describe('Right Hand of the Emperor', function() {
                 expect(this.player2).toHavePromptButton('Done');
                 this.player2.clickPrompt('Done');
                 expect(this.dojiKuwanan.bowed).toBe(false);
-                expect(this.player1.player.conflictDeck.last()).toBe(this.rightHandOfTheEmperor);
+                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.rightHandOfTheEmperor);
                 expect(this.getChatLogs(3)).toContain('player2 plays Right Hand of the Emperor to ready Doji Kuwanan.  Right Hand of the Emperor is placed on the bottom of player1\'s conflict deck');
             });
 
@@ -395,7 +395,7 @@ describe('Right Hand of the Emperor', function() {
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 expect(this.dojiKuwanan.bowed).toBe(true);
                 expect(this.rightHandOfTheEmperor.location).toBe('conflict discard pile');
-                expect(this.player1.player.conflictDiscardPile.toArray()).toContain(this.rightHandOfTheEmperor);
+                expect(this.player1.player.conflictDiscardPile.slice()).toContain(this.rightHandOfTheEmperor);
             });
         });
 

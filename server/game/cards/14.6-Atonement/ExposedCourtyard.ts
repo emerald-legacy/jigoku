@@ -11,10 +11,10 @@ const exposedCourtyardCost = () => ({
         return ['discarding {0}'];
     },
     canPay: function (context) {
-        return context.player.conflictDeck.size() >= 2;
+        return context.player.conflictDeck.length >= 2;
     },
     resolve: function(context) {
-        context.costs.exposedCourtyardCost = context.player.conflictDeck.first(2);
+        context.costs.exposedCourtyardCost = context.player.conflictDeck.slice(0, 2);
     },
     pay: function(context) {
         const discardedCards = context.costs.exposedCourtyardCost;

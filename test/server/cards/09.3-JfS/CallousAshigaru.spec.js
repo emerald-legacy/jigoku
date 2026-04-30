@@ -96,8 +96,8 @@ describe('Callous Ashigaru', function() {
                 this.player1.clickPrompt('No');
                 this.player1.clickCard(this.callousAshigaru);
                 expect(this.getChatLogs(1)).toContain('player1 uses Callous Ashigaru to discard Adept of the Waves, Adept of the Waves, Adept of the Waves and Adept of the Waves');
-                expect(this.player2.player.dynastyDiscardPile.size()).toBe(4);
-                expect(this.player1.player.dynastyDiscardPile.size()).toBe(0);
+                expect(this.player2.player.dynastyDiscardPile.length).toBe(4);
+                expect(this.player1.player.dynastyDiscardPile.length).toBe(0);
             });
         });
     });

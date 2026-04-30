@@ -27,8 +27,8 @@ describe('Onikage Rider', function () {
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.rider);
             this.player1.clickCard(this.rider);
-            expect(this.player2.player.dynastyDiscardPile.size()).toBe(4);
-            expect(this.player1.player.dynastyDiscardPile.size()).toBe(0);
+            expect(this.player2.player.dynastyDiscardPile.length).toBe(4);
+            expect(this.player1.player.dynastyDiscardPile.length).toBe(0);
             expect(this.getChatLogs(5)).toContain('player1 uses Onikage Rider to discard Adept of the Waves, Adept of the Waves, Adept of the Waves and Adept of the Waves');
         });
 

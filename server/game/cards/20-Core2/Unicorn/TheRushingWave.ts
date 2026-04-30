@@ -22,7 +22,7 @@ export default class TheRushingWave extends DrawCard {
         this.action({
             title: 'Set a province to zero strength',
             condition: (context) =>
-                context.player.cardsInPlay.any(
+                context.player.cardsInPlay.some(
                     (card: DrawCard) => card.getType() === CardTypes.Character && card.hasTrait('shugenja')
                 ),
             target: {

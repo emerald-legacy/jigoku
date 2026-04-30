@@ -33,13 +33,13 @@ describe('Adept of Shadows', function() {
                 });
                 this.player2.clickCard(this.blackmail);
                 this.player2.clickCard(this.adeptOfShadows);
-                expect(this.player1.player.hand.size()).toBe(0);
-                expect(this.player2.player.hand.size()).toBe(0);
+                expect(this.player1.player.hand.length).toBe(0);
+                expect(this.player2.player.hand.length).toBe(0);
                 this.player1.pass();
                 this.player2.clickCard(this.adeptOfShadows);
                 expect(this.player2.honor).toBe(4);
-                expect(this.player1.player.hand.size()).toBe(1);
-                expect(this.player2.player.hand.size()).toBe(0);
+                expect(this.player1.player.hand.length).toBe(1);
+                expect(this.player2.player.hand.length).toBe(0);
                 expect(this.adeptOfShadows.location).toBe('hand');
             });
         });

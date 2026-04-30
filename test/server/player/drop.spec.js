@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const Player = require('../../../build/server/game/player.js');
 
 describe('Player - drop', () => {
@@ -20,7 +19,7 @@ describe('Player - drop', () => {
             this.cardSpy.uuid = '1111';
             this.cardSpy.controller = this.cardSpy.owner = this.player;
             this.cardSpy.type = 'character';
-            this.cardSpy.attachments = _([]);
+            this.cardSpy.attachments = [];
             this.cardSpy.isProvince = false;
             this.cardSpy.isFacedown.and.returnValue(false);
             this.cardSpy.isFaceup.and.returnValue(true);

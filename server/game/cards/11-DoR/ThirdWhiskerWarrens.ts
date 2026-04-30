@@ -14,7 +14,7 @@ export default class ThirdWhiskerWarrens extends DrawCard {
         this.persistentEffect({
             condition: (context) => this.conflictAtKaiuWall(context),
             targetLocation: Locations.DynastyDeck,
-            match: (card, context) => context && card === context.player.dynastyDeck.first(),
+            match: (card, context) => context && card === context.player.dynastyDeck[0],
             effect: [
                 AbilityDsl.effects.hideWhenFaceUp(),
                 AbilityDsl.effects.gainPlayAction(PlayCharacterAsIfFromHand),

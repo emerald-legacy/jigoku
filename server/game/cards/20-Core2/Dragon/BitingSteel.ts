@@ -71,7 +71,7 @@ export default class BitingSteel extends DrawCard {
 
     public canPlay(context: TriggeredAbilityContext, playType: string) {
         return (
-            context.player.cardsInPlay.any(
+            context.player.cardsInPlay.some(
                 (card: DrawCard) => card.getType() === CardTypes.Character && card.hasTrait('shugenja')
             ) && super.canPlay(context, playType)
         );

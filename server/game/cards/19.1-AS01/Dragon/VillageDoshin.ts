@@ -28,7 +28,7 @@ export default class VillageDoshin extends DrawCard {
 
             gameAction: AbilityDsl.actions.conditional({
                 condition: (context) => {
-                    const opponentHasEnoughCards = context.player.opponent.hand.size() >= DOSHIN_TAX;
+                    const opponentHasEnoughCards = context.player.opponent.hand.length >= DOSHIN_TAX;
                     const opponentIsAllowedToDiscardCards = AbilityDsl.actions
                         .discardAtRandom({ amount: 2 })
                         .canAffect(context.player.opponent, context);

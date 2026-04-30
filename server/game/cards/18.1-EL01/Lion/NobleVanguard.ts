@@ -13,7 +13,7 @@ class NobleVanguard extends DrawCard {
             title: 'Attach a follower to a character',
             when: {
                 onCharacterEntersPlay: (event, context) => {
-                    return event.card === context.source && context.player.conflictDeck.size() > 0;
+                    return event.card === context.source && context.player.conflictDeck.length > 0;
                 }
             },
             target: {
@@ -22,7 +22,7 @@ class NobleVanguard extends DrawCard {
                 cardCondition: (card, context) => context.game.actions.attach({ attachment: DummyAttachment }).canAffect(card, context),
                 gameAction: AbilityDsl.actions.handler({
                     handler: context => {
-                        const card = context.player.conflictDeck.first();
+                        const card = context.player.conflictDeck[0];
                         let token = context.game.createToken(card, Soldier);
                         card.owner.removeCardFromPile(card);
                         card.moveTo(Locations.RemovedFromGame);

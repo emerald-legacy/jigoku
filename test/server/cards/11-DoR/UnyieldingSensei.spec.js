@@ -48,7 +48,7 @@ describe('Unyielding Sensei', function() {
 
             it('should allow you to choose from the top two cards of your dynasty deck', function() {
                 let cards = this.player1.provinces['province 1'].dynastyCards.length;
-                expect(this.player1.player.dynastyDeck.first()).toBe(this.kitsuWarrior);
+                expect(this.player1.player.dynastyDeck[0]).toBe(this.kitsuWarrior);
                 this.player1.clickCard(this.sensei);
                 expect(this.player1).toBeAbleToSelect(this.p1);
                 this.player1.clickCard(this.p1);
@@ -58,26 +58,26 @@ describe('Unyielding Sensei', function() {
                 expect(this.player1.provinces['province 1'].dynastyCards.length).toBe(cards + 1);
                 expect(this.kitsuWarrior.location).toBe('province 1');
                 expect(this.kitsuWarrior.facedown).toBe(false);
-                expect(this.player1.player.dynastyDeck.first()).toBe(this.storehouse);
+                expect(this.player1.player.dynastyDeck[0]).toBe(this.storehouse);
 
                 expect(this.getChatLogs(2)).toContain('player1 uses Unyielding Sensei to look at the top two cards of their dynasty deck');
                 expect(this.getChatLogs(1)).toContain('player1 puts Kitsu Warrior into a facedown province');
             });
 
             it('should not shuffle', function() {
-                expect(this.player1.player.dynastyDeck.first()).toBe(this.kitsuWarrior);
+                expect(this.player1.player.dynastyDeck[0]).toBe(this.kitsuWarrior);
                 this.player1.clickCard(this.sensei);
                 expect(this.player1).toBeAbleToSelect(this.p1);
                 this.player1.clickCard(this.p1);
                 expect(this.player1).toHavePromptButton('Kitsu Warrior');
                 expect(this.player1).toHavePromptButton('Take nothing');
                 this.player1.clickPrompt('Take nothing');
-                expect(this.player1.player.dynastyDeck.first()).toBe(this.kitsuWarrior);
+                expect(this.player1.player.dynastyDeck[0]).toBe(this.kitsuWarrior);
             });
 
             it('should only show Take Nothing if you don\'t see a character', function() {
                 let cards = this.player1.provinces['province 1'].dynastyCards.length;
-                expect(this.player1.player.dynastyDeck.first()).toBe(this.kitsuWarrior);
+                expect(this.player1.player.dynastyDeck[0]).toBe(this.kitsuWarrior);
                 this.player1.clickCard(this.sensei);
                 expect(this.player1).toBeAbleToSelect(this.p1);
                 this.player1.clickCard(this.p1);
@@ -86,24 +86,24 @@ describe('Unyielding Sensei', function() {
                 this.player1.clickPrompt('Kitsu Warrior');
                 expect(this.player1.provinces['province 1'].dynastyCards.length).toBe(cards + 1);
                 expect(this.kitsuWarrior.location).toBe('province 1');
-                expect(this.player1.player.dynastyDeck.first()).toBe(this.storehouse);
+                expect(this.player1.player.dynastyDeck[0]).toBe(this.storehouse);
 
                 this.player2.pass();
 
-                expect(this.player1.player.dynastyDeck.first()).toBe(this.storehouse);
+                expect(this.player1.player.dynastyDeck[0]).toBe(this.storehouse);
                 this.player1.clickCard(this.sensei2);
                 expect(this.player1).toBeAbleToSelect(this.p1);
                 this.player1.clickCard(this.p1);
                 expect(this.player1).toHavePromptButton('Take nothing');
                 this.player1.clickPrompt('Take nothing');
                 expect(this.player1.provinces['province 1'].dynastyCards.length).toBe(cards + 1);
-                expect(this.player1.player.dynastyDeck.first()).toBe(this.storehouse);
+                expect(this.player1.player.dynastyDeck[0]).toBe(this.storehouse);
             });
 
             it('should let you keep stacking a province', function() {
                 this.player1.moveCard(this.akodototuri, 'dynasty deck');
                 let cards = this.player1.provinces['province 1'].dynastyCards.length;
-                expect(this.player1.player.dynastyDeck.first()).toBe(this.akodototuri);
+                expect(this.player1.player.dynastyDeck[0]).toBe(this.akodototuri);
                 this.player1.clickCard(this.sensei);
                 expect(this.player1).toBeAbleToSelect(this.p1);
                 this.player1.clickCard(this.p1);
@@ -113,11 +113,11 @@ describe('Unyielding Sensei', function() {
                 this.player1.clickPrompt('Kitsu Warrior');
                 expect(this.player1.provinces['province 1'].dynastyCards.length).toBe(cards + 1);
                 expect(this.kitsuWarrior.location).toBe('province 1');
-                expect(this.player1.player.dynastyDeck.first()).toBe(this.akodototuri);
+                expect(this.player1.player.dynastyDeck[0]).toBe(this.akodototuri);
 
                 this.player2.pass();
 
-                expect(this.player1.player.dynastyDeck.first()).toBe(this.akodototuri);
+                expect(this.player1.player.dynastyDeck[0]).toBe(this.akodototuri);
                 this.player1.clickCard(this.sensei2);
                 expect(this.player1).toBeAbleToSelect(this.p1);
                 this.player1.clickCard(this.p1);
@@ -127,13 +127,13 @@ describe('Unyielding Sensei', function() {
                 expect(this.player1.provinces['province 1'].dynastyCards.length).toBe(cards + 2);
                 expect(this.kitsuWarrior.location).toBe('province 1');
                 expect(this.akodototuri.location).toBe('province 1');
-                expect(this.player1.player.dynastyDeck.first()).toBe(this.storehouse);
+                expect(this.player1.player.dynastyDeck[0]).toBe(this.storehouse);
             });
 
             it('chat message', function() {
                 this.p1.facedown = false;
                 let cards = this.player1.provinces['province 1'].dynastyCards.length;
-                expect(this.player1.player.dynastyDeck.first()).toBe(this.kitsuWarrior);
+                expect(this.player1.player.dynastyDeck[0]).toBe(this.kitsuWarrior);
                 this.player1.clickCard(this.sensei);
                 expect(this.player1).toBeAbleToSelect(this.p1);
                 this.player1.clickCard(this.p1);
@@ -142,7 +142,7 @@ describe('Unyielding Sensei', function() {
                 this.player1.clickPrompt('Kitsu Warrior');
                 expect(this.player1.provinces['province 1'].dynastyCards.length).toBe(cards + 1);
                 expect(this.kitsuWarrior.location).toBe('province 1');
-                expect(this.player1.player.dynastyDeck.first()).toBe(this.storehouse);
+                expect(this.player1.player.dynastyDeck[0]).toBe(this.storehouse);
 
                 expect(this.getChatLogs(2)).toContain('player1 uses Unyielding Sensei to look at the top two cards of their dynasty deck');
                 expect(this.getChatLogs(1)).toContain('player1 puts Kitsu Warrior into Shameful Display');

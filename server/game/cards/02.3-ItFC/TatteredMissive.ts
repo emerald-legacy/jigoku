@@ -13,7 +13,7 @@ class TatteredMissive extends DrawCard {
 
         this.action({
             title: 'Search top 5 cards',
-            condition: context => context.player.conflictDeck.size() > 0,
+            condition: context => context.player.conflictDeck.length > 0,
             cost: AbilityDsl.costs.bowParent(),
             effect: 'look at the top 5 cards of their conflict deck',
             gameAction: AbilityDsl.actions.deckSearch({

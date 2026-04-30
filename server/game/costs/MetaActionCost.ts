@@ -3,7 +3,7 @@ import { Locations, Players } from '../Constants';
 import type { Cost, Result } from '../Costs';
 import type { GameAction } from '../GameActions/GameAction';
 import type { SelectCardProperties } from '../GameActions/SelectCardAction';
-import { randomItem } from '../Utils/helpers';
+import { randomItem } from '../utils/helpers';
 import { GameActionCost } from './GameActionCost';
 
 export class MetaActionCost extends GameActionCost implements Cost {

@@ -180,8 +180,8 @@ describe('Bayushi Traitor', function() {
                 this.player1.clickCard(this.assassination);
                 this.player1.clickCard(this.traitor);
                 expect(this.traitor.location).toBe('conflict discard pile');
-                expect(this.player1.player.conflictDiscardPile.toArray()).toContain(this.traitor);
-                expect(this.player2.player.conflictDiscardPile.toArray()).not.toContain(this.traitor);
+                expect(this.player1.player.conflictDiscardPile.slice()).toContain(this.traitor);
+                expect(this.player2.player.conflictDiscardPile.slice()).not.toContain(this.traitor);
             });
 
             it('should not be playable into a conflict', function() {

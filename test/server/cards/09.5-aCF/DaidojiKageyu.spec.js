@@ -47,11 +47,11 @@ describe('Daidoji Kageyu', function() {
                 });
 
                 this.player2.playAttachment(this.newName, this.guardian);
-                let hand = this.player1.player.hand.size();
+                let hand = this.player1.player.hand.length;
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.kageyu);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
-                expect(this.player1.player.hand.size()).toBe(hand + 1);
+                expect(this.player1.player.hand.length).toBe(hand + 1);
                 expect(this.getChatLogs(3)).toContain('player1 uses Daidoji Kageyu to draw 1 card');
             });
 
@@ -71,11 +71,11 @@ describe('Daidoji Kageyu', function() {
                 this.player1.pass();
                 this.player2.playAttachment(this.seal, this.guardian);
 
-                let hand = this.player1.player.hand.size();
+                let hand = this.player1.player.hand.length;
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.kageyu);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
-                expect(this.player1.player.hand.size()).toBe(hand + 4);
+                expect(this.player1.player.hand.length).toBe(hand + 4);
                 expect(this.getChatLogs(3)).toContain('player1 uses Daidoji Kageyu to draw 4 cards');
             });
 
@@ -96,11 +96,11 @@ describe('Daidoji Kageyu', function() {
                 this.player1.pass();
                 this.player2.playAttachment(this.seal, this.guardian);
 
-                let hand = this.player1.player.hand.size();
+                let hand = this.player1.player.hand.length;
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.kageyu);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
-                expect(this.player1.player.hand.size()).toBe(hand + 4);
+                expect(this.player1.player.hand.length).toBe(hand + 4);
                 expect(this.getChatLogs(3)).toContain('player1 uses Daidoji Kageyu to draw 4 cards');
             });
 
@@ -113,11 +113,11 @@ describe('Daidoji Kageyu', function() {
                 });
 
                 this.player2.playAttachment(this.newName, this.guardian);
-                let hand = this.player1.player.hand.size();
+                let hand = this.player1.player.hand.length;
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.kageyu);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
-                expect(this.player1.player.hand.size()).toBe(hand);
+                expect(this.player1.player.hand.length).toBe(hand);
             });
 
             it('should not be usable if not participating', function() {
@@ -129,11 +129,11 @@ describe('Daidoji Kageyu', function() {
                 });
 
                 this.player2.playAttachment(this.newName, this.guardian);
-                let hand = this.player1.player.hand.size();
+                let hand = this.player1.player.hand.length;
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.kageyu);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
-                expect(this.player1.player.hand.size()).toBe(hand);
+                expect(this.player1.player.hand.length).toBe(hand);
             });
         });
 

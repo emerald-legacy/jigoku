@@ -9,7 +9,7 @@ export default class DaidojiOta extends DrawCard {
         this.persistentEffect({
             targetController: Players.Opponent,
             condition: (context) =>
-                context.player.cardsInPlay.any(
+                context.player.cardsInPlay.some(
                     (card) => card.getType() === CardTypes.Character && card.isParticipating()
                 ),
             effect: AbilityDsl.effects.reduceCost({
@@ -36,7 +36,7 @@ export default class DaidojiOta extends DrawCard {
                         cardCondition: (card) => card.type === CardTypes.Event
                     }),
                     'Reveal your hand': AbilityDsl.actions.lookAt((context) => ({
-                        target: context.player.opponent.hand.sortBy((card: DrawCard) => card.name),
+                        target: context.player.opponent.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
                         chatMessage: true,
                         message: '{0} reveals their hand: {1}',
                         messageArgs: (cards) => [context.player.opponent, cards]

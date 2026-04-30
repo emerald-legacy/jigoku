@@ -1,6 +1,5 @@
 /* global jasmine */
 
-const _ = require('underscore');
 const Game = require('../../build/server/game/game.js');
 const PlayerInteractionWrapper = require('./playerinteractionwrapper.js');
 const Settings = require('../../build/server/settings.js');
@@ -38,7 +37,7 @@ class GameFlowWrapper {
     }
 
     get firstPlayer() {
-        return _.find(this.allPlayers, player => player.firstPlayer);
+        return this.allPlayers.find(player => player.firstPlayer);
     }
 
     get rings() {
@@ -46,9 +45,9 @@ class GameFlowWrapper {
     }
 
     eachPlayerInFirstPlayerOrder(handler) {
-        var playersInOrder = _.sortBy(this.allPlayers, player => !player.firstPlayer);
+        var playersInOrder = this.allPlayers.slice().sort((a, b) => (b.firstPlayer ? 1 : 0) - (a.firstPlayer ? 1 : 0));
 
-        _.each(playersInOrder, player => handler(player));
+        playersInOrder.forEach(player => handler(player));
     }
 
     /**
@@ -56,8 +55,8 @@ class GameFlowWrapper {
      * @param {Function} handler - function of a player to be executed
      */
     eachPlayerStartingWithPrompted(handler) {
-        var playersInPromptedOrder = _.sortBy(this.allPlayers, player => player.hasPrompt('Waiting for opponent to take an action or pass'));
-        _.each(playersInPromptedOrder, player => handler(player));
+        var playersInPromptedOrder = this.allPlayers.slice().sort((a, b) => (a.hasPrompt('Waiting for opponent to take an action or pass') ? 1 : 0) - (b.hasPrompt('Waiting for opponent to take an action or pass') ? 1 : 0));
+        playersInPromptedOrder.forEach(player => handler(player));
     }
 
     startGame() {
@@ -128,14 +127,14 @@ class GameFlowWrapper {
                 this.noMoreActions();
             } catch(e) {
                 // Case: handle skipping a player's conflict
-                var playersInPromptedOrder = _.sortBy(this.allPlayers, player => player.hasPrompt('Waiting for opponent to declare conflict'));
+                var playersInPromptedOrder = this.allPlayers.slice().sort((a, b) => (a.hasPrompt('Waiting for opponent to declare conflict') ? 1 : 0) - (b.hasPrompt('Waiting for opponent to declare conflict') ? 1 : 0));
                 playersInPromptedOrder[0].clickPrompt('Pass Conflict');
                 playersInPromptedOrder[0].clickPrompt('yes');
             }
         }
         this.noMoreActions();
         // Resolve claiming imperial favor, if any
-        var claimingPlayer = _.find(this.allPlayers, player => player.hasPrompt('Which side of the Imperial Favor would you like to claim?'));
+        var claimingPlayer = this.allPlayers.find(player => player.hasPrompt('Which side of the Imperial Favor would you like to claim?'));
         if(claimingPlayer) {
             claimingPlayer.clickPrompt('military');
         }
@@ -152,11 +151,11 @@ class GameFlowWrapper {
                 player.clickPrompt('Done');
             }
         }
-        var playersInPromptedOrder = _.sortBy(this.allPlayers, player => player.hasPrompt('Waiting for opponent to discard dynasty cards'));
-        _.each(playersInPromptedOrder, player => player.clickPrompt('Done'));
+        var playersInPromptedOrder = this.allPlayers.slice().sort((a, b) => (a.hasPrompt('Waiting for opponent to discard dynasty cards') ? 1 : 0) - (b.hasPrompt('Waiting for opponent to discard dynasty cards') ? 1 : 0));
+        playersInPromptedOrder.forEach(player => player.clickPrompt('Done'));
         // End the round
-        var promptedToEnd = _.sortBy(this.allPlayers, player => player.hasPrompt('Waiting for opponent to end the round'));
-        _.each(promptedToEnd, player => player.clickPrompt('End Round'));
+        var promptedToEnd = this.allPlayers.slice().sort((a, b) => (a.hasPrompt('Waiting for opponent to end the round') ? 1 : 0) - (b.hasPrompt('Waiting for opponent to end the round') ? 1 : 0));
+        promptedToEnd.forEach(player => player.clickPrompt('End Round'));
         this.guardCurrentPhase('dynasty');
     }
 
@@ -165,11 +164,11 @@ class GameFlowWrapper {
      */
     finishRegroupPhase() {
         this.guardCurrentPhase('regroup');
-        var playersInPromptedOrder = _.sortBy(this.allPlayers, player => player.hasPrompt('Waiting for opponent to discard dynasty cards'));
-        _.each(playersInPromptedOrder, player => player.clickPrompt('Done'));
+        var playersInPromptedOrder = this.allPlayers.slice().sort((a, b) => (a.hasPrompt('Waiting for opponent to discard dynasty cards') ? 1 : 0) - (b.hasPrompt('Waiting for opponent to discard dynasty cards') ? 1 : 0));
+        playersInPromptedOrder.forEach(player => player.clickPrompt('Done'));
         // End the round
-        var promptedToEnd = _.sortBy(this.allPlayers, player => player.hasPrompt('Waiting for opponent to end the round'));
-        _.each(promptedToEnd, player => player.clickPrompt('End Round'));
+        var promptedToEnd = this.allPlayers.slice().sort((a, b) => (a.hasPrompt('Waiting for opponent to end the round') ? 1 : 0) - (b.hasPrompt('Waiting for opponent to end the round') ? 1 : 0));
+        promptedToEnd.forEach(player => player.clickPrompt('End Round'));
         this.guardCurrentPhase('dynasty');
     }
 
@@ -257,7 +256,7 @@ class GameFlowWrapper {
         var promptedPlayer = this.allPlayers.find(p => p.hasPrompt(title));
 
         if(!promptedPlayer) {
-            var promptString = _.map(this.allPlayers, player => player.name + ': ' + player.formatPrompt()).join('\n\n');
+            var promptString = this.allPlayers.map(player => player.name + ': ' + player.formatPrompt()).join('\n\n');
             throw new Error(`No players are being prompted with "${title}". Current prompts are:\n\n${promptString}`);
         }
 

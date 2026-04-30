@@ -1,5 +1,6 @@
 import AbilityDsl from '../../abilitydsl';
 import DrawCard from '../../drawcard';
+import { shuffle } from '../../utils/shuffle';
 
 export default class CourtOfJustice extends DrawCard {
     static id = 'court-of-justice';
@@ -14,7 +15,7 @@ export default class CourtOfJustice extends DrawCard {
                     context.player.opponent !== undefined
             },
             gameAction: AbilityDsl.actions.lookAt((context) => ({
-                target: context.player.opponent.hand.shuffle().slice(0, 3),
+                target: shuffle(context.player.opponent.hand as DrawCard[]).slice(0, 3),
                 message: 'reveals {0} from {1}\'s hand.',
                 messageArgs: (cards) => [cards, context.player.opponent]
             })),

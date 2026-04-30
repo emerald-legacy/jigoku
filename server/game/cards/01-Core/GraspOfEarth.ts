@@ -25,7 +25,7 @@ export default class GraspOfEarth extends DrawCard {
             effect: 'prevent the opponent from bringing characters to the conflict',
             gameAction: [
                 AbilityDsl.actions.cardLastingEffect((context) => ({
-                    target: context.player.opponent.cardsInPlay.toArray(),
+                    target: context.player.opponent.cardsInPlay.slice(),
                     effect: AbilityDsl.effects.cardCannot('moveToConflict')
                 })),
                 AbilityDsl.actions.playerLastingEffect((context) => ({

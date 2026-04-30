@@ -5,7 +5,7 @@ import { AshigaruRecruit } from '../../AshigaruRecruit';
 import type { AbilityContext } from '../../../AbilityContext';
 
 function putAshigaruTokenIntoPlay(context: AbilityContext) {
-    const card = context.player.dynastyDeck.first();
+    const card = context.player.dynastyDeck[0];
     const token = context.game.createToken(card, AshigaruRecruit);
     card.owner.removeCardFromPile(card);
     card.moveTo(Locations.RemovedFromGame);

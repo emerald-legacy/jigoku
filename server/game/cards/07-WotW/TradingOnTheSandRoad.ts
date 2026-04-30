@@ -15,12 +15,12 @@ class TradingOnTheSandRoad extends DrawCard {
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cancel(),
                 AbilityDsl.actions.lookAt(context=> ({
-                    target: context.player.conflictDeck.first(4),
+                    target: context.player.conflictDeck.slice(0, 4),
                     message: '{0} removes the top {1} cards from their conflict deck from the game: {2}',
                     messageArgs: cards => [context.player, cards.length, cards]
                 })),
                 AbilityDsl.actions.lookAt(context=> ({
-                    target: context.player.opponent ? context.player.opponent.conflictDeck.first(4) : [],
+                    target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [],
                     message: '{0} removes the top {1} cards from their conflict deck from the game: {2}',
                     messageArgs: cards => [context.player.opponent, cards.length, cards]
                 })),
@@ -28,10 +28,10 @@ class TradingOnTheSandRoad extends DrawCard {
                     targetController: context.player,
                     duration: Durations.UntilEndOfRound,
                     effect: [
-                        AbilityDsl.effects.canPlayFromOwn(Locations.RemovedFromGame, context.player.conflictDeck.first(4), this),
+                        AbilityDsl.effects.canPlayFromOwn(Locations.RemovedFromGame, context.player.conflictDeck.slice(0, 4), this),
                         AbilityDsl.effects.canPlayFromOpponents(
                             Locations.RemovedFromGame,
-                            context.player.opponent ? context.player.opponent.conflictDeck.first(4) : [], this)
+                            context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [], this)
                     ]
 
                 })),
@@ -40,20 +40,20 @@ class TradingOnTheSandRoad extends DrawCard {
                     duration: Durations.UntilEndOfRound,
                     effect: [
                         AbilityDsl.effects.canPlayFromOwn(Locations.RemovedFromGame,
-                            context.player.opponent ? context.player.opponent.conflictDeck.first(4) : [], this),
+                            context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [], this),
                         AbilityDsl.effects.canPlayFromOpponents(
                             Locations.RemovedFromGame,
-                            context.player.opponent ? context.player.conflictDeck.first(4) : [],
+                            context.player.opponent ? context.player.conflictDeck.slice(0, 4) : [],
                             this
                         )
                     ]
                 })),
                 AbilityDsl.actions.moveCard(context => ({
-                    target: context.player.conflictDeck.first(4),
+                    target: context.player.conflictDeck.slice(0, 4),
                     destination: Locations.RemovedFromGame
                 })),
                 AbilityDsl.actions.moveCard(context => ({
-                    target: context.player.opponent ? context.player.opponent.conflictDeck.first(4) : [],
+                    target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [],
                     destination: Locations.RemovedFromGame
                 }))
             ])

@@ -49,6 +49,6 @@ export default class PolicyDebate extends DrawCard {
     }
 
     #losersHand(duel: Duel): DrawCard[] {
-        return duel.loserController?.hand.sortBy((card: DrawCard) => card.name) ?? [];
+        return duel.loserController?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)) ?? [];
     }
 }

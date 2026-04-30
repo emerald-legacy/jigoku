@@ -1,6 +1,7 @@
 import AbilityDsl from '../../../abilitydsl';
 import { Locations, Players } from '../../../Constants';
 import DrawCard from '../../../drawcard';
+import { shuffle } from '../../../utils/shuffle';
 
 export default class DrawingTheVoid extends DrawCard {
     static id = 'drawing-the-void';
@@ -10,7 +11,7 @@ export default class DrawingTheVoid extends DrawCard {
             title: 'Gaze into the void',
             condition: (context) => context.player.isTraitInPlay('shugenja'),
             gameAction: AbilityDsl.actions.sequentialContext((context) => {
-                const revealedCards = (context.player.opponent.hand.shuffle() as Array<DrawCard>)
+                const revealedCards = (shuffle(context.player.opponent.hand) as Array<DrawCard>)
                     .slice(0, 2)
                     .sort((a, b) => a.name.localeCompare(b.name));
                 return {

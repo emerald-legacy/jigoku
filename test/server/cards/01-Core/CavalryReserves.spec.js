@@ -1,4 +1,3 @@
-const _ = require('underscore');
 
 describe('Cavalry Reserves', function() {
     integration(function() {
@@ -40,7 +39,7 @@ describe('Cavalry Reserves', function() {
             });
 
             it('should be able to target only cavalry', function() {
-                expect(_.every(this.player1.currentActionTargets, card => card.hasTrait('cavalry'))).toBe(true);
+                expect(this.player1.currentActionTargets.every(card => card.hasTrait('cavalry'))).toBe(true);
                 expect(this.player1.currentActionTargets).not.toContain(this.noncavalry);
             });
 

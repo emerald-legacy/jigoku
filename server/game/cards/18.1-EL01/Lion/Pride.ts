@@ -12,7 +12,7 @@ export default class Pride extends StrongholdCard {
         this.action({
             title: 'Give a character a +1/+1 attachment',
             cost: AbilityDsl.costs.bowSelf(),
-            condition: (context) => context.player.conflictDeck.size() > 0,
+            condition: (context) => context.player.conflictDeck.length > 0,
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,
@@ -21,7 +21,7 @@ export default class Pride extends StrongholdCard {
                     context.game.actions.attach({ attachment: DummyAttachment }).canAffect(card, context),
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) => {
-                        const card = context.player.conflictDeck.first();
+                        const card = context.player.conflictDeck[0];
                         let token = context.game.createToken(card, Soldier);
                         card.owner.removeCardFromPile(card);
                         card.moveTo(Locations.RemovedFromGame);

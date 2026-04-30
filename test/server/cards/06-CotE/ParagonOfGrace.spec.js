@@ -79,10 +79,10 @@ describe('Paragon of Grace', function() {
                 this.player1.clickCard(this.paragonOfGrace);
                 this.player2.pass();
                 expect(this.player1).toHavePrompt('Conflict Action Window');
-                let player2hand = this.player2.player.hand.size();
+                let player2hand = this.player2.player.hand.length;
                 this.player1.clickCard(this.paragonOfGrace);
                 expect(this.player2).not.toHavePrompt('Choose a card to discard');
-                expect(this.player2.player.hand.size()).toBe(player2hand - 1);
+                expect(this.player2.player.hand.length).toBe(player2hand - 1);
                 expect(this.getChatLogs(4)).toContain('player1 uses Paragon of Grace to make player2 discard 1 card at random');
             });
         });

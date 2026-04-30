@@ -64,8 +64,8 @@ describe('Unified Company', function() {
                 this.player2.clickCard('banzai');
                 this.player2.clickCard(this.unifiedCompany);
                 this.player2.clickPrompt('Done');
-                expect(this.player1.player.hand.size()).toBe(1);
-                expect(this.player2.player.hand.size()).toBe(1);
+                expect(this.player1.player.hand.length).toBe(1);
+                expect(this.player2.player.hand.length).toBe(1);
                 this.noMoreActions();
                 expect(this.player1).not.toBeAbleToSelect(this.unifiedCompany);
             });
@@ -76,8 +76,8 @@ describe('Unified Company', function() {
                 this.player2.clickPrompt('Done');
                 this.player1.pass();
                 this.player2.playAttachment('fine-katana', this.unifiedCompany);
-                expect(this.player1.player.hand.size()).toBe(1);
-                expect(this.player2.player.hand.size()).toBe(0);
+                expect(this.player1.player.hand.length).toBe(1);
+                expect(this.player2.player.hand.length).toBe(0);
                 this.noMoreActions();
                 expect(this.player1).not.toBeAbleToSelect(this.unifiedCompany);
             });

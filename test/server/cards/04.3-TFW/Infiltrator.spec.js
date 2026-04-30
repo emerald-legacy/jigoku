@@ -77,7 +77,7 @@ describe('Infiltrator', function () {
                     expect(this.matsuBerserker.location).toBe('dynasty discard pile');
                     expect(this.player2.honor).toBe(7);
                     expect(this.assassination.location).toBe('conflict discard pile');
-                    expect(this.player1.player.conflictDiscardPile.toArray()).toContain(this.assassination);
+                    expect(this.player1.player.conflictDiscardPile.slice()).toContain(this.assassination);
                 });
 
                 it('should allow the player to play an attachment from the deck', function () {

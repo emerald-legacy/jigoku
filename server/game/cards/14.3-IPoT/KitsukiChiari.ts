@@ -1,5 +1,6 @@
 import DrawCard from '../../drawcard';
 import AbilityDsl from '../../abilitydsl';
+import { shuffle } from '../../utils/shuffle';
 
 class KitsukiChiari extends DrawCard {
     static id = 'kitsuki-chiari';
@@ -9,19 +10,19 @@ class KitsukiChiari extends DrawCard {
             title: 'Name a card',
             when: {
                 onCardRevealed: (event, context) => event.card.isProvince && event.card.controller === context.player &&
-                    context.player.opponent && context.player.opponent.hand.size() > 0
+                    context.player.opponent && context.player.opponent.hand.length > 0
             },
             cost: AbilityDsl.costs.nameCard(),
             gameAction: AbilityDsl.actions.multipleContext(context => {
-                let cards = context.player.opponent.hand.shuffle().slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
+                let cards: DrawCard[] = shuffle(context.player.opponent.hand as DrawCard[]).slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
                 return ({
                     gameActions: [
                         AbilityDsl.actions.lookAt(() => ({
-                            target: cards.sort(card => card.name)
+                            target: cards
                         })),
                         AbilityDsl.actions.discardMatching(context => ({
                             target: context.player.opponent,
-                            cards: cards.sort((a, b) => a.name.localeCompare(b.name)),
+                            cards: cards,
                             amount: -1, //all
                             reveal: false,
                             match: (context, card) => card.name === context.costs.nameCardCost

@@ -7,7 +7,7 @@ class StolenSecrets extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Steal one of opponent\'s top 4 cards',
-            condition: context => this.game.isDuringConflict('political') && context.player.opponent && context.player.opponent.conflictDeck.size() > 0,
+            condition: context => this.game.isDuringConflict('political') && context.player.opponent && context.player.opponent.conflictDeck.length > 0,
             cost: ability.costs.removeFate({
                 cardType: CardTypes.Character,
                 cardCondition: card => card.isParticipating()
@@ -17,8 +17,8 @@ class StolenSecrets extends DrawCard {
             handler: context => this.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Choose a card to remove from the game',
                 context: context,
-                cards: context.player.opponent.conflictDeck.first(4),
-                cardHandler: card => this.stealCard(card, context.player.opponent.conflictDeck.first(4).filter(c => c !== card), context)
+                cards: context.player.opponent.conflictDeck.slice(0, 4),
+                cardHandler: card => this.stealCard(card, context.player.opponent.conflictDeck.slice(0, 4).filter(c => c !== card), context)
             })
         });
     }

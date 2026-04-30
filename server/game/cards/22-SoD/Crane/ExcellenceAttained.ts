@@ -9,13 +9,13 @@ export default class ExcellenceAttained extends ProvinceCard {
         this.reaction({
             title: 'Search for an attachment',
             when: {
-                onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source && context.player.conflictDeck.size() > 0
+                onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source && context.player.conflictDeck.length > 0
             },
             effect: 'search the top 5 cards of their conflict deck for an attachment and put it into play',
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose an attachment',
-                    cards: context.player.conflictDeck.first(5),
+                    cards: context.player.conflictDeck.slice(0, 5),
                     cardCondition: (card) => card.type === CardTypes.Attachment && card.printedCost <= 1,
                     choices: ['Take nothing'],
                     handlers: [

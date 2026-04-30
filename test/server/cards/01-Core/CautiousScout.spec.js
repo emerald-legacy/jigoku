@@ -56,9 +56,9 @@ describe('Cautious Scout', function() {
                     attackers: ['cautious-scout'],
                     defenders: []
                 });
-                expect(this.player2.player.hand.size()).toBe(0);
+                expect(this.player2.player.hand.length).toBe(0);
                 this.player2.clickCard('fertile-fields');
-                expect(this.player2.player.hand.size()).toBe(0);
+                expect(this.player2.player.hand.length).toBe(0);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
 

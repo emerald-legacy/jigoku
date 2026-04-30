@@ -1,4 +1,3 @@
-const _ = require('underscore');
 
 const Game = require('../../../build/server/game/game.js');
 const Player = require('../../../build/server/game/player.js');
@@ -33,7 +32,7 @@ describe('the Game', () => {
 
                 expect(state.name).toBe('Test Game');
                 expect(state.started).toBe(false);
-                expect(_.size(state.players)).toBe(0);
+                expect(Object.keys(state.players).length).toBe(0);
             });
         });
 
@@ -46,7 +45,7 @@ describe('the Game', () => {
                 var state = game.getSummary('');
 
                 expect(state.started).toBe(false);
-                expect(_.size(state.players)).toBe(1);
+                expect(Object.keys(state.players).length).toBe(1);
                 expect(state.players[player1.name].name).toBe(player1.name);
             });
 
@@ -59,7 +58,7 @@ describe('the Game', () => {
                     var state = game.getSummary('');
 
                     expect(state.started).toBe(false);
-                    expect(_.size(state.players)).toBe(2);
+                    expect(Object.keys(state.players).length).toBe(2);
                     expect(state.players[player1.name].name).toBe(player1.name);
                     expect(state.players[player2.name].name).toBe(player2.name);
                 });

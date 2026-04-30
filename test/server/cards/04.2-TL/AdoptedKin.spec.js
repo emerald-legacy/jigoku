@@ -39,13 +39,13 @@ describe('Adopted Kin', function () {
             });
 
             it('should return other attachments to hand when attached character is discarded', function () {
-                expect(this.player1.player.hand.size()).toBe(1);
+                expect(this.player1.player.hand.length).toBe(1);
                 this.player2.clickCard(this.cloud);
                 this.player2.clickCard(this.adept);
                 this.player1.pass();
                 this.player2.clickCard(this.assassination);
                 this.player2.clickCard(this.adept);
-                expect(this.player1.player.hand.size()).toBe(3);
+                expect(this.player1.player.hand.length).toBe(3);
                 expect(this.player1.player.hand).toContain(this.katana);
                 expect(this.player1.player.hand).toContain(this.master);
                 expect(this.player2.player.hand).toContain(this.cloud);

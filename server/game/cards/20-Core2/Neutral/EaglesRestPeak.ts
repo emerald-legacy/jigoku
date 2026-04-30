@@ -2,6 +2,7 @@ import { CardTypes, Durations, Locations } from '../../../Constants';
 import { ProvinceCard } from '../../../ProvinceCard';
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
+import { shuffle } from '../../../utils/shuffle';
 
 export default class EaglesRestPeak extends ProvinceCard {
     static id = 'eagle-s-rest-peak';
@@ -9,7 +10,7 @@ export default class EaglesRestPeak extends ProvinceCard {
     public setupCardAbilities() {
         this.action({
             title: 'Look at random cards from opponent\'s hand',
-            condition: (context) => context.player.opponent?.hand.size() > 0,
+            condition: (context) => context.player.opponent?.hand.length > 0,
             target: {
                 activePromptTitle: 'Choose a character to lead the investigation',
                 cardType: CardTypes.Character,
@@ -19,9 +20,8 @@ export default class EaglesRestPeak extends ProvinceCard {
             effectArgs: context => [context.target.getCost(), context.player.opponent],
             gameAction: AbilityDsl.actions.sequentialContext((context) => {
                 const opponent = context.player.opponent;
-                const setAsideCards: DrawCard[] = opponent?.hand
-                    .shuffle()
-                    .slice(0, (context.target as DrawCard).getCost());
+                const setAsideCards: DrawCard[] = shuffle(opponent?.hand ?? [] as DrawCard[])
+                    .slice(0, (context.target as DrawCard).getCost()) as DrawCard[];
 
                 return {
                     gameActions: [

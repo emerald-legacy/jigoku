@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const Player = require('../../../build/server/game/player.js');
 const DrawCard = require('../../../build/server/game/drawcard.js');
 
@@ -140,25 +139,25 @@ describe('Player - moveCard', function () {
 
         describe('when the target location is the conflict deck', function () {
             beforeEach(function () {
-                this.player.conflictDeck = _([{}, {}, {}]);
+                this.player.conflictDeck = [{}, {}, {}];
             });
 
             it('should add the card to the top of the deck', function () {
                 this.player.moveCard(this.card, 'conflict deck');
-                expect(this.player.conflictDeck.first()).toBe(this.card);
+                expect(this.player.conflictDeck[0]).toBe(this.card);
             });
 
             it('should add the card to the bottom of the deck when the option is passed', function () {
                 this.player.moveCard(this.card, 'conflict deck', { bottom: true });
-                expect(this.player.conflictDeck.last()).toBe(this.card);
+                expect(this.player.conflictDeck.at(-1)).toBe(this.card);
             });
 
             it('should be able to move a card from top to bottom of the deck', function () {
-                this.player.conflictDeck = _([this.card, {}, {}, {}]);
+                this.player.conflictDeck = [this.card, {}, {}, {}];
                 this.card.location = 'conflict deck';
                 this.player.moveCard(this.card, 'conflict deck', { bottom: true });
-                expect(this.player.conflictDeck.size()).toBe(4);
-                expect(this.player.conflictDeck.last()).toBe(this.card);
+                expect(this.player.conflictDeck.length).toBe(4);
+                expect(this.player.conflictDeck.at(-1)).toBe(this.card);
             });
         });
 
@@ -170,14 +169,14 @@ describe('Player - moveCard', function () {
             beforeEach(function () {
                 // Put into play with the wrong location.
                 this.card.location = 'conflict discard pile';
-                this.player.cardsInPlay = _([this.card]);
+                this.player.cardsInPlay = [this.card];
 
                 this.player.moveCard(this.card, 'play area');
             });
 
             it('should not duplicate the card', function () {
-                expect(this.player.cardsInPlay.size()).toBe(1);
-                expect(this.player.cardsInPlay.toArray()).toEqual([this.card]);
+                expect(this.player.cardsInPlay.length).toBe(1);
+                expect(this.player.cardsInPlay.slice()).toEqual([this.card]);
             });
         });
     });

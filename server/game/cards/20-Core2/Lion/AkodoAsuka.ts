@@ -17,7 +17,7 @@ export default class AkodoAsuka extends DrawCard {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller &&
                     context.source.isParticipating() &&
-                    context.player.conflictDeck.size() > 0
+                    context.player.conflictDeck.length > 0
             },
             gameAction: AbilityDsl.actions.deckSearch({
                 amount: (context) => getCharactersWithoutFate(context),

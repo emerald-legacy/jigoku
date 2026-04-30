@@ -36,7 +36,7 @@ describe('Third Whisker Warrens', function() {
             });
 
             it('should allow you to play characters from dynasty deck during a conflict at Warrens', function() {
-                expect(this.player2.player.dynastyDeck.first()).toBe(this.kitsuWarrior);
+                expect(this.player2.player.dynastyDeck[0]).toBe(this.kitsuWarrior);
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.agashaSwordsmith],
@@ -53,7 +53,7 @@ describe('Third Whisker Warrens', function() {
                 expect(this.game.currentConflict.defenders).toContain(this.kitsuWarrior);
                 expect(this.kitsuWarrior.anyEffect('hideWhenFaceUp')).toBe(false);
 
-                expect(this.player2.player.dynastyDeck.first()).toBe(this.agashaTaiko);
+                expect(this.player2.player.dynastyDeck[0]).toBe(this.agashaTaiko);
                 expect(this.player2.player.isTopDynastyCardShown()).toBe(true);
                 this.player1.pass();
                 this.player2.clickCard(this.agashaTaiko);
@@ -64,7 +64,7 @@ describe('Third Whisker Warrens', function() {
             });
 
             it('should be active at another kaiu wall', function() {
-                expect(this.player2.player.dynastyDeck.first()).toBe(this.kitsuWarrior);
+                expect(this.player2.player.dynastyDeck[0]).toBe(this.kitsuWarrior);
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.agashaSwordsmith],
@@ -81,7 +81,7 @@ describe('Third Whisker Warrens', function() {
                 expect(this.game.currentConflict.defenders).toContain(this.kitsuWarrior);
                 expect(this.kitsuWarrior.anyEffect('hideWhenFaceUp')).toBe(false);
 
-                expect(this.player2.player.dynastyDeck.first()).toBe(this.agashaTaiko);
+                expect(this.player2.player.dynastyDeck[0]).toBe(this.agashaTaiko);
                 expect(this.player2.player.isTopDynastyCardShown()).toBe(true);
                 this.player1.pass();
                 this.player2.clickCard(this.agashaTaiko);
@@ -105,7 +105,7 @@ describe('Third Whisker Warrens', function() {
 
             it('should not let you use holdings', function() {
                 this.player2.moveCard(this.storehouse, 'dynasty deck');
-                expect(this.player2.player.dynastyDeck.first()).toBe(this.storehouse);
+                expect(this.player2.player.dynastyDeck[0]).toBe(this.storehouse);
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.agashaSwordsmith],
@@ -120,7 +120,7 @@ describe('Third Whisker Warrens', function() {
 
             it('should allow you to use the disguised keyword when you play from discard', function() {
                 this.player2.moveCard(this.akodoZentaro, 'dynasty deck');
-                expect(this.player2.player.dynastyDeck.first()).toBe(this.akodoZentaro);
+                expect(this.player2.player.dynastyDeck[0]).toBe(this.akodoZentaro);
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.agashaSwordsmith],
@@ -153,7 +153,7 @@ describe('Third Whisker Warrens', function() {
             //Fails this test, but since doomed & warrens are in different clans, probably okay for now
             // it('should allow additional fate to be added to doomed shugenja', function() {
             //     this.player2.moveCard(this.doomedShugenja, 'dynasty deck');
-            //     expect(this.player2.player.dynastyDeck.first()).toBe(this.doomedShugenja);
+            //     expect(this.player2.player.dynastyDeck[0]).toBe(this.doomedShugenja);
             //     this.noMoreActions();
             //     this.initiateConflict({
             //         attackers: [this.agashaSwordsmith],

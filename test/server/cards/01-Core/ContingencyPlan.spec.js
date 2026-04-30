@@ -16,7 +16,7 @@ describe('Contingency Plan', function () {
 
             it('should allow you to increase your honor bid by 1 and draw an additional card', function () {
                 let honor = this.player2.player.honor;
-                let handSizeWithoutContingencyPlan = this.player2.player.hand.size() - 1;
+                let handSizeWithoutContingencyPlan = this.player2.player.hand.length - 1;
                 this.player1.clickPrompt('5');
                 this.player2.clickPrompt('5');
                 expect(this.player2).toHavePrompt('Triggered Abilities');
@@ -24,12 +24,12 @@ describe('Contingency Plan', function () {
                 this.player2.clickCard(this.contingencyPlan);
                 this.player2.clickPrompt('Increase honor bid');
                 expect(this.player2.player.honor).toBe(honor - 1);
-                expect(this.player2.player.hand.size()).toBe(handSizeWithoutContingencyPlan + 5 + 1);
+                expect(this.player2.player.hand.length).toBe(handSizeWithoutContingencyPlan + 5 + 1);
             });
 
             it('should allow you to decrease your honor bid by 1 and draw on card less', function () {
                 let honor = this.player2.player.honor;
-                let handSizeWithoutContingencyPlan = this.player2.player.hand.size() - 1;
+                let handSizeWithoutContingencyPlan = this.player2.player.hand.length - 1;
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 expect(this.player2).toHavePrompt('Triggered Abilities');
@@ -37,7 +37,7 @@ describe('Contingency Plan', function () {
                 this.player2.clickCard(this.contingencyPlan);
                 this.player2.clickPrompt('Decrease honor bid');
                 expect(this.player2.player.honor).toBe(honor + 1);
-                expect(this.player2.player.hand.size()).toBe(handSizeWithoutContingencyPlan);
+                expect(this.player2.player.hand.length).toBe(handSizeWithoutContingencyPlan);
             });
         });
 
@@ -57,7 +57,7 @@ describe('Contingency Plan', function () {
 
             it('should allow you to increase your honor bid accordingly', function () {
                 let honor = this.player2.player.honor;
-                let handSizeWithoutContingencyPlans = this.player2.player.hand.size() - 2;
+                let handSizeWithoutContingencyPlans = this.player2.player.hand.length - 2;
                 this.player1.clickPrompt('5');
                 this.player2.clickPrompt('5');
                 expect(this.player2).toHavePrompt('Triggered Abilities');
@@ -70,12 +70,12 @@ describe('Contingency Plan', function () {
                 this.player2.clickCard(this.contingencyPlan2);
                 this.player2.clickPrompt('Increase honor bid');
                 expect(this.player2.player.honor).toBe(honor - 2);
-                expect(this.player2.player.hand.size()).toBe(handSizeWithoutContingencyPlans + 5 + 2);
+                expect(this.player2.player.hand.length).toBe(handSizeWithoutContingencyPlans + 5 + 2);
             });
 
             it('should not allow you to decrease your honor bid below 0', function () {
                 let honor = this.player2.player.honor;
-                let handSizeWithoutContingencyPlans = this.player2.player.hand.size() - 2;
+                let handSizeWithoutContingencyPlans = this.player2.player.hand.length - 2;
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 expect(this.player2).toHavePrompt('Triggered Abilities');
@@ -91,7 +91,7 @@ describe('Contingency Plan', function () {
                 expect(this.getChatLogs(6)).toContain('player1 draws 1 cards for the draw phase');
                 expect(this.getChatLogs(6)).toContain('player2 draws 1 cards for the draw phase');
                 expect(this.player2.player.honor).toBe(honor);
-                expect(this.player2.player.hand.size()).toBe(handSizeWithoutContingencyPlans + 1);
+                expect(this.player2.player.hand.length).toBe(handSizeWithoutContingencyPlans + 1);
             });
         });
 

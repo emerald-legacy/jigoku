@@ -19,7 +19,7 @@ class CallingTheStorm extends DrawCard {
                     canChangeZoneNTimes: 9999999, // can change zones infinite times and still be playable if it ends up in the deck
                     effect: AbilityDsl.effects.canPlayFromOutOfPlay((player, card) => {
                         return player && player.conflictDeck &&
-                            context.player.conflictDeck.size() > 0 && card === player.conflictDeck.first() &&
+                            context.player.conflictDeck.length > 0 && card === player.conflictDeck[0] &&
                             player === card.owner && card.location === Locations.ConflictDeck;
                     }, PlayTypes.PlayFromHand)
                 })),

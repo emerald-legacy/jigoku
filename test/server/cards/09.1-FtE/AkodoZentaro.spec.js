@@ -135,7 +135,7 @@
                 this.player1.clickCard(this.imperialStorehouse);
                 this.player1.clickCard(this.shamefulDisplay3);
                 expect(this.imperialStorehouse.location).toBe('province 3');
-                expect(this.player1.player.provinceThree.toArray()).toContain(this.imperialStorehouse);
+                expect(this.player1.player.provinceThree.slice()).toContain(this.imperialStorehouse);
                 expect(this.matsuBerserker.location).toBe('dynasty discard pile');
                 expect(this.kuwanan.location).toBe('dynasty discard pile');
                 expect(this.kisada.location).toBe('dynasty discard pile');

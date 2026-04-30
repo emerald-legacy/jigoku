@@ -55,7 +55,7 @@ describe('Akodo Toshiro', function() {
                 this.noMoreActions();
                 this.player1.clickPrompt('Don\'t resolve');
                 this.player1.clickPrompt('Kitsu Spiritcaller\'s effect on Akodo Toshiro');
-                expect(this.player1.player.dynastyDeck.last()).toBe(this.akodoToshiro);
+                expect(this.player1.player.dynastyDeck.at(-1)).toBe(this.akodoToshiro);
                 expect(this.player1).toHavePrompt('Action Window');
             });
         });

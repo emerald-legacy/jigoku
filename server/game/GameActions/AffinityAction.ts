@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext';
 import type { GameObject } from '../GameObject';
-import { Derivable, derive } from '../Utils/helpers';
+import { Derivable, derive } from '../utils/helpers';
 import { GameAction, type GameActionProperties } from './GameAction';
 
 export interface AffinityActionProperties extends GameActionProperties {

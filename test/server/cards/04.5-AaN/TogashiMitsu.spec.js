@@ -40,7 +40,7 @@ describe('Togashi Mitsu', function () {
                 expect(this.player1).toHavePrompt('Hurricane Punch');
                 this.player1.clickCard(this.togashiMitsu);
                 expect(this.togashiMitsu.militarySkill).toBe(6);
-                expect(this.player1.player.conflictDeck.last()).toBe(this.hurricanePunch);
+                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.hurricanePunch);
             });
 
             it('should allow playing a tattoo', function () {

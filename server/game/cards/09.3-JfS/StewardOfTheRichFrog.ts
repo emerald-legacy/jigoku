@@ -10,7 +10,7 @@ class StewardOfTheRichFrog extends DrawCard {
             condition: (context) =>
                 context.player &&
                 context.player.opponent &&
-                context.player.hand.size() < context.player.opponent.hand.size(),
+                context.player.hand.length < context.player.opponent.hand.length,
             targetController: Players.Self,
             match: (card) => card.getType() === CardTypes.Character,
             effect: AbilityDsl.effects.cardCannot('receiveDishonorToken')

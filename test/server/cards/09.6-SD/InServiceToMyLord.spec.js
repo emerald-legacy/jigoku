@@ -56,7 +56,7 @@ describe('In Service to My Lord', function() {
                 expect(this.brashSamurai.bowed).toBe(true);
                 expect(this.daidojiUji.bowed).toBe(false);
                 expect(this.getChatLogs(1)).toContain('player1 plays In Service to My Lord, bowing Brash Samurai to ready Daidoji Uji.  In Service to My Lord is placed on the bottom of player1\'s conflict deck');
-                expect(this.player1.player.conflictDeck.last()).toBe(this.service);
+                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.service);
             });
 
             it('should go to the bottom of the deck even if you stand no one', function() {
@@ -70,7 +70,7 @@ describe('In Service to My Lord', function() {
                 expect(this.brashSamurai.bowed).toBe(true);
                 expect(this.kakitaToshimoko.bowed).toBe(false);
                 expect(this.getChatLogs(1)).toContain('player1 plays In Service to My Lord, bowing Brash Samurai to ready Kakita Toshimoko.  In Service to My Lord is placed on the bottom of player1\'s conflict deck');
-                expect(this.player1.player.conflictDeck.last()).toBe(this.service);
+                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.service);
             });
 
             it('should go to the discard pile if cancelled', function() {
@@ -112,7 +112,7 @@ describe('In Service to My Lord', function() {
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 expect(this.daidojiUji.bowed).toBe(false);
                 expect(this.brashSamurai.bowed).toBe(true);
-                expect(this.player1.player.conflictDeck.last()).toBe(this.service);
+                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.service);
             });
 
             it('same copy should be playable from discard if cancelled from hand', function() {
@@ -148,7 +148,7 @@ describe('In Service to My Lord', function() {
                 this.player1.clickCard(this.dojiChallenger);
                 expect(this.daidojiUji.bowed).toBe(false);
                 expect(this.dojiChallenger.bowed).toBe(true);
-                expect(this.player1.player.conflictDeck.last()).toBe(this.service);
+                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.service);
             });
 
             it('same copy should be playable from discard if cancelled from discard', function() {
@@ -187,7 +187,7 @@ describe('In Service to My Lord', function() {
                 this.player1.clickCard(this.dojiChallenger);
                 expect(this.daidojiUji.bowed).toBe(false);
                 expect(this.dojiChallenger.bowed).toBe(true);
-                expect(this.player1.player.conflictDeck.last()).toBe(this.service);
+                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.service);
             });
         });
 
@@ -244,7 +244,7 @@ describe('In Service to My Lord', function() {
                 this.player2.clickCard(this.brashSamurai);
                 expect(this.dojiKuwanan.bowed).toBe(false);
                 expect(this.brashSamurai.bowed).toBe(true);
-                expect(this.player1.player.conflictDeck.last()).toBe(this.service);
+                expect(this.player1.player.conflictDeck.at(-1)).toBe(this.service);
                 expect(this.getChatLogs(3)).toContain('player2 plays In Service to My Lord, bowing Brash Samurai to ready Doji Kuwanan.  In Service to My Lord is placed on the bottom of player1\'s conflict deck');
             });
 
@@ -264,7 +264,7 @@ describe('In Service to My Lord', function() {
                 expect(this.dojiKuwanan.bowed).toBe(true);
                 expect(this.brashSamurai.bowed).toBe(true);
                 expect(this.service.location).toBe('conflict discard pile');
-                expect(this.player1.player.conflictDiscardPile.toArray()).toContain(this.service);
+                expect(this.player1.player.conflictDiscardPile.slice()).toContain(this.service);
             });
         });
 

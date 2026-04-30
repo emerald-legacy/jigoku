@@ -6,7 +6,7 @@ class ChikaiOrderProtector extends DrawCard {
 
     setupCardAbilities(ability) {
         this.persistentEffect({
-            condition: context => context.source.isDefending() && context.player.cardsInPlay.any(card => card.getType() === CardTypes.Character && card.isParticipating() && (card.hasTrait('courtier') || card.hasTrait('shugenja'))),
+            condition: context => context.source.isDefending() && context.player.cardsInPlay.some(card => card.getType() === CardTypes.Character && card.isParticipating() && (card.hasTrait('courtier') || card.hasTrait('shugenja'))),
             effect: ability.effects.doesNotBow()
         });
     }

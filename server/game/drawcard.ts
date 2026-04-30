@@ -1103,7 +1103,7 @@ class DrawCard extends BaseCard {
             attackers.reduce(
                 (total: number, card: DrawCard) => total + card.sumEffects(EffectNames.CardCostToAttackMilitary),
                 0
-            ) > this.controller.hand.size()
+            ) > this.controller.hand.length
         ) {
             return false;
         }

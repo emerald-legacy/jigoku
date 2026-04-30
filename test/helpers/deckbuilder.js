@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const _ = require('underscore');
 
 const {matchCardByNameAndPack} = require('./cardutil.js');
 
@@ -34,9 +33,9 @@ class DeckBuilder {
         var cards = {};
 
         var jsonCards = fs.readdirSync(directory).filter(file => file.endsWith('.json'));
-        _.each(jsonCards, file => {
+        jsonCards.forEach(file => {
             var cardsInPack = require(path.join(PathToSubModulePacks, file));
-            _.each(cardsInPack, card => {
+            cardsInPack.forEach(card => {
                 cards[card.id] = card;
             });
         });
@@ -71,10 +70,10 @@ class DeckBuilder {
             provinceDeck.push(player.strongholdProvince);
         }
         if(player.provinces && gameMode !== GameModes.Skirmish) {
-            if(_.isArray(player.provinces)) {
+            if(Array.isArray(player.provinces)) {
                 provinceDeck = provinceDeck.concat(player.provinces);
             } else {
-                _.each(player.provinces, province => {
+                Object.values(player.provinces).forEach(province => {
                     if(province.provinceCard) {
                         provinceDeck.push(province.provinceCard);
                     }
@@ -102,11 +101,13 @@ class DeckBuilder {
         if(player.dynastyDiscard) {
             dynastyDeck.push(...player.dynastyDiscard);
         }
-        _.each(player.provinces, province => {
-            if(province.dynastyCards) {
-                dynastyDeck.push(...province.dynastyCards);
-            }
-        });
+        if(player.provinces) {
+            Object.values(player.provinces).forEach(province => {
+                if(province && province.dynastyCards) {
+                    dynastyDeck.push(...province.dynastyCards);
+                }
+            });
+        }
         //Add cards to prevent reshuffling due to running out of cards
         for(let i = initialDynastySize; i < dynastyDeckSize; i++) {
             dynastyDeck.push(dynastyFiller);
@@ -135,8 +136,8 @@ class DeckBuilder {
         }
 
         //Collect the names of cards in play
-        _.each(player.inPlay, card => {
-            if(_.isString(card)) {
+        (player.inPlay || []).forEach(card => {
+            if(typeof card === 'string') {
                 inPlayCards.push(card);
             } else {
                 //Add the card itself
@@ -158,7 +159,7 @@ class DeckBuilder {
 
     buildDeck(faction, cardLabels) {
         var cardCounts = {};
-        _.each(cardLabels, label => {
+        cardLabels.forEach(label => {
             var cardData = this.getCard(label);
             if(cardCounts[cardData.id]) {
                 cardCounts[cardData.id].count++;
@@ -172,11 +173,11 @@ class DeckBuilder {
 
         return {
             faction: { value: faction },
-            stronghold: _.filter(cardCounts, count => count.card.type === 'stronghold'),
-            role: _.filter(cardCounts, count => count.card.type === 'role'),
-            conflictCards: _.filter(cardCounts, count => count.card.side === 'conflict'),
-            dynastyCards: _.filter(cardCounts, count => count.card.side === 'dynasty'),
-            provinceCards: _.filter(cardCounts, count => count.card.type === 'province'),
+            stronghold: Object.values(cardCounts).filter(count => count.card.type === 'stronghold'),
+            role: Object.values(cardCounts).filter(count => count.card.type === 'role'),
+            conflictCards: Object.values(cardCounts).filter(count => count.card.side === 'conflict'),
+            dynastyCards: Object.values(cardCounts).filter(count => count.card.side === 'dynasty'),
+            provinceCards: Object.values(cardCounts).filter(count => count.card.type === 'province'),
             outsideTheGameCards: this.getShadowlandsSummonables()
         };
     }
@@ -186,14 +187,14 @@ class DeckBuilder {
             return this.cards[idOrLabelOrName];
         }
 
-        var cardsByName = _.filter(this.cards, matchCardByNameAndPack(idOrLabelOrName));
+        var cardsByName = Object.values(this.cards).filter(matchCardByNameAndPack(idOrLabelOrName));
 
         if(cardsByName.length === 0) {
             throw new Error(`Unable to find any card matching ${idOrLabelOrName}`);
         }
 
         if(cardsByName.length > 1) {
-            var matchingLabels = _.map(cardsByName, card => `${card.name} (${card.pack_code})`).join('\n');
+            var matchingLabels = cardsByName.map(card => `${card.name} (${card.pack_code})`).join('\n');
             throw new Error(`Multiple cards match the name ${idOrLabelOrName}. Use one of these instead:\n${matchingLabels}`);
         }
 

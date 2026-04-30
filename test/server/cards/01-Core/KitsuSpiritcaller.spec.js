@@ -78,7 +78,7 @@ describe('Kitsu Spiritcaller', function() {
                     this.player1.clickPrompt('No');
                     this.player1.clickPrompt('Gain 2 honor');
                     expect(this.honoredGeneral.location).toBe('dynasty deck');
-                    expect(this.player1.player.dynastyDeck.last()).toBe(this.honoredGeneral);
+                    expect(this.player1.player.dynastyDeck.at(-1)).toBe(this.honoredGeneral);
                 });
 
                 it('should allow save abilities to stop it returning to the bottom of the deck', function() {
