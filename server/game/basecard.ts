@@ -4,6 +4,7 @@ const AbilityDsl = require('./abilitydsl.js');
 const Effects = require('./effects');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const EffectSource = require('./EffectSource.js');
+import { CardStatusManager } from './CardStatusManager';
 import CardAbility from './CardAbility';
 import TriggeredAbility from './triggeredability';
 import Game from './game';
@@ -75,7 +76,7 @@ class BaseCard extends EffectSource {
 
     attachments = [] as DrawCard[];
     childCards = [] as DrawCard[];
-    statusTokens = [] as StatusToken[];
+    protected statusManager!: CardStatusManager;
     allowedAttachmentTraits = [] as string[];
     printedKeywords: Array<PrintedKeyword> = [];
     disguisedKeywordTraits = [] as string[];
@@ -85,6 +86,7 @@ class BaseCard extends EffectSource {
         public cardData: CardData
     ) {
         super(owner.game);
+        this.statusManager = new CardStatusManager(this);
         this.controller = owner;
 
         this.id = cardData.id;
@@ -1137,110 +1139,23 @@ class BaseCard extends EffectSource {
         this.controller.moveCard(card, location);
     }
 
-    addStatusToken(tokenType: CharacterStatus | StatusToken) {
-        const status = (tokenType as StatusToken).grantedStatus || (tokenType as CharacterStatus);
-        if(!this.statusTokens.find((a) => a.grantedStatus === status)) {
-            if(status === CharacterStatus.Honored && this.isDishonored) {
-                this.removeStatusToken(CharacterStatus.Dishonored);
-            } else if(status === CharacterStatus.Dishonored && this.isHonored) {
-                this.removeStatusToken(CharacterStatus.Honored);
-            } else {
-                const token = StatusToken.create(this.game, this, status);
-                if(token) {
-                    token.setCard(this);
-                    this.statusTokens.push(token);
-                }
-            }
-        }
-    }
+    get statusTokens(): StatusToken[] { return this.statusManager.statusTokens; }
 
-    removeStatusToken(tokenType: CharacterStatus | StatusToken) {
-        const status = (tokenType as StatusToken).grantedStatus || (tokenType as CharacterStatus);
-        const index = this.statusTokens.findIndex((a) => a.grantedStatus === status);
-        if(index > -1) {
-            const realToken = this.statusTokens[index];
-            realToken.setCard(null);
-            this.statusTokens.splice(index, 1);
-        }
-    }
-
-    getStatusToken(tokenType: CharacterStatus) {
-        return this.statusTokens.find((a) => a.grantedStatus === tokenType);
-    }
-
-    updateStatusTokenEffects() {
-        if(this.statusTokens) {
-            if(this.isHonored && this.isDishonored) {
-                this.removeStatusToken(CharacterStatus.Honored);
-                this.removeStatusToken(CharacterStatus.Dishonored);
-                this.game.addMessage(
-                    'Honored and Dishonored status tokens nullify each other and are both discarded from {0}',
-                    this
-                );
-            }
-
-            this.statusTokens.forEach((token) => {
-                token.setCard(this);
-            });
-        }
-    }
-
-    get hasStatusTokens() {
-        return !!this.statusTokens && this.statusTokens.length > 0;
-    }
-
-    hasStatusToken(type: CharacterStatus) {
-        return !!this.statusTokens && this.statusTokens.some((a) => a.grantedStatus === type);
-    }
-
-    get isHonored() {
-        return !!this.statusTokens && !!this.statusTokens.find((a) => a.grantedStatus === CharacterStatus.Honored);
-    }
-
-    honor() {
-        if(this.isHonored) {
-            return;
-        }
-        this.addStatusToken(CharacterStatus.Honored);
-    }
-
-    get isDishonored() {
-        return !!this.statusTokens && !!this.statusTokens.find((a) => a.grantedStatus === CharacterStatus.Dishonored);
-    }
-
-    dishonor() {
-        if(this.isDishonored) {
-            return;
-        }
-        this.addStatusToken(CharacterStatus.Dishonored);
-    }
-
-    get isTainted() {
-        return !!this.statusTokens && !!this.statusTokens.find((a) => a.grantedStatus === CharacterStatus.Tainted);
-    }
-
-    taint() {
-        if(this.isTainted) {
-            return;
-        }
-        this.addStatusToken(CharacterStatus.Tainted);
-    }
-
-    untaint() {
-        if(!this.isTainted) {
-            return;
-        }
-        this.removeStatusToken(CharacterStatus.Tainted);
-    }
-
-    makeOrdinary() {
-        this.removeStatusToken(CharacterStatus.Honored);
-        this.removeStatusToken(CharacterStatus.Dishonored);
-    }
-
-    isOrdinary() {
-        return !this.isHonored && !this.isDishonored;
-    }
+    addStatusToken(tokenType: CharacterStatus | StatusToken) { this.statusManager.addStatusToken(tokenType); }
+    removeStatusToken(tokenType: CharacterStatus | StatusToken) { this.statusManager.removeStatusToken(tokenType); }
+    getStatusToken(tokenType: CharacterStatus) { return this.statusManager.getStatusToken(tokenType); }
+    updateStatusTokenEffects() { this.statusManager.updateStatusTokenEffects(); }
+    get hasStatusTokens() { return this.statusManager.hasStatusTokens; }
+    hasStatusToken(type: CharacterStatus) { return this.statusManager.hasStatusToken(type); }
+    get isHonored() { return this.statusManager.isHonored; }
+    honor() { this.statusManager.honor(); }
+    get isDishonored() { return this.statusManager.isDishonored; }
+    dishonor() { this.statusManager.dishonor(); }
+    get isTainted() { return this.statusManager.isTainted; }
+    taint() { this.statusManager.taint(); }
+    untaint() { this.statusManager.untaint(); }
+    makeOrdinary() { this.statusManager.makeOrdinary(); }
+    isOrdinary() { return this.statusManager.isOrdinary(); }
 
     hasElementSymbols(): boolean {
         return false;
