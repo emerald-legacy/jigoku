@@ -34,7 +34,8 @@ export default class VengefulKami extends DrawCard {
                         .some((province: ProvinceCard) => this.wasProvinceAttacked(context.game.currentConflict, province) && province.getElement().includes(ring.element)),
                 gameAction: AbilityDsl.actions.resolveRingEffect()
             },
-            effect: 'resolve the {0} effect'
+            effect: 'resolve the {0} effect',
+            max: AbilityDsl.limit.perConflict(1)
         });
 
         this.persistentEffect({
