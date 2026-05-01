@@ -34,7 +34,7 @@ export class WsSocket extends EventEmitter {
     }
 
     private connect() {
-        const secretParam = env.nodeSecret ? `&secret=${encodeURIComponent(env.nodeSecret)}` : "";
+        const secretParam = env.nodeSecret ? `&secret=${encodeURIComponent(env.nodeSecret)}` : '';
         const url = `${env.lobbyWsUrl}?identity=${encodeURIComponent(env.gameNodeName)}${secretParam}`;
         logger.info(`${env.gameNodeName} connecting to lobby at ${env.lobbyWsUrl}?identity=${encodeURIComponent(env.gameNodeName)}`);
 
