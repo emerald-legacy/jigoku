@@ -18,6 +18,7 @@ const parsedEnv = z
         LOBBY_PORT: z.coerce.number().int(),
         MAX_GAMES: z.coerce.number().int().optional(),
         LOBBY_WS_URL: z.string(),
+        NODE_SECRET: z.string().optional(),
         SECRET: z.string(),
         SENTRY_DSN: z.string().optional(),
         BUILD_VERSION: z.string().optional()
@@ -44,6 +45,7 @@ export const https = parsedEnv.data.HTTPS;
 export const lobbyPort = parsedEnv.data.LOBBY_PORT;
 export const maxGames = parsedEnv.data.MAX_GAMES;
 export const lobbyWsUrl = parsedEnv.data.LOBBY_WS_URL;
+export const nodeSecret = parsedEnv.data.NODE_SECRET;
 export const secret = parsedEnv.data.SECRET;
 export const sentryDsn = parsedEnv.data.SENTRY_DSN;
 export const buildVersion = parsedEnv.data.BUILD_VERSION ?? 'LOCAL';
