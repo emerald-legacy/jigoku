@@ -4,6 +4,7 @@ const AbilityDsl = require('./abilitydsl.js');
 const Effects = require('./effects');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const EffectSource = require('./EffectSource.js');
+import { CardStatusManager } from './CardStatusManager';
 import CardAbility from './CardAbility';
 import TriggeredAbility from './triggeredability';
 import Game from './game';
@@ -45,24 +46,7 @@ import type { CardData } from './types/CardData';
 
 type Faction = 'neutral' | 'crab' | 'crane' | 'dragon' | 'lion' | 'phoenix' | 'scorpion' | 'unicorn' | 'shadowlands';
 
-const printedKeywords = [
-    'ancestral',
-    'corrupted',
-    'courtesy',
-    'covert',
-    'eminent',
-    'ephemeral',
-    'limited',
-    'no duels',
-    'peaceful',
-    'pride',
-    'rally',
-    'thriving',
-    'restricted',
-    'sincerity'
-] as const;
-type PrintedKeyword = (typeof printedKeywords)[number];
-const ValidKeywords = new Set(printedKeywords);
+import { type PrintedKeyword, parseKeywords as parseKeywordsFromText } from './KeywordParser';
 
 class BaseCard extends EffectSource {
     controller: Player;
@@ -92,7 +76,7 @@ class BaseCard extends EffectSource {
 
     attachments = [] as DrawCard[];
     childCards = [] as DrawCard[];
-    statusTokens = [] as StatusToken[];
+    protected statusManager!: CardStatusManager;
     allowedAttachmentTraits = [] as string[];
     printedKeywords: Array<PrintedKeyword> = [];
     disguisedKeywordTraits = [] as string[];
@@ -102,6 +86,7 @@ class BaseCard extends EffectSource {
         public cardData: CardData
     ) {
         super(owner.game);
+        this.statusManager = new CardStatusManager(this);
         this.controller = owner;
 
         this.id = cardData.id;
@@ -872,26 +857,10 @@ class BaseCard extends EffectSource {
     }
 
     parseKeywords(text: string) {
-        const potentialKeywords = [];
-        for(const line of text.split('\n')) {
-            for(const k of line.slice(0, -1).split('.')) {
-                potentialKeywords.push(k.trim());
-            }
-        }
-
-        for(const keyword of potentialKeywords) {
-            if(ValidKeywords.has(keyword as PrintedKeyword)) {
-                this.printedKeywords.push(keyword as PrintedKeyword);
-            } else if(keyword.startsWith('disguised ')) {
-                this.disguisedKeywordTraits.push(keyword.replace('disguised ', ''));
-            } else if(keyword.startsWith('no attachments except')) {
-                this.allowedAttachmentTraits = keyword.replace('no attachments except ', '').split(' or ');
-            } else if(keyword.startsWith('no attachments,')) {
-                //catch all for statements that are to hard to parse automatically
-            } else if(keyword.startsWith('no attachments')) {
-                this.allowedAttachmentTraits = ['none'];
-            }
-        }
+        const parsed = parseKeywordsFromText(text);
+        this.printedKeywords = parsed.keywords;
+        this.disguisedKeywordTraits = parsed.disguisedTraits;
+        this.allowedAttachmentTraits = parsed.allowedAttachmentTraits;
 
         for(const keyword of this.printedKeywords) {
             this.persistentEffect({ effect: AbilityDsl.effects.addKeyword(keyword) });
@@ -1170,109 +1139,54 @@ class BaseCard extends EffectSource {
         this.controller.moveCard(card, location);
     }
 
+    get statusTokens(): StatusToken[] {
+        return this.statusManager.statusTokens;
+    }
+
     addStatusToken(tokenType: CharacterStatus | StatusToken) {
-        const status = (tokenType as StatusToken).grantedStatus || (tokenType as CharacterStatus);
-        if(!this.statusTokens.find((a) => a.grantedStatus === status)) {
-            if(status === CharacterStatus.Honored && this.isDishonored) {
-                this.removeStatusToken(CharacterStatus.Dishonored);
-            } else if(status === CharacterStatus.Dishonored && this.isHonored) {
-                this.removeStatusToken(CharacterStatus.Honored);
-            } else {
-                const token = StatusToken.create(this.game, this, status);
-                if(token) {
-                    token.setCard(this);
-                    this.statusTokens.push(token);
-                }
-            }
-        }
+        this.statusManager.addStatusToken(tokenType);
     }
-
     removeStatusToken(tokenType: CharacterStatus | StatusToken) {
-        const status = (tokenType as StatusToken).grantedStatus || (tokenType as CharacterStatus);
-        const index = this.statusTokens.findIndex((a) => a.grantedStatus === status);
-        if(index > -1) {
-            const realToken = this.statusTokens[index];
-            realToken.setCard(null);
-            this.statusTokens.splice(index, 1);
-        }
+        this.statusManager.removeStatusToken(tokenType);
     }
-
     getStatusToken(tokenType: CharacterStatus) {
-        return this.statusTokens.find((a) => a.grantedStatus === tokenType);
+        return this.statusManager.getStatusToken(tokenType);
     }
-
     updateStatusTokenEffects() {
-        if(this.statusTokens) {
-            if(this.isHonored && this.isDishonored) {
-                this.removeStatusToken(CharacterStatus.Honored);
-                this.removeStatusToken(CharacterStatus.Dishonored);
-                this.game.addMessage(
-                    'Honored and Dishonored status tokens nullify each other and are both discarded from {0}',
-                    this
-                );
-            }
-
-            this.statusTokens.forEach((token) => {
-                token.setCard(this);
-            });
-        }
+        this.statusManager.updateStatusTokenEffects();
     }
-
     get hasStatusTokens() {
-        return !!this.statusTokens && this.statusTokens.length > 0;
+        return this.statusManager.hasStatusTokens;
     }
-
     hasStatusToken(type: CharacterStatus) {
-        return !!this.statusTokens && this.statusTokens.some((a) => a.grantedStatus === type);
+        return this.statusManager.hasStatusToken(type);
     }
-
     get isHonored() {
-        return !!this.statusTokens && !!this.statusTokens.find((a) => a.grantedStatus === CharacterStatus.Honored);
+        return this.statusManager.isHonored;
     }
-
     honor() {
-        if(this.isHonored) {
-            return;
-        }
-        this.addStatusToken(CharacterStatus.Honored);
+        this.statusManager.honor();
     }
-
     get isDishonored() {
-        return !!this.statusTokens && !!this.statusTokens.find((a) => a.grantedStatus === CharacterStatus.Dishonored);
+        return this.statusManager.isDishonored;
     }
-
     dishonor() {
-        if(this.isDishonored) {
-            return;
-        }
-        this.addStatusToken(CharacterStatus.Dishonored);
+        this.statusManager.dishonor();
     }
-
     get isTainted() {
-        return !!this.statusTokens && !!this.statusTokens.find((a) => a.grantedStatus === CharacterStatus.Tainted);
+        return this.statusManager.isTainted;
     }
-
     taint() {
-        if(this.isTainted) {
-            return;
-        }
-        this.addStatusToken(CharacterStatus.Tainted);
+        this.statusManager.taint();
     }
-
     untaint() {
-        if(!this.isTainted) {
-            return;
-        }
-        this.removeStatusToken(CharacterStatus.Tainted);
+        this.statusManager.untaint();
     }
-
     makeOrdinary() {
-        this.removeStatusToken(CharacterStatus.Honored);
-        this.removeStatusToken(CharacterStatus.Dishonored);
+        this.statusManager.makeOrdinary();
     }
-
     isOrdinary() {
-        return !this.isHonored && !this.isDishonored;
+        return this.statusManager.isOrdinary();
     }
 
     hasElementSymbols(): boolean {

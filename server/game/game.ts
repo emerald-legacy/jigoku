@@ -14,11 +14,6 @@ import { ConflictPhase } from './gamesteps/ConflictPhase.js';
 import { FatePhase } from './gamesteps/FatePhase.js';
 import { EndRoundPrompt } from './gamesteps/regroup/EndRoundPrompt.js';
 import { SimpleStep } from './gamesteps/SimpleStep.js';
-import MenuPrompt from './gamesteps/menuprompt.js';
-import HandlerMenuPrompt from './gamesteps/handlermenuprompt.js';
-import HonorBidPrompt from './gamesteps/honorbidprompt.js';
-import SelectCardPrompt from './gamesteps/selectcardprompt.js';
-import SelectRingPrompt from './gamesteps/selectringprompt.js';
 import GameWonPrompt from './gamesteps/GameWonPrompt';
 import * as GameActions from './GameActions/GameActions';
 import { Event } from './Events/Event';
@@ -36,6 +31,8 @@ import * as MenuCommands from './MenuCommands';
 import SpiritOfTheRiver from './cards/SpiritOfTheRiver';
 
 import { EffectNames, Phases, EventNames, Locations, ConflictTypes, Elements } from './Constants';
+import { ConflictTracker, type ConflictRecord } from './ConflictTracker';
+import { GamePromptHelper } from './GamePromptHelper';
 import { GameModes } from '../GameModes.js';
 import { resolvePackId } from './CardPackUtil';
 import type BaseCard from './basecard';
@@ -60,16 +57,6 @@ interface GameDetails {
 interface GameOptions {
     shortCardData?: any[];
     router?: any;
-}
-
-interface ConflictRecord {
-    attackingPlayer: Player;
-    declaredType: ConflictTypes | string;
-    passed: boolean;
-    uuid: string;
-    completed?: boolean;
-    winner?: Player;
-    typeSwitched?: boolean;
 }
 
 class Game extends EventEmitter {
@@ -99,7 +86,8 @@ class Game extends EventEmitter {
     password?: string;
     roundNumber: number;
     initialFirstPlayer: string | null;
-    conflictRecord: ConflictRecord[];
+    private conflictTracker: ConflictTracker;
+    readonly prompts: GamePromptHelper;
     rings: Record<string, Ring>;
     shortCardData: any[];
     router: any;
@@ -146,7 +134,8 @@ class Game extends EventEmitter {
         this.roundNumber = 0;
         this.initialFirstPlayer = null;
 
-        this.conflictRecord = [];
+        this.conflictTracker = new ConflictTracker();
+        this.prompts = new GamePromptHelper(this);
         this.rings = {
             air: new Ring(this, Elements.Air, ConflictTypes.Military),
             earth: new Ring(this, Elements.Earth, ConflictTypes.Political),
@@ -176,6 +165,14 @@ class Game extends EventEmitter {
         this.setMaxListeners(0);
 
         this.router = options.router;
+    }
+
+    get conflictRecord(): ConflictRecord[] {
+        return this.conflictTracker.records;
+    }
+
+    set conflictRecord(records: ConflictRecord[]) {
+        this.conflictTracker.records = records;
     }
 
     /*
@@ -385,35 +382,15 @@ class Game extends EventEmitter {
     }
 
     recordConflict(conflict: any): void {
-        this.conflictRecord.push({
-            attackingPlayer: conflict.attackingPlayer,
-            declaredType: conflict.declaredType,
-            passed: conflict.conflictPassed,
-            uuid: conflict.uuid
-        });
-        if(conflict.conflictPassed) {
-            conflict.attackingPlayer.declaredConflictOpportunities[ConflictTypes.Passed]++;
-        } else if(conflict.forcedDeclaredType) {
-            conflict.attackingPlayer.declaredConflictOpportunities[ConflictTypes.Forced]++;
-        } else {
-            conflict.attackingPlayer.declaredConflictOpportunities[conflict.declaredType]++;
-        }
+        this.conflictTracker.record(conflict);
     }
 
     getConflicts(player: Player): ConflictRecord[] {
-        if(!player) {
-            return [];
-        }
-        return this.conflictRecord.filter((record) => record.attackingPlayer === player);
+        return this.conflictTracker.getForPlayer(player);
     }
 
     recordConflictWinner(conflict: any): void {
-        const record = this.conflictRecord.find((record) => record.uuid === conflict.uuid);
-        if(record) {
-            record.completed = true;
-            record.winner = conflict.winner;
-            record.typeSwitched = conflict.conflictTypeSwitched;
-        }
+        this.conflictTracker.recordWinner(conflict);
     }
 
     stopNonChessClocks(): void {
@@ -741,36 +718,24 @@ class Game extends EventEmitter {
         }
     }
 
-    /**
-     * Prompts a player with a multiple choice menu
-     */
     promptWithMenu(player: Player, contextObj: any, properties: any): void {
-        this.queueStep(new MenuPrompt(this, player, contextObj, properties));
+        this.prompts.promptWithMenu(player, contextObj, properties);
     }
 
-    /**
-     * Prompts a player with a multiple choice menu
-     */
     promptWithHandlerMenu(player: Player, properties: any): void {
-        this.queueStep(new HandlerMenuPrompt(this, player, properties));
+        this.prompts.promptWithHandlerMenu(player, properties);
     }
 
-    /**
-     * Prompts a player to click a card
-     */
     promptForSelect(player: Player, properties: any): void {
-        this.queueStep(new SelectCardPrompt(this, player, properties));
+        this.prompts.promptForSelect(player, properties);
     }
 
-    /**
-     * Prompts a player to click a ring
-     */
     promptForRingSelect(player: Player, properties: any): void {
-        this.queueStep(new SelectRingPrompt(this, player, properties));
+        this.prompts.promptForRingSelect(player, properties);
     }
 
     promptForHonorBid(activePromptTitle: string, costHandler?: any, prohibitedBids?: any, duel: any = null): void {
-        this.queueStep(new HonorBidPrompt(this, activePromptTitle, costHandler, prohibitedBids, duel));
+        this.prompts.promptForHonorBid(activePromptTitle, costHandler, prohibitedBids, duel);
     }
 
     /**

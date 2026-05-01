@@ -1,4 +1,3 @@
-/* global describe, beforeEach, jasmine */
 /* eslint camelcase: 0, no-invalid-this: 0 */
 
 const { GameModes } = require('../../build/server/GameModes.js');
