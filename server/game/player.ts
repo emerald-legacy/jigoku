@@ -165,50 +165,110 @@ class Player extends GameObject {
         this.honorTracker.honor = value;
     }
 
-    get dynastyDeck(): DrawCard[] { return this.zones.dynastyDeck; }
-    set dynastyDeck(v: DrawCard[]) { this.zones.dynastyDeck = v; }
+    get dynastyDeck(): DrawCard[] {
+        return this.zones.dynastyDeck;
+    }
+    set dynastyDeck(v: DrawCard[]) {
+        this.zones.dynastyDeck = v;
+    }
 
-    get conflictDeck(): DrawCard[] { return this.zones.conflictDeck; }
-    set conflictDeck(v: DrawCard[]) { this.zones.conflictDeck = v; }
+    get conflictDeck(): DrawCard[] {
+        return this.zones.conflictDeck;
+    }
+    set conflictDeck(v: DrawCard[]) {
+        this.zones.conflictDeck = v;
+    }
 
-    get provinceDeck(): BaseCard[] { return this.zones.provinceDeck; }
-    set provinceDeck(v: BaseCard[]) { this.zones.provinceDeck = v; }
+    get provinceDeck(): BaseCard[] {
+        return this.zones.provinceDeck;
+    }
+    set provinceDeck(v: BaseCard[]) {
+        this.zones.provinceDeck = v;
+    }
 
-    get hand(): DrawCard[] { return this.zones.hand; }
-    set hand(v: DrawCard[]) { this.zones.hand = v; }
+    get hand(): DrawCard[] {
+        return this.zones.hand;
+    }
+    set hand(v: DrawCard[]) {
+        this.zones.hand = v;
+    }
 
-    get cardsInPlay(): DrawCard[] { return this.zones.cardsInPlay; }
-    set cardsInPlay(v: DrawCard[]) { this.zones.cardsInPlay = v; }
+    get cardsInPlay(): DrawCard[] {
+        return this.zones.cardsInPlay;
+    }
+    set cardsInPlay(v: DrawCard[]) {
+        this.zones.cardsInPlay = v;
+    }
 
-    get strongholdProvince(): BaseCard[] { return this.zones.strongholdProvince; }
-    set strongholdProvince(v: BaseCard[]) { this.zones.strongholdProvince = v; }
+    get strongholdProvince(): BaseCard[] {
+        return this.zones.strongholdProvince;
+    }
+    set strongholdProvince(v: BaseCard[]) {
+        this.zones.strongholdProvince = v;
+    }
 
-    get provinceOne(): BaseCard[] { return this.zones.provinceOne; }
-    set provinceOne(v: BaseCard[]) { this.zones.provinceOne = v; }
+    get provinceOne(): BaseCard[] {
+        return this.zones.provinceOne;
+    }
+    set provinceOne(v: BaseCard[]) {
+        this.zones.provinceOne = v;
+    }
 
-    get provinceTwo(): BaseCard[] { return this.zones.provinceTwo; }
-    set provinceTwo(v: BaseCard[]) { this.zones.provinceTwo = v; }
+    get provinceTwo(): BaseCard[] {
+        return this.zones.provinceTwo;
+    }
+    set provinceTwo(v: BaseCard[]) {
+        this.zones.provinceTwo = v;
+    }
 
-    get provinceThree(): BaseCard[] { return this.zones.provinceThree; }
-    set provinceThree(v: BaseCard[]) { this.zones.provinceThree = v; }
+    get provinceThree(): BaseCard[] {
+        return this.zones.provinceThree;
+    }
+    set provinceThree(v: BaseCard[]) {
+        this.zones.provinceThree = v;
+    }
 
-    get provinceFour(): BaseCard[] { return this.zones.provinceFour; }
-    set provinceFour(v: BaseCard[]) { this.zones.provinceFour = v; }
+    get provinceFour(): BaseCard[] {
+        return this.zones.provinceFour;
+    }
+    set provinceFour(v: BaseCard[]) {
+        this.zones.provinceFour = v;
+    }
 
-    get dynastyDiscardPile(): DrawCard[] { return this.zones.dynastyDiscardPile; }
-    set dynastyDiscardPile(v: DrawCard[]) { this.zones.dynastyDiscardPile = v; }
+    get dynastyDiscardPile(): DrawCard[] {
+        return this.zones.dynastyDiscardPile;
+    }
+    set dynastyDiscardPile(v: DrawCard[]) {
+        this.zones.dynastyDiscardPile = v;
+    }
 
-    get conflictDiscardPile(): DrawCard[] { return this.zones.conflictDiscardPile; }
-    set conflictDiscardPile(v: DrawCard[]) { this.zones.conflictDiscardPile = v; }
+    get conflictDiscardPile(): DrawCard[] {
+        return this.zones.conflictDiscardPile;
+    }
+    set conflictDiscardPile(v: DrawCard[]) {
+        this.zones.conflictDiscardPile = v;
+    }
 
-    get removedFromGame(): BaseCard[] { return this.zones.removedFromGame; }
-    set removedFromGame(v: BaseCard[]) { this.zones.removedFromGame = v; }
+    get removedFromGame(): BaseCard[] {
+        return this.zones.removedFromGame;
+    }
+    set removedFromGame(v: BaseCard[]) {
+        this.zones.removedFromGame = v;
+    }
 
-    get additionalPiles(): Record<string, any> { return this.zones.additionalPiles; }
-    set additionalPiles(v: Record<string, any>) { this.zones.additionalPiles = v; }
+    get additionalPiles(): Record<string, any> {
+        return this.zones.additionalPiles;
+    }
+    set additionalPiles(v: Record<string, any>) {
+        this.zones.additionalPiles = v;
+    }
 
-    get underneathStronghold(): BaseCard[] { return this.zones.underneathStronghold; }
-    set underneathStronghold(v: BaseCard[]) { this.zones.underneathStronghold = v; }
+    get underneathStronghold(): BaseCard[] {
+        return this.zones.underneathStronghold;
+    }
+    set underneathStronghold(v: BaseCard[]) {
+        this.zones.underneathStronghold = v;
+    }
 
     getSourceList(source: string): any[] {
         return this.zones.getSourceList(source);

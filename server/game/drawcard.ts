@@ -5,8 +5,6 @@ import CourtesyAbility from './KeywordAbilities/CourtesyAbility';
 import PrideAbility from './KeywordAbilities/PrideAbility';
 import SincerityAbility from './KeywordAbilities/SincerityAbility';
 import { RallyAbility } from './KeywordAbilities/RallyAbility.js';
-import StatModifier from './StatModifier';
-
 import { Locations, EffectNames, CardTypes, PlayTypes, ConflictTypes, EventNames } from './Constants';
 import { GameModes } from '../GameModes';
 import { EventRegistrar } from './EventRegistrar';

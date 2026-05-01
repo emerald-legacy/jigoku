@@ -1,4 +1,3 @@
-/* global jasmine */
 
 const Game = require('../../build/server/game/game.js');
 const PlayerInteractionWrapper = require('./playerinteractionwrapper.js');
@@ -125,7 +124,7 @@ class GameFlowWrapper {
             this.player2.player.getConflictOpportunities() > 0) {
             try {
                 this.noMoreActions();
-            } catch(e) {
+            } catch(_e) {
                 // Case: handle skipping a player's conflict
                 var playersInPromptedOrder = this.allPlayers.slice().sort((a, b) => (a.hasPrompt('Waiting for opponent to declare conflict') ? 1 : 0) - (b.hasPrompt('Waiting for opponent to declare conflict') ? 1 : 0));
                 playersInPromptedOrder[0].clickPrompt('Pass Conflict');

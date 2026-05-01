@@ -2,15 +2,17 @@ import StatModifier from './StatModifier';
 import { EffectNames } from './Constants';
 import type DrawCard from './drawcard';
 
+interface BaseSkillModifiers {
+    baseMilitaryModifiers: any[];
+    baseMilitarySkill: number;
+    basePoliticalModifiers: any[];
+    basePoliticalSkill: number;
+}
+
 export class SkillCalculator {
     constructor(private card: DrawCard) {}
 
-    getBaseSkillModifiers(): {
-        baseMilitaryModifiers: any[];
-        baseMilitarySkill: number;
-        basePoliticalModifiers: any[];
-        basePoliticalSkill: number;
-    } {
+    getBaseSkillModifiers(): BaseSkillModifiers {
         const baseModifierEffects = [
             EffectNames.CopyCharacter,
             EffectNames.CalculatePrintedMilitarySkill,

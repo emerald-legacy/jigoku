@@ -73,7 +73,7 @@ module.exports = [
                 }
             }],
             'no-trailing-spaces': 'error',
-            'no-unused-vars': ['error', { varsIgnorePattern: '^_', argsIgnorePattern: '^_' }]
+            'no-unused-vars': ['error', { varsIgnorePattern: '^_', argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }]
         }
     },
     // TypeScript source files (with type checking)

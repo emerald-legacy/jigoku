@@ -1139,23 +1139,55 @@ class BaseCard extends EffectSource {
         this.controller.moveCard(card, location);
     }
 
-    get statusTokens(): StatusToken[] { return this.statusManager.statusTokens; }
+    get statusTokens(): StatusToken[] {
+        return this.statusManager.statusTokens;
+    }
 
-    addStatusToken(tokenType: CharacterStatus | StatusToken) { this.statusManager.addStatusToken(tokenType); }
-    removeStatusToken(tokenType: CharacterStatus | StatusToken) { this.statusManager.removeStatusToken(tokenType); }
-    getStatusToken(tokenType: CharacterStatus) { return this.statusManager.getStatusToken(tokenType); }
-    updateStatusTokenEffects() { this.statusManager.updateStatusTokenEffects(); }
-    get hasStatusTokens() { return this.statusManager.hasStatusTokens; }
-    hasStatusToken(type: CharacterStatus) { return this.statusManager.hasStatusToken(type); }
-    get isHonored() { return this.statusManager.isHonored; }
-    honor() { this.statusManager.honor(); }
-    get isDishonored() { return this.statusManager.isDishonored; }
-    dishonor() { this.statusManager.dishonor(); }
-    get isTainted() { return this.statusManager.isTainted; }
-    taint() { this.statusManager.taint(); }
-    untaint() { this.statusManager.untaint(); }
-    makeOrdinary() { this.statusManager.makeOrdinary(); }
-    isOrdinary() { return this.statusManager.isOrdinary(); }
+    addStatusToken(tokenType: CharacterStatus | StatusToken) {
+        this.statusManager.addStatusToken(tokenType);
+    }
+    removeStatusToken(tokenType: CharacterStatus | StatusToken) {
+        this.statusManager.removeStatusToken(tokenType);
+    }
+    getStatusToken(tokenType: CharacterStatus) {
+        return this.statusManager.getStatusToken(tokenType);
+    }
+    updateStatusTokenEffects() {
+        this.statusManager.updateStatusTokenEffects();
+    }
+    get hasStatusTokens() {
+        return this.statusManager.hasStatusTokens;
+    }
+    hasStatusToken(type: CharacterStatus) {
+        return this.statusManager.hasStatusToken(type);
+    }
+    get isHonored() {
+        return this.statusManager.isHonored;
+    }
+    honor() {
+        this.statusManager.honor();
+    }
+    get isDishonored() {
+        return this.statusManager.isDishonored;
+    }
+    dishonor() {
+        this.statusManager.dishonor();
+    }
+    get isTainted() {
+        return this.statusManager.isTainted;
+    }
+    taint() {
+        this.statusManager.taint();
+    }
+    untaint() {
+        this.statusManager.untaint();
+    }
+    makeOrdinary() {
+        this.statusManager.makeOrdinary();
+    }
+    isOrdinary() {
+        return this.statusManager.isOrdinary();
+    }
 
     hasElementSymbols(): boolean {
         return false;
