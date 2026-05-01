@@ -9,7 +9,7 @@ export default class UtakuTakeko extends DrawCard {
 
     public setupCardAbilities() {
         this.action({
-            title: 'Play character from your discard pile',
+            title: 'Play a character from your dynasty deck',
             gameAction: AbilityDsl.actions.deckSearch(() => ({
                 activePromptTitle: 'Select a character to play',
                 amount: 8,
