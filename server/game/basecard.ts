@@ -1246,7 +1246,8 @@ class BaseCard extends EffectSource {
         }
         const seen = new Set();
         const limits: Array<{ max: number; current: number; exhausted: boolean }> = [];
-        for(const ability of [...this.abilities.actions, ...this.abilities.reactions]) {
+        const gainedAbilities = this.getEffects(EffectNames.GainAbility);
+        for(const ability of [...this.abilities.actions, ...this.abilities.reactions, ...gainedAbilities]) {
             const limit = ability.limit;
             if(!limit || seen.has(limit)) {
                 continue;
