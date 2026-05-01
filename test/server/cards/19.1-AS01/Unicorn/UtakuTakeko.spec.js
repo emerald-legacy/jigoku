@@ -24,7 +24,7 @@ describe('Utaku Takeko', function () {
                 this.yasamura = this.player1.moveCard('shinjo-yasamura', 'dynasty deck');
             });
 
-            it('should allow you to pick a 1 glory or higher unicorn character from your dynasty discard pile and play it', function () {
+            it('should allow you to pick a 1 glory or higher unicorn character from your dynasty deck and play it', function () {
                 this.player1.clickCard(this.utakuTakeko);
 
                 expect(this.player1).toHavePrompt('Select a character to play');
@@ -44,7 +44,7 @@ describe('Utaku Takeko', function () {
                 expect(this.getChatLogs(5)).toContain('Utaku Takeko recalls a distant relative who is a Border Rider');
             });
 
-            it('should allow you to pick a 1 glory or higher unicorn character from your dynasty discard pile and play it at home during a conflict', function () {
+            it('should allow you to pick a 1 glory or higher unicorn character from your dynasty deck and play it at home during a conflict', function () {
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.utakuTakeko],
