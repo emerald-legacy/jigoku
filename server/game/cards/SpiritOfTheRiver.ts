@@ -30,10 +30,11 @@ class SpiritOfTheRiver extends DrawCard {
     }
 
     getSummary(activePlayer, hideWhenFaceup) {
-        let summary = super.getSummary(activePlayer, hideWhenFaceup);
-        let tokenProps: { isToken: boolean; id?: string } = { isToken: true };
+        const summary = super.getSummary(activePlayer, hideWhenFaceup);
+        const tokenProps: Record<string, unknown> = { isToken: true };
         if(activePlayer === this.controller) {
-            tokenProps.id = this.facedownCard.cardData.id;
+            tokenProps.facedownId = this.facedownCard.cardData.id;
+            tokenProps.facedownPackId = this.facedownCard.packId;
         }
         return Object.assign(summary, tokenProps);
     }
