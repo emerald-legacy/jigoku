@@ -55,9 +55,8 @@ class Process {
                 this.context.player.opponent
             );
             for(const card of this.cardsToSteal) {
-                card.owner.removeCardFromPile(card);
-                card.moveTo(Locations.RemovedFromGame);
-                this.context.player.removedFromGame.unshift(card);
+                this.context.player.moveCard(card, Locations.RemovedFromGame);
+                card.controller = this.context.player;
                 this.context.source.lastingEffect(() => ({
                     until: {
                         onCardMoved: (event: any) =>
