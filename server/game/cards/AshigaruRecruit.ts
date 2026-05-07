@@ -31,10 +31,11 @@ export class AshigaruRecruit extends DrawCard {
 
     getSummary(activePlayer: Player, hideWhenFaceup: boolean) {
         const summary = super.getSummary(activePlayer, hideWhenFaceup);
-        const tokenProps =
-            activePlayer === this.controller
-                ? { id: this.facedownCard.cardData.id as string, isToken: true }
-                : { isToken: true };
+        const tokenProps: Record<string, unknown> = { isToken: true };
+        if(activePlayer === this.controller) {
+            tokenProps.facedownId = this.facedownCard.cardData.id;
+            tokenProps.facedownPackId = this.facedownCard.packId;
+        }
         return Object.assign(summary, tokenProps);
     }
 }
