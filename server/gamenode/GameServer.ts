@@ -277,7 +277,7 @@ export class GameServer {
             return;
         }
 
-        game.addAlert('info', 'Both players have left. This match will close in 5 minutes.');
+        game.addAlert('info', 'Both players have left. This match will close in 60 seconds.');
         this.sendGameState(game);
 
         const timer = setTimeout(() => {
@@ -286,7 +286,7 @@ export class GameServer {
                 logger.info(`Auto-closing abandoned game ${game.id} (${game.name})`);
                 this.notifyAndCloseGame(game);
             }
-        }, 5 * 60 * 1000);
+        }, 60 * 1000);
 
         this.abandonTimers.set(game.id, timer);
     }
