@@ -31,6 +31,10 @@ export default class KissOfTheSea extends DrawCard {
                         return false;
                     }
 
+                    if(!context.source.parent.isParticipating()) {
+                        return false;
+                    }
+
                     for(let i = 0; i < event.effectTypes.length; i++) {
                         if(effects.includes(event.effectTypes[i])) {
                             return true;

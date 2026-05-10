@@ -578,6 +578,20 @@ describe('SoD - Scorpion', function () {
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
 
+            it('should not trigger when not participating', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.yunako],
+                    defenders: [this.keeper]
+                });
+
+                this.player2.clickCard(this.defiance);
+                this.player2.clickCard(this.brash);
+
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+            });
+
             it('delayed effect', function () {
                 this.noMoreActions();
                 this.initiateConflict({
