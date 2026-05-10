@@ -432,7 +432,7 @@ describe('SoD - Lion', function () {
                 this.player2.clickCard(this.deeds);
                 this.player2.clickCard(this.natsuko);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
-                expect(this.getChatLogs(5)).toContain('player2 plays Deeds, not Words to give Ikoma Natsuko +2miliary');
+                expect(this.getChatLogs(5)).toContain('player2 plays Deeds, not Words to give Ikoma Natsuko +2military');
                 expect(this.natsuko.getMilitarySkill()).toBe(mil + 2);
             });
 
@@ -446,23 +446,17 @@ describe('SoD - Lion', function () {
                 });
 
                 const mil = this.natsuko.getMilitarySkill();
-                const mil2 = this.challenger.getMilitarySkill();
                 this.player2.clickCard(this.deeds);
                 this.player2.clickCard(this.natsuko);
-                expect(this.getChatLogs(5)).toContain('player2 plays Deeds, not Words to give Ikoma Natsuko +2miliary');
+                expect(this.getChatLogs(5)).toContain('player2 plays Deeds, not Words to give Ikoma Natsuko +2military');
                 expect(this.natsuko.getMilitarySkill()).toBe(mil + 2);
                 expect(this.player2).toHavePromptButton('Discard the Imperial Favor');
                 expect(this.player2).toHavePromptButton('Done');
 
                 this.player2.clickPrompt('Discard the Imperial Favor');
 
-                expect(this.player2).toBeAbleToSelect(this.challenger);
-                expect(this.player2).not.toBeAbleToSelect(this.natsuko);
-
-                this.player2.clickCard(this.challenger);
-                expect(this.challenger.getMilitarySkill()).toBe(mil2 + 2);
+                expect(this.natsuko.isHonored).toBe(true);
                 expect(this.player2.player.imperialFavor).toBe('');
-                expect(this.getChatLogs(5)).toContain('player2 discards the Imperial Favor to give Doji Challenger +2military');
             });
 
             it('not discarding favor', function () {
@@ -475,10 +469,9 @@ describe('SoD - Lion', function () {
                 });
 
                 const mil = this.natsuko.getMilitarySkill();
-                const _mil2 = this.challenger.getMilitarySkill();
                 this.player2.clickCard(this.deeds);
                 this.player2.clickCard(this.natsuko);
-                expect(this.getChatLogs(5)).toContain('player2 plays Deeds, not Words to give Ikoma Natsuko +2miliary');
+                expect(this.getChatLogs(5)).toContain('player2 plays Deeds, not Words to give Ikoma Natsuko +2military');
                 expect(this.natsuko.getMilitarySkill()).toBe(mil + 2);
                 this.player2.clickPrompt('Done');
                 expect(this.player2.player.imperialFavor).toBe('military');
@@ -496,7 +489,6 @@ describe('SoD - Lion', function () {
                 this.player2.clickCard(this.deeds);
                 this.player2.clickCard(this.natsuko);
                 this.player2.clickPrompt('Discard the Imperial Favor');
-                this.player2.clickCard(this.challenger);
 
                 this.noMoreActions();
 
@@ -521,7 +513,6 @@ describe('SoD - Lion', function () {
                 this.player2.clickCard(this.deeds);
                 this.player2.clickCard(this.natsuko);
                 this.player2.clickPrompt('Discard the Imperial Favor');
-                this.player2.clickCard(this.challenger);
 
                 this.natsuko.bow();
                 this.challenger.bow();

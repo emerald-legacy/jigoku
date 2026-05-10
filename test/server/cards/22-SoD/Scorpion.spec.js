@@ -5,7 +5,7 @@ describe('SoD - Scorpion', function () {
                 this.setupTest({
                     phase: 'conflict',
                     player1: {
-                        inPlay: ['bayushi-rumormonger'],
+                        inPlay: ['bayushi-rumormonger', 'kakita-toshimoko'],
                         hand: []
                     },
                     player2: {
@@ -15,30 +15,52 @@ describe('SoD - Scorpion', function () {
                 });
 
                 this.rumormonger = this.player1.findCardByName('bayushi-rumormonger');
+                this.toshimoko = this.player1.findCardByName('kakita-toshimoko');
                 this.keeper = this.player2.findCardByName('keeper-initiate');
                 this.diplomat = this.player2.findCardByName('doji-diplomat');
+                this.assassination = this.player2.findCardByName('assassination');
+                this.letGo = this.player2.findCardByName('let-go');
                 this.training = this.player2.findCardByName('duelist-training');
 
+                this.player2.player.moveCard(this.assassination, 'conflict deck');
+                this.player2.player.moveCard(this.letGo, 'conflict deck');
                 this.player2.player.moveCard(this.training, 'conflict deck');
             });
 
-            it('should work', function () {
-                this.player1.clickCard(this.rumormonger);
-
-                expect(this.player1).toBeAbleToSelect(this.diplomat);
-                expect(this.player1).not.toBeAbleToSelect(this.keeper);
-                expect(this.getChatLogs(5)).toContain('player1 uses Bayushi Rumormonger to discard the top card of player2\'s conflict deck');
-
-                this.player1.clickCard(this.diplomat);
-
-                expect(this.getChatLogs(5)).toContain('player1 dishonors Doji Diplomat');
+            it('should not work outside of conflict', function () {
+                expect(this.player1).not.toBeAbleToSelect(this.rumormonger);
             });
 
-            it('should work if no one to bow', function () {
-                this.player2.moveCard(this.diplomat, 'dynasty deck');
+            it('should discard based on attacker count', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.rumormonger, this.toshimoko],
+                    defenders: [this.keeper]
+                });
+
+                this.player2.pass();
+
+                const before = this.player2.player.conflictDeck.length;
                 this.player1.clickCard(this.rumormonger);
-                expect(this.getChatLogs(5)).toContain('player1 uses Bayushi Rumormonger to discard the top card of player2\'s conflict deck');
-                expect(this.player2).toHavePrompt('Action Window');
+                expect(this.getChatLogs(5)).toContain('player1 uses Bayushi Rumormonger to discard 2 cards from player2\'s conflict deck');
+                expect(this.player2.player.conflictDeck.length).toBe(before - 2);
+            });
+
+            it('should discard based on defender count', function () {
+                this.noMoreActions();
+                this.player1.passConflict();
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.keeper, this.diplomat],
+                    defenders: []
+                });
+
+                const before = this.player2.player.conflictDeck.length;
+                this.player1.clickCard(this.rumormonger);
+                expect(this.getChatLogs(5)).toContain('player1 uses Bayushi Rumormonger to discard 2 cards from player2\'s conflict deck');
+                expect(this.player2.player.conflictDeck.length).toBe(before - 2);
             });
         });
 
@@ -198,6 +220,31 @@ describe('SoD - Scorpion', function () {
                 this.player1.clickCard(this.diplomat);
                 expect(this.diplomat.isParticipating()).toBe(false);
             });
+
+            it('should only trigger once per conflict', function () {
+                this.keeper.dishonor();
+
+                this.player1.pass();
+                this.player2.clickCard(this.mount);
+                this.player2.clickCard(this.keeper);
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.rumormonger],
+                    defenders: [this.keeper, this.diplomat]
+                });
+
+                expect(this.player1).toBeAbleToSelect(this.pressure);
+                this.player1.clickCard(this.pressure);
+                expect(this.keeper.isParticipating()).toBe(false);
+
+                this.diplomat.dishonor();
+                this.player2.clickCard(this.mount);
+                this.player2.clickCard(this.diplomat);
+
+                expect(this.player1).not.toBeAbleToSelect(this.pressure);
+            });
         });
 
         describe('Disputed Lineage', function () {
@@ -299,11 +346,18 @@ describe('SoD - Scorpion', function () {
             });
 
             it('should work', function () {
+                this.player1.pass();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.rumormonger],
+                    defenders: [this.keeper]
+                });
+                this.player2.pass();
+
                 this.player1.clickCard(this.rumormonger);
 
                 expect(this.player2).toBeAbleToSelect(this.aya);
                 this.player2.clickCard(this.aya);
-                expect(this.getChatLogs(5)).toContain('player1 uses Bayushi Rumormonger to discard the top card of player2\'s conflict deck');
                 expect(this.getChatLogs(5)).toContain('player2 uses Soshi Aya, putting Soshi Aya into play to cancel the effects of Bayushi Rumormonger');
                 expect(this.aya.location).toBe('play area');
                 expect(this.aya.fate).toBe(1);
