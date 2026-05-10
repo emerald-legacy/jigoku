@@ -40,17 +40,8 @@ export default class DeedsNotWords extends DrawCard {
                             AbilityDsl.actions.loseImperialFavor(() => ({
                                 target: context.player
                             })),
-                            AbilityDsl.actions.selectCard(() => ({
-                                activePromptTitle: 'Choose a character to give +2 mil',
-                                player: Players.Self,
-                                controller: Players.Self,
-                                cardCondition: (card) => card !== context.target,
-                                targets: true,
-                                message: '{0} discards the Imperial Favor to give {1} +2{2}',
-                                messageArgs: (card) => [context.player, card, 'military'],
-                                gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
-                                    effect: AbilityDsl.effects.modifyMilitarySkill(2)
-                                }))
+                            AbilityDsl.actions.honor(() => ({
+                                target: context.target
                             }))
                         ]),
                         'Done': () => true
