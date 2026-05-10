@@ -58,7 +58,7 @@ export default class DeedsNotWords extends DrawCard {
                 }
             }),
             effect: 'give {0} +2{1}',
-            effectArgs: _context => ['miliary']
+            effectArgs: _context => ['military']
         });
     }
 }
