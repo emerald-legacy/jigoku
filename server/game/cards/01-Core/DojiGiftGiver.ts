@@ -14,7 +14,7 @@ export default class DojiGiftGiver extends DrawCard {
                 player: Players.Opponent,
                 cardType: CardTypes.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating(),
+                cardCondition: (card) => card.isParticipating() && !card.bowed,
                 gameAction: AbilityDsl.actions.bow()
             }
         });
