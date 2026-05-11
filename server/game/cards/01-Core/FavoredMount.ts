@@ -14,6 +14,7 @@ class FavoredMount extends DrawCard {
 
         this.action({
             title: 'Move this character into the conflict',
+            condition: () => this.game.isDuringConflict(),
             cost: ability.costs.bowSelf(),
             gameAction: ability.actions.moveToConflict(context => ({ target: context.source.parent }))
         });
