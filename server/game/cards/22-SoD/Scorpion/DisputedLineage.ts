@@ -17,7 +17,7 @@ export default class DisputedLineage extends DrawCard {
                         duration: Durations.UntilEndOfRound
                     })),
                     AbilityDsl.actions.playerLastingEffect(context => ({
-                        duration: Durations.UntilEndOfPhase,
+                        duration: Durations.UntilEndOfRound,
                         targetController: context.target.controller,
                         condition: () => context.target.isParticipating(),
                         effect: AbilityDsl.effects.playerCannot({
