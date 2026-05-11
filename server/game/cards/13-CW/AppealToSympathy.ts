@@ -14,17 +14,24 @@ class AppealToSympathy extends DrawCard {
             cannotBeMirrored: true,
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cancel(),
-                AbilityDsl.actions.moveCard((context) => ({
-                    target: context.event.card,
-                    destination: context.event.card.isConflict ? Locations.ConflictDeck : Locations.DynastyDiscardPile
-                }))
+                AbilityDsl.actions.conditional({
+                    condition: (context) => context.event.card.isConflict,
+                    trueGameAction: AbilityDsl.actions.moveCard((context) => ({
+                        target: context.event.card,
+                        destination: Locations.ConflictDeck
+                    })),
+                    falseGameAction: AbilityDsl.actions.moveCard((context) => ({
+                        target: context.event.card,
+                        destination: Locations.DynastyDiscardPile
+                    }))
+                })
             ]),
-            effect: 'cancel the effects of {1}{2}{3}{4}',
+            effect: 'cancel the effects of {1} and {2}',
             effectArgs: (context) => [
                 context.event.card,
-                context.event.card.isConflict ? ' and place it on the top of ' : '',
-                context.event.card.isConflict ? context.player.opponent : '',
-                context.event.card.isConflict ? '\'s conflict deck' : ''
+                context.event.card.isConflict
+                    ? `place it on the top of ${context.event.card.owner.name}'s conflict deck`
+                    : `send it to ${context.event.card.owner.name}'s dynasty discard pile`
             ]
         });
     }
