@@ -9,7 +9,7 @@ export default class GatewayToMeido extends ProvinceCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => context.source.isConflictProvince(),
+            condition: () => this.isConflictProvince(),
             targetLocation: Locations.DynastyDiscardPile,
             match: (card) => card.type === CardTypes.Character,
             effect: [

@@ -7,6 +7,7 @@ export default class MeditationsOnTheTao extends ProvinceCard {
     setupCardAbilities() {
         this.action({
             title: 'Remove a fate from a character',
+            condition: () => this.isConflictProvince(),
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card) => card.isAttacking(),

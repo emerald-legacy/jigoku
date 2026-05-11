@@ -7,7 +7,7 @@ export default class ByOnnotangusLight extends ProvinceCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => context.source.isConflictProvince(),
+            condition: () => this.isConflictProvince(),
             targetController: Players.Any,
             targetLocation: Locations.PlayArea,
             match: (card) => card.type === CardTypes.Character,

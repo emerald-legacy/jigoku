@@ -7,7 +7,7 @@ export default class ConflictBetweenKin extends ProvinceCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => context.source.isConflictProvince(),
+            condition: () => this.isConflictProvince(),
             targetController: Players.Opponent,
             match: (card) => card.isParticipating(),
             effect: [

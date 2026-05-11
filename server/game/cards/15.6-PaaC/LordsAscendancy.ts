@@ -8,6 +8,7 @@ export default class LordsAscendancy extends ProvinceCard {
     setupCardAbilities() {
         this.action({
             title: 'Place a fate on a character',
+            condition: () => this.isConflictProvince(),
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card) => card.isParticipating(),

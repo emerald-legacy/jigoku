@@ -6,7 +6,7 @@ export default class SanpukuSeido extends ProvinceCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => context.source.isConflictProvince(),
+            condition: () => this.isConflictProvince(),
             effect: AbilityDsl.effects.changeConflictSkillFunction((card) => card.getGlory())
         });
     }
