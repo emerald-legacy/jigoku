@@ -1,7 +1,6 @@
 import { AbilityTypes, DuelTypes } from '../../Constants';
 import type { Duel } from '../../Duel';
 import type { GameAction } from '../../GameActions/GameAction';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext';
 import AbilityDsl from '../../abilitydsl';
 import DrawCard from '../../drawcard';
 
@@ -14,7 +13,6 @@ export default class JusticarsApproach extends DrawCard {
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
                 title: 'Initiate a duel to dishonor/bow/discard',
-                condition: (context: TriggeredAbilityContext) => context.source.isParticipating(),
                 printedAbility: false,
                 initiateDuel: {
                     type: DuelTypes.Military,
