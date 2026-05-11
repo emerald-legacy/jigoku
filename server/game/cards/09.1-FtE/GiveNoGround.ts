@@ -1,5 +1,5 @@
 import DrawCard from '../../drawcard';
-import { CardTypes, ConflictTypes } from '../../Constants';
+import { CardTypes, ConflictTypes, Players } from '../../Constants';
 import AbilityDsl from '../../abilitydsl';
 
 class GiveNoGround extends DrawCard {
@@ -11,6 +11,7 @@ class GiveNoGround extends DrawCard {
             condition: () => this.game.isDuringConflict(ConflictTypes.Military),
             target: {
                 cardType: CardTypes.Character,
+                controller: Players.Self,
                 cardCondition: card => card.isDefending(),
                 gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                     effect: [
