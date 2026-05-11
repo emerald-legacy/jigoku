@@ -4,7 +4,7 @@ import { Elements } from '../../Constants';
 
 const elementKeys = {
     air: 'sadane-student-air',
-    water: 'sadane-student-fire'
+    fire: 'sadane-student-fire'
 } as Record<string, string>;
 
 class SadaneStudent extends DrawCard {
