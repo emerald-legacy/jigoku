@@ -11,6 +11,7 @@ export default class RespectedConnoisseur extends DrawCard {
             condition: (context) => context.source.isHonored,
             target: {
                 cardType: CardTypes.Character,
+                cardCondition: (card, context) => card !== context.source && card.isParticipating() === context.source.isParticipating(),
                 gameAction: AbilityDsl.actions.honor()
             }
         });
