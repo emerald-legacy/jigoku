@@ -22,6 +22,7 @@ export default class IkomaYumikosDagger extends DrawCard {
 
         this.action({
             title: 'Injure a character',
+            condition: (context) => context.source.isParticipating(),
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Opponent,
