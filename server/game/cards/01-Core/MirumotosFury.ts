@@ -7,6 +7,7 @@ class MirumotosFury extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Bow attacking character',
+            condition: () => this.game.isDuringConflict(),
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card, context) => card.isAttacking() && card.getGlory() <= this.game.provinceCards.filter(card => (
