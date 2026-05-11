@@ -11,7 +11,7 @@ class YasukiHikaru extends DrawCard {
             condition: (context) => context.source.isDefending(),
             target: {
                 cardType: CardTypes.Character,
-                cardCondition: (card, context) => card.getMilitarySkill() > context.source.getMilitarySkill(),
+                cardCondition: (card, context) => card.isAttacking() && card.getMilitarySkill() > context.source.getMilitarySkill(),
                 gameAction: AbilityDsl.actions.sendHome()
             }
         });
