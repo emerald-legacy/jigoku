@@ -196,5 +196,27 @@ describe('Return The Offense', function() {
             expect(this.getChatLogs(10)).toContain('player1 resolves the water ring, readying Border Rider');
             expect(this.borderRider.bowed).toBe(false);
         });
+
+        it('should allow selecting characters not controlled by the card player as challenger', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.borderRider],
+                defenders: [this.yoshi],
+                type: 'political'
+            });
+
+            this.player2.clickCard(this.returnTheOffense);
+            // Select player1's character as challenger (not controlled by card player)
+            expect(this.player2).toBeAbleToSelect(this.borderRider);
+            expect(this.player2).toBeAbleToSelect(this.yoshi);
+            this.player2.clickCard(this.borderRider);
+            // Now select player2's character as the target (different controller)
+            expect(this.player2).toBeAbleToSelect(this.yoshi);
+            expect(this.player2).not.toBeAbleToSelect(this.borderRider);
+            this.player2.clickCard(this.yoshi);
+            this.player2.clickPrompt('1');
+            this.player1.clickPrompt('1');
+            expect(this.getChatLogs(4)).toContain('Border Rider: 5 vs 8: Kakita Yoshi');
+        });
     });
 });
