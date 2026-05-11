@@ -9,6 +9,7 @@ class BreachOfEtiquette extends DrawCard {
         this.action({
             title: 'Force honor loss on players when their non-courtier characters use abilities',
             condition: () => this.game.isDuringConflict('political'),
+            max: AbilityDsl.limit.perConflict(1),
             effect: 'force honor loss on players when their non-courtier characters use abilities during this conflict',
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.playerLastingEffect(context => ({
