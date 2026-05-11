@@ -11,7 +11,7 @@ class DefendYourHonor extends DrawCard {
             when: {
                 onInitiateAbilityEffects: (event, context) =>
                     context.game.isDuringConflict() && context.player.opponent &&
-                    event.card.type === CardTypes.Event
+                    event.card.type === CardTypes.Event && event.context.player === context.player.opponent
             },
             initiateDuel: context => ({
                 type: DuelTypes.Military,
