@@ -8,6 +8,7 @@ class Ambush extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Put characters from you hand or provinces into play',
+            condition: context => context.game.isDuringConflict(),
             target: {
                 activePromptTitle: 'Choose up to two characters',
                 numCards: 2,
