@@ -1,4 +1,4 @@
-import { CardTypes, TargetModes } from '../../../Constants';
+import { CardTypes, Players, TargetModes } from '../../../Constants';
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
 
@@ -20,6 +20,7 @@ export default class ABadDeath extends DrawCard {
                 mode: TargetModes.UpToVariable,
                 numCardsFunc: (context) => context.costs.dishonorAndSacrificeStateWhenChosen?.hasTrait('berserker') ? 2 : 1,
                 cardType: CardTypes.Character,
+                controller: Players.Opponent,
                 cardCondition: card => card.isParticipating(),
                 gameAction: AbilityDsl.actions.dishonor()
             },
