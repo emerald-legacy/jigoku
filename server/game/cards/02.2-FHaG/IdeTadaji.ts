@@ -12,13 +12,13 @@ class IdeTadaji extends DrawCard {
                 myChar: {
                     cardType: CardTypes.Character,
                     controller: Players.Self,
-                    cardCondition: card => !card.bowed && card.costLessThan(3),
+                    cardCondition: card => !card.bowed && !card.isParticipating() && card.costLessThan(3),
                     gameAction: ability.actions.moveToConflict()
                 },
                 oppChar: {
                     cardType: CardTypes.Character,
                     controller: Players.Opponent,
-                    cardCondition: card => !card.bowed && card.costLessThan(3),
+                    cardCondition: card => !card.bowed && !card.isParticipating() && card.costLessThan(3),
                     gameAction: ability.actions.moveToConflict()
                 }
             }
