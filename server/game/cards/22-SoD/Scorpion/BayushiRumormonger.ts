@@ -1,5 +1,5 @@
+import { Locations } from '../../../Constants';
 import AbilityDsl from '../../../abilitydsl';
-import { Players, CardTypes } from '../../../Constants';
 import DrawCard from '../../../drawcard';
 
 export default class BayushiRumormonger extends DrawCard {
@@ -7,33 +7,29 @@ export default class BayushiRumormonger extends DrawCard {
 
     public setupCardAbilities() {
         this.action({
-            title: 'Discard the top card of your opponents conflict deck',
-            gameAction: AbilityDsl.actions.discardCard(context => ({
-                target: context.player.opponent ? context.player.opponent.conflictDeck[0] : []
-            })),
-            then: context => ({
-                gameAction: AbilityDsl.actions.selectCard(({
-                    activePromptTitle: 'Choose a character to dishonor',
-                    targets: true,
-                    optional: true,
-                    cardType: CardTypes.Character,
-                    controller: Players.Opponent,
-                    cardCondition: card => {
-                        const discardCard = (context.events as any)?.[0].cards?.[0];
-                        if(!discardCard) {
-                            return false;
-                        }
-
-                        const discardCost = discardCard.printedCost;
-                        return card.printedCost <= discardCost;
-                    },
-                    message: '{0} dishonors {1}',
-                    messageArgs: cards => [context.player, cards],
-                    gameAction: AbilityDsl.actions.dishonor()
-                }))
+            title: 'Discard cards from opponent\'s conflict deck',
+            condition: context => context.source.isParticipating() && Boolean(context.player.opponent),
+            gameAction: AbilityDsl.actions.handler({
+                handler: context => {
+                    const x = this.getHighestNumberOfParticipants(context);
+                    context.player.opponent.conflictDeck.slice(0, x).forEach(card =>
+                        context.player.opponent.moveCard(card, Locations.ConflictDiscardPile)
+                    );
+                }
             }),
-            effect: 'discard the top card of {1}\'s conflict deck',
-            effectArgs: context => [context.player.opponent]
+            effect: 'discard {1} card{2} from {3}\'s conflict deck',
+            effectArgs: context => {
+                const x = this.getHighestNumberOfParticipants(context);
+                return [x, x === 1 ? '' : 's', context.player.opponent];
+            }
         });
+    }
+
+    getHighestNumberOfParticipants(context) {
+        const conflict = context.game.currentConflict;
+        return Math.max(
+            conflict.getNumberOfParticipantsFor(context.player),
+            conflict.getNumberOfParticipantsFor(context.player.opponent)
+        );
     }
 }

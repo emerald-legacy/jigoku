@@ -9,6 +9,7 @@ export default class Pressure extends DrawCard {
     setupCardAbilities() {
         this.reaction({
             title: 'Move home a character',
+            max: AbilityDsl.limit.perConflict(1),
             when: {
                 onConflictDeclared: (_event, _context) => true,
                 onDefendersDeclared: (_event, _context) => true,

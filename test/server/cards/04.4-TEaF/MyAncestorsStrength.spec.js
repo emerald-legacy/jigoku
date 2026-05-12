@@ -62,7 +62,7 @@ describe('My Ancestors Strength', function() {
                 this.player1.clickCard('isawa-uona');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 expect(this.fearsomeMystic.militarySkill).toBe(2);
-                expect(this.fearsomeMystic.hasDash('politial')).toBeTruthy();
+                expect(this.fearsomeMystic.hasDash('political')).toBeTruthy();
             });
 
             it('should not trigger if a shugenja is not participating in the conflict', function() {

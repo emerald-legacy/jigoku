@@ -145,6 +145,8 @@ describe('SoD - Unicorn', function () {
 
                 this.player1.clickCard(this.cornering);
                 this.player1.clickCard(this.toshimoko);
+                expect(this.player1).toHavePrompt('Choose a character to move');
+                this.player1.clickPrompt('Done');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
         });
@@ -167,6 +169,10 @@ describe('SoD - Unicorn', function () {
                 this.moto = this.player2.findCardByName('incessant-moto');
                 this.defeat = this.player1.findCardByName('admit-defeat');
                 this.scorp = this.player2.findCardByName('way-of-the-scorpion');
+            });
+
+            it('should have berserker trait', function () {
+                expect(this.moto.hasTrait('berserker')).toBe(true);
             });
 
             it('should contribute when bowed', function () {
