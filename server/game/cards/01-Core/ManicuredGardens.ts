@@ -7,7 +7,6 @@ export default class ManicuredGarden extends ProvinceCard {
     setupCardAbilities() {
         this.action({
             title: 'Gain 1 fate',
-            condition: () => this.isConflictProvince(),
             gameAction: AbilityDsl.actions.gainFate()
         });
     }

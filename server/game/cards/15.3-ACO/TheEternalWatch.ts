@@ -8,7 +8,6 @@ export default class TheEternalWatch extends ProvinceCard {
     setupCardAbilities() {
         this.action({
             title: 'Bow a character or take an honor from your opponent',
-            condition: () => this.isConflictProvince(),
             targets: {
                 character: {
                     cardType: CardTypes.Character,

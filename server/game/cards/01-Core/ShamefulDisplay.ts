@@ -8,7 +8,6 @@ export default class ShamefulDisplay extends ProvinceCard {
     setupCardAbilities() {
         this.action({
             title: 'Dishonor/Honor two characters',
-            condition: () => this.isConflictProvince(),
             target: {
                 mode: TargetModes.Exactly,
                 numCards: 2,

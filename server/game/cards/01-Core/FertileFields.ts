@@ -7,7 +7,6 @@ export default class FertileFields extends ProvinceCard {
     setupCardAbilities() {
         this.action({
             title: 'Draw a card',
-            condition: () => this.isConflictProvince(),
             gameAction: AbilityDsl.actions.draw()
         });
     }

@@ -8,7 +8,6 @@ export default class BorderFortress extends ProvinceCard {
     setupCardAbilities() {
         this.action({
             title: 'Reveal a province',
-            condition: () => this.isConflictProvince(),
             target: {
                 cardType: CardTypes.Province,
                 location: Locations.Provinces,
