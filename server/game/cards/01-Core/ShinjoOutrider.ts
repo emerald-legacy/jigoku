@@ -6,7 +6,6 @@ class ShinjoOutrider extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Move this character to conflict',
-            condition: () => this.game.isDuringConflict(),
             gameAction: ability.actions.moveToConflict()
         });
     }

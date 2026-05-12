@@ -8,7 +8,6 @@ class WarriorsOfTheWind extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Re-arrange participating cavalry characters',
-            condition: () => this.game.isDuringConflict(),
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.sendHome(context => ({
                     target: context.player.filterCardsInPlay(card => card.hasTrait('cavalry') && card.isParticipating())

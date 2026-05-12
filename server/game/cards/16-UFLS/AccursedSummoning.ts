@@ -101,7 +101,6 @@ class AccursedSummoning extends DrawCard {
         this.action({
             title: 'Summon a Shadowlands Creature',
             cost: [accursedSummoningCost()],
-            condition: context => context.game.isDuringConflict(),
             gameAction: AbilityDsl.actions.putIntoConflict(context => ({
                 target: context.costs.accursedSummoningCostCreature || context.player.outsideTheGameCards[1]
             })),

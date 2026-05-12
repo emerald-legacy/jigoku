@@ -7,7 +7,6 @@ class MasterOfTheSwiftWaves extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title:'Switch 2 characters you control',
-            condition: () => this.game.isDuringConflict(),
             targets: {
                 characterInConflict: {
                     activePromptTitle: 'Choose a participating character to send home',

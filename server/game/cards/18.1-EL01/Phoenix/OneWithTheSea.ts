@@ -8,7 +8,6 @@ export default class OneWithTheSea extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Move a character you control to the conflict',
-            condition: (context) => context.game.isDuringConflict(),
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,

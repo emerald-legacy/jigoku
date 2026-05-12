@@ -7,7 +7,6 @@ class FavorableGround extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Move a character into or out of the conflict',
-            condition: () => this.game.isDuringConflict(),
             cost: ability.costs.sacrificeSelf(),
             target: {
                 cardType: CardTypes.Character,

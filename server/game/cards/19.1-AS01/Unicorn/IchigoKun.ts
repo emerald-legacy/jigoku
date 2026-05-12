@@ -21,7 +21,6 @@ export default class IchigoKun extends DrawCard {
 
         this.action({
             title: 'Modify military skill and glory',
-            condition: (context) => context.game.isDuringConflict(),
             targets: {
                 otherCharacter: {
                     cardType: CardTypes.Character,
