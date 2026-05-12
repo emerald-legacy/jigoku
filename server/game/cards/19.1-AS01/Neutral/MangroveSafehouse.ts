@@ -14,7 +14,6 @@ export default class MangroveSafehouse extends DrawCard {
             effectArgs: (context) => [
                 this.targetIsMantis(context) && this.opponentHasFateToBeStolen(context) ? ' and steal 1 fate' : ''
             ],
-            condition: (context) => context.game.isDuringConflict(),
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,

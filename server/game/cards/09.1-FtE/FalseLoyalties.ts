@@ -26,7 +26,6 @@ class FalseLoyalties extends DrawCard {
                     activePromptTitle: 'Choose a character to move to the conflict',
                     cardType: CardTypes.Character,
                     controller: Players.Opponent,
-                    cardCondition: card => !card.isParticipating(),
                     gameAction: AbilityDsl.actions.joint([
                         AbilityDsl.actions.sendHome(context => ({ target: context.targets.characterInConflict })),
                         AbilityDsl.actions.moveToConflict()

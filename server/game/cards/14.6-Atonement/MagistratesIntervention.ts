@@ -8,7 +8,6 @@ class MagistratesIntervention extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Dishonor a character',
-            condition: context => context.game.isDuringConflict(),
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: card => card.isAttacking(),

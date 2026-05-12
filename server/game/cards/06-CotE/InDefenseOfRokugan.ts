@@ -7,7 +7,6 @@ class InDefenseOfRokugan extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Set an attacking character to 0 military skill',
-            condition: () => this.game.isDuringConflict(),
             cost: ability.costs.sacrifice({
                 cardType: CardTypes.Character,
                 cardCondition: card => card.isDefending()
