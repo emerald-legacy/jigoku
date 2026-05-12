@@ -18,7 +18,6 @@ export default class TranquilOverlookDojo extends StrongholdCard {
 function actionVersion(self: TranquilOverlookDojo, limit: AbilityLimit, type: DuelTypes, title: string) {
     self.action({
         title,
-        condition: (context) => context.game.isDuringConflict(),
         cost: AbilityDsl.costs.bowSelf(),
         initiateDuel: {
             type,
