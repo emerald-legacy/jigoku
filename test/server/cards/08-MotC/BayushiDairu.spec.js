@@ -148,6 +148,15 @@ describe('Bayushi Dairu', function() {
                     expect(this.getChatLogs(8)).toContain('player1 uses Bayushi Dairu to move Young Rumormonger\'s Dishonored Token to Bayushi Dairu');
                 });
 
+                it('should not allow choosing Bayushi Dairu himself as a target', function() {
+                    this.bayushiDairu.taint();
+                    this.player2.pass();
+                    this.player1.clickCard(this.bayushiDairu);
+                    expect(this.player1).toHavePrompt('Bayushi Dairu');
+                    expect(this.player1).not.toBeAbleToSelect(this.bayushiDairu);
+                    expect(this.player1).toBeAbleToSelect(this.youngRumormonger);
+                });
+
                 it('should only allow choosing a valid token', function() {
                     this.bayushiDairu.dishonor();
                     this.youngRumormonger.taint();

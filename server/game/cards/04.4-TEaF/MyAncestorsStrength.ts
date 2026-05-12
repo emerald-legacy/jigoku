@@ -7,7 +7,7 @@ class MyAncestorsStrength extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Modify base military and political skills',
-            condition: () => this.game.isDuringConflict(),
+
             targets: {
                 shugenja: {
                     activePromptTitle: 'Choose a shugenja character',

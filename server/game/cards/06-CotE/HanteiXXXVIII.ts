@@ -17,7 +17,7 @@ class HanteiXXXVIII extends DrawCard {
 
         this.action({
             title: 'Bow a character',
-            condition: context => context.game.isDuringConflict(),
+
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: card => card.isParticipating(),

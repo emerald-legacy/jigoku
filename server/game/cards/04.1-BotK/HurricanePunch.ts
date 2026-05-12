@@ -8,7 +8,7 @@ class HurricanePunch extends DrawCard {
         this.action({
             title: 'Increase a monk\'s military skill and draw 1 card',
             effect: 'grant 2 military skill to {0} and draw a card',
-            condition: () => this.game.isDuringConflict(),
+
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: card => card.isParticipating() && card.hasTrait('monk'),

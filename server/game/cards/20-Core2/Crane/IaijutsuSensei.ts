@@ -16,7 +16,8 @@ export default class IaijutsuSensei extends DrawCard {
             initiateDuel: {
                 type: DuelTypes.Military,
                 opponentChoosesDuelTarget: true,
-                challengerCondition: (card, context) => !card.bowed && context.game.isDuringConflict(),
+                challengerCondition: (card) => card.isParticipating(),
+                targetCondition: (card) => card.isParticipating() && !card.bowed,
                 message: 'prevent {0} from contributing to resolution of this conflict',
                 messageArgs: (duel) => duel.loser,
                 gameAction: (duel) =>

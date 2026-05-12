@@ -27,11 +27,18 @@ export default class DeadEyes extends DrawCard {
                     }),
                     AbilityDsl.effects.delayedEffect({
                         when: {
-                            afterConflict: event =>
-                                context.source.parent &&
-                                (context.source.controller !== event.conflict.winner ||
-                                    context.source.controller === event.conflict.winner &&
-                                    event.conflict.attackerSkill < event.conflict.defenderSkill * 2)
+                            afterConflict: event => {
+                                if(!context.source.parent) {
+                                    return false;
+                                }
+                                if(context.source.controller !== event.conflict.winner) {
+                                    return true;
+                                }
+                                const controllerIsAttacker = event.conflict.attackingPlayer === context.source.controller;
+                                const mySkill = controllerIsAttacker ? event.conflict.attackerSkill : event.conflict.defenderSkill;
+                                const opponentSkill = controllerIsAttacker ? event.conflict.defenderSkill : event.conflict.attackerSkill;
+                                return mySkill <= opponentSkill * 2;
+                            }
                         },
                         gameAction: AbilityDsl.actions.sacrifice(),
                         message: '{0} is sacrificed due to the delayed effect of {1}',

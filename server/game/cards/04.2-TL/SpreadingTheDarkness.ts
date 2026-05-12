@@ -7,7 +7,7 @@ class SpreadingTheDarkness extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Give a character +4/+0',
-            condition: () => this.game.isDuringConflict(),
+
             cost: ability.costs.payHonor(2),
             target: {
                 cardType: CardTypes.Character,

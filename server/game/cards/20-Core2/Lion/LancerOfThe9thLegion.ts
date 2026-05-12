@@ -1,4 +1,4 @@
-import { CardTypes } from '../../../Constants';
+import { CardTypes, Players } from '../../../Constants';
 import AbilityDsl from '../../../abilitydsl';
 import DrawCard from '../../../drawcard';
 
@@ -11,6 +11,7 @@ export default class LancerOfThe9thLegion extends DrawCard {
             condition: (context) => context.source.isParticipating('military'),
             target: {
                 cardType: CardTypes.Character,
+                controller: Players.Opponent,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.getMilitarySkill() <= context.source.getMilitarySkill(),
                 gameAction: AbilityDsl.actions.bow()

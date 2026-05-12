@@ -12,6 +12,7 @@ class BayushiDairu extends DrawCard {
             target: {
                 mode: TargetModes.Token,
                 cardType: CardTypes.Character,
+                cardCondition: (card, context) => card !== context.source,
                 gameAction: AbilityDsl.actions.moveStatusToken(context => ({ recipient: context.source }))
             }
         });

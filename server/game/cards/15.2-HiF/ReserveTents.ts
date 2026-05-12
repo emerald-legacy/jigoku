@@ -9,7 +9,6 @@ class ReserveTents extends DrawCard {
         this.action({
             title: 'Move a character to the conflict',
             limit: AbilityDsl.limit.perRound(2),
-            condition: context => context.game.isDuringConflict(),
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,

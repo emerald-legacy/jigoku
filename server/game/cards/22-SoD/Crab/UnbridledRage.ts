@@ -8,7 +8,6 @@ export default class UnbridledRage extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Military duel to stop contribution',
-            condition: context => context.game.isDuringConflict(),
             initiateDuel: {
                 type: DuelTypes.Military,
                 challengerCondition: card => card.hasTrait('berserker'),

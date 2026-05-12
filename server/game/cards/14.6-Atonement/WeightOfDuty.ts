@@ -13,7 +13,7 @@ export default class WeightOfDuty extends ProvinceCard {
     setupCardAbilities() {
         this.action({
             title: 'Bow & dishonor a character',
-            condition: (context) => context.game.isDuringConflict() && context.player.opponent !== undefined,
+            condition: (context) => context.player.opponent !== undefined,
             conflictProvinceCondition: (province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)),
             cannotTargetFirst: true,
             cost: AbilityDsl.costs.sacrifice({

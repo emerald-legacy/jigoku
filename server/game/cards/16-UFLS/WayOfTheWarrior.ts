@@ -8,6 +8,7 @@ class WayOfTheWarrior extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Let a bushi embrace the way of the warrior',
+
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Any,

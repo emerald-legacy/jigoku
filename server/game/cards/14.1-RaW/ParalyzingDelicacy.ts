@@ -8,7 +8,7 @@ class ParalyzingDelicacy extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: '-X military equal to facedown provinces',
-            condition: context => context.game.isDuringConflict(),
+
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: card => card.isParticipating(),

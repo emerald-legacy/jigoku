@@ -11,7 +11,7 @@ class KarmicTwist extends DrawCard {
             target: {
                 activePromptTitle: 'Choose a donor character',
                 cardType: CardTypes.Character,
-                cardCondition: card => !card.isUnique(),
+                cardCondition: card => !card.isUnique() && card.getFate() > 0,
                 gameAction: AbilityDsl.actions.selectCard(context => ({
                     cardType: CardTypes.Character,
                     activePromptTitle: 'Choose a recipient character',

@@ -5,8 +5,8 @@ describe('Defend Your Honor', function() {
                 this.setupTest({
                     phase: 'conflict',
                     player1: {
-                        inPlay: ['border-rider'],
-                        hand: ['defend-your-honor']
+                        inPlay: ['border-rider', 'doji-gift-giver'],
+                        hand: ['defend-your-honor', 'way-of-the-crane']
                     },
                     player2: {
                         inPlay: ['doji-challenger', 'doji-whisperer'],
@@ -15,6 +15,8 @@ describe('Defend Your Honor', function() {
                 });
                 this.borderRider = this.player1.findCardByName('border-rider');
                 this.defendYourHonor = this.player1.findCardByName('defend-your-honor');
+                this.player1WayOfTheCrane = this.player1.findCardByName('way-of-the-crane');
+                this.dojiGiftGiver = this.player1.findCardByName('doji-gift-giver');
 
                 this.dojiChallenger = this.player2.findCardByName('doji-challenger');
                 this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
@@ -99,6 +101,20 @@ describe('Defend Your Honor', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('5');
                 expect(this.dojiChallenger.isHonored).toBe(true);
+            });
+
+            it('should not trigger when the controller plays their own event', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.borderRider, this.dojiGiftGiver],
+                    defenders: [this.dojiChallenger],
+                    type: 'political'
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.player1WayOfTheCrane);
+                this.player1.clickCard(this.dojiGiftGiver);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.dojiGiftGiver.isHonored).toBe(true);
             });
         });
     });

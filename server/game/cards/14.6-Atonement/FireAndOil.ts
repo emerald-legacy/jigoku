@@ -12,7 +12,6 @@ export default class FireAndOil extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
                 title: 'Dishonor a character',
                 condition: (context) =>
-                    context.game.isDuringConflict() &&
                     context.game.currentConflict &&
                     context.game.currentConflict.getConflictProvinces().some((a) => a.controller === context.player),
                 cost: AbilityDsl.costs.payHonor(1),

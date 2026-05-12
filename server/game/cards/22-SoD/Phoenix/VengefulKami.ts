@@ -22,9 +22,11 @@ export default class VengefulKami extends DrawCard {
 
         this.action({
             title: 'Resolve Ring Effect',
-            condition: context => context.game.isDuringConflict() && (context.game.currentConflict as Conflict)
-                .getConflictProvinces()
-                .some((province: ProvinceCard) => this.wasProvinceAttacked(context.game.currentConflict, province)),
+            condition: context => context.game.isDuringConflict() &&
+                context.player.isDefendingPlayer() &&
+                (context.game.currentConflict as Conflict)
+                    .getConflictProvinces()
+                    .some((province: ProvinceCard) => this.wasProvinceAttacked(context.game.currentConflict, province)),
             target: {
                 mode: TargetModes.Ring,
                 activePromptTitle: 'Choose a ring',

@@ -12,7 +12,7 @@ class OniMask extends DrawCard {
         this.action({
             title: 'Blank participating character',
             cost: ability.costs.removeFateFromParent(),
-            condition: () => this.game.isDuringConflict(),
+
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: card => card.isParticipating(),

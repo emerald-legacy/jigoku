@@ -18,7 +18,6 @@ export default class ShowMeYourStance extends DrawCard {
 
         this.action({
             title: 'Send a character home',
-            condition: (context) => context.game.isDuringConflict(),
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card, context) =>

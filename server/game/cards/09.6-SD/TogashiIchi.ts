@@ -12,7 +12,8 @@ export default class TogashiIchi extends DrawCard {
                 context.source.isAttacking() &&
                 this.game.currentConflict.getNumberOfCardsPlayed(context.player) +
                     this.game.currentConflict.getNumberOfCardsPlayed(context.player.opponent) >=
-                    10,
+                    10 &&
+                this.game.currentConflict.getConflictProvinces().some((p: any) => p.location !== Locations.StrongholdProvince),
             effect: 'break an attacked province',
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',

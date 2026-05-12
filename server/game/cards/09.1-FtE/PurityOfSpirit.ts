@@ -8,7 +8,7 @@ class PurityOfSpirit extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Choose a bushi character to honor',
-            condition: () => this.game.isDuringConflict(),
+
             effect: 'honor {0}. Their status token will be discarded at the end of the conflict',
             target: {
                 cardType: CardTypes.Character,

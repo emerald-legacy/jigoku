@@ -90,5 +90,38 @@ describe('Breach of Etiquette', function() {
                 expect(this.player1.honor).toBe(honorBefore);
             });
         });
+
+        describe('Breach of Etiquette\'s max 1 per conflict', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        honor: 10,
+                        inPlay: ['bayushi-yunako'],
+                        hand: []
+                    },
+                    player2: {
+                        honor: 11,
+                        inPlay: ['brash-samurai'],
+                        hand: ['breach-of-etiquette', 'breach-of-etiquette']
+                    }
+                });
+                this.brashSamurai = this.player2.findCardByName('brash-samurai');
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: ['bayushi-yunako'],
+                    defenders: ['brash-samurai']
+                });
+                this.player2.clickCard('breach-of-etiquette');
+                this.player1.pass();
+            });
+
+            it('should not be playable a second time in the same conflict', function() {
+                let secondBreachOfEtiquette = this.player2.filterCardsByName('breach-of-etiquette', 'hand')[0];
+                this.player2.clickCard(secondBreachOfEtiquette);
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+            });
+        });
     });
 });

@@ -9,7 +9,7 @@ class Banzai extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Increase a character\'s military skill',
-            condition: () => this.game.isDuringConflict(),
+
             max: AbilityDsl.limit.perConflict(1),
             target: {
                 cardType: CardTypes.Character,

@@ -13,6 +13,7 @@ export default class RetreatToSafety extends DrawCard {
                 numCards: 2,
                 cardType: CardTypes.Character,
                 controller: Players.Self,
+                cardCondition: (card) => card.isDefending(),
                 gameAction: AbilityDsl.actions.sendHome()
             },
             then: (parentContext) => ({

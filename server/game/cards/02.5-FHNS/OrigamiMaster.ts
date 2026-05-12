@@ -12,6 +12,7 @@ class OrigamiMaster extends DrawCard {
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,
+                cardCondition: (card, context) => card !== context.source,
                 gameAction: AbilityDsl.actions.moveStatusToken(context => ({
                     target: context.source.getStatusToken(CharacterStatus.Honored),
                     recipient: context.target

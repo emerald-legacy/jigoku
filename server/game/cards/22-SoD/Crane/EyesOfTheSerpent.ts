@@ -71,7 +71,7 @@ export default class EyesOfTheSerpent extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Taint a character',
-            condition: (context) => context.game.isDuringConflict(),
+
             cost: eyesOfTheSerpentCost(),
             target: {
                 cardType: CardTypes.Character,

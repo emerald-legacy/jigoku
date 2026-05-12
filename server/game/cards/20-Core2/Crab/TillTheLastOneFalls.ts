@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext';
-import { CardTypes } from '../../../Constants';
+import { CardTypes, Players } from '../../../Constants';
 import AbilityDsl from '../../../abilitydsl';
 import type { Conflict } from '../../../conflict';
 import DrawCard from '../../../drawcard';
@@ -16,6 +16,8 @@ export default class TillTheLastOneFalls extends DrawCard {
                 context.game.currentConflict.hasMoreParticipants(context.player.opponent),
             target: {
                 cardType: CardTypes.Character,
+                controller: Players.Self,
+                cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                     effect: AbilityDsl.effects.modifyBothSkills(this.#bonus(context))
                 }))

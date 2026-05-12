@@ -8,7 +8,7 @@ export default class ShinjoArcher extends DrawCard {
     public setupCardAbilities() {
         this.action({
             title: 'Move and give -2/-2',
-            condition: (context) => context.game.isDuringConflict(),
+
             cost: AbilityDsl.costs.switchLocation(),
             target: {
                 mode: TargetModes.Single,

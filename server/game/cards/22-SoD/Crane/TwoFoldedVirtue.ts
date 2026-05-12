@@ -8,7 +8,7 @@ export default class TwoFoldVirtue extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Increase a character\'s military skill',
-            condition: () => this.game.isDuringConflict(),
+
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,

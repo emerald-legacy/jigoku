@@ -9,7 +9,7 @@ export default class ContemplativeWisdom extends DrawCard {
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
                 title: 'Give all abilities to another character',
-                condition: (context) => context.game.isDuringConflict(),
+
                 cost: AbilityDsl.costs.returnRings(1),
                 target: {
                     cardType: CardTypes.Character,

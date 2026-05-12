@@ -8,7 +8,7 @@ class FuryOfTheDamned extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Double the base military skill',
-            condition: context => context.game.isDuringConflict(),
+
             target: {
                 activePromptTitle: 'Choose bushi characters',
                 mode: TargetModes.Unlimited,

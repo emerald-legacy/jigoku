@@ -1,5 +1,6 @@
 import DrawCard from '../../drawcard';
 import AbilityDsl from '../../abilitydsl';
+import { Players } from '../../Constants';
 
 class WildfireKick extends DrawCard {
     static id = 'wildfire-kick';
@@ -11,6 +12,7 @@ class WildfireKick extends DrawCard {
                 this.game.isDuringConflict() &&
                 this.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 3,
             target: {
+                controller: Players.Self,
                 cardCondition: card => card.isParticipating() && card.hasTrait('monk')
             },
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({

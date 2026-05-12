@@ -8,7 +8,7 @@ class IronFoundationsStance extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Prevent opponent\'s bow and send home effects',
-            condition: () => this.game.isDuringConflict(),
+
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,

@@ -8,7 +8,6 @@ export default class DojiReiha extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Initiate a duel that honors participants and move loser home',
-            condition: (context) => context.source.isParticipating(),
             initiateDuel: {
                 type: DuelTypes.Political,
                 opponentChoosesDuelTarget: true,
