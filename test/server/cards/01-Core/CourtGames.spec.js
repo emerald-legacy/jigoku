@@ -39,7 +39,6 @@ describe('Court Games', function () {
                 });
                 this.player2.pass();
                 this.player1.clickCard(this.rider);
-                this.player1.clickPrompt('Move home');
                 this.player2.clickCard('court-games', 'hand');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });

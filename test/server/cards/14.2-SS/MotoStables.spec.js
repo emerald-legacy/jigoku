@@ -47,7 +47,6 @@ describe('Moto Stables', function() {
 
             this.player2.pass();
             this.player1.clickCard(this.juro);
-            this.player1.clickPrompt('Move into conflict');
             this.player1.clickCard(this.motoStables);
 
             expect(this.juro.militarySkill).toBe(this.juro.printedMilitarySkill + 2);
@@ -77,7 +76,6 @@ describe('Moto Stables', function() {
             this.player2.pass();
 
             this.player1.clickCard(this.juro);
-            this.player1.clickPrompt('Move into conflict');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.juro.isParticipating()).toBe(true);
         });

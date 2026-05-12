@@ -29,7 +29,6 @@ describe('KireiKo', function() {
                 });
                 this.player2.pass();
                 this.player1.clickCard(this.juro);
-                this.player1.clickPrompt('Move home');
                 expect(this.player2).toHavePrompt('Triggered Abilities');
                 expect(this.player2).toBeAbleToSelect(this.kireiko);
                 this.player2.clickCard(this.kireiko);
