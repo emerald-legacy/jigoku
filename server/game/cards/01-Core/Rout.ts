@@ -7,7 +7,6 @@ class Rout extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Send a character home.',
-            condition: () => this.game.isDuringConflict(),
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Opponent,

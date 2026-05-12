@@ -7,7 +7,6 @@ class WayOfTheScorpion extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Dishonor a participating character',
-            condition: () => this.game.isDuringConflict(),
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: card => card.isParticipating() && !card.isFaction('scorpion'),

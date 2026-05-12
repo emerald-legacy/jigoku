@@ -13,7 +13,6 @@ class MasterOfTheSpear extends DrawCard {
                 activePromptTitle: 'Choose a character to send home',
                 cardType: CardTypes.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating(),
                 gameAction: ability.actions.sendHome()
             }
         });
