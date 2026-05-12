@@ -30,8 +30,8 @@ class AppealToSympathy extends DrawCard {
             effectArgs: (context) => [
                 context.event.card,
                 context.event.card.isConflict
-                    ? `place it on the top of ${context.event.card.owner.name}'s conflict deck`
-                    : `send it to ${context.event.card.owner.name}'s dynasty discard pile`
+                    ? 'return it to the top of its owner\'s conflict deck'
+                    : 'move it to its owner\'s dynasty discard pile'
             ]
         });
     }

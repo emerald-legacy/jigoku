@@ -33,7 +33,7 @@ describe('Appeal to Sympathy', function() {
                 this.player2.clickCard(this.appeal);
                 expect(this.whisperer.isHonored).toBe(false);
                 expect(this.appeal.location).toBe('conflict discard pile');
-                expect(this.getChatLogs(3)).toContain('player2 plays Appeal to Sympathy to cancel the effects of Way of the Crane and place it on the top of player1\'s conflict deck');
+                expect(this.getChatLogs(3)).toContain('player2 plays Appeal to Sympathy to cancel the effects of Way of the Crane and return it to the top of its owner\'s conflict deck');
             });
 
             it('should put the event on top of the deck', function() {
