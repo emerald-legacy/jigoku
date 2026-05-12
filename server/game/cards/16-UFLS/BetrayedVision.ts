@@ -9,7 +9,7 @@ export default class BetrayedVision extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Make a character a copy',
-            condition: (context) => context.game.isDuringConflict(),
+
             targets: {
                 cardToCopy: {
                     activePromptTitle: 'Choose a character to copy',

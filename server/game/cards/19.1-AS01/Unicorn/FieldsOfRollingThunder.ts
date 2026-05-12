@@ -18,7 +18,7 @@ export default class FieldsOfRollingThunder extends DrawCard {
 
         this.action({
             title: 'Honor a character',
-            condition: () => this.game.isDuringConflict(),
+
             effect: 'honor {0}. They will be dishonored at the end of the conflict if {1} loses the conflict.',
             effectArgs: (context) => [context.source.controller],
             target: {

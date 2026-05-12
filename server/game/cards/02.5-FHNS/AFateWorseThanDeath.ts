@@ -7,7 +7,7 @@ class AFateWorseThanDeath extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Bow, move home, dishonor, remove a fate and blank a character',
-            condition: () => this.game.isDuringConflict(),
+
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: card => card.isParticipating(),

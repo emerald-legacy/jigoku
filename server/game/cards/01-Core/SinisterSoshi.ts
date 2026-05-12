@@ -7,7 +7,7 @@ class SinisterSoshi extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Give a character -2/-2',
-            condition: () => this.game.isDuringConflict(),
+
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: card => card.isParticipating(),

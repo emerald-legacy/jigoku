@@ -8,7 +8,7 @@ export default class SerenadeOfAThousandLanterns extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Send characters home',
-            condition: (context) => context.game.isDuringConflict() && context.player.isTraitInPlay('shugenja'),
+            condition: (context) => context.player.isTraitInPlay('shugenja'),
             target: {
                 activePromptTitle: 'Choose characters adding up to 4 printed cost',
                 numCards: Infinity,

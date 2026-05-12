@@ -8,7 +8,7 @@ export default class StrikeAsTheElements extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Increase a character\'s military skill',
-            condition: (context) => context.game.isDuringConflict(),
+
             targets: {
                 character: {
                     cardType: CardTypes.Character,

@@ -26,7 +26,7 @@ export default class AgashaJianyu extends DrawCard {
     public setupCardAbilities() {
         this.action({
             title: 'Empower a character with the combined strength of the elements',
-            condition: (context) => context.game.isDuringConflict(),
+
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card) => card.isParticipating(),

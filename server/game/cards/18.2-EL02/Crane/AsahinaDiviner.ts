@@ -8,7 +8,7 @@ class AsahinaDiviner extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Give a participating character +3 glory',
-            condition: context => context.game.isDuringConflict(),
+
             max: AbilityDsl.limit.perConflict(1),
             target: {
                 cardType: CardTypes.Character,

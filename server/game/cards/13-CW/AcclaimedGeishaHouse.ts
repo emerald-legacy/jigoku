@@ -8,7 +8,7 @@ class AcclaimedGeishaHouse extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Switch the contested ring',
-            condition: context => context.game.isDuringConflict(),
+
             cost: AbilityDsl.costs.dishonor({ cardCondition: card => card.isParticipating() }),
             target: {
                 mode: TargetModes.Ring,

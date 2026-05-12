@@ -13,7 +13,7 @@ export default class AsakoKousuke extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Treat the status token on a character as if it was another status token',
-            condition: (context) => context.game.isDuringConflict(),
+
             cannotTargetFirst: true,
             targets: {
                 [ORIGINL_TOKEN]: {

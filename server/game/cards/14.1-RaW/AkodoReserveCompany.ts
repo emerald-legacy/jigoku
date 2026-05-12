@@ -8,7 +8,7 @@ class AkodoReserveCompany extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Bow an attacking character',
-            condition: context => context.game.isDuringConflict() && context.game.isTraitInPlay('battlefield'),
+            condition: context => context.game.isTraitInPlay('battlefield'),
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.controller === context.player,

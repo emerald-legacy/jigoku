@@ -15,7 +15,7 @@ export default class RisingStarsKata extends DrawCard {
 
         this.action({
             title: 'Give a participating unique character +3 military skill',
-            condition: (context) => context.game.isDuringConflict(),
+
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card) => card.isUnique() && card.isParticipating(),

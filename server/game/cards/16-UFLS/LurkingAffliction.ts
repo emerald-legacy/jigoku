@@ -8,7 +8,7 @@ class LurkingAffliction extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Taint a participating character',
-            condition: context => context.game.isDuringConflict(),
+
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: card => card.isParticipating(),

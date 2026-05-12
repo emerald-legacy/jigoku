@@ -8,7 +8,7 @@ export default class DeedsNotWords extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Give a character +2 mil',
-            condition: context => context.game.isDuringConflict(),
+
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,

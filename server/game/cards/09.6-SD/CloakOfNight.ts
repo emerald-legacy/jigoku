@@ -8,7 +8,7 @@ class CloakOfNight extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Give a participating character +3 glory',
-            condition: context => context.game.isDuringConflict(),
+
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: card => card.isParticipating(),

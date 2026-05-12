@@ -8,7 +8,7 @@ export default class AncestralRivalry extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Give a character +3/+3 or claim favor',
-            condition: context => context.game.isDuringConflict(),
+
             max: AbilityDsl.limit.perConflict(1),
             targets: {
                 character: {

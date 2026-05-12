@@ -8,7 +8,7 @@ class SurgingWave extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Prevent bowing after conflict',
-            condition: (context) => context.game.isDuringConflict(),
+
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Any,

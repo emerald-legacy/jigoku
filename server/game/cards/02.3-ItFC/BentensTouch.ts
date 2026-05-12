@@ -7,7 +7,7 @@ class BentensTouch extends DrawCard {
     setupCardAbilities(ability) {
         this.action({
             title: 'Bow and Honor a character',
-            condition: () => this.game.isDuringConflict(),
+
             cost: ability.costs.bow({
                 cardType: CardTypes.Character,
                 cardCondition: card => card.isFaction('phoenix') && card.hasTrait('shugenja')

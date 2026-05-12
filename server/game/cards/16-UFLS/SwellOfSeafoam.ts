@@ -8,7 +8,7 @@ class SwellOfSeafoam extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Prevent bowing after conflict',
-            condition: () => this.game.isDuringConflict(),
+
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Any,
