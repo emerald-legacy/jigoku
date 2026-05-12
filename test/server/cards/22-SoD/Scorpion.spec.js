@@ -54,7 +54,7 @@ describe('SoD - Scorpion', function () {
                 this.initiateConflict({
                     type: 'military',
                     attackers: [this.keeper, this.diplomat],
-                    defenders: []
+                    defenders: [this.rumormonger]
                 });
 
                 const before = this.player2.player.conflictDeck.length;
