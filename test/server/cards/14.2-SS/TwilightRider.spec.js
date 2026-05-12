@@ -71,6 +71,7 @@ describe('Twilight Rider', function() {
 
             this.player2.pass();
             this.player1.clickCard(this.juro);
+            this.player1.clickPrompt('Move into conflict');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.player2).toHavePrompt('Conflict Action Window');
         });
