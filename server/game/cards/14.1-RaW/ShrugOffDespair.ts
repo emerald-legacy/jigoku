@@ -8,7 +8,7 @@ export default class ShrugOffDespair extends ProvinceCard {
         this.action({
             title: 'Move the conflict to this province',
             conflictProvinceCondition: () => true,
-            condition: () => this.game.isDuringConflict() && !this.isConflictProvince(),
+            condition: (context) => context.game.isDuringConflict() && !context.source.isConflictProvince(),
             gameAction: AbilityDsl.actions.moveConflict((context) => ({
                 target: context.source
             }))

@@ -9,7 +9,7 @@ export default class ShoreOfTheAshenFlames extends ProvinceCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: () => this.isConflictProvince(),
+            condition: (context) => context.source.isConflictProvince(),
             targetController: Players.Opponent,
             effect: AbilityDsl.effects.changeConflictSkillFunctionPlayer((card: BaseCard, conflict: Conflict) => {
                 const exclusionFunction = (effect: any) => {

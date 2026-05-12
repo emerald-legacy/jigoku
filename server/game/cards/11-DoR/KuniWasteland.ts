@@ -7,7 +7,7 @@ export default class KuniWasteland extends ProvinceCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: () => this.isConflictProvince(),
+            condition: (context) => context.source.isConflictProvince(),
             targetController: Players.Opponent,
             targetLocation: Locations.PlayArea,
             match: (card) => card.type === CardTypes.Character,

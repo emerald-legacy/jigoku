@@ -7,7 +7,7 @@ export default class FestivalOfTheDeparted extends ProvinceCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: () => this.isConflictProvince(),
+            condition: (context) => context.source.isConflictProvince(),
             match: (card) => card.type === CardTypes.Character,
             targetController: Players.Any,
             effect: [

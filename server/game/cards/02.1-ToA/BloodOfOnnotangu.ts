@@ -8,7 +8,7 @@ export default class BloodOfOnnotangu extends ProvinceCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Any,
-            condition: () => this.isConflictProvince(),
+            condition: (context) => context.source.isConflictProvince(),
             effect: AbilityDsl.effects.playerCannot('spendFate')
         });
     }
