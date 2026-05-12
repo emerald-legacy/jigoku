@@ -11,7 +11,6 @@ class YogoHiroue extends DrawCard {
             condition: context => context.source.isParticipating(),
             target: {
                 cardType: CardTypes.Character,
-                cardCondition: card => !card.isParticipating(),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.moveToConflict(),
                     AbilityDsl.actions.cardLastingEffect(context => ({
