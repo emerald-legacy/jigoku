@@ -8,7 +8,7 @@ export default class BayushiRumormonger extends DrawCard {
     public setupCardAbilities() {
         this.action({
             title: 'Discard cards from opponent\'s conflict deck',
-            condition: context => context.game.isDuringConflict() && Boolean(context.player.opponent),
+            condition: context => context.source.isParticipating() && Boolean(context.player.opponent),
             gameAction: AbilityDsl.actions.handler({
                 handler: context => {
                     const x = this.getHighestNumberOfParticipants(context);
