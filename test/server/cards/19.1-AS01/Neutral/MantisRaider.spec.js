@@ -97,5 +97,35 @@ describe('Mantis Raider', function () {
                 );
             });
         });
+
+        describe('from home', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['mantis-raider', 'ancient-master']
+                    },
+                    player2: {
+                        inPlay: ['solemn-scholar']
+                    }
+                });
+
+                this.mantisRaider = this.player1.findCardByName('mantis-raider');
+                this.mantisRaider.fate = 2;
+                this.ancientMaster = this.player1.findCardByName('ancient-master');
+                this.solemScholar = this.player2.findCardByName('solemn-scholar');
+            });
+
+            it('cannot trigger the skill pump from home', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.ancientMaster],
+                    defenders: [this.solemScholar]
+                });
+
+                this.player2.pass();
+                expect(this.player1).not.toBeAbleToSelect(this.mantisRaider);
+            });
+        });
     });
 });
