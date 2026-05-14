@@ -20,7 +20,7 @@ export default class MantisRaider extends DrawCard {
 
         this.action({
             title: 'Give this character +1 military',
-            condition: () => this.game.isDuringConflict(),
+            condition: (context) => context.source.isParticipating(),
             cost: AbilityDsl.costs.removeFateFromSelf(),
             effect: 'give himself +1{1}',
             effectArgs: () => ['military'],

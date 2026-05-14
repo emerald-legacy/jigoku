@@ -20,6 +20,7 @@ export default class MirumotoRei extends DrawCard {
         this.action({
             title: 'Give a skill bonus based on attachments',
 
+            condition: (context) => context.source.isParticipating(),
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,

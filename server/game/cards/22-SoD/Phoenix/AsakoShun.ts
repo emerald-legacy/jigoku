@@ -14,7 +14,7 @@ export default class AsakoShun extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Give a skill penalty to a participating character',
-            condition: (context) => context.game.isDuringConflict(),
+            condition: (context) => context.source.isParticipating(),
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Opponent,
