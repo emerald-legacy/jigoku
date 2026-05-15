@@ -70,5 +70,16 @@ describe('Mirumoto\'s Peak', function() {
             expect(this.rei.getMilitarySkill()).toBe(mil + 4);
             expect(this.rei.getPoliticalSkill()).toBe(pol + 2);
         });
+
+        it('cannot trigger from home', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger, this.kuwanan],
+                defenders: [this.borderRider]
+            });
+
+            this.player2.pass();
+            expect(this.player1).not.toBeAbleToSelect(this.rei);
+        });
     });
 });

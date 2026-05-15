@@ -138,6 +138,19 @@ describe('SoD - Lion', function () {
                 expect(this.player2.player.imperialFavor).toBe('');
                 expect(this.getChatLogs(5)).toContain('player2 uses Ikoma Natsuko, discarding the Imperial Favor to bow and send Ancient Master home');
             });
+
+            it('cannot trigger from home', function () {
+                this.player2.player.imperialFavor = 'military';
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.ancientMaster],
+                    defenders: []
+                });
+
+                this.player2.pass();
+                expect(this.player2).not.toBeAbleToSelect(this.natsuko);
+            });
         });
 
         describe('Ikoma Yumikos Dagger', function () {

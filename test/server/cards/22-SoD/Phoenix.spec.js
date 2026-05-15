@@ -391,6 +391,18 @@ describe('SoD - Phoenix', function () {
                 expect(this.getChatLogs(5)).toContain('player1 uses Asako Shun to give Doji Challenger -4military and -4political');
                 expect(this.getChatLogs(5)).toContain('player1 gains 1 honor because Doji Challenger is not contributing skill to the current conflict');
             });
+
+            it('cannot trigger from home', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.scholar],
+                    defenders: [this.challenger]
+                });
+
+                this.player2.pass();
+                expect(this.player1).not.toBeAbleToSelect(this.shun);
+            });
         });
 
         describe('Song of the Empty City', function () {
