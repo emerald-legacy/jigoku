@@ -68,7 +68,11 @@ Key fields:
 | Field | Type | Description |
 |-------|------|-------------|
 | `title` | `string` | Button label shown to player |
-| `phase` | `Phases \| 'any'` | Phase restriction. Default `'conflict'`. Use `'any'` for dynasty or regroup phases |
+| `phase` | `Phases \| 'any'` | Phase restriction. Default `'any'`. During the Dynasty phase, only Holding/Character/Attachment cards (or `evenDuringDynasty: true`, or events allowed by `dynastyPhaseCanPlayConflictEvents`) may trigger |
+| `evenDuringDynasty` | `boolean` | Allow triggering during the Dynasty phase without the default per-type restrictions |
+| `anyPlayer` | `boolean` | Either player may trigger (default `false`) |
+| `canTriggerOutsideConflict` | `boolean` | Province actions can fire when no conflict is active |
+| `conflictProvinceCondition` | `(province, context) => bool` | Which conflict provinces allow the action (default: `province === this.card`) |
 | `condition` | `(context) => boolean` | Extra boolean gate — ability only appears if this returns `true` |
 | `cost` | `Cost \| Cost[]` | Costs to pay before resolving (see [Costs](#costs)) |
 | `target` / `targets` | see [Targets](#targets) | Card/ring/select targets |
@@ -79,7 +83,8 @@ Key fields:
 | `effectArgs` | `EffectArg \| (context) => EffectArg` | Arguments interpolated into `effect` |
 | `handler` | `(context) => void` | Low-level handler called after costs are paid (use `gameAction` when possible) |
 | `then` | `object \| (context) => object` | Chains a second ability after this one resolves |
-| `cannotTargetFirst` | `boolean` | Prevents the card from being targeted before anything else this window |
+| `cannotTargetFirst` | `boolean` | Skip PreTarget early-target resolution — targets are resolved only after costs (`Stages.Target`) |
+| `initiateDuel` | `InitiateDuel \| (context) => InitiateDuel` | Sugar that wires a duel as the action's effect (see [Duels](#duels)) |
 
 ### `this.reaction(props: TriggeredAbilityProps)`
 
@@ -118,9 +123,15 @@ this.interrupt({
 
 `this.forcedReaction(props)` and `this.forcedInterrupt(props)` fire automatically — the player cannot opt out. Used for mandatory effects (e.g., "when X happens, you must Y").
 
-### `this.wouldInterrupt(props)` and `this.wouldReact(props)`
+### `this.wouldInterrupt(props)`
 
 Fires "before" the triggering event is queued at all. Used for "would" effects — prevention or modification before the event happens. Rare.
+
+The constant `AbilityTypes.WouldInterrupt` has the string value `'cancelinterrupt'` for historical reasons.
+
+### Duel-window helpers
+
+`this.duelChallenge(props)`, `this.duelFocus(props)`, `this.duelStrike(props)` are sugar that wire the `when:` clause to the corresponding duel-step event. They accept `duelCondition: (duel, context) => boolean` instead of a raw `when:` map.
 
 ### `when:` and `aggregateWhen:`
 
@@ -185,12 +196,14 @@ Declares attachment restrictions. Should be called from `setupCardAbilities()` o
 
 ```typescript
 this.attachmentConditions({
-    myControl: true,             // can only attach to cards the controller controls
-    trait: 'bushi',              // must attach to a bushi
-    faction: ['crane', 'lion'],  // or restrict to a faction
-    unique: true,                // card is unique attachment-wise
-    limit: 1,                    // max N copies of this attachment on a single card
-    limitTrait: { weapon: 2 }    // max 2 weapons on the attached card
+    myControl: true,              // can only attach to cards the controller controls
+    opponentControlOnly: true,    // (or) can only attach to opponent's cards
+    trait: 'bushi',               // must attach to a bushi
+    faction: ['crane', 'lion'],   // or restrict to a faction
+    unique: true,                 // card is unique attachment-wise
+    limit: 1,                     // max N copies of this attachment on a single card
+    limitTrait: { weapon: 2 },    // max 2 weapons on the attached card
+    cardCondition: (card) => true // arbitrary extra filter on the parent
 });
 ```
 
@@ -385,6 +398,8 @@ Game actions are called via `AbilityDsl.actions`. All accept an optional `proper
 
 When no `target` is provided, the action defaults to `context.source`.
 
+The tables below cover the most-used factories; the authoritative list lives in `server/game/GameActions/GameActions.ts` (~100 exports). Niche actions not listed here include `attachToRing`, `dishonorProvince`, `placeFateAttachment`, `putIntoProvince`, `performGloryCount`, `refillFaceup`, `selectRing`, `selectToken`, `resolveConflictRing`, `removeRingFromPlay`, `returnRingToPlay`, `moveStatusToken`, `flipImperialFavor`, `fateBid`, `setHonorDial`, `modifyBid`, `triggerAbility`, `duelAddParticipant`, `immediatelyResolveConflict`, `duelLastingEffect`, `cardMenu`, `chooseAction`, `onAffinity`, `jointContext`, `multipleContext`, `sequentialContext`, `playCard`.
+
 ### Card actions
 
 | Function | Default target | Notes |
@@ -547,6 +562,8 @@ effect: [
 
 Effects are used inside `persistentEffect` and `*lastingEffect`. They are factories — call them with arguments, pass the result to `effect:`.
 
+The authoritative list lives in `server/game/effects.ts`. Tables below cover the common cases — when an effect you expect is missing, grep that file.
+
 ### Skill modifiers (card)
 
 | Effect | Description |
@@ -665,7 +682,7 @@ Effects are used inside `persistentEffect` and `*lastingEffect`. They are factor
 
 | Effect | Description |
 |--------|-------------|
-| `effects.modifyDuelistSkill({ player, amount })` | Modify duel skill bid |
+| `effects.modifyDuelistSkill(value, duel?)` | Modify the card's contribution to a duel (optionally scoped to a specific `Duel` instance) |
 | `effects.winDuel(duel)` | Force win a duel |
 | `effects.winDuelTies()` | Win tied duels |
 | `effects.duelIgnorePrintedSkill()` | Ignore printed skill in duel |
@@ -685,12 +702,11 @@ this.action({
         requiresConflict: true,   // default true — source and target must be participating
         challengerCondition: (card, context) => card === context.source,
         targetCondition: (card, context) => card.isParticipating(),
-        message: '{0} challenges {1} to a duel',
-        messageArgs: (challenger, target) => [challenger, target],
-        winCondition: (challenger, target, context) => true,   // optional override
-        winnerHandler: (winner, loser, context) => { ... },
-        loserHandler: (winner, loser, context) => { ... },
-        tieHandler: (challenger, target, context) => { ... }
+        gameAction: (duel, context) =>
+            AbilityDsl.actions.discardFromPlay({ target: duel.loser }),
+        message: 'discard {0}',
+        messageArgs: (duel, context) => duel.loser,
+        refuseGameAction: AbilityDsl.actions.gainHonor({ target: context => context.player.opponent })
     }
 });
 ```
@@ -699,15 +715,19 @@ this.action({
 |-------|-------------|
 | `type` | `DuelTypes.Military`, `DuelTypes.Political`, or `DuelTypes.Glory` |
 | `requiresConflict` | Default `true`. Challenger and target must be participating |
-| `challengerCondition` | Filter for who can be the challenger |
-| `targetCondition` | Filter for legal duel targets |
+| `challengerCondition` | Filter for who can be the challenger (overrides default participation check on the challenger) |
+| `targetCondition` | Filter for legal duel targets (overrides default participation check on the target) |
 | `opponentChoosesDuelTarget` | Opponent selects the target |
 | `opponentChoosesChallenger` | Opponent selects the challenger |
-| `winnerHandler` | `(winner, loser, context) => void` — runs on duel winner |
-| `loserHandler` | `(winner, loser, context) => void` — runs on duel loser |
-| `tieHandler` | `(challenger, target, context) => void` — runs on tie |
+| `gameAction` | `(duel, context) => GameAction` — the effect resolved when the duel ends. `duel.winner` / `duel.loser` are `DrawCard[]` (empty array on tie) |
+| `message` / `messageArgs` | Chat message for the resolution step; `messageArgs: (duel, context) => any \| any[]` |
+| `refuseGameAction` | Effect when the opponent legally refuses the duel (consult `Duel.ts`) |
+| `refusalMessage` / `refusalMessageArgs` | Chat output when refused |
+| `costHandler` | Custom focus-cost handler |
+| `challengerEffect` / `targetEffect` | Pre-resolution per-side effects |
+| `statistic` | `(card, rules) => number` — override skill statistic used in resolution |
 
-When `requiresConflict: true` (default), do not add a redundant `isDuringConflict()` condition or `source.isParticipating()` condition — the duel system enforces both.
+When `requiresConflict: true` (default), do not add a redundant `isDuringConflict()` condition or `source.isParticipating()` condition — the duel system enforces both. There is no `winnerHandler`/`loserHandler`/`tieHandler` indirection — express win/loss/tie effects by branching on `duel.winner.length` / `duel.loser.length` inside the single `gameAction` factory.
 
 ---
 
@@ -722,19 +742,25 @@ Import from `'../Constants'` (adjust path for nesting).
 `Stronghold`, `Role`, `Province`, `Character`, `Holding`, `Event`, `Attachment`
 
 ### `Locations`
-`Any`, `Hand`, `ConflictDeck`, `DynastyDeck`, `ConflictDiscardPile`, `DynastyDiscardPile`, `PlayArea`, `Provinces`, `ProvinceOne`–`ProvinceFour`, `StrongholdProvince`, `RemovedFromGame`
+`Any`, `Hand`, `ConflictDeck`, `DynastyDeck`, `ConflictDiscardPile`, `DynastyDiscardPile`, `PlayArea`, `Provinces` (string value `'province'`, grouping all four slots), `ProvinceOne`–`ProvinceFour`, `StrongholdProvince`, `ProvinceDeck`, `RemovedFromGame`, `UnderneathStronghold`, `OutsideTheGame`, `BeingPlayed`, `Role`
 
 ### `Players`
 `Self`, `Opponent`, `Any`
 
-### `TargetModes`
-`Single` (default), `UpTo`, `Exactly`, `UpToVariable`, `ExactlyVariable`, `Unlimited`, `MaxStat`, `Ring`, `Select`, `Ability`, `Token`
-
 ### `Durations`
-`UntilEndOfConflict` (default), `UntilEndOfPhase`, `UntilEndOfRound`, `UntilEndOfDuel`, `UntilPassPriority`, `Persistent`
+`UntilEndOfConflict` (default for `cardLastingEffect`), `UntilEndOfPhase`, `UntilEndOfRound`, `UntilEndOfDuel`, `UntilPassPriority`, `UntilOpponentPassPriority`, `UntilSelfPassPriority`, `UntilNextPassPriority`, `Persistent`, `Custom`
 
 ### `AbilityTypes`
-`Action`, `Reaction`, `ForcedReaction`, `Interrupt`, `ForcedInterrupt`, `WouldInterrupt`, `Persistent`
+`Action`, `Reaction`, `ForcedReaction`, `Interrupt`, `ForcedInterrupt`, `WouldInterrupt` (string value `'cancelinterrupt'`), `KeywordInterrupt`, `KeywordReaction`, `DuelReaction`, `Persistent`, `OtherEffects`
+
+### `ConflictTypes`
+`Military`, `Political`, `Passed`, `Forced`
+
+### `Stages`
+`Cost`, `Effect`, `PreTarget`, `Target`
+
+### `TargetModes`
+`Single` (default), `UpTo`, `UpToVariable`, `Exactly`, `ExactlyVariable`, `Unlimited`, `MaxStat`, `Ring`, `Select`, `Ability`, `Token`, `ElementSymbol`, `AutoSingle`
 
 ### `DuelTypes`
 `Military`, `Political`, `Glory`
@@ -742,11 +768,17 @@ Import from `'../Constants'` (adjust path for nesting).
 ### `Elements`
 `Fire`, `Earth`, `Air`, `Water`, `Void`
 
-### `ConflictTypes`
-`Military`, `Political`
-
 ### `Decks`
 `ConflictDeck`, `DynastyDeck`
+
+### `CharacterStatus`
+`Honored`, `Dishonored`, `Tainted`
+
+### `FavorTypes`
+`Military`, `Political`, `Both`
+
+### `PlayTypes`
+`PlayFromHand`, `PlayFromProvince`, `Other`
 
 ### `EventNames`
 Key events used in `when:` clauses:
@@ -778,8 +810,9 @@ Key events used in `when:` clauses:
 | `OnModifyFate` | Fate total changes |
 | `OnRoundEnded` | Round ends |
 | `OnPhaseEnded` | Phase ends |
-| `OnAbilityResolverInitiated` | An ability resolver begins |
-| `OnCardAbilityInitiated` | An ability resolves its SELECT prompt |
+| `OnAbilityResolverInitiated` | A non-card-ability resolver begins (rare; cards fire `OnCardAbilityInitiated`) |
+| `OnCardAbilityInitiated` | A card ability's resolver opens its initiate-ability event window (after PreTarget resolution, before costs/targets) |
+| `OnCardAbilityTriggered` | A triggered card ability is being initiated (queued alongside `OnCardAbilityInitiated`) |
 
 ---
 

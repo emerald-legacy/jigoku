@@ -411,7 +411,12 @@ this.action({
 | `targetCondition` | `isParticipating()` | Extra condition on duelTarget |
 | `opponentChoosesDuelTarget` | `false` | Opponent selects their own character |
 | `opponentChoosesChallenger` | `false` | Opponent selects the challenger |
+| `targetCondition` | `isParticipating()` | Extra condition on duelTarget (overrides default participation check) |
 | `refuseGameAction` | none | Effect if opponent refuses duel |
+| `refusalMessage` / `refusalMessageArgs` | none | Chat output when refused |
+| `costHandler` | none | Custom focus-cost handler |
+| `challengerEffect` / `targetEffect` | none | Pre-resolution per-side effects |
+| `statistic` | none | `(card, rules) => number` — override skill statistic used |
 
 **When the source card IS a Character** (`initiateDuelFromCharacter`): the source card is automatically the challenger. No target selection for challenger.
 
@@ -542,6 +547,7 @@ AbilityDsl.actions.resolveAbility((context) => ({
 | `'condition'` | The ability's `condition:` function |
 | `'cost'` | Cost payment |
 | `'limit'` | Usage limit |
+| `'max'` | Per-title `max:` cap |
 | `'triggeringRestrictions'` | Triggering restriction checks |
 
 ---
@@ -561,7 +567,8 @@ AbilityDsl.effects.gainAbility(AbilityTypes.Action, { ... })
 AbilityDsl.effects.switchBaseSkills()
 AbilityDsl.effects.cannotContribute(() => (card) => condition)
 AbilityDsl.effects.changeConflictSkillFunction((card) => card.getGlory())
-AbilityDsl.effects.playerCannot('spendFate')
+AbilityDsl.effects.playerCannot({ cannot: 'loseHonor', restricts: 'loseHonorAsCost' })  // preferred
+AbilityDsl.effects.playerCannot('takeFateFromRings')                                     // legacy short form (string)
 AbilityDsl.effects.suppressEffects((effect) => condition)
 AbilityDsl.effects.gainPlayAction(SomePlayClass)
 AbilityDsl.effects.setApparentFate(0)
@@ -742,8 +749,10 @@ When a card ability is triggered, `AbilityResolver` runs these steps in order:
 2. `resolveEarlyTargets()` — resolve targets at `Stages.PreTarget` (before costs)
 3. `checkForCancel()` — abort if player cancelled
 4. `openInitiateAbilityEventWindow()` — fire `onCardAbilityInitiated` event
-5. Inside: `resolveCosts()` → `payCosts()` → `checkCostsWerePaid()` → `resolveTargets()` (at `Stages.Target`) → `initiateAbilityEffects()` → `executeHandler()`
+5. Inside: `resolveCosts()` → `payCosts()` → `checkCostsWerePaid()` → `resolveTargets()` (at `Stages.Target`) → `checkForCancel()` → `initiateAbilityEffects()` → `executeHandler()` → `moveEventCardToDiscard()`
 6. `refillProvinces()`
+
+The event window opened at step 4 fires `EventNames.OnCardAbilityInitiated` for card abilities (or `OnAbilityResolverInitiated` for non-card abilities). For event cards, it also queues an `OnCardPlayed` event. For any triggered ability, it queues an `OnCardAbilityTriggered` event.
 
 **Implication for reactions:** A reaction that triggers on `onCardAbilityInitiated` (step 4) fires **after** the initiating card's PreTarget prompt has been handled. If a card with a `TargetModes.Select` action fires, the SELECT prompt must be resolved by the player before the reaction's trigger window opens.
 
@@ -760,17 +769,29 @@ CardTypes.Character / Event / Attachment / Province / Stronghold / Role / Holdin
 
 Players.Self / Opponent / Any
 
-Locations.PlayArea / ConflictDiscardPile / DynastyDiscardPile / ConflictDeck / DynastyDeck / Provinces / Hand
+Locations.PlayArea / ConflictDiscardPile / DynastyDiscardPile / ConflictDeck / DynastyDeck / Provinces /
+         ProvinceOne / ProvinceTwo / ProvinceThree / ProvinceFour / StrongholdProvince / Hand /
+         ProvinceDeck / RemovedFromGame / UnderneathStronghold / OutsideTheGame / BeingPlayed / Role / Any
 
-DuelTypes.Military / Political
+// Note: Locations.Provinces is the string 'province' (singular). It groups all four province slots.
 
-TargetModes.Select / Exactly / ExactlyVariable / Ring / MaxStar / Unlimited
+DuelTypes.Military / Political / Glory
 
-AbilityTypes.Action / Reaction / Interrupt / ForcedInterrupt / ForcedReaction / WouldInterrupt
+TargetModes.Single / UpTo / UpToVariable / Exactly / ExactlyVariable / MaxStat / Unlimited /
+            Ring / Select / Ability / Token / ElementSymbol / AutoSingle
 
-Durations.UntilEndOfConflict / UntilEndOfPhase / UntilEndOfRound / Persistent
+AbilityTypes.Action / Reaction / ForcedReaction / Interrupt / ForcedInterrupt / WouldInterrupt /
+             KeywordInterrupt / KeywordReaction / DuelReaction / Persistent / OtherEffects
 
-ConflictTypes.Military / Political
+// AbilityTypes.WouldInterrupt has the string value 'cancelinterrupt' (historical name).
+
+Durations.UntilEndOfConflict / UntilEndOfPhase / UntilEndOfRound / UntilEndOfDuel /
+          UntilPassPriority / UntilOpponentPassPriority / UntilSelfPassPriority / UntilNextPassPriority /
+          Persistent / Custom
+
+ConflictTypes.Military / Political / Passed / Forced
+
+Stages.Cost / Effect / PreTarget / Target
 ```
 
 ---
