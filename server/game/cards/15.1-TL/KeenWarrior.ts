@@ -8,6 +8,7 @@ class KeenWarrior extends DrawCard {
     setupCardAbilities() {
         this.reaction({
             title: 'Draw 2 cards and return 1',
+            collectiveTrigger: true,
             when: {
                 onCardRevealed: (event, context) => {
                     let cards = event.card;
