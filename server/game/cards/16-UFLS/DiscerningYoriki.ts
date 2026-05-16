@@ -8,6 +8,7 @@ class DiscerningYoriki extends DrawCard {
     setupCardAbilities() {
         this.reaction({
             title: 'Honor a character',
+            collectiveTrigger: true,
             when: {
                 onCardRevealed: (event, context) => {
                     let cards = event.card;
