@@ -709,8 +709,6 @@ class Game extends EventEmitter {
     }
 
     selectDeck(playerName: string, deck: any): void {
-        // Once play has begun, the deck (incl. stronghold and faction) is frozen.
-        // The engine's own call during initialise() runs before `playStarted` flips.
         if(this.playStarted) {
             return;
         }
@@ -776,6 +774,18 @@ class Game extends EventEmitter {
         return this.pipeline.handleMenuCommand(player, arg, uuid, method);
     }
 
+    private static readonly TOGGLE_WINDOWS = new Set([
+        'dynasty', 'draw', 'preConflict', 'conflict', 'fate', 'regroup'
+    ]);
+    private static readonly TOGGLE_TIMER_SETTINGS = new Set([
+        'events', 'eventsInDeck'
+    ]);
+    private static readonly TOGGLE_OPTION_SETTINGS = new Set([
+        'markCardsUnselectable', 'cancelOwnAbilities', 'orderForcedAbilities',
+        'confirmOneClick', 'disableCardStats', 'showStatusInSidebar',
+        'sortHandByName', 'showRingEffects'
+    ]);
+
     /**
      * This function is called by the client when a player clicks an action window
      * toggle in the settings menu
@@ -785,8 +795,11 @@ class Game extends EventEmitter {
         if(!player) {
             return;
         }
+        if(!Game.TOGGLE_WINDOWS.has(windowName)) {
+            return;
+        }
 
-        player.promptedActionWindows[windowName] = toggle;
+        player.promptedActionWindows[windowName] = !!toggle;
     }
 
     /**
@@ -798,8 +811,11 @@ class Game extends EventEmitter {
         if(!player) {
             return;
         }
+        if(!Game.TOGGLE_TIMER_SETTINGS.has(settingName)) {
+            return;
+        }
 
-        player.timerSettings[settingName] = toggle;
+        player.timerSettings[settingName] = !!toggle;
     }
 
     /*
@@ -811,8 +827,11 @@ class Game extends EventEmitter {
         if(!player) {
             return;
         }
+        if(!Game.TOGGLE_OPTION_SETTINGS.has(settingName)) {
+            return;
+        }
 
-        player.optionSettings[settingName] = toggle;
+        player.optionSettings[settingName] = !!toggle;
     }
 
     toggleManualMode(playerName: string): void {
