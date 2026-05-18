@@ -4,7 +4,6 @@ const parsedEnv = z
     .object({
         CAPTCHA_KEY: z.string().optional(),
         COOKIE_LIFETIME: z.string().optional(),
-        DB_PATH: z.string(),
         DOMAIN: z.string(),
         EMAIL_PATH: z.string().optional(),
         ENVIRONMENT: z.string(),
@@ -31,7 +30,6 @@ if(!parsedEnv.success) {
 
 export const captchaKey = parsedEnv.data.CAPTCHA_KEY;
 export const cookieLifetime = parsedEnv.data.COOKIE_LIFETIME;
-export const dbPath = parsedEnv.data.DB_PATH;
 export const domain = parsedEnv.data.DOMAIN;
 export const emailPath = parsedEnv.data.EMAIL_PATH;
 export const environment = parsedEnv.data.ENVIRONMENT;
