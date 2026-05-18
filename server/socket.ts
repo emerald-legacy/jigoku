@@ -71,6 +71,10 @@ class Socket extends EventEmitter {
             }
 
             const payload = user as jwt.JwtPayload;
+            if(this.user && this.user.username !== payload.username) {
+                this.socket.disconnect();
+                return;
+            }
             (this.socket.request as unknown as RequestWithUser).user = payload;
             this.user = payload;
             this.emit('authenticate', this, payload);
