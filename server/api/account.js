@@ -420,7 +420,9 @@ module.exports.init = function (server) {
                 return updateUser(res, existingUser);
             })
             .catch(() => {
-                return res.send({ success: false, message: 'An error occured updating your user profile' });
+                if(!res.headersSent) {
+                    return res.send({ success: false, message: 'An error occured updating your user profile' });
+                }
             });
     });
 
