@@ -45,7 +45,6 @@
         "express-session": "1.19.0",
         "helmet": "8.1.0",
         "jsonwebtoken": "9.0.3",
-        "mkdirp": "3.0.1",
         "mongodb": "7.2.0",
         "nodemailer": "8.0.7",
         "passport": "0.7.0",
