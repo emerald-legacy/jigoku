@@ -619,12 +619,27 @@ class Game extends EventEmitter {
         }
     }
 
+    private static readonly CHANGEABLE_STATS = new Set([
+        'fate',
+        'honor',
+        'imperialFavor',
+        'conflictsRemaining',
+        'militaryRemaining',
+        'politicalRemaining'
+    ]);
+
     /**
      * Changes a Player variable and displays a message in chat
      */
     changeStat(playerName: string, stat: string, value: number): void {
         const player = this.getPlayerByName(playerName);
         if(!player) {
+            return;
+        }
+        if(typeof stat !== 'string' || !Game.CHANGEABLE_STATS.has(stat)) {
+            return;
+        }
+        if(!Number.isInteger(value) || Math.abs(value) > 1) {
             return;
         }
 
@@ -694,6 +709,11 @@ class Game extends EventEmitter {
     }
 
     selectDeck(playerName: string, deck: any): void {
+        // Once play has begun, the deck (incl. stronghold and faction) is frozen.
+        // The engine's own call during initialise() runs before `playStarted` flips.
+        if(this.playStarted) {
+            return;
+        }
         const player = this.getPlayerByName(playerName);
         if(player) {
             player.selectDeck(deck);
