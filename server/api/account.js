@@ -227,8 +227,13 @@ module.exports.init = function (server) {
                 let hmac = crypto.createHmac('sha512', env.hmacSecret);
                 let resetToken = hmac.update('RESET ' + user.username + ' ' + user.tokenExpires).digest('hex');
 
-                if(resetToken !== req.body.token) {
-                    logger.error('Invalid reset token', user.username, req.body.token);
+                const providedToken = typeof req.body.token === 'string' ? req.body.token : '';
+                const tokensMatch =
+                    providedToken.length === resetToken.length &&
+                    crypto.timingSafeEqual(Buffer.from(resetToken), Buffer.from(providedToken));
+
+                if(!tokensMatch) {
+                    logger.error('Invalid reset token', user.username);
 
                     res.send({
                         success: false,
