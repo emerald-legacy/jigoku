@@ -2,7 +2,6 @@
     "compilerOptions": {
         "module": "CommonJS",
         "moduleResolution": "node",
-        "ignoreDeprecations": "6.0",
         "target": "ES2022",
         "sourceMap": true,
         "outDir": "build",
