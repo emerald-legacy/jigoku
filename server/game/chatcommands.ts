@@ -45,7 +45,7 @@ class ChatCommands {
     }
 
     executeCommand(player: Player, command: string, args: string[]): boolean {
-        if(!player || !this.commands[command]) {
+        if(!player || !Object.prototype.hasOwnProperty.call(this.commands, command)) {
             return false;
         }
 
