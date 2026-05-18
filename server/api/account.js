@@ -370,20 +370,45 @@ module.exports.init = function (server) {
             .getUserByUsername(req.params.username)
             .then((user) => {
                 if(!user) {
-                    return res.status(404).send({ message: 'Not found' });
+                    res.status(404).send({ message: 'Not found' });
+                    return Promise.reject('Not found');
                 }
 
-                user.email = userToSet.email;
-                user.settings = userToSet.settings;
-                user.promptedActionWindows = userToSet.promptedActionWindows;
+                const isEmailChange = typeof userToSet.email === 'string' && userToSet.email !== user.email;
+                const isPasswordChange = typeof userToSet.password === 'string' && userToSet.password !== '';
 
                 existingUser = user;
 
-                if(userToSet.password && userToSet.password !== '') {
-                    return hashPassword(userToSet.password, 10);
-                }
+                const verify = (isEmailChange || isPasswordChange)
+                    ? (typeof userToSet.currentPassword !== 'string' || userToSet.currentPassword === ''
+                        ? Promise.resolve(false)
+                        : bcrypt.compare(userToSet.currentPassword, user.password))
+                    : Promise.resolve(true);
 
-                return updateUser(res, user);
+                return verify.then((valid) => {
+                    if((isEmailChange || isPasswordChange) && !valid) {
+                        res.status(typeof userToSet.currentPassword === 'string' && userToSet.currentPassword !== '' ? 403 : 400)
+                            .send({ success: false, message: typeof userToSet.currentPassword === 'string' && userToSet.currentPassword !== '' ? 'Current password is incorrect' : 'Current password is required to change email or password' });
+                        return Promise.reject('Auth failed');
+                    }
+
+                    if(isEmailChange) {
+                        if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userToSet.email)) {
+                            res.send({ success: false, message: 'Please enter a valid email address' });
+                            return Promise.reject('Invalid email');
+                        }
+                        user.email = userToSet.email;
+                    }
+
+                    user.settings = userToSet.settings;
+                    user.promptedActionWindows = userToSet.promptedActionWindows;
+
+                    if(isPasswordChange) {
+                        return hashPassword(userToSet.password, 10);
+                    }
+
+                    return updateUser(res, user);
+                });
             })
             .then((passwordHash) => {
                 if(!passwordHash) {
