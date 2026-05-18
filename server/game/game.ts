@@ -484,6 +484,10 @@ class Game extends EventEmitter {
             return;
         }
 
+        if(!this.manualMode) {
+            return;
+        }
+
         MenuCommands.cardMenuClick(menuItem, this, player, card);
         this.checkGameState(true);
     }
