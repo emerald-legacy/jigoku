@@ -350,7 +350,12 @@ module.exports.init = function (server) {
     }
 
     server.put('/api/account/:username', (req, res) => {
-        let userToSet = JSON.parse(req.body.data);
+        let userToSet;
+        try {
+            userToSet = JSON.parse(req.body.data);
+        } catch(_e) {
+            return res.status(400).send({ success: false, message: 'Invalid request data' });
+        }
         let existingUser;
 
         if(!req.user) {
