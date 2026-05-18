@@ -144,10 +144,9 @@ class Server {
             let token = undefined;
 
             if(req.user) {
-                token = jwt.sign(req.user, env.secret);
-                // Remove blockList from user object for rendering
-                const { blockList: _blockList, ...userWithoutBlockList } = req.user;
-                req.user = userWithoutBlockList;
+                const { blockList: _blockList, password: _pw, resetToken: _rt, tokenExpires: _te, ...safeUser } = req.user;
+                req.user = safeUser;
+                token = jwt.sign(safeUser, env.secret, { expiresIn: '1h' });
             }
 
             res.render('index', {

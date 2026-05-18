@@ -143,10 +143,11 @@ module.exports.init = function (server) {
                 return loginUser(req, user);
             })
             .then(() => {
+                const { password: _pw, resetToken: _rt, tokenExpires: _te, ...safeUser } = req.user || {};
                 res.send({
                     success: true,
                     user: Settings.getUserWithDefaultsSet(req.body),
-                    token: jwt.sign(req.user, env.secret)
+                    token: jwt.sign(safeUser, env.secret, { expiresIn: '7d' })
                 });
             })
             .catch(() => {
@@ -183,7 +184,8 @@ module.exports.init = function (server) {
     });
 
     server.post('/api/account/login', passport.authenticate('local'), function (req, res) {
-        res.send({ success: true, user: req.user, token: jwt.sign(req.user, env.secret) });
+        const { password: _pw, resetToken: _rt, tokenExpires: _te, ...safeUser } = req.user || {};
+        res.send({ success: true, user: safeUser, token: jwt.sign(safeUser, env.secret, { expiresIn: '7d' }) });
     });
 
     server.post('/api/account/password-reset-finish', function (req, res) {
@@ -326,19 +328,20 @@ module.exports.init = function (server) {
         return userService
             .update(user)
             .then(() => {
+                const safeUser = {
+                    username: user.username,
+                    email: user.email,
+                    emailHash: user.emailHash,
+                    _id: user._id,
+                    admin: user.admin,
+                    settings: user.settings,
+                    promptedActionWindows: user.promptedActionWindows,
+                    permissions: user.permissions || {}
+                };
                 res.send({
                     success: true,
-                    user: {
-                        username: user.username,
-                        email: user.email,
-                        emailHash: user.emailHash,
-                        _id: user._id,
-                        admin: user.admin,
-                        settings: user.settings,
-                        promptedActionWindows: user.promptedActionWindows,
-                        permissions: user.permissions || {}
-                    },
-                    token: jwt.sign(user, env.secret)
+                    user: safeUser,
+                    token: jwt.sign(safeUser, env.secret, { expiresIn: '7d' })
                 });
             })
             .catch(() => {
