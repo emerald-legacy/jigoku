@@ -300,13 +300,12 @@ export class GameServer {
     }
 
     handshake(socket: socketio.Socket, next: (err?: Error) => void) {
-        // Socket.io v4 uses auth object, v1 used query string
-        const token = (socket.handshake.auth as any)?.token || socket.handshake.query?.token;
+        const token = (socket.handshake.auth as any)?.token;
         if(token && token !== 'undefined') {
-            jwt.verify(token as string, env.secret, function (err, user) {
+            jwt.verify(token as string, env.secret, { algorithms: ['HS256'] }, function (err, user) {
                 if(err) {
                     logger.info(`JWT verification failed: ${err.message}`);
-                    return next();
+                    return next(new Error('Invalid authentication token'));
                 }
 
                 (socket.request as any).user = user;

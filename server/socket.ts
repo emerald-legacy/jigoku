@@ -64,7 +64,7 @@ class Socket extends EventEmitter {
     }
 
     onAuthenticate(token: string): void {
-        jwt.verify(token, secret as string, (err, user) => {
+        jwt.verify(token, secret as string, { algorithms: ['HS256'] }, (err, user) => {
             if(err || typeof user !== 'object' || user === null) {
                 logger.info(err);
                 return;
