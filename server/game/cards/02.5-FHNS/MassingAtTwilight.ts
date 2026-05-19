@@ -1,5 +1,5 @@
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class MassingAtTwilight extends ProvinceCard {
     static id = 'massing-at-twilight';

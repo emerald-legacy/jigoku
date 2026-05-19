@@ -1,7 +1,7 @@
-import { CardTypes, Durations, Players } from '../../../Constants';
-import { Direction } from '../../../GameActions/ModifyBidAction';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Durations, Players } from '../../../Constants.js';
+import { Direction } from '../../../GameActions/ModifyBidAction.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class KakitaTechnique extends DrawCard {
     static id = 'kakita-technique';

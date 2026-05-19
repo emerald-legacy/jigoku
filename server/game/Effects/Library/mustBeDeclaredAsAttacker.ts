@@ -1,5 +1,5 @@
-import { EffectNames } from '../../Constants';
-import { EffectBuilder } from '../EffectBuilder';
+import { EffectNames } from '../../Constants.js';
+import { EffectBuilder } from '../EffectBuilder.js';
 
 export type MustBeDeclaredAsAttackerValue = 'both' | 'military' | 'political';
 

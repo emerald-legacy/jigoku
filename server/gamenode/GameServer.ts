@@ -5,15 +5,16 @@ import https from 'https';
 import jwt from 'jsonwebtoken';
 import * as socketio from 'socket.io';
 
-import { captureException } from '../ErrorMonitoring';
-import Game from '../game/game';
-import type Player from '../game/player';
-import { logger } from '../logger';
-import type PendingGame from '../pendinggame';
-import Socket from '../socket';
-import { detectBinary } from '../util';
-import { SendGameStateProfiler } from './SendGameStateProfiler';
-import { WsSocket } from './WsSocket';
+import { captureException } from '../ErrorMonitoring.js';
+import Game from '../game/game.js';
+import { cards as cardLibrary } from '../game/cards/index.js';
+import type Player from '../game/player.js';
+import { logger } from '../logger.js';
+import type PendingGame from '../pendinggame.js';
+import Socket from '../socket.js';
+import { detectBinary } from '../util.js';
+import { SendGameStateProfiler } from './SendGameStateProfiler.js';
+import { WsSocket } from './WsSocket.js';
 import * as env from '../env.js';
 
 export class GameServer {
@@ -339,7 +340,7 @@ export class GameServer {
     onStartGame(pendingGame: PendingGame): void {
         const playerNames = Object.values(pendingGame.players as any).map((p: any) => p.name).join(' vs ');
         logger.info(`Starting game ${pendingGame.id} (${playerNames}), total games: ${this.games.size + 1}`);
-        const game = new Game(pendingGame as any, { router: this, shortCardData: this.shortCardData });
+        const game = new Game(pendingGame as any, { router: this, shortCardData: this.shortCardData, cardLibrary });
         this.games.set(pendingGame.id, game);
         this.registerUsersForGame(game);
 

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes, Phases } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes, Phases } from '../../Constants.js';
 
 class CommanderOfTheLegions extends DrawCard {
     static id = 'commander-of-the-legions';

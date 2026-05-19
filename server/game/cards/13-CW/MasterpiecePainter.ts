@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { TargetModes, Durations, Locations, Decks } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { TargetModes, Durations, Locations, Decks } from '../../Constants.js';
 
 class MasterpiecePainter extends DrawCard {
     static id = 'masterpiece-painter';

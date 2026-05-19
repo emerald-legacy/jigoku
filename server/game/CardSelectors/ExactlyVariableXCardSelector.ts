@@ -1,4 +1,4 @@
-import BaseCardSelector from './BaseCardSelector';
+import BaseCardSelector from './BaseCardSelector.js';
 
 class ExactlyVariableXCardSelector extends BaseCardSelector {
     numCardsFunc: (context: any) => number;

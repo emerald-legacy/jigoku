@@ -1,12 +1,12 @@
-import * as Settings from '../settings';
-import { CardTypes, ConflictTypes, EffectNames, Elements, EventNames, Locations } from './Constants';
-import { GameObject } from './GameObject';
-import { ProvinceCard } from './ProvinceCard';
-import BaseCard from './basecard';
-import Game from './game';
-import Player from './player';
-import type Ring from './ring';
-import DrawCard from './drawcard';
+import * as Settings from '../settings.js';
+import { CardTypes, ConflictTypes, EffectNames, Elements, EventNames, Locations } from './Constants.js';
+import { GameObject } from './GameObject.js';
+import { ProvinceCard } from './ProvinceCard.js';
+import BaseCard from './basecard.js';
+import Game from './game.js';
+import Player from './player.js';
+import type Ring from './ring.js';
+import DrawCard from './drawcard.js';
 
 type Predicate = (card: DrawCard) => boolean;
 

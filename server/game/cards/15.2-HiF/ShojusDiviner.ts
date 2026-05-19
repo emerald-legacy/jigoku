@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { AbilityTypes, Locations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { AbilityTypes, Locations } from '../../Constants.js';
 
 class ShojusDiviner extends DrawCard {
     static id = 'shoju-s-diviner';

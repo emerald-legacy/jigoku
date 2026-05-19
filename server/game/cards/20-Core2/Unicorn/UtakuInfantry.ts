@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type Player from '../../../player';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type Player from '../../../player.js';
 
 function getNoOfUnicornCharacters(player: Player) {
     return player.cardsInPlay.filter((card: DrawCard) => card.isParticipating() && card.isFaction('unicorn')).length;

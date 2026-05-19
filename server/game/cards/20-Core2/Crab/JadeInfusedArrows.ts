@@ -1,7 +1,7 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import { CardTypes, ConflictTypes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { CardTypes, ConflictTypes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class JadeInfusedArrows extends DrawCard {
     static id = 'jade-infused-arrows';

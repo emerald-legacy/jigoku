@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { CardTypes } from '../../Constants.js';
 
 class DojiFumiki extends DrawCard {
     static id = 'doji-fumiki';

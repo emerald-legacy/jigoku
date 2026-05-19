@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { PlayTypes, DuelTypes, AbilityTypes, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { PlayTypes, DuelTypes, AbilityTypes, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class CivilDiscourse extends DrawCard {
     static id = 'civil-discourse';

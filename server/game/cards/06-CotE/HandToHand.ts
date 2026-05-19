@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, Players, TargetModes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Players, TargetModes } from '../../Constants.js';
 
 class HandToHand extends DrawCard {
     static id = 'hand-to-hand';

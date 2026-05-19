@@ -1,9 +1,9 @@
-import { CardTypes, Locations, Phases, Players } from '../../../Constants';
-import type { ProvinceCard } from '../../../ProvinceCard';
-import { StrongholdCard } from '../../../StrongholdCard';
-import AbilityDsl from '../../../abilitydsl';
+import { CardTypes, Locations, Phases, Players } from '../../../Constants.js';
+import type { ProvinceCard } from '../../../ProvinceCard.js';
+import { StrongholdCard } from '../../../StrongholdCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
 
-import { SimpleStep } from '../../../gamesteps/SimpleStep';
+import { SimpleStep } from '../../../gamesteps/SimpleStep.js';
 
 const MY_PROVINCE = 'myProvince';
 const OPP_PROVINCE = 'oppProvince';

@@ -1,6 +1,6 @@
-import { Players, CardTypes, AbilityTypes } from '../../Constants';
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
+import { Players, CardTypes, AbilityTypes } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class TakeUpCommand extends DrawCard {
     static id = 'take-up-command';

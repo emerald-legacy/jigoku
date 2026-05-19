@@ -1,5 +1,5 @@
-import AbilityDsl from '../../../abilitydsl';
-import { StrongholdCard } from '../../../StrongholdCard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { StrongholdCard } from '../../../StrongholdCard.js';
 
 export default class TheatreOfHonestLies extends StrongholdCard {
     static id = 'theatre-of-honest-lies';

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes, Durations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes, Durations } from '../../Constants.js';
 
 class EsteemedTeaHouse extends DrawCard {
     static id = 'esteemed-tea-house';

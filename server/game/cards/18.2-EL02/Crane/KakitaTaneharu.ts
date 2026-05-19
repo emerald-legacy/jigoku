@@ -1,6 +1,6 @@
-import DrawCard from '../../../drawcard';
-import AbilityDsl from '../../../abilitydsl';
-import { Locations, Players, PlayTypes } from '../../../Constants';
+import DrawCard from '../../../drawcard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Locations, Players, PlayTypes } from '../../../Constants.js';
 
 class KakitaTaneharu extends DrawCard {
     static id = 'kakita-taneharu';

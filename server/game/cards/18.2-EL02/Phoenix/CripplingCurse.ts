@@ -1,7 +1,7 @@
-import { AbilityContext } from '../../../AbilityContext';
-import AbilityDsl from '../../../abilitydsl';
-import { Phases } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import { AbilityContext } from '../../../AbilityContext.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Phases } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 function cardsInPlay(context: AbilityContext, predicate: (card: DrawCard) => boolean) {
     return context.player.cardsInPlay

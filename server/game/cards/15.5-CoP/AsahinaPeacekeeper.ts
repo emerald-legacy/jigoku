@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Players, CardTypes, Locations } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Players, CardTypes, Locations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class AsahinaPeacekeeper extends DrawCard {
     static id = 'asahina-peacekeeper';

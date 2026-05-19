@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class IkomaTsanuri2 extends DrawCard {
     static id = 'ikoma-tsanuri-2';

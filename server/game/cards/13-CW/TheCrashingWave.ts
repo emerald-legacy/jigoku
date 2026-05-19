@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, Locations } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Locations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class TheCrashingWave extends DrawCard {
     static id = 'the-crashing-wave';

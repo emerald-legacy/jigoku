@@ -1,5 +1,5 @@
-import type Game from '../game';
-import { BaseStep } from './BaseStep';
+import type Game from '../game.js';
+import { BaseStep } from './BaseStep.js';
 
 export class SimpleStep extends BaseStep {
     constructor(game: Game, public continueFunc: () => void) {

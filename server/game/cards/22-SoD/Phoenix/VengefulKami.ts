@@ -1,11 +1,11 @@
-import { AbilityContext } from '../../../AbilityContext';
-import AbilityDsl from '../../../abilitydsl';
-import { Conflict } from '../../../conflict';
-import { EventNames, TargetModes, AbilityTypes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import { EventRegistrar } from '../../../EventRegistrar';
-import { ProvinceCard } from '../../../ProvinceCard';
-import Ring from '../../../ring';
+import { AbilityContext } from '../../../AbilityContext.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Conflict } from '../../../conflict.js';
+import { EventNames, TargetModes, AbilityTypes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import { EventRegistrar } from '../../../EventRegistrar.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import Ring from '../../../ring.js';
 
 export default class VengefulKami extends DrawCard {
     static id = 'vengeful-kami';

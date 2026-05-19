@@ -1,6 +1,6 @@
-import DrawCard from '../../../drawcard';
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Players, Durations } from '../../../Constants';
+import DrawCard from '../../../drawcard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Players, Durations } from '../../../Constants.js';
 
 class SurgingWave extends DrawCard {
     static id = 'surging-wave';

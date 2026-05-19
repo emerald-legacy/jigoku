@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import type { Conflict } from '../../../conflict';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import type { Conflict } from '../../../conflict.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class AkodoYoshitsune extends DrawCard {
     static id = 'akodo-yoshitsune';

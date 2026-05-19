@@ -1,8 +1,8 @@
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
-import { AbilityTypes, CardTypes, Locations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type { TriggeredAbilityProps } from '../../../Interfaces';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
+import { AbilityTypes, CardTypes, Locations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type { TriggeredAbilityProps } from '../../../Interfaces.js';
 
 export default class ShibasOath extends DrawCard {
     static id = 'shiba-s-oath';

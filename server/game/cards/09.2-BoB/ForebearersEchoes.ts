@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, Durations, Locations, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Durations, Locations, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class ForebearersEchoes extends DrawCard {
     static id = 'forebearer-s-echoes';

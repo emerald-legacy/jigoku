@@ -1,6 +1,6 @@
-import { CardTypes } from '../../Constants';
-import { StrongholdCard } from '../../StrongholdCard';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes } from '../../Constants.js';
+import { StrongholdCard } from '../../StrongholdCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class KyudenIkoma extends StrongholdCard {
     static id = 'kyuden-ikoma';

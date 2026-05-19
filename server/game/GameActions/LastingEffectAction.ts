@@ -1,9 +1,9 @@
-import type { AbilityContext } from '../AbilityContext';
-import type BaseAbility from '../baseability';
-import { Durations, EventNames, Players } from '../Constants';
-import type { WhenType } from '../Interfaces';
-import type Player from '../player';
-import { GameAction, type GameActionProperties } from './GameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseAbility from '../baseability.js';
+import { Durations, EventNames, Players } from '../Constants.js';
+import type { WhenType } from '../Interfaces.js';
+import type Player from '../player.js';
+import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface LastingEffectGeneralProperties extends GameActionProperties {
     duration?: Durations;

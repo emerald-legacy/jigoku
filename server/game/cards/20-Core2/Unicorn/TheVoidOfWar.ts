@@ -1,7 +1,7 @@
-import CardAbility from '../../../CardAbility';
-import { CardTypes, ConflictTypes, Players, TargetModes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import CardAbility from '../../../CardAbility.js';
+import { CardTypes, ConflictTypes, Players, TargetModes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class TheVoidOfWar extends DrawCard {
     static id = 'the-void-of-war';

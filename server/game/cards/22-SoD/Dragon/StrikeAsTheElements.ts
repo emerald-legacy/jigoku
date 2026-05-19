@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import { CardTypes, Players, TargetModes } from '../../../Constants';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import { CardTypes, Players, TargetModes } from '../../../Constants.js';
 
 export default class StrikeAsTheElements extends DrawCard {
     static id = 'strike-as-the-elements';

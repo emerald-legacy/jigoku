@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import { Locations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import { parseGameMode } from '../../../GameMode';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Locations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import { parseGameMode } from '../../../GameMode.js';
 
 const ACTIVE_LOCATIONS = [Locations.Hand, Locations.PlayArea];
 

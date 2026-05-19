@@ -1,5 +1,5 @@
-import Socket from '../../server/socket';
-import * as jwt from 'jsonwebtoken';
+import Socket from '../../server/socket.js';
+import jwt from 'jsonwebtoken';
 
 const TEST_SECRET = 'testsecret';
 

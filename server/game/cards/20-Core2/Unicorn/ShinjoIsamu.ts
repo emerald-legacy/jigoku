@@ -1,11 +1,11 @@
-import { TargetModes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import type { Conflict } from '../../../conflict';
-import DrawCard from '../../../drawcard';
-import type Ring from '../../../ring';
-import type { AbilityContext } from '../../../AbilityContext';
-import type { ProvinceCard } from '../../../ProvinceCard';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
+import { TargetModes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type { Conflict } from '../../../conflict.js';
+import DrawCard from '../../../drawcard.js';
+import type Ring from '../../../ring.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import type { ProvinceCard } from '../../../ProvinceCard.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 function isamuWentHome(event: any, context: TriggeredAbilityContext<ShinjoIsamu>) {
     return event.card === context.source;

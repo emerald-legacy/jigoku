@@ -1,7 +1,7 @@
-import { CardTypes, Locations, Phases, PlayTypes } from '../../Constants';
-import { StrongholdCard } from '../../StrongholdCard';
-import AbilityDsl from '../../abilitydsl';
-import type DrawCard from '../../drawcard';
+import { CardTypes, Locations, Phases, PlayTypes } from '../../Constants.js';
+import { StrongholdCard } from '../../StrongholdCard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import type DrawCard from '../../drawcard.js';
 
 export default class KyudenHida extends StrongholdCard {
     static id = 'kyuden-hida';

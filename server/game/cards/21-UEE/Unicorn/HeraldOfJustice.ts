@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, ConflictTypes, Durations, Phases } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, ConflictTypes, Durations, Phases } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class HeraldOfJustice extends DrawCard {
     static id = 'herald-of-justice';

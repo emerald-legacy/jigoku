@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import AbiltyDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import AbiltyDsl from '../../abilitydsl.js';
 
 
 class ShinjoKyora extends DrawCard {

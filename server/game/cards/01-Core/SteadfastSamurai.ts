@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Durations, Phases } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Durations, Phases } from '../../Constants.js';
 
 class SteadfastSamurai extends DrawCard {
     static id = 'steadfast-samurai';

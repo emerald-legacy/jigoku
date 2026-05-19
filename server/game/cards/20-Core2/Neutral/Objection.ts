@@ -1,12 +1,12 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import { CardTypes, EventNames } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type { Cost } from '../../../Costs';
-import type Player from '../../../player';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
-import type Game from '../../../game';
-import { EventRegistrar } from '../../../EventRegistrar';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { CardTypes, EventNames } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type { Cost } from '../../../Costs.js';
+import type Player from '../../../player.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type Game from '../../../game.js';
+import { EventRegistrar } from '../../../EventRegistrar.js';
 
 const GLOBAL_TRACKER = new WeakMap<Game, WeakMap<Player, number>>();
 

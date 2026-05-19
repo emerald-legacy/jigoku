@@ -1,7 +1,7 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, ConflictTypes, Durations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, ConflictTypes, Durations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class MarvelousBeings extends DrawCard {
     static id = 'marvelous-beings';

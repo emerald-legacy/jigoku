@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Durations, TargetModes, Phases } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Durations, TargetModes, Phases } from '../../Constants.js';
 
 class EtherealDreamer extends DrawCard {
     static id = 'ethereal-dreamer';

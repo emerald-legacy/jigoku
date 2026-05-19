@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class IuchiShahai2 extends DrawCard {
     static id = 'iuchi-shahai-2';

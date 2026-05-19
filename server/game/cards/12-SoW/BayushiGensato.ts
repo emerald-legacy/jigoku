@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { DuelTypes, EffectNames } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { DuelTypes, EffectNames } from '../../Constants.js';
 
 class BayushiGensato extends DrawCard {
     static id = 'bayushi-gensato';

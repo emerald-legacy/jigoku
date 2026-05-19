@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class SocialPuppeteer extends DrawCard {
     static id = 'social-puppeteer';

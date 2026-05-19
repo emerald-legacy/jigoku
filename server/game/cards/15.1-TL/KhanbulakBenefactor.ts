@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { PlayTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { PlayTypes } from '../../Constants.js';
 
 class KhanbulakBenefactor extends DrawCard {
     static id = 'khanbulak-benefactor';

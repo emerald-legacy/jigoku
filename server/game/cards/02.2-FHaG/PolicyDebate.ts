@@ -1,7 +1,7 @@
-import { CardTypes, DuelTypes, Players } from '../../Constants';
-import type { Duel } from '../../Duel';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
+import { CardTypes, DuelTypes, Players } from '../../Constants.js';
+import type { Duel } from '../../Duel.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
 
 export default class PolicyDebate extends DrawCard {
     static id = 'policy-debate';

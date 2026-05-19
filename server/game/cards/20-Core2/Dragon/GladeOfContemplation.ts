@@ -1,7 +1,7 @@
-import { TargetModes } from '../../../Constants';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
-import type { AbilityContext } from '../../../AbilityContext';
+import { TargetModes } from '../../../Constants.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 
 function cardDifference(context: AbilityContext): number {
     return Math.max(0, Math.min(5, context.player.opponent.hand.length - context.player.hand.length));

@@ -1,7 +1,7 @@
-import { TargetModes, Locations, Players, CardTypes, Durations, Elements } from '../../../Constants';
-import type { Cost } from '../../../Costs';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
+import { TargetModes, Locations, Players, CardTypes, Durations, Elements } from '../../../Constants.js';
+import type { Cost } from '../../../Costs.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
 
 const maelstromCost = function (): Cost {
     return {

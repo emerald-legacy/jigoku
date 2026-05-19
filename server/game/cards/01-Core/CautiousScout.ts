@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Locations, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Locations, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class CautiousScout extends DrawCard {
     static id = 'cautious-scout';

@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../AbilityContext';
-import type BaseCard from '../basecard';
-import { EventNames, Locations } from '../Constants';
-import type Player from '../player';
-import { type CardActionProperties, CardGameAction } from './CardGameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../basecard.js';
+import { EventNames, Locations } from '../Constants.js';
+import type Player from '../player.js';
+import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export interface RevealProperties extends CardActionProperties {
     chatMessage?: boolean;

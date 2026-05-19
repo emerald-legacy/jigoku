@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Locations, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Locations, CardTypes } from '../../Constants.js';
 
 class MountaintopStatuary extends DrawCard {
     static id = 'mountaintop-statuary';

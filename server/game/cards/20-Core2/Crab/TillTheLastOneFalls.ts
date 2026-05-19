@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import { CardTypes, Players } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import type { Conflict } from '../../../conflict';
-import DrawCard from '../../../drawcard';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { CardTypes, Players } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type { Conflict } from '../../../conflict.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class TillTheLastOneFalls extends DrawCard {
     static id = 'till-the-last-one-falls-';

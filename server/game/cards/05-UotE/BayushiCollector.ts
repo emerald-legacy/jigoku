@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, CharacterStatus } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, CharacterStatus } from '../../Constants.js';
 
 class BayushiCollector extends DrawCard {
     static id = 'bayushi-collector';

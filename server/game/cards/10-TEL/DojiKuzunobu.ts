@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Players } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Players } from '../../Constants.js';
 
 class DojiKuzuNobu extends DrawCard {
     static id = 'doji-kuzunobu';

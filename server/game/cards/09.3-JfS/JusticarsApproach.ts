@@ -1,8 +1,8 @@
-import { AbilityTypes, DuelTypes } from '../../Constants';
-import type { Duel } from '../../Duel';
-import type { GameAction } from '../../GameActions/GameAction';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
+import { AbilityTypes, DuelTypes } from '../../Constants.js';
+import type { Duel } from '../../Duel.js';
+import type { GameAction } from '../../GameActions/GameAction.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
 
 export default class JusticarsApproach extends DrawCard {
     static id = 'justicar-s-approach';

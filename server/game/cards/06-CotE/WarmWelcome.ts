@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Locations, Players, CardTypes, PlayTypes} from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Locations, Players, CardTypes, PlayTypes} from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class WarmWelcome extends DrawCard {
     static id = 'warm-welcome';

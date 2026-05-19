@@ -1,7 +1,7 @@
-import type { AbilityContext } from '../AbilityContext';
-import type BaseCard from '../basecard';
-import { CardTypes, EventNames } from '../Constants';
-import { CardGameAction, type CardActionProperties } from './CardGameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../basecard.js';
+import { CardTypes, EventNames } from '../Constants.js';
+import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 
 export type TurnCardFacedownProperties = CardActionProperties;
 

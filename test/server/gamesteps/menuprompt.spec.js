@@ -1,5 +1,5 @@
-const { default: MenuPrompt } = require('../../../build/server/game/gamesteps/menuprompt.js');
-const Player = require('../../../build/server/game/player.js');
+import MenuPrompt from '../../../build/server/game/gamesteps/menuprompt.js';
+import Player from '../../../build/server/game/player.js';
 
 describe('the MenuPrompt', function() {
     beforeEach(function() {

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Players, TargetModes, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Players, TargetModes, CardTypes } from '../../Constants.js';
 
 class CourtGames extends DrawCard {
     static id = 'court-games';

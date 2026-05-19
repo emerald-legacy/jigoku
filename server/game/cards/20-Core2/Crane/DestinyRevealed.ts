@@ -1,8 +1,8 @@
-import { CardTypes, Players } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import { Duel } from '../../../Duel';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
+import { CardTypes, Players } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import { Duel } from '../../../Duel.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class DestinyRevealed extends DrawCard {
     static id = 'destiny-revealed';

@@ -1,7 +1,7 @@
-import { AbilityContext } from '../AbilityContext';
-import EffectSource from '../EffectSource';
-import { UiPrompt } from './UiPrompt';
-import type Player from '../player';
+import { AbilityContext } from '../AbilityContext.js';
+import EffectSource from '../EffectSource.js';
+import { UiPrompt } from './UiPrompt.js';
+import type Player from '../player.js';
 
 /**
  * General purpose menu prompt. Takes a choices object with menu options and

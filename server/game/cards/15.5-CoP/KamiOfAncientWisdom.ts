@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, Phases, Players, TargetModes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Phases, Players, TargetModes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class KamiOfAncientWisdom extends DrawCard {
     static id = 'kami-of-ancient-wisdom';

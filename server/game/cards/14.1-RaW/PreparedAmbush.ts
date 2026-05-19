@@ -1,7 +1,7 @@
-import { Locations } from '../../Constants';
-import { PlayCharacterAsIfFromHandIntoConflict } from '../../PlayCharacterAsIfFromHand';
-import AbilityDsl from '../../abilitydsl';
-import { BattlefieldAttachment } from '../BattlefieldAttachment';
+import { Locations } from '../../Constants.js';
+import { PlayCharacterAsIfFromHandIntoConflict } from '../../PlayCharacterAsIfFromHand.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 
 export default class PreparedAmbush extends BattlefieldAttachment {
     static id = 'prepared-ambush';

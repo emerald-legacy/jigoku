@@ -1,6 +1,6 @@
-import type BaseCard from './basecard';
-import { StatusToken } from './StatusToken';
-import { CharacterStatus } from './Constants';
+import type BaseCard from './basecard.js';
+import { StatusToken } from './StatusToken.js';
+import { CharacterStatus } from './Constants.js';
 
 export class CardStatusManager {
     statusTokens: StatusToken[] = [];

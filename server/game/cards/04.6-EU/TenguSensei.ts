@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Durations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Durations } from '../../Constants.js';
 
 class TenguSensei extends DrawCard {
     static id = 'tengu-sensei';

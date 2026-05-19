@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../AbilityContext';
-import { CharacterStatus, EventNames, Locations } from '../Constants';
-import type DrawCard from '../drawcard';
-import type { StatusToken } from '../StatusToken';
-import { TokenAction, type TokenActionProperties } from './TokenAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { CharacterStatus, EventNames, Locations } from '../Constants.js';
+import type DrawCard from '../drawcard.js';
+import type { StatusToken } from '../StatusToken.js';
+import { TokenAction, type TokenActionProperties } from './TokenAction.js';
 
 export interface MoveTokenProperties extends TokenActionProperties {
     recipient: DrawCard;

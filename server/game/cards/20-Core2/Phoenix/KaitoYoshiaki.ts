@@ -1,7 +1,7 @@
-import { CardTypes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type { Conflict } from '../../../conflict';
+import { CardTypes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type { Conflict } from '../../../conflict.js';
 
 function isEvil(character: DrawCard): boolean {
     return character.isTainted || character.hasTrait('shadowlands');

@@ -1,6 +1,6 @@
-import Player from '../player';
-import { Clock, Mode } from './Clock';
-import type { ClockInterface } from './types';
+import Player from '../player.js';
+import { Clock, Mode } from './Clock.js';
+import type { ClockInterface } from './types.js';
 
 export class ChessClock extends Clock implements ClockInterface {
     mode: Mode = 'stop';

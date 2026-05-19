@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../AbilityContext';
-import { CardTypes, EventNames } from '../Constants';
-import type { ProvinceCard } from '../ProvinceCard';
-import type BaseCard from '../basecard';
-import { type CardActionProperties, CardGameAction } from './CardGameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { CardTypes, EventNames } from '../Constants.js';
+import type { ProvinceCard } from '../ProvinceCard.js';
+import type BaseCard from '../basecard.js';
+import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export type BreakProperties = CardActionProperties;
 

@@ -1,9 +1,9 @@
-import AbilityDsl from '../../../abilitydsl';
-import { DuelTypes, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import { StrongholdCard } from '../../../StrongholdCard';
-import { shuffle } from '../../../utils/shuffle';
-import type { AbilityLimit } from '../../../AbilityLimit';
+import AbilityDsl from '../../../abilitydsl.js';
+import { DuelTypes, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import { StrongholdCard } from '../../../StrongholdCard.js';
+import { shuffle } from '../../../utils/shuffle.js';
+import type { AbilityLimit } from '../../../AbilityLimit.js';
 
 export default class TranquilOverlookDojo extends StrongholdCard {
     static id = 'tranquil-overlook-dojo';

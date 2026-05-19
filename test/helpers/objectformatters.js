@@ -1,10 +1,10 @@
 /* eslint camelcase: 0, no-invalid-this: 0 */
 
-const util = require('util');
+import util from 'util';
 
-const BaseCard = require('../../build/server/game/basecard.js');
-const Game = require('../../build/server/game/game.js');
-const Player = require('../../build/server/game/player.js');
+import BaseCard from '../../build/server/game/basecard.js';
+import Game from '../../build/server/game/game.js';
+import Player from '../../build/server/game/player.js';
 
 // Add custom toString methods for better Jasmine output
 function formatObject(keys) {

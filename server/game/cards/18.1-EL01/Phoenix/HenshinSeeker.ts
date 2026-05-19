@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Elements } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Elements } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 const RING_CLAIM = 'henshin-seeker-fire';
 

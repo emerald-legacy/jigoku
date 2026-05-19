@@ -1,6 +1,6 @@
-import StatModifier from './StatModifier';
-import { EffectNames } from './Constants';
-import type DrawCard from './drawcard';
+import StatModifier from './StatModifier.js';
+import { EffectNames } from './Constants.js';
+import type DrawCard from './drawcard.js';
 
 interface BaseSkillModifiers {
     baseMilitaryModifiers: any[];

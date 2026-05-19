@@ -1,8 +1,8 @@
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
-import { CardTypes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import { EventRegistrar } from '../../../EventRegistrar';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
+import { CardTypes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import { EventRegistrar } from '../../../EventRegistrar.js';
 
 export default class CraneIndustry extends DrawCard {
     static id = 'crane-industry';

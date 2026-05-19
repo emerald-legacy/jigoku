@@ -1,9 +1,9 @@
-import type { AbilityContext } from '../AbilityContext';
-import { Players } from '../Constants';
-import type DrawCard from '../drawcard';
-import type Player from '../player';
-import { type CardActionProperties, CardGameAction } from './CardGameAction';
-import type { GameAction } from './GameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { Players } from '../Constants.js';
+import type DrawCard from '../drawcard.js';
+import type Player from '../player.js';
+import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { GameAction } from './GameAction.js';
 
 export interface CardMenuProperties extends CardActionProperties {
     activePromptTitle?: string;

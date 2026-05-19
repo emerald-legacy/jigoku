@@ -1,6 +1,6 @@
-import DrawCard from '../../../drawcard';
-import AbilityDsl from '../../../abilitydsl';
-import { Locations } from '../../../Constants';
+import DrawCard from '../../../drawcard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Locations } from '../../../Constants.js';
 
 class SearchTheArchives extends DrawCard {
     static id = 'empty-city-archivist';

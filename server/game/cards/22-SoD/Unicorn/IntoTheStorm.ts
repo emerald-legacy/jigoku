@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Durations, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Durations, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class IntoTheStorm extends DrawCard {
     static id = 'into-the-storm';

@@ -1,5 +1,5 @@
-import { RoleCard } from '../../../server/game/RoleCard';
-import type { CardData } from '../../../server/game/types/CardData';
+import { RoleCard } from '../../../server/game/RoleCard.js';
+import type { CardData } from '../../../server/game/types/CardData.js';
 
 function makeGame() {
     const game = jasmine.createSpyObj('game', ['raiseEvent', 'getCurrentAbilityContext', 'getFrameworkContext']);

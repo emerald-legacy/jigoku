@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, AbilityTypes, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, AbilityTypes, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 
 export default class TessenOfTheTsunamiLegion extends DrawCard {

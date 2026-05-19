@@ -1,8 +1,8 @@
-import { CardTypes, Players, TargetModes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
-import DrawCard from '../../../drawcard';
-import type { GameAction } from '../../../GameActions/GameAction';
+import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
+import DrawCard from '../../../drawcard.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class HeartOfTheInferno extends DrawCard {
     static id = 'heart-of-the-inferno';

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class BeastmasterMatriarch extends DrawCard {
     static id = 'beastmaster-matriarch';

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class AwakenedTsukumogami extends DrawCard {
     static id = 'awakened-tsukumogami';

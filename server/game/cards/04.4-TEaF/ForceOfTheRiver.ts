@@ -1,6 +1,6 @@
-import { CardTypes } from '../../Constants';
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class ForceOfTheRiver extends DrawCard {
     static id = 'force-of-the-river';

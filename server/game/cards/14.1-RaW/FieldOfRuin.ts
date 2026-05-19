@@ -1,6 +1,6 @@
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes, Locations, Phases, Players } from '../../Constants';
-import { BattlefieldAttachment } from '../BattlefieldAttachment';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes, Locations, Phases, Players } from '../../Constants.js';
+import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 
 export default class FieldOfRuin extends BattlefieldAttachment {
     static id = 'field-of-ruin';

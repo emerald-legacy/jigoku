@@ -1,7 +1,7 @@
-import { CardTypes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import BaseCard from '../../../basecard';
-import DrawCard from '../../../drawcard';
+import { CardTypes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import BaseCard from '../../../basecard.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class ProtectedMerchant extends DrawCard {
     static id = 'protected-merchant';

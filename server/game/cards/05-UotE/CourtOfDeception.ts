@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Players, CardTypes, CharacterStatus } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Players, CardTypes, CharacterStatus } from '../../Constants.js';
 
 class CourtOfDeception extends DrawCard {
     static id = 'court-of-deception';

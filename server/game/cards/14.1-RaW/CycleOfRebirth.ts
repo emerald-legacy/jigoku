@@ -1,7 +1,7 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
-import { Locations, Players, CardTypes } from '../../Constants';
+import { Locations, Players, CardTypes } from '../../Constants.js';
 
 class CycleOfRebirth extends DrawCard {
     static id = 'cycle-of-rebirth';

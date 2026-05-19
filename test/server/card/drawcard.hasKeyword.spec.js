@@ -1,4 +1,6 @@
-const DrawCard = require('../../../build/server/game/drawcard.js');
+import DrawCard from '../../../build/server/game/drawcard.js';
+import Game from '../../../build/server/game/game.js';
+import Player from '../../../build/server/game/player.js';
 
 describe('the DrawCard', function () {
     describe('the hasKeyword() function', function () {
@@ -41,10 +43,6 @@ describe('the DrawCard', function () {
     });
 
     describe('integration', function () {
-
-        const Game = require('../../../build/server/game/game.js');
-        const Player = require('../../../build/server/game/player.js');
-
         beforeEach(function () {
             this.gameRouter = jasmine.createSpyObj('gameRouter', ['gameWon', 'playerLeft', 'handleError']);
             this.gameRouter.handleError.and.callFake((game, error) => {

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class ShinjoScout extends DrawCard {
     static id = 'shinjo-scout';

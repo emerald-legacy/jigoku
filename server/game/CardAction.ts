@@ -1,11 +1,11 @@
-import type { AbilityContext } from './AbilityContext';
-import CardAbility from './CardAbility';
-import { AbilityTypes, CardTypes, EffectNames, Phases } from './Constants';
-import { parseGameMode } from './GameMode';
-import type { ActionProps } from './Interfaces';
+import type { AbilityContext } from './AbilityContext.js';
+import CardAbility from './CardAbility.js';
+import { AbilityTypes, CardTypes, EffectNames, Phases } from './Constants.js';
+import { parseGameMode } from './GameMode.js';
+import type { ActionProps } from './Interfaces.js';
 import type BaseCard from './basecard.js';
-import type Game from './game';
-import type { ProvinceCard } from './ProvinceCard';
+import type Game from './game.js';
+import type { ProvinceCard } from './ProvinceCard.js';
 
 /**
  * Represents an action ability provided by card text.

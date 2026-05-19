@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Locations, Players, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Locations, Players, CardTypes } from '../../Constants.js';
 
 class BenevolentHost extends DrawCard {
     static id = 'benevolent-host';

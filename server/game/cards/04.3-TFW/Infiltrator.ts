@@ -1,6 +1,6 @@
-import { PlayTypes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
+import { PlayTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
 
 export default class Infiltrator extends DrawCard {
     static id = 'infiltrator';

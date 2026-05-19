@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Players } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Players } from '../../Constants.js';
 
 class TheStoneOfSorrows extends DrawCard {
     static id = 'the-stone-of-sorrows';

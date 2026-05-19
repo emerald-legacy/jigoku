@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import { Locations, Phases, Players, TargetModes, TokenTypes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import { ProvinceCard } from '../../../ProvinceCard';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { Locations, Phases, Players, TargetModes, TokenTypes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
 
 function amountOfFateGain(holding: DrawCard) {
     return holding.getTokenCount(TokenTypes.Honor);

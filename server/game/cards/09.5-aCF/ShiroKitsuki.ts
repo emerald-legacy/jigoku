@@ -1,6 +1,6 @@
-import { Durations } from '../../Constants';
-import { StrongholdCard } from '../../StrongholdCard';
-import AbilityDsl from '../../abilitydsl';
+import { Durations } from '../../Constants.js';
+import { StrongholdCard } from '../../StrongholdCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class ShiroKitsuki extends StrongholdCard {
     static id = 'shiro-kitsuki';

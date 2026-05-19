@@ -1,7 +1,7 @@
-import { CardTypes, Decks, Durations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import { AbilityContext } from '../../../AbilityContext';
+import { CardTypes, Decks, Durations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import { AbilityContext } from '../../../AbilityContext.js';
 
 function statusOfIntern(context: AbilityContext) {
     return (context.source as DrawCard).isHonored ? 'honored' : 'ordinary';

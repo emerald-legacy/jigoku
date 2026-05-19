@@ -1,7 +1,7 @@
-import { ConflictTypes, CardTypes, Locations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import type { Conflict } from '../../../conflict';
-import DrawCard from '../../../drawcard';
+import { ConflictTypes, CardTypes, Locations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type { Conflict } from '../../../conflict.js';
+import DrawCard from '../../../drawcard.js';
 
 function areAllAttackersBerserker(conflict: Conflict) {
     return conflict.attackers.every((c) => c.hasTrait('berserker'));

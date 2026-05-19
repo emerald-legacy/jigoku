@@ -1,6 +1,6 @@
-import { Locations, CardTypes } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { Locations, CardTypes } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class RetireToTheBrotherhood extends ProvinceCard {
     static id = 'retire-to-the-brotherhood';

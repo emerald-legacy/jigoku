@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { CardTypes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class AkodoReserveCompany extends DrawCard {
     static id = 'akodo-reserve-company';

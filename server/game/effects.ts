@@ -1,20 +1,20 @@
-import * as AbilityLimit from './AbilityLimit';
-import GainAllAbiliitesDynamic from './Effects/GainAllAbilitiesDynamic';
-import Restriction from './Effects/restriction';
-import { SuppressEffect } from './Effects/SuppressEffect';
-import { EffectBuilder } from './Effects/EffectBuilder';
-import { attachmentMilitarySkillModifier } from './Effects/Library/attachmentMilitarySkillModifier';
-import { attachmentPoliticalSkillModifier } from './Effects/Library/attachmentPoliticalSkillModifier';
-import { canPlayFromOwn } from './Effects/Library/canPlayFromOwn';
-import { cardCannot } from './Effects/Library/cardCannot';
-import { changePlayerGloryModifier } from './Effects/Library/changePlayerGloryModifier';
-import { copyCard } from './Effects/Library/copyCard';
-import { gainAllAbilities } from './Effects/Library/gainAllAbilities';
-import { gainAbility } from './Effects/Library/gainAbility';
-import { mustBeDeclaredAsAttacker } from './Effects/Library/mustBeDeclaredAsAttacker';
-import { reduceCost } from './Effects/Library/reduceCost';
-import { switchAttachmentSkillModifiers } from './Effects/Library/switchAttachmentSkillModifiers';
-import { EffectNames, PlayTypes, CardTypes, Players } from './Constants';
+import * as AbilityLimit from './AbilityLimit.js';
+import GainAllAbiliitesDynamic from './Effects/GainAllAbilitiesDynamic.js';
+import Restriction from './Effects/restriction.js';
+import { SuppressEffect } from './Effects/SuppressEffect.js';
+import { EffectBuilder } from './Effects/EffectBuilder.js';
+import { attachmentMilitarySkillModifier } from './Effects/Library/attachmentMilitarySkillModifier.js';
+import { attachmentPoliticalSkillModifier } from './Effects/Library/attachmentPoliticalSkillModifier.js';
+import { canPlayFromOwn } from './Effects/Library/canPlayFromOwn.js';
+import { cardCannot } from './Effects/Library/cardCannot.js';
+import { changePlayerGloryModifier } from './Effects/Library/changePlayerGloryModifier.js';
+import { copyCard } from './Effects/Library/copyCard.js';
+import { gainAllAbilities } from './Effects/Library/gainAllAbilities.js';
+import { gainAbility } from './Effects/Library/gainAbility.js';
+import { mustBeDeclaredAsAttacker } from './Effects/Library/mustBeDeclaredAsAttacker.js';
+import { reduceCost } from './Effects/Library/reduceCost.js';
+import { switchAttachmentSkillModifiers } from './Effects/Library/switchAttachmentSkillModifiers.js';
+import { EffectNames, PlayTypes, CardTypes, Players } from './Constants.js';
 
 /* Types of effect
     1. Static effects - do something for a period
@@ -324,4 +324,4 @@ const Effects: Record<string, any> = {
     duelIgnorePrintedSkill: () => EffectBuilder.duel.static(EffectNames.DuelIgnorePrintedSkill, true)
 };
 
-export = Effects;
+export default Effects;

@@ -1,8 +1,8 @@
-import type { AbilityContext } from './AbilityContext';
-import type { CardAction } from './CardAction';
-import { AbilityTypes, Locations, Phases } from './Constants';
-import type BaseCard from './basecard';
-import type { ProvinceCard } from './ProvinceCard';
+import type { AbilityContext } from './AbilityContext.js';
+import type { CardAction } from './CardAction.js';
+import { AbilityTypes, Locations, Phases } from './Constants.js';
+import type BaseCard from './basecard.js';
+import type { ProvinceCard } from './ProvinceCard.js';
 
 type RingChoices = Record<string, (context: AbilityContext) => boolean>;
 

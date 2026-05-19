@@ -1,8 +1,8 @@
-import { Locations, Players, TargetModes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type Player from '../../../player';
-import type { AbilityContext } from '../../../AbilityContext';
+import { Locations, Players, TargetModes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type Player from '../../../player.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 
 const DISCARD = 'Discard all cards from your provinces';
 const FLIP = 'Flip all cards in your provinces facedown';

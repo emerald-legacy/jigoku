@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Phases, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Phases, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class TrailOfBloodAndLies extends DrawCard {
     static id = 'trail-of-blood-and-lies';

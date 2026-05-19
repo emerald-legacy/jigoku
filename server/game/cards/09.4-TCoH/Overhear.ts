@@ -1,9 +1,9 @@
-import type { AbilityContext } from '../../AbilityContext';
-import AbilityDsl from '../../abilitydsl';
-import CardAbility from '../../CardAbility';
-import { Locations, TargetModes } from '../../Constants';
-import DrawCard from '../../drawcard';
-import { shuffle } from '../../utils/shuffle';
+import type { AbilityContext } from '../../AbilityContext.js';
+import AbilityDsl from '../../abilitydsl.js';
+import CardAbility from '../../CardAbility.js';
+import { Locations, TargetModes } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
+import { shuffle } from '../../utils/shuffle.js';
 
 export default class Overhear extends DrawCard {
     static id = 'overhear';

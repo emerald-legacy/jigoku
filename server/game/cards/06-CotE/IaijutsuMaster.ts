@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class IaijutsuMaster extends DrawCard {
     static id = 'iaijutsu-master';

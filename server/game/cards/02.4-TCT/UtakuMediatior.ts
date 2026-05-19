@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class UtakuMediator extends DrawCard {
     static id = 'utaku-mediator';

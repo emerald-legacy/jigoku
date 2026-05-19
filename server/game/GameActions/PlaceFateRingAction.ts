@@ -1,9 +1,9 @@
-import type { AbilityContext } from '../AbilityContext';
-import { EventNames } from '../Constants';
-import type DrawCard from '../drawcard';
-import type Player from '../player';
-import type Ring from '../ring';
-import { RingAction, type RingActionProperties } from './RingAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { EventNames } from '../Constants.js';
+import type DrawCard from '../drawcard.js';
+import type Player from '../player.js';
+import type Ring from '../ring.js';
+import { RingAction, type RingActionProperties } from './RingAction.js';
 
 export interface PlaceFateRingProperties extends RingActionProperties {
     amount?: number;

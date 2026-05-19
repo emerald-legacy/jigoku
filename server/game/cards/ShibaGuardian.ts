@@ -1,6 +1,6 @@
-import { CardTypes, Locations } from '../Constants';
-import DrawCard from '../drawcard';
-import type Player from '../player';
+import { CardTypes, Locations } from '../Constants.js';
+import DrawCard from '../drawcard.js';
+import type Player from '../player.js';
 
 export class ShibaGuardian extends DrawCard {
     constructor(public facedownCard: DrawCard) {

@@ -1,5 +1,5 @@
-import { EffectNames } from '../../Constants';
-import type Player from '../../player';
+import { EffectNames } from '../../Constants.js';
+import type Player from '../../player.js';
 
 class AttackerInfo {
     ring: any;

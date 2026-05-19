@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Players, PlayTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Players, PlayTypes } from '../../Constants.js';
 
 class UtakuTetsuko extends DrawCard {
     static id = 'utaku-tetsuko';

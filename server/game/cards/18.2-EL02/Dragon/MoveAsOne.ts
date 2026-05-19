@@ -1,6 +1,6 @@
-import DrawCard from '../../../drawcard';
-import { Locations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
+import DrawCard from '../../../drawcard.js';
+import { Locations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
 
 class MoveAsOne extends DrawCard {
     static id = 'move-as-one';

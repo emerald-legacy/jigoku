@@ -1,6 +1,6 @@
-import { Locations, Phases } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { Locations, Phases } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class AnkokusBlessing extends DrawCard {
     static id = 'ankoku-s-blessing';

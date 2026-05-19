@@ -1,9 +1,9 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
-import { CardTypes, ConflictTypes, TargetModes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type { GameAction } from '../../../GameActions/GameAction';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
+import { CardTypes, ConflictTypes, TargetModes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class ToGovernTheLand extends DrawCard {
     static id = 'to-govern-the-land';

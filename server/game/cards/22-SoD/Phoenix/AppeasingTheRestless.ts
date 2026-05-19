@@ -1,7 +1,7 @@
-import { TargetModes, Players, CardTypes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import BaseCard from '../../../basecard';
+import { TargetModes, Players, CardTypes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import BaseCard from '../../../basecard.js';
 
 export default class AppeasingTheRestless extends DrawCard {
     static id = 'appeasing-the-restless';

@@ -1,12 +1,12 @@
 {
     "compilerOptions": {
-        "module": "CommonJS",
-        "moduleResolution": "node",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
         "target": "ES2022",
         "sourceMap": true,
         "rootDir": ".",
         "outDir": "build",
-        "allowJs": true,
+        "allowJs": false,
         "checkJs": false,
         "lib": ["ES2022"],
         "esModuleInterop": true,

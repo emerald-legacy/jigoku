@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 import WebSocket from 'ws';
 import { z } from 'zod';
 import * as env from '../env.js';
-import { logger } from '../logger';
+import { logger } from '../logger.js';
 
 const TEN_SECONDS = 10_000;
 const ONE_SECOND = 1_000;

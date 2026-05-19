@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../AbilityContext';
-import type BaseCard from '../basecard';
-import { Durations, EffectNames, EventNames, Locations } from '../Constants';
-import { CardGameAction } from './CardGameAction';
-import type { LastingEffectGeneralProperties } from './LastingEffectAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../basecard.js';
+import { Durations, EffectNames, EventNames, Locations } from '../Constants.js';
+import { CardGameAction } from './CardGameAction.js';
+import type { LastingEffectGeneralProperties } from './LastingEffectAction.js';
 
 export interface LastingEffectCardProperties extends LastingEffectGeneralProperties {
     targetLocation?: Locations | Locations[];

@@ -1,11 +1,11 @@
-import * as AbilityLimit from './AbilityLimit';
-import ThenAbility from './ThenAbility';
-import * as Costs from './Costs';
-import { Locations, CardTypes, EffectNames } from './Constants';
-import { initiateDuel } from './DuelHelper';
-import type Game from './game';
-import type BaseCard from './basecard';
-import type { AbilityContext } from './AbilityContext';
+import * as AbilityLimit from './AbilityLimit.js';
+import ThenAbility from './ThenAbility.js';
+import * as Costs from './Costs.js';
+import { Locations, CardTypes, EffectNames } from './Constants.js';
+import { initiateDuel } from './DuelHelper.js';
+import type Game from './game.js';
+import type BaseCard from './basecard.js';
+import type { AbilityContext } from './AbilityContext.js';
 
 interface CardAbilityProperties {
     title?: string;
@@ -282,4 +282,4 @@ class CardAbility extends ThenAbility {
     }
 }
 
-export = CardAbility;
+export default CardAbility;

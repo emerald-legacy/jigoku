@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { TargetModes, CardTypes, Players } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { TargetModes, CardTypes, Players } from '../../Constants.js';
 
 class EleganceAndGrace extends DrawCard {
     static id = 'elegance-and-grace';

@@ -1,13 +1,12 @@
-import { GameModes } from '../GameModes';
-import { CardTypes, Locations } from './Constants';
-import { resolvePackId } from './CardPackUtil';
-import { ProvinceCard } from './ProvinceCard';
-import { RoleCard } from './RoleCard';
-import { StrongholdCard } from './StrongholdCard';
-import BaseCard from './basecard';
-import { cards } from './cards';
-import DrawCard from './drawcard';
-import Player from './player';
+import { GameModes } from '../GameModes.js';
+import { CardTypes, Locations } from './Constants.js';
+import { resolvePackId } from './CardPackUtil.js';
+import { ProvinceCard } from './ProvinceCard.js';
+import { RoleCard } from './RoleCard.js';
+import { StrongholdCard } from './StrongholdCard.js';
+import BaseCard from './basecard.js';
+import DrawCard from './drawcard.js';
+import Player from './player.js';
 
 export class Deck {
     constructor(public data: any) {}
@@ -29,7 +28,7 @@ export class Deck {
         for(const { count, card, pack_id: packId } of this.data.conflictCards ?? []) {
             for(let i = 0; i < count; i++) {
                 if(card?.side === 'conflict') {
-                    const CardConstructor = cards.get(card.id) ?? DrawCard;
+                    const CardConstructor = player.game.cardLibrary.get(card.id) ?? DrawCard;
                     // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                     const conflictCard: DrawCard = new CardConstructor(player, card);
                     conflictCard.location = Locations.ConflictDeck;
@@ -43,7 +42,7 @@ export class Deck {
         for(const { count, card, pack_id: packId } of this.data.dynastyCards ?? []) {
             for(let i = 0; i < count; i++) {
                 if(card?.side === 'dynasty') {
-                    const CardConstructor = cards.get(card.id) ?? DrawCard;
+                    const CardConstructor = player.game.cardLibrary.get(card.id) ?? DrawCard;
                     // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                     const dynastyCard: DrawCard = new CardConstructor(player, card);
                     dynastyCard.location = Locations.DynastyDeck;
@@ -58,7 +57,7 @@ export class Deck {
             for(const { count, card, pack_id: packId } of this.data.provinceCards ?? []) {
                 for(let i = 0; i < count; i++) {
                     if(card?.type === CardTypes.Province) {
-                        const CardConstructor = cards.get(card.id) ?? ProvinceCard;
+                        const CardConstructor = player.game.cardLibrary.get(card.id) ?? ProvinceCard;
                         // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                         const provinceCard: ProvinceCard = new CardConstructor(player, card);
                         provinceCard.location = Locations.ProvinceDeck;
@@ -80,7 +79,7 @@ export class Deck {
             for(const { count, card, pack_id: packId } of this.data.stronghold ?? []) {
                 for(let i = 0; i < count; i++) {
                     if(card?.type === CardTypes.Stronghold) {
-                        const CardConstructor = cards.get(card.id) ?? StrongholdCard;
+                        const CardConstructor = player.game.cardLibrary.get(card.id) ?? StrongholdCard;
                         // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                         const strongholdCard: StrongholdCard = new CardConstructor(player, card);
                         strongholdCard.location = '' as any;
@@ -92,7 +91,7 @@ export class Deck {
             for(const { count, card, pack_id: packId } of this.data.role ?? []) {
                 for(let i = 0; i < count; i++) {
                     if(card?.type === CardTypes.Role) {
-                        const CardConstructor = cards.get(card.id) ?? RoleCard;
+                        const CardConstructor = player.game.cardLibrary.get(card.id) ?? RoleCard;
                         // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                         const roleCard: RoleCard = new CardConstructor(player, card);
                         roleCard.packId = resolvePackId(packId, card, player.game.gameMode);
@@ -103,7 +102,7 @@ export class Deck {
         }
 
         for(const cardData of this.data.outsideTheGameCards ?? []) {
-            const CardConstructor = cards.get(cardData.id) ?? DrawCard;
+            const CardConstructor = player.game.cardLibrary.get(cardData.id) ?? DrawCard;
             // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
             const card: DrawCard = new CardConstructor(player, cardData);
             card.location = Locations.OutsideTheGame;

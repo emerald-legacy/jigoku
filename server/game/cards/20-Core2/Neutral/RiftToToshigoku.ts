@@ -1,7 +1,7 @@
-import { Players, CardTypes, EventNames, AbilityTypes } from '../../../Constants';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
-import { EventRegistrar } from '../../../EventRegistrar';
+import { Players, CardTypes, EventNames, AbilityTypes } from '../../../Constants.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { EventRegistrar } from '../../../EventRegistrar.js';
 
 export default class RiftToToshigoku extends ProvinceCard {
     static id = 'rift-to-toshigoku';

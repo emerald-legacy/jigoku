@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import {CardTypes, Durations, Phases} from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import {CardTypes, Durations, Phases} from '../../Constants.js';
 
 class ThoseWhoServe extends DrawCard {
     static id = 'those-who-serve';

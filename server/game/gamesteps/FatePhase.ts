@@ -1,11 +1,11 @@
-import { GameModes } from '../../GameModes';
-import { Phases, CardTypes, Players, EffectNames, EventNames, Locations } from '../Constants';
-import type DrawCard from '../drawcard';
-import type Game from '../game';
-import type Player from '../player';
-import { Phase } from './Phase';
-import { SimpleStep } from './SimpleStep';
-import ActionWindow from './actionwindow';
+import { GameModes } from '../../GameModes.js';
+import { Phases, CardTypes, Players, EffectNames, EventNames, Locations } from '../Constants.js';
+import type DrawCard from '../drawcard.js';
+import type Game from '../game.js';
+import type Player from '../player.js';
+import { Phase } from './Phase.js';
+import { SimpleStep } from './SimpleStep.js';
+import ActionWindow from './actionwindow.js';
 
 function characterShouldBeDiscarded(character: DrawCard) {
     return character.fate === 0 && character.allowGameAction('discardFromPlay');

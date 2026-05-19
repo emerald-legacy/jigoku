@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class HeroicResolve extends DrawCard {
     static id = 'heroic-resolve';

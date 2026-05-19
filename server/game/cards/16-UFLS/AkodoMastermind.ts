@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Locations, CardTypes, TargetModes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Locations, CardTypes, TargetModes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class AkodoMastermind extends DrawCard {
     static id = 'akodo-mastermind';

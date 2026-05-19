@@ -1,8 +1,8 @@
-import { AbilityContext } from '../../../AbilityContext';
-import { CardTypes, Players } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type { Conflict } from '../../../conflict';
+import { AbilityContext } from '../../../AbilityContext.js';
+import { CardTypes, Players } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type { Conflict } from '../../../conflict.js';
 
 function shinobiCount(context: AbilityContext): number {
     return (

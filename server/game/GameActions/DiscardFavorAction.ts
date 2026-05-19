@@ -1,7 +1,7 @@
-import { AbilityContext } from '../AbilityContext';
-import { EventNames } from '../Constants';
-import Player from '../player';
-import { PlayerAction, PlayerActionProperties } from './PlayerAction';
+import { AbilityContext } from '../AbilityContext.js';
+import { EventNames } from '../Constants.js';
+import Player from '../player.js';
+import { PlayerAction, PlayerActionProperties } from './PlayerAction.js';
 
 export type DiscardFavorProperties = PlayerActionProperties;
 

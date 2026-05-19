@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import BaseCard from '../../../basecard';
-import { CardTypes, Durations, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import BaseCard from '../../../basecard.js';
+import { CardTypes, Durations, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 const TARGET_MONK = 'myMonk';
 const TARGET_TO_BOW = 'characterToBow';

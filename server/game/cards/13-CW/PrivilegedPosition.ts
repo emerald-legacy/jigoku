@@ -1,6 +1,6 @@
-import AbilityDsl from '../../abilitydsl';
-import { Durations } from '../../Constants';
-import DrawCard from '../../drawcard';
+import AbilityDsl from '../../abilitydsl.js';
+import { Durations } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
 
 export default class PrivilegedPosition extends DrawCard {
     static id = 'privileged-position';

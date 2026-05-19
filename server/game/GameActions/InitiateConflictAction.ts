@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../AbilityContext';
-import { ConflictTypes, EventNames } from '../Constants';
-import type Player from '../player';
-import { ProvinceCard } from '../ProvinceCard';
-import { PlayerAction, type PlayerActionProperties } from './PlayerAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { ConflictTypes, EventNames } from '../Constants.js';
+import type Player from '../player.js';
+import { ProvinceCard } from '../ProvinceCard.js';
+import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
 export interface InitiateConflictProperties extends PlayerActionProperties {
     canPass?: boolean;

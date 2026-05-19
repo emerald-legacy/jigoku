@@ -1,5 +1,5 @@
-import { Clock, Mode } from './Clock';
-import type { ClockInterface } from './types';
+import { Clock, Mode } from './Clock.js';
+import type { ClockInterface } from './types.js';
 
 export class Timer extends Clock implements ClockInterface {
     mode: Mode = 'down';

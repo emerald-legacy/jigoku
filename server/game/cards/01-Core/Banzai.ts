@@ -1,7 +1,7 @@
-import DrawCard from '../../drawcard';
-import { TargetModes, CardTypes } from '../../Constants';
-import CardAbility from '../../CardAbility';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { TargetModes, CardTypes } from '../../Constants.js';
+import CardAbility from '../../CardAbility.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class Banzai extends DrawCard {
     static id = 'banzai';

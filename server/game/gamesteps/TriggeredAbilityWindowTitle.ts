@@ -1,4 +1,4 @@
-import { AbilityTypes } from '../Constants';
+import { AbilityTypes } from '../Constants.js';
 
 const EventToTitleFunc = {
     onCardBowed(event: any) {

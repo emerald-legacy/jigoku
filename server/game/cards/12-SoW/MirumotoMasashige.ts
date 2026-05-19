@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Players, Phases } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Players, Phases } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class MirumotoMasashige extends DrawCard {
     static id = 'mirumoto-masashige';

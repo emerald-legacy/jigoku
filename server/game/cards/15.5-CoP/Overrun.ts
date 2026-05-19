@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Locations, CardTypes, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Locations, CardTypes, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class Overrun extends DrawCard {
     static id = 'overrun';

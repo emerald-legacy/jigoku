@@ -1,6 +1,6 @@
-import { AbilityTypes, Durations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { AbilityTypes, Durations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class KakitaBlade2 extends DrawCard {
     static id = 'kakita-blade-2';

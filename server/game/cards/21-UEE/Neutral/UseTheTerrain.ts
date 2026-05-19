@@ -1,7 +1,7 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import AbilityDsl from '../../../abilitydsl';
-import { Durations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Durations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class UseTheTerrain extends DrawCard {
     static id = 'use-the-terrain';

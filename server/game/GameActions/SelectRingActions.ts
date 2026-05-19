@@ -1,9 +1,9 @@
-import type { AbilityContext } from '../AbilityContext';
-import { Players } from '../Constants';
-import type Player from '../player';
-import type Ring from '../ring';
-import type { GameAction } from './GameAction';
-import { RingAction, type RingActionProperties } from './RingAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { Players } from '../Constants.js';
+import type Player from '../player.js';
+import type Ring from '../ring.js';
+import type { GameAction } from './GameAction.js';
+import { RingAction, type RingActionProperties } from './RingAction.js';
 
 export interface SelectRingProperties extends RingActionProperties {
     activePromptTitle?: string;

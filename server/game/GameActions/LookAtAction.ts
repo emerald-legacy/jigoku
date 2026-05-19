@@ -1,7 +1,7 @@
-import type { AbilityContext } from '../AbilityContext';
-import type BaseCard from '../basecard';
-import { EventNames, Locations } from '../Constants';
-import { CardGameAction, type CardActionProperties } from './CardGameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../basecard.js';
+import { EventNames, Locations } from '../Constants.js';
+import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 
 export interface LookAtProperties extends CardActionProperties {
     message?: string | ((context) => string);

@@ -1,6 +1,6 @@
-import { CardTypes, Locations } from '../../Constants';
-import { BaseOni } from './_BaseOni';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes, Locations } from '../../Constants.js';
+import { BaseOni } from './_BaseOni.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class ScavengingGoblin extends BaseOni {
     static id = 'scavenging-goblin';

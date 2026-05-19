@@ -1,7 +1,7 @@
-import { CardTypes, Players, TargetModes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import type DrawCard from '../../../drawcard';
-import { BattlefieldAttachment } from '../../BattlefieldAttachment';
+import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type DrawCard from '../../../drawcard.js';
+import { BattlefieldAttachment } from '../../BattlefieldAttachment.js';
 
 export default class DeclarationOfDominion extends BattlefieldAttachment {
     static id = 'declaration-of-dominion';

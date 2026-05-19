@@ -1,7 +1,7 @@
-import { CardTypes, Decks, Elements, Locations, Players, TargetModes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import BaseCard from '../../../basecard';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Decks, Elements, Locations, Players, TargetModes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import BaseCard from '../../../basecard.js';
+import DrawCard from '../../../drawcard.js';
 
 const ELEMENT_KEY = 'cinder-salamander-fire';
 

@@ -1,4 +1,4 @@
-import { Elements } from '../../Constants';
-import { makeTempleOfFortuneX } from './_makeTempleOfFortuneX';
+import { Elements } from '../../Constants.js';
+import { makeTempleOfFortuneX } from './_makeTempleOfFortuneX.js';
 
 export default makeTempleOfFortuneX('temple-of-osano-wo', Elements.Earth);

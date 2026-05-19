@@ -1,4 +1,4 @@
-import { makeTwin } from './_makeTwin';
+import { makeTwin } from './_makeTwin.js';
 
 export default makeTwin('ide-nobutada', {
     title: 'Call your sister',

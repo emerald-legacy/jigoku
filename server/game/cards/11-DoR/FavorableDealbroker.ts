@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Decks, CardTypes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Decks, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class FavorableDealbroker extends DrawCard {
     static id = 'favorable-dealbroker';

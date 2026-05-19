@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Players, Phases } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Players, Phases } from '../../Constants.js';
 
 class SecludedTemple extends DrawCard {
     static id = 'secluded-temple';

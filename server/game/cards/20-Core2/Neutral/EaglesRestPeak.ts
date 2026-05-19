@@ -1,8 +1,8 @@
-import { CardTypes, Durations, Locations } from '../../../Constants';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import { shuffle } from '../../../utils/shuffle';
+import { CardTypes, Durations, Locations } from '../../../Constants.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import { shuffle } from '../../../utils/shuffle.js';
 
 export default class EaglesRestPeak extends ProvinceCard {
     static id = 'eagle-s-rest-peak';

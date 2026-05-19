@@ -1,5 +1,5 @@
-import { StrongholdCard } from '../../StrongholdCard';
-import AbilityDsl from '../../abilitydsl';
+import { StrongholdCard } from '../../StrongholdCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class ShiroNishiyama extends StrongholdCard {
     static id = 'shiro-nishiyama';

@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Durations, Players, AbilityTypes, Locations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Durations, Players, AbilityTypes, Locations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class StrangeMirror extends DrawCard {
     static id = 'strange-mirror';

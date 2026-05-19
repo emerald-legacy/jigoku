@@ -1,6 +1,6 @@
-import { CardTypes } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class GuardiansOfTheSeikitsu extends ProvinceCard {
     static id = 'guardians-of-the-seikitsu';

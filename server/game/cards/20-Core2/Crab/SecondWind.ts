@@ -1,7 +1,7 @@
-import { CardTypes, Durations, Locations, Players } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type { AbilityContext } from '../../../AbilityContext';
+import { CardTypes, Durations, Locations, Players } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 
 function cardsToDiscard(context: AbilityContext) {
     return context.player.dynastyDeck.slice(0, 4);

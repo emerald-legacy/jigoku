@@ -1,5 +1,5 @@
-import { UiPrompt } from './UiPrompt';
-import type Player from '../player';
+import { UiPrompt } from './UiPrompt.js';
+import type Player from '../player.js';
 
 /**
  * General purpose menu prompt. By specifying a context object, the buttons in

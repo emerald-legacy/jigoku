@@ -1,8 +1,8 @@
-import { CardTypes, Locations, Players } from '../../../Constants';
-import { StrongholdCard } from '../../../StrongholdCard';
-import AbilityDsl from '../../../abilitydsl';
-import { ProvinceCard } from '../../../ProvinceCard';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { StrongholdCard } from '../../../StrongholdCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class MiokosSong extends StrongholdCard {
     static id = 'mioko-s-song';

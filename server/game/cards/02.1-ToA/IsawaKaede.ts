@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Elements } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Elements } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'isawa-kaede-void';
 

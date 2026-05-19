@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Durations, CardTypes, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Durations, CardTypes, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class BattleAspirant extends DrawCard {
     static id = 'battle-aspirant';

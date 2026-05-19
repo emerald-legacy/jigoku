@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes, Locations, TargetModes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes, Locations, TargetModes } from '../../Constants.js';
 
 class OverlookedCommunity extends DrawCard {
     static id = 'overlooked-community';

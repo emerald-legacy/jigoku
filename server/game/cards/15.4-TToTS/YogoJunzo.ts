@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { AbilityTypes, CardTypes, Players} from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { AbilityTypes, CardTypes, Players} from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class YogoJunzo extends DrawCard {
     static id = 'yogo-junzo';

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class KamiUnleashed extends DrawCard {
     static id = 'kami-unleashed';

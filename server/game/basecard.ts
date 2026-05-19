@@ -1,17 +1,16 @@
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const AbilityDsl = require('./abilitydsl.js');
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const Effects = require('./effects');
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const EffectSource = require('./EffectSource.js');
-import { CardStatusManager } from './CardStatusManager';
-import CardAbility from './CardAbility';
-import TriggeredAbility from './triggeredability';
-import Game from './game';
-import DynastyCardAction from './dynastycardaction';
+import AbilityDsl from './abilitydsl.js';
+import Effects from './effects.js';
+import EffectSourceTyped from './EffectSource.js';
 
-import { GameModes } from '../GameModes';
-import { AbilityContext } from './AbilityContext';
+const EffectSource: any = EffectSourceTyped;
+import { CardStatusManager } from './CardStatusManager.js';
+import CardAbility from './CardAbility.js';
+import TriggeredAbility from './triggeredability.js';
+import Game from './game.js';
+import DynastyCardAction from './dynastycardaction.js';
+
+import { GameModes } from '../GameModes.js';
+import { AbilityContext } from './AbilityContext.js';
 import { CardAction } from './CardAction.js';
 import {
     AbilityTypes,
@@ -22,31 +21,31 @@ import {
     EventNames,
     Locations,
     Players
-} from './Constants';
-import { ElementSymbol } from './ElementSymbol';
+} from './Constants.js';
+import { ElementSymbol } from './ElementSymbol.js';
 import {
     ActionProps,
     AttachmentConditionProps,
     PersistentEffectProps,
     TriggeredAbilityProps,
     TriggeredAbilityWhenProps
-} from './Interfaces';
+} from './Interfaces.js';
 import { PlayAttachmentAction } from './PlayAttachmentAction.js';
 import { PlayAttachmentToRingAction } from './PlayAttachmentToRingAction.js';
 import { PlayCharacterAction } from './PlayCharacterAction.js';
-import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction';
-import { StatusToken } from './StatusToken';
-import Player from './player';
-import type DrawCard from './drawcard';
-import Ring from './ring';
-import type { CardEffect } from './Effects/types';
-import type { GainAllAbilities } from './Effects/Library/gainAllAbilities';
-import type { Duel } from './Duel';
-import type { CardData } from './types/CardData';
+import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js';
+import { StatusToken } from './StatusToken.js';
+import Player from './player.js';
+import type DrawCard from './drawcard.js';
+import Ring from './ring.js';
+import type { CardEffect } from './Effects/types.js';
+import type { GainAllAbilities } from './Effects/Library/gainAllAbilities.js';
+import type { Duel } from './Duel.js';
+import type { CardData } from './types/CardData.js';
 
 type Faction = 'neutral' | 'crab' | 'crane' | 'dragon' | 'lion' | 'phoenix' | 'scorpion' | 'unicorn' | 'shadowlands';
 
-import { type PrintedKeyword, parseKeywords as parseKeywordsFromText } from './KeywordParser';
+import { type PrintedKeyword, parseKeywords as parseKeywordsFromText } from './KeywordParser.js';
 
 class BaseCard extends EffectSource {
     controller: Player;
@@ -1309,4 +1308,4 @@ class BaseCard extends EffectSource {
     }
 }
 
-export = BaseCard;
+export default BaseCard;

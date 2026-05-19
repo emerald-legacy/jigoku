@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import { TargetModes } from '../../../Constants';
-import { StrongholdCard } from '../../../StrongholdCard';
-import AbilityDsl from '../../../abilitydsl';
-import type Ring from '../../../ring';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { TargetModes } from '../../../Constants.js';
+import { StrongholdCard } from '../../../StrongholdCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type Ring from '../../../ring.js';
 
 export default class PalaceOfKnowledge extends StrongholdCard {
     static id = 'palace-of-knowledge';

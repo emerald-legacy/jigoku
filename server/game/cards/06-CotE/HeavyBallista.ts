@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { TargetModes, CardTypes, Locations, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { TargetModes, CardTypes, Locations, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class HeavyBallista extends DrawCard {
     static id = 'heavy-ballista';

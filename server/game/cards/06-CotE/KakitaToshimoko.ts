@@ -1,7 +1,7 @@
-import { DuelTypes, Players } from '../../Constants';
-import type { Duel } from '../../Duel';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
+import { DuelTypes, Players } from '../../Constants.js';
+import type { Duel } from '../../Duel.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
 
 export default class KakitaToshimoko extends DrawCard {
     static id = 'kakita-toshimoko';

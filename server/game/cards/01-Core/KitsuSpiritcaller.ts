@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Durations, Locations, Players } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Durations, Locations, Players } from '../../Constants.js';
 
 class KitsuSpiritcaller extends DrawCard {
     static id = 'kitsu-spiritcaller';

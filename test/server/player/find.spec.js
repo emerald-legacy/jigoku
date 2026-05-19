@@ -1,4 +1,4 @@
-const Player = require('../../../build/server/game/player.js');
+import Player from '../../../build/server/game/player.js';
 
 describe('the Player', function() {
     beforeEach(function() {

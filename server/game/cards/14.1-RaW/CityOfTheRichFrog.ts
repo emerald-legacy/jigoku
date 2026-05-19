@@ -1,6 +1,6 @@
-import { Players, Phases } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { Players, Phases } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class CityOfTheRichFrog extends ProvinceCard {
     static id = 'city-of-the-rich-frog';

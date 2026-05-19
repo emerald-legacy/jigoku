@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Locations, Decks, Phases, Durations } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Locations, Decks, Phases, Durations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class ArtisanAcademy extends DrawCard {
     static id = 'artisan-academy';

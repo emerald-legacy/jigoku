@@ -1,10 +1,10 @@
-import { AbilityContext } from '../AbilityContext';
-import { EventNames, Locations, Players } from '../Constants';
-import type { Cost, Result } from '../Costs';
-import { Event } from '../Events/Event';
-import { removeFate } from '../GameActions/GameActions';
-import BaseCard from '../basecard';
-import Ring from '../ring';
+import { AbilityContext } from '../AbilityContext.js';
+import { EventNames, Locations, Players } from '../Constants.js';
+import type { Cost, Result } from '../Costs.js';
+import { Event } from '../Events/Event.js';
+import { removeFate } from '../GameActions/GameActions.js';
+import BaseCard from '../basecard.js';
+import Ring from '../ring.js';
 
 const CANCELLED = 'CANCELLED';
 const STOP = 'STOP';

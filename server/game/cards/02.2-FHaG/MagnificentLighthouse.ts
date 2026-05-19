@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Locations, TargetModes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Locations, TargetModes } from '../../Constants.js';
 
 class MagnificentLighthouse extends DrawCard {
     static id = 'magnificent-lighthouse';

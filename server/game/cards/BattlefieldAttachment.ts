@@ -1,6 +1,6 @@
-import { CardTypes } from '../Constants';
-import BaseCard from '../basecard';
-import DrawCard from '../drawcard';
+import { CardTypes } from '../Constants.js';
+import BaseCard from '../basecard.js';
+import DrawCard from '../drawcard.js';
 
 export class BattlefieldAttachment extends DrawCard {
     public setupCardAbilities() {

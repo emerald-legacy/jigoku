@@ -1,6 +1,6 @@
-import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
+import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
 
 export default class TattooedWanderer extends DrawCard {
     static id = 'tattooed-wanderer';

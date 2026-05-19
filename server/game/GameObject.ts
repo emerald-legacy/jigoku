@@ -1,13 +1,13 @@
 import { v1 as uuidV1 } from 'uuid';
 
-import type { AbilityContext } from './AbilityContext';
-import { EffectNames, Stages } from './Constants';
-import type DrawCard from './drawcard';
-import type { CardEffect } from './Effects/types';
-import type Game from './game';
-import type { GameAction } from './GameActions/GameAction';
-import * as GameActions from './GameActions/GameActions';
-import type Player from './player';
+import type { AbilityContext } from './AbilityContext.js';
+import { EffectNames, Stages } from './Constants.js';
+import type DrawCard from './drawcard.js';
+import type { CardEffect } from './Effects/types.js';
+import type Game from './game.js';
+import type { GameAction } from './GameActions/GameAction.js';
+import * as GameActions from './GameActions/GameActions.js';
+import type Player from './player.js';
 
 export class GameObject {
     declare public game: Game;

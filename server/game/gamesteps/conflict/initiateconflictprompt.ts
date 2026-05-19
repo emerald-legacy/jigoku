@@ -1,10 +1,10 @@
-import { UiPrompt } from '../UiPrompt';
-import { Locations, CardTypes } from '../../Constants';
-import AttackersMatrix from './attackersMatrix';
-import { AbilityContext } from '../../AbilityContext';
-import CovertAbility from '../../KeywordAbilities/CovertAbility';
-import { GameModes } from '../../../GameModes';
-import type Player from '../../player';
+import { UiPrompt } from '../UiPrompt.js';
+import { Locations, CardTypes } from '../../Constants.js';
+import AttackersMatrix from './attackersMatrix.js';
+import { AbilityContext } from '../../AbilityContext.js';
+import CovertAbility from '../../KeywordAbilities/CovertAbility.js';
+import { GameModes } from '../../../GameModes.js';
+import type Player from '../../player.js';
 
 const capitalize: Record<string, string> = {
     military: 'Military',

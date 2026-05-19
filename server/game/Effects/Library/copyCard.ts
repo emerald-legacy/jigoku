@@ -1,8 +1,8 @@
-import type BaseCard from '../../basecard';
-import { AbilityTypes, Locations, CardTypes, EffectNames } from '../../Constants';
-import { EffectBuilder } from '../EffectBuilder';
-import { EffectValue } from '../EffectValue';
-import GainAbility from '../GainAbility';
+import type BaseCard from '../../basecard.js';
+import { AbilityTypes, Locations, CardTypes, EffectNames } from '../../Constants.js';
+import { EffectBuilder } from '../EffectBuilder.js';
+import { EffectValue } from '../EffectValue.js';
+import GainAbility from '../GainAbility.js';
 
 class CopyCard extends EffectValue<BaseCard> {
     actions: Array<GainAbility>;

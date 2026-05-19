@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { TargetModes, CardTypes, Locations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { TargetModes, CardTypes, Locations } from '../../Constants.js';
 
 class CountrysideTrader extends DrawCard {
     static id = 'countryside-trader';

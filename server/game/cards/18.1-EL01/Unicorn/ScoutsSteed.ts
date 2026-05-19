@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Durations, Locations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Durations, Locations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class ScoutsSteed extends DrawCard {
     static id = 'scout-s-steed';

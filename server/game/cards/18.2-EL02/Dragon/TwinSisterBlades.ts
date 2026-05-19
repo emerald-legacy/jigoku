@@ -1,6 +1,6 @@
-import DrawCard from '../../../drawcard';
-import { AbilityTypes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
+import DrawCard from '../../../drawcard.js';
+import { AbilityTypes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
 
 class TwinSisterBlades extends DrawCard {
     static id = 'twin-sister-blades';
@@ -29,4 +29,4 @@ class TwinSisterBlades extends DrawCard {
 }
 
 
-module.exports = TwinSisterBlades ;
+export default TwinSisterBlades;

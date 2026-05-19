@@ -1,7 +1,7 @@
-import { CardTypes, Durations } from '../../../Constants';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
-import BaseCard from '../../../basecard';
+import { CardTypes, Durations } from '../../../Constants.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import BaseCard from '../../../basecard.js';
 
 export default class FortunesField extends ProvinceCard {
     static id = 'fortune-s-field';

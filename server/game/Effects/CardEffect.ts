@@ -1,6 +1,6 @@
-import Effect from './Effect';
-import { Locations, Players, CardTypes } from '../Constants';
-import type Game from '../game';
+import Effect from './Effect.js';
+import { Locations, Players, CardTypes } from '../Constants.js';
+import type Game from '../game.js';
 
 export default class CardEffect extends Effect {
     targetController: string;

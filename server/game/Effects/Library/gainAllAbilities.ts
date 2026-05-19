@@ -1,8 +1,8 @@
-import type BaseCard from '../../basecard';
-import { AbilityTypes, EffectNames, Locations } from '../../Constants';
-import { EffectBuilder } from '../EffectBuilder';
-import { EffectValue } from '../EffectValue';
-import GainAbility from '../GainAbility';
+import type BaseCard from '../../basecard.js';
+import { AbilityTypes, EffectNames, Locations } from '../../Constants.js';
+import { EffectBuilder } from '../EffectBuilder.js';
+import { EffectValue } from '../EffectValue.js';
+import GainAbility from '../GainAbility.js';
 
 export class GainAllAbilities extends EffectValue<BaseCard> {
     actions: Array<GainAbility>;

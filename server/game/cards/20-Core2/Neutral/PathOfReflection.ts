@@ -1,6 +1,6 @@
-import { CardTypes, Elements } from '../../../Constants';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
+import { CardTypes, Elements } from '../../../Constants.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
 
 export default class PathOfReflection extends ProvinceCard {
     static id = 'path-of-reflection';

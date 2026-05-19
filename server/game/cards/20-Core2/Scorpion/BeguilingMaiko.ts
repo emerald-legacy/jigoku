@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, FavorTypes, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type { GameAction } from '../../../GameActions/GameAction';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, FavorTypes, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class BeguilingMaiko extends DrawCard {
     static id = 'beguiling-maiko';

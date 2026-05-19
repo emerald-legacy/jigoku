@@ -1,9 +1,9 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Locations, Players, TargetModes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand';
-import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Locations, Players, TargetModes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
+import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 
 export default class ToConnectThePeople extends DrawCard {
     static id = 'to-connect-the-people';

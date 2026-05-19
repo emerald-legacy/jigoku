@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Locations, Durations, Phases } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Locations, Durations, Phases } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class ASeasonOfWar extends DrawCard {
     static id = 'a-season-of-war';

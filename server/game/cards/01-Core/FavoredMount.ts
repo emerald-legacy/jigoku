@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class FavoredMount extends DrawCard {
     static id = 'favored-mount';

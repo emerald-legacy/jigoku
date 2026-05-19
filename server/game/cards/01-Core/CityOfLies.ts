@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Durations, CardTypes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Durations, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class CityOfLies extends DrawCard {
     static id = 'city-of-lies';

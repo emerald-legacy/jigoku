@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Locations, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Locations, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class CherishedFamilyServant extends DrawCard {
     static id = 'cherished-family-servant';

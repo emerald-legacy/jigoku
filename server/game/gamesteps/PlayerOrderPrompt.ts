@@ -1,5 +1,5 @@
-import type Player from '../player';
-import { UiPrompt } from './UiPrompt';
+import type Player from '../player.js';
+import { UiPrompt } from './UiPrompt.js';
 
 /**
  * Represents a UI Prompt that prompts each player individually in first-player

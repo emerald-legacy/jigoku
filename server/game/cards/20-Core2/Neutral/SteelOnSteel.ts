@@ -1,6 +1,6 @@
-import { ConflictTypes, DuelTypes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { ConflictTypes, DuelTypes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class SteelOnSteel extends DrawCard {
     static id = 'steel-on-steel';

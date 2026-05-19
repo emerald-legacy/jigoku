@@ -1,7 +1,7 @@
-import { CardTypes, DuelTypes, Locations, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import type BaseCard from '../../basecard';
-import DrawCard from '../../drawcard';
+import { CardTypes, DuelTypes, Locations, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import type BaseCard from '../../basecard.js';
+import DrawCard from '../../drawcard.js';
 
 export default class CunningNegotiator extends DrawCard {
     static id = 'cunning-negotiator';

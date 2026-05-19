@@ -1,11 +1,11 @@
-import type { AbilityContext } from '../AbilityContext';
-import type BaseAction from '../BaseAction';
-import { Locations, PlayTypes, Stages } from '../Constants';
-import type DrawCard from '../drawcard';
-import type { Event } from '../Events/Event';
-import AbilityResolver from '../gamesteps/abilityresolver';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext';
-import { CardGameAction, type CardActionProperties } from './CardGameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseAction from '../BaseAction.js';
+import { Locations, PlayTypes, Stages } from '../Constants.js';
+import type DrawCard from '../drawcard.js';
+import type { Event } from '../Events/Event.js';
+import AbilityResolver from '../gamesteps/abilityresolver.js';
+import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
+import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 
 class PlayCardResolver extends AbilityResolver {
     playGameAction: PlayCardAction;

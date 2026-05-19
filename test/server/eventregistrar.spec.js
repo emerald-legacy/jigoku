@@ -1,4 +1,4 @@
-const { EventRegistrar } = require('../../build/server/game/EventRegistrar.js');
+import { EventRegistrar } from '../../build/server/game/EventRegistrar.js';
 
 describe('EventRegistrar', function () {
     beforeEach(function() {

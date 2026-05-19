@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Durations } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Durations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class MercenaryCompany extends DrawCard {
     static id = 'mercenary-company';

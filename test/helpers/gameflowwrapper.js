@@ -1,7 +1,8 @@
 
-const Game = require('../../build/server/game/game.js');
-const PlayerInteractionWrapper = require('./playerinteractionwrapper.js');
-const Settings = require('../../build/server/settings.js');
+import Game from '../../build/server/game/game.js';
+import PlayerInteractionWrapper from './playerinteractionwrapper.js';
+import * as Settings from '../../build/server/settings.js';
+import { cards as cardLibrary } from '../../build/server/game/cards/index.js';
 
 class GameFlowWrapper {
     constructor() {
@@ -25,7 +26,7 @@ class GameFlowWrapper {
             ],
             spectators: {}
         };
-        this.game = new Game(details, { router: gameRouter });
+        this.game = new Game(details, { router: gameRouter, cardLibrary });
         this.game.started = true;
 
         this.player1 = new PlayerInteractionWrapper(this.game, this.game.getPlayerByName('player1'));
@@ -313,4 +314,4 @@ class GameFlowWrapper {
     }
 }
 
-module.exports = GameFlowWrapper;
+export default GameFlowWrapper;

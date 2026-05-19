@@ -1,8 +1,8 @@
-import { AbilityTypes } from '../Constants';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext';
-import type DrawCard from '../drawcard';
-import type Game from '../game';
-import TriggeredAbility from '../triggeredability';
+import { AbilityTypes } from '../Constants.js';
+import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
+import type DrawCard from '../drawcard.js';
+import type Game from '../game.js';
+import TriggeredAbility from '../triggeredability.js';
 
 export default class SincerityAbility extends TriggeredAbility {
     constructor(game: Game, card: DrawCard) {

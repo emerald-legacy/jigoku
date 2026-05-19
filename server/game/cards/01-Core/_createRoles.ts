@@ -1,7 +1,7 @@
-import type { Elements } from '../../Constants';
-import { RoleCard } from '../../RoleCard';
-import AbilityDsl from '../../abilitydsl';
-import type { Conflict } from '../../conflict';
+import type { Elements } from '../../Constants.js';
+import { RoleCard } from '../../RoleCard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import type { Conflict } from '../../conflict.js';
 
 export function createKeeperRole(id: string, element: Elements) {
     return class KeeperRole extends RoleCard {

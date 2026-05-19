@@ -1,8 +1,8 @@
-import { CardTypes } from '../../../Constants';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type { AbilityContext } from '../../../AbilityContext';
+import { CardTypes } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 
 function penaltyAmount(context: AbilityContext): number {
     return context.player.hasAffinity('earth', context) ? -2 : -1;

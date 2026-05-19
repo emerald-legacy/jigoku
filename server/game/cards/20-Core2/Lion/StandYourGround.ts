@@ -1,6 +1,6 @@
-import { CharacterStatus } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CharacterStatus } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class StandYourGround extends DrawCard {
     static id = 'stand-your-ground';

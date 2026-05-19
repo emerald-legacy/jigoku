@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../../AbilityContext';
-import { CardTypes } from '../../Constants';
-import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
+import type { AbilityContext } from '../../AbilityContext.js';
+import { CardTypes } from '../../Constants.js';
+import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
 
 export default class TogashiKazue extends DrawCard {
     static id = 'togashi-kazue';

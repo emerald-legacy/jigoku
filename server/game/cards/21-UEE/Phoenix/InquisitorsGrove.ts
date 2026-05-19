@@ -1,6 +1,6 @@
-import { CardTypes, Players } from '../../../Constants';
-import { StrongholdCard } from '../../../StrongholdCard';
-import AbilityDsl from '../../../abilitydsl';
+import { CardTypes, Players } from '../../../Constants.js';
+import { StrongholdCard } from '../../../StrongholdCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
 
 export default class InquisitorsGrove extends StrongholdCard {
     static id = 'inquisitor-s-grove';

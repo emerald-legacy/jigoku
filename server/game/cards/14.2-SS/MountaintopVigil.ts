@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Durations, Players } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Durations, Players } from '../../Constants.js';
 
 class MountaintopVigil extends DrawCard {
     static id = 'mountaintop-vigil';

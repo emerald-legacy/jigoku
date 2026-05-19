@@ -1,6 +1,6 @@
-import { TargetModes, Durations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { TargetModes, Durations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class BenevolentLesserKami extends DrawCard {
     static id = 'benevolent-lesser-kami';

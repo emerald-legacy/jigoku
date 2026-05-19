@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { CardTypes } from '../../Constants.js';
 
 class IAmReady extends DrawCard {
     static id = 'i-am-ready';

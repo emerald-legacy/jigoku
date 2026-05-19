@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class ShadowlandsHunter extends DrawCard {
     static id = 'shadowlands-hunter';

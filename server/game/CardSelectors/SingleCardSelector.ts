@@ -1,5 +1,5 @@
-import BaseCardSelector from './BaseCardSelector';
-import { CardTypes } from '../Constants';
+import BaseCardSelector from './BaseCardSelector.js';
+import { CardTypes } from '../Constants.js';
 
 class SingleCardSelector extends BaseCardSelector {
     numCards: number;

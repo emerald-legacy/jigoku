@@ -1,4 +1,4 @@
-const { GamePipeline } = require('../../../build/server/game/GamePipeline.js');
+import { GamePipeline } from '../../../build/server/game/GamePipeline.js';
 
 describe('GamePipeline - queueStep', function() {
     beforeEach(function() {

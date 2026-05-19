@@ -1,11 +1,11 @@
-import { EventNames, Locations, Phases, Players } from '../Constants';
-import { ready, returnRing } from '../GameActions/GameActions';
-import type Game from '../game';
-import type Player from '../player';
-import { Phase } from './Phase';
-import { SimpleStep } from './SimpleStep';
-import ActionWindow from './actionwindow';
-import { EndRoundPrompt } from './regroup/EndRoundPrompt';
+import { EventNames, Locations, Phases, Players } from '../Constants.js';
+import { ready, returnRing } from '../GameActions/GameActions.js';
+import type Game from '../game.js';
+import type Player from '../player.js';
+import { Phase } from './Phase.js';
+import { SimpleStep } from './SimpleStep.js';
+import ActionWindow from './actionwindow.js';
+import { EndRoundPrompt } from './regroup/EndRoundPrompt.js';
 
 /**
  * V Regroup Phase

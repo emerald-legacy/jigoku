@@ -1,7 +1,7 @@
-import { Players, TargetModes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type Ring from '../../../ring';
+import { Players, TargetModes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type Ring from '../../../ring.js';
 
 export default class RightsOfTheChallenged extends DrawCard {
     static id = 'rights-of-the-challenged';

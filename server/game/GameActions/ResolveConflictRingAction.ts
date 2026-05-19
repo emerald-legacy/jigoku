@@ -1,9 +1,9 @@
-import type { AbilityContext } from '../AbilityContext';
-import { EffectNames, EventNames } from '../Constants';
-import type Player from '../player';
-import type Ring from '../ring';
-import { ResolveElementAction } from './ResolveElementAction';
-import { RingAction, type RingActionProperties } from './RingAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { EffectNames, EventNames } from '../Constants.js';
+import type Player from '../player.js';
+import type Ring from '../ring.js';
+import { ResolveElementAction } from './ResolveElementAction.js';
+import { RingAction, type RingActionProperties } from './RingAction.js';
 
 export class ResolveConflictRingAction extends RingAction {
     name = 'resolveRing';

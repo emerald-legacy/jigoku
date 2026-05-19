@@ -1,8 +1,10 @@
 /*eslint no-console:0 */
-const { default: axios } = require('axios');
-const fs = require('fs/promises');
-const path = require('path');
+import axios from 'axios';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const pathToJSON = path.join(__dirname, '../test/json/Card');
 
 const [, , env] = process.argv;

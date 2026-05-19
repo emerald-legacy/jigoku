@@ -1,6 +1,6 @@
-import { TokenTypes } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { TokenTypes } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class FortifiedAssembly extends ProvinceCard {
     static id = 'fortified-assembly';

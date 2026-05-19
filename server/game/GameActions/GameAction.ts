@@ -1,10 +1,10 @@
-import type { AbilityContext } from '../AbilityContext';
-import type BaseCard from '../basecard';
-import { CardTypes, EventNames, Stages } from '../Constants';
-import { Event } from '../Events/Event';
-import type Player from '../player';
-import type Ring from '../ring';
-import type { StatusToken } from '../StatusToken';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../basecard.js';
+import { CardTypes, EventNames, Stages } from '../Constants.js';
+import { Event } from '../Events/Event.js';
+import type Player from '../player.js';
+import type Ring from '../ring.js';
+import type { StatusToken } from '../StatusToken.js';
 
 type PlayerOrRingOrCardOrToken = Player | Ring | BaseCard | StatusToken;
 

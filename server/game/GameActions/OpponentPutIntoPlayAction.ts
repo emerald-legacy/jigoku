@@ -1,6 +1,6 @@
-import { AbilityContext } from '../AbilityContext';
-import { Players } from '../Constants';
-import { PutIntoPlayAction, PutIntoPlayProperties } from './PutIntoPlayAction';
+import { AbilityContext } from '../AbilityContext.js';
+import { Players } from '../Constants.js';
+import { PutIntoPlayAction, PutIntoPlayProperties } from './PutIntoPlayAction.js';
 
 export type OpponentPutIntoPlayProperties = PutIntoPlayProperties;
 

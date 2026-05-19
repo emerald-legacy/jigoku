@@ -1,6 +1,6 @@
 import { v1 as uuid } from 'uuid';
-import type Player from '../player';
-import { BaseStep } from './BaseStep';
+import type Player from '../player.js';
+import { BaseStep } from './BaseStep.js';
 
 type ActivePrompt = {
     buttons: Array<{ text: string; arg?: string; command?: string }>;

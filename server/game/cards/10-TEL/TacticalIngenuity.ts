@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { AbilityTypes, CardTypes, Locations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { AbilityTypes, CardTypes, Locations } from '../../Constants.js';
 
 class TacticalIngenuity extends DrawCard {
     static id = 'tactical-ingenuity';

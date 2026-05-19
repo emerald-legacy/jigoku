@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import { CardTypes, Players } from '../../../Constants';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import { CardTypes, Players } from '../../../Constants.js';
 
 export default class TwoFoldVirtue extends DrawCard {
     static id = 'two-folded-virtue';

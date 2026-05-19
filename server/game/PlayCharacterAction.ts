@@ -1,10 +1,10 @@
-import type { AbilityContext } from './AbilityContext';
-import BaseAction from './BaseAction';
-import { EffectNames, EventNames, Locations, Phases, PlayTypes, Players } from './Constants';
+import type { AbilityContext } from './AbilityContext.js';
+import BaseAction from './BaseAction.js';
+import { EffectNames, EventNames, Locations, Phases, PlayTypes, Players } from './Constants.js';
 import { chooseFate, payReduceableFateCost } from './Costs.js';
-import { putIntoConflict, putIntoPlay } from './GameActions/GameActions';
-import { parseGameMode } from './GameMode';
-import type BaseCard from './basecard';
+import { putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
+import { parseGameMode } from './GameMode.js';
+import type BaseCard from './basecard.js';
 
 export enum PlayCharacterIntoLocation {
     Any,

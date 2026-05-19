@@ -1,6 +1,6 @@
-import BaseCard from '../../../server/game/basecard';
-import DrawCard from '../../../server/game/drawcard';
-import type { CardData } from '../../../server/game/types/CardData';
+import BaseCard from '../../../server/game/basecard.js';
+import DrawCard from '../../../server/game/drawcard.js';
+import type { CardData } from '../../../server/game/types/CardData.js';
 
 function makeGame() {
     const game = jasmine.createSpyObj('game', [

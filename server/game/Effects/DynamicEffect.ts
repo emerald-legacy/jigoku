@@ -1,5 +1,5 @@
-import StaticEffect from './StaticEffect';
-import type { EffectNames } from '../Constants';
+import StaticEffect from './StaticEffect.js';
+import type { EffectNames } from '../Constants.js';
 
 export default class DynamicEffect extends StaticEffect {
     values: Record<string, any>;

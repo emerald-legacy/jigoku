@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Locations, Phases, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Locations, Phases, CardTypes } from '../../Constants.js';
 
 class PeasantsAdvice extends DrawCard {
     static id = 'peasant-s-advice';

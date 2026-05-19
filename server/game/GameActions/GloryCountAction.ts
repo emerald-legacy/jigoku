@@ -1,7 +1,7 @@
-import { AbilityContext } from '../AbilityContext';
-import { EventNames } from '../Constants';
-import Player from '../player';
-import { GameAction, GameActionProperties } from './GameAction';
+import { AbilityContext } from '../AbilityContext.js';
+import { EventNames } from '../Constants.js';
+import Player from '../player.js';
+import { GameAction, GameActionProperties } from './GameAction.js';
 
 export interface GloryCountProperties extends GameActionProperties {
     gameAction: ((gloryCountWinner: Player | null, context: AbilityContext) => GameAction) | GameAction;

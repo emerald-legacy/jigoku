@@ -1,10 +1,10 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import { CardTypes, Locations } from '../../../Constants';
-import type { Cost } from '../../../Costs';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
-import type { Conflict } from '../../../conflict';
-import DrawCard from '../../../drawcard';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { CardTypes, Locations } from '../../../Constants.js';
+import type { Cost } from '../../../Costs.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type { Conflict } from '../../../conflict.js';
+import DrawCard from '../../../drawcard.js';
 
 const CAPTURED_ORIGINAL_PROVINCE = Symbol('Capture Province');
 

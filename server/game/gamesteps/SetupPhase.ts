@@ -1,13 +1,13 @@
-import { GameModes } from '../../GameModes';
-import { Locations } from '../Constants';
-import { randomItem } from '../utils/helpers';
-import type BaseCard from '../basecard';
-import type Game from '../game';
-import { Phase } from './Phase';
-import { SimpleStep } from './SimpleStep';
-import MulliganConflictPrompt from './setup/mulliganconflictprompt';
-import MulliganDynastyPrompt from './setup/mulligandynastyprompt';
-import SetupProvincesPrompt from './setup/setupprovincesprompt';
+import { GameModes } from '../../GameModes.js';
+import { Locations } from '../Constants.js';
+import { randomItem } from '../utils/helpers.js';
+import type BaseCard from '../basecard.js';
+import type Game from '../game.js';
+import { Phase } from './Phase.js';
+import { SimpleStep } from './SimpleStep.js';
+import MulliganConflictPrompt from './setup/mulliganconflictprompt.js';
+import MulliganDynastyPrompt from './setup/mulligandynastyprompt.js';
+import SetupProvincesPrompt from './setup/setupprovincesprompt.js';
 
 export class SetupPhase extends Phase {
     constructor(game: Game) {

@@ -1,7 +1,7 @@
-import { CardTypes, Players } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import type DrawCard from '../../../drawcard';
-import { StrongholdCard } from '../../../StrongholdCard';
+import { CardTypes, Players } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type DrawCard from '../../../drawcard.js';
+import { StrongholdCard } from '../../../StrongholdCard.js';
 
 export default class BreezeOfDawnLodge extends StrongholdCard {
     static id = 'breeze-of-dawn-lodge';

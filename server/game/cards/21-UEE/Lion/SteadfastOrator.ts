@@ -1,8 +1,8 @@
-import type { AbilityLimit } from '../../../AbilityLimit';
-import { CardTypes } from '../../../Constants';
-import type { Cost } from '../../../Costs';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import type { AbilityLimit } from '../../../AbilityLimit.js';
+import { CardTypes } from '../../../Constants.js';
+import type { Cost } from '../../../Costs.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class SteadfastOrator extends DrawCard {
     static id = 'steadfast-orator';

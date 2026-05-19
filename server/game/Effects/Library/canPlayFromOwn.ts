@@ -1,10 +1,10 @@
-import type { AbilityContext } from '../../AbilityContext';
-import type BaseCard from '../../basecard';
-import { CardTypes, EffectNames, Locations, PlayTypes } from '../../Constants';
-import type DrawCard from '../../drawcard';
-import type { PlayableLocation } from '../../PlayableLocation';
-import type Player from '../../player';
-import { EffectBuilder } from '../EffectBuilder';
+import type { AbilityContext } from '../../AbilityContext.js';
+import type BaseCard from '../../basecard.js';
+import { CardTypes, EffectNames, Locations, PlayTypes } from '../../Constants.js';
+import type DrawCard from '../../drawcard.js';
+import type { PlayableLocation } from '../../PlayableLocation.js';
+import type Player from '../../player.js';
+import { EffectBuilder } from '../EffectBuilder.js';
 
 export function canPlayFromOwn(
     location: Locations,

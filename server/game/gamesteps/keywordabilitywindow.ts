@@ -1,4 +1,4 @@
-import ForcedTriggeredAbilityWindow from './forcedtriggeredabilitywindow';
+import ForcedTriggeredAbilityWindow from './forcedtriggeredabilitywindow.js';
 
 class KeywordAbilityWindow extends ForcedTriggeredAbilityWindow {
     constructor(game: any, abilityType: any, window: any, eventsToExclude: any[] = []) {

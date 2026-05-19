@@ -1,6 +1,6 @@
-import { EffectValue } from './EffectValue';
-import { CardTypes, EffectNames, Durations, AbilityTypes } from '../Constants';
-import GainAbility from './GainAbility';
+import { EffectValue } from './EffectValue.js';
+import { CardTypes, EffectNames, Durations, AbilityTypes } from '../Constants.js';
+import GainAbility from './GainAbility.js';
 
 const binaryCardEffects = [
     EffectNames.Blank,
@@ -200,4 +200,4 @@ class StaticEffect {
     }
 }
 
-export = StaticEffect;
+export default StaticEffect;

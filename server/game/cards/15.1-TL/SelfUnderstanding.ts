@@ -1,7 +1,7 @@
-import AbilityDsl from '../../abilitydsl';
-import { AbilityTypes } from '../../Constants';
-import DrawCard from '../../drawcard';
-import { TriggeredAbilityProps } from '../../Interfaces';
+import AbilityDsl from '../../abilitydsl.js';
+import { AbilityTypes } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
+import { TriggeredAbilityProps } from '../../Interfaces.js';
 
 export default class SelfUnderstanding extends DrawCard {
     static id = 'self-understanding';

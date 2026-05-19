@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Durations, Players, Phases } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Durations, Players, Phases } from '../../Constants.js';
 
 class WaningHostilities extends DrawCard {
     static id = 'waning-hostilities';

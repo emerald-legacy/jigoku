@@ -1,7 +1,7 @@
-import type { AbilityContext } from '../AbilityContext';
-import { Locations } from '../Constants';
-import type Player from '../player';
-import { PlayerAction, type PlayerActionProperties } from './PlayerAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { Locations } from '../Constants.js';
+import type Player from '../player.js';
+import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
 export interface ShuffleDeckProperties extends PlayerActionProperties {
     deck: Locations;

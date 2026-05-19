@@ -1,4 +1,4 @@
-import { CardTypes } from './Constants';
+import { CardTypes } from './Constants.js';
 
 class StatModifier {
     amount: number;
@@ -63,4 +63,4 @@ class StatModifier {
     }
 }
 
-export = StatModifier;
+export default StatModifier;

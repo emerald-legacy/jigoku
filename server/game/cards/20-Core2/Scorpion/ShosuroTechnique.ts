@@ -1,6 +1,6 @@
-import { CardTypes, ConflictTypes, Durations, Players, TargetModes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CardTypes, ConflictTypes, Durations, Players, TargetModes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class ShosuroTechnique extends DrawCard {
     static id = 'shosuro-technique';

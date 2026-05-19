@@ -1,7 +1,7 @@
-import { CardTypes, Players } from '../../../Constants';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
-import type DrawCard from '../../../drawcard';
+import { CardTypes, Players } from '../../../Constants.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type DrawCard from '../../../drawcard.js';
 
 export default class HoneypotVillage extends ProvinceCard {
     static id = 'honeypot-village';

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Locations, Durations } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Locations, Durations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class UnderSiege extends DrawCard {
     static id = 'under-siege';

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Durations, Players, TargetModes, Phases } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Durations, Players, TargetModes, Phases } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class ExpertInterpreter extends DrawCard {
     static id = 'expert-interpreter';

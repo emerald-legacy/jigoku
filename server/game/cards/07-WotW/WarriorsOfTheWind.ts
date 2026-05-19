@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes, Players, TargetModes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes, Players, TargetModes } from '../../Constants.js';
 
 class WarriorsOfTheWind extends DrawCard {
     static id = 'warriors-of-the-wind';

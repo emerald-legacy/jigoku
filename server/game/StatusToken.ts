@@ -1,9 +1,9 @@
-import { CardTypes, CharacterStatus, EffectNames } from './Constants';
-import EffectSource from './EffectSource';
-import AbilityDsl from './abilitydsl';
-import type BaseCard from './basecard';
-import type Game from './game';
-import type Player from './player';
+import { CardTypes, CharacterStatus, EffectNames } from './Constants.js';
+import EffectSource from './EffectSource.js';
+import AbilityDsl from './abilitydsl.js';
+import type BaseCard from './basecard.js';
+import type Game from './game.js';
+import type Player from './player.js';
 
 export class StatusToken extends EffectSource {
     persistentEffects: any[] = [];

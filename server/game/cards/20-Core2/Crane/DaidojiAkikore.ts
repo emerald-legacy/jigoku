@@ -1,6 +1,6 @@
-import { DuelTypes, Durations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { DuelTypes, Durations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class DaidojiAkikore extends DrawCard {
     static id = 'daidoji-akikore';

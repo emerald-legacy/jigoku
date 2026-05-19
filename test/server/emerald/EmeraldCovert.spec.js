@@ -1,4 +1,4 @@
-const { GameModes } = require('../../../build/server/GameModes');
+import { GameModes } from '../../../build/server/GameModes.js';
 
 describe('Covert - Emerald', function() {
     integration(function() {

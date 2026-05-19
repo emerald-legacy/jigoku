@@ -1,7 +1,7 @@
-import DrawCard from '../../../drawcard';
-import { TargetModes, CardTypes, AbilityTypes, Durations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import { GameModes } from '../../../../GameModes';
+import DrawCard from '../../../drawcard.js';
+import { TargetModes, CardTypes, AbilityTypes, Durations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { GameModes } from '../../../../GameModes.js';
 
 class CraftyTsukumogami extends DrawCard {
     static id = 'crafty-tsukumogami';

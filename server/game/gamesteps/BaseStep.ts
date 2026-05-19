@@ -1,8 +1,8 @@
-import type BaseCard from '../basecard';
-import type Game from '../game';
-import type Player from '../player';
-import type Ring from '../ring';
-import type { Step } from './Step';
+import type BaseCard from '../basecard.js';
+import type Game from '../game.js';
+import type Player from '../player.js';
+import type Ring from '../ring.js';
+import type { Step } from './Step.js';
 
 export class BaseStep implements Step {
     constructor(public game: Game) {}

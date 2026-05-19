@@ -1,7 +1,7 @@
-import type { AbilityContext } from '../AbilityContext';
-import { EventNames } from '../Constants';
-import type { StatusToken } from '../StatusToken';
-import { TokenAction, TokenActionProperties } from './TokenAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { EventNames } from '../Constants.js';
+import type { StatusToken } from '../StatusToken.js';
+import { TokenAction, TokenActionProperties } from './TokenAction.js';
 
 export type DiscardStatusProperties = TokenActionProperties;
 

@@ -1,11 +1,11 @@
 import { EventEmitter } from 'events';
 
 import ChatCommands from './chatcommands.js';
-import { GameChat } from './GameChat';
+import { GameChat } from './GameChat.js';
 import { EffectEngine } from './EffectEngine.js';
 import Player from './player.js';
 import { Spectator } from './Spectator.js';
-import { AnonymousSpectator } from './AnonymousSpectator';
+import { AnonymousSpectator } from './AnonymousSpectator.js';
 import { GamePipeline } from './GamePipeline.js';
 import { SetupPhase } from './gamesteps/SetupPhase.js';
 import { DynastyPhase } from './gamesteps/DynastyPhase.js';
@@ -14,30 +14,30 @@ import { ConflictPhase } from './gamesteps/ConflictPhase.js';
 import { FatePhase } from './gamesteps/FatePhase.js';
 import { EndRoundPrompt } from './gamesteps/regroup/EndRoundPrompt.js';
 import { SimpleStep } from './gamesteps/SimpleStep.js';
-import GameWonPrompt from './gamesteps/GameWonPrompt';
-import * as GameActions from './GameActions/GameActions';
-import { Event } from './Events/Event';
-import InitiateCardAbilityEvent from './Events/InitiateCardAbilityEvent';
-import EventWindow from './Events/EventWindow';
-import ThenEventWindow from './Events/ThenEventWindow';
-import InitiateAbilityEventWindow from './Events/InitiateAbilityEventWindow';
-import AbilityResolver from './gamesteps/abilityresolver';
-import SimultaneousEffectWindow from './gamesteps/SimultaneousEffectWindow';
+import GameWonPrompt from './gamesteps/GameWonPrompt.js';
+import * as GameActions from './GameActions/GameActions.js';
+import { Event } from './Events/Event.js';
+import InitiateCardAbilityEvent from './Events/InitiateCardAbilityEvent.js';
+import EventWindow from './Events/EventWindow.js';
+import ThenEventWindow from './Events/ThenEventWindow.js';
+import InitiateAbilityEventWindow from './Events/InitiateAbilityEventWindow.js';
+import AbilityResolver from './gamesteps/abilityresolver.js';
+import SimultaneousEffectWindow from './gamesteps/SimultaneousEffectWindow.js';
 import { AbilityContext } from './AbilityContext.js';
 import Ring from './ring.js';
 import { Conflict } from './conflict.js';
 import ConflictFlow from './gamesteps/conflict/conflictflow.js';
-import * as MenuCommands from './MenuCommands';
-import SpiritOfTheRiver from './cards/SpiritOfTheRiver';
+import * as MenuCommands from './MenuCommands.js';
+import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
 
-import { EffectNames, Phases, EventNames, Locations, ConflictTypes, Elements } from './Constants';
-import { ConflictTracker, type ConflictRecord } from './ConflictTracker';
-import { GamePromptHelper } from './GamePromptHelper';
+import { EffectNames, Phases, EventNames, Locations, ConflictTypes, Elements } from './Constants.js';
+import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
+import { GamePromptHelper } from './GamePromptHelper.js';
 import { GameModes } from '../GameModes.js';
-import { resolvePackId } from './CardPackUtil';
-import type BaseCard from './basecard';
-import type DrawCard from './drawcard';
-import type { AnimationEvent } from './AnimationEvent';
+import { resolvePackId } from './CardPackUtil.js';
+import type BaseCard from './basecard.js';
+import type DrawCard from './drawcard.js';
+import type { AnimationEvent } from './AnimationEvent.js';
 
 interface GameDetails {
     id: string;
@@ -56,6 +56,7 @@ interface GameDetails {
 
 interface GameOptions {
     shortCardData?: any[];
+    cardLibrary?: Map<string, unknown>;
     router?: any;
 }
 
@@ -90,6 +91,7 @@ class Game extends EventEmitter {
     readonly prompts: GamePromptHelper;
     rings: Record<string, Ring>;
     shortCardData: any[];
+    cardLibrary: Map<string, unknown>;
     router: any;
     allCards: BaseCard[];
     private cardsByUuid = new Map<string, BaseCard>();
@@ -144,6 +146,7 @@ class Game extends EventEmitter {
             water: new Ring(this, Elements.Water, ConflictTypes.Military)
         };
         this.shortCardData = options.shortCardData || [];
+        this.cardLibrary = options.cardLibrary ?? new Map();
         this.allCards = [];
         this.provinceCards = [];
         this.hiddenInfoLog = [];
@@ -1531,4 +1534,4 @@ class Game extends EventEmitter {
     }
 }
 
-export = Game;
+export default Game;

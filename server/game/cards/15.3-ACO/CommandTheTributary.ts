@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes, AbilityTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes, AbilityTypes } from '../../Constants.js';
 
 class CommandTheTributary extends DrawCard {
     static id = 'command-the-tributary';

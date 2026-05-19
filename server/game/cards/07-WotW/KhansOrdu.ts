@@ -1,6 +1,6 @@
-import { ConflictTypes, Players, Durations } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { ConflictTypes, Players, Durations } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class KhansOrdu extends ProvinceCard {
     static id = 'khan-s-ordu';

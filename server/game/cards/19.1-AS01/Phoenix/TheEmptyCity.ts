@@ -1,8 +1,8 @@
-import { CardTypes, Durations, EventNames, Locations, Players, TargetModes } from '../../../Constants';
-import { EventRegistrar } from '../../../EventRegistrar';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
+import { CardTypes, Durations, EventNames, Locations, Players, TargetModes } from '../../../Constants.js';
+import { EventRegistrar } from '../../../EventRegistrar.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
 
 export default class TheEmptyCity extends ProvinceCard {
     static id = 'the-empty-city';

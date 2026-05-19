@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Locations, Players } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Locations, Players } from '../../Constants.js';
 
 class BorderlandsFortifications extends DrawCard {
     static id = 'borderlands-fortifications';

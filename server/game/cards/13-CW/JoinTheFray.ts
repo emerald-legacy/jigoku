@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Locations, Players, CardTypes, TargetModes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Locations, Players, CardTypes, TargetModes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class JoinTheFray extends DrawCard {
     static id = 'join-the-fray';

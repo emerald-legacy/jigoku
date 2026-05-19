@@ -1,6 +1,6 @@
-import { Players, ConflictTypes, Durations } from '../../Constants';
-import { StrongholdCard } from '../../StrongholdCard';
-import AbilityDsl from '../../abilitydsl';
+import { Players, ConflictTypes, Durations } from '../../Constants.js';
+import { StrongholdCard } from '../../StrongholdCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class CastleOfTheForgotten extends StrongholdCard {
     static id = 'castle-of-the-forgotten';

@@ -1,7 +1,7 @@
-import * as AbilityLimit from './AbilityLimit';
-import * as Effects from './effects.js';
-import * as Costs from './Costs';
-import * as GameActions from './GameActions/GameActions';
+import * as AbilityLimit from './AbilityLimit.js';
+import Effects from './effects.js';
+import * as Costs from './Costs.js';
+import * as GameActions from './GameActions/GameActions.js';
 
 const AbilityDsl = {
     limit: AbilityLimit,
@@ -10,4 +10,4 @@ const AbilityDsl = {
     actions: GameActions
 };
 
-export = AbilityDsl;
+export default AbilityDsl;

@@ -1,7 +1,7 @@
-import { GameModes } from '../../../GameModes';
-import { CardTypes, TargetModes, Decks, Locations, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
+import { GameModes } from '../../../GameModes.js';
+import { CardTypes, TargetModes, Decks, Locations, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
 
 export default class KaiuShihobu extends DrawCard {
     static id = 'kaiu-shihobu';

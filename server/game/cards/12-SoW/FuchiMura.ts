@@ -1,6 +1,6 @@
-import { ProvinceCard } from '../../ProvinceCard';
-import type Ring from '../../ring';
-import AbilityDsl from '../../abilitydsl';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import type Ring from '../../ring.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class FuchiMura extends ProvinceCard {
     static id = 'fuchi-mura';

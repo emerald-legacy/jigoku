@@ -1,7 +1,7 @@
-import { Phases, Durations } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
-import { FatePhase } from '../../gamesteps/FatePhase';
+import { Phases, Durations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
+import { FatePhase } from '../../gamesteps/FatePhase.js';
 
 export default class JurojinsCurse extends DrawCard {
     static id = 'jurojin-s-curse';

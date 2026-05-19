@@ -1,4 +1,4 @@
-import { Locations, Players } from '../Constants';
+import { Locations, Players } from '../Constants.js';
 
 interface BaseCardSelectorProperties {
     cardCondition?: (card: any, context: any) => boolean;

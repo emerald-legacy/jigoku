@@ -1,10 +1,10 @@
-import type { AbilityContext } from '../AbilityContext';
-import { EffectNames, EventNames } from '../Constants';
-import { Event } from '../Events/Event';
-import type Player from '../player';
-import Ring from '../ring';
-import { RingEffects } from '../RingEffects';
-import { RingAction, type RingActionProperties } from './RingAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { EffectNames, EventNames } from '../Constants.js';
+import { Event } from '../Events/Event.js';
+import type Player from '../player.js';
+import Ring from '../ring.js';
+import { RingEffects } from '../RingEffects.js';
+import { RingAction, type RingActionProperties } from './RingAction.js';
 
 export interface ResolveElementProperties extends RingActionProperties {
     physicalRing?: Ring;

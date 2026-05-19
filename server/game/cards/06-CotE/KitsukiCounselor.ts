@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 class KitsukiCounselor extends DrawCard {
     static id = 'kitsuki-counselor';
 

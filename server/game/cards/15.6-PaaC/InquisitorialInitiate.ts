@@ -1,7 +1,7 @@
-import { Locations, Players, TargetModes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import type BaseCard from '../../basecard';
-import DrawCard from '../../drawcard';
+import { Locations, Players, TargetModes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import type BaseCard from '../../basecard.js';
+import DrawCard from '../../drawcard.js';
 
 export default class InquisitorialInitiate extends DrawCard {
     static id = 'inquisitorial-initiate';

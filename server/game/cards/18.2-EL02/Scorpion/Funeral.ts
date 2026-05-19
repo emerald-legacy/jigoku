@@ -1,8 +1,8 @@
-import AbilityDsl from '../../../abilitydsl';
-import { EventNames, FavorTypes, Locations, Phases, Stages } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import { EventRegistrar } from '../../../EventRegistrar';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
+import AbilityDsl from '../../../abilitydsl.js';
+import { EventNames, FavorTypes, Locations, Phases, Stages } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import { EventRegistrar } from '../../../EventRegistrar.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class Funeral extends DrawCard {
     static id = 'funeral';

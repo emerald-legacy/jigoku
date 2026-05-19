@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Locations, Players, CardTypes, EventNames } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Locations, Players, CardTypes, EventNames } from '../../Constants.js';
 
 class OfferTestimony extends DrawCard {
     static id = 'offer-testimony';

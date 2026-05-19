@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import { Conflict } from '../../../conflict';
-import { CardTypes, Decks, Durations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Conflict } from '../../../conflict.js';
+import { CardTypes, Decks, Durations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class KakitaMio extends DrawCard {
     static id = 'kakita-mio';

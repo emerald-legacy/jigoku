@@ -1,5 +1,5 @@
-import { TargetModes } from '../../Constants';
-import DrawCard from '../../drawcard';
+import { TargetModes } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
 
 class Truthseeker extends DrawCard {
     static id = 'truthseeker';

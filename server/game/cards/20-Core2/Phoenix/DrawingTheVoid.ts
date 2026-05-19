@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import { Locations, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import { shuffle } from '../../../utils/shuffle';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Locations, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import { shuffle } from '../../../utils/shuffle.js';
 
 export default class DrawingTheVoid extends DrawCard {
     static id = 'drawing-the-void';

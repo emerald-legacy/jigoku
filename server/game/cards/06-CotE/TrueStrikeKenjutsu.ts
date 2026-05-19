@@ -1,6 +1,6 @@
-import AbilityDsl from '../../abilitydsl';
-import { AbilityTypes, DuelTypes } from '../../Constants';
-import DrawCard from '../../drawcard';
+import AbilityDsl from '../../abilitydsl.js';
+import { AbilityTypes, DuelTypes } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
 
 export default class TrueStrikeKenjutsu extends DrawCard {
     static id = 'true-strike-kenjutsu';

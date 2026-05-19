@@ -1,7 +1,7 @@
-import AbilityDsl from '../../abilitydsl';
-import { AbilityTypes, CardTypes } from '../../Constants';
-import DrawCard from '../../drawcard';
-import { ActionProps } from '../../Interfaces';
+import AbilityDsl from '../../abilitydsl.js';
+import { AbilityTypes, CardTypes } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
+import { ActionProps } from '../../Interfaces.js';
 
 export default class FireAndOil extends DrawCard {
     static id = 'fire-and-oil';

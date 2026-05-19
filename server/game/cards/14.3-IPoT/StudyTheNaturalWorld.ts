@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Durations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Durations } from '../../Constants.js';
 
 class StudyTheNaturalWorld extends DrawCard {
     static id = 'study-the-natural-world';

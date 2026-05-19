@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Durations, TargetModes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Durations, TargetModes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class ShinjoArcher extends DrawCard {
     static id = 'shinjo-archer';

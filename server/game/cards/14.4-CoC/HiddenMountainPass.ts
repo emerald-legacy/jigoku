@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Phases } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Phases } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class HiddenMountainPass extends DrawCard {
     static id = 'hidden-mountain-pass';

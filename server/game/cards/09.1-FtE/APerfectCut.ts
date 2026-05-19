@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, ConflictTypes, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, ConflictTypes, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class APerfectCut extends DrawCard {
     static id = 'a-perfect-cut';

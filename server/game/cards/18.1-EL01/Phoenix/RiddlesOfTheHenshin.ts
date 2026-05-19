@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import { CardTypes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type Player from '../../../player';
-import type Ring from '../../../ring';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { CardTypes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type Player from '../../../player.js';
+import type Ring from '../../../ring.js';
 
 function getNumberOfMonks(context: AbilityContext) {
     return (context.player.cardsInPlay as Array<DrawCard>).reduce(

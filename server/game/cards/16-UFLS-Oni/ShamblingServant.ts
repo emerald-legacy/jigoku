@@ -1,6 +1,6 @@
-import { CardTypes, Players } from '../../Constants';
-import { BaseOni } from './_BaseOni';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes, Players } from '../../Constants.js';
+import { BaseOni } from './_BaseOni.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class ShamblingServant extends BaseOni {
     static id = 'shambling-servant';

@@ -1,7 +1,7 @@
-import DrawCard from '../../drawcard';
-import { Players, TargetModes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import { RingEffects } from '../../RingEffects';
+import DrawCard from '../../drawcard.js';
+import { Players, TargetModes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { RingEffects } from '../../RingEffects.js';
 
 class TogashiMitsu2 extends DrawCard {
     static id = 'togashi-mitsu-2';

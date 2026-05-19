@@ -1,8 +1,8 @@
-import { Durations, EffectNames, EventNames } from './Constants';
-import type Effect from './Effects/Effect';
-import type EffectSource from './EffectSource';
-import { EventRegistrar } from './EventRegistrar';
-import type Game from './game';
+import { Durations, EffectNames, EventNames } from './Constants.js';
+import type Effect from './Effects/Effect.js';
+import type EffectSource from './EffectSource.js';
+import { EventRegistrar } from './EventRegistrar.js';
+import type Game from './game.js';
 
 export class EffectEngine {
     events: EventRegistrar;

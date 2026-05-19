@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, ConflictTypes, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, ConflictTypes, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class BrokenBlades extends DrawCard {
     static id = 'broken-blades';

@@ -1,6 +1,6 @@
-import { EffectValue } from './EffectValue';
-import GainAbility from './GainAbility';
-import { AbilityTypes, Locations } from '../Constants';
+import { EffectValue } from './EffectValue.js';
+import GainAbility from './GainAbility.js';
+import { AbilityTypes, Locations } from '../Constants.js';
 
 export default class GainAllAbilities extends EffectValue<any> {
     actions: GainAbility[];

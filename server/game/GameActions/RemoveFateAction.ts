@@ -1,10 +1,10 @@
-import type { AbilityContext } from '../AbilityContext';
-import type BaseCard from '../basecard';
-import { CardTypes, EventNames, Locations } from '../Constants';
-import type DrawCard from '../drawcard';
-import type Player from '../player';
-import type Ring from '../ring';
-import { type CardActionProperties, CardGameAction } from './CardGameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../basecard.js';
+import { CardTypes, EventNames, Locations } from '../Constants.js';
+import type DrawCard from '../drawcard.js';
+import type Player from '../player.js';
+import type Ring from '../ring.js';
+import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export interface RemoveFateProperties extends CardActionProperties {
     amount?: number;

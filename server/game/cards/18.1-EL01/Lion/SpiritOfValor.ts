@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Locations, Players } from '../../../Constants';
-import type { Cost } from '../../../Costs';
-import DrawCard from '../../../drawcard';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Locations, Players } from '../../../Constants.js';
+import type { Cost } from '../../../Costs.js';
+import DrawCard from '../../../drawcard.js';
 
 function captureParentCost(): Cost {
     return {

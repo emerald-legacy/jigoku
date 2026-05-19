@@ -1,6 +1,6 @@
-import { Durations, DuelTypes, ConflictTypes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { Durations, DuelTypes, ConflictTypes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class MirumotoRei2 extends DrawCard {
     static id = 'mirumoto-rei-2';

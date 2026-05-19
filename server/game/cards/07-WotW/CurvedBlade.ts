@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class CurvedBlade extends DrawCard {
     static id = 'curved-blade';

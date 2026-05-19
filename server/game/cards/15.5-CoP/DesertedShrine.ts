@@ -1,7 +1,7 @@
-import { TargetModes } from '../../Constants';
-import type { CardGameAction } from '../../GameActions/CardGameAction';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { TargetModes } from '../../Constants.js';
+import type { CardGameAction } from '../../GameActions/CardGameAction.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class DesertedShrine extends ProvinceCard {
     static id = 'deserted-shrine';

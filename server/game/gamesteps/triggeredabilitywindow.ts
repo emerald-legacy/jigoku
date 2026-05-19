@@ -1,7 +1,7 @@
-import ForcedTriggeredAbilityWindow from './forcedtriggeredabilitywindow';
-import { TriggeredAbilityWindowTitle } from './TriggeredAbilityWindowTitle';
-import { CardTypes, EventNames, AbilityTypes } from '../Constants';
-import type Player from '../player';
+import ForcedTriggeredAbilityWindow from './forcedtriggeredabilitywindow.js';
+import { TriggeredAbilityWindowTitle } from './TriggeredAbilityWindowTitle.js';
+import { CardTypes, EventNames, AbilityTypes } from '../Constants.js';
+import type Player from '../player.js';
 
 class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
     complete: boolean;

@@ -1,6 +1,6 @@
-const { matchCardByNameAndPack } = require('./cardutil.js');
-const { detectBinary } = require('../../build/server/util');
-const { GameModes } = require('../../build/server/GameModes.js');
+import { matchCardByNameAndPack } from './cardutil.js';
+import { detectBinary } from '../../build/server/util.js';
+import { GameModes } from '../../build/server/GameModes.js';
 
 class PlayerInteractionWrapper {
     constructor(game, player) {
@@ -848,4 +848,4 @@ class PlayerInteractionWrapper {
     }
 }
 
-module.exports = PlayerInteractionWrapper;
+export default PlayerInteractionWrapper;

@@ -1,6 +1,6 @@
-import type { AbilityContext } from '../AbilityContext';
-import DrawCard from '../drawcard';
-import { GameAction, type GameActionProperties } from './GameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import DrawCard from '../drawcard.js';
+import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface HandlerProperties extends GameActionProperties {
     handler: (context: AbilityContext) => void;

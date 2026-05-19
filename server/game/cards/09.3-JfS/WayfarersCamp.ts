@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, Locations, Phases, Players, PlayTypes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Locations, Phases, Players, PlayTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class WayfarersCamp extends DrawCard {
     static id = 'wayfarer-s-camp';

@@ -1,6 +1,6 @@
-import { TargetModes, Locations, Durations, Elements } from '../../Constants';
-import { StrongholdCard } from '../../StrongholdCard';
-import AbilityDsl from '../../abilitydsl';
+import { TargetModes, Locations, Durations, Elements } from '../../Constants.js';
+import { StrongholdCard } from '../../StrongholdCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class TwinSoulTemple extends StrongholdCard {
     static id = 'twin-soul-temple';

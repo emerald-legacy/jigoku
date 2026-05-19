@@ -1,8 +1,8 @@
-import { UiPrompt } from './UiPrompt';
-import { attach } from '../GameActions/GameActions';
-import { AbilityContext } from '../AbilityContext';
-import { Players } from '../Constants';
-import type Player from '../player';
+import { UiPrompt } from './UiPrompt.js';
+import { attach } from '../GameActions/GameActions.js';
+import { AbilityContext } from '../AbilityContext.js';
+import { Players } from '../Constants.js';
+import type Player from '../player.js';
 
 class AttachmentPrompt extends UiPrompt {
     player: Player;

@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import type { Conflict } from '../../../conflict';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import type { Conflict } from '../../../conflict.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class AMatsuProvesTheirWorth extends DrawCard {
     static id = 'a-matsu-proves-their-worth';

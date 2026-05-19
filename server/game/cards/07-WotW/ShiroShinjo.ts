@@ -1,6 +1,6 @@
-import { Locations } from '../../Constants';
-import { StrongholdCard } from '../../StrongholdCard';
-import AbilityDsl from '../../abilitydsl';
+import { Locations } from '../../Constants.js';
+import { StrongholdCard } from '../../StrongholdCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class ShiroShinjo extends StrongholdCard {
     static id = 'shiro-shinjo';

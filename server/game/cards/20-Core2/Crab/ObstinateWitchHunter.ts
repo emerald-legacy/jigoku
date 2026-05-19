@@ -1,7 +1,7 @@
-import { CardTypes, Durations, Locations, Phases } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import BaseCard from '../../../basecard';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Durations, Locations, Phases } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import BaseCard from '../../../basecard.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class ObstinateWitchHunter extends DrawCard {
     static id = 'obstinate-witch-hunter';

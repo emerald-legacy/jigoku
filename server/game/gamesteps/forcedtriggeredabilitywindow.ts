@@ -1,10 +1,10 @@
-import { BaseStep } from './BaseStep';
-import { TriggeredAbilityWindowTitle } from './TriggeredAbilityWindowTitle';
-import { Locations, AbilityTypes } from '../Constants';
-import type Game from '../game';
-import type { Event } from '../Events/Event';
-import type EventWindow from '../Events/EventWindow';
-import type Player from '../player';
+import { BaseStep } from './BaseStep.js';
+import { TriggeredAbilityWindowTitle } from './TriggeredAbilityWindowTitle.js';
+import { Locations, AbilityTypes } from '../Constants.js';
+import type Game from '../game.js';
+import type { Event } from '../Events/Event.js';
+import type EventWindow from '../Events/EventWindow.js';
+import type Player from '../player.js';
 
 class ForcedTriggeredAbilityWindow extends BaseStep {
     choices: any[];
@@ -221,4 +221,4 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
     }
 }
 
-export = ForcedTriggeredAbilityWindow;
+export default ForcedTriggeredAbilityWindow;

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import {CardTypes, Durations, Locations} from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import {CardTypes, Durations, Locations} from '../../Constants.js';
 
 class ChampionsOfYomi extends DrawCard {
     static id = 'champions-of-yomi';

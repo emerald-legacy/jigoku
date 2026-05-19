@@ -1,9 +1,9 @@
-import type { AbilityContext } from '../AbilityContext';
-import { EffectNames, EventNames } from '../Constants';
-import type { Duel } from '../Duel';
-import type Game from '../game';
-import { BaseStepWithPipeline } from './BaseStepWithPipeline';
-import { SimpleStep } from './SimpleStep';
+import type { AbilityContext } from '../AbilityContext.js';
+import { EffectNames, EventNames } from '../Constants.js';
+import type { Duel } from '../Duel.js';
+import type Game from '../game.js';
+import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
+import { SimpleStep } from './SimpleStep.js';
 
 /**
 D. Duel Timing

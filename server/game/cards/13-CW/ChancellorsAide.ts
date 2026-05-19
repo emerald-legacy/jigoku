@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Players, TargetModes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Players, TargetModes } from '../../Constants.js';
 
 class ChancellorsAide extends DrawCard {
     static id = 'chancellor-s-aide';

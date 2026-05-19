@@ -1,4 +1,4 @@
-const { CardAction } = require('../../../build/server/game/CardAction.js');
+import { CardAction } from '../../../build/server/game/CardAction.js';
 
 describe('CardAction', function () {
     beforeEach(function () {

@@ -1,6 +1,6 @@
-import { Players, PlayTypes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import { BattlefieldAttachment } from '../BattlefieldAttachment';
+import { Players, PlayTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 
 export default class UnderAmaterasusGaze extends BattlefieldAttachment {
     static id = 'under-amaterasu-s-gaze';

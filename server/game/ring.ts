@@ -1,8 +1,8 @@
-import EffectSource from './EffectSource';
-import { ConflictTypes, EffectNames, Elements } from './Constants';
-import type Game from './game';
-import type Player from './player';
-import type DrawCard from './drawcard';
+import EffectSource from './EffectSource.js';
+import { ConflictTypes, EffectNames, Elements } from './Constants.js';
+import type Game from './game.js';
+import type Player from './player.js';
+import type DrawCard from './drawcard.js';
 
 class Ring extends EffectSource {
     menu = [
@@ -181,4 +181,4 @@ class Ring extends EffectSource {
     }
 }
 
-export = Ring;
+export default Ring;

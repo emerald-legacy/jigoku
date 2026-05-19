@@ -1,4 +1,4 @@
-const { MatchingDiscardAction } = require('../../../build/server/game/GameActions/MatchingDiscardAction.js');
+import { MatchingDiscardAction } from '../../../build/server/game/GameActions/MatchingDiscardAction.js';
 
 describe('MatchingDiscardAction', function() {
     beforeEach(function() {

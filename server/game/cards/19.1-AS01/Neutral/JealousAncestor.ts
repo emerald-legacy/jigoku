@@ -1,8 +1,8 @@
-import { CardTypes, Elements, Players } from '../../../Constants';
-import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment';
-import PlayerEffect from '../../../Effects/PlayerEffect';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Elements, Players } from '../../../Constants.js';
+import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment.js';
+import PlayerEffect from '../../../Effects/PlayerEffect.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 const ELEMENT_KEY = 'jealous-ancestor-void';
 

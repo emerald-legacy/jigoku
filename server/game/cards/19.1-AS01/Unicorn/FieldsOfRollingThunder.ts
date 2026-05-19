@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Durations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Durations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class FieldsOfRollingThunder extends DrawCard {
     static id = 'fields-of-rolling-thunder';

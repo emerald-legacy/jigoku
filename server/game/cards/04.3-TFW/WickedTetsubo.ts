@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { TargetModes, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { TargetModes, CardTypes } from '../../Constants.js';
 
 class WickedTetsubo extends DrawCard {
     static id = 'wicked-tetsubo';

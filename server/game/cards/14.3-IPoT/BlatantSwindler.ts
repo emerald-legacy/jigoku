@@ -1,6 +1,6 @@
-import { Players, CardTypes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
+import { Players, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
 
 export default class BlatantSwindler extends DrawCard {
     static id = 'blatant-swindler';

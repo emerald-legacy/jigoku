@@ -1,8 +1,8 @@
 import AbilityDsl from './abilitydsl.js';
-import { GameObject } from './GameObject';
-import { Locations, Durations } from './Constants';
-import type Game from './game';
-import type Effect from './Effects/Effect';
+import { GameObject } from './GameObject.js';
+import { Locations, Durations } from './Constants.js';
+import type Game from './game.js';
+import type Effect from './Effects/Effect.js';
 
 type EffectFactory = (game: Game, source: any, properties: EffectProperties) => Effect;
 
@@ -111,4 +111,4 @@ class EffectSource extends GameObject {
     }
 }
 
-export = EffectSource;
+export default EffectSource;

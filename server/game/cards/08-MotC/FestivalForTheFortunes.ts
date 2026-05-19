@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes } from '../../Constants.js';
 
 class FestivalForTheFortunes extends DrawCard {
     static id = 'festival-for-the-fortunes';

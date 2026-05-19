@@ -1,7 +1,7 @@
-import { CardTypes, EventNames } from '../../../Constants';
-import { EventRegistrar } from '../../../EventRegistrar';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CardTypes, EventNames } from '../../../Constants.js';
+import { EventRegistrar } from '../../../EventRegistrar.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class ZealousExorcist extends DrawCard {
     static id = 'zealous-exorcist';

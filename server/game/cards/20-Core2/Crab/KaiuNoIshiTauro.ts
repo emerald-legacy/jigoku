@@ -1,6 +1,6 @@
-import { CardTypes, Players, Decks } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Players, Decks } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class KaiuNoIshiTauro extends DrawCard {
     static id = 'kaiu-no-ishi-tauro';

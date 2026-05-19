@@ -1,4 +1,4 @@
-const { cards } = require('../../../build/server/game/cards');
+import { cards } from '../../../build/server/game/cards/index.js';
 
 describe('All Cards:', function () {
     beforeEach(function () {

@@ -1,6 +1,6 @@
-import { CardTypes, Durations, PlayTypes, Players, TargetModes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Durations, PlayTypes, Players, TargetModes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class UtakuSumire extends DrawCard {
     static id = 'utaku-sumire';

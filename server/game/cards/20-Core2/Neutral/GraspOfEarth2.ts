@@ -1,7 +1,7 @@
-import { AbilityTypes, CardTypes, Locations, Players } from '../../../Constants';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { AbilityTypes, CardTypes, Locations, Players } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class GraspOfEarth2 extends DrawCard {
     static id = 'grasp-of-earth-2';

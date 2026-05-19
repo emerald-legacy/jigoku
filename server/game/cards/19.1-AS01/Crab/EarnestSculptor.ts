@@ -1,8 +1,8 @@
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
-import { CardTypes, Locations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import { PlayAttachmentAction } from '../../../PlayAttachmentAction';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
+import { CardTypes, Locations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
 
 export default class EarnestSculptor extends DrawCard {
     static id = 'earnest-sculptor';

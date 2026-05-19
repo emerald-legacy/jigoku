@@ -1,6 +1,6 @@
-import { Locations } from './Constants';
-import type BaseCard from './basecard';
-import type DrawCard from './drawcard';
+import { Locations } from './Constants.js';
+import type BaseCard from './basecard.js';
+import type DrawCard from './drawcard.js';
 
 export class PlayerZones {
     dynastyDeck: DrawCard[] = [];

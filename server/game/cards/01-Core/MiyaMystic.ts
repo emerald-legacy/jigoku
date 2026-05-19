@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Phases, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Phases, CardTypes } from '../../Constants.js';
 
 class MiyaMystic extends DrawCard {
     static id = 'miya-mystic';

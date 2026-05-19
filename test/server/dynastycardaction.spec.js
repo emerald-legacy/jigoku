@@ -1,4 +1,4 @@
-const DynastyCardAction = require('../../build/server/game/dynastycardaction.js');
+import DynastyCardAction from '../../build/server/game/dynastycardaction.js';
 
 describe('DynastyCardAction', function () {
     beforeEach(function() {

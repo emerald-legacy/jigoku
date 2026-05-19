@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { PlayTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { PlayTypes } from '../../Constants.js';
 
 class Gossip extends DrawCard {
     static id = 'gossip';

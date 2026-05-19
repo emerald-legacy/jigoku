@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Players, CardTypes, DuelTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Players, CardTypes, DuelTypes } from '../../Constants.js';
 
 class GameOfSadane extends DrawCard {
     static id = 'game-of-sadane';

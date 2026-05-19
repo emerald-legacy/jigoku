@@ -1,17 +1,17 @@
-import { shuffle } from './utils/shuffle';
-import { HonorTracker } from './HonorTracker';
-import { PlayerZones } from './PlayerZones';
+import { shuffle } from './utils/shuffle.js';
+import { HonorTracker } from './HonorTracker.js';
+import { PlayerZones } from './PlayerZones.js';
 
-import { GameObject } from './GameObject';
+import { GameObject } from './GameObject.js';
 import { Deck } from './Deck.js';
 import AttachmentPrompt from './gamesteps/attachmentprompt.js';
 import { clockFor } from './Clocks/ClockSelector.js';
-import { CostReducer } from './CostReducer';
-import * as GameActions from './GameActions/GameActions';
+import { CostReducer } from './CostReducer.js';
+import * as GameActions from './GameActions/GameActions.js';
 import { RingEffects } from './RingEffects.js';
-import { PlayableLocation } from './PlayableLocation';
+import { PlayableLocation } from './PlayableLocation.js';
 import { PlayerPromptState } from './PlayerPromptState.js';
-import { RoleCard } from './RoleCard';
+import { RoleCard } from './RoleCard.js';
 import { StrongholdCard } from './StrongholdCard.js';
 
 import {
@@ -25,14 +25,14 @@ import {
     Locations,
     Players,
     PlayTypes
-} from './Constants';
-import { GameModes } from '../GameModes';
-import type Game from './game';
-import type BaseCard from './basecard';
-import type DrawCard from './drawcard';
-import type Ring from './ring';
-import type { ClockInterface } from './Clocks/types';
-import type { AbilityContext } from './AbilityContext';
+} from './Constants.js';
+import { GameModes } from '../GameModes.js';
+import type Game from './game.js';
+import type BaseCard from './basecard.js';
+import type DrawCard from './drawcard.js';
+import type Ring from './ring.js';
+import type { ClockInterface } from './Clocks/types.js';
+import type { AbilityContext } from './AbilityContext.js';
 
 class Player extends GameObject {
     user: any;
@@ -1668,4 +1668,4 @@ class Player extends GameObject {
     }
 }
 
-export = Player;
+export default Player;

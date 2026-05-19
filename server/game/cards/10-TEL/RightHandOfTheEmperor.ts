@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Locations, PlayTypes, TargetModes, CardTypes, Players } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Locations, PlayTypes, TargetModes, CardTypes, Players } from '../../Constants.js';
 
 class RightHandOfTheEmperor extends DrawCard {
     static id = 'right-hand-of-the-emperor';

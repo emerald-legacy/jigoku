@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Players, CardTypes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Players, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class HigashiKazeCompany extends DrawCard {
     static id = 'higashi-kaze-company';

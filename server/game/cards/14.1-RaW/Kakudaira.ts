@@ -1,6 +1,6 @@
-import { Durations } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { Durations } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class Kakudaira extends ProvinceCard {
     static id = 'kakudaira';

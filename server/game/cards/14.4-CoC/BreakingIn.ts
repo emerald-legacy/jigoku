@@ -1,5 +1,5 @@
-import { CardTypes, Locations, Players } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
+import { CardTypes, Locations, Players } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
 
 export default class BreakingIn extends ProvinceCard {
     static id = 'breaking-in';

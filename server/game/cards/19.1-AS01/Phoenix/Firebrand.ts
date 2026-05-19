@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { Elements } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Elements } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 const ELEMENT_TO_RETURN = 'firebrand-fire-cost';
 const ELEMENT_TO_RESOLVE = 'firebrand-fire-ability';

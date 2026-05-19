@@ -1,5 +1,5 @@
-import { Event } from './Event';
-import { EventNames } from '../Constants';
+import { Event } from './Event.js';
+import { EventNames } from '../Constants.js';
 
 class InitiateCardAbilityEvent extends Event {
     cardTargets: any[];
@@ -25,4 +25,4 @@ class InitiateCardAbilityEvent extends Event {
     }
 }
 
-export = InitiateCardAbilityEvent;
+export default InitiateCardAbilityEvent;

@@ -1,6 +1,6 @@
-import { TargetModes } from '../../../Constants';
-import { StrongholdCard } from '../../../StrongholdCard';
-import AbilityDsl from '../../../abilitydsl';
+import { TargetModes } from '../../../Constants.js';
+import { StrongholdCard } from '../../../StrongholdCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
 
 export default class TempleOfTheFivefoldPath extends StrongholdCard {
     static id = 'temple-of-the-fivefold-path';

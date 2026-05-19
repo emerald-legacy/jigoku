@@ -1,8 +1,8 @@
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
-import { CardTypes, Locations, Players, PlayTypes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type Player from '../../../player';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
+import { CardTypes, Locations, Players, PlayTypes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type Player from '../../../player.js';
 
 export default class TogashiTsurumi extends DrawCard {
     static id = 'togashi-tsurumi';

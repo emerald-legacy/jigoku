@@ -1,7 +1,7 @@
-import { CardTypes, Durations, Players } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type BaseCard from '../../../basecard';
+import { CardTypes, Durations, Players } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type BaseCard from '../../../basecard.js';
 
 export default class SupportingCast extends DrawCard {
     static id = 'supporting-cast';

@@ -5,8 +5,8 @@ import AbilityTargetSelect from './AbilityTargets/AbilityTargetSelect.js';
 import AbilityTargetToken from './AbilityTargets/AbilityTargetToken.js';
 import AbilityTargetElementSymbol from './AbilityTargets/AbilityTargetElementSymbol.js';
 import { Stages, TargetModes, AbilityTypes } from './Constants.js';
-import type { AbilityContext } from './AbilityContext';
-import type { GameAction } from './GameActions/GameAction';
+import type { AbilityContext } from './AbilityContext.js';
+import type { GameAction } from './GameActions/GameAction.js';
 
 interface AbilityTarget {
     name: string;
@@ -293,4 +293,4 @@ class BaseAbility {
     }
 }
 
-export = BaseAbility;
+export default BaseAbility;

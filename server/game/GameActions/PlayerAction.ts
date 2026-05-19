@@ -1,6 +1,6 @@
-import type { AbilityContext } from '../AbilityContext';
-import type Player from '../player';
-import { GameAction, type GameActionProperties } from './GameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import type Player from '../player.js';
+import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export type PlayerActionProperties = GameActionProperties;
 

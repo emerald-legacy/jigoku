@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import * as GameActions from '../../GameActions/GameActions';
-import { Locations, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import * as GameActions from '../../GameActions/GameActions.js';
+import { Locations, CardTypes } from '../../Constants.js';
 
 class ConsumedByFiveFires extends DrawCard {
     static id = 'consumed-by-five-fires';

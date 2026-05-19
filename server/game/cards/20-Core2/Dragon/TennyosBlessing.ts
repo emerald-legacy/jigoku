@@ -1,6 +1,6 @@
-import { CardTypes, Players, Locations, TargetModes, Decks } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Players, Locations, TargetModes, Decks } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class TennyosBlessing extends DrawCard {
     static id = 'tennyo-s-blessing';

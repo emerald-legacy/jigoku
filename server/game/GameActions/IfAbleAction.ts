@@ -1,6 +1,6 @@
-import type { AbilityContext } from '../AbilityContext';
-import type { GameObject } from '../GameObject';
-import { GameAction, type GameActionProperties } from './GameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import type { GameObject } from '../GameObject.js';
+import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface IfAbleActionProperties extends GameActionProperties {
     ifAbleAction: GameAction;

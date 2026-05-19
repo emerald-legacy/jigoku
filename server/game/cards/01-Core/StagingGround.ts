@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Locations, Players, TargetModes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Locations, Players, TargetModes } from '../../Constants.js';
 
 class StagingGround extends DrawCard {
     static id = 'staging-ground';

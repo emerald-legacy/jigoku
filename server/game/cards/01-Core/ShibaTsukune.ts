@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Phases } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Phases } from '../../Constants.js';
 
 class ShibaTsukune extends DrawCard {
     static id = 'shiba-tsukune';

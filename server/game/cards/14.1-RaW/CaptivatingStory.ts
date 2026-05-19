@@ -1,7 +1,7 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes, Players } from '../../Constants';
-import CardAbility from '../../CardAbility';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes, Players } from '../../Constants.js';
+import CardAbility from '../../CardAbility.js';
 
 class CaptivatingStory extends DrawCard {
     static id = 'captivating-story';

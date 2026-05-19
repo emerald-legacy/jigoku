@@ -1,6 +1,6 @@
-import { CardTypes, DuelTypes, Players, TargetModes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
+import { CardTypes, DuelTypes, Players, TargetModes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
 
 export default class MirumotoHitomi extends DrawCard {
     static id = 'mirumoto-hitomi';

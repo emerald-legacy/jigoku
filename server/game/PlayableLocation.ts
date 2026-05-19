@@ -1,6 +1,6 @@
-import type { Locations, PlayTypes } from './Constants';
-import type DrawCard from './drawcard';
-import type Player from './player';
+import type { Locations, PlayTypes } from './Constants.js';
+import type DrawCard from './drawcard.js';
+import type Player from './player.js';
 
 export class PlayableLocation {
     public constructor(

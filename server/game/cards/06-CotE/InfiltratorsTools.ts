@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class InfiltratorsTools extends DrawCard {
     static id = 'infiltrator-s-tools';

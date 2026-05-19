@@ -1,7 +1,7 @@
-import { CardTypes, Locations, Players } from '../../../Constants';
-import { StrongholdCard } from '../../../StrongholdCard';
-import AbilityDsl from '../../../abilitydsl';
-import Soldier from '../../Soldier';
+import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { StrongholdCard } from '../../../StrongholdCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import Soldier from '../../Soldier.js';
 
 export default class Pride extends StrongholdCard {
     static id = 'pride';

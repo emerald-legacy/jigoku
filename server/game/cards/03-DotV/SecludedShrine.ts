@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Durations, TargetModes, Phases } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Durations, TargetModes, Phases } from '../../Constants.js';
 
 class SecludedShrine extends DrawCard {
     static id = 'secluded-shrine';

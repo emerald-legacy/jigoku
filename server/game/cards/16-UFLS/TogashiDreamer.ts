@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, TargetModes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, TargetModes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class TogashiDreamer extends DrawCard {
     static id = 'togashi-dreamer';

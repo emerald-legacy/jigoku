@@ -1,18 +1,18 @@
-import BaseCard from './basecard';
-import { SkillCalculator } from './SkillCalculator';
+import BaseCard from './basecard.js';
+import { SkillCalculator } from './SkillCalculator.js';
 import DuplicateUniqueAction from './duplicateuniqueaction.js';
-import CourtesyAbility from './KeywordAbilities/CourtesyAbility';
-import PrideAbility from './KeywordAbilities/PrideAbility';
-import SincerityAbility from './KeywordAbilities/SincerityAbility';
+import CourtesyAbility from './KeywordAbilities/CourtesyAbility.js';
+import PrideAbility from './KeywordAbilities/PrideAbility.js';
+import SincerityAbility from './KeywordAbilities/SincerityAbility.js';
 import { RallyAbility } from './KeywordAbilities/RallyAbility.js';
-import { Locations, EffectNames, CardTypes, PlayTypes, ConflictTypes, EventNames } from './Constants';
-import { GameModes } from '../GameModes';
-import { EventRegistrar } from './EventRegistrar';
-import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility';
-import type Player from './player';
-import type Ring from './ring';
-import type { AbilityContext } from './AbilityContext';
-import type { CardData } from './types/CardData';
+import { Locations, EffectNames, CardTypes, PlayTypes, ConflictTypes, EventNames } from './Constants.js';
+import { GameModes } from '../GameModes.js';
+import { EventRegistrar } from './EventRegistrar.js';
+import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility.js';
+import type Player from './player.js';
+import type Ring from './ring.js';
+import type { AbilityContext } from './AbilityContext.js';
+import type { CardData } from './types/CardData.js';
 
 interface MenuItem {
     command: string;
@@ -781,4 +781,4 @@ class DrawCard extends BaseCard {
     }
 }
 
-export = DrawCard;
+export default DrawCard;

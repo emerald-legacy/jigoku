@@ -1,6 +1,6 @@
-import { AbilityTypes, EventNames } from '../../Constants';
-import { EventRegistrar } from '../../EventRegistrar';
-import { ProvinceCard } from '../../ProvinceCard';
+import { AbilityTypes, EventNames } from '../../Constants.js';
+import { EventRegistrar } from '../../EventRegistrar.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
 
 export default class Pilgrimage extends ProvinceCard {
     static id = 'pilgrimage';

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import * as GameActions from '../../GameActions/GameActions';
-import { EventNames, AbilityTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import * as GameActions from '../../GameActions/GameActions.js';
+import { EventNames, AbilityTypes } from '../../Constants.js';
 
 class DisplayOfPower extends DrawCard {
     static id = 'display-of-power';

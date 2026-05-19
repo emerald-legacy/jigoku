@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Durations, Players, Phases } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Durations, Players, Phases } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class AllOutAssault extends DrawCard {
     static id = 'all-out-assault';

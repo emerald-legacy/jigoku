@@ -1,4 +1,4 @@
-import { ProvinceCard } from '../../ProvinceCard';
+import { ProvinceCard } from '../../ProvinceCard.js';
 
 export default class RallyToTheCause extends ProvinceCard {
     static id = 'rally-to-the-cause';

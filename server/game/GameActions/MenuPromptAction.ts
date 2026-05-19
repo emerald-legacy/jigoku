@@ -1,6 +1,6 @@
-import type { AbilityContext } from '../AbilityContext';
-import { Players } from '../Constants';
-import { GameAction, type GameActionProperties } from './GameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { Players } from '../Constants.js';
+import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface MenuPromptProperties extends GameActionProperties {
     activePromptTitle: string;

@@ -1,5 +1,5 @@
-import type Player from './player';
-import { ConflictTypes } from './Constants';
+import type Player from './player.js';
+import { ConflictTypes } from './Constants.js';
 
 export interface ConflictRecord {
     attackingPlayer: Player;
