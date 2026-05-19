@@ -484,6 +484,10 @@ class Game extends EventEmitter {
             return;
         }
 
+        if(!this.manualMode) {
+            return;
+        }
+
         MenuCommands.cardMenuClick(menuItem, this, player, card);
         this.checkGameState(true);
     }
@@ -615,12 +619,27 @@ class Game extends EventEmitter {
         }
     }
 
+    private static readonly CHANGEABLE_STATS = new Set([
+        'fate',
+        'honor',
+        'imperialFavor',
+        'conflictsRemaining',
+        'militaryRemaining',
+        'politicalRemaining'
+    ]);
+
     /**
      * Changes a Player variable and displays a message in chat
      */
     changeStat(playerName: string, stat: string, value: number): void {
         const player = this.getPlayerByName(playerName);
         if(!player) {
+            return;
+        }
+        if(typeof stat !== 'string' || !Game.CHANGEABLE_STATS.has(stat)) {
+            return;
+        }
+        if(!Number.isInteger(value) || Math.abs(value) > 1) {
             return;
         }
 
@@ -690,6 +709,9 @@ class Game extends EventEmitter {
     }
 
     selectDeck(playerName: string, deck: any): void {
+        if(this.playStarted) {
+            return;
+        }
         const player = this.getPlayerByName(playerName);
         if(player) {
             player.selectDeck(deck);
@@ -752,6 +774,18 @@ class Game extends EventEmitter {
         return this.pipeline.handleMenuCommand(player, arg, uuid, method);
     }
 
+    private static readonly TOGGLE_WINDOWS = new Set([
+        'dynasty', 'draw', 'preConflict', 'conflict', 'fate', 'regroup'
+    ]);
+    private static readonly TOGGLE_TIMER_SETTINGS = new Set([
+        'events', 'eventsInDeck'
+    ]);
+    private static readonly TOGGLE_OPTION_SETTINGS = new Set([
+        'markCardsUnselectable', 'cancelOwnAbilities', 'orderForcedAbilities',
+        'confirmOneClick', 'disableCardStats', 'showStatusInSidebar',
+        'sortHandByName', 'showRingEffects'
+    ]);
+
     /**
      * This function is called by the client when a player clicks an action window
      * toggle in the settings menu
@@ -761,8 +795,11 @@ class Game extends EventEmitter {
         if(!player) {
             return;
         }
+        if(!Game.TOGGLE_WINDOWS.has(windowName)) {
+            return;
+        }
 
-        player.promptedActionWindows[windowName] = toggle;
+        player.promptedActionWindows[windowName] = !!toggle;
     }
 
     /**
@@ -774,8 +811,11 @@ class Game extends EventEmitter {
         if(!player) {
             return;
         }
+        if(!Game.TOGGLE_TIMER_SETTINGS.has(settingName)) {
+            return;
+        }
 
-        player.timerSettings[settingName] = toggle;
+        player.timerSettings[settingName] = !!toggle;
     }
 
     /*
@@ -787,8 +827,11 @@ class Game extends EventEmitter {
         if(!player) {
             return;
         }
+        if(!Game.TOGGLE_OPTION_SETTINGS.has(settingName)) {
+            return;
+        }
 
-        player.optionSettings[settingName] = toggle;
+        player.optionSettings[settingName] = !!toggle;
     }
 
     toggleManualMode(playerName: string): void {

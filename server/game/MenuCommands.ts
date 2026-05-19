@@ -71,10 +71,16 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
             }
             return;
         case 'reveal':
+            if(card.controller !== player) {
+                return;
+            }
             game.addMessage('{0} reveals {1}', player, card);
             card.facedown = false;
             return;
         case 'hide':
+            if(card.controller !== player) {
+                return;
+            }
             game.addMessage('{0} flips {1} facedown', player, card);
             card.facedown = true;
             return;

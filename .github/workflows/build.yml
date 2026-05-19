@@ -10,7 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      DB_PATH: mongodb://localhost:27017/jigoku
       DOMAIN: localhost
       ENVIRONMENT: test
       GAME_NODE_NAME: node-1
@@ -21,9 +20,9 @@ jobs:
       SECRET: test-secret
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: '24'
           cache: 'npm'

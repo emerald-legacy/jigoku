@@ -1,7 +1,6 @@
 /*eslint no-console:0 */
 const { default: axios } = require('axios');
 const fs = require('fs/promises');
-const mkdirp = require('mkdirp');
 const path = require('path');
 
 const pathToJSON = path.join(__dirname, '../test/json/Card');
@@ -19,9 +18,9 @@ function apiRequest(path) {
 }
 
 apiRequest('cards')
-    .then((cards) => {
+    .then(async (cards) => {
         console.log(cards.length + ' cards fetched');
-        mkdirp.sync(pathToJSON);
+        await fs.mkdir(pathToJSON, { recursive: true });
         return Promise.all(
             cards.map((card) => fs.writeFile(path.join(pathToJSON, `${card.id}.json`), JSON.stringify([card])))
         );

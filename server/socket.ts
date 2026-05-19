@@ -64,13 +64,17 @@ class Socket extends EventEmitter {
     }
 
     onAuthenticate(token: string): void {
-        jwt.verify(token, secret as string, (err, user) => {
+        jwt.verify(token, secret as string, { algorithms: ['HS256'] }, (err, user) => {
             if(err || typeof user !== 'object' || user === null) {
                 logger.info(err);
                 return;
             }
 
             const payload = user as jwt.JwtPayload;
+            if(this.user && this.user.username !== payload.username) {
+                this.socket.disconnect();
+                return;
+            }
             (this.socket.request as unknown as RequestWithUser).user = payload;
             this.user = payload;
             this.emit('authenticate', this, payload);

@@ -1,3 +1,4 @@
+import { randomInt } from 'crypto';
 import * as GameActions from './GameActions/GameActions';
 import HonorBidPrompt from './gamesteps/honorbidprompt.js';
 import { Locations, CardTypes, Players } from './Constants';
@@ -45,7 +46,7 @@ class ChatCommands {
     }
 
     executeCommand(player: Player, command: string, args: string[]): boolean {
-        if(!player || !this.commands[command]) {
+        if(!player || !Object.prototype.hasOwnProperty.call(this.commands, command)) {
             return false;
         }
 
@@ -71,7 +72,7 @@ class ChatCommands {
     random(player: Player, args: string[]): void {
         const num = this.getNumberOrDefault(args[1], 4);
         if(num > 1) {
-            this.game.addMessage('{0} rolls a d{1}: {2}', player, num, Math.floor(Math.random() * num) + 1);
+            this.game.addMessage('{0} rolls a d{1}: {2}', player, num, randomInt(1, num + 1));
         }
     }
 

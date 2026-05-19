@@ -4,6 +4,7 @@
         "moduleResolution": "node",
         "target": "ES2022",
         "sourceMap": true,
+        "rootDir": ".",
         "outDir": "build",
         "allowJs": true,
         "checkJs": false,
@@ -15,6 +16,6 @@
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
     },
-    "include": ["server/**/*", "index.js"],
+    "include": ["server/**/*"],
     "exclude": ["test/**/*", "client/**/*"]
 }
