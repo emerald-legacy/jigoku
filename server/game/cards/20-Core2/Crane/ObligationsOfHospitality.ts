@@ -1,6 +1,6 @@
-import { CardTypes, Players, Locations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Players, Locations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class ObligationsOfHospitality extends DrawCard {
     static id = 'obligations-of-hospitality';

@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import { Locations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import { shuffle } from '../../../utils/shuffle';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Locations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import { shuffle } from '../../../utils/shuffle.js';
 
 export default class HonestAssessment extends DrawCard {
     static id = 'honest-assessment';

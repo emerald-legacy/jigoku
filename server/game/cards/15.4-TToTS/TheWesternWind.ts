@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Locations, CardTypes, Players, TargetModes, Decks } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Locations, CardTypes, Players, TargetModes, Decks } from '../../Constants.js';
 
 class TheWesternWind extends DrawCard {
     static id = 'the-western-wind';

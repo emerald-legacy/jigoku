@@ -1,8 +1,8 @@
-import { CardTypes, EventNames, Locations, PlayTypes } from '../../../Constants';
-import { EventRegistrar } from '../../../EventRegistrar';
-import AbilityDsl from '../../../abilitydsl';
-import BaseCard from '../../../basecard';
-import DrawCard from '../../../drawcard';
+import { CardTypes, EventNames, Locations, PlayTypes } from '../../../Constants.js';
+import { EventRegistrar } from '../../../EventRegistrar.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import BaseCard from '../../../basecard.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class ChainOfCommand extends DrawCard {
     static id = 'chain-of-command';

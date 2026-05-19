@@ -1,10 +1,10 @@
 import CardAbility from './CardAbility.js';
 import { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import { Stages, CardTypes, EffectNames, AbilityTypes } from './Constants.js';
-import type Game from './game';
-import type BaseCard from './basecard';
-import type Player from './player';
-import type { Event } from './Events/Event';
+import type Game from './game.js';
+import type BaseCard from './basecard.js';
+import type Player from './player.js';
+import type { Event } from './Events/Event.js';
 
 type EventListener = (event: Event, context: TriggeredAbilityContext) => boolean;
 type AggregateWhen = (events: Event[], context: TriggeredAbilityContext) => boolean;
@@ -164,4 +164,4 @@ class TriggeredAbility extends CardAbility {
     }
 }
 
-export = TriggeredAbility;
+export default TriggeredAbility;

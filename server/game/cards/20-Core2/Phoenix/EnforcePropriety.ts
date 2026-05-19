@@ -1,7 +1,7 @@
-import { CardTypes, Players } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type Player from '../../../player';
+import { CardTypes, Players } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type Player from '../../../player.js';
 
 function countReadyShugenja(player: Player): number {
     return player.cardsInPlay.reduce(

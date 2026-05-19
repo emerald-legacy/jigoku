@@ -1,8 +1,8 @@
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
-import { Locations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
+import { Locations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class DaidojiAhma extends DrawCard {
     static id = 'daidoji-ahma';

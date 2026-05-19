@@ -1,10 +1,10 @@
-import { BaseStepWithPipeline } from './BaseStepWithPipeline';
-import { SimpleStep } from './SimpleStep';
-import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent';
-import InitiateAbilityEventWindow from '../Events/InitiateAbilityEventWindow';
-import { Locations, Stages, CardTypes, EventNames } from '../Constants';
-import type Game from '../game';
-import type { Event } from '../Events/Event';
+import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
+import { SimpleStep } from './SimpleStep.js';
+import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent.js';
+import InitiateAbilityEventWindow from '../Events/InitiateAbilityEventWindow.js';
+import { Locations, Stages, CardTypes, EventNames } from '../Constants.js';
+import type Game from '../game.js';
+import type { Event } from '../Events/Event.js';
 
 class AbilityResolver extends BaseStepWithPipeline {
     context: any;
@@ -234,4 +234,4 @@ class AbilityResolver extends BaseStepWithPipeline {
     }
 }
 
-export = AbilityResolver;
+export default AbilityResolver;

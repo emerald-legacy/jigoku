@@ -1,6 +1,6 @@
-import { CardTypes, Durations, Locations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Durations, Locations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class ShibaYohana extends DrawCard {
     static id = 'shiba-yohana';

@@ -1,7 +1,7 @@
-import { CardTypes, Players, ConflictTypes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import { Conflict } from '../../../conflict';
+import { CardTypes, Players, ConflictTypes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import { Conflict } from '../../../conflict.js';
 
 export default class ToStormAFortress extends DrawCard {
     static id = 'to-storm-a-fortress';

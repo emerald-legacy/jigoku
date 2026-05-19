@@ -1,6 +1,6 @@
-import { Phases, TargetModes, Players, CardTypes, Durations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { Phases, TargetModes, Players, CardTypes, Durations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class IkomaMasterHunter extends DrawCard {
     static id = 'ikoma-master-hunter';

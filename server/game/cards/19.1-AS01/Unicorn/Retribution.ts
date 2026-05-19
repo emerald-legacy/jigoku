@@ -1,8 +1,8 @@
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
-import { CardTypes, ConflictTypes, Durations, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type Player from '../../../player';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
+import { CardTypes, ConflictTypes, Durations, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type Player from '../../../player.js';
 
 function brokenProvinceCountForPlayer(player: Player): number {
     return player.getProvinceCards().reduce((sum, province) => (province.isBroken ? sum + 1 : sum), 0);

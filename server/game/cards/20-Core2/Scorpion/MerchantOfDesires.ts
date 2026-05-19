@@ -1,5 +1,5 @@
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class MerchantOfDesires extends DrawCard {
     static id = 'merchant-of-desires';

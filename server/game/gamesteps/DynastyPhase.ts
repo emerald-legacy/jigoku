@@ -1,9 +1,9 @@
-import { EffectNames, EventNames, Phases } from '../Constants';
-import type DrawCard from '../drawcard';
-import type Game from '../game';
-import { Phase } from './Phase';
-import { SimpleStep } from './SimpleStep';
-import { DynastyActionWindow } from './dynasty/DynastyActionWindow';
+import { EffectNames, EventNames, Phases } from '../Constants.js';
+import type DrawCard from '../drawcard.js';
+import type Game from '../game.js';
+import { Phase } from './Phase.js';
+import { SimpleStep } from './SimpleStep.js';
+import { DynastyActionWindow } from './dynasty/DynastyActionWindow.js';
 
 /*
 I Dynasty Phase

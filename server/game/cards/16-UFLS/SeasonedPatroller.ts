@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Players, Locations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Players, Locations } from '../../Constants.js';
 
 class SeasonedPatroller extends DrawCard {
     static id = 'seasoned-patroller';

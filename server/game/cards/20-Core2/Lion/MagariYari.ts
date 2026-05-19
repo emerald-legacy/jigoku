@@ -1,7 +1,7 @@
-import { AbilityTypes, CardTypes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type { TriggeredAbilityProps } from '../../../Interfaces';
+import { AbilityTypes, CardTypes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type { TriggeredAbilityProps } from '../../../Interfaces.js';
 
 export default class MagariYari extends DrawCard {
     static id = 'magari-yari';

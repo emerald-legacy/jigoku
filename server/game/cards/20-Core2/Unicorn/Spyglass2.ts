@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import { AbilityTypes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type { TriggeredAbilityProps } from '../../../Interfaces';
+import AbilityDsl from '../../../abilitydsl.js';
+import { AbilityTypes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type { TriggeredAbilityProps } from '../../../Interfaces.js';
 
 export default class Spyglass2 extends DrawCard {
     static id = 'spyglass-2';

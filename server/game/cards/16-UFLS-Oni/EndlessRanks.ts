@@ -1,6 +1,6 @@
-import { Players, CardTypes, Locations } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import { BaseOni } from './_BaseOni';
+import { Players, CardTypes, Locations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { BaseOni } from './_BaseOni.js';
 
 export default class EndlessRanks extends BaseOni {
     static id = 'endless-ranks';

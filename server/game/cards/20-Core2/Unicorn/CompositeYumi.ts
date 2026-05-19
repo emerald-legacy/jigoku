@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class CompositeYumi extends DrawCard {
     static id = 'composite-yumi';

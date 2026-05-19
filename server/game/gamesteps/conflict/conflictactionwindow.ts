@@ -1,4 +1,4 @@
-import ActionWindow from '../actionwindow';
+import ActionWindow from '../actionwindow.js';
 
 const capitalize: Record<string, string> = {
     military: 'Military',

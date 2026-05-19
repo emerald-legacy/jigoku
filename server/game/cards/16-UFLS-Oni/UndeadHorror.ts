@@ -1,10 +1,10 @@
-import type { AbilityContext } from '../../AbilityContext';
-import AbilityDsl from '../../abilitydsl';
-import type BaseCard from '../../basecard';
-import { AbilityTypes, CardTypes, Durations, Players } from '../../Constants';
-import type DrawCard from '../../drawcard';
-import type { PersistentEffectProps } from '../../Interfaces';
-import { BaseOni } from './_BaseOni';
+import type { AbilityContext } from '../../AbilityContext.js';
+import AbilityDsl from '../../abilitydsl.js';
+import type BaseCard from '../../basecard.js';
+import { AbilityTypes, CardTypes, Durations, Players } from '../../Constants.js';
+import type DrawCard from '../../drawcard.js';
+import type { PersistentEffectProps } from '../../Interfaces.js';
+import { BaseOni } from './_BaseOni.js';
 
 export default class UndeadHorror extends BaseOni {
     static id = 'undead-horror';

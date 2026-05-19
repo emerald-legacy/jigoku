@@ -1,7 +1,7 @@
-import { Durations, Locations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import { shuffle } from '../../../utils/shuffle';
+import { Durations, Locations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import { shuffle } from '../../../utils/shuffle.js';
 
 export default class SneakAttack extends DrawCard {
     static id = 'sneak-attack';

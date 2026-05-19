@@ -1,11 +1,9 @@
 /* eslint camelcase: 0, no-invalid-this: 0 */
 
-const { GameModes } = require('../../build/server/GameModes.js');
-
-require('./objectformatters.js');
-
-const DeckBuilder = require('./deckbuilder.js');
-const GameFlowWrapper = require('./gameflowwrapper.js');
+import { GameModes } from '../../build/server/GameModes.js';
+import './objectformatters.js';
+import DeckBuilder from './deckbuilder.js';
+import GameFlowWrapper from './gameflowwrapper.js';
 
 const deckBuilder = new DeckBuilder();
 

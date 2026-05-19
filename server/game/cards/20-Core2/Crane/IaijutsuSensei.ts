@@ -1,6 +1,6 @@
-import { Durations, DuelTypes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { Durations, DuelTypes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class IaijutsuSensei extends DrawCard {
     static id = 'iaijutsu-sensei';

@@ -1,6 +1,6 @@
-import { Locations } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import { BaseOni } from './_BaseOni';
+import { Locations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { BaseOni } from './_BaseOni.js';
 
 export default class OnikageRider extends BaseOni {
     static id = 'onikage-rider';

@@ -1,4 +1,4 @@
-const { RandomDiscardAction } = require('../../../build/server/game/GameActions/RandomDiscardAction.js');
+import { RandomDiscardAction } from '../../../build/server/game/GameActions/RandomDiscardAction.js';
 
 describe('RandomDiscardAction', function() {
     beforeEach(function() {

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { AbilityTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { AbilityTypes } from '../../Constants.js';
 
 class SettingTheStandard extends DrawCard {
     static id = 'setting-the-standard';

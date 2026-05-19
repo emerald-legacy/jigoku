@@ -1,8 +1,8 @@
-import { CardTypes, Locations, Players } from '../../../Constants';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
-import type Ring from '../../../ring';
-import type { AbilityContext } from '../../../AbilityContext';
+import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type Ring from '../../../ring.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class OnsenQuarters extends ProvinceCard {
     static id = 'onsen-quarters';

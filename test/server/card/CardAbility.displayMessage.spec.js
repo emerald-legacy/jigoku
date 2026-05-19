@@ -1,6 +1,6 @@
-const CardAbility = require('../../../build/server/game/CardAbility');
-const { GameChat } = require('../../../build/server/game/GameChat');
-const AbilityDsl = require('../../../build/server/game/abilitydsl');
+import CardAbility from '../../../build/server/game/CardAbility.js';
+import { GameChat } from '../../../build/server/game/GameChat.js';
+import AbilityDsl from '../../../build/server/game/abilitydsl.js';
 
 describe('CardAbility displayMessage', function () {
     beforeEach(function () {

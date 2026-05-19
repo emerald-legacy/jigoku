@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { AbilityTypes, CardTypes, Players } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { AbilityTypes, CardTypes, Players } from '../../Constants.js';
 
 class JadeInlaidKatana extends DrawCard {
     static id = 'jade-inlaid-katana';

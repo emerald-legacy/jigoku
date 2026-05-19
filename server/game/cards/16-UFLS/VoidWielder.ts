@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Elements, CardTypes, Players, TargetModes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Elements, CardTypes, Players, TargetModes } from '../../Constants.js';
 
 const elementKey = 'void-wielder-void';
 

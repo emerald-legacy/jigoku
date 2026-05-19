@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Locations, Players, TargetModes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Locations, Players, TargetModes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class PromisingHohei extends DrawCard {
     static id = 'promising-hohei';

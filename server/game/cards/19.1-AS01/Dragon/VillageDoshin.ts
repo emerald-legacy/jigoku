@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Locations, Players } from '../../../Constants';
-import type BaseCard from '../../../basecard';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Locations, Players } from '../../../Constants.js';
+import type BaseCard from '../../../basecard.js';
+import DrawCard from '../../../drawcard.js';
 
 const DOSHIN_TAX = 2;
 

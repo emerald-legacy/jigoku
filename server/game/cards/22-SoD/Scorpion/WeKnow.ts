@@ -1,9 +1,9 @@
-import { CardTypes, TargetModes, Players, CharacterStatus } from '../../../Constants';
+import { CardTypes, TargetModes, Players, CharacterStatus } from '../../../Constants.js';
 
-import { StatusToken } from '../../../StatusToken';
-import AbilityDsl from '../../../abilitydsl';
-import BaseCard from '../../../basecard';
-import DrawCard from '../../../drawcard';
+import { StatusToken } from '../../../StatusToken.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import BaseCard from '../../../basecard.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class WeKnow extends DrawCard {
     static id = 'we-know';

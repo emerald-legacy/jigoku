@@ -1,6 +1,6 @@
-import { CardTypes, Locations, Players } from '../../../Constants';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
+import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
 
 export default class FarVisionPath extends ProvinceCard {
     static id = 'far-vision-path';

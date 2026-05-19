@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { Phases } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Phases } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class TheLionsShadow extends DrawCard {
     static id = 'the-lion-s-shadow';

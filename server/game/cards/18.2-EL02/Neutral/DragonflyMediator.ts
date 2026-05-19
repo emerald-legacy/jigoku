@@ -1,6 +1,6 @@
-import DrawCard from '../../../drawcard';
-import { Locations, Players, TargetModes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
+import DrawCard from '../../../drawcard.js';
+import { Locations, Players, TargetModes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
 
 class DragonflyMediator extends DrawCard {
     static id = 'dragonfly-mediator';

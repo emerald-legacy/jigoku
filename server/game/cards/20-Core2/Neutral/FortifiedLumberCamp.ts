@@ -1,7 +1,7 @@
-import { CardTypes, Locations } from '../../../Constants';
-import type { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Locations } from '../../../Constants.js';
+import type { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class FortifiedLumberCamp extends DrawCard {
     static id = 'fortified-lumber-camp';

@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import type { Conflict } from '../../../conflict';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import type { Conflict } from '../../../conflict.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class ChroniclesOfValor extends DrawCard {
     static id = 'chronicles-of-valor';

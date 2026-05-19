@@ -1,5 +1,5 @@
-const { BaseStep } = require('../../../build/server/game/gamesteps/BaseStep.js');
-const { GamePipeline } = require('../../../build/server/game/GamePipeline.js');
+import { BaseStep } from '../../../build/server/game/gamesteps/BaseStep.js';
+import { GamePipeline } from '../../../build/server/game/GamePipeline.js';
 
 describe('GamePipeline - handleMenuCommand', function() {
     var pipeline;

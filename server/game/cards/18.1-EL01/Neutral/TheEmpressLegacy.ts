@@ -1,5 +1,5 @@
-import DrawCard from '../../../drawcard';
-import AbilityDsl from '../../../abilitydsl';
+import DrawCard from '../../../drawcard.js';
+import AbilityDsl from '../../../abilitydsl.js';
 
 class TheEmpressLegacy extends DrawCard {
     static id = 'the-empress-legacy';

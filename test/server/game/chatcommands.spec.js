@@ -1,4 +1,4 @@
-const ChatCommands = require('../../../build/server/game/chatcommands.js');
+import ChatCommands from '../../../build/server/game/chatcommands.js';
 
 describe('ChatCommands', function() {
     beforeEach(function() {

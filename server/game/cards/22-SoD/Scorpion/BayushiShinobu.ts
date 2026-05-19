@@ -1,7 +1,7 @@
-import { AbilityContext } from '../../../AbilityContext';
-import AbilityDsl from '../../../abilitydsl';
-import { Players, CardTypes, Durations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import { AbilityContext } from '../../../AbilityContext.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Players, CardTypes, Durations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class BayushiShinobu extends DrawCard {
     static id = 'bayushi-shinobu';

@@ -1,4 +1,4 @@
-const DrawCard = require('../../../build/server/game/drawcard.js');
+import DrawCard from '../../../build/server/game/drawcard.js';
 
 describe('DrawCard', function () {
     beforeEach(function () {

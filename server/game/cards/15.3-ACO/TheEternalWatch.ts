@@ -1,6 +1,6 @@
-import { CardTypes, Players, TargetModes } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes, Players, TargetModes } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class TheEternalWatch extends ProvinceCard {
     static id = 'the-eternal-watch';

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { TargetModes, Locations, Decks } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { TargetModes, Locations, Decks } from '../../Constants.js';
 
 class SoshisMemory extends DrawCard {
     static id = 'soshi-s-memory';

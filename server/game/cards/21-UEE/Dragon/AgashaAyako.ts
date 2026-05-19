@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Decks, Durations, PlayTypes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromHand';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Decks, Durations, PlayTypes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromHand.js';
 
 export default class AgashaAyako extends DrawCard {
     static id = 'agasha-ayako';

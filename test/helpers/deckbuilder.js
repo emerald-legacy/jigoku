@@ -1,10 +1,12 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'node:url';
 
-const {matchCardByNameAndPack} = require('./cardutil.js');
+import {matchCardByNameAndPack} from './cardutil.js';
+import { GameModes } from '../../build/server/GameModes.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PathToSubModulePacks = path.join(__dirname, '../json/Card');
-const { GameModes } = require('../../build/server/GameModes');
 
 const defaultFaction = 'phoenix';
 const defaultRole = 'support-of-the-scorpion';
@@ -34,7 +36,7 @@ class DeckBuilder {
 
         var jsonCards = fs.readdirSync(directory).filter(file => file.endsWith('.json'));
         jsonCards.forEach(file => {
-            var cardsInPack = require(path.join(PathToSubModulePacks, file));
+            var cardsInPack = JSON.parse(fs.readFileSync(path.join(PathToSubModulePacks, file), 'utf8'));
             cardsInPack.forEach(card => {
                 cards[card.id] = card;
             });
@@ -225,4 +227,4 @@ class DeckBuilder {
     };
 }
 
-module.exports = DeckBuilder;
+export default DeckBuilder;

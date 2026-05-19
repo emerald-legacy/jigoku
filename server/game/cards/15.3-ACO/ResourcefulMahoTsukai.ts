@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class ResourcefulMahoTsukai extends DrawCard {
     static id = 'resourceful-maho-tsukai';

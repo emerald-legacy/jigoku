@@ -1,4 +1,4 @@
-const { EffectEngine } = require('../../../build/server/game/EffectEngine.js');
+import { EffectEngine } from '../../../build/server/game/EffectEngine.js';
 
 describe('EffectEngine', function () {
     beforeEach(function () {

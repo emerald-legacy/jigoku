@@ -1,4 +1,4 @@
-const { default: InitateConflictPrompt } = require('../../../build/server/game/gamesteps/conflict/initiateconflictprompt.js');
+import InitateConflictPrompt from '../../../build/server/game/gamesteps/conflict/initiateconflictprompt.js';
 
 describe('InitateConflictPrompt: ', function() {
     beforeEach(function() {

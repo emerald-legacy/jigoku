@@ -1,5 +1,5 @@
-import type Player from '../player';
-import { UiPrompt } from './UiPrompt';
+import type Player from '../player.js';
+import { UiPrompt } from './UiPrompt.js';
 
 export class AllPlayerPrompt extends UiPrompt {
     activeCondition(player: Player) {

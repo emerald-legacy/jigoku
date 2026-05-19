@@ -1,7 +1,7 @@
-import { CardTypes } from '../../../Constants';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
+import { CardTypes } from '../../../Constants.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
 
 export default class AvalancheOfStone extends ProvinceCard {
     static id = 'avalanche-of-stone';

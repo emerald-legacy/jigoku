@@ -1,7 +1,7 @@
-import { CardTypes, Players, TargetModes } from '../../../Constants';
-import { RingEffects } from '../../../RingEffects';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import { RingEffects } from '../../../RingEffects.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class TogashiNaname extends DrawCard {
     static id = 'togashi-naname';

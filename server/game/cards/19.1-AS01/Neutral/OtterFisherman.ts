@@ -1,6 +1,6 @@
-import { TargetModes, Players, Elements } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { TargetModes, Players, Elements } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 const ELEMENT_KEY = 'otter-fisherman-water';
 

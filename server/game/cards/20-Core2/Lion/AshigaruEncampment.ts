@@ -1,8 +1,8 @@
-import { CardTypes, Locations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import { AshigaruRecruit } from '../../AshigaruRecruit';
-import type { AbilityContext } from '../../../AbilityContext';
+import { CardTypes, Locations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import { AshigaruRecruit } from '../../AshigaruRecruit.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 
 function putAshigaruTokenIntoPlay(context: AbilityContext) {
     const card = context.player.dynastyDeck[0];

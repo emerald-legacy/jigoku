@@ -1,11 +1,11 @@
 import { randomInt } from 'crypto';
-import * as GameActions from './GameActions/GameActions';
+import * as GameActions from './GameActions/GameActions.js';
 import HonorBidPrompt from './gamesteps/honorbidprompt.js';
-import { Locations, CardTypes, Players } from './Constants';
-import type Game from './game';
-import type Player from './player';
-import type BaseCard from './basecard';
-import type Ring from './ring';
+import { Locations, CardTypes, Players } from './Constants.js';
+import type Game from './game.js';
+import type Player from './player.js';
+import type BaseCard from './basecard.js';
+import type Ring from './ring.js';
 
 type CommandHandler = (player: Player, args: string[]) => boolean | void;
 
@@ -484,4 +484,4 @@ class ChatCommands {
     }
 }
 
-export = ChatCommands;
+export default ChatCommands;

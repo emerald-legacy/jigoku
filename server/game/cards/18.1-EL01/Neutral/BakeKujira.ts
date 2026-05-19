@@ -1,7 +1,7 @@
-import { AbilityContext } from '../../../AbilityContext';
-import { CardTypes, Players } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { AbilityContext } from '../../../AbilityContext.js';
+import { CardTypes, Players } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class BakeKujira extends DrawCard {
     static id = 'bake-kujira';

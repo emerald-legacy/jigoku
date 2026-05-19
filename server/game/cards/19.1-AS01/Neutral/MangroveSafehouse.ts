@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type { GameAction } from '../../../GameActions/GameAction';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class MangroveSafehouse extends DrawCard {
     static id = 'mangrove-safehouse';

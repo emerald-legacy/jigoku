@@ -1,5 +1,5 @@
-const Game = require('../../../build/server/game/game.js');
-const { Spectator } = require('../../../build/server/game/Spectator.js');
+import Game from '../../../build/server/game/game.js';
+import { Spectator } from '../../../build/server/game/Spectator.js';
 
 describe('Game - Chat', function() {
     beforeEach(function() {

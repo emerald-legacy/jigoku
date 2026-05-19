@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Players, CardTypes, Durations } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Players, CardTypes, Durations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class SeizeTheMind extends DrawCard {
     static id = 'seize-the-mind';

@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import AbilityDsl from '../../../abilitydsl';
-import { ConflictTypes, Players } from '../../../Constants';
-import type Player from '../../../player';
-import { ProvinceCard } from '../../../ProvinceCard';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { ConflictTypes, Players } from '../../../Constants.js';
+import type Player from '../../../player.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
 
 type ConflictRecord = {
     attackingPlayer: Player;

@@ -1,9 +1,9 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Durations, EffectNames, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type { AttachmentMilitarySkillModifierValue } from '../../../Effects/Library/attachmentMilitarySkillModifier';
-import type { AttachmentPoliticalSkillModifierValue } from '../../../Effects/Library/attachmentPoliticalSkillModifier';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Durations, EffectNames, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type { AttachmentMilitarySkillModifierValue } from '../../../Effects/Library/attachmentMilitarySkillModifier.js';
+import type { AttachmentPoliticalSkillModifierValue } from '../../../Effects/Library/attachmentPoliticalSkillModifier.js';
 
 function sumModifiers(
     modifiers: Array<AttachmentMilitarySkillModifierValue> | Array<AttachmentPoliticalSkillModifierValue>,

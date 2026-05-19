@@ -1,10 +1,10 @@
-import type { AbilityContext } from '../AbilityContext';
-import { Locations, Players } from '../Constants';
-import type { Cost, Result } from '../Costs';
-import type { GameAction } from '../GameActions/GameAction';
-import type { SelectCardProperties } from '../GameActions/SelectCardAction';
-import { randomItem } from '../utils/helpers';
-import { GameActionCost } from './GameActionCost';
+import type { AbilityContext } from '../AbilityContext.js';
+import { Locations, Players } from '../Constants.js';
+import type { Cost, Result } from '../Costs.js';
+import type { GameAction } from '../GameActions/GameAction.js';
+import type { SelectCardProperties } from '../GameActions/SelectCardAction.js';
+import { randomItem } from '../utils/helpers.js';
+import { GameActionCost } from './GameActionCost.js';
 
 export class MetaActionCost extends GameActionCost implements Cost {
     constructor(

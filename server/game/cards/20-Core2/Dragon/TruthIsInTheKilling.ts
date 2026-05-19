@@ -1,7 +1,7 @@
-import { DuelTypes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type { Duel } from '../../../Duel';
+import { DuelTypes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type { Duel } from '../../../Duel.js';
 
 function applyFullEffect(duel: Duel) {
     return duel.winner?.some((winner) => winner.hasTrait('duelist')) ?? false;

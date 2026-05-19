@@ -1,5 +1,5 @@
-import { AllPlayerPrompt } from '../AllPlayerPrompt';
-import type Player from '../../player';
+import { AllPlayerPrompt } from '../AllPlayerPrompt.js';
+import type Player from '../../player.js';
 
 class MulliganDynastyPrompt extends AllPlayerPrompt {
     selectedCards: Record<string, any[]>;

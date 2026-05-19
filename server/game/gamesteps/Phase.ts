@@ -1,8 +1,8 @@
-import { EventNames, Phases } from '../Constants';
-import type Game from '../game';
-import { BaseStepWithPipeline } from './BaseStepWithPipeline';
-import { SimpleStep } from './SimpleStep';
-import type { Step } from './Step';
+import { EventNames, Phases } from '../Constants.js';
+import type Game from '../game.js';
+import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
+import { SimpleStep } from './SimpleStep.js';
+import type { Step } from './Step.js';
 
 export class Phase extends BaseStepWithPipeline {
     public steps: Step[] = [];

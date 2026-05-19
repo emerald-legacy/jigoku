@@ -1,6 +1,6 @@
-import { CardTypes, Locations } from '../Constants';
-import DrawCard from '../drawcard';
-import Player from '../player';
+import { CardTypes, Locations } from '../Constants.js';
+import DrawCard from '../drawcard.js';
+import Player from '../player.js';
 
 export default class Soldier<D extends DrawCard> extends DrawCard {
     static createDummy(owner: Player) {

@@ -1,8 +1,8 @@
-import { AbilityContext } from '../../../AbilityContext';
-import { Locations } from '../../../Constants';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
-import type DrawCard from '../../../drawcard';
+import { AbilityContext } from '../../../AbilityContext.js';
+import { Locations } from '../../../Constants.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type DrawCard from '../../../drawcard.js';
 
 class Process {
     private topCards: Set<DrawCard>;

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class TheSkinOfFuLeng extends DrawCard {
     static id = 'the-skin-of-fu-leng';

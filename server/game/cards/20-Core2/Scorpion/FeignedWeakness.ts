@@ -1,8 +1,8 @@
-import { CardTypes, Locations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type { Conflict } from '../../../conflict';
-import type Player from '../../../player';
+import { CardTypes, Locations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type { Conflict } from '../../../conflict.js';
+import type Player from '../../../player.js';
 
 export default class FeignedWeakness extends DrawCard {
     static id = 'feigned-weakness';

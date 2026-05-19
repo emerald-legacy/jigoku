@@ -1,7 +1,7 @@
-import { Durations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type { Conflict } from '../../../conflict';
+import { Durations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type { Conflict } from '../../../conflict.js';
 
 export default class KitsukiSano extends DrawCard {
     static id = 'kitsuki-sano';

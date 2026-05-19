@@ -1,8 +1,8 @@
-import { AbilityContext } from '../../../AbilityContext';
-import AbilityDsl from '../../../abilitydsl';
-import BaseCard from '../../../basecard';
-import { CardTypes, Phases, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import { AbilityContext } from '../../../AbilityContext.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import BaseCard from '../../../basecard.js';
+import { CardTypes, Phases, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class ParanoidHososhi extends DrawCard {
     static id = 'paranoid-hososhi';

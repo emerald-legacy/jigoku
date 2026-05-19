@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class TravelingTinkerer extends DrawCard {
     static id = 'traveling-tinkerer';

@@ -1,6 +1,6 @@
-import { CardTypes, Decks, Locations } from '../../../Constants';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
+import { CardTypes, Decks, Locations } from '../../../Constants.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
 
 export default class VisitTheKhubiSquare extends ProvinceCard {
     static id = 'visit-the-khubi-square';

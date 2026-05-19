@@ -1,6 +1,6 @@
-import { AllPlayerPrompt } from '../AllPlayerPrompt';
-import { Locations } from '../../Constants';
-import type Player from '../../player';
+import { AllPlayerPrompt } from '../AllPlayerPrompt.js';
+import { Locations } from '../../Constants.js';
+import type Player from '../../player.js';
 
 class SetupProvincesPrompt extends AllPlayerPrompt {
     strongholdProvince: Record<string, any>;

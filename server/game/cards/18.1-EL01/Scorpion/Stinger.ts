@@ -1,6 +1,6 @@
-import DrawCard from '../../../drawcard';
-import AbilityDsl from '../../../abilitydsl';
-import { Locations, Players, CardTypes, Phases } from '../../../Constants';
+import DrawCard from '../../../drawcard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Locations, Players, CardTypes, Phases } from '../../../Constants.js';
 
 class Stinger extends DrawCard {
     static id = 'stinger';

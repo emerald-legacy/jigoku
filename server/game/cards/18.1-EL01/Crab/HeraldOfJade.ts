@@ -1,6 +1,6 @@
-import DrawCard from '../../../drawcard';
-import { TargetModes, Locations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
+import DrawCard from '../../../drawcard.js';
+import { TargetModes, Locations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
 
 class HeraldOfJade extends DrawCard {
     static id = 'herald-of-jade';

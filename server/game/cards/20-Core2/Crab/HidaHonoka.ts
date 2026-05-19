@@ -1,6 +1,6 @@
-import { CardTypes, Durations, Locations, Players } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Durations, Locations, Players } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class HidaHonoka extends DrawCard {
     static id = 'hida-honoka';

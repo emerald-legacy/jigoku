@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Durations, Players, CardTypes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Durations, Players, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class CenteredBreath extends DrawCard {
     static id = 'centered-breath';

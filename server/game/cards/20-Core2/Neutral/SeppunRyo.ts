@@ -1,6 +1,6 @@
-import { DuelTypes, Durations, FavorTypes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { DuelTypes, Durations, FavorTypes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class SeppunRyo extends DrawCard {
     static id = 'seppun-ryo';

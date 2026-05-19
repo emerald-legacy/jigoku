@@ -1,7 +1,7 @@
 
-const Game = require('../../../build/server/game/game.js');
-const Player = require('../../../build/server/game/player.js');
-const { Spectator } = require('../../../build/server/game/Spectator.js');
+import Game from '../../../build/server/game/game.js';
+import Player from '../../../build/server/game/player.js';
+import { Spectator } from '../../../build/server/game/Spectator.js';
 
 describe('the Game', () => {
     var game = {};

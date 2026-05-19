@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Durations, EventNames } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import { EventRegistrar } from '../../../EventRegistrar';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Durations, EventNames } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import { EventRegistrar } from '../../../EventRegistrar.js';
 
 export default class TheMaidensIcyGrasp extends DrawCard {
     static id = 'the-maiden-s-icy-grasp';

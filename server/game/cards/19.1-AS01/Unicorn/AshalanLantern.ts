@@ -1,9 +1,9 @@
-import { CardTypes, Decks, Durations, Locations, PlayTypes } from '../../../Constants';
-import { PlayCharacterAsIfFromHandIntoConflict } from '../../../PlayCharacterAsIfFromHand';
-import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../../PlayDisguisedCharacterAsIfFromHand';
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Decks, Durations, Locations, PlayTypes } from '../../../Constants.js';
+import { PlayCharacterAsIfFromHandIntoConflict } from '../../../PlayCharacterAsIfFromHand.js';
+import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class AshalanLantern extends DrawCard {
     static id = 'ashalan-lantern';

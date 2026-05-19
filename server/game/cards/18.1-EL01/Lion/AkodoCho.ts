@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Players, TargetModes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 const CHARACTER = 'CHARACTER';
 const SELECT = 'SELECT';

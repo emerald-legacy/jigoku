@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import { Durations, TargetModes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type Player from '../../../player';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Durations, TargetModes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type Player from '../../../player.js';
 
 type Element = 'air' | 'earth' | 'fire' | 'void' | 'water';
 

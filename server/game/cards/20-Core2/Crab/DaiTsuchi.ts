@@ -1,7 +1,7 @@
-import { AbilityContext } from '../../../AbilityContext';
-import { AbilityTypes, CardTypes, Durations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { AbilityContext } from '../../../AbilityContext.js';
+import { AbilityTypes, CardTypes, Durations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class DaiTsuchi extends DrawCard {
     static id = 'dai-tsuchi';

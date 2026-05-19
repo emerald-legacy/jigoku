@@ -1,6 +1,6 @@
-import { TargetModes, Players } from '../../../Constants';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
+import { TargetModes, Players } from '../../../Constants.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
 
 export default class JadeColoredRocks extends ProvinceCard {
     static id = 'jade-colored-rocks';

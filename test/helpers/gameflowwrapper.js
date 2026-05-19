@@ -1,7 +1,7 @@
 
-const Game = require('../../build/server/game/game.js');
-const PlayerInteractionWrapper = require('./playerinteractionwrapper.js');
-const Settings = require('../../build/server/settings.js');
+import Game from '../../build/server/game/game.js';
+import PlayerInteractionWrapper from './playerinteractionwrapper.js';
+import * as Settings from '../../build/server/settings.js';
 
 class GameFlowWrapper {
     constructor() {
@@ -313,4 +313,4 @@ class GameFlowWrapper {
     }
 }
 
-module.exports = GameFlowWrapper;
+export default GameFlowWrapper;

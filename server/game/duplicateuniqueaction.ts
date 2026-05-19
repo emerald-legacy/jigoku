@@ -1,7 +1,7 @@
-import BaseAction from './BaseAction';
-import { Phases, PlayTypes } from './Constants';
-import type { AbilityContext } from './AbilityContext';
-import type BaseCard from './basecard';
+import BaseAction from './BaseAction.js';
+import { Phases, PlayTypes } from './Constants.js';
+import type { AbilityContext } from './AbilityContext.js';
+import type BaseCard from './basecard.js';
 
 class DuplicateUniqueAction extends BaseAction {
     title = 'Add fate to a duplicate';
@@ -43,4 +43,4 @@ class DuplicateUniqueAction extends BaseAction {
     }
 }
 
-export = DuplicateUniqueAction;
+export default DuplicateUniqueAction;

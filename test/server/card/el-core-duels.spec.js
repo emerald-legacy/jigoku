@@ -1,4 +1,4 @@
-const AbilityDsl = require('../../../build/server/game/abilitydsl');
+import AbilityDsl from '../../../build/server/game/abilitydsl.js';
 
 describe('Emerald Core Duels', function() {
     integration(function() {

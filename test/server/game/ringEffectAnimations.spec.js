@@ -1,9 +1,9 @@
-const { WaterRingEffect } = require('../../../build/server/game/Rings/WaterRingEffect.js');
-const { FireRingEffect } = require('../../../build/server/game/Rings/FireRingEffect.js');
-const { VoidRingEffect } = require('../../../build/server/game/Rings/VoidRingEffect.js');
-const { EarthRingEffect } = require('../../../build/server/game/Rings/EarthRingEffect.js');
-const { AirRingEffect } = require('../../../build/server/game/Rings/AirRingEffect.js');
-const { GameModes } = require('../../../build/server/GameModes.js');
+import { WaterRingEffect } from '../../../build/server/game/Rings/WaterRingEffect.js';
+import { FireRingEffect } from '../../../build/server/game/Rings/FireRingEffect.js';
+import { VoidRingEffect } from '../../../build/server/game/Rings/VoidRingEffect.js';
+import { EarthRingEffect } from '../../../build/server/game/Rings/EarthRingEffect.js';
+import { AirRingEffect } from '../../../build/server/game/Rings/AirRingEffect.js';
+import { GameModes } from '../../../build/server/GameModes.js';
 
 function makeContext(overrides = {}) {
     return Object.assign({

@@ -1,4 +1,4 @@
-const { discardFromPlay } = require('../../../../../build/server/game/GameActions/GameActions.js');
+import { discardFromPlay } from '../../../../../build/server/game/GameActions/GameActions.js';
 
 describe('Bake Kujira', function () {
     integration(function () {

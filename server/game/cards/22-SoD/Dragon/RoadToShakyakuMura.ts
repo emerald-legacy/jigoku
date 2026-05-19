@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import { CardTypes, Locations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type { Cost } from '../../../Costs';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { CardTypes, Locations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type { Cost } from '../../../Costs.js';
 
 function captureLocationCost(): Cost {
     return {

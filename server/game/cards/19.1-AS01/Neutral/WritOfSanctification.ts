@@ -1,8 +1,8 @@
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
-import { AbilityTypes, CardTypes, Players, TargetModes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type { ActionProps } from '../../../Interfaces';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
+import { AbilityTypes, CardTypes, Players, TargetModes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type { ActionProps } from '../../../Interfaces.js';
 
 export default class WritOfSanctification extends DrawCard {
     static id = 'writ-of-sanctification';

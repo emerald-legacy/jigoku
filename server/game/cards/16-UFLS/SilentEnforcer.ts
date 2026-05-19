@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Players, TargetModes, CardTypes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Players, TargetModes, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class SilentEnforcer extends DrawCard {
     static id = 'silent-enforcer';

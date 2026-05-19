@@ -1,6 +1,6 @@
-import { StrongholdCard } from '../../../StrongholdCard';
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
+import { StrongholdCard } from '../../../StrongholdCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
 
 export default class MomijiHalls extends StrongholdCard {
     static id = 'momiji-halls';

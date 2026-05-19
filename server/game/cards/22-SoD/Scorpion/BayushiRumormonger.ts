@@ -1,6 +1,6 @@
-import { Locations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { Locations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class BayushiRumormonger extends DrawCard {
     static id = 'bayushi-rumormonger';

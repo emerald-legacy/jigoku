@@ -1,5 +1,5 @@
-const BaseAbility = require('../../../build/server/game/baseability.js');
-const { Stages } = require('../../../build/server/game/Constants.js');
+import BaseAbility from '../../../build/server/game/baseability.js';
+import { Stages } from '../../../build/server/game/Constants.js';
 
 describe('BaseAbility', function () {
     beforeEach(function () {

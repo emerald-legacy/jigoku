@@ -1,5 +1,5 @@
 import { Stages } from './Constants.js';
-import type { AbilityContext } from './AbilityContext';
+import type { AbilityContext } from './AbilityContext.js';
 
 class ImmunityRestriction {
     condition: (context: AbilityContext) => boolean;
@@ -17,4 +17,4 @@ class ImmunityRestriction {
     }
 }
 
-export = ImmunityRestriction;
+export default ImmunityRestriction;

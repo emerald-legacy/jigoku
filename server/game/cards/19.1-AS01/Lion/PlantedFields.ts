@@ -1,7 +1,7 @@
-import { EventNames, Phases } from '../../../Constants';
-import { EventRegistrar } from '../../../EventRegistrar';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { EventNames, Phases } from '../../../Constants.js';
+import { EventRegistrar } from '../../../EventRegistrar.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class PlantedFields extends DrawCard {
     static id = 'planted-fields';

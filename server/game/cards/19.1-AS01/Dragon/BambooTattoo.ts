@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Locations, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Locations, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class BambooTattoo extends DrawCard {
     static id = 'bamboo-tattoo';

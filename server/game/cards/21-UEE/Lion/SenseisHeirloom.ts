@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { Locations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Locations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class SenseisHeirloom extends DrawCard {
     static id = 'sensei-s-heirloom';

@@ -1,6 +1,6 @@
-import { Players, Locations, CardTypes } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { Players, Locations, CardTypes } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class ByOnnotangusLight extends ProvinceCard {
     static id = 'by-onnotangu-s-light';

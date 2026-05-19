@@ -1,5 +1,5 @@
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
 
 export default class ForegateVillage extends ProvinceCard {
     static id = 'foregate-village';

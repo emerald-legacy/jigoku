@@ -1,7 +1,7 @@
-import { CardTypes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type { AbilityContext } from '../../../AbilityContext';
+import { CardTypes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 
 function bonusBase(context: AbilityContext) {
     const elementalTraits = new Set();

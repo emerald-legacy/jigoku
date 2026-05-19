@@ -1,6 +1,6 @@
-import { CardTypes, Players } from '../../../Constants';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
+import { CardTypes, Players } from '../../../Constants.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
 
 const DONOR = 'donor';
 const RECIPIENT = 'recipient';

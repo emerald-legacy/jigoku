@@ -1,8 +1,8 @@
-import { AbilityTypes, EventNames, CardTypes, Locations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import BaseCard from '../../../basecard';
-import { EventRegistrar } from '../../../EventRegistrar';
+import { AbilityTypes, EventNames, CardTypes, Locations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import BaseCard from '../../../basecard.js';
+import { EventRegistrar } from '../../../EventRegistrar.js';
 
 
 export default class CastleOfAir extends DrawCard {

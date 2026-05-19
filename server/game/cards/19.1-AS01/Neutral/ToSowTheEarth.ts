@@ -1,9 +1,9 @@
-import { CardTypes, Players, Locations, TargetModes } from '../../../Constants';
-import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand';
-import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand';
-import AbilityDsl from '../../../abilitydsl';
-import BaseCard from '../../../basecard';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Players, Locations, TargetModes } from '../../../Constants.js';
+import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
+import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import BaseCard from '../../../basecard.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class ToSowTheEarth extends DrawCard {
     static id = 'to-sow-the-earth';

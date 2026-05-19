@@ -1,9 +1,9 @@
-import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic';
-import { AllPlayerPrompt } from './AllPlayerPrompt';
-import { TransferHonorAction } from '../GameActions/TransferHonorAction';
-import { EventNames, EffectNames } from '../Constants';
-import { GameModes } from '../../GameModes';
-import type Player from '../player';
+import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
+import { AllPlayerPrompt } from './AllPlayerPrompt.js';
+import { TransferHonorAction } from '../GameActions/TransferHonorAction.js';
+import { EventNames, EffectNames } from '../Constants.js';
+import { GameModes } from '../../GameModes.js';
+import type Player from '../player.js';
 
 class HonorBidPrompt extends AllPlayerPrompt {
     menuTitle: string;

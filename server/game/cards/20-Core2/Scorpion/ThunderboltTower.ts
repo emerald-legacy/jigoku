@@ -1,6 +1,6 @@
-import { CardTypes, Durations } from '../../../Constants';
-import { StrongholdCard } from '../../../StrongholdCard';
-import AbilityDsl from '../../../abilitydsl';
+import { CardTypes, Durations } from '../../../Constants.js';
+import { StrongholdCard } from '../../../StrongholdCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
 
 export default class ThunderboltTower extends StrongholdCard {
     static id = 'thunderbolt-tower';

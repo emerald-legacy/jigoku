@@ -1,7 +1,7 @@
-import { UiPrompt } from './UiPrompt';
-import { EventNames, Locations, Players, EffectNames } from '../Constants';
-import type Game from '../game';
-import type Player from '../player';
+import { UiPrompt } from './UiPrompt.js';
+import { EventNames, Locations, Players, EffectNames } from '../Constants.js';
+import type Game from '../game.js';
+import type Player from '../player.js';
 
 class ActionWindow extends UiPrompt {
     title: string;
@@ -299,4 +299,4 @@ class ActionWindow extends UiPrompt {
     }
 }
 
-export = ActionWindow;
+export default ActionWindow;

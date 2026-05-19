@@ -1,9 +1,9 @@
 import { EventEmitter } from 'events';
 import { Socket as IOSocket } from 'socket.io';
-import * as jwt from 'jsonwebtoken';
-import { logger } from './logger';
-import { captureException } from './ErrorMonitoring';
-import { secret } from './env';
+import jwt from 'jsonwebtoken';
+import { logger } from './logger.js';
+import { captureException } from './ErrorMonitoring.js';
+import { secret } from './env.js';
 
 interface RequestWithUser {
     user: jwt.JwtPayload | null;
@@ -90,4 +90,4 @@ class Socket extends EventEmitter {
     }
 }
 
-export = Socket;
+export default Socket;

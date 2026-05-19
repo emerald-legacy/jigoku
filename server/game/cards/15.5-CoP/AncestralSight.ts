@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, Players, AbilityTypes, TargetModes, Locations } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Players, AbilityTypes, TargetModes, Locations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 const isCopyInPlay = function(card, context) {
     return context.game.findAnyCardsInPlay(c => c.name === card.name).length > 0;

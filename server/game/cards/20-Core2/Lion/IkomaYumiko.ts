@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import Player from '../../../player';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import Player from '../../../player.js';
 
 export default class IkomaYumiko extends DrawCard {
     static id = 'ikoma-yumiko';

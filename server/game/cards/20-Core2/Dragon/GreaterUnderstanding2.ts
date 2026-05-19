@@ -1,8 +1,8 @@
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
-import { CardTypes, Locations, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type Ring from '../../../ring';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
+import { CardTypes, Locations, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type Ring from '../../../ring.js';
 
 export default class GreaterUnderstanding extends DrawCard {
     static id = 'greater-understanding-2';

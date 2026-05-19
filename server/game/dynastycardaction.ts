@@ -1,9 +1,9 @@
-import BaseAction from './BaseAction';
-import * as Costs from './Costs';
-import * as GameActions from './GameActions/GameActions';
-import { EffectNames, Phases, PlayTypes, EventNames } from './Constants';
-import type { AbilityContext } from './AbilityContext';
-import type BaseCard from './basecard';
+import BaseAction from './BaseAction.js';
+import * as Costs from './Costs.js';
+import * as GameActions from './GameActions/GameActions.js';
+import { EffectNames, Phases, PlayTypes, EventNames } from './Constants.js';
+import type { AbilityContext } from './AbilityContext.js';
+import type BaseCard from './basecard.js';
 
 class DynastyCardAction extends BaseAction {
     title = 'Play this character';
@@ -84,4 +84,4 @@ class DynastyCardAction extends BaseAction {
     }
 }
 
-export = DynastyCardAction;
+export default DynastyCardAction;

@@ -1,9 +1,9 @@
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
-import { CardTypes, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import { SequentialContextProperties } from '../../../GameActions/SequentialContextAction';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
+import { CardTypes, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import { SequentialContextProperties } from '../../../GameActions/SequentialContextAction.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class AncientStoneGuardian extends DrawCard {
     static id = 'ancient-stone-guardian';

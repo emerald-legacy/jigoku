@@ -1,9 +1,9 @@
-import { CardTypes, DuelTypes, Durations, Players } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
-import type BaseCard from '../../../basecard';
-import type Player from '../../../player';
+import { CardTypes, DuelTypes, Durations, Players } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type BaseCard from '../../../basecard.js';
+import type Player from '../../../player.js';
 
 function getAttachmentSkill(card: DrawCard) {
     let amount = 0;

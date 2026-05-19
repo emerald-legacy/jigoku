@@ -1,7 +1,7 @@
-import { AbilityTypes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type { TriggeredAbilityProps } from '../../../Interfaces';
+import { AbilityTypes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type { TriggeredAbilityProps } from '../../../Interfaces.js';
 
 export default class CollectorOfFavors extends DrawCard {
     static id = 'collector-of-favors';

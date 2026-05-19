@@ -1,5 +1,5 @@
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class BorderlandsDefender extends DrawCard {
     static id = 'borderlands-defender';

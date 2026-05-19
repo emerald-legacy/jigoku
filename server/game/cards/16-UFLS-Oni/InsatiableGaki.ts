@@ -1,5 +1,5 @@
-import AbilityDsl from '../../abilitydsl';
-import { BaseOni } from './_BaseOni';
+import AbilityDsl from '../../abilitydsl.js';
+import { BaseOni } from './_BaseOni.js';
 
 export default class InsatiableGaki extends BaseOni {
     static id = 'insatiable-gaki';

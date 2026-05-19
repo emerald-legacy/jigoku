@@ -1,12 +1,12 @@
-import { Phases, EffectNames } from '../Constants';
-import { initiateConflict } from '../GameActions/GameActions';
-import AbilityDsl from '../abilitydsl';
-import { Conflict } from '../conflict';
-import type Game from '../game';
-import type Player from '../player';
-import { Phase } from './Phase';
-import { SimpleStep } from './SimpleStep';
-import ActionWindow from './actionwindow';
+import { Phases, EffectNames } from '../Constants.js';
+import { initiateConflict } from '../GameActions/GameActions.js';
+import AbilityDsl from '../abilitydsl.js';
+import { Conflict } from '../conflict.js';
+import type Game from '../game.js';
+import type Player from '../player.js';
+import { Phase } from './Phase.js';
+import { SimpleStep } from './SimpleStep.js';
+import ActionWindow from './actionwindow.js';
 
 /**
  * III Conflict Phase

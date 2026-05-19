@@ -1,8 +1,8 @@
-import { CardTypes, Locations, Players } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
-import DrawCard from '../../../drawcard';
-import type Ring from '../../../ring';
+import { CardTypes, Locations, Players } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
+import DrawCard from '../../../drawcard.js';
+import type Ring from '../../../ring.js';
 
 export default class IllusionaryDecoy extends DrawCard {
     static id = 'illusionary-decoy';

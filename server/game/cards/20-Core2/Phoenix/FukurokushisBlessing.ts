@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import { ProvinceCard } from '../../../ProvinceCard';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
 
 export default class FukurokushisBlessing extends DrawCard {
     static id = 'fukurokushi-s-blessing';

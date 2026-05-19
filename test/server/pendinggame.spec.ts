@@ -1,4 +1,4 @@
-import PendingGame from '../../server/pendinggame';
+import PendingGame from '../../server/pendinggame.js';
 
 
 function makeOwner(overrides?: any) {

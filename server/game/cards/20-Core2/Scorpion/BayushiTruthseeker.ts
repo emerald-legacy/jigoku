@@ -1,4 +1,4 @@
-import DrawCard from '../../../drawcard';
+import DrawCard from '../../../drawcard.js';
 
 export default class BayushiTruthseeker extends DrawCard {
     static id = 'bayushi-truthseeker';

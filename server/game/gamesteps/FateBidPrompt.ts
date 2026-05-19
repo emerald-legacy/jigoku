@@ -1,9 +1,9 @@
-import type { AbilityContext } from '../AbilityContext';
-import type Game from '../game';
-import { JointGameAction } from '../GameActions/JointGameAction';
-import { LoseFateAction } from '../GameActions/LoseFateAction';
-import type Player from '../player';
-import { AllPlayerPrompt } from './AllPlayerPrompt';
+import type { AbilityContext } from '../AbilityContext.js';
+import type Game from '../game.js';
+import { JointGameAction } from '../GameActions/JointGameAction.js';
+import { LoseFateAction } from '../GameActions/LoseFateAction.js';
+import type Player from '../player.js';
+import { AllPlayerPrompt } from './AllPlayerPrompt.js';
 
 export type Result = {
     bids: Map<Player, number>;

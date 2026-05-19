@@ -1,8 +1,8 @@
-import { Locations, CardTypes, CharacterStatus, EventNames } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type BaseCard from '../../../basecard';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
+import { Locations, CardTypes, CharacterStatus, EventNames } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type BaseCard from '../../../basecard.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 function targetsFromEvent(context: any): WeakSet<BaseCard> {
     switch(context.event.name) {

@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { DuelTypes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { DuelTypes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class ShochuBrawl extends DrawCard {
     static id = 'shochu-brawl';

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Locations, CardTypes, TargetModes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Locations, CardTypes, TargetModes } from '../../Constants.js';
 
 class Untainted extends DrawCard {
     static id = 'untainted';

@@ -1,18 +1,18 @@
-import { AbilityContext } from '../../AbilityContext';
-import { BaseStepWithPipeline } from '../BaseStepWithPipeline';
-import { discardCard, payFate, payFateToRing, payHonor } from '../../Costs';
-import CovertAbility from '../../KeywordAbilities/CovertAbility';
-import { bow, loseHonor, resolveConflictRing } from '../../GameActions/GameActions';
-import { SimpleStep } from '../SimpleStep';
-import ConflictActionWindow from './conflictactionwindow';
-import InitiateConflictPrompt from './initiateconflictprompt';
-import SelectDefendersPrompt from './selectdefendersprompt';
-import InitiateCardAbilityEvent from '../../Events/InitiateCardAbilityEvent';
-import AttackersMatrix from './attackersMatrix';
+import { AbilityContext } from '../../AbilityContext.js';
+import { BaseStepWithPipeline } from '../BaseStepWithPipeline.js';
+import { discardCard, payFate, payFateToRing, payHonor } from '../../Costs.js';
+import CovertAbility from '../../KeywordAbilities/CovertAbility.js';
+import { bow, loseHonor, resolveConflictRing } from '../../GameActions/GameActions.js';
+import { SimpleStep } from '../SimpleStep.js';
+import ConflictActionWindow from './conflictactionwindow.js';
+import InitiateConflictPrompt from './initiateconflictprompt.js';
+import SelectDefendersPrompt from './selectdefendersprompt.js';
+import InitiateCardAbilityEvent from '../../Events/InitiateCardAbilityEvent.js';
+import AttackersMatrix from './attackersMatrix.js';
 
-import { Players, CardTypes, EventNames, EffectNames, Locations, ConflictTypes } from '../../Constants';
-import { GameModes } from '../../../GameModes';
-import type Player from '../../player';
+import { Players, CardTypes, EventNames, EffectNames, Locations, ConflictTypes } from '../../Constants.js';
+import { GameModes } from '../../../GameModes.js';
+import type Player from '../../player.js';
 
 /**
 Conflict Resolution

@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Locations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Locations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class WorkInProgress extends DrawCard {
     static id = 'work-in-progress';

@@ -1,7 +1,7 @@
-import { AbilityContext } from '../../../AbilityContext';
-import AbilityDsl from '../../../abilitydsl';
-import { Elements } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import { AbilityContext } from '../../../AbilityContext.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Elements } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 const ELEMENT_KEY = 'kitsuki-seiji-water';
 

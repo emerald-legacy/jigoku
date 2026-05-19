@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, Phases } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Phases } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class ShadowedVillage extends DrawCard {
     static id = 'shadowed-village';

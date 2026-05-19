@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { Decks, Durations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Decks, Durations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export function makeTwin(id: string, opt: { siblingName: string; title: string; effect: string }) {
     return class Twin extends DrawCard {

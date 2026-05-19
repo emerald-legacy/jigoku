@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Durations, Players, TargetModes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Durations, Players, TargetModes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class InLadyDojisService extends DrawCard {
     static id = 'in-lady-doji-s-service';

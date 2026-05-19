@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Locations, Players, TargetModes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Locations, Players, TargetModes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class CounselFromYumeDo extends DrawCard {
     static id = 'counsel-from-yume-do';

@@ -1,8 +1,8 @@
-import { CardTypes, CharacterStatus, Players, TargetModes } from '../../../Constants';
-import type { StatusToken } from '../../../StatusToken';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type { AbilityContext } from '../../../AbilityContext';
+import { CardTypes, CharacterStatus, Players, TargetModes } from '../../../Constants.js';
+import type { StatusToken } from '../../../StatusToken.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 
 const TOKEN = 'token';
 const RECIPIENT = 'recipient';

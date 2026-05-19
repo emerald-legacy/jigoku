@@ -1,8 +1,8 @@
-import { CardTypes, ConflictTypes, EffectNames, Players } from '../../../Constants';
-import { ProvinceCard } from '../../../ProvinceCard';
-import AbilityDsl from '../../../abilitydsl';
-import type BaseCard from '../../../basecard';
-import type { Conflict } from '../../../conflict';
+import { CardTypes, ConflictTypes, EffectNames, Players } from '../../../Constants.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../basecard.js';
+import type { Conflict } from '../../../conflict.js';
 
 export default class ShoreOfTheAshenFlames extends ProvinceCard {
     static id = 'shore-of-the-ashen-flames';

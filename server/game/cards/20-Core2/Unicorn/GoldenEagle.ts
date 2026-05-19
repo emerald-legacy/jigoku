@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Locations, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Locations, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment.js';
 
 export default class GoldenEagle extends DrawCard {
     static id = 'golden-eagle';

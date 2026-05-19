@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Locations, CardTypes, Durations, ConflictTypes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Locations, CardTypes, Durations, ConflictTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class AWarOnTwoFronts extends DrawCard {
     static id = 'a-war-on-two-fronts';

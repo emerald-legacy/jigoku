@@ -1,5 +1,5 @@
-import { StrongholdCard } from '../../../server/game/StrongholdCard';
-import type { CardData } from '../../../server/game/types/CardData';
+import { StrongholdCard } from '../../../server/game/StrongholdCard.js';
+import type { CardData } from '../../../server/game/types/CardData.js';
 
 function makeGame() {
     const game = jasmine.createSpyObj('game', ['raiseEvent', 'getCurrentAbilityContext', 'getFrameworkContext']);

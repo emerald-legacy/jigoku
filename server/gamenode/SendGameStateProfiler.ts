@@ -1,4 +1,4 @@
-import { logger } from '../logger';
+import { logger } from '../logger.js';
 
 /**
  * Lightweight profiler for sendGameState. Collects per-phase timings and

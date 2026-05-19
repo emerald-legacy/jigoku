@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import { TargetModes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import Game from '../../../game';
+import AbilityDsl from '../../../abilitydsl.js';
+import { TargetModes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import Game from '../../../game.js';
 
 export default class BackhandedCompliment2 extends DrawCard {
     static id = 'backhanded-compliment-2';

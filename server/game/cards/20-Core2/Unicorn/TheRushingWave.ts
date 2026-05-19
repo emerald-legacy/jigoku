@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Durations, Locations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type { ProvinceCard } from '../../../ProvinceCard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Durations, Locations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type { ProvinceCard } from '../../../ProvinceCard.js';
 
 function provinceLog(province: ProvinceCard) {
     return province.facedown ? province.location : province;

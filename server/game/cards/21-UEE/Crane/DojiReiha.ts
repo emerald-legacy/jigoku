@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { DuelTypes, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { DuelTypes, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class DojiReiha extends DrawCard {
     static id = 'doji-reiha';

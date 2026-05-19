@@ -1,10 +1,10 @@
-import { EffectNames, Phases } from '../Constants';
-import { draw } from '../GameActions/GameActions';
-import type Game from '../game';
-import { Phase } from './Phase';
-import { SimpleStep } from './SimpleStep';
-import ActionWindow from './actionwindow';
-import HonorBidPrompt from './honorbidprompt';
+import { EffectNames, Phases } from '../Constants.js';
+import { draw } from '../GameActions/GameActions.js';
+import type Game from '../game.js';
+import { Phase } from './Phase.js';
+import { SimpleStep } from './SimpleStep.js';
+import ActionWindow from './actionwindow.js';
+import HonorBidPrompt from './honorbidprompt.js';
 
 /**
  * II Draw Phase

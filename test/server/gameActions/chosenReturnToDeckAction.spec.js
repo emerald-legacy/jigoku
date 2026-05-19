@@ -1,4 +1,4 @@
-const { ChosenReturnToDeckAction } = require('../../../build/server/game/GameActions/ChosenReturnToDeckAction.js');
+import { ChosenReturnToDeckAction } from '../../../build/server/game/GameActions/ChosenReturnToDeckAction.js';
 
 describe('ChosenReturnToDeckAction', function() {
     beforeEach(function() {

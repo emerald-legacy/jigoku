@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import { CardTypes, Players, CharacterStatus } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type { StatusToken } from '../../../StatusToken';
+import AbilityDsl from '../../../abilitydsl.js';
+import { CardTypes, Players, CharacterStatus } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type { StatusToken } from '../../../StatusToken.js';
 
 export default class ForcedRetirement extends DrawCard {
     static id = 'forced-retirement';

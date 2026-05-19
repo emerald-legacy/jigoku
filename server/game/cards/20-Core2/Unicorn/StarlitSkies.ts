@@ -1,6 +1,6 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import { Locations, TargetModes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { Locations, TargetModes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 const possibleChoices = {
     'Your Dynasty Deck': {

@@ -1,6 +1,6 @@
-import { CardTypes, Elements } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Elements } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 const BOW_ELEMENT = 'solemn-scholar-earth';
 

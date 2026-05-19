@@ -1,7 +1,7 @@
-import DrawCard from '../../../drawcard';
-import { CardTypes, Players, Locations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import Soldier from '../../Soldier';
+import DrawCard from '../../../drawcard.js';
+import { CardTypes, Players, Locations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import Soldier from '../../Soldier.js';
 
 class NobleVanguard extends DrawCard {
     static id = 'noble-vanguard';

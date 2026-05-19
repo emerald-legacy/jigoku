@@ -1,6 +1,6 @@
-import AbilityDsl from '../../../abilitydsl';
-import { Locations, Players } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Locations, Players } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class MasterAtArms extends DrawCard {
     static id = 'master-at-arms';

@@ -1,7 +1,7 @@
-import { Locations } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
-import type { Conflict } from '../../../conflict';
+import { Locations } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
+import type { Conflict } from '../../../conflict.js';
 
 export default class PatronOfTheTradingCouncil extends DrawCard {
     static id = 'patron-of-the-trading-council';

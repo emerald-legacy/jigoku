@@ -1,5 +1,5 @@
-import AbilityDsl from '../../abilitydsl';
-import { BaseOni } from './_BaseOni';
+import AbilityDsl from '../../abilitydsl.js';
+import { BaseOni } from './_BaseOni.js';
 
 export default class BogHag extends BaseOni {
     static id = 'bog-hag';

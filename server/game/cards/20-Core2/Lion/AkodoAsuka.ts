@@ -1,7 +1,7 @@
-import type { AbilityContext } from '../../../AbilityContext';
-import AbilityDsl from '../../../abilitydsl';
-import { Locations } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import { Locations } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 function getCharactersWithoutFate(context: AbilityContext) {
     return context.game.currentConflict?.getNumberOfParticipantsFor(context.player) ?? 0;

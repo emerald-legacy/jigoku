@@ -1,8 +1,8 @@
-import { CardTypes, TargetModes } from '../../../Constants';
-import { GameAction } from '../../../GameActions/GameAction';
-import { StatusToken } from '../../../StatusToken';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CardTypes, TargetModes } from '../../../Constants.js';
+import { GameAction } from '../../../GameActions/GameAction.js';
+import { StatusToken } from '../../../StatusToken.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 const ORIGINL_TOKEN = 'original';
 const SELECTION = 'selection';

@@ -1,6 +1,6 @@
-import { CardTypes, Locations, PlayTypes, Players, TargetModes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Locations, PlayTypes, Players, TargetModes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class MeditationsOnOrthodoxy extends DrawCard {
     static id = 'meditations-on-orthodoxy';

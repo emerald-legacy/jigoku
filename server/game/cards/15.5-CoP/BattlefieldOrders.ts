@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes, Players, TargetModes, Locations, AbilityTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes, Players, TargetModes, Locations, AbilityTypes } from '../../Constants.js';
 
 class BattlefieldOrders extends DrawCard {
     static id = 'battlefield-orders';

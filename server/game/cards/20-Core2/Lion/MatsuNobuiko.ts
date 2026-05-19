@@ -1,6 +1,6 @@
-import { DuelTypes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { DuelTypes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class MatsuNobuiko extends DrawCard {
     static id = 'matsu-nobuiko';

@@ -1,8 +1,8 @@
-import AbilityDsl from '../../../abilitydsl';
-import { AbilityTypes, CardTypes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
-import type { TriggeredAbilityProps } from '../../../Interfaces';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext';
+import AbilityDsl from '../../../abilitydsl.js';
+import { AbilityTypes, CardTypes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
+import type { TriggeredAbilityProps } from '../../../Interfaces.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class Naginata extends DrawCard {
     static id = 'naginata';

@@ -1,6 +1,6 @@
-import { TargetModes } from '../../../Constants';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { TargetModes } from '../../../Constants.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class WebisusBlessing extends DrawCard {
     static id = 'webisu-s-blessing';

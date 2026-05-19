@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../AbilityContext';
-import { EventNames } from '../Constants';
-import type { Cost } from '../Costs';
-import { Event } from '../Events/Event';
-import { ReduceableFateCost } from './ReduceableFateCost';
+import type { AbilityContext } from '../AbilityContext.js';
+import { EventNames } from '../Constants.js';
+import type { Cost } from '../Costs.js';
+import { Event } from '../Events/Event.js';
+import { ReduceableFateCost } from './ReduceableFateCost.js';
 
 export class TargetDependentFateCost extends ReduceableFateCost implements Cost {
     constructor(ignoreType: boolean, public dependsOn: string) {

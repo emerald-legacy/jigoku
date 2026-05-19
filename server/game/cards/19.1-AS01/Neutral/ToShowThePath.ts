@@ -1,7 +1,7 @@
-import AbilityDsl from '../../../abilitydsl';
-import BaseCard from '../../../basecard';
-import { CardTypes, Durations, Players, TargetModes } from '../../../Constants';
-import DrawCard from '../../../drawcard';
+import AbilityDsl from '../../../abilitydsl.js';
+import BaseCard from '../../../basecard.js';
+import { CardTypes, Durations, Players, TargetModes } from '../../../Constants.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class ToShowThePath extends DrawCard {
     static id = 'to-show-the-path';

@@ -1,8 +1,8 @@
-import { CardTypes, Decks, PlayTypes } from '../../../Constants';
-import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromHand';
-import { PlayDisguisedCharacterAsIfFromHandAtHome } from '../../../PlayDisguisedCharacterAsIfFromHand';
-import AbilityDsl from '../../../abilitydsl';
-import DrawCard from '../../../drawcard';
+import { CardTypes, Decks, PlayTypes } from '../../../Constants.js';
+import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromHand.js';
+import { PlayDisguisedCharacterAsIfFromHandAtHome } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
+import AbilityDsl from '../../../abilitydsl.js';
+import DrawCard from '../../../drawcard.js';
 
 export default class UtakuTakeko extends DrawCard {
     static id = 'utaku-takeko';

@@ -1,6 +1,6 @@
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes, Players, Durations, TargetModes, Locations } from '../../Constants';
-import DrawCard from '../../drawcard';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes, Players, Durations, TargetModes, Locations } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
 
 const agreeableCost = () => ({
     action: { name: 'agreeableArrangementCost' },

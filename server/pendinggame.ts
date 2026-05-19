@@ -1,7 +1,7 @@
 import * as uuid from 'uuid';
 import * as bcrypt from 'bcrypt';
-import { logger } from './logger';
-import { GameChat } from './game/GameChat';
+import { logger } from './logger.js';
+import { GameChat } from './game/GameChat.js';
 
 interface PendingGameDetails {
     name: string;
@@ -364,4 +364,4 @@ class PendingGame {
     }
 }
 
-export = PendingGame;
+export default PendingGame;

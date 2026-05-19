@@ -1,5 +1,9 @@
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const rotate = new winston.transports.DailyRotateFile({
     filename: __dirname + '/logs/jigoku',
