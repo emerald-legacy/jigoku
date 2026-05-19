@@ -6,7 +6,7 @@
         "sourceMap": true,
         "rootDir": ".",
         "outDir": "build",
-        "allowJs": true,
+        "allowJs": false,
         "checkJs": false,
         "lib": ["ES2022"],
         "esModuleInterop": true,
