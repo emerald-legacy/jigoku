@@ -1,10 +1,10 @@
-import type { AbilityContext } from './AbilityContext';
-import BaseAction from './BaseAction';
-import { CardTypes, EventNames, Locations, Phases } from './Constants';
-import { payTargetDependentFateCost } from './Costs';
-import { attach } from './GameActions/GameActions';
-import { parseGameMode } from './GameMode';
-import type BaseCard from './basecard';
+import type { AbilityContext } from './AbilityContext.js';
+import BaseAction from './BaseAction.js';
+import { CardTypes, EventNames, Locations, Phases } from './Constants.js';
+import { payTargetDependentFateCost } from './Costs.js';
+import { attach } from './GameActions/GameActions.js';
+import { parseGameMode } from './GameMode.js';
+import type BaseCard from './basecard.js';
 
 export class PlayAttachmentAction extends BaseAction {
     title = 'Play this attachment';

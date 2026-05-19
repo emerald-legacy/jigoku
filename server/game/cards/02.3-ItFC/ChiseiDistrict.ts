@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Locations, ConflictTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Locations, ConflictTypes } from '../../Constants.js';
 
 class ChiseiDistrict extends DrawCard {
     static id = 'chisei-district';

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { TokenTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { TokenTypes } from '../../Constants.js';
 
 class EndlessArchives extends DrawCard {
     static id = 'endless-archives';

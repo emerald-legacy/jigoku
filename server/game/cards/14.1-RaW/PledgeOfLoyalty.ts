@@ -1,6 +1,6 @@
-import { CharacterStatus } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { CharacterStatus } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class PledgeOfLoyalty extends ProvinceCard {
     static id = 'pledge-of-loyalty';

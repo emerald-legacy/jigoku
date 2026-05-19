@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes, EventNames } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes, EventNames } from '../../Constants.js';
 
 class YoungRumormonger extends DrawCard {
     static id = 'young-rumormonger';

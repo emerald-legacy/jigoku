@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Locations, CardTypes, Players } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Locations, CardTypes, Players } from '../../Constants.js';
 
 class KaiuForges extends DrawCard {
     static id = 'kaiu-forges';

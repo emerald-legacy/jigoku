@@ -1,8 +1,8 @@
-import { CardTypes, Players } from '../../Constants';
-import { PlayAttachmentAction } from '../../PlayAttachmentAction';
-import { StrongholdCard } from '../../StrongholdCard';
-import AbilityDsl from '../../abilitydsl';
-import type DrawCard from '../../drawcard';
+import { CardTypes, Players } from '../../Constants.js';
+import { PlayAttachmentAction } from '../../PlayAttachmentAction.js';
+import { StrongholdCard } from '../../StrongholdCard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import type DrawCard from '../../drawcard.js';
 
 export default class IronMountainCastle extends StrongholdCard {
     static id = 'iron-mountain-castle';

@@ -1,5 +1,5 @@
-import BaseCard from './basecard';
-import type Player from './player';
+import BaseCard from './basecard.js';
+import type Player from './player.js';
 
 export class StrongholdCard extends BaseCard {
     menu = [{ command: 'bow', text: 'Bow/Ready' }];

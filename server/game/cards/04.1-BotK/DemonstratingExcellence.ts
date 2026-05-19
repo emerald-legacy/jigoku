@@ -1,6 +1,6 @@
-import { Locations } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { Locations } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class DemonstratingExcellence extends ProvinceCard {
     static id = 'demonstrating-excellence';

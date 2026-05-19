@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Locations, Players } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Locations, Players } from '../../Constants.js';
 
 class HidaSugi extends DrawCard {
     static id = 'hida-sugi';

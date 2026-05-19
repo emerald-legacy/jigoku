@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { shuffle } from '../../utils/shuffle';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { shuffle } from '../../utils/shuffle.js';
 
 class KitsukiChiari extends DrawCard {
     static id = 'kitsuki-chiari';

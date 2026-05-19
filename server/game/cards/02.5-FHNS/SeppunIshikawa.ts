@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Locations, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Locations, CardTypes } from '../../Constants.js';
 
 class SeppunIshikawa extends DrawCard {
     static id = 'seppun-ishikawa';

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, Players, TargetModes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Players, TargetModes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class AlluringPatron extends DrawCard {
     static id = 'alluring-patron';

@@ -1,6 +1,6 @@
-import { CardTypes, Players, Locations } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes, Players, Locations } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class UntamedSteppe extends ProvinceCard {
     static id = 'untamed-steppe';

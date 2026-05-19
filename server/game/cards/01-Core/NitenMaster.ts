@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class NitenMaster extends DrawCard {
     static id = 'niten-master';

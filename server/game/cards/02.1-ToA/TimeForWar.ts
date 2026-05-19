@@ -1,7 +1,7 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import CardSelector from '../../CardSelector';
-import { Locations, Players, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import CardSelector from '../../CardSelector.js';
+import { Locations, Players, CardTypes } from '../../Constants.js';
 
 class TimeForWar extends DrawCard {
     static id = 'time-for-war';

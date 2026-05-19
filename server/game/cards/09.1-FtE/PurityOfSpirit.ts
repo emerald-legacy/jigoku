@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Durations, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Durations, CardTypes } from '../../Constants.js';
 
 class PurityOfSpirit extends DrawCard {
     static id = 'purity-of-spirit';

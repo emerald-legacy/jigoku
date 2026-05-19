@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Phases, CardTypes, ConflictTypes, Durations } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Phases, CardTypes, ConflictTypes, Durations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 const validSacrificeTraits = ['courtier', 'bushi', 'shugenja'];
 

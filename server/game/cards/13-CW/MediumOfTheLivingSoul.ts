@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes, Players, AbilityTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes, Players, AbilityTypes } from '../../Constants.js';
 
 class MediumOfTheLivingSoul extends DrawCard {
     static id = 'medium-of-the-living-soul';

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class UtakuBattleSteed extends DrawCard {
     static id = 'utaku-battle-steed';

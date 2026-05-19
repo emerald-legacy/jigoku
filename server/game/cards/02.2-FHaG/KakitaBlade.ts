@@ -1,6 +1,6 @@
-import type { Duel } from '../../Duel';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
+import type { Duel } from '../../Duel.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
 
 export default class KakitaBlade extends DrawCard {
     static id = 'kakita-blade';

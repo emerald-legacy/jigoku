@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class MinamiKazeRegulars extends DrawCard {
     static id = 'minami-kaze-regulars';

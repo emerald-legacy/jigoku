@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class WatchCommander extends DrawCard {
     static id = 'watch-commander';

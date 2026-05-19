@@ -1,7 +1,7 @@
-import AbilityDsl from '../../abilitydsl';
+import AbilityDsl from '../../abilitydsl.js';
 
-import DrawCard from '../../drawcard';
-import { CardTypes, Locations, Players } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Locations, Players } from '../../Constants.js';
 
 class TravelingPhilospher extends DrawCard {
     static id = 'traveling-philosopher';

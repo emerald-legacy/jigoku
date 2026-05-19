@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, AbilityTypes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, AbilityTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class HirumaOutpost extends DrawCard {
     static id = 'hiruma-outpost';

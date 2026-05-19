@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Players, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Players, CardTypes } from '../../Constants.js';
 
 class WildStallion extends DrawCard {
     static id = 'wild-stallion';

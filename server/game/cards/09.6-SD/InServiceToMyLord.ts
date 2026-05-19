@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Locations, PlayTypes, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Locations, PlayTypes, CardTypes } from '../../Constants.js';
 
 class InServiceToMyLord extends DrawCard {
     static id = 'in-service-to-my-lord';

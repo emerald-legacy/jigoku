@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Durations, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Durations, CardTypes } from '../../Constants.js';
 
 class AFateWorseThanDeath extends DrawCard {
     static id = 'a-fate-worse-than-death';

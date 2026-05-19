@@ -1,6 +1,6 @@
-import AbilityDsl from '../../abilitydsl';
-import { AbilityTypes } from '../../Constants';
-import DrawCard from '../../drawcard';
+import AbilityDsl from '../../abilitydsl.js';
+import { AbilityTypes } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
 
 export default class SturdyTetsubo extends DrawCard {
     static id = 'sturdy-tetsubo';

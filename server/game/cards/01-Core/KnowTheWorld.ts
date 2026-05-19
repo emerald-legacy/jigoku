@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class KnowTheWorld extends DrawCard {
     static id = 'know-the-world';

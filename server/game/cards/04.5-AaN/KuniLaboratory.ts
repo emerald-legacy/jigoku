@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Phases, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Phases, CardTypes } from '../../Constants.js';
 
 class KuniLaboratory extends DrawCard {
     static id = 'kuni-laboratory';

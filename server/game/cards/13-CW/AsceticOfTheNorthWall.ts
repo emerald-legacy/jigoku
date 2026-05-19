@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Phases, Elements } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Phases, Elements } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'ascetic-of-the-north-wall-earth';
 

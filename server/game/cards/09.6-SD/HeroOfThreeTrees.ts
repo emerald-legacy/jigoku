@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { TargetModes, CardTypes, Locations } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { TargetModes, CardTypes, Locations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class HeroOfThreeTrees extends DrawCard {
     static id = 'hero-of-three-trees';

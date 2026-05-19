@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Locations, Durations, Phases } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Locations, Durations, Phases } from '../../Constants.js';
 
 class TradingOnTheSandRoad extends DrawCard {
     static id = 'trading-on-the-sand-road';

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class DisguisedProtector extends DrawCard {
     static id = 'disguised-protector';

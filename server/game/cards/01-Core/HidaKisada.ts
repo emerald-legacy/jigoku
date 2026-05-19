@@ -1,6 +1,6 @@
-import { AbilityTypes, CardTypes, EventNames, Locations } from '../../Constants';
-import { EventRegistrar } from '../../EventRegistrar';
-import DrawCard from '../../drawcard';
+import { AbilityTypes, CardTypes, EventNames, Locations } from '../../Constants.js';
+import { EventRegistrar } from '../../EventRegistrar.js';
+import DrawCard from '../../drawcard.js';
 
 export default class HidaKisada extends DrawCard {
     static id = 'hida-kisada';

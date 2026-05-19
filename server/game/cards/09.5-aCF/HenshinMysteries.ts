@@ -1,5 +1,5 @@
-import { EventRegistrar } from '../../EventRegistrar';
-import { ProvinceCard } from '../../ProvinceCard';
+import { EventRegistrar } from '../../EventRegistrar.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
 
 export default class HenshinMysteries extends ProvinceCard {
     static id = 'henshin-mysteries';

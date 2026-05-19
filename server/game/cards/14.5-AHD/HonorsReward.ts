@@ -1,6 +1,6 @@
-import { CardTypes, Players, Elements } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes, Players, Elements } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'honor-s-reward-fire';
 

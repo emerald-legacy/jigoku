@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class KakitaFavorite extends DrawCard {
     static id = 'kakita-favorite';

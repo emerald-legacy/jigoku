@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes, DuelTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes, DuelTypes } from '../../Constants.js';
 
 class DefendYourHonor extends DrawCard {
     static id = 'defend-your-honor';

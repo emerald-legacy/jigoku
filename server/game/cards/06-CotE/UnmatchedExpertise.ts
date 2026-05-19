@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class UnmatchedExpertise extends DrawCard {
     static id = 'unmatched-expertise';

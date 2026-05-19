@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes, Decks } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes, Decks } from '../../Constants.js';
 
 class GuardiansOfRokugan extends DrawCard {
     static id = 'guardians-of-rokugan';

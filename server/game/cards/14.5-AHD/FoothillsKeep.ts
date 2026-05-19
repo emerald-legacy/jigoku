@@ -1,6 +1,6 @@
-import { CardTypes, Locations, Players } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes, Locations, Players } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class FoothillsKeep extends ProvinceCard {
     static id = 'foothills-keep';

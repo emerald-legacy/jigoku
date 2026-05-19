@@ -1,7 +1,7 @@
-import { DuelTypes, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
-import type Player from '../../player';
+import { DuelTypes, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
+import type Player from '../../player.js';
 
 export default class TaoistAdept extends DrawCard {
     static id = 'taoist-adept';

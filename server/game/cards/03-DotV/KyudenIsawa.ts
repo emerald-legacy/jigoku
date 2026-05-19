@@ -1,6 +1,6 @@
-import { CardTypes, Locations, PlayTypes, Players } from '../../Constants';
-import { StrongholdCard } from '../../StrongholdCard';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes, Locations, PlayTypes, Players } from '../../Constants.js';
+import { StrongholdCard } from '../../StrongholdCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class KyudenIsawa extends StrongholdCard {
     static id = 'kyuden-isawa';

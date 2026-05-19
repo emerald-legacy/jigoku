@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Durations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Durations } from '../../Constants.js';
 
 class HirumaSkirmisher extends DrawCard {
     static id = 'hiruma-skirmisher';

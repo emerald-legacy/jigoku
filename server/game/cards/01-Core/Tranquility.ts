@@ -1,6 +1,6 @@
-import AbilityDsl from '../../abilitydsl';
-import type BaseCard from '../../basecard';
-import DrawCard from '../../drawcard';
+import AbilityDsl from '../../abilitydsl.js';
+import type BaseCard from '../../basecard.js';
+import DrawCard from '../../drawcard.js';
 
 export default class Tranquility extends DrawCard {
     static id = 'tranquility';

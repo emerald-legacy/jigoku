@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { TargetModes, Locations, CharacterStatus, CardTypes, Players } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { TargetModes, Locations, CharacterStatus, CardTypes, Players } from '../../Constants.js';
 
 class FearlessSkirmisher extends DrawCard {
     static id = 'fearless-skirmisher';

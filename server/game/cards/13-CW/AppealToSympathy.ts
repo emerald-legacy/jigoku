@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes, Locations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes, Locations } from '../../Constants.js';
 
 class AppealToSympathy extends DrawCard {
     static id = 'appeal-to-sympathy';

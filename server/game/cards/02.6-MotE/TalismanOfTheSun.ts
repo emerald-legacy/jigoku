@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Locations, CardTypes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Locations, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class TalismanOfTheSun extends DrawCard {
     static id = 'talisman-of-the-sun';

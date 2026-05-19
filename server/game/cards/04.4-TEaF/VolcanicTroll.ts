@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Elements } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Elements } from '../../Constants.js';
 
 const elementKey = 'isawa-tsuke-2-fire';
 class VolcanicTroll extends DrawCard {

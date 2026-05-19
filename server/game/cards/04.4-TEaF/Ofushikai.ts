@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Durations, CardTypes, AbilityTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Durations, CardTypes, AbilityTypes } from '../../Constants.js';
 
 class Ofushukai extends DrawCard {
     static id = 'ofushikai';

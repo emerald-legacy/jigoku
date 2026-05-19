@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, Elements, Durations } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Elements, Durations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class IsawaHeiko extends DrawCard {
     static id = 'isawa-heiko';

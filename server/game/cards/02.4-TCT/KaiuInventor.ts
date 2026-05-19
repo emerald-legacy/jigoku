@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Locations, Durations, Players, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Locations, Durations, Players, CardTypes } from '../../Constants.js';
 
 class KaiuInventor extends DrawCard {
     static id = 'kaiu-inventor';

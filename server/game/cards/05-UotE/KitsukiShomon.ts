@@ -1,8 +1,8 @@
-import AbilityDsl from '../../abilitydsl';
-import type BaseCard from '../../basecard';
-import { CardTypes } from '../../Constants';
-import DrawCard from '../../drawcard';
-import ThenAbility from '../../ThenAbility';
+import AbilityDsl from '../../abilitydsl.js';
+import type BaseCard from '../../basecard.js';
+import { CardTypes } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
+import ThenAbility from '../../ThenAbility.js';
 
 export default class KitsukiShomon extends DrawCard {
     static id = 'kitsuki-shomon';

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { AbilityTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { AbilityTypes } from '../../Constants.js';
 
 class Shukujo extends DrawCard {
     static id = 'shukujo';

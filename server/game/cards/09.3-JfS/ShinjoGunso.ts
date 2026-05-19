@@ -1,6 +1,6 @@
-import { PlayTypes, Decks, CardTypes, Locations } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
+import { PlayTypes, Decks, CardTypes, Locations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
 
 export default class ShinjoGunso extends DrawCard {
     static id = 'shinjo-gunso';

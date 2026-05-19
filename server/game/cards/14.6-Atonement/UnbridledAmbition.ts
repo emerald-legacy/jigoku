@@ -1,6 +1,6 @@
-import { Players } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { Players } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class UnbridledAmbition extends ProvinceCard {
     static id = 'unbridled-ambition';

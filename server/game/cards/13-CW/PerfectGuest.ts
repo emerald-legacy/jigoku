@@ -1,7 +1,7 @@
-import { Durations } from '../../Constants';
-import { EventRegistrar } from '../../EventRegistrar';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
+import { Durations } from '../../Constants.js';
+import { EventRegistrar } from '../../EventRegistrar.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
 
 export default class PerfectGuest extends DrawCard {
     static id = 'perfect-guest';

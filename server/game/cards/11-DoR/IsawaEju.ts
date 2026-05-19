@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Locations, CardTypes, Elements } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Locations, CardTypes, Elements } from '../../Constants.js';
 
 const elementKey = 'isawa-eju-air';
 

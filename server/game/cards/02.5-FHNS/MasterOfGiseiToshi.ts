@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Durations, Players, TargetModes, Phases } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Durations, Players, TargetModes, Phases } from '../../Constants.js';
 
 class MasterOfGiseiToshi extends DrawCard {
     static id = 'master-of-gisei-toshi';

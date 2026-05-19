@@ -1,7 +1,7 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { TargetModes, Locations, Players, CardTypes } from '../../Constants';
-import { GameModes } from '../../../GameModes';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { TargetModes, Locations, Players, CardTypes } from '../../Constants.js';
+import { GameModes } from '../../../GameModes.js';
 
 class CardWrapper {
     dynastyCard: any;

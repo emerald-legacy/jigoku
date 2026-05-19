@@ -1,6 +1,6 @@
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes, Players } from '../../Constants';
-import DrawCard from '../../drawcard';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes, Players } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
 
 export default class ShosuroActor extends DrawCard {
     static id = 'shosuro-actor';

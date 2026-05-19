@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class MonoNoAware extends DrawCard {
     static id = 'mono-no-aware';

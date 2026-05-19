@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Durations, Locations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Durations, Locations } from '../../Constants.js';
 
 class AkodoToshiro extends DrawCard {
     static id = 'akodo-toshiro';

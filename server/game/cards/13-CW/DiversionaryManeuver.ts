@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Locations, CardTypes, Players, TargetModes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Locations, CardTypes, Players, TargetModes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class DiversionaryManeuver extends DrawCard {
     static id = 'diversionary-maneuver';

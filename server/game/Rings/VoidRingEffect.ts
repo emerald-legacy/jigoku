@@ -1,7 +1,7 @@
-import { AbilityContext } from '../AbilityContext';
-import { CardTypes } from '../Constants';
-import BaseAbility from '../baseability';
-import DrawCard from '../drawcard';
+import { AbilityContext } from '../AbilityContext.js';
+import { CardTypes } from '../Constants.js';
+import BaseAbility from '../baseability.js';
+import DrawCard from '../drawcard.js';
 
 export class VoidRingEffect extends BaseAbility {
     public title = 'Void Ring Effect';

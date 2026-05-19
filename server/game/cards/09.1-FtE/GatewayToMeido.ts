@@ -1,8 +1,8 @@
-import { Locations, CardTypes } from '../../Constants';
-import { PlayCharacterAsIfFromHandIntoConflict } from '../../PlayCharacterAsIfFromHand';
-import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../PlayDisguisedCharacterAsIfFromHand';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { Locations, CardTypes } from '../../Constants.js';
+import { PlayCharacterAsIfFromHandIntoConflict } from '../../PlayCharacterAsIfFromHand.js';
+import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../PlayDisguisedCharacterAsIfFromHand.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class GatewayToMeido extends ProvinceCard {
     static id = 'gateway-to-meido';

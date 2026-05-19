@@ -1,6 +1,6 @@
-import { Locations, CardTypes, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
+import { Locations, CardTypes, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
 
 export default class AsahinaTakako extends DrawCard {
     static id = 'asahina-takako';

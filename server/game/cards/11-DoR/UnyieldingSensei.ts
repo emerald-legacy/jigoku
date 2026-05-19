@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, Players, Locations, Decks } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Players, Locations, Decks } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class UnyieldingSensei extends DrawCard {
     static id = 'unyielding-sensei';

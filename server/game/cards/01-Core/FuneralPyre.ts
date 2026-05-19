@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { CardTypes } from '../../Constants.js';
 
 class FuneralPyre extends DrawCard {
     static id = 'funeral-pyre';

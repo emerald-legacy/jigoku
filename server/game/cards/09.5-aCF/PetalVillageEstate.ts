@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { CardTypes } from '../../Constants.js';
 
 class PetalVillageEstate extends DrawCard {
     static id = 'petal-village-estate';

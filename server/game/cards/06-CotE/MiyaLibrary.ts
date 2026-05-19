@@ -1,6 +1,6 @@
 
-import DrawCard from '../../drawcard';
-import { CardTypes, Locations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Locations } from '../../Constants.js';
 // const AbilitDsl = require('../../abilitydsl');
 
 class MiyaLibrary extends DrawCard {

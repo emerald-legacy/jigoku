@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Phases, CardTypes, Locations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Phases, CardTypes, Locations } from '../../Constants.js';
 
 class YasukiTaka extends DrawCard {
     static id = 'yasuki-taka';

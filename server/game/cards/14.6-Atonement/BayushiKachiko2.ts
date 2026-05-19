@@ -1,10 +1,10 @@
-import { AbilityContext } from '../../AbilityContext';
-import AbilityDsl from '../../abilitydsl';
-import type BaseCard from '../../basecard';
-import { CardTypes, EventNames, Locations, Players, PlayTypes } from '../../Constants';
-import DrawCard from '../../drawcard';
-import { EventRegistrar } from '../../EventRegistrar';
-import type Player from '../../player';
+import { AbilityContext } from '../../AbilityContext.js';
+import AbilityDsl from '../../abilitydsl.js';
+import type BaseCard from '../../basecard.js';
+import { CardTypes, EventNames, Locations, Players, PlayTypes } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
+import { EventRegistrar } from '../../EventRegistrar.js';
+import type Player from '../../player.js';
 
 const MAXIMUM_CARDS_ALLOWED = 3;
 

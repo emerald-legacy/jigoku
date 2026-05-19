@@ -1,9 +1,9 @@
 import { AbilityContext } from './AbilityContext.js';
 import BaseAbility from './baseability.js';
 import { Stages } from './Constants.js';
-import type Game from './game';
-import type BaseCard from './basecard';
-import type Player from './player';
+import type Game from './game.js';
+import type BaseCard from './basecard.js';
+import type Player from './player.js';
 
 interface ThenAbilityProperties {
     cost?: any;
@@ -120,4 +120,4 @@ class ThenAbility extends BaseAbility {
     }
 }
 
-export = ThenAbility;
+export default ThenAbility;

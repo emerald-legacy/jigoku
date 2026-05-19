@@ -1,7 +1,7 @@
-import { CardTypes, Locations, TargetModes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
-import { shuffle } from '../../utils/shuffle';
+import { CardTypes, Locations, TargetModes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
+import { shuffle } from '../../utils/shuffle.js';
 
 export default class IsawaTadaka2 extends DrawCard {
     static id = 'isawa-tadaka-2';

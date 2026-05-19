@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Locations, DuelTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Locations, DuelTypes } from '../../Constants.js';
 
 class DaimyosGunbai extends DrawCard {
     static id = 'daimyo-s-gunbai';

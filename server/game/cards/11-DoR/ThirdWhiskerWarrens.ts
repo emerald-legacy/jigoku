@@ -1,11 +1,11 @@
-import type { AbilityContext } from '../../AbilityContext';
-import { Locations, Players, CardTypes } from '../../Constants';
-import { PlayCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand';
-import { PlayDisguisedCharacterAsIfFromHand } from '../../PlayDisguisedCharacterAsIfFromHand';
-import type { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
-import type BaseCard from '../../basecard';
-import DrawCard from '../../drawcard';
+import type { AbilityContext } from '../../AbilityContext.js';
+import { Locations, Players, CardTypes } from '../../Constants.js';
+import { PlayCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand.js';
+import { PlayDisguisedCharacterAsIfFromHand } from '../../PlayDisguisedCharacterAsIfFromHand.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import type BaseCard from '../../basecard.js';
+import DrawCard from '../../drawcard.js';
 
 export default class ThirdWhiskerWarrens extends DrawCard {
     static id = 'third-whisker-warrens';

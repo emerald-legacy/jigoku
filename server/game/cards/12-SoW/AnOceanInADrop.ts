@@ -1,7 +1,7 @@
-import DrawCard from '../../drawcard';
-import { Locations, TargetModes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import { shuffle } from '../../utils/shuffle';
+import DrawCard from '../../drawcard.js';
+import { Locations, TargetModes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { shuffle } from '../../utils/shuffle.js';
 
 class AnOceanInADrop extends DrawCard {
     static id = 'an-ocean-in-a-drop';

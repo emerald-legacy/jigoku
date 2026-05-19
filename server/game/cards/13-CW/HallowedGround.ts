@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Players, Elements } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Players, Elements } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 const elementKeys = {
     air: 'hallowed-ground-air',

@@ -1,10 +1,10 @@
-import { Locations } from './Constants';
-import { Conflict } from './conflict';
-import type BaseCard from './basecard';
-import type Game from './game';
-import ConflictFlow from './gamesteps/conflict/conflictflow';
-import type Player from './player';
-import type Ring from './ring';
+import { Locations } from './Constants.js';
+import { Conflict } from './conflict.js';
+import type BaseCard from './basecard.js';
+import type Game from './game.js';
+import ConflictFlow from './gamesteps/conflict/conflictflow.js';
+import type Player from './player.js';
+import type Ring from './ring.js';
 
 type MenuItem = {
     command: string;

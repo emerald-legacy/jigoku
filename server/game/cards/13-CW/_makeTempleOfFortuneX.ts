@@ -1,6 +1,6 @@
-import { Elements } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { Elements } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export function makeTempleOfFortuneX(id: string, element: Elements) {
     const elementKeys = [`${id}-${element}-0`, `${id}-${element}-1`];

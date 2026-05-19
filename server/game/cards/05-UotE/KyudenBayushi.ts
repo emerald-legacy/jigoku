@@ -1,6 +1,6 @@
-import { CardTypes, Durations, Players } from '../../Constants';
-import { StrongholdCard } from '../../StrongholdCard';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes, Durations, Players } from '../../Constants.js';
+import { StrongholdCard } from '../../StrongholdCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class KyudenBayushi extends StrongholdCard {
     static id = 'kyuden-bayushi';

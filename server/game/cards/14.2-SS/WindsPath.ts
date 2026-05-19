@@ -1,7 +1,7 @@
-import { CardTypes, Locations } from '../../Constants';
-import { PlayCharacterAsIfFromHandIntoConflict } from '../../PlayCharacterAsIfFromHand';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes, Locations } from '../../Constants.js';
+import { PlayCharacterAsIfFromHandIntoConflict } from '../../PlayCharacterAsIfFromHand.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class WindsPath extends ProvinceCard {
     static id = 'wind-s-path';

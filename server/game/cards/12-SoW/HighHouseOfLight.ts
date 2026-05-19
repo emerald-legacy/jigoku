@@ -1,6 +1,6 @@
-import { CardTypes, Players } from '../../Constants';
-import { StrongholdCard } from '../../StrongholdCard';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes, Players } from '../../Constants.js';
+import { StrongholdCard } from '../../StrongholdCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class HighHouseOfLight extends StrongholdCard {
     static id = 'high-house-of-light';

@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Players, TargetModes, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Players, TargetModes, CardTypes } from '../../Constants.js';
 
 class DeceptiveOffer extends DrawCard {
     static id = 'deceptive-offer';

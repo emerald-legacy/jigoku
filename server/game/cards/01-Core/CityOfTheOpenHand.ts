@@ -1,5 +1,5 @@
-import { StrongholdCard } from '../../StrongholdCard';
-import AbilityDsl from '../../abilitydsl';
+import { StrongholdCard } from '../../StrongholdCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class CityOfTheOpenHand extends StrongholdCard {
     static id = 'city-of-the-open-hand';

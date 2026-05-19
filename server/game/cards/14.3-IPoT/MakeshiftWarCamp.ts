@@ -1,6 +1,6 @@
-import { Players, CardTypes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import { BattlefieldAttachment } from '../BattlefieldAttachment';
+import { Players, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 
 export default class MakeshiftWarCamp extends BattlefieldAttachment {
     static id = 'makeshift-war-camp';

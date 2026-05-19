@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Players, CardTypes, Phases } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Players, CardTypes, Phases } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class DaidojiNetsu extends DrawCard {
     static id = 'daidoji-netsu';

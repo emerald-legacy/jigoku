@@ -1,7 +1,7 @@
-import { CardTypes, Durations, EventNames, Players } from '../../Constants';
-import { EventRegistrar } from '../../EventRegistrar';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
+import { CardTypes, Durations, EventNames, Players } from '../../Constants.js';
+import { EventRegistrar } from '../../EventRegistrar.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
 
 export default class InfernoGuardInvoker extends DrawCard {
     static id = 'inferno-guard-invoker';

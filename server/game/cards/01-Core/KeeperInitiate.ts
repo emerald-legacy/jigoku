@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Locations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Locations } from '../../Constants.js';
 
 class KeeperInitiate extends DrawCard {
     static id = 'keeper-initiate';

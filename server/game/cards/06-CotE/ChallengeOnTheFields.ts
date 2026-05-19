@@ -1,7 +1,7 @@
-import AbilityDsl from '../../abilitydsl';
-import { DuelTypes } from '../../Constants';
-import DrawCard from '../../drawcard';
-import Player from '../../player';
+import AbilityDsl from '../../abilitydsl.js';
+import { DuelTypes } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
+import Player from '../../player.js';
 
 function participatingCharacters(player: Player): number {
     return player.filterCardsInPlay((card) => card.isParticipating()).length;

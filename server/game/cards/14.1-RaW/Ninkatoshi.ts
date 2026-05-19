@@ -1,6 +1,6 @@
-import { Locations, Players, CardTypes } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { Locations, Players, CardTypes } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class Ninkatoshi extends ProvinceCard {
     static id = 'ninkatoshi';

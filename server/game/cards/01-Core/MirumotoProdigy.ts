@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class MirumotoProdigy extends DrawCard {
     static id = 'mirumoto-prodigy';

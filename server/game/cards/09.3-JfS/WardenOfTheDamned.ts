@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, Phases, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Phases, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class WardenOfTheDamned extends DrawCard {
     static id = 'warden-of-the-damned';

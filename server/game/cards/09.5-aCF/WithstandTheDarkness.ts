@@ -1,9 +1,9 @@
-import AbilityDsl from '../../abilitydsl';
-import type BaseCard from '../../basecard';
-import { AbilityTypes, CardTypes, EventNames, Locations, Players } from '../../Constants';
-import DrawCard from '../../drawcard';
-import { EventRegistrar } from '../../EventRegistrar';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext';
+import AbilityDsl from '../../abilitydsl.js';
+import type BaseCard from '../../basecard.js';
+import { AbilityTypes, CardTypes, EventNames, Locations, Players } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
+import { EventRegistrar } from '../../EventRegistrar.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 export default class WithstandTheDarkness extends DrawCard {
     static id = 'withstand-the-darkness';

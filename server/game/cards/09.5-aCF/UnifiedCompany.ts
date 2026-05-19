@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { CardTypes, Players, Locations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { CardTypes, Players, Locations } from '../../Constants.js';
 
 class UnifiedCompany extends DrawCard {
     static id = 'unified-company';

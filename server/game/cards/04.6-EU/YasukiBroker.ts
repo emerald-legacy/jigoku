@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, Players } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Players } from '../../Constants.js';
 
 class YasukiBroker extends DrawCard {
     static id = 'yasuki-broker';

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { AbilityTypes, CardTypes, Locations, Players, Durations } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { AbilityTypes, CardTypes, Locations, Players, Durations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class VoiceOfTheAncestors extends DrawCard {
     static id = 'voice-of-the-ancestors';

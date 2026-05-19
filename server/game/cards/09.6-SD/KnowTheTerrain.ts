@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, Players, Locations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Players, Locations } from '../../Constants.js';
 
 class KnowTheTerrain extends DrawCard {
     static id = 'know-the-terrain';

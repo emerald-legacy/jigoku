@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class UnleashTheDjinn extends DrawCard {
     static id = 'unleash-the-djinn';

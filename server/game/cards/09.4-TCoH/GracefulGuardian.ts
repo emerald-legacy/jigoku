@@ -1,7 +1,7 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
-import { Durations, Players } from '../../Constants';
+import { Durations, Players } from '../../Constants.js';
 
 class GracefulGuardian extends DrawCard {
     static id = 'graceful-guardian';

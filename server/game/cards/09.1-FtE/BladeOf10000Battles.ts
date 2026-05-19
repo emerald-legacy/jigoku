@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Locations, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Locations, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class BladeOf10000Battles extends DrawCard {
     static id = 'blade-of-10-000-battles';

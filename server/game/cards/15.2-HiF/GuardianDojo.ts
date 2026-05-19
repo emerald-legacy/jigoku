@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Locations, CharacterStatus, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Locations, CharacterStatus, CardTypes } from '../../Constants.js';
 
 class GuardianDojo extends DrawCard {
     static id = 'guardian-dojo';

@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Durations, TargetModes, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Durations, TargetModes, CardTypes } from '../../Constants.js';
 
 class TogashiYokuni extends DrawCard {
     static id = 'togashi-yokuni';

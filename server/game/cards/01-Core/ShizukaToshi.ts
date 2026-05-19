@@ -1,6 +1,6 @@
-import { CardTypes } from '../../Constants';
-import { StrongholdCard } from '../../StrongholdCard';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes } from '../../Constants.js';
+import { StrongholdCard } from '../../StrongholdCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class ShizukaToshi extends StrongholdCard {
     static id = 'shizuka-toshi';

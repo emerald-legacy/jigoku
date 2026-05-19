@@ -1,6 +1,6 @@
-import { CardTypes, Elements } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes, Elements } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 const ELEMENT_KEY = 'along-the-river-of-gold-water';
 

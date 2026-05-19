@@ -1,9 +1,9 @@
-import { Locations, Phases, PlayTypes, EventNames, CardTypes } from '../../Constants';
-import { putIntoPlay, sacrifice } from '../../GameActions/GameActions';
-import ThenAbility from '../../ThenAbility';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
-import DynastyCardAction from '../../dynastycardaction';
+import { Locations, Phases, PlayTypes, EventNames, CardTypes } from '../../Constants.js';
+import { putIntoPlay, sacrifice } from '../../GameActions/GameActions.js';
+import ThenAbility from '../../ThenAbility.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
+import DynastyCardAction from '../../dynastycardaction.js';
 
 const backAlleyPersistentEffect = {
     apply: (card) => {

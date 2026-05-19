@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class LostPapers extends DrawCard {
     static id = 'lost-papers';

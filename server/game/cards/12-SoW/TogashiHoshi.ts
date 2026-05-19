@@ -1,7 +1,7 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
-import { CardTypes, Durations } from '../../Constants';
+import { CardTypes, Durations } from '../../Constants.js';
 
 class TogashiHoshi extends DrawCard {
     static id = 'togashi-hoshi';

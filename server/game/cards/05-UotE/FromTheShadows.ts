@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Locations, Players, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Locations, Players, CardTypes } from '../../Constants.js';
 
 class FromTheShadows extends DrawCard {
     static id = 'from-the-shadows';

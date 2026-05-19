@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Phases, EventNames } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Phases, EventNames } from '../../Constants.js';
 
 class SeizeTheDay extends DrawCard {
     static id = 'seize-the-day';

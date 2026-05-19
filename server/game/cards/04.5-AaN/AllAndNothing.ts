@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { TargetModes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { TargetModes } from '../../Constants.js';
 
 class AllAndNothing extends DrawCard {
     static id = 'all-and-nothing';

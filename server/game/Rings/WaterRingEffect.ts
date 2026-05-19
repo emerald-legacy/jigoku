@@ -1,8 +1,8 @@
-import { GameModes } from '../../GameModes';
-import { CardTypes, Locations } from '../Constants';
-import { AbilityContext } from '../AbilityContext';
-import BaseAbility from '../baseability';
-import DrawCard from '../drawcard';
+import { GameModes } from '../../GameModes.js';
+import { CardTypes, Locations } from '../Constants.js';
+import { AbilityContext } from '../AbilityContext.js';
+import BaseAbility from '../baseability.js';
+import DrawCard from '../drawcard.js';
 
 function cardConditionSkirmish<C extends DrawCard>(card: C, context: AbilityContext) {
     return (

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { ConflictTypes, Locations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { ConflictTypes, Locations } from '../../Constants.js';
 
 class CallousAshigaru extends DrawCard {
     static id = 'callous-ashigaru';

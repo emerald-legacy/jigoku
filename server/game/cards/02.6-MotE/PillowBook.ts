@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Locations, Decks, Durations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Locations, Decks, Durations } from '../../Constants.js';
 
 class PillowBook extends DrawCard {
     static id = 'pillow-book';

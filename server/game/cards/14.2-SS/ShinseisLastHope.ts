@@ -1,6 +1,6 @@
-import { PlayTypes, Locations, Players, CardTypes, CharacterStatus } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { PlayTypes, Locations, Players, CardTypes, CharacterStatus } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class ShinseisLastHope extends ProvinceCard {
     static id = 'shinsei-s-last-hope';

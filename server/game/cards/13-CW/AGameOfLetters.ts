@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { TargetModes, Players, CardTypes, CharacterStatus } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { TargetModes, Players, CardTypes, CharacterStatus } from '../../Constants.js';
 
 class AGameOfLetters extends DrawCard {
     static id = 'a-game-of-letters';

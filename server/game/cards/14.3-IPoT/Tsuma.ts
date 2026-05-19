@@ -1,6 +1,6 @@
-import { Locations, Players, CardTypes, CharacterStatus } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { Locations, Players, CardTypes, CharacterStatus } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class Tsuma extends ProvinceCard {
     static id = 'tsuma';

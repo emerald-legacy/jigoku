@@ -1,6 +1,6 @@
-import { CardTypes, Decks, Durations, Locations, Players } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes, Decks, Durations, Locations, Players } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class SpectralVisitation extends ProvinceCard {
     static id = 'spectral-visitation';

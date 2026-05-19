@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Players, CardTypes, EventNames } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Players, CardTypes, EventNames } from '../../Constants.js';
 
 class AgashaProdigys extends DrawCard {
     static id = 'agasha-prodigy';

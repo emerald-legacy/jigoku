@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, Locations } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Locations } from '../../Constants.js';
 
 class VengefulBerserker extends DrawCard {
     static id = 'vengeful-berserker';

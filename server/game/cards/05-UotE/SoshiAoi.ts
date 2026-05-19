@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Durations, Players, TargetModes, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Durations, Players, TargetModes, CardTypes } from '../../Constants.js';
 
 class SoshiAoi extends DrawCard {
     static id = 'soshi-aoi';

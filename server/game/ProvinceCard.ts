@@ -1,11 +1,11 @@
-import { GameModes } from '../GameModes';
-import { EffectNames, Locations } from './Constants';
-import AbilityDsl from './abilitydsl';
-import BaseCard from './basecard';
-import type Player from './player';
-import type DrawCard from './drawcard';
-import StatModifier from './StatModifier';
-import type { CardData } from './types/CardData';
+import { GameModes } from '../GameModes.js';
+import { EffectNames, Locations } from './Constants.js';
+import AbilityDsl from './abilitydsl.js';
+import BaseCard from './basecard.js';
+import type Player from './player.js';
+import type DrawCard from './drawcard.js';
+import StatModifier from './StatModifier.js';
+import type { CardData } from './types/CardData.js';
 
 export class ProvinceCard extends BaseCard {
     isProvince = true;

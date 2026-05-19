@@ -1,6 +1,6 @@
-import { CardTypes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
+import { CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../drawcard.js';
 
 export default class AsakoMaezawa2 extends DrawCard {
     static id = 'asako-maezawa-2';

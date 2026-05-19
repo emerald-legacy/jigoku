@@ -1,9 +1,9 @@
-import type { AbilityContext } from '../../AbilityContext';
-import AbilityDsl from '../../abilitydsl';
-import type BaseCard from '../../basecard';
-import { CardTypes, EventNames, Players } from '../../Constants';
-import DrawCard from '../../drawcard';
-import { EventRegistrar } from '../../EventRegistrar';
+import type { AbilityContext } from '../../AbilityContext.js';
+import AbilityDsl from '../../abilitydsl.js';
+import type BaseCard from '../../basecard.js';
+import { CardTypes, EventNames, Players } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
+import { EventRegistrar } from '../../EventRegistrar.js';
 
 export default class HonoredVeterans extends DrawCard {
     static id = 'honored-veterans';

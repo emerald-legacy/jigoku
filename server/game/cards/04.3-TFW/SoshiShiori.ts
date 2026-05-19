@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { TargetModes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { TargetModes } from '../../Constants.js';
 
 class SoshiShiori extends DrawCard {
     static id = 'soshi-shiori';

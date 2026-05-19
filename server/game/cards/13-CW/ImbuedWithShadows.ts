@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { TargetModes, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { TargetModes, CardTypes } from '../../Constants.js';
 
 class ImbuedWithShadows extends DrawCard {
     static id = 'imbued-with-shadows';

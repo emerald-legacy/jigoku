@@ -1,6 +1,6 @@
-import { CardTypes, Players } from '../../Constants';
-import { BattlefieldAttachment } from '../BattlefieldAttachment';
-import AbilityDsl from '../../abilitydsl';
+import { CardTypes, Players } from '../../Constants.js';
+import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class TotalWarfare extends BattlefieldAttachment {
     static id = 'total-warfare';

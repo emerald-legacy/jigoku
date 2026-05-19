@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Players, TargetModes, CardTypes, Elements } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Players, TargetModes, CardTypes, Elements } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'fu-sui-disciple-air';
 

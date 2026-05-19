@@ -1,6 +1,6 @@
-import { TargetModes } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { TargetModes } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class KuroiMori extends ProvinceCard {
     static id = 'kuroi-mori';

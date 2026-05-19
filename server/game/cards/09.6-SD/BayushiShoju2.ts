@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Phases, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Phases, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class BayushiShoju2 extends DrawCard {
     static id = 'bayushi-shoju-2';

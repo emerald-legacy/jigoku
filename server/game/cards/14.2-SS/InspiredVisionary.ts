@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Phases, CardTypes, Locations } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Phases, CardTypes, Locations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class InspiredVisionary extends DrawCard {
     static id = 'inspired-visionary';

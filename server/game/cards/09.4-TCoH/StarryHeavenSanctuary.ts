@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Phases, EventNames } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Phases, EventNames } from '../../Constants.js';
 
 class StarryHeavenSanctuary extends DrawCard {
     static id = 'starry-heaven-sanctuary';

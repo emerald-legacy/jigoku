@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { TargetModes, TokenTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { TargetModes, TokenTypes } from '../../Constants.js';
 
 class DistinguishedDojo extends DrawCard {
     static id = 'distinguished-dojo';

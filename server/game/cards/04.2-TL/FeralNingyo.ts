@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Durations, Locations, Elements } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Durations, Locations, Elements } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'feral-ningyo-water';
 

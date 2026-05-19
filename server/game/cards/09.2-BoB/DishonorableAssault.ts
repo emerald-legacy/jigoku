@@ -1,6 +1,6 @@
-import { TargetModes, CardTypes } from '../../Constants';
-import { ProvinceCard } from '../../ProvinceCard';
-import AbilityDsl from '../../abilitydsl';
+import { TargetModes, CardTypes } from '../../Constants.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 export default class DishonorableAssault extends ProvinceCard {
     static id = 'dishonorable-assault';

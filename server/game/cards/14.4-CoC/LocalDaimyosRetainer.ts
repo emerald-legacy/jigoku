@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class LocalDaimyosRetainer extends DrawCard {
     static id = 'local-daimyo-s-retainer';

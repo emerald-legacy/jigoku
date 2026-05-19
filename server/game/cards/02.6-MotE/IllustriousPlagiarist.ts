@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Locations, Durations, Players, AbilityTypes, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Locations, Durations, Players, AbilityTypes, CardTypes } from '../../Constants.js';
 
 class IllustriousPlagiarist extends DrawCard {
     static id = 'illustrious-plagiarist';

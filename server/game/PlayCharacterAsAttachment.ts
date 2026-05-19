@@ -1,7 +1,7 @@
-import AbilityDsl from './abilitydsl';
-import { Durations, CardTypes } from './Constants';
+import AbilityDsl from './abilitydsl.js';
+import { Durations, CardTypes } from './Constants.js';
 import { PlayAttachmentAction } from './PlayAttachmentAction.js';
-import DrawCard from './drawcard';
+import DrawCard from './drawcard.js';
 
 export class PlayCharacterAsAttachment extends PlayAttachmentAction {
     constructor(card: DrawCard) {

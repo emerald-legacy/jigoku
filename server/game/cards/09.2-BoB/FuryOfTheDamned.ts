@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Players, CardTypes, Durations, TargetModes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Players, CardTypes, Durations, TargetModes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class FuryOfTheDamned extends DrawCard {
     static id = 'fury-of-the-damned';

@@ -1,12 +1,12 @@
-import { GameModes } from '../GameModes';
-import { AirRingEffect } from './Rings/AirRingEffect';
-import { EarthRingEffect } from './Rings/EarthRingEffect';
-import { FireRingEffect } from './Rings/FireRingEffect';
-import { VoidRingEffect } from './Rings/VoidRingEffect';
-import { WaterRingEffect } from './Rings/WaterRingEffect';
-import { AbilityContext } from './AbilityContext';
-import BaseAbility from './baseability';
-import Player from './player';
+import { GameModes } from '../GameModes.js';
+import { AirRingEffect } from './Rings/AirRingEffect.js';
+import { EarthRingEffect } from './Rings/EarthRingEffect.js';
+import { FireRingEffect } from './Rings/FireRingEffect.js';
+import { VoidRingEffect } from './Rings/VoidRingEffect.js';
+import { WaterRingEffect } from './Rings/WaterRingEffect.js';
+import { AbilityContext } from './AbilityContext.js';
+import BaseAbility from './baseability.js';
+import Player from './player.js';
 
 interface RingAbility extends BaseAbility {
     title: string;

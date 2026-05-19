@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard';
-import { Players, PlayTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import { Players, PlayTypes } from '../../Constants.js';
 
 class AkodoToturi2 extends DrawCard {
     static id = 'akodo-toturi-2';

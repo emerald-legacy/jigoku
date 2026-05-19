@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { CardTypes, Locations, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { CardTypes, Locations, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class RaiseTheAlarm extends DrawCard {
     static id = 'raise-the-alarm';

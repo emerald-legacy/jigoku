@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Players, CardTypes, Phases } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Players, CardTypes, Phases } from '../../Constants.js';
 
 class RoadsideInn extends DrawCard {
     static id = 'roadside-inn';

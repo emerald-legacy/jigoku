@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class TirelessSodanSenzo extends DrawCard {
     static id = 'tireless-sodan-senzo';

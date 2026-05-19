@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { DuelTypes } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { DuelTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class DuelToTheDeath extends DrawCard {
     static id = 'duel-to-the-death';

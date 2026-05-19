@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard';
+import DrawCard from '../../drawcard.js';
 
 class PacifistPhilosopher extends DrawCard {
     static id = 'pacifist-philosopher';

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import { Locations, TargetModes, Players } from '../../Constants';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import { Locations, TargetModes, Players } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 const merchantOfCuriositiesCost = function () {
     return {

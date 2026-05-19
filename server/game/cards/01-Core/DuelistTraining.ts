@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import * as GameActions from '../../GameActions/GameActions';
-import { Players, CardTypes, AbilityTypes, DuelTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import * as GameActions from '../../GameActions/GameActions.js';
+import { Players, CardTypes, AbilityTypes, DuelTypes } from '../../Constants.js';
 
 class DuelistTraining extends DrawCard {
     static id = 'duelist-training';

@@ -1,7 +1,7 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
-import { Locations, Players } from '../../Constants';
+import { Locations, Players } from '../../Constants.js';
 
 class InvokeTheDivine extends DrawCard {
     static id = 'invoke-the-divine';

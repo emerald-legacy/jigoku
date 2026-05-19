@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Locations, CardTypes } from '../../Constants';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Locations, CardTypes } from '../../Constants.js';
 
 class KyofukisHammer extends DrawCard {
     static id = 'kyofuki-s-hammer';

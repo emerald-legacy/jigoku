@@ -1,7 +1,7 @@
-import DrawCard from '../../drawcard';
-import AbilityDsl from '../../abilitydsl';
-import { Players, Locations, CardTypes } from '../../Constants';
-import { GameModes } from '../../../GameModes';
+import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import { Players, Locations, CardTypes } from '../../Constants.js';
+import { GameModes } from '../../../GameModes.js';
 
 class TheWealthOfTheCrane extends DrawCard {
     static id = 'the-wealth-of-the-crane';
