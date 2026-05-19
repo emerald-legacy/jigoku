@@ -56,6 +56,7 @@ interface GameDetails {
 
 interface GameOptions {
     shortCardData?: any[];
+    cardLibrary?: Map<string, unknown>;
     router?: any;
 }
 
@@ -90,6 +91,7 @@ class Game extends EventEmitter {
     readonly prompts: GamePromptHelper;
     rings: Record<string, Ring>;
     shortCardData: any[];
+    cardLibrary: Map<string, unknown>;
     router: any;
     allCards: BaseCard[];
     private cardsByUuid = new Map<string, BaseCard>();
@@ -144,6 +146,7 @@ class Game extends EventEmitter {
             water: new Ring(this, Elements.Water, ConflictTypes.Military)
         };
         this.shortCardData = options.shortCardData || [];
+        this.cardLibrary = options.cardLibrary ?? new Map();
         this.allCards = [];
         this.provinceCards = [];
         this.hiddenInfoLog = [];
