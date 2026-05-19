@@ -233,4 +233,61 @@ describe('Keen Warrior', function() {
             expect(this.player2).toHavePrompt('Conflict Action Window');
         });
     });
+
+    describe('Kitsuki Chiari interaction', function() {
+        integration(function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['eager-scout'],
+                        hand: ['assassination', 'banzai', 'fine-katana']
+                    },
+                    player2: {
+                        inPlay: ['keen-warrior', 'kitsuki-chiari'],
+                        conflictDiscard: ['way-of-the-dragon', 'charge'],
+                        provinces: ['upholding-authority']
+                    }
+                });
+
+                this.scout = this.player1.findCardByName('eager-scout');
+                this.assassination = this.player1.findCardByName('assassination');
+                this.warrior = this.player2.findCardByName('keen-warrior');
+                this.chiari = this.player2.findCardByName('kitsuki-chiari');
+                this.ua = this.player2.findCardByName('upholding-authority');
+
+                this.dragon = this.player2.moveCard('way-of-the-dragon', 'conflict deck');
+                this.charge = this.player2.moveCard('charge', 'conflict deck');
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.scout],
+                    province: this.ua
+                });
+            });
+
+            it('specific triggers - Kitsuki Chiari should trigger Keen Warrior', function() {
+                this.player2.clickCard(this.chiari);
+                this.player2.chooseCardInPrompt(this.assassination.name, 'card-name');
+
+                expect(this.player2).toHavePrompt('Any reactions to the effects of Kitsuki Chiari?');
+                expect(this.player2).toBeAbleToSelect(this.warrior);
+            });
+
+            it('specific triggers - Kitsuki Chiari: should draw 2 and return 1 to bottom of deck', function() {
+                let hand = this.player2.hand.length;
+
+                this.player2.clickCard(this.chiari);
+                this.player2.chooseCardInPrompt(this.assassination.name, 'card-name');
+
+                this.player2.clickCard(this.warrior);
+                expect(this.player2.hand.length).toBe(hand + 2);
+                expect(this.player2).toHavePrompt('Choose a card to return to your deck');
+
+                this.player2.clickCard(this.dragon);
+                expect(this.dragon.location).toBe('conflict deck');
+                expect(this.player2.player.conflictDeck.at(-1)).toBe(this.dragon);
+            });
+        });
+    });
 });

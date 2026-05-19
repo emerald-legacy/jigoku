@@ -1,11 +1,13 @@
 
-## Implementing Cards
+# Implementing Cards
 
-### Getting started
+For a complete reference of all available costs, game actions, effects, limits, and constants, see [ability_dsl.md](ability_dsl.md).
+
+## Getting started
 
 To implement a card, follow these steps:
 
-##### 1. Create a file named after the card.
+### 1. Create a file named after the card.
 
 Cards are organized under the `/server/game/cards` directory by grouping them by cycle/set number, pack number if applicable, and name.
 
@@ -14,7 +16,7 @@ Cards are organized under the `/server/game/cards` directory by grouping them by
 /server/game/cards/02.1-ToA/GoblinSneak.js //Imperial Cycle, Pack 1, Tears of Amaterasu
 ```
 
-#### 2. Create a class for the card and export it.
+### 2. Create a class for the card and export it.
 
 Character, holding, event and attachment cards should be derived from the `DrawCard` class.
 
@@ -37,7 +39,7 @@ CloudTheMind.id = 'cloud-the-mind';
 module.exports = CloudTheMind;
 ```
 
-#### 3. Override the `setupCardAbilities` method.
+### 3. Override the `setupCardAbilities` method.
 
 Persistent effects, actions, and triggered abilities should be defined in the `setupCardAbilities` method. Use the AbilityDsl import to get access to tools to help with  implementations. See below for more documentation.
 
@@ -49,21 +51,21 @@ class CloudTheMind extends DrawCard {
 }
 ```
 
-### Keywords
+## Keywords
 
 Most Keywords are automatically parsed from the card text. It isn't necessary to explicitly implement them unless they are provided by a conditional persistent effect.
 
-### Static bonuses from attachments
+## Static bonuses from attachments
 
 Static attachment bonuses are automatically included in skill calculation.  They don't need to be implemented unless they are dynamic (e.g. Born in War)
 
-### Persistent effects
+## Persistent effects
 
 Many cards provide continuous bonuses to other cards you control or detrimental effects to opponents cards in certain situations. These can be defined using the `persistentEffect` method. Cards that enter play while the persistent effect is in play will automatically have the effect applied, and cards that leave play will have the effect removed. If the card providing the effect becomes blank, the effect is automatically removed from all previously applied cards.
 
 For a full list of properties that can be set when declaring an effect, look at `/server/game/Effects/effect.js`. To see all the types of effect which you can use (and whether they apply to cards, rings or players), look at `/server/game/effects.js`. Here are some common scenarios:
 
-#### Matching conditions vs matching specific cards
+### Matching conditions vs matching specific cards
 
 The effect declaration (for card and ring effects) takes a `match` property. In most cases this will be a function that takes a `Card` (or `Ring`) object and should return `true` if the effect should be applied to that card.
 
@@ -86,7 +88,7 @@ this.persistentEffect({
 });
 ```
 
-#### Conditional effects
+### Conditional effects
 
 Some effects have a 'when', 'while' or 'if' clause within their text. These cards can be implemented by passing a `condition` function into the persistent effect declaration. The effect will only be applied when the function returns `true`. If the function returns `false` later on, the effect will be automatically unapplied from the cards it matched.
 
@@ -101,7 +103,7 @@ this.persistentEffect({
 });
 ```
 
-#### Targeting opponent or all matching cards
+### Targeting opponent or all matching cards
 
 By default, an effect will only be applied to cards controlled by the current player. The `targetController` property can be modified to specify which players' cards should be targeted.
 
@@ -129,7 +131,7 @@ this.persistentEffect({
 });
 ```
 
-#### Dynamic skill
+### Dynamic skill
 
 A few cards provide skill bonuses based on game state. For example, [Beastmaster Matriarch](https://fiveringsdb.com/card/beastmaster-matriarch) gets a bonus to military skill depending on how many rings have been claimed. Where the bonus should be continously updated, pass a function as the effect paramater. In `/server/game/effects.js`, you can see whether an effect is coded as static (expects to be passed an integer), dynamic (expects to be passed a function) or flexible (can take either).
 
@@ -141,7 +143,7 @@ this.persistentEffect({
 }
 ```
 
-#### Attachment-based effects
+### Attachment-based effects
 
 A `whileAttached` method is provided to define persistent effects that are applied to the card an attachment is attached. These effects remain as long as the card is attached to its parent and the attachment has not been blanked.
 
@@ -161,7 +163,7 @@ this.whileAttached({
 });
 ```
 
-#### Applying multiple effects at once
+### Applying multiple effects at once
 As a shorthand, it is possible to pass an array into the `effect` property to apply multiple effects that have the same conditions / matching functions.
 
 ```javascript
@@ -176,7 +178,7 @@ this.persistentEffect({
 });
 ```
 
-#### Applying effects to cards which aren't in play
+### Applying effects to cards which aren't in play
 
 By default, effects will only be applied to cards in the play area.  Certain cards effects refer to cards in your hand, such as reducing their cost or providing ambush to matching cards. In these cases, set the `targetLocation` property to `'hand'`.
 
@@ -202,7 +204,7 @@ this.persistentEffect({
 });
 ```
 
-#### Player modifying effects
+### Player modifying effects
 
 Certain cards provide bonuses or restrictions on the player itself instead of on any specific cards. These effects are marked as `player` effects in `/server/game/effects.js`. For player effects, `targetController` indicates which players the effect should be applied to (with `'current'` acting as the default). Player effects should not have a `match` property.
 
@@ -215,11 +217,11 @@ this.persistentEffect({
 });
 ```
 
-### Actions
+## Actions
 
 Actions are abilities provided by the card text that players may trigger during action windows. They are declared using the `action` method. See `/server/game/cardaction.js` for full documentation. Here are some common scenarios:
 
-#### Declaring an action
+### Declaring an action
 
 When declaring an action, use the `action` method and provide it with a `title` property. The title is what will be displayed in the menu players see when clicking on the card. 
 
@@ -234,7 +236,7 @@ class BorderRider extends DrawCard {
 }
 ```
 
-#### Context object
+### Context object
 
 When the game starts to resolve an ability, it creates a context object for that ability. Generally, the context ability has the following structure:
 
@@ -256,7 +258,7 @@ class AbilityContext {
 
 `context.source` is the card with the ability being used, and `context.player` is the player who is using the ability (almost always the controller of the `context.source`). When implementing actions and other triggered abilities, `context` should almost always be used (instead of `this`) to reference cards or players.  The only exception is that `this.game` can be used as an alternative to `context.game`.
 
-#### Checking ability restrictions
+### Checking ability restrictions
 
 Card abilities can only be triggered if they have the potential to modify game state (outside of paying costs). To ensure that the action's play restrictions are met, pass a `condition` function that returns `true` when the restrictions are met, and `false` otherwise. If the condition returns `false`, the action will not be executed and costs will not be paid.
 
@@ -278,7 +280,7 @@ this.action({
 });
 ```
 
-#### Paying additional costs for action
+### Paying additional costs for action
 
 Some actions have an additional cost, such as bowing the card. In these cases, specify the `cost` parameter. The action will check if the cost can be paid. If it can't, the action will not execute. If it can, costs will be paid automatically and then the action will execute.
 
@@ -308,7 +310,7 @@ this.action({
 });
 ```
 
-#### Choosing / targeting cards
+### Choosing / targeting cards
 
 Cards that specify to 'choose' or otherwise target a specific card should be implemented by passing a `target` property. The target property should include any limitations set by the ability, using the `cardType`, `location`, `controller` and/or `cardCondition` property. A game action can also be included by using the `gameAction` property, which will restrict the card chosen to those for which that game action is legal (e.g. only cards in the play area can be dishonored, only cards with fate can have fate removed from them, etc.).  If an array of game actions is specified, then the target only needs to meet the requirements of one of them.
 
@@ -335,7 +337,7 @@ this.action({
     // ...
 });
 ```
-#### Multiple targets
+### Multiple targets
 
 Some card abilities require multiple targets. These may be specified using the `targets` property. Each sub key under `targets` is the name that will be given to the chosen card, and the value is the prompt properties.
 
@@ -364,7 +366,7 @@ this.action({
 
 Once all targets are chosen, they will be set using their specified name under the `targets` property on the handler context object.
 
-#### Targeting rings
+### Targeting rings
 
 Rings are targeted in almost the same way as cards.  For abilities which target rings, set the `mode` property to `'ring'`, and use `ringCondition` instead of `cardCondition`. Most of the ring selection prompt properties are valid here also, see `/server/game/gamesteps/selectringprompt.js` for more details. the chosen ring is stored in `context.ring` (or `context.rings[targetName]` where an ability has multiple targets).
 
@@ -382,7 +384,7 @@ this.action({
 });
 ```
 
-#### Select options
+### Select options
 
 Some abilities require the player (or their opponent) to choose between multiple options.  This is done in the same way as targets above, but by using the `mode` property set to `'select'`.  In addition, a `choices` object should be included, which contains key:value pairs where the key is the option to display to the player, and the value is either a function which takes the `context` object and returns a boolean indicating whether this option is legal, or a game action which will be evaluated on the basis of the specified target (or default as detailed below) to determine whether the choice is legal.  The selected option is stored in `context.select.choice` (or `context.selects[targetName].choice` for an ability with multiple targets).
 
@@ -422,11 +424,11 @@ this.action({
 });
 ```
 
-### Ability effects
+## Ability effects
 
 In general, the effects of an ability should be implemented using Game Actions.
 
-#### Game Actions
+### Game Actions
 
 Actions (and other triggered abilities) often use game actions.  Available game actions can be found in `/server/game/GameActions/GameActions.js`, along with any parameters and their defaults.  Game actions as properties in the main ability section default to targetomg the card generating the ability (for cards), the opponent (for players) and the contested ring (for rings). Game actions included in `target` (or in one of `targets`) will default to the that target. You can change the target of a game action or the parameters by passing either an object with the properties you want, or a function which takes `context` and returns those properties.
 
@@ -448,7 +450,7 @@ this.reaction({
 });
 ```
 
-#### Effect messages
+### Effect messages
 
 Once costs have been paid and targets chosen (but before the ability resolves), the game automatically displays a message in the chat box which tells both players the ability, costs and targets of the effect.  Game actions will automatically generate their own effect message, although this will only work for a single game action.  If the effects of the ability involve two or more game actions, or the effect is a lasting effect or uses a handler, then an `effect` property is required.  The effect property will be passed the target (card(s) or ring) of the effect (or the source if there are no targets) as its first parameter (and so can be referenced using `'{0}'` in the effect property string).  If other references are required, this can be done using curly bracket references in the effect string(`'{1}', '{2', etc`) and supplying an `effectArgs` property (which generally will be a function taking the `context` object):
 
@@ -479,7 +481,7 @@ this.action({
 });
 ```
 
-#### Lasting effects
+### Lasting effects
 
 Unlike persistent effects, lasting effects are typically applied during an action, reaction or interrupt and expire after a specified period of time.  Lasting effect use the same properties as persistent effects, above.  Lasting effects are applied using the `cardLastingEffect`, `ringLastingEffect` or `playerLastingEffect`, depending on what they affect.  They take a `duration:` property which is one of `untilEndOfConflict` (default), `untilEndOfPhase` or `untilEndOfRound`.
 
@@ -536,7 +538,7 @@ this.action({
 });
 ```
 
-#### Limiting an action to a specific phase
+### Limiting an action to a specific phase
 
 Some actions are limited to a specific phase by their card text. You can pass an optional `phase` property to the action to limit it to just that phase. Valid phases include `'dynasty'`, `'draw'`, `'conflict'`, `'fate'`. The default is `'any'` which allows the action to be triggered in any phase.
 
@@ -552,7 +554,7 @@ this.action({
 });
 ```
 
-#### Limiting the number of uses
+### Limiting the number of uses
 
 Some actions have text limiting the number of times they may be used in a given period. You can pass an optional `limit` property using one of the duration-specific ability limiters. See `/server/game/abilitylimit.js` for more details.
 
@@ -564,7 +566,7 @@ this.action({
 });
 ```
 
-#### Actions outside of play
+### Actions outside of play
 
 Certain actions, such as that of Ancestral Guidance, can only be activated while the character is in the discard pile. Such actions should be defined by specifying the `location` property with the location from which the ability may be activated. The player can then activate the ability by simply clicking the card. If there is a conflict (e.g. both the ability and playing the card normally can occur), then the player will be prompted.
 
@@ -576,11 +578,11 @@ this.action({
 })
 ```
 
-### Triggered abilities
+## Triggered abilities
 
 Triggered abilities include all card abilities that have **Interrupt**, **Forced Interrupt**, **Reaction**, **Forced Reaction**. Implementing a triggered ability is similar to actions above, but instead of calling `this.action`, `this.reaction` or `this.interrupt` are used instead. Costs and targets are declared in the same way. For full documentation of properties, see `/server/game/triggeredability.js`. Here are some common scenarios:
 
-#### Defining the triggering condition
+### Defining the triggering condition
 
 Each triggered ability has an associated triggering condition. This is done using the `when` property. This should be an object whose sub-property is the name of the event, and whose value is a function which takes the event and the context object. When the function returns `true`, the ability will be executed.
 
@@ -607,7 +609,7 @@ this.reaction({
 });
 ```
 
-#### Forced reactions and interrupts
+### Forced reactions and interrupts
 
 Forced reactions and interrupts do not provide the player with a choice - unless cancelled, the effect will always resolve.
 
@@ -645,7 +647,7 @@ this.forcedInterrupt({
 });
 ```
 
-#### 'Would' interrupts
+### 'Would' interrupts
 
 Some abilities allow the player to cancel an effect. These effects are always interrupts, and are usually templated as 'Interrupt: When [trigger] would....'.  These are implemented
 using the `wouldInterrupt` method.  The context object for triggered ability has a useful `cancel` method which can be called in these cases
@@ -663,7 +665,7 @@ this.wouldInterrupt({
 });
 ```
 
-#### Abilities outside of play
+### Abilities outside of play
 
 Certain abilities, such as that of Vengeful Oathkeeper can only be activated in non-play locations. Such reactions should be defined by specifying the `location` property with the location from which the ability may be activated. The player can then activate the ability when prompted.
 
@@ -677,7 +679,7 @@ this.reaction({
 })
 ```
 
-### Ability limits
+## Ability limits
 
 Actions, reactions, and interrupts can have limits on how many times they may be used within a certain period. These limits can be set by setting the `limit` property on the ability. The `ability` object has a limit helper with methods for the different periods.
 
@@ -689,23 +691,23 @@ To limit an ability per round, use `AbilityDsl.limit.perRound(x)`.
 
 In each case, `x` should be the number of times the ability is allowed to be used.
 
-### Language
+## Language
 
-#### Game messages should begin with the player doing the action
+### Game messages should begin with the player doing the action
 
 Game messages should begin with the name of the player to ensure a uniform format and make it easy to see who triggered an ability.
 
 * **Bad**: Kaiu Shuichi triggers to gain 1 fate for Player1
 * **Good**: Player1 uses Kaiu Shuichi to gain 1 fate
 
-#### Game messages should not end in punctuation
+### Game messages should not end in punctuation
 
 No game messages should end in a period, exclaimation point or question mark.
 
 * **Bad**: Player1 draws 2 cards.
 * **Good**: Player1 draws 2 cards
 
-#### Game messages should use present tense.
+### Game messages should use present tense.
 
 All game messages should use present tense.
 
@@ -714,7 +716,7 @@ All game messages should use present tense.
 * **Good**: Player1 uses Isawa Masahiro to discard Miya Mystic
 * **Good**: Player1 chooses to discard Miya Mystic
 
-#### Targeting prompts should use the format "Choose a \<card type\>" where possible.
+### Targeting prompts should use the format "Choose a \<card type\>" where possible.
 
 Targeting prompts should ask the player to choose a card or a card of particular type to keep prompt titles relatively short, without specifying the final goal of card selection.
 
