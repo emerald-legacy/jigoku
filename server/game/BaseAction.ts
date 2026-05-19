@@ -1,8 +1,8 @@
-import { AbilityContext } from './AbilityContext';
+import { AbilityContext } from './AbilityContext.js';
 import BaseAbility from './baseability.js';
 import { Stages } from './Constants.js';
-import type Player from './player';
-import type BaseCard from './basecard';
+import type Player from './player.js';
+import type BaseCard from './basecard.js';
 
 interface Cost {
     getReducedCost?(context: AbilityContext): number;
@@ -56,4 +56,4 @@ class BaseAction extends BaseAbility {
     }
 }
 
-export = BaseAction;
+export default BaseAction;

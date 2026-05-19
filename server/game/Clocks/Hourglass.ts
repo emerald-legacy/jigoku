@@ -1,5 +1,5 @@
-import { ChessClock } from './ChessClock';
-import type { ClockInterface } from './types';
+import { ChessClock } from './ChessClock.js';
+import type { ClockInterface } from './types.js';
 
 export class Hourglass extends ChessClock implements ClockInterface {
     name = 'Hourglass';

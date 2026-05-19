@@ -1,11 +1,11 @@
-import type { AbilityContext } from '../AbilityContext';
-import { CardTypes, Durations, EventNames, Locations, type DuelTypes } from '../Constants';
-import type DrawCard from '../drawcard';
-import { Duel } from '../Duel';
-import { DuelFlow } from '../gamesteps/DuelFlow';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext';
-import { CardGameAction, type CardActionProperties } from './CardGameAction';
-import { type GameAction } from './GameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { CardTypes, Durations, EventNames, Locations, type DuelTypes } from '../Constants.js';
+import type DrawCard from '../drawcard.js';
+import { Duel } from '../Duel.js';
+import { DuelFlow } from '../gamesteps/DuelFlow.js';
+import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
+import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
+import { type GameAction } from './GameAction.js';
 
 export interface DuelProperties extends CardActionProperties {
     type: DuelTypes;

@@ -1,14 +1,14 @@
-import type CardAbility from '../CardAbility';
-import { EventNames } from '../Constants';
-import type DrawCard from '../drawcard';
-import type { Event } from '../Events/Event';
-import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent';
-import AbilityResolver from '../gamesteps/abilityresolver';
-import { SimpleStep } from '../gamesteps/SimpleStep';
-import type Player from '../player';
-import type TriggeredAbility from '../triggeredability';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext';
-import { type CardActionProperties, CardGameAction } from './CardGameAction';
+import type CardAbility from '../CardAbility.js';
+import { EventNames } from '../Constants.js';
+import type DrawCard from '../drawcard.js';
+import type { Event } from '../Events/Event.js';
+import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent.js';
+import AbilityResolver from '../gamesteps/abilityresolver.js';
+import { SimpleStep } from '../gamesteps/SimpleStep.js';
+import type Player from '../player.js';
+import type TriggeredAbility from '../triggeredability.js';
+import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
+import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 class ResolveAbilityActionResolver extends AbilityResolver {
     ignoreCosts: boolean;

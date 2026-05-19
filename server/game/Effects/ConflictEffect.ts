@@ -1,5 +1,5 @@
-import Effect from './Effect';
-import type Game from '../game';
+import Effect from './Effect.js';
+import type Game from '../game.js';
 
 export default class ConflictEffect extends Effect {
     constructor(game: Game, source: any, properties: any, effect: any) {

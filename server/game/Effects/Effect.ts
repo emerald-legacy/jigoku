@@ -1,5 +1,5 @@
-import { Locations, Durations } from '../Constants';
-import type Game from '../game';
+import { Locations, Durations } from '../Constants.js';
+import type Game from '../game.js';
 
 /**
  * Represents a card based effect applied to one or more targets.
@@ -156,4 +156,4 @@ class Effect {
     }
 }
 
-export = Effect;
+export default Effect;

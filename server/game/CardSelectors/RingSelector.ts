@@ -1,4 +1,4 @@
-import BaseCardSelector from './BaseCardSelector';
+import BaseCardSelector from './BaseCardSelector.js';
 
 class RingSelector extends BaseCardSelector {
     ringCondition: (ring: any, context: any) => boolean;

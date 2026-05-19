@@ -1,5 +1,5 @@
-import BaseAbility from '../baseability';
-import { AbilityTypes } from '../Constants';
+import BaseAbility from '../baseability.js';
+import { AbilityTypes } from '../Constants.js';
 
 class CovertAbility extends BaseAbility {
     title: string;
@@ -19,4 +19,4 @@ class CovertAbility extends BaseAbility {
     }
 }
 
-export = CovertAbility;
+export default CovertAbility;

@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../AbilityContext';
-import { CardTypes, EventNames, Locations, Players } from '../Constants';
-import type DrawCard from '../drawcard';
-import type Player from '../player';
-import { type CardActionProperties, CardGameAction } from './CardGameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { CardTypes, EventNames, Locations, Players } from '../Constants.js';
+import type DrawCard from '../drawcard.js';
+import type Player from '../player.js';
+import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export interface PutIntoPlayProperties extends CardActionProperties {
     fate?: number;

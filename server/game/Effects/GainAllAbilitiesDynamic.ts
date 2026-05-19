@@ -1,6 +1,6 @@
-import { EffectValue } from './EffectValue';
-import GainAbility from './GainAbility';
-import { AbilityTypes } from '../Constants';
+import { EffectValue } from './EffectValue.js';
+import GainAbility from './GainAbility.js';
+import { AbilityTypes } from '../Constants.js';
 
 // This ignores persistent effects since it's used by Shosuro Deceiver who only takes triggered abilities
 export default class GainAllAbilitiesDynamic extends EffectValue<any> {

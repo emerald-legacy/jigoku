@@ -1,4 +1,4 @@
-import BaseCardSelector from './BaseCardSelector';
+import BaseCardSelector from './BaseCardSelector.js';
 
 class UpToVariableXCardSelector extends BaseCardSelector {
     numCardsFunc: (context: any) => number;

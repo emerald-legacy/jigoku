@@ -1,5 +1,5 @@
-import type { AbilityContext } from '../AbilityContext';
-import { GameAction, type GameActionProperties } from './GameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface ConditionalActionProperties extends GameActionProperties {
     condition: ((context: any, properties: ConditionalActionProperties) => boolean) | boolean;

@@ -1,7 +1,7 @@
-import type Player from './player';
-import type BaseCard from './basecard';
-import type Ring from './ring';
-import type { Step } from './gamesteps/Step';
+import type Player from './player.js';
+import type BaseCard from './basecard.js';
+import type Ring from './ring.js';
+import type { Step } from './gamesteps/Step.js';
 
 type StepFactory = () => Step;
 type StepItem = Step | StepFactory;

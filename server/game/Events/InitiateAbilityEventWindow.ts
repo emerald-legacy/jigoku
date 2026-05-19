@@ -1,8 +1,8 @@
-import EventWindow from './EventWindow';
-import TriggeredAbilityWindow from '../gamesteps/triggeredabilitywindow';
-import { EventNames, AbilityTypes } from '../Constants';
-import type Game from '../game';
-import type { Event } from './Event';
+import EventWindow from './EventWindow.js';
+import TriggeredAbilityWindow from '../gamesteps/triggeredabilitywindow.js';
+import { EventNames, AbilityTypes } from '../Constants.js';
+import type Game from '../game.js';
+import type { Event } from './Event.js';
 
 class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
     playEvent: any;

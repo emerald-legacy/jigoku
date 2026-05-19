@@ -1,6 +1,6 @@
-import type { AbilityContext } from '../AbilityContext';
-import type Ring from '../ring';
-import { GameAction, type GameActionProperties } from './GameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import type Ring from '../ring.js';
+import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export type RingActionProperties = GameActionProperties;
 

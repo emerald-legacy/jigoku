@@ -1,9 +1,9 @@
-import type { AbilityContext } from './AbilityContext';
-import type { AbilityLimit } from './AbilityLimit';
-import type BaseCard from './basecard';
-import type { CardTypes, PlayTypes } from './Constants';
-import type Game from './game';
-import type Player from './player';
+import type { AbilityContext } from './AbilityContext.js';
+import type { AbilityLimit } from './AbilityLimit.js';
+import type BaseCard from './basecard.js';
+import type { CardTypes, PlayTypes } from './Constants.js';
+import type Game from './game.js';
+import type Player from './player.js';
 
 export type CostReducerProps = {
     cardType?: CardTypes;

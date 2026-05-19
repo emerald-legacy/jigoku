@@ -24,7 +24,7 @@ module.exports = [
         },
         languageOptions: {
             ecmaVersion: 2020,
-            sourceType: 'commonjs',
+            sourceType: 'module',
             globals: {
                 ...globals.node,
                 ...globals.es2020,

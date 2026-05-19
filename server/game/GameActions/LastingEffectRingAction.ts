@@ -1,6 +1,6 @@
-import { RingAction } from './RingAction';
-import { Durations, EventNames } from '../Constants';
-import { LastingEffectGeneralProperties } from './LastingEffectAction';
+import { RingAction } from './RingAction.js';
+import { Durations, EventNames } from '../Constants.js';
+import { LastingEffectGeneralProperties } from './LastingEffectAction.js';
 
 export type LastingEffectRingProperties = LastingEffectGeneralProperties;
 

@@ -1,11 +1,11 @@
-import { BaseStepWithPipeline } from '../gamesteps/BaseStepWithPipeline';
-import ForcedTriggeredAbilityWindow from '../gamesteps/forcedtriggeredabilitywindow';
-import { SimpleStep } from '../gamesteps/SimpleStep';
-import TriggeredAbilityWindow from '../gamesteps/triggeredabilitywindow';
-import { AbilityTypes } from '../Constants';
-import KeywordAbilityWindow from '../gamesteps/keywordabilitywindow';
-import type Game from '../game';
-import type { Event } from './Event';
+import { BaseStepWithPipeline } from '../gamesteps/BaseStepWithPipeline.js';
+import ForcedTriggeredAbilityWindow from '../gamesteps/forcedtriggeredabilitywindow.js';
+import { SimpleStep } from '../gamesteps/SimpleStep.js';
+import TriggeredAbilityWindow from '../gamesteps/triggeredabilitywindow.js';
+import { AbilityTypes } from '../Constants.js';
+import KeywordAbilityWindow from '../gamesteps/keywordabilitywindow.js';
+import type Game from '../game.js';
+import type { Event } from './Event.js';
 
 export default class EventWindow extends BaseStepWithPipeline {
     events: Event[] = [];

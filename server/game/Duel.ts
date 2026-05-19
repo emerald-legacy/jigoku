@@ -1,12 +1,12 @@
-import { GameObject } from './GameObject';
-import { DuelTypes, EffectNames, EventNames, Locations } from './Constants';
-import { GameMode, parseGameMode } from './GameMode';
-import { EventRegistrar } from './EventRegistrar';
-import type DrawCard from './drawcard';
-import type Game from './game';
-import type Player from './player';
-import { AbilityContext } from './AbilityContext';
-import type BaseCard from './basecard';
+import { GameObject } from './GameObject.js';
+import { DuelTypes, EffectNames, EventNames, Locations } from './Constants.js';
+import { GameMode, parseGameMode } from './GameMode.js';
+import { EventRegistrar } from './EventRegistrar.js';
+import type DrawCard from './drawcard.js';
+import type Game from './game.js';
+import type Player from './player.js';
+import { AbilityContext } from './AbilityContext.js';
+import type BaseCard from './basecard.js';
 
 /**
  * Used to track whether a player has played a specific type of duel effect yet

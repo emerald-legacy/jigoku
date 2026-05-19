@@ -1,6 +1,6 @@
-import { EffectValue } from './EffectValue';
-import { AbilityTypes, CardTypes, Locations, Phases, Stages } from '../Constants';
-import { MoveCardAction } from '../GameActions/MoveCardAction';
+import { EffectValue } from './EffectValue.js';
+import { AbilityTypes, CardTypes, Locations, Phases, Stages } from '../Constants.js';
+import { MoveCardAction } from '../GameActions/MoveCardAction.js';
 
 const checkRestrictions: Record<string, (context: any, effect: any, card?: any) => boolean> = {
     abilitiesTriggeredByOpponents: (context, effect) =>
@@ -195,4 +195,4 @@ class Restriction extends EffectValue<any> {
     }
 }
 
-export = Restriction;
+export default Restriction;

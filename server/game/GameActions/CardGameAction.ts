@@ -1,10 +1,10 @@
-import type { AbilityContext } from '../AbilityContext';
-import type BaseCard from '../basecard';
-import { CardTypes, EffectNames, Locations } from '../Constants';
-import type DrawCard from '../drawcard';
-import type Ring from '../ring';
-import { GameAction, GameActionProperties } from './GameAction';
-import { LoseFateAction } from './LoseFateAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../basecard.js';
+import { CardTypes, EffectNames, Locations } from '../Constants.js';
+import type DrawCard from '../drawcard.js';
+import type Ring from '../ring.js';
+import { GameAction, GameActionProperties } from './GameAction.js';
+import { LoseFateAction } from './LoseFateAction.js';
 
 export interface CardActionProperties extends GameActionProperties {
     target?: BaseCard | BaseCard[];

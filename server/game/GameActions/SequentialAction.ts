@@ -1,6 +1,6 @@
-import type { AbilityContext } from '../AbilityContext';
-import { GameAction, type GameActionProperties } from './GameAction';
-import type { GameObject } from '../GameObject';
+import type { AbilityContext } from '../AbilityContext.js';
+import { GameAction, type GameActionProperties } from './GameAction.js';
+import type { GameObject } from '../GameObject.js';
 
 export interface SequentialProperties extends GameActionProperties {
     gameActions: GameAction[];

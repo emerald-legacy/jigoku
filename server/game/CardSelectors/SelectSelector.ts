@@ -1,4 +1,4 @@
-import BaseCardSelector from './BaseCardSelector';
+import BaseCardSelector from './BaseCardSelector.js';
 
 class SelectSelector extends BaseCardSelector {
     choices: Record<string, (context: any) => boolean>;

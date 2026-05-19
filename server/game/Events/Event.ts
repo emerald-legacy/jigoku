@@ -1,5 +1,5 @@
-import type { AbilityContext } from '../AbilityContext';
-import { EventNames } from '../Constants';
+import type { AbilityContext } from '../AbilityContext.js';
+import { EventNames } from '../Constants.js';
 
 type Params = {
     amount: number;

@@ -1,5 +1,5 @@
-import { EffectValue } from './EffectValue';
-import { AbilityTypes, Locations } from '../Constants';
+import { EffectValue } from './EffectValue.js';
+import { AbilityTypes, Locations } from '../Constants.js';
 
 export default class GainAbility extends EffectValue<any> {
     abilityType: string;

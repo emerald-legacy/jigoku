@@ -1,13 +1,13 @@
-import { type AbilityTypes, EffectNames } from '../../Constants';
+import { type AbilityTypes, EffectNames } from '../../Constants.js';
 import type {
     ActionProps,
     PersistentEffectProps,
     TriggeredAbilityProps,
     TriggeredAbilityWhenProps
-} from '../../Interfaces';
-import type CardEffect from '../CardEffect';
-import { EffectBuilder } from '../EffectBuilder';
-import GainAbility from '../GainAbility';
+} from '../../Interfaces.js';
+import type CardEffect from '../CardEffect.js';
+import { EffectBuilder } from '../EffectBuilder.js';
+import GainAbility from '../GainAbility.js';
 
 type Res = (game: any, source: any, props: any) => CardEffect;
 

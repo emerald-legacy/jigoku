@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../../AbilityContext';
-import { EffectNames } from '../../Constants';
-import type { CostReducer, CostReducerProps } from '../../CostReducer';
-import type Player from '../../player';
-import { EffectBuilder } from '../EffectBuilder';
+import type { AbilityContext } from '../../AbilityContext.js';
+import { EffectNames } from '../../Constants.js';
+import type { CostReducer, CostReducerProps } from '../../CostReducer.js';
+import type Player from '../../player.js';
+import { EffectBuilder } from '../EffectBuilder.js';
 
 export function reduceCost(properties: CostReducerProps) {
     return EffectBuilder.player.detached(EffectNames.CostReducer, {

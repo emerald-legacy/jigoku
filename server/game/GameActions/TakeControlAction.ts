@@ -1,10 +1,10 @@
-import type { AbilityContext } from '../AbilityContext';
-import { Durations, Locations } from '../Constants';
-import type DrawCard from '../drawcard';
-import Effects from '../effects';
-import type { WhenType } from '../Interfaces';
-import type { GameActionProperties } from './GameAction';
-import { LastingEffectCardAction, type LastingEffectCardProperties } from './LastingEffectCardAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { Durations, Locations } from '../Constants.js';
+import type DrawCard from '../drawcard.js';
+import Effects from '../effects.js';
+import type { WhenType } from '../Interfaces.js';
+import type { GameActionProperties } from './GameAction.js';
+import { LastingEffectCardAction, type LastingEffectCardProperties } from './LastingEffectCardAction.js';
 
 export interface TakeControlProperties extends GameActionProperties {
     duration?: Durations;

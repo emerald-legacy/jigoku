@@ -1,12 +1,12 @@
-import BaseAbility from './baseability';
-import type BaseCard from './basecard';
-import { Locations, PlayTypes, Stages } from './Constants';
-import EffectSource from './EffectSource';
-import type Game from './game';
-import type { GameAction } from './GameActions/GameAction';
-import type Player from './player';
-import type Ring from './ring';
-import type { StatusToken } from './StatusToken';
+import BaseAbility from './baseability.js';
+import type BaseCard from './basecard.js';
+import { Locations, PlayTypes, Stages } from './Constants.js';
+import EffectSource from './EffectSource.js';
+import type Game from './game.js';
+import type { GameAction } from './GameActions/GameAction.js';
+import type Player from './player.js';
+import type Ring from './ring.js';
+import type { StatusToken } from './StatusToken.js';
 
 export interface AbilityContextProperties {
     game: Game;

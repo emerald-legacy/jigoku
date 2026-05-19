@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../AbilityContext';
-import { CardTypes, EventNames, Locations } from '../Constants';
-import type DrawCard from '../drawcard';
-import type { Duel } from '../Duel';
-import { type CardActionProperties, CardGameAction } from './CardGameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { CardTypes, EventNames, Locations } from '../Constants.js';
+import type DrawCard from '../drawcard.js';
+import type { Duel } from '../Duel.js';
+import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export interface DuelAddParticipantProperties extends CardActionProperties {
     duel: Duel;

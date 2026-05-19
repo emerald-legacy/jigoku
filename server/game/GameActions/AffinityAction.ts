@@ -1,7 +1,7 @@
-import type { AbilityContext } from '../AbilityContext';
-import type { GameObject } from '../GameObject';
-import { Derivable, derive } from '../utils/helpers';
-import { GameAction, type GameActionProperties } from './GameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import type { GameObject } from '../GameObject.js';
+import { Derivable, derive } from '../utils/helpers.js';
+import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface AffinityActionProperties extends GameActionProperties {
     gameAction: GameAction;

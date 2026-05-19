@@ -1,6 +1,6 @@
-import type Player from '../player';
-import { ChessClock } from './ChessClock';
-import type { ClockInterface } from './types';
+import type Player from '../player.js';
+import { ChessClock } from './ChessClock.js';
+import type { ClockInterface } from './types.js';
 
 export class Byoyomi extends ChessClock implements ClockInterface {
     name = 'Byoyomi';

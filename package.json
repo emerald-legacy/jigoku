@@ -2,6 +2,7 @@
     "name": "jigoku",
     "version": "2.0.0",
     "description": "The server code for Jigoku, a browser based implementation of the Legend of the Five Rings LCG",
+    "type": "module",
     "main": "build/server/gamenode/index.js",
     "scripts": {
         "test": "npm run jasmine",

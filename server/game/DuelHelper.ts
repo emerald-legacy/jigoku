@@ -1,6 +1,6 @@
-import AbilityDsl from './abilitydsl';
-import { CardTypes, Players } from './Constants';
-import { InitiateDuel } from './Interfaces';
+import AbilityDsl from './abilitydsl.js';
+import { CardTypes, Players } from './Constants.js';
+import { InitiateDuel } from './Interfaces.js';
 
 export const initiateDuel = (game, card, properties) => {
     if(properties.initiateDuel) {

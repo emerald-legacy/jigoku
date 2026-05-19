@@ -1,4 +1,4 @@
-import Effect from './Effect';
+import Effect from './Effect.js';
 
 export default class RingEffect extends Effect {
     getTargets(): any[] {

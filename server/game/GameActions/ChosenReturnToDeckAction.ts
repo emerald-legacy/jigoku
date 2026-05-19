@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../AbilityContext';
-import { EventNames, Locations, Players, TargetModes } from '../Constants';
-import type Player from '../player';
-import { PlayerAction, type PlayerActionProperties } from './PlayerAction';
-import { shuffle } from '../utils/shuffle';
+import type { AbilityContext } from '../AbilityContext.js';
+import { EventNames, Locations, Players, TargetModes } from '../Constants.js';
+import type Player from '../player.js';
+import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import { shuffle } from '../utils/shuffle.js';
 
 export interface ChosenReturnToDeckProperties extends PlayerActionProperties {
     amount?: number;

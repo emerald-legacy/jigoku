@@ -1,6 +1,6 @@
-import type { AbilityContext } from '../AbilityContext';
-import type { EffectNames } from '../Constants';
-import type { GameObject } from '../GameObject';
+import type { AbilityContext } from '../AbilityContext.js';
+import type { EffectNames } from '../Constants.js';
+import type { GameObject } from '../GameObject.js';
 
 export interface CardEffect {
     type: EffectNames;

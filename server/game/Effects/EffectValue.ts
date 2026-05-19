@@ -1,4 +1,4 @@
-import type { AbilityContext } from '../AbilityContext';
+import type { AbilityContext } from '../AbilityContext.js';
 
 export class EffectValue<V> {
     value: V;

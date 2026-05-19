@@ -1,4 +1,4 @@
-import { EffectValue } from './EffectValue';
+import { EffectValue } from './EffectValue.js';
 
 export class SuppressEffect extends EffectValue<any[]> {
     constructor(private predicate: (effect: unknown) => boolean) {

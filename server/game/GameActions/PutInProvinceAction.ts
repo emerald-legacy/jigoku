@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../AbilityContext';
-import type BaseCard from '../basecard';
-import { CardTypes, EffectNames, EventNames, Locations } from '../Constants';
-import type DrawCard from '../drawcard';
-import { type CardActionProperties, CardGameAction } from './CardGameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../basecard.js';
+import { CardTypes, EffectNames, EventNames, Locations } from '../Constants.js';
+import type DrawCard from '../drawcard.js';
+import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export interface PutInProvinceProperties extends CardActionProperties {
     destination?: Locations;

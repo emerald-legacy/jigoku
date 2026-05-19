@@ -1,11 +1,11 @@
-import type { AbilityContext } from '../AbilityContext';
-import type BaseCard from '../basecard';
-import CardSelector from '../CardSelector';
-import type BaseCardSelector from '../CardSelectors/BaseCardSelector';
-import { CardTypes, EffectNames, Locations, Players, TargetModes } from '../Constants';
-import type Player from '../player';
-import { type CardActionProperties, CardGameAction } from './CardGameAction';
-import type { GameAction } from './GameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../basecard.js';
+import CardSelector from '../CardSelector.js';
+import type BaseCardSelector from '../CardSelectors/BaseCardSelector.js';
+import { CardTypes, EffectNames, Locations, Players, TargetModes } from '../Constants.js';
+import type Player from '../player.js';
+import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { GameAction } from './GameAction.js';
 
 export interface SelectCardProperties extends CardActionProperties {
     activePromptTitle?: string;

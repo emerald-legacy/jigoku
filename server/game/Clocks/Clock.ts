@@ -1,5 +1,5 @@
-import type Player from '../player';
-import type { ClockInterface } from './types';
+import type Player from '../player.js';
+import type { ClockInterface } from './types.js';
 
 export type Mode = 'stop' | 'down' | 'up' | 'off';
 

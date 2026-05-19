@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../AbilityContext';
-import type BaseCard from '../basecard';
-import { CardTypes, Durations, EventNames, Locations } from '../Constants';
-import Effects from '../effects';
-import { type CardActionProperties, CardGameAction } from './CardGameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../basecard.js';
+import { CardTypes, Durations, EventNames, Locations } from '../Constants.js';
+import Effects from '../effects.js';
+import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export interface CreateTokenProperties extends CardActionProperties {
     atHome?: boolean;

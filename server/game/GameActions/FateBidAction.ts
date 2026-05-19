@@ -1,12 +1,12 @@
-import type { AbilityContext } from '../AbilityContext';
-import { EventNames } from '../Constants';
+import type { AbilityContext } from '../AbilityContext.js';
+import { EventNames } from '../Constants.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
-import type { GameAction } from './GameAction';
-import type Player from '../player';
-import { PlayerAction, type PlayerActionProperties } from './PlayerAction';
-import { FateBidPrompt } from '../gamesteps/FateBidPrompt';
-import { LoseFateAction } from './LoseFateAction';
-import { JointGameAction } from './JointGameAction';
+import type { GameAction } from './GameAction.js';
+import type Player from '../player.js';
+import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import { FateBidPrompt } from '../gamesteps/FateBidPrompt.js';
+import { LoseFateAction } from './LoseFateAction.js';
+import { JointGameAction } from './JointGameAction.js';
 
 export interface FateBidProperties extends PlayerActionProperties {
     postBidAction?: GameAction;

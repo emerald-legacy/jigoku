@@ -1,8 +1,8 @@
-import type { AbilityContext } from '../AbilityContext';
-import { EffectNames, EventNames } from '../Constants';
-import type Player from '../player';
-import { PlayerAction, type PlayerActionProperties } from './PlayerAction';
-import { CalculateHonorLimit } from './Shared/HonorLogic';
+import type { AbilityContext } from '../AbilityContext.js';
+import { EffectNames, EventNames } from '../Constants.js';
+import type Player from '../player.js';
+import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import { CalculateHonorLimit } from './Shared/HonorLogic.js';
 
 export interface TransferHonorProperties extends PlayerActionProperties {
     amount?: number;

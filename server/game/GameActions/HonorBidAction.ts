@@ -1,10 +1,10 @@
-import type { AbilityContext } from '../AbilityContext';
-import { EventNames, Players } from '../Constants';
-import HonorBidPrompt from '../gamesteps/honorbidprompt';
-import { SimpleStep } from '../gamesteps/SimpleStep';
-import type Player from '../player';
-import type { GameAction } from './GameAction';
-import { PlayerAction, type PlayerActionProperties } from './PlayerAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import { EventNames, Players } from '../Constants.js';
+import HonorBidPrompt from '../gamesteps/honorbidprompt.js';
+import { SimpleStep } from '../gamesteps/SimpleStep.js';
+import type Player from '../player.js';
+import type { GameAction } from './GameAction.js';
+import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
 export interface HonorBidProperties extends PlayerActionProperties {
     giveHonor?: boolean;

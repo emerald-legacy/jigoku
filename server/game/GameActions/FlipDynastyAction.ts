@@ -1,7 +1,7 @@
-import type { AbilityContext } from '../AbilityContext';
-import type BaseCard from '../basecard';
-import { CardTypes, EventNames } from '../Constants';
-import { type CardActionProperties, CardGameAction } from './CardGameAction';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../basecard.js';
+import { CardTypes, EventNames } from '../Constants.js';
+import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export type FlipDynastyProperties = CardActionProperties;
 

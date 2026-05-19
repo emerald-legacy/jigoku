@@ -1,11 +1,11 @@
-import ExactlyXCardSelector from './CardSelectors/ExactlyXCardSelector';
-import ExactlyVariableXCardSelector from './CardSelectors/ExactlyVariableXCardSelector';
-import MaxStatCardSelector from './CardSelectors/MaxStatCardSelector';
-import SingleCardSelector from './CardSelectors/SingleCardSelector';
-import UnlimitedCardSelector from './CardSelectors/UnlimitedCardSelector';
-import UpToXCardSelector from './CardSelectors/UpToXCardSelector';
-import UpToVariableXCardSelector from './CardSelectors/UpToVariableXCardSelector';
-import { TargetModes, CardTypes } from './Constants';
+import ExactlyXCardSelector from './CardSelectors/ExactlyXCardSelector.js';
+import ExactlyVariableXCardSelector from './CardSelectors/ExactlyVariableXCardSelector.js';
+import MaxStatCardSelector from './CardSelectors/MaxStatCardSelector.js';
+import SingleCardSelector from './CardSelectors/SingleCardSelector.js';
+import UnlimitedCardSelector from './CardSelectors/UnlimitedCardSelector.js';
+import UpToXCardSelector from './CardSelectors/UpToXCardSelector.js';
+import UpToVariableXCardSelector from './CardSelectors/UpToVariableXCardSelector.js';
+import { TargetModes, CardTypes } from './Constants.js';
 
 interface CardSelectorProperties {
     numCards?: number;
@@ -78,4 +78,4 @@ class CardSelector {
     }
 }
 
-export = CardSelector;
+export default CardSelector;

@@ -1,7 +1,7 @@
-import type { AbilityContext } from '../../AbilityContext';
-import type BaseCard from '../../basecard';
-import { EffectNames } from '../../Constants';
-import { EffectBuilder } from '../EffectBuilder';
+import type { AbilityContext } from '../../AbilityContext.js';
+import type BaseCard from '../../basecard.js';
+import { EffectNames } from '../../Constants.js';
+import { EffectBuilder } from '../EffectBuilder.js';
 
 export type AttachmentPoliticalSkillModifierValue = number | ((card: BaseCard, context: AbilityContext) => number);
 
