@@ -1224,7 +1224,12 @@ class Player extends GameObject {
     }
 
     modifyFate(amount: number): void {
+        const before = this.fate;
         this.fate = Math.max(0, this.fate + amount);
+        const actual = this.fate - before;
+        if(actual !== 0 && this.game) {
+            this.game.addAnimation({ type: 'fate', playerName: this.name, amount: actual });
+        }
     }
 
     modifyHonor(amount: number): void {
