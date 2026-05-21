@@ -15,7 +15,7 @@ const parsedEnv = z
         HMAC_SECRET: z.string().optional(),
         HTTPS: z.string(),
         LOBBY_PORT: z.coerce.number().int(),
-        MAX_GAMES: z.coerce.number().int().optional(),
+        MAX_GAMES: z.coerce.number().int().positive().default(20),
         LOBBY_WS_URL: z.string(),
         NODE_SECRET: z.string().optional(),
         SECRET: z.string(),
