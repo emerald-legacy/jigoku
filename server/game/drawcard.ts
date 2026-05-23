@@ -771,20 +771,32 @@ class DrawCard extends BaseCard {
         const seen = new Set<string>();
         const matching: Array<{ source: string; kind: 'delayed' | 'modifier' }> = [];
         for(const e of engine.effects) {
-            if(!e) continue;
-            if(e.duration === Durations.Persistent) continue;
+            if(!e) {
+                continue;
+            }
+            if(e.duration === Durations.Persistent) {
+                continue;
+            }
             const targetsByList = Array.isArray(e.targets) && e.targets.indexOf(this) !== -1;
             const targetsByMatch = e.match === this;
-            if(!targetsByList && !targetsByMatch) continue;
+            if(!targetsByList && !targetsByMatch) {
+                continue;
+            }
             const sourceObj: any = e.context && e.context.source;
-            if(sourceObj && sourceObj.printedType === 'token') continue;
+            if(sourceObj && sourceObj.printedType === 'token') {
+                continue;
+            }
             const effectType: string = (e.effect && e.effect.type) || '';
             const isDelayed = effectType === EffectNames.DelayedEffect;
-            if(!isDelayed && SKILL_EFFECTS.has(effectType)) continue;
+            if(!isDelayed && SKILL_EFFECTS.has(effectType)) {
+                continue;
+            }
             const source = (sourceObj && sourceObj.name) || 'Unknown';
             const kind: 'delayed' | 'modifier' = isDelayed ? 'delayed' : 'modifier';
             const key = `${source}|${kind}`;
-            if(seen.has(key)) continue;
+            if(seen.has(key)) {
+                continue;
+            }
             seen.add(key);
             matching.push({ source, kind });
         }
