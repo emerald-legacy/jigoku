@@ -786,7 +786,7 @@ class Game extends EventEmitter {
     private static readonly TOGGLE_OPTION_SETTINGS = new Set([
         'markCardsUnselectable', 'cancelOwnAbilities', 'orderForcedAbilities',
         'confirmOneClick', 'disableCardStats', 'showStatusInSidebar',
-        'sortHandByName', 'showRingEffects'
+        'sortHandByName', 'showRingEffects', 'hideEffectMarkers'
     ]);
 
     /**

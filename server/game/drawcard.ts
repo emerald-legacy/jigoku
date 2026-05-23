@@ -5,7 +5,7 @@ import CourtesyAbility from './KeywordAbilities/CourtesyAbility.js';
 import PrideAbility from './KeywordAbilities/PrideAbility.js';
 import SincerityAbility from './KeywordAbilities/SincerityAbility.js';
 import { RallyAbility } from './KeywordAbilities/RallyAbility.js';
-import { Locations, EffectNames, CardTypes, PlayTypes, ConflictTypes, EventNames } from './Constants.js';
+import { Locations, EffectNames, CardTypes, PlayTypes, ConflictTypes, EventNames, Durations } from './Constants.js';
 import { GameModes } from '../GameModes.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility.js';
@@ -749,6 +749,60 @@ class DrawCard extends BaseCard {
         return super.allowAttachment(attachment);
     }
 
+    getEffectMarkers(): Array<{ source: string; kind: 'delayed' | 'modifier' }> {
+        const engine: any = this.game && (this.game as any).effectEngine;
+        if(!engine || !Array.isArray(engine.effects)) {
+            return [];
+        }
+        const SKILL_EFFECTS: Set<string> = new Set([
+            EffectNames.ModifyMilitarySkill,
+            EffectNames.ModifyPoliticalSkill,
+            EffectNames.ModifyBaseMilitarySkillMultiplier,
+            EffectNames.ModifyBasePoliticalSkillMultiplier,
+            EffectNames.ModifyMilitarySkillMultiplier,
+            EffectNames.ModifyPoliticalSkillMultiplier,
+            EffectNames.ModifyGlory,
+            EffectNames.SetMilitarySkill,
+            EffectNames.SetPoliticalSkill,
+            EffectNames.SetBaseMilitarySkill,
+            EffectNames.SetBasePoliticalSkill,
+            EffectNames.SetGlory
+        ]);
+        const seen = new Set<string>();
+        const matching: Array<{ source: string; kind: 'delayed' | 'modifier' }> = [];
+        for(const e of engine.effects) {
+            if(!e) {
+                continue;
+            }
+            if(e.duration === Durations.Persistent) {
+                continue;
+            }
+            const targetsByList = Array.isArray(e.targets) && e.targets.indexOf(this) !== -1;
+            const targetsByMatch = e.match === this;
+            if(!targetsByList && !targetsByMatch) {
+                continue;
+            }
+            const sourceObj: any = e.context && e.context.source;
+            if(sourceObj && sourceObj.printedType === 'token') {
+                continue;
+            }
+            const effectType: string = (e.effect && e.effect.type) || '';
+            const isDelayed = effectType === EffectNames.DelayedEffect;
+            if(!isDelayed && SKILL_EFFECTS.has(effectType)) {
+                continue;
+            }
+            const source = (sourceObj && sourceObj.name) || 'Unknown';
+            const kind: 'delayed' | 'modifier' = isDelayed ? 'delayed' : 'modifier';
+            const key = `${source}|${kind}`;
+            if(seen.has(key)) {
+                continue;
+            }
+            seen.add(key);
+            matching.push({ source, kind });
+        }
+        return matching;
+    }
+
     getSummary(activePlayer: Player, hideWhenFaceup?: boolean): any {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
 
@@ -776,7 +830,8 @@ class DrawCard extends BaseCard {
             militarySkillSummary: this.militarySkillSummary,
             politicalSkillSummary: this.politicalSkillSummary,
             glorySummary: this.glorySummary,
-            controller: this.controller.getShortSummary()
+            controller: this.controller.getShortSummary(),
+            effectMarkers: this.getEffectMarkers()
         });
     }
 }
