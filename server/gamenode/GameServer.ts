@@ -141,7 +141,20 @@ export class GameServer {
             }
         }
 
-        captureException(e, { extra: debugData });
+        captureException(e);
+
+        const playerNames = game.getPlayers().map((p) => p.name);
+        if(playerNames.length >= 2) {
+            this.wsSocket.send('GAMEERROR', {
+                gameId: game.id,
+                gameName: game.name,
+                players: playerNames,
+                errorMessage: e.message,
+                errorStack: e.stack,
+                timestamp: new Date().toISOString(),
+                debugData: debugData
+            });
+        }
 
         if(game) {
             game.addMessage(
