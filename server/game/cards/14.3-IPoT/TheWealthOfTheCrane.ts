@@ -1,10 +1,17 @@
-import DrawCard from '../../drawcard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Players, Locations, CardTypes } from '../../Constants.js';
 import { GameModes } from '../../../GameModes.js';
+import AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import type BaseCard from '../../basecard.js';
+import { CardTypes, Locations, Players } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
+import type Player from '../../player.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 
 class TheWealthOfTheCrane extends DrawCard {
     static id = 'the-wealth-of-the-crane';
+
+    cards: DrawCard[] = [];
+    chosenProvinces: BaseCard[] = [];
 
     setupCardAbilities() {
         this.cards = [];
@@ -13,19 +20,19 @@ class TheWealthOfTheCrane extends DrawCard {
             location: Locations.Any,
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
-                amount: (card, player) => {
+                amount: (card: BaseCard, player: Player) => {
                     return player.getNumberOfFaceupProvinces();
                 },
-                match: (card, source) => card === source
+                match: (card: BaseCard, source: BaseCard) => card === source
             })
         });
 
         this.action({
             title: 'Look at your dynasty deck',
             effect: 'look at the top ten cards of their dynasty deck',
-            condition: (context) => context.player.dynastyDeck.length > 0,
+            condition: (context: AbilityContext) => context.player.dynastyDeck.length > 0,
             max: AbilityDsl.limit.perPhase(1),
-            handler: (context) => {
+            handler: (context: any) => {
                 this.cards = context.player.dynastyDeck.slice(0, 10);
                 this.chosenProvinces = [];
 
@@ -34,30 +41,30 @@ class TheWealthOfTheCrane extends DrawCard {
         });
     }
 
-    wealthSelectPrompt(context) {
+    wealthSelectPrompt(context: AbilityContext) {
         if(!this.cards || this.cards.length <= 0 || !this.hasRemainingTarget()) {
             context.player.shuffleDynastyDeck();
             return;
         }
 
-        let cardHandler = (currentCard) => {
+        const cardHandler = (currentCard: DrawCard) => {
             this.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a province for ' + currentCard.name,
                 context: context,
                 location: Locations.Provinces,
                 controller: Players.Self,
-                cardCondition: (card) => card.type === CardTypes.Province && this.isProvinceValidTarget(card),
-                onSelect: (player, card) => {
+                cardCondition: (card: BaseCard) => card.type === CardTypes.Province && this.isProvinceValidTarget(card),
+                onSelect: (player: Player, card: BaseCard) => {
                     this.game.addMessage(
                         '{0} puts {1} into {2}',
                         context.player,
                         currentCard,
-                        card.isFacedown() ? 'a facedown province' : card.name
+                        (card as ProvinceCard).isFacedown() ? 'a facedown province' : card.name
                     );
                     this.chosenProvinces.push(card);
                     context.player.moveCard(currentCard, card.location);
                     currentCard.facedown = false;
-                    this.cards = this.cards.filter((a) => a !== currentCard);
+                    this.cards = this.cards.filter((a: DrawCard) => a !== currentCard);
 
                     if(this.cards && this.cards.length > 0 && this.hasRemainingTarget()) {
                         this.game.promptWithHandlerMenu(context.player, {
@@ -87,12 +94,12 @@ class TheWealthOfTheCrane extends DrawCard {
         });
     }
 
-    isProvinceValidTarget(province) {
-        return province.location !== Locations.StrongholdProvince && !this.chosenProvinces.some((a) => a === province);
+    isProvinceValidTarget(province: BaseCard) {
+        return province.location !== Locations.StrongholdProvince && !this.chosenProvinces.some((a: BaseCard) => a === province);
     }
 
     hasRemainingTarget() {
-        let baseLocations = [Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree];
+        const baseLocations = [Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree];
         if(this.game.gameMode !== GameModes.Skirmish) {
             baseLocations.push(Locations.ProvinceFour);
         }

@@ -36,25 +36,26 @@ export class SetupPhase extends Phase {
 
     chooseFirstPlayer() {
         const firstPlayer = this.game.getFirstPlayer();
-        if(!firstPlayer.opponent) {
+        if(!firstPlayer || !firstPlayer.opponent) {
             return;
         }
+        const opponent = firstPlayer.opponent;
 
         if(
             firstPlayer.stronghold?.stealFirstPlayerDuringSetupWithMsg &&
-            !firstPlayer.opponent.stronghold?.stealFirstPlayerDuringSetupWithMsg
+            !opponent.stronghold?.stealFirstPlayerDuringSetupWithMsg
         ) {
             return;
         }
 
         if(
             !firstPlayer.stronghold?.stealFirstPlayerDuringSetupWithMsg &&
-            firstPlayer.opponent.stronghold?.stealFirstPlayerDuringSetupWithMsg
+            opponent.stronghold?.stealFirstPlayerDuringSetupWithMsg
         ) {
             firstPlayer.firstPlayer = false;
-            firstPlayer.opponent.firstPlayer = true;
-            this.game.addMessage(firstPlayer.opponent.stronghold.stealFirstPlayerDuringSetupWithMsg, [
-                firstPlayer.opponent
+            opponent.firstPlayer = true;
+            this.game.addMessage(opponent.stronghold.stealFirstPlayerDuringSetupWithMsg, [
+                opponent
             ]);
             return;
         }
@@ -68,7 +69,7 @@ export class SetupPhase extends Phase {
                     this.game.setFirstPlayer(firstPlayer);
                 },
                 () => {
-                    this.game.setFirstPlayer(firstPlayer.opponent);
+                    this.game.setFirstPlayer(opponent);
                 }
             ]
         });
@@ -79,7 +80,9 @@ export class SetupPhase extends Phase {
             return;
         }
         for(const player of this.game.getPlayers()) {
-            player.moveCard(player.stronghold, Locations.StrongholdProvince);
+            if(player.stronghold) {
+                player.moveCard(player.stronghold, Locations.StrongholdProvince);
+            }
             if(player.role) {
                 player.role.moveTo(Locations.Role);
             }
@@ -127,7 +130,8 @@ export class SetupPhase extends Phase {
 
     startGame() {
         for(const player of this.game.getPlayers()) {
-            player.honor = this.game.gameMode === GameModes.Skirmish ? 6 : player.stronghold.cardData.honor;
+            const strongholdHonor = player.stronghold?.cardData.honor ?? 0;
+            player.honor = this.game.gameMode === GameModes.Skirmish ? 6 : strongholdHonor;
             player.readyToStart = true;
         }
         this.endPhase();

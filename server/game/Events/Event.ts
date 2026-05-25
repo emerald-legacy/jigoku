@@ -10,15 +10,17 @@ type Params = {
 export class Event {
     cancelled = false;
     resolved = false;
-    context = null;
-    window = null;
-    replacementEvent = null;
-    condition = (_event) => true;
+    context: AbilityContext | null = null;
+    window: any = null;
+    replacementEvent: Event | null = null;
+    condition = (_event: Event) => true;
     order = 0;
     isContingent = false;
-    checkFullyResolved = (event) => !event.cancelled;
-    createContingentEvents = () => [];
+    checkFullyResolved = (event: Event) => !event.cancelled;
+    createContingentEvents = (): Event[] => [];
     preResolutionEffect = () => true;
+    onPlayCardSource?: any;
+    [key: string]: any;
 
     constructor(
         public name: string,

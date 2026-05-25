@@ -28,12 +28,12 @@ class BaseAction extends BaseAbility {
         this.card = card;
     }
 
-    meetsRequirements(context: AbilityContext): string | undefined {
+    meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {
         if(this.isCardPlayed() && this.card.isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
             return 'limited';
         }
 
-        return super.meetsRequirements(context);
+        return super.meetsRequirements(context, ignoredRequirements);
     }
 
     createContext(player: Player = this.card.controller): AbilityContext {

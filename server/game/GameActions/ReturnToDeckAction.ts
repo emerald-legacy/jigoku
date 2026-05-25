@@ -1,6 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
 import type DrawCard from '../drawcard.js';
+import type { Event } from '../Events/Event.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export interface ReturnToDeckProperties extends CardActionProperties {
@@ -44,12 +45,10 @@ export class ReturnToDeckAction extends CardGameAction {
     }
 
     canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context) as ReturnToDeckProperties;
-        let location = properties.location;
-        if(!Array.isArray(location)) {
-            location = [location];
-        }
-        let index = location.indexOf(Locations.Provinces);
+        const properties = this.getProperties(context) as ReturnToDeckProperties;
+        const rawLocation = properties.location ?? Locations.PlayArea;
+        let location: Locations[] = Array.isArray(rawLocation) ? [...rawLocation] : [rawLocation];
+        const index = location.indexOf(Locations.Provinces);
         if(index > -1) {
             location.splice(index, 1);
             location = location.concat(context.game.getProvinceArray());
@@ -61,17 +60,19 @@ export class ReturnToDeckAction extends CardGameAction {
         );
     }
 
-    updateEvent(event, card: DrawCard, context: AbilityContext, additionalProperties): void {
-        let { shuffle, target, bottom } = this.getProperties(context, additionalProperties) as ReturnToDeckProperties;
+    updateEvent(event: Event, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+        const { shuffle, target, bottom } = this.getProperties(context, additionalProperties) as ReturnToDeckProperties;
         this.updateLeavesPlayEvent(event, card, context, additionalProperties);
         event.destination = card.isDynasty ? Locations.DynastyDeck : Locations.ConflictDeck;
         event.options = { bottom };
-        if(shuffle && (target.length === 0 || card === target[target.length - 1])) {
+        const targets = target as DrawCard | DrawCard[] | undefined;
+        const lastTarget = Array.isArray(targets) ? targets[targets.length - 1] : targets;
+        if(shuffle && (!targets || (Array.isArray(targets) && targets.length === 0) || card === lastTarget)) {
             event.shuffle = true;
         }
     }
 
-    eventHandler(event, additionalProperties = {}): void {
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
         this.leavesPlayEventHandler(event, additionalProperties);
         if(event.shuffle) {
             if(event.destination === Locations.DynastyDeck) {

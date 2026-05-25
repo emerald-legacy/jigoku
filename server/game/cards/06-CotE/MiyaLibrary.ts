@@ -1,7 +1,7 @@
 
-import DrawCard from '../../drawcard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { CardTypes, Locations } from '../../Constants.js';
-// const AbilitDsl = require('../../abilitydsl');
+import DrawCard from '../../drawcard.js';
 
 class MiyaLibrary extends DrawCard {
     static id = 'miya-library';
@@ -9,17 +9,17 @@ class MiyaLibrary extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Replace Miya Library for a faceup imperial character',
-            condition: context => context.player.dynastyDeck.length > 0,
+            condition: (context: AbilityContext) => context.player.dynastyDeck.length > 0,
             effect: 'Search the top four card for your dynasty deck for an imperial character',
-            handler: context => {
+            handler: (context: any) => {
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'select an imperial character to replace miya library',
                     context: context,
-                    cardCondition: card => card.hasTrait('imperial') && card.getType() === CardTypes.Character,
+                    cardCondition: (card: DrawCard) => card.hasTrait('imperial') && card.getType() === CardTypes.Character,
                     cards: context.player.dynastyDeck.slice(0, 4),
                     choices: ['Do not replace Miya Library'],
                     handlers: [() => this.miyaLibraryPrompt(context, context.player.dynastyDeck.slice(0, 4), [], 'Select the card you would like to place on top of your dynasty deck')],
-                    cardHandler: (card) => {
+                    cardHandler: (card: DrawCard) => {
                         if(card.hasTrait('imperial') && card.getType() === CardTypes.Character) {
                             context.player.moveCard(card, context.source.location);
                             card.facedown = false;
@@ -32,15 +32,15 @@ class MiyaLibrary extends DrawCard {
         });
     }
 
-    miyaLibraryPrompt(context, promptCards, orderedCards, promptTitle) {
+    miyaLibraryPrompt(context: AbilityContext, promptCards: DrawCard[], orderedCards: DrawCard[], promptTitle: string) {
         const orderPrompt = ['first', 'second', 'third'];
         this.game.promptWithHandlerMenu(context.player, {
             activePromptTitle: promptTitle,
             context: context,
             cards: promptCards,
-            cardHandler: card => {
+            cardHandler: (card: DrawCard) => {
                 orderedCards.push(card);
-                promptCards = promptCards.filter(c => c !== card);
+                promptCards = promptCards.filter((c: DrawCard) => c !== card);
                 if(promptCards.length > 1) {
                     this.miyaLibraryPrompt(context, promptCards, orderedCards, 'Which card do you want to be the ' + orderPrompt[orderedCards.length] + ' card?');
                     return;

@@ -7,11 +7,11 @@ class StatModifier {
     type: CardTypes;
     overrides: boolean;
 
-    constructor(amount: number, name: string, overrides: boolean, type: CardTypes) {
+    constructor(amount: number, name: string, overrides: boolean, type?: CardTypes) {
         this.amount = amount;
         this.name = name;
         this.overrides = overrides;
-        this.type = type;
+        this.type = type as CardTypes;
     }
 
     static getEffectName(effect) {

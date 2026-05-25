@@ -142,10 +142,10 @@ export class ProvinceCard extends BaseCard {
         return this.getElement();
     }
 
-    getElement() {
+    getElement(): string[] {
         const symbols = this.getCurrentElementSymbols();
-        const elementArray = [];
-        symbols.forEach((symbol) => {
+        const elementArray: string[] = [];
+        symbols.forEach((symbol: { key: string; element: string }) => {
             if(symbol.key.startsWith('province-element')) {
                 elementArray.push(symbol.element);
             }
@@ -154,20 +154,20 @@ export class ProvinceCard extends BaseCard {
         return elementArray;
     }
 
-    isElement(element) {
+    isElement(element: string): boolean {
         return this.element.includes(element);
     }
 
-    hasElementSymbols() {
-        return this.cardData.elements && this.cardData.elements.length > 0;
+    hasElementSymbols(): boolean {
+        return !!this.cardData.elements && this.cardData.elements.length > 0;
     }
 
-    getPrintedElementSymbols() {
-        const symbols = [];
+    getPrintedElementSymbols(): Array<{ key: string; prettyName: string; element: string }> {
+        const symbols: Array<{ key: string; prettyName: string; element: string }> = [];
         if(this.hasElementSymbols()) {
             const elements =
                 this.cardData.elements === 'all' ? ['air', 'earth', 'fire', 'void', 'water'] : this.cardData.elements;
-            elements.forEach((element, index) => {
+            elements?.forEach((element: string, index: number) => {
                 symbols.push({
                     key: `province-element-${index}`,
                     prettyName: 'The Province\'s Element',
@@ -189,12 +189,12 @@ export class ProvinceCard extends BaseCard {
     }
 
     isConflictProvince(): boolean {
-        return this.game.currentConflict && this.game.currentConflict.getConflictProvinces().includes(this);
+        return !!this.game.currentConflict && this.game.currentConflict.getConflictProvinces().includes(this);
     }
 
     canBeAttacked() {
         const fateCostToAttack = this.getFateCostToAttack();
-        const attackers = this.game.isDuringConflict() ? this.game.currentConflict.attackers : [];
+        const attackers = this.game.isDuringConflict() && this.game.currentConflict ? this.game.currentConflict.attackers : [];
         const fateToDeclareAttackers = attackers.reduce(
             (total, card) => total + card.sumEffects(EffectNames.FateCostToAttack),
             0
@@ -210,7 +210,7 @@ export class ProvinceCard extends BaseCard {
         );
     }
 
-    canDeclare(type, _ring) {
+    canDeclare(type: string, _ring: unknown): boolean {
         return this.canBeAttacked() && !this.getEffects(EffectNames.CannotHaveConflictsDeclaredOfType).includes(type);
     }
 
@@ -310,7 +310,7 @@ export class ProvinceCard extends BaseCard {
                 this.game.isDuringConflict() &&
                 !this.isConflictProvince() &&
                 this.canBeAttacked() &&
-                this.game.currentConflict.getConflictProvinces().some((a) => a.controller === this.controller)
+                this.game.currentConflict?.getConflictProvinces().some((a) => a.controller === this.controller)
             ) {
                 menu.push({ command: 'move_conflict', text: 'Move Conflict' });
             }

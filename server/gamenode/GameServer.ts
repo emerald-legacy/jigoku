@@ -34,8 +34,8 @@ export class GameServer implements GameRouter {
         let privateKey: undefined | string;
         let certificate: undefined | string;
         try {
-            privateKey = fs.readFileSync(env.gameNodeKeyPath).toString();
-            certificate = fs.readFileSync(env.gameNodeCertPath).toString();
+            privateKey = fs.readFileSync(env.gameNodeKeyPath as string).toString();
+            certificate = fs.readFileSync(env.gameNodeCertPath as string).toString();
         } catch{
             // No local certs — if HTTPS is enabled (e.g. via nginx proxy), still
             // advertise https to clients so they connect over the proxy.
@@ -165,7 +165,7 @@ export class GameServer implements GameRouter {
         try {
             func();
         } catch(e) {
-            this.handleError(game, e);
+            this.handleError(game, e as Error);
 
             this.sendGameState(game);
         }
@@ -373,7 +373,7 @@ export class GameServer implements GameRouter {
         game.initialise();
     }
 
-    onSpectator(pendingGame: PendingGame, user) {
+    onSpectator(pendingGame: PendingGame, user: { username: string; [key: string]: unknown }) {
         const game = this.games.get(pendingGame.id);
         if(!game) {
             return;
@@ -385,8 +385,8 @@ export class GameServer implements GameRouter {
         this.sendGameState(game);
     }
 
-    onGameSync(callback) {
-        const gameSummaries = [];
+    onGameSync(callback: (summaries: unknown[]) => void) {
+        const gameSummaries: unknown[] = [];
         for(const game of this.games.values()) {
             const retGame = game.getSummary();
             if(retGame) {
@@ -400,7 +400,7 @@ export class GameServer implements GameRouter {
         callback(gameSummaries);
     }
 
-    onFailedConnect(gameId, username) {
+    onFailedConnect(gameId: string, username: string) {
         const game = this.findGameForUser(username);
         if(!game || game.id !== gameId) {
             return;
@@ -422,7 +422,7 @@ export class GameServer implements GameRouter {
         this.sendGameState(game);
     }
 
-    onCloseGame(gameId) {
+    onCloseGame(gameId: string) {
         this.cancelAbandonTimer(gameId);
         const game = this.games.get(gameId);
         if(!game) {
@@ -433,26 +433,30 @@ export class GameServer implements GameRouter {
         this.notifyAndCloseGame(game);
     }
 
-    onCardData(cardData) {
+    onCardData(cardData: { titleCardData: unknown; shortCardData: unknown }) {
         this.titleCardData = cardData.titleCardData;
         this.shortCardData = cardData.shortCardData;
     }
 
-    onConnection(ioSocket) {
-        if(!ioSocket.request.user) {
+    onConnection(ioSocket: socketio.Socket) {
+        const req = ioSocket.request as { user?: { username: string } };
+        if(!req.user) {
             logger.info('socket connected with no user, disconnecting');
             ioSocket.disconnect();
             return;
         }
 
-        const game = this.findGameForUser(ioSocket.request.user.username);
+        const game = this.findGameForUser(req.user.username);
         if(!game) {
-            logger.info(`No game for ${ioSocket.request.user.username}, disconnecting`);
+            logger.info(`No game for ${req.user.username}, disconnecting`);
             ioSocket.disconnect();
             return;
         }
 
         const socket = new Socket(ioSocket);
+        if(!socket.user) {
+            return;
+        }
 
         const player = game.playersAndSpectators[socket.user.username];
         if(!player) {
@@ -485,7 +489,10 @@ export class GameServer implements GameRouter {
         socket.on('disconnect', this.onSocketDisconnected.bind(this));
     }
 
-    onSocketDisconnected(socket, reason) {
+    onSocketDisconnected(socket: Socket, reason: string) {
+        if(!socket.user) {
+            return;
+        }
         const game = this.findGameForUser(socket.user.username);
         if(!game) {
             return;
@@ -521,7 +528,10 @@ export class GameServer implements GameRouter {
         this.sendGameState(game);
     }
 
-    onLeaveGame(socket) {
+    onLeaveGame(socket: Socket) {
+        if(!socket.user) {
+            return;
+        }
         const game = this.findGameForUser(socket.user.username);
         if(!game) {
             return;
@@ -581,7 +591,10 @@ export class GameServer implements GameRouter {
         toggleTimerSetting: (g: Game, p: string, settingName: string, toggle: boolean) => g.toggleTimerSetting(p, settingName, toggle)
     } as const satisfies Record<string, (game: Game, player: string, ...args: any[]) => void>;
 
-    onGameMessage(socket, command, ...args) {
+    onGameMessage(socket: Socket, command: string, ...args: unknown[]) {
+        if(!socket.user) {
+            return;
+        }
         const game = this.findGameForUser(socket.user.username);
 
         if(!game) {
@@ -598,9 +611,10 @@ export class GameServer implements GameRouter {
             return;
         }
 
+        const username = socket.user.username;
         this.runAndCatchErrors(game, () => {
             game.stopNonChessClocks();
-            handler(game, socket.user.username, ...args);
+            handler(game, username, ...args);
 
             game.continue();
 

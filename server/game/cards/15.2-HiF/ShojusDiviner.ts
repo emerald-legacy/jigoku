@@ -1,6 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityTypes, Locations } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 class ShojusDiviner extends DrawCard {
     static id = 'shoju-s-diviner';
@@ -10,12 +11,12 @@ class ShojusDiviner extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
                 title: 'Divine your conflict deck',
                 printedAbility: false,
-                condition: context => context.player.conflictDeck.length > 0,
+                condition: (context: AbilityContext) => context.player.conflictDeck.length > 0,
                 effect: 'look at the top 8 cards of their conflict deck',
                 gameAction: AbilityDsl.actions.handler({
-                    handler: context => {
+                    handler: (context: AbilityContext) => {
                         const cards = context.player.conflictDeck.slice(0, 8);
-                        const chosenCards = [];
+                        const chosenCards: DrawCard[] = [];
 
                         this.selectPrompt(context, cards, chosenCards);
                     }
@@ -24,13 +25,13 @@ class ShojusDiviner extends DrawCard {
         });
     }
 
-    selectPrompt(context, cards, chosenCards) {
+    selectPrompt(context: AbilityContext, cards: DrawCard[], chosenCards: DrawCard[]) {
         if(!cards || cards.length <= 0) {
             return;
         }
 
-        let cardHandler = currentCard => {
-            cards = cards.filter(a => a !== currentCard);
+        const cardHandler = (currentCard: DrawCard) => {
+            cards = cards.filter((a: DrawCard) => a !== currentCard);
             chosenCards.push(currentCard);
             this.promptWithMenu(context, cards, chosenCards, cardHandler);
         };
@@ -39,7 +40,7 @@ class ShojusDiviner extends DrawCard {
 
     }
 
-    promptWithMenu(context, cards, chosenCards, cardHandler) {
+    promptWithMenu(context: AbilityContext, cards: DrawCard[], chosenCards: DrawCard[], cardHandler: (card: DrawCard) => void) {
         if(!cards || cards.length <= 0) {
             this.handleCards(context, cards, chosenCards);
             return;
@@ -49,7 +50,7 @@ class ShojusDiviner extends DrawCard {
         if(chosenCards.length > 0) {
             promptInfo = `under ${chosenCards[chosenCards.length - 1].name}`;
         }
-        let prompt = `Select the card to put ${promptInfo}`;
+        const prompt = `Select the card to put ${promptInfo}`;
 
         this.game.promptWithHandlerMenu(context.player, {
             activePromptTitle: prompt,
@@ -63,10 +64,10 @@ class ShojusDiviner extends DrawCard {
         });
     }
 
-    handleCards(context, cards, chosenCards) {
+    handleCards(context: AbilityContext, cards: DrawCard[], chosenCards: DrawCard[]) {
         if(cards && cards.length > 0) {
             this.game.addMessage('{0} discards {1}', context.player, cards);
-            cards.forEach(card => context.player.moveCard(card, Locations.ConflictDiscardPile));
+            cards.forEach((card: DrawCard) => context.player.moveCard(card, Locations.ConflictDiscardPile));
         }
         if(chosenCards.length > 0) {
             this.game.addMessage('{0} places {1} card{2} on top of their deck', context.player, chosenCards.length, chosenCards.length > 1 ? 's' : '');

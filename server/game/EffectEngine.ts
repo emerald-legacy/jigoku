@@ -1,13 +1,20 @@
 import { Durations, EffectNames, EventNames } from './Constants.js';
 import type Effect from './Effects/Effect.js';
 import type EffectSource from './EffectSource.js';
+import type { Event } from './Events/Event.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import type Game from './game.js';
+
+interface CustomDurationEvent {
+    name: string;
+    handler: (...args: unknown[]) => void;
+    effect: Effect;
+}
 
 export class EffectEngine {
     events: EventRegistrar;
     effects: Array<Effect> = [];
-    customDurationEvents = [];
+    customDurationEvents: CustomDurationEvent[] = [];
     newEffect = false;
 
     constructor(private game: Game) {
@@ -30,9 +37,9 @@ export class EffectEngine {
         return effect;
     }
 
-    checkDelayedEffects(events: any[]) {
-        let effectsToTrigger = [];
-        const effectsToRemove = [];
+    checkDelayedEffects(events: Event[]) {
+        let effectsToTrigger: Effect[] = [];
+        const effectsToRemove: Effect[] = [];
         for(const effect of this.effects.filter(
             (effect) => effect.isEffectActive() && effect.effect.type === EffectNames.DelayedEffect
         )) {
@@ -55,7 +62,7 @@ export class EffectEngine {
                 }
             }
         }
-        effectsToTrigger = effectsToTrigger.map((effect) => {
+        const triggers = effectsToTrigger.map((effect) => {
             const properties = effect.effect.getValue();
             const context = effect.context;
             const targets = effect.targets;
@@ -70,7 +77,7 @@ export class EffectEngine {
                         }
                         this.game.addMessage(properties.message, ...messageArgs);
                     }
-                    const actionEvents = [];
+                    const actionEvents: Event[] = [];
                     properties.gameAction.addEventsToArray(actionEvents, context);
                     this.game.queueSimpleStep(() => this.game.openThenEventWindow(actionEvents));
                     this.game.queueSimpleStep(() => context.refill());
@@ -80,8 +87,8 @@ export class EffectEngine {
         if(effectsToRemove.length > 0) {
             this.unapplyAndRemove((effect) => effectsToRemove.includes(effect));
         }
-        if(effectsToTrigger.length > 0) {
-            this.game.openSimultaneousEffectWindow(effectsToTrigger);
+        if(triggers.length > 0) {
+            this.game.openSimultaneousEffectWindow(triggers);
         }
     }
 
@@ -135,7 +142,7 @@ export class EffectEngine {
         this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Durations.UntilEndOfRound);
     }
 
-    onPassActionPhasePriority(event) {
+    onPassActionPhasePriority(event: Event) {
         for(const effect of this.effects) {
             if(
                 effect.duration === Durations.UntilSelfPassPriority &&
@@ -175,7 +182,7 @@ export class EffectEngine {
     }
 
     unregisterCustomDurationEvents(effect: Effect) {
-        const remainingEvents = [];
+        const remainingEvents: CustomDurationEvent[] = [];
         for(const event of this.customDurationEvents) {
             if(event.effect === effect) {
                 this.game.removeListener(event.name, event.handler);
@@ -186,10 +193,10 @@ export class EffectEngine {
         this.customDurationEvents = remainingEvents;
     }
 
-    createCustomDurationHandler(customDurationEffect) {
-        return (...args) => {
-            let event = args[0];
-            let listener = customDurationEffect.until[event.name];
+    createCustomDurationHandler(customDurationEffect: Effect) {
+        return (...args: unknown[]) => {
+            const event = args[0] as Event;
+            const listener = customDurationEffect.until?.[event.name];
             if(listener && listener(...args)) {
                 customDurationEffect.cancel();
                 this.unregisterCustomDurationEvents(customDurationEffect);

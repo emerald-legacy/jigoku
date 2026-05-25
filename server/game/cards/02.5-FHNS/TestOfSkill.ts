@@ -1,22 +1,24 @@
+import type { AbilityContext } from '../../AbilityContext.js';
+import type BaseCard from '../../basecard.js';
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { Locations, CardTypes } from '../../Constants.js';
 
 const testOfSkillCost = function() {
     return {
-        action: { name: 'testOfSkillCost', getCostMessage: () => ['naming {0}', []] },
+        action: { name: 'testOfSkillCost', getCostMessage: () => ['naming {0}', []] as [string, unknown[]] },
         canPay: function() {
             return true;
         },
-        resolve: function(context, result = { resolved: false }) {
+        resolve: function(context: AbilityContext, result: { resolved: boolean; value?: boolean } = { resolved: false }) {
             let choices = [CardTypes.Attachment, CardTypes.Character, CardTypes.Event];
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Select a card type',
                 context: context,
                 choices: choices,
-                handlers: choices.map(choice => {
+                handlers: choices.map((choice) => {
                     return () => {
                         context.costs.testOfSkillCost = choice;
-                        // @ts-expect-error result has dynamic 'value' property used by the cost resolution system
                         result.value = true;
                         result.resolved = true;
                     };
@@ -33,33 +35,35 @@ const testOfSkillCost = function() {
 class TestOfSkill extends DrawCard {
     static id = 'test-of-skill';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Reveal cards and take ones matching named type',
-            condition: context => context.player.conflictDeck.length >= (context.player.cardsInPlay.some(card => card.hasTrait('duelist')) ? 4 : 3),
-            cost: [ability.costs.reveal(context => context.player.conflictDeck.slice(0,
-                context.player.cardsInPlay.some(card => card.hasTrait('duelist')) ? 4 : 3
+            condition: (context: AbilityContext) => context.player.conflictDeck.length >= (context.player.cardsInPlay.some((card: BaseCard) => card.hasTrait('duelist')) ? 4 : 3),
+            cost: [ability.costs.reveal((context: AbilityContext) => context.player.conflictDeck.slice(0,
+                context.player.cardsInPlay.some((card: BaseCard) => card.hasTrait('duelist')) ? 4 : 3
             )), testOfSkillCost()],
             cannotBeMirrored: true,
             effect: 'take cards into their hand',
-            handler: context => {
-                const isMatching = card => card.type === context.costs.testOfSkillCost && card.location === Locations.ConflictDeck;
-                let matchingCards = context.costs.reveal.filter(isMatching);
-                let cardsToDiscard = context.costs.reveal.filter(card => !isMatching(card));
-                //Handle situations where card is played from deck, such as with pillow book
-                matchingCards = matchingCards.filter(c => c.uuid !== context.source.uuid);
+            handler: (context?: AbilityContext) => {
+                if(!context) {
+                    return;
+                }
+                const isMatching = (card: BaseCard) => card.type === context.costs.testOfSkillCost && card.location === Locations.ConflictDeck;
+                let matchingCards: BaseCard[] = context.costs.reveal.filter(isMatching);
+                let cardsToDiscard: BaseCard[] = context.costs.reveal.filter((card: BaseCard) => !isMatching(card));
+                matchingCards = matchingCards.filter((c: BaseCard) => c.uuid !== context.source.uuid);
 
                 let discardHandler = () => {
                     cardsToDiscard = cardsToDiscard.concat(matchingCards);
                     this.game.addMessage('{0} discards {1}', context.player, cardsToDiscard);
-                    cardsToDiscard.forEach(card => {
+                    cardsToDiscard.forEach((card: BaseCard) => {
                         context.player.moveCard(card, Locations.ConflictDiscardPile);
                     });
                 };
-                let takeCardHandler = card => {
+                let takeCardHandler = (card: BaseCard) => {
                     this.game.addMessage('{0} adds {1} to their hand', context.player, card);
                     context.player.moveCard(card, Locations.Hand);
-                    return matchingCards.filter(c => c.uuid !== card.uuid);
+                    return matchingCards.filter((c: BaseCard) => c.uuid !== card.uuid);
                 };
                 if(matchingCards.length === 0) {
                     return discardHandler();
@@ -68,7 +72,7 @@ class TestOfSkill extends DrawCard {
                     activePromptTitle: 'Select a card',
                     context: context,
                     cards: matchingCards,
-                    cardHandler: card => {
+                    cardHandler: (card: BaseCard) => {
                         matchingCards = takeCardHandler(card);
                         if(matchingCards.length === 0) {
                             return discardHandler();
@@ -77,7 +81,7 @@ class TestOfSkill extends DrawCard {
                             activePromptTitle: 'Select a card',
                             context: context,
                             cards: matchingCards,
-                            cardHandler: card => {
+                            cardHandler: (card: BaseCard) => {
                                 matchingCards = takeCardHandler(card);
                                 discardHandler();
                             },

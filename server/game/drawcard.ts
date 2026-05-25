@@ -60,7 +60,7 @@ class DrawCard extends BaseCard {
 
         this.printedMilitarySkill = this.getPrintedSkill('military');
         this.printedPoliticalSkill = this.getPrintedSkill('political');
-        this.printedCost = parseInt(this.cardData.cost);
+        this.printedCost = parseInt(this.cardData.cost ?? '');
 
         if(typeof this.printedCost !== 'number' || isNaN(this.printedCost)) {
             if(this.type === CardTypes.Event) {
@@ -69,8 +69,8 @@ class DrawCard extends BaseCard {
                 this.printedCost = null;
             }
         }
-        this.printedGlory = parseInt(cardData.glory);
-        this.printedStrengthBonus = parseInt(cardData.strength_bonus);
+        this.printedGlory = parseInt(cardData.glory ?? '');
+        this.printedStrengthBonus = parseInt(cardData.strength_bonus ?? '');
         this.fate = 0;
         this.bowed = false;
         this.covert = false;
@@ -196,12 +196,12 @@ class DrawCard extends BaseCard {
     }
 
     isInConflictProvince(): boolean {
-        return this.game.currentConflict.isCardInConflictProvince(this);
+        return !!this.game.currentConflict?.isCardInConflictProvince(this);
     }
 
     costLessThan(num: number): boolean {
         const cost = this.printedCost;
-        return num && (cost || cost === 0) && cost < num;
+        return !!num && (!!cost || cost === 0) && cost < num;
     }
 
     anotherUniqueInPlay(player: Player): boolean {
@@ -536,7 +536,7 @@ class DrawCard extends BaseCard {
         const cacheParticipating = this.isParticipating();
 
         if(this.isParticipating()) {
-            this.game.currentConflict.removeFromConflict(this);
+            this.game.currentConflict?.removeFromConflict(this);
         }
 
         const honorStatusDoesNotAffectLeavePlayEffects = this.anyEffect(EffectNames.HonorStatusDoesNotModifySkill);
@@ -603,7 +603,7 @@ class DrawCard extends BaseCard {
             }
         }
 
-        let attackers = this.game.isDuringConflict() ? this.game.currentConflict.attackers : [];
+        let attackers = this.game.isDuringConflict() && this.game.currentConflict ? this.game.currentConflict.attackers : [];
         if(incomingAttackers) {
             attackers = incomingAttackers;
         }
@@ -678,7 +678,7 @@ class DrawCard extends BaseCard {
         );
     }
 
-    canDeclareAsDefender(conflictType: string = this.game.currentConflict.conflictType): boolean {
+    canDeclareAsDefender(conflictType: string = this.game.currentConflict?.conflictType ?? ''): boolean {
         return (
             this.checkRestrictions('declareAsDefender', this.game.getFrameworkContext()) &&
             this.canParticipateAsDefender(conflictType) &&
@@ -688,12 +688,12 @@ class DrawCard extends BaseCard {
         );
     }
 
-    canParticipateAsAttacker(conflictType: string = this.game.currentConflict.conflictType): boolean {
+    canParticipateAsAttacker(conflictType: string = this.game.currentConflict?.conflictType ?? ''): boolean {
         const effects = this.getEffects(EffectNames.CannotParticipateAsAttacker);
         return !effects.some((value: any) => value === 'both' || value === conflictType) && !this.hasDash(conflictType);
     }
 
-    canParticipateAsDefender(conflictType: string = this.game.currentConflict.conflictType): boolean {
+    canParticipateAsDefender(conflictType: string = this.game.currentConflict?.conflictType ?? ''): boolean {
         const effects = this.getEffects(EffectNames.CannotParticipateAsDefender);
         const hasDash = conflictType ? this.hasDash(conflictType) : false;
 
@@ -804,7 +804,7 @@ class DrawCard extends BaseCard {
     }
 
     getSummary(activePlayer: Player, hideWhenFaceup?: boolean): any {
-        const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
+        const baseSummary = super.getSummary(activePlayer, hideWhenFaceup ?? false);
 
         return Object.assign(baseSummary, {
             attached: !!this.parent,

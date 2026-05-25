@@ -40,9 +40,9 @@ export class Conflict extends GameObject {
 
     constructor(
         game: Game,
-        private attackingPlayer: Player,
+        public attackingPlayer: Player,
         defendingPlayer: Player,
-        private ring?: Ring,
+        public ring?: Ring,
         public conflictProvince?: ProvinceCard,
         private forcedDeclaredType?: ConflictTypes
     ) {

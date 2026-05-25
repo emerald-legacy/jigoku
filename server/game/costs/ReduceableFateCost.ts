@@ -29,7 +29,7 @@ export class ReduceableFateCost implements Cost {
             return false;
         }
 
-        const minCost = context.player.getMinimumCost(context.playType, context, null, this.ignoreType);
+        const minCost = context.player.getMinimumCost(context.playType ?? '', context, null, this.ignoreType);
         if(minCost === 0) {
             return true;
         }
@@ -42,7 +42,7 @@ export class ReduceableFateCost implements Cost {
     }
 
     protected getAlternateFatePools(context: AbilityContext): Set<BaseCard | Ring> {
-        return new Set(context.player.getAlternateFatePools(context.playType, context.source, context));
+        return new Set(context.player.getAlternateFatePools(context.playType ?? '', context.source, context));
     }
 
     public resolve(context: AbilityContext, result: Result): void {
@@ -139,7 +139,7 @@ export class ReduceableFateCost implements Cost {
     }
 
     protected getReducedCost(context: AbilityContext): number {
-        return context.player.getReducedCost(context.playType, context.source, null, this.ignoreType);
+        return context.player.getReducedCost(context.playType ?? '', context.source, null, this.ignoreType);
     }
 
     protected getFinalFatecost(context: AbilityContext, reducedCost: number) {
@@ -187,8 +187,8 @@ export class ReduceableFateCost implements Cost {
             location: Locations.PlayArea,
             controller: Players.Self,
             buttons,
-            cardCondition: (card) => cards.has(card),
-            onSelect: (player, card) => {
+            cardCondition: (card: BaseCard) => cards.has(card),
+            onSelect: (_player: unknown, card: BaseCard) => {
                 handler(card);
                 return true;
             },
@@ -196,7 +196,7 @@ export class ReduceableFateCost implements Cost {
                 handler(CANCELLED);
                 return true;
             },
-            onMenuCommand: (player, arg) => {
+            onMenuCommand: (_player: unknown, arg: PoolOption) => {
                 handler(arg);
                 return true;
             }
@@ -210,8 +210,8 @@ export class ReduceableFateCost implements Cost {
         handler?: (choice: string) => void
     ) {
         const choices: Array<number | string> = Array.from(
-            { length: properties.numberOfChoices },
-            (_, idx) => idx + properties.minFate
+            { length: properties.numberOfChoices ?? 0 },
+            (_, idx) => idx + (properties.minFate ?? 0)
         );
         if(result.canCancel) {
             choices.push('Cancel');
@@ -221,13 +221,14 @@ export class ReduceableFateCost implements Cost {
             return;
         }
 
-        if(typeof properties.pool === 'string') {
+        if(!properties.pool || typeof properties.pool === 'string') {
             return;
         }
 
-        context.player.setSelectableCards([properties.pool as BaseCard]);
+        const pool = properties.pool;
+        context.player.setSelectableCards([pool as BaseCard]);
         context.game.promptWithHandlerMenu(context.player, {
-            activePromptTitle: `Choose amount of fate to spend from ${properties.pool.name}`,
+            activePromptTitle: `Choose amount of fate to spend from ${pool.name}`,
             choices: choices,
             choiceHandler: (choice: string) => {
                 context.player.clearSelectableCards();
@@ -256,7 +257,7 @@ export class ReduceableFateCost implements Cost {
         const amount = this.getReducedCost(context);
         context.costs.fate = amount;
         return new Event(EventNames.OnSpendFate, { amount, context }, (event) => {
-            event.context.player.markUsedReducers(context.playType, event.context.source);
+            event.context.player.markUsedReducers(context.playType ?? '', event.context.source);
             event.context.player.fate -= this.getFinalFatecost(context, amount);
             this.afterPayHook(event);
         });

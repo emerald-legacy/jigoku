@@ -1,3 +1,6 @@
+import type { AbilityContext } from '../../AbilityContext.js';
+import type BaseCard from '../../basecard.js';
+import type Player from '../../player.js';
 import DrawCard from '../../drawcard.js';
 import { Locations, TargetModes } from '../../Constants.js';
 
@@ -11,26 +14,40 @@ class MagnificentLighthouse extends DrawCard {
                 mode: TargetModes.Select,
                 activePromptTitle: 'Choose which deck to look at:',
                 choices: {
-                    'Dynasty Deck': context => context.player.opponent && context.player.opponent.dynastyDeck.length > 0,
-                    'Conflict Deck': context => context.player.opponent && context.player.opponent.conflictDeck.length > 0
+                    'Dynasty Deck': (context: AbilityContext) => !!context.player.opponent && context.player.opponent.dynastyDeck.length > 0,
+                    'Conflict Deck': (context: AbilityContext) => !!context.player.opponent && context.player.opponent.conflictDeck.length > 0
                 }
             },
             effect: 'look at the top 3 cards of {1}\'s {2}',
-            effectArgs: context => [context.player.opponent, context.select.toLowerCase()],
-            handler: context => {
-                let topThree = [];
+            effectArgs: (context: AbilityContext) => [context.player.opponent as Player, (context.select ?? '').toLowerCase()],
+            handler: (context?: AbilityContext) => {
+                if(!context || !context.player.opponent) {
+                    return;
+                }
+                const opponent = context.player.opponent;
+                let topThree: BaseCard[] = [];
                 if(context.select === 'Dynasty Deck') {
-                    topThree = context.player.opponent.dynastyDeck.slice(0, 3);
+                    topThree = opponent.dynastyDeck.slice(0, 3);
                 } else {
-                    topThree = context.player.opponent.conflictDeck.slice(0, 3);
+                    topThree = opponent.conflictDeck.slice(0, 3);
+                }
+                if(topThree.length === 0) {
+                    return;
                 }
                 let messages = ['{0} places a card on the bottom of the deck', '{0} chooses to discard {1}'];
-                let destinations = [topThree[0].isDynasty ? 'dynasty deck bottom' : 'conflict deck bottom', topThree[0].isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile];
-                let choices = [];
-                let handlers = [];
-                let cardHandler = card => {
-                    this.game.addMessage(messages.pop(), context.player, card);
-                    context.player.opponent.moveCard(card, destinations.pop());
+                let destinations: string[] = [
+                    topThree[0].isDynasty ? 'dynasty deck bottom' : 'conflict deck bottom',
+                    topThree[0].isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile
+                ];
+                let choices: string[] = [];
+                let handlers: (() => void)[] = [];
+                let cardHandler = (card: BaseCard) => {
+                    const msg = messages.pop();
+                    const dest = destinations.pop();
+                    if(msg && dest) {
+                        this.game.addMessage(msg, context.player, card);
+                        opponent.moveCard(card, dest as Locations);
+                    }
                     if(messages.length > 0) {
                         let index = topThree.indexOf(card);
                         topThree.splice(index, 1);

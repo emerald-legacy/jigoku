@@ -50,6 +50,8 @@ export class AbilityContext<S = any> {
     gameActionsResolutionChain: GameAction[] = [];
     playType: PlayTypes | string | undefined;
     cardStateWhenInitiated: any = null;
+    ignoreFateCost?: boolean;
+    onPlayCardSource?: any;
 
     constructor(properties: AbilityContextProperties) {
         this.game = properties.game;

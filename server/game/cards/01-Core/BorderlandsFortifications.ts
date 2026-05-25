@@ -1,5 +1,7 @@
-import DrawCard from '../../drawcard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import type BaseCard from '../../basecard.js';
 import { Locations, Players } from '../../Constants.js';
+import DrawCard from '../../drawcard.js';
 
 class BorderlandsFortifications extends DrawCard {
     static id = 'borderlands-fortifications';
@@ -10,12 +12,12 @@ class BorderlandsFortifications extends DrawCard {
             target: {
                 location: Locations.Provinces,
                 controller: Players.Self,
-                cardCondition: (card, context) => card.isDynasty && card !== context.source
+                cardCondition: (card: BaseCard, context: AbilityContext) => card.isDynasty && card !== context.source
             },
             effect: 'swap it with {1}',
-            effectArgs: context => context.target.isFacedown() ? 'a facedown card' : context.target,
-            handler: context => {
-                let location = context.source.location;
+            effectArgs: (context: AbilityContext) => context.target.isFacedown() ? 'a facedown card' : context.target,
+            handler: (context: any) => {
+                const location = context.source.location;
                 context.player.removeCardFromPile(context.source);
                 context.player.removeCardFromPile(context.target);
                 context.source.moveTo(context.target.location);

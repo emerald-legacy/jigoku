@@ -1,6 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Locations } from '../../../Constants.js';
 import DrawCard from '../../../drawcard.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class WorkInProgress extends DrawCard {
     static id = 'work-in-progress';
@@ -8,22 +9,25 @@ export default class WorkInProgress extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Reveal cards and take ones matching named type',
-            condition: (context) =>
+            condition: (context: AbilityContext<this>) =>
                 context.player.conflictDeck.length >=
-        (context.player.cardsInPlay.some((card) => card.hasTrait('artisan')) ? 4 : 3),
+        (context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('artisan')) ? 4 : 3),
             cost: [
-                AbilityDsl.costs.reveal((context) =>
+                AbilityDsl.costs.reveal((context: AbilityContext<this>) =>
                     context.player.conflictDeck.slice(
-                        0, context.player.cardsInPlay.some((card) => card.hasTrait('artisan')) ? 4 : 3
+                        0, context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('artisan')) ? 4 : 3
                     )
                 ),
                 testOfSkillCost()
             ],
             cannotBeMirrored: true,
             effect: 'take cards into their hand',
-            handler: (context) => {
+            handler: (context?: AbilityContext<this>) => {
+                if(!context) {
+                    return;
+                }
                 let [matchingCards, cardsToDiscard] = context.costs.reveal.reduce(
-                    (acc, card) => {
+                    (acc: DrawCard[][], card: DrawCard) => {
                         if(card.type === context.costs.testOfSkillCost && card.location === Locations.ConflictDeck) {
                             acc[0].push(card);
                         } else {
@@ -31,10 +35,9 @@ export default class WorkInProgress extends DrawCard {
                         }
                         return acc;
                     },
-                    [[], []]
+                    [[] as DrawCard[], [] as DrawCard[]]
                 );
-                //Handle situations where card is played from deck, such as with pillow book
-                matchingCards = matchingCards.filter((c) => c.uuid !== context.source.uuid);
+                matchingCards = matchingCards.filter((c: DrawCard) => c.uuid !== context.source.uuid);
 
                 const discardHandler = () => {
                     cardsToDiscard = cardsToDiscard.concat(matchingCards);
@@ -43,10 +46,10 @@ export default class WorkInProgress extends DrawCard {
                         context.player.moveCard(card, Locations.ConflictDiscardPile);
                     }
                 };
-                const takeCardHandler = (card) => {
+                const takeCardHandler = (card: DrawCard) => {
                     this.game.addMessage('{0} adds {1} to their hand', context.player, card);
                     context.player.moveCard(card, Locations.Hand);
-                    return matchingCards.filter((c) => c.uuid !== card.uuid);
+                    return matchingCards.filter((c: DrawCard) => c.uuid !== card.uuid);
                 };
                 if(matchingCards.length === 0) {
                     return discardHandler();
@@ -55,7 +58,7 @@ export default class WorkInProgress extends DrawCard {
                     activePromptTitle: 'Select a card',
                     context: context,
                     cards: matchingCards,
-                    cardHandler: (card) => {
+                    cardHandler: (card: DrawCard) => {
                         matchingCards = takeCardHandler(card);
                         if(matchingCards.length === 0) {
                             return discardHandler();
@@ -64,7 +67,7 @@ export default class WorkInProgress extends DrawCard {
                             activePromptTitle: 'Select a card',
                             context: context,
                             cards: matchingCards,
-                            cardHandler: (card) => {
+                            cardHandler: (card: DrawCard) => {
                                 matchingCards = takeCardHandler(card);
                                 discardHandler();
                             },
@@ -84,7 +87,7 @@ function testOfSkillCost() {
     return {
         action: { name: 'testOfSkillCost', getCostMessage: () => ['naming {0}', []] },
         canPay: () => true,
-        resolve: (context, result = { resolved: false }) => {
+        resolve: (context: AbilityContext, result: { resolved: boolean; value?: boolean } = { resolved: false }) => {
             const choices = [CardTypes.Attachment, CardTypes.Character, CardTypes.Event];
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Select a card type',
@@ -93,7 +96,6 @@ function testOfSkillCost() {
                 handlers: choices.map((choice) => {
                     return () => {
                         context.costs.testOfSkillCost = choice;
-                        // @ts-expect-error -- result.value is not declared on the type but is used by the cost resolution system
                         result.value = true;
                         result.resolved = true;
                     };
