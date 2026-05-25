@@ -271,6 +271,15 @@ export class GameServer {
         }
     }
 
+    private clearMessageCountsForGame(game: Game): void {
+        for(const player of Object.values(game.getPlayersAndSpectators()) as any[]) {
+            if(player.socket?.id) {
+                this.lastSentMessageCount.delete(player.socket.id);
+            }
+            this.lastSentMessageCount.delete(player.name);
+        }
+    }
+
     notifyAndCloseGame(game: Game): void {
         for(const player of Object.values(game.getPlayersAndSpectators()) as any[]) {
             if(player.socket && !player.disconnected) {
@@ -278,6 +287,7 @@ export class GameServer {
                 player.socket.leaveChannel(game.id);
             }
         }
+        this.clearMessageCountsForGame(game);
         this.unregisterUsersForGame(game);
         this.games.delete(game.id);
         this.wsSocket.send('GAMECLOSED', { game: game.id });
@@ -400,6 +410,7 @@ export class GameServer {
 
         if(game.isEmpty()) {
             this.cancelAbandonTimer(game.id);
+            this.clearMessageCountsForGame(game);
             this.unregisterUsersForGame(game);
             this.games.delete(game.id);
             this.wsSocket.send('GAMECLOSED', { game: game.id });
@@ -481,12 +492,15 @@ export class GameServer {
 
         logger.info('user \'%s\' disconnected from a game: %s', socket.user.username, reason);
 
+        this.lastSentMessageCount.delete(socket.id);
+
         const isSpectator = game.isSpectator(game.playersAndSpectators[socket.user.username]);
 
         game.disconnect(socket.user.username);
 
         if(game.isEmpty()) {
             this.cancelAbandonTimer(game.id);
+            this.clearMessageCountsForGame(game);
             this.unregisterUsersForGame(game);
             this.games.delete(game.id);
 
@@ -516,6 +530,7 @@ export class GameServer {
 
         game.leave(socket.user.username);
         this.userGameMap.delete(socket.user.username);
+        this.lastSentMessageCount.delete(socket.id);
 
         this.wsSocket.send('PLAYERLEFT', {
             gameId: game.id,
@@ -529,6 +544,7 @@ export class GameServer {
 
         if(game.isEmpty()) {
             this.cancelAbandonTimer(game.id);
+            this.clearMessageCountsForGame(game);
             this.unregisterUsersForGame(game);
             this.games.delete(game.id);
 
