@@ -39,9 +39,9 @@ export class DeckSearchAction extends PlayerAction {
         numCards: 1,
         targetMode: TargetModes.Single,
         deck: Decks.ConflictDeck,
-        selectedCardsHandler: null,
-        remainingCardsHandler: null,
-        takesNothingGameAction: null,
+        selectedCardsHandler: undefined,
+        remainingCardsHandler: undefined,
+        takesNothingGameAction: undefined,
         shuffle: true,
         reveal: true,
         uniqueNames: false,
@@ -51,7 +51,7 @@ export class DeckSearchAction extends PlayerAction {
 
     hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties) as DeckSearchProperties;
-        if(this.#getAmount(properties.amount, context) === 0) {
+        if(this.#getAmount(properties.amount ?? -1, context) === 0) {
             return false;
         }
         const player = properties.player || context.player;
@@ -67,9 +67,9 @@ export class DeckSearchAction extends PlayerAction {
         return properties;
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         const properties = this.getProperties(context);
-        const amount = this.#getAmount(properties.amount, context);
+        const amount = this.#getAmount(properties.amount ?? -1, context);
         const message =
             amount > 0
                 ? `look at the top ${amount === 1 ? 'card' : `${amount} cards`} of their deck`
@@ -79,7 +79,7 @@ export class DeckSearchAction extends PlayerAction {
 
     canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties) as DeckSearchProperties;
-        const amount = this.#getAmount(properties.amount, context);
+        const amount = this.#getAmount(properties.amount ?? -1, context);
         return amount !== 0 && this.#getDeck(player, properties).length > 0 && super.canAffect(player, context);
     }
 
@@ -87,9 +87,9 @@ export class DeckSearchAction extends PlayerAction {
         return [context.player];
     }
 
-    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: unknown): void {
+    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const { amount } = this.getProperties(context, additionalProperties) as DeckSearchProperties;
-        const fAmount = this.#getAmount(amount, context);
+        const fAmount = this.#getAmount(amount ?? -1, context);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = fAmount;
     }
@@ -100,8 +100,9 @@ export class DeckSearchAction extends PlayerAction {
         const event = this.getEvent(player, context) as any;
         const amount = event.amount > -1 ? event.amount : this.#getDeck(player, properties).length;
         let cards = this.#getDeck(player, properties).slice(0, amount);
+        const cardCondition = properties.cardCondition ?? (() => true);
         if(event.amount === -1) {
-            cards = cards.filter((card) => properties.cardCondition(card, context));
+            cards = cards.filter((card) => cardCondition(card, context));
         }
         events.push(event);
         this.#selectCard(event, additionalProperties, cards, new Set());
@@ -125,10 +126,12 @@ export class DeckSearchAction extends PlayerAction {
                 return player.dynastyDeck.slice();
             case Decks.ConflictDeck:
                 return player.conflictDeck.slice();
+            default:
+                return [];
         }
     }
 
-    #selectCard(event: any, additionalProperties: unknown, cards: DrawCard[], selectedCards: Set<DrawCard>): void {
+    #selectCard(event: any, additionalProperties: Record<string, unknown> = {}, cards: DrawCard[], selectedCards: Set<DrawCard>): void {
         const context: AbilityContext = event.context;
         const properties = this.getProperties(context, additionalProperties) as DeckSearchProperties;
         const canCancel = properties.targetMode !== TargetModes.Exactly;
@@ -136,13 +139,13 @@ export class DeckSearchAction extends PlayerAction {
         const choosingPlayer = properties.choosingPlayer || event.player;
 
         if(properties.targetMode === TargetModes.UpTo || properties.targetMode === TargetModes.UpToVariable) {
-            selectAmount = this.#getNumCards(properties.numCards, context);
+            selectAmount = this.#getNumCards(properties.numCards ?? 1, context);
         }
         if(properties.targetMode === TargetModes.Single) {
             selectAmount = 1;
         }
         if(properties.targetMode === TargetModes.Exactly || properties.targetMode === TargetModes.ExactlyVariable) {
-            selectAmount = this.#getNumCards(properties.numCards, context);
+            selectAmount = this.#getNumCards(properties.numCards ?? 1, context);
         }
         if(properties.targetMode === TargetModes.Unlimited) {
             selectAmount = -1;
@@ -167,7 +170,7 @@ export class DeckSearchAction extends PlayerAction {
             context: context,
             cards: cards,
             cardCondition: (card: DrawCard, context: AbilityContext) =>
-                properties.cardCondition(card, context) &&
+                (properties.cardCondition ?? (() => true))(card, context) &&
                 (!properties.uniqueNames || !Array.from(selectedCards).some((sel) => sel.name === card.name)) &&
                 (!properties.gameAction || properties.gameAction.canAffect(card, context, additionalProperties)),
             choices: canCancel ? (selectedCards.size > 0 ? ['Done'] : ['Take nothing']) : [],
@@ -197,7 +200,7 @@ export class DeckSearchAction extends PlayerAction {
     ): void {
         event.selectedCards = Array.from(selectedCards);
         context.selects['deckSearch'] = Array.from(selectedCards);
-        if(properties.selectedCardsHandler === null) {
+        if(!properties.selectedCardsHandler) {
             this.#defaultHandleDone(properties, context, event, selectedCards);
         } else {
             properties.selectedCardsHandler(context, event, Array.from(selectedCards));
@@ -217,8 +220,8 @@ export class DeckSearchAction extends PlayerAction {
         event: any,
         selectedCards: Set<DrawCard>,
         allCards: DrawCard[]
-    ) {
-        if(this.#shouldShuffle(properties.shuffle, context)) {
+    ): void {
+        if(this.#shouldShuffle(properties.shuffle ?? false, context)) {
             switch(properties.deck) {
                 case Decks.ConflictDeck:
                     return event.player.shuffleConflictDeck();
@@ -260,8 +263,9 @@ export class DeckSearchAction extends PlayerAction {
             gameAction.setDefaultTarget(() => selectedArray);
             context.game.queueSimpleStep(() => {
                 if(gameAction.hasLegalTarget(context)) {
-                    gameAction.resolve(null, context);
+                    gameAction.resolve(null as any, context);
                 }
+                return true;
             });
         }
     }
@@ -294,14 +298,16 @@ export class DeckSearchAction extends PlayerAction {
         );
     }
 
-    #takesNothing(properties: DeckSearchProperties, context: AbilityContext, event: any) {
+    #takesNothing(properties: DeckSearchProperties, context: AbilityContext, event: any): void {
         const choosingPlayer = properties.choosingPlayer || event.player;
         context.game.addMessage('{0} takes nothing', choosingPlayer);
         if(properties.takesNothingGameAction) {
+            const action = properties.takesNothingGameAction;
             context.game.queueSimpleStep(() => {
-                if(properties.takesNothingGameAction.hasLegalTarget(context)) {
-                    properties.takesNothingGameAction.resolve(null, context);
+                if(action.hasLegalTarget(context)) {
+                    action.resolve(null as any, context);
                 }
+                return true;
             });
         }
     }
