@@ -1383,6 +1383,7 @@ class Game extends EventEmitter {
             owner: ownerSummary,
             conflict: conflictState,
             phase: this.currentPhase,
+            roundNumber: this.roundNumber,
             spectators: this.getSpectators().map((spectator) => {
                 return {
                     id: spectator.id,
