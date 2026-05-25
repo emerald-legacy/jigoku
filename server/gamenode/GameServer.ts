@@ -7,6 +7,7 @@ import * as socketio from 'socket.io';
 
 import Game from '../game/game.js';
 import { cards as cardLibrary } from '../game/cards/index.js';
+import type { GameRouter } from '../game/GameRouter.js';
 import type Player from '../game/player.js';
 import { logger } from '../logger.js';
 import type PendingGame from '../pendinggame.js';
@@ -16,7 +17,7 @@ import { SendGameStateProfiler } from './SendGameStateProfiler.js';
 import { WsSocket } from './WsSocket.js';
 import * as env from '../env.js';
 
-export class GameServer {
+export class GameServer implements GameRouter {
     private games = new Map<string, Game>();
     private userGameMap = new Map<string, Game>();
     private abandonTimers = new Map<string, ReturnType<typeof setTimeout>>();

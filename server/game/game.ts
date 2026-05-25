@@ -38,6 +38,7 @@ import { resolvePackId } from './CardPackUtil.js';
 import type BaseCard from './basecard.js';
 import type DrawCard from './drawcard.js';
 import type { AnimationEvent } from './AnimationEvent.js';
+import type { GameRouter } from './GameRouter.js';
 
 interface GameDetails {
     id: string;
@@ -57,7 +58,7 @@ interface GameDetails {
 interface GameOptions {
     shortCardData?: any[];
     cardLibrary?: Map<string, unknown>;
-    router?: any;
+    router?: GameRouter;
 }
 
 class Game extends EventEmitter {
@@ -92,7 +93,7 @@ class Game extends EventEmitter {
     rings: Record<string, Ring>;
     shortCardData: any[];
     cardLibrary: Map<string, unknown>;
-    router: any;
+    router?: GameRouter;
     allCards: BaseCard[];
     private cardsByUuid = new Map<string, BaseCard>();
     provinceCards: BaseCard[];
@@ -182,7 +183,7 @@ class Game extends EventEmitter {
      * Reports errors from the game engine back to the router
      */
     reportError(e: Error): void {
-        this.router.handleError(this, e);
+        this.router?.handleError(this, e);
     }
 
     addAnimation(event: AnimationEvent): void {
@@ -601,7 +602,7 @@ class Game extends EventEmitter {
         this.finishedAt = new Date();
         this.winReason = reason;
 
-        this.router.gameWon(this, reason, winner);
+        this.router?.gameWon(this, reason, winner);
 
         this.queueStep(new GameWonPrompt(this, winner));
     }
