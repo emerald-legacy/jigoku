@@ -1289,21 +1289,22 @@ class Player extends GameObject {
         if(this.opponent) {
             this.opponent.loseImperialFavor();
         }
+        const sovereign = (this.game.gameMode === GameModes.Emerald || this.game.gameMode === GameModes.Sanctuary) ? 'Empress\'' : 'Emperor\'s';
         if(this.game.gameMode === GameModes.Skirmish) {
             this.imperialFavor = 'both';
-            this.game.addMessage('{0} claims the Emperor\'s favor!', this);
+            this.game.addMessage('{0} claims the ' + sovereign + ' favor!', this);
             return;
         }
         if(favorType && favorType !== FavorTypes.Both) {
             this.imperialFavor = favorType;
-            this.game.addMessage('{0} claims the Emperor\'s {1} favor!', this, favorType);
+            this.game.addMessage('{0} claims the ' + sovereign + ' {1} favor!', this, favorType);
             return;
         }
 
         const handlers = ['military', 'political'].map((type) => {
             return () => {
                 this.imperialFavor = type;
-                this.game.addMessage('{0} claims the Emperor\'s {1} favor!', this, type);
+                this.game.addMessage('{0} claims the ' + sovereign + ' {1} favor!', this, type);
             };
         });
         this.game.promptWithHandlerMenu(this, {
