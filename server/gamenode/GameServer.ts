@@ -5,7 +5,6 @@ import https from 'https';
 import jwt from 'jsonwebtoken';
 import * as socketio from 'socket.io';
 
-import { captureException } from '../ErrorMonitoring.js';
 import Game from '../game/game.js';
 import { cards as cardLibrary } from '../game/cards/index.js';
 import type Player from '../game/player.js';
@@ -140,8 +139,6 @@ export class GameServer {
                 debugData[player.name] = player.getState(player);
             }
         }
-
-        captureException(e);
 
         const playerNames = game.getPlayers().map((p) => p.name);
         if(playerNames.length >= 2) {

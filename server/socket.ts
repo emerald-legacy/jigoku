@@ -2,7 +2,6 @@ import { EventEmitter } from 'events';
 import { Socket as IOSocket } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import { logger } from './logger.js';
-import { captureException } from './ErrorMonitoring.js';
 import { secret } from './env.js';
 
 interface RequestWithUser {
@@ -58,8 +57,7 @@ class Socket extends EventEmitter {
         try {
             callback(this, ...args);
         } catch(err) {
-            logger.error(err);
-            captureException(err, { args });
+            logger.error('Socket event handler error', { error: err, args });
         }
     }
 
