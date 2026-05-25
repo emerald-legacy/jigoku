@@ -557,27 +557,29 @@ export class GameServer implements GameRouter {
         this.sendGameState(game);
     }
 
-    private static readonly ALLOWED_GAME_COMMANDS = new Set([
-        'cardClicked',
-        'changeStat',
-        'chat',
-        'concede',
-        'drop',
-        'facedownCardClicked',
-        'menuButton',
-        'menuItemClick',
-        'ringClicked',
-        'ringMenuItemClick',
-        'selectDeck',
-        'showConflictDeck',
-        'showDynastyDeck',
-        'shuffleConflictDeck',
-        'shuffleDynastyDeck',
-        'toggleManualMode',
-        'toggleOptionSetting',
-        'togglePromptedActionWindow',
-        'toggleTimerSetting'
-    ]);
+    private static readonly GAME_COMMANDS = {
+        cardClicked: (g: Game, p: string, cardId: string) => g.cardClicked(p, cardId),
+        changeStat: (g: Game, p: string, stat: string, value: number) => g.changeStat(p, stat, value),
+        chat: (g: Game, p: string, message: string) => g.chat(p, message),
+        concede: (g: Game, p: string) => g.concede(p),
+        drop: (g: Game, p: string, cardId: string, source: string, target: string) => g.drop(p, cardId, source, target),
+        facedownCardClicked: (g: Game, p: string, location: string, controllerName: string, isProvince?: boolean) => g.facedownCardClicked(p, location, controllerName, isProvince),
+        menuButton: (g: Game, p: string, arg: string, uuid: string, method: string) => {
+            g.menuButton(p, arg, uuid, method);
+        },
+        menuItemClick: (g: Game, p: string, cardId: string, menuItem: any) => g.menuItemClick(p, cardId, menuItem),
+        ringClicked: (g: Game, p: string, ringindex: string) => g.ringClicked(p, ringindex),
+        ringMenuItemClick: (g: Game, p: string, sourceRing: { element: string }, menuItem: any) => g.ringMenuItemClick(p, sourceRing, menuItem),
+        selectDeck: (g: Game, p: string, deck: any) => g.selectDeck(p, deck),
+        showConflictDeck: (g: Game, p: string) => g.showConflictDeck(p),
+        showDynastyDeck: (g: Game, p: string) => g.showDynastyDeck(p),
+        shuffleConflictDeck: (g: Game, p: string) => g.shuffleConflictDeck(p),
+        shuffleDynastyDeck: (g: Game, p: string) => g.shuffleDynastyDeck(p),
+        toggleManualMode: (g: Game, p: string) => g.toggleManualMode(p),
+        toggleOptionSetting: (g: Game, p: string, settingName: string, toggle: boolean) => g.toggleOptionSetting(p, settingName, toggle),
+        togglePromptedActionWindow: (g: Game, p: string, windowName: string, toggle: boolean) => g.togglePromptedActionWindow(p, windowName, toggle),
+        toggleTimerSetting: (g: Game, p: string, settingName: string, toggle: boolean) => g.toggleTimerSetting(p, settingName, toggle)
+    } as const satisfies Record<string, (game: Game, player: string, ...args: any[]) => void>;
 
     onGameMessage(socket, command, ...args) {
         const game = this.findGameForUser(socket.user.username);
@@ -590,14 +592,15 @@ export class GameServer implements GameRouter {
             return this.onLeaveGame(socket);
         }
 
-        if(!GameServer.ALLOWED_GAME_COMMANDS.has(command)) {
+        const handler = (GameServer.GAME_COMMANDS as Record<string, (game: Game, player: string, ...args: any[]) => void>)[command];
+        if(!handler) {
             logger.info(`Rejected unknown game command '${command}' from ${socket.user.username}`);
             return;
         }
 
         this.runAndCatchErrors(game, () => {
             game.stopNonChessClocks();
-            game[command](socket.user.username, ...args);
+            handler(game, socket.user.username, ...args);
 
             game.continue();
 
