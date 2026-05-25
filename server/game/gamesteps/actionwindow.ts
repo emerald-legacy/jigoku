@@ -146,6 +146,7 @@ class ActionWindow extends UiPrompt {
             this.pass();
             return true;
         }
+        return false;
     }
 
     getCurrentPlayerConsecutiveActions(): number {

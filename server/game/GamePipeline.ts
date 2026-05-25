@@ -84,6 +84,7 @@ export class GamePipeline {
         if(step.onRingClicked(player, ring) !== false) {
             return true;
         }
+        return false;
     }
 
     handleMenuCommand(player: Player, arg: string, uuid: string, method: string) {

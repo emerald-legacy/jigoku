@@ -68,6 +68,8 @@ class Truthseeker extends DrawCard {
                 return [this.owner, 'dynasty deck'];
             case this.getChoiceName('MyConflict'):
                 return [this.owner, 'conflict deck'];
+            default:
+                return [];
         }
     }
 
@@ -81,6 +83,8 @@ class Truthseeker extends DrawCard {
                 return this.owner.dynastyDeck.slice(0, 3);
             case this.getChoiceName('MyConflict'):
                 return this.owner.conflictDeck.slice(0, 3);
+            default:
+                return [];
         }
     }
 
@@ -94,6 +98,8 @@ class Truthseeker extends DrawCard {
                 return this.owner.dynastyDeck;
             case this.getChoiceName('MyConflict'):
                 return this.owner.conflictDeck;
+            default:
+                return [];
         }
     }
 

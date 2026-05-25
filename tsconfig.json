@@ -12,6 +12,8 @@
         "esModuleInterop": true,
         "strictBindCallApply": true,
         "strictFunctionTypes": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
         "useDefineForClassFields": false,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true

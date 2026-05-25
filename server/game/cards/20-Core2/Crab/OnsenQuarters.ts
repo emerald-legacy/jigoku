@@ -37,5 +37,6 @@ export default class OnsenQuarters extends ProvinceCard {
                 return context.game.rings[trait];
             }
         }
+        return undefined;
     }
 }

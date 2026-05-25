@@ -161,6 +161,7 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
                     this.promptBetweenSources(this.choices);
                     return true;
                 }
+                return false;
             }
         }));
     }

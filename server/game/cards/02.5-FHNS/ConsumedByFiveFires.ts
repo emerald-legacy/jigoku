@@ -28,6 +28,7 @@ class ConsumedByFiveFires extends DrawCard {
                 if(card) {
                     return GameActions.removeFate({ amount: targets[key]}).getEvent(card, context);
                 }
+                return undefined;
             }).filter(obj => obj);
             this.game.openThenEventWindow(events);
             return;

@@ -27,6 +27,7 @@ export default class WithstandTheDarkness extends DrawCard {
                         this.currentTargets = this.getLegalWithstandTargets(event);
                         return this.currentTargets.size > 0;
                     }
+                    return false;
                 }
             },
             title: 'Place a fate on a character',

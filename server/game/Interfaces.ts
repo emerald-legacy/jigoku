@@ -1,4 +1,5 @@
 import type { AbilityContext } from './AbilityContext.js';
+import type { EventPayload } from './Events/EventPayloads.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type Ring from './ring.js';
@@ -183,7 +184,7 @@ interface TriggeredAbilityTargets {
 }
 
 export type WhenType = {
-    [EventName in EventNames]?: (event: any, context?: TriggeredAbilityContext) => boolean;
+    [EventName in EventNames]?: (event: EventPayload<EventName>, context: TriggeredAbilityContext) => unknown;
 };
 
 export interface TriggeredAbilityWhenProps extends AbilityProps<TriggeredAbilityContext> {

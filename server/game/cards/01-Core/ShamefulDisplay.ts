@@ -96,6 +96,7 @@ export default class ShamefulDisplay extends ProvinceCard {
                     this.promptToChooseHonorOrDishonor(cards, context);
                     return true;
                 }
+                return false;
             }
         });
     }

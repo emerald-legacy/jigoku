@@ -233,6 +233,7 @@ class CardAbility extends ThenAbility {
                     [format, args] = cost.getCostMessage(context);
                     return { message: this.game.gameChat.formatMessage(format, [card].concat(args)) };
                 }
+                return undefined;
             })
             .filter((obj: any) => obj);
         if(costMessages.length > 0) {

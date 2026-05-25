@@ -250,7 +250,7 @@ class BaseCard extends EffectSource {
      * Create card abilities by calling subsequent methods with appropriate properties
      * @param {Object} ability - AbilityDsl object containing limits, costs, effects, and game actions
      */
-    setupCardAbilities(_ability: any): void {
+    setupCardAbilities(_ability: typeof AbilityDsl): void {
 
     }
 
