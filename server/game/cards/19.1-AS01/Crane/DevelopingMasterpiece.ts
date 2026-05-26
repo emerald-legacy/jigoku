@@ -66,7 +66,7 @@ export default class DevelopingMasterpiece extends DrawCard {
 
     private getHonorGain(context: AbilityContext): number {
         return context.costs.captureParentCost
-            ? context.costs.captureParentCost.getGlory()
+            ? (context.costs.captureParentCost as DrawCard).getGlory()
             : context.source.parent.getGlory();
     }
 }

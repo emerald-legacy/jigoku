@@ -29,7 +29,7 @@ export default class MarvelousBeings extends DrawCard {
         if(!context.costs.moveToConflict) {
             return 0;
         }
-        const bonus = Math.min(context.costs.moveToConflict.printedCost, 3);
+        const bonus = Math.min((context.costs.moveToConflict as DrawCard).printedCost ?? NaN, 3);
         return isNaN(bonus) ? 0 : bonus;
     }
 }

@@ -1,6 +1,7 @@
 import { CardTypes, Durations, Elements, EventNames, Locations, Players, TargetModes } from '../../../Constants.js';
 import type { Cost } from '../../../Costs.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
+import type DrawCard from '../../../drawcard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -59,7 +60,7 @@ const maelstromCost = function (): Cost {
             if(context.costs.maelstromCostPaid) {
                 let events = [];
 
-                let discardAction = context.game.actions.discardCard({ target: context.costs.maelstromCost });
+                let discardAction = context.game.actions.discardCard({ target: context.costs.maelstromCost as DrawCard });
                 events.push(discardAction.getEvent(context.costs.maelstromCost, context));
                 context.game.addMessage('{0} chooses to discard a card', context.player);
 

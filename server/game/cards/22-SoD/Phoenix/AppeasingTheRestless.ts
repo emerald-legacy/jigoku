@@ -15,7 +15,7 @@ export default class AppeasingTheRestless extends DrawCard {
             }),
             cannotTargetFirst: true,
             effect: 'choose up to 3 spirits to place fate on{1}{2}',
-            effectArgs: context => context.player.hasAffinity('void') ? ['', ''] : [' and injure ', context.costs.bow],
+            effectArgs: context => context.player.hasAffinity('void') ? ['', ''] : [' and injure ', context.costs.bow as DrawCard],
             condition: context => context.player.fate > 0 && context.player.checkRestrictions('spendFate', context) || !context.player.hasAffinity('void'),
             gameAction: AbilityDsl.actions.multipleContext(context => {
                 const gameActions = [];

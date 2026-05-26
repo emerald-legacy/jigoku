@@ -1,4 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../basecard.js';
 import { Locations, Players } from '../Constants.js';
 import type { Cost, Result } from '../Costs.js';
 import type { GameAction } from '../GameActions/GameAction.js';
@@ -35,7 +36,7 @@ export class MetaActionCost extends GameActionCost implements Cost {
                 properties.selector.getAllLegalTargets(context, context.player)
             );
             context.costs[properties.gameAction.name + 'StateWhenChosen'] =
-                context.costs[properties.gameAction.name].createSnapshot();
+                (context.costs[properties.gameAction.name] as BaseCard).createSnapshot();
             return properties.gameAction.addEventsToArray(events, context, {
                 target: context.costs[properties.gameAction.name]
             });

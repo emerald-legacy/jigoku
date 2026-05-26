@@ -424,7 +424,7 @@ export function variableHonorCost(amountFunc: (context: TriggeredAbilityContext)
             });
         },
         payEvent(context: TriggeredAbilityContext) {
-            const action = context.game.actions.loseHonor({ amount: context.costs.variableHonorCost });
+            const action = context.game.actions.loseHonor({ amount: context.costs.variableHonorCost as number });
             return action.getEvent(context.player, context);
         }
     };
@@ -495,7 +495,7 @@ export function variableFateCost(properties: {
             }
 
             const costModifiers = context.player.getTotalCostModifiers(PlayTypes.PlayFromHand, context.source);
-            const cost = context.costs.variableFateCost + Math.min(0, costModifiers); //+ve cost modifiers are applied by the engine
+            const cost = (context.costs.variableFateCost as number) + Math.min(0, costModifiers); //+ve cost modifiers are applied by the engine
             if(cost > 0) {
                 const action = context.game.actions.loseFate({ amount: cost });
                 return action.getEvent(context.player, context);
@@ -573,7 +573,7 @@ export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context:
             promptPlayer();
         },
         payEvent(context: TriggeredAbilityContext) {
-            return context.game.actions.returnRing({ target: context.costs.returnRing }).getEventArray(context);
+            return context.game.actions.returnRing({ target: context.costs.returnRing as Ring }).getEventArray(context);
         }
     };
 }
@@ -705,7 +705,7 @@ export function discardCardsUpToVariableX(amountDerivable: Derivable<number, Tri
             });
         },
         payEvent(context: TriggeredAbilityContext) {
-            const action = context.game.actions.discardCard({ target: context.costs.discardCardsUpToVariableX });
+            const action = context.game.actions.discardCard({ target: context.costs.discardCardsUpToVariableX as BaseCard[] });
             return action.getEvent(context.costs.discardCardsUpToVariableX, context);
         }
     };
@@ -746,7 +746,7 @@ export function discardCardsExactlyVariableX(amountDerivable: Derivable<number, 
             });
         },
         payEvent(context: TriggeredAbilityContext) {
-            const action = context.game.actions.discardCard({ target: context.costs.discardCardsExactlyVariableX });
+            const action = context.game.actions.discardCard({ target: context.costs.discardCardsExactlyVariableX as BaseCard[] });
             return action.getEvent(context.costs.discardCardsExactlyVariableX, context);
         }
     };
@@ -762,7 +762,7 @@ export function discardHand(): Cost {
             context.costs.discardHand = context.player.hand.slice();
         },
         payEvent(context: TriggeredAbilityContext) {
-            const action = context.game.actions.discardCard({ target: context.costs.discardHand });
+            const action = context.game.actions.discardCard({ target: context.costs.discardHand as BaseCard[] });
             return action.getEvent(context.costs.discardHand, context);
         }
     };
@@ -888,7 +888,7 @@ export function optionalFateCost(amount: number, forcePayment: (context: Trigger
             }
         },
         pay(context: TriggeredAbilityContext) {
-            context.player.fate -= context.costs.optionalFateCost;
+            context.player.fate -= context.costs.optionalFateCost as number;
         }
     };
 }
@@ -938,9 +938,9 @@ export function optionalGiveFateCost(amount: number): Cost {
             }
         },
         pay(context: TriggeredAbilityContext) {
-            context.player.fate -= context.costs.optionalFateCost;
+            context.player.fate -= context.costs.optionalFateCost as number;
             if(context.player.opponent) {
-                context.player.opponent.fate += context.costs.optionalFateCost;
+                context.player.opponent.fate += context.costs.optionalFateCost as number;
             }
         }
     };
@@ -1100,8 +1100,8 @@ export function switchLocation(): Cost {
         },
         payEvent(context: TriggeredAbilityContext) {
             const action = context.source.isParticipating()
-                ? context.game.actions.sendHome({ target: context.costs.switchLocation })
-                : context.game.actions.moveToConflict({ target: context.costs.switchLocation });
+                ? context.game.actions.sendHome({ target: context.costs.switchLocation as BaseCard })
+                : context.game.actions.moveToConflict({ target: context.costs.switchLocation as BaseCard });
             return action.getEvent(context.costs.switchLocation, context);
         }
     };

@@ -26,7 +26,7 @@ export default class WorkInProgress extends DrawCard {
                 if(!context) {
                     return;
                 }
-                let [matchingCards, cardsToDiscard] = context.costs.reveal.reduce(
+                let [matchingCards, cardsToDiscard] = (context.costs.reveal as DrawCard[]).reduce(
                     (acc: DrawCard[][], card: DrawCard) => {
                         if(card.type === context.costs.testOfSkillCost && card.location === Locations.ConflictDeck) {
                             acc[0].push(card);

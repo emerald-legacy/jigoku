@@ -45,7 +45,7 @@ const ancestralSightCost = function () {
             });
         },
         payEvent: function (context: AbilityContext) {
-            const action = context.game.actions.returnToDeck({ target: context.costs.ancestralSightCost, bottom: true, location: Locations.DynastyDiscardPile });
+            const action = context.game.actions.returnToDeck({ target: context.costs.ancestralSightCost as DrawCard, bottom: true, location: Locations.DynastyDiscardPile });
             return action.getEvent(context.costs.ancestralSightCost, context);
         },
         promptsPlayer: true
@@ -69,7 +69,7 @@ class AncestralSight extends DrawCard {
                 target: {
                     cardType: CardTypes.Character,
                     cardCondition: (card: any, context: AbilityContext) => {
-                        return !context.costs.ancestralSightCost || context.costs.ancestralSightCost && card.name === context.costs.ancestralSightCost.name;
+                        return !context.costs.ancestralSightCost || context.costs.ancestralSightCost && card.name === (context.costs.ancestralSightCost as DrawCard).name;
                     },
                     gameAction: AbilityDsl.actions.placeFate((context: AbilityContext) => ({ origin: context.player }))
                 }

@@ -25,7 +25,7 @@ class ChancellorsAide extends DrawCard {
                     mode: TargetModes.Select,
                     targets: true,
                     player: Players.Opponent,
-                    condition: context => context.costs.optionalHonorTransferFromOpponentCostPaid,
+                    condition: context => !!context.costs.optionalHonorTransferFromOpponentCostPaid,
                     choices: {
                         [this.owner.opponent && this.owner.opponent.name || 'NA']: AbilityDsl.actions.chosenDiscard(({ target: this.owner.opponent })),
                         [this.owner.name]: AbilityDsl.actions.chosenDiscard(({ target: this.owner }))

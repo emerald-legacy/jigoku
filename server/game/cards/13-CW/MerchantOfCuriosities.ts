@@ -1,4 +1,5 @@
 import DrawCard from '../../drawcard.js';
+import type BaseCard from '../../basecard.js';
 import { Locations, TargetModes, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -86,7 +87,7 @@ class MerchantOfCuriosities extends DrawCard {
                 target: context.costs.merchantOfCuriositiesCostPaid ? context.game.getPlayers() : context.player
             })),
             effect: 'draw a card{2}',
-            effectArgs: context => [context.costs.discardCard, this.buildString(context)]
+            effectArgs: context => [context.costs.discardCard as BaseCard, this.buildString(context)]
         });
     }
 

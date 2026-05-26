@@ -3,6 +3,7 @@ import { CardTypes, EffectNames, EventNames, Phases, Players } from './Constants
 import { ReduceableFateCost } from './costs/ReduceableFateCost.js';
 import BaseAction from './BaseAction.js';
 import BaseCard from './basecard.js';
+import type DrawCard from './drawcard.js';
 import { AbilityContext } from './AbilityContext.js';
 import Player from './player.js';
 import { Cost } from './Costs.js';
@@ -48,7 +49,7 @@ class DisguisedReduceableFateCost extends ReduceableFateCost implements Cost {
 
     getReducedCost(context: AbilityContext) {
         if(context.costs.chooseDisguisedCharacter) {
-            return Math.max(super.getReducedCost(context) - (context.costs.chooseDisguisedCharacter.getCost() ?? 0), 0);
+            return Math.max(super.getReducedCost(context) - ((context.costs.chooseDisguisedCharacter as DrawCard).getCost() ?? 0), 0);
         }
         return super.getReducedCost(context);
     }
@@ -113,7 +114,7 @@ export class PlayDisguisedCharacterAction extends BaseAction {
                 playType: context.playType
             })
         ];
-        const replacedCharacter = context.costs.chooseDisguisedCharacter;
+        const replacedCharacter = context.costs.chooseDisguisedCharacter as DrawCard;
         if(!replacedCharacter) {
             return;
         }

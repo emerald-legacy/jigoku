@@ -30,8 +30,8 @@ const oniTyrantCost = function () {
         },
         payEvent: function (context: AbilityContext): Event | Event[] {
             if(context.costs.oniTyrantCostCreature) {
-                const oni = context.costs.oniTyrantCostCreature;
-                const copy = new oni.constructor(context.player, oni.cardData);
+                const oni = context.costs.oniTyrantCostCreature as DrawCard;
+                const copy = new (oni.constructor as typeof DrawCard)(context.player, oni.cardData);
                 context.game.allCards.push(copy);
                 context.costs.oniTyrantCostCreature = copy;
 
@@ -60,11 +60,12 @@ class OniTyrant extends DrawCard {
             })),
             effect: 'summon a{2} {1} from the depths of the Shadowlands!',
             effectArgs: context => {
-                var testStr = context.costs.oniTyrantCostCreature.name;
+                const creature = context.costs.oniTyrantCostCreature as DrawCard;
+                var testStr = creature.name;
                 var vowelRegex = '^[aieouAIEOU].*';
                 var matched = testStr.match(vowelRegex);
                 return [
-                    context.costs.oniTyrantCostCreature,
+                    creature,
                     matched ? 'n' : ''
                 ];
             }

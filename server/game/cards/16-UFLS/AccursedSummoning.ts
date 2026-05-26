@@ -106,11 +106,12 @@ class AccursedSummoning extends DrawCard {
             })),
             effect: 'summon a{2} {1} from the depths of the Shadowlands!',
             effectArgs: context => {
-                var testStr = context.costs.accursedSummoningCostCreature.name;
+                const creature = context.costs.accursedSummoningCostCreature as DrawCard;
+                var testStr = creature.name;
                 var vowelRegex = '^[aieouAIEOU].*';
                 var matched = testStr.match(vowelRegex);
                 return [
-                    context.costs.accursedSummoningCostCreature,
+                    creature,
                     matched ? 'n' : ''
                 ];
             }

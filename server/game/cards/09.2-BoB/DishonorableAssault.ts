@@ -1,5 +1,6 @@
 import { TargetModes, CardTypes } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
+import type BaseCard from '../../basecard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 export default class DishonorableAssault extends ProvinceCard {
@@ -15,7 +16,7 @@ export default class DishonorableAssault extends ProvinceCard {
                 mode: TargetModes.ExactlyVariable,
                 numCardsFunc: (context) => {
                     if(context && context.costs && context.costs.discardCardsUpToVariableX) {
-                        return context.costs.discardCardsUpToVariableX.length;
+                        return (context.costs.discardCardsUpToVariableX as BaseCard[]).length;
                     }
 
                     return this.getNumberOfLegalTargets(context);

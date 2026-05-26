@@ -28,9 +28,9 @@ export default class YoungBeastmaster extends DrawCard {
             },
             cost: AbilityDsl.costs.discardCardSpecific((context) => context.player.dynastyDeck.slice(0, 2)),
             effect: 'give {0} +{1}{2}',
-            effectArgs: (context) => [bonusSize(context.costs.discardCard), 'military'],
+            effectArgs: (context) => [bonusSize(context.costs.discardCard as DrawCard[]), 'military'],
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.modifyMilitarySkill(bonusSize(context.costs.discardCard))
+                effect: AbilityDsl.effects.modifyMilitarySkill(bonusSize(context.costs.discardCard as DrawCard[]))
             }))
         });
     }

@@ -20,7 +20,7 @@ class IsawaTsuke2 extends DrawCard {
                 mode: TargetModes.ExactlyVariable,
                 numCardsFunc: (context) => {
                     if(context && context.costs && context.costs.variableHonorCost) {
-                        return context.costs.variableHonorCost;
+                        return context.costs.variableHonorCost as number;
                     }
 
                     return this.getNumberOfLegalTargets(context);

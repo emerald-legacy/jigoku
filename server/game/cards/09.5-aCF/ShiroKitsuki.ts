@@ -1,6 +1,7 @@
 import { Durations, EventNames } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type Player from '../../player.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class ShiroKitsuki extends StrongholdCard {
@@ -34,7 +35,7 @@ export default class ShiroKitsuki extends StrongholdCard {
                 })
             })),
             effect: 'claim a ring whenever {1} plays a card named {2}',
-            effectArgs: (context) => [context.player.opponent, context.costs.nameCardCost]
+            effectArgs: (context) => [context.player.opponent as Player, context.costs.nameCardCost as string]
         });
     }
 }

@@ -49,8 +49,8 @@ class TestOfSkill extends DrawCard {
                     return;
                 }
                 const isMatching = (card: BaseCard) => card.type === context.costs.testOfSkillCost && card.location === Locations.ConflictDeck;
-                let matchingCards: BaseCard[] = context.costs.reveal.filter(isMatching);
-                let cardsToDiscard: BaseCard[] = context.costs.reveal.filter((card: BaseCard) => !isMatching(card));
+                let matchingCards: BaseCard[] = (context.costs.reveal as BaseCard[]).filter(isMatching);
+                let cardsToDiscard: BaseCard[] = (context.costs.reveal as BaseCard[]).filter((card: BaseCard) => !isMatching(card));
                 matchingCards = matchingCards.filter((c: BaseCard) => c.uuid !== context.source.uuid);
 
                 let discardHandler = () => {

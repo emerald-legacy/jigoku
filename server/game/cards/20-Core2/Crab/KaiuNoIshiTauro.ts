@@ -1,6 +1,7 @@
 import { CardTypes, Players, Decks } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
+import type Ring from '../../../ring.js';
 
 export default class KaiuNoIshiTauro extends DrawCard {
     static id = 'kaiu-no-ishi-tauro';
@@ -43,7 +44,7 @@ export default class KaiuNoIshiTauro extends DrawCard {
                 }))
             },
             effect: 'search their deck for an attachment costing {1} or less and attach it to {0}',
-            effectArgs: (context) => context.costs.returnRing.length
+            effectArgs: (context) => (context.costs.returnRing as Ring[]).length
         });
     }
 }

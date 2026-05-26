@@ -11,7 +11,7 @@ class DoomThrower extends DrawCard {
             condition: context => context.game.isDuringConflict(),
             cost: AbilityDsl.costs.sacrifice({ cardType: CardTypes.Character }),
             effect: 'reduce an attacked province\'s strength by {1}',
-            effectArgs: context => (context.costs.sacrificeStateWhenChosen && context.costs.sacrificeStateWhenChosen.getFate() > 0) ? 5 : 2,
+            effectArgs: context => (context.costs.sacrificeStateWhenChosen && (context.costs.sacrificeStateWhenChosen as DrawCard).getFate() > 0) ? 5 : 2,
             gameAction: AbilityDsl.actions.selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,

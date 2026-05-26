@@ -58,13 +58,13 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
                     if(
                         (!context.costs ||
                             !context.costs.targetingCostPaid ||
-                            !context.costs.targetingCostPaid.includes(costTarget)) &&
+                            !(context.costs.targetingCostPaid as BaseCard[]).includes(costTarget)) &&
                         targetingCosts > 0
                     ) {
                         if(!context.costs.targetingCostPaid) {
                             context.costs.targetingCostPaid = [];
                         }
-                        context.costs.targetingCostPaid.push(costTarget);
+                        (context.costs.targetingCostPaid as BaseCard[]).push(costTarget);
                         let properties = { amount: targetingCosts, target: context.player };
                         let cost = new LoseFateAction(properties);
                         if(cost.canAffect(context.player, context)) {

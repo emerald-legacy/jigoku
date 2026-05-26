@@ -148,7 +148,7 @@ export class ReduceableFateCost implements Cost {
         }
         let totalAlternateFate = 0;
         for(const alternatePool of this.getAlternateFatePools(context)) {
-            const amount: number = context.costs.alternateFate.get(alternatePool);
+            const amount = (context.costs.alternateFate as Map<unknown, number>).get(alternatePool);
             if(amount) {
                 context.game.addMessage(
                     '{0} takes {1} fate from {2} to pay the cost of {3}',
@@ -217,7 +217,7 @@ export class ReduceableFateCost implements Cost {
             choices.push('Cancel');
         }
         if(properties.maxFate === 0) {
-            context.costs.alternateFate.set(properties.pool, 0);
+            (context.costs.alternateFate as Map<unknown, number>).set(properties.pool, 0);
             return;
         }
 
@@ -238,7 +238,7 @@ export class ReduceableFateCost implements Cost {
                     return;
                 }
 
-                context.costs.alternateFate.set(properties.pool, choice);
+                (context.costs.alternateFate as Map<unknown, number>).set(properties.pool, parseInt(choice, 10));
                 properties.reducedCost -= parseInt(choice, 10);
 
                 if(handler) {

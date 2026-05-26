@@ -34,8 +34,9 @@ export class AbilityContext<S = any> {
     player: Player;
     ability: BaseAbility;
     // Bags are dynamically keyed by per-ability target/cost names; values typed to
-    // the union their resolvers produce. costs stays broad (per-cost-name heterogeneous).
-    costs: any;
+    // the union their resolvers produce. cost results are open-ended per cost type
+    // (card/array/ring/number/boolean/string), so values are unknown — narrow at read.
+    costs: Record<string, unknown>;
     targets: Record<string, BaseCard | BaseCard[]>;
     rings: Record<string, Ring | Ring[]>;
     selects: Record<string, SelectChoice>;

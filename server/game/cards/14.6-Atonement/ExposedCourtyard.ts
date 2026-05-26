@@ -18,7 +18,7 @@ const exposedCourtyardCost = () => ({
         context.costs.exposedCourtyardCost = context.player.conflictDeck.slice(0, 2);
     },
     pay: function(context: AbilityContext) {
-        const discardedCards = context.costs.exposedCourtyardCost;
+        const discardedCards = context.costs.exposedCourtyardCost as DrawCard[];
         discardedCards.slice(0, 2).forEach((card: any) => {
             card.controller.moveCard(card, Locations.ConflictDiscardPile);
         });
