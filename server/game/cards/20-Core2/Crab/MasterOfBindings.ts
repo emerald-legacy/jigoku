@@ -12,7 +12,7 @@ export default class MasterOfBindings extends DrawCard {
                 onCardReadied: ({ card }, context) =>
                     card.type === CardTypes.Character &&
                     card.controller === context.player.opponent &&
-                    (card as DrawCard).printedCost <= 3
+                    ((card as DrawCard).printedCost ?? 0) <= 3
             },
             gameAction: AbilityDsl.actions.bow((context) => ({ target: (context as any).event.card }))
         });

@@ -23,8 +23,8 @@ class IsawaEju extends DrawCard {
             effectArgs: context => [context.target.controller.getDynastyCardsInProvince(context.target.location)],
             then: context => ({
                 gameAction: AbilityDsl.actions.refillFaceup(() => ({
-                    target: context.target.controller,
-                    location: context.target.location
+                    target: context?.target?.controller,
+                    location: context?.target?.location
                 }))
             }),
             limit: AbilityDsl.limit.perRound(3)

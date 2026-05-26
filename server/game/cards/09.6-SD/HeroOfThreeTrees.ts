@@ -5,7 +5,7 @@ import AbilityDsl from '../../abilitydsl.js';
 class HeroOfThreeTrees extends DrawCard {
     static id = 'hero-of-three-trees';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.action({
             title: 'Gain 1 honor or reduce the attacked province strength',
             condition: context => context.source.isParticipating()
@@ -30,7 +30,7 @@ class HeroOfThreeTrees extends DrawCard {
                         gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
                             effect: (
                                 context.target.getStrength() > 0 ?
-                                    ability.effects.modifyProvinceStrength(-1) : []
+                                    AbilityDsl.effects.modifyProvinceStrength(-1) : []
                             )
                         }))
                     }))

@@ -7,13 +7,13 @@ class UtakuKamoko extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isDishonored,
+            condition: (context: any) => context.source.isDishonored,
             effect: AbilityDsl.effects.honorStatusDoesNotModifySkill()
         });
         this.reaction({
             title: 'Ready and honor',
             when: {
-                onBreakProvince: (event, context) => context.player.opponent && event.conflict.attackingPlayer === context.player.opponent
+                onBreakProvince: (event: any, context: any) => context.player.opponent && event.conflict && event.conflict.attackingPlayer === context.player.opponent
             },
             cost: AbilityDsl.costs.discardCard({
                 location: Locations.Hand,

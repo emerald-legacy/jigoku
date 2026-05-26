@@ -13,7 +13,7 @@ export default class AsceticVisionary extends DrawCard {
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card) =>
-                    card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk')),
+                    card.hasTrait('monk') || card.attachments.some((card: any) => card.hasTrait('monk')),
                 gameAction: AbilityDsl.actions.ready()
             }
         });

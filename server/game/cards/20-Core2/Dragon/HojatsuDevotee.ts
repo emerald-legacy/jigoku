@@ -8,8 +8,8 @@ export default class HojatsuDevotee extends DrawCard {
     public setupCardAbilities() {
         this.interrupt({
             when: {
-                onCardLeavesPlay: (event, context) =>
-                    event.card === context.source && event.context.player === context.player.opponent
+                onCardLeavesPlay: (event: any, context) =>
+                    event.card === context.source && event.context?.player === context.player.opponent
             },
             title: 'Initiate a military duel, discarding the loser',
             initiateDuel: {

@@ -18,7 +18,7 @@ class DiplomaticHall extends DrawCard {
                 }
             },
             effect: 'have {1} draw a card',
-            effectArgs: context => context.select === this.owner.name ? this.owner : this.owner.opponent
+            effectArgs: context => (context.select === this.owner.name ? this.owner : this.owner.opponent) as any
         });
     }
 }

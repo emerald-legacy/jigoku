@@ -7,7 +7,7 @@ class DaringChallenger extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.player.opponent && context.player.isLessHonorable(),
+            condition: (context: any) => Boolean(context.player.opponent) && context.player.isLessHonorable(),
             effect: AbilityDsl.effects.modifyMilitarySkill(1)
         });
 
@@ -15,7 +15,7 @@ class DaringChallenger extends DrawCard {
             title: 'Initiate a Military duel',
             initiateDuel: {
                 type: DuelTypes.Military,
-                gameAction: duel => AbilityDsl.actions.placeFate({
+                gameAction: (duel: any) => AbilityDsl.actions.placeFate({
                     target: duel.winner
                 })
             }

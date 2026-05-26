@@ -8,7 +8,7 @@ class GallantQuartermaster extends DrawCard {
         this.interrupt({
             title: 'Gain two fate',
             when: {
-                onCardLeavesPlay: (event, context) => event.isSacrifice && event.card === context.source
+                onCardLeavesPlay: (event: any, context) => event.isSacrifice && event.card === context.source
             },
             gameAction: AbilityDsl.actions.gainFate({ amount: 2 })
         });

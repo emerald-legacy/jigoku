@@ -1,9 +1,10 @@
 import DrawCard from '../../drawcard.js';
+import { AbilityContext } from '../../AbilityContext.js';
 
 class HeightOfFashion extends DrawCard {
     static id = 'height-of-fashion';
 
-    canPlay(context, playType) {
+    canPlay(context: AbilityContext, playType: string = 'play'): boolean {
         if(this.game.currentConflict) {
             return false;
         }

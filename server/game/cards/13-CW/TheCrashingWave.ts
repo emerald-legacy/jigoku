@@ -9,7 +9,7 @@ class TheCrashingWave extends DrawCard {
         this.reaction({
             title: 'Move the conflict',
             when: {
-                onTheCrashingWave: (event, context) => event.conflict.defendingPlayer === context.player
+                onTheCrashingWave: (event: any, context) => event.conflict.defendingPlayer === context.player
             },
             target: {
                 cardType: CardTypes.Province,

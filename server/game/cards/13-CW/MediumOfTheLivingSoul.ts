@@ -17,13 +17,13 @@ class MediumOfTheLivingSoul extends DrawCard {
                     effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
                         title: 'Resolve the Ring Effect',
                         when: {
-                            onResolveRingElement: (event, context) => {
+                            onResolveRingElement: (event: any, context: any) => {
                                 let val = event.player === context.player && context.source.isParticipating();
                                 return val;
                             }
                         },
                         cost: AbilityDsl.costs.removeFateFromSelf(),
-                        gameAction: AbilityDsl.actions.resolveRingEffect((context) => ({ target: context.event.ring }))
+                        gameAction: AbilityDsl.actions.resolveRingEffect((context: any) => ({ target: context.event.ring }))
                     })
                 }))
             },

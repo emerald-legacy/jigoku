@@ -17,7 +17,7 @@ export default class WayOfThePhoenix extends DrawCard {
                 ringCondition: () => true
             },
             effect: 'prevent {1} from declaring a conflict with {0}',
-            effectArgs: (context) => context.player.opponent,
+            effectArgs: (context) => context.player.opponent ?? '',
             gameAction: AbilityDsl.actions.ringLastingEffect((context) => ({
                 duration: Durations.UntilEndOfPhase,
                 target: (context.ring.getElements() as Element[]).map((element) => this.game.rings[element]),

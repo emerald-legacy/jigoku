@@ -9,7 +9,7 @@ class AudienceChamber extends DrawCard {
         this.reaction({
             title: 'Place fate on character',
             when: {
-                onCardPlayed: (event, context) =>
+                onCardPlayed: (event: any, context) =>
                     event.player === context.player &&
                     event.card.type === CardTypes.Character &&
                     event.card.getCost() >= 4

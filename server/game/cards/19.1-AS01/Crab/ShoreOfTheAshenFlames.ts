@@ -32,6 +32,7 @@ export default class ShoreOfTheAshenFlames extends ProvinceCard {
                         }
                         return false;
                     }
+                    return false;
                 };
 
                 if(conflict.conflictType === ConflictTypes.Military) {

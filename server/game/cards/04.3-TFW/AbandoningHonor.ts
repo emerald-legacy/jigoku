@@ -7,7 +7,7 @@ export default class AbandoningHonor extends ProvinceCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => context.player.role && context.player.role.hasTrait('fire'),
+            condition: (context) => !!context.player.role && context.player.role.hasTrait('fire'),
             effect: AbilityDsl.effects.modifyProvinceStrength(2)
         });
 

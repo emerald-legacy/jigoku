@@ -24,7 +24,7 @@ export default class TogashiKazue extends DrawCard {
                 }))
             },
             effect: 'steal a fate from {0} and place it on {1}',
-            effectArgs: (context) => context.source.parent
+            effectArgs: (context) => context.source.parent ?? ''
         });
     }
 

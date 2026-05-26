@@ -21,10 +21,10 @@ export default class ABadDeath extends DrawCard {
                 numCardsFunc: (context) => context.costs.dishonorAndSacrificeStateWhenChosen?.hasTrait('berserker') ? 2 : 1,
                 cardType: CardTypes.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating(),
+                cardCondition: (card: any) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.dishonor()
             },
-            then: context => ({
+            then: (context: any) => ({
                 message: '{0} draws a card',
                 gameAction: AbilityDsl.actions.draw({
                     target: context.player,

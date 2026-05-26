@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class DojiShigeru extends DrawCard {
     static id = 'doji-shigeru';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Opponent discards a card',
             limit: ability.limit.unlimitedPerConflict(),

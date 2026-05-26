@@ -24,7 +24,7 @@ export default class TheMaidensIcyGrasp extends DrawCard {
                 cardCondition: (card: DrawCard) => this.charactersPlayedThisConflict.has(card),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.cardLastingEffect((context) => ({
-                        effect: [AbilityDsl.effects.cannotContribute(() => (card) => card === context.target)],
+                        effect: [AbilityDsl.effects.cannotContribute(() => (card: any) => card === context.target)],
                         duration: Durations.UntilEndOfConflict
                     })),
                     AbilityDsl.actions.onAffinity({

@@ -22,7 +22,7 @@ export default class TwoFoldVirtue extends DrawCard {
                         targetController: context.player,
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
-                                afterConflict: event =>
+                                afterConflict: (event: any) =>
                                     context.player === event.conflict.loser
                             },
                             gameAction: AbilityDsl.actions.gainHonor(context => ({ target: context.player })),

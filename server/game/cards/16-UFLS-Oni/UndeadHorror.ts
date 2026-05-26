@@ -23,9 +23,9 @@ export default class UndeadHorror extends BaseOni {
                     ).length > 0
             },
             effect: 'attach a random character from {1}\'s dynasty discard pile to {2}',
-            effectArgs: (context) => [context.player.opponent, context.source],
+            effectArgs: (context) => [context.player.opponent as any, context.source],
             gameAction: AbilityDsl.actions.sequentialContext((context) => {
-                const potentialTargets = (context.player.opponent.dynastyDiscardPile as BaseCard[]).filter(
+                const potentialTargets = ((context.player.opponent?.dynastyDiscardPile ?? []) as BaseCard[]).filter(
                     (card): card is DrawCard => card.type === CardTypes.Character
                 );
                 var j = Math.floor(Math.random() * potentialTargets.length);
@@ -42,7 +42,7 @@ export default class UndeadHorror extends BaseOni {
                                 AbilityDsl.effects.blank(true),
                                 AbilityDsl.effects.changeType(CardTypes.Attachment),
                                 AbilityDsl.effects.gainAbility(AbilityTypes.Persistent, {
-                                    match: (card, context) => card === context.source.parent,
+                                    match: (card, context) => card === context?.source.parent,
                                     targetController: Players.Opponent,
                                     effect: [
                                         AbilityDsl.effects.modifyMilitarySkill(

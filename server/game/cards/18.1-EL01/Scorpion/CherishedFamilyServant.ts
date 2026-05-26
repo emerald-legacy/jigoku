@@ -14,10 +14,10 @@ export default class CherishedFamilyServant extends DrawCard {
 
         this.persistentEffect({
             match: (card, context) =>
-                card.getType() === CardTypes.Attachment &&
+                !!(card.getType() === CardTypes.Attachment &&
                 card.hasTrait('poison') &&
                 card.parent &&
-                context.source.controller === card.parent.controller,
+                context?.source.controller === card.parent.controller),
             effect: AbilityDsl.effects.addKeyword('ancestral'),
             targetController: Players.Any
         });

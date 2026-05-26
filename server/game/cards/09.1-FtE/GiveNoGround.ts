@@ -16,8 +16,8 @@ class GiveNoGround extends DrawCard {
                 gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                     effect: [
                         AbilityDsl.effects.modifyMilitarySkill(2),
-                        AbilityDsl.effects.suppressEffects(effect => effect && effect.isSkillModifier() && (effect.getValue() < 0 || effect.getValue(context.target) < 0)),
-                        AbilityDsl.effects.cannotApplyLastingEffects(effect => effect && effect.isSkillModifier() && (effect.getValue() < 0 || effect.getValue(context.target) < 0))
+                        AbilityDsl.effects.suppressEffects((effect: any) => effect && effect.isSkillModifier() && (effect.getValue() < 0 || effect.getValue(context.target) < 0)),
+                        AbilityDsl.effects.cannotApplyLastingEffects((effect: any) => effect && effect.isSkillModifier() && (effect.getValue() < 0 || effect.getValue(context.target) < 0))
                     ]
                 }))
             },

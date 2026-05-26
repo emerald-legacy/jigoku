@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { Players, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class ShinjoTatsuo extends DrawCard {
     static id = 'shinjo-tatsuo';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Move this and another character to the conflict',
             targets: {

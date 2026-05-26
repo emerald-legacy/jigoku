@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { Durations, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class AFateWorseThanDeath extends DrawCard {
     static id = 'a-fate-worse-than-death';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Bow, move home, dishonor, remove a fate and blank a character',
 

@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { Players, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class SmokeAndMirrors extends DrawCard {
     static id = 'smoke-and-mirrors';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Move shinobi home',
             condition: context => context.player.isAttackingPlayer(),

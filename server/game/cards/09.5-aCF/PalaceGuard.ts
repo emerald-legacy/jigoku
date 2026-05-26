@@ -6,7 +6,7 @@ class PalaceGuard extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.player.opponent && context.player.opponent.isLessHonorable(),
+            condition: context => !!context.player.opponent && context.player.opponent.isLessHonorable(),
             effect: AbilityDsl.effects.cardCannot('declareAsAttacker')
         });
     }

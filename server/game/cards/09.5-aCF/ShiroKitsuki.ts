@@ -18,7 +18,7 @@ export default class ShiroKitsuki extends StrongholdCard {
                 duration: Durations.UntilEndOfConflict,
                 effect: AbilityDsl.effects.delayedEffect({
                     when: {
-                        onCardPlayed: (event, context) =>
+                        onCardPlayed: (event: any, context: any) =>
                             event.player === context.player.opponent &&
                             event.card.name === playerLastingEffectContext.costs.nameCardCost
                     },

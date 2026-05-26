@@ -1,9 +1,10 @@
 import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class IshikenInitiate extends DrawCard {
     static id = 'ishiken-initiate';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
             effect: ability.effects.modifyBothSkills(() => this.getNoOfClaimedRings())
         });

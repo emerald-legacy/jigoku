@@ -22,11 +22,11 @@ class AnOceanInADrop extends DrawCard {
             effect: 'place {1}\'s hand on the bottom of their deck and have them draw {2} cards',
             effectArgs: (context) => (context.select === this.owner.name || !this.owner.opponent) ?
                 [this.owner.name, context.player.hand.length] :
-                [this.owner.opponent.name, context.player.opponent.hand.length]
+                [this.owner.opponent.name, context.player.opponent?.hand.length ?? 0]
         });
     }
 
-    getGameActions(player) {
+    getGameActions(player: any) {
         if(!player) {
             return [];
         }

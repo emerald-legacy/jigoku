@@ -19,7 +19,7 @@ export default class MirumotoRaitsugu extends DrawCard {
                     gameAction: (duel) =>
                         AbilityDsl.actions.conditional({
                             target: duel.loser?.[0],
-                            condition: duel.loser?.[0]?.getFate() > 0,
+                            condition: (duel.loser?.[0]?.getFate() ?? 0) > 0,
                             trueGameAction: AbilityDsl.actions.removeFate(),
                             falseGameAction: AbilityDsl.actions.discardFromPlay()
                         })

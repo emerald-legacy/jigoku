@@ -11,7 +11,7 @@ class TogashiMendicant extends DrawCard {
                 onPhaseStarted: (event, context) => event.phase === Phases.Fate && context.player.dynastyDeck.length > 0
             },
             effect: 'rearrange the top 3 cards of their dynasty deck',
-            handler: context => this.togashiMendicantPrompt(context, context.player.dynastyDeck.slice(0, 3), [], 'Which card do you want to be on top?')
+            handler: (context: any) => this.togashiMendicantPrompt(context, context.player.dynastyDeck.slice(0, 3), [], 'Which card do you want to be on top?')
         });
     }
 

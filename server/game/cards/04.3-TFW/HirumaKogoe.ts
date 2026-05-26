@@ -10,7 +10,12 @@ class HirumaKogoe extends DrawCard {
                 onPhaseStarted: (event, context) => event.phase === 'draw' && context.player.opponent && context.player.honor < context.player.opponent.honor
             },
             effect: 'rearrange the top 3 cards of their conflict deck',
-            handler: context => this.hirumaKogoePrompt(context, context.player.conflictDeck.slice(0, 3), [], 'Which card do you want to be on top?')
+            handler: (context) => {
+                if(!context) {
+                    return;
+                }
+                this.hirumaKogoePrompt(context, context.player.conflictDeck.slice(0, 3), [], 'Which card do you want to be on top?');
+            }
         });
     }
 

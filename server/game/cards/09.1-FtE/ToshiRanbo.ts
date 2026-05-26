@@ -14,7 +14,7 @@ export default class ToshiRanbo extends ProvinceCard {
 
         this.persistentEffect({
             targetLocation: Locations.Provinces,
-            match: (card, context) => card.isDynasty && card.location === context.source.location,
+            match: (card, context) => card.isDynasty && card.location === context?.source.location,
             effect: AbilityDsl.effects.gainExtraFateWhenPlayed()
         });
     }

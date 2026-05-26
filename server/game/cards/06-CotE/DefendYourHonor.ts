@@ -9,14 +9,14 @@ class DefendYourHonor extends DrawCard {
         this.wouldInterrupt({
             title: 'Initiate a military duel',
             when: {
-                onInitiateAbilityEffects: (event, context) =>
+                onInitiateAbilityEffects: (event: any, context: any) =>
                     context.game.isDuringConflict() && context.player.opponent &&
                     event.card.type === CardTypes.Event && event.context.player === context.player.opponent
             },
-            initiateDuel: context => ({
+            initiateDuel: (context: any) => ({
                 type: DuelTypes.Military,
                 opponentChoosesDuelTarget: true,
-                gameAction: duel => duel.winner && duel.winningPlayer === context.player && AbilityDsl.actions.cancel()
+                gameAction: (duel: any) => (duel.winner && duel.winningPlayer === context.player) ? AbilityDsl.actions.cancel() : AbilityDsl.actions.noAction()
             })
         });
     }

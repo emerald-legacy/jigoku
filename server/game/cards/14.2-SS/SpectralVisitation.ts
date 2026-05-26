@@ -31,7 +31,7 @@ export default class SpectralVisitation extends ProvinceCard {
                                     onPhaseEnded: () => true
                                 },
                                 message: '{0} returns to the bottom of the deck due to {1}\'s effect',
-                                messageArgs: (effectContext, effectTargets) => [effectTargets, context.source],
+                                messageArgs: (effectContext: any, effectTargets: any) => [effectTargets, context.source],
                                 gameAction: AbilityDsl.actions.returnToDeck({ bottom: true })
                             })
                         }))

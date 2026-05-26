@@ -5,7 +5,7 @@ import { Locations, Players, CardTypes } from '../../Constants.js';
 class IkomaEiji extends DrawCard {
     static id = 'ikoma-eiji';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Put a character into play',
             when: {

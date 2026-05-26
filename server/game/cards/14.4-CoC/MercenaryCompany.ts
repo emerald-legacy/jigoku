@@ -41,8 +41,7 @@ class MercenaryCompany extends DrawCard {
                 }
             }),
             effect: 'let {1} hire their services',
-            // @ts-expect-error effectArgs returns Player but EffectArg union mismatch - game engine handles it
-            effectArgs: context => [context.player.opponent],
+            effectArgs: context => [context.player.opponent] as any,
             limit: AbilityDsl.limit.unlimitedPerConflict()
         });
     }

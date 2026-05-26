@@ -1,6 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityTypes, CardTypes, Locations } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 class TacticalIngenuity extends DrawCard {
     static id = 'tactical-ingenuity';
@@ -12,7 +13,7 @@ class TacticalIngenuity extends DrawCard {
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
                 title: 'Reveal and draw an event',
-                condition: (context) => context.source.isParticipating(),
+                condition: (context: AbilityContext) => context.source.isParticipating(),
                 effect: 'look at the top four cards of their deck',
                 gameAction: AbilityDsl.actions.deckSearch({
                     amount: 4,

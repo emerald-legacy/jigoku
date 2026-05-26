@@ -122,7 +122,7 @@ export class WsSocket extends EventEmitter {
             return InboundMessageSchema.parse(JSON.parse(msg));
         } catch(e) {
             logger.info(`Failed to parse message: ${e}`);
-            return;
+            return undefined;
         }
     }
 

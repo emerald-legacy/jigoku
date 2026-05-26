@@ -1,9 +1,10 @@
 import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class SealOfThePhoenix extends DrawCard {
     static id = 'seal-of-the-phoenix';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.whileAttached({
             effect: [
                 ability.effects.addFaction('phoenix'),

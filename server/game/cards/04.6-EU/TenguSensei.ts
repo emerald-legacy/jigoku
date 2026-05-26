@@ -1,10 +1,11 @@
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { Durations } from '../../Constants.js';
 
 class TenguSensei extends DrawCard {
     static id = 'tengu-sensei';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.reaction({
             title: 'Prevent a character from attacking this phase',
             when: {
@@ -16,11 +17,11 @@ class TenguSensei extends DrawCard {
             effectArgs: context => {
                 return context.event.context.target;
             },
-            gameAction: ability.actions.cardLastingEffect(context => {
+            gameAction: AbilityDsl.actions.cardLastingEffect(context => {
                 return ({
                     target: context.event.context.target,
                     duration: Durations.UntilEndOfPhase,
-                    effect: ability.effects.cardCannot('declareAsAttacker')
+                    effect: AbilityDsl.effects.cardCannot('declareAsAttacker')
                 });
             })
         });

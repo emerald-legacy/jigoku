@@ -1,14 +1,15 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { CardTypes, Locations, Players } from '../../Constants.js';
 
 class IuchiFarseer extends DrawCard {
     static id = 'iuchi-farseer';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Reveal an opponent\'s province',
             when: {
-                onCharacterEntersPlay: (event, context) => event.card === context.source
+                onCharacterEntersPlay: (event: any, context: any) => event.card === context.source
             },
             target: {
                 cardType: CardTypes.Province,

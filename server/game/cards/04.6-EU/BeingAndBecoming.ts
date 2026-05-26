@@ -24,8 +24,7 @@ class BeingAndBecoming extends DrawCard {
                 }))
             },
             effect: 'move {1} fate from {2} to {3}',
-            // @ts-expect-error effectArgs returns mixed types but EffectArg union doesn't include Ring - game engine handles it
-            effectArgs: context => [context.ring ? context.ring.fate : 0, context.ring, context.source.parent]
+            effectArgs: context => [context.ring ? context.ring.fate : 0, context.ring, context.source.parent] as any
         });
     }
 }

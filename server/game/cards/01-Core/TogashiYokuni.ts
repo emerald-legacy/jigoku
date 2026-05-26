@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { Durations, TargetModes, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class TogashiYokuni extends DrawCard {
     static id = 'togashi-yokuni';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Copy another character\'s ability',
             target: {

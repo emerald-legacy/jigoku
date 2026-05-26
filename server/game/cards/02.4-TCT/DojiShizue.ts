@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { Phases } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class DojiShizue extends DrawCard {
     static id = 'doji-shizue';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
             condition: context => this.game.currentPhase === Phases.Fate && context.player.imperialFavor !== '',
             effect: [

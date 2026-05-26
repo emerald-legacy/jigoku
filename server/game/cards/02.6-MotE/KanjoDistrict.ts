@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class KanjoDistrict extends DrawCard {
     static id = 'kanjo-district';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Bow and send home a participating character',
             cost: ability.costs.discardImperialFavor(),

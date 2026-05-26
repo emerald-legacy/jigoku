@@ -1,10 +1,11 @@
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { Players, CardTypes } from '../../Constants.js';
 
 class MasterOfTheSwiftWaves extends DrawCard {
     static id = 'master-of-the-swift-waves';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.action({
             title:'Switch 2 characters you control',
             targets: {
@@ -19,9 +20,9 @@ class MasterOfTheSwiftWaves extends DrawCard {
                     activePromptTitle: 'Choose a character to move to the conflict',
                     cardType: CardTypes.Character,
                     controller: Players.Self,
-                    gameAction: ability.actions.joint([
-                        ability.actions.sendHome(context => ({ target: context.targets.characterInConflict })),
-                        ability.actions.moveToConflict()
+                    gameAction: AbilityDsl.actions.joint([
+                        AbilityDsl.actions.sendHome(context => ({ target: context.targets.characterInConflict })),
+                        AbilityDsl.actions.moveToConflict()
                     ])
                 }
             },

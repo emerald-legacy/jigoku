@@ -11,14 +11,14 @@ class IsawaUjina extends DrawCard {
         this.forcedReaction({
             title: 'Remove a character from the game',
             when: {
-                onClaimRing: (event) => {
+                onClaimRing: (event: any) => {
                     const element = this.getCurrentElementSymbol(elementKey) || Elements.Void;
-                    return (event.conflict && event.conflict.ring.hasElement(element)) || event.ring.hasElement(element);
+                    return (event.conflict && event.conflict.ring && event.conflict.ring.hasElement(element)) || event.ring.hasElement(element);
                 }
             },
             target: {
                 cardType: CardTypes.Character,
-                cardCondition: card => card.getFate() === 0,
+                cardCondition: (card: any) => card.getFate() === 0,
                 gameAction: AbilityDsl.actions.removeFromGame()
             },
             limit: AbilityDsl.limit.unlimitedPerConflict()

@@ -82,7 +82,7 @@ export default class BayushiKachiko2 extends DrawCard {
             match: (card, context) =>
                 card.type === CardTypes.Event &&
                 card.location === Locations.ConflictDiscardPile &&
-                card.owner === context.player.opponent,
+                card.owner === context?.player.opponent,
             effect: [
                 AbilityDsl.effects.canPlayFromOutOfPlay(
                     (player: Player, card: BaseCard) => player !== card.owner,

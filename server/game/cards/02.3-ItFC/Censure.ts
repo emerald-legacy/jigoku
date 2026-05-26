@@ -1,6 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes } from '../../Constants.js';
+import { AbilityContext } from '../../AbilityContext.js';
 
 class Censure extends DrawCard {
     static id = 'censure';
@@ -16,7 +17,7 @@ class Censure extends DrawCard {
         });
     }
 
-    canPlay(context, playType) {
+    canPlay(context: AbilityContext, playType: string = 'play'): boolean {
         if(context.player.imperialFavor !== '') {
             return super.canPlay(context, playType);
         }

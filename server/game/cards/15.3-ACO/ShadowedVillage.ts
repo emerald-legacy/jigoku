@@ -9,7 +9,7 @@ class ShadowedVillage extends DrawCard {
         this.reaction({
             title: 'Draw cards',
             when: {
-                onMoveFate: (event, context) =>
+                onMoveFate: (event: any, context: any) =>
                     context.game.currentPhase !== Phases.Fate &&
                     event.origin &&
                     event.origin.type === CardTypes.Character &&

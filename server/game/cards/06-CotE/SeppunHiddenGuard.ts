@@ -9,10 +9,10 @@ class SeppunHiddenGuard extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel ability',
             when: {
-                onInitiateAbilityEffects: (event, context) =>
+                onInitiateAbilityEffects: (event: any, context: any) =>
                     event.card.type === CardTypes.Character &&
-                    event.cardTargets.some(
-                        (card) =>
+                    (event.cardTargets ?? []).some(
+                        (card: any) =>
                             card.isUnique() &&
                             card.controller === context.player &&
                             card.location === Locations.PlayArea
@@ -20,10 +20,10 @@ class SeppunHiddenGuard extends DrawCard {
             },
             cost: AbilityDsl.costs.sacrificeSelf(),
             effect: 'cancel the effects of {1}, and force {2} to discard a card at random',
-            effectArgs: (context) => [context.event.card, context.event.context.player],
+            effectArgs: (context: any) => [context.event.card, context.event.context.player],
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cancel(),
-                AbilityDsl.actions.discardAtRandom((context) => ({ target: context.event.context.player }))
+                AbilityDsl.actions.discardAtRandom((context: any) => ({ target: context.event.context.player }))
             ])
         });
     }

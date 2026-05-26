@@ -34,6 +34,6 @@ export default class MangroveSafehouse extends DrawCard {
     }
 
     private opponentHasFateToBeStolen(context: AbilityContext): boolean {
-        return context.player.opponent.fate > 0;
+        return (context.player.opponent?.fate ?? 0) > 0;
     }
 }

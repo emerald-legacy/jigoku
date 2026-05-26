@@ -21,7 +21,7 @@ class KitsukiJusai extends DrawCard {
                 gameAction: AbilityDsl.actions.placeFateOnRing({ origin: context.player.opponent })
             })),
             effect: 'move 1 fate from {1}\'s fate pool to an unclaimed ring',
-            effectArgs: context => [context.player.opponent]
+            effectArgs: context => [context.player.opponent ?? context.player]
         });
     }
 }

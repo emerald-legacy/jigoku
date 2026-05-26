@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardTypes, Locations } from '../../Constants.js';
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -22,7 +22,7 @@ export default class ForceOfTheRiver extends DrawCard {
             gameAction: AbilityDsl.actions.createToken((context) => ({
                 target: context.game
                     .getProvinceArray()
-                    .flatMap((location) =>
+                    .flatMap((location: Locations) =>
                         context.player.getDynastyCardsInProvince(location).filter((card: DrawCard) => card.isFacedown())
                     )
             }))

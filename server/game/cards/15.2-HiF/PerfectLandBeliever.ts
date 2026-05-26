@@ -7,7 +7,7 @@ class PerfectLandBeliever extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isOrdinary(),
-            match: (card, context) => card === context.source,
+            match: (card, context) => card === context?.source,
             effect: AbilityDsl.effects.modifyBothSkills(2)
         });
     }

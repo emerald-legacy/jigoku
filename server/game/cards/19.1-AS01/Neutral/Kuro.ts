@@ -6,7 +6,7 @@ export default class Kuro extends DrawCard {
     static id = 'kuro';
 
     public allowAttachment(attachment: DrawCard) {
-        if(attachment.printedCost < 1) {
+        if((attachment.printedCost ?? 0) < 1) {
             return false;
         }
         return super.allowAttachment(attachment);
@@ -22,7 +22,7 @@ export default class Kuro extends DrawCard {
                 cardType: CardTypes.Attachment,
                 mode: TargetModes.Single,
                 cardCondition: (card) =>
-                    card.printedCost >= 1 && card.canAttach(this, { ignoreType: false, controller: this.controller }),
+                    (card.printedCost ?? 0) >= 1 && card.canAttach(this, { ignoreType: false, controller: this.controller }),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.playerLastingEffect((context) => ({
                         targetController: context.player,

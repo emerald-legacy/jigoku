@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { TargetModes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class IdeTrader extends DrawCard {
     static id = 'ide-trader';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Gain a fate/card',
             when: {

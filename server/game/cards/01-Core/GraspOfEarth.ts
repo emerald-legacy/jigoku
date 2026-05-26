@@ -15,7 +15,7 @@ export default class GraspOfEarth extends DrawCard {
             location: Locations.Any,
             targetController: Players.Any,
             condition: (context) => context.player.hasAffinity('earth'),
-            effect: AbilityDsl.effects.reduceCost({ amount: 1, match: (card, source) => card === source })
+            effect: AbilityDsl.effects.reduceCost({ amount: 1, match: (card: any, source: any) => card === source })
         });
 
         this.action({

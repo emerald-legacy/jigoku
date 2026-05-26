@@ -28,9 +28,9 @@ export default class DishonorableAssault extends ProvinceCard {
         });
     }
 
-    getNumberOfLegalTargets(context) {
-        if(this.game.isDuringConflict()) {
-            let cards = this.game.currentConflict.getParticipants((card) => card.isAttacking());
+    getNumberOfLegalTargets(context: any) {
+        if(this.game.isDuringConflict() && this.game.currentConflict) {
+            let cards = this.game.currentConflict.getParticipants((card: any) => card.isAttacking());
             let count = 0;
             cards.forEach((card) => {
                 if(card.allowGameAction('dishonor', context)) {

@@ -1,9 +1,10 @@
 import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class NitenMaster extends DrawCard {
     static id = 'niten-master';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Ready this character',
             when: {

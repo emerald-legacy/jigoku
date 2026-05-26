@@ -2,6 +2,7 @@ import { Phases, Durations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { FatePhase } from '../../gamesteps/FatePhase.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 export default class JurojinsCurse extends DrawCard {
     static id = 'jurojin-s-curse';
@@ -18,10 +19,10 @@ export default class JurojinsCurse extends DrawCard {
                 duration: Durations.UntilEndOfRound,
                 effect: AbilityDsl.effects.playerDelayedEffect({
                     when: {
-                        onPhaseEnded: (event) => event.phase === Phases.Fate
+                        onPhaseEnded: (event: any) => event.phase === Phases.Fate
                     },
                     message: '{0} takes hold!',
-                    messageArgs: (context) => [context.source],
+                    messageArgs: (context: AbilityContext) => [context.source],
                     gameAction: AbilityDsl.actions.handler({
                         handler: (context) => context.game.queueStep(new FatePhase(context.game))
                     })

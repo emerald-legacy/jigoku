@@ -12,7 +12,7 @@ export default class AshenFlamePlateau extends ProvinceCard {
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             },
             effect: 'prevent {1} from triggering character abilities this conflict',
-            effectArgs: (context) => [context.player.opponent],
+            effectArgs: (context) => [context.player.opponent as any],
             gameAction: AbilityDsl.actions.conflictLastingEffect((context) => ({
                 duration: Durations.UntilEndOfConflict,
                 effect: [

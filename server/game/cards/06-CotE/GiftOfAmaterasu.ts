@@ -9,7 +9,7 @@ class GiftofAmaterasu extends DrawCard {
         this.reaction({
             title: 'Honor a character',
             when: {
-                afterConflict: (event, context) => event.conflict.winner === context.player && event.conflict.skillDifference >= 5
+                afterConflict: (event: any, context: any) => event.conflict.winner === context.player && (event.conflict.skillDifference ?? 0) >= 5
             },
             cannotBeMirrored: true,
             target: {

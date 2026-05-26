@@ -14,7 +14,7 @@ export default class HisuMoriToride extends StrongholdCard {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.player &&
                     event.conflict.conflictType === 'military' &&
-                    event.conflict.skillDifference >= 5
+                    (event.conflict.skillDifference ?? 0) >= 5
             },
             cost: [
                 AbilityDsl.costs.bowSelf(),

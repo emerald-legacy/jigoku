@@ -14,12 +14,12 @@ export default class MatsuNobuiko extends DrawCard {
                     event.context.ability.abilityType === 'action' &&
                     (context.source as DrawCard).isParticipating()
             },
-            initiateDuel: (context) => ({
+            initiateDuel: ((context: any) => ({
                 type: DuelTypes.Military,
                 opponentChoosesDuelTarget: true,
-                gameAction: (duel) =>
-                    duel.winner && duel.winningPlayer === context.player && AbilityDsl.actions.cancel()
-            })
+                gameAction: (duel: any) =>
+                    duel.winner && duel.winningPlayer === context.player ? AbilityDsl.actions.cancel() : AbilityDsl.actions.noAction()
+            })) as any
         });
     }
 }

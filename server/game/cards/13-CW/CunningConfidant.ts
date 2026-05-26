@@ -6,7 +6,7 @@ class CunningConfidant extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isParticipating() && context.player.opponent && context.player.opponent.getClaimedRings().length > context.player.getClaimedRings().length,
+            condition: context => context.source.isParticipating() && context.player.opponent !== undefined && context.player.opponent.getClaimedRings().length > context.player.getClaimedRings().length,
             effect: AbilityDsl.effects.modifyPoliticalSkill(2)
         });
     }

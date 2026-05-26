@@ -1,13 +1,14 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 
 class KakitaAsami extends DrawCard {
     static id = 'kakita-asami';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action ({
             title: 'Take one honor from your opponent',
-            condition: context => {
-                if(!this.game.isDuringConflict('political')) {
+            condition: (context: any) => {
+                if(!this.game.isDuringConflict('political') || !this.game.currentConflict) {
                     return false;
                 }
                 let diff = this.game.currentConflict.attackerSkill - this.game.currentConflict.defenderSkill;

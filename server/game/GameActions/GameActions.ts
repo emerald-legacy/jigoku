@@ -443,7 +443,9 @@ export function handler(propertyFactory: PropsFactory<HandlerProperties>): GameA
     return new HandlerAction(propertyFactory);
 }
 export function noAction(): GameAction {
-    return new HandlerAction({});
+    const action = new HandlerAction({});
+    (action as unknown as { isNoAction: boolean }).isNoAction = true;
+    return action;
 }
 
 //////////////

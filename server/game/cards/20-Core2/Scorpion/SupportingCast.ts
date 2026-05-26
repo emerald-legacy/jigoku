@@ -9,10 +9,10 @@ export default class SupportingCast extends DrawCard {
     setupCardAbilities() {
         this.reaction({
             when: {
-                onInitiateAbilityEffects: (event, context) => {
+                onInitiateAbilityEffects: (event: any, context) => {
                     return (
                         context.game.isDuringConflict('military') &&
-                        event.cardTargets.some((card: BaseCard) => card.controller === context.player)
+                        (event.cardTargets ?? []).some((card: BaseCard) => card.controller === context.player)
                     );
                 }
             },

@@ -14,8 +14,7 @@ class DaimyosFavor extends DrawCard {
             title: 'Bow to reduce attachment cost',
             cost: ability.costs.bowSelf(),
             effect: 'reduce the cost of the next attachment they play on {1} by 1',
-            // @ts-expect-error effectArgs returns BaseCard but EffectArg union doesn't include BaseCard - game engine handles it
-            effectArgs: context => context.source.parent,
+            effectArgs: context => context.source.parent as any,
             gameAction: ability.actions.playerLastingEffect(context => ({
                 targetController: context.player,
                 duration: Durations.UntilEndOfPhase,

@@ -43,11 +43,11 @@ export default class JealousAncestor extends DrawCard {
     private addAttachedEffectOnOpponent(effect: (game: any, source: any, props: any) => PlayerEffect) {
         this.persistentEffect({
             condition: (context) =>
-                context.source.parent &&
+                !!(context.source.parent &&
                 context.source.parent.isParticipating() &&
                 !this.game.rings[this.getCurrentElementSymbol(ELEMENT_KEY)].isConsideredClaimed(
                     context.source.parent.controller
-                ),
+                )),
             targetController: Players.Opponent,
             effect: effect
         });

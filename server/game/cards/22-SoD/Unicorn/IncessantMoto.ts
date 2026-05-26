@@ -9,7 +9,7 @@ export default class IncessantMoto extends DrawCard {
         this.persistentEffect({
             condition: context => context.source.isParticipating(),
             targetController: Players.Any,
-            match: (card, context) => card === context.source,
+            match: (card, context) => card === context?.source,
             effect: AbilityDsl.effects.canContributeWhileBowed()
         });
 

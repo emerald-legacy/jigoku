@@ -6,7 +6,7 @@ export default class WebOfLies extends ProvinceCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyBaseProvinceStrength((card) => card.controller.showBid * 2)
+            effect: AbilityDsl.effects.modifyBaseProvinceStrength((card: any) => card.controller.showBid * 2)
         });
     }
 }

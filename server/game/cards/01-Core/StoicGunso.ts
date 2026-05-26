@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class StoicGunso extends DrawCard {
     static id = 'stoic-gunso';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Sacrifice a character for +3/+0',
             condition: () => this.game.isDuringConflict(),

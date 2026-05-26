@@ -9,7 +9,7 @@ class RoadsideInn extends DrawCard {
         this.reaction({
             title: 'Place a fate on a character',
             cost: AbilityDsl.costs.optionalHonorTransferFromOpponentCost(context => {
-                return context.player.opponent.fate > 0;
+                return (context.player.opponent?.fate ?? 0) > 0;
             }),
             when: {
                 onPhaseStarted: event => event.phase === Phases.Fate
@@ -33,7 +33,7 @@ class RoadsideInn extends DrawCard {
         });
     }
 
-    buildString(context) {
+    buildString(context: any) {
         if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
             let target = context.targets.oppCharacter;
             return '.  ' + target.controller.name + ' gives ' + context.player.name + ' 1 honor to place a fate from their pool on ' + target.name;

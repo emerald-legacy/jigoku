@@ -32,7 +32,7 @@ export default class ShosuroMiyako extends DrawCard {
                 }
             },
             effect: 'force {1} to {2}',
-            effectArgs: (context) => [context.player.opponent, context.select.toLowerCase()]
+            effectArgs: (context) => [context.player.opponent ?? '', context.select.toLowerCase()]
         });
     }
 }

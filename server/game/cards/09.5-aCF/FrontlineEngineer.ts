@@ -28,7 +28,7 @@ class FrontlineEngineer extends DrawCard {
                     handler: context => this.game.promptWithHandlerMenu(context.player, {
                         activePromptTitle: 'Choose a holding',
                         context: context,
-                        cardCondition: card => card.getType() === CardTypes.Holding,
+                        cardCondition: (card: any) => card.getType() === CardTypes.Holding,
                         cards: context.player.dynastyDeck.slice(0, 5),
                         choices: ['Take nothing'],
                         handlers: [() => {
@@ -36,7 +36,7 @@ class FrontlineEngineer extends DrawCard {
                             context.player.shuffleDynastyDeck();
                             return true;
                         }],
-                        cardHandler: cardFromDeck => {
+                        cardHandler: (cardFromDeck: any) => {
                             let cards = context.player.getDynastyCardsInProvince(context.target.location);
                             this.game.addMessage('{0} discards {1}, replacing it with {2}', context.player, cards, cardFromDeck);
                             context.player.moveCard(cardFromDeck, context.target.location);

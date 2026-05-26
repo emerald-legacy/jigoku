@@ -20,7 +20,7 @@ export default class RenownedSinger extends DrawCard {
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) =>
-                        this.game.promptWithHandlerMenu(context.player.opponent, {
+                        this.game.promptWithHandlerMenu(context.player.opponent as any, {
                             activePromptTitle: 'Choose a card to add to your opponent\'s hand',
                             context: context,
                             cards: context.target,
@@ -53,7 +53,7 @@ export default class RenownedSinger extends DrawCard {
                 })
             },
             effect: 'have {1} return one of {2} to {3}\'s hand',
-            effectArgs: (context) => [context.player.opponent, context.target, context.player]
+            effectArgs: (context) => [context.player.opponent as any, context.target, context.player]
         });
     }
 }

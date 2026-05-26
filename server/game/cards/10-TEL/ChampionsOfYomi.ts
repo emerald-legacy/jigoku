@@ -1,6 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import {CardTypes, Durations, Locations} from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 class ChampionsOfYomi extends DrawCard {
     static id = 'champions-of-yomi';
@@ -29,7 +30,7 @@ class ChampionsOfYomi extends DrawCard {
                             onPhaseEnded: () => true
                         },
                         message: '{0} is removed from the game due to its delayed effect',
-                        messageArgs: context => [context.source],
+                        messageArgs: (context: AbilityContext) => [context.source],
                         gameAction: AbilityDsl.actions.removeFromGame()
                     })
                 }))

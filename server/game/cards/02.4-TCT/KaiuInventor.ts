@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { Locations, Durations, Players, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class KaiuInventor extends DrawCard {
     static id = 'kaiu-inventor';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Add an additional ability use to a holding',
             target: {

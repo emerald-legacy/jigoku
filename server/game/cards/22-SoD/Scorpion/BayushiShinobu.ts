@@ -38,7 +38,7 @@ export default class BayushiShinobu extends DrawCard {
                         target: context.player,
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
-                                onCardLeavesPlay: (event) => event.card === context.target
+                                onCardLeavesPlay: (event: any) => event.card === context.target
                             },
                             onlyRemoveOnSuccess: true,
                             gameAction: AbilityDsl.actions.loseHonor(({

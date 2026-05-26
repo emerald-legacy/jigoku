@@ -1,9 +1,10 @@
 import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class GiftedTactician extends DrawCard {
     static id = 'gifted-tactician';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Draw a card',
             when: {

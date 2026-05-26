@@ -1,6 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import { Durations, Locations, Elements } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 const elementKey = 'feral-ningyo-water';
 
@@ -27,7 +28,7 @@ class FeralNingyo extends DrawCard {
                             onConflictFinished: () => true
                         },
                         message: '{0} returns to the deck and shuffles due to its delayed effect',
-                        messageArgs: context => [context.source],
+                        messageArgs: (context: AbilityContext) => [context.source],
                         gameAction: AbilityDsl.actions.returnToDeck({ shuffle: true })
                     })
                 }))

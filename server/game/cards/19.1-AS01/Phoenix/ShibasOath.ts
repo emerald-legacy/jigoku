@@ -16,7 +16,7 @@ export default class ShibasOath extends DrawCard {
         this.reaction({
             title: 'Honor attached character',
             when: {
-                onCardAttached: (event, context) =>
+                onCardAttached: (event: any, context) =>
                     event.card === context.source && event.originalLocation !== Locations.PlayArea
             },
             gameAction: AbilityDsl.actions.honor((context) => ({

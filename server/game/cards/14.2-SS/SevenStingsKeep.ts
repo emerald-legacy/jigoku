@@ -13,7 +13,7 @@ export default class SevenStingsKeep extends StrongholdCard {
             },
             cost: [AbilityDsl.costs.bowSelf()],
             effect: 'force {1} to declare defenders before attackers are chosen this conflict',
-            effectArgs: (context) => [context.player.opponent],
+            effectArgs: (context) => [context.player.opponent as any],
             gameAction: AbilityDsl.actions.menuPrompt((context) => ({
                 activePromptTitle: 'Choose how many characters will be attacking',
                 choices: this.getChoices(context),
@@ -38,7 +38,7 @@ export default class SevenStingsKeep extends StrongholdCard {
         });
     }
 
-    getChoices(context) {
+    getChoices(context: any) {
         const min = 1;
         const max = context.event.attackerMatrix.maximumNumberOfAttackers;
         const array = [];

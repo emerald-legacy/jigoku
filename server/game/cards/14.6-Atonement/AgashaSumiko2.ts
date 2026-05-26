@@ -27,7 +27,7 @@ export default class AgashaSumiko2 extends DrawCard {
                 }))
             ]),
             effect: 'make {1} {2}',
-            effectArgs: (context) => [context.player.opponent, this.getChatMessage(context)]
+            effectArgs: (context) => [context.player.opponent as any, this.getChatMessage(context)]
         });
     }
 

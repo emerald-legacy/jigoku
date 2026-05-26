@@ -6,7 +6,7 @@ class IuchiSoulweaver extends DrawCard {
 
     setupCardAbilities() {
         this.dire({
-            condition: context => context.game.isDuringConflict() && context.game.currentConflict.getNumberOfParticipantsFor(context.player, card => card !== context.source) > 0,
+            condition: context => context.game.isDuringConflict() && (context.game.currentConflict?.getNumberOfParticipantsFor(context.player, (card: any) => card !== context.source) ?? 0) > 0,
             effect: AbilityDsl.effects.participatesFromHome()
         });
 

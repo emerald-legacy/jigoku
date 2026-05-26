@@ -23,7 +23,7 @@ export default class KitsukiYuikimi extends DrawCard {
                 })
             })),
             effect: 'prevent {0} from being chosen as the target of {1}\'s triggered abilities until the end of the conflict',
-            effectArgs: (context) => [context.player.opponent]
+            effectArgs: (context) => [context.player.opponent as any]
         });
     }
 }

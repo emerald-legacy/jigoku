@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { Locations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class GuidanceOfTheAncestors extends DrawCard {
     static id = 'guidance-of-the-ancestors';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Play this from the discard pile',
             location: Locations.ConflictDiscardPile,

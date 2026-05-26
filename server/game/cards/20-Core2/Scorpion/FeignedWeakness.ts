@@ -14,7 +14,7 @@ export default class FeignedWeakness extends DrawCard {
                 onInitiateAbilityEffects: (event, context) =>
                     event.card.type === CardTypes.Event &&
                     context.game.isDuringConflict() &&
-                    this.#hasEqualOrLessSkill(this.game.currentConflict, context.player)
+                    !!this.game.currentConflict && this.#hasEqualOrLessSkill(this.game.currentConflict, context.player)
             },
             cost: AbilityDsl.costs.discardCard({
                 location: Locations.Hand,

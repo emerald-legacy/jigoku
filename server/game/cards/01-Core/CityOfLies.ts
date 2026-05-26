@@ -12,7 +12,7 @@ class CityOfLies extends DrawCard {
             gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
                 targetController: context.player,
                 duration: Durations.UntilEndOfPhase,
-                effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, card => card.type === CardTypes.Event)
+                effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, (card: any) => card.type === CardTypes.Event)
             }))
         });
     }

@@ -16,8 +16,8 @@ export default class PerfectGuest extends DrawCard {
         this.action({
             title: 'Give control of this character',
             effect: 'give control of itself to {1}',
-            effectArgs: (context) => [context.player.opponent],
-            condition: (context) => context.player.opponent && !this.triggeredThisRound,
+            effectArgs: (context) => [context.player.opponent ?? context.player],
+            condition: (context) => context.player.opponent !== undefined && !this.triggeredThisRound,
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => {
                 this.triggeredThisRound = true;
                 return {

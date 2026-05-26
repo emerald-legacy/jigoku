@@ -16,7 +16,7 @@ class YogoHiroue extends DrawCard {
                     AbilityDsl.actions.cardLastingEffect(context => ({
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
-                                afterConflict: event => event.conflict.winner === context.player
+                                afterConflict: (event: any) => event.conflict.winner === context.player
                             },
                             gameAction: AbilityDsl.actions.menuPrompt({
                                 activePromptTitle: 'Dishonor ' + context.target.name + '?',

@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class HidaKotoe extends DrawCard {
     static id = 'hida-kotoe';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.reaction({
             when: {
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isDefending()
@@ -12,7 +13,7 @@ class HidaKotoe extends DrawCard {
             title: 'Discard an attachment',
             target: {
                 cardType: CardTypes.Attachment,
-                gameAction: ability.actions.discardFromPlay()
+                gameAction: AbilityDsl.actions.discardFromPlay()
             }
         });
     }

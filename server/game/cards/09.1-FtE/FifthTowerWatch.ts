@@ -9,7 +9,7 @@ class FifthTowerWatch extends DrawCard {
         this.interrupt({
             title: 'Bow a character',
             when: {
-                onCardLeavesPlay: (event, context) => event.isSacrifice && event.card.controller === context.player && event.card.location === Locations.PlayArea
+                onCardLeavesPlay: (event: any, context) => event.isSacrifice && event.card.controller === context.player && event.card.location === Locations.PlayArea
             },
             target: {
                 player: Players.Opponent,

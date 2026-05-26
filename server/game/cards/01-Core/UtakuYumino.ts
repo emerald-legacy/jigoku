@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { Locations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class UtakuYumino extends DrawCard {
     static id = 'utaku-yumino';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Discard a card for +2/+2',
             condition: () => this.game.isDuringConflict(),

@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class MirumotosFury extends DrawCard {
     static id = 'mirumoto-s-fury';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Bow attacking character',
             target: {

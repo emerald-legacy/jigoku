@@ -10,7 +10,7 @@ export default class WithstandTheDarkness extends DrawCard {
 
     private currentTargets = new Set<BaseCard>();
     private extraBanzaiTarget?: BaseCard;
-    private abilityRegistrar: EventRegistrar;
+    private abilityRegistrar?: EventRegistrar;
 
     setupCardAbilities() {
         this.abilityRegistrar = new EventRegistrar(this.game, this);

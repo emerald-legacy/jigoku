@@ -11,7 +11,7 @@ class PeacemakersBlade extends DrawCard {
         });
     }
 
-    canPlayOn(card) {
+    canPlayOn(card: any) {
         return (card.getType() === CardTypes.Character && !card.isAttacking()) && super.canPlayOn(card);
     }
 }

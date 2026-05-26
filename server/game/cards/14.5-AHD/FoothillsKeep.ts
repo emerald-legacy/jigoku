@@ -11,7 +11,7 @@ export default class FoothillsKeep extends ProvinceCard {
             targetController: Players.Self,
             condition: () => true,
             match: (card, context) =>
-                card.type === CardTypes.Province && card !== context.source && card.controller === context.player,
+                card.type === CardTypes.Province && card !== context?.source && card.controller === context?.player,
             effect: AbilityDsl.effects.fateCostToRingToDeclareConflictAgainst()
         });
     }

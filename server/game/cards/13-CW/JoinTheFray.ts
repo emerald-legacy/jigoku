@@ -32,7 +32,7 @@ class JoinTheFray extends DrawCard {
         });
     }
 
-    getEffectArg(context, selection) {
+    getEffectArg(context: any, selection: any) {
         if(selection === context.player.name) {
             return context.player;
         }

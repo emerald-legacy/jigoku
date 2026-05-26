@@ -1,16 +1,17 @@
 import DrawCard from '../../drawcard.js';
 import { Players, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class AgelessCrone extends DrawCard {
     static id = 'ageless-crone';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
             condition: context => context.source.isParticipating(),
             targetController: Players.Any,
             effect: ability.effects.increaseCost({
                 amount: 1,
-                match: card => card.type === CardTypes.Event
+                match: (card: any) => card.type === CardTypes.Event
             })
         });
     }

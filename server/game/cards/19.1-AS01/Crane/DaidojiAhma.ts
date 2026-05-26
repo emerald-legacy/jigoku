@@ -15,7 +15,7 @@ export default class DaidojiAhma extends DrawCard {
                     event.context.ability.isTriggeredAbility() &&
                     (event.cardTargets as Array<BaseCard>).some((card) => this.targetIsDishonoredCrane(card, context)),
                 onMoveFate: (event, context) =>
-                    this.isRingEffect(event) && event.fate > 0 && this.targetIsDishonoredCrane(event.origin, context),
+                    this.isRingEffect(event) && event.fate > 0 && this.targetIsDishonoredCrane(event.origin as BaseCard, context),
                 onCardHonored: (event, context) =>
                     this.isRingEffect(event) && this.targetIsDishonoredCrane(event.card, context),
                 onCardDishonored: (event, context) =>

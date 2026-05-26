@@ -20,7 +20,7 @@ export function createKeeperRole(id: string, element: Elements) {
             });
         }
 
-        getElement() {
+        getElement(): Elements[] {
             return [element];
         }
     };
@@ -43,7 +43,7 @@ export function createSeekerRole(id: string, element: Elements) {
             });
         }
 
-        getElement() {
+        getElement(): Elements[] {
             return [element];
         }
     };

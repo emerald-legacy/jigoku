@@ -8,10 +8,9 @@ export default class TacticiansApprentice extends DrawCard {
         this.reaction({
             title: 'Draw a card',
             when: {
-                onHonorDialsRevealed: (event, context) =>
+                onHonorDialsRevealed: (event: any, context) =>
                     event.isHonorBid &&
-                    // lower bid than opponent
-                    context.player.opponent &&
+                    !!context.player.opponent &&
                     context.player.showBid < context.player.opponent.showBid
             },
             effect: 'draw a card',

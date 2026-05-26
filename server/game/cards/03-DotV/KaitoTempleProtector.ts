@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class KaitoTempleProtector extends DrawCard {
     static id = 'kaito-temple-protector';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
             condition: context => context.source.isDefending(),
             effect: ability.effects.cardCannot({

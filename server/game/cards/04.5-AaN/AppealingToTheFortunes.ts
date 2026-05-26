@@ -7,7 +7,7 @@ export default class AppealingToTheFortunes extends ProvinceCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => context.player.role && context.player.role.hasTrait('void'),
+            condition: (context) => !!context.player.role && context.player.role.hasTrait('void'),
             effect: AbilityDsl.effects.modifyProvinceStrength(2)
         });
 

@@ -9,7 +9,7 @@ class BrashSamurai extends DrawCard {
             title: 'Honor this character',
             condition: context =>
                 context.source.isParticipatingFor(context.player) &&
-                this.game.currentConflict.getNumberOfParticipantsFor(context.player) === 1,
+                this.game.currentConflict?.getNumberOfParticipantsFor(context.player) === 1,
             gameAction: AbilityDsl.actions.honor()
         });
     }

@@ -7,7 +7,7 @@ const ayubunePilotCaptureParentCost = function() {
         canPay: function() {
             return true;
         },
-        resolve: function(context) {
+        resolve: function(context: any) {
             context.costs.ayubunePilotCaptureParentCost = context.source.parent;
         },
         pay: function() {

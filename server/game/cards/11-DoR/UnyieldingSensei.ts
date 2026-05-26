@@ -12,7 +12,7 @@ class UnyieldingSensei extends DrawCard {
                 cardType: CardTypes.Province,
                 controller: Players.Self,
                 location: Locations.Provinces,
-                cardCondition: (card, context) => !card.isBroken && context.player.getDynastyCardsInProvince(card.location).some(c => c.getType() === CardTypes.Holding && c.isFaceup())
+                cardCondition: (card, context) => !card.isBroken && context.player.getDynastyCardsInProvince(card.location).some((c: any) => c.getType() === CardTypes.Holding && c.isFaceup())
             },
             effect: 'look at the top two cards of their dynasty deck',
             gameAction: AbilityDsl.actions.deckSearch({

@@ -1,9 +1,10 @@
 import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class PacifistPhilosopher extends DrawCard {
     static id = 'pacifist-philosopher';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Gain 1 fate',
             limit: ability.limit.perRound(2),

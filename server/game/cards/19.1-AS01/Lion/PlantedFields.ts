@@ -16,9 +16,9 @@ export default class PlantedFields extends DrawCard {
         this.interrupt({
             title: 'Sacrifice Planted Fields',
             when: {
-                onPhaseEnded: (event, context) =>
+                onPhaseEnded: (event: any, context) =>
                     event.phase === Phases.Conflict &&
-                    !context.player.getProvinceCardInProvince(context.source.location).isBroken
+                    !context.player.getProvinceCardInProvince(context.source.location)?.isBroken
             },
             cost: AbilityDsl.costs.sacrificeSelf(),
             gameAction: AbilityDsl.actions.handler({

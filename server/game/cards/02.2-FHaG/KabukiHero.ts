@@ -1,9 +1,10 @@
 import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class KabukiHero extends DrawCard {
     static id = 'kabuki-hero';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Gain military bonus',
             cost: ability.costs.payFate(1),

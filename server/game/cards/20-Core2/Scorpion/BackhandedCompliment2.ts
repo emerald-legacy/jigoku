@@ -25,7 +25,7 @@ export default class BackhandedCompliment2 extends DrawCard {
                 )
             },
             effect: 'make {1} lose an honor and draw a card',
-            effectArgs: (context) => (context.select === this.owner.name ? this.owner : this.owner.opponent)
+            effectArgs: (context) => (context.select === this.owner.name ? this.owner : this.owner.opponent) as any
         });
     }
 }

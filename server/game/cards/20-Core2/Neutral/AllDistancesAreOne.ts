@@ -16,7 +16,7 @@ function captureOriginalProvince(): Cost {
             return true;
         },
         resolve(context: AbilityContext) {
-            context[CAPTURED_ORIGINAL_PROVINCE] = (context.game.currentConflict as Conflict).conflictProvince;
+            (context as any)[CAPTURED_ORIGINAL_PROVINCE] = (context.game.currentConflict as Conflict).conflictProvince;
         },
         pay() { }
     };
@@ -29,12 +29,12 @@ export default class AllDistancesAreOne extends DrawCard {
         this.action({
             title: 'Move conflict to a different province',
             condition: (context) =>
-                (context.game.currentConflict as Conflict | undefined)
+                !!((context.game.currentConflict as Conflict | undefined)
                     ?.getConflictProvinces()
-                    .every((province) => province.location !== Locations.StrongholdProvince) &&
+                    .every((province: any) => province.location !== Locations.StrongholdProvince) &&
                 context.player.cardsInPlay.some(
                     (card: DrawCard) => card.isParticipating() && card.hasTrait('shugenja')
-                ),
+                )),
             cost: captureOriginalProvince(),
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 cardType: CardTypes.Province,

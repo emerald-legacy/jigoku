@@ -7,7 +7,7 @@ export default class HonoredGeneral extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
-            match: (card, context) => card.isParticipating() && card.isFaction('lion') && card !== context.source,
+            match: (card, context) => card.isParticipating() && card.isFaction('lion') && card !== context?.source,
             effect: AbilityDsl.effects.modifyMilitarySkill(1)
         });
 

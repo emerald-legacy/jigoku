@@ -8,7 +8,7 @@ class ChiseiDistrict extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Locations.Provinces,
-            match: (card, context) => card.isProvince && card.location === context.source.location,
+            match: (card: any, context: any) => card.isProvince && card.location === context.source.location,
             effect: AbilityDsl.effects.cannotHaveConflictsDeclaredOfType(ConflictTypes.Military)
         });
     }

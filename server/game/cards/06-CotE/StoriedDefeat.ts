@@ -26,7 +26,7 @@ export default class StoriedDefeat extends DrawCard {
                     AbilityDsl.actions.menuPrompt((context) => ({
                         activePromptTitle: 'Spend 1 fate to dishonor ' + context.target.name + '?',
                         choices: ['Yes'].concat(
-                            context.events.some((event) => event.name === EventNames.OnCardBowed) ? ['No'] : []
+                            context.events.some((event: any) => event.name === EventNames.OnCardBowed) ? ['No'] : []
                         ),
                         choiceHandler: (choice, displayMessage) => {
                             if(displayMessage) {

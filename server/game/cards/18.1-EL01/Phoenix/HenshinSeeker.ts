@@ -11,8 +11,8 @@ export default class HenshinSeeker extends DrawCard {
         this.reaction({
             title: 'Ready a character',
             when: {
-                onClaimRing: (event) => {
-                    const element = this.getCurrentElementSymbol(RING_CLAIM);
+                onClaimRing: (event: any) => {
+                    const element = this.getCurrentElementSymbol(RING_CLAIM) as Elements;
                     return (event.conflict && event.conflict.hasElement(element)) || event.ring.hasElement(element);
                 }
             },

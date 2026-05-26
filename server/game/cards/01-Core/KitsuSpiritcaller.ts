@@ -16,7 +16,7 @@ class KitsuSpiritcaller extends DrawCard {
                 gameAction: AbilityDsl.actions.putIntoConflict()
             },
             effect: 'call {0} back from the dead until the end of the conflict',
-            then: context => ({
+            then: (context: any) => ({
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     target: context.target,
                     duration: Durations.UntilEndOfPhase,

@@ -13,7 +13,14 @@ class Dispatch extends DrawCard {
                 cardCondition: card => card.isFaction('unicorn'),
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.conditional({
-                    condition: (context, properties) => properties.target[0].inConflict,
+                    condition: (context, properties) => {
+                        const target = properties.target;
+                        if(!target || !Array.isArray(target)) {
+                            return false;
+                        }
+                        const first = target[0] as any;
+                        return !!first && first.inConflict;
+                    },
                     trueGameAction: AbilityDsl.actions.sendHome(),
                     falseGameAction: AbilityDsl.actions.moveToConflict()
                 }),

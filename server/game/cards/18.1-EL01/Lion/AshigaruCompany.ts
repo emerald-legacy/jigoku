@@ -9,12 +9,12 @@ class AshigaruCompany extends DrawCard {
         this.reaction({
             title: 'Search your conflict deck',
             when: {
-                onCardAttached: (event, context) => event.card === context.source && event.originalLocation !== Locations.PlayArea
+                onCardAttached: (event: any, context) => event.card === context.source && event.originalLocation !== Locations.PlayArea
             },
             effect: 'look at the top five cards of their deck',
             gameAction: AbilityDsl.actions.deckSearch({
                 amount: 5,
-                cardCondition: card => card.hasTrait('follower') && card.type === CardTypes.Attachment,
+                cardCondition: (card: any) => card.hasTrait('follower') && card.type === CardTypes.Attachment,
                 gameAction: AbilityDsl.actions.moveCard({
                     destination: Locations.Hand
                 }),

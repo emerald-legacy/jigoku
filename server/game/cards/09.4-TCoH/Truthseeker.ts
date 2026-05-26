@@ -29,7 +29,7 @@ class Truthseeker extends DrawCard {
             },
             effect: 'look at the top 3 cards of {1}\'s {2}',
             effectArgs: (context: AbilityContext) => this.mapChoiceToEffectArgs(context) as [Player, string],
-            handler: (context: AbilityContext) => {
+            handler: (context: any) => {
                 const cardsToSort = this.mapChoiceToCards(context);
                 this.truthSeekerPrompt(
                     context,

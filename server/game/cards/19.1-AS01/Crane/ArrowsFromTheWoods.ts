@@ -13,11 +13,11 @@ export default class ArrowsFromTheWoods extends DrawCard {
                 context.game.isDuringConflict('military') &&
                 context.player.anyCardsInPlay((card: BaseCard) => card.isParticipating() && card.hasTrait('bushi')),
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.game.currentConflict.getCharacters(context.player.opponent),
+                target: context.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                 effect: AbilityDsl.effects.modifyMilitarySkill(this.penaltyValue(context))
             })),
             effect: 'give {1}\'s participating characters {2}{3}',
-            effectArgs: (context) => [context.player.opponent, this.penaltyValue(context), 'military'],
+            effectArgs: (context) => [context.player.opponent as any, this.penaltyValue(context), 'military'],
             max: AbilityDsl.limit.perConflict(1)
         });
     }

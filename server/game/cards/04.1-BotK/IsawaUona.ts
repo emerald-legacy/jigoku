@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { Players, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class IsawaUona extends DrawCard {
     static id = 'isawa-uona';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(_ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Bow a non-unique character in the conflict',
             when: {
@@ -15,7 +16,7 @@ class IsawaUona extends DrawCard {
                 cardType: CardTypes.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isParticipating() && !card.isUnique(),
-                gameAction: ability.actions.bow()
+                gameAction: AbilityDsl.actions.bow()
             }
         });
     }

@@ -22,12 +22,12 @@ export default class MirumotoHitori extends DrawCard {
                         canChangeZoneOnce: true,
                         duration: Durations.Custom,
                         until: {
-                            onCharacterEntersPlay: (event) => event.card === context.source,
-                            onPhaseEnded: (event) => event.phase === Phases.Dynasty
+                            onCharacterEntersPlay: (event: any) => event.card === context.source,
+                            onPhaseEnded: (event: any) => event.phase === Phases.Dynasty
                         },
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
-                                onPhaseStarted: (event) => event.phase === Phases.Dynasty
+                                onPhaseStarted: (event: any) => event.phase === Phases.Dynasty
                             },
                             message: '{0} is put into play due to {0}\'s effect',
                             messageArgs: [context.source],

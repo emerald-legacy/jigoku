@@ -8,7 +8,7 @@ class IkebanaArtisan extends DrawCard {
         this.wouldInterrupt({
             title: 'Lose fate instead of honor',
             when: {
-                onModifyHonor: (event, context) => event.dueToUnopposed && event.player === context.player
+                onModifyHonor: (event: any, context) => event.dueToUnopposed && event.player === context.player
             },
             limit: AbilityDsl.limit.unlimitedPerConflict(),
             effect: 'lose 1 fate rather than 1 honor for not defending the conflict',

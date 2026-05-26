@@ -15,13 +15,13 @@ export default class KaiuNoIshiTauro extends DrawCard {
                 gameAction: AbilityDsl.actions.deckSearch(context => ({
                     activePromptTitle: 'Select an attachment',
                     deck: Decks.ConflictDeck,
-                    cardCondition: card => card.type === CardTypes.Attachment &&
+                    cardCondition: (card: any) => card.type === CardTypes.Attachment &&
                         (card.hasTrait('weapon') || card.hasTrait('armor') || card.hasTrait('item')) &&
                         (context.game.actions.attach({ attachment: card }).canAffect(context.target, context)) &&
                         card.costLessThan(context.costs.returnRing ? context.costs.returnRing.length + 1 : 1),
                     shuffle: true,
                     reveal: true,
-                    selectedCardsHandler: (context, event, cards) => {
+                    selectedCardsHandler: (context: any, event: any, cards: any) => {
                         const card = cards[0];
                         if(!card) {
                             context.game.addMessage('{0} takes nothing', context.player);
@@ -37,7 +37,7 @@ export default class KaiuNoIshiTauro extends DrawCard {
                         context.game.queueSimpleStep(() =>
                             AbilityDsl.actions
                                 .attach({ target: context.target, attachment: card })
-                                .resolve(null, context)
+                                .resolve(undefined, context)
                         );
                     }
                 }))

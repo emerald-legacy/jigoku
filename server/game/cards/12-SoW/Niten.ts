@@ -8,7 +8,7 @@ const nitenCaptureParentCost = function() {
         canPay: function() {
             return true;
         },
-        resolve: function(context) {
+        resolve: function(context: any) {
             context.costs.nitenCaptureParentCost = context.source.parent;
         },
         pay: function() {

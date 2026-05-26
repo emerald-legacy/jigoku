@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { Durations, Phases } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class SteadfastSamurai extends DrawCard {
     static id = 'steadfast-samurai';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.forcedReaction({
             title: 'Can\'t be discarded or remove fate',
             when: {

@@ -14,7 +14,7 @@ class AgashaShunsen extends DrawCard {
                 cardType: CardTypes.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.cardMenu(context => ({
-                    cards: context.player.conflictDeck.filter(card =>
+                    cards: context.player.conflictDeck.filter((card: any) =>
                         card.type === CardTypes.Attachment &&
                         card.costLessThan(context.costs.returnRing ? context.costs.returnRing.length + 1 : 1)
                     ),

@@ -9,10 +9,10 @@ class Aranat extends DrawCard {
         this.reaction({
             title: 'Place additional fate',
             when: {
-                onCardPlayed: (event, context) => context.player.opponent && event.card === context.source
+                onCardPlayed: (event: any, context: any) => context.player.opponent && event.card === context.source
             },
             effect: 'give {1} the opportunity to reveal provinces',
-            effectArgs: context => context.player.opponent,
+            effectArgs: (context: any) => context.player.opponent ?? '',
             gameAction: AbilityDsl.actions.selectCard({
                 cardType: CardTypes.Province,
                 location: this.game.getProvinceArray(false),
@@ -20,16 +20,16 @@ class Aranat extends DrawCard {
                 player: Players.Opponent,
                 optional: true,
                 mode: TargetModes.Unlimited,
-                cardCondition: card => card.isFacedown(),
+                cardCondition: (card: any) => card.isFacedown(),
                 message: '{0} chooses to reveal {1}',
-                messageArgs: (card, player) => [player, card],
+                messageArgs: (card: any, player: any) => [player, card],
                 gameAction: AbilityDsl.actions.reveal()
             }),
             then: {
                 message: '{3} has {4} facedown provinces so {4} fate is placed on {1}',
-                messageArgs: context => [context.player.opponent, context.player.getNumberOfOpponentsFacedownProvinces()],
+                messageArgs: (context: any) => [context.player.opponent, context.player.getNumberOfOpponentsFacedownProvinces()],
                 thenCondition: () => true,
-                gameAction: AbilityDsl.actions.placeFate(context => ({
+                gameAction: AbilityDsl.actions.placeFate((context: any) => ({
                     target: context.source,
                     amount: context.player.getNumberOfOpponentsFacedownProvinces()
                 }))

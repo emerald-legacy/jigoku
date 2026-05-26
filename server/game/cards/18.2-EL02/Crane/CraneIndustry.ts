@@ -24,7 +24,7 @@ export default class CraneIndustry extends DrawCard {
                 targetController: context.player,
                 effect: AbilityDsl.effects.reduceCost({
                     amount: 1,
-                    match: (card) => !this.hasEventBeenPlayedByThisPlayer(card)
+                    match: (card: BaseCard) => !this.hasEventBeenPlayedByThisPlayer(card)
                 })
             }))
         });

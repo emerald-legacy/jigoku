@@ -9,9 +9,9 @@ class MotoNergui extends DrawCard {
             title: 'Move highest glory character home',
             condition: context => this.game.isDuringConflict('military') && context.source.isParticipating(),
             target: {
-                cardCondition: (card, context) => {
+                cardCondition: (card: any, context: any) => {
                     let participants = context.game.currentConflict.getParticipants();
-                    return participants.includes(card) && card.getGlory() === Math.max(...participants.map(c => c.getGlory()));
+                    return participants.includes(card) && card.getGlory() === Math.max(...participants.map((c: any) => c.getGlory()));
                 },
                 gameAction: AbilityDsl.actions.sendHome()
             }

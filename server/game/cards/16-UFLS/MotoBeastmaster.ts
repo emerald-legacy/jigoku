@@ -9,7 +9,7 @@ class MotoBeastmaster extends DrawCard {
         this.reaction({
             title: 'Put a character into play',
             when: {
-                onConflictDeclared: (event, context) => event.attackers.includes(context.source)
+                onConflictDeclared: (event: any, context) => event.attackers?.includes(context.source) ?? false
             },
             target: {
                 cardType: CardTypes.Character,

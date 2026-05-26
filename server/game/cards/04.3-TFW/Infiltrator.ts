@@ -1,6 +1,7 @@
 import { PlayTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 export default class Infiltrator extends DrawCard {
     static id = 'infiltrator';
@@ -32,7 +33,7 @@ export default class Infiltrator extends DrawCard {
         });
     }
 
-    canPlay(context, playType) {
+    canPlay(context: AbilityContext, playType: string) {
         if(!context.player.opponent || context.player.showBid <= context.player.opponent.showBid) {
             return false;
         }

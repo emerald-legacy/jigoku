@@ -1,8 +1,9 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 class StudentOfWar extends DrawCard {
     static id = 'student-of-war';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.composure({
             effect: [
                 ability.effects.cardCannot('removeFate'),

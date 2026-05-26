@@ -26,7 +26,7 @@ class MasterpiecePainter extends DrawCard {
         });
     }
 
-    revealAndMayPlayAbility(player) {
+    revealAndMayPlayAbility(player: any) {
         return AbilityDsl.actions.playerLastingEffect(() => {
             let chosenPlayer = player;
             let topCard = chosenPlayer.conflictDeck[0];

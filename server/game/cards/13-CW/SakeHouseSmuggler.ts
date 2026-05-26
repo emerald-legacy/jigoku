@@ -14,12 +14,12 @@ class SakeHouseSmuggler extends DrawCard {
                 AbilityDsl.actions.playerLastingEffect(context => ({
                     targetController: context.player,
                     duration: Durations.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, card => card.type !== CardTypes.Event)
+                    effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, (card: any) => card.type !== CardTypes.Event)
                 })),
                 AbilityDsl.actions.playerLastingEffect(context => ({
                     duration: Durations.UntilEndOfPhase,
                     targetController: context.player.opponent,
-                    effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, card => card.type !== CardTypes.Event)
+                    effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, (card: any) => card.type !== CardTypes.Event)
                 }))
             ])
         });

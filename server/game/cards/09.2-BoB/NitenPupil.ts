@@ -9,7 +9,7 @@ class NitenPupil extends DrawCard {
         this.reaction({
             title: 'Double base skills',
             when: {
-                onHonorDialsRevealed: (event, context) => event.duel && event.duel.isInvolved(context.source)
+                onHonorDialsRevealed: (event: any, context) => event.duel && event.duel.isInvolved(context.source)
             },
             gameAction: AbilityDsl.actions.cardLastingEffect({
                 effect: [

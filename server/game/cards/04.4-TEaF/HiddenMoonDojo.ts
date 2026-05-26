@@ -10,6 +10,7 @@ export default class HiddenMoonDojo extends DrawCard {
         this.persistentEffect({
             targetLocation: Locations.Provinces,
             match: (card, context) =>
+                !!context &&
                 card.isDynasty &&
                 card.isFaceup() &&
                 context.player.areLocationsAdjacent(context.source.location, card.location),

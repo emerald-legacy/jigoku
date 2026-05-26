@@ -11,7 +11,7 @@ class CaptiveAudience extends DrawCard {
             condition: () => this.game.isDuringConflict('political'),
             effect: 'switch the conflict type to {1}',
             effectArgs: () => 'military',
-            handler: () => this.game.currentConflict.switchType()
+            handler: () => this.game.currentConflict?.switchType()
         });
     }
 }

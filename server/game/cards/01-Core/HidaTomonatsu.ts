@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { Players, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class HidaTomonatsu extends DrawCard {
     static id = 'hida-tomonatsu';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Return a character to deck',
             when: {

@@ -1,16 +1,19 @@
 import DrawCard from '../../drawcard.js';
+import BaseCard from '../../basecard.js';
+import Ring from '../../ring.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class PitTrap extends DrawCard {
     static id = 'pit-trap';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.whileAttached({
             effect: ability.effects.doesNotReady()
         });
     }
 
-    canPlayOn(card) {
-        return card.isAttacking() && super.canPlayOn(card);
+    canPlayOn(card: BaseCard | Ring): boolean {
+        return (card as any).isAttacking() && super.canPlayOn(card);
     }
 }
 

@@ -1,9 +1,10 @@
 import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class ShibaTetsu extends DrawCard {
     static id = 'shiba-tetsu';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Gain +1/+1',
             limit: ability.limit.unlimitedPerConflict(),

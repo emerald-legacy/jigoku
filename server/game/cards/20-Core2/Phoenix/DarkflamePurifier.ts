@@ -9,7 +9,7 @@ export default class DarkflamePurifier extends DrawCard {
         this.reaction({
             title: 'Dishonor a character',
             when: {
-                onMoveFate: (event, context) =>
+                onMoveFate: (event: any, context) =>
                     context.game.currentPhase !== Phases.Fate &&
                     event.origin?.type === CardTypes.Character &&
                     event.origin?.controller === context.player.opponent &&

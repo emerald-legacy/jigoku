@@ -14,7 +14,7 @@ export class EventRegistrar {
 
     constructor(
         private game: Game,
-        private context: Record<string, unknown>
+        private context: object
     ) {
         this.events = [];
     }
@@ -53,7 +53,7 @@ export class EventRegistrar {
      * Registers a single event handler.
      */
     public registerEvent(eventName: string, methodName = '') {
-        const method = this.context[methodName || eventName];
+        const method = (this.context as Record<string, unknown>)[methodName || eventName];
         if(typeof method !== 'function') {
             throw new Error(`Cannot bind event handler for ${eventName}`);
         }

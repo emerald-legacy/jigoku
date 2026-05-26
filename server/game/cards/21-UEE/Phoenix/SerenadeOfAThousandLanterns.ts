@@ -20,7 +20,7 @@ export default class SerenadeOfAThousandLanterns extends DrawCard {
                 gameAction: AbilityDsl.actions.sendHome()
             },
             max: AbilityDsl.limit.perConflict(1),
-            then: (context) => ({
+            then: (context: any) => ({
                 gameAction: AbilityDsl.actions.onAffinity({
                     trait: 'fire',
                     gameAction: AbilityDsl.actions.gainHonor(() => ({

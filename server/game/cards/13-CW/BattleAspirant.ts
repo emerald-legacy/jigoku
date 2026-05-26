@@ -9,7 +9,7 @@ class BattleAspirant extends DrawCard {
         this.reaction({
             title: 'Force a character to defend',
             when: {
-                onConflictDeclared: (event, context) => event.attackers.includes(context.source) && this.game.currentConflict.conflictType === 'military'
+                onConflictDeclared: (event: any, context) => event.attackers?.includes(context.source) && this.game.currentConflict?.conflictType === 'military'
             },
             target: {
                 controller: Players.Opponent,

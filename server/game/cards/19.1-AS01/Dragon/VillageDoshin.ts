@@ -14,8 +14,8 @@ export default class VillageDoshin extends DrawCard {
             location: Locations.Hand,
             cost: AbilityDsl.costs.discardSelf(),
             when: {
-                onInitiateAbilityEffects: (event, context) =>
-                    event.cardTargets.some((card: BaseCard) => {
+                onInitiateAbilityEffects: (event: any, context) =>
+                    (event.cardTargets ?? []).some((card: BaseCard) => {
                         const attachment = card.type === CardTypes.Attachment;
                         const onCharacterYouControl =
                             card.parent &&
@@ -28,8 +28,8 @@ export default class VillageDoshin extends DrawCard {
 
             gameAction: AbilityDsl.actions.conditional({
                 condition: (context) => {
-                    const opponentHasEnoughCards = context.player.opponent.hand.length >= DOSHIN_TAX;
-                    const opponentIsAllowedToDiscardCards = AbilityDsl.actions
+                    const opponentHasEnoughCards = (context.player.opponent?.hand.length ?? 0) >= DOSHIN_TAX;
+                    const opponentIsAllowedToDiscardCards = !!context.player.opponent && AbilityDsl.actions
                         .discardAtRandom({ amount: 2 })
                         .canAffect(context.player.opponent, context);
                     return opponentHasEnoughCards && opponentIsAllowedToDiscardCards;

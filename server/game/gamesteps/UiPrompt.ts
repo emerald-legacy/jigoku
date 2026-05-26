@@ -47,7 +47,7 @@ export class UiPrompt extends BaseStep {
 
     addDefaultCommandToButtons(original?: ActivePrompt) {
         if(!original) {
-            return;
+            return undefined;
         }
 
         const newPrompt = { ...original };

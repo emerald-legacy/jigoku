@@ -9,7 +9,7 @@ export default class Tsuma extends ProvinceCard {
         this.persistentEffect({
             targetLocation: Locations.Provinces,
             targetController: Players.Self,
-            match: (card, context) => card.type === CardTypes.Character && card.location === context.source.location,
+            match: (card, context) => card.type === CardTypes.Character && card.location === context?.source.location,
             effect: AbilityDsl.effects.entersPlayWithStatus(CharacterStatus.Honored)
         });
     }

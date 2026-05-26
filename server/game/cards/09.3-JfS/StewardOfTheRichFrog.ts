@@ -8,8 +8,8 @@ class StewardOfTheRichFrog extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
-                context.player &&
-                context.player.opponent &&
+                !!context.player &&
+                !!context.player.opponent &&
                 context.player.hand.length < context.player.opponent.hand.length,
             targetController: Players.Self,
             match: (card) => card.getType() === CardTypes.Character,

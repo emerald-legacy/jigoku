@@ -12,13 +12,13 @@ export default class HonestAssessment extends DrawCard {
         this.reaction({
             title: 'Name a card',
             when: {
-                onCardAttached: (event, context) =>
+                onCardAttached: (event: any, context) =>
                     event.card === context.source && event.originalLocation !== Locations.PlayArea
             },
             cost: AbilityDsl.costs.nameCard(),
             max: AbilityDsl.limit.perRound(1),
             gameAction: AbilityDsl.actions.multipleContext((context) => {
-                const hand: Array<DrawCard> = shuffle(context.player.opponent.hand);
+                const hand: Array<DrawCard> = shuffle(context.player.opponent?.hand ?? []);
                 const cards = hand.slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
                 return {
                     gameActions: [
@@ -34,7 +34,7 @@ export default class HonestAssessment extends DrawCard {
                 };
             }),
             effect: 'reveal 4 random cards from {1}\'s hand and discard all copies of {2}',
-            effectArgs: (context) => [context.player.opponent, context.costs.nameCardCost]
+            effectArgs: (context) => [context.player.opponent as any, context.costs.nameCardCost]
         });
     }
 }

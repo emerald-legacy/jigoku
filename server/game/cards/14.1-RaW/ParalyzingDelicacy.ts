@@ -11,7 +11,7 @@ class ParalyzingDelicacy extends DrawCard {
 
             target: {
                 cardType: CardTypes.Character,
-                cardCondition: card => card.isParticipating(),
+                cardCondition: (card: any) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                     effect: AbilityDsl.effects.modifyMilitarySkill(-this.getFaceDownProvinceCards(context))
                 }))
@@ -21,10 +21,10 @@ class ParalyzingDelicacy extends DrawCard {
         });
     }
 
-    getFaceDownProvinceCards(context) {
+    getFaceDownProvinceCards(context: any) {
         return context.target.controller
             .getDynastyCardsInProvince(Locations.Provinces)
-            .filter(card => card.isFacedown() && card.controller === context.target.controller).length;
+            .filter((card: any) => card.isFacedown() && card.controller === context.target.controller).length;
     }
 }
 

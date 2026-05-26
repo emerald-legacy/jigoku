@@ -9,11 +9,11 @@ class SearchTheArchives extends DrawCard {
         this.reaction({
             title: 'Search your deck for a card',
             when: {
-                onCardAttached: (event, context) => event.card === context.source && event.originalLocation !== Locations.PlayArea
+                onCardAttached: (event: any, context) => event.card === context.source && event.originalLocation !== Locations.PlayArea
             },
             gameAction: AbilityDsl.actions.deckSearch({
                 amount: 4,
-                cardCondition: (card, context) => card.hasTrait('spell') || card.hasTrait('kiho') || (context.source.parent && context.source.parent.hasTrait('scholar')),
+                cardCondition: (card: any, context: any) => card.hasTrait('spell') || card.hasTrait('kiho') || (context.source.parent && context.source.parent.hasTrait('scholar')),
                 placeOnBottomInRandomOrder: true,
                 shuffle: false,
                 gameAction: AbilityDsl.actions.moveCard({

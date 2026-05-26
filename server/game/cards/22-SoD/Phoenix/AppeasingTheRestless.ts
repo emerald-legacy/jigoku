@@ -25,7 +25,7 @@ export default class AppeasingTheRestless extends DrawCard {
                         activePromptTitle: 'Select spirits',
                         targets: false,
                         mode: TargetModes.UpToVariable,
-                        numCardsFunc: (context) => context.player.fate,
+                        numCardsFunc: (context: any) => context.player.fate,
                         optional: true,
                         cardType: CardTypes.Character,
                         controller: Players.Self,

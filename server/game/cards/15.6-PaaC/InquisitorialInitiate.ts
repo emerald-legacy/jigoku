@@ -19,7 +19,7 @@ export default class InquisitorialInitiate extends DrawCard {
                 activePromptTitle: 'Choose cards to reveal',
                 player: Players.Opponent,
                 numCardsFunc: (context) =>
-                    context.player.opponent.cardsInPlay.filter((card: BaseCard) => card.getFate() === 0).length,
+                    context.player.opponent?.cardsInPlay.filter((card: BaseCard) => card.getFate() === 0).length ?? 0,
                 mode: TargetModes.ExactlyVariable,
                 location: Locations.Hand
             },

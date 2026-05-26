@@ -15,10 +15,10 @@ export default class CityOfTheRichFrog extends ProvinceCard {
             targetController: Players.Self,
             effect: AbilityDsl.effects.playerDelayedEffect({
                 when: {
-                    onPhaseEnded: (event) => event.phase === Phases.Setup
+                    onPhaseEnded: (event: any) => event.phase === Phases.Setup
                 },
                 message: '{0} fills to 3 cards!',
-                messageArgs: (effectContext) => [effectContext.source],
+                messageArgs: (effectContext: any) => [effectContext.source],
                 gameAction: AbilityDsl.actions.fillProvince((context) => ({
                     location: context.source.location,
                     fillTo: 3

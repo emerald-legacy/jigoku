@@ -7,7 +7,7 @@ const steedOfTheSteppesCaptureParentCost = function() {
         canPay: function() {
             return true;
         },
-        resolve: function(context) {
+        resolve: function(context: any) {
             context.costs.steedOfTheSteppesCaptureParentCost = context.source.parent;
         },
         pay: function() {

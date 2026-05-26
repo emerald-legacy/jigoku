@@ -10,12 +10,12 @@ class ThirdTower extends DrawCard {
         this.reaction({
             title: 'Take an honor from your opponent',
             when: {
-                onConflictDeclared: (event, context) => {
+                onConflictDeclared: (event: any, context) => {
                     if(event.conflict.attackingPlayer === context.player) {
                         return false;
                     }
-                    let cards = context.player.getDynastyCardsInProvince(event.conflict.declaredProvince.location);
-                    return !cards.some(card => card.isFaceup() && card.type === CardTypes.Holding && card.hasTrait('kaiu-wall'));
+                    let cards = context.player.getDynastyCardsInProvince(event.conflict.declaredProvince?.location);
+                    return !cards.some((card: any) => card.isFaceup() && card.type === CardTypes.Holding && card.hasTrait('kaiu-wall'));
                 }
             },
             gameAction: AbilityDsl.actions.takeHonor(),

@@ -19,7 +19,7 @@ class BenevolentHost extends DrawCard {
                 gameAction: AbilityDsl.actions.putIntoPlay()
             },
             then: context => ({
-                gameAction: AbilityDsl.actions.placeFate({ target: context.target.costLessThan(3) ? context.target : [] })
+                gameAction: AbilityDsl.actions.placeFate({ target: context?.target?.costLessThan(3) ? context.target : [] })
             })
         });
     }

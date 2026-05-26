@@ -1,9 +1,10 @@
 import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class SealOfTheCrab extends DrawCard {
     static id = 'seal-of-the-crab';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.whileAttached({
             effect: [
                 ability.effects.addFaction('crab'),

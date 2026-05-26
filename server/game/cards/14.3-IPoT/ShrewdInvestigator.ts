@@ -17,7 +17,7 @@ export default class ShrewdInvestigator extends DrawCard {
             effect: 'look at {1} random card{3} in {2}\'s hand',
             effectArgs: (context) => [
                 context.player.getNumberOfFacedownProvinces(),
-                context.player.opponent,
+                context.player.opponent as any,
                 context.player.getNumberOfFacedownProvinces() === 1 ? '' : 's'
             ]
         });

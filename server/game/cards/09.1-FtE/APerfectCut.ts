@@ -18,7 +18,7 @@ class APerfectCut extends DrawCard {
                         AbilityDsl.effects.modifyMilitarySkill(2),
                         AbilityDsl.effects.delayedEffect({
                             when: {
-                                afterConflict: event =>
+                                afterConflict: (event: any) =>
                                     context.target.isParticipating() &&
                                     context.target.controller === event.conflict.winner
                             },

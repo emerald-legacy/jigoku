@@ -14,11 +14,11 @@ class IsawaAtsuko extends DrawCard {
             effect: 'give friendly characters +1/+1 and opposing characters -1/-1',
             gameAction: [
                 AbilityDsl.actions.cardLastingEffect(context => ({
-                    target: this.game.currentConflict.getCharacters(context.player),
+                    target: this.game.currentConflict?.getCharacters(context.player) ?? [],
                     effect: AbilityDsl.effects.modifyBothSkills(1)
                 })),
                 AbilityDsl.actions.cardLastingEffect(context => ({
-                    target: this.game.currentConflict.getCharacters(context.player.opponent),
+                    target: this.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                     effect: AbilityDsl.effects.modifyBothSkills(-1)
                 }))
             ]

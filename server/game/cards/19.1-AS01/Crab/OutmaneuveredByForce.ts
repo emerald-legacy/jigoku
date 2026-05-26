@@ -11,7 +11,7 @@ export default class OutmaneuveredByForce extends DrawCard {
             title: 'Declare a conflict right now',
             phase: Phases.Conflict,
             condition: (context) =>
-                context.game.getConflicts(Players.Any).filter((conflict) => conflict.declared).length === 0,
+                context.game.getConflicts(Players.Any).filter((conflict: any) => conflict.declared).length === 0,
 
             gameAction: AbilityDsl.actions.initiateConflict({ canPass: false })
         });
@@ -28,7 +28,7 @@ export default class OutmaneuveredByForce extends DrawCard {
     private controlsBerserkerOrBigCharacter(context: AbilityContext): boolean {
         return context.player.cardsInPlay.some(
             (card: DrawCard) =>
-                card.getType() === CardTypes.Character && (card.hasTrait('berserker') || card.printedMilitarySkill >= 5)
+                card.getType() === CardTypes.Character && (card.hasTrait('berserker') || (card.printedMilitarySkill ?? 0) >= 5)
         );
     }
 }

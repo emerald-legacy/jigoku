@@ -14,7 +14,7 @@ export default class OurDuty extends DrawCard {
                 cardCondition: (card: DrawCard) => card.isFaction('crab')
             }),
             effect: 'force {1} to sacrifice a character',
-            effectArgs: (context) => context.player.opponent,
+            effectArgs: (context) => context.player.opponent as any,
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to sacrifice',

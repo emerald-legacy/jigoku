@@ -9,7 +9,7 @@ class DaidojiNetsu extends DrawCard {
         this.persistentEffect({
             condition: () => this.game.currentPhase === Phases.Conflict,
             targetController: Players.Any,
-            match: (card, context) => card.getType() === CardTypes.Character && card !== context.source,
+            match: (card, context) => card.getType() === CardTypes.Character && card !== context?.source,
             effect: [
                 AbilityDsl.effects.cardCannot({
                     cannot: 'leavePlay',

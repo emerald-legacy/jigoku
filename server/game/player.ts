@@ -888,7 +888,7 @@ class Player extends GameObject {
 
     addPlayableLocation(type: PlayTypes | string, player: Player, location: Locations, cards: BaseCard[] = []): PlayableLocation | undefined {
         if(!player) {
-            return;
+            return undefined;
         }
         const playableLocation = new PlayableLocation(type as PlayTypes, player, location, new Set(cards as DrawCard[]));
         this.playableLocations.push(playableLocation);

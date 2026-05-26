@@ -18,7 +18,7 @@ export default class SneakAttack extends DrawCard {
             effect: 'give {1} the first action in this conflict{2}',
             effectArgs: (context) => [
                 context.player,
-                context.player.opponent.hand.length > 0 ? ' and sets aside opponent\'s cards' : ''
+                (context.player.opponent?.hand.length ?? 0) > 0 ? ' and sets aside opponent\'s cards' : ''
             ],
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.handler({

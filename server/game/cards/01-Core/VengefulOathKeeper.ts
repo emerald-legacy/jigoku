@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { Locations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class VengefulOathkeeper extends DrawCard {
     static id = 'vengeful-oathkeeper';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Put this into play',
             when: {

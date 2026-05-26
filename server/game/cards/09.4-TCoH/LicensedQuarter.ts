@@ -8,10 +8,10 @@ class LicensedQuarter extends DrawCard {
         this.reaction({
             title: 'Discard the top card of your opponents conflict deck',
             when: {
-                afterConflict: (event, context) => event.conflict.winner === context.player
+                afterConflict: (event: any, context) => event.conflict.winner === context.player
             },
             effect: 'discard the top card of {1}\'s conflict deck',
-            effectArgs: context => context.player.opponent,
+            effectArgs: context => [context.player.opponent as any],
             gameAction: AbilityDsl.actions.discardCard(context => ({
                 target: context.player.opponent && context.player.opponent.conflictDeck[0]
             })),

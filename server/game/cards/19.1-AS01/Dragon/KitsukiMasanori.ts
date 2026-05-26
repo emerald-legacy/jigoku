@@ -68,7 +68,7 @@ export default class KitsukiMasanori extends DrawCard {
                                     context.game.queueSimpleStep(() =>
                                         AbilityDsl.actions
                                             .attach({ target: context.source, attachment: card })
-                                            .resolve(null, context)
+                                            .resolve(undefined, context)
                                     );
                                 }
                             }),

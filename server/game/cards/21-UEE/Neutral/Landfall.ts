@@ -16,7 +16,7 @@ export default class Landfall extends ProvinceCard {
                     event.card === context.source && context.player.dynastyDeck.length > 0
             },
             effect: 'look at the top 8 cards of their dynasty deck',
-            handler: (context) => {
+            handler: (context: any) => {
                 this.cards = context.player.dynastyDeck.slice(0, 8);
                 this.chosenProvinces = [];
 
@@ -37,7 +37,7 @@ export default class Landfall extends ProvinceCard {
                 context: context,
                 location: Locations.Provinces,
                 controller: Players.Self,
-                cardCondition: (card: any) => card.type === CardTypes.Province && this.isProvinceValidTarget(card),
+                cardCondition: (card: any, _context?: any) => card.type === CardTypes.Province && this.isProvinceValidTarget(card),
                 onSelect: (player: any, card: any) => {
                     this.game.addMessage(
                         '{0} puts {1} into {2}',

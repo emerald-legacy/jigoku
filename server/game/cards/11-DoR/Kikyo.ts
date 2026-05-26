@@ -17,7 +17,7 @@ class Kikyo extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
                 title: 'Make opponent discard a card at random',
                 when: {
-                    onCardsDrawn: (event, context) => {
+                    onCardsDrawn: (event: any, context: any) => {
                         return context.player.opponent && event.player === context.player && context.source.isParticipating();
                     }
                 },

@@ -8,7 +8,7 @@ class EnigmaticMagistrate extends DrawCard {
         this.persistentEffect({
             condition: context => context.source.isAttacking(),
             effect: AbilityDsl.effects.cannotContribute(() => {
-                return card => card.getCost() === 0 || card.getCost() && card.getCost() % 2 === 0;
+                return (card: any) => card.getCost() === 0 || card.getCost() && card.getCost() % 2 === 0;
             })
         });
     }

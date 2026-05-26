@@ -8,7 +8,7 @@ class ChildOfThePlains extends DrawCard {
         this.reaction({
             title: 'Get first action',
             when: {
-                onCardRevealed: (event, context) =>
+                onCardRevealed: (event: any, context) =>
                     context.source.isAttacking() && event.card.isConflictProvince() && event.onDeclaration
             },
             effect: 'get the first action in this conflict',

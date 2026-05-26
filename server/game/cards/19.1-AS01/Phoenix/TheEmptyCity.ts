@@ -54,7 +54,7 @@ export default class TheEmptyCity extends ProvinceCard {
                 ])
             },
             effect: 'put {0} into play',
-            then: (context) => {
+            then: (context: any) => {
                 this.invokedSpirit = context.target;
                 return { gameAction: AbilityDsl.actions.noAction() };
             },

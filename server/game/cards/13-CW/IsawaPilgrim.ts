@@ -11,7 +11,7 @@ class IsawaPilgrim extends DrawCard {
         this.action({
             title: 'Give control of this character',
             effect: 'give control of itself to {1}',
-            effectArgs: context => [context.player.opponent],
+            effectArgs: context => [context.player.opponent ?? context.player],
             condition: context => context.player.opponent && context.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player.opponent),
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                 effect: AbilityDsl.effects.takeControl(context.player.opponent),

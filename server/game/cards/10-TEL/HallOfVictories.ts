@@ -12,10 +12,10 @@ class HallOfVictories extends DrawCard {
             },
             limit: AbilityDsl.limit.unlimitedPerConflict(),
             gameAction: AbilityDsl.actions.gainHonor(context => ({
-                target: context.game.currentConflict.winner
+                target: context.game.currentConflict?.winner ?? undefined
             })),
             effect: 'make {1} gain 1 honor',
-            effectArgs: context => [context.game.currentConflict.winner.name]
+            effectArgs: context => [context.game.currentConflict?.winner?.name ?? '']
         });
     }
 }

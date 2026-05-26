@@ -12,6 +12,9 @@ class SeizeTheDay extends DrawCard {
             },
             handler: () => {
                 let firstPlayer = this.game.getFirstPlayer();
+                if(!firstPlayer) {
+                    return;
+                }
                 let otherPlayer = this.game.getOtherPlayer(firstPlayer);
                 if(otherPlayer) {
                     this.game.raiseEvent(EventNames.OnPassFirstPlayer, { player: otherPlayer }, () => this.game.setFirstPlayer(otherPlayer));

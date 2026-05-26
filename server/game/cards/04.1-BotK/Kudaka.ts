@@ -13,7 +13,13 @@ class Kudaka extends DrawCard {
             limit: AbilityDsl.limit.perRound(2),
             effect: 'gain 1 fate and draw 1 card',
             when: {
-                onClaimRing: (event, context) => ((event.conflict && event.conflict.hasElement(this.getCurrentElementSymbol(elementKey))) || event.ring.hasElement(this.getCurrentElementSymbol('kudaka-air'))) && event.player === context.player
+                onClaimRing: (event, context) => {
+                    const elem = this.getCurrentElementSymbol(elementKey);
+                    if(elem === 'none') {
+                        return false;
+                    }
+                    return ((event.conflict && event.conflict.hasElement(elem)) || event.ring.hasElement(elem)) && event.player === context.player;
+                }
             },
             gameAction: [AbilityDsl.actions.gainFate(), AbilityDsl.actions.draw()]
         });

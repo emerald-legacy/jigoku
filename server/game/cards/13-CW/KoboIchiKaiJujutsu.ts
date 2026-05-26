@@ -6,7 +6,7 @@ class KoboIchiKaiJujutsu extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.attachmentMilitarySkillModifier((card, context) => context.player.opponent ? context.player.opponent.getClaimedRings().length : 0)
+            effect: AbilityDsl.effects.attachmentMilitarySkillModifier((card: any, context: any) => context.player.opponent ? context.player.opponent.getClaimedRings().length : 0)
         });
     }
 }

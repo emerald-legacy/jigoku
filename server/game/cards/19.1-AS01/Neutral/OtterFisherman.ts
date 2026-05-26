@@ -15,10 +15,10 @@ export default class OtterFisherman extends DrawCard {
         this.reaction({
             title: 'Gain resource after claiming water',
             when: {
-                onClaimRing: (event, context) =>
+                onClaimRing: (event: any, context) =>
                     event.player === context.player &&
-                    ((event.conflict && event.conflict.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY))) ||
-                        event.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY)))
+                    ((event.conflict && event.conflict.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY) as Elements)) ||
+                        event.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY) as Elements))
             },
             target: {
                 mode: TargetModes.Select,

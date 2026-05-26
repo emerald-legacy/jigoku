@@ -27,7 +27,7 @@ export default class NightingaleTattoo extends DrawCard {
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) =>
-                        this.game.promptWithHandlerMenu(context.player.opponent, {
+                        this.game.promptWithHandlerMenu(context.player.opponent as any, {
                             activePromptTitle: 'Choose a card to shuffle into your opponent\'s deck',
                             context: context,
                             cards: context.target,

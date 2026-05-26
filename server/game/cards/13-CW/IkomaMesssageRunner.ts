@@ -35,7 +35,7 @@ class IkomaMessageRunner extends DrawCard {
         });
     }
 
-    buildString(context) {
+    buildString(context: any) {
         let string = '';
 
         if(context.targets.myCard && context.targets.myCard.length) {

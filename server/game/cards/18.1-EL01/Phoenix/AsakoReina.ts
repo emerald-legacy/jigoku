@@ -59,7 +59,7 @@ class AsakoReina extends DrawCard {
         });
     }
 
-    createEffectMessage(context) {
+    createEffectMessage(context: any) {
         const strings = [];
         if(context.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player)) {
             strings.push('gain 1 honor');

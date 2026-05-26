@@ -10,7 +10,7 @@ class ImpossibleKoan extends DrawCard {
             title: 'Make all participating characters have base skills of 1/1',
             condition: () => this.game.isDuringConflict(),
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: context.game.findAnyCardsInPlay(card => card.type === CardTypes.Character),
+                target: context.game.findAnyCardsInPlay((card: any) => card.type === CardTypes.Character),
                 effect: [
                     AbilityDsl.effects.setBaseMilitarySkill(1),
                     AbilityDsl.effects.setBasePoliticalSkill(1)

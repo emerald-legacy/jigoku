@@ -11,7 +11,7 @@ class RestoredHeirloom extends DrawCard {
         this.wouldInterrupt({
             title: 'Put into play',
             when: {
-                onResolveRingElement: (event, context) => event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
+                onResolveRingElement: (event, context) => !!event.ring && event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
             },
             effect: 'attach {1} to {0} instead of resolving the {2}',
             effectArgs: context => [context.source, context.event.ring],

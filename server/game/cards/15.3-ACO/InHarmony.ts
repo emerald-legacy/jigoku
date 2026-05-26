@@ -13,7 +13,7 @@ class InHarmony extends DrawCard {
         });
     }
 
-    canPlay(context) {
+    canPlay(context: any) {
         return context.player.getClaimedRings().length >= 1;
     }
 }

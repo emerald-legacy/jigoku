@@ -1,10 +1,11 @@
 import DrawCard from '../../drawcard.js';
 import { Locations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class FavoredNiece extends DrawCard {
     static id = 'favored-niece';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Discard then draw a card',
             limit: ability.limit.perRound(2),

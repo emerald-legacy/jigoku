@@ -22,9 +22,9 @@ export default class ShowMeYourStance extends DrawCard {
                 cardType: CardTypes.Character,
                 cardCondition: (card, context) =>
                     card.isAttacking() &&
-                    context.game.currentConflict
-                        .getCharacters(context.player)
-                        .some((myCard) => myCard.hasTrait('duelist') && myCard.glory >= card.glory),
+                    (context.game.currentConflict
+                        ?.getCharacters(context.player)
+                        .some((myCard: any) => myCard.hasTrait('duelist') && myCard.glory >= card.glory) ?? false),
                 gameAction: AbilityDsl.actions.sendHome()
             }
         });

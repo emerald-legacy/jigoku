@@ -28,11 +28,11 @@ class KakitaTaneharu extends DrawCard {
             location: Locations.PlayArea,
             targetLocation: this.uuid,
             targetController: Players.Self,
-            match: card => {
+            match: (card: any) => {
                 return card.location === this.uuid;
             },
             effect: [
-                AbilityDsl.effects.canPlayFromOutOfPlay(player => {
+                AbilityDsl.effects.canPlayFromOutOfPlay((player: any) => {
                     return player === this.controller;
                 }, PlayTypes.PlayFromHand),
                 AbilityDsl.effects.registerToPlayFromOutOfPlay()

@@ -6,7 +6,7 @@ export default class MaliciousTimekeeper extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => context.source.isAttacking() && this.game.currentConflict.winner === context.player,
+            condition: (context) => context.source.isAttacking() && this.game.currentConflict?.winner === context.player,
             effect: AbilityDsl.effects.forceConflictUnopposed()
         });
     }

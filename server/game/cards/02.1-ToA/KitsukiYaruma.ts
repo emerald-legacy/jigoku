@@ -1,4 +1,5 @@
 import DrawCard from '../../drawcard.js';
+import BaseCard from '../../basecard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Locations } from '../../Constants.js';
 
@@ -14,13 +15,13 @@ class KitsukiYaruma extends DrawCard {
             target: {
                 cardType: CardTypes.Province,
                 location: Locations.Provinces,
-                cardCondition: card => !card.isBroken,
+                cardCondition: (card: any) => !card.isBroken,
                 gameAction: AbilityDsl.actions.turnFacedown()
             }
         });
     }
 
-    allowAttachment(attachment) {
+    allowAttachment(attachment: BaseCard | DrawCard): boolean {
         if(attachment.hasTrait('poison') && !this.isBlank()) {
             return false;
         }

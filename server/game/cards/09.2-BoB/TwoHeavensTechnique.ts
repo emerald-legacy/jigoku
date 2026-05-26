@@ -10,7 +10,7 @@ class TwoHeavensTechnique extends DrawCard {
         });
 
         this.whileAttached({
-            condition: context => context.source.parent && context.source.parent.attachments.filter(card => card.hasTrait('weapon')).length === 2,
+            condition: context => !!context.source.parent && context.source.parent.attachments.filter((card: any) => card.hasTrait('weapon')).length === 2,
             effect: AbilityDsl.effects.addKeyword('covert')
         });
     }

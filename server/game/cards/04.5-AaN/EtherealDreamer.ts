@@ -1,10 +1,11 @@
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { Durations, TargetModes, Phases } from '../../Constants.js';
 
 class EtherealDreamer extends DrawCard {
     static id = 'ethereal-dreamer';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.reaction({
             title: 'Gain +2/+2 while contesting the target ring',
             when: {
@@ -16,10 +17,10 @@ class EtherealDreamer extends DrawCard {
             },
             effect: 'give herself +2{1}/+2{2} while the {0} is contested',
             effectArgs: ['military', 'political'],
-            gameAction: ability.actions.cardLastingEffect(context => ({
+            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                 duration: Durations.UntilEndOfPhase,
                 condition: () => context.ring.isContested(),
-                effect: ability.effects.modifyBothSkills(2)
+                effect: AbilityDsl.effects.modifyBothSkills(2)
             }))
         });
     }

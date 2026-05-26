@@ -17,7 +17,7 @@ export default class ToConnectThePeople extends DrawCard {
                     (card) => card.getType() === CardTypes.Character && card.hasTrait('merchant')
                 ),
             effect: 'discard the top 3 cards of {1}\'s dynasty deck',
-            effectArgs: (context) => [context.player.opponent],
+            effectArgs: (context) => [context.player.opponent as any],
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.handler({
                     handler: (context) => {
