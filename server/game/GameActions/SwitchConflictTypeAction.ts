@@ -33,7 +33,7 @@ export class SwitchConflictTypeAction extends RingAction<SwitchConflictTypePrope
         return ring.conflictType !== targetConflictType;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.context.game.currentConflict.switchType();
     }
 }

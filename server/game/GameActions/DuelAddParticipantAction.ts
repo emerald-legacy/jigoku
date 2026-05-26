@@ -34,13 +34,13 @@ export class DuelAddParticipantAction extends CardGameAction<DuelAddParticipantP
         return properties.duel.canAddToDuel(card, context);
     }
 
-    addPropertiesToEvent(event, card: DrawCard, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { duel } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.duel = duel;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.duel.addTargetToDuel(event.card);
     }
 }

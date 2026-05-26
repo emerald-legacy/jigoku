@@ -17,15 +17,15 @@ export default class Pride extends StrongholdCard {
                 cardType: CardTypes.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
-                    card.attachments.filter((a) => a.hasTrait('follower')).length === 0 &&
+                    card.attachments.filter((a: any) => a.hasTrait('follower')).length === 0 &&
                     context.game.actions.attach({ attachment: DummyAttachment }).canAffect(card, context),
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) => {
                         const card = context.player.conflictDeck[0];
-                        let token = context.game.createToken(card, Soldier);
+                        const token = context.game.createToken(card, Soldier);
                         card.owner.removeCardFromPile(card);
                         card.moveTo(Locations.RemovedFromGame);
-                        const moveEvents = [];
+                        const moveEvents: any[] = [];
                         context.game.actions
                             .attach({ target: context.target, attachment: token })
                             .addEventsToArray(moveEvents, context);

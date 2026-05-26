@@ -11,14 +11,14 @@ export class LastingEffectRingAction extends RingAction {
     defaultProperties: LastingEffectRingProperties = {
         duration: Durations.UntilEndOfConflict,
         effect: [],
-        ability: null
+        ability: undefined
     };
 
-    eventHandler(event, additionalProperties): void {
+    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties(event.context, additionalProperties) as LastingEffectRingProperties;
         if(!properties.ability) {
             properties.ability = event.context.ability;
         }
-        event.context.source[properties.duration](() => Object.assign({ match: event.ring }, properties));
+        event.context.source[properties.duration ?? Durations.UntilEndOfConflict](() => Object.assign({ match: event.ring }, properties));
     }
 }

@@ -16,10 +16,10 @@ class ExpertInterpreter extends DrawCard {
                 myRing: {
                     mode: TargetModes.Ring,
                     ringCondition: () => true,
-                    gameAction: AbilityDsl.actions.ringLastingEffect(context => ({
+                    gameAction: AbilityDsl.actions.ringLastingEffect((context: any) => ({
                         duration: Durations.UntilEndOfPhase,
                         targetController: Players.Any,
-                        condition: () => this.game.currentConflict && this.game.currentConflict.ring === context.rings.myRing,
+                        condition: () => this.game.currentConflict !== null && this.game.currentConflict.ring === context.rings.myRing,
                         effect: AbilityDsl.effects.playerCannot({
                             cannot: 'enterPlay',
                             restricts: 'characters'
@@ -31,11 +31,11 @@ class ExpertInterpreter extends DrawCard {
                     optional: true,
                     hideIfNoLegalTargets: true,
                     mode: TargetModes.Ring,
-                    ringCondition: (ring, context) => context.costs.optionalHonorTransferFromOpponentCostPaid,
-                    gameAction: AbilityDsl.actions.ringLastingEffect(context => ({
+                    ringCondition: (ring: any, context: any) => context && context.costs.optionalHonorTransferFromOpponentCostPaid,
+                    gameAction: AbilityDsl.actions.ringLastingEffect((context: any) => ({
                         duration: Durations.UntilEndOfPhase,
                         targetController: Players.Any,
-                        condition: () => this.game.currentConflict && this.game.currentConflict.ring === context.rings.oppRing,
+                        condition: () => this.game.currentConflict !== null && this.game.currentConflict.ring === context.rings.oppRing,
                         effect: AbilityDsl.effects.playerCannot({
                             cannot: 'enterPlay',
                             restricts: 'characters'
@@ -48,7 +48,7 @@ class ExpertInterpreter extends DrawCard {
         });
     }
 
-    buildString(context) {
+    buildString(context: any) {
         if(context.rings.oppRing && !Array.isArray(context.rings.oppRing)) {
             let ring = context.rings.oppRing;
             return '.  ' + context.player.opponent.name + ' gives ' + context.player.name + ' 1 honor to also apply this effect to the ' + ring.name;

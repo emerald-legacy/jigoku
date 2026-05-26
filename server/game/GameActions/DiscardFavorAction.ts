@@ -12,10 +12,10 @@ export class DiscardFavorAction extends PlayerAction<DiscardFavorProperties> {
     effect = 'make {0} lose the Imperial Favor';
 
     canAffect(player: Player, context: AbilityContext): boolean {
-        return player.imperialFavor && super.canAffect(player, context);
+        return !!player.imperialFavor && super.canAffect(player, context);
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.player.loseImperialFavor();
     }
 }

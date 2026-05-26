@@ -11,10 +11,10 @@ export default class StokeInsurrection extends DrawCard {
             location: Locations.Any,
             targetController: Players.Any,
             condition: (context) =>
-                context.player.opponent && this.getFaceDownProvinceCards(context.player.opponent) >= 4,
+                context.player.opponent !== undefined && this.getFaceDownProvinceCards(context.player.opponent) >= 4,
             effect: AbilityDsl.effects.reduceCost({
                 amount: 2,
-                match: (card, source) => card === source
+                match: (card: any, source: any) => card === source
             })
         });
 
@@ -23,7 +23,7 @@ export default class StokeInsurrection extends DrawCard {
             condition: (context) => context.game.isDuringConflict() && context.player.opponent !== undefined,
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.reveal((context) => ({
-                    target: context.player.opponent.getDynastyCardsInProvince(Locations.Provinces)
+                    target: context.player.opponent ? context.player.opponent.getDynastyCardsInProvince(Locations.Provinces) : []
                 })),
                 AbilityDsl.actions.selectCard((context) => ({
                     activePromptTitle: 'Choose up to two characters',
@@ -43,7 +43,7 @@ export default class StokeInsurrection extends DrawCard {
                 }))
             ]),
             effect: 'reveal {1}\'s dynasty cards and put up to two of them into play',
-            effectArgs: (context) => [context.player.opponent]
+            effectArgs: (context) => context.player.opponent ? [context.player.opponent] : []
         });
     }
 

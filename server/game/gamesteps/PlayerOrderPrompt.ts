@@ -8,11 +8,11 @@ import { UiPrompt } from './UiPrompt.js';
  * any matching players from the prompt.
  */
 export class PlayerOrderPrompt extends UiPrompt {
-    players: Player[];
+    players: Player[] | undefined;
 
     public get currentPlayer() {
         this.lazyFetchPlayers();
-        return this.players[0];
+        return (this.players ?? [])[0];
     }
 
     private lazyFetchPlayers(): void {
@@ -23,7 +23,7 @@ export class PlayerOrderPrompt extends UiPrompt {
 
     private skipPlayers(): void {
         this.lazyFetchPlayers();
-        this.players = this.players.filter((p) => !this.skipCondition(p));
+        this.players = (this.players ?? []).filter((p) => !this.skipCondition(p));
     }
 
     private skipCondition(_player: Player): boolean {
@@ -32,7 +32,7 @@ export class PlayerOrderPrompt extends UiPrompt {
 
     protected completePlayer(): void {
         this.lazyFetchPlayers();
-        this.players.shift();
+        (this.players ?? []).shift();
     }
 
     private setPlayers(players: Player[]): void {
@@ -41,7 +41,7 @@ export class PlayerOrderPrompt extends UiPrompt {
 
     public isComplete(): boolean {
         this.lazyFetchPlayers();
-        return this.players.length === 0;
+        return (this.players ?? []).length === 0;
     }
 
     public activeCondition(player: Player): boolean {

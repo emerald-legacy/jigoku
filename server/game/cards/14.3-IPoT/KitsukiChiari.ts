@@ -35,12 +35,12 @@ class KitsukiChiari extends DrawCard {
         });
     }
 
-    selectCardName(player, cardName, context) {
+    selectCardName(player: any, cardName: any, context: any) {
         context.costs.kitsukiChiariCost = cardName;
         return true;
     }
 
-    allowAttachment(attachment) {
+    allowAttachment(attachment: any) {
         if(attachment.hasTrait('poison') && !this.isBlank()) {
             return false;
         }

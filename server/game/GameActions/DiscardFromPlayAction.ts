@@ -11,7 +11,7 @@ export class DiscardFromPlayAction extends CardGameAction<DiscardFromPlayPropert
     cost = 'sacrificing {0}';
     targetType = [CardTypes.Character, CardTypes.Attachment, CardTypes.Holding];
 
-    constructor(propertyFactory, isSacrifice = false) {
+    constructor(propertyFactory: DiscardFromPlayProperties | ((context?: AbilityContext) => DiscardFromPlayProperties), isSacrifice = false) {
         super(propertyFactory);
         if(isSacrifice) {
             this.name = 'sacrifice';
@@ -37,11 +37,11 @@ export class DiscardFromPlayAction extends CardGameAction<DiscardFromPlayPropert
         return super.canAffect(card, context);
     }
 
-    updateEvent(event, card: BaseCard, context: AbilityContext, additionalProperties): void {
+    updateEvent(event: any, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         this.updateLeavesPlayEvent(event, card, context, additionalProperties);
     }
 
-    eventHandler(event, additionalProperties = {}): void {
+    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
         this.leavesPlayEventHandler(event, additionalProperties);
     }
 }

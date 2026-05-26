@@ -26,7 +26,7 @@ export class LastingEffectAction<P extends LastingEffectProperties = LastingEffe
     defaultProperties: LastingEffectProperties = {
         duration: Durations.UntilEndOfConflict,
         effect: [],
-        ability: null
+        ability: undefined
     } as LastingEffectProperties;
 
     // @ts-expect-error -- overriding return type to be more specific than base class signature
@@ -59,6 +59,6 @@ export class LastingEffectAction<P extends LastingEffectProperties = LastingEffe
         if(!properties.ability) {
             properties.ability = event.context.ability;
         }
-        event.context.source[properties.duration](() => properties);
+        event.context.source[properties.duration ?? Durations.UntilEndOfConflict](() => properties);
     }
 }

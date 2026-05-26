@@ -134,7 +134,7 @@ export default class EventWindow extends BaseStepWithPipeline {
 
     checkThenAbilities() {
         for(const thenAbility of this.thenAbilities) {
-            if(thenAbility.context.events.every(event => thenAbility.condition(event))) {
+            if(thenAbility.context.events.every((event: any) => thenAbility.condition(event))) {
                 this.game.resolveAbility(thenAbility.ability.createContext(thenAbility.context.player));
             }
         }

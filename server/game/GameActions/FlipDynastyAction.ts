@@ -10,16 +10,17 @@ export class FlipDynastyAction extends CardGameAction<FlipDynastyProperties> {
     eventName = EventNames.OnCardRevealed;
     targetType = [CardTypes.Character, CardTypes.Holding, CardTypes.Event];
 
-    getEffectMessage(context): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, any[]] {
         let properties = this.getProperties(context);
-        return ['reveal the facedown card in {0}', [properties.target[0].location]];
+        const target = Array.isArray(properties.target) ? properties.target[0] : properties.target;
+        return ['reveal the facedown card in {0}', [target ? target.location : '']];
     }
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
         return card.isInProvince() && card.isDynasty && card.isFacedown() && super.canAffect(card, context);
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.card.facedown = false;
     }
 }

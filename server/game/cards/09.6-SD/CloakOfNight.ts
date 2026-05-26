@@ -26,12 +26,12 @@ class CloakOfNight extends DrawCard {
                 ])
             },
             effect: 'give {0} +3 glory and prevent them from being chosen as the target of {1}\'s triggered abilities until the end of the conflict',
-            effectArgs: context => [context.player.opponent]
+            effectArgs: context => context.player.opponent ? [context.player.opponent] : []
         });
     }
 
-    canPlay(context, playType) {
-        if(!context.player.cardsInPlay.some(card => card.getType() === CardTypes.Character && card.hasTrait('shugenja'))) {
+    canPlay(context: any, playType: any) {
+        if(!context.player.cardsInPlay.some((card: any) => card.getType() === CardTypes.Character && card.hasTrait('shugenja'))) {
             return false;
         }
 

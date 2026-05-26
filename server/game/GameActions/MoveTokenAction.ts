@@ -46,19 +46,19 @@ export class MoveTokenAction extends TokenAction {
         return super.canAffect(token, context, additionalProperties);
     }
 
-    addPropertiesToEvent(event, token: StatusToken, context: AbilityContext, additionalProperties = {}): void {
+    addPropertiesToEvent(event: any, token: StatusToken, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const { recipient } = this.getProperties(context) as MoveTokenProperties;
         super.addPropertiesToEvent(event, token, context, additionalProperties);
         event.recipient = recipient;
         event.donor = token.card;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         let tokens = event.token;
         if(!Array.isArray(tokens)) {
             tokens = [tokens];
         }
-        tokens.forEach((token) => {
+        tokens.forEach((token: any) => {
             token.card.removeStatusToken(token);
             event.recipient.addStatusToken(token);
             event.recipient.game.raiseEvent(EventNames.OnStatusTokenGained, { token: token, card: event.recipient });

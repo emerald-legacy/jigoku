@@ -16,7 +16,7 @@ export class TurnCardFacedownAction extends CardGameAction {
         return card.isFaceup() && super.canAffect(card, context) && card.isInProvince();
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         if(event.card.controller !== event.card.owner) {
             event.card.owner.moveCard(event.card, event.card.location);
         }

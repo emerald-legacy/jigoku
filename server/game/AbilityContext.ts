@@ -39,11 +39,11 @@ export class AbilityContext<S = any> {
     stage: Stages;
     targetAbility: any;
     target: any;
-    select: string;
-    ring: Ring;
-    token: StatusToken;
+    select: string = '';
+    ring: Ring | undefined;
+    token: StatusToken | undefined;
     element: any;
-    elementCard: BaseCard;
+    elementCard: BaseCard | undefined;
     provincesToRefill: any[] = [];
     subResolution = false;
     choosingPlayerOverride: Player | null = null;
@@ -56,7 +56,7 @@ export class AbilityContext<S = any> {
     constructor(properties: AbilityContextProperties) {
         this.game = properties.game;
         this.source = properties.source || new EffectSource(this.game);
-        this.player = properties.player;
+        this.player = properties.player as Player;
         this.ability = properties.ability || new BaseAbility({});
         this.costs = properties.costs || {};
         this.targets = properties.targets || {};

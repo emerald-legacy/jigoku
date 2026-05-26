@@ -193,7 +193,7 @@ export interface TriggeredAbilityWhenProps extends AbilityProps<TriggeredAbility
     anyPlayer?: boolean;
     target?: TriggeredAbilityTarget & TriggeredAbilityTarget;
     targets?: TriggeredAbilityTargets;
-    handler?: (context: TriggeredAbilityContext) => void;
+    handler?: (context?: TriggeredAbilityContext) => void;
     then?: ((context?: TriggeredAbilityContext) => object) | object;
 }
 
@@ -202,7 +202,7 @@ export interface TriggeredAbilityAggregateWhenProps extends AbilityProps<Trigger
     collectiveTrigger?: boolean;
     target?: TriggeredAbilityTarget & TriggeredAbilityTarget;
     targets?: TriggeredAbilityTargets;
-    handler?: (context: TriggeredAbilityContext) => void;
+    handler?: (context?: TriggeredAbilityContext) => void;
     then?: ((context?: TriggeredAbilityContext) => object) | object;
 }
 

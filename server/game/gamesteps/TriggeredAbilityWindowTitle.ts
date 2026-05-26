@@ -1,6 +1,6 @@
 import { AbilityTypes } from '../Constants.js';
 
-const EventToTitleFunc = {
+const EventToTitleFunc: Record<string, (event: any) => string> = {
     onCardBowed(event: any) {
         return `${event.card.name} being bowed`;
     },
@@ -76,12 +76,13 @@ export const TriggeredAbilityWindowTitle = {
     getTitle(abilityType: string, eventsaa: Event[] | Event) {
         const events = Array.isArray(eventsaa) ? eventsaa : [eventsaa];
         const abilityWord = AbilityTypeToWord.get(abilityType) ?? abilityType;
-        const titles = events
+        const titles: string[] = events
             .map((event) => {
                 let func = EventToTitleFunc[event.name];
                 if(func) {
                     return func(event);
                 }
+                return '';
             })
             .filter(Boolean);
 

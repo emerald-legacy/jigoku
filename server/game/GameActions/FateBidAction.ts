@@ -62,13 +62,13 @@ export class FateBidAction extends PlayerAction {
             })
         );
         context.game.queueStep(
-            new SimpleStep(context.game, () => event.postBidAction.resolve(context.player, context))
+            new SimpleStep(context.game, () => event.postBidAction && event.postBidAction.resolve(context.player, context))
         );
         context.game.queueStep(
             new SimpleStep(context.game, () => {
                 const [message, messageArgs] = event.message
                     ? [event.message, event.messageArgs ? Array.from(event.messageArgs(context)) : []]
-                    : event.postBidAction.getEffectMessage(context);
+                    : (event.postBidAction ? event.postBidAction.getEffectMessage(context) : ['', []]);
                 context.game.addMessage(message, ...messageArgs);
             })
         );

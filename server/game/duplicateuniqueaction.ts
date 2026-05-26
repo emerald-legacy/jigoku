@@ -10,7 +10,7 @@ class DuplicateUniqueAction extends BaseAction {
         super(card);
     }
 
-    meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []): string | undefined {
+    meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []): string {
         if(!ignoredRequirements.includes('facedown') && this.card.isFacedown()) {
             return 'facedown';
         }

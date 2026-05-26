@@ -28,7 +28,7 @@ export class TaintAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.card.taint();
         event.card.game.raiseEvent(EventNames.OnStatusTokenGained, {
             token: event.card.getStatusToken(CharacterStatus.Tainted),

@@ -1,5 +1,6 @@
 import { AbilityContext } from '../AbilityContext.js';
 import { Players } from '../Constants.js';
+import type Player from '../player.js';
 import { PutIntoPlayAction, PutIntoPlayProperties } from './PutIntoPlayAction.js';
 
 export type OpponentPutIntoPlayProperties = PutIntoPlayProperties;
@@ -9,11 +10,11 @@ export class OpponentPutIntoPlayAction extends PutIntoPlayAction {
         fate: 0,
         status: 'ordinary',
         controller: Players.Opponent,
-        side: null
+        side: undefined
     };
 
-    getDefaultSide(context: AbilityContext) {
-        return context.player.opponent;
+    getDefaultSide(context: AbilityContext): Player {
+        return context.player.opponent ?? context.player;
     }
 
     constructor(
@@ -23,7 +24,7 @@ export class OpponentPutIntoPlayAction extends PutIntoPlayAction {
         super(properties, intoConflict);
     }
 
-    getPutIntoPlayPlayer(context) {
-        return context.player.opponent;
+    getPutIntoPlayPlayer(context: AbilityContext): Player {
+        return context.player.opponent ?? context.player;
     }
 }

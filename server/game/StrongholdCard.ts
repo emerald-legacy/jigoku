@@ -8,19 +8,19 @@ export class StrongholdCard extends BaseCard {
     stealFirstPlayerDuringSetupWithMsg?: string;
 
     getFate(): number {
-        return this.cardData.fate;
+        return this.cardData.fate ?? 0;
     }
 
     getStartingHonor(): number {
-        return this.cardData.honor;
+        return this.cardData.honor ?? 0;
     }
 
     getInfluence(): number {
-        return this.cardData.influence_pool;
+        return this.cardData.influence_pool ?? 0;
     }
 
     getProvinceStrengthBonus(): number {
-        return parseInt(this.cardData.strength_bonus);
+        return parseInt(this.cardData.strength_bonus ?? '0');
     }
 
     bow(): void {

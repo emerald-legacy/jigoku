@@ -68,10 +68,10 @@ class PrepareForWar extends DrawCard {
         });
     }
 
-    getStatusTokenPrompts(context) {
+    getStatusTokenPrompts(context: any) {
         const tokens = context.target.statusTokens;
-        let prompts = [];
-        tokens.forEach((token) => {
+        let prompts: any[] = [];
+        tokens.forEach((token: any) => {
             prompts.push(
                 AbilityDsl.actions.menuPrompt((context) => ({
                     activePromptTitle: `Do you wish to discard ${token.name}?`,

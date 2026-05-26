@@ -26,7 +26,7 @@ export class RoleCard extends BaseCard {
     isRole = true;
 
     getInfluence(): number {
-        return this.cardData.influence_pool + this.influenceModifier;
+        return (this.cardData.influence_pool ?? 0) + this.influenceModifier;
     }
 
     flipFaceup(): void {

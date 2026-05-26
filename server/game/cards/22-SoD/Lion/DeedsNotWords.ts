@@ -21,7 +21,7 @@ export default class DeedsNotWords extends DrawCard {
                         targetController: context.player,
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
-                                afterConflict: event =>
+                                afterConflict: (event: any) =>
                                     context.player === event.conflict.winner
                             },
                             gameAction: AbilityDsl.actions.claimImperialFavor(context => ({ target: context.player })),
@@ -32,16 +32,16 @@ export default class DeedsNotWords extends DrawCard {
                 ])
             },
             then: context => ({
-                thenCondition: () => context.player.imperialFavor !== '',
+                thenCondition: () => !!context && context.player.imperialFavor !== '',
                 target: {
                     mode: TargetModes.Select,
                     choices: {
                         'Discard the Imperial Favor': AbilityDsl.actions.joint([
                             AbilityDsl.actions.loseImperialFavor(() => ({
-                                target: context.player
+                                target: context?.player
                             })),
                             AbilityDsl.actions.honor(() => ({
-                                target: context.target
+                                target: context?.target
                             }))
                         ]),
                         'Done': () => true

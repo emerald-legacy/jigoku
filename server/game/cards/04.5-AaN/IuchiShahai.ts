@@ -1,13 +1,14 @@
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 
 class IuchiShahai extends DrawCard {
     static id = 'iuchi-shahai';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.persistentEffect({
-            effect: ability.effects.reduceCost({
-                match: card => card.hasTrait('meishodo'),
-                targetCondition: (target, source) => target === source || target.isFaction('neutral')
+            effect: AbilityDsl.effects.reduceCost({
+                match: (card: any) => card.hasTrait('meishodo'),
+                targetCondition: (target: any, source: any) => target === source || target.isFaction('neutral')
             })
         });
     }

@@ -12,7 +12,7 @@ class DynastyCardAction extends BaseAction {
         super(card, [Costs.chooseFate(PlayTypes.PlayFromProvince), Costs.payReduceableFateCost()]);
     }
 
-    meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []): string | undefined {
+    meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []): string {
         if(!ignoredRequirements.includes('facedown') && this.card.isFacedown()) {
             return 'facedown';
         } else if(!ignoredRequirements.includes('player') && context.player !== this.card.controller) {

@@ -1,6 +1,7 @@
 import { CardTypes, Players, Locations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class ObligationsOfHospitality extends DrawCard {
     static id = 'obligations-of-hospitality';
@@ -10,7 +11,7 @@ export default class ObligationsOfHospitality extends DrawCard {
             location: Locations.Any,
             targetController: Players.Any,
             match: (player) => player.imperialFavor !== '',
-            effect: AbilityDsl.effects.reduceCost({ match: (card, source) => card === source })
+            effect: AbilityDsl.effects.reduceCost({ match: (card: any, source: any) => card === source })
         });
 
         this.action({
@@ -28,7 +29,7 @@ export default class ObligationsOfHospitality extends DrawCard {
         });
     }
 
-    canPlay(context, playType) {
-        return context.player.opponent && context.player.isMoreHonorable() && super.canPlay(context, playType);
+    canPlay(context: TriggeredAbilityContext, playType: string) {
+        return !!context.player.opponent && context.player.isMoreHonorable() && super.canPlay(context, playType);
     }
 }

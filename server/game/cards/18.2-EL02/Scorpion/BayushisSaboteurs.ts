@@ -8,7 +8,11 @@ const DISCARD = 'Discard all cards from your provinces';
 const FLIP = 'Flip all cards in your provinces facedown';
 
 function defender(context: AbilityContext): Player {
-    return context.game.currentConflict.defendingPlayer;
+    const conflict = context.game.currentConflict;
+    if(!conflict) {
+        throw new Error('BayushisSaboteurs: no current conflict');
+    }
+    return conflict.defendingPlayer;
 }
 
 export default class BayushisSaboteurs extends DrawCard {
@@ -18,14 +22,14 @@ export default class BayushisSaboteurs extends DrawCard {
         this.reaction({
             title: 'Discard or flip facedown cards in the defender\'s provinces',
             when: {
-                onConflictDeclared: (event, context) => event.attackers.includes(context.source),
-                onDefendersDeclared: (event, context) => event.defenders.includes(context.source),
-                onMoveToConflict: (event, context) => event.card === context.source
+                onConflictDeclared: (event: any, context) => event.attackers?.includes(context.source),
+                onDefendersDeclared: (event: any, context) => event.defenders?.includes(context.source),
+                onMoveToConflict: (event: any, context) => event.card === context.source
             },
             target: {
                 mode: TargetModes.Select,
                 player: (context) =>
-                    context.player !== context.game.currentConflict.defendingPlayer ? Players.Opponent : Players.Self,
+                    context.player !== context.game.currentConflict?.defendingPlayer ? Players.Opponent : Players.Self,
                 choices: {
                     [DISCARD]: AbilityDsl.actions.sequential([
                         AbilityDsl.actions.discardCard((context) => ({

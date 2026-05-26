@@ -33,13 +33,13 @@ export default class DiligentChaperone extends DrawCard {
         this.reaction({
             title: 'Rehonor the character',
             when: {
-                onStatusTokenMoved: (event, context) =>
+                onStatusTokenMoved: (event: any, context) =>
                     event.token.grantedStatus === CharacterStatus.Honored &&
                     isFriendlyCharacter(context, event.donor) &&
                     !context.source.bowed,
                 onCardDishonored: (event: { card: DrawCard }, context) =>
                     event.card.isOrdinary() && isFriendlyCharacter(context, event.card) && !context.source.bowed,
-                onStatusTokenDiscarded: (event, context) =>
+                onStatusTokenDiscarded: (event: any, context) =>
                     !context.source.bowed &&
                     event.token.grantedStatus === CharacterStatus.Honored &&
                     event.cards.some(isFriendlyCharacter.bind(null, context))

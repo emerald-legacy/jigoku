@@ -59,7 +59,7 @@ class SelectRingPrompt extends UiPrompt {
         this.targets = [];
     }
 
-    defaultProperties() {
+    defaultProperties(): Record<string, any> {
         return {
             buttons: [],
             controls: this.getDefaultControls(),

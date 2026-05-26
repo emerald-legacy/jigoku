@@ -21,7 +21,7 @@ export class ReturnRingToPlayAction extends RingAction {
         return super.canAffect(ring, context);
     }
 
-    eventHandler(event, _additionalProperties): void {
+    eventHandler(event: any, _additionalProperties: Record<string, unknown> = {}): void {
         let ring = event.ring;
         let context = event.context;
 

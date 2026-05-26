@@ -20,7 +20,7 @@ export class SendHomeAction extends CardGameAction {
         );
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.context.game.currentConflict.removeFromConflict(event.card);
     }
 }

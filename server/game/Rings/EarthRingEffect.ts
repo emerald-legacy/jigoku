@@ -13,7 +13,7 @@ function choices(optional: boolean, gameMode: GameModes) {
         case GameModes.Skirmish:
             return {
                 [DRAW]: () => true,
-                [FORCE_DISCARD]: (context) => context.player.opponent,
+                [FORCE_DISCARD]: (context: any) => context.player.opponent,
                 [SKIP]: () => optional
             };
         default:

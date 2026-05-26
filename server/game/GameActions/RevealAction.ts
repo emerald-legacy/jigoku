@@ -27,13 +27,13 @@ export class RevealAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event, card: BaseCard, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { onDeclaration } = this.getProperties(context, additionalProperties) as RevealProperties;
         event.onDeclaration = onDeclaration;
         super.addPropertiesToEvent(event, card, context, additionalProperties);
     }
 
-    eventHandler(event, additionalProperties): void {
+    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties(event.context, additionalProperties) as RevealProperties;
         if(properties.chatMessage) {
             event.context.game.addMessage(

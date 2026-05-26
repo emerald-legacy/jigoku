@@ -25,7 +25,7 @@ export class ThrivingAbility extends TriggeredAbility {
             message: '{0} places a card facedown in {1} due to {2}\'s Thriving',
             messageArgs: (context: TriggeredAbilityContext<DrawCard>) => [
                 context.player,
-                context.player.getProvinceCardInProvince(context.source.location).isFacedown()
+                context.player.getProvinceCardInProvince(context.source.location)?.isFacedown()
                     ? context.source.location
                     : context.player.getProvinceCardInProvince(context.source.location),
                 context.source

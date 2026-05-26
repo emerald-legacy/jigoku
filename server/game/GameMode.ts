@@ -86,7 +86,7 @@ const Stronghold: GameMode = {
     ringAirChoices: (optional: boolean): RingChoices => ({
         [AIR_CHOICE.GAIN_2]: () => true,
         [AIR_CHOICE.TAKE_1]: (context: AbilityContext) =>
-            context.player.opponent && context.player.opponent.checkRestrictions('takeHonor', context),
+            Boolean(context.player.opponent && context.player.opponent.checkRestrictions('takeHonor', context)),
         [AIR_CHOICE.SKIP]: () => optional
     }),
     ringEarthChoices: (optional: boolean): RingChoices => ({
@@ -125,7 +125,7 @@ const Skirmish: GameMode = {
     setupStartingHandSize: 3,
     ringAirChoices: (optional: boolean): RingChoices => ({
         [AIR_CHOICE.TAKE_1]: (context: AbilityContext) =>
-            context.player.opponent && context.player.opponent.checkRestrictions('takeHonor', context),
+            Boolean(context.player.opponent && context.player.opponent.checkRestrictions('takeHonor', context)),
         [AIR_CHOICE.SKIP]: () => optional
     }),
     ringEarthChoices: (optional: boolean): RingChoices => ({

@@ -20,7 +20,7 @@ export class TakeRingAction extends RingAction {
         return !ring.isRemovedFromGame() && ring.claimedBy !== context.player.name && super.canAffect(ring, context);
     }
 
-    eventHandler(event, additionalProperties): void {
+    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
         let { takeFate } = this.getProperties(event.context, additionalProperties) as TakeRingProperties;
         let ring = event.ring;
         let context = event.context;

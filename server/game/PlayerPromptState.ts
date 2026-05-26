@@ -8,8 +8,8 @@ export class PlayerPromptState {
     selectRing = false;
     menuTitle = '';
     promptTitle = '';
-    buttons = [];
-    controls = [];
+    buttons: any[] = [];
+    controls: any[] = [];
 
     selectableRings: Ring[] = [];
     selectableCards: BaseCard[] = [];

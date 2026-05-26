@@ -14,7 +14,7 @@ export class MoveToConflictAction extends CardGameAction {
     cost = 'moving {0} into the conflict';
     effect = 'move {0} into the conflict';
     targetType = [CardTypes.Character];
-    defaultProperties: MoveToConflictProperties = { side: null };
+    defaultProperties: MoveToConflictProperties = { side: undefined };
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
         let properties = this.getProperties(context) as MoveToConflictProperties;
@@ -41,13 +41,13 @@ export class MoveToConflictAction extends CardGameAction {
         return card.location === Locations.PlayArea;
     }
 
-    addPropertiesToEvent(event, card: BaseCard, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties(context) as MoveToConflictProperties;
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.side = properties.side || card.controller;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         const player = event.side;
 
         if(player.isAttackingPlayer()) {

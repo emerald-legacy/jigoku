@@ -1,25 +1,27 @@
+import type { AbilityContext } from '../../AbilityContext.js';
+import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 
 class MaraudingOni extends DrawCard {
     static id = 'marauding-oni';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                ability.effects.cardCannot('honor'),
-                ability.effects.cardCannot('dishonor')
+                AbilityDsl.effects.cardCannot('honor'),
+                AbilityDsl.effects.cardCannot('dishonor')
             ]
         });
 
         this.forcedReaction({
             title: 'Lose honor when declared as attacker or defender',
             when: {
-                onConflictDeclared: (event, context) => event.attackers.includes(context.source),
-                onDefendersDeclared: (event, context) => event.defenders.includes(context.source)
+                onConflictDeclared: (event: any, context: AbilityContext) => (event.attackers ?? []).includes(context.source),
+                onDefendersDeclared: (event: any, context: AbilityContext) => (event.defenders ?? []).includes(context.source)
             },
             effect: 'lose an honor',
-            gameAction: ability.actions.loseHonor(context => ({ target: context.player })),
-            limit: ability.limit.unlimitedPerConflict()
+            gameAction: AbilityDsl.actions.loseHonor((context: AbilityContext) => ({ target: context.player })),
+            limit: AbilityDsl.limit.unlimitedPerConflict()
         });
     }
 }

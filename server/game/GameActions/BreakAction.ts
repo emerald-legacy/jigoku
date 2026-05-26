@@ -20,12 +20,12 @@ export class BreakAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event, card: ProvinceCard, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, card: ProvinceCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.conflict = context.game.currentConflict;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.card.breakProvince();
     }
 }

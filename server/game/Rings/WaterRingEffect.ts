@@ -9,7 +9,7 @@ function cardConditionSkirmish<C extends DrawCard>(card: C, context: AbilityCont
         card.location === Locations.PlayArea &&
         card.getFate() <= 1 &&
         !card.isParticipating() &&
-        ((card.ready && card.allowGameAction('bow', context)) || (card.bowed && card.allowGameAction('ready', context)))
+        ((!card.bowed && card.allowGameAction('bow', context)) || (card.bowed && card.allowGameAction('ready', context)))
     );
 }
 

@@ -24,7 +24,7 @@ export class CreateTokenAction extends CardGameAction<CreateTokenProperties> {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event, additionalProperties = {}): void {
+    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
         let { atHome } = this.getProperties(event.context, additionalProperties);
         let context = event.context;
         let card = event.card;

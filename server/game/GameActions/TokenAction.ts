@@ -22,7 +22,7 @@ export class TokenAction<P extends TokenActionProperties = TokenActionProperties
         return this.canAffect(event.token, event.context, additionalProperties);
     }
 
-    addPropertiesToEvent(event, token: StatusToken, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, token: StatusToken, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, token, context, additionalProperties);
         event.token = token;
         if(Array.isArray(event.token)) {

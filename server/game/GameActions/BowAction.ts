@@ -19,7 +19,7 @@ export class BowAction extends CardGameAction<BowActionProperties> {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.card.bow();
     }
 }

@@ -10,21 +10,21 @@ class DiscerningYoriki extends DrawCard {
             title: 'Honor a character',
             collectiveTrigger: true,
             when: {
-                onCardRevealed: (event, context) => {
+                onCardRevealed: (event: any, context) => {
                     let cards = event.card;
                     if(!Array.isArray(cards)) {
                         cards = [cards];
                     }
 
-                    return cards.some(a => a.location === Locations.Hand && a.controller === context.player.opponent);
+                    return cards.some((a: any) => a.location === Locations.Hand && a.controller === context.player.opponent);
                 },
-                onLookAtCards: (event, context) => {
+                onLookAtCards: (event: any, context) => {
                     let cards = event.stateBeforeResolution;
                     if(!Array.isArray(cards)) {
                         cards = [cards];
                     }
 
-                    return cards.some(a => a.location === Locations.Hand && a.card.controller === context.player.opponent);
+                    return cards.some((a: any) => a.location === Locations.Hand && a.card.controller === context.player.opponent);
                 }
             },
             target: {

@@ -148,7 +148,7 @@ export class GamePipeline {
 
         let name = step.constructor.name;
         if(step.pipeline) {
-            let result = {};
+            let result: Record<string, unknown> = {};
             result[name] = step.pipeline.getDebugInfo();
             return result;
         }

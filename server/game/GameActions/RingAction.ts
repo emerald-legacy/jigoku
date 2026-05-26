@@ -8,14 +8,14 @@ export class RingAction<P extends RingActionProperties = RingActionProperties> e
     targetType = ['ring'];
 
     defaultTargets(context: AbilityContext): Ring[] {
-        return context.game.currentConflict ? [context.game.currentConflict.ring] : [];
+        return context.game.currentConflict && context.game.currentConflict.ring ? [context.game.currentConflict.ring] : [];
     }
 
     checkEventCondition(event: any, additionalProperties = {}): boolean {
         return this.canAffect(event.ring, event.context, additionalProperties);
     }
 
-    addPropertiesToEvent(event, ring: Ring, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         event.ring = ring;
     }

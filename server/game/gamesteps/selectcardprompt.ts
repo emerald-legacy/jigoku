@@ -109,7 +109,7 @@ class SelectCardPrompt extends UiPrompt {
         this.savePreviouslySelectedCards();
     }
 
-    defaultProperties() {
+    defaultProperties(): Record<string, any> {
         return {
             buttons: [],
             controls: this.getDefaultControls(),

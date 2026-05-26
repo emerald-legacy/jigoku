@@ -38,8 +38,8 @@ export class TakeControlAction extends LastingEffectCardAction {
         return !card.anotherUniqueInPlay(context.player) && super.canAffect(card, context, additionalProperties);
     }
 
-    eventHandler(event, additionalProperties): void {
+    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties(event.context, additionalProperties);
-        event.context.source[properties.duration](() => Object.assign({ match: event.card }, properties));
+        event.context.source[properties.duration ?? Durations.Custom](() => Object.assign({ match: event.card }, properties));
     }
 }

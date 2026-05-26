@@ -13,7 +13,7 @@ export class PlaceCardUnderneathAction extends CardGameAction {
     name = 'placeCardUnderneath';
     targetType = [CardTypes.Character, CardTypes.Attachment, CardTypes.Event, CardTypes.Holding];
     defaultProperties: PlaceCardUnderneathProperties = {
-        destination: null,
+        destination: undefined,
         hideWhenFaceup: true
     };
     constructor(
@@ -34,14 +34,17 @@ export class PlaceCardUnderneathAction extends CardGameAction {
 
     canAffect(card: BaseCard, context: AbilityContext, additionalProperties = {}): boolean {
         const { destination } = this.getProperties(context, additionalProperties) as PlaceCardUnderneathProperties;
-        return destination && destination.uuid && super.canAffect(card, context);
+        return !!(destination && destination.uuid) && super.canAffect(card, context);
     }
 
-    eventHandler(event, additionalProperties = {}): void {
+    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
         let context = event.context;
         let card = event.card;
         event.cardStateWhenMoved = card.createSnapshot();
         let properties = this.getProperties(context, additionalProperties) as PlaceCardUnderneathProperties;
+        if(!properties.destination) {
+            return;
+        }
         let destination = properties.destination.uuid;
 
         context.player.moveCard(card, destination);
@@ -50,7 +53,7 @@ export class PlaceCardUnderneathAction extends CardGameAction {
         if(properties.hideWhenFaceup) {
             card.lastingEffect(() => ({
                 until: {
-                    onCardMoved: (event) => event.card === card && event.originalLocation === destination
+                    onCardMoved: (event: any) => event.card === card && event.originalLocation === destination
                 },
                 match: card,
                 effect: Effects.hideWhenFaceUp()

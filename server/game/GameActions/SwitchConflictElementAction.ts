@@ -19,7 +19,7 @@ export class SwitchConflictElementAction extends RingAction {
         );
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.context.game.currentConflict.switchElement(event.ring.element);
     }
 }

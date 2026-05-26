@@ -20,7 +20,7 @@ export class RefillFaceupAction extends PlayerAction {
         return [context.player];
     }
 
-    eventHandler(event, additionalProperties): void {
+    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
         let { location } = this.getProperties(event.context, additionalProperties) as RefillFaceupProperties;
         if(!Array.isArray(location)) {
             location = [location];
@@ -31,7 +31,7 @@ export class RefillFaceupAction extends PlayerAction {
                 if(event.player.replaceDynastyCard(loc)) {
                     event.context.game.queueSimpleStep(() => {
                         let cards = event.player.getDynastyCardsInProvince(loc);
-                        cards.forEach((card) => {
+                        cards.forEach((card: any) => {
                             if(card) {
                                 card.facedown = false;
                             }

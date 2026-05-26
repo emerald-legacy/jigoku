@@ -23,14 +23,14 @@ export class MoveConflictAction extends CardGameAction {
             card.type !== CardTypes.Province ||
             card.isConflictProvince() ||
             !card.canBeAttacked() ||
-            !context.game.currentConflict.getConflictProvinces().some((a) => a.controller === card.controller)
+            !context.game.currentConflict || !context.game.currentConflict.getConflictProvinces().some((a) => a.controller === card.controller)
         ) {
             return false;
         }
         return super.canAffect(card, context);
     }
 
-    eventHandler(event, _additionalProperties): void {
+    eventHandler(event: any, _additionalProperties: Record<string, unknown> = {}): void {
         let context = event.context;
         let newProvince = event.card;
 

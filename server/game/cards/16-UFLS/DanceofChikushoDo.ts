@@ -2,6 +2,7 @@ import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TargetModes, Locations } from '../../Constants.js';
 import { GameModes } from '../../../GameModes.js';
+import type Player from '../../player.js';
 
 class DanceOfChikushoDo extends DrawCard {
     static id = 'dance-of-chikusho-do';
@@ -28,9 +29,12 @@ class DanceOfChikushoDo extends DrawCard {
         });
     }
 
-    fillProvinces(player) {
+    fillProvinces(player: Player | undefined) {
         return AbilityDsl.actions.handler({
             handler: () => {
+                if(!player) {
+                    return;
+                }
                 const unbrokenProvinces = this.getUnbrokenProvinces(player);
                 unbrokenProvinces.forEach(province => {
                     this.game.queueSimpleStep(() => player.putTopDynastyCardInProvince(province, true));
@@ -40,15 +44,15 @@ class DanceOfChikushoDo extends DrawCard {
         });
     }
 
-    getUnbrokenProvinces(player) {
-        let unbrokenLocations = [];
-        let baseLocations = [Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree];
+    getUnbrokenProvinces(player: Player): Locations[] {
+        const unbrokenLocations: Locations[] = [];
+        const baseLocations = [Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree];
         if(this.game.gameMode !== GameModes.Skirmish) {
             baseLocations.push(Locations.ProvinceFour);
         }
         baseLocations.forEach(p => {
             const province = player.getProvinceCardInProvince(p);
-            if(!province.isBroken) {
+            if(province && !province.isBroken) {
                 unbrokenLocations.push(p);
             }
         });

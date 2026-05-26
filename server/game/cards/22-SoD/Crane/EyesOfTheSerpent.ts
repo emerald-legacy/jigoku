@@ -3,7 +3,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
-const resourcesAvailable = (context) => {
+const resourcesAvailable = (context: TriggeredAbilityContext) => {
     let honorAvailable = false;
     let fateAvailable = false;
     if(context.game.actions.loseHonor().canAffect(context.player, context)) {
@@ -29,7 +29,7 @@ const eyesOfTheSerpentCost = function () {
             const { honorAvailable, fateAvailable } = resourcesAvailable(context);
             return honorAvailable || fateAvailable;
         },
-        resolve: function (context, _result) {
+        resolve: function (context: TriggeredAbilityContext, _result: unknown) {
             const { honorAvailable, fateAvailable } = resourcesAvailable(context);
             context.costs.merchantOfCuriositiesCostPaid = false;
             if(honorAvailable && fateAvailable) {
@@ -50,8 +50,8 @@ const eyesOfTheSerpentCost = function () {
                 }
             }
         },
-        payEvent: function (context) {
-            let events = [];
+        payEvent: function (context: TriggeredAbilityContext) {
+            const events = [];
             if(context.costs.serpentCostPaid === 'honor') {
                 const action = context.game.actions.loseHonor({ amount: 1 });
                 events.push(action.getEvent(context.player, context));

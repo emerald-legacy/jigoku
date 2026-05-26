@@ -24,7 +24,7 @@ export class HonorAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.card.honor();
         if(event.card.isHonored) {
             event.card.game.raiseEvent(EventNames.OnStatusTokenGained, {

@@ -14,7 +14,7 @@ export class ReturnRingAction extends RingAction {
         return !ring.isUnclaimed() && super.canAffect(ring, context);
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.ring.resetRing();
     }
 }

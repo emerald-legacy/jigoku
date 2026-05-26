@@ -16,11 +16,11 @@ export default class Funeral extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel honor loss',
             when: {
-                onModifyHonor: (event, context) =>
+                onModifyHonor: (event: any, context) =>
                     event.player === context.player &&
                     -event.amount >= context.player.honor &&
                     event.context.stage === Stages.Effect,
-                onTransferHonor: (event, context) =>
+                onTransferHonor: (event: any, context) =>
                     event.player === context.player &&
                     event.amount >= context.player.honor &&
                     event.context.stage === Stages.Effect
