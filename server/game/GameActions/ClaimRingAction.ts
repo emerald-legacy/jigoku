@@ -3,6 +3,7 @@ import { ConflictTypes, EventNames } from '../Constants.js';
 import type Ring from '../ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface ClaimRingProperties extends RingActionProperties {
     takeFate?: boolean;
     type?: string;
@@ -22,10 +23,10 @@ export class ClaimRingAction extends RingAction<ClaimRingProperties> {
         return !ring.isRemovedFromGame() && ring.claimedBy !== context.player.name && super.canAffect(ring, context);
     }
 
-    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
-        let { takeFate, type } = this.getProperties(event.context, additionalProperties) as ClaimRingProperties;
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+        let { takeFate, type } = this.getProperties(event.context!, additionalProperties) as ClaimRingProperties;
         let ring = event.ring;
-        let context = event.context;
+        let context = event.context!;
         ring.contested = false;
         ring.conflictType = type;
         if(takeFate && ring.fate > 0 && context.player.checkRestrictions('takeFateFromRings', context)) {
@@ -41,7 +42,7 @@ export class ClaimRingAction extends RingAction<ClaimRingProperties> {
             });
         }
         event.player = context.player;
-        event.conflict = context.conflict;
+        event.conflict = context.game.currentConflict ?? undefined;
         event.ring = ring;
         ring.claimRing(context.player);
     }

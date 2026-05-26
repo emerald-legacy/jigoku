@@ -1,22 +1,23 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Locations, Players, Durations } from '../../Constants.js';
 
 const exposedCourtyardCost = () => ({
     action: { name: 'exposedCourtyardCost' },
-    getActionName(_context: any) {
+    getActionName(_context: AbilityContext) {
         return 'exposedCourtyardCost';
     },
-    getCostMessage: function (_context: any) {
+    getCostMessage: function (_context: AbilityContext) {
         return ['discarding {0}'];
     },
-    canPay: function (context: any) {
+    canPay: function (context: AbilityContext) {
         return context.player.conflictDeck.length >= 2;
     },
-    resolve: function(context: any) {
+    resolve: function(context: AbilityContext) {
         context.costs.exposedCourtyardCost = context.player.conflictDeck.slice(0, 2);
     },
-    pay: function(context: any) {
+    pay: function(context: AbilityContext) {
         const discardedCards = context.costs.exposedCourtyardCost;
         discardedCards.slice(0, 2).forEach((card: any) => {
             card.controller.moveCard(card, Locations.ConflictDiscardPile);
@@ -38,7 +39,7 @@ class ExposedCourtyard extends DrawCard {
                 AbilityDsl.actions.handler({
                     handler: () => true
                 }),
-                AbilityDsl.actions.selectCard((context: any) => ({
+                AbilityDsl.actions.selectCard((context: AbilityContext) => ({
                     location: Locations.ConflictDiscardPile,
                     cardType: CardTypes.Event,
                     activePromptTitle: 'Choose an event',
@@ -49,7 +50,7 @@ class ExposedCourtyard extends DrawCard {
                         return ({ target: card });
                     },
                     gameAction: AbilityDsl.actions.sequential([
-                        AbilityDsl.actions.playerLastingEffect((context: any) => {
+                        AbilityDsl.actions.playerLastingEffect((context: AbilityContext) => {
                             return {
                                 targetController: context.player,
                                 duration: Durations.Custom,
@@ -62,7 +63,7 @@ class ExposedCourtyard extends DrawCard {
                                 effect: AbilityDsl.effects.canPlayFromOwn(Locations.ConflictDiscardPile, [context.target], this)
                             };
                         }),
-                        AbilityDsl.actions.cardLastingEffect((context: any) => ({
+                        AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => ({
                             duration: Durations.UntilEndOfConflict,
                             targetLocation: Locations.Any,
                             canChangeZoneNTimes: 2,

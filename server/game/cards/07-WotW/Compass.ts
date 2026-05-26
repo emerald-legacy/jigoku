@@ -1,7 +1,8 @@
 import DrawCard from '../../drawcard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardTypes, EventNames } from '../../Constants.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class Compass extends DrawCard {
     static id = 'compass';
 
@@ -9,7 +10,7 @@ class Compass extends DrawCard {
         this.reaction({
             title: 'Look at top 3 cards of a deck',
             when: {
-                onCardRevealed: (event: any, context: TriggeredAbilityContext) =>
+                onCardRevealed: (event: EventPayload<EventNames.OnCardRevealed>, context: TriggeredAbilityContext) =>
                     event.card && event.card.type === CardTypes.Province && event.card.controller === context.player.opponent &&
                     context.source && (context.source as any).parent && (context.source as any).parent.isParticipating() &&
                     (context.player.dynastyDeck.length > 0 || context.player.conflictDeck.length > 0)

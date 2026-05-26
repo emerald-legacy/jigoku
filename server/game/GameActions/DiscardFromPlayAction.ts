@@ -3,6 +3,7 @@ import type BaseCard from '../basecard.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export type DiscardFromPlayProperties = CardActionProperties;
 
 export class DiscardFromPlayAction extends CardGameAction<DiscardFromPlayProperties> {
@@ -37,11 +38,11 @@ export class DiscardFromPlayAction extends CardGameAction<DiscardFromPlayPropert
         return super.canAffect(card, context);
     }
 
-    updateEvent(event: any, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    updateEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         this.updateLeavesPlayEvent(event, card, context, additionalProperties);
     }
 
-    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
         this.leavesPlayEventHandler(event, additionalProperties);
     }
 }

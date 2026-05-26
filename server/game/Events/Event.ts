@@ -1,5 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../basecard.js';
 import { EventNames } from '../Constants.js';
+import type EventWindow from './EventWindow.js';
 
 type Params = {
     amount: number;
@@ -11,15 +13,15 @@ export class Event {
     cancelled = false;
     resolved = false;
     context: AbilityContext | null = null;
-    window: any = null;
+    window: EventWindow | null = null;
     replacementEvent: Event | null = null;
     condition = (_event: Event) => true;
     order = 0;
     isContingent = false;
     checkFullyResolved = (event: Event) => !event.cancelled;
     createContingentEvents = (): Event[] => [];
-    preResolutionEffect = () => true;
-    onPlayCardSource?: any;
+    preResolutionEffect: () => void = () => true;
+    onPlayCardSource?: BaseCard;
     [key: string]: any;
 
     constructor(
@@ -41,7 +43,7 @@ export class Event {
         }
     }
 
-    setWindow(window: any) {
+    setWindow(window: EventWindow) {
         this.window = window;
     }
 

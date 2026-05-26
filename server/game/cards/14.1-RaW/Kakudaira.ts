@@ -1,7 +1,8 @@
-import { Durations } from '../../Constants.js';
+import { Durations, EventNames } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class Kakudaira extends ProvinceCard {
     static id = 'kakudaira';
 
@@ -9,7 +10,7 @@ export default class Kakudaira extends ProvinceCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.playerDelayedEffect({
                 when: {
-                    onPhaseStarted: (event: any, context: any) =>
+                    onPhaseStarted: (event: EventPayload<EventNames.OnPhaseStarted>, context: any) =>
                         context.source.isFaceup() &&
                         !context.source.isBroken &&
                         context.player.getDynastyCardsInProvince(context.source.location).some((a: any) => a.isFacedown())

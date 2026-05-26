@@ -1,7 +1,8 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityTypes } from '../../Constants.js';
+import { AbilityTypes, EventNames } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class WayWithWords extends DrawCard {
     static id = 'way-with-words';
 
@@ -10,7 +11,7 @@ class WayWithWords extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
                 title: 'Take 1 honor',
                 when: {
-                    afterConflict: (event: any, context: any) =>
+                    afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) =>
                         context.source.isParticipating() &&
                         event.conflict.winner === context.source.controller &&
                         context.player.opponent &&

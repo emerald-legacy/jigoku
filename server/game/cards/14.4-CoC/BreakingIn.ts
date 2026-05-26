@@ -1,7 +1,8 @@
-import { CardTypes, Locations, Players } from '../../Constants.js';
+import { CardTypes, EventNames, Locations, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class BreakingIn extends ProvinceCard {
     static id = 'breaking-in';
 
@@ -9,7 +10,7 @@ export default class BreakingIn extends ProvinceCard {
         this.reaction({
             title: 'Search for a character card',
             when: {
-                onCardRevealed: (event: any, context: TriggeredAbilityContext) => event.card === context.source
+                onCardRevealed: (event: EventPayload<EventNames.OnCardRevealed>, context: TriggeredAbilityContext) => event.card === context.source
             },
             handler: (context?: TriggeredAbilityContext) => {
                 if(!context) {

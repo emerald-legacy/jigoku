@@ -1,8 +1,9 @@
-import { TargetModes, Locations, Players, CardTypes, Durations, Elements } from '../../../Constants.js';
+import { CardTypes, Durations, Elements, EventNames, Locations, Players, TargetModes } from '../../../Constants.js';
 import type { Cost } from '../../../Costs.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 const maelstromCost = function (): Cost {
     return {
         getActionName(_context) {
@@ -98,7 +99,7 @@ export default class Maelstrom extends ProvinceCard {
                                 duration: Durations.UntilEndOfPhase,
                                 effect: AbilityDsl.effects.delayedEffect({
                                     when: {
-                                        afterConflict: (event: any, context: any) =>
+                                        afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) =>
                                             event.conflict.winner === target.controller &&
                                             target.isParticipating() &&
                                             target.controller === context.player

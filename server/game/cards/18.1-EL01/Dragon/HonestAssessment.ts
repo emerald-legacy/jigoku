@@ -1,8 +1,9 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { Locations } from '../../../Constants.js';
+import { EventNames, Locations } from '../../../Constants.js';
 import DrawCard from '../../../drawcard.js';
 import { shuffle } from '../../../utils/shuffle.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class HonestAssessment extends DrawCard {
     static id = 'honest-assessment';
 
@@ -12,7 +13,7 @@ export default class HonestAssessment extends DrawCard {
         this.reaction({
             title: 'Name a card',
             when: {
-                onCardAttached: (event: any, context) =>
+                onCardAttached: (event: EventPayload<EventNames.OnCardAttached>, context) =>
                     event.card === context.source && event.originalLocation !== Locations.PlayArea
             },
             cost: AbilityDsl.costs.nameCard(),

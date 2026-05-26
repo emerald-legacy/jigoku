@@ -3,6 +3,7 @@ import { Locations } from '../Constants.js';
 import type Player from '../player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface FillProvinceProperties extends PlayerActionProperties {
     location: Locations;
     fillTo?: number;
@@ -23,13 +24,13 @@ export class FillProvinceAction extends PlayerAction<FillProvinceProperties> {
         return ['fills {0} to {1} cards!', [properties.location, properties.fillTo]];
     }
 
-    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
-        let properties = this.getProperties(event.context, additionalProperties) as FillProvinceProperties;
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+        let properties = this.getProperties(event.context!, additionalProperties) as FillProvinceProperties;
         let currentCards = event.player.getDynastyCardsInProvince(properties.location).length;
         event.player.refillProvince(properties.location, (properties.fillTo ?? 0) - currentCards);
 
         if(properties.faceup) {
-            event.context.game.queueSimpleStep(() => {
+            event.context!.game.queueSimpleStep(() => {
                 let cards = event.player.getDynastyCardsInProvince(properties.location);
                 cards.forEach((card: any) => {
                     if(card) {

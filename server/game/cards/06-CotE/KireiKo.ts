@@ -1,7 +1,8 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardTypes, EventNames } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class KireiKo extends DrawCard {
     static id = 'kirei-ko';
 
@@ -9,7 +10,7 @@ class KireiKo extends DrawCard {
         this.reaction({
             title: 'Bow a character who triggered an ability',
             when: {
-                onCardAbilityInitiated: (event: any, context: any) =>
+                onCardAbilityInitiated: (event: EventPayload<EventNames.OnCardAbilityInitiated>, context: any) =>
                     event.card.type === CardTypes.Character && event.card.controller === context.player.opponent &&
                     event.ability.isTriggeredAbility()
             },

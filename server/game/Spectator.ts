@@ -1,5 +1,7 @@
+import type { PromptButton } from './PlayerPromptState.js';
+
 export class Spectator {
-    buttons = [];
+    buttons: PromptButton[] = [];
     menuTitle = 'Spectator mode';
     name: string;
     emailHash: string;

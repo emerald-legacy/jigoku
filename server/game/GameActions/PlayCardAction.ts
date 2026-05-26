@@ -247,8 +247,8 @@ export class PlayCardAction extends CardGameAction {
     }
 
     updateForDragonTattoo_DYH(context: AbilityContext, actionContext: AbilityContext) {
-        if((context as TriggeredAbilityContext).event && (context as TriggeredAbilityContext).event.context) {
-            (actionContext as TriggeredAbilityContext).event = (context as TriggeredAbilityContext).event.context.event;
+        if((context as TriggeredAbilityContext).event && (context as TriggeredAbilityContext).event.context!) {
+            (actionContext as TriggeredAbilityContext).event = (context as TriggeredAbilityContext).event.context!.event;
         }
     }
 

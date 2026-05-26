@@ -1,6 +1,8 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
+import { EventNames } from '../../Constants.js';
 class WarDogMaster extends DrawCard {
     static id = 'war-dog-master';
 
@@ -8,7 +10,7 @@ class WarDogMaster extends DrawCard {
         this.reaction({
             title: 'Gain a +X/+0 bonus',
             when: {
-                onConflictDeclared: (event: any, context) => event.attackers.includes(context.source)
+                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context) => (event.attackers ?? []).includes(context.source)
             },
             cost: AbilityDsl.costs.discardCardSpecific(context => context.player.dynastyDeck[0]),
             effect: 'give {0} +{1}{2}',

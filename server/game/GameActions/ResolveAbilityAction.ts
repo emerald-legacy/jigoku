@@ -137,18 +137,18 @@ export class ResolveAbilityAction extends CardGameAction {
         return !ability.meetsRequirements(newContext, ignoredRequirements);
     }
 
-    eventHandler(event: any, additionalProperties: any): void {
-        let properties = this.getProperties(event.context, additionalProperties) as ResolvedResolveAbilityProperties;
-        let player = properties.player || event.context.player;
+    eventHandler(event: Event, additionalProperties: any): void {
+        let properties = this.getProperties(event.context!, additionalProperties) as ResolvedResolveAbilityProperties;
+        let player = properties.player || event.context!.player;
         let newContextEvent = properties.event;
         let newContext = (properties.ability as TriggeredAbility).createContext(player, newContextEvent);
         newContext.subResolution = !!properties.subResolution;
         if(properties.choosingPlayerOverride) {
             newContext.choosingPlayerOverride = properties.choosingPlayerOverride;
         }
-        event.context.game.queueStep(
+        event.context!.game.queueStep(
             new ResolveAbilityActionResolver(
-                event.context.game,
+                event.context!.game,
                 newContext,
                 properties.ignoredRequirements.includes('cost')
             )

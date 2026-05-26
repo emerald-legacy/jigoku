@@ -1,11 +1,14 @@
 import { AllPlayerPrompt } from '../AllPlayerPrompt.js';
+import type BaseCard from '../../basecard.js';
+import type DrawCard from '../../drawcard.js';
+import type Game from '../../game.js';
 import type Player from '../../player.js';
 
 class MulliganDynastyPrompt extends AllPlayerPrompt {
-    selectedCards: Record<string, any[]>;
-    selectableCards: Record<string, any[]>;
+    selectedCards: Record<string, DrawCard[]>;
+    selectableCards: Record<string, DrawCard[]>;
 
-    constructor(game: any) {
+    constructor(game: Game) {
         super(game);
         this.selectedCards = {};
         this.selectableCards = {};
@@ -13,7 +16,7 @@ class MulliganDynastyPrompt extends AllPlayerPrompt {
     }
 
     completionCondition(player: Player): boolean {
-        return !!(player as any).takenDynastyMulligan;
+        return player.takenDynastyMulligan;
     }
 
     continue(): boolean {
@@ -27,7 +30,7 @@ class MulliganDynastyPrompt extends AllPlayerPrompt {
     highlightSelectableCards(): void {
         this.game.getPlayers().forEach((player: Player) => {
             if(!this.selectableCards[player.name]) {
-                this.selectableCards[player.name] = this.game.getProvinceArray(false).map((location: any) => (player as any).getDynastyCardsInProvince(location)).flat();
+                this.selectableCards[player.name] = this.game.getProvinceArray(false).map((location: string) => player.getDynastyCardsInProvince(location)).flat();
             }
             player.setSelectableCards(this.selectableCards[player.name]);
         });
@@ -43,7 +46,7 @@ class MulliganDynastyPrompt extends AllPlayerPrompt {
         };
     }
 
-    onCardClicked(player: Player, card: any): boolean {
+    onCardClicked(player: Player, card: DrawCard): boolean {
         if(!player || !this.activeCondition(player) || !card) {
             return false;
         }
@@ -61,7 +64,7 @@ class MulliganDynastyPrompt extends AllPlayerPrompt {
         return true;
     }
 
-    cardCondition(card: any): boolean {
+    cardCondition(card: BaseCard): boolean {
         return card.isDynasty && card.isInProvince();
     }
 
@@ -75,23 +78,23 @@ class MulliganDynastyPrompt extends AllPlayerPrompt {
         if(arg === 'done') {
             if(this.selectedCards[player.name].length > 0) {
                 for(const card of this.selectedCards[player.name]) {
-                    if((player as any).dynastyDeck.length > 0) {
-                        (player as any).moveCard((player as any).dynastyDeck[0], card.location);
+                    if(player.dynastyDeck.length > 0) {
+                        player.moveCard(player.dynastyDeck[0], card.location);
                     }
                 }
                 for(const card of this.selectedCards[player.name]) {
                     let location = card.location;
-                    (player as any).moveCard(card, 'dynasty deck bottom');
-                    (player as any).replaceDynastyCard(location);
+                    player.moveCard(card, 'dynasty deck bottom');
+                    player.replaceDynastyCard(location);
                 }
-                (player as any).shuffleDynastyDeck();
+                player.shuffleDynastyDeck();
                 this.game.addMessage('{0} has mulliganed {1} cards from the dynasty deck', player, this.selectedCards[player.name].length);
             } else {
                 this.game.addMessage('{0} has kept all dynasty cards', player);
             }
             player.clearSelectedCards();
             player.clearSelectableCards();
-            (player as any).takenDynastyMulligan = true;
+            player.takenDynastyMulligan = true;
             return true;
         }
         return false;

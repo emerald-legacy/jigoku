@@ -1,9 +1,10 @@
 import DrawCard from '../../drawcard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { CardTypes, EventNames, Players } from '../../Constants.js';
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class Deathseeker extends DrawCard {
     static id = 'deathseeker';
 
@@ -12,7 +13,7 @@ class Deathseeker extends DrawCard {
         this.reaction({
             title: 'Remove fate/discard character',
             when: {
-                afterConflict: (event: any, context: TriggeredAbilityContext) => event.conflict.loser === context.player && context.source.isAttacking()
+                afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: TriggeredAbilityContext) => event.conflict.loser === context.player && context.source.isAttacking()
             },
             cost: ability.costs.sacrificeSelf(),
             target: {

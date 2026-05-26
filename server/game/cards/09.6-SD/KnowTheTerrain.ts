@@ -1,6 +1,7 @@
 import DrawCard from '../../drawcard.js';
-import { CardTypes, Players, Locations } from '../../Constants.js';
+import { CardTypes, EventNames, Players, Locations } from '../../Constants.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
 
 class KnowTheTerrain extends DrawCard {
     static id = 'know-the-terrain';
@@ -10,7 +11,7 @@ class KnowTheTerrain extends DrawCard {
             title: 'Switch the attacked province with a facedown province',
             effect: 'switch the attacked province card',
             when: {
-                onConflictDeclaredBeforeProvinceReveal: (event: any, context: TriggeredAbilityContext) => event.conflict.conflictProvince.isFacedown() &&
+                onConflictDeclaredBeforeProvinceReveal: (event: EventPayload<EventNames.OnConflictDeclaredBeforeProvinceReveal>, context: TriggeredAbilityContext) => !!event.conflict.conflictProvince && event.conflict.conflictProvince.isFacedown() &&
                     event.conflict.defendingPlayer === context.player &&
                     event.conflict.conflictProvince.location !== Locations.StrongholdProvince
             },

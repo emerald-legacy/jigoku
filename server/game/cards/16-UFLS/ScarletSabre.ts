@@ -1,7 +1,8 @@
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityTypes } from '../../Constants.js';
+import { AbilityTypes, EventNames } from '../../Constants.js';
 import DrawCard from '../../drawcard.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class ScarletSabre extends DrawCard {
     static id = 'scarlet-sabre';
 
@@ -12,7 +13,7 @@ export default class ScarletSabre extends DrawCard {
                 title: 'Make opponent lose 1 fate',
                 printedAbility: false,
                 when: {
-                    afterConflict: (event: any, context: any) =>
+                    afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) =>
                         context.player.opponent &&
                         context.source.isParticipating() &&
                         event.conflict.winner === context.source.controller

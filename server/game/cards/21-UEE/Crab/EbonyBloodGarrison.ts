@@ -1,11 +1,12 @@
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import { CardTypes, Locations, Phases, Players } from '../../../Constants.js';
+import { CardTypes, EventNames, Locations, Phases, Players } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 import { SimpleStep } from '../../../gamesteps/SimpleStep.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 const MY_PROVINCE = 'myProvince';
 const OPP_PROVINCE = 'oppProvince';
 
@@ -16,7 +17,7 @@ export default class EbonyBloodGarrison extends StrongholdCard {
         this.reaction({
             title: 'Break a province from each player',
             when: {
-                onPhaseEnded: (event: any, context: TriggeredAbilityContext) => event.phase === Phases.Dynasty && context.game.roundNumber === 1
+                onPhaseEnded: (event: EventPayload<EventNames.OnPhaseEnded>, context: TriggeredAbilityContext) => event.phase === Phases.Dynasty && context.game.roundNumber === 1
             },
             cost: AbilityDsl.costs.bowSelf(),
             targets: {

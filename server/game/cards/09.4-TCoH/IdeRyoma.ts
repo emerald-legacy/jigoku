@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../drawcard.js';
 import { CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -29,7 +30,7 @@ class IdeRyoma extends DrawCard {
                     }))
                 }
             },
-            then: (context: any) => ({
+            then: (context: AbilityContext) => ({
                 gameAction: AbilityDsl.actions.ready((() => ({
                     target: Object.values(context.targets).filter((card: any) => context.events.every((event: any) => event.card !== card))
                 })) as any)

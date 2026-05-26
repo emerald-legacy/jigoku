@@ -1,7 +1,9 @@
+import type { PromptButton } from './PlayerPromptState.js';
+
 export class AnonymousSpectator {
     name = 'Anonymous';
     emailHash = '';
-    buttons = [];
+    buttons: PromptButton[] = [];
     menuTitle = 'Spectator mode';
 
     getCardSelectionState() {

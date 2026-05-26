@@ -1,7 +1,8 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, CardTypes, TargetModes } from '../../Constants.js';
+import { CardTypes, EventNames, Locations, TargetModes } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class Untainted extends DrawCard {
     static id = 'untainted';
 
@@ -9,7 +10,7 @@ class Untainted extends DrawCard {
         this.reaction({
             title: 'discard status token',
             when: {
-                afterConflict: (event: any, context) => !!context.source.parent &&
+                afterConflict: (event: EventPayload<EventNames.AfterConflict>, context) => !!context.source.parent &&
                     event.conflict.winner === context.player
                     && context.source.parent.isConflictProvince()
             },

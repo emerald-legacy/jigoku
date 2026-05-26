@@ -1,8 +1,9 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardTypes, EventNames, Locations, Players } from '../../../Constants.js';
 import DrawCard from '../../../drawcard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class BambooTattoo extends DrawCard {
     static id = 'bamboo-tattoo';
 
@@ -24,7 +25,7 @@ export default class BambooTattoo extends DrawCard {
         this.reaction({
             title: 'Ready attached character',
             when: {
-                onCardBowed: (event: any, context: any) =>
+                onCardBowed: (event: EventPayload<EventNames.OnCardBowed>, context: any) =>
                     context.source.parent &&
                     event.card === context.source.parent &&
                     event.context?.source.type !== 'ring' &&

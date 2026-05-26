@@ -1,15 +1,16 @@
-import { CardTypes, Durations, Players } from '../../../Constants.js';
+import { CardTypes, Durations, EventNames, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 import type BaseCard from '../../../basecard.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class SupportingCast extends DrawCard {
     static id = 'supporting-cast';
 
     setupCardAbilities() {
         this.reaction({
             when: {
-                onInitiateAbilityEffects: (event: any, context) => {
+                onInitiateAbilityEffects: (event: EventPayload<EventNames.OnInitiateAbilityEffects>, context) => {
                     return (
                         context.game.isDuringConflict('military') &&
                         (event.cardTargets ?? []).some((card: BaseCard) => card.controller === context.player)

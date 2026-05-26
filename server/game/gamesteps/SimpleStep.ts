@@ -6,7 +6,7 @@ export class SimpleStep extends BaseStep {
         super(game);
     }
 
-    continue() {
+    continue(): undefined {
         this.continueFunc();
         return undefined;
     }

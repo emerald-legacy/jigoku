@@ -4,6 +4,7 @@ import { EventNames, Locations } from '../Constants.js';
 import type Player from '../player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface RevealProperties extends CardActionProperties {
     chatMessage?: boolean;
     player?: Player;
@@ -27,20 +28,20 @@ export class RevealAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event: any, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { onDeclaration } = this.getProperties(context, additionalProperties) as RevealProperties;
         event.onDeclaration = onDeclaration;
         super.addPropertiesToEvent(event, card, context, additionalProperties);
     }
 
-    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
-        let properties = this.getProperties(event.context, additionalProperties) as RevealProperties;
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+        let properties = this.getProperties(event.context!, additionalProperties) as RevealProperties;
         if(properties.chatMessage) {
-            event.context.game.addMessage(
+            event.context!.game.addMessage(
                 '{0} reveals {1} due to {2}',
-                properties.player || event.context.player,
+                properties.player || event.context!.player,
                 event.card,
-                event.context.source
+                event.context!.source
             );
         }
         event.card.facedown = false;

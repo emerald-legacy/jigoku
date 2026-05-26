@@ -125,7 +125,7 @@ class AbilityResolver extends BaseStepWithPipeline {
         return {
             cancelled: false,
             canCancel: this.canCancel,
-            events: [],
+            events: [] as Event[],
             playCosts: true,
             triggerCosts: true
         };

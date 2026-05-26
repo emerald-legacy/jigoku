@@ -1,9 +1,10 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityTypes, CardTypes } from '../../../Constants.js';
+import { AbilityTypes, CardTypes, EventNames } from '../../../Constants.js';
 import DrawCard from '../../../drawcard.js';
 import type { TriggeredAbilityProps } from '../../../Interfaces.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class Naginata extends DrawCard {
     static id = 'naginata';
 
@@ -19,11 +20,11 @@ export default class Naginata extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
                 title: 'Bow a character',
                 when: {
-                    onMoveToConflict: (event: any, context: TriggeredAbilityContext<DrawCard>) =>
+                    onMoveToConflict: (event: EventPayload<EventNames.OnMoveToConflict>, context: TriggeredAbilityContext<DrawCard>) =>
                         context.source.isParticipating('military') &&
                         event.card?.type === CardTypes.Character &&
                         event.card?.isParticipating(),
-                    onSendHome: (event: any, context: TriggeredAbilityContext<DrawCard>) =>
+                    onSendHome: (event: EventPayload<EventNames.OnSendHome>, context: TriggeredAbilityContext<DrawCard>) =>
                         context.source.isParticipating('military') &&
                         event.card?.type === CardTypes.Character &&
                         !event.card?.isParticipating()

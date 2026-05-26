@@ -2,14 +2,29 @@ import type BaseCard from './basecard.js';
 import type Player from './player.js';
 import type Ring from './ring.js';
 
+export interface PromptButton {
+    text?: string;
+    arg?: string;
+    method?: string;
+    timer?: boolean;
+    timerCancel?: boolean;
+    card?: BaseCard;
+    [key: string]: unknown;
+}
+
+export interface PromptControl {
+    type?: string;
+    [key: string]: unknown;
+}
+
 export class PlayerPromptState {
     selectCard = false;
     selectOrder = false;
     selectRing = false;
     menuTitle = '';
     promptTitle = '';
-    buttons: any[] = [];
-    controls: any[] = [];
+    buttons: PromptButton[] = [];
+    controls: PromptControl[] = [];
 
     selectableRings: Ring[] = [];
     selectableCards: BaseCard[] = [];
@@ -47,8 +62,8 @@ export class PlayerPromptState {
         selectRing?: boolean;
         menuTitle?: string;
         promptTitle: string;
-        buttons?: any[];
-        controls?: any[];
+        buttons?: PromptButton[];
+        controls?: PromptControl[];
     }) {
         this.promptTitle = prompt.promptTitle;
         this.selectCard = prompt.selectCard ?? false;

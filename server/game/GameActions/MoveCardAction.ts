@@ -4,6 +4,7 @@ import { CardTypes, EffectNames, Locations } from '../Constants.js';
 import type DrawCard from '../drawcard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface MoveCardProperties extends CardActionProperties {
     destination?: Locations;
     switch?: boolean;
@@ -68,8 +69,8 @@ export class MoveCardAction extends CardGameAction {
         );
     }
 
-    eventHandler(event: any, additionalProperties = {}): void {
-        let context = event.context;
+    eventHandler(event: Event, additionalProperties = {}): void {
+        let context = event.context!;
         let card = event.card;
         event.cardStateWhenMoved = card.createSnapshot();
         let properties = this.getProperties(context, additionalProperties) as MoveCardProperties;

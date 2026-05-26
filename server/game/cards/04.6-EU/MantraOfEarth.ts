@@ -1,7 +1,8 @@
-import { CardTypes } from '../../Constants.js';
+import { CardTypes, EventNames } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class MantraOfEarth extends DrawCard {
     static id = 'mantra-of-earth';
 
@@ -9,7 +10,7 @@ export default class MantraOfEarth extends DrawCard {
         this.reaction({
             title: 'Make a monk untargetable by opponents\' card effects and draw a card',
             when: {
-                onConflictDeclared: (event: any, context: any) =>
+                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context: any) =>
                     event.ring?.hasElement('earth' as any) && event.conflict.attackingPlayer === context.player.opponent
             },
             target: {

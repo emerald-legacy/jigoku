@@ -1,7 +1,8 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations } from '../../Constants.js';
+import { EventNames, Locations } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class MushinNoShin extends DrawCard {
     static id = 'mushin-no-shin';
 
@@ -9,7 +10,7 @@ class MushinNoShin extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel an ability',
             when: {
-                onInitiateAbilityEffects: (event: any, context) =>
+                onInitiateAbilityEffects: (event: EventPayload<EventNames.OnInitiateAbilityEffects>, context) =>
                     event.context.ability.isTriggeredAbility() &&
                     (event.cardTargets?.some(
                         (card: any) =>

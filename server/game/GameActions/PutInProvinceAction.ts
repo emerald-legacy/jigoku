@@ -4,6 +4,7 @@ import { CardTypes, EffectNames, EventNames, Locations } from '../Constants.js';
 import type DrawCard from '../drawcard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface PutInProvinceProperties extends CardActionProperties {
     destination?: Locations;
     switch?: boolean;
@@ -62,8 +63,8 @@ export class PutInProvinceAction extends CardGameAction {
         return canMove;
     }
 
-    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
-        let context = event.context as AbilityContext;
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+        let context = event.context! as AbilityContext;
         let card = event.card as DrawCard;
         event.cardStateWhenMoved = card.createSnapshot();
         let properties = this.getProperties(context, additionalProperties) as PutInProvinceProperties;

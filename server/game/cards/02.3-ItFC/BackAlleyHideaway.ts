@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import { Locations, Phases, PlayTypes, EventNames, CardTypes } from '../../Constants.js';
 import { putIntoPlay, sacrifice } from '../../GameActions/GameActions.js';
 import ThenAbility from '../../ThenAbility.js';
@@ -61,13 +62,13 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
         return '';
     }
 
-    executeHandler(context: any) {
+    executeHandler(context: AbilityContext) {
         context.game.addMessage(
             '{0} plays {1} from {2} with {3} additional fate',
             context.player,
             context.source,
             context.source.parent,
-            context.chooseFate
+            (context as any).chooseFate
         );
         context.source.abilities.playActions = context.source.abilities.playActions.filter(
             (action: any) => action.title !== 'Play this character from Back-Alley Hideaway'
@@ -75,7 +76,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
         // remove associations between this card and Back-Alley Hideaway
         this.backAlleyCard.removeAttachment(context.source);
         context.source.parent = null;
-        let putIntoPlayEvent = putIntoPlay({ fate: context.chooseFate }).getEvent(context.source, context);
+        let putIntoPlayEvent = putIntoPlay({ fate: (context as any).chooseFate }).getEvent(context.source, context);
         let cardPlayedEvent = context.game.getEvent(EventNames.OnCardPlayed, {
             player: context.player,
             card: context.source,

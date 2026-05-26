@@ -1,6 +1,8 @@
 import DrawCard from '../../drawcard.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
+import { EventNames } from '../../Constants.js';
 export default class MidnightProwler extends DrawCard {
     static id = 'midnight-prowler';
 
@@ -8,7 +10,7 @@ export default class MidnightProwler extends DrawCard {
         this.reaction({
             title: 'Look at the top two card of your opponents conflict deck.',
             when: {
-                afterConflict: (event: any, context: TriggeredAbilityContext) =>
+                afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: TriggeredAbilityContext) =>
                     this.game.isDuringConflict('military') &&
                     context.source.isParticipating() &&
                     event.conflict.winner === context.source.controller &&

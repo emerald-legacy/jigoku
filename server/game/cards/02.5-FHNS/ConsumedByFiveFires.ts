@@ -18,7 +18,11 @@ class ConsumedByFiveFires extends DrawCard {
                 context.player.opponent.cardsInPlay.some((card: BaseCard) => card.allowGameAction('removeFate', context)),
             effect: 'remove fate from {1}\'s characters',
             effectArgs: (context: AbilityContext) => context.player.opponent as Player,
-            handler: (context: any) => this.chooseCard(context, {}, [])
+            handler: (context?: AbilityContext) => {
+                if(context) {
+                    this.chooseCard(context, {}, []);
+                }
+            }
         });
     }
 

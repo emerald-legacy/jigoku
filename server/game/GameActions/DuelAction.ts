@@ -150,7 +150,7 @@ export class DuelAction extends CardGameAction {
         }
     }
 
-    addPropertiesToEvent(event: any, cards: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, cards: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         let resolvedCards = cards;
         if(!resolvedCards) {
@@ -178,8 +178,8 @@ export class DuelAction extends CardGameAction {
         event.duel = duel;
     }
 
-    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
-        const context: AbilityContext = event.context;
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+        const context: AbilityContext = event.context!;
         const cards: DrawCard[] = event.cards;
         const properties = this.getProperties(context, additionalProperties);
         if(
@@ -218,16 +218,16 @@ export class DuelAction extends CardGameAction {
             new DuelFlow(
                 context.game,
                 duel,
-                (duel: Duel) => this.resolveDuel(duel, event.context, additionalProperties),
+                (duel: Duel) => this.resolveDuel(duel, event.context!, additionalProperties),
                 properties.costHandler
-                    ? (prompt: unknown) => this.honorCosts(prompt, event.context, additionalProperties)
+                    ? (prompt: unknown) => this.honorCosts(prompt, event.context!, additionalProperties)
                     : undefined
             )
         );
     }
 
-    checkEventCondition(event: any, additionalProperties: Record<string, unknown> = {}): boolean {
-        return event.cards.some((card: DrawCard) => this.canAffect(card, event.context, additionalProperties));
+    checkEventCondition(event: Event, additionalProperties: Record<string, unknown> = {}): boolean {
+        return event.cards.some((card: DrawCard) => this.canAffect(card, event.context!, additionalProperties));
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {

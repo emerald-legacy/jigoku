@@ -1,6 +1,7 @@
 import { Elements } from './Constants.js';
 import EffectSource from './EffectSource.js';
 import BaseCard from './basecard.js';
+import type Effect from './Effects/Effect.js';
 import Game from './game.js';
 
 type Info = {
@@ -9,9 +10,13 @@ type Info = {
     prettyName: string,
 }
 
+interface PersistentEffectRecord {
+    ref?: Effect[];
+}
+
 export class ElementSymbol extends EffectSource {
     printedType = 'elementSymbol';
-    persistentEffects = [];
+    persistentEffects: PersistentEffectRecord[] = [];
     element: Elements;
     key: string;
     prettyName: string;

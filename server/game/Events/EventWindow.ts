@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../AbilityContext.js';
 import { BaseStepWithPipeline } from '../gamesteps/BaseStepWithPipeline.js';
 import ForcedTriggeredAbilityWindow from '../gamesteps/forcedtriggeredabilitywindow.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
@@ -59,7 +60,7 @@ export default class EventWindow extends BaseStepWithPipeline {
         return event;
     }
 
-    addThenAbility(ability: any, context: any, condition: (event: Event) => boolean = event => event.isFullyResolved()) {
+    addThenAbility(ability: any, context: AbilityContext, condition: (event: Event) => boolean = event => event.isFullyResolved()) {
         this.thenAbilities.push({ ability, context, condition });
     }
 

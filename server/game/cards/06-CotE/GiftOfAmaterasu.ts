@@ -1,7 +1,8 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { CardTypes, EventNames, Players } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class GiftofAmaterasu extends DrawCard {
     static id = 'gift-of-amaterasu';
 
@@ -9,7 +10,7 @@ class GiftofAmaterasu extends DrawCard {
         this.reaction({
             title: 'Honor a character',
             when: {
-                afterConflict: (event: any, context: any) => event.conflict.winner === context.player && (event.conflict.skillDifference ?? 0) >= 5
+                afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) => event.conflict.winner === context.player && (event.conflict.skillDifference ?? 0) >= 5
             },
             cannotBeMirrored: true,
             target: {

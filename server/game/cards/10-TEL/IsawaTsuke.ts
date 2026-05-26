@@ -2,6 +2,7 @@ import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Elements, EventNames } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 const elementKey = 'isawa-tsuke-fire';
 
 class IsawaTsuke extends DrawCard {
@@ -11,13 +12,13 @@ class IsawaTsuke extends DrawCard {
         this.reaction({
             title: 'Fire ring same cost characters',
             when: {
-                onCardDishonored: (event: any, context) => {
+                onCardDishonored: (event: EventPayload<EventNames.OnCardDishonored>, context) => {
                     const dishonoredByYourEffect = context.player === event.context?.player;
                     const dishonoredByRingEffect = event.context?.source.type === 'ring';
                     const currentlyFire = this.getCurrentElementSymbol(elementKey) === Elements.Fire;
                     return dishonoredByYourEffect && dishonoredByRingEffect && currentlyFire;
                 },
-                onCardHonored: (event: any, context) => {
+                onCardHonored: (event: EventPayload<EventNames.OnCardHonored>, context) => {
                     const honoredByYourEffect = context.player === event.context?.player;
                     const honoredByRingEffect = event.context?.source.type === 'ring';
                     const currentlyFire = this.getCurrentElementSymbol(elementKey) === Elements.Fire;

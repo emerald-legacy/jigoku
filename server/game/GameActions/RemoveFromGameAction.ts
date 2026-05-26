@@ -3,6 +3,7 @@ import type BaseCard from '../basecard.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface RemoveFromGameProperties extends CardActionProperties {
     location?: Locations | Locations[];
 }
@@ -42,12 +43,12 @@ export class RemoveFromGameAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    updateEvent(event: any, card: BaseCard, context: AbilityContext, additionalProperties: any): void {
+    updateEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: any): void {
         additionalProperties.destination = Locations.RemovedFromGame;
         this.updateLeavesPlayEvent(event, card, context, additionalProperties);
     }
 
-    eventHandler(event: any, additionalProperties: any = {}): void {
+    eventHandler(event: Event, additionalProperties: any = {}): void {
         this.leavesPlayEventHandler(event, additionalProperties);
     }
 }

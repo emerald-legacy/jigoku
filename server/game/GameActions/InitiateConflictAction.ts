@@ -4,6 +4,7 @@ import type Player from '../player.js';
 import { ProvinceCard } from '../ProvinceCard.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface InitiateConflictProperties extends PlayerActionProperties {
     canPass?: boolean;
     forcedDeclaredType?: ConflictTypes;
@@ -27,11 +28,11 @@ export class InitiateConflictAction extends PlayerAction<InitiateConflictPropert
         return [context.player];
     }
 
-    eventHandler(event: any, additionalProperties: any): void {
-        const properties = this.getProperties(event.context, additionalProperties);
-        event.context.game.initiateConflict(
+    eventHandler(event: Event, additionalProperties: any): void {
+        const properties = this.getProperties(event.context!, additionalProperties);
+        event.context!.game.initiateConflict(
             event.player,
-            properties.canPass,
+            properties.canPass ?? true,
             properties.forcedDeclaredType,
             properties.forceProvinceTarget
         );

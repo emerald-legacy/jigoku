@@ -1,8 +1,9 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardTypes, EventNames, Locations, Players } from '../../../Constants.js';
 import type BaseCard from '../../../basecard.js';
 import DrawCard from '../../../drawcard.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 const DOSHIN_TAX = 2;
 
 export default class VillageDoshin extends DrawCard {
@@ -14,7 +15,7 @@ export default class VillageDoshin extends DrawCard {
             location: Locations.Hand,
             cost: AbilityDsl.costs.discardSelf(),
             when: {
-                onInitiateAbilityEffects: (event: any, context) =>
+                onInitiateAbilityEffects: (event: EventPayload<EventNames.OnInitiateAbilityEffects>, context) =>
                     (event.cardTargets ?? []).some((card: BaseCard) => {
                         const attachment = card.type === CardTypes.Attachment;
                         const onCharacterYouControl =

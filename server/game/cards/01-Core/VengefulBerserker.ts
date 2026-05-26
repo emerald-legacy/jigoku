@@ -1,7 +1,8 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
-import { CardTypes, Locations } from '../../Constants.js';
+import { CardTypes, EventNames, Locations } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class VengefulBerserker extends DrawCard {
     static id = 'vengeful-berserker';
 
@@ -9,7 +10,7 @@ class VengefulBerserker extends DrawCard {
         this.reaction({
             title: 'Double military skill',
             when: {
-                onCardLeavesPlay: (event: any, context) => {
+                onCardLeavesPlay: (event: EventPayload<EventNames.OnCardLeavesPlay>, context) => {
                     const card = event.cardStateWhenLeftPlay;
                     return !!card && card.location === Locations.PlayArea && card.type === CardTypes.Character && card.controller === context.player && this.game.isDuringConflict();
                 }

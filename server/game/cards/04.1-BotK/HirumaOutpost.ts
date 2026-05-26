@@ -1,8 +1,9 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../drawcard.js';
-import { CardTypes, AbilityTypes } from '../../Constants.js';
+import { AbilityTypes, CardTypes, EventNames } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class HirumaOutpost extends DrawCard {
     static id = 'hiruma-outpost';
 
@@ -16,8 +17,11 @@ class HirumaOutpost extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
                 title: 'Make opponent lose an honor',
                 when: {
-                    onConflictDeclared: (event: any, context: AbilityContext) => {
+                    onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context: AbilityContext) => {
                         if(event.conflict.attackingPlayer === context.player) {
+                            return false;
+                        }
+                        if(!event.conflict.declaredProvince) {
                             return false;
                         }
                         let cards = context.player.getDynastyCardsInProvince(event.conflict.declaredProvince.location);

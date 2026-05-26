@@ -1,6 +1,8 @@
 import DrawCard from '../../../drawcard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
+import { EventNames } from '../../../Constants.js';
 export default class BayushiTruthseeker extends DrawCard {
     static id = 'bayushi-truthseeker';
 
@@ -8,7 +10,7 @@ export default class BayushiTruthseeker extends DrawCard {
         this.reaction({
             title: 'Look at the top two card of your opponents conflict deck',
             when: {
-                afterConflict: (event: any, context: TriggeredAbilityContext) =>
+                afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: TriggeredAbilityContext) =>
                     context.player.opponent !== undefined &&
                     event.conflict.winner === context.source.controller &&
                     context.source.isAttacking()

@@ -1,7 +1,8 @@
 import DrawCard from '../../../drawcard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { Locations, Players, TargetModes } from '../../../Constants.js';
+import { EventNames, Locations, Players, TargetModes } from '../../../Constants.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 class Stowaway extends DrawCard {
     static id = 'stowaway';
 
@@ -9,9 +10,9 @@ class Stowaway extends DrawCard {
         this.reaction({
             title: 'Place cards underneath self',
             when: {
-                onConflictDeclared: (event: any, context: any) => !!event.attackers?.includes(context.source),
-                onDefendersDeclared: (event: any, context: any) => !!event.defenders?.includes(context.source),
-                onCharacterEntersPlay: (event: any, context: any) => event.card === context.source && context.game.isDuringConflict() && context.source.isParticipating()
+                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context: any) => !!event.attackers?.includes(context.source),
+                onDefendersDeclared: (event: EventPayload<EventNames.OnDefendersDeclared>, context: any) => !!event.defenders?.includes(context.source),
+                onCharacterEntersPlay: (event: EventPayload<EventNames.OnCharacterEntersPlay>, context: any) => event.card === context.source && context.game.isDuringConflict() && context.source.isParticipating()
             },
             effect: 'place {0} beneath {1}',
             effectArgs: context => [context.source],

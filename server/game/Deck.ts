@@ -17,7 +17,7 @@ export class Deck {
             conflictCards: [] as DrawCard[],
             dynastyCards: [] as DrawCard[],
             provinceCards: [] as ProvinceCard[],
-            outOfPlayCards: [],
+            outOfPlayCards: [] as DrawCard[],
             outsideTheGameCards: [] as DrawCard[],
             stronghold: undefined as StrongholdCard | undefined,
             role: undefined as RoleCard | undefined,

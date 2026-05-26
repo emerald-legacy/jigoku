@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, Durations, EventNames, Locations, Players, TargetModes } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
@@ -54,7 +55,7 @@ export default class TheEmptyCity extends ProvinceCard {
                 ])
             },
             effect: 'put {0} into play',
-            then: (context: any) => {
+            then: (context: AbilityContext) => {
                 this.invokedSpirit = context.target;
                 return { gameAction: AbilityDsl.actions.noAction() };
             },

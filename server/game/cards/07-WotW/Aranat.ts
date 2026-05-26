@@ -1,7 +1,8 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players, TargetModes } from '../../Constants.js';
+import { CardTypes, EventNames, Players, TargetModes } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class Aranat extends DrawCard {
     static id = 'aranat';
 
@@ -9,7 +10,7 @@ class Aranat extends DrawCard {
         this.reaction({
             title: 'Place additional fate',
             when: {
-                onCardPlayed: (event: any, context: any) => context.player.opponent && event.card === context.source
+                onCardPlayed: (event: EventPayload<EventNames.OnCardPlayed>, context: any) => context.player.opponent && event.card === context.source
             },
             effect: 'give {1} the opportunity to reveal provinces',
             effectArgs: (context: any) => context.player.opponent ?? '',

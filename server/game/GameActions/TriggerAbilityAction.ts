@@ -45,13 +45,13 @@ export class TriggerAbilityAction extends CardGameAction<TriggerAbilityPropertie
         return !ability.meetsRequirements(newContext, ignoredRequirements);
     }
 
-    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
-        let properties = this.getProperties(event.context, additionalProperties);
-        let player = properties.player || event.context.player;
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+        let properties = this.getProperties(event.context!, additionalProperties);
+        let player = properties.player || event.context!.player;
         let newContextEvent = properties.event;
         let newContext = (properties.ability as TriggeredAbility).createContext(player, newContextEvent);
         newContext.subResolution = !!properties.subResolution;
-        event.context.game.queueStep(new AbilityResolver(event.context.game, newContext));
+        event.context!.game.queueStep(new AbilityResolver(event.context!.game, newContext));
     }
 
     hasTargetsChosenByInitiatingPlayer(context: TriggeredAbilityContext) {

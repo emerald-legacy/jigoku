@@ -3,6 +3,7 @@ import type { Locations } from '../Constants.js';
 import type Player from '../player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface RefillFaceupProperties extends PlayerActionProperties {
     location: Locations | Locations[];
 }
@@ -20,16 +21,16 @@ export class RefillFaceupAction extends PlayerAction {
         return [context.player];
     }
 
-    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
-        let { location } = this.getProperties(event.context, additionalProperties) as RefillFaceupProperties;
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+        let { location } = this.getProperties(event.context!, additionalProperties) as RefillFaceupProperties;
         if(!Array.isArray(location)) {
             location = [location];
         }
 
         location.forEach((loc) => {
-            event.context.game.queueSimpleStep(() => {
+            event.context!.game.queueSimpleStep(() => {
                 if(event.player.replaceDynastyCard(loc)) {
-                    event.context.game.queueSimpleStep(() => {
+                    event.context!.game.queueSimpleStep(() => {
                         let cards = event.player.getDynastyCardsInProvince(loc);
                         cards.forEach((card: any) => {
                             if(card) {

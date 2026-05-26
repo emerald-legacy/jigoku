@@ -1,7 +1,8 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardTypes, EventNames, Players } from '../../../Constants.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class TwoFoldVirtue extends DrawCard {
     static id = 'two-folded-virtue';
 
@@ -22,7 +23,7 @@ export default class TwoFoldVirtue extends DrawCard {
                         targetController: context.player,
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
-                                afterConflict: (event: any) =>
+                                afterConflict: (event: EventPayload<EventNames.AfterConflict>) =>
                                     context.player === event.conflict.loser
                             },
                             gameAction: AbilityDsl.actions.gainHonor(context => ({ target: context.player })),

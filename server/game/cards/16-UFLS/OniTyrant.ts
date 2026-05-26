@@ -1,6 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityContext } from '../../AbilityContext.js';
+import type { Event } from '../../Events/Event.js';
 
 const oniTyrantCost = function () {
     return {
@@ -27,7 +28,7 @@ const oniTyrantCost = function () {
                 ]
             });
         },
-        payEvent: function (context: AbilityContext) {
+        payEvent: function (context: AbilityContext): Event | Event[] {
             if(context.costs.oniTyrantCostCreature) {
                 const oni = context.costs.oniTyrantCostCreature;
                 const copy = new oni.constructor(context.player, oni.cardData);

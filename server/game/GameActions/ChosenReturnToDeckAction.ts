@@ -84,7 +84,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
     }
 
     eventHandler(event: Event): void {
-        (event.context as AbilityContext).game.addMessage(
+        (event.context! as AbilityContext).game.addMessage(
             '{0} returns {1} card{2} to{3} their deck',
             event.player,
             event.cards.length,

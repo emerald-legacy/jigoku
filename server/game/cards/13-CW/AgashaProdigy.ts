@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, CardTypes, EventNames } from '../../Constants.js';
@@ -52,7 +53,7 @@ class AgashaProdigys extends DrawCard {
         });
     }
 
-    getDiscardedCards(context: any) {
+    getDiscardedCards(context: AbilityContext) {
         let events = context.events.filter((event: any) => event.name === EventNames.OnCardsDiscarded);
         if(events.length > 0) {
             let cards: any[] = [];
@@ -63,8 +64,8 @@ class AgashaProdigys extends DrawCard {
         return [];
     }
 
-    buildString(context: any) {
-        if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
+    buildString(context: AbilityContext) {
+        if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter) && context.player.opponent) {
             let target = context.targets.oppCharacter;
             return '.  ' + context.player.opponent.name + ' gives ' + context.player.name + ' 1 honor to discard the top card of their deck and attempt to attach it to ' + target.name;
         }

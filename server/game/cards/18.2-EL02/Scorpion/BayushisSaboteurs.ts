@@ -1,9 +1,10 @@
-import { Locations, Players, TargetModes } from '../../../Constants.js';
+import { EventNames, Locations, Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 import type Player from '../../../player.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 const DISCARD = 'Discard all cards from your provinces';
 const FLIP = 'Flip all cards in your provinces facedown';
 
@@ -22,9 +23,9 @@ export default class BayushisSaboteurs extends DrawCard {
         this.reaction({
             title: 'Discard or flip facedown cards in the defender\'s provinces',
             when: {
-                onConflictDeclared: (event: any, context) => event.attackers?.includes(context.source),
-                onDefendersDeclared: (event: any, context) => event.defenders?.includes(context.source),
-                onMoveToConflict: (event: any, context) => event.card === context.source
+                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context) => event.attackers?.includes(context.source),
+                onDefendersDeclared: (event: EventPayload<EventNames.OnDefendersDeclared>, context) => event.defenders?.includes(context.source),
+                onMoveToConflict: (event: EventPayload<EventNames.OnMoveToConflict>, context) => event.card === context.source
             },
             target: {
                 mode: TargetModes.Select,

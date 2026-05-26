@@ -1,7 +1,8 @@
 import DrawCard from '../../drawcard.js';
-import { Locations, Players, CardTypes } from '../../Constants.js';
+import { CardTypes, EventNames, Locations, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class MotoBeastmaster extends DrawCard {
     static id = 'moto-beastmaster';
 
@@ -9,7 +10,7 @@ class MotoBeastmaster extends DrawCard {
         this.reaction({
             title: 'Put a character into play',
             when: {
-                onConflictDeclared: (event: any, context) => event.attackers?.includes(context.source) ?? false
+                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context) => event.attackers?.includes(context.source) ?? false
             },
             target: {
                 cardType: CardTypes.Character,

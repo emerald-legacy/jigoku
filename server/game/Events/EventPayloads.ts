@@ -33,6 +33,14 @@ export interface EventPayloadMap {
         defenders?: DrawCard[];
         ringFate?: number;
     };
+    [EventNames.OnConflictDeclaredBeforeProvinceReveal]: BaseEventPayload & {
+        conflict: Conflict;
+        type?: ConflictTypes;
+        ring?: Ring;
+        attackers?: DrawCard[];
+        ringFate?: number;
+    };
+    [EventNames.OnTheCrashingWave]: BaseEventPayload & { conflict: Conflict };
     [EventNames.OnConflictStarted]: BaseEventPayload & { conflict: Conflict };
     [EventNames.OnConflictFinished]: BaseEventPayload & { conflict: Conflict };
     [EventNames.OnConflictPass]: BaseEventPayload & { conflict: Conflict; player?: Player };
@@ -41,7 +49,7 @@ export interface EventPayloadMap {
         player?: Player;
         originalLocation?: Locations;
     };
-    [EventNames.OnCardRevealed]: BaseEventPayload & { card: BaseCard };
+    [EventNames.OnCardRevealed]: BaseEventPayload & { card: BaseCard; onDeclaration?: boolean };
     [EventNames.OnBreakProvince]: BaseEventPayload & {
         card: ProvinceCard;
         conflict: Conflict | null;
@@ -50,6 +58,7 @@ export interface EventPayloadMap {
         card: BaseCard;
         destination?: Locations;
         cardStateWhenLeftPlay?: BaseCard;
+        isSacrifice?: boolean;
     };
     [EventNames.OnCardHonored]: BaseEventPayload & { card: DrawCard; source?: BaseCard };
     [EventNames.OnCardDishonored]: BaseEventPayload & { card: DrawCard };
@@ -77,7 +86,11 @@ export interface EventPayloadMap {
     [EventNames.OnDefendersDeclared]: BaseEventPayload & { conflict: Conflict; defenders?: DrawCard[] };
     [EventNames.OnPassFirstPlayer]: BaseEventPayload & { player?: Player };
     [EventNames.OnDeckShuffled]: BaseEventPayload & { player: Player; deck: Decks };
-    [EventNames.OnCardAttached]: BaseEventPayload & { card: BaseCard; parent: DrawCard };
+    [EventNames.OnCardAttached]: BaseEventPayload & {
+        card: BaseCard;
+        parent: DrawCard;
+        originalLocation?: Locations;
+    };
     [EventNames.AfterDuel]: BaseEventPayload & {
         duel?: Duel;
         winner?: DrawCard | DrawCard[];
@@ -162,10 +175,12 @@ export interface EventPayloadMap {
     [EventNames.OnStatusTokenMoved]: BaseEventPayload & {
         card?: BaseCard;
         token?: StatusToken;
+        donor?: BaseCard;
     };
     [EventNames.OnStatusTokenDiscarded]: BaseEventPayload & {
         card?: BaseCard;
         token?: StatusToken;
+        cards?: BaseCard[];
     };
     [EventNames.OnEffectApplied]: BaseEventPayload & {
         effect?: unknown;
@@ -177,6 +192,7 @@ export interface EventPayloadMap {
     [EventNames.OnLookAtCards]: BaseEventPayload & {
         player?: Player;
         cards?: BaseCard[];
+        stateBeforeResolution?: { card: BaseCard; location: Locations }[];
     };
     [EventNames.OnDeckSearch]: BaseEventPayload & {
         player?: Player;
@@ -194,10 +210,12 @@ export interface EventPayloadMap {
     [EventNames.OnModifyHonor]: BaseEventPayload & {
         player?: Player;
         amount?: number;
+        dueToUnopposed?: boolean;
     };
     [EventNames.OnTransferHonor]: BaseEventPayload & {
         player?: Player;
         amount?: number;
+        afterBid?: boolean;
     };
     [EventNames.OnResolveFateCost]: BaseEventPayload & {
         player?: Player;
@@ -220,6 +238,7 @@ export interface EventPayloadMap {
         element?: string;
         player?: Player;
         ring?: Ring;
+        effectivellyResolvedEffect?: boolean;
     };
     [EventNames.OnRemoveRingFromPlay]: BaseEventPayload & { ring: Ring };
     [EventNames.OnReturnRingToPlay]: BaseEventPayload & { ring: Ring };
@@ -234,16 +253,21 @@ export interface EventPayloadMap {
     [EventNames.OnCreateTokenCharacter]: BaseEventPayload & {
         tokenCharacter?: DrawCard;
     };
-    [EventNames.OnPlaceFateOnUnclaimedRings]: BaseEventPayload & { player?: Player };
+    [EventNames.OnPlaceFateOnUnclaimedRings]: BaseEventPayload & {
+        player?: Player;
+        recipients?: { ring: Ring; amount: number }[];
+    };
     [EventNames.OnBeginRound]: BaseEventPayload & { round?: number };
     [EventNames.OnRoundEnded]: BaseEventPayload & { round?: number };
     [EventNames.OnFavorGloryTied]: BaseEventPayload;
     [EventNames.OnHonorDialsRevealed]: BaseEventPayload & {
         player1?: Player;
         player2?: Player;
+        isHonorBid?: boolean;
+        duel?: Duel;
     };
     [EventNames.OnPhaseCreated]: BaseEventPayload & { phase?: Phases };
-    [EventNames.OnPassDuringDynasty]: BaseEventPayload & { player?: Player };
+    [EventNames.OnPassDuringDynasty]: BaseEventPayload & { player?: Player; firstToPass?: boolean };
     [EventNames.OnCardDetached]: BaseEventPayload & {
         card?: BaseCard;
         parent?: BaseCard;

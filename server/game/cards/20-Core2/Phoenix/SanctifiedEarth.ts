@@ -1,22 +1,23 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardTypes, EventNames, Players } from '../../../Constants.js';
 import DrawCard from '../../../drawcard.js';
 import type Player from '../../../player.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 const controlledBy = (player: Player) => (character: DrawCard) => character.controller === player;
 
-const trigger: Record<string, { when: (event: any, context: TriggeredAbilityContext) => boolean; cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => boolean }> = {
+const trigger = {
     onConflictDeclared: {
-        when: (event: any, context: TriggeredAbilityContext) => (event.attackers ?? []).some(controlledBy(context.player)),
+        when: (event: EventPayload<EventNames.OnConflictDeclared>, context: TriggeredAbilityContext) => (event.attackers ?? []).some(controlledBy(context.player)),
         cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => (context.event.attackers ?? []).includes(card)
     },
     onDefendersDeclared: {
-        when: (event: any, context: TriggeredAbilityContext) => (event.defenders ?? []).some(controlledBy(context.player)),
+        when: (event: EventPayload<EventNames.OnDefendersDeclared>, context: TriggeredAbilityContext) => (event.defenders ?? []).some(controlledBy(context.player)),
         cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => (context.event.defenders ?? []).includes(card)
     },
     onMoveToConflict: {
-        when: (event: any, context: TriggeredAbilityContext) => controlledBy(context.player)(event.card),
+        when: (event: EventPayload<EventNames.OnMoveToConflict>, context: TriggeredAbilityContext) => controlledBy(context.player)(event.card),
         cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => context.event.card === card
     }
 };
@@ -37,7 +38,7 @@ export default class SanctifiedEarth extends DrawCard {
             target: {
                 cardType: CardTypes.Character,
                 player: Players.Self,
-                cardCondition: (card, context) => trigger[context.event.name]?.cardCondition(card, context) ?? false,
+                cardCondition: (card, context) => trigger[context.event.name as keyof typeof trigger]?.cardCondition(card, context) ?? false,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.cardLastingEffect({
                         effect: AbilityDsl.effects.modifyBothSkills(2)

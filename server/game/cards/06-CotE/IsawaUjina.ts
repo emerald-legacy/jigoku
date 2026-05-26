@@ -1,7 +1,8 @@
 import DrawCard from '../../drawcard.js';
-import { CardTypes, Elements } from '../../Constants.js';
+import { CardTypes, Elements, EventNames } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 const elementKey = 'isawa-ujina-void';
 
 class IsawaUjina extends DrawCard {
@@ -11,7 +12,7 @@ class IsawaUjina extends DrawCard {
         this.forcedReaction({
             title: 'Remove a character from the game',
             when: {
-                onClaimRing: (event: any) => {
+                onClaimRing: (event: EventPayload<EventNames.OnClaimRing>) => {
                     const element = this.getCurrentElementSymbol(elementKey) || Elements.Void;
                     return (event.conflict && event.conflict.ring && event.conflict.ring.hasElement(element)) || event.ring.hasElement(element);
                 }

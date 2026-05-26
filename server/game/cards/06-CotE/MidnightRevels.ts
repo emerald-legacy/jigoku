@@ -1,7 +1,8 @@
-import { CardTypes } from '../../Constants.js';
+import { CardTypes, EventNames } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class MidnightRevels extends ProvinceCard {
     static id = 'midnight-revels';
 
@@ -9,7 +10,7 @@ export default class MidnightRevels extends ProvinceCard {
         this.reaction({
             title: 'Bow a character',
             when: {
-                onConflictDeclared: (event: any, context: any) => event.conflict.declaredProvince === context.source
+                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context: any) => event.conflict.declaredProvince === context.source
             },
             target: {
                 cardType: CardTypes.Character,

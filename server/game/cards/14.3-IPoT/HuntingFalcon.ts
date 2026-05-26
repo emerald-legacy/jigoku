@@ -1,7 +1,8 @@
 import DrawCard from '../../drawcard.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { CardTypes, EventNames, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class HuntingFalcon extends DrawCard {
     static id = 'hunting-falcon';
 
@@ -9,7 +10,7 @@ class HuntingFalcon extends DrawCard {
         this.reaction({
             title: 'Look at a province',
             when: {
-                onCardAttached: (event: any, context) => event.card === context.source && event.originalLocation !== Locations.PlayArea
+                onCardAttached: (event: EventPayload<EventNames.OnCardAttached>, context) => event.card === context.source && event.originalLocation !== Locations.PlayArea
             },
             target: {
                 location: Locations.Provinces,

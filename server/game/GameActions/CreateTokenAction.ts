@@ -4,6 +4,7 @@ import { CardTypes, Durations, EventNames, Locations } from '../Constants.js';
 import Effects from '../effects.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface CreateTokenProperties extends CardActionProperties {
     atHome?: boolean;
 }
@@ -24,20 +25,21 @@ export class CreateTokenAction extends CardGameAction<CreateTokenProperties> {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
-        let { atHome } = this.getProperties(event.context, additionalProperties);
-        let context = event.context;
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+        let { atHome } = this.getProperties(event.context!, additionalProperties);
+        let context = event.context!;
         let card = event.card;
         let token = context.game.createToken(card);
         card.owner.removeCardFromPile(card);
         this.checkForRefillProvince(card, event, additionalProperties);
         card.moveTo(Locations.RemovedFromGame);
         card.owner.moveCard(token, Locations.PlayArea);
-        if(!atHome) {
+        const conflict = context.game.currentConflict;
+        if(!atHome && conflict) {
             if(context.player.isAttackingPlayer()) {
-                context.game.currentConflict.addAttacker(token);
+                conflict.addAttacker(token);
             } else {
-                context.game.currentConflict.addDefender(token);
+                conflict.addDefender(token);
             }
         }
 

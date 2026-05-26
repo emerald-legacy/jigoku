@@ -1,7 +1,8 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
-import { Durations } from '../../../Constants.js';
+import { Durations, EventNames } from '../../../Constants.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class RecklessAssault extends DrawCard {
     static id = 'reckless-assault';
 
@@ -9,7 +10,7 @@ export default class RecklessAssault extends DrawCard {
         this.reaction({
             title: 'Force defenders',
             when: {
-                onConflictDeclared: (event: any, context: any) =>
+                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context: any) =>
                     !!context.game.currentConflict &&
                     context.game.currentConflict.getNumberOfParticipantsFor(context.player) === 1 &&
                     context.game.currentConflict.getParticipants(

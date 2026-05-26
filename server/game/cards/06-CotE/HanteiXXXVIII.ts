@@ -1,7 +1,8 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardTypes, EventNames } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class HanteiXXXVIII extends DrawCard {
     static id = 'hantei-xxxviii';
 
@@ -28,7 +29,7 @@ class HanteiXXXVIII extends DrawCard {
         this.interrupt({
             title: 'Choose targets for opponent\'s ability',
             when: {
-                onCardAbilityInitiated: (event: any, context) =>
+                onCardAbilityInitiated: (event: EventPayload<EventNames.OnCardAbilityInitiated>, context) =>
                     event.ability.hasTargetsChosenByInitiatingPlayer(event.context) && event.context.player === context.player.opponent
             },
             effect: 'choose targets for {1}\'s {2} ability',

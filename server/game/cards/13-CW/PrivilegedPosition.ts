@@ -1,7 +1,8 @@
 import AbilityDsl from '../../abilitydsl.js';
-import { Durations } from '../../Constants.js';
+import { Durations, EventNames } from '../../Constants.js';
 import DrawCard from '../../drawcard.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class PrivilegedPosition extends DrawCard {
     static id = 'privileged-position';
 
@@ -9,7 +10,7 @@ export default class PrivilegedPosition extends DrawCard {
         this.reaction({
             title: 'Your opponent may only declare 1 conflict opportunity this turn',
             when: {
-                onHonorDialsRevealed: (event: any, context) =>
+                onHonorDialsRevealed: (event: EventPayload<EventNames.OnHonorDialsRevealed>, context) =>
                     event.isHonorBid &&
                     context.player.opponent !== undefined &&
                     context.player.honorBid < context.player.opponent.honorBid

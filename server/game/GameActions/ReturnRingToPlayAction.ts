@@ -3,6 +3,7 @@ import { EventNames } from '../Constants.js';
 import type Ring from '../ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
+import type { Event } from '../Events/Event.js';
 export type ReturnRingToPlayProperties = RingActionProperties;
 
 export class ReturnRingToPlayAction extends RingAction {
@@ -21,9 +22,9 @@ export class ReturnRingToPlayAction extends RingAction {
         return super.canAffect(ring, context);
     }
 
-    eventHandler(event: any, _additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: Event, _additionalProperties: Record<string, unknown> = {}): void {
         let ring = event.ring;
-        let context = event.context;
+        let context = event.context!;
 
         context.game.raiseEvent(EventNames.OnReturnRingToPlay, { ring: ring }, () => ring.returnRingToPlay());
     }

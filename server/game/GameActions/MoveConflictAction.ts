@@ -3,6 +3,7 @@ import type BaseCard from '../basecard.js';
 import { CardTypes, EventNames } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export type MoveConflictProperties = CardActionProperties;
 
 export class MoveConflictAction extends CardGameAction {
@@ -30,18 +31,22 @@ export class MoveConflictAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: any, _additionalProperties: Record<string, unknown> = {}): void {
-        let context = event.context;
+    eventHandler(event: Event, _additionalProperties: Record<string, unknown> = {}): void {
+        let context = event.context!;
         let newProvince = event.card;
+        const conflict = context.game.currentConflict;
+        if(!conflict || !conflict.conflictProvince) {
+            return;
+        }
 
         newProvince.inConflict = true;
-        context.game.currentConflict.conflictProvince.inConflict = false;
-        context.game.currentConflict.conflictProvince = newProvince;
+        conflict.conflictProvince.inConflict = false;
+        conflict.conflictProvince = newProvince;
         if(newProvince.isFacedown()) {
-            const revealEvent = event.context.game.actions
+            const revealEvent = event.context!.game.actions
                 .reveal()
-                .getEvent(newProvince, event.context.game.getFrameworkContext());
-            event.context.game.openThenEventWindow(revealEvent);
+                .getEvent(newProvince, event.context!.game.getFrameworkContext());
+            event.context!.game.openThenEventWindow(revealEvent);
         }
     }
 }

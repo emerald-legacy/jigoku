@@ -4,6 +4,7 @@ import type DrawCard from '../drawcard.js';
 import type Player from '../player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface PutIntoPlayProperties extends CardActionProperties {
     fate?: number;
     status?: 'honored' | 'ordinary' | 'dishonored';
@@ -86,7 +87,7 @@ export class PutIntoPlayAction extends CardGameAction {
         return true;
     }
 
-    addPropertiesToEvent(event: any, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { fate, status, controller, side, overrideLocation } = this.getProperties(
             context,
             additionalProperties
@@ -100,16 +101,16 @@ export class PutIntoPlayAction extends CardGameAction {
         event.side = side || this.getDefaultSide(context);
     }
 
-    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
-        let player = this.getPutIntoPlayPlayer(event.context);
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+        let player = this.getPutIntoPlayPlayer(event.context!);
         this.checkForRefillProvince(event.card, event, additionalProperties);
         event.card.new = true;
         if(event.fate) {
             event.card.fate = event.fate;
         }
 
-        let finalController = event.context.player;
-        if(event.controller === Players.Opponent) {
+        let finalController = event.context!.player;
+        if(event.controller === Players.Opponent && finalController.opponent) {
             finalController = finalController.opponent;
         }
 
@@ -134,11 +135,12 @@ export class PutIntoPlayAction extends CardGameAction {
             event.card.controller.cardsInPlay.push(event.card);
         }
 
-        if(event.intoConflict) {
+        const conflict = event.context!.game.currentConflict;
+        if(event.intoConflict && conflict) {
             if(targetSide.isAttackingPlayer()) {
-                event.context.game.currentConflict.addAttacker(event.card);
+                conflict.addAttacker(event.card);
             } else {
-                event.context.game.currentConflict.addDefender(event.card);
+                conflict.addDefender(event.card);
             }
         }
     }

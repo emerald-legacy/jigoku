@@ -85,7 +85,7 @@ export default class WorkInProgress extends DrawCard {
 
 function testOfSkillCost() {
     return {
-        action: { name: 'testOfSkillCost', getCostMessage: () => ['naming {0}', []] },
+        action: { name: 'testOfSkillCost', getCostMessage: (): [string, unknown[]] => ['naming {0}', []] },
         canPay: () => true,
         resolve: (context: AbilityContext, result: { resolved: boolean; value?: boolean } = { resolved: false }) => {
             const choices = [CardTypes.Attachment, CardTypes.Character, CardTypes.Event];

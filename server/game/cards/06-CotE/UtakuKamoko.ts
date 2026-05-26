@@ -1,7 +1,8 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations } from '../../Constants.js';
+import { EventNames, Locations } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class UtakuKamoko extends DrawCard {
     static id = 'utaku-kamoko';
 
@@ -13,7 +14,7 @@ class UtakuKamoko extends DrawCard {
         this.reaction({
             title: 'Ready and honor',
             when: {
-                onBreakProvince: (event: any, context: any) => context.player.opponent && event.conflict && event.conflict.attackingPlayer === context.player.opponent
+                onBreakProvince: (event: EventPayload<EventNames.OnBreakProvince>, context: any) => context.player.opponent && event.conflict && event.conflict.attackingPlayer === context.player.opponent
             },
             cost: AbilityDsl.costs.discardCard({
                 location: Locations.Hand,

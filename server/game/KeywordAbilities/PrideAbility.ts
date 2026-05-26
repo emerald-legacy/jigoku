@@ -1,15 +1,17 @@
 import * as AbilityLimit from '../AbilityLimit.js';
-import { AbilityTypes } from '../Constants.js';
+import { AbilityTypes, EventNames } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../drawcard.js';
 import type Game from '../game.js';
 import TriggeredAbility from '../triggeredability.js';
 
+import type { EventPayload } from '../Events/EventPayloads.js';
+import type { Event } from '../Events/Event.js';
 export default class PrideAbility extends TriggeredAbility {
     constructor(game: Game, card: DrawCard) {
         super(game, card, AbilityTypes.KeywordReaction, {
             when: {
-                afterConflict: (event: any, context: TriggeredAbilityContext) => context.source.isParticipating() && context.source.hasPride() &&
+                afterConflict: (event: Event, context: TriggeredAbilityContext) => context.source.isParticipating() && context.source.hasPride() &&
                                                    ((event.conflict.winner === context.player && context.source.allowGameAction('honor', context)) ||
                                                    (event.conflict.loser === context.player && context.source.allowGameAction('dishonor', context)))
             },

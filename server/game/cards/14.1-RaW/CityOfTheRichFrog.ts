@@ -1,7 +1,8 @@
-import { Players, Phases } from '../../Constants.js';
+import { EventNames, Phases, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class CityOfTheRichFrog extends ProvinceCard {
     static id = 'city-of-the-rich-frog';
 
@@ -15,7 +16,7 @@ export default class CityOfTheRichFrog extends ProvinceCard {
             targetController: Players.Self,
             effect: AbilityDsl.effects.playerDelayedEffect({
                 when: {
-                    onPhaseEnded: (event: any) => event.phase === Phases.Setup
+                    onPhaseEnded: (event: EventPayload<EventNames.OnPhaseEnded>) => event.phase === Phases.Setup
                 },
                 message: '{0} fills to 3 cards!',
                 messageArgs: (effectContext: any) => [effectContext.source],

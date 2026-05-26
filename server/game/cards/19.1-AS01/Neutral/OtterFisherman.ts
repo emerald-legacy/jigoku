@@ -1,7 +1,8 @@
-import { TargetModes, Players, Elements } from '../../../Constants.js';
+import { Elements, EventNames, Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 const ELEMENT_KEY = 'otter-fisherman-water';
 
 export default class OtterFisherman extends DrawCard {
@@ -15,7 +16,7 @@ export default class OtterFisherman extends DrawCard {
         this.reaction({
             title: 'Gain resource after claiming water',
             when: {
-                onClaimRing: (event: any, context) =>
+                onClaimRing: (event: EventPayload<EventNames.OnClaimRing>, context) =>
                     event.player === context.player &&
                     ((event.conflict && event.conflict.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY) as Elements)) ||
                         event.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY) as Elements))

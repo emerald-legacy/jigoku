@@ -1,8 +1,9 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardTypes, EventNames } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class BreachOfEtiquette extends DrawCard {
     static id = 'breach-of-etiquette';
 
@@ -17,7 +18,7 @@ class BreachOfEtiquette extends DrawCard {
                     targetController: context.player,
                     effect: AbilityDsl.effects.playerDelayedEffect({
                         when: {
-                            onCardAbilityTriggered: (event: any) =>
+                            onCardAbilityTriggered: (event: EventPayload<EventNames.OnCardAbilityTriggered>) =>
                                 event.player === context.player && event.card.type === CardTypes.Character && !event.card.hasTrait('courtier')
                         },
                         message: '{1} loses 1 honor due to {0}',
@@ -30,7 +31,7 @@ class BreachOfEtiquette extends DrawCard {
                     targetController: context.player.opponent,
                     effect: AbilityDsl.effects.playerDelayedEffect({
                         when: {
-                            onCardAbilityTriggered: (event: any) =>
+                            onCardAbilityTriggered: (event: EventPayload<EventNames.OnCardAbilityTriggered>) =>
                                 event.player === context.player.opponent && event.card.type === CardTypes.Character && !event.card.hasTrait('courtier')
                         },
                         message: '{1} loses 1 honor due to {0}',

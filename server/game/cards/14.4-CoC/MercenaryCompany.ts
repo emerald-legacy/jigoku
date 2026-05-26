@@ -1,7 +1,8 @@
 import DrawCard from '../../drawcard.js';
-import { Durations } from '../../Constants.js';
+import { Durations, EventNames } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class MercenaryCompany extends DrawCard {
     static id = 'mercenary-company';
 
@@ -9,7 +10,7 @@ class MercenaryCompany extends DrawCard {
         this.forcedReaction({
             title: 'Give control of this character',
             when: {
-                afterConflict: (event: any, context) => !!context.player.opponent && event.conflict.loser === context.player && context.source.isParticipating()
+                afterConflict: (event: EventPayload<EventNames.AfterConflict>, context) => !!context.player.opponent && event.conflict.loser === context.player && context.source.isParticipating()
                     && AbilityDsl.actions.loseFate().canAffect(context.player.opponent, context)
                     && AbilityDsl.actions.placeFate().canAffect(context.source, context)
             },

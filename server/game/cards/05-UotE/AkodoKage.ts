@@ -1,6 +1,8 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
+import { EventNames } from '../../Constants.js';
 export default class AkodoKage extends DrawCard {
     static id = 'akodo-kage';
 
@@ -8,7 +10,7 @@ export default class AkodoKage extends DrawCard {
         this.reaction({
             title: 'Set your opponent\'s dial to equal yours',
             when: {
-                onHonorDialsRevealed: (event: any, context: any) =>
+                onHonorDialsRevealed: (event: EventPayload<EventNames.OnHonorDialsRevealed>, context: any) =>
                     event.isHonorBid &&
                     context.player.opponent &&
                     context.player.honorBid < context.player.opponent.honorBid &&

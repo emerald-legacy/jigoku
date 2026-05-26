@@ -1,7 +1,8 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players, AbilityTypes } from '../../Constants.js';
+import { AbilityTypes, CardTypes, EventNames, Players } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class MediumOfTheLivingSoul extends DrawCard {
     static id = 'medium-of-the-living-soul';
 
@@ -17,7 +18,7 @@ class MediumOfTheLivingSoul extends DrawCard {
                     effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
                         title: 'Resolve the Ring Effect',
                         when: {
-                            onResolveRingElement: (event: any, context: any) => {
+                            onResolveRingElement: (event: EventPayload<EventNames.OnResolveRingElement>, context: any) => {
                                 let val = event.player === context.player && context.source.isParticipating();
                                 return val;
                             }

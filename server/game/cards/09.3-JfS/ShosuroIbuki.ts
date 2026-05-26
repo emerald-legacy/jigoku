@@ -1,6 +1,8 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
+import { EventNames } from '../../Constants.js';
 class ShosuroIbuki extends DrawCard {
     static id = 'shosuro-ibuki';
 
@@ -8,7 +10,7 @@ class ShosuroIbuki extends DrawCard {
         this.reaction({
             title: 'Remove one fate from each other participating character',
             when: {
-                afterConflict: (event: any, context) =>
+                afterConflict: (event: EventPayload<EventNames.AfterConflict>, context) =>
                     event.conflict.winner === context.source.controller &&
                     context.source.isParticipating()
             },

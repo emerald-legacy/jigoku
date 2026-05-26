@@ -5,6 +5,7 @@ import type { WhenType } from '../Interfaces.js';
 import type Player from '../player.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface LastingEffectGeneralProperties extends GameActionProperties {
     duration?: Durations;
     condition?: (context: AbilityContext) => boolean;
@@ -54,11 +55,11 @@ export class LastingEffectAction<P extends LastingEffectProperties = LastingEffe
         }
     }
 
-    eventHandler(event: any, additionalProperties: any): void {
-        let properties = this.getProperties(event.context, additionalProperties);
+    eventHandler(event: Event, additionalProperties: any): void {
+        let properties = this.getProperties(event.context!, additionalProperties);
         if(!properties.ability) {
-            properties.ability = event.context.ability;
+            properties.ability = event.context!.ability;
         }
-        event.context.source[properties.duration ?? Durations.UntilEndOfConflict](() => properties);
+        event.context!.source[properties.duration ?? Durations.UntilEndOfConflict](() => properties);
     }
 }

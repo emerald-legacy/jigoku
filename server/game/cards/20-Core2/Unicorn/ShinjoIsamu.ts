@@ -1,4 +1,4 @@
-import { TargetModes } from '../../../Constants.js';
+import { EventNames, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type { Conflict } from '../../../conflict.js';
 import DrawCard from '../../../drawcard.js';
@@ -6,8 +6,13 @@ import type Ring from '../../../ring.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
-function isamuWentHome(event: any, context: TriggeredAbilityContext<ShinjoIsamu>) {
+type SendOrReturnHomeEvent =
+    | EventPayload<EventNames.OnSendHome>
+    | EventPayload<EventNames.OnReturnHome>;
+
+function isamuWentHome(event: SendOrReturnHomeEvent, context: TriggeredAbilityContext<ShinjoIsamu>) {
     return event.card === context.source;
 }
 

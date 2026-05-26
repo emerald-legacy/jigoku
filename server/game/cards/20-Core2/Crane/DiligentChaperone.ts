@@ -4,6 +4,7 @@ import DrawCard from '../../../drawcard.js';
 import type BaseCard from '../../../basecard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 function targetsFromEvent(context: any): WeakSet<BaseCard> {
     switch(context.event.name) {
         case EventNames.OnStatusTokenMoved:
@@ -33,16 +34,16 @@ export default class DiligentChaperone extends DrawCard {
         this.reaction({
             title: 'Rehonor the character',
             when: {
-                onStatusTokenMoved: (event: any, context) =>
-                    event.token.grantedStatus === CharacterStatus.Honored &&
-                    isFriendlyCharacter(context, event.donor) &&
+                onStatusTokenMoved: (event: EventPayload<EventNames.OnStatusTokenMoved>, context) =>
+                    !!event.token && event.token.grantedStatus === CharacterStatus.Honored &&
+                    !!event.donor && isFriendlyCharacter(context, event.donor) &&
                     !context.source.bowed,
                 onCardDishonored: (event: { card: DrawCard }, context) =>
                     event.card.isOrdinary() && isFriendlyCharacter(context, event.card) && !context.source.bowed,
-                onStatusTokenDiscarded: (event: any, context) =>
+                onStatusTokenDiscarded: (event: EventPayload<EventNames.OnStatusTokenDiscarded>, context) =>
                     !context.source.bowed &&
-                    event.token.grantedStatus === CharacterStatus.Honored &&
-                    event.cards.some(isFriendlyCharacter.bind(null, context))
+                    !!event.token && event.token.grantedStatus === CharacterStatus.Honored &&
+                    (event.cards ?? []).some(isFriendlyCharacter.bind(null, context))
             },
             effect: 'protect the honor of the Crane',
             gameAction: AbilityDsl.actions.selectCard((context) => ({

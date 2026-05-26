@@ -2,11 +2,21 @@ import { CardTypes, CharacterStatus, EffectNames } from './Constants.js';
 import EffectSource from './EffectSource.js';
 import AbilityDsl from './abilitydsl.js';
 import type BaseCard from './basecard.js';
+import type Effect from './Effects/Effect.js';
 import type Game from './game.js';
 import type Player from './player.js';
 
+type EffectFactory = (game: Game, source: EffectSource, properties: Record<string, unknown>) => Effect;
+
+interface StatusTokenEffect {
+    match: BaseCard | Player;
+    effect: EffectFactory;
+    ref: Effect[];
+    condition?: () => boolean;
+}
+
 export class StatusToken extends EffectSource {
-    persistentEffects: any[] = [];
+    persistentEffects: StatusTokenEffect[] = [];
     printedType = 'token';
     overrideStatus?: CharacterStatus;
 
@@ -81,7 +91,7 @@ export class StatusToken extends EffectSource {
         if(!this.card || this.card.type !== CardTypes.Character) {
             return;
         }
-        const effect: { match: BaseCard; effect: ReturnType<typeof AbilityDsl.effects.modifyBothSkills>; ref: any[] } = {
+        const effect: StatusTokenEffect = {
             match: this.card,
             effect: AbilityDsl.effects.modifyBothSkills((card: BaseCard) => -card.getGlory()),
             ref: []
@@ -94,7 +104,7 @@ export class StatusToken extends EffectSource {
         if(!this.card || this.card.type !== CardTypes.Character) {
             return;
         }
-        const effect: { match: BaseCard; effect: ReturnType<typeof AbilityDsl.effects.modifyBothSkills>; ref: any[] } = {
+        const effect: StatusTokenEffect = {
             match: this.card,
             effect: AbilityDsl.effects.modifyBothSkills((card: BaseCard) => card.getGlory()),
             ref: []
@@ -114,13 +124,13 @@ export class StatusToken extends EffectSource {
                     ? this.#taintEffectsOnProvinces()
                     : [];
 
-        effects.forEach((effect: any) => {
+        effects.forEach((effect: StatusTokenEffect) => {
             this.persistentEffects.push(effect);
             effect.ref = this.addEffectToEngine(effect);
         });
     }
 
-    #taintEffectsOnCharacters() {
+    #taintEffectsOnCharacters(): StatusTokenEffect[] {
         const card = this.card;
         if(!card) {
             return [];
@@ -129,18 +139,18 @@ export class StatusToken extends EffectSource {
             {
                 match: card,
                 effect: AbilityDsl.effects.modifyBothSkills(2),
-                ref: undefined
+                ref: []
             },
             {
                 match: card,
                 condition: () => !card.anyEffect(EffectNames.TaintedStatusDoesNotCostHonor),
                 effect: AbilityDsl.effects.honorCostToDeclare(1),
-                ref: undefined
+                ref: []
             }
         ];
     }
 
-    #taintEffectsOnProvinces() {
+    #taintEffectsOnProvinces(): StatusTokenEffect[] {
         const card = this.card;
         if(!card) {
             return [];
@@ -155,7 +165,7 @@ export class StatusToken extends EffectSource {
                         card.isConflictProvince()
                     ),
                 effect: AbilityDsl.effects.modifyProvinceStrength(2),
-                ref: undefined
+                ref: []
             },
             {
                 match: card.controller,
@@ -169,7 +179,7 @@ export class StatusToken extends EffectSource {
                             amount: 1
                         })
                 }),
-                ref: undefined
+                ref: []
             }
         ];
     }

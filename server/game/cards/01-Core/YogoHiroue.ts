@@ -1,7 +1,8 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardTypes, EventNames } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class YogoHiroue extends DrawCard {
     static id = 'yogo-hiroue';
 
@@ -16,7 +17,7 @@ class YogoHiroue extends DrawCard {
                     AbilityDsl.actions.cardLastingEffect(context => ({
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
-                                afterConflict: (event: any) => event.conflict.winner === context.player
+                                afterConflict: (event: EventPayload<EventNames.AfterConflict>) => event.conflict.winner === context.player
                             },
                             gameAction: AbilityDsl.actions.menuPrompt({
                                 activePromptTitle: 'Dishonor ' + context.target.name + '?',

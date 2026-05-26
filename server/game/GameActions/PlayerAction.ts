@@ -2,6 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type Player from '../player.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export type PlayerActionProperties = GameActionProperties;
 
 export class PlayerAction<P extends PlayerActionProperties = PlayerActionProperties> extends GameAction<P> {
@@ -11,11 +12,11 @@ export class PlayerAction<P extends PlayerActionProperties = PlayerActionPropert
         return context.player && context.player.opponent ? [context.player.opponent] : [];
     }
 
-    checkEventCondition(event: any, additionalProperties: Record<string, unknown> = {}): boolean {
-        return this.canAffect(event.player, event.context, additionalProperties);
+    checkEventCondition(event: Event, additionalProperties: Record<string, unknown> = {}): boolean {
+        return this.canAffect(event.player, event.context!, additionalProperties);
     }
 
-    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.player = player;
     }

@@ -1,8 +1,9 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { Elements } from '../../../Constants.js';
+import { Elements, EventNames } from '../../../Constants.js';
 import DrawCard from '../../../drawcard.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 const ELEMENT_KEY = 'kitsuki-seiji-water';
 
 export default class KitsukiSeiji extends DrawCard {
@@ -21,9 +22,9 @@ export default class KitsukiSeiji extends DrawCard {
         this.wouldInterrupt({
             title: 'Put fate on this character',
             when: {
-                onMoveFate: (event: any) => this.fateRecipientIsSeijisRing(event.recipient),
-                onPlaceFateOnUnclaimedRings: (event: any) =>
-                    event.recipients.some((recipient: any) => this.fateRecipientIsSeijisRing(recipient.ring))
+                onMoveFate: (event: EventPayload<EventNames.OnMoveFate>) => this.fateRecipientIsSeijisRing(event.recipient),
+                onPlaceFateOnUnclaimedRings: (event: EventPayload<EventNames.OnPlaceFateOnUnclaimedRings>) =>
+                    (event.recipients ?? []).some((recipient: any) => this.fateRecipientIsSeijisRing(recipient.ring))
             },
             effect: 'put the fate that would go on the {1} ring on {0} instead',
             effectArgs: () => [this.getCurrentElementSymbol(ELEMENT_KEY)],

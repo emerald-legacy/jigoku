@@ -426,7 +426,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     ability: new CovertAbility()
                 })
         );
-        contexts = contexts.filter((context: any) => context.source.canInitiateKeywords(context));
+        contexts = contexts.filter((context: AbilityContext) => context.source.canInitiateKeywords(context));
 
         for(let target of targets) {
             target.covert = false;
@@ -448,7 +448,7 @@ class ConflictFlow extends BaseStepWithPipeline {
             }
             if(
                 this.covert.every(
-                    (context: any) =>
+                    (context: AbilityContext) =>
                         context.targets.target.canBeBypassedByCovert(context) &&
                         context.targets.target.checkRestrictions('target', context)
                 )
@@ -495,7 +495,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     ability: new CovertAbility()
                 })
         );
-        contexts = contexts.filter((context: any) => context.source.canInitiateKeywords(context));
+        contexts = contexts.filter((context: AbilityContext) => context.source.canInitiateKeywords(context));
 
         for(let target of targets) {
             target.covert = false;
@@ -545,7 +545,7 @@ class ConflictFlow extends BaseStepWithPipeline {
 
         if(this.game.gameMode === GameModes.Emerald) {
             let goodContext: any = undefined;
-            this.covert.forEach((context: any) => {
+            this.covert.forEach((context: AbilityContext) => {
                 if(events.length === 0 && context.source && context.target) {
                     events = [
                         new InitiateCardAbilityEvent(
@@ -564,14 +564,14 @@ class ConflictFlow extends BaseStepWithPipeline {
             );
         } else {
             events = this.covert.map(
-                (context: any) =>
+                (context: AbilityContext) =>
                     new InitiateCardAbilityEvent(
                         { card: context.source, context: context },
                         () => (context.target.covert = true)
                     )
             );
             events = events.concat(
-                this.covert.map((context: any) =>
+                this.covert.map((context: AbilityContext) =>
                     this.game.getEvent(EventNames.OnCovertResolved, { card: context.source, context: context })
                 )
             );

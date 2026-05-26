@@ -117,7 +117,7 @@ export class GameObject {
         return this.printedType;
     }
 
-    public getPrintedFaction() {
+    public getPrintedFaction(): string | null {
         return null;
     }
 
@@ -129,7 +129,7 @@ export class GameObject {
         return false;
     }
 
-    public getTraits() {
+    public getTraits(): string[] {
         return [];
     }
 

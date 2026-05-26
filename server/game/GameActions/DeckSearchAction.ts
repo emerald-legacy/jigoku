@@ -6,6 +6,7 @@ import type { GameAction } from './GameAction.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type Player from '../player.js';
 
+import type { Event } from '../Events/Event.js';
 type Derivable<T> = T | ((context: AbilityContext) => T);
 
 export interface DeckSearchProperties extends PlayerActionProperties {
@@ -87,7 +88,7 @@ export class DeckSearchAction extends PlayerAction {
         return [context.player];
     }
 
-    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const { amount } = this.getProperties(context, additionalProperties) as DeckSearchProperties;
         const fAmount = this.#getAmount(amount ?? -1, context);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
@@ -131,8 +132,8 @@ export class DeckSearchAction extends PlayerAction {
         }
     }
 
-    #selectCard(event: any, additionalProperties: Record<string, unknown> = {}, cards: DrawCard[], selectedCards: Set<DrawCard>): void {
-        const context: AbilityContext = event.context;
+    #selectCard(event: Event, additionalProperties: Record<string, unknown> = {}, cards: DrawCard[], selectedCards: Set<DrawCard>): void {
+        const context: AbilityContext = event.context!;
         const properties = this.getProperties(context, additionalProperties) as DeckSearchProperties;
         const canCancel = properties.targetMode !== TargetModes.Exactly;
         let selectAmount = 1;
@@ -256,10 +257,10 @@ export class DeckSearchAction extends PlayerAction {
     ): void {
         this.#doneMessage(properties, context, event, selectedCards);
 
-        const gameAction = this.getProperties(event.context).gameAction;
+        const gameAction = this.getProperties(event.context!).gameAction;
         if(gameAction) {
             const selectedArray = Array.from(selectedCards);
-            event.context.targets = selectedArray;
+            event.context!.targets = selectedArray;
             gameAction.setDefaultTarget(() => selectedArray);
             context.game.queueSimpleStep(() => {
                 if(gameAction.hasLegalTarget(context)) {

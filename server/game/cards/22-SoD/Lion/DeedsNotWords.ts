@@ -1,7 +1,8 @@
-import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardTypes, EventNames, Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class DeedsNotWords extends DrawCard {
     static id = 'deeds-not-words';
 
@@ -21,7 +22,7 @@ export default class DeedsNotWords extends DrawCard {
                         targetController: context.player,
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
-                                afterConflict: (event: any) =>
+                                afterConflict: (event: EventPayload<EventNames.AfterConflict>) =>
                                     context.player === event.conflict.winner
                             },
                             gameAction: AbilityDsl.actions.claimImperialFavor(context => ({ target: context.player })),

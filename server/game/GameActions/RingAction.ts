@@ -2,6 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type Ring from '../ring.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export type RingActionProperties = GameActionProperties;
 
 export class RingAction<P extends RingActionProperties = RingActionProperties> extends GameAction<P> {
@@ -11,11 +12,11 @@ export class RingAction<P extends RingActionProperties = RingActionProperties> e
         return context.game.currentConflict && context.game.currentConflict.ring ? [context.game.currentConflict.ring] : [];
     }
 
-    checkEventCondition(event: any, additionalProperties = {}): boolean {
-        return this.canAffect(event.ring, event.context, additionalProperties);
+    checkEventCondition(event: Event, additionalProperties = {}): boolean {
+        return this.canAffect(event.ring, event.context!, additionalProperties);
     }
 
-    addPropertiesToEvent(event: any, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         event.ring = ring;
     }

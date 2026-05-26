@@ -1,6 +1,8 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
+import { EventNames } from '../../Constants.js';
 class CurryFavor extends DrawCard {
     static id = 'curry-favor';
 
@@ -8,7 +10,7 @@ class CurryFavor extends DrawCard {
         this.reaction({
             title: 'Ready a character',
             when: {
-                onReturnHome: (event: any, context) => {
+                onReturnHome: (event: EventPayload<EventNames.OnReturnHome>, context) => {
                     if(this.game.getConflicts(context.player).filter(conflict => !conflict.passed).length !== 2) {
                         return false;
                     }

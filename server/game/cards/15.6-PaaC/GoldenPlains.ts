@@ -1,7 +1,8 @@
-import { Locations, Players, CardTypes } from '../../Constants.js';
+import { CardTypes, EventNames, Locations, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class GoldenPlains extends ProvinceCard {
     static id = 'golden-plains';
 
@@ -16,7 +17,7 @@ export default class GoldenPlains extends ProvinceCard {
         this.reaction({
             title: 'Move the conflict',
             when: {
-                onConflictDeclared: (event: any, context: any) => event.conflict.declaredProvince === context.source
+                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context: any) => event.conflict.declaredProvince === context.source
             },
             target: {
                 cardType: CardTypes.Province,
