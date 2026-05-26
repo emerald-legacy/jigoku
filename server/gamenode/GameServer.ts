@@ -211,7 +211,7 @@ export class GameServer implements GameRouter {
         let playerCount = 0;
         let spectatorCount = 0;
 
-        for(const player of Object.values(game.getPlayersAndSpectators()) as any[]) {
+        for(const player of Object.values(game.getPlayersAndSpectators())) {
             if(player.socket && !player.left && !player.disconnected) {
                 let state: any;
                 if(game.isSpectator(player)) {
@@ -272,7 +272,7 @@ export class GameServer implements GameRouter {
     }
 
     private clearMessageCountsForGame(game: Game): void {
-        for(const player of Object.values(game.getPlayersAndSpectators()) as any[]) {
+        for(const player of Object.values(game.getPlayersAndSpectators())) {
             if(player.socket?.id) {
                 this.lastSentMessageCount.delete(player.socket.id);
             }
@@ -281,7 +281,7 @@ export class GameServer implements GameRouter {
     }
 
     notifyAndCloseGame(game: Game): void {
-        for(const player of Object.values(game.getPlayersAndSpectators()) as any[]) {
+        for(const player of Object.values(game.getPlayersAndSpectators())) {
             if(player.socket && !player.disconnected) {
                 player.socket.send('cleargamestate');
                 player.socket.leaveChannel(game.id);
