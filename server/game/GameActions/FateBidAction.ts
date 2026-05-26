@@ -49,7 +49,7 @@ export class FateBidAction extends PlayerAction {
     eventHandler(
         event: { context: AbilityContext } & Pick<FateBidProperties, 'postBidAction' | 'messageArgs' | 'message'>
     ): void {
-        const context = event.context!;
+        const context = (event.context as AbilityContext);
         context.game.queueStep(
             new FateBidPrompt(context.game, 'Choose an amount of fate', (result, context) => {
                 const actions: Array<LoseFateAction> = [];

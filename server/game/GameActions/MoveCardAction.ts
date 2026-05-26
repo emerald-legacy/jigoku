@@ -70,7 +70,7 @@ export class MoveCardAction extends CardGameAction {
     }
 
     eventHandler(event: Event, additionalProperties = {}): void {
-        let context = event.context!;
+        let context = (event.context as AbilityContext);
         let card = event.card;
         event.cardStateWhenMoved = card.createSnapshot();
         let properties = this.getProperties(context, additionalProperties) as MoveCardProperties;

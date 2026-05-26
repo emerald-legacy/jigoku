@@ -32,7 +32,7 @@ export class MoveConflictAction extends CardGameAction {
     }
 
     eventHandler(event: Event, _additionalProperties: Record<string, unknown> = {}): void {
-        let context = event.context!;
+        let context = (event.context as AbilityContext);
         let newProvince = event.card;
         const conflict = context.game.currentConflict;
         if(!conflict || !conflict.conflictProvince) {
@@ -43,10 +43,10 @@ export class MoveConflictAction extends CardGameAction {
         conflict.conflictProvince.inConflict = false;
         conflict.conflictProvince = newProvince;
         if(newProvince.isFacedown()) {
-            const revealEvent = event.context!.game.actions
+            const revealEvent = (event.context as AbilityContext).game.actions
                 .reveal()
-                .getEvent(newProvince, event.context!.game.getFrameworkContext());
-            event.context!.game.openThenEventWindow(revealEvent);
+                .getEvent(newProvince, (event.context as AbilityContext).game.getFrameworkContext());
+            (event.context as AbilityContext).game.openThenEventWindow(revealEvent);
         }
     }
 }

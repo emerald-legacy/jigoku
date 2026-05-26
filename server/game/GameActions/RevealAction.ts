@@ -35,13 +35,13 @@ export class RevealAction extends CardGameAction {
     }
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        let properties = this.getProperties(event.context!, additionalProperties) as RevealProperties;
+        let properties = this.getProperties((event.context as AbilityContext), additionalProperties) as RevealProperties;
         if(properties.chatMessage) {
-            event.context!.game.addMessage(
+            (event.context as AbilityContext).game.addMessage(
                 '{0} reveals {1} due to {2}',
-                properties.player || event.context!.player,
+                properties.player || (event.context as AbilityContext).player,
                 event.card,
-                event.context!.source
+                (event.context as AbilityContext).source
             );
         }
         event.card.facedown = false;

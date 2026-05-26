@@ -28,7 +28,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
     }
 
     checkEventCondition(event: Event, additionalProperties = {}): boolean {
-        return this.canAffect(event.card, event.context!, additionalProperties);
+        return this.canAffect(event.card, event.context as AbilityContext, additionalProperties);
     }
 
     canAffect(target: BaseCard | Ring, context: AbilityContext, additionalProperties = {}): boolean {
@@ -201,7 +201,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         if(!card.isInProvince() || card.location === Locations.StrongholdProvince) {
             return;
         }
-        const context = additionalProperties.replacementEffect ? event.context!.event.context! : event.context;
+        const context = additionalProperties.replacementEffect ? event.context.event.context : event.context;
         context.refillProvince(card.controller, card.location);
     }
 }

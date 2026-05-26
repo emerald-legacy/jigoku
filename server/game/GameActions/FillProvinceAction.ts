@@ -25,12 +25,12 @@ export class FillProvinceAction extends PlayerAction<FillProvinceProperties> {
     }
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        let properties = this.getProperties(event.context!, additionalProperties) as FillProvinceProperties;
+        let properties = this.getProperties((event.context as AbilityContext), additionalProperties) as FillProvinceProperties;
         let currentCards = event.player.getDynastyCardsInProvince(properties.location).length;
         event.player.refillProvince(properties.location, (properties.fillTo ?? 0) - currentCards);
 
         if(properties.faceup) {
-            event.context!.game.queueSimpleStep(() => {
+            (event.context as AbilityContext).game.queueSimpleStep(() => {
                 let cards = event.player.getDynastyCardsInProvince(properties.location);
                 cards.forEach((card: any) => {
                     if(card) {

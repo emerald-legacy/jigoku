@@ -97,7 +97,7 @@ export class AttachAction extends CardGameAction<AttachActionProperties> {
     }
 
     checkEventCondition(event: Event, additionalProperties: any): boolean {
-        return this.canAffect(event.parent, event.context!, additionalProperties);
+        return this.canAffect(event.parent, (event.context as AbilityContext), additionalProperties);
     }
 
     isEventFullyResolved(event: Event, card: DrawCard, context: AbilityContext, additionalProperties: any): boolean {
@@ -114,7 +114,7 @@ export class AttachAction extends CardGameAction<AttachActionProperties> {
     }
 
     eventHandler(event: Event, additionalProperties = {}): void {
-        let properties = this.getProperties(event.context!, additionalProperties);
+        let properties = this.getProperties((event.context as AbilityContext), additionalProperties);
         event.originalLocation = event.card.location;
         if(event.card.location === Locations.PlayArea) {
             event.card.parent.removeAttachment(event.card);
@@ -126,10 +126,10 @@ export class AttachAction extends CardGameAction<AttachActionProperties> {
         event.parent.attachments.push(event.card);
         event.card.parent = event.parent;
         if(properties.takeControl) {
-            event.card.controller = event.context!.player;
+            event.card.controller = (event.context as AbilityContext).player;
             event.card.updateEffectContexts();
         } else if(properties.giveControl) {
-            event.card.controller = event.context!.player.opponent;
+            event.card.controller = (event.context as AbilityContext).player.opponent;
             event.card.updateEffectContexts();
         }
         if(event.card.parent.getType() === CardTypes.Province) {

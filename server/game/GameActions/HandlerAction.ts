@@ -27,8 +27,8 @@ export class HandlerAction extends GameAction<HandlerProperties> {
     }
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        const properties = this.getProperties(event.context!, additionalProperties) as HandlerProperties;
-        properties.handler?.(event.context!);
+        const properties = this.getProperties((event.context as AbilityContext), additionalProperties) as HandlerProperties;
+        properties.handler?.((event.context as AbilityContext));
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {

@@ -102,14 +102,14 @@ export class PutIntoPlayAction extends CardGameAction {
     }
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        let player = this.getPutIntoPlayPlayer(event.context!);
+        let player = this.getPutIntoPlayPlayer((event.context as AbilityContext));
         this.checkForRefillProvince(event.card, event, additionalProperties);
         event.card.new = true;
         if(event.fate) {
             event.card.fate = event.fate;
         }
 
-        let finalController = event.context!.player;
+        let finalController = (event.context as AbilityContext).player;
         if(event.controller === Players.Opponent && finalController.opponent) {
             finalController = finalController.opponent;
         }
@@ -135,7 +135,7 @@ export class PutIntoPlayAction extends CardGameAction {
             event.card.controller.cardsInPlay.push(event.card);
         }
 
-        const conflict = event.context!.game.currentConflict;
+        const conflict = (event.context as AbilityContext).game.currentConflict;
         if(event.intoConflict && conflict) {
             if(targetSide.isAttackingPlayer()) {
                 conflict.addAttacker(event.card);

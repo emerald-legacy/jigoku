@@ -13,7 +13,7 @@ export class RingAction<P extends RingActionProperties = RingActionProperties> e
     }
 
     checkEventCondition(event: Event, additionalProperties = {}): boolean {
-        return this.canAffect(event.ring, event.context!, additionalProperties);
+        return this.canAffect(event.ring, (event.context as AbilityContext), additionalProperties);
     }
 
     addPropertiesToEvent(event: Event, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {

@@ -20,7 +20,7 @@ export class TokenAction<P extends TokenActionProperties = TokenActionProperties
     }
 
     checkEventCondition(event: Event, additionalProperties = {}): boolean {
-        return this.canAffect(event.token, event.context!, additionalProperties);
+        return this.canAffect(event.token, (event.context as AbilityContext), additionalProperties);
     }
 
     addPropertiesToEvent(event: Event, token: StatusToken, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {

@@ -24,9 +24,9 @@ export class ClaimRingAction extends RingAction<ClaimRingProperties> {
     }
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        let { takeFate, type } = this.getProperties(event.context!, additionalProperties) as ClaimRingProperties;
+        let { takeFate, type } = this.getProperties((event.context as AbilityContext), additionalProperties) as ClaimRingProperties;
         let ring = event.ring;
-        let context = event.context!;
+        let context = (event.context as AbilityContext);
         ring.contested = false;
         ring.conflictType = type;
         if(takeFate && ring.fate > 0 && context.player.checkRestrictions('takeFateFromRings', context)) {

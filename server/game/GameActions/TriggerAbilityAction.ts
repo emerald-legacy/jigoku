@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../AbilityContext.js';
 import type CardAbility from '../CardAbility.js';
 import type DrawCard from '../drawcard.js';
 import type { Event } from '../Events/Event.js';
@@ -46,12 +47,12 @@ export class TriggerAbilityAction extends CardGameAction<TriggerAbilityPropertie
     }
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        let properties = this.getProperties(event.context!, additionalProperties);
-        let player = properties.player || event.context!.player;
+        let properties = this.getProperties((event.context as AbilityContext), additionalProperties);
+        let player = properties.player || (event.context as AbilityContext).player;
         let newContextEvent = properties.event;
         let newContext = (properties.ability as TriggeredAbility).createContext(player, newContextEvent);
         newContext.subResolution = !!properties.subResolution;
-        event.context!.game.queueStep(new AbilityResolver(event.context!.game, newContext));
+        (event.context as AbilityContext).game.queueStep(new AbilityResolver((event.context as AbilityContext).game, newContext));
     }
 
     hasTargetsChosenByInitiatingPlayer(context: TriggeredAbilityContext) {

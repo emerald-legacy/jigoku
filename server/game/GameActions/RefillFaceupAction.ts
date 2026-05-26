@@ -22,15 +22,15 @@ export class RefillFaceupAction extends PlayerAction {
     }
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        let { location } = this.getProperties(event.context!, additionalProperties) as RefillFaceupProperties;
+        let { location } = this.getProperties((event.context as AbilityContext), additionalProperties) as RefillFaceupProperties;
         if(!Array.isArray(location)) {
             location = [location];
         }
 
         location.forEach((loc) => {
-            event.context!.game.queueSimpleStep(() => {
+            (event.context as AbilityContext).game.queueSimpleStep(() => {
                 if(event.player.replaceDynastyCard(loc)) {
-                    event.context!.game.queueSimpleStep(() => {
+                    (event.context as AbilityContext).game.queueSimpleStep(() => {
                         let cards = event.player.getDynastyCardsInProvince(loc);
                         cards.forEach((card: any) => {
                             if(card) {

@@ -40,7 +40,7 @@ export class TakeControlAction extends LastingEffectCardAction {
     }
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        let properties = this.getProperties(event.context!, additionalProperties);
-        event.context!.source[properties.duration ?? Durations.Custom](() => Object.assign({ match: event.card }, properties));
+        let properties = this.getProperties((event.context as AbilityContext), additionalProperties);
+        (event.context as AbilityContext).source[properties.duration ?? Durations.Custom](() => Object.assign({ match: event.card }, properties));
     }
 }

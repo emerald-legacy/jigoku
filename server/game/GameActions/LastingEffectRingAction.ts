@@ -1,4 +1,5 @@
 import { RingAction } from './RingAction.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import { Durations, EventNames } from '../Constants.js';
 import { LastingEffectGeneralProperties } from './LastingEffectAction.js';
 
@@ -16,10 +17,10 @@ export class LastingEffectRingAction extends RingAction {
     };
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        let properties = this.getProperties(event.context!, additionalProperties) as LastingEffectRingProperties;
+        let properties = this.getProperties((event.context as AbilityContext), additionalProperties) as LastingEffectRingProperties;
         if(!properties.ability) {
-            properties.ability = event.context!.ability;
+            properties.ability = (event.context as AbilityContext).ability;
         }
-        event.context!.source[properties.duration ?? Durations.UntilEndOfConflict](() => Object.assign({ match: event.ring }, properties));
+        (event.context as AbilityContext).source[properties.duration ?? Durations.UntilEndOfConflict](() => Object.assign({ match: event.ring }, properties));
     }
 }

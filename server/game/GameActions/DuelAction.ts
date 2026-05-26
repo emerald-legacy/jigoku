@@ -179,7 +179,7 @@ export class DuelAction extends CardGameAction {
     }
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        const context: AbilityContext = event.context!;
+        const context: AbilityContext = (event.context as AbilityContext);
         const cards: DrawCard[] = event.cards;
         const properties = this.getProperties(context, additionalProperties);
         if(
@@ -218,16 +218,16 @@ export class DuelAction extends CardGameAction {
             new DuelFlow(
                 context.game,
                 duel,
-                (duel: Duel) => this.resolveDuel(duel, event.context!, additionalProperties),
+                (duel: Duel) => this.resolveDuel(duel, (event.context as AbilityContext), additionalProperties),
                 properties.costHandler
-                    ? (prompt: unknown) => this.honorCosts(prompt, event.context!, additionalProperties)
+                    ? (prompt: unknown) => this.honorCosts(prompt, (event.context as AbilityContext), additionalProperties)
                     : undefined
             )
         );
     }
 
     checkEventCondition(event: Event, additionalProperties: Record<string, unknown> = {}): boolean {
-        return event.cards.some((card: DrawCard) => this.canAffect(card, event.context!, additionalProperties));
+        return event.cards.some((card: DrawCard) => this.canAffect(card, (event.context as AbilityContext), additionalProperties));
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {

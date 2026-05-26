@@ -133,7 +133,7 @@ export class DeckSearchAction extends PlayerAction {
     }
 
     #selectCard(event: Event, additionalProperties: Record<string, unknown> = {}, cards: DrawCard[], selectedCards: Set<DrawCard>): void {
-        const context: AbilityContext = event.context!;
+        const context: AbilityContext = (event.context as AbilityContext);
         const properties = this.getProperties(context, additionalProperties) as DeckSearchProperties;
         const canCancel = properties.targetMode !== TargetModes.Exactly;
         let selectAmount = 1;
@@ -257,10 +257,10 @@ export class DeckSearchAction extends PlayerAction {
     ): void {
         this.#doneMessage(properties, context, event, selectedCards);
 
-        const gameAction = this.getProperties(event.context!).gameAction;
+        const gameAction = this.getProperties((event.context as AbilityContext)).gameAction;
         if(gameAction) {
             const selectedArray = Array.from(selectedCards);
-            event.context!.targets = selectedArray;
+            (event.context as AbilityContext).targets = selectedArray;
             gameAction.setDefaultTarget(() => selectedArray);
             context.game.queueSimpleStep(() => {
                 if(gameAction.hasLegalTarget(context)) {

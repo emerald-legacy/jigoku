@@ -26,7 +26,7 @@ export class RemoveRingFromPlayAction extends RingAction {
 
     eventHandler(event: Event, _additionalProperties: Record<string, unknown> = {}): void {
         let ring = event.ring;
-        let context = event.context!;
+        let context = (event.context as AbilityContext);
 
         context.game.raiseEvent(EventNames.OnRemoveRingFromPlay, { ring: ring }, () => ring.removeRingFromPlay());
     }

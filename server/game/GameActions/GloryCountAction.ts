@@ -21,8 +21,8 @@ export class GloryCountAction extends GameAction<GloryCountProperties> {
     }
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        let game = event.context!.game;
-        let properties = this.getProperties(event.context!, additionalProperties);
+        let game = (event.context as AbilityContext).game;
+        let properties = this.getProperties((event.context as AbilityContext), additionalProperties);
 
         let gloryTotals = game.getPlayersInFirstPlayerOrder().map((player: Player) => {
             return player.getGloryCount();
@@ -43,10 +43,10 @@ export class GloryCountAction extends GameAction<GloryCountProperties> {
 
         let gameAction =
             typeof properties.gameAction === 'function'
-                ? properties.gameAction(winner, event.context!)
+                ? properties.gameAction(winner, (event.context as AbilityContext))
                 : properties.gameAction;
-        if(gameAction && gameAction.hasLegalTarget(event.context!) && winner) {
-            gameAction.resolve(undefined, event.context!);
+        if(gameAction && gameAction.hasLegalTarget((event.context as AbilityContext)) && winner) {
+            gameAction.resolve(undefined, (event.context as AbilityContext));
         }
     }
 }

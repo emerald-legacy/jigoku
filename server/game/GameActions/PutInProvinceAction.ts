@@ -64,7 +64,7 @@ export class PutInProvinceAction extends CardGameAction {
     }
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        let context = event.context! as AbilityContext;
+        let context = event.context as AbilityContext;
         let card = event.card as DrawCard;
         event.cardStateWhenMoved = card.createSnapshot();
         let properties = this.getProperties(context, additionalProperties) as PutInProvinceProperties;

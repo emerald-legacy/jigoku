@@ -24,7 +24,7 @@ export class ReturnRingToPlayAction extends RingAction {
 
     eventHandler(event: Event, _additionalProperties: Record<string, unknown> = {}): void {
         let ring = event.ring;
-        let context = event.context!;
+        let context = (event.context as AbilityContext);
 
         context.game.raiseEvent(EventNames.OnReturnRingToPlay, { ring: ring }, () => ring.returnRingToPlay());
     }

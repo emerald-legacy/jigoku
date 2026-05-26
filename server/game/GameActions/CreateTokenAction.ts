@@ -26,8 +26,8 @@ export class CreateTokenAction extends CardGameAction<CreateTokenProperties> {
     }
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        let { atHome } = this.getProperties(event.context!, additionalProperties);
-        let context = event.context!;
+        let { atHome } = this.getProperties((event.context as AbilityContext), additionalProperties);
+        let context = (event.context as AbilityContext);
         let card = event.card;
         let token = context.game.createToken(card);
         card.owner.removeCardFromPile(card);

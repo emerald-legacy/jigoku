@@ -56,10 +56,10 @@ export class LastingEffectAction<P extends LastingEffectProperties = LastingEffe
     }
 
     eventHandler(event: Event, additionalProperties: any): void {
-        let properties = this.getProperties(event.context!, additionalProperties);
+        let properties = this.getProperties((event.context as AbilityContext), additionalProperties);
         if(!properties.ability) {
-            properties.ability = event.context!.ability;
+            properties.ability = (event.context as AbilityContext).ability;
         }
-        event.context!.source[properties.duration ?? Durations.UntilEndOfConflict](() => properties);
+        (event.context as AbilityContext).source[properties.duration ?? Durations.UntilEndOfConflict](() => properties);
     }
 }
