@@ -28,10 +28,10 @@ export default class KakitaRusumi extends DrawCard {
             effect: 'search their dynasty deck for a character to put into play',
             then: (context) => ({
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => {
-                    let target: any = [];
-                    const selects = context?.selects as any;
-                    if(selects && selects['deckSearch']?.length > 0) {
-                        target = selects['deckSearch'][0];
+                    let target: DrawCard | DrawCard[] = [];
+                    const selected = context?.deckSearchSelected ?? [];
+                    if(selected.length > 0) {
+                        target = selected[0];
                     }
                     return {
                         target: target,

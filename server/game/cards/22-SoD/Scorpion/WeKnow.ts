@@ -4,6 +4,7 @@ import { StatusToken } from '../../../StatusToken.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import BaseCard from '../../../basecard.js';
 import DrawCard from '../../../drawcard.js';
+import type Player from '../../../player.js';
 
 export default class WeKnow extends DrawCard {
     static id = 'we-know';
@@ -62,13 +63,13 @@ export default class WeKnow extends DrawCard {
                 if(context.selects.select.choice === 'Lose honor and let opponent draw cards') {
                     return [
                         'draw two cards and cause ',
-                        context.player.opponent,
+                        context.player.opponent as Player,
                         ' to lose 1 honor'
                     ];
                 }
                 return [
                     'replace ',
-                    context.tokens.token[0].card,
+                    (context.tokens.token as StatusToken[])[0].card as DrawCard,
                     ' honored status token with a dishonored status token'
                 ];
 

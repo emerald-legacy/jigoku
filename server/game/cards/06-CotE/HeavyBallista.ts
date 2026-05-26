@@ -18,7 +18,7 @@ class HeavyBallista extends DrawCard {
                 select: {
                     mode: TargetModes.Select,
                     dependsOn: 'character',
-                    player: context => context.targets.character.controller === context.player ? Players.Self : Players.Opponent,
+                    player: context => (context.targets.character as DrawCard).controller === context.player ? Players.Self : Players.Opponent,
                     choices: {
                         'Bow': AbilityDsl.actions.bow(context => ({ target: context.targets.character })),
                         'Remove 1 Fate': AbilityDsl.actions.removeFate(context => ({ target: context.targets.character }))

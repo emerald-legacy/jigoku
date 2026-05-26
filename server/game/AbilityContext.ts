@@ -1,6 +1,8 @@
+import type { SelectChoice } from './AbilityTargets/SelectChoice.js';
 import BaseAbility from './baseability.js';
 import type BaseCard from './basecard.js';
 import type CardAbility from './CardAbility.js';
+import type DrawCard from './drawcard.js';
 import { Locations, PlayTypes, Stages } from './Constants.js';
 import EffectSource from './EffectSource.js';
 import type { Event } from './Events/Event.js';
@@ -31,15 +33,15 @@ export class AbilityContext<S = any> {
     source: S;
     player: Player;
     ability: BaseAbility;
-    // These bags are dynamically keyed by per-ability target names. Concrete typing
-    // is staged work (architecture.md P2.6) — touches ~200 card files. Left as any
-    // until that migration; new code should prefer narrowed locals at access sites.
+    // Bags are dynamically keyed by per-ability target/cost names; values typed to
+    // the union their resolvers produce. costs stays broad (per-cost-name heterogeneous).
     costs: any;
-    targets: any;
-    rings: any;
-    selects: any;
-    tokens: any;
-    elements: any;
+    targets: Record<string, BaseCard | BaseCard[]>;
+    rings: Record<string, Ring | Ring[]>;
+    selects: Record<string, SelectChoice>;
+    tokens: Record<string, StatusToken | StatusToken[]>;
+    elements: Record<string, string>;
+    deckSearchSelected: DrawCard[] = [];
     events: Event[] = [];
     stage: Stages;
     targetAbility: CardAbility | null = null;

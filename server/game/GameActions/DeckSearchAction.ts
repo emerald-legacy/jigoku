@@ -200,7 +200,7 @@ export class DeckSearchAction extends PlayerAction {
         allCards: DrawCard[]
     ): void {
         event.selectedCards = Array.from(selectedCards);
-        context.selects['deckSearch'] = Array.from(selectedCards);
+        context.deckSearchSelected = Array.from(selectedCards);
         if(!properties.selectedCardsHandler) {
             this.#defaultHandleDone(properties, context, event, selectedCards);
         } else {
@@ -260,7 +260,6 @@ export class DeckSearchAction extends PlayerAction {
         const gameAction = this.getProperties((event.context as AbilityContext)).gameAction;
         if(gameAction) {
             const selectedArray = Array.from(selectedCards);
-            (event.context as AbilityContext).targets = selectedArray;
             gameAction.setDefaultTarget(() => selectedArray);
             context.game.queueSimpleStep(() => {
                 if(gameAction.hasLegalTarget(context)) {

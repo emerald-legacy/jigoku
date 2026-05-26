@@ -19,7 +19,11 @@ export default class DiscipleOfDeception extends DrawCard {
             title: 'Treat a status token as a different token',
             condition: (context) => context.game.isDuringConflict(),
             effect: 'replace {1}\'s {2} with {3} until the end of the conflict',
-            effectArgs: (context) => [context.tokens.second[0].card, context.tokens.second, context.tokens.first],
+            effectArgs: (context) => [
+                (context.tokens.second as StatusToken[])[0].card as DrawCard,
+                context.tokens.second,
+                context.tokens.first
+            ],
             targets: {
                 first: {
                     activePromptTitle: 'Choose the status token to copy',
@@ -37,9 +41,12 @@ export default class DiscipleOfDeception extends DrawCard {
                     tokenCondition: (token, context) => token.grantedStatus !== context.tokens.first[0].grantedStatus,
                     gameAction: AbilityDsl.actions.handler({
                         handler: (context) => {
-                            const targetToken = context.tokens.second[0];
-                            const newStatus = context.tokens.first[0].grantedStatus;
+                            const targetToken = (context.tokens.second as StatusToken[])[0];
+                            const newStatus = (context.tokens.first as StatusToken[])[0].grantedStatus;
                             const targetCard = targetToken.card;
+                            if(!targetCard) {
+                                return;
+                            }
                             targetToken.overrideStatus = newStatus;
                             this.tokensChanged?.push(targetToken);
                             targetCard.updateStatusTokenEffects();

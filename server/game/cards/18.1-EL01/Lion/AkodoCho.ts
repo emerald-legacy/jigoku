@@ -25,12 +25,12 @@ export default class AkodoCho extends DrawCard {
                     mode: TargetModes.Select,
                     dependsOn: CHARACTER,
                     player: (context) =>
-                        context.targets[CHARACTER].controller === context.player ? Players.Self : Players.Opponent,
+                        (context.targets[CHARACTER] as DrawCard).controller === context.player ? Players.Self : Players.Opponent,
                     choices: {
                         'Discard an attachment from this character': AbilityDsl.actions.selectCard((context) => ({
                             cardType: CardTypes.Attachment,
                             effect: 'discard an attachment on {0}',
-                            effectArgs: (context) => [context.targets[CHARACTER]],
+                            effectArgs: () => [context.targets[CHARACTER]],
                             player:
                                 context.targets[CHARACTER].controller === context.player
                                     ? Players.Self

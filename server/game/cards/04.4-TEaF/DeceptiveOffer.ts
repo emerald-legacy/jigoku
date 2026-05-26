@@ -1,5 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
+import type Player from '../../player.js';
 import { Players, TargetModes, CardTypes } from '../../Constants.js';
 
 class DeceptiveOffer extends DrawCard {
@@ -30,9 +31,9 @@ class DeceptiveOffer extends DrawCard {
             effect: '{1}{2}',
             effectArgs: context => {
                 if(context.selects.select.choice === 'Give your opponent 1 honor') {
-                    return ['take 1 honor from ', context.player.opponent];
+                    return ['take 1 honor from ', context.player.opponent as Player];
                 }
-                return ['give +2/+2 to ', context.targets.character];
+                return ['give +2/+2 to ', context.targets.character as DrawCard];
             }
         });
     }

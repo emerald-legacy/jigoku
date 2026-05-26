@@ -46,7 +46,7 @@ export default class ShosuroTechnique extends DrawCard {
                 }))
             ]),
             effect: 'set the {3} of {1} to {4}{3} (equal to {2}). There\'s no blade as keen as surprise.',
-            effectArgs: (context) => [context.targets.shinobi.name, context.targets.enemy.name, 'military', context.targets.enemy.militarySkill]
+            effectArgs: (context) => [(context.targets.shinobi as DrawCard).name, (context.targets.enemy as DrawCard).name, 'military', (context.targets.enemy as DrawCard).militarySkill]
         });
     }
 }

@@ -1,5 +1,6 @@
 import { CardTypes, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
+import type DrawCard from '../../../drawcard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 const STARTED_IN_CONFLICT = 'started_in';
@@ -22,7 +23,7 @@ export default class CloudStepValley extends ProvinceCard {
                     activePromptTitle: 'Choose a character to move to the conflict',
                     cardType: CardTypes.Character,
                     player: (context) =>
-                        context.targets[STARTED_IN_CONFLICT].controller === context.player
+                        (context.targets[STARTED_IN_CONFLICT] as DrawCard).controller === context.player
                             ? Players.Self
                             : Players.Opponent,
                     cardCondition: (card, context) =>

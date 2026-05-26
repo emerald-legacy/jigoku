@@ -49,11 +49,11 @@ export default class PalmStrike extends DrawCard {
                 if(!context) {
                     return;
                 }
-                if(context.targets[TARGET_MONK].hasTrait('tattooed')) {
+                if((context.targets[TARGET_MONK] as DrawCard).hasTrait('tattooed')) {
                     context.game.addMessage(
                         '{0} cannot ready until the end of the conflict - they are overwhelmed by the mystical tattoos of {1}{2}!',
                         context.targets[TARGET_TO_BOW],
-                        context.targets[TARGET_MONK].isUnique() ? '' : 'the ',
+                        (context.targets[TARGET_MONK] as DrawCard).isUnique() ? '' : 'the ',
                         context.targets[TARGET_MONK]
                     );
                 }

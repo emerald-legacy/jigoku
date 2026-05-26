@@ -1,5 +1,7 @@
 import { CardTypes, Players, TargetModes } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
+import type DrawCard from '../../drawcard.js';
+import type Player from '../../player.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 export default class TheEternalWatch extends ProvinceCard {
@@ -28,8 +30,8 @@ export default class TheEternalWatch extends ProvinceCard {
             effect: '{1}{2}',
             effectArgs: (context) =>
                 context.selects.select.choice === 'Give your opponent 1 honor'
-                    ? ['take 1 honor from ', context.player.opponent]
-                    : ['bow ', context.targets.character]
+                    ? ['take 1 honor from ', context.player.opponent as Player]
+                    : ['bow ', context.targets.character as DrawCard]
         });
     }
 }

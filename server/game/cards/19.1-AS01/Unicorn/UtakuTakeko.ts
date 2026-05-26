@@ -20,7 +20,7 @@ export default class UtakuTakeko extends DrawCard {
                     card.isFaction('unicorn') &&
                     !card.isUnique(),
                 gameAction: AbilityDsl.actions.playCard((context) => {
-                    const target = context.targets[0];
+                    const target = context.deckSearchSelected[0];
                     return {
                         target,
                         source: this,

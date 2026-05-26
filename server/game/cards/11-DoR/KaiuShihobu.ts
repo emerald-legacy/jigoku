@@ -2,6 +2,7 @@ import { GameModes } from '../../../GameModes.js';
 import { CardTypes, TargetModes, Decks, Locations, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 
 export default class KaiuShihobu extends DrawCard {
     static id = 'kaiu-shihobu';
@@ -64,8 +65,8 @@ export default class KaiuShihobu extends DrawCard {
                 if(!context) {
                     return;
                 }
-                let holding = context.targets.first;
-                let province = context.targets.second;
+                let holding = context.targets.first as DrawCard;
+                let province = context.targets.second as ProvinceCard;
 
                 let cards = context.player.getDynastyCardsInProvince(province.location);
                 if(context.player.stronghold) {
@@ -78,9 +79,9 @@ export default class KaiuShihobu extends DrawCard {
             },
             effect: 'discard {1}, replacing {2} with {3}',
             effectArgs: (context) => [
-                context.player.getDynastyCardsInProvince(context.targets.second.location),
-                context.player.getDynastyCardsInProvince(context.targets.second.location).length > 1 ? 'them' : 'it',
-                context.targets.first
+                context.player.getDynastyCardsInProvince((context.targets.second as ProvinceCard).location),
+                context.player.getDynastyCardsInProvince((context.targets.second as ProvinceCard).location).length > 1 ? 'them' : 'it',
+                context.targets.first as DrawCard
             ]
         });
     }

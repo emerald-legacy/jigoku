@@ -8,7 +8,7 @@ const TOKEN = 'token';
 const RECIPIENT = 'recipient';
 
 function doesCardDraw(context: AbilityContext) {
-    return context.targets[RECIPIENT].controller !== context.source.controller;
+    return (context.targets[RECIPIENT] as DrawCard).controller !== context.source.controller;
 }
 
 export default class WhiteLotusMethod extends DrawCard {

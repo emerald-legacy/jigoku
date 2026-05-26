@@ -46,10 +46,10 @@ export default class TributeToANewDawn extends DrawCard {
 
     #getAffectedAttachments(context: AbilityContext<any>) {
         const protectedAttachments = new WeakSet<DrawCard>();
-        for(const card of context.targets[FIRST]) {
+        for(const card of context.targets[FIRST] as DrawCard[]) {
             protectedAttachments.add(card);
         }
-        for(const card of context.targets[SECOND]) {
+        for(const card of context.targets[SECOND] as DrawCard[]) {
             protectedAttachments.add(card);
         }
 

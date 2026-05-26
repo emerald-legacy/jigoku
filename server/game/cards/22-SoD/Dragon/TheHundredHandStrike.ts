@@ -41,11 +41,11 @@ export default class TheHundredHandStrike extends DrawCard {
                 }
                 const ctx = context;
                 return {
-                    thenCondition: () => ctx.targets.puncher.hasTrait('tattooed') &&
+                    thenCondition: () => (ctx.targets.puncher as DrawCard).hasTrait('tattooed') &&
                         ctx.game.currentConflict !== null &&
-                        ctx.game.currentConflict.calculateSkillFor([ctx.targets.punchee]) === 0,
+                        ctx.game.currentConflict.calculateSkillFor([ctx.targets.punchee as DrawCard]) === 0,
                     gameAction: AbilityDsl.actions.conditional({
-                        condition: () => ctx.targets.punchee.getFate() === 0,
+                        condition: () => (ctx.targets.punchee as DrawCard).getFate() === 0,
                         trueGameAction: AbilityDsl.actions.discardFromPlay({ target: ctx.targets.punchee }),
                         falseGameAction: AbilityDsl.actions.removeFate({ target: ctx.targets.punchee })
                     }),

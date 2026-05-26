@@ -22,12 +22,12 @@ export default class AgashaAyako extends DrawCard {
                         targetController: context.player,
                         duration: Durations.UntilSelfPassPriority,
                         effect: AbilityDsl.effects.reduceCost({
-                            match: (card: any) => card === context.targets[0],
+                            match: (card: any) => card === context.deckSearchSelected[0],
                             amount: 1
                         })
                     })),
                     AbilityDsl.actions.playCard((context) => {
-                        const target = context.targets[0];
+                        const target = context.deckSearchSelected[0];
                         return {
                             target,
                             source: this,

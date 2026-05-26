@@ -1,5 +1,6 @@
 import { CardTypes, Players, TargetModes } from '../../../Constants.js';
 import { RingEffects } from '../../../RingEffects.js';
+import type Ring from '../../../ring.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 
@@ -30,13 +31,13 @@ export default class TogashiNaname extends DrawCard {
                     dependsOn: 'ring',
                     player: Players.Opponent,
                     choices: (context) => ({
-                        [`Move a fate from ${context.targets.character.name} to the ${RingEffects.getRingName(
-                            context.rings.ring.element
+                        [`Move a fate from ${(context.targets.character as DrawCard).name} to the ${RingEffects.getRingName(
+                            (context.rings.ring as Ring).element
                         )}`]: AbilityDsl.actions.placeFateOnRing((context) => ({
                             target: context.rings.ring,
                             origin: context.targets.character
                         })),
-                        [`Let Opponent Resolve the ${RingEffects.getRingName(context.rings.ring.element)}`]:
+                        [`Let Opponent Resolve the ${RingEffects.getRingName((context.rings.ring as Ring).element)}`]:
                             AbilityDsl.actions.resolveRingEffect((context) => ({
                                 player: context.player,
                                 target: context.rings.ring

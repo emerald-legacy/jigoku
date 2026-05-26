@@ -1,6 +1,7 @@
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { CardTypes, EventNames, Locations, Phases, Players } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
+import type Player from '../../../player.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -41,7 +42,7 @@ export default class EbonyBloodGarrison extends StrongholdCard {
                 if(!context) {
                     return;
                 }
-                const provinces = [context.targets[MY_PROVINCE], context.targets[OPP_PROVINCE]];
+                const provinces = [context.targets[MY_PROVINCE] as ProvinceCard, context.targets[OPP_PROVINCE] as ProvinceCard];
                 context.game.queueStep(
                     new SimpleStep(context.game, () =>
                         AbilityDsl.actions.reveal({ target: provinces }).resolve(provinces, context)
@@ -68,9 +69,9 @@ export default class EbonyBloodGarrison extends StrongholdCard {
             },
             effect: 'drag {1} into chaos, as a crisis strikes {2} and {3}',
             effectArgs: (context: TriggeredAbilityContext) => [
-                context.player.opponent,
-                context.targets[MY_PROVINCE],
-                context.targets[OPP_PROVINCE]
+                context.player.opponent as Player,
+                context.targets[MY_PROVINCE] as ProvinceCard,
+                context.targets[OPP_PROVINCE] as ProvinceCard
             ]
         });
     }

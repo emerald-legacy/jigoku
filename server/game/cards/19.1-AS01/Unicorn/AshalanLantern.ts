@@ -30,7 +30,7 @@ export default class AshalanLantern extends DrawCard {
                     shuffle: false,
                     cardCondition: (card) => card.type === CardTypes.Character && !card.isUnique(),
                     gameAction: AbilityDsl.actions.playCard((deckSearchContext) => {
-                        const target = deckSearchContext.targets[0];
+                        const target = deckSearchContext.deckSearchSelected[0];
                         return {
                             target,
                             source: this,

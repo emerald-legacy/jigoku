@@ -1,4 +1,5 @@
 import DrawCard from '../../drawcard.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 import { Locations, CardTypes, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -51,8 +52,8 @@ class Logistics extends DrawCard {
             },
             effect: 'move {1} to {2}{3}',
             effectArgs: context => [
-                context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
-                context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province,
+                (context.targets.cardInProvince as DrawCard).isFacedown() ? 'a facedown card' : context.targets.cardInProvince as DrawCard,
+                (context.targets.province as ProvinceCard).isFacedown() ? (context.targets.province as ProvinceCard).location : context.targets.province as ProvinceCard,
                 context.game.isTraitInPlay('battlefield') ? ' and draw a card' : ''
             ]
         });

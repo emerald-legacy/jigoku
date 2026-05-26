@@ -128,9 +128,11 @@ type EffectArg =
     | number
     | string
     | Player
+    | BaseCard
     | DrawCard
     | ProvinceCard
     | Ring
+    | StatusToken
     | { id: string; label: string; name: string; facedown: boolean; type: CardTypes }
     | EffectArg[];
 

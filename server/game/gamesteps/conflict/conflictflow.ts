@@ -1,4 +1,5 @@
 import { AbilityContext } from '../../AbilityContext.js';
+import type DrawCard from '../../drawcard.js';
 import { BaseStepWithPipeline } from '../BaseStepWithPipeline.js';
 import { discardCard, payFate, payFateToRing, payHonor } from '../../Costs.js';
 import CovertAbility from '../../KeywordAbilities/CovertAbility.js';
@@ -449,8 +450,8 @@ class ConflictFlow extends BaseStepWithPipeline {
             if(
                 this.covert.every(
                     (context: AbilityContext) =>
-                        context.targets.target.canBeBypassedByCovert(context) &&
-                        context.targets.target.checkRestrictions('target', context)
+                        (context.targets.target as DrawCard).canBeBypassedByCovert(context) &&
+                        (context.targets.target as DrawCard).checkRestrictions('target', context)
                 )
             ) {
                 return;
