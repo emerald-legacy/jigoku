@@ -120,7 +120,7 @@ class StaticEffect {
         return this.value.getValue();
     }
 
-    recalculate() {
+    recalculate(_target?: unknown) {
         return this.value.recalculate();
     }
 
