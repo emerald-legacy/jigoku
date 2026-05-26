@@ -35,10 +35,6 @@ export class PlayerOrderPrompt extends UiPrompt {
         (this.players ?? []).shift();
     }
 
-    private setPlayers(players: Player[]): void {
-        this.players = players;
-    }
-
     public isComplete(): boolean {
         this.lazyFetchPlayers();
         return (this.players ?? []).length === 0;

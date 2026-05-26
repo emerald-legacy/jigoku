@@ -16,7 +16,6 @@ export type CostReducerProps = {
 };
 
 export class CostReducer {
-    private uses = 0;
     private amount: number | ((card: BaseCard, player: Player) => number);
     private costFloor: number;
     private match?: (card: BaseCard, source: BaseCard) => boolean;

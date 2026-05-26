@@ -1,11 +1,10 @@
 import * as AbilityLimit from '../AbilityLimit.js';
-import { AbilityTypes, EventNames } from '../Constants.js';
+import { AbilityTypes } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../drawcard.js';
 import type Game from '../game.js';
 import TriggeredAbility from '../triggeredability.js';
 
-import type { EventPayload } from '../Events/EventPayloads.js';
 import type { Event } from '../Events/Event.js';
 export default class PrideAbility extends TriggeredAbility {
     constructor(game: Game, card: DrawCard) {

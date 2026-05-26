@@ -20,20 +20,6 @@ interface AbilityTarget {
     getGameAction(context: AbilityContext): any[];
 }
 
-interface _AbilityCost {
-    dependsOn?: string;
-    canPay(context: AbilityContext): boolean;
-    canIgnoreForTargeting?: boolean;
-    isPrintedFateCost?: boolean;
-    isPlayCost?: boolean;
-    addEventsToArray?(events: any[], context: AbilityContext, results: any): void;
-    resolve?(context: AbilityContext, results: any): void;
-    payEvent?(context: AbilityContext): any;
-    pay?(context: AbilityContext): void;
-    hasTargetsChosenByInitiatingPlayer?(context: AbilityContext): boolean;
-    [key: string]: any;
-}
-
 interface BaseAbilityProperties {
     cost?: any;
     target?: any;

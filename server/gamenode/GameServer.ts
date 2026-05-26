@@ -25,7 +25,6 @@ export class GameServer implements GameRouter {
     private host = env.domain;
     private wsSocket: WsSocket;
     private io: socketio.Server;
-    private titleCardData: any;
     private shortCardData: any;
     private lastSentMessageCount = new Map<string, number>();
     private profiler = new SendGameStateProfiler();
@@ -434,7 +433,6 @@ export class GameServer implements GameRouter {
     }
 
     onCardData(cardData: { titleCardData: unknown; shortCardData: unknown }) {
-        this.titleCardData = cardData.titleCardData;
         this.shortCardData = cardData.shortCardData;
     }
 
