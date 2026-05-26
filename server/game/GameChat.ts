@@ -44,10 +44,10 @@ export class GameChat {
         }
 
         let fragments = format.split(/(\{\d+\})/);
-        return fragments.reduce((output, fragment) => {
+        return fragments.reduce<any>((output, fragment) => {
             let argMatch = fragment.match(/\{(\d+)\}/);
             if(argMatch && args) {
-                let arg = args[argMatch[1]];
+                let arg: any = args[Number(argMatch[1])];
                 if(arg || arg === 0) {
                     if(arg.message) {
                         return output.concat(arg.message);
@@ -65,7 +65,7 @@ export class GameChat {
                 let splitFragment = fragment.split(' ');
                 let lastWord = splitFragment.pop();
                 return splitFragment
-                    .reduce((output, word) => {
+                    .reduce<any>((output, word) => {
                         return output.concat(word || [], ' ');
                     }, output)
                     .concat(lastWord || []);

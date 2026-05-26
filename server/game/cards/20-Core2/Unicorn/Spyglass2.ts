@@ -11,8 +11,8 @@ export default class Spyglass2 extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
                 title: 'Draw a card',
                 when: {
-                    onConflictDeclared: (event, context) => event.attackers.includes(context.source),
-                    onDefendersDeclared: (event, context) => event.defenders.includes(context.source),
+                    onConflictDeclared: (event, context) => (event.attackers ?? []).includes(context.source),
+                    onDefendersDeclared: (event, context) => (event.defenders ?? []).includes(context.source),
                     onMoveToConflict: (event, context) => event.card === context.source
                 },
                 gameAction: AbilityDsl.actions.draw()

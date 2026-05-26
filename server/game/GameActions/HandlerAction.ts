@@ -3,11 +3,11 @@ import DrawCard from '../drawcard.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface HandlerProperties extends GameActionProperties {
-    handler: (context: AbilityContext) => void;
+    handler?: (context: AbilityContext) => void;
     hasTargetsChosenByInitiatingPlayer?: boolean;
 }
 
-export class HandlerAction extends GameAction {
+export class HandlerAction extends GameAction<HandlerProperties> {
     defaultProperties: HandlerProperties = {
         handler: () => true,
         hasTargetsChosenByInitiatingPlayer: false
@@ -25,16 +25,16 @@ export class HandlerAction extends GameAction {
         events.push(this.getEvent(null, context, additionalProperties));
     }
 
-    eventHandler(event, additionalProperties = {}): void {
+    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
         const properties = this.getProperties(event.context, additionalProperties) as HandlerProperties;
-        properties.handler(event.context);
+        properties.handler?.(event.context);
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties = {}) {
+    hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         const { hasTargetsChosenByInitiatingPlayer } = this.getProperties(
             context,
             additionalProperties
         ) as HandlerProperties;
-        return hasTargetsChosenByInitiatingPlayer;
+        return !!hasTargetsChosenByInitiatingPlayer;
     }
 }

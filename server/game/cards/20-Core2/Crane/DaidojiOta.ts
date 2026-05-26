@@ -13,15 +13,15 @@ export default class DaidojiOta extends DrawCard {
                     (card) => card.getType() === CardTypes.Character && card.isParticipating()
                 ),
             effect: AbilityDsl.effects.reduceCost({
-                amount: (card, player) => {
-                    const dynastyMatchesByName = player.dynastyDiscardPile.filter((a) => a.name === card.name);
-                    const conflictMatchesByName = player.conflictDiscardPile.filter((a) => a.name === card.name);
+                amount: (card: any, player: any) => {
+                    const dynastyMatchesByName = player.dynastyDiscardPile.filter((a: any) => a.name === card.name);
+                    const conflictMatchesByName = player.conflictDiscardPile.filter((a: any) => a.name === card.name);
                     if(dynastyMatchesByName.length + conflictMatchesByName.length > 0) {
                         return -1;
                     }
                     return 0;
                 },
-                match: (card) => card.type === CardTypes.Event
+                match: (card: any) => card.type === CardTypes.Event
             })
         });
 
@@ -36,15 +36,15 @@ export default class DaidojiOta extends DrawCard {
                         cardCondition: (card) => card.type === CardTypes.Event
                     }),
                     'Reveal your hand': AbilityDsl.actions.lookAt((context) => ({
-                        target: context.player.opponent.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
+                        target: context.player.opponent.hand.slice().sort((a: any, b: any) => a.name.localeCompare(b.name)),
                         chatMessage: true,
                         message: '{0} reveals their hand: {1}',
-                        messageArgs: (cards) => [context.player.opponent, cards]
+                        messageArgs: (cards: any) => [context.player.opponent, cards]
                     }))
                 }
             },
             effect: 'make {1}{2}',
-            effectArgs: (context) =>
+            effectArgs: (context): [any, string] =>
                 context.select === 'Discard an event'
                     ? [context.player.opponent, ' discard an event']
                     : [context.player.opponent, ' reveal their hand']

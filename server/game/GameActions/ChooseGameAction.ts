@@ -43,7 +43,8 @@ export class ChooseGameAction extends GameAction {
         }
 
         const { activePromptTitle, target } = properties;
-        const player = properties.player === Players.Opponent ? context.player.opponent : context.player;
+        const opponent = context.player.opponent;
+        const player = properties.player === Players.Opponent && opponent ? opponent : context.player;
         const choiceLabels = legalChoices.map(([label, _]) => label);
         const choiceHandler = (choiceLabel: string): void => {
             const choice = legalChoices.find(([label, _]) => label === choiceLabel)?.[1];
@@ -51,7 +52,7 @@ export class ChooseGameAction extends GameAction {
                 return;
             }
             if(choice.message) {
-                context.game.addMessage(choice.message, player, properties.target, ...properties.messageArgs);
+                context.game.addMessage(choice.message, player, properties.target, ...(properties.messageArgs ?? []));
             }
             context.game.queueSimpleStep(() => choice.action.addEventsToArray(events, context));
         };

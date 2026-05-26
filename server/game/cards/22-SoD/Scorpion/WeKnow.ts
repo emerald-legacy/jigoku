@@ -29,11 +29,10 @@ export default class WeKnow extends DrawCard {
                     dependsOn: 'token',
                     mode: TargetModes.Select,
                     player: Players.Opponent,
-                    choices: (context) => {
+                    choices: ((context: any) => {
                         const targetToken: StatusToken = context.tokens.token[0];
                         const targetCard = targetToken.card;
                         if(!(targetCard instanceof DrawCard)) {
-                            // should never happen
                             return {};
                         }
                         return {
@@ -46,17 +45,17 @@ export default class WeKnow extends DrawCard {
                                 AbilityDsl.actions.draw({ target: context.player, amount: 2 })
                             ])
                         };
-                    }
+                    }) as any
                 }
             },
             then: context => ({
-                thenCondition: () => context.player.honor > context.player.opponent?.honor,
+                thenCondition: () => !!context && !!context.player.opponent && context.player.honor > (context.player.opponent.honor ?? 0),
                 gameAction: AbilityDsl.actions.loseHonor({
-                    target: context.player,
+                    target: context?.player,
                     amount: 2
                 }),
                 message: '{3} loses 2 honor',
-                messageArgs: () => [context.player]
+                messageArgs: () => [context?.player]
             }),
             effect: '{1}{2}{3}',
             effectArgs: (context) => {

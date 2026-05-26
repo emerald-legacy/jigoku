@@ -1,26 +1,32 @@
+import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../drawcard.js';
 import { Players, CardTypes } from '../../Constants.js';
 
 class MakeAnOpening extends DrawCard {
     static id = 'make-an-opening';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Give -X/-X to opposing character, where X is the difference between current honor dial bid values',
-            condition: context =>
-                this.game.isDuringConflict() &&
-                context.player.opponent &&
-                this.game.currentConflict.getNumberOfParticipantsFor(context.player) >= 1 &&
-                this.game.currentConflict.getNumberOfParticipantsFor(context.player.opponent) >= 1 &&
-                context.player.showBid &&
-                context.player.opponent.showBid &&
-                context.player.showBid !== context.player.opponent.showBid,
+            condition: context => {
+                const conflict = this.game.currentConflict;
+                const opponent = context.player.opponent;
+                return this.game.isDuringConflict() &&
+                    !!opponent &&
+                    !!conflict &&
+                    conflict.getNumberOfParticipantsFor(context.player) >= 1 &&
+                    conflict.getNumberOfParticipantsFor(opponent) >= 1 &&
+                    !!context.player.showBid &&
+                    !!opponent.showBid &&
+                    context.player.showBid !== opponent.showBid;
+            },
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Opponent,
-                cardCondition: card =>
+                cardCondition: (card: any) =>
                     card.isParticipating(),
-                gameAction: ability.actions.cardLastingEffect(context => ({
+                gameAction: ability.actions.cardLastingEffect((context: any) => ({
                     effect: ability.effects.modifyBothSkills(-(this.getHonorDialDifference(context)))
                 }))
             },
@@ -29,8 +35,12 @@ class MakeAnOpening extends DrawCard {
         });
     }
 
-    getHonorDialDifference(context) {
-        return Math.abs(context.player.showBid - context.player.opponent.showBid);
+    getHonorDialDifference(context: AbilityContext) {
+        const opp = context.player.opponent;
+        if(!opp) {
+            return 0;
+        }
+        return Math.abs((context.player.showBid ?? 0) - (opp.showBid ?? 0));
     }
 }
 

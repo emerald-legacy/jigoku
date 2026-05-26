@@ -19,5 +19,6 @@ export class EndRoundPrompt extends PlayerOrderPrompt {
         }
 
         this.completePlayer();
+        return true;
     }
 }

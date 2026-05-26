@@ -15,15 +15,15 @@ export class GloryCountAction extends GameAction<GloryCountProperties> {
         return true;
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties): void {
+    addEventsToArray(events: any[], context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         events.push(this.getEvent(null, context, additionalProperties));
     }
 
-    eventHandler(event, additionalProperties): void {
+    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
         let game = event.context.game;
         let properties = this.getProperties(event.context, additionalProperties);
 
-        let gloryTotals = game.getPlayersInFirstPlayerOrder().map((player) => {
+        let gloryTotals = game.getPlayersInFirstPlayerOrder().map((player: Player) => {
             return player.getGloryCount();
         });
         let winner = game.getFirstPlayer();
@@ -45,7 +45,7 @@ export class GloryCountAction extends GameAction<GloryCountProperties> {
                 ? properties.gameAction(winner, event.context)
                 : properties.gameAction;
         if(gameAction && gameAction.hasLegalTarget(event.context) && winner) {
-            gameAction.resolve(null, event.context);
+            gameAction.resolve(undefined, event.context);
         }
     }
 }

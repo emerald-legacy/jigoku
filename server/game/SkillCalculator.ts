@@ -81,13 +81,13 @@ export class SkillCalculator {
                 case EffectNames.SetBaseDash:
                     if(effect.getValue(this.card) === 'military') {
                         baseMilitaryModifiers.push(
-                            StatModifier.fromEffect(undefined, effect, true, StatModifier.getEffectName(effect))
+                            StatModifier.fromEffect(NaN, effect, true, StatModifier.getEffectName(effect))
                         );
                         baseMilitarySkill = NaN;
                     }
                     if(effect.getValue(this.card) === 'political') {
                         basePoliticalModifiers.push(
-                            StatModifier.fromEffect(undefined, effect, true, StatModifier.getEffectName(effect))
+                            StatModifier.fromEffect(NaN, effect, true, StatModifier.getEffectName(effect))
                         );
                         basePoliticalSkill = NaN;
                     }
@@ -168,13 +168,13 @@ export class SkillCalculator {
 
         const overridingMilModifiers = baseMilitaryModifiers.filter((mod: any) => mod.overrides);
         if(overridingMilModifiers.length > 0) {
-            const lastModifier = overridingMilModifiers.at(-1);
+            const lastModifier = overridingMilModifiers[overridingMilModifiers.length - 1];
             baseMilitaryModifiers = [lastModifier];
             baseMilitarySkill = lastModifier.amount;
         }
         const overridingPolModifiers = basePoliticalModifiers.filter((mod: any) => mod.overrides);
         if(overridingPolModifiers.length > 0) {
-            const lastModifier = overridingPolModifiers.at(-1);
+            const lastModifier = overridingPolModifiers[overridingPolModifiers.length - 1];
             basePoliticalModifiers = [lastModifier];
             basePoliticalSkill = lastModifier.amount;
         }

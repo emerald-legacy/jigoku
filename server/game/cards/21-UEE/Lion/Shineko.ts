@@ -10,13 +10,13 @@ export default class Shineko extends DrawCard {
             location: Locations.Any,
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
-                amount: (_, player) =>
+                amount: (_: any, player: any) =>
                     player.cardsInPlay.some(
                         (card: DrawCard) => card.getType() === CardTypes.Character && card.hasSomeTrait('scout', 'beastmaster')
                     )
                         ? 1
                         : 0,
-                match: (card, source) => card === source
+                match: (card: any, source: any) => card === source
             })
         });
 

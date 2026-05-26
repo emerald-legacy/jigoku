@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../basecard.js';
 import { CardTypes, EffectNames, Locations, PlayTypes } from '../../Constants.js';
 import type DrawCard from '../../drawcard.js';
@@ -13,7 +12,8 @@ export function canPlayFromOwn(
     playType = PlayTypes.PlayFromHand
 ) {
     return EffectBuilder.player.detached(EffectNames.CanPlayFromOwn, {
-        apply(player: Player) {
+        apply(target) {
+            const player = target as Player;
             for(const card of cards) {
                 if(card.type === CardTypes.Event && card.location === location) {
                     for(const reaction of card.reactions) {
@@ -29,7 +29,9 @@ export function canPlayFromOwn(
 
             return player.addPlayableLocation(playType, player, location, cards);
         },
-        unapply(player: Player, context: AbilityContext, location: PlayableLocation) {
+        unapply(target, _context, state) {
+            const player = target as Player;
+            const location = state as PlayableLocation;
             player.removePlayableLocation(location);
             for(const card of location.cards) {
                 if(Array.isArray(card.fromOutOfPlaySource)) {

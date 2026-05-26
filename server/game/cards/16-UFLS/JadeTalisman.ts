@@ -12,11 +12,11 @@ class JadeTalisman extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel a ring effect',
             when: {
-                onMoveFate: (event, context) => event.context.source.type === 'ring' && event.origin === context.source.parent && event.fate > 0,
-                onCardHonored: (event, context) => event.card === context.source.parent && event.context.source.type === 'ring',
-                onCardDishonored: (event, context) => event.card === context.source.parent && event.context.source.type === 'ring',
-                onCardBowed: (event, context) => event.card === context.source.parent && event.context.source.type === 'ring',
-                onCardReadied: (event, context) => event.card === context.source.parent && event.context.source.type === 'ring'
+                onMoveFate: (event, context) => event.context?.source.type === 'ring' && event.origin === context.source.parent && event.fate > 0,
+                onCardHonored: (event, context) => event.card === context.source.parent && event.context?.source.type === 'ring',
+                onCardDishonored: (event, context) => event.card === context.source.parent && event.context?.source.type === 'ring',
+                onCardBowed: (event, context) => event.card === context.source.parent && event.context?.source.type === 'ring',
+                onCardReadied: (event, context) => event.card === context.source.parent && event.context?.source.type === 'ring'
             },
             cost: AbilityDsl.costs.sacrificeSelf(),
             gameAction: AbilityDsl.actions.cancel(),

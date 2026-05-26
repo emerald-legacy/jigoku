@@ -1,41 +1,46 @@
+import type BaseCard from './basecard.js';
 import { CardTypes } from './Constants.js';
+
+interface EffectLike {
+    context?: { source?: { name?: string; type?: CardTypes } };
+}
 
 class StatModifier {
     amount: number;
     name: string;
-    countsAsBase: boolean;
-    type: CardTypes;
+    countsAsBase: boolean = false;
+    type: CardTypes | undefined;
     overrides: boolean;
 
     constructor(amount: number, name: string, overrides: boolean, type?: CardTypes) {
         this.amount = amount;
         this.name = name;
         this.overrides = overrides;
-        this.type = type as CardTypes;
+        this.type = type;
     }
 
-    static getEffectName(effect) {
-        if(effect && effect.context && effect.context.source) {
+    static getEffectName(effect: EffectLike | null | undefined): string {
+        if(effect && effect.context && effect.context.source && effect.context.source.name) {
             return effect.context.source.name;
         }
         return 'Unknown';
     }
 
-    static getEffectType(effect) {
+    static getEffectType(effect: EffectLike | null | undefined): CardTypes | undefined {
         if(effect && effect.context && effect.context.source) {
             return effect.context.source.type;
         }
-        return;
+        return undefined;
     }
 
-    static getCardType(card) {
+    static getCardType(card: BaseCard | null | undefined): CardTypes | undefined {
         if(card) {
             return card.type;
         }
-        return;
+        return undefined;
     }
 
-    static fromEffect(amount: number, effect: any, overrides = false, name = `${this.getEffectName(effect)}`) {
+    static fromEffect(amount: number, effect: EffectLike | null | undefined, overrides = false, name = `${this.getEffectName(effect)}`) {
         return new this(
             amount,
             name,
@@ -44,7 +49,7 @@ class StatModifier {
         );
     }
 
-    static fromCard(amount: number, card: any, name, overrides = false) {
+    static fromCard(amount: number, card: BaseCard | null | undefined, name: string, overrides = false) {
         return new this(
             amount,
             name,
@@ -53,7 +58,7 @@ class StatModifier {
         );
     }
 
-    static fromStatusToken(amount: number, name, overrides = false) {
+    static fromStatusToken(amount: number, name: string, overrides = false) {
         return new this(
             amount,
             name,

@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import type BaseAction from '../../../BaseAction.js';
 import type BaseCard from '../../../basecard.js';
 import { CardTypes, Locations } from '../../../Constants.js';
 import DrawCard from '../../../drawcard.js';
@@ -24,24 +25,18 @@ export default class EarnestSculptor extends DrawCard {
             title: 'Reduce cost of next Jade card',
             when: {
                 onCardPlayed: (event, context) =>
-                    // Event
                     event.card.type === CardTypes.Event &&
-                    // by player
                     event.player === context.player &&
-                    // jade
                     event.card.hasTrait('jade') &&
-                    // costing more than zero
-                    event.context.ability.getReducedCost(event.context) > 0,
+                    event.context !== undefined &&
+                    (event.context.ability as BaseAction).getReducedCost(event.context) > 0,
                 onAbilityResolverInitiated: (event, context) =>
-                    // Attachment
+                    event.context !== undefined &&
                     (event.context.source.type === CardTypes.Attachment ||
                         event.context.ability instanceof PlayAttachmentAction) &&
-                    // by player
                     event.context.player === context.player &&
-                    // jade
                     event.context.source.hasTrait('jade') &&
-                    // costing more than zero
-                    event.context.ability.getReducedCost(event.context) > 0
+                    (event.context.ability as BaseAction).getReducedCost(event.context) > 0
             },
             effect: 'reduce the cost of {1} by 1',
             effectArgs: (context) => [context.event.context.source],

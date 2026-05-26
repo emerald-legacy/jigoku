@@ -8,15 +8,15 @@ class DojiKuwanan extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
-                condition: (context) =>
-                    context.player && context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru'),
+                condition: (context: any) =>
+                    context.player && context.player.cardsInPlay.find((card: any) => card.name === 'Doji Hotaru'),
                 message: '{1} is discarded from play as its controller controls {0}',
-                messageArgs: (context) => [
+                messageArgs: (context: any) => [
                     context.source,
-                    context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru')
+                    context.player.cardsInPlay.find((card: any) => card.name === 'Doji Hotaru')
                 ],
-                gameAction: AbilityDsl.actions.discardFromPlay((context) => ({
-                    target: context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru')
+                gameAction: AbilityDsl.actions.discardFromPlay((context: any) => ({
+                    target: context.player.cardsInPlay.find((card: any) => card.name === 'Doji Hotaru')
                 }))
             })
         });
@@ -26,7 +26,7 @@ class DojiKuwanan extends DrawCard {
                 context.source.game.isDuringConflict('military') && context.source.isParticipating(),
             target: {
                 cardType: CardTypes.Character,
-                cardCondition: (card, context) =>
+                cardCondition: (card: any, context: any) =>
                     card.getMilitarySkill() < context.source.getMilitarySkill() && card.isParticipating(),
                 gameAction: AbilityDsl.actions.bow()
             }

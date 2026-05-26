@@ -5,8 +5,8 @@ import DrawCard from '../../../drawcard.js';
 export default class MirumotoRei2 extends DrawCard {
     static id = 'mirumoto-rei-2';
 
-    getWeaponCount(context) {
-        return context.source.attachments.filter((card) => card.hasTrait('weapon')).length;
+    getWeaponCount(context: any) {
+        return context.source.attachments.filter((card: any) => card.hasTrait('weapon')).length;
     }
 
     setupCardAbilities() {
@@ -33,11 +33,11 @@ export default class MirumotoRei2 extends DrawCard {
                 type: DuelTypes.Military,
                 message: 'injure {0}',
                 messageArgs: (duel) => [duel.loser],
-                gameAction: (duel) =>
+                gameAction: ((duel: any) =>
                     duel.loser &&
                     AbilityDsl.actions.multipleContext(() => {
-                        const gameActions = [];
-                        duel.loser.forEach((loser) => {
+                        const gameActions: any[] = [];
+                        duel.loser.forEach((loser: any) => {
                             if(loser.getFate() > 0) {
                                 gameActions.push(
                                     AbilityDsl.actions.removeFate({
@@ -54,7 +54,7 @@ export default class MirumotoRei2 extends DrawCard {
                             }
                         });
                         return { gameActions };
-                    })
+                    })) as any
             }
         });
     }

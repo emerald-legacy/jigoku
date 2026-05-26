@@ -25,20 +25,20 @@ export default class Landfall extends ProvinceCard {
         });
     }
 
-    wealthSelectPrompt(context) {
+    wealthSelectPrompt(context: any) {
         if(!this.cards || this.cards.length <= 0 || !this.hasRemainingTarget()) {
             context.player.shuffleDynastyDeck();
             return;
         }
 
-        let cardHandler = (currentCard) => {
+        let cardHandler = (currentCard: any) => {
             this.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a province for ' + currentCard.name,
                 context: context,
                 location: Locations.Provinces,
                 controller: Players.Self,
-                cardCondition: (card) => card.type === CardTypes.Province && this.isProvinceValidTarget(card),
-                onSelect: (player, card) => {
+                cardCondition: (card: any) => card.type === CardTypes.Province && this.isProvinceValidTarget(card),
+                onSelect: (player: any, card: any) => {
                     this.game.addMessage(
                         '{0} puts {1} into {2}',
                         context.player,
@@ -48,7 +48,7 @@ export default class Landfall extends ProvinceCard {
                     this.chosenProvinces.push(card);
                     context.player.moveCard(currentCard, card.location);
                     currentCard.facedown = false;
-                    this.cards = this.cards.filter((a) => a !== currentCard);
+                    this.cards = this.cards.filter((a: any) => a !== currentCard);
 
                     if(this.cards && this.cards.length > 0 && this.hasRemainingTarget()) {
                         this.game.promptWithHandlerMenu(context.player, {
@@ -78,8 +78,8 @@ export default class Landfall extends ProvinceCard {
         });
     }
 
-    isProvinceValidTarget(province) {
-        return province.location !== Locations.StrongholdProvince && !this.chosenProvinces.some((a) => a === province);
+    isProvinceValidTarget(province: any) {
+        return province.location !== Locations.StrongholdProvince && !this.chosenProvinces.some((a: any) => a === province);
     }
 
     hasRemainingTarget() {

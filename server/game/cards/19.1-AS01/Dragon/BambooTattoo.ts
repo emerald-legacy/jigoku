@@ -16,19 +16,19 @@ export default class BambooTattoo extends DrawCard {
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: 1,
-                targetCondition: (target) => target.type === CardTypes.Character && target.printedCost <= 3,
-                match: (card, source) => card === source
+                targetCondition: (target: any) => target.type === CardTypes.Character && target.printedCost <= 3,
+                match: (card: any, source: any) => card === source
             })
         });
 
         this.reaction({
             title: 'Ready attached character',
             when: {
-                onCardBowed: (event, context) =>
+                onCardBowed: (event: any, context: any) =>
                     context.source.parent &&
                     event.card === context.source.parent &&
-                    event.context.source.type !== 'ring' &&
-                    event.context.source.name !== 'Framework effect'
+                    event.context?.source.type !== 'ring' &&
+                    event.context?.source.name !== 'Framework effect'
             },
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.ready((context) => ({ target: context.source.parent })),

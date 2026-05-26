@@ -15,16 +15,16 @@ export class GainAllAbilities extends EffectValue<BaseCard> {
         super(card);
         this.printedOnly = printedOnly;
         this.actions = card.abilities.actions
-            .filter(action => !this.printedOnly || action.printedAbility)
-            .map((action) => new GainAbility(AbilityTypes.Action, action));
+            .filter((action: any) => !this.printedOnly || action.printedAbility)
+            .map((action: any) => new GainAbility(AbilityTypes.Action, action));
         //Need to ignore keyword reactions or we double up on the pride / courtesy / sincerity triggers
         this.reactions = card.abilities.reactions
-            .filter(a => !this.printedOnly || a.printedAbility)
-            .filter((a) => !a.isKeywordAbility())
-            .map((ability) => new GainAbility(ability.abilityType, ability));
+            .filter((a: any) => !this.printedOnly || a.printedAbility)
+            .filter((a: any) => !a.isKeywordAbility())
+            .map((ability: any) => new GainAbility(ability.abilityType, ability));
         this.persistentEffects = card.abilities.persistentEffects
             // .filter(a => !this.printedOnly || a.printedAbility)
-            .map((effect) => Object.assign({}, effect));
+            .map((effect: any) => Object.assign({}, effect));
         this.abilitiesForTargets = {};
     }
 
@@ -47,9 +47,12 @@ export class GainAllAbilities extends EffectValue<BaseCard> {
     }
 
     unapply(target: BaseCard) {
-        for(const value of this.abilitiesForTargets[target.uuid].reactions) {
-            // @ts-expect-error -- GainAbility values have unregisterEvents at runtime but the type is not declared
-            value.unregisterEvents();
+        const entry = this.abilitiesForTargets[target.uuid];
+        if(entry) {
+            for(const value of entry.reactions) {
+                // @ts-expect-error -- GainAbility values have unregisterEvents at runtime but the type is not declared
+                value.unregisterEvents();
+            }
         }
         for(const effect of this.persistentEffects) {
             if(effect.ref) {
@@ -61,15 +64,17 @@ export class GainAllAbilities extends EffectValue<BaseCard> {
     }
 
     getActions(target: BaseCard) {
-        if(this.abilitiesForTargets[target.uuid]) {
-            return this.abilitiesForTargets[target.uuid].actions;
+        const entry = this.abilitiesForTargets[target.uuid];
+        if(entry) {
+            return entry.actions;
         }
         return [];
     }
 
     getReactions(target: BaseCard) {
-        if(this.abilitiesForTargets[target.uuid]) {
-            return this.abilitiesForTargets[target.uuid].reactions;
+        const entry = this.abilitiesForTargets[target.uuid];
+        if(entry) {
+            return entry.reactions;
         }
         return [];
     }

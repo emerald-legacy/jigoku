@@ -1,6 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes } from '../../../Constants.js';
 import DrawCard from '../../../drawcard.js';
+import type { Event } from '../../../Events/Event.js';
 import type Player from '../../../player.js';
 import type Ring from '../../../ring.js';
 
@@ -44,7 +45,7 @@ class Process {
             onMenuCommand: (player: Player) => {
                 this.context.game.addMessage('{0} resolves {1}', player, this.#chosenRings);
                 const action = this.context.game.actions.resolveRingEffect({ target: this.#chosenRings });
-                const events = [];
+                const events: Event[] = [];
                 action.addEventsToArray(events, this.context.game.getFrameworkContext(player));
                 this.context.game.openThenEventWindow(events);
                 return true;
@@ -62,7 +63,7 @@ class Process {
             target: this.#chosenRings,
             enforceOrderedResolution: true
         });
-        const events = [];
+        const events: Event[] = [];
         action.addEventsToArray(events, this.context.game.getFrameworkContext(this.context.player));
         this.context.game.openThenEventWindow(events);
         return true;
@@ -92,7 +93,7 @@ export default class RiddlesOfTheHenshin extends DrawCard {
         this.action({
             title: 'Resolve ring effects',
             condition: (context) => getNumberOfMonks(context) > 0 && context.player.getClaimedRings().length > 0,
-            handler: (context) => new Process(getNumberOfMonks(context), context).promptPlayer(),
+            handler: (context) => new Process(getNumberOfMonks(context as AbilityContext), context as AbilityContext).promptPlayer(),
             effect: 'resolve ring effects'
         });
     }

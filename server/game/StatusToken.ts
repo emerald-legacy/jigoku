@@ -32,7 +32,7 @@ export class StatusToken extends EffectSource {
     }
 
     get controller() {
-        return this.card.controller;
+        return this.card?.controller;
     }
 
     get grantedStatus() {
@@ -81,7 +81,7 @@ export class StatusToken extends EffectSource {
         if(!this.card || this.card.type !== CardTypes.Character) {
             return;
         }
-        const effect = {
+        const effect: { match: BaseCard; effect: ReturnType<typeof AbilityDsl.effects.modifyBothSkills>; ref: any[] } = {
             match: this.card,
             effect: AbilityDsl.effects.modifyBothSkills((card: BaseCard) => -card.getGlory()),
             ref: []
@@ -94,9 +94,9 @@ export class StatusToken extends EffectSource {
         if(!this.card || this.card.type !== CardTypes.Character) {
             return;
         }
-        const effect = {
+        const effect: { match: BaseCard; effect: ReturnType<typeof AbilityDsl.effects.modifyBothSkills>; ref: any[] } = {
             match: this.card,
-            effect: AbilityDsl.effects.modifyBothSkills((card) => card.getGlory()),
+            effect: AbilityDsl.effects.modifyBothSkills((card: BaseCard) => card.getGlory()),
             ref: []
         };
         this.persistentEffects.push(effect);
@@ -121,15 +121,19 @@ export class StatusToken extends EffectSource {
     }
 
     #taintEffectsOnCharacters() {
+        const card = this.card;
+        if(!card) {
+            return [];
+        }
         return [
             {
-                match: this.card,
+                match: card,
                 effect: AbilityDsl.effects.modifyBothSkills(2),
                 ref: undefined
             },
             {
-                match: this.card,
-                condition: () => !this.card.anyEffect(EffectNames.TaintedStatusDoesNotCostHonor),
+                match: card,
+                condition: () => !card.anyEffect(EffectNames.TaintedStatusDoesNotCostHonor),
                 effect: AbilityDsl.effects.honorCostToDeclare(1),
                 ref: undefined
             }
@@ -137,21 +141,25 @@ export class StatusToken extends EffectSource {
     }
 
     #taintEffectsOnProvinces() {
+        const card = this.card;
+        if(!card) {
+            return [];
+        }
         return [
             {
-                match: this.card,
+                match: card,
                 condition: () =>
                     !(
-                        this.card.game.currentConflict &&
-                        this.card.game.currentConflict.anyEffect(EffectNames.ConflictIgnoreStatusTokens) &&
-                        this.card.isConflictProvince()
+                        card.game.currentConflict &&
+                        card.game.currentConflict.anyEffect(EffectNames.ConflictIgnoreStatusTokens) &&
+                        card.isConflictProvince()
                     ),
                 effect: AbilityDsl.effects.modifyProvinceStrength(2),
                 ref: undefined
             },
             {
-                match: this.card.controller,
-                condition: () => this.card.isConflictProvince(),
+                match: card.controller,
+                condition: () => card.isConflictProvince(),
                 effect: AbilityDsl.effects.costToDeclareAnyParticipants({
                     type: 'defenders',
                     message: 'loses 1 honor',

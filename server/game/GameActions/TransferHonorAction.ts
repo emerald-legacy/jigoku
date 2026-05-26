@@ -39,56 +39,69 @@ export class TransferHonorAction extends PlayerAction {
 
     getCostMessage(context: AbilityContext): [string, any[]] {
         let properties = this.getProperties(context) as TransferHonorProperties;
+        const opponent = context.player.opponent;
+        if(!opponent) {
+            return ['giving {1} honor to {2}', [0, null]];
+        }
         var amountToTransfer = this.getAmountToTransfer(
             context.player,
-            context.player.opponent,
+            opponent,
             context,
-            properties.amount
+            properties.amount ?? 0
         );
-        return ['giving {1} honor to {2}', [amountToTransfer, context.player.opponent]];
+        return ['giving {1} honor to {2}', [amountToTransfer, opponent]];
     }
 
     getEffectMessage(context: AbilityContext): [string, any[]] {
         let properties = this.getProperties(context) as TransferHonorProperties;
+        const opponent = context.player.opponent;
+        if(!opponent) {
+            return ['take {1} honor from {0}', [null, 0]];
+        }
         var amountToTransfer = this.getAmountToTransfer(
-            context.player.opponent,
+            opponent,
             context.player,
             context,
-            properties.amount
+            properties.amount ?? 0
         );
-        return ['take {1} honor from {0}', [context.player.opponent, amountToTransfer]];
+        return ['take {1} honor from {0}', [opponent, amountToTransfer]];
     }
 
     canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties) as TransferHonorProperties;
 
-        const gainsHonor = properties.amount > 0;
+        const amount = properties.amount ?? 0;
+        const gainsHonor = amount > 0;
         if(!gainsHonor) {
+            return false;
+        }
+        const opponent = player.opponent;
+        if(!opponent) {
             return false;
         }
 
         var [hasLimit, amountToTransfer] = CalculateHonorLimit(
-            player.opponent,
+            opponent,
             context.game.roundNumber,
             context.game.currentPhase,
-            properties.amount
+            amount
         );
-        amountToTransfer = this.getAmountToTransfer(player, player.opponent, context, properties.amount);
+        amountToTransfer = this.getAmountToTransfer(player, opponent, context, amount);
         if(hasLimit && !amountToTransfer) {
             return false;
         }
 
-        return player.opponent && super.canAffect(player, context);
+        return super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event, player: Player, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: any): void {
         let { afterBid, amount } = this.getProperties(context, additionalProperties) as TransferHonorProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.afterBid = afterBid;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         var amountToTransfer = this.getAmountToTransfer(
             event.player,
             event.player.opponent,

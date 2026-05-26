@@ -37,13 +37,13 @@ export class GainStatusTokenAction extends CardGameAction<GainStatusTokenPropert
         return ['give {0} a {1} status token', [properties.target, properties.token]];
     }
 
-    addPropertiesToEvent(event, card: BaseCard, context: AbilityContext, additionalProperties = {}): void {
+    addPropertiesToEvent(event: any, card: BaseCard, context: AbilityContext, additionalProperties = {}): void {
         const { token } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.token = token;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.card.addStatusToken(event.token);
     }
 }

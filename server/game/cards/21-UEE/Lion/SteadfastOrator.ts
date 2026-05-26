@@ -29,7 +29,7 @@ function abilityWithCost(self: SteadfastOrator, limit: AbilityLimit, cost: Cost,
         title,
         when: {
             onSendHome: (event, context) =>
-                event.card.type === CardTypes.Character && event.card.controller === context.player
+                !!event.card && event.card.type === CardTypes.Character && event.card.controller === context.player
         },
         cost,
         cannotBeMirrored: true,

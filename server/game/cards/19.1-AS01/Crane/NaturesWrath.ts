@@ -48,7 +48,7 @@ export default class NaturesWrath extends DrawCard {
                 }
             },
             then: (context) => {
-                if(!context.subResolution) {
+                if(!context || !context.subResolution) {
                     return {
                         target: {
                             mode: TargetModes.Select,
@@ -61,13 +61,14 @@ export default class NaturesWrath extends DrawCard {
                         },
                         then: {
                             thenCondition: (event: any) =>
+                                !!context &&
                                 event.origin === context.target &&
                                 !event.cancelled &&
                                 event.name === EventNames.OnCardDishonored,
                             gameAction: AbilityDsl.actions.resolveAbility({
-                                ability: context.ability instanceof CardAbility ? context.ability : null,
+                                ability: (context && context.ability instanceof CardAbility ? context.ability : undefined) as CardAbility,
                                 subResolution: true,
-                                choosingPlayerOverride: context.choosingPlayerOverride
+                                choosingPlayerOverride: context?.choosingPlayerOverride ?? undefined
                             })
                         }
                     };

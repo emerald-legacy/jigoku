@@ -92,7 +92,7 @@ class BaseCard extends EffectSource {
         this.printedName = cardData.name;
         this.printedType = cardData.type;
         this.traits = cardData.traits || [];
-        this.printedFaction = cardData.clan || cardData.faction;
+        this.printedFaction = cardData.clan ?? cardData.faction ?? '';
 
         this.setupCardAbilities(AbilityDsl);
         this.parseKeywords(cardData.text ? cardData.text.replace(/<[^>]*>/g, '').toLowerCase() : '');
@@ -267,7 +267,7 @@ class BaseCard extends EffectSource {
     }
 
     createTriggeredAbility(abilityType: AbilityTypes, properties: TriggeredAbilityProps): TriggeredAbility {
-        return new TriggeredAbility(this.game, this, abilityType, properties);
+        return new TriggeredAbility(this.game, this, abilityType, properties as unknown as ConstructorParameters<typeof TriggeredAbility>[3]);
     }
 
     reaction(properties: TriggeredAbilityProps): void {
@@ -751,19 +751,21 @@ class BaseCard extends EffectSource {
 
     isAttacking(conflictType?: 'military' | 'political'): boolean {
         return (
-            this.game.currentConflict?.isAttacking(this) && (!conflictType || (this.game.isDuringConflict as (type: string | null) => boolean)(conflictType))
+            !!this.game.currentConflict?.isAttacking(this as unknown as DrawCard) &&
+            (!conflictType || (this.game.isDuringConflict as (type: string | null) => boolean)(conflictType))
         );
     }
 
     isDefending(conflictType?: 'military' | 'political'): boolean {
         return (
-            this.game.currentConflict?.isDefending(this) && (!conflictType || (this.game.isDuringConflict as (type: string | null) => boolean)(conflictType))
+            !!this.game.currentConflict?.isDefending(this as unknown as DrawCard) &&
+            (!conflictType || (this.game.isDuringConflict as (type: string | null) => boolean)(conflictType))
         );
     }
 
     isParticipating(conflictType?: 'military' | 'political'): boolean {
         return (
-            this.game.currentConflict?.isParticipating(this) &&
+            !!this.game.currentConflict?.isParticipating(this as unknown as DrawCard) &&
             (!conflictType || (this.game.isDuringConflict as (type: string | null) => boolean)(conflictType))
         );
     }
@@ -781,7 +783,7 @@ class BaseCard extends EffectSource {
     }
 
     isUnique(): boolean {
-        return this.cardData.is_unique;
+        return !!this.cardData.is_unique;
     }
 
     isBlank(): boolean {
@@ -789,7 +791,7 @@ class BaseCard extends EffectSource {
     }
 
     getPrintedFaction(): string {
-        return this.cardData.clan || this.cardData.faction;
+        return this.cardData.clan ?? this.cardData.faction ?? '';
     }
 
     checkRestrictions(actionType: string, context: AbilityContext): boolean {
@@ -873,8 +875,8 @@ class BaseCard extends EffectSource {
     }
 
     applyAttachmentBonus() {
-        const militaryBonus = parseInt(this.cardData.military_bonus);
-        const politicalBonus = parseInt(this.cardData.political_bonus);
+        const militaryBonus = parseInt(this.cardData.military_bonus ?? '');
+        const politicalBonus = parseInt(this.cardData.political_bonus ?? '');
         if(!isNaN(militaryBonus)) {
             this.persistentEffect({
                 match: (card) => card === this.parent,

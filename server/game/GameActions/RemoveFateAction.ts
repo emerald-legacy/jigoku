@@ -38,7 +38,7 @@ export class RemoveFateAction extends CardGameAction {
         return super.canAffect(card, context) && this.checkRecipient(properties.recipient, context);
     }
 
-    checkRecipient(origin: Player | Ring | DrawCard, context: AbilityContext): boolean {
+    checkRecipient(origin: Player | Ring | DrawCard | undefined, context: AbilityContext): boolean {
         if(origin) {
             if(['player', 'ring'].includes(origin.type)) {
                 return true;
@@ -48,7 +48,7 @@ export class RemoveFateAction extends CardGameAction {
         return true;
     }
 
-    addPropertiesToEvent(event, card: DrawCard, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, card: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, recipient } = this.getProperties(context, additionalProperties) as RemoveFateProperties;
         event.fate = amount;
         event.recipient = recipient;
@@ -56,11 +56,11 @@ export class RemoveFateAction extends CardGameAction {
         event.context = context;
     }
 
-    checkEventCondition(event): boolean {
+    checkEventCondition(event: any): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event, card: DrawCard, context: AbilityContext, additionalProperties): boolean {
+    isEventFullyResolved(event: any, card: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         let { amount, recipient } = this.getProperties(context, additionalProperties) as RemoveFateProperties;
         return (
             !event.cancelled &&
@@ -71,7 +71,7 @@ export class RemoveFateAction extends CardGameAction {
         );
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         this.moveFateEventHandler(event);
     }
 }

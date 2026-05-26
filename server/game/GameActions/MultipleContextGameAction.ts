@@ -54,7 +54,7 @@ export class MultipleContextGameAction extends GameAction {
         }
     }
 
-    hasTargetsChosenByInitiatingPlayer(context) {
+    hasTargetsChosenByInitiatingPlayer(context: AbilityContext) {
         let properties = this.getProperties(context);
         return properties.gameActions.some((gameAction) => gameAction.hasTargetsChosenByInitiatingPlayer(context));
     }

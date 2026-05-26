@@ -18,7 +18,7 @@ export interface TriggerAbilityProperties extends CardActionProperties {
 export class TriggerAbilityAction extends CardGameAction<TriggerAbilityProperties> {
     name = 'triggerAbility';
     defaultProperties: TriggerAbilityProperties = {
-        ability: null,
+        ability: null as unknown as CardAbility,
         ignoredRequirements: [],
         subResolution: false
     };
@@ -41,11 +41,11 @@ export class TriggerAbilityAction extends CardGameAction<TriggerAbilityPropertie
             return false;
         }
         let newContext = ability.createContext(player, newContextEvent);
-        let ignoredRequirements = properties.ignoredRequirements.concat('player', 'location', 'limit');
+        let ignoredRequirements = (properties.ignoredRequirements ?? []).concat('player', 'location', 'limit');
         return !ability.meetsRequirements(newContext, ignoredRequirements);
     }
 
-    eventHandler(event, additionalProperties): void {
+    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties(event.context, additionalProperties);
         let player = properties.player || event.context.player;
         let newContextEvent = properties.event;
@@ -54,7 +54,7 @@ export class TriggerAbilityAction extends CardGameAction<TriggerAbilityPropertie
         event.context.game.queueStep(new AbilityResolver(event.context.game, newContext));
     }
 
-    hasTargetsChosenByInitiatingPlayer(context) {
+    hasTargetsChosenByInitiatingPlayer(context: TriggeredAbilityContext) {
         let properties = this.getProperties(context);
         return (
             properties.ability &&

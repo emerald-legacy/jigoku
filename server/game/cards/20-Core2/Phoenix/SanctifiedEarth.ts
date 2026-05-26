@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../conflict.js';
 import { CardTypes, Players } from '../../../Constants.js';
 import DrawCard from '../../../drawcard.js';
 import type Player from '../../../player.js';
@@ -7,14 +6,14 @@ import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.j
 
 const controlledBy = (player: Player) => (character: DrawCard) => character.controller === player;
 
-const trigger = {
+const trigger: Record<string, { when: (event: any, context: TriggeredAbilityContext) => boolean; cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => boolean }> = {
     onConflictDeclared: {
-        when: (event: Conflict, context: TriggeredAbilityContext) => event.attackers.some(controlledBy(context.player)),
-        cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => context.event.attackers.includes(card)
+        when: (event: any, context: TriggeredAbilityContext) => (event.attackers ?? []).some(controlledBy(context.player)),
+        cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => (context.event.attackers ?? []).includes(card)
     },
     onDefendersDeclared: {
-        when: (event: Conflict, context: TriggeredAbilityContext) => event.defenders.some(controlledBy(context.player)),
-        cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => context.event.defenders.includes(card)
+        when: (event: any, context: TriggeredAbilityContext) => (event.defenders ?? []).some(controlledBy(context.player)),
+        cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => (context.event.defenders ?? []).includes(card)
     },
     onMoveToConflict: {
         when: (event: any, context: TriggeredAbilityContext) => controlledBy(context.player)(event.card),

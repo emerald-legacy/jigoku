@@ -32,16 +32,16 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
         return super.canAffect(ring, context);
     }
 
-    checkEventCondition(event, additionalProperties): boolean {
+    checkEventCondition(event: any, additionalProperties: Record<string, unknown> = {}): boolean {
         return this.canAffect(event.parent, event.context, additionalProperties);
     }
 
-    isEventFullyResolved(event, card: DrawCard, context: AbilityContext, additionalProperties): boolean {
+    isEventFullyResolved(event: any, card: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         let { attachment } = this.getProperties(context, additionalProperties);
         return event.parent === card && event.card === attachment && event.name === this.eventName && !event.cancelled;
     }
 
-    addPropertiesToEvent(event, card: DrawCard, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, card: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { attachment } = this.getProperties(context, additionalProperties);
         event.name = this.eventName;
         event.parent = card;
@@ -49,7 +49,7 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
         event.context = context;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         if(event.card.location === Locations.PlayArea && event.card.parent) {
             event.card.parent.removeAttachment(event.card);
         } else {

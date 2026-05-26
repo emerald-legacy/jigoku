@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -10,9 +11,13 @@ class PoliticalSanction extends DrawCard {
         });
     }
 
-    canPlay(context, playType) {
+    canPlay(context: AbilityContext, playType: string) {
         if(context.game.isDuringConflict('political')) {
-            let diff = this.game.currentConflict.attackerSkill - this.game.currentConflict.defenderSkill;
+            const conflict = this.game.currentConflict;
+            if(!conflict) {
+                return false;
+            }
+            const diff = conflict.attackerSkill - conflict.defenderSkill;
             const hasSkillAdvantage = context.player.isAttackingPlayer() ? diff > 0 : diff < 0;
             return hasSkillAdvantage && super.canPlay(context, playType);
         }
@@ -20,7 +25,7 @@ class PoliticalSanction extends DrawCard {
         return false;
     }
 
-    canPlayOn(card) {
+    canPlayOn(card: any) {
         return card.isParticipating() && super.canPlayOn(card);
     }
 }

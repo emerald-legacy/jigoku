@@ -8,12 +8,12 @@ import type Player from '../../../player.js';
 function getAttachmentSkill(card: DrawCard) {
     let amount = 0;
 
-    const mil = parseInt(card.cardData.military_bonus);
+    const mil = parseInt(card.cardData.military_bonus ?? '');
     if(!isNaN(mil)) {
         amount += mil;
     }
 
-    const pol = parseInt(card.cardData.political_bonus);
+    const pol = parseInt(card.cardData.political_bonus ?? '');
     if(!isNaN(pol)) {
         amount += pol;
     }
@@ -33,7 +33,7 @@ export default class BitingSteel extends DrawCard {
             target: {
                 cardType: CardTypes.Attachment,
                 cardCondition: (card: DrawCard, context) =>
-                    card.parent && card.parent === context.source.parent && card.hasTrait('weapon') && getAttachmentSkill(card) !== 0,
+                    !!card.parent && card.parent === context.source.parent && card.hasTrait('weapon') && getAttachmentSkill(card) !== 0,
                 gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                     target: context.target.parent,
                     effect: AbilityDsl.effects.modifyDuelistSkill(
@@ -50,7 +50,7 @@ export default class BitingSteel extends DrawCard {
         this.action({
             title: 'Send an enemy home',
             condition: (context) =>
-                (context.source.parent as DrawCard | undefined)?.isParticipating('military') &&
+                !!(context.source.parent as DrawCard | undefined)?.isParticipating('military') &&
                 (context.player as Player).hasAffinity('fire', context),
             target: {
                 cardType: CardTypes.Character,

@@ -12,7 +12,7 @@ const maelstromCost = function (): Cost {
             if(context.costs.maelstromCostPaid) {
                 return ['discarding {0}'];
             }
-            return undefined;
+            return [];
         },
         canPay: function () {
             return true;
@@ -39,7 +39,7 @@ const maelstromCost = function (): Cost {
                                 numCards: 1,
                                 location: Locations.Hand,
                                 controller: Players.Self,
-                                onSelect: (player, card) => {
+                                onSelect: (player: any, card: any) => {
                                     context.costs.maelstromCost = card;
                                     return true;
                                 },
@@ -98,7 +98,7 @@ export default class Maelstrom extends ProvinceCard {
                                 duration: Durations.UntilEndOfPhase,
                                 effect: AbilityDsl.effects.delayedEffect({
                                     when: {
-                                        afterConflict: (event, context) =>
+                                        afterConflict: (event: any, context: any) =>
                                             event.conflict.winner === target.controller &&
                                             target.isParticipating() &&
                                             target.controller === context.player

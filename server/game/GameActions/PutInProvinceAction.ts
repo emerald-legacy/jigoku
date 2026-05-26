@@ -19,9 +19,9 @@ export class PutInProvinceAction extends CardGameAction {
     eventName = EventNames.OnCardLeavesPlay;
     targetType = [CardTypes.Character, CardTypes.Attachment];
     defaultProperties: PutInProvinceProperties = {
-        destination: null,
+        destination: undefined,
         switch: false,
-        switchTarget: null,
+        switchTarget: undefined,
         faceup: true,
         canBeStronghold: false,
         changePlayer: false,
@@ -38,13 +38,14 @@ export class PutInProvinceAction extends CardGameAction {
 
     getEffectMessage(context: AbilityContext): [string, any[]] {
         let properties = this.getProperties(context) as PutInProvinceProperties;
-        let destinationController = Array.isArray(properties.target)
+        const target = properties.target as BaseCard | BaseCard[];
+        let destinationController = Array.isArray(target)
             ? properties.changePlayer
-                ? properties.target[0].controller.opponent
-                : properties.target[0].controller
+                ? target[0].controller.opponent
+                : target[0].controller
             : properties.changePlayer
-                ? properties.target.controller.opponent
-                : properties.target.controller;
+                ? target.controller.opponent
+                : target.controller;
         return ['move {0} to {1}\'s {2}', [properties.target, destinationController, properties.destination]];
     }
 
@@ -61,9 +62,9 @@ export class PutInProvinceAction extends CardGameAction {
         return canMove;
     }
 
-    eventHandler(event, additionalProperties = {}): void {
-        let context = event.context;
-        let card = event.card;
+    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
+        let context = event.context as AbilityContext;
+        let card = event.card as DrawCard;
         event.cardStateWhenMoved = card.createSnapshot();
         let properties = this.getProperties(context, additionalProperties) as PutInProvinceProperties;
         if(properties.switch && properties.switchTarget) {
@@ -72,20 +73,23 @@ export class PutInProvinceAction extends CardGameAction {
         }
 
         const player = card.owner;
-        if(card.isConflict && [...context.game.getProvinceArray()].includes(properties.destination)) {
+        if(properties.destination && card.isConflict && [...context.game.getProvinceArray()].includes(properties.destination)) {
             context.game.addMessage('{0} is discarded instead since it can\'t enter a province legally!', card);
             properties.destination = Locations.ConflictDiscardPile;
         }
         if(
             properties.discardDestinationCards &&
+            properties.destination &&
             context.game.getProvinceArray(false).includes(properties.destination)
         ) {
-            let cardsToDiscard = player.getSourceList(properties.destination).filter((card) => card.isDynasty);
-            for(const card of cardsToDiscard) {
-                player.moveCard(card, Locations.DynastyDiscardPile);
+            let cardsToDiscard = player.getSourceList(properties.destination).filter((c: DrawCard) => c.isDynasty);
+            for(const c of cardsToDiscard) {
+                player.moveCard(c, Locations.DynastyDiscardPile);
             }
         }
-        player.moveCard(card, properties.destination);
+        if(properties.destination) {
+            player.moveCard(card, properties.destination);
+        }
         if(properties.faceup) {
             card.facedown = false;
         }

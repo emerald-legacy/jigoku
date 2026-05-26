@@ -92,7 +92,7 @@ export class GameObject {
     }
 
     public allowGameAction(actionType: string, context = this.game.getFrameworkContext()) {
-        const gameActionFactory = GameActions[actionType];
+        const gameActionFactory = (GameActions as Record<string, (...args: any[]) => GameAction>)[actionType];
         if(gameActionFactory) {
             const gameAction: GameAction = gameActionFactory();
             return gameAction.canAffect(this, context);
@@ -177,7 +177,7 @@ export class GameObject {
                 // @ts-expect-error -- getReducedCost exists on play action abilities but is not declared on the base AbilityContext.ability type
                 fateCost = context.ability.getReducedCost(context);
             }
-            let alternateFate = context.player.getAvailableAlternateFate(context.playType, context);
+            let alternateFate = context.player.getAvailableAlternateFate(context.playType ?? '', context);
             let availableFate = Math.max(context.player.fate - Math.max(fateCost - alternateFate, 0), 0);
 
             return (
@@ -200,7 +200,7 @@ export class GameObject {
     }
 
     public isParticipating(_card: DrawCard): boolean {
-        return this.game.currentConflict && this.game.currentConflict.isParticipating(this);
+        return !!this.game.currentConflict && this.game.currentConflict.isParticipating(this as unknown as DrawCard);
     }
 
     public isFacedown() {
@@ -222,7 +222,7 @@ export class GameObject {
             return this.effects;
         }
         const suppressEffects = this.effects.filter((effect) => effect.type === EffectNames.SuppressEffects);
-        const suppressedEffects = suppressEffects.reduce((array, effect) => array.concat(effect.getValue(this)), []);
+        const suppressedEffects = suppressEffects.reduce<CardEffect[]>((array, effect) => array.concat(effect.getValue(this)), []);
         return this.effects.filter((effect) => !suppressedEffects.includes(effect));
     }
 }

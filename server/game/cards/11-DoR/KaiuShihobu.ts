@@ -25,7 +25,7 @@ export default class KaiuShihobu extends DrawCard {
                             event.player.moveCard(card, Locations.UnderneathStronghold);
                             card.lastingEffect(() => ({
                                 until: {
-                                    onCardMoved: (event) =>
+                                    onCardMoved: (event: any) =>
                                         event.card === card && event.originalLocation === Locations.UnderneathStronghold
                                 },
                                 match: card,
@@ -48,7 +48,7 @@ export default class KaiuShihobu extends DrawCard {
                     cardType: CardTypes.Holding,
                     controller: Players.Self,
                     location: Locations.UnderneathStronghold,
-                    cardCondition: (card: DrawCard, context) => context.player.stronghold.childCards.includes(card)
+                    cardCondition: (card: DrawCard, context) => !!context?.player.stronghold && context.player.stronghold.childCards.includes(card)
                 },
                 second: {
                     activePromptTitle: 'Choose an unbroken province',
@@ -61,13 +61,18 @@ export default class KaiuShihobu extends DrawCard {
                 }
             },
             handler: (context) => {
+                if(!context) {
+                    return;
+                }
                 let holding = context.targets.first;
                 let province = context.targets.second;
 
                 let cards = context.player.getDynastyCardsInProvince(province.location);
-                context.player.stronghold.removeChildCard(holding, province.location);
+                if(context.player.stronghold) {
+                    context.player.stronghold.removeChildCard(holding, province.location);
+                }
                 holding.facedown = false;
-                cards.forEach((card) => {
+                cards.forEach((card: any) => {
                     context.player.moveCard(card, Locations.DynastyDiscardPile);
                 });
             },

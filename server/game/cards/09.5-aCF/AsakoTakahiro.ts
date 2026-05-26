@@ -8,12 +8,12 @@ class AsakoTakahiro extends DrawCard {
         this.persistentEffect({
             condition: context => context.source.isParticipating(),
             effect: [
-                AbilityDsl.effects.modifyMilitarySkill((card, context) => (2 *
+                AbilityDsl.effects.modifyMilitarySkill((card: any, context: any) => (2 *
                     context.game.currentConflict
-                        .getNumberOfParticipants(card => card.isDishonored && card !== context.source))),
-                AbilityDsl.effects.modifyPoliticalSkill((card, context) => (2 *
+                        .getNumberOfParticipants((card: any) => card.isDishonored && card !== context.source))),
+                AbilityDsl.effects.modifyPoliticalSkill((card: any, context: any) => (2 *
                     context.game.currentConflict
-                        .getNumberOfParticipants(card => card.isHonored && card !== context.source)))
+                        .getNumberOfParticipants((card: any) => card.isHonored && card !== context.source)))
             ]
         });
     }

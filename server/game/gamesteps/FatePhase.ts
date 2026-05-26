@@ -121,9 +121,9 @@ export class FatePhase extends Phase {
         }
     }
 
-    discardFromProvincesForPlayer(player) {
-        let cardsToDiscard = [];
-        let cardsOnUnbrokenProvinces = [];
+    discardFromProvincesForPlayer(player: Player) {
+        let cardsToDiscard: DrawCard[] = [];
+        let cardsOnUnbrokenProvinces: DrawCard[] = [];
         for(const location of this.game.getProvinceArray()) {
             const provinceCard = player.getProvinceCardInProvince(location);
             const province = player.getSourceList(location);
@@ -147,8 +147,8 @@ export class FatePhase extends Phase {
                 waitingPromptTitle: 'Waiting for opponent to discard dynasty cards',
                 location: Locations.Provinces,
                 controller: Players.Self,
-                cardCondition: (card) => cardsOnUnbrokenProvinces.includes(card),
-                onSelect: (player, cards) => {
+                cardCondition: (card: DrawCard) => cardsOnUnbrokenProvinces.includes(card),
+                onSelect: (player: Player, cards: DrawCard[]) => {
                     cardsToDiscard = cardsToDiscard.concat(cards);
                     if(cardsToDiscard.length > 0) {
                         this.game.addMessage('{0} discards {1} from their provinces', player, cardsToDiscard);
@@ -191,6 +191,9 @@ export class FatePhase extends Phase {
 
     passFirstPlayer() {
         const firstPlayer = this.game.getFirstPlayer();
+        if(!firstPlayer) {
+            return;
+        }
         const otherPlayer = this.game.getOtherPlayer(firstPlayer);
         if(otherPlayer) {
             this.game.raiseEvent(EventNames.OnPassFirstPlayer, { player: otherPlayer }, () =>

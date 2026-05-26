@@ -207,7 +207,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     this.conflict.attackingPlayer,
                     totalFateCost
                 );
-                payFate(totalFateCost).addEventsToArray(
+                payFate(totalFateCost).addEventsToArray?.(
                     costEvents,
                     this.game.getFrameworkContext(this.conflict.attackingPlayer)
                 );
@@ -218,7 +218,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     this.conflict.attackingPlayer,
                     totalHonorCost
                 );
-                payHonor(totalHonorCost).addEventsToArray(
+                payHonor(totalHonorCost).addEventsToArray?.(
                     costEvents,
                     this.game.getFrameworkContext(this.conflict.attackingPlayer)
                 );
@@ -236,7 +236,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     message: '{0} discards {1}',
                     messageArgs: (cards: any, player: any) => [player, cards]
                 };
-                discardCard(props).addEventsToArray(
+                discardCard(props).addEventsToArray?.(
                     costEvents,
                     this.game.getFrameworkContext(this.conflict.attackingPlayer),
                     // @ts-expect-error -- legacy optional flag on discardCard cost
@@ -304,7 +304,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                 const costEvents: any[] = [];
                 let result = true;
                 let costToRings = province.sumEffects(EffectNames.FateCostToRingToDeclareConflictAgainst);
-                payFateToRing(costToRings).addEventsToArray(
+                payFateToRing(costToRings).addEventsToArray?.(
                     costEvents,
                     this.game.getFrameworkContext(this.conflict.attackingPlayer),
                     // @ts-expect-error -- legacy optional flag on discardCard cost
@@ -672,7 +672,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     this.conflict.defendingPlayer,
                     totalHonorCost
                 );
-                payHonor(totalHonorCost).addEventsToArray(
+                payHonor(totalHonorCost).addEventsToArray?.(
                     costEvents,
                     this.game.getFrameworkContext(this.conflict.defendingPlayer)
                 );

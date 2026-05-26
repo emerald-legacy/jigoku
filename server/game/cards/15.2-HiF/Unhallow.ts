@@ -12,18 +12,18 @@ class Unhallow extends DrawCard {
 
         this.persistentEffect({
             targetLocation: Locations.Provinces,
-            match: (card, context) => card === context.source.parent,
+            match: (card, context) => card === context?.source.parent,
             effect: AbilityDsl.effects.modifyProvinceStrength(3)
         });
 
         this.persistentEffect({
-            condition: (context) => context.source.parent && context.source.parent.isConflictProvince(),
+            condition: (context) => !!(context.source.parent && context.source.parent.isConflictProvince()),
             targetLocation: Locations.Provinces,
             targetController: Players.Self,
             effect: AbilityDsl.effects.costToDeclareAnyParticipants({
                 type: 'defenders',
                 message: 'loses 1 honor',
-                cost: (player) => AbilityDsl.actions.loseHonor({
+                cost: (player: any) => AbilityDsl.actions.loseHonor({
                     target: player,
                     amount: 1
                 })
@@ -31,11 +31,11 @@ class Unhallow extends DrawCard {
         });
     }
 
-    canPlayOn(source) {
+    canPlayOn(source: any) {
         return source && source.getType() === 'province' && source.controller === this.controller && !source.isBroken && this.getType() === CardTypes.Attachment;
     }
 
-    canAttach(parent) {
+    canAttach(parent: any) {
         if(parent.type === CardTypes.Province && parent.isBroken) {
             return false;
         }

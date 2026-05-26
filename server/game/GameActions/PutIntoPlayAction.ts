@@ -22,8 +22,8 @@ export class PutIntoPlayAction extends CardGameAction {
         fate: 0,
         status: 'ordinary',
         controller: Players.Self,
-        side: null,
-        overrideLocation: null
+        side: undefined,
+        overrideLocation: undefined
     };
     constructor(
         properties: ((context: AbilityContext) => PutIntoPlayProperties) | PutIntoPlayProperties,
@@ -86,7 +86,7 @@ export class PutIntoPlayAction extends CardGameAction {
         return true;
     }
 
-    addPropertiesToEvent(event, card: DrawCard, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { fate, status, controller, side, overrideLocation } = this.getProperties(
             context,
             additionalProperties
@@ -100,7 +100,7 @@ export class PutIntoPlayAction extends CardGameAction {
         event.side = side || this.getDefaultSide(context);
     }
 
-    eventHandler(event, additionalProperties = {}): void {
+    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
         let player = this.getPutIntoPlayPlayer(event.context);
         this.checkForRefillProvince(event.card, event, additionalProperties);
         event.card.new = true;

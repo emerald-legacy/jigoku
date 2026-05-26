@@ -13,7 +13,7 @@ function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIn
             (context.player.cardsInPlay as BaseCard[]).some((card) =>
                 context.source.canDisguise(card, context, intoConflictOnly)
             ),
-        resolve: (context: AbilityContext, results) =>
+        resolve: (context: AbilityContext, results: any) =>
             context.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a character to replace',
                 cardType: CardTypes.Character,
@@ -37,18 +37,18 @@ class DisguisedReduceableFateCost extends ReduceableFateCost implements Cost {
     canPay(context: AbilityContext) {
         const maxCharacterCost = Math.max(
             ...context.player.cardsInPlay.map((card) =>
-                context.source.canDisguise(card, context) ? card.getCost() : 0
+                context.source.canDisguise(card, context) ? (card.getCost() ?? 0) : 0
             )
         );
-        const minCost = Math.max(context.player.getMinimumCost(context.playType, context) - maxCharacterCost, 0);
+        const minCost = Math.max(context.player.getMinimumCost(context.playType ?? '', context) - maxCharacterCost, 0);
         return (
             context.player.fate >= minCost && (minCost === 0 || context.player.checkRestrictions('spendFate', context))
         );
     }
 
-    getReducedCost(context) {
+    getReducedCost(context: AbilityContext) {
         if(context.costs.chooseDisguisedCharacter) {
-            return Math.max(super.getReducedCost(context) - context.costs.chooseDisguisedCharacter.getCost(), 0);
+            return Math.max(super.getReducedCost(context) - (context.costs.chooseDisguisedCharacter.getCost() ?? 0), 0);
         }
         return super.getReducedCost(context);
     }
@@ -91,7 +91,7 @@ export class PlayDisguisedCharacterAction extends BaseAction {
         return super.meetsRequirements(context);
     }
 
-    public executeHandler(context) {
+    public executeHandler(context: AbilityContext) {
         const legendaryFate = context.source.sumEffects(EffectNames.LegendaryFate);
         let extraFate = context.source.sumEffects(EffectNames.GainExtraFateWhenPlayed);
         if(!context.source.checkRestrictions('placeFate', context)) {
@@ -146,7 +146,7 @@ export class PlayDisguisedCharacterAction extends BaseAction {
             gameAction.addEventsToArray(events, context);
             events.push(
                 context.game.getEvent(EventNames.Unnamed, {}, () => {
-                    const moveEvents = [];
+                    const moveEvents: any[] = [];
                     context.game.actions
                         .placeFate({
                             target: context.source,

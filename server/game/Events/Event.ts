@@ -29,7 +29,7 @@ export class Event {
     ) {
         for(const key in params) {
             if(Object.prototype.hasOwnProperty.call(params, key)) {
-                this[key] = params[key];
+                this[key] = (params as Record<string, unknown>)[key];
             }
         }
     }
@@ -41,7 +41,7 @@ export class Event {
         }
     }
 
-    setWindow(window) {
+    setWindow(window: any) {
         this.window = window;
     }
 
@@ -58,7 +58,7 @@ export class Event {
         }
     }
 
-    getResolutionEvent() {
+    getResolutionEvent(): Event {
         if(this.replacementEvent) {
             return this.replacementEvent.getResolutionEvent();
         }
@@ -72,11 +72,11 @@ export class Event {
     executeHandler() {
         this.resolved = true;
         if(this.handler) {
-            this.handler(this);
+            this.handler(this as Event & Partial<Params>);
         }
     }
 
-    replaceHandler(newHandler) {
+    replaceHandler(newHandler: (event: Event & Partial<Params>) => void) {
         this.handler = newHandler;
     }
 }

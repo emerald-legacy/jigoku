@@ -12,7 +12,7 @@ export default class Overhear extends DrawCard {
         this.action({
             title: 'Place random card on top of deck',
             effect: 'reveal a random card from {1}\'s hand and place it on top of {1}\'s deck',
-            effectArgs: (context) => [context.player.opponent],
+            effectArgs: (context) => (context.player.opponent ? [context.player.opponent] : []),
             gameAction: AbilityDsl.actions.multipleContext((context) => {
                 let card: DrawCard[] = context.player.opponent ? (shuffle(context.player.opponent.hand) as DrawCard[]).slice(0, 1) : [];
                 return {
@@ -30,13 +30,16 @@ export default class Overhear extends DrawCard {
                 };
             }),
             condition: (context) => context.game.isDuringConflict('political') && context.player.opponent !== undefined,
-            then: (context) => {
+            then: (context?: AbilityContext) => {
+                if(!context || !context.game.currentConflict) {
+                    return {};
+                }
                 if(
                     context.game.currentConflict
                         .getCharacters(context.player)
                         .filter((card: DrawCard) => card.hasTrait('courtier')).length < 1
                 ) {
-                    return;
+                    return {};
                 }
                 if(context.subResolution) {
                     return {
@@ -48,12 +51,13 @@ export default class Overhear extends DrawCard {
                             }
                         },
                         message: '{0} chooses {3}to give an honor to {4} for no effect',
-                        messageArgs: (context: AbilityContext) => [
-                            context.select === 'Done' ? 'not ' : '',
-                            context.player.opponent
+                        messageArgs: (innerContext: AbilityContext) => [
+                            innerContext.select === 'Done' ? 'not ' : '',
+                            innerContext.player.opponent
                         ]
                     };
                 }
+                const ability = context.ability instanceof CardAbility ? context.ability : undefined;
                 return {
                     target: {
                         mode: TargetModes.Select,
@@ -65,17 +69,17 @@ export default class Overhear extends DrawCard {
                         }
                     },
                     message: '{0} chooses {3}to give an honor to {4} to resolve {1} again',
-                    messageArgs: (context: AbilityContext) => [
-                        context.select === 'Done' ? 'not ' : '',
-                        context.player.opponent
+                    messageArgs: (innerContext: AbilityContext) => [
+                        innerContext.select === 'Done' ? 'not ' : '',
+                        innerContext.player.opponent
                     ],
-                    then: {
+                    then: ability ? {
                         gameAction: AbilityDsl.actions.resolveAbility({
-                            ability: context.ability instanceof CardAbility ? context.ability : null,
+                            ability: ability,
                             subResolution: true,
-                            choosingPlayerOverride: context.choosingPlayerOverride
+                            choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
                         })
-                    }
+                    } : undefined
                 };
             }
         });

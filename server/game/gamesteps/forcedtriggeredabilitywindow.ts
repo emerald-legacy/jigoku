@@ -23,7 +23,7 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         this.eventWindow = window;
         this.eventsToExclude = eventsToExclude;
         this.abilityType = abilityType;
-        this.currentPlayer = this.game.getFirstPlayer();
+        this.currentPlayer = this.game.getFirstPlayer() as Player;
         this.resolvedAbilities = [];
     }
 
@@ -99,8 +99,8 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
                     targets = targets.concat(event.context.target);
                 } else if((event as any).card && (event as any).card !== event.context.source) {
                     targets = targets.concat((event as any).card);
-                } else if(event.context.event && event.context.event.card) {
-                    targets = targets.concat(event.context.event.card);
+                } else if((event.context as any).event && (event.context as any).event.card) {
+                    targets = targets.concat((event.context as any).event.card);
                 } else if((event as any).card) {
                     targets = targets.concat((event as any).card);
                 }

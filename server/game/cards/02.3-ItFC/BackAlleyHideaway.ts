@@ -6,31 +6,24 @@ import DrawCard from '../../drawcard.js';
 import DynastyCardAction from '../../dynastycardaction.js';
 
 const backAlleyPersistentEffect = {
-    apply: (card) => {
-        // enable popup functionality
+    apply: (card: any) => {
         card.showPopup = true;
         card.popupMenuText = 'Use Interrupt ability';
-        // register limit which needs to be shared among all the play actions which will be added by the interrupt ability
         card.backAlleyActionLimit.registerEvents(card.game);
     },
-    unapply: (card) => {
+    unapply: (card: any) => {
         for(const character of card.attachments) {
-            // move all attachments to the correct discard pile
             character.owner.moveCard(
                 character,
                 character.isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile
             );
-            // remove any added playActions
-            // ??
             character.abilities.playActions = character.abilities.playActions.filter(
-                (action) => action.title !== 'Play this character from Back-Alley Hideaway'
+                (action: any) => action.title !== 'Play this character from Back-Alley Hideaway'
             );
         }
 
-        // disable popup functionality
         card.showPopup = false;
         card.popupMenuText = '';
-        // reset and unregister limit
         card.backAlleyActionLimit.reset();
         card.backAlleyActionLimit.unregisterEvents(card.game);
     }
@@ -42,7 +35,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
 
     constructor(
         public backAlleyCard: BackAlleyHideaway,
-        card
+        card: any
     ) {
         super(card);
         this.limit = backAlleyCard.backAlleyActionLimit;
@@ -67,7 +60,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
         return '';
     }
 
-    executeHandler(context) {
+    executeHandler(context: any) {
         context.game.addMessage(
             '{0} plays {1} from {2} with {3} additional fate',
             context.player,
@@ -75,10 +68,8 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
             context.source.parent,
             context.chooseFate
         );
-        // remove this action from the card
-        // ??
         context.source.abilities.playActions = context.source.abilities.playActions.filter(
-            (action) => action.title !== 'Play this character from Back-Alley Hideaway'
+            (action: any) => action.title !== 'Play this character from Back-Alley Hideaway'
         );
         // remove associations between this card and Back-Alley Hideaway
         this.backAlleyCard.removeAttachment(context.source);
@@ -123,7 +114,7 @@ export default class BackAlleyHideaway extends DrawCard {
             effect: 'move {1} into hiding',
             effectArgs: (context) => context.event.card,
             handler: (context) =>
-                context.event.replaceHandler((event) => {
+                context.event.replaceHandler((event: any) => {
                     context.player.removeCardFromPile(event.card);
                     event.card.leavesPlay();
                     event.card.moveTo('backalley hideaway');

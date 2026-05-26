@@ -80,7 +80,7 @@ export class CardAction extends CardAbility {
         }
     }
 
-    meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements = []) {
+    meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []) {
         if(!ignoredRequirements.includes('location') && !this.isInValidLocation(context)) {
             return 'location';
         }

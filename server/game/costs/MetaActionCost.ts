@@ -30,7 +30,7 @@ export class MetaActionCost extends GameActionCost implements Cost {
 
     addEventsToArray(events: any[], context: AbilityContext, result: Result): void {
         const properties = this.action.getProperties(context) as SelectCardProperties;
-        if(properties.targets && context.choosingPlayerOverride) {
+        if(properties.targets && context.choosingPlayerOverride && properties.selector) {
             context.costs[properties.gameAction.name] = randomItem(
                 properties.selector.getAllLegalTargets(context, context.player)
             );
@@ -61,8 +61,8 @@ export class MetaActionCost extends GameActionCost implements Cost {
         return this.action.hasTargetsChosenByInitiatingPlayer(context);
     }
 
-    getCostMessage(context: AbilityContext): [string, any[]] {
+    getCostMessage(context: AbilityContext): unknown[] {
         const properties = this.action.getProperties(context) as SelectCardProperties;
-        return properties.gameAction.getCostMessage(context);
+        return properties.gameAction.getCostMessage(context) ?? [];
     }
 }

@@ -39,10 +39,10 @@ export class PlaceFateRingAction extends RingAction {
         ) {
             return false;
         }
-        return properties.amount > 0 && super.canAffect(ring, context);
+        return (properties.amount ?? 0) > 0 && super.canAffect(ring, context);
     }
 
-    addPropertiesToEvent(event, ring: Ring, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, ring: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateRingProperties;
         event.fate = amount;
         event.origin = origin;
@@ -50,11 +50,11 @@ export class PlaceFateRingAction extends RingAction {
         event.recipient = ring;
     }
 
-    checkEventCondition(event): boolean {
+    checkEventCondition(event: any): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event, ring: Ring, context: AbilityContext, additionalProperties): boolean {
+    isEventFullyResolved(event: any, ring: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         let { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateRingProperties;
         return (
             !event.cancelled &&
@@ -65,7 +65,7 @@ export class PlaceFateRingAction extends RingAction {
         );
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         this.moveFateEventHandler(event);
     }
 }

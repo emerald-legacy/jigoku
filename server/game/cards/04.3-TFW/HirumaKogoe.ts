@@ -14,14 +14,14 @@ class HirumaKogoe extends DrawCard {
         });
     }
 
-    hirumaKogoePrompt(context, promptCards, orderedCards, promptTitle) {
+    hirumaKogoePrompt(context: any, promptCards: any, orderedCards: any, promptTitle: any) {
         this.game.promptWithHandlerMenu(context.player, {
             activePromptTitle: promptTitle,
             context: context,
             cards: promptCards,
-            cardHandler: card => {
+            cardHandler: (card: any) => {
                 orderedCards.push(card);
-                promptCards = promptCards.filter(c => c !== card);
+                promptCards = promptCards.filter((c: any) => c !== card);
                 if(promptCards.length > 1) {
                     this.hirumaKogoePrompt(context, promptCards, orderedCards, 'Which card do you want to be the second card?');
                     return;

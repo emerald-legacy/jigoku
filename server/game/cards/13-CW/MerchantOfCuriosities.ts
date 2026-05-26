@@ -7,7 +7,7 @@ const merchantOfCuriositiesCost = function () {
         canPay: function () {
             return true;
         },
-        resolve: function (context, result) {
+        resolve: function (context: any, result: any) {
             let honorAvailable = true;
             let cardAvailable = true;
             if(!context.player.opponent || !context.game.actions.loseHonor().canAffect(context.player.opponent, context) || !context.game.actions.gainHonor().canAffect(context.player, context)) {
@@ -34,7 +34,7 @@ const merchantOfCuriositiesCost = function () {
                                 numCards: 1,
                                 location: Locations.Hand,
                                 controller: Players.Opponent,
-                                onSelect: (player, card) => {
+                                onSelect: (player: any, card: any) => {
                                     context.costs.merchantOfCuriositiesCostDiscardedCard = card;
                                     return true;
                                 },
@@ -49,9 +49,9 @@ const merchantOfCuriositiesCost = function () {
                 });
             }
         },
-        payEvent: function (context) {
+        payEvent: function (context: any) {
             if(context.costs.merchantOfCuriositiesCostPaid) {
-                let events = [];
+                let events: any[] = [];
 
                 let discardAction = context.game.actions.discardCard({ target: context.costs.merchantOfCuriositiesCostDiscardedCard });
                 events.push(discardAction.getEvent(context.costs.merchantOfCuriositiesCostDiscardedCard, context));
@@ -90,7 +90,7 @@ class MerchantOfCuriosities extends DrawCard {
         });
     }
 
-    buildString(context) {
+    buildString(context: any) {
         if(context.costs.merchantOfCuriositiesCostPaid) {
             return '.  ' + context.player.opponent.name + ' gives ' + context.player.name + ' 1 honor to discard ' +
                 context.costs.merchantOfCuriositiesCostDiscardedCard.name + ' and draw a card';

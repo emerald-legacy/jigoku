@@ -1184,15 +1184,15 @@ class Player extends GameObject {
     }
 
     promptForAttachment(card: DrawCard, playingType?: string): void {
-        this.game.queueStep(new AttachmentPrompt(this.game, this, card, playingType));
+        this.game.queueStep(new AttachmentPrompt(this.game, this, card, playingType ?? ''));
     }
 
     isAttackingPlayer(): boolean {
-        return this.game.currentConflict && this.game.currentConflict.attackingPlayer === this;
+        return !!this.game.currentConflict && this.game.currentConflict.attackingPlayer === this;
     }
 
     isDefendingPlayer(): boolean {
-        return this.game.currentConflict && this.game.currentConflict.defendingPlayer === this;
+        return !!this.game.currentConflict && this.game.currentConflict.defendingPlayer === this;
     }
 
     resetForConflict(): void {
@@ -1558,6 +1558,9 @@ class Player extends GameObject {
     }
 
     isKihoPlayedThisConflict(context: AbilityContext, cardBeingPlayed: BaseCard): boolean {
+        if(!context.game.currentConflict) {
+            return false;
+        }
         return (
             context.game.currentConflict.getNumberOfCardsPlayed(
                 this,

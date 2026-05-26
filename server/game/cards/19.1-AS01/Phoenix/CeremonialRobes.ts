@@ -15,9 +15,9 @@ export default class CeremonialRobes extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyGlory((_character, context) =>
+            effect: AbilityDsl.effects.modifyGlory((_character: any, context: any) =>
                 (context.player.cardsInPlay as BaseCard[]).reduce(
-                    (sum, card) => (card.type === CardTypes.Character && card.hasTrait('spirit') ? sum + 1 : sum),
+                    (sum: number, card: BaseCard) => (card.type === CardTypes.Character && card.hasTrait('spirit') ? sum + 1 : sum),
                     0
                 )
             )
@@ -34,42 +34,46 @@ export default class CeremonialRobes extends DrawCard {
                 controller: Players.Self
             },
             handler: (context) => {
-                const top3Cards = context.player.dynastyDeck.slice(0, 3);
+                if(!context) {
+                    return;
+                }
+                const ctx = context;
+                const top3Cards = ctx.player.dynastyDeck.slice(0, 3);
                 const steps: HandlerStep[] = [
                     {
                         activePromptTitle: 'Select a card to put into the province faceup',
                         message: '{0} places {1} into their province',
                         callback: (chosenCard) => {
-                            context.player.moveCard(chosenCard, context.target.location);
+                            ctx.player.moveCard(chosenCard, ctx.target.location);
                             chosenCard.facedown = false;
                         }
                     },
                     {
                         activePromptTitle: 'Select a card to put on the bottom of the deck',
                         message: '{0} places a card on the bottom of the deck',
-                        callback: (chosenCard) => context.player.moveCard(chosenCard, 'dynasty deck bottom')
+                        callback: (chosenCard) => ctx.player.moveCard(chosenCard, 'dynasty deck bottom')
                     },
                     {
                         activePromptTitle: 'Select a card to discard',
                         message: '{0} discards {1}',
                         callback: (chosenCard) => {
-                            context.player.moveCard(chosenCard, Locations.DynastyDiscardPile);
+                            ctx.player.moveCard(chosenCard, Locations.DynastyDiscardPile);
                             if(chosenCard.hasTrait('spirit')) {
                                 this.game.addMessage(
                                     '{0} was a Spirit! {1} and {2} lose 1 honor',
                                     chosenCard,
-                                    context.player,
-                                    context.player.opponent
+                                    ctx.player,
+                                    ctx.player.opponent
                                 );
                                 AbilityDsl.actions
-                                    .loseHonor((context) => ({ target: context.game.getPlayers() }))
-                                    .resolve(chosenCard, context);
+                                    .loseHonor((innerContext: any) => ({ target: innerContext.game.getPlayers() }))
+                                    .resolve(chosenCard, ctx);
                             }
                         }
                     }
                 ];
 
-                this.recursivePromptHandler(steps, context, top3Cards);
+                this.recursivePromptHandler(steps, ctx, top3Cards);
             }
         });
     }

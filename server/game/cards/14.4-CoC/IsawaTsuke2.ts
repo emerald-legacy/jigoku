@@ -39,10 +39,10 @@ class IsawaTsuke2 extends DrawCard {
         });
     }
 
-    getNumberOfLegalTargets(context) {
-        let cards = context.game.currentConflict.getParticipants((card) => card.allowGameAction('removeFate'));
-        let selectedCards = [];
-        cards.forEach((card) => {
+    getNumberOfLegalTargets(context: any) {
+        const cards = context.game.currentConflict.getParticipants((card: any) => card.allowGameAction('removeFate'));
+        const selectedCards: any[] = [];
+        cards.forEach((card: any) => {
             if(card.canBeTargeted(context, selectedCards)) {
                 selectedCards.push(card);
             }

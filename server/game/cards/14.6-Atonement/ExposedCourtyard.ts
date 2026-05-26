@@ -4,21 +4,21 @@ import { CardTypes, Locations, Players, Durations } from '../../Constants.js';
 
 const exposedCourtyardCost = () => ({
     action: { name: 'exposedCourtyardCost' },
-    getActionName(_context) {
+    getActionName(_context: any) {
         return 'exposedCourtyardCost';
     },
-    getCostMessage: function (_context) {
+    getCostMessage: function (_context: any) {
         return ['discarding {0}'];
     },
-    canPay: function (context) {
+    canPay: function (context: any) {
         return context.player.conflictDeck.length >= 2;
     },
-    resolve: function(context) {
+    resolve: function(context: any) {
         context.costs.exposedCourtyardCost = context.player.conflictDeck.slice(0, 2);
     },
-    pay: function(context) {
+    pay: function(context: any) {
         const discardedCards = context.costs.exposedCourtyardCost;
-        discardedCards.slice(0, 2).forEach(card => {
+        discardedCards.slice(0, 2).forEach((card: any) => {
             card.controller.moveCard(card, Locations.ConflictDiscardPile);
         });
     }
@@ -38,23 +38,23 @@ class ExposedCourtyard extends DrawCard {
                 AbilityDsl.actions.handler({
                     handler: () => true
                 }),
-                AbilityDsl.actions.selectCard(context => ({
+                AbilityDsl.actions.selectCard((context: any) => ({
                     location: Locations.ConflictDiscardPile,
                     cardType: CardTypes.Event,
                     activePromptTitle: 'Choose an event',
                     controller: Players.Self,
                     targets: true,
-                    subActionProperties: card => {
+                    subActionProperties: (card: any) => {
                         context.target = card;
                         return ({ target: card });
                     },
                     gameAction: AbilityDsl.actions.sequential([
-                        AbilityDsl.actions.playerLastingEffect(context => {
+                        AbilityDsl.actions.playerLastingEffect((context: any) => {
                             return {
                                 targetController: context.player,
                                 duration: Durations.Custom,
                                 until: {
-                                    onCardMoved: event => {
+                                    onCardMoved: (event: any) => {
                                         return event.card === context.target && event.originalLocation === Locations.ConflictDiscardPile;
                                     },
                                     onConflictFinished: () => true
@@ -62,13 +62,13 @@ class ExposedCourtyard extends DrawCard {
                                 effect: AbilityDsl.effects.canPlayFromOwn(Locations.ConflictDiscardPile, [context.target], this)
                             };
                         }),
-                        AbilityDsl.actions.cardLastingEffect(context => ({
+                        AbilityDsl.actions.cardLastingEffect((context: any) => ({
                             duration: Durations.UntilEndOfConflict,
                             targetLocation: Locations.Any,
                             canChangeZoneNTimes: 2,
                             effect: AbilityDsl.effects.delayedEffect({
                                 when: {
-                                    onCardPlayed: (event) => {
+                                    onCardPlayed: (event: any) => {
                                         return event.card === context.target && event.player === context.target.controller;
                                     }
                                 },
@@ -83,7 +83,7 @@ class ExposedCourtyard extends DrawCard {
                         }))
                     ]),
                     message: '{0} can play {1} this conflict. It will be put on the bottom of the deck if it\'s played this conflict',
-                    messageArgs: card => [context.player, card, context.source]
+                    messageArgs: (card: any) => [context.player, card, context.source]
                 }))
             ])
         });

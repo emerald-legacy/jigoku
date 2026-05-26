@@ -10,7 +10,7 @@ export default class MiokosSong extends StrongholdCard {
     setupCardAbilities() {
         this.persistentEffect({
             match: (card, context) =>
-                card.controller === context.player &&
+                !!context && card.controller === context.player &&
                 card.type === CardTypes.Character &&
                 card.isDishonored &&
                 card.isFaction('crane'),
@@ -35,8 +35,12 @@ export default class MiokosSong extends StrongholdCard {
                 cardType: CardTypes.Province,
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) => {
+                        const opponent = context.player.opponent;
+                        if(!opponent) {
+                            return;
+                        }
                         const province: ProvinceCard = context.target;
-                        const topCards: Array<DrawCard> = context.player.opponent.dynastyDeck.slice(0, 2);
+                        const topCards: Array<DrawCard> = opponent.dynastyDeck.slice(0, 2);
                         this.game.promptWithHandlerMenu(context.player, {
                             activePromptTitle: 'Which card do you want to put in the province?',
                             context: context,
@@ -46,12 +50,12 @@ export default class MiokosSong extends StrongholdCard {
                             cardHandler: (selectedCard: DrawCard) => {
                                 const cardsFromProvince = province.cardsInSelf();
                                 for(const fromProvince of cardsFromProvince) {
-                                    context.player.opponent.moveCard(fromProvince, 'dynasty discard pile');
+                                    opponent.moveCard(fromProvince, 'dynasty discard pile');
                                 }
-                                context.player.opponent.moveCard(selectedCard, province.location);
+                                opponent.moveCard(selectedCard, province.location);
                                 selectedCard.facedown = false;
                                 for(const goToBottom of topCards.filter((c) => c !== selectedCard)) {
-                                    context.player.opponent.moveCard(goToBottom, 'dynasty deck bottom');
+                                    opponent.moveCard(goToBottom, 'dynasty deck bottom');
                                 }
 
                                 context.game.addMessage(

@@ -44,24 +44,28 @@ export class MenuPromptAction extends GameAction {
         });
     }
 
-    addEventsToArray(events, context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: any[], context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties(context, additionalProperties);
-        if(properties.choices.length === 0 || (properties.player === Players.Opponent && !context.player.opponent)) {
+        const choices = properties.choices as string[];
+        if(choices.length === 0 || (properties.player === Players.Opponent && !context.player.opponent)) {
             return;
         }
         let player = properties.player === Players.Opponent ? context.player.opponent : context.player;
-        let choiceHandler = (choice) => {
+        if(!player) {
+            return;
+        }
+        let choiceHandler = (choice: string) => {
             let childProperties = properties.choiceHandler(choice, true, properties);
             properties.gameAction.addEventsToArray(events, context, childProperties);
         };
-        if(properties.choices.length === 1) {
-            choiceHandler(properties.choices[0]);
+        if(choices.length === 1) {
+            choiceHandler(choices[0]);
             return;
         }
         context.game.promptWithHandlerMenu(player, Object.assign({}, properties, { context, choiceHandler }));
     }
 
-    hasTargetsChosenByInitiatingPlayer(context) {
+    hasTargetsChosenByInitiatingPlayer(context: AbilityContext) {
         let properties = this.getProperties(context);
         return properties.gameAction.hasTargetsChosenByInitiatingPlayer(context);
     }

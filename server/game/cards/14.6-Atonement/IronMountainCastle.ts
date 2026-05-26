@@ -1,3 +1,4 @@
+import type BaseAction from '../../BaseAction.js';
 import { CardTypes, Players } from '../../Constants.js';
 import { PlayAttachmentAction } from '../../PlayAttachmentAction.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
@@ -18,17 +19,20 @@ export default class IronMountainCastle extends StrongholdCard {
             title: 'Reduce cost of next attachment',
             when: {
                 onAbilityResolverInitiated: (event, context) => {
-                    //might be able to remove the source.type check at some point
+                    if(event.context === undefined) {
+                        return false;
+                    }
+                    const ec = event.context;
                     const isAttachment =
-                        event.context.source.type === CardTypes.Attachment ||
-                        event.context.ability instanceof PlayAttachmentAction;
+                        ec.source.type === CardTypes.Attachment ||
+                        ec.ability instanceof PlayAttachmentAction;
                     return (
                         isAttachment &&
-                        event.context.player === context.player &&
-                        event.context.target &&
-                        event.context.target.controller === context.player &&
-                        event.context.target.type === CardTypes.Character &&
-                        event.context.ability.getReducedCost(event.context) > 0
+                        ec.player === context.player &&
+                        ec.target &&
+                        ec.target.controller === context.player &&
+                        ec.target.type === CardTypes.Character &&
+                        (ec.ability as BaseAction).getReducedCost(ec) > 0
                     );
                 }
             },

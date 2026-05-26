@@ -1,16 +1,19 @@
+import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../drawcard.js';
+import type Player from '../../player.js';
 
 class InsolentOutcast extends DrawCard {
     static id = 'insolent-outcast';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
-            effect: ability.effects.modifyBothSkills((card, context) => context.player.opponent && this.getNoOfHonoredCharacters(context.player.opponent))
+            effect: ability.effects.modifyBothSkills((card: any, context: AbilityContext) => context.player.opponent ? this.getNoOfHonoredCharacters(context.player.opponent) : 0)
         });
     }
 
-    getNoOfHonoredCharacters(player) {
-        return player.cardsInPlay.filter(card => card.getType() === 'character' && card.isHonored).length;
+    getNoOfHonoredCharacters(player: Player) {
+        return player.cardsInPlay.filter((card: any) => card.getType() === 'character' && card.isHonored).length;
     }
 }
 

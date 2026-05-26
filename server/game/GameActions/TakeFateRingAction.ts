@@ -29,12 +29,12 @@ export class TakeFateRingAction extends RingAction {
         return (
             context.player.checkRestrictions('takeFateFromRings', context) &&
             ring.fate > 0 &&
-            properties.amount > 0 &&
+            (properties.amount ?? 0) > 0 &&
             super.canAffect(ring, context)
         );
     }
 
-    addPropertiesToEvent(event, ring: Ring, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, ring: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties(context, additionalProperties) as TakeFateRingProperties;
         event.fate = properties.amount;
         event.origin = ring;
@@ -42,11 +42,11 @@ export class TakeFateRingAction extends RingAction {
         event.recipient = properties.removeOnly ? null : context.player;
     }
 
-    checkEventCondition(event): boolean {
+    checkEventCondition(event: any): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event, ring: Ring, context: AbilityContext, additionalProperties): boolean {
+    isEventFullyResolved(event: any, ring: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         let { amount } = this.getProperties(context, additionalProperties) as TakeFateRingProperties;
         return (
             !event.cancelled &&
@@ -57,7 +57,7 @@ export class TakeFateRingAction extends RingAction {
         );
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         this.moveFateEventHandler(event);
     }
 }

@@ -374,16 +374,18 @@ class Game extends EventEmitter {
     }
 
     isDuringConflict(types: string | string[] | null = null): boolean {
-        if(!this.currentConflict) {
+        const conflict = this.currentConflict;
+        if(!conflict) {
             return false;
         } else if(!types) {
             return true;
         } else if(!Array.isArray(types)) {
             types = [types];
         }
-        return types.every((type) =>
-            this.currentConflict.elements.concat(this.currentConflict.conflictType).includes(type)
+        const elementsAndType = ([...conflict.elements, conflict.conflictType] as Array<string | undefined>).filter(
+            (value): value is string => typeof value === 'string'
         );
+        return types.every((type) => elementsAndType.includes(type));
     }
 
     recordConflict(conflict: any): void {
@@ -1060,7 +1062,7 @@ class Game extends EventEmitter {
     }
 
     getFrameworkContext(player: Player | null = null): AbilityContext {
-        return new AbilityContext({ game: this, player: player });
+        return new AbilityContext({ game: this, player: player ?? undefined });
     }
 
     initiateConflict(
@@ -1072,9 +1074,9 @@ class Game extends EventEmitter {
         const conflict = new Conflict(
             this,
             player,
-            player.opponent,
-            null,
-            forceProvinceTarget ?? null,
+            player.opponent as Player,
+            undefined,
+            forceProvinceTarget ?? undefined,
             forcedDeclaredType as ConflictTypes
         );
         this.queueStep(new ConflictFlow(this, conflict, canPass));
@@ -1102,7 +1104,7 @@ class Game extends EventEmitter {
         card.controller.removeCardFromPile(card);
         player.cardsInPlay.push(card);
         card.controller = player;
-        if(card.isParticipating()) {
+        if(card.isParticipating() && this.currentConflict) {
             this.currentConflict.removeFromConflict(card);
             if(player.isAttackingPlayer()) {
                 this.currentConflict.addAttacker(card);

@@ -80,7 +80,7 @@ class Ring extends EffectSource {
 
     getElements(): Elements[] {
         let elements: Elements[] = this.getEffects(EffectNames.AddElement).concat([this.element]);
-        if(this.game.isDuringConflict()) {
+        if(this.game.isDuringConflict() && this.game.currentConflict) {
             if(this.isContested()) {
                 elements = elements.concat(
                     ...this.game.currentConflict
@@ -159,13 +159,13 @@ class Ring extends EffectSource {
             claimedBy: this.claimedBy,
             conflictType: this.conflictType,
             contested: this.contested,
-            selected: this.game.currentConflict && this.game.currentConflict.conflictRing === this.element,
+            selected: !!this.game.currentConflict && this.game.currentConflict.ring?.element === this.element,
             element: this.element,
             fate: this.fate,
             menu: this.getMenu(),
             removedFromGame: this.removedFromGame,
             attachments: this.attachments.length
-                ? this.attachments.map((attachment) => attachment.getSummary(activePlayer, false))
+                ? this.attachments.map((attachment) => attachment.getSummary(activePlayer as Player, false))
                 : this.attachments
         };
 

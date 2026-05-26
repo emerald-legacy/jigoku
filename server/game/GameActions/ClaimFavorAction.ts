@@ -4,7 +4,7 @@ import type Player from '../player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
 export interface ClaimFavorProperties extends PlayerActionProperties {
-    target: Player | null;
+    target?: Player;
     side?: FavorTypes;
 }
 
@@ -25,7 +25,7 @@ export class ClaimFavorAction extends PlayerAction<ClaimFavorProperties> {
         return !!player && super.canAffect(player, context);
     }
 
-    eventHandler(event, additionalProperties = {}): void {
+    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
         let { side } = this.getProperties(event.context, additionalProperties);
         if(event.player) {
             event.player.claimImperialFavor(side);

@@ -8,20 +8,20 @@ class Castigated extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             effect: AbilityDsl.effects.delayedEffect({
-                condition: context => context.source.parent && !context.source.parent.hasDash('political') && context.source.parent.getPoliticalSkill() < 1,
+                condition: (context: any) => context.source.parent && !context.source.parent.hasDash('political') && context.source.parent.getPoliticalSkill() < 1,
                 message: '{0} is discarded by {1}',
-                messageArgs: context => [context.source.parent, context.source],
+                messageArgs: (context: any) => [context.source.parent, context.source],
                 gameAction: AbilityDsl.actions.discardFromPlay()
             })
         });
     }
 
-    canPlayOn(card) {
+    canPlayOn(card: any) {
         return card.isParticipating() && super.canPlayOn(card);
     }
 
-    canPlay(context, playType) {
-        if(!context.game.isDuringConflict('political') || !context.player.cardsInPlay.some(card => card.getType() === CardTypes.Character && card.hasTrait('imperial'))) {
+    canPlay(context: any, playType: any) {
+        if(!context.game.isDuringConflict('political') || !context.player.cardsInPlay.some((card: any) => card.getType() === CardTypes.Character && card.hasTrait('imperial'))) {
             return false;
         }
 

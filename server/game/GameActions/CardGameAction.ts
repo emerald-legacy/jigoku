@@ -40,7 +40,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
             let allCostsPaid = true;
             const additionalCosts = card
                 .getEffects(EffectNames.UnlessActionCost)
-                .filter((properties) => properties.actionName === this.name);
+                .filter((properties: any) => properties.actionName === this.name);
 
             if(context.player && context.ability && context.ability.targets && context.ability.targets.length > 0) {
                 let targetForCost = [card];
@@ -125,16 +125,16 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         }
     }
 
-    addPropertiesToEvent(event, card: BaseCard, context: AbilityContext, additionalProperties = {}): void {
+    addPropertiesToEvent(event: any, card: BaseCard, context: AbilityContext, additionalProperties: any = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.card = card;
     }
 
-    isEventFullyResolved(event, card: BaseCard, context: AbilityContext, additionalProperties): boolean {
+    isEventFullyResolved(event: any, card: BaseCard, context: AbilityContext, additionalProperties: any): boolean {
         return event.card === card && super.isEventFullyResolved(event, card, context, additionalProperties);
     }
 
-    updateLeavesPlayEvent(event, card: BaseCard, context: AbilityContext, additionalProperties): void {
+    updateLeavesPlayEvent(event: any, card: BaseCard, context: AbilityContext, additionalProperties: any): void {
         let properties = this.getProperties(context, additionalProperties) as any;
         super.updateEvent(event, card, context, additionalProperties);
         event.isSacrifice = this.name === 'sacrifice';
@@ -183,7 +183,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         };
     }
 
-    leavesPlayEventHandler(event, additionalProperties = {}): void {
+    leavesPlayEventHandler(event: any, additionalProperties: any = {}): void {
         this.checkForRefillProvince(event.card, event, additionalProperties);
         if(!event.card.owner.isLegalLocationForCard(event.card, event.destination)) {
             event.card.game.addMessage(
@@ -196,7 +196,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         event.card.owner.moveCard(event.card, event.destination, event.options || {});
     }
 
-    checkForRefillProvince(card: BaseCard, event, additionalProperties: any = {}): void {
+    checkForRefillProvince(card: BaseCard, event: any, additionalProperties: any = {}): void {
         if(!card.isInProvince() || card.location === Locations.StrongholdProvince) {
             return;
         }

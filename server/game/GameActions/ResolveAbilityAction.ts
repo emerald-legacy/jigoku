@@ -3,6 +3,7 @@ import { EventNames } from '../Constants.js';
 import type DrawCard from '../drawcard.js';
 import type { Event } from '../Events/Event.js';
 import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent.js';
+import type Game from '../game.js';
 import AbilityResolver from '../gamesteps/abilityresolver.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import type Player from '../player.js';
@@ -13,7 +14,7 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 class ResolveAbilityActionResolver extends AbilityResolver {
     ignoreCosts: boolean;
 
-    constructor(game, context, ignoreCosts) {
+    constructor(game: Game, context: TriggeredAbilityContext, ignoreCosts: boolean) {
         super(game, context);
         this.ignoreCosts = ignoreCosts;
     }
@@ -91,13 +92,17 @@ export interface ResolveAbilityProperties extends CardActionProperties {
     choosingPlayerOverride?: Player;
 }
 
+type ResolvedResolveAbilityProperties = ResolveAbilityProperties & {
+    ignoredRequirements: NonNullable<ResolveAbilityProperties['ignoredRequirements']>;
+};
+
 export class ResolveAbilityAction extends CardGameAction {
     name = 'resolveAbility';
     defaultProperties: ResolveAbilityProperties = {
-        ability: null,
+        ability: null as unknown as CardAbility,
         ignoredRequirements: [],
         subResolution: false,
-        choosingPlayerOverride: null
+        choosingPlayerOverride: undefined
     };
     constructor(
         properties: ((context: TriggeredAbilityContext) => ResolveAbilityProperties) | ResolveAbilityProperties
@@ -111,7 +116,7 @@ export class ResolveAbilityAction extends CardGameAction {
     }
 
     canAffect(card: DrawCard, context: TriggeredAbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties) as ResolveAbilityProperties;
+        let properties = this.getProperties(context, additionalProperties) as ResolvedResolveAbilityProperties;
         let ability = properties.ability as TriggeredAbility;
         let player = properties.player || context.player;
         let newContextEvent = properties.event;
@@ -132,8 +137,8 @@ export class ResolveAbilityAction extends CardGameAction {
         return !ability.meetsRequirements(newContext, ignoredRequirements);
     }
 
-    eventHandler(event, additionalProperties): void {
-        let properties = this.getProperties(event.context, additionalProperties) as ResolveAbilityProperties;
+    eventHandler(event: any, additionalProperties: any): void {
+        let properties = this.getProperties(event.context, additionalProperties) as ResolvedResolveAbilityProperties;
         let player = properties.player || event.context.player;
         let newContextEvent = properties.event;
         let newContext = (properties.ability as TriggeredAbility).createContext(player, newContextEvent);
@@ -150,7 +155,7 @@ export class ResolveAbilityAction extends CardGameAction {
         );
     }
 
-    hasTargetsChosenByInitiatingPlayer(context) {
+    hasTargetsChosenByInitiatingPlayer(context: TriggeredAbilityContext): boolean {
         let properties = this.getProperties(context) as ResolveAbilityProperties;
         return properties.ability.hasTargetsChosenByInitiatingPlayer(context);
     }

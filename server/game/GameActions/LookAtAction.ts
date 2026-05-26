@@ -4,7 +4,7 @@ import { EventNames, Locations } from '../Constants.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 
 export interface LookAtProperties extends CardActionProperties {
-    message?: string | ((context) => string);
+    message?: string | ((context: AbilityContext) => string);
     messageArgs?: (cards: any) => any[];
 }
 
@@ -34,7 +34,7 @@ export class LookAtAction extends CardGameAction {
         events.push(event);
     }
 
-    addPropertiesToEvent(event, cards, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, cards: any, context: AbilityContext, additionalProperties: any): void {
         if(!cards) {
             cards = this.getProperties(context, additionalProperties).target;
         }
@@ -42,28 +42,27 @@ export class LookAtAction extends CardGameAction {
             cards = [cards];
         }
         event.cards = cards;
-        let _obj = { a: cards, b: context };
-        event.stateBeforeResolution = cards.map((a) => {
+        event.stateBeforeResolution = cards.map((a: BaseCard) => {
             return { card: a, location: a.location };
         });
         event.context = context;
     }
 
-    eventHandler(event, additionalProperties = {}): void {
+    eventHandler(event: any, additionalProperties = {}): void {
         let context = event.context;
         let properties = this.getProperties(context, additionalProperties) as LookAtProperties;
         let messageArgs = properties.messageArgs ? properties.messageArgs(event.cards) : [context.source, event.cards];
         context.game.addMessage(this.getMessage(properties.message, context), ...messageArgs);
     }
 
-    getMessage(message, context): string {
+    getMessage(message: string | ((context: AbilityContext) => string) | undefined, context: AbilityContext): string {
         if(typeof message === 'function') {
             return message(context);
         }
-        return message;
+        return message ?? '';
     }
 
-    isEventFullyResolved(event): boolean {
+    isEventFullyResolved(event: any): boolean {
         return !event.cancelled && event.name === this.eventName;
     }
 

@@ -9,7 +9,7 @@ class KnowTheTerrain extends DrawCard {
             title: 'Switch the attacked province with a facedown province',
             effect: 'switch the attacked province card',
             when: {
-                onConflictDeclaredBeforeProvinceReveal: (event, context) => event.conflict.conflictProvince.isFacedown() &&
+                onConflictDeclaredBeforeProvinceReveal: (event: any, context) => event.conflict.conflictProvince.isFacedown() &&
                     event.conflict.defendingPlayer === context.player &&
                     event.conflict.conflictProvince.location !== Locations.StrongholdProvince
             },
@@ -19,8 +19,8 @@ class KnowTheTerrain extends DrawCard {
                 context: context,
                 location: Locations.Provinces,
                 controller: Players.Self,
-                cardCondition: (card, context) => card.location !== Locations.StrongholdProvince && !card.isBroken && card.isFacedown() && card !== context.event.conflict.conflictProvince,
-                onSelect: (player, card) => {
+                cardCondition: (card: any, context: any) => card.location !== Locations.StrongholdProvince && !card.isBroken && card.isFacedown() && card !== context.event.conflict.conflictProvince,
+                onSelect: (player: any, card: any) => {
                     let attackedprovince = context.event.conflict.conflictProvince;
                     let chosenProvince = card;
                     let attackedLocation = attackedprovince.location;

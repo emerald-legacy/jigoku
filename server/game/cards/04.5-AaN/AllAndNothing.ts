@@ -10,13 +10,13 @@ class AllAndNothing extends DrawCard {
             title: 'Replace a void effect with another ring effect',
             when: {
                 onResolveRingElement: (event, context) =>
-                    event.ring.element === 'void' && event.player === context.player
+                    !!event.ring && event.ring.element === 'void' && event.player === context.player
             },
             target: {
                 mode: TargetModes.Ring,
-                ringCondition: (ring, context) =>
-                    context.event.physicalRing ? ring !== context.event.physicalRing : ring.element !== 'void',
-                gameAction: AbilityDsl.actions.cancel((context) => ({
+                ringCondition: (ring: any, context: any) =>
+                    context?.event?.physicalRing ? ring !== context.event.physicalRing : ring.element !== 'void',
+                gameAction: AbilityDsl.actions.cancel((context: any) => ({
                     replacementGameAction: AbilityDsl.actions.resolveRingEffect({
                         optional: context.event.optional,
                         physicalRing: context.ring

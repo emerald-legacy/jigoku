@@ -40,10 +40,10 @@ class OfferTestimony extends DrawCard {
                 }),
                 // @ts-expect-error context.targets values are dynamically typed, filter returns unknown[] but game engine handles it
                 AbilityDsl.actions.bow(context => {
-                    let events = context.events.filter(event => event.name === EventNames.OnCardRevealed);
-                    let revealedCards = events.map(event => event.card);
-                    let lowestCost = Math.min(...revealedCards.map(card => card.getCost()).filter(number => Number.isInteger(number)));
-                    let lowestCostPlayers = revealedCards.filter(card => card.getCost() === lowestCost).map(card => card.controller);
+                    let events = context.events.filter((event: any) => event.name === EventNames.OnCardRevealed);
+                    let revealedCards = events.map((event: any) => event.card);
+                    let lowestCost = Math.min(...revealedCards.map((card: any) => card.getCost()).filter((number: any) => Number.isInteger(number)));
+                    let lowestCostPlayers = revealedCards.filter((card: any) => card.getCost() === lowestCost).map((card: any) => card.controller);
                     return { target: Object.values(context.targets).filter((card: any) => lowestCostPlayers.includes(card.controller)) };
                 })
             ]

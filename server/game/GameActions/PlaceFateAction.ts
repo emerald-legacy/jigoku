@@ -48,7 +48,7 @@ export class PlaceFateAction extends CardGameAction {
         );
     }
 
-    addPropertiesToEvent(event, card: DrawCard, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, card: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateProperties;
         event.fate = amount;
         event.origin = origin;
@@ -56,11 +56,11 @@ export class PlaceFateAction extends CardGameAction {
         event.recipient = card;
     }
 
-    checkEventCondition(event): boolean {
+    checkEventCondition(event: any): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event, card: DrawCard, context: AbilityContext, additionalProperties): boolean {
+    isEventFullyResolved(event: any, card: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         const { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateProperties;
         return (
             !event.cancelled &&
@@ -71,7 +71,7 @@ export class PlaceFateAction extends CardGameAction {
         );
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         this.moveFateEventHandler(event);
     }
 }

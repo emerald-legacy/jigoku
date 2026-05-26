@@ -57,16 +57,16 @@ export class CancelAction extends GameAction {
     }
 
     addEventsToArray(events: any[], context: TriggeredAbilityContext, additionalProperties = {}): void {
-        let event = this.createEvent(null, context, additionalProperties);
-        super.addPropertiesToEvent(event, null, context, additionalProperties);
-        event.replaceHandler((event) => this.eventHandler(event, additionalProperties));
+        let event = this.createEvent(null as unknown as any, context, additionalProperties);
+        super.addPropertiesToEvent(event, null as unknown as any, context, additionalProperties);
+        event.replaceHandler((event: any) => this.eventHandler(event, additionalProperties));
         events.push(event);
     }
 
-    eventHandler(event, additionalProperties = {}): void {
+    eventHandler(event: any, additionalProperties = {}): void {
         let { replacementGameAction } = this.getProperties(event.context, additionalProperties);
         if(replacementGameAction) {
-            let events = [];
+            let events: any[] = [];
             let eventWindow = event.context.event.window;
             replacementGameAction.addEventsToArray(
                 events,
@@ -87,10 +87,10 @@ export class CancelAction extends GameAction {
 
     canAffect(target: any, context: TriggeredAbilityContext, additionalProperties = {}): boolean {
         let { replacementGameAction } = this.getProperties(context, additionalProperties);
-        return (
-            (!context.event.cannotBeCancelled && !replacementGameAction) ||
-            replacementGameAction.canAffect(target, context, additionalProperties)
-        );
+        if(!replacementGameAction) {
+            return !context.event.cannotBeCancelled;
+        }
+        return replacementGameAction.canAffect(target, context, additionalProperties);
     }
 
     defaultTargets(context: TriggeredAbilityContext): any[] {
@@ -100,7 +100,7 @@ export class CancelAction extends GameAction {
     hasTargetsChosenByInitiatingPlayer(context: TriggeredAbilityContext, additionalProperties = {}): boolean {
         let { replacementGameAction } = this.getProperties(context);
         return (
-            replacementGameAction &&
+            replacementGameAction !== undefined &&
             replacementGameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties)
         );
     }

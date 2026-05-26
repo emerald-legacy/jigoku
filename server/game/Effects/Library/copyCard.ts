@@ -18,9 +18,11 @@ class CopyCard extends EffectValue<BaseCard> {
 
     constructor(card: BaseCard) {
         super(card);
-        this.actions = card.abilities.actions.map((action) => new GainAbility(AbilityTypes.Action, action));
-        this.reactions = card.abilities.reactions.map((ability) => new GainAbility(ability.abilityType, ability));
-        this.persistentEffects = card.abilities.persistentEffects.map((effect) => Object.assign({}, effect));
+        this.actions = card.abilities.actions.map((action: any) => new GainAbility(AbilityTypes.Action, action));
+        this.reactions = card.abilities.reactions.map(
+            (ability: any) => new GainAbility(ability.abilityType, ability)
+        );
+        this.persistentEffects = card.abilities.persistentEffects.map((effect: any) => Object.assign({}, effect));
     }
 
     apply(target: BaseCard) {

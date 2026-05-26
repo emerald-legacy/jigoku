@@ -44,7 +44,7 @@ class Compass extends DrawCard {
         });
     }
 
-    moveToBottomHandler(context, cards, deck) {
+    moveToBottomHandler(context: any, cards: any, deck: any) {
         let bottomOfDeck = deck + ' bottom';
         if(cards.length > 0) {
             this.game.promptWithHandlerMenu(context.player, {
@@ -53,10 +53,10 @@ class Compass extends DrawCard {
                 cards: cards,
                 choices: ['Done'],
                 handlers: [() => this.moveToTopHandler(context, cards, deck)],
-                cardHandler: card => {
+                cardHandler: (card: any) => {
                     this.game.addMessage('{0} places a card on the bottom of their {1}', context.player, deck);
                     context.player.moveCard(card, bottomOfDeck);
-                    cards = cards.filter(c => c !== card);
+                    cards = cards.filter((c: any) => c !== card);
                     this.moveToBottomHandler(context, cards, deck);
                 }
             });
@@ -65,16 +65,16 @@ class Compass extends DrawCard {
         }
     }
 
-    moveToTopHandler(context, cards, deck) {
+    moveToTopHandler(context: any, cards: any, deck: any) {
         if(cards.length > 1) {
             this.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Choose a card to place on the top of your deck',
                 context: context,
                 cards: cards,
-                cardHandler: card => {
+                cardHandler: (card: any) => {
                     this.game.addMessage('{0} places a card on the top of their {1}', context.player, deck);
                     context.player.moveCard(card, deck);
-                    cards = cards.filter(c => c !== card);
+                    cards = cards.filter((c: any) => c !== card);
                     this.moveToTopHandler(context, cards, deck);
                 }
             });
