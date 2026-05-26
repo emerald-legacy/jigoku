@@ -1,7 +1,9 @@
 import BaseAbility from './baseability.js';
 import type BaseCard from './basecard.js';
+import type CardAbility from './CardAbility.js';
 import { Locations, PlayTypes, Stages } from './Constants.js';
 import EffectSource from './EffectSource.js';
+import type { Event } from './Events/Event.js';
 import type Game from './game.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type Player from './player.js';
@@ -10,7 +12,7 @@ import type { StatusToken } from './StatusToken.js';
 
 export interface AbilityContextProperties {
     game: Game;
-    source?: any;
+    source?: BaseCard | Ring | EffectSource;
     player?: Player;
     ability?: BaseAbility;
     costs?: any;
@@ -19,9 +21,9 @@ export interface AbilityContextProperties {
     selects?: any;
     tokens?: any;
     elements?: any;
-    events?: any[];
+    events?: Event[];
     stage?: Stages;
-    targetAbility?: any;
+    targetAbility?: CardAbility | null;
 }
 
 export class AbilityContext<S = any> {
@@ -29,33 +31,41 @@ export class AbilityContext<S = any> {
     source: S;
     player: Player;
     ability: BaseAbility;
+    // These bags are dynamically keyed by per-ability target names. Concrete typing
+    // is staged work (architecture.md P2.6) — touches ~200 card files. Left as any
+    // until that migration; new code should prefer narrowed locals at access sites.
     costs: any;
     targets: any;
     rings: any;
     selects: any;
     tokens: any;
     elements: any;
-    events: any[] = [];
+    events: Event[] = [];
     stage: Stages;
-    targetAbility: any;
+    targetAbility: CardAbility | null = null;
+    /**
+     * Current target of the resolving ability. Concrete type is determined by
+     * the card's target declaration (single BaseCard, BaseCard[], Ring, etc.);
+     * typed as union here so all valid runtime shapes are representable.
+     */
     target: any;
     select: string = '';
     ring: Ring | undefined;
     token: StatusToken | undefined;
-    element: any;
+    element: string | null = null;
     elementCard: BaseCard | undefined;
-    provincesToRefill: any[] = [];
+    provincesToRefill: { player: Player; location: Locations }[] = [];
     subResolution = false;
     choosingPlayerOverride: Player | null = null;
     gameActionsResolutionChain: GameAction[] = [];
     playType: PlayTypes | string | undefined;
-    cardStateWhenInitiated: any = null;
+    cardStateWhenInitiated: BaseCard | null = null;
     ignoreFateCost?: boolean;
-    onPlayCardSource?: any;
+    onPlayCardSource?: BaseCard;
 
     constructor(properties: AbilityContextProperties) {
         this.game = properties.game;
-        this.source = properties.source || new EffectSource(this.game);
+        this.source = (properties.source || new EffectSource(this.game)) as S;
         this.player = properties.player as Player;
         this.ability = properties.ability || new BaseAbility({});
         this.costs = properties.costs || {};
@@ -65,7 +75,7 @@ export class AbilityContext<S = any> {
         this.tokens = properties.tokens || {};
         this.elements = properties.elements || {};
         this.stage = properties.stage || Stages.Effect;
-        this.targetAbility = properties.targetAbility;
+        this.targetAbility = properties.targetAbility ?? null;
         // const location = this.player && this.player.playableLocations.find(location => location.contains(this.source));
         this.playType = this.player && this.player.findPlayType(this.source as BaseCard); //location && location.playingType;
     }
@@ -111,7 +121,7 @@ export class AbilityContext<S = any> {
     getProps(): AbilityContextProperties {
         return {
             game: this.game,
-            source: this.source,
+            source: this.source as BaseCard | Ring | EffectSource,
             player: this.player,
             ability: this.ability,
             costs: Object.assign({}, this.costs),

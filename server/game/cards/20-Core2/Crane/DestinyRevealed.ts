@@ -41,7 +41,7 @@ export default class DestinyRevealed extends DrawCard {
             },
             gameAction: AbilityDsl.actions.cancel(),
             effect: 'cancel the effects of the {1}',
-            effectArgs: (context) => [context.event.context!.source]
+            effectArgs: (context) => [context.event.context?.source]
         });
     }
 }
@@ -53,5 +53,5 @@ type CardStatusEvent =
     | EventPayload<EventNames.OnCardReadied>;
 
 function targetedByOpponentRingEffect(event: CardStatusEvent, context: TriggeredAbilityContext<any>) {
-    return event.card?.controller === context.player && event.context!.source.type === 'ring';
+    return event.card?.controller === context.player && event.context?.source.type === 'ring';
 }
