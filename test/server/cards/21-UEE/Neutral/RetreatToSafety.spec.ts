@@ -11,7 +11,7 @@ describe('Retreat to Safety', () => {
         let noMoreActions: () => void;
         let getChatLogs: (_n: number) => string[];
 
-        beforeEach(function() {
+        beforeEach(function(this: any) {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
