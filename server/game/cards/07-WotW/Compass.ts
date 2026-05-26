@@ -1,5 +1,6 @@
 import DrawCard from '../../drawcard.js';
 import { CardTypes } from '../../Constants.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 class Compass extends DrawCard {
     static id = 'compass';
@@ -8,16 +9,19 @@ class Compass extends DrawCard {
         this.reaction({
             title: 'Look at top 3 cards of a deck',
             when: {
-                onCardRevealed: (event, context) =>
+                onCardRevealed: (event: any, context: TriggeredAbilityContext) =>
                     event.card && event.card.type === CardTypes.Province && event.card.controller === context.player.opponent &&
-                    context.source && context.source.parent && context.source.parent.isParticipating() &&
+                    context.source && (context.source as any).parent && (context.source as any).parent.isParticipating() &&
                     (context.player.dynastyDeck.length > 0 || context.player.conflictDeck.length > 0)
             },
             effect: 'look at the top 3 cards of one of their decks',
-            handler: context => {
-                let cards = [];
-                let choices = [];
-                let handlers = [];
+            handler: (context?: TriggeredAbilityContext) => {
+                if(!context) {
+                    return;
+                }
+                let cards: any[] = [];
+                let choices: string[] = [];
+                let handlers: (() => void)[] = [];
                 if(context.player.dynastyDeck.length > 0) {
                     choices.push('Dynasty Deck');
                     handlers.push(() => {

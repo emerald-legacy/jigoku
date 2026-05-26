@@ -9,11 +9,13 @@ export default class RediscoveredShrine extends DrawCard {
         this.interrupt({
             title: 'Reduce cost of next event',
             when: {
-                onCardPlayed: (event, context) =>
-                    event.card.type === CardTypes.Event &&
-                    event.player === context.player &&
-                    !context.player.getProvinceCardInProvince(context.source.location).isBroken &&
-                    event.context.ability.getReducedCost(event.context) > 0
+                onCardPlayed: (event, context) => {
+                    const province = context.player.getProvinceCardInProvince(context.source.location);
+                    return event.card.type === CardTypes.Event &&
+                        event.player === context.player &&
+                        !!province && !province.isBroken &&
+                        (event.context?.ability as any)?.getReducedCost(event.context) > 0;
+                }
             },
             effect: 'reduce the cost of their next event by 1',
             gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({

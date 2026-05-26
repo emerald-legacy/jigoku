@@ -20,10 +20,10 @@ export default class ShibaYohana extends DrawCard {
             })),
             then: (context) => ({
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    target: context.source,
+                    target: context?.source,
                     duration: Durations.Custom,
                     until: {
-                        onCardLeavesPlay: (event) => event.card === context.source
+                        onCardLeavesPlay: (event) => event.card === context?.source
                     },
                     effect: AbilityDsl.effects.addTrait('spirit')
                 })

@@ -21,9 +21,8 @@ export default class ChroniclerOfCalamities extends DrawCard {
                     card !== context.source &&
                     card.isParticipating() &&
                     card.controller !== context.player &&
-                    context.game.currentConflict
-                        .getCharacters(context.player)
-                        .some((myCard) => myCard.printedCost >= card.printedCost),
+                    (context.game.currentConflict?.getCharacters(context.player) ?? [])
+                        .some((myCard: any) => (myCard.printedCost ?? 0) >= (card.printedCost ?? 0)),
                 gameAction: AbilityDsl.actions.chooseAction((context) => ({
                     activePromptTitle: 'Select one',
                     options: {

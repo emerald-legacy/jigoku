@@ -1,3 +1,4 @@
+import type BaseCard from '../../basecard.js';
 import { CardTypes, Locations, Players } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -34,8 +35,8 @@ export default class SereneIseZumi extends DrawCard {
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: 2,
-                targetCondition: (target) => target.type === CardTypes.Character,
-                match: (card, source) => card === source
+                targetCondition: (target: BaseCard) => target.type === CardTypes.Character,
+                match: (card: BaseCard, source: BaseCard) => card === source
             })
         });
     }

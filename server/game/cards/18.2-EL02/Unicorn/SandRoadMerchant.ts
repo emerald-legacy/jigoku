@@ -26,9 +26,9 @@ export default class SandRoadMerchant extends DrawCard {
             effect: 'look at the top two cards of their opponent\'s conflict deck',
             when: {
                 onConflictDeclared: (event, context) =>
-                    event.attackers.includes(context.source) && context.player.opponent !== undefined,
+                    (event.attackers ?? []).includes(context.source) && context.player.opponent !== undefined,
                 onDefendersDeclared: (event, context) =>
-                    event.defenders.includes(context.source) && context.player.opponent !== undefined
+                    (event.defenders ?? []).includes(context.source) && context.player.opponent !== undefined
             },
             gameAction: AbilityDsl.actions.sequentialContext((context) => ({
                 gameActions: [

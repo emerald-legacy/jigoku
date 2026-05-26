@@ -10,7 +10,7 @@ class SettingTheStandard extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
                 title: 'Draw 2 cards and discard one',
                 when: {
-                    afterConflict: (event, context) =>
+                    afterConflict: (event: any, context: any) =>
                         event.conflict.winner === context.source.controller && context.source.isParticipating()
                 },
                 gameAction: AbilityDsl.actions.sequential([

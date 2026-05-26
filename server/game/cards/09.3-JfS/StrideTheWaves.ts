@@ -27,11 +27,14 @@ class StrideTheWaves extends DrawCard {
                 }))
             }),
             effect: '{3} {1} {2}',
-            effectArgs: context => [
-                context.source.parent,
-                context.source.parent.inConflict ? 'home' : 'into the conflict',
-                context.source.parent.inConflict ? 'send' : 'move'
-            ]
+            effectArgs: context => {
+                const parent = context.source.parent;
+                return [
+                    parent as unknown as string,
+                    parent && parent.inConflict ? 'home' : 'into the conflict',
+                    parent && parent.inConflict ? 'send' : 'move'
+                ];
+            }
         });
     }
 

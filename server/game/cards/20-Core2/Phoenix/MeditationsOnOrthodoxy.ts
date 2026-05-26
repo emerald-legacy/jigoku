@@ -7,7 +7,7 @@ export default class MeditationsOnOrthodoxy extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => context.player.opponent && context.player.isMoreHonorable(),
+            condition: (context) => Boolean(context.player.opponent) && context.player.isMoreHonorable(),
             location: Locations.ConflictDiscardPile,
             effect: AbilityDsl.effects.canPlayFromOwn(Locations.ConflictDiscardPile, [this], this, PlayTypes.Other)
         });
@@ -28,7 +28,7 @@ export default class MeditationsOnOrthodoxy extends DrawCard {
             then: (context) => ({
                 gameAction: [
                     AbilityDsl.actions.moveCard({
-                        target: context.source,
+                        target: context?.source,
                         destination: Locations.ConflictDeck,
                         bottom: true
                     })

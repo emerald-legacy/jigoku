@@ -14,14 +14,17 @@ class ProveYourSkill extends DrawCard {
                 gameAction: AbilityDsl.actions.discardStatusToken()
             },
             effect: 'discard {1}\'s {2}',
-            effectArgs: context => [
-                context.token[0].card,
-                context.token
-            ]
+            effectArgs: context => {
+                const token: any = context && (context as any).token;
+                if(!token) {
+                    return [];
+                }
+                return [Array.isArray(token) ? token[0].card : token.card, token];
+            }
         });
     }
 
-    canPlay(context, playType) {
+    canPlay(context: any, playType: any) {
         if(context.player.opponent && context.player.isMoreHonorable()) {
             return super.canPlay(context, playType);
         }

@@ -21,8 +21,8 @@ export default class KitsukiSeiji extends DrawCard {
         this.wouldInterrupt({
             title: 'Put fate on this character',
             when: {
-                onMoveFate: (event) => this.fateRecipientIsSeijisRing(event.recipient),
-                onPlaceFateOnUnclaimedRings: (event) =>
+                onMoveFate: (event: any) => this.fateRecipientIsSeijisRing(event.recipient),
+                onPlaceFateOnUnclaimedRings: (event: any) =>
                     event.recipients.some((recipient: any) => this.fateRecipientIsSeijisRing(recipient.ring))
             },
             effect: 'put the fate that would go on the {1} ring on {0} instead',
@@ -66,7 +66,7 @@ export default class KitsukiSeiji extends DrawCard {
 
     private replacementForPlaceFateOnUnclaimedRings(context: AbilityContext) {
         return AbilityDsl.actions.joint(
-            (context as any).event.recipients.map((recipient) => {
+            (context as any).event.recipients.map((recipient: any) => {
                 const isSeijisRing = recipient.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY));
                 if(isSeijisRing) {
                     return AbilityDsl.actions.placeFate({

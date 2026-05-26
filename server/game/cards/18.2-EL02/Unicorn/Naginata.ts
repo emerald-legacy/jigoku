@@ -11,7 +11,7 @@ export default class Naginata extends DrawCard {
         this.attachmentConditions({ myControl: true });
 
         this.whileAttached({
-            condition: (context) => context.source.parent && context.source.controller.firstPlayer,
+            condition: (context) => !!context.source.parent && context.source.controller.firstPlayer,
             effect: AbilityDsl.effects.modifyMilitarySkill(1)
         });
 
@@ -19,14 +19,14 @@ export default class Naginata extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
                 title: 'Bow a character',
                 when: {
-                    onMoveToConflict: (event, context: TriggeredAbilityContext<DrawCard>) =>
+                    onMoveToConflict: (event: any, context: TriggeredAbilityContext<DrawCard>) =>
                         context.source.isParticipating('military') &&
-                        event.card.type === CardTypes.Character &&
-                        event.card.isParticipating(),
-                    onSendHome: (event, context) =>
+                        event.card?.type === CardTypes.Character &&
+                        event.card?.isParticipating(),
+                    onSendHome: (event: any, context: TriggeredAbilityContext<DrawCard>) =>
                         context.source.isParticipating('military') &&
-                        event.card.type === CardTypes.Character &&
-                        !event.card.isParticipating()
+                        event.card?.type === CardTypes.Character &&
+                        !event.card?.isParticipating()
                 },
                 target: {
                     cardType: CardTypes.Character,

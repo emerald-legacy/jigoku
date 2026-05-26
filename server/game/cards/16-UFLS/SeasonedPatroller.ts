@@ -12,11 +12,11 @@ class SeasonedPatroller extends DrawCard {
             targetController: Players.Any,
             condition: context => context.source.isAttacking(),
             effect: [
-                AbilityDsl.effects.suppressEffects(effect =>
+                AbilityDsl.effects.suppressEffects((effect: any) =>
                     effect.isProvinceStrengthModifier() && effect.getValue() > 0
                 ),
                 AbilityDsl.effects.provinceCannotHaveSkillIncreased(),
-                AbilityDsl.effects.cannotApplyLastingEffects(effect =>
+                AbilityDsl.effects.cannotApplyLastingEffects((effect: any) =>
                     effect.isProvinceStrengthModifier() && effect.getValue() > 0
                 )
             ]

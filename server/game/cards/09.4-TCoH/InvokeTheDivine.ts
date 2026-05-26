@@ -7,18 +7,18 @@ class InvokeTheDivine extends DrawCard {
     static id = 'invoke-the-divine';
 
     setupCardAbilities() {
-        const getSelectCardAction = (fate, spellsCast) => AbilityDsl.actions.selectCard({
+        const getSelectCardAction = (fate: number, spellsCast: number) => AbilityDsl.actions.selectCard({
             location: Locations.Hand,
             controller: Players.Self,
-            cardCondition: card => card.hasTrait('spell') && card.getCost() <= fate,
+            cardCondition: (card: DrawCard) => card.hasTrait('spell') && (card.getCost() ?? 0) <= fate,
             optional: spellsCast > 0,
             gameAction: AbilityDsl.actions.playCard(invokeContext => ({
                 resetOnCancel: true,
                 payCosts: false,
                 source: this,
-                postHandler: context => {
+                postHandler: (context: any) => {
                     if(spellsCast < 2) {
-                        getSelectCardAction(fate - context.source.getCost(), spellsCast + 1).resolve(null, invokeContext);
+                        getSelectCardAction(fate - (context.source.getCost() ?? 0), spellsCast + 1).resolve(undefined, invokeContext);
                     }
                 }
             }))

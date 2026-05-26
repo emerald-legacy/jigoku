@@ -13,7 +13,7 @@ export default class OnsenQuarters extends ProvinceCard {
             targetController: Players.Self,
             condition: () => true,
             match: (card, context) =>
-                card.type === CardTypes.Province && card !== context.source && card.controller === context.player,
+                !!context && card.type === CardTypes.Province && card !== context?.source && card.controller === context?.player,
             effect: AbilityDsl.effects.modifyProvinceStrength(1)
         });
 
@@ -32,7 +32,11 @@ export default class OnsenQuarters extends ProvinceCard {
     }
 
     #ringForRole(context: AbilityContext): Ring | undefined {
-        for(const trait of context.player.role.traits) {
+        const role = context.player.role;
+        if(!role) {
+            return undefined;
+        }
+        for(const trait of role.traits) {
             if(trait in context.game.rings) {
                 return context.game.rings[trait];
             }

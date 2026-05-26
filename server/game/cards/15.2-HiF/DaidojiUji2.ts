@@ -23,7 +23,7 @@ class DaidojiUji2 extends DrawCard {
                             card.facedown = false;
                             card.lastingEffect(() => ({
                                 until: {
-                                    onCardMoved: event => event.card === card && event.originalLocation === this.uuid
+                                    onCardMoved: (event: any) => event.card === card && event.originalLocation === this.uuid
                                 },
                                 match: card,
                                 effect: [
@@ -47,7 +47,7 @@ class DaidojiUji2 extends DrawCard {
                 return card.location === this.uuid;
             },
             effect: [
-                AbilityDsl.effects.canPlayFromOutOfPlay(player => {
+                AbilityDsl.effects.canPlayFromOutOfPlay((player: any) => {
                     return player === this.controller;
                 }, PlayTypes.PlayFromHand),
                 AbilityDsl.effects.registerToPlayFromOutOfPlay()

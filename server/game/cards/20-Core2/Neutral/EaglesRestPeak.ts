@@ -14,14 +14,14 @@ export default class EaglesRestPeak extends ProvinceCard {
             target: {
                 activePromptTitle: 'Choose a character to lead the investigation',
                 cardType: CardTypes.Character,
-                cardCondition: (card: DrawCard) => card.isDefending() && card.getCost() > 0
+                cardCondition: (card: DrawCard) => card.isDefending() && (card.getCost() ?? 0) > 0
             },
             effect: 'use the insight of {0}, revealing and setting aside {1} cards from {2}\'s hand',
             effectArgs: context => [context.target.getCost(), context.player.opponent],
             gameAction: AbilityDsl.actions.sequentialContext((context) => {
                 const opponent = context.player.opponent;
                 const setAsideCards: DrawCard[] = shuffle(opponent?.hand ?? [] as DrawCard[])
-                    .slice(0, (context.target as DrawCard).getCost()) as DrawCard[];
+                    .slice(0, (context.target as DrawCard).getCost() ?? 0) as DrawCard[];
 
                 return {
                     gameActions: [

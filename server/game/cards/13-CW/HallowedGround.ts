@@ -25,10 +25,10 @@ class HallowedGround extends DrawCard {
             condition: context => context.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player.opponent),
             effect: AbilityDsl.effects.playerDelayedEffect({
                 when: {
-                    afterConflict: (event, context) => event.conflict.loser === context.player.opponent && event.conflict.conflictUnopposed
+                    afterConflict: (event: any, context: any) => event.conflict.loser === context.player.opponent && event.conflict.conflictUnopposed
                 },
                 message: '{0} loses 1 honor due to the constant effect of {1}',
-                messageArgs: effectContext => [effectContext.player.opponent, effectContext.source],
+                messageArgs: (effectContext: any) => [effectContext.player.opponent, effectContext.source],
                 multipleTrigger: true,
                 gameAction: AbilityDsl.actions.loseHonor()
             })

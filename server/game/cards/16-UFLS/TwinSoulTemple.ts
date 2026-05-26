@@ -45,7 +45,7 @@ export default class TwinSoulTemple extends StrongholdCard {
         });
     }
 
-    getChoices(context) {
+    getChoices(context: any) {
         let els = [Elements.Air, Elements.Earth, Elements.Fire, Elements.Void, Elements.Water];
         let currentEl = context.element.element;
 
@@ -53,11 +53,11 @@ export default class TwinSoulTemple extends StrongholdCard {
         if(index > -1) {
             els.splice(index, 1);
         }
-        els.forEach((e, i) => (els[i] = this.capitalize(e)));
+        els.forEach((e, i) => (els[i] = this.capitalize(e) as Elements));
         return els;
     }
 
-    capitalize(string) {
+    capitalize(string: string) {
         return string[0].toUpperCase() + string.substring(1);
     }
 }

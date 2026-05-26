@@ -14,8 +14,7 @@ export default class IchigoKun extends DrawCard {
     public setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
-                context.game.currentConflict &&
-                context.game.currentConflict.hasElement(this.getCurrentElementSymbol(VULNERABLE_ELEMENT)),
+                context.game.currentConflict?.hasElement(this.getCurrentElementSymbol(VULNERABLE_ELEMENT) as Elements) ?? false,
             effect: AbilityDsl.effects.setBaseMilitarySkill(0)
         });
 

@@ -15,7 +15,7 @@ export default class WardOfEarthenThorns extends DrawCard {
             targetLocation: Locations.Provinces,
             targetController: Players.Self,
             condition: (context) => context.source.controller.hasAffinity('earth', context),
-            match: (card, context) => card.type === CardTypes.Province && card === context.source.parent,
+            match: (card, context) => card.type === CardTypes.Province && card === context?.source.parent,
             effect: AbilityDsl.effects.modifyProvinceStrength(1)
         });
 
@@ -24,7 +24,7 @@ export default class WardOfEarthenThorns extends DrawCard {
             condition: (context) =>
                 (context.game.currentConflict as Conflict | undefined)
                     ?.getConflictProvinces()
-                    .some((province) => context.source.parent === province),
+                    .some((province) => context.source.parent === province) ?? false,
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card) => card.isAttacking(),

@@ -15,18 +15,20 @@ export default class MirumotoHitomi extends DrawCard {
                 cardCondition: (card) => card.isParticipating(),
                 mode: TargetModes.UpTo,
                 numCards: 2,
-                gameAction: AbilityDsl.actions.duel((context) => ({
+                gameAction: AbilityDsl.actions.duel(((context: any) => ({
                     type: DuelTypes.Military,
                     challenger: context.source,
                     message: '{0} chooses whether to dishonor or bow {1}',
-                    messageArgs: (duel) => [
+                    messageArgs: (duel: any) => [
                         context.source === duel.winner ? context.player.opponent : context.player,
                         duel.loser
                     ],
-                    gameAction: (duel) =>
-                        duel.loser &&
-                        AbilityDsl.actions.multiple(
-                            [].concat(duel.loser).map((card) =>
+                    gameAction: (duel: any) => {
+                        if(!duel.loser) {
+                            return undefined;
+                        }
+                        return AbilityDsl.actions.multiple(
+                            ([] as any[]).concat(duel.loser).map((card: any) =>
                                 AbilityDsl.actions.chooseAction({
                                     target: card,
                                     player: context.player !== card.controller ? Players.Opponent : Players.Self,
@@ -42,8 +44,9 @@ export default class MirumotoHitomi extends DrawCard {
                                     }
                                 })
                             )
-                        )
-                }))
+                        );
+                    }
+                })) as any)
             }
         });
     }

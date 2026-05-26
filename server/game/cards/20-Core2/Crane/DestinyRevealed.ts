@@ -28,8 +28,8 @@ export default class DestinyRevealed extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel a ring effect',
             when: {
-                onMoveFate: (event, context) =>
-                    event.context.source.type === 'ring' &&
+                onMoveFate: (event: any, context) =>
+                    event.context?.source.type === 'ring' &&
                     event.origin?.controller === context.player &&
                     event.fate > 0,
                 onCardHonored: targetedByOpponentRingEffect,

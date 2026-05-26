@@ -1,10 +1,11 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { CardTypes } from '../../Constants.js';
 
 class TheMirrorsGaze extends DrawCard {
     static id = 'the-mirror-s-gaze';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.attachmentConditions({
             myControl: true,
             trait: 'shugenja'
@@ -13,10 +14,10 @@ class TheMirrorsGaze extends DrawCard {
         this.reaction({
             title: 'Mirror an opponent\'s event',
             when: {
-                onCardAbilityTriggered: (event, context) => event.card.type === CardTypes.Event && !event.context.ability.cannotBeMirrored &&
+                onCardAbilityTriggered: (event: any, context: any) => event.card.type === CardTypes.Event && !(event.context.ability as any).cannotBeMirrored &&
                     event.context.player === context.player.opponent && !event.cancelled
             },
-            gameAction: ability.actions.resolveAbility(context => ({
+            gameAction: ability.actions.resolveAbility((context: any) => ({
                 target: context.event.card,
                 ability: context.event.context.ability,
                 ignoredRequirements: ['cost', 'condition', 'limit'],

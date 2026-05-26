@@ -10,7 +10,7 @@ export default class KakitaBlade2 extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
                 title: 'Take an action',
                 when: {
-                    onConflictStarted: (event, context) =>
+                    onConflictStarted: (_event: any, context: any) =>
                         context.source.isParticipating() && context.source.hasTrait('bushi')
                 },
                 gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({

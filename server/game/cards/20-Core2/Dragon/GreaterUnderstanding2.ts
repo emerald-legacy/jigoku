@@ -26,11 +26,11 @@ export default class GreaterUnderstanding extends DrawCard {
                 gameAction: AbilityDsl.actions.selectRing({
                     activePromptTitle: 'Choose a ring to attach Greater Understanding',
                     player: Players.Opponent,
-                    ringCondition: (ring) => ring !== context.source.parent && ring.getFate() === 0,
-                    subActionProperties: (ring) => ({ attachment: context.source, target: ring }),
+                    ringCondition: (ring) => ring !== context?.source.parent && ring.getFate() === 0,
+                    subActionProperties: (ring) => ({ attachment: context?.source, target: ring }),
                     gameAction: AbilityDsl.actions.attachToRing(),
                     message: '{0} moves {1} to {2} - enlightenment is elusive',
-                    messageArgs: (ring, player) => [player, context.source, ring]
+                    messageArgs: (ring, player) => [player, context?.source, ring]
                 })
             })
         });

@@ -1,27 +1,33 @@
 import DrawCard from '../../drawcard.js';
 import { Locations } from '../../Constants.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 class ShrineMaiden extends DrawCard {
     static id = 'shrine-maiden';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Reveal your top 3 conflict cards',
             when: {
-                onCharacterEntersPlay: (event, context) => event.card === context.source
+                onCharacterEntersPlay: (event: any, context: TriggeredAbilityContext) => event.card === context.source
             },
-            cost: ability.costs.reveal(context => context.player.conflictDeck.slice(0, 3)),
+            cost: ability.costs.reveal((context: AbilityContext) => context.player.conflictDeck.slice(0, 3)),
             effect: 'take any revealed spells into their hand',
-            handler: context => {
+            handler: (context?: TriggeredAbilityContext) => {
+                if(!context) {
+                    return;
+                }
                 const cards = context.player.conflictDeck.slice(0, 3);
-                const toHand = cards.filter(card => card.hasTrait('kiho') || card.hasTrait('spell'));
-                const toDiscard = cards.filter(card => !card.hasTrait('kiho') && !card.hasTrait('spell'));
+                const toHand = cards.filter((card: any) => card.hasTrait('kiho') || card.hasTrait('spell'));
+                const toDiscard = cards.filter((card: any) => !card.hasTrait('kiho') && !card.hasTrait('spell'));
 
-                toHand.forEach(card => {
+                toHand.forEach((card: any) => {
                     context.player.moveCard(card, Locations.Hand);
                 });
 
-                toDiscard.forEach(card => {
+                toDiscard.forEach((card: any) => {
                     context.player.moveCard(card, Locations.ConflictDiscardPile);
                 });
 

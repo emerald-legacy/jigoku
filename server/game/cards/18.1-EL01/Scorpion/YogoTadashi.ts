@@ -9,8 +9,8 @@ class YogoTadashi extends DrawCard {
         this.reaction({
             title: 'Prevent a character from being targeted by events',
             when: {
-                onConflictDeclared: (event, context) => event.attackers.includes(context.source),
-                onDefendersDeclared: (event, context) => event.defenders.includes(context.source),
+                onConflictDeclared: (event, context) => event.attackers?.includes(context.source) ?? false,
+                onDefendersDeclared: (event, context) => event.defenders?.includes(context.source) ?? false,
                 onMoveToConflict: (event, context) => event.card === context.source
             },
             target: {
@@ -25,7 +25,7 @@ class YogoTadashi extends DrawCard {
                 }))
             },
             effect: 'prevent {0} from being targeted by events played by {1}',
-            effectArgs: context => [context.player.opponent]
+            effectArgs: context => [context.player.opponent].filter((p): p is NonNullable<typeof p> => p !== undefined)
         });
     }
 }

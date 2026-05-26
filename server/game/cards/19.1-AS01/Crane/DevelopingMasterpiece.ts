@@ -43,7 +43,7 @@ export default class DevelopingMasterpiece extends DrawCard {
             effectArgs: (context: AbilityContext) => [this.getHonorGain(context)],
             then: (context) => {
                 const haiku = randomHaiku();
-                if(haiku) {
+                if(haiku && context) {
                     haiku.forEach((line) => context.game.addMessage(`>> ${line}`));
                     context.game.addMessage('>>>> Matsuo Bashō <<<<');
                 }

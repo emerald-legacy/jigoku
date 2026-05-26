@@ -21,7 +21,7 @@ export default class KakitaMio extends DrawCard {
 
                     context.game.addMessage('{0} receives their {1}', context.source, card);
                     context.game.queueSimpleStep(() =>
-                        AbilityDsl.actions.attach({ target: context.source, attachment: card }).resolve(null, context)
+                        AbilityDsl.actions.attach({ target: context.source, attachment: card }).resolve(undefined, context)
                     );
                 }
             })
@@ -48,8 +48,8 @@ export default class KakitaMio extends DrawCard {
                 context.game.currentConflict.getNumberOfParticipantsFor(context.player.opponent, (card) => (card.hasTrait('shadowlands') || card.isTainted)) > 0,
             match: (card, context) =>
                 card.type === CardTypes.Character &&
-                card.isParticipatingFor(context.player) &&
-                (card.hasTrait('imperial') || card.attachments.some((attachment) => attachment.hasTrait('imperial'))),
+                card.isParticipatingFor(context?.player) &&
+                (card.hasTrait('imperial') || card.attachments.some((attachment: any) => attachment.hasTrait('imperial'))),
             effect: AbilityDsl.effects.modifyBothSkills(1)
         });
     }

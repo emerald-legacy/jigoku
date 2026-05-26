@@ -1,8 +1,9 @@
 import DrawCard from '../drawcard.js';
+import type Player from '../player.js';
 import { Locations, CardTypes } from '../Constants.js';
 
 class SpiritOfTheRiver extends DrawCard {
-    constructor(facedownCard) {
+    constructor(facedownCard: DrawCard) {
         super(facedownCard.owner, {
             clan: 'neutral',
             cost: null,
@@ -29,7 +30,7 @@ class SpiritOfTheRiver extends DrawCard {
         super.leavesPlay();
     }
 
-    getSummary(activePlayer, hideWhenFaceup) {
+    getSummary(activePlayer: Player, hideWhenFaceup?: boolean) {
         const summary = super.getSummary(activePlayer, hideWhenFaceup);
         const tokenProps: Record<string, unknown> = { isToken: true };
         if(activePlayer === this.controller) {

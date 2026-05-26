@@ -9,7 +9,7 @@ class Untainted extends DrawCard {
         this.reaction({
             title: 'discard status token',
             when: {
-                afterConflict: (event, context) => context.source.parent &&
+                afterConflict: (event: any, context) => !!context.source.parent &&
                     event.conflict.winner === context.player
                     && context.source.parent.isConflictProvince()
             },
@@ -17,28 +17,34 @@ class Untainted extends DrawCard {
                 activePromptTitle: 'Choose a status token',
                 mode: TargetModes.Token,
                 location: Locations.Any,
-                tokenCondition: (token, context) => {
-                    return token.card === context.source.parent || token.card.isParticipating();
+                tokenCondition: (token: any, context: any) => {
+                    return !!token.card && (token.card === context.source.parent || token.card.isParticipating());
                 }
             },
             gameAction: AbilityDsl.actions.multiple([
-                AbilityDsl.actions.discardStatusToken(context => ({
+                AbilityDsl.actions.discardStatusToken((context: any) => ({
                     target: context.token
                 })),
-                AbilityDsl.actions.gainHonor(context => ({
+                AbilityDsl.actions.gainHonor((context: any) => ({
                     target: context.player
                 }))
             ]),
             effect: 'gain 1 honor and discard {1} from {2}',
-            effectArgs: context => [context.token, Array.isArray(context.token) ? context.token[0].card : context.token.card]
+            effectArgs: context => {
+                const token: any = context && (context as any).token;
+                if(!token) {
+                    return [];
+                }
+                return [token, Array.isArray(token) ? token[0].card : token.card];
+            }
         });
     }
 
-    canPlayOn(source) {
+    canPlayOn(source: any) {
         return source && source.getType() === 'province' && !source.isBroken && this.getType() === CardTypes.Attachment;
     }
 
-    canAttach(parent) {
+    canAttach(parent: any) {
         if(parent.type === CardTypes.Province && parent.isBroken) {
             return false;
         }

@@ -9,7 +9,7 @@ export default class JadeInfusedArrows extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Give attached character a skill bonus',
-            condition: (context) => context.source.parent?.isParticipating(ConflictTypes.Military),
+            condition: (context) => context.source.parent?.isParticipating(ConflictTypes.Military) ?? false,
             cost: AbilityDsl.costs.payFate(1),
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.source.parent,
@@ -19,7 +19,7 @@ export default class JadeInfusedArrows extends DrawCard {
             effectArgs: (context) => [
                 this.#bonusAmount(context),
                 'military',
-                context.source.parent,
+                context.source.parent ?? '',
                 this.#isAgainstEvil(context) ? ' - the jade is potent against the spawns of jigoku!' : ''
             ],
             limit: AbilityDsl.limit.unlimitedPerConflict()
@@ -32,7 +32,7 @@ export default class JadeInfusedArrows extends DrawCard {
                 card.getType() === CardTypes.Character &&
                 card.isParticipating() &&
                 (card.isTainted || card.hasTrait('shadowlands'))
-        );
+        ) ?? false;
     }
 
     #bonusAmount(context: AbilityContext): number {

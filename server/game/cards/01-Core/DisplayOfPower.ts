@@ -9,20 +9,27 @@ class DisplayOfPower extends DrawCard {
         this.reaction({
             title: 'Cancel opponent\'s ring effect and claim and resolve the ring',
             when: {
-                afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictUnopposed
+                afterConflict: (event: any, context) => event.conflict.loser === context.player && event.conflict.conflictUnopposed
             },
             cannotBeMirrored: true,
             effect: 'resolve and claim the ring when the ring effect resolves',
-            handler: context => this.game.once(EventNames.OnResolveConflictRing + ':' + AbilityTypes.WouldInterrupt, event => this.onResolveConflictRing(event, context))
+            handler: context => this.game.once(EventNames.OnResolveConflictRing + ':' + AbilityTypes.WouldInterrupt, (event: any) => this.onResolveConflictRing(event, context))
         });
     }
 
-    onResolveConflictRing(event, context) {
+    onResolveConflictRing(event: any, context: any) {
         if(event.cancelled) {
             return;
         }
         this.game.addMessage('{0} cancels the ring effect and {1} may resolve it and then claims it', context.source, context.player);
-        let ring = this.game.currentConflict.ring;
+        const conflict = this.game.currentConflict;
+        if(!conflict) {
+            return;
+        }
+        const ring = conflict.ring;
+        if(!ring) {
+            return;
+        }
         event.window.addEvent(GameActions.resolveConflictRing().getEvent(ring, context));
 
         if(context.player.checkRestrictions('claimRings', context)) {

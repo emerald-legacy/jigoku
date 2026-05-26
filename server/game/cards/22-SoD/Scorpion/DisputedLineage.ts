@@ -27,12 +27,12 @@ export default class DisputedLineage extends DrawCard {
                 ])
             },
             effect: 'remove {0}\'s printed faction and prevent {1} from honoring characters while {0} is participating in a conflict',
-            effectArgs: (context) => [context.player.opponent],
+            effectArgs: (context) => [context.player.opponent].filter((p): p is NonNullable<typeof p> => p !== undefined),
             then: context => ({
-                thenCondition: () => context.player.imperialFavor !== '',
+                thenCondition: () => context?.player.imperialFavor !== '',
                 message: '{0} draws a card',
                 gameAction: AbilityDsl.actions.draw({
-                    target: context.player,
+                    target: context?.player,
                     amount: 1
                 })
             })

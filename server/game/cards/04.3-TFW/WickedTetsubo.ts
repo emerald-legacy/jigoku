@@ -4,7 +4,7 @@ import { TargetModes, CardTypes } from '../../Constants.js';
 class WickedTetsubo extends DrawCard {
     static id = 'wicked-tetsubo';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: any) {
         this.attachmentConditions({
             trait: 'berserker'
         });
@@ -23,11 +23,11 @@ class WickedTetsubo extends DrawCard {
                     dependsOn: 'character',
                     activePromptTitle: 'Choose a skill to set to 0',
                     choices: {
-                        'Military': ability.actions.cardLastingEffect(context => ({
+                        'Military': ability.actions.cardLastingEffect((context: any) => ({
                             target: context.targets.character,
                             effect: ability.effects.setMilitarySkill(0)
                         })),
-                        'Political': ability.actions.cardLastingEffect(context => ({
+                        'Political': ability.actions.cardLastingEffect((context: any) => ({
                             target: context.targets.character,
                             effect: ability.effects.setPoliticalSkill(0)
                         }))

@@ -17,7 +17,7 @@ class ExiledGuardian extends DrawCard {
             },
             effect: 'discard {1}\'s {2}',
             effectArgs: context => [
-                context.token[0].card,
+                (context.token as any)?.[0]?.card,
                 context.token
             ]
         });

@@ -26,7 +26,7 @@ class NobleVanguard extends DrawCard {
                         let token = context.game.createToken(card, Soldier);
                         card.owner.removeCardFromPile(card);
                         card.moveTo(Locations.RemovedFromGame);
-                        const moveEvents = [];
+                        const moveEvents: any[] = [];
                         context.game.actions.attach({ target: context.target, attachment: token }).addEventsToArray(moveEvents, context);
                         context.game.openThenEventWindow(moveEvents);
                         return true;

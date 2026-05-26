@@ -24,7 +24,7 @@ class HeraldOfJade extends DrawCard {
             },
             effect: 'discard {1}\'s {2} and gain 1 honor',
             effectArgs: context => [
-                context.token[0].card,
+                (context.token as any)?.[0]?.card,
                 context.token
             ]
         });

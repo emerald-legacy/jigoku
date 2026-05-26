@@ -25,7 +25,7 @@ export default class ShiroGisu extends StrongholdCard {
         });
     }
 
-    getCharactersWithoutFate(context) {
-        return context.player.opponent.cardsInPlay.filter((card) => card.getFate() === 0).length;
+    getCharactersWithoutFate(context: any) {
+        return context.player.opponent.cardsInPlay.filter((card: any) => card.getFate() === 0).length;
     }
 }

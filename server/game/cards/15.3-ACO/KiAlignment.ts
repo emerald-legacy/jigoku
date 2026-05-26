@@ -9,8 +9,8 @@ class KiAlignment extends DrawCard {
         this.reaction({
             title: 'Search for kihos',
             when: {
-                onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player && event.attackers.some(card => card.hasTrait('monk')),
-                onDefendersDeclared: (event, context) => event.conflict.defendingPlayer === context.player && event.defenders.some(card => card.hasTrait('monk'))
+                onConflictDeclared: (event: any, context: any) => event.conflict.attackingPlayer === context.player && (event.attackers?.some((card: any) => card.hasTrait('monk')) ?? false),
+                onDefendersDeclared: (event: any, context: any) => event.conflict.defendingPlayer === context.player && (event.defenders?.some((card: any) => card.hasTrait('monk')) ?? false)
             },
             effect: 'look at the top eight cards of their deck for up to two kihos',
             gameAction: AbilityDsl.actions.deckSearch({
@@ -18,7 +18,7 @@ class KiAlignment extends DrawCard {
                 amount: 8,
                 numCards: 2,
                 uniqueNames: true,
-                cardCondition: card => card.hasTrait('kiho'),
+                cardCondition: (card: any) => card.hasTrait('kiho'),
                 gameAction: AbilityDsl.actions.moveCard({
                     destination: Locations.Hand
                 })

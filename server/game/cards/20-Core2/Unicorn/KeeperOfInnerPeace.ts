@@ -9,13 +9,13 @@ export default class KeeperOfInnerPeace extends DrawCard {
         this.reaction({
             title: 'Add fate to a character',
             when: {
-                onMoveFate: (event, context) =>
+                onMoveFate: (event: any, context) =>
                     !context.source.bowed &&
-                    event.context.source.name !== 'Framework effect' &&
+                    event.context?.source.name !== 'Framework effect' &&
                     event.fate > 0 &&
                     event.origin?.type === CardTypes.Character &&
                     event.origin?.controller === context.player &&
-                    event.context.player === context.player.opponent
+                    event.context?.player === context.player.opponent
             },
             gameAction: AbilityDsl.actions.placeFate((context: any) => ({ target: context.event.origin }))
         });

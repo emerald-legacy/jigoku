@@ -9,16 +9,16 @@ class FinalWhisper extends DrawCard {
         this.reaction({
             title: 'Copy status token',
             when: {
-                onStatusTokenGained: (event, context) =>
-                    event.card.type === CardTypes.Character && event.card.controller === context.player.opponent
+                onStatusTokenGained: (event: any, context: any) =>
+                    event.card?.type === CardTypes.Character && event.card?.controller === context.player.opponent
             },
             target: {
                 cardType: CardTypes.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent,
-                cardCondition: (card, context) =>
+                cardCondition: (card: any, context: any) =>
                     card !== context.event.card && card.controller === context.event.card.controller,
-                gameAction: AbilityDsl.actions.gainStatusToken((context) => ({
+                gameAction: AbilityDsl.actions.gainStatusToken((context: any) => ({
                     token: context.event.token.grantedStatus || context.event.token
                 }))
             }

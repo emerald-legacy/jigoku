@@ -8,13 +8,13 @@ class WhispersOfPower extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Gain political power according to fateless characters',
-            condition: context => context.game.isDuringConflict(),
+            condition: (context: any) => context.game.isDuringConflict(),
             cost: AbilityDsl.costs.payHonor(),
             target:{
                 cardType: CardTypes.Character,
                 controller: Players.Any
             },
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
+            gameAction: AbilityDsl.actions.cardLastingEffect((context: any) => ({
                 duration: Durations.UntilEndOfConflict,
                 target: context.target,
                 effect: AbilityDsl.effects.modifyPoliticalSkill(
@@ -22,12 +22,12 @@ class WhispersOfPower extends DrawCard {
                 )
             })),
             effect: 'grant {0} +{1} {2} until the end of the conflict',
-            effectArgs: context => [this.getPoliticalPowerChange(context), 'political']
+            effectArgs: (context: any) => [this.getPoliticalPowerChange(context), 'political']
         });
     }
 
-    getPoliticalPowerChange(context) {
-        return context.player.opponent.filterCardsInPlay(card => card.type === CardTypes.Character && card.getFate() === 0).length * 3;
+    getPoliticalPowerChange(context: any) {
+        return context.player.opponent.filterCardsInPlay((card: any) => card.type === CardTypes.Character && card.getFate() === 0).length * 3;
     }
 
     isTemptationsMaho() {

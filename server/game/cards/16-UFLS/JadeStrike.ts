@@ -29,8 +29,8 @@ class JadeStrike extends DrawCard {
         });
     }
 
-    canPlay(context, playType) {
-        if(!context.player.cardsInPlay.some(card => card.getType() === CardTypes.Character && card.hasTrait('shugenja'))) {
+    canPlay(context: any, playType: any) {
+        if(!context.player.cardsInPlay.some((card: any) => card.getType() === CardTypes.Character && card.hasTrait('shugenja'))) {
             return false;
         }
 

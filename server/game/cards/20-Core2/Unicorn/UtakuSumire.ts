@@ -24,7 +24,7 @@ export default class UtakuSumire extends DrawCard {
                     targetController: Players.Self,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
-                            afterConflict: (event, context) => event.conflict.winner === context.player
+                            afterConflict: (event: any, context: any) => event.conflict.winner === context.player
                         },
                         gameAction: AbilityDsl.actions.selectCard({
                             cardType: CardTypes.Character,

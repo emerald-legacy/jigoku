@@ -9,7 +9,7 @@ class ArdentOmoidasu extends DrawCard {
         this.reaction({
             title: 'Steal 2 honor',
             when: {
-                onCardDishonored: (event, context) => {
+                onCardDishonored: (event: any, context) => {
                     const isCharacter = event.card.type === CardTypes.Character;
                     const dishonoredByOpponentsEffect = (context.player.opponent === event.context.player);
                     const dishonoredByRingEffect = (event.context.source.type === 'ring');

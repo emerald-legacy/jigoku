@@ -1,4 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
+import type BaseCard from '../../basecard.js';
 import { CardTypes, Locations, Phases, Players } from '../../Constants.js';
 import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 
@@ -13,8 +14,8 @@ export default class FieldOfRuin extends BattlefieldAttachment {
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: 1,
-                targetCondition: (target) => target.type === CardTypes.Province && target.isBroken,
-                match: (card, source) => card === source
+                targetCondition: (target: BaseCard) => target.type === CardTypes.Province && (target as any).isBroken,
+                match: (card: BaseCard, source: BaseCard) => card === source
             })
         });
 

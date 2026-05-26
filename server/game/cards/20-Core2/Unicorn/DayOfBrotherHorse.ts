@@ -52,7 +52,7 @@ export default class DayOfBrotherHorse extends DrawCard {
             })),
             max: AbilityDsl.limit.perRound(1),
             effect: 'prevent {1} from declaring {0} conflicts, draw 3 cards, and discard 1 card - {2}',
-            effectArgs: (context) => [context.player.opponent, fluff(context.ring.element)]
+            effectArgs: (context) => [context.player.opponent ?? '', fluff((context.ring?.element ?? 'air') as Element)]
         });
     }
 }

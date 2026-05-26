@@ -4,14 +4,14 @@ import { Durations } from '../../Constants.js';
 class YoungHarrier extends DrawCard {
     static id = 'young-harrier';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: any) {
         this.action({
             title: 'Prevent other characters from being dishonored',
             cost: ability.costs.dishonorSelf(),
             effect: 'prevent Crane characters from being dishonored this phase',
-            gameAction: ability.actions.cardLastingEffect(context => ({
+            gameAction: ability.actions.cardLastingEffect((context: any) => ({
                 duration: Durations.UntilEndOfPhase,
-                target: context.player.cardsInPlay.filter(card => card.isFaction('crane')),
+                target: context.player.cardsInPlay.filter((card: DrawCard) => card.isFaction('crane')),
                 effect: ability.effects.cardCannot('dishonor')
             }))
         });

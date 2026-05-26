@@ -9,7 +9,7 @@ export default class BustlingAcademy extends DrawCard {
         this.action({
             title: 'Discard a card in a province and refill it faceup',
             condition: (context) =>
-                context.player.cardsInPlay.some((card) => card.hasTrait('scholar')) &&
+                context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('scholar')) &&
                 context.player.opponent !== undefined,
             target: {
                 location: Locations.Provinces,
@@ -17,7 +17,7 @@ export default class BustlingAcademy extends DrawCard {
                 gameAction: AbilityDsl.actions.moveCard({ destination: Locations.DynastyDiscardPile })
             },
             effect: 'discard {0} and refill it faceup',
-            then: (context) => ({
+            then: (context: any) => ({
                 gameAction: AbilityDsl.actions.refillFaceup(() => ({
                     target: context.events[0].cardStateWhenMoved.controller,
                     location: context.events[0].cardStateWhenMoved.location

@@ -16,13 +16,13 @@ export default class AgashaAyako extends DrawCard {
             gameAction: AbilityDsl.actions.deckSearch({
                 activePromptTitle: 'Choose a character to play',
                 deck: Decks.DynastyDeck,
-                cardCondition: (card) => card.type === CardTypes.Character && card.printedCost <= 2 && !card.isUnique(),
+                cardCondition: (card) => card.type === CardTypes.Character && (card.printedCost ?? 0) <= 2 && !card.isUnique(),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.playerLastingEffect((context) => ({
                         targetController: context.player,
                         duration: Durations.UntilSelfPassPriority,
                         effect: AbilityDsl.effects.reduceCost({
-                            match: (card) => card === context.targets[0],
+                            match: (card: any) => card === context.targets[0],
                             amount: 1
                         })
                     })),

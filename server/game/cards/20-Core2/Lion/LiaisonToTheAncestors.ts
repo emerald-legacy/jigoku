@@ -13,7 +13,7 @@ export default class LiaisonToTheAncestors extends DrawCard {
                     event.card.type === CardTypes.Character &&
           event.card.controller === context.player &&
           (context.player.dynastyDiscardPile as Array<DrawCard>).some(
-              (card) => event.card.printedCost < card.printedCost
+              (card) => (event.card.printedCost ?? 0) < (card.printedCost ?? 0)
           )
             },
             gameAction: AbilityDsl.actions.honor((context: any) => ({

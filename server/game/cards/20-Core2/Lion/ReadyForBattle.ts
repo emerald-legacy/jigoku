@@ -10,8 +10,8 @@ export default class ReadyForBattle extends DrawCard {
             when: {
                 onCardBowed: (event, context) =>
                     event.card.controller === context.player &&
-                    (event.context.source.type === 'ring' ||
-                        (context.player.opponent && event.context.player === context.player.opponent))
+                    (event.context?.source.type === 'ring' ||
+                        (context.player.opponent && event.context?.player === context.player.opponent))
             },
             cannotBeMirrored: true,
             gameAction: AbilityDsl.actions.ready((context) => ({ target: (context as any).event.card }))

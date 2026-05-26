@@ -4,6 +4,7 @@ import ThenAbility from '../../ThenAbility.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import DynastyCardAction from '../../dynastycardaction.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 const backAlleyPersistentEffect = {
     apply: (card: any) => {
@@ -105,23 +106,27 @@ export default class BackAlleyHideaway extends DrawCard {
         this.interrupt({
             title: 'Place character in Hideaway',
             when: {
-                onCardLeavesPlay: (event, context) =>
+                onCardLeavesPlay: (event: any, context: TriggeredAbilityContext) =>
                     event.card.isFaction('scorpion') &&
                     event.card.type === CardTypes.Character &&
                     event.card.controller === context.player &&
                     event.card.location === Locations.PlayArea
             },
             effect: 'move {1} into hiding',
-            effectArgs: (context) => context.event.card,
-            handler: (context) =>
+            effectArgs: (context?: TriggeredAbilityContext) => context?.event.card,
+            handler: (context?: TriggeredAbilityContext) => {
+                if(!context) {
+                    return;
+                }
                 context.event.replaceHandler((event: any) => {
                     context.player.removeCardFromPile(event.card);
                     event.card.leavesPlay();
                     event.card.moveTo('backalley hideaway');
-                    context.source.attachments.push(event.card);
+                    (context.source as any).attachments.push(event.card);
                     event.card.parent = context.source;
-                    event.card.abilities.playActions.push(new BackAlleyPlayCharacterAction(context.source, event.card));
-                })
+                    event.card.abilities.playActions.push(new BackAlleyPlayCharacterAction(context.source as BackAlleyHideaway, event.card));
+                });
+            }
         });
     }
 }

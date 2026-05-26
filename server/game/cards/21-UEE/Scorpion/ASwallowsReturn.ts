@@ -14,7 +14,7 @@ export default class ASwallowsReturn extends DrawCard {
                 context.game.currentConflict !== null &&
         context.player.opponent !== null &&
         context.player.opponent.conflictDeck.length >= CARD_COUNT,
-            cost: AbilityDsl.costs.reveal((context) => context.player.opponent.conflictDeck.slice(0, CARD_COUNT)),
+            cost: AbilityDsl.costs.reveal((context) => context.player.opponent?.conflictDeck.slice(0, CARD_COUNT) ?? []),
             cannotBeMirrored: true,
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardMenu((context) => ({
@@ -36,10 +36,10 @@ export default class ASwallowsReturn extends DrawCard {
                         source: context.source
                     }),
                     message: '{0} chooses to play {1} and discard {2}',
-                    messageArgs: (card, player) => [player, card.name, context.costs.reveal.filter((c) => c !== card)]
+                    messageArgs: (card: any, player: any) => [player, card.name, context.costs.reveal.filter((c: any) => c !== card)]
                 })),
                 AbilityDsl.actions.discardCard((context) => ({
-                    target: (context.costs.reveal ?? []).filter((card) => card.location === Locations.ConflictDeck)
+                    target: (context.costs.reveal ?? []).filter((card: any) => card.location === Locations.ConflictDeck)
                 }))
             ]),
             effect: 'choose one of those to play'

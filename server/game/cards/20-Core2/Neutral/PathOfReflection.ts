@@ -12,8 +12,8 @@ export default class PathOfReflection extends ProvinceCard {
         this.action({
             title: 'switch a character\'s base skills',
             conflictProvinceCondition: (province, context) =>
-                province.isElement(this.getCurrentElementSymbol(this.#provinceElement)) ||
-                context.game.currentConflict?.hasElement?.(this.getCurrentElementSymbol(this.#conflictElement)),
+                province.isElement(this.getCurrentElementSymbol(this.#provinceElement) as Elements) ||
+                (context.game.currentConflict?.hasElement?.(this.getCurrentElementSymbol(this.#conflictElement) as Elements) ?? false),
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card) => card.isParticipating() && !card.hasDash(),

@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { CardTypes, Locations, Phases, Players } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
@@ -15,7 +16,7 @@ export default class EbonyBloodGarrison extends StrongholdCard {
         this.reaction({
             title: 'Break a province from each player',
             when: {
-                onPhaseEnded: (event, context) => event.phase === Phases.Dynasty && context.game.roundNumber === 1
+                onPhaseEnded: (event: any, context: TriggeredAbilityContext) => event.phase === Phases.Dynasty && context.game.roundNumber === 1
             },
             cost: AbilityDsl.costs.bowSelf(),
             targets: {
@@ -35,7 +36,10 @@ export default class EbonyBloodGarrison extends StrongholdCard {
                         card.facedown && card.location !== Locations.StrongholdProvince
                 }
             },
-            handler: (context) => {
+            handler: (context?: TriggeredAbilityContext) => {
+                if(!context) {
+                    return;
+                }
                 const provinces = [context.targets[MY_PROVINCE], context.targets[OPP_PROVINCE]];
                 context.game.queueStep(
                     new SimpleStep(context.game, () =>
@@ -62,7 +66,7 @@ export default class EbonyBloodGarrison extends StrongholdCard {
                 // );
             },
             effect: 'drag {1} into chaos, as a crisis strikes {2} and {3}',
-            effectArgs: (context) => [
+            effectArgs: (context: TriggeredAbilityContext) => [
                 context.player.opponent,
                 context.targets[MY_PROVINCE],
                 context.targets[OPP_PROVINCE]

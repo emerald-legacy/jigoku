@@ -27,7 +27,7 @@ export default class DeadEyes extends DrawCard {
                     }),
                     AbilityDsl.effects.delayedEffect({
                         when: {
-                            afterConflict: event => {
+                            afterConflict: (event: any) => {
                                 if(!context.source.parent) {
                                     return false;
                                 }
@@ -47,7 +47,7 @@ export default class DeadEyes extends DrawCard {
                 ]
             })),
             effect: 'grant +2{2} to {1}, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill',
-            effectArgs: context => [context.source.parent, 'military']
+            effectArgs: context => [context.source.parent ?? '', 'military']
         });
     }
 }

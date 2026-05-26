@@ -11,15 +11,15 @@ export default class PalaceOfKnowledge extends StrongholdCard {
         this.reaction({
             title: 'Resolve another ring effect',
             when: {
-                onResolveRingElement: (event, context) =>
+                onResolveRingElement: (event: any, context) =>
                     event.player === context.player && event.effectivellyResolvedEffect
             },
             cost: [AbilityDsl.costs.bowSelf(), AbilityDsl.costs.discardCard()],
             target: {
                 mode: TargetModes.Ring,
                 activePromptTitle: 'Choose a ring',
-                ringCondition: (ring: Ring, context: AbilityContext) =>
-                    ring !== (context as any).event.ring && ring.isUnclaimed(),
+                ringCondition: (ring: Ring, context?: AbilityContext) =>
+                    ring !== (context as any)?.event.ring && ring.isUnclaimed(),
                 gameAction: AbilityDsl.actions.resolveRingEffect()
             }
         });

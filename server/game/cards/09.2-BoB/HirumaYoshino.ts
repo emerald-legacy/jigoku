@@ -17,8 +17,8 @@ class HirumaYoshino extends DrawCard {
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     targetLocation: Locations.Provinces,
                     effect: [
-                        AbilityDsl.effects.contributeToConflict((card, context) => context.player),
-                        AbilityDsl.effects.changeContributionFunction(card => card.printedMilitarySkill)
+                        AbilityDsl.effects.contributeToConflict((card: any, context: any) => context.player),
+                        AbilityDsl.effects.changeContributionFunction((card: any) => card.printedMilitarySkill)
                     ]
                 })
             },

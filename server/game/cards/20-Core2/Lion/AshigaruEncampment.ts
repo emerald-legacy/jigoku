@@ -9,7 +9,7 @@ function putAshigaruTokenIntoPlay(context: AbilityContext) {
     const token = context.game.createToken(card, AshigaruRecruit);
     card.owner.removeCardFromPile(card);
     card.moveTo(Locations.RemovedFromGame);
-    const moveEvents = [];
+    const moveEvents: any[] = [];
     context.game.actions.putIntoPlay({ target: token }).addEventsToArray(moveEvents, context);
     context.game.openThenEventWindow(moveEvents);
     return true;

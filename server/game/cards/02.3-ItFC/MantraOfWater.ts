@@ -10,12 +10,12 @@ export default class MantraOfWater extends DrawCard {
             title: 'Ready a monk and draw a card',
             when: {
                 onConflictDeclared: (event, context) =>
-                    event.ring.hasElement('water') && event.conflict.attackingPlayer === context.player.opponent
+                    !!event.ring && event.ring.hasElement('water' as any) && event.conflict.attackingPlayer === context.player.opponent
             },
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card) =>
-                    card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk')),
+                    card.hasTrait('monk') || card.attachments.some((card: DrawCard) => card.hasTrait('monk')),
                 gameAction: AbilityDsl.actions.ready()
             },
             effect: 'ready {0} and draw a card',

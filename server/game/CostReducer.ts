@@ -80,7 +80,7 @@ export class CostReducer {
         return !this.match || this.match(card, this.source);
     }
 
-    private checkTargetCondition(context: AbilityContext, target?: BaseCard) {
-        return !this.targetCondition || (target && this.targetCondition(target, this.source, context));
+    private checkTargetCondition(context: AbilityContext, target?: BaseCard): boolean {
+        return !this.targetCondition || (!!target && this.targetCondition(target, this.source, context));
     }
 }

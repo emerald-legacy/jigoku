@@ -21,7 +21,7 @@ export default class KaitoYoshiaki extends DrawCard {
                     card.isParticipating() &&
                     (context.game.currentConflict as Conflict)
                         .getCharacters(context.player)
-                        .some((myCard) => myCard.printedCost >= card.printedCost),
+                        .some((myCard) => (myCard.printedCost ?? 0) >= (card.printedCost ?? 0)),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.cardLastingEffect({
                         effect: [

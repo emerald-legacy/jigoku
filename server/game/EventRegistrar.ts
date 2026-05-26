@@ -14,7 +14,7 @@ export class EventRegistrar {
 
     constructor(
         private game: Game,
-        private context: unknown
+        private context: Record<string, unknown>
     ) {
         this.events = [];
     }
@@ -58,7 +58,7 @@ export class EventRegistrar {
             throw new Error(`Cannot bind event handler for ${eventName}`);
         }
 
-        const boundHandler = method.bind(this.context);
+        const boundHandler = (method as (event: any) => void).bind(this.context);
         this.game.on(eventName, boundHandler);
         this.events.push({ name: eventName, handler: boundHandler });
     }

@@ -10,7 +10,7 @@ export default class WhispersOfTheLordsOfDeath extends DrawCard {
     public setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Any,
-            effect: AbilityDsl.effects.changePlayerGloryModifier((player) => this.highestMilitaryForPlayer(player))
+            effect: AbilityDsl.effects.changePlayerGloryModifier((player: Player) => this.highestMilitaryForPlayer(player))
         });
 
         this.reaction({
@@ -19,7 +19,7 @@ export default class WhispersOfTheLordsOfDeath extends DrawCard {
             when: {
                 onCardLeavesPlay: (event, context) =>
                     event.card.type === CardTypes.Character &&
-                    event.cardStateWhenLeftPlay.location === Locations.PlayArea &&
+                    event.cardStateWhenLeftPlay?.location === Locations.PlayArea &&
                     context.game.isDuringConflict()
             },
             gameAction: AbilityDsl.actions.multiple([

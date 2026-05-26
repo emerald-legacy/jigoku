@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../drawcard.js';
 import { CardTypes, Elements } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -13,8 +14,8 @@ class KatanaOfFire extends DrawCard {
         });
     }
 
-    canPlay(context, playType) {
-        if(!context.player.cardsInPlay.some(card => card.getType() === CardTypes.Character && card.hasTrait('shugenja'))) {
+    canPlay(context: AbilityContext, playType: string) {
+        if(!context.player.cardsInPlay.some((card: DrawCard) => card.getType() === CardTypes.Character && card.hasTrait('shugenja'))) {
             return false;
         }
 
@@ -26,7 +27,7 @@ class KatanaOfFire extends DrawCard {
         return this.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(this.controller);
     }
     numberOfFireCards() {
-        return this.controller.getNumberOfCardsInPlay(card => card.hasTrait('fire'));
+        return this.controller.getNumberOfCardsInPlay((card: DrawCard) => card.hasTrait('fire'));
     }
     totalKatanaModifier() {
         var skillModifier = this.controllerHasFireRing() ? 2 : 0;
