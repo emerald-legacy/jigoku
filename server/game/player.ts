@@ -28,6 +28,7 @@ import {
 } from './Constants.js';
 import { GameModes } from '../GameModes.js';
 import type Game from './game.js';
+import type Socket from '../socket.js';
 import type BaseCard from './basecard.js';
 import type DrawCard from './drawcard.js';
 import type Ring from './ring.js';
@@ -40,7 +41,7 @@ class Player extends GameObject {
     declare id: string;
     owner: boolean;
     declare printedType: string;
-    socket: any;
+    socket: Socket | null | undefined;
     disconnected: boolean;
     left: boolean;
     lobbyId: string | null;

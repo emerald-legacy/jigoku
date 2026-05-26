@@ -1,5 +1,6 @@
 import BaseCard from './basecard.js';
-import { SkillCalculator } from './SkillCalculator.js';
+import { SkillCalculator, type Exclusions } from './SkillCalculator.js';
+import type StatModifier from './StatModifier.js';
 import DuplicateUniqueAction from './duplicateuniqueaction.js';
 import CourtesyAbility from './KeywordAbilities/CourtesyAbility.js';
 import PrideAbility from './KeywordAbilities/PrideAbility.js';
@@ -326,8 +327,8 @@ class DrawCard extends BaseCard {
         if(!this.showStats) {
             return {};
         }
-        const modifiers = this.skillCalculator.getMilitaryModifiers().map((modifier: any) => Object.assign({}, modifier));
-        const skill = modifiers.reduce((total: number, modifier: any) => total + modifier.amount, 0);
+        const modifiers = this.skillCalculator.getMilitaryModifiers().map((modifier: StatModifier) => Object.assign({}, modifier));
+        const skill = modifiers.reduce((total: number, modifier: StatModifier) => total + modifier.amount, 0);
         return {
             stat: isNaN(skill) ? '-' : Math.max(skill, 0).toString(),
             modifiers: modifiers
@@ -338,9 +339,9 @@ class DrawCard extends BaseCard {
         if(!this.showStats) {
             return {};
         }
-        const modifiers = this.skillCalculator.getPoliticalModifiers().map((modifier: any) => Object.assign({}, modifier));
-        modifiers.forEach((modifier: any) => (modifier = Object.assign({}, modifier)));
-        const skill = modifiers.reduce((total: number, modifier: any) => total + modifier.amount, 0);
+        const modifiers = this.skillCalculator.getPoliticalModifiers().map((modifier: StatModifier) => Object.assign({}, modifier));
+        modifiers.forEach((modifier: StatModifier) => (modifier = Object.assign({}, modifier)));
+        const skill = modifiers.reduce((total: number, modifier: StatModifier) => total + modifier.amount, 0);
         return {
             stat: isNaN(skill) ? '-' : Math.max(skill, 0).toString(),
             modifiers: modifiers
@@ -351,9 +352,9 @@ class DrawCard extends BaseCard {
         if(!this.showStats) {
             return {};
         }
-        const modifiers = this.skillCalculator.getGloryModifiers().map((modifier: any) => Object.assign({}, modifier));
-        modifiers.forEach((modifier: any) => (modifier = Object.assign({}, modifier)));
-        const stat = modifiers.reduce((total: number, modifier: any) => total + modifier.amount, 0);
+        const modifiers = this.skillCalculator.getGloryModifiers().map((modifier: StatModifier) => Object.assign({}, modifier));
+        modifiers.forEach((modifier: StatModifier) => (modifier = Object.assign({}, modifier)));
+        const stat = modifiers.reduce((total: number, modifier: StatModifier) => total + modifier.amount, 0);
         return {
             stat: Math.max(stat, 0).toString(),
             modifiers: modifiers
@@ -366,7 +367,7 @@ class DrawCard extends BaseCard {
 
     getGlory(): number {
         const gloryModifiers = this.skillCalculator.getGloryModifiers();
-        const glory = gloryModifiers.reduce((total: number, modifier: any) => total + modifier.amount, 0);
+        const glory = gloryModifiers.reduce((total: number, modifier: StatModifier) => total + modifier.amount, 0);
         if(isNaN(glory)) {
             return 0;
         }
@@ -375,7 +376,7 @@ class DrawCard extends BaseCard {
 
     getProvinceStrengthBonus(): number {
         const modifiers = this.skillCalculator.getProvinceStrengthBonusModifiers();
-        const bonus = modifiers.reduce((total: number, modifier: any) => total + modifier.amount, 0);
+        const bonus = modifiers.reduce((total: number, modifier: StatModifier) => total + modifier.amount, 0);
         if(bonus && this.isFaceup()) {
             return bonus;
         }
@@ -386,11 +387,11 @@ class DrawCard extends BaseCard {
         return this.skillCalculator.getStatusTokenSkill();
     }
 
-    getMilitaryModifiers(exclusions?: any): any[] {
+    getMilitaryModifiers(exclusions?: Exclusions): StatModifier[] {
         return this.skillCalculator.getMilitaryModifiers(exclusions);
     }
 
-    getPoliticalModifiers(exclusions?: any): any[] {
+    getPoliticalModifiers(exclusions?: Exclusions): StatModifier[] {
         return this.skillCalculator.getPoliticalModifiers(exclusions);
     }
 
@@ -400,7 +401,7 @@ class DrawCard extends BaseCard {
 
     getMilitarySkill(floor: boolean = true): number {
         const modifiers = this.skillCalculator.getMilitaryModifiers();
-        const skill = modifiers.reduce((total: number, modifier: any) => total + modifier.amount, 0);
+        const skill = modifiers.reduce((total: number, modifier: StatModifier) => total + modifier.amount, 0);
         if(isNaN(skill)) {
             return 0;
         }
@@ -412,7 +413,7 @@ class DrawCard extends BaseCard {
             exclusions = [exclusions];
         }
         const modifiers = this.skillCalculator.getMilitaryModifiers(exclusions);
-        const skill = modifiers.reduce((total: number, modifier: any) => total + modifier.amount, 0);
+        const skill = modifiers.reduce((total: number, modifier: StatModifier) => total + modifier.amount, 0);
         if(isNaN(skill)) {
             return 0;
         }
@@ -425,7 +426,7 @@ class DrawCard extends BaseCard {
 
     getPoliticalSkill(floor: boolean = true): number {
         const modifiers = this.skillCalculator.getPoliticalModifiers();
-        const skill = modifiers.reduce((total: number, modifier: any) => total + modifier.amount, 0);
+        const skill = modifiers.reduce((total: number, modifier: StatModifier) => total + modifier.amount, 0);
         if(isNaN(skill)) {
             return 0;
         }
@@ -437,7 +438,7 @@ class DrawCard extends BaseCard {
             exclusions = [exclusions];
         }
         const modifiers = this.skillCalculator.getPoliticalModifiers(exclusions);
-        const skill = modifiers.reduce((total: number, modifier: any) => total + modifier.amount, 0);
+        const skill = modifiers.reduce((total: number, modifier: StatModifier) => total + modifier.amount, 0);
         if(isNaN(skill)) {
             return 0;
         }

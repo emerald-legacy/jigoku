@@ -443,7 +443,7 @@ class ChatCommands {
     }
 
     disconnectMe(player: Player): void {
-        player.socket.disconnect();
+        player.socket?.disconnect();
     }
 
     manual(player: Player): void {
