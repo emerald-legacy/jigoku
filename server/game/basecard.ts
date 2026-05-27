@@ -34,6 +34,7 @@ import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js'
 import { StatusToken } from './StatusToken.js';
 import Player from './player.js';
 import type DrawCard from './drawcard.js';
+import type BaseAction from './BaseAction.js';
 import Ring from './ring.js';
 import type { CardEffect } from './Effects/types.js';
 import type { GainAllAbilities } from './Effects/Library/gainAllAbilities.js';
@@ -47,7 +48,7 @@ interface CardAbilities {
     reactions: TriggeredAbility[];
     // descriptor blobs (PersistentEffectProps + duration/location/ref); heterogeneous — kept loose
     persistentEffects: any[];
-    playActions: any[];
+    playActions: BaseAction[];
 }
 
 import { type PrintedKeyword, parseKeywords as parseKeywordsFromText } from './KeywordParser.js';

@@ -1,5 +1,6 @@
 import StaticEffect from './StaticEffect.js';
 import type { EffectNames } from '../Constants.js';
+import type { GameObject } from '../GameObject.js';
 
 export default class DynamicEffect extends StaticEffect {
     values: Record<string, any>;
@@ -11,12 +12,15 @@ export default class DynamicEffect extends StaticEffect {
         this.calculate = calculate;
     }
 
-    apply(target: any) {
+    apply(target: GameObject) {
         super.apply(target);
         this.recalculate(target);
     }
 
-    recalculate(target?: any): boolean {
+    recalculate(target?: GameObject): boolean {
+        if(!target) {
+            return false;
+        }
         let oldValue = this.getValue(target);
         let newValue = this.setValue(target, this.calculate(target, this.context));
         if(typeof oldValue === 'function' && typeof newValue === 'function') {
@@ -36,13 +40,13 @@ export default class DynamicEffect extends StaticEffect {
         return oldValue !== newValue;
     }
 
-    getValue(target?: any) {
+    getValue(target?: GameObject) {
         if(target) {
             return this.values[target.uuid];
         }
     }
 
-    setValue(target: any, value: any) {
+    setValue(target: GameObject, value: any) {
         this.values[target.uuid] = value;
         return value;
     }

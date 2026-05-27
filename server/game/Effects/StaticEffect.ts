@@ -1,6 +1,8 @@
 import { EffectValue } from './EffectValue.js';
 import { CardTypes, EffectNames, Durations, AbilityTypes } from '../Constants.js';
 import GainAbility from './GainAbility.js';
+import type { GameObject } from '../GameObject.js';
+import type { CardEffect } from './types.js';
 
 const binaryCardEffects = [
     EffectNames.Blank,
@@ -98,7 +100,7 @@ class StaticEffect {
         this.copies = [];
     }
 
-    apply(target: any) {
+    apply(target: GameObject) {
         target.addEffect(this);
         if(this.value instanceof GainAbility && this.value.abilityType === AbilityTypes.Persistent) {
             const copy = this.value.getCopy();
@@ -109,7 +111,7 @@ class StaticEffect {
         }
     }
 
-    unapply(target: any) {
+    unapply(target: GameObject) {
         target.removeEffect(this);
         this.value.unapply(target);
         this.copies.forEach((a) => a.unapply(target));
@@ -182,14 +184,14 @@ class StaticEffect {
         return true;
     }
 
-    hasLongerDuration(effect: any): boolean {
+    hasLongerDuration(effect: CardEffect): boolean {
         let durations = [
             Durations.UntilEndOfDuel,
             Durations.UntilEndOfConflict,
             Durations.UntilEndOfPhase,
             Durations.UntilEndOfRound
         ];
-        return durations.indexOf(this.duration as Durations) > durations.indexOf(effect.duration);
+        return durations.indexOf(this.duration as Durations) > durations.indexOf(effect.duration as Durations);
     }
 
     getDebugInfo() {
