@@ -13,7 +13,7 @@ export default class SerenadeOfAThousandLanterns extends DrawCard {
                 activePromptTitle: 'Choose characters adding up to 4 printed cost',
                 numCards: Infinity,
                 mode: TargetModes.MaxStat,
-                cardStat: (card) => card.getCost(),
+                cardStat: (card: DrawCard) => card.getCost() ?? 0,
                 maxStat: () => 4,
                 cardType: CardTypes.Character,
                 cardCondition: (card, _context) => card.isParticipating() && !card.isUnique(),

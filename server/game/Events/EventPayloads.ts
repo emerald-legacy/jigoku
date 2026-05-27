@@ -93,8 +93,8 @@ export interface EventPayloadMap {
     };
     [EventNames.AfterDuel]: BaseEventPayload & {
         duel?: Duel;
-        winner?: DrawCard | DrawCard[];
-        loser?: DrawCard | DrawCard[];
+        winner?: DrawCard[];
+        loser?: DrawCard[];
         winningPlayer?: Player | Player[];
         losingPlayer?: Player | Player[];
     };

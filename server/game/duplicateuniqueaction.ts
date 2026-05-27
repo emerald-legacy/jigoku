@@ -1,12 +1,13 @@
 import BaseAction from './BaseAction.js';
 import { Phases, PlayTypes } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
-import type BaseCard from './basecard.js';
+import type DrawCard from './drawcard.js';
 
 class DuplicateUniqueAction extends BaseAction {
     title = 'Add fate to a duplicate';
+    declare card: DrawCard;
 
-    constructor(card: BaseCard) {
+    constructor(card: DrawCard) {
         super(card);
     }
 

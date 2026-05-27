@@ -81,7 +81,7 @@ interface TargetCardExactlyUpToVariable extends BaseTargetCard {
 interface TargetCardMaxStat extends BaseTargetCard {
     mode: TargetModes.MaxStat;
     numCards: number;
-    cardStat: (card: BaseCard) => number;
+    cardStat: (card: DrawCard) => number;
     maxStat: () => number;
 }
 

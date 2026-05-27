@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseCard from '../basecard.js';
+import type { ProvinceCard } from '../ProvinceCard.js';
 import { CardTypes, EventNames } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
@@ -17,7 +17,7 @@ export class MoveConflictAction extends CardGameAction {
         super(properties);
     }
 
-    canAffect(card: BaseCard, context: AbilityContext): boolean {
+    canAffect(card: ProvinceCard, context: AbilityContext): boolean {
         if(
             !card ||
             !context.game.isDuringConflict() ||

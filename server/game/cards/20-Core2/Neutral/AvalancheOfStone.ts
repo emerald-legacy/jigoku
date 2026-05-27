@@ -1,7 +1,7 @@
 import { CardTypes } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
+import type DrawCard from '../../../drawcard.js';
 
 export default class AvalancheOfStone extends ProvinceCard {
     static id = 'avalanche-of-stone';
@@ -12,7 +12,7 @@ export default class AvalancheOfStone extends ProvinceCard {
             when: { onCardRevealed: (event, context) => event.card === context.source },
             gameAction: AbilityDsl.actions.bow(() => ({
                 target: this.game.findAnyCardsInPlay(
-                    (card: BaseCard) => card.getType() === CardTypes.Character && card.costLessThan(3)
+                    (card: DrawCard) => card.getType() === CardTypes.Character && card.costLessThan(3)
                 )
             }))
         });

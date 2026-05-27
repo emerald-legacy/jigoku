@@ -11,7 +11,7 @@ class EleganceAndGrace extends DrawCard {
             target: {
                 mode: TargetModes.MaxStat,
                 activePromptTitle: 'Choose characters',
-                cardStat: (card) => card.getCost(),
+                cardStat: (card: DrawCard) => card.getCost() ?? 0,
                 maxStat: () => 6,
                 numCards: 2,
                 cardType: CardTypes.Character,

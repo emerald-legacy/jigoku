@@ -60,7 +60,7 @@ class CraftyTsukumogami extends DrawCard {
         const frameworkLimitsAttachmentsWithRepeatedNames = context.game.gameMode === GameModes.Emerald || context.game.gameMode === GameModes.Obsidian;
         if(frameworkLimitsAttachmentsWithRepeatedNames) {
             const attachment = context.source;
-            if(ring.attachments.filter((a: BaseCard) => !a.allowDuplicatesOfAttachment).some((a: BaseCard) => a.id === attachment.id && a.controller === attachment.controller && a !== attachment)) {
+            if(ring.attachments.filter((a: DrawCard) => !a.allowDuplicatesOfAttachment).some((a: BaseCard) => a.id === attachment.id && a.controller === attachment.controller && a !== attachment)) {
                 return false;
             }
         }

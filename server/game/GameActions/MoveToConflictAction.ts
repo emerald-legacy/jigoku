@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../basecard.js';
+import type DrawCard from '../drawcard.js';
 import { CardTypes, EffectNames, EventNames, Locations } from '../Constants.js';
 import type Player from '../player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -16,7 +17,7 @@ export class MoveToConflictAction extends CardGameAction {
     targetType = [CardTypes.Character];
     defaultProperties: MoveToConflictProperties = { side: undefined };
 
-    canAffect(card: BaseCard, context: AbilityContext): boolean {
+    canAffect(card: DrawCard, context: AbilityContext): boolean {
         let properties = this.getProperties(context) as MoveToConflictProperties;
         if(!super.canAffect(card, context)) {
             return false;

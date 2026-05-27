@@ -1,5 +1,4 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import type BaseCard from '../../basecard.js';
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityTypes, CardTypes } from '../../Constants.js';
@@ -26,7 +25,7 @@ class Daikyu extends DrawCard {
                 },
                 target: {
                     cardType: CardTypes.Character,
-                    cardCondition: (card: BaseCard, context: AbilityContext) =>
+                    cardCondition: (card: DrawCard, context: AbilityContext) =>
                         card.getMilitarySkill() < context.source.getMilitarySkill() && card.isParticipating(),
                     gameAction: AbilityDsl.actions.bow()
                 }

@@ -2,6 +2,7 @@ import { CardTypes, CharacterStatus, EffectNames } from './Constants.js';
 import EffectSource from './EffectSource.js';
 import AbilityDsl from './abilitydsl.js';
 import type BaseCard from './basecard.js';
+import type DrawCard from './drawcard.js';
 import type Effect from './Effects/Effect.js';
 import type Game from './game.js';
 import type Player from './player.js';
@@ -93,7 +94,7 @@ export class StatusToken extends EffectSource {
         }
         const effect: StatusTokenEffect = {
             match: this.card,
-            effect: AbilityDsl.effects.modifyBothSkills((card: BaseCard) => -card.getGlory()),
+            effect: AbilityDsl.effects.modifyBothSkills((card: DrawCard) => -card.getGlory()),
             ref: []
         };
         this.persistentEffects.push(effect);
@@ -106,7 +107,7 @@ export class StatusToken extends EffectSource {
         }
         const effect: StatusTokenEffect = {
             match: this.card,
-            effect: AbilityDsl.effects.modifyBothSkills((card: BaseCard) => card.getGlory()),
+            effect: AbilityDsl.effects.modifyBothSkills((card: DrawCard) => card.getGlory()),
             ref: []
         };
         this.persistentEffects.push(effect);

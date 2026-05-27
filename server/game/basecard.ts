@@ -1,8 +1,6 @@
 import AbilityDsl from './abilitydsl.js';
 import Effects from './effects.js';
-import EffectSourceTyped from './EffectSource.js';
-
-const EffectSource: any = EffectSourceTyped;
+import EffectSource from './EffectSource.js';
 import { CardStatusManager } from './CardStatusManager.js';
 import CardAbility from './CardAbility.js';
 import TriggeredAbility from './triggeredability.js';
