@@ -45,7 +45,6 @@ class DrawCard extends BaseCard {
     printedGlory: number;
     printedStrengthBonus: number;
     fate: number;
-    bowed: boolean;
     covert: boolean;
     declare isConflict: boolean;
     declare isDynasty: boolean;
@@ -75,7 +74,6 @@ class DrawCard extends BaseCard {
         this.printedGlory = parseInt(cardData.glory ?? '');
         this.printedStrengthBonus = parseInt(cardData.strength_bonus ?? '');
         this.fate = 0;
-        this.bowed = false;
         this.covert = false;
         this.isConflict = cardData.side === 'conflict';
         this.isDynasty = cardData.side === 'dynasty';
@@ -529,14 +527,6 @@ class DrawCard extends BaseCard {
          * @param amount - the amount of fate to modify this card's fate total by
          */
         this.fate = Math.max(0, this.fate + amount);
-    }
-
-    bow(): void {
-        this.bowed = true;
-    }
-
-    ready(): void {
-        this.bowed = false;
     }
 
     canPlay(context: AbilityContext, type: string = 'play'): boolean {

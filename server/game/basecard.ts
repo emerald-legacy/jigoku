@@ -62,6 +62,7 @@ class BaseCard extends EffectSource {
     printedName: string;
     inConflict = false;
     facedown: boolean = false;
+    bowed = false;
 
     tokens: Record<string, number> = {};
     menu: { command: string; text: string }[] = [];
@@ -785,6 +786,14 @@ class BaseCard extends EffectSource {
 
     isAtHome(): boolean {
         return !this.inConflict;
+    }
+
+    bow(): void {
+        this.bowed = true;
+    }
+
+    ready(): void {
+        this.bowed = false;
     }
 
     isParticipatingFor(player: Player): boolean {

@@ -3,7 +3,6 @@ import type Player from './player.js';
 
 export class StrongholdCard extends BaseCard {
     menu = [{ command: 'bow', text: 'Bow/Ready' }];
-    bowed = false;
     isStronghold = true;
     stealFirstPlayerDuringSetupWithMsg?: string;
 
@@ -21,14 +20,6 @@ export class StrongholdCard extends BaseCard {
 
     getProvinceStrengthBonus(): number {
         return parseInt(this.cardData.strength_bonus ?? '0');
-    }
-
-    bow(): void {
-        this.bowed = true;
-    }
-
-    ready(): void {
-        this.bowed = false;
     }
 
     flipFaceup(): void {
