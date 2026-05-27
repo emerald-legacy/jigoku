@@ -1,6 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
 import { AbilityTypes, CardTypes } from '../../../Constants.js';
 import DrawCard from '../../../drawcard.js';
 import type { ActionProps } from '../../../Interfaces.js';
@@ -35,7 +34,7 @@ export default class DesperateAide extends DrawCard {
     }
 
     private participatingPolSkillTotal(player: Player): number {
-        return (player.cardsInPlay as BaseCard[]).reduce(
+        return player.cardsInPlay.reduce(
             (total, card) =>
                 card.type === CardTypes.Character && card.isParticipating() ? total + card.politicalSkill : total,
             0
