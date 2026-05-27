@@ -17,7 +17,7 @@ export default class HeartOfTheInferno extends DrawCard {
             target: {
                 mode: TargetModes.Single,
                 controller: Players.Opponent,
-                cardCondition: (card: BaseCard) => card.isParticipating() || card.parent?.isParticipating(),
+                cardCondition: (card: BaseCard) => card.isParticipating() || (card instanceof DrawCard && !!card.parent?.isParticipating()),
                 gameAction: AbilityDsl.actions.multipleContext((context) => {
                     if(!(context.target instanceof DrawCard)) {
                         return { gameActions: [] };

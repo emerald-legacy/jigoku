@@ -19,6 +19,7 @@ export default class VillageDoshin extends DrawCard {
                     (event.cardTargets ?? []).some((card: BaseCard) => {
                         const attachment = card.type === CardTypes.Attachment;
                         const onCharacterYouControl =
+                            card instanceof DrawCard &&
                             card.parent &&
                             card.parent.type === CardTypes.Character &&
                             card.parent.controller === context.player;

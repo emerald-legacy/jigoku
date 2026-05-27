@@ -2,7 +2,6 @@ import { v1 as uuidV1 } from 'uuid';
 
 import type { AbilityContext } from './AbilityContext.js';
 import { EffectNames, Stages } from './Constants.js';
-import type DrawCard from './drawcard.js';
 import type { CardEffect } from './Effects/types.js';
 import type Game from './game.js';
 import type { GameAction } from './GameActions/GameAction.js';
@@ -11,7 +10,7 @@ import type Player from './player.js';
 
 export class GameObject {
     declare public game: Game;
-    declare public name: string;
+    private _name!: string;
     public uuid = uuidV1();
     protected id: string;
     protected printedType = '';
@@ -31,6 +30,14 @@ export class GameObject {
 
     public get type() {
         return this.getType();
+    }
+
+    public get name(): string {
+        return this._name;
+    }
+
+    public set name(value: string) {
+        this._name = value;
     }
 
     public addEffect(effect: CardEffect) {
@@ -121,23 +128,23 @@ export class GameObject {
         return null;
     }
 
-    public hasKeyword() {
+    public hasKeyword(_keyword: string) {
         return false;
     }
 
-    public hasTrait() {
+    public hasTrait(_trait: string) {
         return false;
     }
 
-    public getTraits(): string[] {
-        return [];
+    public getTraits(): Set<string> {
+        return new Set();
     }
 
-    public isFaction() {
+    public isFaction(_faction: string) {
         return false;
     }
 
-    public hasToken() {
+    public hasToken(_type: string) {
         return false;
     }
 
@@ -195,12 +202,8 @@ export class GameObject {
         return true;
     }
 
-    public getShortSummaryForControls(_activePlayer: Player) {
+    public getShortSummaryForControls(_activePlayer: Player): Record<string, unknown> {
         return this.getShortSummary();
-    }
-
-    public isParticipating(_card: DrawCard): boolean {
-        return !!this.game.currentConflict && this.game.currentConflict.isParticipating(this as unknown as DrawCard);
     }
 
     public isFacedown() {

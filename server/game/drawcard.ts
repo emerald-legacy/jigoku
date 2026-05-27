@@ -1,4 +1,5 @@
 import BaseCard from './basecard.js';
+import AbilityDsl from './abilitydsl.js';
 import { SkillCalculator, type Exclusions } from './SkillCalculator.js';
 import type StatModifier from './StatModifier.js';
 import DuplicateUniqueAction from './duplicateuniqueaction.js';
@@ -6,13 +7,14 @@ import CourtesyAbility from './KeywordAbilities/CourtesyAbility.js';
 import PrideAbility from './KeywordAbilities/PrideAbility.js';
 import SincerityAbility from './KeywordAbilities/SincerityAbility.js';
 import { RallyAbility } from './KeywordAbilities/RallyAbility.js';
-import { Locations, EffectNames, CardTypes, PlayTypes, ConflictTypes, EventNames, Durations } from './Constants.js';
+import { Locations, EffectNames, CardTypes, PlayTypes, ConflictTypes, EventNames, Durations, Players } from './Constants.js';
 import { GameModes } from '../GameModes.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility.js';
 import type Player from './player.js';
 import type Ring from './ring.js';
 import type { AbilityContext } from './AbilityContext.js';
+import type { PersistentEffectProps } from './Interfaces.js';
 import type { CardData } from './types/CardData.js';
 
 interface MenuItem {
@@ -104,6 +106,8 @@ class DrawCard extends BaseCard {
             this.abilities.reactions.push(new RallyAbility(this.game, this));
             this.abilities.reactions.push(new ThrivingAbility(this.game, this));
         }
+
+        this.applyAttachmentBonus();
     }
 
     handleEphemeral(event: any): void {
@@ -113,6 +117,51 @@ class DrawCard extends BaseCard {
             }
             this.fromOutOfPlaySource = undefined;
         }
+    }
+
+    isAttachmentBonusModifierSwitchActive() {
+        const switches = this.getEffects(EffectNames.SwitchAttachmentSkillModifiers).filter(Boolean);
+        // each pair of switches cancels each other. Need an odd number of switches to be active
+        return switches.length % 2 === 1;
+    }
+
+    applyAttachmentBonus() {
+        const militaryBonus = parseInt(this.cardData.military_bonus ?? '');
+        const politicalBonus = parseInt(this.cardData.political_bonus ?? '');
+        if(!isNaN(militaryBonus)) {
+            this.persistentEffect({
+                match: (card) => card === this.parent,
+                targetController: Players.Any,
+                effect: AbilityDsl.effects.attachmentMilitarySkillModifier(() =>
+                    this.isAttachmentBonusModifierSwitchActive() ? politicalBonus : militaryBonus
+                )
+            });
+        }
+        if(!isNaN(politicalBonus)) {
+            this.persistentEffect({
+                match: (card) => card === this.parent,
+                targetController: Players.Any,
+                effect: AbilityDsl.effects.attachmentPoliticalSkillModifier(() =>
+                    this.isAttachmentBonusModifierSwitchActive() ? militaryBonus : politicalBonus
+                )
+            });
+        }
+    }
+
+    /**
+     * Applies an effect with the specified properties while the current card is
+     * attached to another card. By default the effect will target the parent
+     * card, but you can provide a match function to narrow down whether the
+     * effect is applied (for cases where the effect only applies to specific
+     * characters).
+     */
+    whileAttached(properties: Pick<PersistentEffectProps<this>, 'condition' | 'match' | 'effect'>) {
+        this.persistentEffect({
+            condition: properties.condition || (() => true),
+            match: (card, context) => card === this.parent && (!properties.match || properties.match(card, context)),
+            targetController: Players.Any,
+            effect: properties.effect
+        });
     }
 
     getPrintedSkill(type: string): number {

@@ -19,8 +19,7 @@ import {
     Durations,
     EffectNames,
     EventNames,
-    Locations,
-    Players
+    Locations
 } from './Constants.js';
 import { ElementSymbol } from './ElementSymbol.js';
 import {
@@ -62,7 +61,6 @@ class BaseCard extends EffectSource {
     declare id: string;
     printedName: string;
     inConflict = false;
-    declare type: CardTypes;
     facedown: boolean = false;
 
     tokens: Record<string, number> = {};
@@ -104,7 +102,6 @@ class BaseCard extends EffectSource {
 
         this.setupCardAbilities(AbilityDsl);
         this.parseKeywords(cardData.text ? cardData.text.replace(/<[^>]*>/g, '').toLowerCase() : '');
-        this.applyAttachmentBonus();
     }
 
     get name(): string {
@@ -114,6 +111,10 @@ class BaseCard extends EffectSource {
 
     set name(name: string) {
         this.printedName = name;
+    }
+
+    get type(): CardTypes {
+        return this.getType() as CardTypes;
     }
 
     #mostRecentEffect(predicate: (effect: CardEffect) => boolean): CardEffect | undefined {
@@ -876,35 +877,6 @@ class BaseCard extends EffectSource {
         }
     }
 
-    isAttachmentBonusModifierSwitchActive() {
-        const switches = this.getEffects(EffectNames.SwitchAttachmentSkillModifiers).filter(Boolean);
-        // each pair of switches cancels each other. Need an odd number of switches to be active
-        return switches.length % 2 === 1;
-    }
-
-    applyAttachmentBonus() {
-        const militaryBonus = parseInt(this.cardData.military_bonus ?? '');
-        const politicalBonus = parseInt(this.cardData.political_bonus ?? '');
-        if(!isNaN(militaryBonus)) {
-            this.persistentEffect({
-                match: (card) => card === this.parent,
-                targetController: Players.Any,
-                effect: AbilityDsl.effects.attachmentMilitarySkillModifier(() =>
-                    this.isAttachmentBonusModifierSwitchActive() ? politicalBonus : militaryBonus
-                )
-            });
-        }
-        if(!isNaN(politicalBonus)) {
-            this.persistentEffect({
-                match: (card) => card === this.parent,
-                targetController: Players.Any,
-                effect: AbilityDsl.effects.attachmentPoliticalSkillModifier(() =>
-                    this.isAttachmentBonusModifierSwitchActive() ? militaryBonus : politicalBonus
-                )
-            });
-        }
-    }
-
     checkForIllegalAttachments() {
         let context = (this.game.getFrameworkContext as (player?: Player | null) => AbilityContext)(this.controller);
         const illegalAttachments = new Set(
@@ -1022,22 +994,6 @@ class BaseCard extends EffectSource {
         }
 
         return this.isBlank() || this.allowedAttachmentTraits.length === 0;
-    }
-
-    /**
-     * Applies an effect with the specified properties while the current card is
-     * attached to another card. By default the effect will target the parent
-     * card, but you can provide a match function to narrow down whether the
-     * effect is applied (for cases where the effect only applies to specific
-     * characters).
-     */
-    whileAttached(properties: Pick<PersistentEffectProps<this>, 'condition' | 'match' | 'effect'>) {
-        this.persistentEffect({
-            condition: properties.condition || (() => true),
-            match: (card, context) => card === this.parent && (!properties.match || properties.match(card, context)),
-            targetController: Players.Any,
-            effect: properties.effect
-        });
     }
 
     /**
