@@ -15,8 +15,8 @@ export class GameObject {
     protected id: string;
     protected printedType = '';
     public facedown = false;
-    private effects = [] as CardEffect[];
-    private effectsByType = new Map<EffectNames, CardEffect[]>();
+    protected effects = [] as CardEffect[];
+    protected effectsByType = new Map<EffectNames, CardEffect[]>();
     private suppressEffectCount = 0;
 
     public constructor(
