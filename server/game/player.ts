@@ -329,12 +329,6 @@ class Player extends GameObject {
         });
     }
 
-    areCardsSelected(): boolean {
-        return this.cardsInPlay.some((card) => {
-            return (card as any).selected;
-        });
-    }
-
     removeCardByUuid(list: BaseCard[], uuid: string): BaseCard[] {
         return list.filter((card) => {
             return card.uuid !== uuid;
