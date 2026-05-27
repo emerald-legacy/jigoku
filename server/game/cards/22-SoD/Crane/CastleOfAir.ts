@@ -7,6 +7,7 @@ import { EventRegistrar } from '../../../EventRegistrar.js';
 
 export default class CastleOfAir extends DrawCard {
     static id = 'castle-of-air';
+    private eventRegistrar?: EventRegistrar;
     private playersTriggered = new Map<string, boolean>();
 
     setupCardAbilities() {

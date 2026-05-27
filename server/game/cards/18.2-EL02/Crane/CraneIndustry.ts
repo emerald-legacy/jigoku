@@ -1,8 +1,9 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../basecard.js';
-import { CardTypes } from '../../../Constants.js';
+import { CardTypes, EventNames } from '../../../Constants.js';
 import DrawCard from '../../../drawcard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 export default class CraneIndustry extends DrawCard {
     static id = 'crane-industry';
@@ -34,8 +35,8 @@ export default class CraneIndustry extends DrawCard {
         this.eventsPlayedThisConflictByThisPlayer.clear();
     }
 
-    public onCardPlayed(event: BaseCard) {
-        if(event.card.type === CardTypes.Event && event.context.player === this.controller) {
+    public onCardPlayed(event: EventPayload<EventNames.OnCardPlayed>) {
+        if(event.card.type === CardTypes.Event && event.context?.player === this.controller) {
             this.eventsPlayedThisConflictByThisPlayer.add(event.card.name);
         }
     }

@@ -10,6 +10,7 @@ const MAXIMUM_CARDS_ALLOWED = 3;
 
 export default class MasterTactician extends DrawCard {
     static id = 'master-tactician';
+    private eventRegistrar?: EventRegistrar;
 
     private cardsPlayedThisRound = 0;
     private mostRecentEvent?: any;

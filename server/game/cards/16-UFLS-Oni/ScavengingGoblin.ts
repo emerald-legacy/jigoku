@@ -4,6 +4,7 @@ import AbilityDsl from '../../abilitydsl.js';
 
 export default class ScavengingGoblin extends BaseOni {
     static id = 'scavenging-goblin';
+    private messageShown?: boolean;
 
     public setupCardAbilities() {
         super.setupCardAbilities();

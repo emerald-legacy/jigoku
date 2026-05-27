@@ -8,6 +8,7 @@ import { BaseOni } from './_BaseOni.js';
 
 export default class UndeadHorror extends BaseOni {
     static id = 'undead-horror';
+    private messageShown?: boolean;
 
     public setupCardAbilities() {
         super.setupCardAbilities();

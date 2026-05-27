@@ -7,6 +7,7 @@ import DrawCard from '../../drawcard.js';
 
 export default class MagnificentTriumph extends DrawCard {
     static id = 'magnificent-triumph';
+    private eventRegistrar?: EventRegistrar;
 
     #duelWinnersThisConflict = new Set<BaseCard>();
 

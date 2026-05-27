@@ -59,6 +59,7 @@ class HifumiCost extends ReduceableFateCost {
 
 export default class IsawaHifumi extends DrawCard {
     static id = 'isawa-hifumi';
+    private eventRegistrar?: EventRegistrar;
 
     hifumiCost!: HifumiCost;
 

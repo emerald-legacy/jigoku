@@ -6,6 +6,7 @@ import DrawCard from '../../drawcard.js';
 
 export default class KakitasFinalStance extends DrawCard {
     static id = 'kakita-s-final-stance';
+    private eventRegistrar?: EventRegistrar;
 
     private duelParticipantsInThisConflict = new Set<DrawCard>();
 

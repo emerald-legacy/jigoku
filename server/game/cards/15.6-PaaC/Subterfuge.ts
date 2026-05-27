@@ -4,6 +4,7 @@ import { Phases } from '../../Constants.js';
 
 class Subterfuge extends DrawCard {
     static id = 'subterfuge';
+    private messageShown?: boolean;
 
     setupCardAbilities() {
         this.wouldInterrupt({

@@ -6,6 +6,7 @@ import DrawCard from '../../drawcard.js';
 
 export default class RisingStarsKata extends DrawCard {
     static id = 'rising-stars-kata';
+    private eventRegistrar?: EventRegistrar;
 
     private duelWinnersThisConflict = new Set<BaseCard>();
 

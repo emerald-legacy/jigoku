@@ -1,9 +1,13 @@
 import DrawCard from '../../drawcard.js';
 import { Locations, Durations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type Player from '../../player.js';
 
 class UnderSiege extends DrawCard {
     static id = 'under-siege';
+
+    setAsideCards!: DrawCard[];
+    targetPlayer!: Player | null;
 
     setupCardAbilities() {
         this.setAsideCards = [];
@@ -32,10 +36,11 @@ class UnderSiege extends DrawCard {
                             AbilityDsl.actions.handler({
                                 handler: context => {
                                     if(this.targetPlayer && this.setAsideCards && this.setAsideCards.length > 0) {
-                                        context.game.addMessage('{0} picks up their original hand', this.targetPlayer);
+                                        const targetPlayer = this.targetPlayer;
+                                        context.game.addMessage('{0} picks up their original hand', targetPlayer);
 
                                         this.setAsideCards.forEach((card: any) => {
-                                            this.targetPlayer.moveCard(card, Locations.Hand);
+                                            targetPlayer.moveCard(card, Locations.Hand);
                                         });
                                     }
                                 }

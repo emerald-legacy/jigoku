@@ -5,6 +5,7 @@ import DrawCard from '../../../drawcard.js';
 
 export default class BloodthirstyOnryo extends DrawCard {
     static id = 'bloodthirsty-onryo';
+    private eventRegistrar?: EventRegistrar;
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
