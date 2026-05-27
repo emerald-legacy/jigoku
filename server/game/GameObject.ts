@@ -219,7 +219,7 @@ export class GameObject {
         return effects[effects.length - 1];
     }
 
-    protected getRawEffects() {
+    public getRawEffects() {
         // Fast path: no suppress effects (vast majority of game objects)
         if(this.suppressEffectCount === 0) {
             return this.effects;
