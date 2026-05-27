@@ -1,7 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames } from '../Constants.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
-import type BaseCard from '../basecard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export type BreakProperties = CardActionProperties;
@@ -13,7 +12,7 @@ export class BreakAction extends CardGameAction {
     cost = 'breaking {0}';
     effect = 'break {0}';
 
-    canAffect(card: BaseCard, context: AbilityContext): boolean {
+    canAffect(card: ProvinceCard, context: AbilityContext): boolean {
         if(!card.isProvince || card.isBroken) {
             return false;
         }

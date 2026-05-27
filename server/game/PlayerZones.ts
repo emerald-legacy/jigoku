@@ -1,6 +1,7 @@
 import { Locations } from './Constants.js';
 import type BaseCard from './basecard.js';
 import type DrawCard from './drawcard.js';
+import type { ProvinceCard } from './ProvinceCard.js';
 
 export class PlayerZones {
     dynastyDeck: DrawCard[] = [];
@@ -135,7 +136,7 @@ export class PlayerZones {
         return cards;
     }
 
-    getProvinceCardInProvince(location: string): BaseCard | undefined {
-        return this.getSourceList(location).find((card: any) => card.isProvince);
+    getProvinceCardInProvince(location: string): ProvinceCard | undefined {
+        return this.getSourceList(location).find((card: any) => card.isProvince) as ProvinceCard | undefined;
     }
 }

@@ -31,6 +31,7 @@ import type Game from './game.js';
 import type Socket from '../socket.js';
 import type BaseCard from './basecard.js';
 import type DrawCard from './drawcard.js';
+import type { ProvinceCard } from './ProvinceCard.js';
 import type Ring from './ring.js';
 import type { ClockInterface } from './Clocks/types.js';
 import type { AbilityContext } from './AbilityContext.js';
@@ -291,7 +292,7 @@ class Player extends GameObject {
         return this.zones.getDynastyCardsInProvince(location);
     }
 
-    getProvinceCardInProvince(location: string): BaseCard | undefined {
+    getProvinceCardInProvince(location: string): ProvinceCard | undefined {
         return this.zones.getProvinceCardInProvince(location);
     }
 
@@ -423,7 +424,7 @@ class Player extends GameObject {
         }
     }
 
-    getProvinceCards(): BaseCard[] {
+    getProvinceCards(): ProvinceCard[] {
         const gameModeProvinceCount = this.game.gameMode === GameModes.Skirmish ? 3 : 5;
         const locations = [
             Locations.ProvinceOne,
@@ -432,7 +433,7 @@ class Player extends GameObject {
             Locations.ProvinceFour,
             Locations.StrongholdProvince
         ].slice(0, gameModeProvinceCount);
-        return locations.map((location) => this.getProvinceCardInProvince(location) as BaseCard);
+        return locations.map((location) => this.getProvinceCardInProvince(location) as ProvinceCard);
     }
 
     anyCardsInPlay(predicate: (card: DrawCard) => boolean): boolean {

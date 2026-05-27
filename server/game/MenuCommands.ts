@@ -87,13 +87,15 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
             game.addMessage('{0} flips {1} facedown', player, card);
             card.facedown = true;
             return;
-        case 'break':
-            game.addMessage('{0} {1} {2}', player, card.isBroken ? 'unbreaks' : 'breaks', card);
-            card.isBroken = card.isBroken ? false : true;
-            if(card.location === Locations.StrongholdProvince && card.isBroken && player.opponent) {
+        case 'break': {
+            const province = card as ProvinceCard;
+            game.addMessage('{0} {1} {2}', player, province.isBroken ? 'unbreaks' : 'breaks', card);
+            province.isBroken = province.isBroken ? false : true;
+            if(card.location === Locations.StrongholdProvince && province.isBroken && player.opponent) {
                 game.recordWinner(player.opponent, 'conquest');
             }
             return;
+        }
         case 'move_conflict':
             game.addMessage('{0} moves the conflict to {1}', player, card);
             card.inConflict = true;
