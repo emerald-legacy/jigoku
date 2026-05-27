@@ -137,7 +137,7 @@ const Skirmish: GameMode = {
         card.location === Locations.PlayArea &&
         card.getFate() <= 1 &&
         !card.isParticipating() &&
-        ((card.ready && card.allowGameAction('bow', context)) ||
+        ((!card.bowed && card.allowGameAction('bow', context)) ||
             (card.bowed && card.allowGameAction('ready', context))),
     winConReachedConquestVictory: (provinceBeingBroken: ProvinceCard) =>
         provinceBeingBroken.controller.getProvinces((card: ProvinceCard) => card.isBroken).length > 2,
