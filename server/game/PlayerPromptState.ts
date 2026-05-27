@@ -12,6 +12,16 @@ export interface PromptButton {
     [key: string]: unknown;
 }
 
+export interface RenderedPromptButton {
+    text?: string;
+    arg?: string;
+    method?: string;
+    timer?: boolean;
+    timerCancel?: boolean;
+    card?: ReturnType<BaseCard['getShortSummary']>;
+    [key: string]: unknown;
+}
+
 export interface PromptControl {
     type?: string;
     [key: string]: unknown;
@@ -23,7 +33,7 @@ export class PlayerPromptState {
     selectRing = false;
     menuTitle = '';
     promptTitle = '';
-    buttons: PromptButton[] = [];
+    buttons: RenderedPromptButton[] = [];
     controls: PromptControl[] = [];
 
     selectableRings: Ring[] = [];
@@ -73,16 +83,16 @@ export class PlayerPromptState {
         this.controls = prompt.controls ?? [];
         this.buttons = !prompt.buttons
             ? []
-            : prompt.buttons.map((button) => {
-                if(button.card) {
-                    const { card, ...properties } = button;
+            : prompt.buttons.map((button): RenderedPromptButton => {
+                const { card, ...properties } = button;
+                if(card) {
                     return Object.assign(
                         { text: card.name, arg: card.uuid, card: card.getShortSummary() },
                         properties
                     );
                 }
 
-                return button;
+                return properties;
             });
     }
 
