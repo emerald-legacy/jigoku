@@ -863,6 +863,10 @@ class BaseCard extends EffectSource {
         return 0;
     }
 
+    getFate(): number {
+        return 0;
+    }
+
     readiesDuringReadyPhase(): boolean {
         return !this.anyEffect(EffectNames.DoesNotReady);
     }
