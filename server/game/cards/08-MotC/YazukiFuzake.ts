@@ -30,7 +30,7 @@ class YasukiFuzake extends DrawCard {
                 }
             },
             effect: 'discard all status tokens from {1}{2}{3}',
-            effectArgs: context => [context.targets.first, context.targets.second.length !== 0 ? ' and ' : '', context.targets.second]
+            effectArgs: context => [context.targets.first, !Array.isArray(context.targets.second) ? ' and ' : '', context.targets.second]
         });
     }
 }

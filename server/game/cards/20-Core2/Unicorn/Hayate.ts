@@ -38,8 +38,8 @@ export default class Hayate extends DrawCard {
             },
             effect: 'move {0}{1}{2} into the conflict',
             effectArgs: (context) => [
-                context.targets.optional.length !== 0 ? ' and ' : '',
-                context.targets.optional.length !== 0 ? context.targets.optional : ''
+                !Array.isArray(context.targets.optional) ? ' and ' : '',
+                !Array.isArray(context.targets.optional) ? context.targets.optional : ''
             ]
         });
     }
