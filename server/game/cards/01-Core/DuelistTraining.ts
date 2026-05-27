@@ -1,5 +1,4 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import type BaseCard from '../../basecard.js';
 import { AbilityTypes, CardTypes, DuelTypes, Players } from '../../Constants.js';
 import DrawCard from '../../drawcard.js';
 import type { Duel } from '../../Duel.js';
@@ -17,7 +16,7 @@ class DuelistTraining extends DrawCard {
                 target: {
                     cardType: CardTypes.Character,
                     controller: Players.Opponent,
-                    cardCondition: (card: BaseCard) => card.isParticipating(),
+                    cardCondition: (card: DrawCard) => card.isParticipating(),
                     gameAction: ability.actions.duel((context: AbilityContext) => ({
                         type: DuelTypes.Military,
                         challenger: context.source,

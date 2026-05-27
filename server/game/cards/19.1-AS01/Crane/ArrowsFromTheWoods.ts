@@ -1,6 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
 import DrawCard from '../../../drawcard.js';
 
 export default class ArrowsFromTheWoods extends DrawCard {
@@ -11,7 +10,7 @@ export default class ArrowsFromTheWoods extends DrawCard {
             title: 'Reduce opponent\'s characters mil',
             condition: (context) =>
                 context.game.isDuringConflict('military') &&
-                context.player.anyCardsInPlay((card: BaseCard) => card.isParticipating() && card.hasTrait('bushi')),
+                context.player.anyCardsInPlay((card: DrawCard) => card.isParticipating() && card.hasTrait('bushi')),
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                 effect: AbilityDsl.effects.modifyMilitarySkill(this.penaltyValue(context))
@@ -24,7 +23,7 @@ export default class ArrowsFromTheWoods extends DrawCard {
 
     private penaltyValue(context: AbilityContext): number {
         const hasScoutOrShinobiParticipating = context.player.anyCardsInPlay(
-            (card: BaseCard) => card.isParticipating() && card.hasSomeTrait('scout', 'shinobi')
+            (card: DrawCard) => card.isParticipating() && card.hasSomeTrait('scout', 'shinobi')
         );
         return hasScoutOrShinobiParticipating ? -2 : -1;
     }

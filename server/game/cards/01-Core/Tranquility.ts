@@ -1,5 +1,4 @@
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
 import DrawCard from '../../drawcard.js';
 
 export default class Tranquility extends DrawCard {
@@ -12,7 +11,7 @@ export default class Tranquility extends DrawCard {
             effect: 'stop characters at {1}\'s home from triggering abilities until the end of the conflict',
             effectArgs: (context) => context.player.opponent ?? '',
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: ((context.player.opponent?.cardsInPlay ?? []) as BaseCard[]).filter((card) => !card.isParticipating()),
+                target: (context.player.opponent?.cardsInPlay ?? []).filter((card: DrawCard) => !card.isParticipating()),
                 effect: AbilityDsl.effects.cardCannot('triggerAbilities')
             }))
         });

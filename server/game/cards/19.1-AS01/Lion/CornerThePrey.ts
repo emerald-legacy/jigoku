@@ -36,7 +36,7 @@ export default class CornerThePrey extends DrawCard {
             (card) => card.controller === context.player && card.hasTrait('follower')
         );
         const myParticipatingFollowers = myFollowers.filter(
-            (card) => card.isParticipating() || (card instanceof DrawCard && !!card.parent && card.parent.isParticipating())
+            (card) => card instanceof DrawCard && (card.isParticipating() || (!!card.parent && card.parent.isParticipating()))
         );
         const amount = myParticipatingFollowers.length;
         return amount;

@@ -54,7 +54,7 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
         case 'move':
             if(game.currentConflict) {
                 const drawCard = card as DrawCard;
-                if(card.isParticipating()) {
+                if(drawCard.isParticipating()) {
                     game.addMessage('{0} moves {1} out of the conflict', player, card);
                     game.currentConflict.removeFromConflict(drawCard);
                 } else {

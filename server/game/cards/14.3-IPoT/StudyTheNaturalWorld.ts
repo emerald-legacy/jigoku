@@ -1,5 +1,4 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import type BaseCard from '../../basecard.js';
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Durations, EventNames } from '../../Constants.js';
@@ -12,7 +11,7 @@ class StudyTheNaturalWorld extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Add elements to the conflict ring',
-            condition: (context: AbilityContext) => context.player.anyCardsInPlay((card: BaseCard) => card.isAttacking() && card.hasTrait('scholar')),
+            condition: (context: AbilityContext) => context.player.anyCardsInPlay((card: DrawCard) => card.isAttacking() && card.hasTrait('scholar')),
             effect: 'add {1} to the conflict ring. They may resolve all elements if they win the conflict',
             effectArgs: (context: AbilityContext) => [this.getElements(context)],
             gameAction: AbilityDsl.actions.multiple([

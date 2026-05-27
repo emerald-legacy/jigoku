@@ -1,6 +1,5 @@
 import { CardTypes, Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
 import DrawCard from '../../../drawcard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -17,7 +16,7 @@ export default class HeartOfTheInferno extends DrawCard {
             target: {
                 mode: TargetModes.Single,
                 controller: Players.Opponent,
-                cardCondition: (card: BaseCard) => card.isParticipating() || (card instanceof DrawCard && !!card.parent?.isParticipating()),
+                cardCondition: (card: DrawCard) => card.isParticipating() || !!card.parent?.isParticipating(),
                 gameAction: AbilityDsl.actions.multipleContext((context) => {
                     if(!(context.target instanceof DrawCard)) {
                         return { gameActions: [] };

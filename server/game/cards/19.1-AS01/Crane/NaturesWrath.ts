@@ -11,7 +11,7 @@ function selfDishonorSelect(message: string) {
     return AbilityDsl.actions.selectCard((context: AbilityContext) => ({
         cardType: CardTypes.Character,
         controller: Players.Self,
-        cardCondition: (card: BaseCard) => card.isParticipating(),
+        cardCondition: (card: DrawCard) => card.isParticipating(),
         gameAction: AbilityDsl.actions.dishonor(),
         message: message,
         messageArgs: (card: BaseCard) => [context.player, card, context.source]
@@ -26,7 +26,7 @@ export default class NaturesWrath extends DrawCard {
             title: 'Dishonor or move home a character',
             condition: (context) =>
                 context.game.isDuringConflict(ConflictTypes.Military) &&
-                context.player.anyCardsInPlay((card: BaseCard) => card.isParticipating()),
+                context.player.anyCardsInPlay((card: DrawCard) => card.isParticipating()),
             targets: {
                 [TARGET_CHARACTER]: {
                     cardType: CardTypes.Character,

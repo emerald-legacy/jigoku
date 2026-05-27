@@ -757,27 +757,6 @@ class BaseCard extends EffectSource {
         return false;
     }
 
-    isAttacking(conflictType?: 'military' | 'political'): boolean {
-        return (
-            !!this.game.currentConflict?.isAttacking(this as unknown as DrawCard) &&
-            (!conflictType || (this.game.isDuringConflict as (type: string | null) => boolean)(conflictType))
-        );
-    }
-
-    isDefending(conflictType?: 'military' | 'political'): boolean {
-        return (
-            !!this.game.currentConflict?.isDefending(this as unknown as DrawCard) &&
-            (!conflictType || (this.game.isDuringConflict as (type: string | null) => boolean)(conflictType))
-        );
-    }
-
-    isParticipating(conflictType?: 'military' | 'political'): boolean {
-        return (
-            !!this.game.currentConflict?.isParticipating(this as unknown as DrawCard) &&
-            (!conflictType || (this.game.isDuringConflict as (type: string | null) => boolean)(conflictType))
-        );
-    }
-
     isInConflict(): boolean {
         return this.inConflict;
     }
@@ -792,10 +771,6 @@ class BaseCard extends EffectSource {
 
     ready(): void {
         this.bowed = false;
-    }
-
-    isParticipatingFor(player: Player): boolean {
-        return (this.isAttacking() && player.isAttackingPlayer()) || (this.isDefending() && player.isDefendingPlayer());
     }
 
     isUnique(): boolean {

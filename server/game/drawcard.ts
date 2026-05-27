@@ -247,6 +247,31 @@ class DrawCard extends BaseCard {
         return !!this.game.currentConflict?.isCardInConflictProvince(this);
     }
 
+    isAttacking(conflictType?: 'military' | 'political'): boolean {
+        return (
+            !!this.game.currentConflict?.isAttacking(this) &&
+            (!conflictType || (this.game.isDuringConflict as (type: string | null) => boolean)(conflictType))
+        );
+    }
+
+    isDefending(conflictType?: 'military' | 'political'): boolean {
+        return (
+            !!this.game.currentConflict?.isDefending(this) &&
+            (!conflictType || (this.game.isDuringConflict as (type: string | null) => boolean)(conflictType))
+        );
+    }
+
+    isParticipating(conflictType?: 'military' | 'political'): boolean {
+        return (
+            !!this.game.currentConflict?.isParticipating(this) &&
+            (!conflictType || (this.game.isDuringConflict as (type: string | null) => boolean)(conflictType))
+        );
+    }
+
+    isParticipatingFor(player: Player): boolean {
+        return (this.isAttacking() && player.isAttackingPlayer()) || (this.isDefending() && player.isDefendingPlayer());
+    }
+
     costLessThan(num: number): boolean {
         const cost = this.printedCost;
         return !!num && (!!cost || cost === 0) && cost < num;

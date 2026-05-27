@@ -67,7 +67,7 @@ export default class ToGovernTheLand extends DrawCard {
         );
     }
 
-    private conditionToTarget(conflictType: ConflictTypes, card: BaseCard, context: AbilityContext): boolean {
+    private conditionToTarget(conflictType: ConflictTypes, card: DrawCard, context: AbilityContext): boolean {
         if(!card.isParticipating()) {
             return false;
         }
