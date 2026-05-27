@@ -45,6 +45,14 @@ import type { CardData } from './types/CardData.js';
 
 type Faction = 'neutral' | 'crab' | 'crane' | 'dragon' | 'lion' | 'phoenix' | 'scorpion' | 'unicorn' | 'shadowlands';
 
+interface CardAbilities {
+    actions: CardAction[];
+    reactions: TriggeredAbility[];
+    // descriptor blobs (PersistentEffectProps + duration/location/ref); heterogeneous — kept loose
+    persistentEffects: any[];
+    playActions: any[];
+}
+
 import { type PrintedKeyword, parseKeywords as parseKeywordsFromText } from './KeywordParser.js';
 
 class BaseCard extends EffectSource {
@@ -62,7 +70,7 @@ class BaseCard extends EffectSource {
 
     showPopup: boolean = false;
     popupMenuText: string = '';
-    abilities: any = { actions: [], reactions: [], persistentEffects: [], playActions: [] };
+    abilities: CardAbilities = { actions: [], reactions: [], persistentEffects: [], playActions: [] };
     traits: string[];
     printedFaction: string;
     location!: Locations;
@@ -951,7 +959,7 @@ class BaseCard extends EffectSource {
             this.game.promptForSelect(this.controller, {
                 activePromptTitle: 'Choose an attachment to discard',
                 waitingPromptTitle: 'Waiting for opponent to choose an attachment to discard',
-                cardCondition: (card: DrawCard) => card.parent === (this as unknown as DrawCard) && card.isRestricted(),
+                cardCondition: (card: DrawCard) => card.parent?.uuid === this.uuid && card.isRestricted(),
                 onSelect: (player: Player, card: DrawCard) => {
                     this.game.addMessage(
                         '{0} discards {1} from {2} due to too many Restricted attachments',

@@ -24,13 +24,17 @@ class EffectSource extends GameObject {
         super(game, name);
     }
 
+    private applyDurationEffect(duration: Durations, propertyFactory: PropertyFactory): void {
+        const properties = propertyFactory(AbilityDsl);
+        this.addEffectToEngine(Object.assign({ duration, location: Locations.Any }, properties));
+    }
+
     /**
      * Applies an immediate effect which lasts until the end of the current
      * duel.
      */
     untilEndOfDuel(propertyFactory: PropertyFactory): void {
-        const properties = propertyFactory(AbilityDsl);
-        this.addEffectToEngine(Object.assign({ duration: Durations.UntilEndOfDuel, location: Locations.Any }, properties));
+        this.applyDurationEffect(Durations.UntilEndOfDuel, propertyFactory);
     }
 
     /**
@@ -38,44 +42,37 @@ class EffectSource extends GameObject {
      * conflict.
      */
     untilEndOfConflict(propertyFactory: PropertyFactory): void {
-        const properties = propertyFactory(AbilityDsl);
-        this.addEffectToEngine(Object.assign({ duration: Durations.UntilEndOfConflict, location: Locations.Any }, properties));
+        this.applyDurationEffect(Durations.UntilEndOfConflict, propertyFactory);
     }
 
     /**
      * Applies an immediate effect which lasts until the end of the phase.
      */
     untilEndOfPhase(propertyFactory: PropertyFactory): void {
-        const properties = propertyFactory(AbilityDsl);
-        this.addEffectToEngine(Object.assign({ duration: Durations.UntilEndOfPhase, location: Locations.Any }, properties));
+        this.applyDurationEffect(Durations.UntilEndOfPhase, propertyFactory);
     }
 
     /**
      * Applies an immediate effect which lasts until the end of the round.
      */
     untilEndOfRound(propertyFactory: PropertyFactory): void {
-        const properties = propertyFactory(AbilityDsl);
-        this.addEffectToEngine(Object.assign({ duration: Durations.UntilEndOfRound, location: Locations.Any }, properties));
+        this.applyDurationEffect(Durations.UntilEndOfRound, propertyFactory);
     }
 
     untilPassPriority(propertyFactory: PropertyFactory): void {
-        const properties = propertyFactory(AbilityDsl);
-        this.addEffectToEngine(Object.assign({ duration: Durations.UntilPassPriority, location: Locations.Any }, properties));
+        this.applyDurationEffect(Durations.UntilPassPriority, propertyFactory);
     }
 
     untilOpponentPassPriority(propertyFactory: PropertyFactory): void {
-        const properties = propertyFactory(AbilityDsl);
-        this.addEffectToEngine(Object.assign({ duration: Durations.UntilOpponentPassPriority, location: Locations.Any }, properties));
+        this.applyDurationEffect(Durations.UntilOpponentPassPriority, propertyFactory);
     }
 
     untilNextPassPriority(propertyFactory: PropertyFactory): void {
-        const properties = propertyFactory(AbilityDsl);
-        this.addEffectToEngine(Object.assign({ duration: Durations.UntilNextPassPriority, location: Locations.Any }, properties));
+        this.applyDurationEffect(Durations.UntilNextPassPriority, propertyFactory);
     }
 
     untilSelfPassPriority(propertyFactory: PropertyFactory): void {
-        const properties = propertyFactory(AbilityDsl);
-        this.addEffectToEngine(Object.assign({ duration: Durations.UntilSelfPassPriority, location: Locations.Any }, properties));
+        this.applyDurationEffect(Durations.UntilSelfPassPriority, propertyFactory);
     }
 
     /**
@@ -83,8 +80,7 @@ class EffectSource extends GameObject {
      * `until` property for the effect has occurred.
      */
     lastingEffect(propertyFactory: PropertyFactory): void {
-        const properties = propertyFactory(AbilityDsl);
-        this.addEffectToEngine(Object.assign({ duration: Durations.Custom, location: Locations.Any }, properties));
+        this.applyDurationEffect(Durations.Custom, propertyFactory);
     }
 
     /*
