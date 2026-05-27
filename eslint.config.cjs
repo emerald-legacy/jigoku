@@ -100,7 +100,7 @@ module.exports = [
             // TypeScript rules (disabled for gradual migration — re-enable as codebase improves)
             ...tseslint.configs.recommended.rules,
             'no-unused-vars': 'off',
-            '@typescript-eslint/no-explicit-any': 'off',
+            '@typescript-eslint/no-explicit-any': 'warn',
             '@typescript-eslint/no-unused-vars': ['error', {
                 argsIgnorePattern: '^_',
                 varsIgnorePattern: '^_'
@@ -176,7 +176,7 @@ module.exports = [
         },
         rules: {
             'no-unused-vars': 'off',
-            '@typescript-eslint/no-explicit-any': 'off',
+            '@typescript-eslint/no-explicit-any': 'warn',
             '@typescript-eslint/no-unused-vars': ['error', {
                 argsIgnorePattern: '^_',
                 varsIgnorePattern: '^_'
