@@ -5,6 +5,7 @@ import { Locations, CardTypes, EffectNames } from './Constants.js';
 import { initiateDuel } from './DuelHelper.js';
 import type Game from './game.js';
 import type BaseCard from './basecard.js';
+import type DrawCard from './drawcard.js';
 import type { AbilityContext } from './AbilityContext.js';
 
 interface CardAbilityProperties {
@@ -103,7 +104,7 @@ class CardAbility extends ThenAbility {
 
         if(
             (this.isTriggeredAbility() && !this.card.canTriggerAbilities(context, ignoredRequirements)) ||
-            (this.card.type === CardTypes.Event && !this.card.canPlay(context, context.playType))
+            (this.card.type === CardTypes.Event && !(this.card as DrawCard).canPlay(context, context.playType))
         ) {
             return 'cannotTrigger';
         }
@@ -120,7 +121,7 @@ class CardAbility extends ThenAbility {
             return 'max';
         }
 
-        if(this.isCardPlayed() && this.card.isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
+        if(this.isCardPlayed() && (this.card as DrawCard).isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
             return 'limited';
         }
 

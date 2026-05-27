@@ -3,6 +3,7 @@ import BaseAbility from './baseability.js';
 import { Stages } from './Constants.js';
 import type Player from './player.js';
 import type BaseCard from './basecard.js';
+import type DrawCard from './drawcard.js';
 
 interface Cost {
     getReducedCost?(context: AbilityContext): number;
@@ -29,7 +30,7 @@ class BaseAction extends BaseAbility {
     }
 
     meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {
-        if(this.isCardPlayed() && this.card.isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
+        if(this.isCardPlayed() && (this.card as DrawCard).isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
             return 'limited';
         }
 

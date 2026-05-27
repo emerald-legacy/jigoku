@@ -35,9 +35,9 @@ export default class ToGovernTheLand extends DrawCard {
     private governSkill(conflictType: ConflictTypes, card: BaseCard): number {
         switch(conflictType) {
             case ConflictTypes.Political:
-                return card.getMilitarySkill();
+                return (card as DrawCard).getMilitarySkill();
             case ConflictTypes.Military:
-                return card.getPoliticalSkill();
+                return (card as DrawCard).getPoliticalSkill();
             default:
                 return NaN;
         }
