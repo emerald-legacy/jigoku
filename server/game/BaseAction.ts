@@ -1,7 +1,5 @@
 import { AbilityContext } from './AbilityContext.js';
-import BaseAbility from './baseability.js';
-import { Stages } from './Constants.js';
-import type Player from './player.js';
+import BaseCardAbility from './BaseCardAbility.js';
 import type BaseCard from './basecard.js';
 import type DrawCard from './drawcard.js';
 
@@ -14,8 +12,7 @@ interface TargetProperties {
     [key: string]: any;
 }
 
-class BaseAction extends BaseAbility {
-    card: BaseCard;
+class BaseAction extends BaseCardAbility {
     abilityType = 'action';
     cannotBeCancelled = true;
     declare cost: Cost[];
@@ -35,16 +32,6 @@ class BaseAction extends BaseAbility {
         }
 
         return super.meetsRequirements(context, ignoredRequirements);
-    }
-
-    createContext(player: Player = this.card.controller): AbilityContext {
-        return new AbilityContext({
-            ability: this,
-            game: this.card.game,
-            player: player,
-            source: this.card,
-            stage: Stages.PreTarget
-        });
     }
 
     getReducedCost(context: AbilityContext): number {

@@ -1,0 +1,28 @@
+import { AbilityContext } from './AbilityContext.js';
+import BaseAbility from './baseability.js';
+import { Stages } from './Constants.js';
+import type Player from './player.js';
+import type BaseCard from './basecard.js';
+
+/**
+ * An ability whose source is a card (play actions, card actions, reactions),
+ * as opposed to source-agnostic abilities like the elemental ring effects.
+ * Owns the card-bound contract — the source `card` and `createContext` — so the
+ * card action/play/reaction menus share one type instead of falling back to `any`.
+ */
+abstract class BaseCardAbility extends BaseAbility {
+    card!: BaseCard;
+    title?: string;
+
+    createContext(player: Player = this.card.controller): AbilityContext {
+        return new AbilityContext({
+            ability: this,
+            game: this.card.game,
+            player: player,
+            source: this.card,
+            stage: Stages.PreTarget
+        });
+    }
+}
+
+export default BaseCardAbility;

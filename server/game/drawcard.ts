@@ -3,6 +3,7 @@ import AbilityDsl from './abilitydsl.js';
 import { SkillCalculator, type Exclusions } from './SkillCalculator.js';
 import type StatModifier from './StatModifier.js';
 import DuplicateUniqueAction from './duplicateuniqueaction.js';
+import type BaseCardAbility from './BaseCardAbility.js';
 import CourtesyAbility from './KeywordAbilities/CourtesyAbility.js';
 import PrideAbility from './KeywordAbilities/PrideAbility.js';
 import SincerityAbility from './KeywordAbilities/SincerityAbility.js';
@@ -564,11 +565,11 @@ class DrawCard extends BaseCard {
         );
     }
 
-    getActions(location: string = this.location): any[] {
+    getActions(location: string = this.location): BaseCardAbility[] {
         if(location === Locations.PlayArea || this.type === CardTypes.Event) {
             return super.getActions();
         }
-        const actions = this.type === CardTypes.Character ? [new DuplicateUniqueAction(this)] : [];
+        const actions: BaseCardAbility[] = this.type === CardTypes.Character ? [new DuplicateUniqueAction(this)] : [];
         return actions.concat(this.getPlayActions(), super.getActions());
     }
 

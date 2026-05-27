@@ -4,6 +4,7 @@ import EffectSource from './EffectSource.js';
 import { CardStatusManager } from './CardStatusManager.js';
 import CardAbility from './CardAbility.js';
 import TriggeredAbility from './triggeredability.js';
+import type BaseCardAbility from './BaseCardAbility.js';
 import Game from './game.js';
 import DynastyCardAction from './dynastycardaction.js';
 
@@ -825,11 +826,11 @@ class BaseCard extends EffectSource {
         }
     }
 
-    getActions(): any[] {
+    getActions(): BaseCardAbility[] {
         return this.actions.slice();
     }
 
-    getReactions(): any[] {
+    getReactions(): TriggeredAbility[] {
         return this.reactions.slice();
     }
 
@@ -1046,7 +1047,7 @@ class BaseCard extends EffectSource {
         return true;
     }
 
-    getPlayActions() {
+    getPlayActions(): BaseCardAbility[] {
         if(this.type === CardTypes.Event) {
             return this.getActions();
         }

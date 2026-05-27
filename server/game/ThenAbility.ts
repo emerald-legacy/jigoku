@@ -1,9 +1,7 @@
 import { AbilityContext } from './AbilityContext.js';
-import BaseAbility from './baseability.js';
-import { Stages } from './Constants.js';
+import BaseCardAbility from './BaseCardAbility.js';
 import type Game from './game.js';
 import type BaseCard from './basecard.js';
-import type Player from './player.js';
 
 interface ThenAbilityProperties {
     cost?: any;
@@ -17,9 +15,8 @@ interface ThenAbilityProperties {
     [key: string]: any;
 }
 
-class ThenAbility extends BaseAbility {
+class ThenAbility extends BaseCardAbility {
     game: Game;
-    card: BaseCard;
     properties: ThenAbilityProperties;
     handler: (context: AbilityContext) => void;
     cannotTargetFirst = true;
@@ -31,16 +28,6 @@ class ThenAbility extends BaseAbility {
         this.card = card;
         this.properties = properties;
         this.handler = properties.handler || this.executeGameActions.bind(this);
-    }
-
-    createContext(player: Player = this.card.controller): AbilityContext {
-        return new AbilityContext({
-            ability: this,
-            game: this.game,
-            player: player,
-            source: this.card,
-            stage: Stages.PreTarget
-        });
     }
 
     checkGameActionsForPotential(context: AbilityContext): boolean {

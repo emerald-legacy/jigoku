@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAction from '../BaseAction.js';
+import type BaseCardAbility from '../BaseCardAbility.js';
 import { Locations, PlayTypes, Stages } from '../Constants.js';
 import type DrawCard from '../drawcard.js';
 import type { Event } from '../Events/Event.js';
@@ -145,7 +146,7 @@ export class PlayCardAction extends CardGameAction {
 
         let legalAbilities = legalActions.concat(legalReactions);
 
-        return legalAbilities.filter((ability: BaseAction) => {
+        return legalAbilities.filter((ability: BaseCardAbility) => {
             const ignoredRequirements = ['location', 'player', ...(properties.ignoredRequirements ?? [])];
             if(!properties.payCosts) {
                 ignoredRequirements.push('cost');
@@ -208,10 +209,10 @@ export class PlayCardAction extends CardGameAction {
         }
         context.game.promptWithHandlerMenu(context.player, {
             source: card,
-            choices: abilities.map((action: BaseAction & { title?: string }) => action.title).concat(properties.resetOnCancel ? 'Cancel' : []),
+            choices: abilities.map((action: BaseCardAbility) => action.title).concat(properties.resetOnCancel ? 'Cancel' : []),
             handlers: abilities
                 .map(
-                    (action: BaseAction) => () =>
+                    (action: BaseCardAbility) => () =>
                         events.push(
                             this.getPlayCardEvent(
                                 card,
