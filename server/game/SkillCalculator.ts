@@ -210,7 +210,7 @@ export class SkillCalculator {
             (effect: any) => effect.type === EffectNames.SetMilitarySkill || effect.type === EffectNames.SetDash
         );
         if(setEffects.length > 0) {
-            const latestSetEffect = setEffects.at(-1);
+            const latestSetEffect = setEffects[setEffects.length - 1];
             const setAmount = latestSetEffect.type === EffectNames.SetDash ? undefined : latestSetEffect.getValue(this.card);
             return [
                 StatModifier.fromEffect(
@@ -269,7 +269,7 @@ export class SkillCalculator {
 
         const setEffects = rawEffects.filter((effect: any) => effect.type === EffectNames.SetPoliticalSkill);
         if(setEffects.length > 0) {
-            const latestSetEffect = setEffects.at(-1);
+            const latestSetEffect = setEffects[setEffects.length - 1];
             const setAmount = latestSetEffect.getValue(this.card);
             return [
                 StatModifier.fromEffect(
@@ -378,7 +378,7 @@ export class SkillCalculator {
 
         const setEffects = gloryEffects.filter((effect: any) => effect.type === EffectNames.SetGlory);
         if(setEffects.length > 0) {
-            const latestSetEffect = setEffects.at(-1);
+            const latestSetEffect = setEffects[setEffects.length - 1];
             const setAmount = latestSetEffect.getValue(this.card);
             return [
                 StatModifier.fromEffect(
@@ -393,7 +393,7 @@ export class SkillCalculator {
         const baseEffects = gloryEffects.filter((effect: any) => effect.type === EffectNames.SetBaseGlory);
         const copyEffects = gloryEffects.filter((effect: any) => effect.type === EffectNames.CopyCharacter);
         if(baseEffects.length > 0) {
-            const latestBaseEffect = baseEffects.at(-1);
+            const latestBaseEffect = baseEffects[baseEffects.length - 1];
             const baseAmount = latestBaseEffect.getValue(this.card);
             gloryModifiers.push(
                 StatModifier.fromEffect(
@@ -404,7 +404,7 @@ export class SkillCalculator {
                 )
             );
         } else if(copyEffects.length > 0) {
-            const latestCopyEffect = copyEffects.at(-1);
+            const latestCopyEffect = copyEffects[copyEffects.length - 1];
             const copiedCard = latestCopyEffect.getValue(this.card);
             gloryModifiers.push(
                 StatModifier.fromEffect(
@@ -443,7 +443,7 @@ export class SkillCalculator {
             (effect: any) => effect.type === EffectNames.SetProvinceStrengthBonus
         );
         if(setEffects.length > 0) {
-            const latestSetEffect = setEffects.at(-1);
+            const latestSetEffect = setEffects[setEffects.length - 1];
             const setAmount = latestSetEffect.getValue(this.card);
             return [
                 StatModifier.fromEffect(
