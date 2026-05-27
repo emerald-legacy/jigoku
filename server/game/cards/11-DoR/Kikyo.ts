@@ -13,7 +13,6 @@ class Kikyo extends DrawCard {
             faction: 'crab'
         });
 
-        this.grantedAbilityLimits = {};
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
                 title: 'Make opponent discard a card at random',

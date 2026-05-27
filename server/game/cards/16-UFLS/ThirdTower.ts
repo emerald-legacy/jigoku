@@ -7,7 +7,6 @@ class ThirdTower extends DrawCard {
     static id = 'third-tower';
 
     setupCardAbilities() {
-        this.grantedAbilityLimits = {};
         this.reaction({
             title: 'Take an honor from your opponent',
             when: {

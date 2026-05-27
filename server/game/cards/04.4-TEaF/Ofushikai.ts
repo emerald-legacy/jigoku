@@ -11,7 +11,6 @@ class Ofushukai extends DrawCard {
             faction: 'phoenix'
         });
 
-        this.grantedAbilityLimits = {};
         this.whileAttached({
             match: (card: DrawCard) => card.hasTrait('champion'),
             effect: ability.effects.gainAbility(AbilityTypes.Action, {

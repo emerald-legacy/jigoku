@@ -12,7 +12,6 @@ class Shukujo extends DrawCard {
             faction: 'crane'
         });
 
-        this.grantedAbilityLimits = {};
         this.whileAttached({
             match: card => card.hasTrait('champion'),
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {

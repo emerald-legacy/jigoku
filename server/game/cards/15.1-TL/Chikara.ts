@@ -13,7 +13,6 @@ class Chikara extends DrawCard {
             faction: 'crab'
         });
 
-        this.grantedAbilityLimits = {};
         this.whileAttached({
             match: (card: any) => card.hasTrait('champion'),
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {

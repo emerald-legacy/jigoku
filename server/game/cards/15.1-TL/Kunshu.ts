@@ -11,7 +11,6 @@ class Kunshu extends DrawCard {
             unique: true
         });
 
-        this.grantedAbilityLimits = {};
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
                 title: 'Play a card',

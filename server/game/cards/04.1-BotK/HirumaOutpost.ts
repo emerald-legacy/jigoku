@@ -8,7 +8,6 @@ class HirumaOutpost extends DrawCard {
     static id = 'hiruma-outpost';
 
     setupCardAbilities() {
-        this.grantedAbilityLimits = {};
         this.persistentEffect({
             condition: (context: AbilityContext) => {
                 const province = context.player.getProvinceCardInProvince(context.source.location);
@@ -31,11 +30,6 @@ class HirumaOutpost extends DrawCard {
                 gameAction: AbilityDsl.actions.loseHonor()
             })
         });
-    }
-
-    leavesPlay() {
-        this.grantedAbilityLimits = {};
-        super.leavesPlay();
     }
 }
 

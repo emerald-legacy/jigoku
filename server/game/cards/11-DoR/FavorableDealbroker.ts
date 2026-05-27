@@ -6,7 +6,6 @@ class FavorableDealbroker extends DrawCard {
     static id = 'favorable-dealbroker';
 
     setupCardAbilities() {
-        this.chosenCard = null;
         this.reaction({
             title: 'Put a character into play',
             when: {
