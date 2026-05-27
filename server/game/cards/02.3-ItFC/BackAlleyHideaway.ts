@@ -47,7 +47,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
         if(context.game.currentPhase !== Phases.Dynasty) {
             return 'phase';
         }
-        if(context.source.location !== 'backalley hideaway') {
+        if(context.source.location !== this.backAlleyCard.uuid) {
             return 'location';
         }
         if(
@@ -80,7 +80,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
         let cardPlayedEvent = context.game.getEvent(EventNames.OnCardPlayed, {
             player: context.player,
             card: context.source,
-            originalLocation: 'backalley hideaway',
+            originalLocation: this.backAlleyCard.uuid,
             playType: PlayTypes.PlayFromProvince
         });
         let window = context.game.openEventWindow([putIntoPlayEvent, cardPlayedEvent]);
@@ -124,7 +124,7 @@ export default class BackAlleyHideaway extends DrawCard {
                 context.event.replaceHandler((event: any) => {
                     context.player.removeCardFromPile(event.card);
                     event.card.leavesPlay();
-                    event.card.moveTo('backalley hideaway');
+                    event.card.moveTo(context.source.uuid);
                     (context.source as any).attachments.push(event.card);
                     event.card.parent = context.source;
                     event.card.abilities.playActions.push(new BackAlleyPlayCharacterAction(context.source as BackAlleyHideaway, event.card));
