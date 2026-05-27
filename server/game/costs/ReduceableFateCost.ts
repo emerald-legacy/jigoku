@@ -52,10 +52,10 @@ export class ReduceableFateCost implements Cost {
         const cardPool = new Set<BaseCard>();
         let alternatePoolTotal = 0;
         for(const pool of alternatePools) {
-            if(pool.printedType === 'ring') {
-                ringPool.add(pool as Ring);
+            if(pool instanceof Ring) {
+                ringPool.add(pool);
             } else {
-                cardPool.add(pool as BaseCard);
+                cardPool.add(pool);
             }
             alternatePoolTotal += pool.getFate();
         }
