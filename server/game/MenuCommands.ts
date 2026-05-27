@@ -45,11 +45,11 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
             return;
         case 'addfate':
             game.addMessage('{0} adds a fate to {1}', player, card);
-            card.modifyFate(1);
+            (card as DrawCard).modifyFate(1);
             return;
         case 'remfate':
             game.addMessage('{0} removes a fate from {1}', player, card);
-            card.modifyFate(-1);
+            (card as DrawCard).modifyFate(-1);
             return;
         case 'move':
             if(game.currentConflict) {
@@ -70,7 +70,7 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
         case 'control':
             if(player.opponent) {
                 game.addMessage('{0} gives {1} control of {2}', player, player.opponent, card);
-                card.setDefaultController(player.opponent);
+                (card as DrawCard).setDefaultController(player.opponent);
             }
             return;
         case 'reveal':
