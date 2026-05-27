@@ -3,6 +3,8 @@ import type Player from '../player.js';
 import { Locations, CardTypes } from '../Constants.js';
 
 class SpiritOfTheRiver extends DrawCard {
+    facedownCard: DrawCard;
+
     constructor(facedownCard: DrawCard) {
         super(facedownCard.owner, {
             clan: 'neutral',
