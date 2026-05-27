@@ -4,9 +4,11 @@ import * as GameActions from './GameActions/GameActions.js';
 import { EffectNames, Phases, PlayTypes, EventNames } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './basecard.js';
+import type DrawCard from './drawcard.js';
 
 class DynastyCardAction extends BaseAction {
     title = 'Play this character';
+    declare card: DrawCard;
 
     constructor(card: BaseCard) {
         super(card, [Costs.chooseFate(PlayTypes.PlayFromProvince), Costs.payReduceableFateCost()]);
