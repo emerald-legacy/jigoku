@@ -1,6 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, EventNames, Locations, TargetModes } from '../../Constants.js';
+import type { StatusToken } from '../../StatusToken.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 class Untainted extends DrawCard {
@@ -18,8 +19,8 @@ class Untainted extends DrawCard {
                 activePromptTitle: 'Choose a status token',
                 mode: TargetModes.Token,
                 location: Locations.Any,
-                tokenCondition: (token: any, context: any) => {
-                    return !!token.card && (token.card === context.source.parent || token.card.isParticipating());
+                tokenCondition: (token: StatusToken, context: any) => {
+                    return !!token.card && (token.card === context.source.parent || (token.card instanceof DrawCard && token.card.isParticipating()));
                 }
             },
             gameAction: AbilityDsl.actions.multiple([

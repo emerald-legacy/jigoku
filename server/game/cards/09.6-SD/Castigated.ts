@@ -1,4 +1,6 @@
 import DrawCard from '../../drawcard.js';
+import type BaseCard from '../../basecard.js';
+import type Ring from '../../ring.js';
 import { CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -16,8 +18,8 @@ class Castigated extends DrawCard {
         });
     }
 
-    canPlayOn(card: any) {
-        return card.isParticipating() && super.canPlayOn(card);
+    canPlayOn(card: BaseCard | Ring) {
+        return card instanceof DrawCard && card.isParticipating() && super.canPlayOn(card);
     }
 
     canPlay(context: any, playType: any) {

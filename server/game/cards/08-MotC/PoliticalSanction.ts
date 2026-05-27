@@ -1,5 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
+import type BaseCard from '../../basecard.js';
 import DrawCard from '../../drawcard.js';
+import type Ring from '../../ring.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class PoliticalSanction extends DrawCard {
@@ -25,8 +27,8 @@ class PoliticalSanction extends DrawCard {
         return false;
     }
 
-    canPlayOn(card: any) {
-        return card.isParticipating() && super.canPlayOn(card);
+    canPlayOn(card: BaseCard | Ring) {
+        return card instanceof DrawCard && card.isParticipating() && super.canPlayOn(card);
     }
 }
 
