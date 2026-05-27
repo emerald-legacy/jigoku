@@ -215,7 +215,7 @@ export interface PersistentEffectProps<Source = any> {
     condition?: (context: AbilityContext<Source>) => boolean;
     match?: (card: any, context?: AbilityContext<Source>) => boolean;
     targetController?: Players;
-    targetLocation?: Locations;
+    targetLocation?: Locations | (string & {});
     effect: ((...args: any[]) => any) | ((...args: any[]) => any)[];
     createCopies?: boolean;
 }
