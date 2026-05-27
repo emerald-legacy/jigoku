@@ -6,6 +6,7 @@ describe('CardAction', function () {
         this.gameSpy.currentPhase = 'dynasty';
 
         this.cardSpy = jasmine.createSpyObj('card', ['getType', 'isBlank', 'canTriggerAbilities']);
+        this.cardSpy.game = this.gameSpy;
         this.cardSpy.canTriggerAbilities.and.returnValue(true);
         this.cardSpy.handler = function() {};
         this.cardSpy.abilities = { actions: [] };
@@ -41,7 +42,7 @@ describe('CardAction', function () {
                         title: 'Do the thing',
                         handler: jasmine.createSpy('handler')
                     };
-                    this.action = new CardAction(this.gameSpy, this.cardSpy, this.properties);
+                    this.action = new CardAction(this.cardSpy, this.properties);
                 });
 
                 it('should use the handler directly', function() {
@@ -54,7 +55,7 @@ describe('CardAction', function () {
         describe('location', function() {
             it('should use the location sent via properties', function() {
                 this.properties.location = ['foo'];
-                this.action = new CardAction(this.gameSpy, this.cardSpy, this.properties);
+                this.action = new CardAction(this.cardSpy, this.properties);
                 expect(this.action.location).toContain('foo');
             });
         });
@@ -64,7 +65,7 @@ describe('CardAction', function () {
                 beforeEach(function() {
                     this.cardSpy.getType.and.returnValue('event');
                     this.properties.cost = ['foo'];
-                    this.action = new CardAction(this.gameSpy, this.cardSpy, this.properties);
+                    this.action = new CardAction(this.cardSpy, this.properties);
                 });
 
                 it('should add the reduced fate cost', function() {
@@ -75,7 +76,7 @@ describe('CardAction', function () {
 
         describe('when there is no limit', function() {
             beforeEach(function() {
-                this.action = new CardAction(this.gameSpy, this.cardSpy, this.properties);
+                this.action = new CardAction(this.cardSpy, this.properties);
             });
 
             it('should not register an event', function() {
@@ -86,7 +87,7 @@ describe('CardAction', function () {
         describe('when there is a limit', function() {
             beforeEach(function() {
                 this.properties.limit = this.limitSpy;
-                this.action = new CardAction(this.gameSpy, this.cardSpy, this.properties);
+                this.action = new CardAction(this.cardSpy, this.properties);
             });
 
             it('should register events for the limit', function() {
@@ -110,7 +111,7 @@ describe('CardAction', function () {
 
         describe('when the action has no limit', function() {
             beforeEach(function() {
-                this.action = new CardAction(this.gameSpy, this.cardSpy, this.properties);
+                this.action = new CardAction(this.cardSpy, this.properties);
                 this.action.executeHandler(this.context);
             });
 
@@ -122,7 +123,7 @@ describe('CardAction', function () {
         describe('when the action has limited uses', function() {
             beforeEach(function() {
                 this.properties.limit = this.limitSpy;
-                this.action = new CardAction(this.gameSpy, this.cardSpy, this.properties);
+                this.action = new CardAction(this.cardSpy, this.properties);
             });
 
             describe('and the handler returns false', function() {

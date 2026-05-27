@@ -4,6 +4,7 @@ describe('TriggeredAbility', function () {
     beforeEach(function () {
         this.gameSpy = jasmine.createSpyObj('game', ['on', 'removeListener', 'registerAbility', 'getPlayers']);
         this.cardSpy = jasmine.createSpyObj('card', ['getType', 'isBlank', 'canTriggerAbilities', 'anyEffect']);
+        this.cardSpy.game = this.gameSpy;
         //this.cardSpy.location = 'play area';
         //this.cardSpy.canTriggerAbilities.and.returnValue(true);
         //this.cardSpy.abilities = { reactions: [] };
@@ -22,7 +23,7 @@ describe('TriggeredAbility', function () {
 
         this.properties.when.onSomething.and.returnValue(true);
 
-        this.reaction = new TriggeredAbility(this.gameSpy, this.cardSpy, 'reaction', this.properties);
+        this.reaction = new TriggeredAbility(this.cardSpy, 'reaction', this.properties);
         this.cardSpy.reactions = [this.reaction];
     });
 
@@ -77,7 +78,7 @@ describe('TriggeredAbility', function () {
                 },
                 handler: () => true
             };
-            this.reaction = new TriggeredAbility(this.gameSpy, this.cardSpy, 'reaction', this.properties);
+            this.reaction = new TriggeredAbility(this.cardSpy, 'reaction', this.properties);
             this.reaction.registerEvents();
         });
 
@@ -102,7 +103,7 @@ describe('TriggeredAbility', function () {
                 },
                 handler: () => true
             };
-            this.reaction = new TriggeredAbility(this.gameSpy, this.cardSpy, 'reaction', this.properties);
+            this.reaction = new TriggeredAbility(this.cardSpy, 'reaction', this.properties);
 
         });
 

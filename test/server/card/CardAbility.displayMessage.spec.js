@@ -14,6 +14,7 @@ describe('CardAbility displayMessage', function () {
             honorGained: () => 0
         };
         this.cardSpy = jasmine.createSpyObj('card', ['getType', 'getShortSummary', 'isFacedown']);
+        this.cardSpy.game = this.gameSpy;
         this.cardSpy.type = 'event';
         this.cardSpy.getShortSummary.and.returnValue(this.cardSpy);
         this.cardSpy.isFacedown.and.returnValue(false);
@@ -21,7 +22,7 @@ describe('CardAbility displayMessage', function () {
 
     describe('Assassinaton', function () {
         beforeEach(function () {
-            this.ability = new CardAbility(this.gameSpy, this.cardSpy, {
+            this.ability = new CardAbility(this.cardSpy, {
                 cost: AbilityDsl.costs.payHonor(3),
                 target: {
                     cardType: 'character',
@@ -95,7 +96,7 @@ describe('CardAbility displayMessage', function () {
                 getShortSummary: () => this.eventToCancel,
                 isFacedown: () => false
             };
-            this.ability = new CardAbility(this.gameSpy, this.cardSpy, {
+            this.ability = new CardAbility(this.cardSpy, {
                 cost: AbilityDsl.costs.dishonor({ cardCondition: (card) => card.hasTrait('courtier') }),
                 effect: 'cancel {1}',
                 effectArgs: (context) => context.event.card,
@@ -185,7 +186,7 @@ describe('CardAbility displayMessage', function () {
             this.opponent.opponent = this.player;
             this.player.opponent = this.opponent;
             this.cardSpy.type = 'stronghold';
-            this.ability = new CardAbility(this.gameSpy, this.cardSpy, {
+            this.ability = new CardAbility(this.cardSpy, {
                 cost: AbilityDsl.costs.bowSelf(),
                 gameAction: AbilityDsl.actions.takeHonor()
             });
