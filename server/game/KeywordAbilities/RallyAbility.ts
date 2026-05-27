@@ -1,13 +1,12 @@
 import { AbilityTypes, Locations } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../drawcard.js';
-import type Game from '../game.js';
 import TriggeredAbility from '../triggeredability.js';
 
 import type { Event } from '../Events/Event.js';
 export class RallyAbility extends TriggeredAbility {
-    constructor(game: Game, card: DrawCard) {
-        super(game, card, AbilityTypes.KeywordReaction, {
+    constructor(card: DrawCard) {
+        super(card, AbilityTypes.KeywordReaction, {
             when: {
                 onCardRevealed: (event: Event, context: TriggeredAbilityContext) =>
                     event.card === context.source &&

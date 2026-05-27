@@ -34,7 +34,7 @@ class CaptivatingStory extends DrawCard {
                             AbilityDsl.actions.resolveAbility({
                                 target: context.source,
                                 subResolution: true,
-                                ability: new CardAbility(this.game, context.source, {
+                                ability: new CardAbility(context.source, {
                                     title: 'Honor this character',
                                     gameAction: AbilityDsl.actions.honor({ target: context.target })
                                 })

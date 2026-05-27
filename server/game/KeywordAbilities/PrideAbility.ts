@@ -2,13 +2,12 @@ import * as AbilityLimit from '../AbilityLimit.js';
 import { AbilityTypes } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../drawcard.js';
-import type Game from '../game.js';
 import TriggeredAbility from '../triggeredability.js';
 
 import type { Event } from '../Events/Event.js';
 export default class PrideAbility extends TriggeredAbility {
-    constructor(game: Game, card: DrawCard) {
-        super(game, card, AbilityTypes.KeywordReaction, {
+    constructor(card: DrawCard) {
+        super(card, AbilityTypes.KeywordReaction, {
             when: {
                 afterConflict: (event: Event, context: TriggeredAbilityContext) => context.source.isParticipating() && context.source.hasPride() &&
                                                    ((event.conflict.winner === context.player && context.source.allowGameAction('honor', context)) ||

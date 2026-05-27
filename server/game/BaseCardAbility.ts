@@ -3,6 +3,7 @@ import BaseAbility from './baseability.js';
 import { Stages } from './Constants.js';
 import type Player from './player.js';
 import type BaseCard from './basecard.js';
+import type Game from './game.js';
 
 /**
  * An ability whose source is a card (play actions, card actions, reactions),
@@ -13,6 +14,10 @@ import type BaseCard from './basecard.js';
 abstract class BaseCardAbility extends BaseAbility {
     card!: BaseCard;
     title?: string;
+
+    get game(): Game {
+        return this.card.game;
+    }
 
     createContext(player: Player = this.card.controller): AbilityContext {
         return new AbilityContext({

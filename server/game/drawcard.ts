@@ -81,13 +81,13 @@ class DrawCard extends BaseCard {
         this.allowDuplicatesOfAttachment = !!cardData.attachment_allow_duplicates;
 
         if(cardData.type === CardTypes.Character) {
-            this.abilities.reactions.push(new CourtesyAbility(this.game, this));
-            this.abilities.reactions.push(new PrideAbility(this.game, this));
-            this.abilities.reactions.push(new SincerityAbility(this.game, this));
+            this.abilities.reactions.push(new CourtesyAbility(this));
+            this.abilities.reactions.push(new PrideAbility(this));
+            this.abilities.reactions.push(new SincerityAbility(this));
         }
         if(cardData.type === CardTypes.Attachment) {
-            this.abilities.reactions.push(new CourtesyAbility(this.game, this));
-            this.abilities.reactions.push(new SincerityAbility(this.game, this));
+            this.abilities.reactions.push(new CourtesyAbility(this));
+            this.abilities.reactions.push(new SincerityAbility(this));
         }
         if(cardData.type === CardTypes.Event && this.hasEphemeral()) {
             this.eventRegistrarForEphemeral = new EventRegistrar(this.game, this);
@@ -102,8 +102,8 @@ class DrawCard extends BaseCard {
             this.eventRegistrarForEphemeral.register([{ [EventNames.OnCardLeavesPlay]: 'handleEphemeral' }]);
         }
         if(this.isDynasty) {
-            this.abilities.reactions.push(new RallyAbility(this.game, this));
-            this.abilities.reactions.push(new ThrivingAbility(this.game, this));
+            this.abilities.reactions.push(new RallyAbility(this));
+            this.abilities.reactions.push(new ThrivingAbility(this));
         }
 
         this.applyAttachmentBonus();

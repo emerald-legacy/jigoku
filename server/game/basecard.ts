@@ -269,7 +269,7 @@ class BaseCard extends EffectSource {
     }
 
     createAction(properties: ActionProps): CardAction {
-        return new CardAction(this.game, this, properties);
+        return new CardAction(this, properties);
     }
 
     triggeredAbility(abilityType: AbilityTypes, properties: TriggeredAbilityProps): void {
@@ -277,7 +277,7 @@ class BaseCard extends EffectSource {
     }
 
     createTriggeredAbility(abilityType: AbilityTypes, properties: TriggeredAbilityProps): TriggeredAbility {
-        return new TriggeredAbility(this.game, this, abilityType, properties as unknown as ConstructorParameters<typeof TriggeredAbility>[3]);
+        return new TriggeredAbility(this, abilityType, properties as unknown as ConstructorParameters<typeof TriggeredAbility>[2]);
     }
 
     reaction(properties: TriggeredAbilityProps): void {

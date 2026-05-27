@@ -1,7 +1,6 @@
 import CardAbility from './CardAbility.js';
 import { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import { Stages, CardTypes, EffectNames, AbilityTypes } from './Constants.js';
-import type Game from './game.js';
 import type BaseCard from './basecard.js';
 import type Player from './player.js';
 import type { Event } from './Events/Event.js';
@@ -58,8 +57,8 @@ class TriggeredAbility extends CardAbility {
     collectiveTrigger: boolean;
     events: RegisteredEvent[] | null = null;
 
-    constructor(game: Game, card: BaseCard, abilityType: AbilityTypes, properties: TriggeredAbilityProperties) {
-        super(game, card, properties);
+    constructor(card: BaseCard, abilityType: AbilityTypes, properties: TriggeredAbilityProperties) {
+        super(card, properties);
         this.when = properties.when;
         this.aggregateWhen = properties.aggregateWhen;
         this.anyPlayer = !!properties.anyPlayer;

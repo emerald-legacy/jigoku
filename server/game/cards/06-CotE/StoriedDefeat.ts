@@ -44,7 +44,7 @@ export default class StoriedDefeat extends DrawCard {
                             AbilityDsl.actions.resolveAbility({
                                 target: context.source,
                                 subResolution: true,
-                                ability: new CardAbility(this.game, context.source, {
+                                ability: new CardAbility(context.source, {
                                     title: 'Dishonor this character',
                                     gameAction: AbilityDsl.actions.dishonor({ target: context.target })
                                 })

@@ -4,7 +4,6 @@ import { AbilityTypes, CardTypes, EffectNames, Phases } from './Constants.js';
 import { parseGameMode } from './GameMode.js';
 import type { ActionProps } from './Interfaces.js';
 import type BaseCard from './basecard.js';
-import type Game from './game.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 
 /**
@@ -46,8 +45,8 @@ export class CardAction extends CardAbility {
 
     condition?: (context?: AbilityContext) => boolean;
 
-    constructor(game: Game, card: BaseCard, properties: ActionProps) {
-        super(game, card, properties);
+    constructor(card: BaseCard, properties: ActionProps) {
+        super(card, properties);
 
         this.phase = properties.phase ?? 'any';
         this.evenDuringDynasty = properties.evenDuringDynasty ?? false;

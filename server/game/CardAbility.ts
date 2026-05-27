@@ -3,7 +3,6 @@ import ThenAbility from './ThenAbility.js';
 import * as Costs from './Costs.js';
 import { Locations, CardTypes, EffectNames } from './Constants.js';
 import { initiateDuel } from './DuelHelper.js';
-import type Game from './game.js';
 import type BaseCard from './basecard.js';
 import type DrawCard from './drawcard.js';
 import type { AbilityContext } from './AbilityContext.js';
@@ -49,15 +48,15 @@ class CardAbility extends ThenAbility {
     maxIdentifier: string;
     origin?: BaseCard;
 
-    constructor(game: Game, card: BaseCard, properties: CardAbilityProperties) {
+    constructor(card: BaseCard, properties: CardAbilityProperties) {
         if(properties.initiateDuel) {
-            initiateDuel(game, card, properties);
+            initiateDuel(card.game, card, properties);
         }
-        super(game, card, properties);
+        super(card, properties);
 
         this.title = properties.title;
         this.limit = properties.limit || AbilityLimit.perRound(1);
-        this.limit.registerEvents(game);
+        this.limit.registerEvents(card.game);
         this.limit.ability = this;
         this.abilityCost = this.cost;
         this.location = this.buildLocation(card, properties.location);
