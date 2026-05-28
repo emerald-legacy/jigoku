@@ -17,7 +17,7 @@ jobs:
       HTTPS: false
       LOBBY_PORT: 4000
       LOBBY_WS_URL: ws://127.0.0.1:6000
-      SECRET: test-secret
+      SECRET: testsecret
 
     steps:
       - uses: actions/checkout@v6
