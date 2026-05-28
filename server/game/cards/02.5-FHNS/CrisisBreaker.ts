@@ -1,10 +1,11 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { Players, CardTypes } from '../../Constants.js';
 
 class CrisisBreaker extends DrawCard {
     static id = 'crisis-breaker';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Ready and bring into play',
             condition: context => {

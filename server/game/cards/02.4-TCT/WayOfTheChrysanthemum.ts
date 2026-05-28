@@ -1,3 +1,4 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -5,7 +6,7 @@ import { EventNames } from '../../Constants.js';
 class WayOfTheChrysanthemum extends DrawCard {
     static id = 'way-of-the-chrysanthemum';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Gain extra honor after bid',
             max: ability.limit.perRound(1),

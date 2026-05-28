@@ -1,10 +1,11 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { Durations, TargetModes, Phases } from '../../Constants.js';
 
 class SecludedShrine extends DrawCard {
     static id = 'secluded-shrine';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Count a ring as claimed',
             when: {

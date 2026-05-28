@@ -17,12 +17,12 @@ export interface AbilityContextProperties {
     source?: BaseCard | Ring | EffectSource;
     player?: Player;
     ability?: BaseAbility;
-    costs?: any;
-    targets?: any;
-    rings?: any;
-    selects?: any;
-    tokens?: any;
-    elements?: any;
+    costs?: Record<string, unknown>;
+    targets?: Record<string, BaseCard | BaseCard[]>;
+    rings?: Record<string, Ring | Ring[]>;
+    selects?: Record<string, SelectChoice>;
+    tokens?: Record<string, StatusToken | StatusToken[]>;
+    elements?: Record<string, string>;
     events?: Event[];
     stage?: Stages;
     targetAbility?: CardAbility | null;

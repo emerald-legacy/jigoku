@@ -1,10 +1,12 @@
+import type AbilityDsl from '../../abilitydsl.js';
+import type CardAbility from '../../CardAbility.js';
 import DrawCard from '../../drawcard.js';
 import { CardTypes, Players, TargetModes } from '../../Constants.js';
 
 class HandToHand extends DrawCard {
     static id = 'hand-to-hand';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Discard an attachment',
             condition: () => this.game.isDuringConflict('military'),
@@ -26,7 +28,7 @@ class HandToHand extends DrawCard {
                         activePromptTitle: 'Resolve Hand to Hand\'s ability again?',
                         choices: {
                             'Yes': ability.actions.resolveAbility({
-                                ability: ctx.ability,
+                                ability: ctx.ability as CardAbility,
                                 player: ctx.player.opponent ?? ctx.player,
                                 subResolution: true,
                                 choosingPlayerOverride: ctx.choosingPlayerOverride ?? undefined

@@ -1,9 +1,10 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 
 class Smoke extends DrawCard {
     static id = 'smoke';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Give non-unique characters -2/+0',
             condition: context => this.game.isDuringConflict() && context.source.parent && context.source.parent.isParticipating(),

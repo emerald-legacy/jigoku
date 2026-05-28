@@ -1,10 +1,11 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { Locations } from '../../Constants.js';
 
 class KarmicBalance extends DrawCard {
     static id = 'karmic-balance';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Shuffle and draw 4 new conflict cards',
             gameAction: [

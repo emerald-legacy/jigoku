@@ -1,10 +1,11 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { CardTypes } from '../../Constants.js';
 
 class FormalInvitation extends DrawCard {
     static id = 'formal-invitation';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Move attached character into the conflict',
             condition: () => this.game.isDuringConflict('political'),

@@ -1,9 +1,10 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 
 class Misinformation extends DrawCard {
     static id = 'misinformation';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Give opponent\'s participating cards -1/-1',
             condition: context => this.game.isDuringConflict() &&

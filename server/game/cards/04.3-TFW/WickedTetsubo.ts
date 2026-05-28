@@ -1,10 +1,11 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { TargetModes, CardTypes } from '../../Constants.js';
 
 class WickedTetsubo extends DrawCard {
     static id = 'wicked-tetsubo';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.attachmentConditions({
             trait: 'berserker'
         });

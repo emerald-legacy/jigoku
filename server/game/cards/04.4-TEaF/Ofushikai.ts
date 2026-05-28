@@ -1,10 +1,11 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { Durations, CardTypes, AbilityTypes } from '../../Constants.js';
 
 class Ofushukai extends DrawCard {
     static id = 'ofushikai';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.attachmentConditions({
             myControl: true,
             unique: true,

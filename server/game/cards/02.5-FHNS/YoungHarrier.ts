@@ -1,10 +1,11 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { Durations } from '../../Constants.js';
 
 class YoungHarrier extends DrawCard {
     static id = 'young-harrier';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Prevent other characters from being dishonored',
             cost: ability.costs.dishonorSelf(),

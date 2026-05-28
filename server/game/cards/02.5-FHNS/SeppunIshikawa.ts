@@ -1,10 +1,11 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { Locations, CardTypes } from '../../Constants.js';
 
 class SeppunIshikawa extends DrawCard {
     static id = 'seppun-ishikawa';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
             effect: ability.effects.modifyBothSkills((card: DrawCard) => this.getImperialCardsInPlay(card))
         });

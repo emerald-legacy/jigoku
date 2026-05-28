@@ -1,10 +1,11 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { CardTypes } from '../../Constants.js';
 
 class VoidFist extends DrawCard {
     static id = 'void-fist';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Bow and send a character home',
             condition: context =>

@@ -1,10 +1,11 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { Players } from '../../Constants.js';
 
 class InquisitiveIshika extends DrawCard {
     static id = 'inquisitive-ishika';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
             condition: () => this.game.isDuringConflict(),
             targetController: Players.Any,

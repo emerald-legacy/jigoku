@@ -1,10 +1,11 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import {CardTypes, Durations, Phases} from '../../Constants.js';
 
 class ThoseWhoServe extends DrawCard {
     static id = 'those-who-serve';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Reduce the cost of your characters by 1 this phase',
             phase: Phases.Dynasty,

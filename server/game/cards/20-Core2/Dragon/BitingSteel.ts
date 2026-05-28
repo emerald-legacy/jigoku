@@ -64,7 +64,7 @@ export default class BitingSteel extends DrawCard {
     public canAttach(card: BaseCard) {
         return (
             card.getType() === CardTypes.Character &&
-            card.attachments.some((card) => card.hasTrait('weapon')) &&
+            (card as DrawCard).attachments.some((c: DrawCard) => c.hasTrait('weapon')) &&
             super.canAttach(card)
         );
     }

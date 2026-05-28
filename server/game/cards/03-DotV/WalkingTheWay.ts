@@ -1,3 +1,4 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../basecard.js';
 import type Player from '../../player.js';
@@ -7,7 +8,7 @@ import DrawCard from '../../drawcard.js';
 class WalkingTheWay extends DrawCard {
     static id = 'walking-the-way';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
             location: Locations.Any,
             targetController: Players.Any,

@@ -1,9 +1,10 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 
 class SakeHouseConfidant extends DrawCard {
     static id = 'sake-house-confidant';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Give Shinobi +2 political',
             condition: context => context.source.isParticipating(),

@@ -1,3 +1,4 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { AbilityTypes, CardTypes, DuelTypes, Players } from '../../Constants.js';
 import DrawCard from '../../drawcard.js';
@@ -7,7 +8,7 @@ import * as GameActions from '../../GameActions/GameActions.js';
 class DuelistTraining extends DrawCard {
     static id = 'duelist-training';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.whileAttached({
             effect: ability.effects.gainAbility(AbilityTypes.Action, {
                 title: 'Initiate a duel to bow',

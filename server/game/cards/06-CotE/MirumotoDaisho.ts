@@ -1,10 +1,11 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { Players } from '../../Constants.js';
 
 class MirumotoDaisho extends DrawCard {
     static id = 'mirumoto-daisho';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.whileAttached({
             effect: ability.effects.cannotHaveOtherRestrictedAttachments(this)
         });

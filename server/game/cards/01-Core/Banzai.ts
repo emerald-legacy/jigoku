@@ -6,7 +6,7 @@ import AbilityDsl from '../../abilitydsl.js';
 class Banzai extends DrawCard {
     static id = 'banzai';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Increase a character\'s military skill',
 

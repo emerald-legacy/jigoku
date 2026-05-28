@@ -1,10 +1,11 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { Players, CardTypes, DuelTypes } from '../../Constants.js';
 
 class GameOfSadane extends DrawCard {
     static id = 'game-of-sadane';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Initiate a political duel',
             targets: {

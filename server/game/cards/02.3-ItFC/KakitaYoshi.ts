@@ -1,10 +1,11 @@
+import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../drawcard.js';
 import { CardTypes } from '../../Constants.js';
 
 class KakitaYoshi extends DrawCard {
     static id = 'kakita-yoshi';
 
-    setupCardAbilities(ability: any) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Draw 3 cards',
             condition: context => context.source.isParticipating(),
