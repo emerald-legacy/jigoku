@@ -1,15 +1,12 @@
-/* eslint camelcase: 0, no-invalid-this: 0 */
-
 import util from 'util';
 
-import BaseCard from '../../build/server/game/basecard.js';
-import Game from '../../build/server/game/game.js';
-import Player from '../../build/server/game/player.js';
+import BaseCard from '../../server/game/basecard.js';
+import Game from '../../server/game/game.js';
+import Player from '../../server/game/player.js';
 
-// Add custom toString methods for better Jasmine output
-function formatObject(keys) {
-    return function () {
-        const formattedProperties = [];
+function formatObject(keys: string[]): (this: Record<string, unknown>) => string {
+    return function() {
+        const formattedProperties: string[] = [];
         for(const key of keys) {
             const value = this[key];
             formattedProperties.push(`key:${util.inspect(value)}`);
@@ -21,6 +18,6 @@ function formatObject(keys) {
 BaseCard.prototype.toString = formatObject(['name', 'location']);
 Player.prototype.toString = formatObject(['name']);
 
-Game.prototype.toString = function () {
+Game.prototype.toString = function(): string {
     return 'Game';
 };

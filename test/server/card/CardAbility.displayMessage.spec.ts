@@ -1,9 +1,22 @@
-import CardAbility from '../../../build/server/game/CardAbility.js';
-import { GameChat } from '../../../build/server/game/GameChat.js';
-import AbilityDsl from '../../../build/server/game/abilitydsl.js';
+import CardAbility from '../../../server/game/CardAbility.js';
+import { GameChat } from '../../../server/game/GameChat.js';
+import AbilityDsl from '../../../server/game/abilitydsl.js';
+
+interface DisplayMessageTestContext {
+    gameSpy: any;
+    player: any;
+    opponent?: any;
+    cardSpy: any;
+    courtier: any;
+    eventToCancel: any;
+    target: any;
+    ability: CardAbility;
+    actionSpy: jasmine.Spy;
+    args: any[];
+}
 
 describe('CardAbility displayMessage', function () {
-    beforeEach(function () {
+    beforeEach(function (this: DisplayMessageTestContext) {
         this.gameSpy = jasmine.createSpyObj('game', ['addMessage', 'on']);
         this.gameSpy.gameChat = new GameChat();
         this.player = {
@@ -21,16 +34,19 @@ describe('CardAbility displayMessage', function () {
     });
 
     describe('Assassinaton', function () {
-        beforeEach(function () {
+        beforeEach(function (this: DisplayMessageTestContext) {
             this.ability = new CardAbility(this.cardSpy, {
                 cost: AbilityDsl.costs.payHonor(3),
                 target: {
                     cardType: 'character',
-                    cardCondition: (card) => card.getCost() <= 2,
+                    cardCondition: (card: any) => card.getCost() <= 2,
                     gameAction: AbilityDsl.actions.discardFromPlay()
                 }
-            });
-            this.actionSpy = spyOn(this.ability.targets[0].properties.gameAction[0], 'canAffect');
+            } as any);
+            this.actionSpy = spyOn(
+                (this.ability.targets[0] as any).properties.gameAction[0],
+                'canAffect'
+            );
             this.actionSpy.and.returnValue('true');
             this.target = { name: 'target', getShortSummary: () => this.target };
             this.ability.displayMessage({
@@ -45,31 +61,31 @@ describe('CardAbility displayMessage', function () {
                 },
                 target: this.target,
                 gameActionsResolutionChain: []
-            });
+            } as any);
             this.args = this.gameSpy.addMessage.calls.allArgs()[0];
         });
 
-        it('should send an 8 part message', function () {
+        it('should send an 8 part message', function (this: DisplayMessageTestContext) {
             expect(this.args[0]).toBe('{0}{1}{2}{3}{4}{5}{6}{7}{8}');
         });
 
-        it('should have the player object as the first arg', function () {
+        it('should have the player object as the first arg', function (this: DisplayMessageTestContext) {
             expect(this.args[1]).toBe(this.player);
         });
 
-        it('should have \'plays\' as the second arg', function () {
+        it('should have \'plays\' as the second arg', function (this: DisplayMessageTestContext) {
             expect(this.args[2]).toBe(' plays ');
         });
 
-        it('should have the source as the third arg', function () {
+        it('should have the source as the third arg', function (this: DisplayMessageTestContext) {
             expect(this.args[3]).toBe(this.cardSpy);
         });
 
-        it('should have a comma as the sixth arg', function () {
+        it('should have a comma as the sixth arg', function (this: DisplayMessageTestContext) {
             expect(this.args[6]).toBe(', ');
         });
 
-        it('should have a cost term as the seventh arg', function () {
+        it('should have a cost term as the seventh arg', function (this: DisplayMessageTestContext) {
             expect(this.args[7][0].message[0]).toBe('losing');
             expect(this.args[7][0].message[1]).toBe(' ');
             expect(this.args[7][0].message[2]).toBe(3);
@@ -77,11 +93,11 @@ describe('CardAbility displayMessage', function () {
             expect(this.args[7][0].message[4]).toBe('honor');
         });
 
-        it('should have \'to\' as the eighth arg', function () {
+        it('should have \'to\' as the eighth arg', function (this: DisplayMessageTestContext) {
             expect(this.args[8]).toBe(' to ');
         });
 
-        it('should have an effect term as the ninth arg', function () {
+        it('should have an effect term as the ninth arg', function (this: DisplayMessageTestContext) {
             expect(this.args[9].message[0]).toBe('discard');
             expect(this.args[9].message[1]).toBe(' ');
             expect(this.args[9].message[2]).toBe(this.target);
@@ -89,7 +105,7 @@ describe('CardAbility displayMessage', function () {
     });
 
     describe('Forged Edict', function () {
-        beforeEach(function () {
+        beforeEach(function (this: DisplayMessageTestContext) {
             this.courtier = { name: 'courtier', getShortSummary: () => this.courtier, isFacedown: () => false };
             this.eventToCancel = {
                 name: 'eventToCancel',
@@ -97,11 +113,11 @@ describe('CardAbility displayMessage', function () {
                 isFacedown: () => false
             };
             this.ability = new CardAbility(this.cardSpy, {
-                cost: AbilityDsl.costs.dishonor({ cardCondition: (card) => card.hasTrait('courtier') }),
+                cost: AbilityDsl.costs.dishonor({ cardCondition: (card: any) => card.hasTrait('courtier') }),
                 effect: 'cancel {1}',
-                effectArgs: (context) => context.event.card,
-                handler: (context) => context.cancel()
-            });
+                effectArgs: (context: any) => context.event.card,
+                handler: (context: any) => context.cancel()
+            } as any);
             this.ability.displayMessage({
                 game: this.gameSpy,
                 player: this.player,
@@ -113,41 +129,41 @@ describe('CardAbility displayMessage', function () {
                     card: this.eventToCancel
                 },
                 gameActionsResolutionChain: []
-            });
+            } as any);
             this.args = this.gameSpy.addMessage.calls.allArgs()[0];
         });
 
-        it('should send an 8 part message', function () {
+        it('should send an 8 part message', function (this: DisplayMessageTestContext) {
             expect(this.args[0]).toBe('{0}{1}{2}{3}{4}{5}{6}{7}{8}');
         });
 
-        it('should have the player object as the first arg', function () {
+        it('should have the player object as the first arg', function (this: DisplayMessageTestContext) {
             expect(this.args[1]).toBe(this.player);
         });
 
-        it('should have \'plays\' as the second arg', function () {
+        it('should have \'plays\' as the second arg', function (this: DisplayMessageTestContext) {
             expect(this.args[2]).toBe(' plays ');
         });
 
-        it('should have the source as the third arg', function () {
+        it('should have the source as the third arg', function (this: DisplayMessageTestContext) {
             expect(this.args[3]).toBe(this.cardSpy);
         });
 
-        it('should have a comma as the sixth arg', function () {
+        it('should have a comma as the sixth arg', function (this: DisplayMessageTestContext) {
             expect(this.args[6]).toBe(', ');
         });
 
-        it('should have a cost term as the seventh arg', function () {
+        it('should have a cost term as the seventh arg', function (this: DisplayMessageTestContext) {
             expect(this.args[7][0].message[0]).toBe('dishonoring');
             expect(this.args[7][0].message[1]).toBe(' ');
             expect(this.args[7][0].message[2]).toBe(this.courtier);
         });
 
-        it('should have \'to\' as the eighth arg', function () {
+        it('should have \'to\' as the eighth arg', function (this: DisplayMessageTestContext) {
             expect(this.args[8]).toBe(' to ');
         });
 
-        it('should have an effect term as the ninth arg', function () {
+        it('should have an effect term as the ninth arg', function (this: DisplayMessageTestContext) {
             expect(this.args[9].message[0]).toBe('cancel');
             expect(this.args[9].message[1]).toBe(' ');
             expect(this.args[9].message[2]).toBe(this.eventToCancel);
@@ -155,41 +171,39 @@ describe('CardAbility displayMessage', function () {
     });
 
     describe('City of the Open Hand', function () {
-        beforeEach(function () {
-            class Player {
-                constructor(name) {
+        beforeEach(function (this: DisplayMessageTestContext) {
+            class PlayerStub {
+                name: string;
+                type: string;
+                opponent?: PlayerStub;
+                constructor(name: string) {
                     this.name = name;
                     this.type = 'player';
                 }
-
-                checkRestrictions() {
+                checkRestrictions(): boolean {
                     return true;
                 }
-
-                getShortSummary() {
+                getShortSummary(): this {
                     return this;
                 }
-
-                isFacedown() {
+                isFacedown(): boolean {
                     return false;
                 }
-
-                getEffects() {
+                getEffects(): unknown[] {
                     return [];
                 }
-
-                honorGained() {
+                honorGained(): number {
                     return 0;
                 }
             }
-            this.opponent = new Player('Player 2');
+            this.opponent = new PlayerStub('Player 2');
             this.opponent.opponent = this.player;
             this.player.opponent = this.opponent;
             this.cardSpy.type = 'stronghold';
             this.ability = new CardAbility(this.cardSpy, {
                 cost: AbilityDsl.costs.bowSelf(),
                 gameAction: AbilityDsl.actions.takeHonor()
-            });
+            } as any);
             this.ability.displayMessage({
                 game: this.gameSpy,
                 player: this.player,
@@ -198,41 +212,41 @@ describe('CardAbility displayMessage', function () {
                     bow: this.cardSpy
                 },
                 gameActionsResolutionChain: []
-            });
+            } as any);
             this.args = this.gameSpy.addMessage.calls.allArgs()[0];
         });
 
-        it('should send an 8 part message', function () {
+        it('should send an 8 part message', function (this: DisplayMessageTestContext) {
             expect(this.args[0]).toBe('{0}{1}{2}{3}{4}{5}{6}{7}{8}');
         });
 
-        it('should have the player object as the first arg', function () {
+        it('should have the player object as the first arg', function (this: DisplayMessageTestContext) {
             expect(this.args[1]).toBe(this.player);
         });
 
-        it('should have \'uses\' as the second arg', function () {
+        it('should have \'uses\' as the second arg', function (this: DisplayMessageTestContext) {
             expect(this.args[2]).toBe(' uses ');
         });
 
-        it('should have the source as the third arg', function () {
+        it('should have the source as the third arg', function (this: DisplayMessageTestContext) {
             expect(this.args[3]).toBe(this.cardSpy);
         });
 
-        it('should have a comma as the sixth arg', function () {
+        it('should have a comma as the sixth arg', function (this: DisplayMessageTestContext) {
             expect(this.args[6]).toBe(', ');
         });
 
-        it('should have a cost term as the seventh arg', function () {
+        it('should have a cost term as the seventh arg', function (this: DisplayMessageTestContext) {
             expect(this.args[7][0].message[0]).toBe('bowing');
             expect(this.args[7][0].message[1]).toBe(' ');
             expect(this.args[7][0].message[2]).toBe(this.cardSpy);
         });
 
-        it('should have \'to\' as the eighth arg', function () {
+        it('should have \'to\' as the eighth arg', function (this: DisplayMessageTestContext) {
             expect(this.args[8]).toBe(' to ');
         });
 
-        it('should have an effect term as the ninth arg', function () {
+        it('should have an effect term as the ninth arg', function (this: DisplayMessageTestContext) {
             expect(this.args[9].message[0]).toBe('take');
             expect(this.args[9].message[1]).toBe(' ');
             expect(this.args[9].message[2]).toBe(1);
