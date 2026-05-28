@@ -7,6 +7,7 @@ import {
     PROTOCOL_VERSION,
     type GameClosedPayload,
     type GameErrorPayload,
+    type GameSummary,
     type GameWinPayload,
     type HelloPayload,
     type PlayerLeftPayload
@@ -103,9 +104,9 @@ export class WsSocket extends EventEmitter {
         }
     }
 
-    private onGameSync(games: any) {
+    private onGameSync(games: GameSummary[]) {
         const port = env.gameNodeProxyPort ?? env.gameNodeSocketIoPort;
-        logger.info(`${env.gameNodeName} sending HELLO to lobby (address=${this.listenAddress}, port=${port}, games=${Object.keys(games).length})`);
+        logger.info(`${env.gameNodeName} sending HELLO to lobby (address=${this.listenAddress}, port=${port}, games=${games.length})`);
         this.send('HELLO', {
             maxGames: env.maxGames,
             address: this.listenAddress,

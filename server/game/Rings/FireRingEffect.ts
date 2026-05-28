@@ -24,7 +24,8 @@ export class FireRingEffect extends BaseAbility {
     }
 
     public executeHandler(context: AbilityContext) {
-        if(!context.target) {
+        const target = context.target;
+        if(!target) {
             context.game.addMessage('{0} chooses not to resolve the {1} ring', context.player, 'fire');
             this.onResolution(false);
             return;
@@ -33,33 +34,33 @@ export class FireRingEffect extends BaseAbility {
         const choices: string[] = [];
         const handlers: Array<() => void> = [];
 
-        if(context.target.allowGameAction('honor', context)) {
-            choices.push(`Honor ${context.target.name}`);
+        if(target.allowGameAction('honor', context)) {
+            choices.push(`Honor ${target.name}`);
             handlers.push(() => {
                 context.game.addMessage(
                     '{0} resolves the {1} ring, honoring {2}',
                     context.player,
                     'fire',
-                    context.target
+                    target
                 );
                 this.onResolution(true);
-                context.game.addAnimation({ type: 'fire', targetUuid: context.target.uuid, effect: 'honor' });
-                context.game.applyGameAction(context, { honor: context.target });
+                context.game.addAnimation({ type: 'fire', targetUuid: target.uuid, effect: 'honor' });
+                context.game.applyGameAction(context, { honor: target });
             });
         }
 
-        if(context.target.allowGameAction('dishonor', context)) {
-            choices.push(`Dishonor ${context.target.name}`);
+        if(target.allowGameAction('dishonor', context)) {
+            choices.push(`Dishonor ${target.name}`);
             handlers.push(() => {
                 context.game.addMessage(
                     '{0} resolves the {1} ring, dishonoring {2}',
                     context.player,
                     'fire',
-                    context.target
+                    target
                 );
                 this.onResolution(true);
-                context.game.addAnimation({ type: 'fire', targetUuid: context.target.uuid, effect: 'dishonor' });
-                context.game.applyGameAction(context, { dishonor: context.target });
+                context.game.addAnimation({ type: 'fire', targetUuid: target.uuid, effect: 'dishonor' });
+                context.game.applyGameAction(context, { dishonor: target });
             });
         }
 

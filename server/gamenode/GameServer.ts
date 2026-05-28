@@ -10,11 +10,11 @@ import { cards as cardLibrary } from '../game/cards/index.js';
 import type { GameRouter } from '../game/GameRouter.js';
 import type Player from '../game/player.js';
 import { logger } from '../logger.js';
-import type PendingGame from '../pendinggame.js';
 import Socket from '../socket.js';
 import { detectBinary } from '../util.js';
 import { SendGameStateProfiler } from './SendGameStateProfiler.js';
 import { WsSocket } from './WsSocket.js';
+import type { GameSummary, LobbyUser, PendingGameDTO } from './LobbyProtocol.js';
 import * as env from '../env.js';
 
 export class GameServer implements GameRouter {
@@ -357,22 +357,22 @@ export class GameServer implements GameRouter {
         }
     }
 
-    onStartGame(pendingGame: PendingGame): void {
-        const playerNames = Object.values(pendingGame.players as any).map((p: any) => p.name).join(' vs ');
+    onStartGame(pendingGame: PendingGameDTO): void {
+        const playerNames = Object.values(pendingGame.players).map((p) => p.name).join(' vs ');
         logger.info(`Starting game ${pendingGame.id} (${playerNames}), total games: ${this.games.size + 1}`);
         const game = new Game(pendingGame as any, { router: this, shortCardData: this.shortCardData, cardLibrary });
         this.games.set(pendingGame.id, game);
         this.registerUsersForGame(game);
 
         game.started = true;
-        for(const player of Object.values(pendingGame.players as any) as Player[]) {
+        for(const player of Object.values(pendingGame.players)) {
             game.selectDeck(player.name, player.deck);
         }
 
         game.initialise();
     }
 
-    onSpectator(pendingGame: PendingGame, user: { username: string; [key: string]: unknown }) {
+    onSpectator(pendingGame: PendingGameDTO, user: LobbyUser) {
         const game = this.games.get(pendingGame.id);
         if(!game) {
             return;
@@ -384,14 +384,14 @@ export class GameServer implements GameRouter {
         this.sendGameState(game);
     }
 
-    onGameSync(callback: (summaries: unknown[]) => void) {
-        const gameSummaries: unknown[] = [];
+    onGameSync(callback: (summaries: GameSummary[]) => void) {
+        const gameSummaries: GameSummary[] = [];
         for(const game of this.games.values()) {
             const retGame = game.getSummary();
             if(retGame) {
                 retGame.password = game.password;
+                gameSummaries.push(retGame);
             }
-            gameSummaries.push(retGame);
         }
 
         logger.info(`syncing ${gameSummaries.length} games`);

@@ -47,11 +47,12 @@ export class AbilityContext<S = any> {
     stage: Stages;
     targetAbility: CardAbility | null = null;
     /**
-     * Current target of the resolving ability. Concrete type is determined by
-     * the card's target declaration (single BaseCard, BaseCard[], Ring, etc.);
-     * typed as union here so all valid runtime shapes are representable.
+     * Set by `AbilityTargetCard` when the target name is `'target'`. In
+     * multi-card selector modes (`Exactly`/`Unlimited` with numCards > 1) it
+     * is assigned a `BaseCard[]`; the few cards that use multi-card targets
+     * read from `context.targets.target` instead and cast.
      */
-    target: any;
+    target: BaseCard | undefined;
     select: string = '';
     ring: Ring | undefined;
     token: StatusToken | undefined;

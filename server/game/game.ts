@@ -40,6 +40,7 @@ import type BaseCard from './basecard.js';
 import type DrawCard from './drawcard.js';
 import type { AnimationEvent } from './AnimationEvent.js';
 import type { GameRouter } from './GameRouter.js';
+import type { GameSaveState, GameSummary } from '../gamenode/LobbyProtocol.js';
 
 interface GameDetails {
     id: string;
@@ -1336,7 +1337,7 @@ class Game extends EventEmitter {
     /*
      * This information is all logged when a game is won
      */
-    getSaveState(): any {
+    getSaveState(): GameSaveState {
         const players = this.getPlayers().map((player) => ({
             name: player.name,
             faction: player.faction.name || player.faction.value,
@@ -1485,7 +1486,7 @@ class Game extends EventEmitter {
     /*
      * This is used for debugging?
      */
-    getSummary(activePlayerName?: string): any {
+    getSummary(activePlayerName?: string): GameSummary | undefined {
         const playerSummaries: Record<string, any> = {};
 
         for(const player of this.getPlayers()) {
