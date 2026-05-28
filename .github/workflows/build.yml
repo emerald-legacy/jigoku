@@ -31,7 +31,7 @@ jobs:
         run: npm ci
 
       - name: TypeScript compile
-        run: npx tsc
+        run: npx tsc -p tsconfig.test.json
 
       - name: Fetch card data
         run: node bin/fetchdata.js prod
