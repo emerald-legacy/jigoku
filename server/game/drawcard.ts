@@ -1,5 +1,6 @@
 import BaseCard from './basecard.js';
 import { AttachmentManager } from './AttachmentManager.js';
+import { ChildCardManager } from './ChildCardManager.js';
 import AbilityDsl from './abilitydsl.js';
 import { SkillCalculator, type Exclusions } from './SkillCalculator.js';
 import type StatModifier from './StatModifier.js';
@@ -55,6 +56,7 @@ class DrawCard extends BaseCard {
     new: boolean = false;
     private skillCalculator: SkillCalculator;
     private attachmentHost = new AttachmentManager(this);
+    private childCardHost = new ChildCardManager(this);
 
     get attachments(): DrawCard[] {
         return this.attachmentHost.attachments;
@@ -70,6 +72,22 @@ class DrawCard extends BaseCard {
 
     override checkForIllegalAttachments(): boolean {
         return this.attachmentHost.checkForIllegalAttachments();
+    }
+
+    get childCards(): DrawCard[] {
+        return this.childCardHost.childCards;
+    }
+
+    set childCards(value: DrawCard[]) {
+        this.childCardHost.childCards = value;
+    }
+
+    addChildCard(card: DrawCard, location: Locations): void {
+        this.childCardHost.add(card, location);
+    }
+
+    removeChildCard(card: DrawCard | null, location: Locations): void {
+        this.childCardHost.remove(card, location);
     }
 
     constructor(owner: Player, cardData: CardData) {
@@ -365,6 +383,7 @@ class DrawCard extends BaseCard {
         clone.tokens = Object.assign({}, this.tokens);
         clone.printedKeywords = this.printedKeywords;
         clone.attachmentHost = new AttachmentManager(clone);
+        clone.childCardHost = new ChildCardManager(clone);
 
         // Recursive snapshot for nested cards
         clone.attachments = this.attachments.map((attachment: DrawCard) => attachment.createSnapshot());

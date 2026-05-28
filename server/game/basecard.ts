@@ -33,7 +33,6 @@ import { PlayCharacterAction } from './PlayCharacterAction.js';
 import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js';
 import { StatusToken } from './StatusToken.js';
 import Player from './player.js';
-import type DrawCard from './drawcard.js';
 import type BaseAction from './BaseAction.js';
 import Ring from './ring.js';
 import type { CardEffect } from './Effects/types.js';
@@ -79,7 +78,6 @@ class BaseCard extends EffectSource {
     isStronghold: boolean = false;
     packId: string | undefined;
 
-    childCards = [] as DrawCard[];
     protected statusManager!: CardStatusManager;
     allowedAttachmentTraits = [] as string[];
     printedKeywords: Array<PrintedKeyword> = [];
@@ -980,20 +978,6 @@ class BaseCard extends EffectSource {
             actions.push(new PlayAttachmentAction(this));
         }
         return actions;
-    }
-
-    addChildCard(card: DrawCard, location: Locations) {
-        this.childCards.push(card);
-        this.controller.moveCard(card, location);
-    }
-
-    removeChildCard(card: DrawCard | null, location: Locations) {
-        if(!card) {
-            return;
-        }
-
-        this.childCards = this.childCards.filter((a) => a !== card);
-        this.controller.moveCard(card, location);
     }
 
     get statusTokens(): StatusToken[] {

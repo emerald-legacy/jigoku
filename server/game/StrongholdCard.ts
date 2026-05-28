@@ -1,10 +1,30 @@
 import BaseCard from './basecard.js';
+import { ChildCardManager } from './ChildCardManager.js';
+import type DrawCard from './drawcard.js';
 import type Player from './player.js';
+import type { Locations } from './Constants.js';
 
 export class StrongholdCard extends BaseCard {
     menu = [{ command: 'bow', text: 'Bow/Ready' }];
     isStronghold = true;
     stealFirstPlayerDuringSetupWithMsg?: string;
+    private childCardHost = new ChildCardManager(this);
+
+    get childCards(): DrawCard[] {
+        return this.childCardHost.childCards;
+    }
+
+    set childCards(value: DrawCard[]) {
+        this.childCardHost.childCards = value;
+    }
+
+    addChildCard(card: DrawCard, location: Locations): void {
+        this.childCardHost.add(card, location);
+    }
+
+    removeChildCard(card: DrawCard | null, location: Locations): void {
+        this.childCardHost.remove(card, location);
+    }
 
     getFate(): number {
         return this.cardData.fate ?? 0;
