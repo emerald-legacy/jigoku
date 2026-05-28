@@ -2,6 +2,7 @@ import { GameModes } from '../GameModes.js';
 import { EffectNames, Locations } from './Constants.js';
 import AbilityDsl from './abilitydsl.js';
 import BaseCard from './basecard.js';
+import { AttachmentManager } from './AttachmentManager.js';
 import type Player from './player.js';
 import type DrawCard from './drawcard.js';
 import StatModifier from './StatModifier.js';
@@ -17,6 +18,23 @@ export class ProvinceCard extends BaseCard {
         { command: 'honor', text: 'Honor' },
         { command: 'taint', text: 'Taint/Cleanse' }
     ];
+    private attachmentHost = new AttachmentManager(this);
+
+    get attachments(): DrawCard[] {
+        return this.attachmentHost.attachments;
+    }
+
+    set attachments(value: DrawCard[]) {
+        this.attachmentHost.attachments = value;
+    }
+
+    removeAttachment(attachment: DrawCard): void {
+        this.attachmentHost.remove(attachment);
+    }
+
+    override checkForIllegalAttachments(): boolean {
+        return this.attachmentHost.checkForIllegalAttachments();
+    }
 
     constructor(
         owner: Player,

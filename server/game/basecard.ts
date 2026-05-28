@@ -8,7 +8,6 @@ import type BaseCardAbility from './BaseCardAbility.js';
 import Game from './game.js';
 import DynastyCardAction from './dynastycardaction.js';
 
-import { GameModes } from '../GameModes.js';
 import { AbilityContext } from './AbilityContext.js';
 import { CardAction } from './CardAction.js';
 import {
@@ -80,7 +79,6 @@ class BaseCard extends EffectSource {
     isStronghold: boolean = false;
     packId: string | undefined;
 
-    attachments = [] as DrawCard[];
     childCards = [] as DrawCard[];
     protected statusManager!: CardStatusManager;
     allowedAttachmentTraits = [] as string[];
@@ -865,97 +863,7 @@ class BaseCard extends EffectSource {
         }
     }
 
-    checkForIllegalAttachments() {
-        let context = (this.game.getFrameworkContext as (player?: Player | null) => AbilityContext)(this.controller);
-        const illegalAttachments = new Set(
-            this.attachments.filter((attachment) => !this.allowAttachment(attachment) || !attachment.canAttach(this))
-        );
-        for(const effectCard of this.getEffects(EffectNames.CannotHaveOtherRestrictedAttachments)) {
-            for(const card of this.attachments) {
-                if(card.isRestricted() && card !== effectCard) {
-                    illegalAttachments.add(card);
-                }
-            }
-        }
-
-        const attachmentLimits = this.attachments.filter((card) => card.anyEffect(EffectNames.AttachmentLimit));
-        for(const card of attachmentLimits) {
-            let limit = Math.max(...card.getEffects(EffectNames.AttachmentLimit));
-            const matchingAttachments = this.attachments.filter((attachment) => attachment.id === card.id);
-            for(const card of matchingAttachments.slice(0, -limit)) {
-                illegalAttachments.add(card);
-            }
-        }
-
-        const frameworkLimitsAttachmentsWithRepeatedNames =
-            this.game.gameMode === GameModes.Emerald || this.game.gameMode === GameModes.Obsidian || this.game.gameMode === GameModes.Sanctuary;
-        if(frameworkLimitsAttachmentsWithRepeatedNames) {
-            for(const card of this.attachments) {
-                const matchingAttachments = this.attachments.filter(
-                    (attachment) =>
-                        !attachment.allowDuplicatesOfAttachment &&
-                        attachment.id === card.id &&
-                        attachment.controller === card.controller
-                );
-                for(const card of matchingAttachments.slice(0, -1)) {
-                    illegalAttachments.add(card);
-                }
-            }
-        }
-
-        for(const object of this.attachments.reduce(
-            (array, card) => array.concat(card.getEffects(EffectNames.AttachmentRestrictTraitAmount)),
-            []
-        )) {
-            for(const trait of Object.keys(object)) {
-                const matchingAttachments = this.attachments.filter((attachment) => attachment.hasTrait(trait));
-                for(const card of matchingAttachments.slice(0, -object[trait])) {
-                    illegalAttachments.add(card);
-                }
-            }
-        }
-        let maximumRestricted = 2 + this.sumEffects(EffectNames.ModifyRestrictedAttachmentAmount);
-        if(this.attachments.filter((card) => card.isRestricted()).length > maximumRestricted) {
-            this.game.promptForSelect(this.controller, {
-                activePromptTitle: 'Choose an attachment to discard',
-                waitingPromptTitle: 'Waiting for opponent to choose an attachment to discard',
-                cardCondition: (card: DrawCard) => card.parent?.uuid === this.uuid && card.isRestricted(),
-                onSelect: (player: Player, card: DrawCard) => {
-                    this.game.addMessage(
-                        '{0} discards {1} from {2} due to too many Restricted attachments',
-                        player,
-                        card,
-                        card.parent
-                    );
-
-                    if(illegalAttachments.size > 0) {
-                        this.game.addMessage(
-                            '{0} {1} discarded from {3} as {2} {1} no longer legally attached',
-                            Array.from(illegalAttachments),
-                            illegalAttachments.size > 1 ? 'are' : 'is',
-                            illegalAttachments.size > 1 ? 'they' : 'it',
-                            this
-                        );
-                    }
-
-                    illegalAttachments.add(card);
-                    this.game.applyGameAction(context, { discardFromPlay: Array.from(illegalAttachments) });
-                    return true;
-                },
-                source: 'Too many Restricted attachments'
-            });
-            return true;
-        } else if(illegalAttachments.size > 0) {
-            this.game.addMessage(
-                '{0} {1} discarded from {3} as {2} {1} no longer legally attached',
-                Array.from(illegalAttachments),
-                illegalAttachments.size > 1 ? 'are' : 'is',
-                illegalAttachments.size > 1 ? 'they' : 'it',
-                this
-            );
-            this.game.applyGameAction(context, { discardFromPlay: Array.from(illegalAttachments) });
-            return true;
-        }
+    checkForIllegalAttachments(): boolean {
         return false;
     }
 
@@ -976,7 +884,7 @@ class BaseCard extends EffectSource {
      * Checks 'no attachment' restrictions for this card when attempting to
      * attach the passed attachment card.
      */
-    allowAttachment(attachment: BaseCard | DrawCard): boolean {
+    allowAttachment(attachment: BaseCard): boolean {
         if(this.allowedAttachmentTraits.some((trait) => attachment.hasTrait(trait))) {
             return true;
         }
@@ -987,6 +895,11 @@ class BaseCard extends EffectSource {
     /**
      * Checks whether the passed card meets the attachment restrictions (e.g.
      * Opponent cards only, specific factions, etc) for this card.
+     *
+     * `Ring` is in the signature only so `AttachToRingAction.canAffect` can call
+     * `attachment.canAttach(ring)` without a cast — the base impl rejects rings.
+     * Ring-attaching cards (e.g. `GreaterUnderstanding`) override this and pair
+     * with `mustAttachToRing()`.
      */
     canAttach(parent?: BaseCard | Ring, properties = { ignoreType: false, controller: this.controller }) {
         if(!(parent instanceof BaseCard)) {
@@ -1067,15 +980,6 @@ class BaseCard extends EffectSource {
             actions.push(new PlayAttachmentAction(this));
         }
         return actions;
-    }
-
-    /**
-     * This removes an attachment from this card's attachment Array.  It doesn't open any windows for
-     * game effects to respond to.
-     * @param {DrawCard} attachment
-     */
-    removeAttachment(attachment: DrawCard) {
-        this.attachments = this.attachments.filter((card) => card.uuid !== attachment.uuid);
     }
 
     addChildCard(card: DrawCard, location: Locations) {
