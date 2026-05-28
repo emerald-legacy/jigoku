@@ -17,7 +17,7 @@ class CripplingTaxes extends DrawCard {
                 target: context.target.controller.getDynastyCardsInProvince(context.target.location)
             })),
             effect: 'discard {1}',
-            effectArgs: context => [context.target.controller.getDynastyCardsInProvince(context.target.location)]
+            effectArgs: context => [(context.target as DrawCard).controller.getDynastyCardsInProvince((context.target as DrawCard).location)]
         });
     }
 }

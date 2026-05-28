@@ -23,7 +23,7 @@ class HirumaYoshino extends DrawCard {
                 })
             },
             effect: 'contribute {0}\'s printed {1} skill of {2} to their side of the conflict',
-            effectArgs: context => ['military', context.target.printedMilitarySkill]
+            effectArgs: context => ['military', (context.target as DrawCard).printedMilitarySkill]
         });
     }
 }

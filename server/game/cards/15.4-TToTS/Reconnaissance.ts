@@ -52,7 +52,7 @@ class Reconnaissance extends DrawCard {
     getLookAtAction() {
         return AbilityDsl.actions.lookAt(context => ({
             message: context => {
-                let target = context.target;
+                let target: any = context.target;
                 if(!Array.isArray(target)) {
                     target = [target];
                 }
@@ -66,7 +66,7 @@ class Reconnaissance extends DrawCard {
 
             },
             messageArgs: () => {
-                let target = context.target;
+                let target: any = context.target;
                 if(!Array.isArray(target)) {
                     target = [target];
                 }

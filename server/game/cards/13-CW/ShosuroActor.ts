@@ -20,7 +20,7 @@ export default class ShosuroActor extends DrawCard {
                 }))
             },
             effect: 'become a copy of {1}',
-            effectArgs: (context) => [context.target]
+            effectArgs: (context) => [(context.target as DrawCard)]
         });
     }
 }

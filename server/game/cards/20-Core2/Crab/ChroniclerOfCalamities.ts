@@ -12,8 +12,8 @@ export default class ChroniclerOfCalamities extends DrawCard {
             condition: (context) => context.source.isParticipating(),
             effect: 'dishonor or send home {0}',
             effectArgs: (context) => [
-                context.target.isFacedown() ? 'a facedown card' : context.target,
-                context.target.location
+                (context.target as DrawCard).isFacedown() ? 'a facedown card' : (context.target as DrawCard),
+                (context.target as DrawCard).location
             ],
             target: {
                 cardType: CardTypes.Character,

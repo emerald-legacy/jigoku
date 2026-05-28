@@ -20,7 +20,7 @@ class FinalWhisper extends DrawCard {
                 cardCondition: (card: any, context: any) =>
                     card !== context.event.card && card.controller === context.event.card.controller,
                 gameAction: AbilityDsl.actions.gainStatusToken((context: any) => ({
-                    token: context.event.token.grantedStatus || context.event.token
+                    token: context.event.token?.grantedStatus || context.event.token
                 }))
             }
         });

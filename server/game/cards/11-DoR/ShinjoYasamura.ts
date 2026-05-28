@@ -13,7 +13,7 @@ class ShinjoYasamura extends DrawCard {
                 onCovertResolved: (event: EventPayload<EventNames.OnCovertResolved>, context) =>
                     (event.card === context.source ||
                         (Array.isArray(event.card) && event.card.includes(context.source))) &&
-                    event.context?.target?.covert
+                    (event.context?.target as DrawCard)?.covert
             },
             effect: 'prevent {1} from defending this phase',
             effectArgs: (context) => context.event.context.target,

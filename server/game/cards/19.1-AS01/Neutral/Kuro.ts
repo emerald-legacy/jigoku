@@ -47,7 +47,7 @@ export default class Kuro extends DrawCard {
             },
             effect: 'seek the lost treasure \'{1}\'. {2}',
             effectArgs: (context) => [
-                context.target,
+                (context.target as DrawCard),
                 context.source.isParticipating()
                     ? 'Kuro returns home with their treasure'
                     : 'Kuro swoops into the conflict'

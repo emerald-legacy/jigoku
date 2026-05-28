@@ -32,7 +32,7 @@ class KaiuForges extends DrawCard {
                         return true;
                     }],
                     cardHandler: (cardFromDeck: DrawCard) => {
-                        const provinceLocation = context.target.location;
+                        const provinceLocation = (context.target as DrawCard).location;
                         const cards = context.player.getDynastyCardsInProvince(provinceLocation);
                         if(cards.some((a: BaseCard) => a.getType() === CardTypes.Holding && a.hasTrait('kaiu-wall'))) {
                             this.game.promptForSelect(context.player, {

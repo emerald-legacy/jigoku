@@ -18,9 +18,12 @@ class BenevolentHost extends DrawCard {
                 cardCondition: card => card.hasTrait('courtier'),
                 gameAction: AbilityDsl.actions.putIntoPlay()
             },
-            then: context => ({
-                gameAction: AbilityDsl.actions.placeFate({ target: context?.target?.costLessThan(3) ? context.target : [] })
-            })
+            then: context => {
+                const target = context?.target as DrawCard | undefined;
+                return {
+                    gameAction: AbilityDsl.actions.placeFate({ target: target?.costLessThan(3) ? target : [] })
+                };
+            }
         });
     }
 }

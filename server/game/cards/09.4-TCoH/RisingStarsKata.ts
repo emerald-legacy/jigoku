@@ -22,13 +22,13 @@ export default class RisingStarsKata extends DrawCard {
                 cardCondition: (card) => card.isUnique() && card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                     duration: Durations.UntilEndOfConflict,
-                    effect: this.duelWinnersThisConflict.has(context.target)
+                    effect: this.duelWinnersThisConflict.has((context.target as DrawCard))
                         ? AbilityDsl.effects.modifyMilitarySkill(5)
                         : AbilityDsl.effects.modifyMilitarySkill(3)
                 }))
             },
             effect: 'give {0} +{1} {2} skill until the end of the conflict',
-            effectArgs: (context) => [this.duelWinnersThisConflict.has(context.target) ? 5 : 3, 'military'],
+            effectArgs: (context) => [this.duelWinnersThisConflict.has((context.target as DrawCard)) ? 5 : 3, 'military'],
             max: AbilityDsl.limit.perConflict(1)
         });
     }
@@ -38,7 +38,7 @@ export default class RisingStarsKata extends DrawCard {
     }
 
     public afterDuel(event: any) {
-        if(event.duel.winner) {
+        if(event.duel?.winner) {
             const winners: BaseCard[] = Array.isArray(event.duel.winner) ? event.duel.winner : [event.duel.winner];
             winners.forEach((duelWinner) => this.duelWinnersThisConflict.add(duelWinner));
         }

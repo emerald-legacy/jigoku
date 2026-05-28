@@ -21,7 +21,7 @@ class PreeminentDecree extends DrawCard {
                 }))
             },
             effect: 'give all participating characters except {0} -{1}{2}',
-            effectArgs: context => [context.target.glory, 'political']
+            effectArgs: context => [(context.target as DrawCard).glory, 'political']
         });
     }
 }

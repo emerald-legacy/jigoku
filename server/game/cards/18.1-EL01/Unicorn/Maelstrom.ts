@@ -116,7 +116,7 @@ export default class Maelstrom extends ProvinceCard {
             },
             effect: 'move {0} into the conflict{1}',
             effectArgs: (context) =>
-                context.target.controller === context.player ? ['. It will be honored if it wins the conflict'] : ['']
+                (context.target as DrawCard).controller === context.player ? ['. It will be honored if it wins the conflict'] : ['']
         });
     }
 

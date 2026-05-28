@@ -19,13 +19,14 @@ export default class RenownedSinger extends DrawCard {
                 cardType: [CardTypes.Character, CardTypes.Attachment, CardTypes.Event],
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.handler({
-                    handler: (context) =>
-                        this.game.promptWithHandlerMenu(context.player.opponent as any, {
+                    handler: (context) => {
+                        const targets = context.targets.target as DrawCard[];
+                        return this.game.promptWithHandlerMenu(context.player.opponent as any, {
                             activePromptTitle: 'Choose a card to add to your opponent\'s hand',
                             context: context,
-                            cards: context.target,
+                            cards: targets,
                             cardHandler: (handCard: DrawCard) => {
-                                let bottomCard = context.target.filter((a: DrawCard) => a !== handCard);
+                                let bottomCard = targets.filter((a: DrawCard) => a !== handCard);
                                 context.game.addMessage(
                                     '{0} chooses {1} to be put into {2}\'s hand. {3} is put on the bottom of {2}\'s conflict deck',
                                     context.player.opponent,
@@ -49,11 +50,12 @@ export default class RenownedSinger extends DrawCard {
 
                                 gameAction.resolve(undefined, context);
                             }
-                        })
+                        });
+                    }
                 })
             },
             effect: 'have {1} return one of {2} to {3}\'s hand',
-            effectArgs: (context) => [context.player.opponent as any, context.target, context.player]
+            effectArgs: (context) => [context.player.opponent as any, context.targets.target as DrawCard[], context.player]
         });
     }
 }

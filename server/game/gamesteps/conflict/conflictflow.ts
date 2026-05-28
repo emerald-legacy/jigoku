@@ -551,7 +551,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     events = [
                         new InitiateCardAbilityEvent(
                             { card: context.source, context: context },
-                            () => (context.target.covert = true)
+                            () => ((context.target as DrawCard).covert = true)
                         )
                     ];
                     goodContext = context;
@@ -568,7 +568,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                 (context: AbilityContext) =>
                     new InitiateCardAbilityEvent(
                         { card: context.source, context: context },
-                        () => (context.target.covert = true)
+                        () => ((context.target as DrawCard).covert = true)
                     )
             );
             events = events.concat(

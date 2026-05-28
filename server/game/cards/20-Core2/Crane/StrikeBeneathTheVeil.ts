@@ -21,7 +21,7 @@ export default class StrikeBeneathTheVeil extends DrawCard {
                 }))
             },
             effect: 'give {0} {1}{2} and {1}{3}',
-            effectArgs: (context) => [penalty(context.target), 'military','political']
+            effectArgs: (context) => [penalty(context.target as DrawCard), 'military','political']
         });
     }
 }

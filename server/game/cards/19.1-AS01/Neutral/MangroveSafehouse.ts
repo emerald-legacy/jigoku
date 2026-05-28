@@ -30,7 +30,7 @@ export default class MangroveSafehouse extends DrawCard {
     }
 
     private targetIsMantis(context: AbilityContext): boolean {
-        return context.target.traits.some((trait: string) => trait === 'mantis-clan');
+        return (context.target as DrawCard).traits.some((trait: string) => trait === 'mantis-clan');
     }
 
     private opponentHasFateToBeStolen(context: AbilityContext): boolean {

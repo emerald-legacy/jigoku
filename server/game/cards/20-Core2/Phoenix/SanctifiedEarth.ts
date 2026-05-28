@@ -59,7 +59,7 @@ export default class SanctifiedEarth extends DrawCard {
                 ])
             },
             effect: 'give +2{1} and +2{2} to {3}',
-            effectArgs: (context) => ['military', 'political', context.target]
+            effectArgs: (context) => ['military', 'political', (context.target as DrawCard)]
         });
     }
 }

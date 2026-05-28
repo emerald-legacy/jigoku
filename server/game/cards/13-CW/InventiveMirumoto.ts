@@ -26,7 +26,7 @@ class InventiveMirumoto extends DrawCard {
                 }))
             },
             effect: 'play {0} onto {1}',
-            effectArgs: context => [context.target, context.source]
+            effectArgs: context => [(context.target as DrawCard), context.source]
         });
     }
 

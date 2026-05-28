@@ -22,7 +22,7 @@ class UnyieldingSensei extends DrawCard {
                 cardCondition: card => card.type === CardTypes.Character,
                 shuffle: false,
                 message: '{0} puts {1} into {2}',
-                messageArgs: (context, cards) => [context.player, cards, context.target.isFacedown() ? 'a facedown province' : context.target.name],
+                messageArgs: (context, cards) => [context.player, cards, (context.target as DrawCard).isFacedown() ? 'a facedown province' : (context.target as DrawCard).name],
                 gameAction: AbilityDsl.actions.moveCard(context => ({
                     destination: context.target.location,
                     faceup: true

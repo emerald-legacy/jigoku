@@ -1,4 +1,5 @@
 import DrawCard from '../../drawcard.js';
+import type BaseCard from '../../basecard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TargetModes, CardTypes, Elements } from '../../Constants.js';
 
@@ -11,7 +12,7 @@ class IsawaTsuke2 extends DrawCard {
         this.action({
             title: 'Lose honor to discard fate',
             effect: 'lose {1} honor to discard a fate from {2}',
-            effectArgs: (context) => [context.costs.variableHonorCost, context.target],
+            effectArgs: (context) => [context.costs.variableHonorCost as number, context.targets.target as BaseCard[]],
             condition: (context) =>
                 context.game.isDuringConflict() &&
                 context.game.rings[this.getCurrentElementSymbol(elementKey)].isUnclaimed(),

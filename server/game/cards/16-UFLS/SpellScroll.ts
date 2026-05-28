@@ -34,7 +34,7 @@ export default class SpellScroll extends DrawCard {
                 ])
             },
             effect: 'move {1} to their hand and sacrifice {2}',
-            effectArgs: (context) => [context.target, context.source]
+            effectArgs: (context) => [(context.target as DrawCard), context.source]
         });
     }
 }

@@ -30,7 +30,7 @@ export default class AsakoShun extends DrawCard {
             then: (context) => ({
                 thenCondition: () => {
                     const conflict = context?.game.currentConflict;
-                    return !!conflict && !!context && conflict.calculateSkillFor([context.target]) === 0;
+                    return !!conflict && !!context && conflict.calculateSkillFor([(context.target as DrawCard)]) === 0;
                 },
                 gameAction: AbilityDsl.actions.gainHonor({
                     target: context?.player,
@@ -40,7 +40,7 @@ export default class AsakoShun extends DrawCard {
                 messageArgs: () => [context?.target, context?.player]
             }),
             effect: 'give {4} {1}{2} and {1}{3}',
-            effectArgs: (context) => [penalty(context), 'military', 'political', context.target]
+            effectArgs: (context) => [penalty(context), 'military', 'political', (context.target as DrawCard)]
         });
     }
 }

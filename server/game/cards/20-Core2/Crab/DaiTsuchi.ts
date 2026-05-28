@@ -33,7 +33,7 @@ export default class DaiTsuchi extends DrawCard {
                     })
                 })),
                 effect: 'return {0} to {1}\'s hand and prevent them from playing copies this conflict',
-                effectArgs: (context: AbilityContext) => [context.target.owner]
+                effectArgs: (context: AbilityContext) => [(context.target as DrawCard).owner]
             })
         });
     }

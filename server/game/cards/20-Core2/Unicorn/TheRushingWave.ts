@@ -46,11 +46,11 @@ export default class TheRushingWave extends DrawCard {
                         effect: AbilityDsl.effects.setProvinceStrength(0)
                     }),
                     effect: 'also set the strength of {0} to 0',
-                    effectArgs: (context) => [adjacentProvinces(context.target)]
+                    effectArgs: (context) => [adjacentProvinces(context.target as ProvinceCard)]
                 })
             },
             effect: 'set {1}\'s strength to 0 until the end of the phase',
-            effectArgs: (context) => [provinceLog(context.target)]
+            effectArgs: (context) => [provinceLog(context.target as ProvinceCard)]
         });
     }
 }

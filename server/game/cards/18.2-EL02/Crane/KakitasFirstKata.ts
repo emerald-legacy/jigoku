@@ -51,7 +51,7 @@ export default class KakitasFirstKata extends DrawCard {
                 ])
             },
             effect: '{1}prevent opponents\' actions from bowing or moving {0}',
-            effectArgs: (context) => (this.bowedCharactersThisConflict.has(context.target) ? 'ready and ' : '')
+            effectArgs: (context) => (this.bowedCharactersThisConflict.has((context.target as DrawCard)) ? 'ready and ' : '')
         });
     }
 

@@ -25,7 +25,7 @@ class JadeStrike extends DrawCard {
                 ])
             },
             effect: '{3}set the base skills of {0} to 0{1}/0{2}',
-            effectArgs: context => ['military', 'political', context.target.isTainted ? 'remove a fate from and ' : '']
+            effectArgs: context => ['military', 'political', (context.target as DrawCard).isTainted ? 'remove a fate from and ' : '']
         });
     }
 

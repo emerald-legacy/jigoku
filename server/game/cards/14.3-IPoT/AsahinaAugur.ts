@@ -21,7 +21,7 @@ class AsahinaAugur extends DrawCard {
                 gameAction: AbilityDsl.actions.discardCard()
             },
             effect: 'discard {1} in {2}',
-            effectArgs: context => [context.target.isFacedown() ? 'a facedown card' : context.target, context.target.location],
+            effectArgs: context => [(context.target as DrawCard).isFacedown() ? 'a facedown card' : (context.target as DrawCard), (context.target as DrawCard).location],
             limit: AbilityDsl.limit.perRound(3)
         });
     }

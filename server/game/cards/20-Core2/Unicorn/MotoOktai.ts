@@ -33,7 +33,7 @@ export default class MotoOktai extends DrawCard {
                 gameAction: AbilityDsl.actions.discardFromPlay()
             },
             effect: 'discard {1} - purge the weak!',
-            effectArgs: (context) => [context.target]
+            effectArgs: (context) => [(context.target as DrawCard)]
         });
     }
 }

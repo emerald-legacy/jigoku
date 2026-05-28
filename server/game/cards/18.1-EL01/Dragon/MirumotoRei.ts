@@ -48,21 +48,24 @@ export default class MirumotoRei extends DrawCard {
                 }))
             },
             effect: 'give {1} a skill bonus equal to the total attachment skill bonus on {0} ({2}{3}/{4}{5})',
-            effectArgs: (context) => [
-                context.source,
-                sumModifiers(
-                    context.target.getEffects(EffectNames.AttachmentMilitarySkillModifier),
-                    context.target,
-                    context
-                ),
-                'military',
-                sumModifiers(
-                    context.target.getEffects(EffectNames.AttachmentPoliticalSkillModifier),
-                    context.target,
-                    context
-                ),
-                'political'
-            ]
+            effectArgs: (context) => {
+                const target = context.target as DrawCard;
+                return [
+                    context.source,
+                    sumModifiers(
+                        target.getEffects(EffectNames.AttachmentMilitarySkillModifier),
+                        target,
+                        context
+                    ),
+                    'military',
+                    sumModifiers(
+                        target.getEffects(EffectNames.AttachmentPoliticalSkillModifier),
+                        target,
+                        context
+                    ),
+                    'political'
+                ];
+            }
         });
     }
 }

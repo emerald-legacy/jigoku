@@ -1,6 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Locations } from '../../../Constants.js';
 import DrawCard from '../../../drawcard.js';
+import type { ProvinceCard } from '../../../ProvinceCard.js';
 
 export default class ChildOfSaltlessWater extends DrawCard {
     static id = 'child-of-saltless-water';
@@ -29,10 +30,10 @@ export default class ChildOfSaltlessWater extends DrawCard {
             },
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.source,
-                effect: AbilityDsl.effects.setMilitarySkill(context.target.printedStrength)
+                effect: AbilityDsl.effects.setMilitarySkill((context.target as ProvinceCard).printedStrength)
             })),
             effect: 'set it\'s {1} to {2}',
-            effectArgs: (context) => ['military', context.target.printedStrength]
+            effectArgs: (context) => ['military', (context.target as ProvinceCard).printedStrength]
         });
     }
 }

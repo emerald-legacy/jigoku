@@ -70,7 +70,7 @@ class ExposedCourtyard extends DrawCard {
                             effect: AbilityDsl.effects.delayedEffect({
                                 when: {
                                     onCardPlayed: (event: any) => {
-                                        return event.card === context.target && event.player === context.target.controller;
+                                        return event.card === context.target && event.player === (context.target as DrawCard).controller;
                                     }
                                 },
                                 multipleTrigger: true,

@@ -9,10 +9,12 @@ export default class BrokenBlades extends DrawCard {
         this.reaction({
             title: 'Return all fate from a character then discard them',
             effect: 'ensure {0} is gone!{1}{2}{3}',
-            effectArgs: (context) =>
-                context.target.fate < 1
+            effectArgs: (context) => {
+                const target = context.target as DrawCard;
+                return target.fate < 1
                     ? []
-                    : [' (', context.target.owner, ' recovers ' + context.target.fate + ' fate)'],
+                    : [' (', target.owner, ' recovers ' + target.fate + ' fate)'];
+            },
             when: {
                 afterConflict: (event, context) =>
                     context.player.isAttackingPlayer() &&

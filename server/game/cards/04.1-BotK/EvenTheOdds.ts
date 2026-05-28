@@ -19,7 +19,7 @@ class EvenTheOdds extends DrawCard {
                 controller: Players.Self,
                 gameAction: [
                     AbilityDsl.actions.moveToConflict(),
-                    AbilityDsl.actions.honor((context: AbilityContext) => ({ target: context.target.hasTrait('commander') ? context.target : [] }))
+                    AbilityDsl.actions.honor((context: AbilityContext) => ({ target: (context.target as DrawCard).hasTrait('commander') ? context.target : [] }))
                 ]
             }
         });

@@ -27,10 +27,10 @@ export default class TennyosBlessing extends DrawCard {
                                 event.player,
                                 cards,
                                 cards.length > 1 ? 'them' : 'it',
-                                context.target.facedown ? context.target.location : context.target
+                                (context.target as DrawCard).facedown ? (context.target as DrawCard).location : (context.target as DrawCard)
                             );
                             cards.forEach((card) => {
-                                event.player.moveCard(card, context.target.location);
+                                event.player.moveCard(card, (context.target as DrawCard).location);
                                 card.facedown = false;
                             });
                         } else {

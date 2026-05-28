@@ -31,7 +31,7 @@ class RightHandOfTheEmperor extends DrawCard {
                 bottom: true
             })),
             effect: 'ready {0}{1}.  {2} is placed on the bottom of {3}\'s conflict deck',
-            effectArgs: (context) => [context.target.length > 0 ? '' : 'no one', context.source, context.source.owner]
+            effectArgs: (context) => [(context.targets.target as DrawCard[]).length > 0 ? '' : 'no one', context.source, context.source.owner]
         });
     }
 }

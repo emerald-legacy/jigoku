@@ -51,7 +51,7 @@ class DiversionaryManeuver extends DrawCard {
                 })
             ]),
             effect: 'move the conflict to {1} and send all participating characters home bowed',
-            effectArgs: context => [context.target]
+            effectArgs: context => [(context.target as DrawCard)]
         });
     }
 }

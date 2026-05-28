@@ -59,7 +59,7 @@ export default class SpiderwebPassage extends DrawCard {
                 };
             }),
             effect: 'ambush {1}',
-            effectArgs: (context) => context.target
+            effectArgs: (context) => (context.target as DrawCard)
         });
     }
 }

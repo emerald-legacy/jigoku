@@ -39,7 +39,7 @@ class ExpertBartering extends DrawCard {
             ]),
             cannotTargetFirst: true,
             effect: 'switch {1} with {2}',
-            effectArgs: context => [context.source, context.target]
+            effectArgs: context => [context.source, (context.target as DrawCard)]
         });
     }
 }

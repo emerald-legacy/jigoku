@@ -1,6 +1,7 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players } from '../../Constants.js';
+import type Player from '../../player.js';
 
 class WildfireKick extends DrawCard {
     static id = 'wildfire-kick';
@@ -17,11 +18,14 @@ class WildfireKick extends DrawCard {
                 cardCondition: card => card.isParticipating() && card.hasTrait('monk')
             },
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: this.game.currentConflict?.getCharacters(context.player.opponent).filter((card: DrawCard) => card.getMilitarySkill() <= context.target.getMilitarySkill() && card !== context.source) ?? [],
+                target: this.game.currentConflict?.getCharacters(context.player.opponent).filter((card: DrawCard) => card.getMilitarySkill() <= (context.target as DrawCard).getMilitarySkill() && card !== context.source) ?? [],
                 effect: AbilityDsl.effects.modifyBothSkills(-2)
             })),
             effect: 'give {1}\'s participating characters -2{2}/-2{3} if their military skill is equal to or lower than {4}. This affects: {5}',
-            effectArgs: context => [context.player.opponent, 'military', 'political', context.target.getMilitarySkill(), this.game.currentConflict?.getCharacters(context.player.opponent).filter((card: DrawCard) => card.getMilitarySkill() <= context.target.getMilitarySkill() && card !== context.source) ?? []]
+            effectArgs: context => {
+                const target = context.target as DrawCard;
+                return [context.player.opponent as Player, 'military', 'political', target.getMilitarySkill(), this.game.currentConflict?.getCharacters(context.player.opponent).filter((card: DrawCard) => card.getMilitarySkill() <= target.getMilitarySkill() && card !== context.source) ?? []];
+            }
         });
     }
 }

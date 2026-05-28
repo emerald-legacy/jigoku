@@ -1,6 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Durations, Locations } from '../../../Constants.js';
 import DrawCard from '../../../drawcard.js';
+import type { ProvinceCard } from '../../../ProvinceCard.js';
 
 export default class ScoutsSteed extends DrawCard {
     static id = 'scout-s-steed';
@@ -42,10 +43,13 @@ export default class ScoutsSteed extends DrawCard {
                 })
             ),
             effect: 'ready {1} and send them on a journey! {2} cannot be broken during this conflict - it\'s just exploration for now',
-            effectArgs: (context) => [
-                context.source.parent,
-                context.target.isFacedown() ? context.target.location : context.target
-            ]
+            effectArgs: (context) => {
+                const target = context.target as ProvinceCard;
+                return [
+                    context.source.parent,
+                    target.isFacedown() ? target.location : target
+                ];
+            }
         });
     }
 }

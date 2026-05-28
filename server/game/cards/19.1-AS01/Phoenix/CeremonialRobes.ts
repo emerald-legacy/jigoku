@@ -44,7 +44,7 @@ export default class CeremonialRobes extends DrawCard {
                         activePromptTitle: 'Select a card to put into the province faceup',
                         message: '{0} places {1} into their province',
                         callback: (chosenCard) => {
-                            ctx.player.moveCard(chosenCard, ctx.target.location);
+                            ctx.player.moveCard(chosenCard, (ctx.target as DrawCard).location);
                             chosenCard.facedown = false;
                         }
                     },

@@ -18,7 +18,7 @@ class HanteiDaisetsu extends DrawCard {
                 })
             },
             effect: 'treat {1} as if its text box were blank until the end of the conflict',
-            effectArgs: (context) => [context.target]
+            effectArgs: (context) => [(context.target as DrawCard)]
         });
     }
 }

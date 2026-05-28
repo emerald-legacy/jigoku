@@ -20,10 +20,10 @@ class AdornedTemple extends DrawCard {
                 }
             },
             effect: 'draw {1} card{2}',
-            effectArgs: (context: any) => (context.event.recipient.isOrdinary() ? ['2', 's'] : ['a', '']),
+            effectArgs: (context: any) => (context.event.recipient?.isOrdinary() ? ['2', 's'] : ['a', '']),
             gameAction: AbilityDsl.actions.draw((context: any) => ({
                 target: context.player,
-                amount: context.event.recipient.isOrdinary() ? 2 : 1
+                amount: context.event.recipient?.isOrdinary() ? 2 : 1
             }))
         });
     }

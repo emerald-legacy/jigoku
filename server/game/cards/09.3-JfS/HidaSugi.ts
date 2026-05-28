@@ -17,7 +17,7 @@ class HidaSugi extends DrawCard {
                 gameAction: AbilityDsl.actions.moveCard({ destination: Locations.DynastyDeck, bottom: true})
             },
             effect: 'move {0} to bottom of {1}\'s dynasty deck',
-            effectArgs: context => [context.target.controller]
+            effectArgs: context => [(context.target as DrawCard).controller]
         });
     }
 }

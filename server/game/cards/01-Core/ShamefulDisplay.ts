@@ -24,38 +24,39 @@ export default class ShamefulDisplay extends ProvinceCard {
                 if(!context || !context.target) {
                     return;
                 }
-                if(context.target.every((card: DrawCard) => !card.allowGameAction('honor', context))) {
+                const targets = context.targets.target as DrawCard[];
+                if(targets.every((card: DrawCard) => !card.allowGameAction('honor', context))) {
                     this.game.promptForSelect(context.player, {
                         activePromptTitle: 'Choose a character to dishonor',
                         context: context,
                         gameAction: AbilityDsl.actions.dishonor(),
-                        cardCondition: (card: any) => context.target.includes(card),
+                        cardCondition: (card: any) => targets.includes(card),
                         onSelect: (_player: Player, card: DrawCard) => {
                             this.resolveShamefulDisplay(
                                 context,
-                                context.target.find((c: DrawCard) => c !== card),
+                                targets.find((c: DrawCard) => c !== card),
                                 card
                             );
                             return true;
                         }
                     });
-                } else if(context.target.every((card: DrawCard) => !card.allowGameAction('dishonor', context))) {
+                } else if(targets.every((card: DrawCard) => !card.allowGameAction('dishonor', context))) {
                     this.game.promptForSelect(context.player, {
                         activePromptTitle: 'Choose a character to honor',
                         context: context,
                         gameAction: AbilityDsl.actions.honor(),
-                        cardCondition: (card: any) => context.target.includes(card),
+                        cardCondition: (card: any) => targets.includes(card),
                         onSelect: (_player: Player, card: DrawCard) => {
                             this.resolveShamefulDisplay(
                                 context,
                                 card,
-                                context.target.find((c: DrawCard) => c !== card)
+                                targets.find((c: DrawCard) => c !== card)
                             );
                             return true;
                         }
                     });
                 } else {
-                    this.promptToChooseHonorOrDishonor(context.target, context);
+                    this.promptToChooseHonorOrDishonor(targets, context);
                 }
             }
         });

@@ -44,7 +44,7 @@ export default class BitingSteel extends DrawCard {
                 }))
             },
             effect: 'add the skill bonus of {0} ({1}) to their duel total',
-            effectArgs: (context) => [getAttachmentSkill(context.target)]
+            effectArgs: (context) => [getAttachmentSkill(context.target as DrawCard)]
         });
 
         this.action({

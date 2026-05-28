@@ -45,15 +45,16 @@ export default class DaidojiAmbusher extends DrawCard {
 
     private triggerKickerEffect(context: AbilityContext, timing: Timing): boolean {
         const isDishonored = context.source.isDishonored;
+        const target = context.target as DrawCard;
         const targetZero =
             timing === Timing.BEFORE_PENALTY
-                ? context.target.getMilitarySkill() <= 2
-                : context.target.getMilitarySkill() === 0;
+                ? target.getMilitarySkill() <= 2
+                : target.getMilitarySkill() === 0;
 
         return isDishonored && targetZero;
     }
 
     private shouldDiscardTarget(context: AbilityContext): boolean {
-        return context.target.getFate() === 0;
+        return (context.target as DrawCard).getFate() === 0;
     }
 }

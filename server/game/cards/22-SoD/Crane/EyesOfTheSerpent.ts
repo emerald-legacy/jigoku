@@ -89,7 +89,7 @@ export default class EyesOfTheSerpent extends DrawCard {
                 ])
             },
             effect: 'taint {1}',
-            effectArgs: (context) => [context.target]
+            effectArgs: (context) => [(context.target as DrawCard)]
         });
     }
 

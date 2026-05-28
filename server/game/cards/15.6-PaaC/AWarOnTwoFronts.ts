@@ -1,4 +1,5 @@
 import DrawCard from '../../drawcard.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 import { Locations, CardTypes, Durations, ConflictTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -24,7 +25,7 @@ class AWarOnTwoFronts extends DrawCard {
                 ])
             },
             effect: '{2}also attack {1} this conflict!',
-            effectArgs: context => [context.target, context.target.isFacedown() ? 'reveal and ' : '']
+            effectArgs: context => [(context.target as DrawCard), (context.target as ProvinceCard).isFacedown() ? 'reveal and ' : '']
         });
     }
 }

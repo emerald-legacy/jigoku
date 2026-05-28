@@ -31,11 +31,11 @@ export default class AsahinaEnvoy extends DrawCard {
                             '{0} selects {1} and puts it into {2}',
                             event.player,
                             cards,
-                            context.target.facedown ? context.target.location : context.target
+                            (context.target as DrawCard).facedown ? (context.target as DrawCard).location : (context.target as DrawCard)
                         );
 
                         for(const card of cards) {
-                            event.player.moveCard(card, context.target.location);
+                            event.player.moveCard(card, (context.target as DrawCard).location);
                             card.facedown = false;
                         }
                     }

@@ -17,16 +17,19 @@ class IsawaEju extends DrawCard {
             },
             gameAction: AbilityDsl.actions.moveCard(context => ({
                 destination: Locations.DynastyDiscardPile,
-                target: context.target.controller.getDynastyCardsInProvince(context.target.location)
+                target: (context.target as DrawCard).controller.getDynastyCardsInProvince((context.target as DrawCard).location)
             })),
             effect: 'discard {1} and refill the province faceup',
-            effectArgs: context => [context.target.controller.getDynastyCardsInProvince(context.target.location)],
-            then: context => ({
-                gameAction: AbilityDsl.actions.refillFaceup(() => ({
-                    target: context?.target?.controller,
-                    location: context?.target?.location
-                }))
-            }),
+            effectArgs: context => [(context.target as DrawCard).controller.getDynastyCardsInProvince((context.target as DrawCard).location)],
+            then: context => {
+                const target = context?.target as DrawCard;
+                return {
+                    gameAction: AbilityDsl.actions.refillFaceup(() => ({
+                        target: target.controller,
+                        location: target.location
+                    }))
+                };
+            },
             limit: AbilityDsl.limit.perRound(3)
         });
     }

@@ -24,7 +24,7 @@ export default class Retribution extends DrawCard {
                         brokenProvinceCountForPlayer(context.player.opponent)
             },
             effect: 'declare a military conflict, attacking with {1}',
-            effectArgs: (context) => [context.target],
+            effectArgs: (context) => [(context.target as DrawCard)],
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,

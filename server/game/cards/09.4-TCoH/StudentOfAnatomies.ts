@@ -19,7 +19,7 @@ class StudentOfAnatomies extends DrawCard {
                 })
             },
             effect: 'treat {1} as if its printed text box were blank until the end of the phase',
-            effectArgs: (context) => context.target
+            effectArgs: (context) => (context.target as DrawCard)
         });
     }
 }

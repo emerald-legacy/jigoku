@@ -1,6 +1,7 @@
 import { Players, TargetModes, Locations, CardTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
+import type Player from '../../../player.js';
 
 export default class NightingaleTattoo extends DrawCard {
     static id = 'nightingale-tattoo';
@@ -30,9 +31,9 @@ export default class NightingaleTattoo extends DrawCard {
                         this.game.promptWithHandlerMenu(context.player.opponent as any, {
                             activePromptTitle: 'Choose a card to shuffle into your opponent\'s deck',
                             context: context,
-                            cards: context.target,
+                            cards: context.targets.target as DrawCard[],
                             cardHandler: (selectedCard: DrawCard) => {
-                                let removedCard = context.target.filter((a: DrawCard) => a !== selectedCard);
+                                let removedCard = (context.targets.target as DrawCard[]).filter((a: DrawCard) => a !== selectedCard);
                                 context.game.addMessage(
                                     '{0} chooses {1} to be shuffled into {2}\'s deck. {3} is removed from the game',
                                     context.player.opponent,
@@ -59,7 +60,7 @@ export default class NightingaleTattoo extends DrawCard {
                 })
             },
             effect: 'have {1} shuffle one of {2} into {3}\'s conflict deck',
-            effectArgs: (context) => [context.player.opponent, context.target, context.player]
+            effectArgs: (context) => [context.player.opponent as Player, context.targets.target as DrawCard[], context.player]
         });
     }
 }

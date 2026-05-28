@@ -4,7 +4,7 @@ import DrawCard from '../../../drawcard.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 
 function attachedToType(context: AbilityContext): CardTypes {
-    return (context.target.parent as DrawCard).type;
+    return ((context.target as DrawCard).parent as DrawCard).type;
 }
 
 export default class WiseQuartermaster extends DrawCard {

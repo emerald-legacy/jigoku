@@ -36,7 +36,7 @@ class MasterOfManyLifetimes extends DrawCard {
                 ])
             })),
             effect: 'prevent {1} from leaving play, putting it into {2} instead',
-            effectArgs: (context) => [context.event.card, context.target.location]
+            effectArgs: (context) => [context.event.card, (context.target as DrawCard).location]
         });
     }
 }

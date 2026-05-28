@@ -16,15 +16,15 @@ class EsteemedTeaHouse extends DrawCard {
             },
             gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
                 duration: Durations.UntilEndOfPhase,
-                targetController: context.target.owner,
+                targetController: (context.target as DrawCard).owner,
                 effect: AbilityDsl.effects.playerCannot({
                     cannot: 'play',
                     restricts: 'copiesOfX',
-                    params: context.target.name
+                    params: (context.target as DrawCard).name
                 })
             })),
             effect: 'return {0} to {1}\'s hand and prevent them from playing copies this phase',
-            effectArgs: context => [context.target.owner]
+            effectArgs: context => [(context.target as DrawCard).owner]
         });
     }
 }

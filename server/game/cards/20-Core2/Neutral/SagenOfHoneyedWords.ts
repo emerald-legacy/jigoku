@@ -24,7 +24,7 @@ export default class SagenOfHoneyedWords extends DrawCard {
             })),
             effect: 'get +{1}{2} and +{3}{4}',
             effectArgs: (context) => {
-                const bonus = skillBonus(context.target);
+                const bonus = skillBonus(context.target as DrawCard);
                 return [bonus, 'military', bonus, 'political'];
             }
         });

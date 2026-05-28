@@ -18,7 +18,7 @@ class FieldTactician extends DrawCard {
                 controller: Players.Any,
                 gameAction: AbilityDsl.actions.handler({
                     handler: context => {
-                        const card = context.target;
+                        const card = context.target as DrawCard;
                         const player = card.owner;
                         player.moveCard(card, Locations.ConflictDeck);
                         const index = player.conflictDeck.indexOf(card);
@@ -30,7 +30,7 @@ class FieldTactician extends DrawCard {
                 })
             },
             effect: 'return {0} to {1}\'s conflict deck',
-            effectArgs: context => [context.target.owner]
+            effectArgs: context => [(context.target as DrawCard).owner]
         });
     }
 }
