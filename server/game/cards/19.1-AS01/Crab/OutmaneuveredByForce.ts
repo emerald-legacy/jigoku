@@ -11,7 +11,7 @@ export default class OutmaneuveredByForce extends DrawCard {
             title: 'Declare a conflict right now',
             phase: Phases.Conflict,
             condition: (context) =>
-                context.game.getConflicts(Players.Any).filter((conflict: any) => conflict.declared).length === 0,
+                context.game.getConflicts(Players.All).filter((conflict: any) => conflict.declared).length === 0,
 
             gameAction: AbilityDsl.actions.initiateConflict({ canPass: false })
         });

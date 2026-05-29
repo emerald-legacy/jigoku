@@ -9,7 +9,7 @@ class RiverOfTheLastStand extends DrawCard {
         this.action({
             title: 'Make opponent discard two cards and draw a card',
             condition: context => {
-                if(context.player.isDefendingPlayer()) {
+                if(context.player.isDefendingPlayer() && context.game.currentConflict) {
                     let cards = context.game.currentConflict.getConflictProvinces().map((a: any) => context.player.getDynastyCardsInProvince(a.location));
                     return cards.some((c: any) => c.some((card: any) => card.isFaceup() && card.type === CardTypes.Holding && card.hasTrait('kaiu-wall')));
                 }

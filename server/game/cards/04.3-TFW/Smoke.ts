@@ -7,7 +7,7 @@ class Smoke extends DrawCard {
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Give non-unique characters -2/+0',
-            condition: context => this.game.isDuringConflict() && context.source.parent && context.source.parent.isParticipating(),
+            condition: context => !!(this.game.isDuringConflict() && context.source.parent && context.source.parent.isParticipating()),
             cost: [ability.costs.bowSelf(), ability.costs.sacrificeSelf()],
             gameAction: ability.actions.cardLastingEffect((context: any) => ({
                 target: context.game.currentConflict?.getParticipants().filter((card: DrawCard) => !card.isUnique()) ?? [],

@@ -7,7 +7,7 @@ class BayushisWhisperers extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Look at opponent\'s hand and name a card',
-            condition: context => context.player.opponent && this.game.isDuringConflict(),
+            condition: context => !!(context.player.opponent && this.game.isDuringConflict()),
             effect: 'look at {1}\'s hand, then name a card',
             effectArgs: context => context.player.opponent as any,
             gameAction: AbilityDsl.actions.sequential([

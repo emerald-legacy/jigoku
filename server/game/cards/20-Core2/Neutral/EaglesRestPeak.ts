@@ -11,7 +11,7 @@ export default class EaglesRestPeak extends ProvinceCard {
     public setupCardAbilities() {
         this.action({
             title: 'Look at random cards from opponent\'s hand',
-            condition: (context) => context.player.opponent?.hand.length > 0,
+            condition: (context) => (context.player.opponent?.hand.length ?? 0) > 0,
             target: {
                 activePromptTitle: 'Choose a character to lead the investigation',
                 cardType: CardTypes.Character,

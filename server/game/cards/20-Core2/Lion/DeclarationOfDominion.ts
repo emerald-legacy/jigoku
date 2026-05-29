@@ -11,7 +11,7 @@ export default class DeclarationOfDominion extends BattlefieldAttachment {
 
         this.action({
             title: 'Gives Pride to chosen characters',
-            condition: (context) => context.source.parent?.isConflictProvince(),
+            condition: (context) => !!context.source.parent?.isConflictProvince(),
             targets: {
                 myCard: {
                     activePromptTitle: 'Choose a character on your side',

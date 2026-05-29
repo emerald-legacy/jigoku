@@ -14,9 +14,9 @@ export default class Kinki extends DrawCard {
             title: 'Remove a fate from or move home a character',
             cost: AbilityDsl.costs.sacrificeSelf(),
             condition: (context) =>
-                context.game.isDuringConflict('military') &&
+                !!(context.game.isDuringConflict('military') &&
                 context.source.parent &&
-                context.source.parent.isParticipating(),
+                context.source.parent.isParticipating()),
             targets: {
                 character: {
                     cardType: CardTypes.Character,

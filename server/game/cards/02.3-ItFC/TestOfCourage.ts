@@ -8,7 +8,7 @@ class TestOfCourage extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Move a character into conflict',
-            condition: context => context.player.opponent && context.player.showBid < context.player.opponent.showBid,
+            condition: context => !!(context.player.opponent && context.player.showBid < context.player.opponent.showBid),
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,

@@ -27,7 +27,7 @@ class Niten extends DrawCard {
 
         this.action({
             title: 'Put an attachment into play',
-            condition: context => context.source.parent && context.source.parent.isParticipating(),
+            condition: context => !!(context.source.parent && context.source.parent.isParticipating()),
             cost: [
                 nitenCaptureParentCost(),
                 AbilityDsl.costs.returnSelfToHand()

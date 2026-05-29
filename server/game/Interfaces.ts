@@ -157,7 +157,7 @@ interface AbilityProps<Context> {
 }
 
 export interface ActionProps<Source = any> extends AbilityProps<AbilityContext<Source>> {
-    condition?: (context?: any) => boolean;
+    condition?: (context: AbilityContext<Source>) => boolean;
     phase?: Phases | 'any';
     emeraldWorksInDynsty?: boolean;
     /**

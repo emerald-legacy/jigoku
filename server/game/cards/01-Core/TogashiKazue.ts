@@ -12,9 +12,9 @@ export default class TogashiKazue extends DrawCard {
         this.action({
             title: 'Steal a fate',
             condition: (context) =>
-                context.source.type === CardTypes.Attachment &&
+                !!(context.source.type === CardTypes.Attachment &&
                 context.source.parent &&
-                context.source.parent.isParticipating(),
+                context.source.parent.isParticipating()),
             printedAbility: false,
             target: {
                 cardType: CardTypes.Character,

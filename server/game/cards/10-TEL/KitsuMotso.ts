@@ -9,9 +9,9 @@ class KitsuMotso extends DrawCard {
         this.action({
             title: 'Move a character in',
             condition: (context) =>
-                context.source.isParticipating() &&
+                !!(context.source.isParticipating() &&
                 context.player.opponent &&
-                context.player.hand.length < context.player.opponent.hand.length,
+                context.player.hand.length < context.player.opponent.hand.length),
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Opponent,

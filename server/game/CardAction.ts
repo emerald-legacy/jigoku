@@ -43,7 +43,7 @@ export class CardAction extends CardAbility {
     phase: string;
     evenDuringDynasty: boolean;
 
-    condition?: (context?: AbilityContext) => boolean;
+    condition?: (context: AbilityContext) => boolean;
 
     constructor(card: BaseCard, properties: ActionProps) {
         super(card, properties);

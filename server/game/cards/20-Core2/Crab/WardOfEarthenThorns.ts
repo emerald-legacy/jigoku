@@ -24,7 +24,7 @@ export default class WardOfEarthenThorns extends DrawCard {
             condition: (context) =>
                 (context.game.currentConflict as Conflict | undefined)
                     ?.getConflictProvinces()
-                    .some((province) => context.source.parent === province) ?? false,
+                    .some((province) => (context.source.parent as BaseCard | null) === province) ?? false,
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card) => card.isAttacking(),

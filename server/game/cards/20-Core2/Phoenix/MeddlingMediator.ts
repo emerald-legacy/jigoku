@@ -10,7 +10,7 @@ export default class MeddlingMediator extends DrawCard {
             title: 'Take 1 fate or 1 honor',
             phase: Phases.Conflict,
             condition: (context) =>
-                this.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1,
+                this.game.getConflicts(context.player.opponent ?? null).filter((conflict) => !conflict.passed).length > 1,
             target: {
                 mode: TargetModes.Select,
                 choices: {

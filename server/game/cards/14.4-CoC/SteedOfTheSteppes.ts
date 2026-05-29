@@ -25,7 +25,7 @@ class SteedOfTheSteppes extends DrawCard {
 
         this.action({
             title: 'Ready attached character',
-            condition: context => context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 3,
+            condition: context => !!(context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 3),
             cost: [
                 steedOfTheSteppesCaptureParentCost(),
                 AbilityDsl.costs.sacrificeSelf()

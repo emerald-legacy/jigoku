@@ -13,7 +13,7 @@ class AdornedBarcha extends DrawCard {
 
         this.action({
             title: 'Move character into the conflict',
-            condition: context => context.source.parent && !context.source.parent.isParticipating() && this.game.isDuringConflict('military'),
+            condition: context => !!(context.source.parent && !context.source.parent.isParticipating() && this.game.isDuringConflict('military')),
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: card => card.isParticipating(),

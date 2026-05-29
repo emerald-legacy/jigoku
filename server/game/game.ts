@@ -31,7 +31,7 @@ import ConflictFlow from './gamesteps/conflict/conflictflow.js';
 import * as MenuCommands from './MenuCommands.js';
 import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
 
-import { EffectNames, Phases, EventNames, Locations, ConflictTypes, Elements } from './Constants.js';
+import { EffectNames, Phases, EventNames, Locations, ConflictTypes, Elements, Players } from './Constants.js';
 import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
 import { GamePromptHelper } from './GamePromptHelper.js';
 import { GameModes } from '../GameModes.js';
@@ -393,7 +393,7 @@ class Game extends EventEmitter {
         this.conflictTracker.record(conflict);
     }
 
-    getConflicts(player: Player): ConflictRecord[] {
+    getConflicts(player: Player | Players.All | null): ConflictRecord[] {
         return this.conflictTracker.getForPlayer(player);
     }
 

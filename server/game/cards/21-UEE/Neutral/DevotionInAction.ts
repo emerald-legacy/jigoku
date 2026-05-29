@@ -11,7 +11,7 @@ export default class DevotionInAction extends DrawCard {
             condition: (context) =>
                 !!(context.game.isDuringConflict() &&
         context.player.opponent &&
-        context.game.currentConflict?.hasMoreParticipants(context.player.opponent)),
+        context.game.currentConflict?.hasMoreParticipants(context.player.opponent, () => true)),
             target: {
                 cardType: CardTypes.Character,
                 location: [Locations.Provinces, Locations.Hand],
