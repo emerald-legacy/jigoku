@@ -10,7 +10,7 @@ import type { GameAction } from './GameAction.js';
 
 export interface SelectCardProperties extends CardActionProperties {
     activePromptTitle?: string;
-    player?: Players;
+    player?: Players.Self | Players.Opponent;
     cardType?: CardTypes | CardTypes[];
     controller?: Players;
     location?: Locations | Locations[];

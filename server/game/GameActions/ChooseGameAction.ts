@@ -5,7 +5,7 @@ import { GameAction, type GameActionProperties } from './GameAction.js';
 export interface ChooseActionProperties extends GameActionProperties {
     activePromptTitle?: string;
     messageArgs?: any[];
-    player?: Players;
+    player?: Players.Self | Players.Opponent;
     options: { [label: string]: { action: GameAction; message?: string } };
 }
 

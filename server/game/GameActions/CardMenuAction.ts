@@ -7,7 +7,7 @@ import type { GameAction } from './GameAction.js';
 
 export interface CardMenuProperties extends CardActionProperties {
     activePromptTitle?: string;
-    player?: Players;
+    player?: Players.Self | Players.Opponent;
     cards: DrawCard[];
     cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
     choices?: string[];

@@ -16,7 +16,7 @@ interface BaseTarget {
     activePromptTitle?: string;
     location?: Locations | Locations[];
     controller?: ((context: AbilityContext) => Players) | Players;
-    player?: ((context: AbilityContext) => Players) | Players;
+    player?: ((context: AbilityContext) => Players.Self | Players.Opponent) | Players.Self | Players.Opponent;
     hideIfNoLegalTargets?: boolean;
     gameAction?: GameAction | GameAction[];
 }

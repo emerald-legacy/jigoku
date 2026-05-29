@@ -10,7 +10,7 @@ import { TokenAction, type TokenActionProperties } from './TokenAction.js';
 export interface SelectTokenProperties extends TokenActionProperties {
     activePromptTitle?: string;
     card?: BaseCard;
-    player?: Players;
+    player?: Players.Self | Players.Opponent;
     targets?: boolean;
     singleToken?: boolean;
     tokenCondition?: (token: StatusToken, context: AbilityContext) => boolean;

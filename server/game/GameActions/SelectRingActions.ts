@@ -8,7 +8,7 @@ import { RingAction, type RingActionProperties } from './RingAction.js';
 
 export interface SelectRingProperties extends RingActionProperties {
     activePromptTitle?: string;
-    player?: Players;
+    player?: Players.Self | Players.Opponent;
     targets?: boolean;
     ringCondition?: (ring: Ring, context: AbilityContext) => boolean;
     cancelHandler?: () => void;

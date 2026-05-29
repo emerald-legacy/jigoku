@@ -4,7 +4,7 @@ import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface MenuPromptProperties extends GameActionProperties {
     activePromptTitle: string;
-    player?: Players;
+    player?: Players.Self | Players.Opponent;
     gameAction: GameAction;
     choices: string[] | ((properties: any) => string[]);
     choiceHandler: (choice: string, displayMessage: boolean, properties: MenuPromptProperties) => object;
