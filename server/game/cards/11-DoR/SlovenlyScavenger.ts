@@ -26,9 +26,6 @@ class SlovenlyScavenger extends DrawCard {
             effect: 'shuffle {1} into their deck',
             effectArgs: context => this.getEffectArg(context ? context.select : ''),
             handler: context => {
-                if(!context) {
-                    return;
-                }
                 if(context.select === this.getChoiceName('MyDynasty')) {
                     this.owner.dynastyDiscardPile.forEach(card => {
                         this.owner.moveCard(card, Locations.DynastyDeck);

@@ -10,10 +10,7 @@ export default class NegotiationTable extends DrawCard {
         this.action({
             title: 'Make opponent pick from several options',
             condition: (context) => context.player.opponent !== undefined,
-            handler: (context?: AbilityContext) => {
-                if(!context) {
-                    return;
-                }
+            handler: (context: AbilityContext) => {
                 let choices: string[] = [];
                 let handlers: (() => void)[] = [];
 

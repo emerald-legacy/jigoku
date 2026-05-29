@@ -16,10 +16,7 @@ class Compass extends DrawCard {
                     (context.player.dynastyDeck.length > 0 || context.player.conflictDeck.length > 0)
             },
             effect: 'look at the top 3 cards of one of their decks',
-            handler: (context?: TriggeredAbilityContext) => {
-                if(!context) {
-                    return;
-                }
+            handler: (context: TriggeredAbilityContext) => {
                 let cards: any[] = [];
                 let choices: string[] = [];
                 let handlers: (() => void)[] = [];

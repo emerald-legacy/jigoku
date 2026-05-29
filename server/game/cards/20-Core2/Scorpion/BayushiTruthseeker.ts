@@ -15,7 +15,7 @@ export default class BayushiTruthseeker extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.source.isAttacking()
             },
-            handler: (context?: TriggeredAbilityContext) => {
+            handler: (context: TriggeredAbilityContext) => {
                 if(!context || !context.player.opponent) {
                     return;
                 }

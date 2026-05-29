@@ -1,4 +1,5 @@
 import { Durations } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 
@@ -11,7 +12,7 @@ export default class PromisingKohai extends DrawCard {
             duelCondition: (duel, context) =>
                 duel.participants.some((a) => a.controller === context.source.controller && a !== context.source),
             gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
-                target: (context as any).event.duel,
+                target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.modifyDuelSkill({ amount: 2, player: context.player }),
                 duration: Durations.UntilEndOfDuel
             })),

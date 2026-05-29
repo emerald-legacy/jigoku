@@ -15,11 +15,8 @@ class EmbraceTheVoid extends DrawCard {
                     event.origin === (context.source as any).parent && event.fate > 0 && event.recipient !== context.player
             },
             effect: 'take the {1} fate being removed from {2}',
-            effectArgs: (context?: TriggeredAbilityContext) => context ? [context.event.fate, (context.source as any).parent] : [],
-            handler: (context?: TriggeredAbilityContext) => {
-                if(!context) {
-                    return;
-                }
+            effectArgs: (context: TriggeredAbilityContext) => context ? [context.event.fate, (context.source as any).parent] : [],
+            handler: (context: TriggeredAbilityContext) => {
                 context.event.recipient = context.player;
             }
         });

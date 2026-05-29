@@ -46,9 +46,6 @@ export default class PalmStrike extends DrawCard {
             effect: 'bow {1}',
             effectArgs: (context) => [context.targets[TARGET_TO_BOW]],
             then: (context) => {
-                if(!context) {
-                    return;
-                }
                 if((context.targets[TARGET_MONK] as DrawCard).hasTrait('tattooed')) {
                     context.game.addMessage(
                         '{0} cannot ready until the end of the conflict - they are overwhelmed by the mystical tattoos of {1}{2}!',

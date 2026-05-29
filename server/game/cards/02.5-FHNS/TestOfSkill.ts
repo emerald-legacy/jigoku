@@ -44,10 +44,7 @@ class TestOfSkill extends DrawCard {
             )), testOfSkillCost()],
             cannotBeMirrored: true,
             effect: 'take cards into their hand',
-            handler: (context?: AbilityContext) => {
-                if(!context) {
-                    return;
-                }
+            handler: (context: AbilityContext) => {
                 const isMatching = (card: BaseCard) => card.type === context.costs.testOfSkillCost && card.location === Locations.ConflictDeck;
                 let matchingCards: BaseCard[] = (context.costs.reveal as BaseCard[]).filter(isMatching);
                 let cardsToDiscard: BaseCard[] = (context.costs.reveal as BaseCard[]).filter((card: BaseCard) => !isMatching(card));

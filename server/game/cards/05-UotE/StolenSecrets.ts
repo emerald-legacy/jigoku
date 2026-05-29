@@ -18,10 +18,7 @@ class StolenSecrets extends DrawCard {
             }),
             effect: 'look at the top 4 cards of {1}\'s conflict deck and remove one from the game',
             effectArgs: (context: AbilityContext<this>) => context.player.opponent as Player,
-            handler: (context?: AbilityContext<this>) => {
-                if(!context) {
-                    return;
-                }
+            handler: (context: AbilityContext<this>) => {
                 const opponent = context.player.opponent as Player;
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Choose a card to remove from the game',

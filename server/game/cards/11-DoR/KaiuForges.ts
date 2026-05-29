@@ -16,10 +16,7 @@ class KaiuForges extends DrawCard {
                 cardType: CardTypes.Province
             },
             effect: 'look at the top ten cards of their dynasty deck',
-            handler: (context?: AbilityContext<this>) => {
-                if(!context) {
-                    return;
-                }
+            handler: (context: AbilityContext<this>) => {
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Choose a holding to swap with a Kaiu Wall',
                     context: context,

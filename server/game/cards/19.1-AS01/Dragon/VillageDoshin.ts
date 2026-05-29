@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
 import { CardTypes, EventNames, Locations, Players } from '../../../Constants.js';
 import type BaseCard from '../../../basecard.js';
 import DrawCard from '../../../drawcard.js';
@@ -53,7 +54,7 @@ export default class VillageDoshin extends DrawCard {
                             message: `{0} refuses to discard ${DOSHIN_TAX} cards. The effects of {2} are canceled.`
                         }
                     },
-                    messageArgs: [(context as any).event.card]
+                    messageArgs: [(context as TriggeredAbilityContext).event.card]
                 }))
             }),
             effect: 'protect {1}',

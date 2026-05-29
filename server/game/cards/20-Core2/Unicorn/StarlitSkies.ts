@@ -31,10 +31,7 @@ export default class StarlitSkies extends DrawCard {
             },
             effect: 'look at the top 3 cards of {1}\'s {2}',
             effectArgs: (context) => [context.player, (context.select ?? '').toLowerCase()],
-            handler: (context?: AbilityContext) => {
-                if(!context) {
-                    return;
-                }
+            handler: (context: AbilityContext) => {
                 const choice = possibleChoices[context.select as keyof typeof possibleChoices];
                 const topThree = choice.cards(context);
                 if(topThree.length === 0) {

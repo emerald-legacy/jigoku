@@ -1,4 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
+import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
 import AbilityDsl from '../../../abilitydsl.js';
 import { Durations } from '../../../Constants.js';
 import DrawCard from '../../../drawcard.js';
@@ -41,7 +42,7 @@ export default class UnderTheNewMoon extends DrawCard {
 
     #getChoices(context: AbilityContext<this>) {
         const min = 1;
-        const max = (context as any).event.attackerMatrix.maximumNumberOfAttackers;
+        const max = (context as TriggeredAbilityContext).event.attackerMatrix.maximumNumberOfAttackers;
         const array = [];
         for(let i = min; i <= max; i++) {
             array.push(i.toString());

@@ -1,4 +1,5 @@
 import type { AbilityLimit } from '../../../AbilityLimit.js';
+import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
 import { CardTypes } from '../../../Constants.js';
 import type { Cost } from '../../../Costs.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -33,7 +34,7 @@ function abilityWithCost(self: SteadfastOrator, limit: AbilityLimit, cost: Cost,
         },
         cost,
         cannotBeMirrored: true,
-        gameAction: AbilityDsl.actions.moveToConflict((context) => ({ target: (context as any).event.card })),
+        gameAction: AbilityDsl.actions.moveToConflict((context) => ({ target: (context as TriggeredAbilityContext).event.card })),
         limit: limit
     });
 }

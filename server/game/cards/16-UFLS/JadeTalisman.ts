@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -21,7 +22,7 @@ class JadeTalisman extends DrawCard {
             cost: AbilityDsl.costs.sacrificeSelf(),
             gameAction: AbilityDsl.actions.cancel(),
             effect: 'cancel the effects of the {1}',
-            effectArgs: context => [context.event.context.source]
+            effectArgs: context => [(context.event.context as AbilityContext).source]
         });
     }
 }

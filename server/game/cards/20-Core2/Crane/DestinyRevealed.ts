@@ -17,7 +17,7 @@ export default class DestinyRevealed extends DrawCard {
                 hidePromptIfSingleCard: true,
                 cardType: CardTypes.Character,
                 controller: Players.Self,
-                cardCondition: (card) => ((context as any).event.duel as Duel).isInvolved(card),
+                cardCondition: (card) => ((context as TriggeredAbilityContext).event.duel as Duel).isInvolved(card),
                 message: '{0} places a fate from their fate pool on {1}',
                 messageArgs: (cards) => [context.player, cards],
                 gameAction: AbilityDsl.actions.placeFate((context) => ({

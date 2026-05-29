@@ -35,7 +35,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
                 target: context.source,
                 destination: context.target.location
             })),
-            then: (context?: AbilityContext) => ({
+            then: (context: AbilityContext) => ({
                 thenCondition: () => !!context && this.otherHoldingsInSameProvince(context as AbilityContext<this>).length > 0,
                 gameAction: AbilityDsl.actions.discardCard(() => ({
                     target: context ? this.otherHoldingsInSameProvince(context as AbilityContext<this>) : []

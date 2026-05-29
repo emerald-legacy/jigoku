@@ -1,4 +1,5 @@
 import { Durations } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 import type { Conflict } from '../../../conflict.js';
@@ -15,7 +16,7 @@ export default class KitsukiSano extends DrawCard {
                     (participant) => participant.controller === context.player.opponent && participant.isDishonored
                 ),
             gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
-                target: (context as any).event.duel,
+                target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.modifyDuelSkill({
                     amount: 2,
                     player: context.player

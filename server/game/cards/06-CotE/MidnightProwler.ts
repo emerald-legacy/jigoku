@@ -16,7 +16,7 @@ export default class MidnightProwler extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.player.opponent !== undefined
             },
-            handler: (context?: TriggeredAbilityContext) => {
+            handler: (context: TriggeredAbilityContext) => {
                 if(!context || !context.player.opponent) {
                     return;
                 }

@@ -22,10 +22,7 @@ export default class WorkInProgress extends DrawCard {
             ],
             cannotBeMirrored: true,
             effect: 'take cards into their hand',
-            handler: (context?: AbilityContext<this>) => {
-                if(!context) {
-                    return;
-                }
+            handler: (context: AbilityContext<this>) => {
                 let [matchingCards, cardsToDiscard] = (context.costs.reveal as DrawCard[]).reduce(
                     (acc: DrawCard[][], card: DrawCard) => {
                         if(card.type === context.costs.testOfSkillCost && card.location === Locations.ConflictDeck) {

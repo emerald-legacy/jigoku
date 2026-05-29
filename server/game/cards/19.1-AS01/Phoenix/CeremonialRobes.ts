@@ -34,9 +34,6 @@ export default class CeremonialRobes extends DrawCard {
                 controller: Players.Self
             },
             handler: (context) => {
-                if(!context) {
-                    return;
-                }
                 const ctx = context;
                 const top3Cards = ctx.player.dynastyDeck.slice(0, 3);
                 const steps: HandlerStep[] = [

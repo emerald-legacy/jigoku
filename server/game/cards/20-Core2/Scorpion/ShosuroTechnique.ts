@@ -1,4 +1,5 @@
 import { CardTypes, ConflictTypes, Durations, Players, TargetModes } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 
@@ -10,7 +11,7 @@ export default class ShosuroTechnique extends DrawCard {
             title: 'Apply status tokens to the duel',
             duelCondition: (duel, context) => duel.challengingPlayer && duel.challengingPlayer.opponent === context.player,
             gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
-                target: (context as any).event.duel,
+                target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.duelIgnorePrintedSkill(),
                 duration: Durations.UntilEndOfDuel
             })),

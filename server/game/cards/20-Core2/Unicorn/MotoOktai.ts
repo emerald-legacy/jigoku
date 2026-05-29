@@ -1,4 +1,5 @@
 import { CardTypes, Durations, Locations, Players } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 
@@ -20,7 +21,7 @@ export default class MotoOktai extends DrawCard {
             effectArgs: (context) => [skillBonus(context.event.card), 'military'],
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 duration: Durations.UntilEndOfPhase,
-                effect: AbilityDsl.effects.modifyMilitarySkill(skillBonus((context as any).event.card))
+                effect: AbilityDsl.effects.modifyMilitarySkill(skillBonus((context as TriggeredAbilityContext).event.card))
             }))
         });
 

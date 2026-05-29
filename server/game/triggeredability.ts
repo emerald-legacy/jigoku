@@ -113,7 +113,7 @@ class TriggeredAbility extends CardAbility {
 
     createContext(player: Player = this.card.controller, event?: Event | Event[]): TriggeredAbilityContext {
         return new TriggeredAbilityContext({
-            event: event,
+            event: event as Event,
             game: this.game,
             source: this.card,
             player: player,

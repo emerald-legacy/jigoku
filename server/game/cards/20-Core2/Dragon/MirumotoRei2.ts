@@ -1,4 +1,5 @@
 import { Durations, DuelTypes, ConflictTypes } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 
@@ -15,7 +16,7 @@ export default class MirumotoRei2 extends DrawCard {
             duelCondition: (duel, context) =>
                 duel.participants.includes(context.source) && this.getWeaponCount(context) > 0,
             gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
-                target: (context as any).event.duel,
+                target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.modifyDuelSkill({
                     amount: this.getWeaponCount(context),
                     player: context.player

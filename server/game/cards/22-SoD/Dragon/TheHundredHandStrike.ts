@@ -36,9 +36,6 @@ export default class TheHundredHandStrike extends DrawCard {
                 effect: AbilityDsl.effects.modifyBothSkills(penalty(context))
             })),
             then: (context) => {
-                if(!context) {
-                    return {};
-                }
                 const ctx = context;
                 return {
                     thenCondition: () => (ctx.targets.puncher as DrawCard).hasTrait('tattooed') &&

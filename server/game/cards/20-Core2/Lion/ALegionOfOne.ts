@@ -24,9 +24,6 @@ export default class ALegionOfOne extends DrawCard {
             },
             effect: 'give {0} +3/+0',
             then: (context) => {
-                if(!context) {
-                    return {};
-                }
                 const ctx = context;
                 if(ctx.subResolution) {
                     return {

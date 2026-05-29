@@ -15,7 +15,7 @@ class ShibaTsukune extends DrawCard {
                 onPhaseEnded: (event: EventPayload<typeof EventNames.OnPhaseEnded>) => event.phase === Phases.Conflict
             },
             effect: 'resolve up to 2 ring effects',
-            handler: (context?: TriggeredAbilityContext<any>) => (context ? this.game.promptForRingSelect(context.player, {
+            handler: (context: TriggeredAbilityContext<any>) => (context ? this.game.promptForRingSelect(context.player, {
                 activePromptTitle: 'Choose a ring to resolve',
                 context: context,
                 ringCondition: (ring: Ring) => ring.isUnclaimed(),

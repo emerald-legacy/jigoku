@@ -152,8 +152,8 @@ interface AbilityProps<Context> {
     evenDuringDynasty?: boolean;
     effectArgs?: EffectArg | ((context: Context) => EffectArg);
     gameAction?: GameAction | GameAction[];
-    handler?: (context?: Context) => void;
-    then?: ((context?: AbilityContext) => object) | object;
+    handler?: (context: Context) => void;
+    then?: ((context: AbilityContext) => object) | object;
 }
 
 export interface ActionProps<Source = any> extends AbilityProps<AbilityContext<Source>> {
@@ -195,8 +195,8 @@ export interface TriggeredAbilityWhenProps extends AbilityProps<TriggeredAbility
     anyPlayer?: boolean;
     target?: TriggeredAbilityTarget & TriggeredAbilityTarget;
     targets?: TriggeredAbilityTargets;
-    handler?: (context?: TriggeredAbilityContext) => void;
-    then?: ((context?: TriggeredAbilityContext) => object) | object;
+    handler?: (context: TriggeredAbilityContext) => void;
+    then?: ((context: TriggeredAbilityContext) => object) | object;
 }
 
 export interface TriggeredAbilityAggregateWhenProps extends AbilityProps<TriggeredAbilityContext> {
@@ -204,8 +204,8 @@ export interface TriggeredAbilityAggregateWhenProps extends AbilityProps<Trigger
     collectiveTrigger?: boolean;
     target?: TriggeredAbilityTarget & TriggeredAbilityTarget;
     targets?: TriggeredAbilityTargets;
-    handler?: (context?: TriggeredAbilityContext) => void;
-    then?: ((context?: TriggeredAbilityContext) => object) | object;
+    handler?: (context: TriggeredAbilityContext) => void;
+    then?: ((context: TriggeredAbilityContext) => object) | object;
 }
 
 export type TriggeredAbilityProps = TriggeredAbilityWhenProps | TriggeredAbilityAggregateWhenProps;

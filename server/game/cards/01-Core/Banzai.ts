@@ -20,9 +20,6 @@ class Banzai extends DrawCard {
             },
             effect: 'grant 2 military skill to {0}',
             then: context => {
-                if(!context) {
-                    return {};
-                }
                 const ctx = context;
                 if(ctx.subResolution) {
                     return {

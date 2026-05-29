@@ -1,4 +1,6 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type BaseCard from '../../basecard.js';
 import DrawCard from '../../drawcard.js';
 import { Durations } from '../../Constants.js';
 
@@ -15,11 +17,11 @@ class TenguSensei extends DrawCard {
             },
             effect: 'prevent {1} from attacking this phase',
             effectArgs: context => {
-                return context.event.context.target;
+                return (context.event.context as AbilityContext).target as BaseCard;
             },
             gameAction: AbilityDsl.actions.cardLastingEffect(context => {
                 return ({
-                    target: context.event.context.target,
+                    target: (context.event.context as AbilityContext).target,
                     duration: Durations.UntilEndOfPhase,
                     effect: AbilityDsl.effects.cardCannot('declareAsAttacker')
                 });

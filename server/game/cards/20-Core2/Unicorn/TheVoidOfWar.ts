@@ -20,9 +20,6 @@ export default class TheVoidOfWar extends DrawCard {
             },
             effect: 'bow {0}.',
             then: (context) => {
-                if(!context) {
-                    return {};
-                }
                 const ctx = context;
                 return {
                     target: {

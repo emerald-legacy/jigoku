@@ -20,7 +20,7 @@ export default class ShamefulDisplay extends ProvinceCard {
                 gameAction: [AbilityDsl.actions.honor(), AbilityDsl.actions.dishonor()]
             },
             effect: 'change the personal honor of {0}',
-            handler: (context?: AbilityContext) => {
+            handler: (context: AbilityContext) => {
                 if(!context || !context.target) {
                     return;
                 }

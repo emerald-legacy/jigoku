@@ -15,10 +15,7 @@ class KnowTheTerrain extends DrawCard {
                     event.conflict.defendingPlayer === context.player &&
                     event.conflict.conflictProvince.location !== Locations.StrongholdProvince
             },
-            handler: (context?: TriggeredAbilityContext) => {
-                if(!context) {
-                    return;
-                }
+            handler: (context: TriggeredAbilityContext) => {
                 return this.game.promptForSelect(context.player, {
                     activePromptTitle: 'Choose an unbroken province',
                     cardType: CardTypes.Province,

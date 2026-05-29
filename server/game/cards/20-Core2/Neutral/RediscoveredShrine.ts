@@ -1,4 +1,5 @@
 import { CardTypes } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 
@@ -22,7 +23,7 @@ export default class RediscoveredShrine extends DrawCard {
                 targetController: context.player,
                 effect: AbilityDsl.effects.reduceNextPlayedCardCost(
                     1,
-                    (card: DrawCard) => card === (context as any).event.card
+                    (card: DrawCard) => card === (context as TriggeredAbilityContext).event.card
                 )
             }))
         });

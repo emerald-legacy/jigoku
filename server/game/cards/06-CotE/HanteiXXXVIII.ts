@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, EventNames } from '../../Constants.js';
@@ -35,10 +36,7 @@ class HanteiXXXVIII extends DrawCard {
             effect: 'choose targets for {1}\'s {2} ability',
             effectArgs: context => context ? [context.event.card, context.event.ability.title] : [],
             handler: context => {
-                if(!context) {
-                    return;
-                }
-                context.event.context.choosingPlayerOverride = context.player;
+                (context.event.context as AbilityContext).choosingPlayerOverride = context.player;
             }
         });
     }

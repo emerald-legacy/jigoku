@@ -16,10 +16,7 @@ class ShrineMaiden extends DrawCard {
             },
             cost: ability.costs.reveal((context: AbilityContext) => context.player.conflictDeck.slice(0, 3)),
             effect: 'take any revealed spells into their hand',
-            handler: (context?: TriggeredAbilityContext) => {
-                if(!context) {
-                    return;
-                }
+            handler: (context: TriggeredAbilityContext) => {
                 const cards = context.player.conflictDeck.slice(0, 3);
                 const toHand = cards.filter((card: any) => card.hasTrait('kiho') || card.hasTrait('spell'));
                 const toDiscard = cards.filter((card: any) => !card.hasTrait('kiho') && !card.hasTrait('spell'));

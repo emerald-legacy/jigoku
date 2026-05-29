@@ -38,10 +38,7 @@ export default class EbonyBloodGarrison extends StrongholdCard {
                         card.facedown && card.location !== Locations.StrongholdProvince
                 }
             },
-            handler: (context?: TriggeredAbilityContext) => {
-                if(!context) {
-                    return;
-                }
+            handler: (context: TriggeredAbilityContext) => {
                 const provinces = [context.targets[MY_PROVINCE] as ProvinceCard, context.targets[OPP_PROVINCE] as ProvinceCard];
                 context.game.queueStep(
                     new SimpleStep(context.game, () =>

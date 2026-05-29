@@ -1,4 +1,5 @@
 import { CharacterStatus } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 
@@ -16,7 +17,7 @@ export default class StandYourGround extends DrawCard {
             cannotBeMirrored: true,
             gameAction: AbilityDsl.actions.cancel((context) => ({
                 replacementGameAction: AbilityDsl.actions.discardStatusToken({
-                    target: (context as any).event.card.getStatusToken(CharacterStatus.Honored)
+                    target: (context as TriggeredAbilityContext).event.card.getStatusToken(CharacterStatus.Honored)
                 })
             }))
         });

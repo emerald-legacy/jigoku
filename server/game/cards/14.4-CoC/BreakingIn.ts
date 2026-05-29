@@ -12,10 +12,7 @@ export default class BreakingIn extends ProvinceCard {
             when: {
                 onCardRevealed: (event: EventPayload<EventNames.OnCardRevealed>, context: TriggeredAbilityContext) => event.card === context.source
             },
-            handler: (context?: TriggeredAbilityContext) => {
-                if(!context) {
-                    return;
-                }
+            handler: (context: TriggeredAbilityContext) => {
                 return this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Select a card:',
                     context: context,

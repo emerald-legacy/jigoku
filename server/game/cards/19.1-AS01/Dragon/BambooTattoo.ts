@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, EventNames, Locations, Players } from '../../../Constants.js';
 import DrawCard from '../../../drawcard.js';
@@ -45,10 +46,11 @@ export default class BambooTattoo extends DrawCard {
     }
 
     private isSelfTrigger(context: TriggeredAbilityContext<this>) {
+        const triggerCtx = context.event.context as AbilityContext;
         return (
             context.source.controller &&
-            context.event.context.player &&
-            context.source.controller === context.event.context.player
+            triggerCtx.player &&
+            context.source.controller === triggerCtx.player
         );
     }
 }

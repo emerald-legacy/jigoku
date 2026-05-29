@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../basecard.js';
 import { Locations } from '../../../Constants.js';
@@ -28,8 +29,8 @@ export default class DaidojiAhma extends DrawCard {
             gameAction: AbilityDsl.actions.cancel(),
             effect: 'cancel the effects of {1}{2}',
             effectArgs: (context) => [
-                context.event.context.source.type === 'ring' ? 'the ' : '',
-                context.event.context.source
+                (context.event.context as AbilityContext).source.type === 'ring' ? 'the ' : '',
+                (context.event.context as AbilityContext).source
             ]
         });
     }

@@ -1,4 +1,5 @@
 import { CardTypes, ConflictTypes, Players, TargetModes } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 import { Conflict } from '../../../conflict.js';
@@ -14,7 +15,7 @@ export default class TwoHands extends DrawCard {
             target: {
                 controller: Players.Opponent,
                 gameAction: AbilityDsl.actions.duelAddParticipant((context) => ({
-                    duel: (context as any).event.duel
+                    duel: (context as TriggeredAbilityContext).event.duel
                 }))
             }
         });

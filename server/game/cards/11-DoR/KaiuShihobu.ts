@@ -62,9 +62,6 @@ export default class KaiuShihobu extends DrawCard {
                 }
             },
             handler: (context) => {
-                if(!context) {
-                    return;
-                }
                 let holding = context.targets.first as DrawCard;
                 let province = context.targets.second as ProvinceCard;
 

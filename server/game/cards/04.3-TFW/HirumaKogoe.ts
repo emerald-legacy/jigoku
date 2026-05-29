@@ -11,9 +11,6 @@ class HirumaKogoe extends DrawCard {
             },
             effect: 'rearrange the top 3 cards of their conflict deck',
             handler: (context) => {
-                if(!context) {
-                    return;
-                }
                 this.hirumaKogoePrompt(context, context.player.conflictDeck.slice(0, 3), [], 'Which card do you want to be on top?');
             }
         });

@@ -28,9 +28,6 @@ export default class EbbAndFlow extends DrawCard {
             effect: 'switch {1}\'s military and political skill',
             effectArgs: context => [context.targets.opponents],
             then: context => {
-                if(!context) {
-                    return {};
-                }
                 const ctx = context;
                 return {
                     thenCondition: () => ctx.player.fate > 0 && ctx.game.actions.loseFate().canAffect(ctx.player, ctx),

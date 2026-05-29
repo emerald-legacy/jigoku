@@ -2,6 +2,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../basecard.js';
 import { CardTypes } from '../../Constants.js';
 import DrawCard from '../../drawcard.js';
+import type EventWindow from '../../Events/EventWindow.js';
 import ThenAbility from '../../ThenAbility.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
@@ -19,19 +20,16 @@ export default class KitsukiShomon extends DrawCard {
                     card !== context.source
             },
             effect: 'dishonor {0} instead of {1}',
-            effectArgs: (context?: TriggeredAbilityContext) => context?.event.card,
-            handler: (context?: TriggeredAbilityContext) => {
-                if(!context) {
-                    return;
-                }
+            effectArgs: (context: TriggeredAbilityContext) => context?.event.card,
+            handler: (context: TriggeredAbilityContext) => {
                 let newEvent = AbilityDsl.actions.dishonor().getEvent(context.source, context);
                 context.event.replacementEvent = newEvent;
                 let thenAbility = new ThenAbility(context.source, {
                     gameAction: AbilityDsl.actions.ready()
                 });
                 context.events = [newEvent];
-                context.event.window.addEvent(newEvent);
-                context.event.window.addThenAbility(thenAbility, context);
+                (context.event.window as EventWindow).addEvent(newEvent);
+                (context.event.window as EventWindow).addThenAbility(thenAbility, context);
                 context.cancel();
             }
         });

@@ -20,10 +20,7 @@ class WalkingTheWay extends DrawCard {
             title: 'Place a card from your deck faceup on a province',
             condition: (context: AbilityContext) => context.player.dynastyDeck.length > 0,
             effect: 'look at the top three cards of their dynasty deck',
-            handler: (context?: AbilityContext) => {
-                if(!context) {
-                    return;
-                }
+            handler: (context: AbilityContext) => {
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Choose a card to place in a province',
                     context: context,

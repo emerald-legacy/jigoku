@@ -24,7 +24,7 @@ class DistinguishedDojo extends DrawCard {
             },
             limit: AbilityDsl.limit.perRound(3),
             gameAction: AbilityDsl.actions.addToken(),
-            then: (context?: AbilityContext) => ({
+            then: (context: AbilityContext) => ({
                 target: {
                     mode: TargetModes.Select,
                     activePromptTitle: 'Sacrifice ' + (context?.source.name ?? '') + '?',

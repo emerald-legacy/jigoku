@@ -1,4 +1,5 @@
 import { CardTypes, Players } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 import { Duel } from '../../../Duel.js';
@@ -15,7 +16,7 @@ export default class Coward extends DrawCard {
                 controller: Players.Any,
                 hidePromptIfSingleCard: true,
                 cardCondition: (card: DrawCard) => {
-                    const duel: Duel = (context as any).event.duel;
+                    const duel: Duel = (context as TriggeredAbilityContext).event.duel;
                     const isInvolved = duel.isInvolved(card);
                     const isChallenger = duel.challenger === card;
                     const higherSkill = duel.targets.some(

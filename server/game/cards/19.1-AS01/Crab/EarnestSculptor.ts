@@ -1,4 +1,6 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type BaseAction from '../../../BaseAction.js';
 import type BaseCard from '../../../basecard.js';
 import { CardTypes, Locations } from '../../../Constants.js';
@@ -39,13 +41,13 @@ export default class EarnestSculptor extends DrawCard {
                     (event.context.ability as BaseAction).getReducedCost(event.context) > 0
             },
             effect: 'reduce the cost of {1} by 1',
-            effectArgs: (context) => [context.event.context.source],
+            effectArgs: (context) => [(context.event.context as AbilityContext).source],
             gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
                 effect: AbilityDsl.effects.reduceNextPlayedCardCost(
                     1,
                     (card: BaseCard) =>
-                        card === (context as any).event.card || card === (context as any).event.context.source
+                        card === (context as TriggeredAbilityContext).event.card || card === ((context as TriggeredAbilityContext).event.context as AbilityContext).source
                 )
             }))
         });

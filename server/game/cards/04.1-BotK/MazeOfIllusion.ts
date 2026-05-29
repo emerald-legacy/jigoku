@@ -22,10 +22,7 @@ export default class MazeOfIllusion extends DrawCard {
             },
             effect: 'bow and dishonor {0} if {1} can\'t guess whether their dial is even or odd',
             effectArgs: (context) => context.player.opponent as Player,
-            handler: (context?: AbilityContext) => {
-                if(!context) {
-                    return;
-                }
+            handler: (context: AbilityContext) => {
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Choose a value to set your honor dial at',
                     context: context,

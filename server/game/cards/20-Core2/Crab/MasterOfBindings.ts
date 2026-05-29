@@ -1,4 +1,5 @@
 import { CardTypes } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 
@@ -14,7 +15,7 @@ export default class MasterOfBindings extends DrawCard {
                     card.controller === context.player.opponent &&
                     ((card as DrawCard).printedCost ?? 0) <= 3
             },
-            gameAction: AbilityDsl.actions.bow((context) => ({ target: (context as any).event.card }))
+            gameAction: AbilityDsl.actions.bow((context) => ({ target: (context as TriggeredAbilityContext).event.card }))
         });
     }
 }

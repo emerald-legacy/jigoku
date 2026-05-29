@@ -10,9 +10,6 @@ class Gossip extends DrawCard {
         this.action({
             title: 'Name a card that your opponent cannot play for the phase',
             handler: context => {
-                if(!context) {
-                    return;
-                }
                 this.game.promptWithMenu(context.player, this, {
                     context: context,
                     activePrompt: {

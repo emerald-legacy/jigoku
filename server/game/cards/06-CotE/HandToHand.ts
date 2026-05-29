@@ -17,9 +17,6 @@ class HandToHand extends DrawCard {
             },
             effect: 'discard {0} from play',
             then: context => {
-                if(!context) {
-                    return {};
-                }
                 const ctx = context;
                 return {
                     target: {

@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
 import DrawCard from '../../../drawcard.js';
 
 export default class ReadyForBattle extends DrawCard {
@@ -14,7 +15,7 @@ export default class ReadyForBattle extends DrawCard {
                         (context.player.opponent && event.context?.player === context.player.opponent))
             },
             cannotBeMirrored: true,
-            gameAction: AbilityDsl.actions.ready((context) => ({ target: (context as any).event.card }))
+            gameAction: AbilityDsl.actions.ready((context) => ({ target: (context as TriggeredAbilityContext).event.card }))
         });
     }
 }

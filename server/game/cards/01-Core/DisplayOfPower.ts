@@ -15,9 +15,6 @@ class DisplayOfPower extends DrawCard {
             cannotBeMirrored: true,
             effect: 'resolve and claim the ring when the ring effect resolves',
             handler: context => {
-                if(!context) {
-                    return;
-                }
                 this.game.once(EventNames.OnResolveConflictRing + ':' + AbilityTypes.WouldInterrupt, (event: any) => this.onResolveConflictRing(event, context));
             }
         });

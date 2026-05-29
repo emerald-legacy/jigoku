@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
 import DrawCard from '../../../drawcard.js';
 
 export default class IndomitableWill extends DrawCard {
@@ -16,7 +17,7 @@ export default class IndomitableWill extends DrawCard {
             effect: 'prevent {1} from bowing as a result of the conflict\'s resolution',
             effectArgs: (context) => context.player.cardsInPlay.find((card: any) => card.isParticipating()) as any,
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: (context as any).event.conflict.getCharacters(context.player),
+                target: (context as TriggeredAbilityContext).event.conflict.getCharacters(context.player),
                 effect: AbilityDsl.effects.doesNotBow()
             }))
         });

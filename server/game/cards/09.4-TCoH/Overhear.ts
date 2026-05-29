@@ -30,7 +30,7 @@ export default class Overhear extends DrawCard {
                 };
             }),
             condition: (context) => context.game.isDuringConflict('political') && context.player.opponent !== undefined,
-            then: (context?: AbilityContext) => {
+            then: (context: AbilityContext) => {
                 if(!context || !context.game.currentConflict) {
                     return {};
                 }

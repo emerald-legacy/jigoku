@@ -1,4 +1,5 @@
 import { DuelTypes } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../drawcard.js';
 
@@ -17,7 +18,7 @@ export default class LetHimGoBy extends DrawCard {
                     event.card.isParticipating()
             },
             gameAction: AbilityDsl.actions.bow((context) => ({
-                target: (context as any).event.card
+                target: (context as TriggeredAbilityContext).event.card
             }))
         });
 
