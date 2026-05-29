@@ -5,7 +5,7 @@ import { CardStatusManager } from './CardStatusManager.js';
 import CardAbility from './CardAbility.js';
 import TriggeredAbility from './triggeredability.js';
 import type BaseCardAbility from './BaseCardAbility.js';
-import Game from './game.js';
+import Game from './Game.js';
 import DynastyCardAction from './dynastycardaction.js';
 
 import { AbilityContext } from './AbilityContext.js';

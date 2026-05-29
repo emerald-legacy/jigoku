@@ -3,7 +3,7 @@ import type Effect from './Effects/Effect.js';
 import type EffectSource from './EffectSource.js';
 import type { Event } from './Events/Event.js';
 import { EventRegistrar } from './EventRegistrar.js';
-import type Game from './game.js';
+import type Game from './Game.js';
 
 interface CustomDurationEvent {
     name: string;

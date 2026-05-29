@@ -5,7 +5,7 @@ import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import TriggeredAbilityWindow from '../gamesteps/triggeredabilitywindow.js';
 import { AbilityTypes } from '../Constants.js';
 import KeywordAbilityWindow from '../gamesteps/keywordabilitywindow.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 import type { Event } from './Event.js';
 
 export default class EventWindow extends BaseStepWithPipeline {

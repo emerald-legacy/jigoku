@@ -2,7 +2,7 @@ import { GameModes } from '../../GameModes.js';
 import { Locations } from '../Constants.js';
 import { randomItem } from '../utils/helpers.js';
 import type BaseCard from '../basecard.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 import { Phase } from './Phase.js';
 import { SimpleStep } from './SimpleStep.js';
 import MulliganConflictPrompt from './setup/mulliganconflictprompt.js';

@@ -1,5 +1,5 @@
 
-import Game from '../../../build/server/game/game.js';
+import Game from '../../../build/server/game/Game.js';
 import Player from '../../../build/server/game/player.js';
 import { Spectator } from '../../../build/server/game/Spectator.js';
 

@@ -3,7 +3,7 @@ import { CardTypes, ConflictTypes, EffectNames, Elements, EventNames, Locations 
 import { GameObject } from './GameObject.js';
 import { ProvinceCard } from './ProvinceCard.js';
 import BaseCard from './basecard.js';
-import Game from './game.js';
+import Game from './Game.js';
 import Player from './player.js';
 import type Ring from './ring.js';
 import DrawCard from './drawcard.js';

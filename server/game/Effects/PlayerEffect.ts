@@ -1,6 +1,6 @@
 import Effect, { type EffectMatchFn } from './Effect.js';
 import { Players } from '../Constants.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 
 export default class PlayerEffect extends Effect {
     targetController: string;

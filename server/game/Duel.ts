@@ -3,7 +3,7 @@ import { DuelTypes, EffectNames, EventNames, Locations } from './Constants.js';
 import { GameMode, parseGameMode } from './GameMode.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import type DrawCard from './drawcard.js';
-import type Game from './game.js';
+import type Game from './Game.js';
 import type Player from './player.js';
 import { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './basecard.js';

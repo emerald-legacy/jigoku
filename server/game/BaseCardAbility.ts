@@ -3,7 +3,7 @@ import BaseAbility from './baseability.js';
 import { Stages } from './Constants.js';
 import type Player from './player.js';
 import type BaseCard from './basecard.js';
-import type Game from './game.js';
+import type Game from './Game.js';
 
 /**
  * An ability whose source is a card (play actions, card actions, reactions),

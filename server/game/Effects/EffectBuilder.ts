@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAbility from '../baseability.js';
 import type BaseCard from '../basecard.js';
 import type { Durations, EffectNames, Locations } from '../Constants.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 import type { GameAction, GameActionProperties } from '../GameActions/GameAction.js';
 import type { WhenType } from '../Interfaces.js';
 import type Player from '../player.js';

@@ -1,7 +1,7 @@
 import AbilityDsl from './abilitydsl.js';
 import { GameObject } from './GameObject.js';
 import { Locations, Durations } from './Constants.js';
-import type Game from './game.js';
+import type Game from './Game.js';
 import type Effect from './Effects/Effect.js';
 
 type EffectFactory = (game: Game, source: any, properties: EffectProperties) => Effect;

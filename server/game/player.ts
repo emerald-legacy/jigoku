@@ -27,7 +27,7 @@ import {
     PlayTypes
 } from './Constants.js';
 import { GameModes } from '../GameModes.js';
-import type Game from './game.js';
+import type Game from './Game.js';
 import type Socket from '../socket.js';
 import type BaseCard from './basecard.js';
 import type DrawCard from './drawcard.js';

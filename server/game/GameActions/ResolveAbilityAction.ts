@@ -4,7 +4,7 @@ import { EventNames } from '../Constants.js';
 import type DrawCard from '../drawcard.js';
 import type { Event } from '../Events/Event.js';
 import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 import AbilityResolver from '../gamesteps/abilityresolver.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import type Player from '../player.js';

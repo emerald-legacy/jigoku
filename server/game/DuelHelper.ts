@@ -3,7 +3,7 @@ import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './basecard.js';
 import { CardTypes, Players } from './Constants.js';
 import type DrawCard from './drawcard.js';
-import type Game from './game.js';
+import type Game from './Game.js';
 import { InitiateDuel } from './Interfaces.js';
 
 interface InitiateDuelHelperProps {

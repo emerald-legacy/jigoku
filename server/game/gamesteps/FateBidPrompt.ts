@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 import { JointGameAction } from '../GameActions/JointGameAction.js';
 import { LoseFateAction } from '../GameActions/LoseFateAction.js';
 import type Player from '../player.js';

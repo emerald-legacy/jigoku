@@ -1,6 +1,6 @@
 import { UiPrompt } from './UiPrompt.js';
 import { EventNames, Locations, Players, EffectNames } from '../Constants.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 import type Player from '../player.js';
 
 class ActionWindow extends UiPrompt {

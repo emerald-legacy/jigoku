@@ -5,7 +5,7 @@ import https from 'https';
 import jwt from 'jsonwebtoken';
 import * as socketio from 'socket.io';
 
-import Game from '../game/game.js';
+import Game from '../game/Game.js';
 import { cards as cardLibrary } from '../game/cards/index.js';
 import type { GameRouter } from '../game/GameRouter.js';
 import type Player from '../game/player.js';

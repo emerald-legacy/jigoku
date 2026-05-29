@@ -1,7 +1,7 @@
 import { EventNames, Locations, Phases, Players } from '../Constants.js';
 import { ready, returnRing } from '../GameActions/GameActions.js';
 import type DrawCard from '../drawcard.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 import type Player from '../player.js';
 import { Phase } from './Phase.js';
 import { SimpleStep } from './SimpleStep.js';

@@ -1,7 +1,7 @@
 import { matchCardByNameAndPack } from './cardutil.js';
 import { detectBinary } from '../../server/util.js';
 import { GameModes } from '../../server/GameModes.js';
-import type Game from '../../server/game/game.js';
+import type Game from '../../server/game/Game.js';
 import type Player from '../../server/game/player.js';
 import type BaseCard from '../../server/game/basecard.js';
 import type DrawCard from '../../server/game/drawcard.js';

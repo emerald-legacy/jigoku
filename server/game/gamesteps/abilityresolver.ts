@@ -3,7 +3,7 @@ import { SimpleStep } from './SimpleStep.js';
 import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent.js';
 import InitiateAbilityEventWindow from '../Events/InitiateAbilityEventWindow.js';
 import { Locations, Stages, CardTypes, EventNames } from '../Constants.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 import type { Event } from '../Events/Event.js';
 
 class AbilityResolver extends BaseStepWithPipeline {

@@ -5,7 +5,7 @@ import DrawCard from '../../../drawcard.js';
 import type { Cost } from '../../../Costs.js';
 import type Player from '../../../player.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import type Game from '../../../game.js';
+import type Game from '../../../Game.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 
 const GLOBAL_TRACKER = new WeakMap<Game, WeakMap<Player, number>>();

@@ -1,4 +1,4 @@
-import type Game from './game.js';
+import type Game from './Game.js';
 
 interface EventHandler {
     name: string;

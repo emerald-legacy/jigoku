@@ -1,5 +1,5 @@
 import Effect from './Effect.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 
 export default class DuelEffect extends Effect {
     duel: any;

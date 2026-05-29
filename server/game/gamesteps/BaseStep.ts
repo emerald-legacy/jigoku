@@ -1,5 +1,5 @@
 import type BaseCard from '../basecard.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 import type Player from '../player.js';
 import type Ring from '../ring.js';
 import type { Step } from './Step.js';

@@ -1,4 +1,4 @@
-import Game from '../../server/game/game.js';
+import Game from '../../server/game/Game.js';
 import PlayerInteractionWrapper from './playerinteractionwrapper.js';
 import * as Settings from '../../server/settings.js';
 import { cards as cardLibrary } from '../../server/game/cards/index.js';

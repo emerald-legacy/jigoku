@@ -4,7 +4,7 @@ import type BaseCardAbility from '../BaseCardAbility.js';
 import { Locations, PlayTypes, Stages } from '../Constants.js';
 import type DrawCard from '../drawcard.js';
 import type { Event } from '../Events/Event.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 import AbilityResolver from '../gamesteps/abilityresolver.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';

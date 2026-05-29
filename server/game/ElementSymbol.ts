@@ -2,7 +2,7 @@ import { Elements } from './Constants.js';
 import EffectSource from './EffectSource.js';
 import BaseCard from './basecard.js';
 import type Effect from './Effects/Effect.js';
-import Game from './game.js';
+import Game from './Game.js';
 
 type Info = {
     element: Elements

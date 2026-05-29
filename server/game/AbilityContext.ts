@@ -6,7 +6,7 @@ import type DrawCard from './drawcard.js';
 import { Locations, PlayTypes, Stages } from './Constants.js';
 import EffectSource from './EffectSource.js';
 import type { Event } from './Events/Event.js';
-import type Game from './game.js';
+import type Game from './Game.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type Player from './player.js';
 import type Ring from './ring.js';

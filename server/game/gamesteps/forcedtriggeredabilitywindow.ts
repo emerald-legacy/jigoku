@@ -1,7 +1,7 @@
 import { BaseStep } from './BaseStep.js';
 import { TriggeredAbilityWindowTitle } from './TriggeredAbilityWindowTitle.js';
 import { Locations, AbilityTypes } from '../Constants.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 import type { Event } from '../Events/Event.js';
 import type EventWindow from '../Events/EventWindow.js';
 import type Player from '../player.js';

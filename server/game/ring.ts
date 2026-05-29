@@ -1,6 +1,6 @@
 import EffectSource from './EffectSource.js';
 import { ConflictTypes, EffectNames, Elements } from './Constants.js';
-import type Game from './game.js';
+import type Game from './Game.js';
 import type Player from './player.js';
 import type DrawCard from './drawcard.js';
 

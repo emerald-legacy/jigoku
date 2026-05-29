@@ -2,7 +2,7 @@ import type { AbilityContext } from './AbilityContext.js';
 import type { AbilityLimit } from './AbilityLimit.js';
 import type BaseCard from './basecard.js';
 import type { CardTypes, PlayTypes } from './Constants.js';
-import type Game from './game.js';
+import type Game from './Game.js';
 import type Player from './player.js';
 
 export type CostReducerProps = {

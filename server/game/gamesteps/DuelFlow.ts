@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { EffectNames, EventNames } from '../Constants.js';
 import type { Duel } from '../Duel.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
 import { SimpleStep } from './SimpleStep.js';
 
