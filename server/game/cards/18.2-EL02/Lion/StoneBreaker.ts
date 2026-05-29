@@ -1,6 +1,6 @@
 import DrawCard from '../../../drawcard.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardTypes, Locations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 class StoneBreaker extends DrawCard {
@@ -13,7 +13,6 @@ class StoneBreaker extends DrawCard {
             targets: {
                 cardInProvince: {
                     location: [Locations.Provinces, Locations.PlayArea],
-                    player: Players.Any,
                     cardCondition: card =>
                         (card.isInProvince() && card.type !== CardTypes.Province && card.type !== CardTypes.Stronghold) ||
                         (card.type === CardTypes.Attachment && card.parent && card.parent.type === CardTypes.Province)
@@ -23,7 +22,6 @@ class StoneBreaker extends DrawCard {
                     dependsOn: 'cardInProvince',
                     location: [Locations.Provinces],
                     cardType: CardTypes.Province,
-                    player: Players.Any,
                     cardCondition: (card, context) =>
                         card.location !== Locations.StrongholdProvince &&
                         !card.isBroken &&

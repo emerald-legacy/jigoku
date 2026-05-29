@@ -1,6 +1,6 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, Players } from '../../Constants.js';
+import { Locations } from '../../Constants.js';
 
 class HidaSugi extends DrawCard {
     static id = 'hida-sugi';
@@ -13,7 +13,6 @@ class HidaSugi extends DrawCard {
             },
             target: {
                 location: Locations.DynastyDiscardPile,
-                player: Players.Any,
                 gameAction: AbilityDsl.actions.moveCard({ destination: Locations.DynastyDeck, bottom: true})
             },
             effect: 'move {0} to bottom of {1}\'s dynasty deck',

@@ -1,5 +1,5 @@
 import DrawCard from '../../../drawcard.js';
-import { Locations, Players } from '../../../Constants.js';
+import { Locations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 class FieldOfTheFallen extends DrawCard {
@@ -21,7 +21,6 @@ class FieldOfTheFallen extends DrawCard {
                 if(moreHonorable) {
                     gameActions.push(AbilityDsl.actions.selectCard(context => ({
                         location: [Locations.DynastyDiscardPile, Locations.ConflictDiscardPile],
-                        player: Players.Any,
                         activePromptTitle: 'Select a card to place on the bottom of a deck',
                         message: '{0} places {1} on the bottom of {2}\'s {3} deck',
                         messageArgs: card => [context.player, card, card.owner, card.isDynasty ? 'dynasty' : 'conflict'],

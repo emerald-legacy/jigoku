@@ -1,6 +1,6 @@
 import DrawCard from '../../drawcard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes, Players, CardTypes, CharacterStatus } from '../../Constants.js';
+import { TargetModes, CardTypes, CharacterStatus } from '../../Constants.js';
 
 class AGameOfLetters extends DrawCard {
     static id = 'a-game-of-letters';
@@ -21,7 +21,6 @@ class AGameOfLetters extends DrawCard {
                     dependsOn: 'token',
                     cardType: CardTypes.Character,
                     cardCondition: (card, context) => card.controller !== context.tokens.token[0].card.controller && card.isParticipating(),
-                    player: Players.Any,
                     gameAction: AbilityDsl.actions.conditional({
                         condition: context => context.tokens.token[0].grantedStatus === CharacterStatus.Honored,
                         trueGameAction: AbilityDsl.actions.honor(),

@@ -1,5 +1,5 @@
 import DrawCard from '../../drawcard.js';
-import { Locations, Players } from '../../Constants.js';
+import { Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class KitsukiKagi extends DrawCard {
@@ -15,7 +15,6 @@ class KitsukiKagi extends DrawCard {
                 first: {
                     activePromptTitle: 'Choose up to 3 cards',
                     location: [Locations.DynastyDiscardPile, Locations.ConflictDiscardPile],
-                    player: Players.Any,
                     gameAction: AbilityDsl.actions.moveCard({ destination: Locations.RemovedFromGame })
                 },
                 second: {
@@ -23,7 +22,6 @@ class KitsukiKagi extends DrawCard {
                     dependsOn: 'first',
                     optional: true,
                     location: [Locations.DynastyDiscardPile, Locations.ConflictDiscardPile],
-                    player: Players.Any,
                     cardCondition: (card, context) =>
                         card.controller === context.targets.first.controller &&
                         card.location === context.targets.first.location &&
@@ -35,7 +33,6 @@ class KitsukiKagi extends DrawCard {
                     dependsOn: 'first',
                     optional: true,
                     location: [Locations.DynastyDiscardPile, Locations.ConflictDiscardPile],
-                    player: Players.Any,
                     cardCondition: (card, context) =>
                         card.controller === context.targets.first.controller &&
                         card.location === context.targets.first.location &&

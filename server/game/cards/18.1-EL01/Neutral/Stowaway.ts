@@ -1,6 +1,6 @@
 import DrawCard from '../../../drawcard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { EventNames, Locations, Players, TargetModes } from '../../../Constants.js';
+import { EventNames, Locations, TargetModes } from '../../../Constants.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 class Stowaway extends DrawCard {
@@ -18,7 +18,6 @@ class Stowaway extends DrawCard {
             effectArgs: context => [context.source],
             target: {
                 location: [Locations.DynastyDiscardPile, Locations.ConflictDiscardPile],
-                player: Players.Any,
                 mode: TargetModes.UpTo,
                 numCards: 2,
                 activePromptTitle: 'Choose up to 2 cards in a discard pile',

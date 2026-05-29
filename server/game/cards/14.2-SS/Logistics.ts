@@ -1,6 +1,6 @@
 import DrawCard from '../../drawcard.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
-import { Locations, CardTypes, Players } from '../../Constants.js';
+import { Locations, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Logistics extends DrawCard {
@@ -12,7 +12,6 @@ class Logistics extends DrawCard {
             targets: {
                 cardInProvince: {
                     location: [Locations.Provinces, Locations.PlayArea],
-                    player: Players.Any,
                     cardCondition: card =>
                         (card.isInProvince() && card.type !== CardTypes.Province && card.type !== CardTypes.Stronghold) ||
                         (card.type === CardTypes.Attachment && card.parent && card.parent.type === CardTypes.Province)
@@ -22,7 +21,6 @@ class Logistics extends DrawCard {
                     dependsOn: 'cardInProvince',
                     location: [Locations.Provinces],
                     cardType: CardTypes.Province,
-                    player: Players.Any,
                     cardCondition: (card, context) =>
                         card.location !== Locations.StrongholdProvince &&
                         !card.isBroken &&
