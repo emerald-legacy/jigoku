@@ -14,8 +14,8 @@ export default class MountainsAnvilCastle extends StrongholdCard {
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card) => card.isParticipating() && card.attachments.length > 0,
-                gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: AbilityDsl.effects.modifyBothSkills(Math.min((context.target as DrawCard).attachments.length, 2))
+                gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
+                    effect: AbilityDsl.effects.modifyBothSkills(Math.min(context.target?.attachments.length ?? 0, 2))
                 }))
             },
             effect: 'give {0} +{1}{2}/{1}{3}',

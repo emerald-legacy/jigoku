@@ -21,10 +21,10 @@ export default class ShamefulDisplay extends ProvinceCard {
             },
             effect: 'change the personal honor of {0}',
             handler: (context: AbilityContext) => {
-                if(!context || !context.target) {
+                if(!context.target) {
                     return;
                 }
-                const targets = context.targets.target as DrawCard[];
+                const targets = context.getCards<DrawCard>('target');
                 if(targets.every((card: DrawCard) => !card.allowGameAction('honor', context))) {
                     this.game.promptForSelect(context.player, {
                         activePromptTitle: 'Choose a character to dishonor',

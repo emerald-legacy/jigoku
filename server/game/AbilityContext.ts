@@ -108,6 +108,14 @@ export class AbilityContext<S = any, T extends BaseCard = BaseCard> {
         this.provincesToRefill.push({ player, location });
     }
 
+    getCards<U extends BaseCard = BaseCard>(name: string = 'target'): U[] {
+        const slot = this.targets[name];
+        if(!slot) {
+            return [];
+        }
+        return (Array.isArray(slot) ? slot : [slot]) as U[];
+    }
+
     refill(): void {
         for(let player of this.game.getPlayersInFirstPlayerOrder()) {
             for(let refill of this.provincesToRefill.filter((refill) => refill.player === player)) {

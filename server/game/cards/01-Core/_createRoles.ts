@@ -1,5 +1,5 @@
 import type { Elements } from '../../Constants.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
+import { isProvinceCard } from '../../ProvinceCard.js';
 import { RoleCard } from '../../RoleCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { Conflict } from '../../Conflict.js';
@@ -37,8 +37,8 @@ export function createSeekerRole(id: string, element: Elements) {
                 when: {
                     onCardRevealed: (event, context) =>
                         event.card.controller === context.player &&
-                        event.card.isProvince &&
-                        (event.card as ProvinceCard).getElement().some((element: string) => context.source.hasTrait(element))
+                        isProvinceCard(event.card) &&
+                        event.card.getElement().some((element: string) => context.source.hasTrait(element))
                 },
                 gameAction: AbilityDsl.actions.gainFate()
             });

@@ -20,7 +20,7 @@ class TogashiYokuni extends DrawCard {
                 }))
             },
             effect: 'copy {1}\'s \'{2}\' ability',
-            effectArgs: context => [context.targetAbility?.card as DrawCard, context.targetAbility?.title ?? ''],
+            effectArgs: context => [context.targetAbility?.card ?? '', context.targetAbility?.title ?? ''],
             max: ability.limit.perRound(1)
         });
     }

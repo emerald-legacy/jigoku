@@ -1,3 +1,5 @@
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../BaseCard.js';
 import { AddTokenAction, AddTokenProperties } from './AddTokenAction.js';
 import { AffinityAction, AffinityActionProperties } from './AffinityAction.js';
 import { AttachAction, AttachActionProperties } from './AttachAction.js';
@@ -100,6 +102,7 @@ import { TriggerAbilityAction, TriggerAbilityProperties } from './TriggerAbility
 import { TurnCardFacedownAction, TurnCardFacedownProperties } from './TurnCardFacedownAction.js';
 
 type PropsFactory<Props> = Props | ((context: any) => Props);
+type TypedPropsFactory<Props, Target extends BaseCard = BaseCard> = Props | ((context: AbilityContext<any, Target>) => Props);
 
 //////////////
 // CARD
@@ -119,6 +122,8 @@ export function bow(propertyFactory: PropsFactory<BowActionProperties> = {}): Ca
 export function breakProvince(propertyFactory: PropsFactory<BreakProperties> = {}): CardGameAction {
     return new BreakAction(propertyFactory);
 }
+export function cardLastingEffect(propertyFactory: PropsFactory<LastingEffectCardProperties>): GameAction;
+export function cardLastingEffect<Target extends BaseCard>(propertyFactory: TypedPropsFactory<LastingEffectCardProperties, Target>): GameAction;
 export function cardLastingEffect(propertyFactory: PropsFactory<LastingEffectCardProperties>): GameAction {
     return new LastingEffectCardAction(propertyFactory);
 }

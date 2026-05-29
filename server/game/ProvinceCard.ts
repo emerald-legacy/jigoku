@@ -380,3 +380,7 @@ export class ProvinceCard extends BaseCard {
         return this.controller.getDynastyCardsInProvince(this.location);
     }
 }
+
+export function isProvinceCard(card: BaseCard): card is ProvinceCard {
+    return card.isProvince;
+}
