@@ -10,7 +10,7 @@ class Deathseeker extends DrawCard {
 
     setupCardAbilities(ability: typeof AbilityDsl) {
         // TODO: RemoveFateOrDiscard action?
-        this.reaction({
+        this.reaction<DrawCard>({
             title: 'Remove fate/discard character',
             when: {
                 afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: TriggeredAbilityContext) => event.conflict.loser === context.player && context.source.isAttacking()
@@ -22,9 +22,9 @@ class Deathseeker extends DrawCard {
                 cardCondition: (card: any, innerContext: AbilityContext) => (card.getFate() > 0 ? card.allowGameAction('removeFate', innerContext) : card.allowGameAction('discardFromPlay', innerContext))
             },
             effect: '{1} {0}',
-            effectArgs: (context: TriggeredAbilityContext) => context && (context.target as DrawCard).getFate() > 0 ? 'remove 1 fate from' : 'discard',
-            handler: (context: TriggeredAbilityContext) => {
-                if(!context || !context.target) {
+            effectArgs: (context) => (context.target?.getFate() ?? 0) > 0 ? 'remove 1 fate from' : 'discard',
+            handler: (context) => {
+                if(!context.target) {
                     return;
                 }
                 if(context.target.getFate() === 0) {

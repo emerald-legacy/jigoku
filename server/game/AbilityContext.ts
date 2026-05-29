@@ -28,7 +28,7 @@ export interface AbilityContextProperties {
     targetAbility?: CardAbility | null;
 }
 
-export class AbilityContext<S = any> {
+export class AbilityContext<S = any, T extends BaseCard = BaseCard> {
     game: Game;
     source: S;
     player: Player;
@@ -52,7 +52,7 @@ export class AbilityContext<S = any> {
      * is assigned a `BaseCard[]`; the few cards that use multi-card targets
      * read from `context.targets.target` instead and cast.
      */
-    target: BaseCard | undefined;
+    target: T | undefined;
     select: string = '';
     ring: Ring | undefined;
     token: StatusToken | undefined;

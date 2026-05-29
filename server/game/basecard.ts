@@ -260,39 +260,39 @@ class BaseCard extends EffectSource {
 
     }
 
-    action(properties: ActionProps<this>): void {
-        this.abilities.actions.push(this.createAction(properties));
+    action<Target extends BaseCard = BaseCard>(properties: ActionProps<this, Target>): void {
+        this.abilities.actions.push(this.createAction(properties as ActionProps));
     }
 
     createAction(properties: ActionProps): CardAction {
         return new CardAction(this, properties);
     }
 
-    triggeredAbility(abilityType: AbilityTypes, properties: TriggeredAbilityProps): void {
+    triggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityTypes, properties: TriggeredAbilityProps<Target>): void {
         this.abilities.reactions.push(this.createTriggeredAbility(abilityType, properties));
     }
 
-    createTriggeredAbility(abilityType: AbilityTypes, properties: TriggeredAbilityProps): TriggeredAbility {
+    createTriggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityTypes, properties: TriggeredAbilityProps<Target>): TriggeredAbility {
         return new TriggeredAbility(this, abilityType, properties as unknown as ConstructorParameters<typeof TriggeredAbility>[2]);
     }
 
-    reaction(properties: TriggeredAbilityProps): void {
+    reaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<Target>): void {
         this.triggeredAbility(AbilityTypes.Reaction, properties);
     }
 
-    forcedReaction(properties: TriggeredAbilityProps): void {
+    forcedReaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<Target>): void {
         this.triggeredAbility(AbilityTypes.ForcedReaction, properties);
     }
 
-    wouldInterrupt(properties: TriggeredAbilityProps): void {
+    wouldInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<Target>): void {
         this.triggeredAbility(AbilityTypes.WouldInterrupt, properties);
     }
 
-    interrupt(properties: TriggeredAbilityProps): void {
+    interrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<Target>): void {
         this.triggeredAbility(AbilityTypes.Interrupt, properties);
     }
 
-    forcedInterrupt(properties: TriggeredAbilityProps): void {
+    forcedInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<Target>): void {
         this.triggeredAbility(AbilityTypes.ForcedInterrupt, properties);
     }
 

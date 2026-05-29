@@ -2,21 +2,25 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../basecard.js';
 import { Locations, Players } from '../../Constants.js';
 import DrawCard from '../../drawcard.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 
 class BorderlandsFortifications extends DrawCard {
     static id = 'borderlands-fortifications';
 
     setupCardAbilities() {
-        this.action({
+        this.action<ProvinceCard>({
             title: 'Switch this card with another',
             target: {
                 location: Locations.Provinces,
                 controller: Players.Self,
-                cardCondition: (card: BaseCard, context: AbilityContext) => card.isDynasty && card !== context.source
+                cardCondition: (card: BaseCard, context?: AbilityContext) => card.isDynasty && card !== context?.source
             },
             effect: 'swap it with {1}',
-            effectArgs: (context: AbilityContext) => (context.target as DrawCard).isFacedown() ? 'a facedown card' : (context.target as DrawCard),
-            handler: (context: any) => {
+            effectArgs: (context) => context.target?.isFacedown() ? 'a facedown card' : context.target ?? '',
+            handler: (context) => {
+                if(!context.target) {
+                    return;
+                }
                 const location = context.source.location;
                 context.player.removeCardFromPile(context.source);
                 context.player.removeCardFromPile(context.target);

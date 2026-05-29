@@ -1,11 +1,12 @@
 import { AbilityContext, type AbilityContextProperties } from './AbilityContext.js';
+import type BaseCard from './basecard.js';
 import type { Event } from './Events/Event.js';
 
 interface TriggeredAbilityContextProperties extends AbilityContextProperties {
     event: Event;
 }
 
-export class TriggeredAbilityContext<S = any> extends AbilityContext<S> {
+export class TriggeredAbilityContext<S = any, T extends BaseCard = BaseCard> extends AbilityContext<S, T> {
     event: Event;
 
     constructor(properties: TriggeredAbilityContextProperties) {
@@ -13,8 +14,8 @@ export class TriggeredAbilityContext<S = any> extends AbilityContext<S> {
         this.event = properties.event;
     }
 
-    createCopy(newProps: Partial<TriggeredAbilityContextProperties>): TriggeredAbilityContext<this> {
-        return new TriggeredAbilityContext<this>(Object.assign(this.getProps(), newProps));
+    createCopy(newProps: Partial<TriggeredAbilityContextProperties>): TriggeredAbilityContext<this, T> {
+        return new TriggeredAbilityContext<this, T>(Object.assign(this.getProps(), newProps));
     }
 
     getProps(): TriggeredAbilityContextProperties {
