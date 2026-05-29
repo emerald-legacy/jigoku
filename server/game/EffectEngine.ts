@@ -146,7 +146,7 @@ export class EffectEngine {
         for(const effect of this.effects) {
             if(
                 effect.duration === Durations.UntilSelfPassPriority &&
-                event.player === (effect as any).targetController
+                event.player === effect.context.player
             ) {
                 effect.duration = Durations.UntilPassPriority;
             }
