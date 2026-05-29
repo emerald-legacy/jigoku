@@ -1,7 +1,7 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players } from '../../Constants.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 
 class WildfireKick extends DrawCard {
     static id = 'wildfire-kick';

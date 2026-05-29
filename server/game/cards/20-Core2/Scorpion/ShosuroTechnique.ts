@@ -1,7 +1,7 @@
 import { CardTypes, ConflictTypes, Durations, Players, TargetModes } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class ShosuroTechnique extends DrawCard {
     static id = 'shosuro-technique';

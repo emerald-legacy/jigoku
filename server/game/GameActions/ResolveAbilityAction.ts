@@ -1,14 +1,14 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type CardAbility from '../CardAbility.js';
 import { EventNames } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
+import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent.js';
 import type Game from '../Game.js';
 import AbilityResolver from '../gamesteps/abilityresolver.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
-import type Player from '../player.js';
-import type TriggeredAbility from '../triggeredability.js';
+import type Player from '../Player.js';
+import type TriggeredAbility from '../TriggeredAbility.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 

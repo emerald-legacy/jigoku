@@ -1,8 +1,8 @@
 import { AbilityContext } from '../../../AbilityContext.js';
-import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { Elements, EventNames } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 const ELEMENT_KEY = 'kitsuki-seiji-water';

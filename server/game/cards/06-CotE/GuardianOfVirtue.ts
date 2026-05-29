@@ -1,5 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 class GuardianOfVirtue extends DrawCard {
     static id = 'guardian-of-virtue';

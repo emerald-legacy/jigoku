@@ -1,6 +1,6 @@
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 import { EffectNames } from '../../Constants.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import Restriction from '../restriction.js';
 

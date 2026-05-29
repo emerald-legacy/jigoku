@@ -1,7 +1,7 @@
 import { GameModes } from '../../GameModes.js';
 import { Locations } from '../Constants.js';
 import { randomItem } from '../utils/helpers.js';
-import type BaseCard from '../basecard.js';
+import type BaseCard from '../BaseCard.js';
 import type Game from '../Game.js';
 import { Phase } from './Phase.js';
 import { SimpleStep } from './SimpleStep.js';

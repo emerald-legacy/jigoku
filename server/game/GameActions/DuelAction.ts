@@ -1,10 +1,10 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, Durations, EventNames, Locations, type DuelTypes } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
+import type DrawCard from '../DrawCard.js';
 import { Duel } from '../Duel.js';
 import type { Event } from '../Events/Event.js';
 import { DuelFlow } from '../gamesteps/DuelFlow.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import { type GameAction } from './GameAction.js';

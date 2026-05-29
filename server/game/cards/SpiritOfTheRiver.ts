@@ -1,5 +1,5 @@
-import DrawCard from '../drawcard.js';
-import type Player from '../player.js';
+import DrawCard from '../DrawCard.js';
+import type Player from '../Player.js';
 import { Locations, CardTypes } from '../Constants.js';
 
 class SpiritOfTheRiver extends DrawCard {

@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Durations, EventNames } from '../../Constants.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';

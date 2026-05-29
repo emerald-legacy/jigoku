@@ -1,7 +1,7 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import DrawCard from '../../drawcard.js';
-import type Player from '../../player.js';
+import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 
 class InsolentOutcast extends DrawCard {
     static id = 'insolent-outcast';

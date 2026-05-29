@@ -2,9 +2,9 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
-import type { Conflict } from '../../../conflict.js';
-import DrawCard from '../../../drawcard.js';
+import type BaseCard from '../../../BaseCard.js';
+import type { Conflict } from '../../../Conflict.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class DeployedGarrison extends DrawCard {
     static id = 'deployed-garrison';

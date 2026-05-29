@@ -2,15 +2,15 @@ import type { AbilityContext } from './AbilityContext.js';
 import type { EventPayload } from './Events/EventPayloads.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import type { GameAction } from './GameActions/GameAction.js';
-import type Ring from './ring.js';
-import type BaseCard from './basecard.js';
-import type DrawCard from './drawcard.js';
+import type Ring from './Ring.js';
+import type BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type CardAbility from './CardAbility.js';
 import type { DuelProperties } from './GameActions/DuelAction.js';
 import type { Players, TargetModes, CardTypes, Locations, EventNames, Phases } from './Constants.js';
 import type { StatusToken } from './StatusToken.js';
-import type Player from './player.js';
+import type Player from './Player.js';
 
 interface BaseTarget {
     activePromptTitle?: string;

@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseCard from '../basecard.js';
+import type BaseCard from '../BaseCard.js';
 import { CardTypes, EventNames } from '../Constants.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 

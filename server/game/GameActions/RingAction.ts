@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type Ring from '../ring.js';
+import type Ring from '../Ring.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
 import type { Event } from '../Events/Event.js';

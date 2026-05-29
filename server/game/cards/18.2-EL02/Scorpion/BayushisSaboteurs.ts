@@ -1,7 +1,7 @@
 import { EventNames, Locations, Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import type Player from '../../../player.js';
+import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';

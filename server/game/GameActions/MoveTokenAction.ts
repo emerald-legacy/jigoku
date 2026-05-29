@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { CharacterStatus, EventNames, Locations } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
+import type DrawCard from '../DrawCard.js';
 import type { StatusToken } from '../StatusToken.js';
 import { TokenAction, type TokenActionProperties } from './TokenAction.js';
 

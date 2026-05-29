@@ -1,7 +1,7 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Durations, EventNames, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class BayushiShinobu extends DrawCard {

@@ -1,5 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 import { CardTypes, Locations, Phases, Players } from '../../Constants.js';
 import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Phases, EventNames } from '../../Constants.js';
 
 class SeizeTheDay extends DrawCard {

@@ -1,6 +1,6 @@
 import StatModifier from './StatModifier.js';
 import { EffectNames } from './Constants.js';
-import type DrawCard from './drawcard.js';
+import type DrawCard from './DrawCard.js';
 import type { CardEffect } from './Effects/types.js';
 
 export type Exclusions = EffectNames[] | ((effect: CardEffect) => boolean);

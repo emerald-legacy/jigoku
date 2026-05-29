@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Phases } from '../../Constants.js';
 
 class TogashiMendicant extends DrawCard {

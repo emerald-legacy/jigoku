@@ -1,6 +1,6 @@
 import { Locations, Durations, Phases } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class MirumotoHitori extends DrawCard {
     static id = 'mirumoto-hitori';

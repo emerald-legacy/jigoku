@@ -1,6 +1,6 @@
 import { ConflictTypes, DuelTypes, Durations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class KakitaYuri extends DrawCard {
     static id = 'kakita-yuri';

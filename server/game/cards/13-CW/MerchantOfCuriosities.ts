@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard.js';
-import type BaseCard from '../../basecard.js';
+import DrawCard from '../../DrawCard.js';
+import type BaseCard from '../../BaseCard.js';
 import { Locations, TargetModes, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 

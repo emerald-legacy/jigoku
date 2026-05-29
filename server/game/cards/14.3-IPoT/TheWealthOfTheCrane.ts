@@ -1,10 +1,10 @@
 import { GameModes } from '../../../GameModes.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 import { CardTypes, Locations, Players } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
-import type Player from '../../player.js';
+import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 
 class TheWealthOfTheCrane extends DrawCard {

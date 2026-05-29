@@ -1,5 +1,5 @@
 import { AllPlayerPrompt } from './AllPlayerPrompt.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 
 class GameWonPrompt extends AllPlayerPrompt {
     winner: any;

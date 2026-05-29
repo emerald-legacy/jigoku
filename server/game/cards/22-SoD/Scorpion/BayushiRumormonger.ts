@@ -1,7 +1,7 @@
 import { Locations } from '../../../Constants.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class BayushiRumormonger extends DrawCard {
     static id = 'bayushi-rumormonger';

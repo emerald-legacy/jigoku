@@ -1,6 +1,6 @@
 import { CardTypes, Locations, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 
 function attachedToType(context: AbilityContext): CardTypes {

@@ -1,6 +1,6 @@
 import { CardTypes, Locations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { AshigaruRecruit } from '../../AshigaruRecruit.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 

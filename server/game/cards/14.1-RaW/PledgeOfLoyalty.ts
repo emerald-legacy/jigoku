@@ -1,5 +1,5 @@
 import { CharacterStatus } from '../../Constants.js';
-import type { TriggeredAbilityContext } from "../../TriggeredAbilityContext.js";
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 

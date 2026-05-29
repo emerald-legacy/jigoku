@@ -1,5 +1,5 @@
 import { AbilityContext, type AbilityContextProperties } from './AbilityContext.js';
-import type BaseCard from './basecard.js';
+import type BaseCard from './BaseCard.js';
 import type { Event } from './Events/Event.js';
 
 interface TriggeredAbilityContextProperties extends AbilityContextProperties {

@@ -3,7 +3,7 @@ import { AllPlayerPrompt } from './AllPlayerPrompt.js';
 import { TransferHonorAction } from '../GameActions/TransferHonorAction.js';
 import { EventNames, EffectNames } from '../Constants.js';
 import { GameModes } from '../../GameModes.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 
 class HonorBidPrompt extends AllPlayerPrompt {
     menuTitle: string;

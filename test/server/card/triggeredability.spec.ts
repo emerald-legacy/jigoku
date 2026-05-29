@@ -1,4 +1,4 @@
-import TriggeredAbility from '../../../server/game/triggeredability.js';
+import TriggeredAbility from '../../../server/game/TriggeredAbility.js';
 import { AbilityTypes } from '../../../server/game/Constants.js';
 
 interface TriggeredAbilityTestContext {

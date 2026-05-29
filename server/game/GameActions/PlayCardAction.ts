@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAction from '../BaseAction.js';
 import type BaseCardAbility from '../BaseCardAbility.js';
 import { Locations, PlayTypes, Stages } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
+import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import type Game from '../Game.js';
 import AbilityResolver from '../gamesteps/abilityresolver.js';

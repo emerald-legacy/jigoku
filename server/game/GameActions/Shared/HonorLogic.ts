@@ -1,5 +1,5 @@
 import { EffectNames } from '../../Constants.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 
 export function CalculateHonorLimit(player: Player, round: number, phase: string, plannedHonorAmount: number): [boolean, number] {
     if(!player || !player.getEffects) {

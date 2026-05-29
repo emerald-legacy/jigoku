@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import type Player from '../../player.js';
-import DrawCard from '../../drawcard.js';
+import type Player from '../../Player.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { EventNames, TargetModes, TokenTypes } from '../../Constants.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';

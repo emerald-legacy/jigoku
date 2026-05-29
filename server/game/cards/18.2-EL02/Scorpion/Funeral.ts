@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { EventNames, FavorTypes, Locations, Phases, Stages } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 

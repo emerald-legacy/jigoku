@@ -1,11 +1,11 @@
 import { CardTypes, CharacterStatus, EffectNames } from './Constants.js';
 import EffectSource from './EffectSource.js';
 import AbilityDsl from './abilitydsl.js';
-import type BaseCard from './basecard.js';
-import type DrawCard from './drawcard.js';
+import type BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
 import type Effect from './Effects/Effect.js';
 import type Game from './Game.js';
-import type Player from './player.js';
+import type Player from './Player.js';
 
 type EffectFactory = (game: Game, source: EffectSource, properties: Record<string, unknown>) => Effect;
 

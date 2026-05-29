@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames, Locations, Players } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
-import type Player from '../player.js';
+import type DrawCard from '../DrawCard.js';
+import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 import type { Event } from '../Events/Event.js';

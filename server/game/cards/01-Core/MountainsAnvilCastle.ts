@@ -1,7 +1,7 @@
 import { CardTypes } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type DrawCard from '../../drawcard.js';
+import type DrawCard from '../../DrawCard.js';
 
 export default class MountainsAnvilCastle extends StrongholdCard {
     static id = 'mountain-s-anvil-castle';

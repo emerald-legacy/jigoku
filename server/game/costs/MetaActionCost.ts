@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseCard from '../basecard.js';
+import type BaseCard from '../BaseCard.js';
 import { Locations, Players } from '../Constants.js';
 import type { Cost, Result } from '../Costs.js';
 import type { GameAction } from '../GameActions/GameAction.js';

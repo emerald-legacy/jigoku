@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, CharacterStatus, EventNames, Locations } from '../Constants.js';
-import type BaseCard from '../basecard.js';
+import type BaseCard from '../BaseCard.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 
 export type DishonorProperties = CardActionProperties;

@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import type BaseCard from '../../../basecard.js';
-import DrawCard from '../../../drawcard.js';
-import type Ring from '../../../ring.js';
+import type BaseCard from '../../../BaseCard.js';
+import DrawCard from '../../../DrawCard.js';
+import type Ring from '../../../Ring.js';
 import { TargetModes, CardTypes, AbilityTypes, Durations, EventNames } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { GameModes } from '../../../../GameModes.js';

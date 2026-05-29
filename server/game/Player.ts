@@ -29,10 +29,10 @@ import {
 import { GameModes } from '../GameModes.js';
 import type Game from './Game.js';
 import type Socket from '../socket.js';
-import type BaseCard from './basecard.js';
-import type DrawCard from './drawcard.js';
+import type BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
-import type Ring from './ring.js';
+import type Ring from './Ring.js';
 import type { ClockInterface } from './Clocks/types.js';
 import type { AbilityContext } from './AbilityContext.js';
 

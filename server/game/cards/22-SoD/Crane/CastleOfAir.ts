@@ -1,7 +1,7 @@
 import { AbilityTypes, EventNames, CardTypes, Locations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import BaseCard from '../../../basecard.js';
+import DrawCard from '../../../DrawCard.js';
+import BaseCard from '../../../BaseCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 
 

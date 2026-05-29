@@ -4,7 +4,7 @@ import { Locations, AbilityTypes } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from '../Events/Event.js';
 import type EventWindow from '../Events/EventWindow.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 
 class ForcedTriggeredAbilityWindow extends BaseStep {
     choices: any[];

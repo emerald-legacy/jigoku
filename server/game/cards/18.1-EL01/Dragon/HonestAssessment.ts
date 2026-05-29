@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { EventNames, Locations } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { shuffle } from '../../../utils/shuffle.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';

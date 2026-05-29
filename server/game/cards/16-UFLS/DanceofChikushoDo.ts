@@ -1,8 +1,8 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TargetModes, Locations } from '../../Constants.js';
 import { GameModes } from '../../../GameModes.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 
 class DanceOfChikushoDo extends DrawCard {
     static id = 'dance-of-chikusho-do';

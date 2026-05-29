@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
-import DrawCard from '../../drawcard.js';
+import type BaseCard from '../../BaseCard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class PerceptiveKitsuki extends DrawCard {
     static id = 'perceptive-kitsuki';

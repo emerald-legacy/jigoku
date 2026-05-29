@@ -1,4 +1,4 @@
-import type Player from './player.js';
+import type Player from './Player.js';
 import { ConflictTypes, Players } from './Constants.js';
 
 export interface ConflictRecord {

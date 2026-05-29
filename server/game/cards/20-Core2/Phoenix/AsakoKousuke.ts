@@ -2,7 +2,7 @@ import { CardTypes, TargetModes } from '../../../Constants.js';
 import { GameAction } from '../../../GameActions/GameAction.js';
 import { StatusToken } from '../../../StatusToken.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 const ORIGINL_TOKEN = 'original';
 const SELECTION = 'selection';

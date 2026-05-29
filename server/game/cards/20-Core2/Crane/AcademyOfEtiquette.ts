@@ -1,6 +1,6 @@
 import { TargetModes, Players, Phases, CardTypes, Durations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class AcademyOfEtiquette extends DrawCard {
     static id = 'academy-of-etiquette';

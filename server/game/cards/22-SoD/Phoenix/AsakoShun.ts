@@ -1,7 +1,7 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 function penalty(context: AbilityContext): number {
     const conflict = context.game.currentConflict;

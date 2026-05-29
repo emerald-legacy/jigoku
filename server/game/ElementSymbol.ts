@@ -1,6 +1,6 @@
 import { Elements } from './Constants.js';
 import EffectSource from './EffectSource.js';
-import BaseCard from './basecard.js';
+import BaseCard from './BaseCard.js';
 import type Effect from './Effects/Effect.js';
 import Game from './Game.js';
 

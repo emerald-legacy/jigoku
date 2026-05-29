@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, Phases } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 

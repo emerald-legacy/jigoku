@@ -2,10 +2,10 @@ import { GameModes } from '../GameModes.js';
 import { CardTypes, EffectNames, EventNames, Phases, Players } from './Constants.js';
 import { ReduceableFateCost } from './costs/ReduceableFateCost.js';
 import BaseAction from './BaseAction.js';
-import BaseCard from './basecard.js';
-import type DrawCard from './drawcard.js';
+import BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
 import { AbilityContext } from './AbilityContext.js';
-import Player from './player.js';
+import Player from './Player.js';
 import { Cost } from './Costs.js';
 
 function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIntoLocation) {

@@ -1,5 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Durations, CardTypes } from '../../Constants.js';
 
 class TaintedHero extends DrawCard {

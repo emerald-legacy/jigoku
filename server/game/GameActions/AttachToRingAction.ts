@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames, Locations } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
-import type Ring from '../ring.js';
+import type DrawCard from '../DrawCard.js';
+import type Ring from '../Ring.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export interface AttachToRingActionProperties extends CardActionProperties {

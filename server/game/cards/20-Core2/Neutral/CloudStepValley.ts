@@ -1,6 +1,6 @@
 import { CardTypes, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import type DrawCard from '../../../drawcard.js';
+import type DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 const STARTED_IN_CONFLICT = 'started_in';

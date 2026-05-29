@@ -1,10 +1,10 @@
 import { GameModes } from '../GameModes.js';
 import { EffectNames, Locations } from './Constants.js';
 import AbilityDsl from './abilitydsl.js';
-import BaseCard from './basecard.js';
+import BaseCard from './BaseCard.js';
 import { AttachmentManager } from './AttachmentManager.js';
-import type Player from './player.js';
-import type DrawCard from './drawcard.js';
+import type Player from './Player.js';
+import type DrawCard from './DrawCard.js';
 import StatModifier from './StatModifier.js';
 import type { CardData } from './types/CardData.js';
 

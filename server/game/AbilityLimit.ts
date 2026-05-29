@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import { EventNames } from './Constants.js';
-import Player from './player.js';
+import Player from './Player.js';
 import type CardAbility from './CardAbility.js';
 
 export interface AbilityLimit {

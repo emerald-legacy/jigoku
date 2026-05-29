@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
-import type Player from '../../player.js';
+import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 
 class SocialPuppeteer extends DrawCard {
     static id = 'social-puppeteer';

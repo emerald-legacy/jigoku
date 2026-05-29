@@ -1,6 +1,6 @@
 import { Locations } from './Constants.js';
-import type BaseCard from './basecard.js';
-import type DrawCard from './drawcard.js';
+import type BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 
 export class PlayerZones {

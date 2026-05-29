@@ -1,6 +1,6 @@
 import { CardTypes, Durations, EventNames, PlayTypes, Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class UtakuSumire extends DrawCard {

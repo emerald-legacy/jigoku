@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { AbilityTypes, CardTypes, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { ActionProps } from '../../../Interfaces.js';
 
 export default class DragonsClaw extends DrawCard {

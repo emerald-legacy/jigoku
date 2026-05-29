@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
-import DrawCard from '../../../drawcard.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class ReadyForBattle extends DrawCard {
     static id = 'ready-for-battle';

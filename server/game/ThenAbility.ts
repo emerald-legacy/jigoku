@@ -1,6 +1,6 @@
 import { AbilityContext } from './AbilityContext.js';
 import BaseCardAbility from './BaseCardAbility.js';
-import type BaseCard from './basecard.js';
+import type BaseCard from './BaseCard.js';
 
 interface ThenAbilityProperties {
     cost?: any;

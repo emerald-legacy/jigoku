@@ -1,7 +1,7 @@
 import { Durations, EventNames } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class ShiroKitsuki extends StrongholdCard {

@@ -1,6 +1,6 @@
 import { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
-import type Ring from '../ring.js';
+import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
 export type SwitchConflictElementProperties = RingActionProperties;

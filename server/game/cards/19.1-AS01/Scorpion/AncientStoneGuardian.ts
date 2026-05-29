@@ -1,7 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
+import type BaseCard from '../../../BaseCard.js';
 import { CardTypes, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { SequentialContextProperties } from '../../../GameActions/SequentialContextAction.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 

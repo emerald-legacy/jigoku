@@ -1,6 +1,6 @@
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type DrawCard from '../../../drawcard.js';
+import type DrawCard from '../../../DrawCard.js';
 
 export default class MomijiHalls extends StrongholdCard {
     static id = 'momiji-halls';

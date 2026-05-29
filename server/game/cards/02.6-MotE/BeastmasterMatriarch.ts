@@ -1,6 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
-import type Player from '../../player.js';
-import DrawCard from '../../drawcard.js';
+import type Player from '../../Player.js';
+import DrawCard from '../../DrawCard.js';
 
 class BeastmasterMatriarch extends DrawCard {
     static id = 'beastmaster-matriarch';

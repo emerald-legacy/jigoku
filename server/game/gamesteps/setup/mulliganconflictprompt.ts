@@ -1,6 +1,6 @@
 import MulliganDynastyPrompt from './mulligandynastyprompt.js';
 import { Locations } from '../../Constants.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 
 class MulliganConflictPrompt extends MulliganDynastyPrompt {
     completionCondition(player: Player): boolean {

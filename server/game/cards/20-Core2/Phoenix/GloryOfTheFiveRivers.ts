@@ -1,10 +1,10 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { FateBidPrompt, Result } from '../../../gamesteps/FateBidPrompt.js';
 import { SimpleStep } from '../../../gamesteps/SimpleStep.js';
-import Player from '../../../player.js';
+import Player from '../../../Player.js';
 
 function resolveActionOnSelection(context: AbilityContext, player: Player, action: 'honor' | 'dishonor') {
     const playerEnum = player === context.player ? Players.Self : Players.Opponent;

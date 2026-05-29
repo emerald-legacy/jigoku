@@ -1,7 +1,7 @@
 import type { AbilityContext } from './AbilityContext.js';
-import BaseCard from './basecard.js';
+import BaseCard from './BaseCard.js';
 import { EffectNames, Elements } from './Constants.js';
-import type Player from './player.js';
+import type Player from './Player.js';
 
 const illegalActions = new Set([
     'bow',

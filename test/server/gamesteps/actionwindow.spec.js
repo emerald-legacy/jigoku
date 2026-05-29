@@ -1,6 +1,6 @@
 import ActionWindow from '../../../build/server/game/gamesteps/actionwindow.js';
 import Game from '../../../build/server/game/Game.js';
-import Player from '../../../build/server/game/player.js';
+import Player from '../../../build/server/game/Player.js';
 import * as Settings from '../../../build/server/settings.js';
 
 describe('ActionWindow', function() {

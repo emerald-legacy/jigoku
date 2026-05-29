@@ -1,5 +1,5 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import type Ring from '../../ring.js';
+import type Ring from '../../Ring.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 export default class FuchiMura extends ProvinceCard {

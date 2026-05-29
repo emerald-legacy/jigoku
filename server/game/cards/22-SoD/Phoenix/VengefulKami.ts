@@ -1,12 +1,12 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { Conflict } from '../../../conflict.js';
+import { Conflict } from '../../../Conflict.js';
 import { EventNames, TargetModes, AbilityTypes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import Ring from '../../../ring.js';
+import Ring from '../../../Ring.js';
 
 export default class VengefulKami extends DrawCard {
     static id = 'vengeful-kami';

@@ -1,6 +1,6 @@
-import type Player from './player.js';
-import type BaseCard from './basecard.js';
-import type Ring from './ring.js';
+import type Player from './Player.js';
+import type BaseCard from './BaseCard.js';
+import type Ring from './Ring.js';
 import type { Step } from './gamesteps/Step.js';
 
 type StepFactory = () => Step;

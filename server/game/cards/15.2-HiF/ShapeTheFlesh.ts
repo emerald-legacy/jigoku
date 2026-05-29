@@ -1,5 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 class ShapeTheFlesh extends DrawCard {
     static id = 'shape-the-flesh';

@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, Durations, EventNames, Players } from '../../../Constants.js';
 import { Direction } from '../../../GameActions/ModifyBidAction.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class KakitaTechnique extends DrawCard {

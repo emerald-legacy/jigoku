@@ -1,8 +1,8 @@
 import { Durations } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import type { Conflict } from '../../../conflict.js';
+import DrawCard from '../../../DrawCard.js';
+import type { Conflict } from '../../../Conflict.js';
 
 export default class KitsukiSano extends DrawCard {
     static id = 'kitsuki-sano';

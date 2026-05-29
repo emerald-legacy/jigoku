@@ -3,8 +3,8 @@ import { Locations, Phases, PlayTypes, EventNames, CardTypes } from '../../Const
 import { putIntoPlay, sacrifice } from '../../GameActions/GameActions.js';
 import ThenAbility from '../../ThenAbility.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
-import DynastyCardAction from '../../dynastycardaction.js';
+import DrawCard from '../../DrawCard.js';
+import DynastyCardAction from '../../DynastyCardAction.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 const backAlleyPersistentEffect = {

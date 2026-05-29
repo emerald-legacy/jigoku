@@ -1,6 +1,6 @@
 import { CardTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 function penalty(target: DrawCard): number {
     return -3 * target.attachments.length;

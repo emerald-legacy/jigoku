@@ -2,7 +2,7 @@ import { CardTypes, TargetModes } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { StatusToken } from '../../StatusToken.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class DiscipleOfDeception extends DrawCard {
     static id = 'disciple-of-deception';

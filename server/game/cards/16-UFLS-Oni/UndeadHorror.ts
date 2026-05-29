@@ -1,8 +1,8 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 import { AbilityTypes, CardTypes, Durations, Players } from '../../Constants.js';
-import type DrawCard from '../../drawcard.js';
+import type DrawCard from '../../DrawCard.js';
 import type { PersistentEffectProps } from '../../Interfaces.js';
 import { BaseOni } from './_BaseOni.js';
 

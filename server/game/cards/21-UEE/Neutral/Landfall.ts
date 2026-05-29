@@ -1,8 +1,8 @@
 import { GameModes } from '../../../../GameModes.js';
 import { CardTypes, Locations, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import type DrawCard from '../../../drawcard.js';
-import type BaseCard from '../../../basecard.js';
+import type DrawCard from '../../../DrawCard.js';
+import type BaseCard from '../../../BaseCard.js';
 
 export default class Landfall extends ProvinceCard {
     static id = 'landfall';

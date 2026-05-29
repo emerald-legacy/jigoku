@@ -1,8 +1,8 @@
 import { CardTypes, Players } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import type Player from '../../../player.js';
+import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 
 function countReadyShugenja(player: Player): number {
     return player.cardsInPlay.reduce(

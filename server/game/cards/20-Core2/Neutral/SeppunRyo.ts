@@ -1,7 +1,7 @@
 import { DuelTypes, Durations, FavorTypes } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class SeppunRyo extends DrawCard {
     static id = 'seppun-ryo';

@@ -1,6 +1,6 @@
 import { CardTypes, Decks, Durations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 
 function statusOfIntern(context: AbilityContext) {

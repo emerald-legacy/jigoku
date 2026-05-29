@@ -1,10 +1,10 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseCard from '../basecard.js';
+import type BaseCard from '../BaseCard.js';
 import CardSelector from '../CardSelector.js';
 import type BaseCardSelector from '../CardSelectors/BaseCardSelector.js';
 import { CardTypes, EffectNames, Locations, Players, TargetModes } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { GameAction } from './GameAction.js';
 

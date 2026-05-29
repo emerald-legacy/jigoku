@@ -2,8 +2,8 @@ import CardAbility from '../../CardAbility.js';
 import { CardTypes, EventNames } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
-import BaseCard from '../../basecard.js';
-import DrawCard from '../../drawcard.js';
+import BaseCard from '../../BaseCard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class StoriedDefeat extends DrawCard {
     static id = 'storied-defeat';

@@ -1,4 +1,4 @@
-import type BaseCard from './basecard.js';
+import type BaseCard from './BaseCard.js';
 import { CardTypes } from './Constants.js';
 
 interface EffectLike {

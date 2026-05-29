@@ -2,9 +2,9 @@ import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, EventNames, Locations, Players, PlayTypes } from '../../../Constants.js';
 import { ReduceableFateCost } from '../../../costs/ReduceableFateCost.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
-import Player from '../../../player.js';
+import Player from '../../../Player.js';
 
 class HifumiCost extends ReduceableFateCost {
     isPlayCost = false;

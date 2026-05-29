@@ -1,8 +1,8 @@
 import { GameModes } from '../../GameModes.js';
 import { Phases, CardTypes, Players, EffectNames, EventNames, Locations } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
+import type DrawCard from '../DrawCard.js';
 import type Game from '../Game.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { Phase } from './Phase.js';
 import { SimpleStep } from './SimpleStep.js';
 import ActionWindow from './actionwindow.js';

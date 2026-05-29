@@ -3,10 +3,10 @@ import * as GameActions from './GameActions/GameActions.js';
 import HonorBidPrompt from './gamesteps/honorbidprompt.js';
 import { Locations, CardTypes, Players } from './Constants.js';
 import type Game from './Game.js';
-import type Player from './player.js';
-import type BaseCard from './basecard.js';
-import type DrawCard from './drawcard.js';
-import type Ring from './ring.js';
+import type Player from './Player.js';
+import type BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
+import type Ring from './Ring.js';
 
 type CommandHandler = (player: Player, args: string[]) => boolean | void;
 

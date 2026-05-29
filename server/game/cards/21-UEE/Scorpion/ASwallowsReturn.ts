@@ -1,6 +1,6 @@
 import { Locations, PlayTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 const CARD_COUNT = 3;
 

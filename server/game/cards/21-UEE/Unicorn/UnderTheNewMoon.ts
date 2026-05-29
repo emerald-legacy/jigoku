@@ -1,8 +1,8 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { Durations } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class UnderTheNewMoon extends DrawCard {
     static id = 'under-the-new-moon';

@@ -1,6 +1,6 @@
 import { CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 class GreaterUnderstanding extends DrawCard {
     static id = 'greater-understanding';

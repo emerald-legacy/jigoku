@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, TargetModes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { RingEffects } from '../../RingEffects.js';

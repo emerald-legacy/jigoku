@@ -1,5 +1,5 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import type { TriggeredAbilityContext } from "../../TriggeredAbilityContext.js";
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 export default class TheArtOfPeace extends ProvinceCard {

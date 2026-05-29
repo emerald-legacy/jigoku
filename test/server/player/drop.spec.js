@@ -1,4 +1,4 @@
-import Player from '../../../build/server/game/player.js';
+import Player from '../../../build/server/game/Player.js';
 
 describe('Player - drop', () => {
     describe('drop()', function() {

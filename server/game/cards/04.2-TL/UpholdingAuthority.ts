@@ -1,6 +1,6 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type DrawCard from '../../drawcard.js';
+import type DrawCard from '../../DrawCard.js';
 
 export default class UpholdingAuthority extends ProvinceCard {
     static id = 'upholding-authority';

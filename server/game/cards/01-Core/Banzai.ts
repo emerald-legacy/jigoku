@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { TargetModes, CardTypes } from '../../Constants.js';
 import CardAbility from '../../CardAbility.js';
 import AbilityDsl from '../../abilitydsl.js';

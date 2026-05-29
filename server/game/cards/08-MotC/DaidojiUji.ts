@@ -1,7 +1,7 @@
 import { Locations } from '../../Constants.js';
 import { PlayCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class DaidojiUji extends DrawCard {
     static id = 'daidoji-uji';

@@ -1,8 +1,8 @@
 import CardAbility from './CardAbility.js';
 import { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import { Stages, CardTypes, EffectNames, AbilityTypes } from './Constants.js';
-import type BaseCard from './basecard.js';
-import type Player from './player.js';
+import type BaseCard from './BaseCard.js';
+import type Player from './Player.js';
 import type { Event } from './Events/Event.js';
 
 type EventListener = (event: Event, context: TriggeredAbilityContext) => boolean;

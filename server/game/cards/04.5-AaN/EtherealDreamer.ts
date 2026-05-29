@@ -1,5 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Durations, TargetModes, Phases } from '../../Constants.js';
 
 class EtherealDreamer extends DrawCard {

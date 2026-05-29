@@ -1,8 +1,8 @@
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 import { CardTypes, EffectNames, Locations, PlayTypes } from '../../Constants.js';
-import type DrawCard from '../../drawcard.js';
+import type DrawCard from '../../DrawCard.js';
 import type { PlayableLocation } from '../../PlayableLocation.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 
 export function canPlayFromOwn(

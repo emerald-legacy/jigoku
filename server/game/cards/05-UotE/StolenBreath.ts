@@ -1,6 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 class StolenBreath extends DrawCard {
     static id = 'stolen-breath';

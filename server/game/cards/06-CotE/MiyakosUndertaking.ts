@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Locations, Players } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 export default class MiyakosUndertaking extends DrawCard {

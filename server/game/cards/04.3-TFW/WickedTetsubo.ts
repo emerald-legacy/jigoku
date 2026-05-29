@@ -1,5 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { TargetModes, CardTypes } from '../../Constants.js';
 
 class WickedTetsubo extends DrawCard {

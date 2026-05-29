@@ -1,9 +1,9 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type BaseCard from '../../basecard.js';
-import type Player from '../../player.js';
+import type BaseCard from '../../BaseCard.js';
+import type Player from '../../Player.js';
 import { Locations, Players, CardTypes } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 class WalkingTheWay extends DrawCard {
     static id = 'walking-the-way';

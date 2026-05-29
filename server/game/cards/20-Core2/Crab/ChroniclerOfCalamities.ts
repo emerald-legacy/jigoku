@@ -1,6 +1,6 @@
 import { CardTypes, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class ChroniclerOfCalamities extends DrawCard {

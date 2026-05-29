@@ -1,4 +1,4 @@
-import DrawCard from '../../../build/server/game/drawcard.js';
+import DrawCard from '../../../build/server/game/DrawCard.js';
 
 describe('DrawCard - moveTo', function () {
     beforeEach(function () {

@@ -1,7 +1,7 @@
 import { Locations, PlayTypes, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import Player from '../../../player.js';
+import DrawCard from '../../../DrawCard.js';
+import Player from '../../../Player.js';
 
 export default class SandRoadMerchant extends DrawCard {
     static id = 'sand-road-merchant';

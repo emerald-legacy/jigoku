@@ -1,4 +1,4 @@
-import Player from '../../../build/server/game/player.js';
+import Player from '../../../build/server/game/Player.js';
 import { shuffle } from '../../../build/server/game/utils/shuffle.js';
 
 describe('Player zone initialisation', function() {

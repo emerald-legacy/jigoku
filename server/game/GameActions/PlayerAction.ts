@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
 import type { Event } from '../Events/Event.js';

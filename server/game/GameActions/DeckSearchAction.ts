@@ -1,10 +1,10 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { Decks, EventNames, Locations, TargetModes } from '../Constants.js';
 import { shuffle } from '../utils/shuffle.js';
-import type DrawCard from '../drawcard.js';
+import type DrawCard from '../DrawCard.js';
 import type { GameAction } from './GameAction.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 
 import type { Event } from '../Events/Event.js';
 type Derivable<T> = T | ((context: AbilityContext) => T);

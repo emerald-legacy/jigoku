@@ -1,9 +1,9 @@
 import { Phases, EffectNames } from '../Constants.js';
 import { initiateConflict } from '../GameActions/GameActions.js';
 import AbilityDsl from '../abilitydsl.js';
-import { Conflict } from '../conflict.js';
+import { Conflict } from '../Conflict.js';
 import type Game from '../Game.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { Phase } from './Phase.js';
 import { SimpleStep } from './SimpleStep.js';
 import ActionWindow from './actionwindow.js';

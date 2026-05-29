@@ -1,12 +1,12 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseAbility from '../baseability.js';
-import type BaseCard from '../basecard.js';
+import type BaseAbility from '../BaseAbility.js';
+import type BaseCard from '../BaseCard.js';
 import type { Durations, EffectNames, Locations } from '../Constants.js';
 import type Game from '../Game.js';
 import type { GameAction, GameActionProperties } from '../GameActions/GameAction.js';
 import type { WhenType } from '../Interfaces.js';
-import type Player from '../player.js';
-import type Ring from '../ring.js';
+import type Player from '../Player.js';
+import type Ring from '../Ring.js';
 import type { StatusToken } from '../StatusToken.js';
 import CardEffect from './CardEffect.js';
 import ConflictEffect from './ConflictEffect.js';

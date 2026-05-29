@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import CardAbility from '../../CardAbility.js';
 import { Locations, TargetModes } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { shuffle } from '../../utils/shuffle.js';
 
 export default class Overhear extends DrawCard {

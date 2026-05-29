@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { AbilityContext } from '../../AbilityContext.js';
 
 class HeightOfFashion extends DrawCard {

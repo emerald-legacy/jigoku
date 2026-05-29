@@ -1,5 +1,5 @@
-import type BaseCard from './basecard.js';
-import type DrawCard from './drawcard.js';
+import type BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
 import type { Locations } from './Constants.js';
 
 export interface CanHostChildCards {

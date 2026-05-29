@@ -1,6 +1,6 @@
 import { CardTypes, Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type DrawCard from '../../../drawcard.js';
+import type DrawCard from '../../../DrawCard.js';
 import { BattlefieldAttachment } from '../../BattlefieldAttachment.js';
 
 export default class DeclarationOfDominion extends BattlefieldAttachment {

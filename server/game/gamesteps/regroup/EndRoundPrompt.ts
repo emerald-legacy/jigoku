@@ -1,4 +1,4 @@
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 import { PlayerOrderPrompt } from '../PlayerOrderPrompt.js';
 
 export class EndRoundPrompt extends PlayerOrderPrompt {

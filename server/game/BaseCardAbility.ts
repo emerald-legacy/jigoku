@@ -1,8 +1,8 @@
 import { AbilityContext } from './AbilityContext.js';
-import BaseAbility from './baseability.js';
+import BaseAbility from './BaseAbility.js';
 import { Stages } from './Constants.js';
-import type Player from './player.js';
-import type BaseCard from './basecard.js';
+import type Player from './Player.js';
+import type BaseCard from './BaseCard.js';
 import type Game from './Game.js';
 
 /**

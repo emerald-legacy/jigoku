@@ -1,8 +1,8 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, CardTypes, EventNames } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 
 class StolenSecrets extends DrawCard {

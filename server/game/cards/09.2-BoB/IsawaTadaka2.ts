@@ -1,8 +1,8 @@
 import { CardTypes, Locations, TargetModes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
-import DrawCard from '../../drawcard.js';
-import type Player from '../../player.js';
+import type BaseCard from '../../BaseCard.js';
+import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 import { shuffle } from '../../utils/shuffle.js';
 
 export default class IsawaTadaka2 extends DrawCard {

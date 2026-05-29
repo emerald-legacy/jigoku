@@ -6,7 +6,7 @@ import type { CardEffect } from './Effects/types.js';
 import type Game from './Game.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import * as GameActions from './GameActions/GameActions.js';
-import type Player from './player.js';
+import type Player from './Player.js';
 
 export class GameObject {
     declare public game: Game;

@@ -1,9 +1,9 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { AbilityTypes, CardTypes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { ActionProps } from '../../../Interfaces.js';
-import type Player from '../../../player.js';
+import type Player from '../../../Player.js';
 
 export default class DesperateAide extends DrawCard {
     static id = 'desperate-aide';

@@ -1,6 +1,6 @@
 import { Players, Durations, Locations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class KayoTheShrinetender extends DrawCard {
     static id = 'kayo-the-shrinetender';

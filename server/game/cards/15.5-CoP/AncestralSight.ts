@@ -1,9 +1,9 @@
-import DrawCard from '../../drawcard.js';
-import BaseCard from '../../basecard.js';
+import DrawCard from '../../DrawCard.js';
+import BaseCard from '../../BaseCard.js';
 import { CardTypes, Players, AbilityTypes, TargetModes, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 
 const isCopyInPlay = function(card: BaseCard, context: AbilityContext) {
     return context.game.findAnyCardsInPlay((c: BaseCard) => c.name === card.name).length > 0;

@@ -1,8 +1,8 @@
 import { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
-import type Player from '../player.js';
-import Ring from '../ring.js';
+import type DrawCard from '../DrawCard.js';
+import type Player from '../Player.js';
+import Ring from '../Ring.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 
 export interface PlaceFateProperties extends CardActionProperties {

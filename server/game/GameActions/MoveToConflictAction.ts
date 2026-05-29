@@ -1,8 +1,8 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseCard from '../basecard.js';
-import type DrawCard from '../drawcard.js';
+import type BaseCard from '../BaseCard.js';
+import type DrawCard from '../DrawCard.js';
 import { CardTypes, EffectNames, EventNames, Locations } from '../Constants.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export interface MoveToConflictProperties extends CardActionProperties {

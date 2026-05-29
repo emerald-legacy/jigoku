@@ -1,9 +1,9 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
+import type BaseCard from '../../../BaseCard.js';
 import CardAbility from '../../../CardAbility.js';
 import { CardTypes, ConflictTypes, EventNames, Players, TargetModes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 const TARGET_CHARACTER = 'character';
 

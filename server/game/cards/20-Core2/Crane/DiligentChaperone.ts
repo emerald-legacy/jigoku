@@ -1,7 +1,7 @@
 import { Locations, CardTypes, CharacterStatus, EventNames } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import type BaseCard from '../../../basecard.js';
+import DrawCard from '../../../DrawCard.js';
+import type BaseCard from '../../../BaseCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';

@@ -1,9 +1,9 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, EventNames } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { Cost } from '../../../Costs.js';
-import type Player from '../../../player.js';
+import type Player from '../../../Player.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type Game from '../../../Game.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';

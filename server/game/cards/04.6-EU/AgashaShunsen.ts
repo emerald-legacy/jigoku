@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type Ring from '../../ring.js';
+import type Ring from '../../Ring.js';
 import { Players, CardTypes, Locations } from '../../Constants.js';
 
 class AgashaShunsen extends DrawCard {

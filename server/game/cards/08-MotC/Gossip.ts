@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import DrawCard from '../../drawcard.js';
-import type Player from '../../player.js';
+import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 import { PlayTypes } from '../../Constants.js';
 
 class Gossip extends DrawCard {

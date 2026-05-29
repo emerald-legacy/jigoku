@@ -3,8 +3,8 @@ import * as Costs from './Costs.js';
 import * as GameActions from './GameActions/GameActions.js';
 import { EffectNames, Phases, PlayTypes, EventNames } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
-import type BaseCard from './basecard.js';
-import type DrawCard from './drawcard.js';
+import type BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
 
 class DynastyCardAction extends BaseAction {
     title = 'Play this character';

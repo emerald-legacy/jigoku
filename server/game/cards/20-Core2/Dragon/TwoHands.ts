@@ -1,8 +1,8 @@
 import { CardTypes, ConflictTypes, Players, TargetModes } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import { Conflict } from '../../../conflict.js';
+import DrawCard from '../../../DrawCard.js';
+import { Conflict } from '../../../Conflict.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 
 export default class TwoHands extends DrawCard {

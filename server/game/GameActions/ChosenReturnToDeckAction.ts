@@ -1,8 +1,8 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames, Locations, Players, TargetModes } from '../Constants.js';
-import type BaseCard from '../basecard.js';
+import type BaseCard from '../BaseCard.js';
 import type { Event } from '../Events/Event.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { shuffle } from '../utils/shuffle.js';
 

@@ -4,7 +4,7 @@ import { EffectNames, EventNames, Locations, Phases, PlayTypes, Players } from '
 import { chooseFate, payReduceableFateCost } from './Costs.js';
 import { putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
 import { parseGameMode } from './GameMode.js';
-import type BaseCard from './basecard.js';
+import type BaseCard from './BaseCard.js';
 
 export enum PlayCharacterIntoLocation {
     Any,

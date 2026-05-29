@@ -1,4 +1,4 @@
-import type Player from './player.js';
+import type Player from './Player.js';
 import MenuPrompt from './gamesteps/menuprompt.js';
 import HandlerMenuPrompt from './gamesteps/handlermenuprompt.js';
 import HonorBidPrompt from './gamesteps/honorbidprompt.js';

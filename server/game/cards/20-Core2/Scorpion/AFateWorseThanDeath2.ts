@@ -1,6 +1,6 @@
 import { CardTypes, Durations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class AFateWorseThanDeath2 extends DrawCard {
     static id = 'a-fate-worse-than-death-2';

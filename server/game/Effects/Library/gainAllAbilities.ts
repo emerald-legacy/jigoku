@@ -1,6 +1,6 @@
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 import type { CardAction } from '../../CardAction.js';
-import type TriggeredAbility from '../../triggeredability.js';
+import type TriggeredAbility from '../../TriggeredAbility.js';
 import { AbilityTypes, EffectNames, Locations } from '../../Constants.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import { EffectValue } from '../EffectValue.js';

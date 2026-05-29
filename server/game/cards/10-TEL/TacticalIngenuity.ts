@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityTypes, CardTypes, Locations } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';

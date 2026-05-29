@@ -1,4 +1,4 @@
-import Player from '../player.js';
+import Player from '../Player.js';
 import { Clock, Mode } from './Clock.js';
 import type { ClockInterface } from './types.js';
 

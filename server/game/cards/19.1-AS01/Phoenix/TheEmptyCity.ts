@@ -3,7 +3,7 @@ import { CardTypes, Durations, EventNames, Locations, Players, TargetModes } fro
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
+import type BaseCard from '../../../BaseCard.js';
 
 export default class TheEmptyCity extends ProvinceCard {
     static id = 'the-empty-city';

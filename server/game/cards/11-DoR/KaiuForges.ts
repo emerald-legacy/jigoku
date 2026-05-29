@@ -1,8 +1,8 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, CardTypes, Players } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type Player from '../../player.js';
-import type BaseCard from '../../basecard.js';
+import type Player from '../../Player.js';
+import type BaseCard from '../../BaseCard.js';
 
 class KaiuForges extends DrawCard {
     static id = 'kaiu-forges';

@@ -1,6 +1,6 @@
 import { DuelTypes, Durations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class DazzlingDuelist extends DrawCard {
     static id = 'dazzling-duelist';

@@ -1,7 +1,7 @@
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Locations, Players, TargetModes } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
-import type Player from '../../player.js';
+import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 
 export default class StokeInsurrection extends DrawCard {
     static id = 'stoke-insurrection';

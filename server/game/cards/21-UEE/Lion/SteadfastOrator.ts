@@ -1,9 +1,9 @@
 import type { AbilityLimit } from '../../../AbilityLimit.js';
-import type { TriggeredAbilityContext } from "../../../TriggeredAbilityContext.js";
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { CardTypes } from '../../../Constants.js';
 import type { Cost } from '../../../Costs.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class SteadfastOrator extends DrawCard {
     static id = 'steadfast-orator';

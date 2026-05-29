@@ -1,6 +1,6 @@
 import { CardTypes, ConflictTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class EarthsExamination extends DrawCard {
     static id = 'earth-s-examination';

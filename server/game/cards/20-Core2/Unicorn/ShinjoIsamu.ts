@@ -1,8 +1,8 @@
 import { EventNames, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../conflict.js';
-import DrawCard from '../../../drawcard.js';
-import type Ring from '../../../ring.js';
+import type { Conflict } from '../../../Conflict.js';
+import DrawCard from '../../../DrawCard.js';
+import type Ring from '../../../Ring.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';

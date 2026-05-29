@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityTypes, CardTypes } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { ActionProps } from '../../Interfaces.js';
 
 export default class FireAndOil extends DrawCard {

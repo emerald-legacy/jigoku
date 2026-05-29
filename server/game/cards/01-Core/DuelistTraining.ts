@@ -1,7 +1,7 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { AbilityTypes, CardTypes, DuelTypes, Players } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import type { Duel } from '../../Duel.js';
 import * as GameActions from '../../GameActions/GameActions.js';
 

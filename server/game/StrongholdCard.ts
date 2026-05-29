@@ -1,7 +1,7 @@
-import BaseCard from './basecard.js';
+import BaseCard from './BaseCard.js';
 import { ChildCardManager } from './ChildCardManager.js';
-import type DrawCard from './drawcard.js';
-import type Player from './player.js';
+import type DrawCard from './DrawCard.js';
+import type Player from './Player.js';
 import type { Locations } from './Constants.js';
 
 export class StrongholdCard extends BaseCard {

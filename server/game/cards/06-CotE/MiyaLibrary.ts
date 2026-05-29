@@ -1,7 +1,7 @@
 
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardTypes, Locations } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 class MiyaLibrary extends DrawCard {
     static id = 'miya-library';

@@ -1,8 +1,8 @@
 import util from 'util';
 
-import BaseCard from '../../server/game/basecard.js';
+import BaseCard from '../../server/game/BaseCard.js';
 import Game from '../../server/game/Game.js';
-import Player from '../../server/game/player.js';
+import Player from '../../server/game/Player.js';
 
 function formatObject(keys: string[]): (this: Record<string, unknown>) => string {
     return function() {

@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { ConflictTypes, Players } from '../../../Constants.js';
-import type Player from '../../../player.js';
+import type Player from '../../../Player.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 
 type ConflictRecord = {

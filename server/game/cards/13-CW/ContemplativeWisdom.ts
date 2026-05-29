@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityTypes, CardTypes } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class ContemplativeWisdom extends DrawCard {
     static id = 'contemplative-wisdom';

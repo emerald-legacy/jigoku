@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { EventNames, Locations, TargetModes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 

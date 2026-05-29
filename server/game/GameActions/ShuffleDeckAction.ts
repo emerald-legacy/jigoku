@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { Locations } from '../Constants.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
 import type { Event } from '../Events/Event.js';

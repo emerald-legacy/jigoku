@@ -1,9 +1,9 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { PlayCharacterIntoLocation, PlayCharacterAction } from '../../PlayCharacterAction.js';
 import { Elements, Locations, PlayTypes } from '../../Constants.js';
-import type BaseCard from '../../basecard.js';
-import type Player from '../../player.js';
+import type BaseCard from '../../BaseCard.js';
+import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
 const elementKey = 'isawa-skycaller-air';

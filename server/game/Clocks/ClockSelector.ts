@@ -1,4 +1,4 @@
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { Byoyomi } from './Byoyomi.js';
 import { ChessClock } from './ChessClock.js';
 import { Clock } from './Clock.js';

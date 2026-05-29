@@ -1,10 +1,10 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 import { CardTypes, Locations } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import type { Event } from '../../Events/Event.js';
 import * as GameActions from '../../GameActions/GameActions.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 
 class ConsumedByFiveFires extends DrawCard {
     static id = 'consumed-by-five-fires';

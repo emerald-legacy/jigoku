@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class StewardOfCelestialOrder extends DrawCard {
     static id = 'steward-of-celestial-order';

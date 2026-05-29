@@ -4,7 +4,7 @@ import { CardTypes, EventNames, Locations, Phases } from './Constants.js';
 import { payTargetDependentFateCost } from './Costs.js';
 import { attach } from './GameActions/GameActions.js';
 import { parseGameMode } from './GameMode.js';
-import type BaseCard from './basecard.js';
+import type BaseCard from './BaseCard.js';
 
 export class PlayAttachmentAction extends BaseAction {
     title = 'Play this attachment';

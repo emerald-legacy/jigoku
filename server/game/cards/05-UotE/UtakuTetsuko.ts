@@ -1,5 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, PlayTypes } from '../../Constants.js';
 
 class UtakuTetsuko extends DrawCard {

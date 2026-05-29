@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { EventNames, TargetModes } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type Ring from '../../../ring.js';
+import type Ring from '../../../Ring.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class PalaceOfKnowledge extends StrongholdCard {

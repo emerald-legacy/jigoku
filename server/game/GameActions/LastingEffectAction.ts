@@ -1,8 +1,8 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseAbility from '../baseability.js';
+import type BaseAbility from '../BaseAbility.js';
 import { Durations, EventNames, Players } from '../Constants.js';
 import type { WhenType } from '../Interfaces.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
 import type { Event } from '../Events/Event.js';

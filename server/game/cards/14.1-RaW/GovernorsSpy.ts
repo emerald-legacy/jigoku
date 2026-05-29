@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import type BaseCard from '../../basecard.js';
-import type Player from '../../player.js';
-import DrawCard from '../../drawcard.js';
+import type BaseCard from '../../BaseCard.js';
+import type Player from '../../Player.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TargetModes, Locations, Players, CardTypes } from '../../Constants.js';
 import { GameModes } from '../../../GameModes.js';

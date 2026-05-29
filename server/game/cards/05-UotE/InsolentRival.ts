@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, CardTypes, DuelTypes } from '../../Constants.js';
 
 class InsolentRival extends DrawCard {

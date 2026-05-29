@@ -1,6 +1,6 @@
 import { UiPrompt } from '../UiPrompt.js';
 import { CardTypes, EffectNames, EventNames } from '../../Constants.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 
 const capitalize: Record<string, string> = {
     military: 'Military',

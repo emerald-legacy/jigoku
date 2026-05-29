@@ -1,7 +1,7 @@
 import { CardTypes, Locations } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 
 export default class BorderFortress extends ProvinceCard {
     static id = 'border-fortress';

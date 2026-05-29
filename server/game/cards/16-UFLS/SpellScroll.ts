@@ -1,7 +1,7 @@
 import AbilityDsl from '../../abilitydsl.js';
-import { Conflict } from '../../conflict.js';
+import { Conflict } from '../../Conflict.js';
 import { CardTypes, Locations, Players } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class SpellScroll extends DrawCard {
     static id = 'spell-scroll';

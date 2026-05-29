@@ -2,7 +2,7 @@ import { AbilityContext } from '../../../AbilityContext.js';
 import { Locations } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type DrawCard from '../../../drawcard.js';
+import type DrawCard from '../../../DrawCard.js';
 
 class Process {
     private topCards: Set<DrawCard>;

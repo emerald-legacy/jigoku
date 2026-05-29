@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import type { GameAction } from './GameAction.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { FateBidPrompt } from '../gamesteps/FateBidPrompt.js';
 import { LoseFateAction } from './LoseFateAction.js';

@@ -1,5 +1,5 @@
-import DrawCard from '../../drawcard.js';
-import BaseCard from '../../basecard.js';
+import DrawCard from '../../DrawCard.js';
+import BaseCard from '../../BaseCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Locations } from '../../Constants.js';
 

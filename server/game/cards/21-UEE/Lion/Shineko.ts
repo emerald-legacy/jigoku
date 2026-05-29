@@ -1,6 +1,6 @@
 import { CardTypes, Locations, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class Shineko extends DrawCard {
     static id = 'shineko';

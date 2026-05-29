@@ -1,5 +1,5 @@
 import { Players, CardTypes, AbilityTypes } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class TakeUpCommand extends DrawCard {

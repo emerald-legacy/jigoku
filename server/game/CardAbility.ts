@@ -3,8 +3,8 @@ import ThenAbility from './ThenAbility.js';
 import * as Costs from './Costs.js';
 import { Locations, CardTypes, EffectNames } from './Constants.js';
 import { initiateDuel } from './DuelHelper.js';
-import type BaseCard from './basecard.js';
-import type DrawCard from './drawcard.js';
+import type BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
 import type { AbilityContext } from './AbilityContext.js';
 
 interface CardAbilityProperties {

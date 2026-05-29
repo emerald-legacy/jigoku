@@ -1,4 +1,4 @@
-import BaseAbility from '../../../build/server/game/baseability.js';
+import BaseAbility from '../../../build/server/game/BaseAbility.js';
 import { Stages } from '../../../build/server/game/Constants.js';
 
 describe('BaseAbility', function () {

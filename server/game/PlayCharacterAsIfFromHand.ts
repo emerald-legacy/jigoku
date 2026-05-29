@@ -1,8 +1,8 @@
 import { AbilityContext } from './AbilityContext.js';
 import { PlayTypes } from './Constants.js';
 import { PlayCharacterAction, PlayCharacterIntoLocation } from './PlayCharacterAction.js';
-import DrawCard from './drawcard.js';
-import Player from './player.js';
+import DrawCard from './DrawCard.js';
+import Player from './Player.js';
 
 export class PlayCharacterAsIfFromHand extends PlayCharacterAction {
     constructor(card: DrawCard) {

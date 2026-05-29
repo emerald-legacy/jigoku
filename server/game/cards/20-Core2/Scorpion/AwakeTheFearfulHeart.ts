@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import type { Conflict } from '../../../conflict.js';
+import DrawCard from '../../../DrawCard.js';
+import type { Conflict } from '../../../Conflict.js';
 import { CardTypes } from '../../../Constants.js';
 
 export default class AwakeTheFearfulHeart extends DrawCard {

@@ -3,7 +3,7 @@ import CardAbility from './CardAbility.js';
 import { AbilityTypes, CardTypes, EffectNames, Phases } from './Constants.js';
 import { parseGameMode } from './GameMode.js';
 import type { ActionProps } from './Interfaces.js';
-import type BaseCard from './basecard.js';
+import type BaseCard from './BaseCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 
 /**

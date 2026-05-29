@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import CardAbility from '../../../CardAbility.js';
 import { CardTypes, ConflictTypes, Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class TheVoidOfWar extends DrawCard {
     static id = 'the-void-of-war';

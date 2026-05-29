@@ -1,6 +1,6 @@
 import { TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { StatusToken } from '../../../StatusToken.js';
 
 export default class WebisusBlessing extends DrawCard {

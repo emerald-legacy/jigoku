@@ -1,5 +1,5 @@
 import { AbilityContext } from '../../AbilityContext.js';
-import type DrawCard from '../../drawcard.js';
+import type DrawCard from '../../DrawCard.js';
 import { BaseStepWithPipeline } from '../BaseStepWithPipeline.js';
 import { discardCard, payFate, payFateToRing, payHonor } from '../../Costs.js';
 import CovertAbility from '../../KeywordAbilities/CovertAbility.js';
@@ -13,7 +13,7 @@ import AttackersMatrix from './attackersMatrix.js';
 
 import { Players, CardTypes, EventNames, EffectNames, Locations, ConflictTypes } from '../../Constants.js';
 import { GameModes } from '../../../GameModes.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 
 /**
 Conflict Resolution

@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 
 class PerfectLandEthos extends DrawCard {
     static id = 'perfect-land-ethos';

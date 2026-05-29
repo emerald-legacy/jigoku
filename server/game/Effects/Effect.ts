@@ -1,7 +1,7 @@
 import { Locations, Durations } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseAbility from '../baseability.js';
-import type BaseCard from '../basecard.js';
+import type BaseAbility from '../BaseAbility.js';
+import type BaseCard from '../BaseCard.js';
 import type Game from '../Game.js';
 import type { GameObject } from '../GameObject.js';
 import type StaticEffect from './StaticEffect.js';

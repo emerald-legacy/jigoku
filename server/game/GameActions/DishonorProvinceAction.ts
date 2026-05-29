@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames } from '../Constants.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
-import type BaseCard from '../basecard.js';
+import type BaseCard from '../BaseCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export type DishonorProvinceProperties = CardActionProperties;

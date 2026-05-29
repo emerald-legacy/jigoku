@@ -1,4 +1,4 @@
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { UiPrompt } from './UiPrompt.js';
 
 export class AllPlayerPrompt extends UiPrompt {

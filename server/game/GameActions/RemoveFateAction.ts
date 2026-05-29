@@ -1,9 +1,9 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseCard from '../basecard.js';
+import type BaseCard from '../BaseCard.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
-import type Player from '../player.js';
-import type Ring from '../ring.js';
+import type DrawCard from '../DrawCard.js';
+import type Player from '../Player.js';
+import type Ring from '../Ring.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export interface RemoveFateProperties extends CardActionProperties {

@@ -1,7 +1,7 @@
 import { GameModes } from '../../../GameModes.js';
 import { CardTypes, TargetModes, Decks, Locations, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 
 export default class KaiuShihobu extends DrawCard {

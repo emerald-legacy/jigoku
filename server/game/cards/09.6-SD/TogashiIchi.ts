@@ -1,6 +1,6 @@
 import { CardTypes, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class TogashiIchi extends DrawCard {
     static id = 'togashi-ichi';

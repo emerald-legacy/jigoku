@@ -1,6 +1,6 @@
-import DrawCard from '../../drawcard.js';
-import type BaseCard from '../../basecard.js';
-import type Ring from '../../ring.js';
+import DrawCard from '../../DrawCard.js';
+import type BaseCard from '../../BaseCard.js';
+import type Ring from '../../Ring.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';

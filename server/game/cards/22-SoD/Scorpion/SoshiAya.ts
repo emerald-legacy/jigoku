@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import type CardAbility from '../../../CardAbility.js';
 import { CardTypes, Locations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class SoshiAya extends DrawCard {
     static id = 'soshi-aya';

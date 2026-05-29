@@ -1,7 +1,7 @@
 import { Players, TargetModes, Locations, CardTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import type Player from '../../../player.js';
+import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 
 export default class NightingaleTattoo extends DrawCard {
     static id = 'nightingale-tattoo';

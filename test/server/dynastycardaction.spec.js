@@ -1,4 +1,4 @@
-import DynastyCardAction from '../../build/server/game/dynastycardaction.js';
+import DynastyCardAction from '../../build/server/game/DynastyCardAction.js';
 
 describe('DynastyCardAction', function () {
     beforeEach(function() {

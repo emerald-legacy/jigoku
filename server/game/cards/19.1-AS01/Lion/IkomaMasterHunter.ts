@@ -1,6 +1,6 @@
 import { CardTypes, Durations, EventNames, Phases, Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class IkomaMasterHunter extends DrawCard {

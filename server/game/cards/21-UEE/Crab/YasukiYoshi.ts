@@ -1,7 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../conflict.js';
+import type { Conflict } from '../../../Conflict.js';
 import { Decks } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class YasukiYoshi extends DrawCard {
     static id = 'yasuki-yoshi';

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes, EventNames } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';

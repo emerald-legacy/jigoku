@@ -1,6 +1,6 @@
 import { Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class Levy2 extends DrawCard {
     static id = 'levy-2';

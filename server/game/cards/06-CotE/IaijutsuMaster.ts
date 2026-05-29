@@ -1,5 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Direction } from '../../GameActions/ModifyBidAction.js';
 
 class IaijutsuMaster extends DrawCard {

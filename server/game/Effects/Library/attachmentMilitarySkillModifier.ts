@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 import { EffectNames } from '../../Constants.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 

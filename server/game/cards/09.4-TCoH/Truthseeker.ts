@@ -1,7 +1,7 @@
 import { TargetModes } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 
 class Truthseeker extends DrawCard {
     static id = 'truthseeker';

@@ -1,7 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
+import type BaseCard from '../../../BaseCard.js';
 import { AbilityTypes, CardTypes, Players, TargetModes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { ActionProps } from '../../../Interfaces.js';
 
 export default class WritOfSurvey extends DrawCard {

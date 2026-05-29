@@ -1,5 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, TargetModes, CardTypes } from '../../Constants.js';
 
 class ForShame extends DrawCard {

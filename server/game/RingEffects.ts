@@ -5,8 +5,8 @@ import { FireRingEffect } from './Rings/FireRingEffect.js';
 import { VoidRingEffect } from './Rings/VoidRingEffect.js';
 import { WaterRingEffect } from './Rings/WaterRingEffect.js';
 import { AbilityContext } from './AbilityContext.js';
-import BaseAbility from './baseability.js';
-import Player from './player.js';
+import BaseAbility from './BaseAbility.js';
+import Player from './Player.js';
 
 interface RingAbility extends BaseAbility {
     title: string;

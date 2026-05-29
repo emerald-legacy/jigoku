@@ -1,8 +1,8 @@
 import { CardTypes, Durations, Locations } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import type Player from '../../../player.js';
+import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 import { shuffle } from '../../../utils/shuffle.js';
 
 export default class EaglesRestPeak extends ProvinceCard {

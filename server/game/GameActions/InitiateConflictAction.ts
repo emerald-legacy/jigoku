@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { ConflictTypes, EventNames } from '../Constants.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { ProvinceCard } from '../ProvinceCard.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 

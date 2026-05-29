@@ -1,10 +1,10 @@
-import BaseCard from './basecard.js';
+import BaseCard from './BaseCard.js';
 import { AttachmentManager } from './AttachmentManager.js';
 import { ChildCardManager } from './ChildCardManager.js';
 import AbilityDsl from './abilitydsl.js';
 import { SkillCalculator, type Exclusions } from './SkillCalculator.js';
 import type StatModifier from './StatModifier.js';
-import DuplicateUniqueAction from './duplicateuniqueaction.js';
+import DuplicateUniqueAction from './DuplicateUniqueAction.js';
 import type BaseCardAbility from './BaseCardAbility.js';
 import CourtesyAbility from './KeywordAbilities/CourtesyAbility.js';
 import PrideAbility from './KeywordAbilities/PrideAbility.js';
@@ -14,8 +14,8 @@ import { Locations, EffectNames, CardTypes, PlayTypes, ConflictTypes, EventNames
 import { GameModes } from '../GameModes.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility.js';
-import type Player from './player.js';
-import type Ring from './ring.js';
+import type Player from './Player.js';
+import type Ring from './Ring.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { PersistentEffectProps } from './Interfaces.js';
 import type { CardData } from './types/CardData.js';

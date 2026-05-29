@@ -2,9 +2,9 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type BaseAction from '../../../BaseAction.js';
-import type BaseCard from '../../../basecard.js';
+import type BaseCard from '../../../BaseCard.js';
 import { CardTypes, Locations } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
 
 export default class EarnestSculptor extends DrawCard {

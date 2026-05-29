@@ -1,5 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, Players, PlayTypes } from '../../Constants.js';
 
 class TogashiMitsu extends DrawCard {

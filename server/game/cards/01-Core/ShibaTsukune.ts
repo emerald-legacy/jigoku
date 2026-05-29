@@ -1,8 +1,8 @@
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-import type Player from '../../player.js';
-import type Ring from '../../ring.js';
+import type Player from '../../Player.js';
+import type Ring from '../../Ring.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { EventNames, Phases } from '../../Constants.js';
 
 class ShibaTsukune extends DrawCard {

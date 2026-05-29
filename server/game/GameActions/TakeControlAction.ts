@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { Durations, Locations } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
+import type DrawCard from '../DrawCard.js';
 import Effects from '../effects.js';
 import type { WhenType } from '../Interfaces.js';
 import type { GameActionProperties } from './GameAction.js';

@@ -1,6 +1,6 @@
 import { EffectNames } from '../../Constants.js';
 import type { CostReducer, CostReducerProps } from '../../CostReducer.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 
 export function reduceCost(properties: CostReducerProps) {

@@ -1,9 +1,9 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, Locations, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
-import DrawCard from '../../../drawcard.js';
-import { Conflict } from '../../../conflict.js';
+import type BaseCard from '../../../BaseCard.js';
+import DrawCard from '../../../DrawCard.js';
+import { Conflict } from '../../../Conflict.js';
 
 export default class WardOfEarthenThorns extends DrawCard {
     static id = 'ward-of-earthen-thorns';

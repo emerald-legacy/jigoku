@@ -1,7 +1,7 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, Durations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 
 class UnderSiege extends DrawCard {
     static id = 'under-siege';

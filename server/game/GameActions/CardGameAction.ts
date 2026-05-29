@@ -1,8 +1,8 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseCard from '../basecard.js';
+import type BaseCard from '../BaseCard.js';
 import { CardTypes, EffectNames, Locations } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
-import type Ring from '../ring.js';
+import type DrawCard from '../DrawCard.js';
+import type Ring from '../Ring.js';
 import { GameAction, GameActionProperties } from './GameAction.js';
 import { LoseFateAction } from './LoseFateAction.js';
 

@@ -2,8 +2,8 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, Locations, Phases, PlayTypes } from '../../../Constants.js';
 import type { Cost } from '../../../Costs.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
-import DrawCard from '../../../drawcard.js';
+import type BaseCard from '../../../BaseCard.js';
+import DrawCard from '../../../DrawCard.js';
 
 function captureParentCost(): Cost {
     return {

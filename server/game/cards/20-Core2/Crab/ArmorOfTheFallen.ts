@@ -1,8 +1,8 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import { AbilityTypes, CardTypes, Locations, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
-import DrawCard from '../../../drawcard.js';
+import type BaseCard from '../../../BaseCard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class ArmorOfTheFallen extends DrawCard {
     static id = 'armor-of-the-fallen';

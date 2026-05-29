@@ -1,7 +1,7 @@
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 import { AbilityTypes, CardTypes, EventNames, Locations, Players } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 

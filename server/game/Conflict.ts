@@ -2,11 +2,11 @@ import * as Settings from '../settings.js';
 import { CardTypes, ConflictTypes, EffectNames, Elements, EventNames, Locations } from './Constants.js';
 import { GameObject } from './GameObject.js';
 import { ProvinceCard } from './ProvinceCard.js';
-import BaseCard from './basecard.js';
+import BaseCard from './BaseCard.js';
 import Game from './Game.js';
-import Player from './player.js';
-import type Ring from './ring.js';
-import DrawCard from './drawcard.js';
+import Player from './Player.js';
+import type Ring from './Ring.js';
+import DrawCard from './DrawCard.js';
 
 type Predicate = (card: DrawCard) => boolean;
 

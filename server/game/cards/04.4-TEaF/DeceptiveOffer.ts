@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
-import type Player from '../../player.js';
+import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 import { Players, TargetModes, CardTypes } from '../../Constants.js';
 
 class DeceptiveOffer extends DrawCard {

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, TargetModes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { shuffle } from '../../utils/shuffle.js';

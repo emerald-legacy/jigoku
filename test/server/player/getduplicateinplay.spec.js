@@ -1,5 +1,5 @@
-import Player from '../../../build/server/game/player.js';
-import DrawCard from '../../../build/server/game/drawcard.js';
+import Player from '../../../build/server/game/Player.js';
+import DrawCard from '../../../build/server/game/DrawCard.js';
 
 describe('Player - getDuplicateInPlay', function () {
     describe('getDuplicateInPlay', function () {

@@ -1,7 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, FavorTypes, Locations, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
-import type Player from '../../../player.js';
+import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 
 export default class WhispersOfTheLordsOfDeath extends DrawCard {
     static id = 'whispers-of-the-lords-of-death';

@@ -1,7 +1,7 @@
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 import { CardTypes } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import type EventWindow from '../../Events/EventWindow.js';
 import ThenAbility from '../../ThenAbility.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';

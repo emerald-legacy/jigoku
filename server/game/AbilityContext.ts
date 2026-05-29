@@ -1,15 +1,15 @@
 import type { SelectChoice } from './AbilityTargets/SelectChoice.js';
-import BaseAbility from './baseability.js';
-import type BaseCard from './basecard.js';
+import BaseAbility from './BaseAbility.js';
+import type BaseCard from './BaseCard.js';
 import type CardAbility from './CardAbility.js';
-import type DrawCard from './drawcard.js';
+import type DrawCard from './DrawCard.js';
 import { Locations, PlayTypes, Stages } from './Constants.js';
 import EffectSource from './EffectSource.js';
 import type { Event } from './Events/Event.js';
 import type Game from './Game.js';
 import type { GameAction } from './GameActions/GameAction.js';
-import type Player from './player.js';
-import type Ring from './ring.js';
+import type Player from './Player.js';
+import type Ring from './Ring.js';
 import type { StatusToken } from './StatusToken.js';
 
 export interface AbilityContextProperties {

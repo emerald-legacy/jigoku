@@ -1,8 +1,8 @@
 import { CardTypes, EventNames, Players } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import BaseCard from '../../../basecard.js';
-import DrawCard from '../../../drawcard.js';
+import BaseCard from '../../../BaseCard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class KakitasFirstKata extends DrawCard {
     static id = 'kakita-s-first-kata';

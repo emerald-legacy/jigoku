@@ -1,8 +1,8 @@
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import DrawCard from '../../drawcard.js';
-import type Player from '../../player.js';
-import type Ring from '../../ring.js';
+import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
+import type Ring from '../../Ring.js';
 
 type RingFate = { ring: Ring; fate: number };
 

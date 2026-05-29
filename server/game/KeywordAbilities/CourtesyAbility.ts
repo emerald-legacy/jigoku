@@ -1,7 +1,7 @@
 import { AbilityTypes } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
-import type DrawCard from '../drawcard.js';
-import TriggeredAbility from '../triggeredability.js';
+import type DrawCard from '../DrawCard.js';
+import TriggeredAbility from '../TriggeredAbility.js';
 
 import type { Event } from '../Events/Event.js';
 export default class CourtesyAbility extends TriggeredAbility {

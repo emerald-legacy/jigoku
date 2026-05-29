@@ -3,8 +3,8 @@ import { EventNames, Locations, Players } from '../Constants.js';
 import type { Cost, Result } from '../Costs.js';
 import { Event } from '../Events/Event.js';
 import { removeFate } from '../GameActions/GameActions.js';
-import BaseCard from '../basecard.js';
-import Ring from '../ring.js';
+import BaseCard from '../BaseCard.js';
+import Ring from '../Ring.js';
 
 const CANCELLED = 'CANCELLED';
 const STOP = 'STOP';

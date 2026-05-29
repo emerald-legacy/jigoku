@@ -1,7 +1,7 @@
 import { EventNames, Locations, Phases } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 const MAXIMUM_RESSURRECTIONS = 1;
 

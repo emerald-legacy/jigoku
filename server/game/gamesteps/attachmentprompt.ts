@@ -2,7 +2,7 @@ import { UiPrompt } from './UiPrompt.js';
 import { attach } from '../GameActions/GameActions.js';
 import { AbilityContext } from '../AbilityContext.js';
 import { Players } from '../Constants.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 
 class AttachmentPrompt extends UiPrompt {
     player: Player;

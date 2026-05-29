@@ -1,9 +1,9 @@
 import { GamePipeline } from '../GamePipeline.js';
 import { BaseStep } from './BaseStep.js';
 import type { Step } from './Step.js';
-import type BaseCard from '../basecard.js';
-import type Player from '../player.js';
-import type Ring from '../ring.js';
+import type BaseCard from '../BaseCard.js';
+import type Player from '../Player.js';
+import type Ring from '../Ring.js';
 
 export class BaseStepWithPipeline extends BaseStep implements Step {
     pipeline = new GamePipeline();

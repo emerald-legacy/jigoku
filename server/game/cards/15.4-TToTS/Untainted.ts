@@ -1,10 +1,10 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, EventNames, Locations, TargetModes } from '../../Constants.js';
 import type { StatusToken } from '../../StatusToken.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type BaseCard from '../../basecard.js';
-import type Ring from '../../ring.js';
+import type BaseCard from '../../BaseCard.js';
+import type Ring from '../../Ring.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 

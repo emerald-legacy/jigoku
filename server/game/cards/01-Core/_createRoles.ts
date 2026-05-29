@@ -2,7 +2,7 @@ import type { Elements } from '../../Constants.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 import { RoleCard } from '../../RoleCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type { Conflict } from '../../conflict.js';
+import type { Conflict } from '../../Conflict.js';
 
 export function createKeeperRole(id: string, element: Elements) {
     return class KeeperRole extends RoleCard {

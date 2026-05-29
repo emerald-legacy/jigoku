@@ -1,6 +1,6 @@
-import type BaseCard from './basecard.js';
-import type Player from './player.js';
-import type Ring from './ring.js';
+import type BaseCard from './BaseCard.js';
+import type Player from './Player.js';
+import type Ring from './Ring.js';
 
 export interface PromptButton {
     text?: string;

@@ -1,14 +1,14 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseAbility from '../baseability.js';
-import type BaseCard from '../basecard.js';
-import type { Conflict } from '../conflict.js';
+import type BaseAbility from '../BaseAbility.js';
+import type BaseCard from '../BaseCard.js';
+import type { Conflict } from '../Conflict.js';
 import type { ConflictTypes, Decks, EventNames, Locations, Phases } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
+import type DrawCard from '../DrawCard.js';
 import type { Duel } from '../Duel.js';
 import type { Event } from './Event.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
-import type Ring from '../ring.js';
+import type Ring from '../Ring.js';
 import type { StatusToken } from '../StatusToken.js';
 
 export interface BaseEventPayload {
