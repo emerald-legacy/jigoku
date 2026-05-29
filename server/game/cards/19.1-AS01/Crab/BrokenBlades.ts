@@ -6,12 +6,12 @@ export default class BrokenBlades extends DrawCard {
     static id = 'broken-blades';
 
     public setupCardAbilities() {
-        this.reaction({
+        this.reaction<DrawCard>({
             title: 'Return all fate from a character then discard them',
             effect: 'ensure {0} is gone!{1}{2}{3}',
             effectArgs: (context) => {
-                const target = context.target as DrawCard;
-                return target.fate < 1
+                const target = context.target;
+                return !target || target.fate < 1
                     ? []
                     : [' (', target.owner, ' recovers ' + target.fate + ' fate)'];
             },

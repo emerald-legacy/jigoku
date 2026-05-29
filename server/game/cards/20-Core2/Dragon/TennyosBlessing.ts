@@ -1,12 +1,13 @@
 import { CardTypes, Players, Locations, TargetModes, Decks } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
 
 export default class TennyosBlessing extends DrawCard {
     static id = 'tennyo-s-blessing';
 
     public setupCardAbilities() {
-        this.action({
+        this.action<ProvinceCard>({
             title: 'Look at your dynasty deck',
             evenDuringDynasty: true,
             target: {
@@ -14,7 +15,7 @@ export default class TennyosBlessing extends DrawCard {
                 location: Locations.Provinces,
                 controller: Players.Self,
                 cardCondition: (card) => card.location !== Locations.StrongholdProvince,
-                gameAction: AbilityDsl.actions.deckSearch({
+                gameAction: AbilityDsl.actions.deckSearch<ProvinceCard>({
                     targetMode: TargetModes.UpTo,
                     numCards: 2,
                     amount: 4,
@@ -22,15 +23,18 @@ export default class TennyosBlessing extends DrawCard {
                     deck: Decks.DynastyDeck,
                     selectedCardsHandler: (context, event, cards) => {
                         if(cards.length > 0) {
+                            const target = context.target;
                             context.game.addMessage(
                                 '{0} selects {1} and puts {2} into {3}',
                                 event.player,
                                 cards,
                                 cards.length > 1 ? 'them' : 'it',
-                                (context.target as DrawCard).facedown ? (context.target as DrawCard).location : (context.target as DrawCard)
+                                target?.facedown ? target.location : (target ?? '')
                             );
                             cards.forEach((card) => {
-                                event.player.moveCard(card, (context.target as DrawCard).location);
+                                if(target) {
+                                    event.player.moveCard(card, target.location);
+                                }
                                 card.facedown = false;
                             });
                         } else {

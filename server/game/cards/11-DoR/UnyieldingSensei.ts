@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 import { CardTypes, Players, Locations, Decks } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -6,7 +7,7 @@ class UnyieldingSensei extends DrawCard {
     static id = 'unyielding-sensei';
 
     setupCardAbilities() {
-        this.action({
+        this.action<ProvinceCard>({
             title: 'Choose a province',
             target: {
                 cardType: CardTypes.Province,
@@ -22,9 +23,12 @@ class UnyieldingSensei extends DrawCard {
                 cardCondition: card => card.type === CardTypes.Character,
                 shuffle: false,
                 message: '{0} puts {1} into {2}',
-                messageArgs: (context, cards) => [context.player, cards, (context.target as DrawCard).isFacedown() ? 'a facedown province' : (context.target as DrawCard).name],
-                gameAction: AbilityDsl.actions.moveCard(context => ({
-                    destination: context.target.location,
+                messageArgs: (context, cards) => {
+                    const province = context.target as ProvinceCard;
+                    return [context.player, cards, province.isFacedown() ? 'a facedown province' : province.name];
+                },
+                gameAction: AbilityDsl.actions.moveCard<ProvinceCard>(context => ({
+                    destination: context.target?.location,
                     faceup: true
                 }))
             })

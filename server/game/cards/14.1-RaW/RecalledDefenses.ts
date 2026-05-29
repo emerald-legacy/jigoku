@@ -6,7 +6,7 @@ class RecalledDefenses extends DrawCard {
     static id = 'recalled-defenses';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Move a card to your stronghold',
             target: {
                 location: Locations.Provinces,
@@ -15,7 +15,7 @@ class RecalledDefenses extends DrawCard {
                 gameAction: AbilityDsl.actions.moveCard({ destination: Locations.StrongholdProvince })
             },
             effect: 'move {1} to their stronghold province',
-            effectArgs: context => [(context.target as DrawCard)]
+            effectArgs: context => [context.target ?? '']
         });
     }
 }

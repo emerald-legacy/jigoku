@@ -7,7 +7,7 @@ class WildfireKick extends DrawCard {
     static id = 'wildfire-kick';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Give opponent\'s characters -2/-2',
             condition: context =>
                 this.game.isDuringConflict() &&
@@ -17,14 +17,15 @@ class WildfireKick extends DrawCard {
                 controller: Players.Self,
                 cardCondition: card => card.isParticipating() && card.hasTrait('monk')
             },
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: this.game.currentConflict?.getCharacters(context.player.opponent).filter((card: DrawCard) => card.getMilitarySkill() <= (context.target as DrawCard).getMilitarySkill() && card !== context.source) ?? [],
+            gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>(context => ({
+                target: this.game.currentConflict?.getCharacters(context.player.opponent).filter((card: DrawCard) => card.getMilitarySkill() <= (context.target?.getMilitarySkill() ?? 0) && card !== context.source) ?? [],
                 effect: AbilityDsl.effects.modifyBothSkills(-2)
             })),
             effect: 'give {1}\'s participating characters -2{2}/-2{3} if their military skill is equal to or lower than {4}. This affects: {5}',
             effectArgs: context => {
-                const target = context.target as DrawCard;
-                return [context.player.opponent as Player, 'military', 'political', target.getMilitarySkill(), this.game.currentConflict?.getCharacters(context.player.opponent).filter((card: DrawCard) => card.getMilitarySkill() <= target.getMilitarySkill() && card !== context.source) ?? []];
+                const target = context.target;
+                const targetMs = target?.getMilitarySkill() ?? 0;
+                return [context.player.opponent as Player, 'military', 'political', targetMs, this.game.currentConflict?.getCharacters(context.player.opponent).filter((card: DrawCard) => card.getMilitarySkill() <= targetMs && card !== context.source) ?? []];
             }
         });
     }

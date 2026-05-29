@@ -42,7 +42,10 @@ export default class TogashiTsurumi extends DrawCard {
                     })),
                     AbilityDsl.actions.handler({
                         handler: (context) => {
-                            const card = context.target as DrawCard;
+                            const card = context.target;
+                            if(!(card instanceof DrawCard)) {
+                                return;
+                            }
                             context.player.moveCard(card, this.uuid);
                             card.controller = context.source.controller;
                             card.facedown = false;

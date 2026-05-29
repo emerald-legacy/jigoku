@@ -6,7 +6,7 @@ class SeizeTheMind extends DrawCard {
     static id = 'seize-the-mind';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Take control of a character',
             condition: () => this.game.isDuringConflict(),
             target: {
@@ -14,11 +14,11 @@ class SeizeTheMind extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: card => !card.isUnique(),
                 gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.loseHonor(context => ({
+                    AbilityDsl.actions.loseHonor<DrawCard>(context => ({
                         target: context.player,
-                        amount: context.target.fate
+                        amount: context.target?.fate ?? 0
                     })),
-                    AbilityDsl.actions.cardLastingEffect(context => ({
+                    AbilityDsl.actions.cardLastingEffect<DrawCard>(context => ({
                         effect: AbilityDsl.effects.takeControl(context.player),
                         duration: Durations.UntilEndOfConflict
                     }))
@@ -26,8 +26,8 @@ class SeizeTheMind extends DrawCard {
             },
             effect: 'take control of {0}{1}{2}{3}',
             effectArgs: context => {
-                const target = context.target as DrawCard;
-                return target.getFate() > 0 ? [' and lose ', target.getFate(), ' honor'] : ['', '', ''];
+                const fate = context.target?.getFate() ?? 0;
+                return fate > 0 ? [' and lose ', fate, ' honor'] : ['', '', ''];
             }
         });
     }

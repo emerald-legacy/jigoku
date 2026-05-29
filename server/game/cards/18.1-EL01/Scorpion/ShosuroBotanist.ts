@@ -6,7 +6,7 @@ class ShosuroBotanist extends DrawCard {
     static id = 'shosuro-botanist';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Return attachment to owners hand',
             target: {
                 cardType: CardTypes.Attachment,
@@ -15,7 +15,7 @@ class ShosuroBotanist extends DrawCard {
                 gameAction: AbilityDsl.actions.returnToHand()
             },
             effect: 'return {0} to {1}\'s hand',
-            effectArgs: context => [(context.target as DrawCard).owner]
+            effectArgs: context => [context.target?.owner ?? '']
         });
     }
 }

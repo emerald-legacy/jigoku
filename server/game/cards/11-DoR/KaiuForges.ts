@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 import { Locations, CardTypes, Players } from '../../Constants.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
 import type BaseCard from '../../BaseCard.js';
 
@@ -8,7 +8,7 @@ class KaiuForges extends DrawCard {
     static id = 'kaiu-forges';
 
     setupCardAbilities() {
-        this.action({
+        this.action<ProvinceCard>({
             title: 'Choose a province',
             target: {
                 location: Locations.Provinces,
@@ -16,7 +16,11 @@ class KaiuForges extends DrawCard {
                 cardType: CardTypes.Province
             },
             effect: 'look at the top ten cards of their dynasty deck',
-            handler: (context: AbilityContext<this>) => {
+            handler: (context) => {
+                const province = context.target;
+                if(!province) {
+                    return;
+                }
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Choose a holding to swap with a Kaiu Wall',
                     context: context,
@@ -29,7 +33,7 @@ class KaiuForges extends DrawCard {
                         return true;
                     }],
                     cardHandler: (cardFromDeck: DrawCard) => {
-                        const provinceLocation = (context.target as DrawCard).location;
+                        const provinceLocation = province.location;
                         const cards = context.player.getDynastyCardsInProvince(provinceLocation);
                         if(cards.some((a: BaseCard) => a.getType() === CardTypes.Holding && a.hasTrait('kaiu-wall'))) {
                             this.game.promptForSelect(context.player, {

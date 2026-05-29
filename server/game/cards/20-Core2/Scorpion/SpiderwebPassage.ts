@@ -16,7 +16,7 @@ export default class SpiderwebPassage extends DrawCard {
     static id = 'spiderweb-passage';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Discard a participating character with 0 skill',
             condition: (context) => shinobiCount(context) > 0,
             cost: AbilityDsl.costs.sacrificeSelf(),
@@ -59,7 +59,7 @@ export default class SpiderwebPassage extends DrawCard {
                 };
             }),
             effect: 'ambush {1}',
-            effectArgs: (context) => (context.target as DrawCard)
+            effectArgs: (context) => context.target ?? ''
         });
     }
 }

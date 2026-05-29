@@ -25,7 +25,7 @@ export default class MotoOktai extends DrawCard {
             }))
         });
 
-        this.action({
+        this.action<DrawCard>({
             title: 'Discard a character from play',
             condition: (context) => context.source.isParticipatingFor(context.player),
             target: {
@@ -34,7 +34,7 @@ export default class MotoOktai extends DrawCard {
                 gameAction: AbilityDsl.actions.discardFromPlay()
             },
             effect: 'discard {1} - purge the weak!',
-            effectArgs: (context) => [(context.target as DrawCard)]
+            effectArgs: (context) => [context.target ?? '']
         });
     }
 }

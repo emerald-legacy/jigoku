@@ -80,7 +80,7 @@ const elementKey = 'maelstrom-water';
 export default class Maelstrom extends ProvinceCard {
     static id = 'maelstrom';
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Move a character into the conflict',
             cost: maelstromCost(),
             conflictProvinceCondition: (province) => province.isElement(this.getCurrentElementSymbol(elementKey)),
@@ -116,7 +116,7 @@ export default class Maelstrom extends ProvinceCard {
             },
             effect: 'move {0} into the conflict{1}',
             effectArgs: (context) =>
-                (context.target as DrawCard).controller === context.player ? ['. It will be honored if it wins the conflict'] : ['']
+                context.target?.controller === context.player ? ['. It will be honored if it wins the conflict'] : ['']
         });
     }
 

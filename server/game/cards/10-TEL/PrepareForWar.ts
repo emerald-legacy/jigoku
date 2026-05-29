@@ -6,17 +6,17 @@ class PrepareForWar extends DrawCard {
     static id = 'prepare-for-war';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Remove honor token and any attachment',
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.multipleContext((context) => {
+                    AbilityDsl.actions.multipleContext<DrawCard>((context) => {
                         const promptActions = this.getStatusTokenPrompts(context);
                         return {
                             gameActions: [
-                                AbilityDsl.actions.selectCard((context) => ({
+                                AbilityDsl.actions.selectCard<DrawCard>((context) => ({
                                     mode: TargetModes.Unlimited,
                                     cardType: CardTypes.Attachment,
                                     controller: Players.Any,
@@ -28,21 +28,24 @@ class PrepareForWar extends DrawCard {
                                     messageArgs: (cards) => [
                                         context.player,
                                         cards.length === 0 ? 'no attachments' : cards,
-                                        context.target
+                                        context.target ?? ''
                                     ]
                                 })),
                                 ...promptActions
                             ]
                         };
                     }),
-                    AbilityDsl.actions.honor((context) => ({
-                        target: context.target.hasTrait('commander') ? context.target : []
+                    AbilityDsl.actions.honor<DrawCard>((context) => ({
+                        target: context.target?.hasTrait('commander') ? context.target : []
                     }))
                 ])
             },
             effect: '{1}{2} {0}',
             effectArgs: (context) => {
-                const target = context.target as DrawCard;
+                const target = context.target;
+                if(!target) {
+                    return ['', ''];
+                }
                 let isCommander = target.hasTrait('commander');
                 let hasAttachments = target.attachments.length > 0;
                 let hasToken = target.isDishonored || target.isHonored;

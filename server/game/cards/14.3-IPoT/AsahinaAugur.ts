@@ -12,7 +12,7 @@ class AsahinaAugur extends DrawCard {
             effect: AbilityDsl.effects.canBeSeenWhenFacedown()
         });
 
-        this.action({
+        this.action<DrawCard>({
             title: 'Discard a card in a province',
             target: {
                 cardType: [CardTypes.Character, CardTypes.Holding, CardTypes.Event],
@@ -21,7 +21,7 @@ class AsahinaAugur extends DrawCard {
                 gameAction: AbilityDsl.actions.discardCard()
             },
             effect: 'discard {1} in {2}',
-            effectArgs: context => [(context.target as DrawCard).isFacedown() ? 'a facedown card' : (context.target as DrawCard), (context.target as DrawCard).location],
+            effectArgs: context => [context.target?.isFacedown() ? 'a facedown card' : context.target ?? '', context.target?.location ?? ''],
             limit: AbilityDsl.limit.perRound(3)
         });
     }

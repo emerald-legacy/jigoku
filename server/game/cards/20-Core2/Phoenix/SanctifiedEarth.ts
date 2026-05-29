@@ -28,7 +28,7 @@ export default class SanctifiedEarth extends DrawCard {
     public setupCardAbilities() {
         this.attachmentConditions({ trait: 'shugenja', myControl: true });
 
-        this.reaction({
+        this.reaction<DrawCard>({
             title: 'Give character a skill bonus',
             when: {
                 onConflictDeclared: trigger.onConflictDeclared.when,
@@ -59,7 +59,7 @@ export default class SanctifiedEarth extends DrawCard {
                 ])
             },
             effect: 'give +2{1} and +2{2} to {3}',
-            effectArgs: (context) => ['military', 'political', (context.target as DrawCard)]
+            effectArgs: (context) => ['military', 'political', context.target ?? '']
         });
     }
 }

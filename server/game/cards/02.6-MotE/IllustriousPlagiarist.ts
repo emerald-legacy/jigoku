@@ -19,10 +19,10 @@ class IllustriousPlagiarist extends DrawCard {
                     card.type === CardTypes.Event &&
                     card.controller === context.player.opponent &&
                     card.abilities.actions.length > 0,
-                gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => ({
+                gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
                     duration: Durations.UntilEndOfPhase,
                     target: context.source,
-                    effect: (context.target as DrawCard).abilities.actions.map((action: any) => AbilityDsl.effects.gainAbility(AbilityTypes.Action, action))
+                    effect: context.target?.abilities.actions.map((action: any) => AbilityDsl.effects.gainAbility(AbilityTypes.Action, action)) ?? []
                 }))
             },
             effect: 'copy {0}\'s action abilities'

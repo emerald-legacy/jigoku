@@ -6,7 +6,7 @@ class PeasantsAdvice extends DrawCard {
     static id = 'peasant-s-advice';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'look at a province and return its dynasty card to deck',
             phase: Phases.Conflict,
             cost: AbilityDsl.costs.dishonor(),
@@ -18,11 +18,11 @@ class PeasantsAdvice extends DrawCard {
                         message: '{0} sees {1} in {2}',
                         messageArgs: (cards) => [context.source, cards[0], cards[0].location]
                     })),
-                    AbilityDsl.actions.selectCard(context => ({
+                    AbilityDsl.actions.selectCard<DrawCard>(context => ({
                         activePromptTitle: 'Choose a faceup card to return to its owner\'s deck',
                         cardCondition: card =>
-                            card.location === (context.target as DrawCard).location &&
-                            card.controller === (context.target as DrawCard).controller &&
+                            card.location === context.target?.location &&
+                            card.controller === context.target?.controller &&
                             card.isDynasty && !card.facedown,
                         location: Locations.Provinces,
                         optional: true,
@@ -36,7 +36,7 @@ class PeasantsAdvice extends DrawCard {
                 ])
             },
             effect: 'look at {1}\'s {2}',
-            effectArgs: context => [(context.target as DrawCard).controller, (context.target as DrawCard).location]
+            effectArgs: context => [context.target?.controller ?? '', context.target?.location ?? '']
         });
     }
 }

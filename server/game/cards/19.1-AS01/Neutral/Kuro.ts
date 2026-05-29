@@ -13,7 +13,7 @@ export default class Kuro extends DrawCard {
     }
 
     public setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Play opponent discarded attachment',
             condition: (context) => context.game.isDuringConflict(),
             target: {
@@ -47,7 +47,7 @@ export default class Kuro extends DrawCard {
             },
             effect: 'seek the lost treasure \'{1}\'. {2}',
             effectArgs: (context) => [
-                (context.target as DrawCard),
+                context.target ?? '',
                 context.source.isParticipating()
                     ? 'Kuro returns home with their treasure'
                     : 'Kuro swoops into the conflict'

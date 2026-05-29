@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
 import { Locations, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -14,7 +15,7 @@ class FrontlineEngineer extends DrawCard {
             title: 'Place a holding from your deck faceup in the defending province',
             condition: context => context.player.dynastyDeck.length > 0 && context.source.isDefending(),
             effect: 'look at the top five cards of their dynasty deck',
-            gameAction: AbilityDsl.actions.selectCard(context => ({
+            gameAction: AbilityDsl.actions.selectCard<ProvinceCard>(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardTypes.Province,
@@ -37,9 +38,12 @@ class FrontlineEngineer extends DrawCard {
                             return true;
                         }],
                         cardHandler: (cardFromDeck: any) => {
-                            let cards = context.player.getDynastyCardsInProvince((context.target as DrawCard).location);
+                            if(!context.target) {
+                                return;
+                            }
+                            let cards = context.player.getDynastyCardsInProvince(context.target.location);
                             this.game.addMessage('{0} discards {1}, replacing it with {2}', context.player, cards, cardFromDeck);
-                            context.player.moveCard(cardFromDeck, (context.target as DrawCard).location);
+                            context.player.moveCard(cardFromDeck, context.target.location);
                             cardFromDeck.facedown = false;
                             cards.forEach(element => {
                                 context.player.moveCard(element, Locations.DynastyDiscardPile);

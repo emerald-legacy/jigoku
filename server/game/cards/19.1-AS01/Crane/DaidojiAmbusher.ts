@@ -12,7 +12,7 @@ export default class DaidojiAmbusher extends DrawCard {
     static id = 'daidoji-ambusher';
 
     public setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Give someone -2 military',
             condition: (context) => context.game.isDuringConflict('military') && context.source.isParticipating(),
             target: {
@@ -43,9 +43,12 @@ export default class DaidojiAmbusher extends DrawCard {
         });
     }
 
-    private triggerKickerEffect(context: AbilityContext, timing: Timing): boolean {
+    private triggerKickerEffect(context: AbilityContext<any, DrawCard>, timing: Timing): boolean {
         const isDishonored = context.source.isDishonored;
-        const target = context.target as DrawCard;
+        const target = context.target;
+        if(!target) {
+            return false;
+        }
         const targetZero =
             timing === Timing.BEFORE_PENALTY
                 ? target.getMilitarySkill() <= 2
@@ -54,7 +57,7 @@ export default class DaidojiAmbusher extends DrawCard {
         return isDishonored && targetZero;
     }
 
-    private shouldDiscardTarget(context: AbilityContext): boolean {
-        return (context.target as DrawCard).getFate() === 0;
+    private shouldDiscardTarget(context: AbilityContext<any, DrawCard>): boolean {
+        return context.target?.getFate() === 0;
     }
 }

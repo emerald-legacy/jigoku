@@ -6,7 +6,7 @@ class FieldTactician extends DrawCard {
     static id = 'field-tactician';
 
     setupCardAbilities() {
-        this.reaction({
+        this.reaction<DrawCard>({
             title: 'Return a card to a deck',
             when: {
                 onCardPlayed: (event, context) => event.card.hasTrait('tactic') && event.player === context.player
@@ -19,6 +19,9 @@ class FieldTactician extends DrawCard {
                 gameAction: AbilityDsl.actions.handler({
                     handler: context => {
                         const card = context.target as DrawCard;
+                        if(!card) {
+                            return;
+                        }
                         const player = card.owner;
                         player.moveCard(card, Locations.ConflictDeck);
                         const index = player.conflictDeck.indexOf(card);
@@ -30,7 +33,7 @@ class FieldTactician extends DrawCard {
                 })
             },
             effect: 'return {0} to {1}\'s conflict deck',
-            effectArgs: context => [(context.target as DrawCard).owner]
+            effectArgs: context => [context.target?.owner ?? '']
         });
     }
 }

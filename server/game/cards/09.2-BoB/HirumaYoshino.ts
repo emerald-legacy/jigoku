@@ -6,7 +6,7 @@ class HirumaYoshino extends DrawCard {
     static id = 'hiruma-yoshino';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Contribute printed military skill',
             condition: context => context.game.isDuringConflict('military') && context.source.isParticipating(),
             target: {
@@ -23,7 +23,7 @@ class HirumaYoshino extends DrawCard {
                 })
             },
             effect: 'contribute {0}\'s printed {1} skill of {2} to their side of the conflict',
-            effectArgs: context => ['military', (context.target as DrawCard).printedMilitarySkill]
+            effectArgs: context => ['military', context.target?.printedMilitarySkill ?? 0]
         });
     }
 }

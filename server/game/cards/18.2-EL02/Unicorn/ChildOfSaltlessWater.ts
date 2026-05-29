@@ -18,7 +18,7 @@ export default class ChildOfSaltlessWater extends DrawCard {
             })
         });
 
-        this.reaction({
+        this.reaction<ProvinceCard>({
             title: 'Evoke the strength of water!',
             when: {
                 onCardPlayed: (event, context) => event.card === context.source
@@ -28,12 +28,12 @@ export default class ChildOfSaltlessWater extends DrawCard {
                 cardType: CardTypes.Province,
                 cardCondition: (card) => card.isConflictProvince()
             },
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+            gameAction: AbilityDsl.actions.cardLastingEffect<ProvinceCard>((context) => ({
                 target: context.source,
-                effect: AbilityDsl.effects.setMilitarySkill((context.target as ProvinceCard).printedStrength)
+                effect: AbilityDsl.effects.setMilitarySkill(context.target?.printedStrength ?? 0)
             })),
             effect: 'set it\'s {1} to {2}',
-            effectArgs: (context) => ['military', (context.target as ProvinceCard).printedStrength]
+            effectArgs: (context) => ['military', context.target?.printedStrength ?? 0]
         });
     }
 }

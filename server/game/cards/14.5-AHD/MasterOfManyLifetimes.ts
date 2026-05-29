@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Players, Locations } from '../../Constants.js';
@@ -6,7 +7,7 @@ class MasterOfManyLifetimes extends DrawCard {
     static id = 'master-of-many-lifetimes';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
+        this.wouldInterrupt<DrawCard>({
             title: 'Return a character and attachments',
             when: {
                 onCardLeavesPlay: (event, context) => {
@@ -23,7 +24,7 @@ class MasterOfManyLifetimes extends DrawCard {
                 location: Locations.Provinces,
                 cardCondition: (card) => card.facedown
             },
-            gameAction: AbilityDsl.actions.cancel((context) => ({
+            gameAction: AbilityDsl.actions.cancel((context: TriggeredAbilityContext<any, DrawCard>) => ({
                 replacementGameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.returnToHand((context) => ({
                         target: context.event.card.attachments
@@ -31,12 +32,12 @@ class MasterOfManyLifetimes extends DrawCard {
                     AbilityDsl.actions.putIntoProvince({
                         target: context.event.card,
                         canBeStronghold: true,
-                        destination: context.target.location
+                        destination: context.target?.location
                     })
                 ])
             })),
             effect: 'prevent {1} from leaving play, putting it into {2} instead',
-            effectArgs: (context) => [context.event.card, (context.target as DrawCard).location]
+            effectArgs: (context) => [context.event.card, context.target?.location ?? '']
         });
     }
 }

@@ -6,7 +6,7 @@ class HanteiDaisetsu extends DrawCard {
     static id = 'hantei-daisetsu';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Blank a participating character',
             condition: (context) => context.source.isParticipating() && context.game.isDuringConflict('political'),
             target: {
@@ -18,7 +18,7 @@ class HanteiDaisetsu extends DrawCard {
                 })
             },
             effect: 'treat {1} as if its text box were blank until the end of the conflict',
-            effectArgs: (context) => [(context.target as DrawCard)]
+            effectArgs: (context) => [context.target ?? '']
         });
     }
 }

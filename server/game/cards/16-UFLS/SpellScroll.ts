@@ -16,7 +16,7 @@ export default class SpellScroll extends DrawCard {
             effect: AbilityDsl.effects.modifyPoliticalSkill(3)
         });
 
-        this.action({
+        this.action<DrawCard>({
             title: 'Put a card into your hand',
             condition: (context) => !!context.source.parent,
             target: {
@@ -26,7 +26,7 @@ export default class SpellScroll extends DrawCard {
                     card.type !== CardTypes.Character &&
                     (context.source.parent as DrawCard).hasSomeTrait(card.getTraitSet()),
                 gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.moveCard((context) => ({
+                    AbilityDsl.actions.moveCard<DrawCard>((context) => ({
                         target: context.target,
                         destination: Locations.Hand
                     })),
@@ -34,7 +34,7 @@ export default class SpellScroll extends DrawCard {
                 ])
             },
             effect: 'move {1} to their hand and sacrifice {2}',
-            effectArgs: (context) => [(context.target as DrawCard), context.source]
+            effectArgs: (context) => [context.target ?? '', context.source]
         });
     }
 }

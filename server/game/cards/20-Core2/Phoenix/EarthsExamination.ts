@@ -6,7 +6,7 @@ export default class EarthsExamination extends DrawCard {
     static id = 'earth-s-examination';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Taint a character',
             condition: (context) =>
                 context.game.isDuringConflict(ConflictTypes.Political) && context.player.isTraitInPlay('shugenja'),
@@ -25,7 +25,7 @@ export default class EarthsExamination extends DrawCard {
                 ])
             },
             effect: 'reveal {1}\'s corruption',
-            effectArgs: (context) => [(context.target as DrawCard)]
+            effectArgs: (context) => [context.target ?? '']
         });
     }
 }

@@ -39,7 +39,10 @@ export default class MiokosSong extends StrongholdCard {
                         if(!opponent) {
                             return;
                         }
-                        const province: ProvinceCard = context.target as ProvinceCard;
+                        const province = context.target;
+                        if(!(province instanceof ProvinceCard)) {
+                            return;
+                        }
                         const topCards: Array<DrawCard> = opponent.dynastyDeck.slice(0, 2);
                         this.game.promptWithHandlerMenu(context.player, {
                             activePromptTitle: 'Which card do you want to put in the province?',

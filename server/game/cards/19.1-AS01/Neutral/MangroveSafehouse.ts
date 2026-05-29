@@ -8,7 +8,7 @@ export default class MangroveSafehouse extends DrawCard {
     static id = 'mangrove-safehouse';
 
     public setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Move an attacker out of the conflict',
             effect: 'move {0} home{1}',
             effectArgs: (context) => [
@@ -29,8 +29,8 @@ export default class MangroveSafehouse extends DrawCard {
         });
     }
 
-    private targetIsMantis(context: AbilityContext): boolean {
-        return (context.target as DrawCard).traits.some((trait: string) => trait === 'mantis-clan');
+    private targetIsMantis(context: AbilityContext<any, DrawCard>): boolean {
+        return context.target?.traits.some((trait: string) => trait === 'mantis-clan') ?? false;
     }
 
     private opponentHasFateToBeStolen(context: AbilityContext): boolean {

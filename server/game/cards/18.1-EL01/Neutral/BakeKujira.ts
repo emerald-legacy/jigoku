@@ -9,7 +9,7 @@ export default class BakeKujira extends DrawCard {
     setupCardAbilities() {
         this.legendary(1);
 
-        this.reaction({
+        this.reaction<DrawCard>({
             title: 'Eat a character',
             when: {
                 afterConflict: (event, context) =>
@@ -28,7 +28,7 @@ export default class BakeKujira extends DrawCard {
         });
     }
 
-    #shouldDiscardTarget(context: AbilityContext): boolean {
-        return (context.target as DrawCard).getFate() === 0;
+    #shouldDiscardTarget(context: AbilityContext<any, DrawCard>): boolean {
+        return context.target?.getFate() === 0;
     }
 }

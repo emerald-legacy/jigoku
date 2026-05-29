@@ -12,13 +12,13 @@ export default class AsahinaTakako extends DrawCard {
             effect: AbilityDsl.effects.canBeSeenWhenFacedown()
         });
 
-        this.action({
+        this.action<DrawCard>({
             title: 'Discard a card or switch with another card',
             target: {
                 cardType: [CardTypes.Character, CardTypes.Holding, CardTypes.Event],
                 location: Locations.Provinces,
                 controller: Players.Self,
-                gameAction: AbilityDsl.actions.chooseAction((context) => ({
+                gameAction: AbilityDsl.actions.chooseAction<DrawCard>((context) => ({
                     options: {
                         Discard: {
                             action: AbilityDsl.actions.discardCard({ target: context.target })
@@ -32,13 +32,13 @@ export default class AsahinaTakako extends DrawCard {
                                 message: '{0} switches {1} in {2} and {3} in {4}',
                                 messageArgs: (card) => [
                                     context.player,
-                                    (context.target as DrawCard).isFacedown() ? 'a facedown card' : (context.target as DrawCard),
-                                    (context.target as DrawCard).location,
+                                    context.target?.isFacedown() ? 'a facedown card' : context.target ?? '',
+                                    context.target?.location ?? '',
                                     card.isFacedown() ? 'a facedown card' : card,
                                     card.location
                                 ],
                                 gameAction: AbilityDsl.actions.moveCard({
-                                    destination: (context.target as DrawCard).location,
+                                    destination: context.target?.location,
                                     switch: true,
                                     switchTarget: context.target
                                 })
@@ -50,8 +50,8 @@ export default class AsahinaTakako extends DrawCard {
             },
             effect: 'switch or discard {1} in {2}',
             effectArgs: (context) => [
-                (context.target as DrawCard).isFacedown() ? 'a facedown card' : (context.target as DrawCard),
-                (context.target as DrawCard).location
+                context.target?.isFacedown() ? 'a facedown card' : context.target ?? '',
+                context.target?.location ?? ''
             ]
         });
     }

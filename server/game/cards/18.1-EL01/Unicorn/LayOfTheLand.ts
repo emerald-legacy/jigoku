@@ -7,7 +7,7 @@ export default class LayOfTheLand extends DrawCard {
     static id = 'lay-of-the-land';
 
     setupCardAbilities() {
-        this.action({
+        this.action<ProvinceCard>({
             title: 'Reveal a province and discard status tokens',
             target: {
                 activePromptTitle: 'Choose an unbroken province',
@@ -19,7 +19,10 @@ export default class LayOfTheLand extends DrawCard {
             },
             effect: '{1} {2}',
             effectArgs: (context) => {
-                const target = context.target as ProvinceCard;
+                const target = context.target;
+                if(!target) {
+                    return ['reveal', ''];
+                }
                 return target.isFaceup() ? ['flip facedown', target] : ['reveal', target.location];
             }
         });

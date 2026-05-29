@@ -6,7 +6,7 @@ class HidaSugi extends DrawCard {
     static id = 'hida-sugi';
 
     setupCardAbilities() {
-        this.reaction({
+        this.reaction<DrawCard>({
             title: 'Move a discarded dynasty card',
             when: {
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()
@@ -16,7 +16,7 @@ class HidaSugi extends DrawCard {
                 gameAction: AbilityDsl.actions.moveCard({ destination: Locations.DynastyDeck, bottom: true})
             },
             effect: 'move {0} to bottom of {1}\'s dynasty deck',
-            effectArgs: context => [(context.target as DrawCard).controller]
+            effectArgs: context => [context.target?.controller ?? '']
         });
     }
 }

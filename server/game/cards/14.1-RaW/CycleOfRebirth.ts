@@ -7,7 +7,7 @@ class CycleOfRebirth extends DrawCard {
     static id = 'cycle-of-rebirth';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Shuffle this and target into deck',
             max: AbilityDsl.limit.perRound(1),
             target: {
@@ -17,7 +17,7 @@ class CycleOfRebirth extends DrawCard {
             },
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.moveCard(context => ({
+                    AbilityDsl.actions.moveCard<DrawCard>(context => ({
                         destination: Locations.DynastyDeck,
                         target: context.target,
                         shuffle: true,
@@ -30,14 +30,17 @@ class CycleOfRebirth extends DrawCard {
                         bottom: true
                     }))
                 ]),
-                AbilityDsl.actions.refillFaceup(context => ({
-                    target: [context.target.controller, context.source.controller],
+                AbilityDsl.actions.refillFaceup<DrawCard>(context => ({
+                    target: context.target ? [context.target.controller, context.source.controller] : [context.source.controller],
                     location: context.game.getProvinceArray()
                 }))
             ]),
             effect: 'shuffle {1}{3}{4} into {2}\'s dynasty deck{5}{6}{7}{8}{9}',
             effectArgs: context => {
-                const target = (context.target as DrawCard);
+                const target = context.target;
+                if(!target) {
+                    return ['', '', '', '', '', '', '', '', '', context.source.controller];
+                }
                 return [
                     target,
                     target.controller,

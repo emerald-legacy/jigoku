@@ -1,12 +1,13 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Decks, Locations, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
 
 export default class AsahinaEnvoy extends DrawCard {
     static id = 'asahina-envoy';
 
     setupCardAbilities() {
-        this.interrupt({
+        this.interrupt<ProvinceCard>({
             title: 'Put a character into a province',
             when: {
                 onCardLeavesPlay: (event, context) => event.card === context.source
@@ -16,7 +17,7 @@ export default class AsahinaEnvoy extends DrawCard {
                 location: Locations.Provinces,
                 controller: Players.Self,
                 cardCondition: (card) => card.location !== Locations.StrongholdProvince,
-                gameAction: AbilityDsl.actions.deckSearch({
+                gameAction: AbilityDsl.actions.deckSearch<ProvinceCard>({
                     cardCondition: (card) =>
                         card.type === CardTypes.Character && (card.printedCost ?? 0) >= 4 && card.isFaction('crane'),
                     amount: 6,
@@ -27,15 +28,18 @@ export default class AsahinaEnvoy extends DrawCard {
                             return this.game.addMessage('{0} selects no characters', event.player);
                         }
 
+                        const target = context.target;
                         this.game.addMessage(
                             '{0} selects {1} and puts it into {2}',
                             event.player,
                             cards,
-                            (context.target as DrawCard).facedown ? (context.target as DrawCard).location : (context.target as DrawCard)
+                            target?.facedown ? target.location : (target ?? '')
                         );
 
                         for(const card of cards) {
-                            event.player.moveCard(card, (context.target as DrawCard).location);
+                            if(target) {
+                                event.player.moveCard(card, target.location);
+                            }
                             card.facedown = false;
                         }
                     }

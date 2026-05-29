@@ -12,7 +12,7 @@ export default class Retribution extends DrawCard {
     static id = 'retribution-';
 
     public setupCardAbilities() {
-        this.reaction({
+        this.reaction<DrawCard>({
             title: 'Immediately declare a military conflict',
             when: {
                 onConflictFinished: (event, context) =>
@@ -24,7 +24,7 @@ export default class Retribution extends DrawCard {
                         brokenProvinceCountForPlayer(context.player.opponent)
             },
             effect: 'declare a military conflict, attacking with {1}',
-            effectArgs: (context) => [(context.target as DrawCard)],
+            effectArgs: (context) => [context.target ?? ''],
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,

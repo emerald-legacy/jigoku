@@ -7,13 +7,13 @@ export default class ForcedRetirement extends DrawCard {
     static id = 'forced-retirement';
 
     public setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Remove negative status tokens from a character, and discard it from play',
             effect: 'expiate {0}\'s misdeeds by retiring them to the nearest monatery{1} Let them contemplate their sins.',
             effectArgs: (context) => {
-                const target = context.target as DrawCard;
+                const target = context.target;
                 return [
-                    target.fate > 0 ? ', recovering their ' + target.fate + ' fate.' : '.'
+                    target && target.fate > 0 ? ', recovering their ' + target.fate + ' fate.' : '.'
                 ];
             },
             target: {

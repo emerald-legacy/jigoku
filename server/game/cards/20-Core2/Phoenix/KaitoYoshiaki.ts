@@ -11,7 +11,7 @@ export default class KaitoYoshiaki extends DrawCard {
     static id = 'kaito-yoshiaki';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Punish the wicked',
             condition: (context) => context.source.isParticipating(),
             target: {
@@ -37,7 +37,7 @@ export default class KaitoYoshiaki extends DrawCard {
                 ])
             },
             effect: '{3}set the base skills of {0} to 0{1}/0{2}',
-            effectArgs: (context) => ['military', 'political', isEvil(context.target as DrawCard) ? 'remove a fate from and ' : '']
+            effectArgs: (context) => ['military', 'political', context.target && isEvil(context.target) ? 'remove a fate from and ' : '']
         });
     }
 }

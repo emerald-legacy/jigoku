@@ -17,7 +17,7 @@ export default class MirumotoRei extends DrawCard {
     static id = 'mirumoto-rei';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Give a skill bonus based on attachments',
 
             condition: (context) => context.source.isParticipating(),
@@ -26,22 +26,26 @@ export default class MirumotoRei extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.hasTrait('bushi') && card !== context.source,
-                gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+                gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
                     target: context.source,
                     effect: [
                         AbilityDsl.effects.modifyMilitarySkill(
-                            sumModifiers(
-                                context.target.getEffects(EffectNames.AttachmentMilitarySkillModifier),
-                                context.target,
-                                context
-                            )
+                            context.target
+                                ? sumModifiers(
+                                    context.target.getEffects(EffectNames.AttachmentMilitarySkillModifier),
+                                    context.target,
+                                    context
+                                )
+                                : 0
                         ),
                         AbilityDsl.effects.modifyPoliticalSkill(
-                            sumModifiers(
-                                context.target.getEffects(EffectNames.AttachmentPoliticalSkillModifier),
-                                context.target,
-                                context
-                            )
+                            context.target
+                                ? sumModifiers(
+                                    context.target.getEffects(EffectNames.AttachmentPoliticalSkillModifier),
+                                    context.target,
+                                    context
+                                )
+                                : 0
                         )
                     ],
                     duration: Durations.UntilEndOfConflict
@@ -49,7 +53,10 @@ export default class MirumotoRei extends DrawCard {
             },
             effect: 'give {1} a skill bonus equal to the total attachment skill bonus on {0} ({2}{3}/{4}{5})',
             effectArgs: (context) => {
-                const target = context.target as DrawCard;
+                const target = context.target;
+                if(!target) {
+                    return [context.source, 0, 'military', 0, 'political'];
+                }
                 return [
                     context.source,
                     sumModifiers(

@@ -16,7 +16,7 @@ export default class AsakoShun extends DrawCard {
     static id = 'asako-shun';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Give a skill penalty to a participating character',
             condition: (context) => context.source.isParticipating(),
             target: {
@@ -30,7 +30,8 @@ export default class AsakoShun extends DrawCard {
             then: (context) => ({
                 thenCondition: () => {
                     const conflict = context?.game.currentConflict;
-                    return !!conflict && !!context && conflict.calculateSkillFor([(context.target as DrawCard)]) === 0;
+                    const target = context?.target;
+                    return !!conflict && !!target && conflict.calculateSkillFor([target]) === 0;
                 },
                 gameAction: AbilityDsl.actions.gainHonor({
                     target: context?.player,
@@ -40,7 +41,7 @@ export default class AsakoShun extends DrawCard {
                 messageArgs: () => [context?.target, context?.player]
             }),
             effect: 'give {4} {1}{2} and {1}{3}',
-            effectArgs: (context) => [penalty(context), 'military', 'political', (context.target as DrawCard)]
+            effectArgs: (context) => [penalty(context), 'military', 'political', context.target ?? '']
         });
     }
 }

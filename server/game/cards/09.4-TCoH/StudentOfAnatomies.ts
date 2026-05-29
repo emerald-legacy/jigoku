@@ -6,7 +6,7 @@ class StudentOfAnatomies extends DrawCard {
     static id = 'student-of-anatomies';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Sacrifice a character to blank an enemy',
             cost: AbilityDsl.costs.sacrifice({
                 cardType: CardTypes.Character
@@ -19,7 +19,7 @@ class StudentOfAnatomies extends DrawCard {
                 })
             },
             effect: 'treat {1} as if its printed text box were blank until the end of the phase',
-            effectArgs: (context) => (context.target as DrawCard)
+            effectArgs: (context) => context.target ?? ''
         });
     }
 }

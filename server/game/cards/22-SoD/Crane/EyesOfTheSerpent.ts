@@ -69,7 +69,7 @@ export default class EyesOfTheSerpent extends DrawCard {
     static id = 'eyes-of-the-serpent';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Taint a character',
 
             cost: eyesOfTheSerpentCost(),
@@ -89,7 +89,7 @@ export default class EyesOfTheSerpent extends DrawCard {
                 ])
             },
             effect: 'taint {1}',
-            effectArgs: (context) => [(context.target as DrawCard)]
+            effectArgs: (context) => [context.target ?? '']
         });
     }
 

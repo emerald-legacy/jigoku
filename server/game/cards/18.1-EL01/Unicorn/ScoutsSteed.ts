@@ -9,7 +9,7 @@ export default class ScoutsSteed extends DrawCard {
     public setupCardAbilities() {
         this.attachmentConditions({ myControl: true });
 
-        this.reaction({
+        this.reaction<ProvinceCard>({
             title: 'Call your steed and go out to explore!',
             when: {
                 onCardPlayed: (event, context) => event.card === context.source
@@ -44,10 +44,10 @@ export default class ScoutsSteed extends DrawCard {
             ),
             effect: 'ready {1} and send them on a journey! {2} cannot be broken during this conflict - it\'s just exploration for now',
             effectArgs: (context) => {
-                const target = context.target as ProvinceCard;
+                const target = context.target;
                 return [
                     context.source.parent,
-                    target.isFacedown() ? target.location : target
+                    target && target.isFacedown() ? target.location : target ?? ''
                 ];
             }
         });

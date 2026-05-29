@@ -14,21 +14,21 @@ export default class RisingStarsKata extends DrawCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register(['onConflictFinished', 'afterDuel']);
 
-        this.action({
+        this.action<DrawCard>({
             title: 'Give a participating unique character +3 military skill',
 
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card) => card.isUnique() && card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+                gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
                     duration: Durations.UntilEndOfConflict,
-                    effect: this.duelWinnersThisConflict.has((context.target as DrawCard))
+                    effect: context.target && this.duelWinnersThisConflict.has(context.target)
                         ? AbilityDsl.effects.modifyMilitarySkill(5)
                         : AbilityDsl.effects.modifyMilitarySkill(3)
                 }))
             },
             effect: 'give {0} +{1} {2} skill until the end of the conflict',
-            effectArgs: (context) => [this.duelWinnersThisConflict.has((context.target as DrawCard)) ? 5 : 3, 'military'],
+            effectArgs: (context) => [context.target && this.duelWinnersThisConflict.has(context.target) ? 5 : 3, 'military'],
             max: AbilityDsl.limit.perConflict(1)
         });
     }

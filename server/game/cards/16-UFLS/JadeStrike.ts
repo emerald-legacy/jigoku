@@ -6,7 +6,7 @@ class JadeStrike extends DrawCard {
     static id = 'jade-strike';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Set a characters base skills to 0/0',
 
             target: {
@@ -19,13 +19,13 @@ class JadeStrike extends DrawCard {
                             AbilityDsl.effects.setBasePoliticalSkill(0)
                         ]
                     }),
-                    AbilityDsl.actions.removeFate(context => ({
-                        target: context.target.isTainted ? context.target : []
+                    AbilityDsl.actions.removeFate<DrawCard>(context => ({
+                        target: context.target?.isTainted ? context.target : []
                     }))
                 ])
             },
             effect: '{3}set the base skills of {0} to 0{1}/0{2}',
-            effectArgs: context => ['military', 'political', (context.target as DrawCard).isTainted ? 'remove a fate from and ' : '']
+            effectArgs: context => ['military', 'political', context.target?.isTainted ? 'remove a fate from and ' : '']
         });
     }
 
