@@ -113,7 +113,7 @@ module.exports = [
             '@typescript-eslint/no-duplicate-enum-values': 'error',
             '@typescript-eslint/no-unused-expressions': 'error',
             '@typescript-eslint/no-this-alias': 'error',
-            'no-redeclare': 'error',
+            'no-redeclare': 'off',
 
             // Jasmine rules
             'jasmine/no-spec-dupes': 'off',
