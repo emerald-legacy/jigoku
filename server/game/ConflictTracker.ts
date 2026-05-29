@@ -30,12 +30,9 @@ export class ConflictTracker {
         }
     }
 
-    getForPlayer(player: Player | Players.All | null): ConflictRecord[] {
+    getForPlayer(player: Player | Players.All): ConflictRecord[] {
         if(player === Players.All) {
             return this.records.slice();
-        }
-        if(!player) {
-            return [];
         }
         return this.records.filter((r) => r.attackingPlayer === player);
     }

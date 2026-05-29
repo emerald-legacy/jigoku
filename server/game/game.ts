@@ -393,7 +393,7 @@ class Game extends EventEmitter {
         this.conflictTracker.record(conflict);
     }
 
-    getConflicts(player: Player | Players.All | null): ConflictRecord[] {
+    getConflicts(player: Player | Players.All): ConflictRecord[] {
         return this.conflictTracker.getForPlayer(player);
     }
 
