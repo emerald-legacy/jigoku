@@ -1,5 +1,3 @@
-import { EventEmitter } from 'events';
-
 import ChatCommands from './chatcommands.js';
 import { GameChat } from './GameChat.js';
 import { EffectEngine } from './EffectEngine.js';
@@ -33,6 +31,7 @@ import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
 
 import { EffectNames, Phases, EventNames, Locations, ConflictTypes, Elements, Players } from './Constants.js';
 import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
+import { GameEventBus, type EventHandler } from './GameEventBus.js';
 import { GamePromptHelper } from './GamePromptHelper.js';
 import { GameModes } from '../GameModes.js';
 import { resolvePackId } from './CardPackUtil.js';
@@ -63,7 +62,9 @@ interface GameOptions {
     router?: GameRouter;
 }
 
-class Game extends EventEmitter {
+class Game {
+    private bus = new GameEventBus();
+
     effectEngine: EffectEngine;
     playersAndSpectators: Record<string, Player | Spectator>;
     gameChat: GameChat;
@@ -110,8 +111,6 @@ class Game extends EventEmitter {
     pendingAnimations: AnimationEvent[] = [];
 
     constructor(details: GameDetails, options: GameOptions = {}) {
-        super();
-
         this.effectEngine = new EffectEngine(this);
         this.playersAndSpectators = {};
         this.gameChat = new GameChat();
@@ -167,8 +166,6 @@ class Game extends EventEmitter {
         Object.values(details.spectators).forEach((spectator: any) => {
             this.playersAndSpectators[spectator.user.username] = new Spectator(spectator.id, spectator.user);
         });
-
-        this.setMaxListeners(0);
 
         this.router = options.router;
     }
@@ -996,6 +993,22 @@ class Game extends EventEmitter {
     emitEvent(eventName: string, params: any = {}): void {
         const event = this.getEvent(eventName, params);
         this.emit(event.name, event);
+    }
+
+    emit(eventName: string, ...args: unknown[]): void {
+        this.bus.emit(eventName, ...args);
+    }
+
+    on(eventName: string, handler: EventHandler): void {
+        this.bus.on(eventName, handler);
+    }
+
+    once(eventName: string, handler: EventHandler): void {
+        this.bus.once(eventName, handler);
+    }
+
+    removeListener(eventName: string, handler: EventHandler): void {
+        this.bus.off(eventName, handler);
     }
 
     /**

@@ -1,7 +1,12 @@
-import EventEmitter from 'events';
 import { EventNames } from './Constants.js';
 import Player from './Player.js';
 import type CardAbility from './CardAbility.js';
+import type { EventHandler } from './GameEventBus.js';
+
+export interface EventBusLike {
+    on(eventName: string, handler: EventHandler): void;
+    removeListener(eventName: string, handler: EventHandler): void;
+}
 
 export interface AbilityLimit {
     ability?: CardAbility;
@@ -11,8 +16,8 @@ export interface AbilityLimit {
     isAtMax(player: Player): boolean;
     increment(player: Player): void;
     reset(): void;
-    registerEvents(eventEmitter: EventEmitter): void;
-    unregisterEvents(eventEmitter: EventEmitter): void;
+    registerEvents(bus: EventBusLike): void;
+    unregisterEvents(bus: EventBusLike): void;
 }
 
 class UnlimitedAbilityLimit {
@@ -43,9 +48,9 @@ class UnlimitedAbilityLimit {
         this.#useCount.clear();
     }
 
-    public registerEvents(_eventEmitter: EventEmitter): void {}
+    public registerEvents(_eventEmitter: EventBusLike): void {}
 
-    public unregisterEvents(_eventEmitter: EventEmitter): void {}
+    public unregisterEvents(_eventEmitter: EventBusLike): void {}
 
     public currentForPlayer(player: Player) {
         return this.#useCount.get(this.#getKey(player.name)) ?? 0;
@@ -87,9 +92,9 @@ class FixedAbilityLimit {
         this.#useCount.clear();
     }
 
-    public registerEvents(_eventEmitter: EventEmitter): void {}
+    public registerEvents(_eventEmitter: EventBusLike): void {}
 
-    public unregisterEvents(_eventEmitter: EventEmitter): void {}
+    public unregisterEvents(_eventEmitter: EventBusLike): void {}
 
     public currentForPlayer(player: Player) {
         return this.#useCount.get(this.#getKey(player.name)) ?? 0;
@@ -123,13 +128,13 @@ class RepeatableAbilityLimit extends FixedAbilityLimit {
         return true;
     }
 
-    public registerEvents(eventEmitter: EventEmitter): void {
+    public registerEvents(eventEmitter: EventBusLike): void {
         for(const eventN of this.eventName) {
             eventEmitter.on(eventN, () => this.reset());
         }
     }
 
-    public unregisterEvents(eventEmitter: EventEmitter): void {
+    public unregisterEvents(eventEmitter: EventBusLike): void {
         for(const eventN of this.eventName) {
             eventEmitter.removeListener(eventN, () => this.reset());
         }
