@@ -124,7 +124,7 @@ export interface InitiateDuel extends DuelProperties {
     targetCondition?: (card: DrawCard, context: TriggeredAbilityContext) => boolean;
 }
 
-type EffectArg =
+export type EffectArg =
     | number
     | string
     | Player

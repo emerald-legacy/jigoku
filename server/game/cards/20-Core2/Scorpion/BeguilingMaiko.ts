@@ -33,7 +33,7 @@ export default class BeguilingMaiko extends DrawCard {
                     gameActions.push(
                         AbilityDsl.actions.selectCard({
                             effect: 'force {0} to dishonor one of their characters',
-                            effectArgs: () => [],
+                            effectArgs: (context) => [context.player.opponent ?? ''],
                             cardType: CardTypes.Character,
                             player: Players.Opponent,
                             controller: Players.Opponent,

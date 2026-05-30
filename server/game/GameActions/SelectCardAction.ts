@@ -7,6 +7,7 @@ import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { GameAction } from './GameAction.js';
+import type { EffectArg } from '../Interfaces.js';
 
 export interface SelectCardProperties extends CardActionProperties {
     activePromptTitle?: string;
@@ -27,7 +28,7 @@ export interface SelectCardProperties extends CardActionProperties {
     subActionProperties?: (card: any) => Record<string, unknown>;
     cancelHandler?: () => void;
     effect?: string;
-    effectArgs?: (context: AbilityContext) => string[];
+    effectArgs?: (context: AbilityContext) => EffectArg[];
 }
 
 type ResolvedSelectCardProperties = SelectCardProperties & {
