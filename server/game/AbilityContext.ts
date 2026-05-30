@@ -84,7 +84,7 @@ export class AbilityContext<S = any, T extends BaseCard = BaseCard> {
         this.playType = this.player && this.player.findPlayType(this.source as BaseCard); //location && location.playingType;
     }
 
-    copy(newProps: Partial<AbilityContextProperties>): AbilityContext<this> {
+    copy(newProps: Partial<AbilityContextProperties>): AbilityContext<this, T> {
         let copy = this.createCopy(newProps);
         copy.target = this.target;
         copy.token = this.token;
@@ -100,8 +100,8 @@ export class AbilityContext<S = any, T extends BaseCard = BaseCard> {
         return copy;
     }
 
-    createCopy(newProps: Partial<AbilityContextProperties>): AbilityContext<this> {
-        return new AbilityContext(Object.assign(this.getProps(), newProps));
+    createCopy(newProps: Partial<AbilityContextProperties>): AbilityContext<this, T> {
+        return new AbilityContext<this, T>(Object.assign(this.getProps(), newProps));
     }
 
     refillProvince(player: Player, location: Locations): void {
