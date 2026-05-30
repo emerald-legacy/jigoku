@@ -17,7 +17,8 @@ import {
     Durations,
     EffectNames,
     EventNames,
-    Locations
+    Locations,
+    Players
 } from './Constants.js';
 import { ElementSymbol } from './ElementSymbol.js';
 import {
@@ -36,17 +37,31 @@ import Player from './Player.js';
 import type BaseAction from './BaseAction.js';
 import Ring from './Ring.js';
 import type { CardEffect } from './Effects/types.js';
+import type Effect from './Effects/Effect.js';
 import type { GainAllAbilities } from './Effects/Library/gainAllAbilities.js';
 import type { Duel } from './Duel.js';
 import type { CardData } from './types/CardData.js';
 
 type Faction = 'neutral' | 'crab' | 'crane' | 'dragon' | 'lion' | 'phoenix' | 'scorpion' | 'unicorn' | 'shadowlands';
 
+export interface StoredPersistentEffect {
+    duration: Durations;
+    location: Locations | Locations[];
+    condition?: (context: AbilityContext) => boolean;
+    match?: (card: BaseCard, context?: AbilityContext) => boolean;
+    targetController?: Players;
+    targetLocation?: Locations | (string & {});
+    effect: ((...args: any[]) => any) | ((...args: any[]) => any)[];
+    createCopies?: boolean;
+    ref?: Effect[];
+    type?: EffectNames;
+    isKeywordEffect?: boolean;
+}
+
 interface CardAbilities {
     actions: CardAction[];
     reactions: TriggeredAbility[];
-    // descriptor blobs (PersistentEffectProps + duration/location/ref); heterogeneous — kept loose
-    persistentEffects: any[];
+    persistentEffects: StoredPersistentEffect[];
     playActions: BaseAction[];
 }
 

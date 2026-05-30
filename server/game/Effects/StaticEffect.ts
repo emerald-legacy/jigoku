@@ -1,10 +1,11 @@
 import { EffectValue } from './EffectValue.js';
 import { CardTypes, EffectNames, Durations, AbilityTypes } from '../Constants.js';
 import GainAbility from './GainAbility.js';
+import type DrawCard from '../DrawCard.js';
 import type { GameObject } from '../GameObject.js';
 import type { CardEffect } from './types.js';
 
-const binaryCardEffects = [
+const binaryCardEffects: readonly EffectNames[] = [
     EffectNames.Blank,
     EffectNames.CanBeSeenWhenFacedown,
     EffectNames.CannotParticipateAsAttacker,
@@ -38,7 +39,9 @@ const ProvinceStrengthModifiers = [
     EffectNames.SetBaseProvinceStrength
 ];
 
-const hasDash: Record<string, (card: any, type?: any) => boolean> = {
+type DashSkillType = 'military' | 'political';
+
+const hasDash: Record<string, (card: DrawCard, value?: EffectValue<unknown>) => boolean> = {
     modifyBaseMilitarySkillMultiplier: (card) => card.hasDash('military'),
     modifyBasePoliticalSkillMultiplier: (card) => card.hasDash('political'),
     modifyBothSkills: (card) => card.hasDash('military') && card.hasDash('political'),
@@ -50,33 +53,42 @@ const hasDash: Record<string, (card: any, type?: any) => boolean> = {
     modifyPoliticalSkillMultiplier: (card) => card.hasDash('political'),
     setBaseMilitarySkill: (card) => card.hasDash('military'),
     setBasePoliticalSkill: (card) => card.hasDash('political'),
-    setDash: (card, type) => type && card.hasDash(type),
+    setDash: (card, value) => {
+        const type = value?.getValue() as DashSkillType | undefined;
+        return !!type && card.hasDash(type);
+    },
     setMilitarySkill: (card) => card.hasDash('military'),
     setPoliticalSkill: (card) => card.hasDash('political')
 };
 
-const conflictingEffects: Record<string, (target: any, value?: any) => any[]> = {
+const conflictingEffects: Record<string, (target: GameObject, value?: unknown) => CardEffect[]> = {
     modifyBaseMilitarySkillMultiplier: (card) =>
-        card.effects.filter((effect: any) => effect.type === EffectNames.SetBaseMilitarySkill),
+        card.getRawEffects().filter((effect) => effect.type === EffectNames.SetBaseMilitarySkill),
     modifyBasePoliticalSkillMultiplier: (card) =>
-        card.effects.filter((effect: any) => effect.type === EffectNames.SetBasePoliticalSkill),
-    modifyGlory: (card) => card.effects.filter((effect: any) => effect.type === EffectNames.SetGlory),
-    modifyMilitarySkill: (card) => card.effects.filter((effect: any) => effect.type === EffectNames.SetMilitarySkill),
+        card.getRawEffects().filter((effect) => effect.type === EffectNames.SetBasePoliticalSkill),
+    modifyGlory: (card) => card.getRawEffects().filter((effect) => effect.type === EffectNames.SetGlory),
+    modifyMilitarySkill: (card) => card.getRawEffects().filter((effect) => effect.type === EffectNames.SetMilitarySkill),
     modifyMilitarySkillMultiplier: (card) =>
-        card.effects.filter((effect: any) => effect.type === EffectNames.SetMilitarySkill),
-    modifyPoliticalSkill: (card) => card.effects.filter((effect: any) => effect.type === EffectNames.SetPoliticalSkill),
+        card.getRawEffects().filter((effect) => effect.type === EffectNames.SetMilitarySkill),
+    modifyPoliticalSkill: (card) => card.getRawEffects().filter((effect) => effect.type === EffectNames.SetPoliticalSkill),
     modifyPoliticalSkillMultiplier: (card) =>
-        card.effects.filter((effect: any) => effect.type === EffectNames.SetPoliticalSkill),
-    setBaseMilitarySkill: (card) => card.effects.filter((effect: any) => effect.type === EffectNames.SetMilitarySkill),
-    setBasePoliticalSkill: (card) => card.effects.filter((effect: any) => effect.type === EffectNames.SetPoliticalSkill),
-    setMaxConflicts: (player, value) =>
-        player.mostRecentEffect(EffectNames.SetMaxConflicts) === value
-            ? [player.effects.filter((effect: any) => effect.type === EffectNames.SetMaxConflicts).at(-1)]
-            : [],
-    takeControl: (card, player) =>
-        card.mostRecentEffect(EffectNames.TakeControl) === player
-            ? [card.effects.filter((effect: any) => effect.type === EffectNames.TakeControl).at(-1)]
-            : []
+        card.getRawEffects().filter((effect) => effect.type === EffectNames.SetPoliticalSkill),
+    setBaseMilitarySkill: (card) => card.getRawEffects().filter((effect) => effect.type === EffectNames.SetMilitarySkill),
+    setBasePoliticalSkill: (card) => card.getRawEffects().filter((effect) => effect.type === EffectNames.SetPoliticalSkill),
+    setMaxConflicts: (player, value) => {
+        if(player.mostRecentEffect(EffectNames.SetMaxConflicts) !== value) {
+            return [];
+        }
+        const last = player.getRawEffects().filter((effect) => effect.type === EffectNames.SetMaxConflicts).at(-1);
+        return last ? [last] : [];
+    },
+    takeControl: (card, player) => {
+        if(card.mostRecentEffect(EffectNames.TakeControl) !== player) {
+            return [];
+        }
+        const last = card.getRawEffects().filter((effect) => effect.type === EffectNames.TakeControl).at(-1);
+        return last ? [last] : [];
+    }
 };
 
 class StaticEffect {
@@ -84,7 +96,7 @@ class StaticEffect {
     value: EffectValue<any>;
     context: any;
     duration: Durations | null;
-    copies: any[];
+    copies: GainAbility[];
     isConditional?: boolean;
 
     constructor(type: EffectNames, value: any) {
@@ -131,11 +143,11 @@ class StaticEffect {
         this.value.setContext(context);
     }
 
-    canBeApplied(target: any): boolean {
+    canBeApplied(target: GameObject): boolean {
         if(target.facedown && target.type !== CardTypes.Province) {
             return false;
         }
-        return !hasDash[this.type] || !hasDash[this.type](target, this.value);
+        return !hasDash[this.type] || !hasDash[this.type](target as DrawCard, this.value);
     }
 
     isMilitaryModifier(): boolean {
