@@ -9,10 +9,13 @@ describe('Lucky Coin', function () {
                     dynastyDiscard: [
                         'iron-mine',
                         'miya-mystic',
+                        'miya-mystic',
                         'aranat',
                         'fushicho',
                         'imperial-storehouse',
-                        'miya-library'
+                        'miya-library',
+                        'doji-kuwanan',
+                        'doji-kuwanan'
                     ],
                     provinces: {
                         'province 1': { dynastyCards: ['adept-of-the-waves'] },
@@ -37,15 +40,17 @@ describe('Lucky Coin', function () {
             this.player2.player.promptedActionWindows.fate = true;
             this.flow.advancePhases('fate');
 
-            this.kuwanan = this.player1.findCardByName('doji-kuwanan');
+            this.kuwanan = this.player1.findCardByName('doji-kuwanan', 'play area');
             this.coin = this.player1.findCardByName('lucky-coin');
 
             this.mine = this.player1.findCardByName('iron-mine');
-            this.mystic = this.player1.findCardByName('miya-mystic');
+            this.mystics = this.player1.findAllCardsByName('miya-mystic');
+            this.mystic = this.mystics[0];
             this.aranat = this.player1.findCardByName('aranat');
             this.fushicho = this.player1.findCardByName('fushicho');
             this.storehouse = this.player1.findCardByName('imperial-storehouse');
             this.library = this.player1.findCardByName('miya-library');
+            this.kuwanansInDiscard = this.player1.findAllCardsByName('doji-kuwanan', 'dynasty discard pile');
         });
 
         describe('for flips with ok cost', function () {
@@ -92,14 +97,14 @@ describe('Lucky Coin', function () {
 
         describe('for too expensive flips', function () {
             beforeEach(function () {
-                this.player1.placeCardInProvince(this.mine, 'province 1');
-                this.mine.facedown = true;
-                this.player1.placeCardInProvince(this.aranat, 'province 2');
-                this.aranat.facedown = true;
-                this.player1.placeCardInProvince(this.fushicho, 'province 3');
-                this.fushicho.facedown = true;
-                this.player1.placeCardInProvince(this.mystic, 'province 4');
-                this.mystic.facedown = true;
+                this.player1.placeCardInProvince(this.kuwanansInDiscard[0], 'province 1');
+                this.kuwanansInDiscard[0].facedown = true;
+                this.player1.placeCardInProvince(this.kuwanansInDiscard[1], 'province 2');
+                this.kuwanansInDiscard[1].facedown = true;
+                this.player1.placeCardInProvince(this.mystics[0], 'province 3');
+                this.mystics[0].facedown = true;
+                this.player1.placeCardInProvince(this.mystics[1], 'province 4');
+                this.mystics[1].facedown = true;
                 this.player1.moveCard(this.coin, 'hand');
             });
 
@@ -121,6 +126,15 @@ describe('Lucky Coin', function () {
                         'player1 uses Lucky Coin, removing Lucky Coin from the game to to replace all cards in their provinces'
                     );
                 });
+
+                it('refills provinces face-up', function () {
+                    this.player1.clickCard(this.coin);
+                    for(const loc of ['province 1', 'province 2', 'province 3', 'province 4']) {
+                        const card = this.player1.player.getDynastyCardInProvince(loc);
+                        expect(card).not.toBeNull();
+                        expect(card.facedown).toBe(false);
+                    }
+                });
             });
 
             describe('with attachment in hand', function () {
@@ -138,6 +152,15 @@ describe('Lucky Coin', function () {
                     expect(this.getChatLogs(3)).toContain(
                         'player1 uses Lucky Coin, removing Lucky Coin from the game to to replace all cards in their provinces'
                     );
+                });
+
+                it('refills provinces face-up', function () {
+                    this.player1.clickCard(this.coin);
+                    for(const loc of ['province 1', 'province 2', 'province 3', 'province 4']) {
+                        const card = this.player1.player.getDynastyCardInProvince(loc);
+                        expect(card).not.toBeNull();
+                        expect(card.facedown).toBe(false);
+                    }
                 });
             });
         });
