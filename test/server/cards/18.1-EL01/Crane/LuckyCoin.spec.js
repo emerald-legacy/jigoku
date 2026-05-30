@@ -1,11 +1,11 @@
-xdescribe('Lucky Coin - ATTENTION: FLAKY!!', function () {
+describe('Lucky Coin', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
-                phase: 'fate',
+                phase: 'setup',
                 player1: {
-                    inPlay: ['doji-kuwanan'],
-                    hand: ['lucky-coin'],
+                    inPlay: [{ card: 'doji-kuwanan', fate: 1 }],
+                    conflictDiscard: ['lucky-coin'],
                     dynastyDiscard: [
                         'iron-mine',
                         'miya-mystic',
@@ -13,9 +13,29 @@ xdescribe('Lucky Coin - ATTENTION: FLAKY!!', function () {
                         'fushicho',
                         'imperial-storehouse',
                         'miya-library'
-                    ]
+                    ],
+                    provinces: {
+                        'province 1': { dynastyCards: ['adept-of-the-waves'] },
+                        'province 2': { dynastyCards: ['adept-of-the-waves'] },
+                        'province 3': { dynastyCards: ['adept-of-the-waves'] },
+                        'province 4': { dynastyCards: ['adept-of-the-waves'] }
+                    }
+                },
+                player2: {
+                    provinces: {
+                        'province 1': { dynastyCards: ['adept-of-the-waves'] },
+                        'province 2': { dynastyCards: ['adept-of-the-waves'] },
+                        'province 3': { dynastyCards: ['adept-of-the-waves'] },
+                        'province 4': { dynastyCards: ['adept-of-the-waves'] }
+                    }
                 }
             });
+
+            this.flow.keepDynasty();
+            this.flow.keepConflict();
+            this.player1.player.promptedActionWindows.fate = true;
+            this.player2.player.promptedActionWindows.fate = true;
+            this.flow.advancePhases('fate');
 
             this.kuwanan = this.player1.findCardByName('doji-kuwanan');
             this.coin = this.player1.findCardByName('lucky-coin');
@@ -38,9 +58,10 @@ xdescribe('Lucky Coin - ATTENTION: FLAKY!!', function () {
                 this.fushicho.facedown = true;
                 this.player1.placeCardInProvince(this.mystic, 'province 4');
                 this.mystic.facedown = true;
+                this.player1.moveCard(this.coin, 'hand');
             });
 
-            xdescribe('with attachment in play', function () {
+            describe('with attachment in play', function () {
                 beforeEach(function () {
                     this.player1.playAttachment(this.coin, this.kuwanan);
 
@@ -79,9 +100,10 @@ xdescribe('Lucky Coin - ATTENTION: FLAKY!!', function () {
                 this.fushicho.facedown = true;
                 this.player1.placeCardInProvince(this.mystic, 'province 4');
                 this.mystic.facedown = true;
+                this.player1.moveCard(this.coin, 'hand');
             });
 
-            xdescribe('with attachment in play', function () {
+            describe('with attachment in play', function () {
                 beforeEach(function () {
                     this.player1.playAttachment(this.coin, this.kuwanan);
 
@@ -130,9 +152,10 @@ xdescribe('Lucky Coin - ATTENTION: FLAKY!!', function () {
                 this.storehouse.facedown = true;
                 this.player1.placeCardInProvince(this.mystic, 'province 4');
                 this.mystic.facedown = true;
+                this.player1.moveCard(this.coin, 'hand');
             });
 
-            xdescribe('with attachment in play', function () {
+            describe('with attachment in play', function () {
                 beforeEach(function () {
                     this.player1.playAttachment(this.coin, this.kuwanan);
 
