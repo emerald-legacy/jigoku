@@ -66,7 +66,11 @@ class CopyCard extends EffectValue<BaseCard> {
     }
 
     getReactions(target: BaseCard) {
-        return this.abilitiesForTargets.get(target)?.reactions ?? [];
+        const copied = this.abilitiesForTargets.get(target)?.reactions ?? [];
+        const ownKeywordReactions = target.abilities.reactions.filter(
+            (ability) => typeof ability.isKeywordAbility === 'function' && ability.isKeywordAbility()
+        );
+        return [...copied, ...ownKeywordReactions];
     }
 
     getPersistentEffects() {
