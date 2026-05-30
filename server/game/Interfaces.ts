@@ -21,7 +21,7 @@ interface BaseTarget {
     gameAction?: GameAction | GameAction[];
 }
 
-interface ChoicesInterface {
+export interface ChoicesInterface {
     [propName: string]: ((context: AbilityContext) => boolean) | GameAction | GameAction[];
 }
 
