@@ -12,7 +12,7 @@ export default class EffectiveDeception extends ProvinceCard {
                     context.source.isConflictProvince() && event.context.ability.isTriggeredAbility()
             },
             effect: 'cancel the effects of {1}\'s ability',
-            effectArgs: (context) => context.event.card,
+            effectArgs: (context) => context.event.card ?? '',
             gameAction: AbilityDsl.actions.cancel()
         });
     }

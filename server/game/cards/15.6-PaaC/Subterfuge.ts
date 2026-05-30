@@ -21,9 +21,10 @@ class Subterfuge extends DrawCard {
             },
             gameAction: AbilityDsl.actions.cancel((context) => ({
                 replacementGameAction: AbilityDsl.actions.sequentialContext(() => {
-                    const discardAmount = Math.min(context.event.amount, 3);
+                    const eventAmount = context.event.amount ?? 0;
+                    const discardAmount = Math.min(eventAmount, 3);
                     const cardsToDiscard = context.player.opponent.conflictDeck.slice(0, discardAmount);
-                    const drawAmount = context.event.amount - discardAmount;
+                    const drawAmount = eventAmount - discardAmount;
                     this.messageShown = false;
                     return {
                         gameActions: [
@@ -60,11 +61,14 @@ class Subterfuge extends DrawCard {
                 })
             })),
             effect: 'prevent {1} card{2} from being drawn, discarding {3} instead',
-            effectArgs: (context) => [
-                Math.min(context.event.amount, 3),
-                context.event.amount > 1 ? 's' : '',
-                context.event.amount > 1 ? 'them' : 'it'
-            ]
+            effectArgs: (context) => {
+                const amount = context.event.amount ?? 0;
+                return [
+                    Math.min(amount, 3),
+                    amount > 1 ? 's' : '',
+                    amount > 1 ? 'them' : 'it'
+                ];
+            }
         });
     }
 }

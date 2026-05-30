@@ -18,10 +18,10 @@ export default class MotoOktai extends DrawCard {
                     card.location === Locations.PlayArea && card.type === CardTypes.Character
             },
             effect: 'get +{1} {2} for this phase - he is emboldened by justice, but unburdened by mercy!',
-            effectArgs: (context) => [skillBonus(context.event.card), 'military'],
+            effectArgs: (context) => [skillBonus(context.event.card as DrawCard), 'military'],
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 duration: Durations.UntilEndOfPhase,
-                effect: AbilityDsl.effects.modifyMilitarySkill(skillBonus((context as TriggeredAbilityContext).event.card))
+                effect: AbilityDsl.effects.modifyMilitarySkill(skillBonus((context as TriggeredAbilityContext).event.card as DrawCard))
             }))
         });
 

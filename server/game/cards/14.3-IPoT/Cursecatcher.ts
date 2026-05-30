@@ -13,7 +13,7 @@ class Cursecatcher extends DrawCard {
                     event.card.controller && event.card.controller.getDynastyCardsInProvince(event.card.location).some(a => a.isFacedown()) //any facedown cards
             },
             effect: 'cancel the effects of {1}\'s ability',
-            effectArgs: context => context.event.card,
+            effectArgs: context => context.event.card ?? '',
             gameAction: AbilityDsl.actions.cancel()
         });
     }

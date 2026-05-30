@@ -13,7 +13,7 @@ class Reprieve extends DrawCard {
                                                       context.source.allowGameAction('discardFromPlay', context)
             },
             effect: 'prevent {1} from leaving play',
-            effectArgs: context => context.event.card,
+            effectArgs: context => context.event.card ?? '',
             gameAction: AbilityDsl.actions.cancel(context => ({
                 target: context.source,
                 replacementGameAction: AbilityDsl.actions.discardFromPlay()

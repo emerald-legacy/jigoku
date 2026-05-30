@@ -14,7 +14,7 @@ class WholenessOfTheWorld extends DrawCard {
             },
             cannotBeMirrored: true,
             effect: 'prevent {1} from returning to the unclaimed pool',
-            effectArgs: context => context.event.ring,
+            effectArgs: context => context.event.ring ?? '',
             gameAction: AbilityDsl.actions.cancel(),
             max: AbilityDsl.limit.perRound(1)
         });

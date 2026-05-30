@@ -84,16 +84,18 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
     }
 
     eventHandler(event: Event): void {
-        (event.context as AbilityContext).game.addMessage(
+        const cards = event.cards as BaseCard[];
+        const context = event.context as AbilityContext;
+        context.game.addMessage(
             '{0} returns {1} card{2} to{3} their deck',
             event.player,
-            event.cards.length,
-            event.cards.length === 1 ? '' : 's',
+            cards.length,
+            cards.length === 1 ? '' : 's',
             event.bottom ? ' the bottom of' : ''
         );
-        event.discardedCards = event.cards;
+        event.discardedCards = cards;
         const players: Player[] = [];
-        for(let card of event.cards as BaseCard[]) {
+        for(let card of cards) {
             card.owner.moveCard(card, Locations.ConflictDeck, event.options);
             if(!players.includes(card.owner)) {
                 players.push(card.owner);

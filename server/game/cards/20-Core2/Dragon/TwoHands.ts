@@ -4,6 +4,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { Conflict } from '../../../Conflict.js';
 import { AbilityContext } from '../../../AbilityContext.js';
+import type { Duel } from '../../../Duel.js';
 
 export default class TwoHands extends DrawCard {
     static id = 'two-hands';
@@ -15,7 +16,7 @@ export default class TwoHands extends DrawCard {
             target: {
                 controller: Players.Opponent,
                 gameAction: AbilityDsl.actions.duelAddParticipant((context) => ({
-                    duel: (context as TriggeredAbilityContext).event.duel
+                    duel: (context as TriggeredAbilityContext).event.duel as Duel
                 }))
             }
         });

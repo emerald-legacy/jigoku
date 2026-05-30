@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
+import type DrawCard from '../DrawCard.js';
 import { CardTypes, Durations, EventNames, Locations } from '../Constants.js';
 import Effects from '../effects.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -26,9 +27,9 @@ export class CreateTokenAction extends CardGameAction<CreateTokenProperties> {
     }
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        let { atHome } = this.getProperties((event.context as AbilityContext), additionalProperties);
-        let context = (event.context as AbilityContext);
-        let card = event.card;
+        let context = event.context as AbilityContext;
+        let { atHome } = this.getProperties(context, additionalProperties);
+        let card = event.card as DrawCard;
         let token = context.game.createToken(card);
         card.owner.removeCardFromPile(card);
         this.checkForRefillProvince(card, event, additionalProperties);

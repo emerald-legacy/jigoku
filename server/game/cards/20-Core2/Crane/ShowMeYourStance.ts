@@ -2,6 +2,7 @@ import { CardTypes, Durations } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import type { LastingEffectProperties } from '../../../GameActions/LastingEffectAction.js';
 
 export default class ShowMeYourStance extends DrawCard {
     static id = 'show-me-your-stance';
@@ -13,7 +14,7 @@ export default class ShowMeYourStance extends DrawCard {
                 target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.applyStatusTokensToDuel(),
                 duration: Durations.UntilEndOfDuel
-            })),
+            } as LastingEffectProperties)),
             effect: 'have status tokens count when resolving this duel'
         });
 

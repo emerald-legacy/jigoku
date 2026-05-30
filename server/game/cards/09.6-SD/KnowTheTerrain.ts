@@ -16,6 +16,10 @@ class KnowTheTerrain extends DrawCard {
                     event.conflict.conflictProvince.location !== Locations.StrongholdProvince
             },
             handler: (context: TriggeredAbilityContext) => {
+                const conflict = context.event.conflict;
+                if(!conflict) {
+                    return;
+                }
                 return this.game.promptForSelect(context.player, {
                     activePromptTitle: 'Choose an unbroken province',
                     cardType: CardTypes.Province,
@@ -24,7 +28,10 @@ class KnowTheTerrain extends DrawCard {
                     controller: Players.Self,
                     cardCondition: (card: any, innerContext: any) => card.location !== Locations.StrongholdProvince && !card.isBroken && card.isFacedown() && card !== innerContext.event.conflict.conflictProvince,
                     onSelect: (player: any, card: any) => {
-                        let attackedprovince = context.event.conflict.conflictProvince;
+                        let attackedprovince = conflict.conflictProvince;
+                        if(!attackedprovince) {
+                            return true;
+                        }
                         let chosenProvince = card;
                         let attackedLocation = attackedprovince.location;
                         let chosenLocation = chosenProvince.location;
@@ -32,8 +39,8 @@ class KnowTheTerrain extends DrawCard {
                         context.player.moveCard(chosenProvince, attackedLocation);
 
                         chosenProvince.inConflict = true;
-                        context.event.conflict.conflictProvince.inConflict = false;
-                        context.event.conflict.conflictProvince = chosenProvince;
+                        attackedprovince.inConflict = false;
+                        conflict.conflictProvince = chosenProvince;
                         return true;
                     }
                 });

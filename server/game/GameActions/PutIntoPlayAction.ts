@@ -102,14 +102,16 @@ export class PutIntoPlayAction extends CardGameAction {
     }
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        let player = this.getPutIntoPlayPlayer((event.context as AbilityContext));
-        this.checkForRefillProvince(event.card, event, additionalProperties);
-        event.card.new = true;
+        const context = event.context as AbilityContext;
+        let player = this.getPutIntoPlayPlayer(context);
+        const card = event.card as DrawCard;
+        this.checkForRefillProvince(card, event, additionalProperties);
+        card.new = true;
         if(event.fate) {
-            event.card.fate = event.fate;
+            card.fate = event.fate;
         }
 
-        let finalController = (event.context as AbilityContext).player;
+        let finalController = context.player;
         if(event.controller === Players.Opponent && finalController.opponent) {
             finalController = finalController.opponent;
         }
@@ -117,30 +119,30 @@ export class PutIntoPlayAction extends CardGameAction {
         let targetSide = event.side;
 
         if(event.status === 'honored') {
-            event.card.honor();
+            card.honor();
         } else if(event.status === 'dishonored') {
-            event.card.dishonor();
+            card.dishonor();
         }
-        if(event.card.hasPrintedKeyword('corrupted')) {
-            event.card.taint();
+        if(card.hasPrintedKeyword('corrupted')) {
+            card.taint();
         }
 
-        player.moveCard(event.card, Locations.PlayArea);
+        player.moveCard(card, Locations.PlayArea);
 
         //moveCard sets all this stuff and only works if the owner is moving cards, so we're switching it around
-        if(event.card.controller !== finalController) {
-            event.card.controller = finalController;
-            event.card.setDefaultController(event.card.controller);
-            event.card.owner.cardsInPlay.splice(event.card.owner.cardsInPlay.indexOf(event.card), 1);
-            event.card.controller.cardsInPlay.push(event.card);
+        if(card.controller !== finalController) {
+            card.controller = finalController;
+            card.setDefaultController(card.controller);
+            card.owner.cardsInPlay.splice(card.owner.cardsInPlay.indexOf(card), 1);
+            card.controller.cardsInPlay.push(card);
         }
 
-        const conflict = (event.context as AbilityContext).game.currentConflict;
+        const conflict = context.game.currentConflict;
         if(event.intoConflict && conflict) {
             if(targetSide.isAttackingPlayer()) {
-                conflict.addAttacker(event.card);
+                conflict.addAttacker(card);
             } else {
-                conflict.addDefender(event.card);
+                conflict.addDefender(card);
             }
         }
     }

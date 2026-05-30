@@ -81,15 +81,16 @@ export class LastingEffectCardAction<
             properties.ability = eventContext.ability;
         }
 
-        const lastingEffectRestrictions = event.card.getEffects(EffectNames.CannotApplyLastingEffects);
+        const card = event.card as BaseCard;
+        const lastingEffectRestrictions = card.getEffects(EffectNames.CannotApplyLastingEffects);
         const { effect: _effect, ...otherProperties } = properties;
-        const effectProperties = Object.assign({ match: event.card, location: Locations.Any }, otherProperties);
+        const effectProperties = Object.assign({ match: card, location: Locations.Any }, otherProperties);
         let effects = properties.effect.map((factory: LastingEffectFactory) =>
             factory(eventContext.game, eventContext.source, effectProperties)
         );
         effects = effects.filter(
             (props: ReturnType<LastingEffectFactory>) =>
-                props.effect.canBeApplied(event.card) &&
+                props.effect.canBeApplied(card) &&
                 !lastingEffectRestrictions.some((condition: (e: unknown) => boolean) => condition(props.effect))
         );
         for(const effect of effects) {

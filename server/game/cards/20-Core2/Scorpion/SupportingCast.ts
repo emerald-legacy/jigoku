@@ -44,7 +44,7 @@ export default class SupportingCast extends DrawCard {
                 ]
             },
             effect: 'give +3 military skill to {1} - {2} was just a distraction!',
-            effectArgs: (context) => [context.target, context.event.cardTargets],
+            effectArgs: (context) => [context.target ?? '', context.event.cardTargets ?? []],
             max: AbilityDsl.limit.perConflict(1)
         });
     }

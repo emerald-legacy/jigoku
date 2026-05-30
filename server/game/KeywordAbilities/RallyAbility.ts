@@ -10,7 +10,7 @@ export class RallyAbility extends TriggeredAbility {
             when: {
                 onCardRevealed: (event: Event, context: TriggeredAbilityContext) =>
                     event.card === context.source &&
-                    context.game.getProvinceArray().includes(event.card.location) &&
+                    !!event.card && context.game.getProvinceArray().includes(event.card.location) &&
                     context.source.hasRally()
             },
             location: [

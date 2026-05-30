@@ -20,7 +20,7 @@ export default class KitsukiShomon extends DrawCard {
                     card !== context.source
             },
             effect: 'dishonor {0} instead of {1}',
-            effectArgs: (context: TriggeredAbilityContext) => context?.event.card,
+            effectArgs: (context: TriggeredAbilityContext) => context.event.card ?? '',
             handler: (context: TriggeredAbilityContext) => {
                 let newEvent = AbilityDsl.actions.dishonor().getEvent(context.source, context);
                 context.event.replacementEvent = newEvent;
@@ -28,8 +28,9 @@ export default class KitsukiShomon extends DrawCard {
                     gameAction: AbilityDsl.actions.ready()
                 });
                 context.events = [newEvent];
-                (context.event.window as EventWindow).addEvent(newEvent);
-                (context.event.window as EventWindow).addThenAbility(thenAbility, context);
+                const window = context.event.window as EventWindow;
+                window.addEvent(newEvent);
+                window.addThenAbility(thenAbility, context);
                 context.cancel();
             }
         });

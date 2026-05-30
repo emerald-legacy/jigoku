@@ -13,7 +13,7 @@ export default class ShibaYohana extends DrawCard {
                     event.card === context.source && event.card.location === Locations.PlayArea
             },
             effect: 'prevent {1} from leaving play - vengeance and destruction sustains her in a damned existence',
-            effectArgs: (context) => context.event.card,
+            effectArgs: (context) => context.event.card ?? '',
             gameAction: AbilityDsl.actions.cancel((context) => ({
                 target: context.source,
                 replacementGameAction: AbilityDsl.actions.taint()

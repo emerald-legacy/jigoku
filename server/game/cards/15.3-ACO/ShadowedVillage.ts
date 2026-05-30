@@ -1,3 +1,4 @@
+import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import { CardTypes, EventNames, Phases } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -19,10 +20,10 @@ class ShadowedVillage extends DrawCard {
                     event.fate > 0
             },
             effect: 'draw {1} card{2}',
-            effectArgs: (context) => (context.event.origin.isDishonored ? ['2', 's'] : ['a', '']),
+            effectArgs: (context) => ((context.event.origin as BaseCard).isDishonored ? ['2', 's'] : ['a', '']),
             gameAction: AbilityDsl.actions.draw((context) => ({
                 target: context.player,
-                amount: context.event.origin.isDishonored ? 2 : 1
+                amount: (context.event.origin as BaseCard).isDishonored ? 2 : 1
             }))
         });
     }

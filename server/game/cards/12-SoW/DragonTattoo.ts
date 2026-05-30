@@ -34,31 +34,34 @@ export default class DragonTattoo extends DrawCard {
                     this.checkTargets(event, context)
             },
             title: 'Play card again',
-            gameAction: AbilityDsl.actions.ifAble((context) => ({
-                ifAbleAction: AbilityDsl.actions.playCard(() => {
-                    this.cardPlayed = true;
-                    return {
-                        source: this,
-                        target: context.event.card,
-                        resetOnCancel: true,
-                        playType: PlayTypes.Other,
-                        destination: Locations.RemovedFromGame,
-                        payCosts: true,
-                        allowReactions: true
-                    };
-                }),
-                otherwiseAction: AbilityDsl.actions.moveCard(() => {
-                    this.cardPlayed = false;
-                    return {
-                        target: context.event.card,
-                        destination: Locations.RemovedFromGame
-                    };
-                })
-            })),
+            gameAction: AbilityDsl.actions.ifAble((context) => {
+                const card = context.event.card;
+                return {
+                    ifAbleAction: AbilityDsl.actions.playCard(() => {
+                        this.cardPlayed = true;
+                        return {
+                            source: this,
+                            target: card,
+                            resetOnCancel: true,
+                            playType: PlayTypes.Other,
+                            destination: Locations.RemovedFromGame,
+                            payCosts: true,
+                            allowReactions: true
+                        };
+                    }),
+                    otherwiseAction: AbilityDsl.actions.moveCard(() => {
+                        this.cardPlayed = false;
+                        return {
+                            target: card,
+                            destination: Locations.RemovedFromGame
+                        };
+                    })
+                };
+            }),
             effect: '{1}{2}{3}',
             effectArgs: (context) => [
                 this.cardPlayed ? 'play ' : 'remove ',
-                context.event.card.name,
+                context.event.card?.name ?? '',
                 this.cardPlayed ? '' : ' from the game'
             ]
         });

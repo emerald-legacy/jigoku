@@ -74,11 +74,12 @@ export class ReturnToDeckAction extends CardGameAction {
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
         this.leavesPlayEventHandler(event, additionalProperties);
+        const card = event.card as DrawCard;
         if(event.shuffle) {
             if(event.destination === Locations.DynastyDeck) {
-                event.card.owner.shuffleDynastyDeck();
+                card.owner.shuffleDynastyDeck();
             } else if(event.destination === Locations.ConflictDeck) {
-                event.card.owner.shuffleConflictDeck();
+                card.owner.shuffleConflictDeck();
             }
         }
     }

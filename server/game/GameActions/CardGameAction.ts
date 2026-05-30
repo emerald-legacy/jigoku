@@ -28,7 +28,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
     }
 
     checkEventCondition(event: Event, additionalProperties = {}): boolean {
-        return this.canAffect(event.card, event.context as AbilityContext, additionalProperties);
+        return this.canAffect(event.card as BaseCard, event.context as AbilityContext, additionalProperties);
     }
 
     canAffect(target: BaseCard | Ring, context: AbilityContext, additionalProperties = {}): boolean {
@@ -142,21 +142,23 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         event.destination =
             properties.destination || (card.isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile);
         event.preResolutionEffect = () => {
-            event.cardStateWhenLeftPlay = event.card.createSnapshot();
-            if(event.card.isAncestral() && event.isContingent) {
+            const evCard = event.card as DrawCard;
+            event.cardStateWhenLeftPlay = evCard.createSnapshot();
+            if(evCard.isAncestral() && event.isContingent) {
                 event.destination = Locations.Hand;
                 context.game.addMessage(
                     '{0} returns to {1}\'s hand due to its Ancestral keyword',
-                    event.card,
-                    event.card.owner
+                    evCard,
+                    evCard.owner
                 );
             }
         };
         event.createContingentEvents = () => {
             let contingentEvents = [];
+            const evCard = event.card as DrawCard;
             // Add an imminent triggering condition for all attachments leaving play
 
-            for(const attachment of (event.card.attachments ?? []) as DrawCard[]) {
+            for(const attachment of (evCard.attachments ?? []) as DrawCard[]) {
                 // we only need to add events for attachments that are in play.
                 if(attachment.location === Locations.PlayArea) {
                     let attachmentEvent = context.game.actions
@@ -165,17 +167,17 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
                     attachmentEvent.order = event.order - 1;
                     let previousCondition = attachmentEvent.condition;
                     attachmentEvent.condition = (attachmentEvent) =>
-                        previousCondition(attachmentEvent) && attachment.parent === event.card;
+                        previousCondition(attachmentEvent) && attachment.parent === evCard;
                     attachmentEvent.isContingent = true;
                     contingentEvents.push(attachmentEvent);
                 }
             }
 
             // Add an imminent triggering condition for removing fate
-            if(event.card.allowGameAction('removeFate', context.game.getFrameworkContext())) {
+            if(evCard.allowGameAction('removeFate', context.game.getFrameworkContext())) {
                 let fateEvent = context.game.actions
-                    .removeFate({ amount: event.card.getFate() })
-                    .getEvent(event.card, context.game.getFrameworkContext());
+                    .removeFate({ amount: evCard.getFate() })
+                    .getEvent(evCard, context.game.getFrameworkContext());
                 fateEvent.order = event.order - 1;
                 fateEvent.isContingent = true;
                 contingentEvents.push(fateEvent);
@@ -185,16 +187,17 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
     }
 
     leavesPlayEventHandler(event: Event, additionalProperties: any = {}): void {
-        this.checkForRefillProvince(event.card, event, additionalProperties);
-        if(!event.card.owner.isLegalLocationForCard(event.card, event.destination)) {
-            event.card.game.addMessage(
+        const card = event.card as DrawCard;
+        this.checkForRefillProvince(card, event, additionalProperties);
+        if(!card.owner.isLegalLocationForCard(card, event.destination as Locations)) {
+            card.game.addMessage(
                 '{0} is not a legal location for {1} and it is discarded',
                 event.destination,
-                event.card
+                card
             );
-            event.destination = event.card.isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile;
+            event.destination = card.isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile;
         }
-        event.card.owner.moveCard(event.card, event.destination, event.options || {});
+        card.owner.moveCard(card, event.destination as Locations, event.options || {});
     }
 
     checkForRefillProvince(card: BaseCard, event: any, additionalProperties: any = {}): void {

@@ -1,3 +1,4 @@
+import type BaseCard from '../../BaseCard.js';
 import { Locations, CardTypes } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -47,7 +48,8 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
                         //Identify who actually entered play
                         let enteredPlay = context.events
                             .filter((a) => a.name === 'onCharacterEntersPlay' && !a.cancelled)
-                            .map((a) => a.card);
+                            .map((a) => a.card)
+                            .filter((a): a is BaseCard => !!a);
                         let myEnter = enteredPlay.filter((a) => a.controller === context.player);
                         let oppEnter = enteredPlay.filter((a) => a.controller === context.player.opponent);
                         if(myEnter.length > 0) {

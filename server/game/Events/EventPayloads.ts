@@ -278,3 +278,15 @@ export interface EventPayloadMap {
 
 export type EventPayload<K extends string> =
     K extends keyof EventPayloadMap ? EventPayloadMap[K] : BaseEventPayload & Record<string, unknown>;
+
+type AllPayloadKeys = EventPayloadMap[keyof EventPayloadMap] extends infer P
+    ? P extends object ? keyof P : never
+    : never;
+
+type PayloadValueAt<K extends PropertyKey> = EventPayloadMap[keyof EventPayloadMap] extends infer P
+    ? P extends object ? (K extends keyof P ? P[K] : never) : never
+    : never;
+
+export type EventUnion = {
+    [K in AllPayloadKeys]?: PayloadValueAt<K>;
+};

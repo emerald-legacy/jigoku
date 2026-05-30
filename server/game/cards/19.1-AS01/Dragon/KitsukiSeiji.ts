@@ -3,6 +3,8 @@ import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.j
 import AbilityDsl from '../../../abilitydsl.js';
 import { Elements, EventNames } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
+import type Ring from '../../../Ring.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 const ELEMENT_KEY = 'kitsuki-seiji-water';
@@ -59,16 +61,17 @@ export default class KitsukiSeiji extends DrawCard {
     }
 
     private replacementForMoveFate(context: AbilityContext) {
+        const event = (context as TriggeredAbilityContext).event;
         return AbilityDsl.actions.placeFate({
-            origin: (context as TriggeredAbilityContext).event.origin,
+            origin: event.origin as DrawCard | Player | Ring | undefined,
             target: context.source,
-            amount: (context as TriggeredAbilityContext).event.fate
+            amount: event.fate
         });
     }
 
     private replacementForPlaceFateOnUnclaimedRings(context: AbilityContext) {
         return AbilityDsl.actions.joint(
-            (context as TriggeredAbilityContext).event.recipients.map((recipient: any) => {
+            ((context as TriggeredAbilityContext).event.recipients ?? []).map((recipient: any) => {
                 const isSeijisRing = recipient.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY));
                 if(isSeijisRing) {
                     return AbilityDsl.actions.placeFate({

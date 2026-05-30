@@ -30,7 +30,7 @@ export default class LongJourneyHome extends DrawCard {
                 ])
             },
             effect: 'make {1} take the long way home. {1} is bowed and cannot ready until the end of the phase',
-            effectArgs: (context) => [context.event.card]
+            effectArgs: (context) => [context.event.card as DrawCard]
         });
     }
 

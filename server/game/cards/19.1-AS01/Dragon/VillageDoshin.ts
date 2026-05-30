@@ -58,7 +58,7 @@ export default class VillageDoshin extends DrawCard {
                 }))
             }),
             effect: 'protect {1}',
-            effectArgs: (context) => context.event.cardTargets
+            effectArgs: (context) => context.event.cardTargets ?? []
         });
     }
 }

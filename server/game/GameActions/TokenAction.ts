@@ -20,14 +20,15 @@ export class TokenAction<P extends TokenActionProperties = TokenActionProperties
     }
 
     checkEventCondition(event: Event, additionalProperties = {}): boolean {
-        return this.canAffect(event.token, (event.context as AbilityContext), additionalProperties);
+        return this.canAffect(event.token as StatusToken, (event.context as AbilityContext), additionalProperties);
     }
 
     addPropertiesToEvent(event: Event, token: StatusToken, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, token, context, additionalProperties);
-        event.token = token;
-        if(Array.isArray(event.token)) {
-            event.token = [...event.token];
+        const typedEvent = event as Event & { token: StatusToken | StatusToken[] };
+        typedEvent.token = token;
+        if(Array.isArray(typedEvent.token)) {
+            typedEvent.token = [...typedEvent.token];
         }
     }
 }

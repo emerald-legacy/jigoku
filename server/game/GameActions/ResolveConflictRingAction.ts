@@ -1,4 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
+import type { Conflict } from '../Conflict.js';
 import { EffectNames, EventNames } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
@@ -40,12 +41,12 @@ export class ResolveConflictRingAction extends RingAction {
             return;
         }
 
-        let elements = event.ring.getElements();
-        let player = event.player;
+        let elements = (event.ring as Ring).getElements();
+        let player = event.player as Player;
         if(elements.length === 1) {
             this.resolveRingEffects(player, elements);
         } else {
-            this.chooseElementsToResolve(player, elements, event.conflict.elementsToResolve);
+            this.chooseElementsToResolve(player, elements, (event.conflict as Conflict).elementsToResolve);
         }
     }
 

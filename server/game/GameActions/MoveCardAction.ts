@@ -71,7 +71,7 @@ export class MoveCardAction extends CardGameAction {
 
     eventHandler(event: Event, additionalProperties = {}): void {
         let context = (event.context as AbilityContext);
-        let card = event.card;
+        let card = event.card as DrawCard;
         event.cardStateWhenMoved = card.createSnapshot();
         let properties = this.getProperties(context, additionalProperties) as MoveCardProperties;
         if(properties.switch && properties.switchTarget) {
@@ -91,7 +91,7 @@ export class MoveCardAction extends CardGameAction {
                 player.moveCard(card, Locations.DynastyDiscardPile);
             }
         }
-        player.moveCard(card, properties.destination, { bottom: !!properties.bottom });
+        player.moveCard(card, properties.destination as Locations, { bottom: !!properties.bottom });
         let target = properties.target as BaseCard | BaseCard[] | undefined;
         const targetArr = Array.isArray(target) ? target : target ? [target] : [];
         if(properties.shuffle && (targetArr.length === 0 || card === targetArr[targetArr.length - 1])) {

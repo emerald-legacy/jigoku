@@ -22,9 +22,9 @@ export class TakeRingAction extends RingAction {
     }
 
     eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        let { takeFate } = this.getProperties((event.context as AbilityContext), additionalProperties) as TakeRingProperties;
-        let ring = event.ring;
-        let context = (event.context as AbilityContext);
+        const context = event.context as AbilityContext;
+        const { takeFate } = this.getProperties(context, additionalProperties) as TakeRingProperties;
+        const ring = event.ring as Ring;
         ring.claimRing(context.player);
         ring.contested = false;
         if(takeFate && context.player.checkRestrictions('takeFateFromRings', context)) {

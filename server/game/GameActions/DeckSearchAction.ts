@@ -137,7 +137,7 @@ export class DeckSearchAction extends PlayerAction {
         const properties = this.getProperties(context, additionalProperties) as DeckSearchProperties;
         const canCancel = properties.targetMode !== TargetModes.Exactly;
         let selectAmount = 1;
-        const choosingPlayer = properties.choosingPlayer || event.player;
+        const choosingPlayer = (properties.choosingPlayer || event.player) as Player;
 
         if(properties.targetMode === TargetModes.UpTo || properties.targetMode === TargetModes.UpToVariable) {
             selectAmount = this.#getNumCards(properties.numCards ?? 1, context);
@@ -257,7 +257,7 @@ export class DeckSearchAction extends PlayerAction {
     ): void {
         this.#doneMessage(properties, context, event, selectedCards);
 
-        const gameAction = this.getProperties((event.context as AbilityContext)).gameAction;
+        const gameAction = this.getProperties(context).gameAction;
         if(gameAction) {
             const selectedArray = Array.from(selectedCards);
             gameAction.setDefaultTarget(() => selectedArray);
@@ -276,7 +276,7 @@ export class DeckSearchAction extends PlayerAction {
         event: any,
         selectedCards: Set<DrawCard>
     ): void {
-        const choosingPlayer = properties.choosingPlayer || event.player;
+        const choosingPlayer = (properties.choosingPlayer || event.player) as Player;
         if(selectedCards.size > 0 && properties.message) {
             const args = properties.messageArgs ? properties.messageArgs(context, Array.from(selectedCards)) : [];
             return context.game.addMessage(properties.message, ...args);
@@ -299,7 +299,7 @@ export class DeckSearchAction extends PlayerAction {
     }
 
     #takesNothing(properties: DeckSearchProperties, context: AbilityContext, event: any): void {
-        const choosingPlayer = properties.choosingPlayer || event.player;
+        const choosingPlayer = (properties.choosingPlayer || event.player) as Player;
         context.game.addMessage('{0} takes nothing', choosingPlayer);
         if(properties.takesNothingGameAction) {
             const action = properties.takesNothingGameAction;

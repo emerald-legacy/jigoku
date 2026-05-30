@@ -97,7 +97,7 @@ export class AttachAction extends CardGameAction<AttachActionProperties> {
     }
 
     checkEventCondition(event: Event, additionalProperties: any): boolean {
-        return this.canAffect(event.parent, (event.context as AbilityContext), additionalProperties);
+        return this.canAffect(event.parent as DrawCard, (event.context as AbilityContext), additionalProperties);
     }
 
     isEventFullyResolved(event: Event, card: DrawCard, context: AbilityContext, additionalProperties: any): boolean {
@@ -114,26 +114,30 @@ export class AttachAction extends CardGameAction<AttachActionProperties> {
     }
 
     eventHandler(event: Event, additionalProperties = {}): void {
-        let properties = this.getProperties((event.context as AbilityContext), additionalProperties);
-        event.originalLocation = event.card.location;
-        if(event.card.location === Locations.PlayArea) {
-            event.card.parent.removeAttachment(event.card);
+        const card = event.card as DrawCard;
+        const parent = event.parent as DrawCard;
+        const context = event.context as AbilityContext;
+        const properties = this.getProperties(context, additionalProperties);
+        event.originalLocation = card.location;
+        if(card.location === Locations.PlayArea) {
+            const currentParent = card.parent as DrawCard;
+            currentParent.removeAttachment(card);
         } else {
-            event.card.controller.removeCardFromPile(event.card);
-            event.card.new = true;
-            event.card.moveTo(Locations.PlayArea);
+            card.controller.removeCardFromPile(card);
+            card.new = true;
+            card.moveTo(Locations.PlayArea);
         }
-        event.parent.attachments.push(event.card);
-        event.card.parent = event.parent;
+        parent.attachments.push(card);
+        card.parent = parent;
         if(properties.takeControl) {
-            event.card.controller = (event.context as AbilityContext).player;
-            event.card.updateEffectContexts();
+            card.controller = context.player;
+            card.updateEffectContexts();
         } else if(properties.giveControl) {
-            event.card.controller = (event.context as AbilityContext).player.opponent;
-            event.card.updateEffectContexts();
+            card.controller = context.player.opponent as Player;
+            card.updateEffectContexts();
         }
-        if(event.card.parent.getType() === CardTypes.Province) {
-            this.checkForRefillProvince(event.card.parent, event, additionalProperties);
+        if(parent.getType() === CardTypes.Province) {
+            this.checkForRefillProvince(parent, event, additionalProperties);
         }
     }
 }

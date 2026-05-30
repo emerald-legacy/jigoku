@@ -13,7 +13,7 @@ class RestorativeHotSpring extends DrawCard {
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.type === CardTypes.Character && event.card.location === Locations.PlayArea
             },
             effect: 'prevent {1} from leaving play, removing itself from the game instead',
-            effectArgs: context => context.event.card,
+            effectArgs: context => context.event.card as DrawCard,
             gameAction: AbilityDsl.actions.cancel({
                 replacementGameAction: AbilityDsl.actions.removeFromGame(context => ({ target: context.source }))
             })

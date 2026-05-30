@@ -29,9 +29,10 @@ export class InitiateConflictAction extends PlayerAction<InitiateConflictPropert
     }
 
     eventHandler(event: Event, additionalProperties: any): void {
-        const properties = this.getProperties((event.context as AbilityContext), additionalProperties);
-        (event.context as AbilityContext).game.initiateConflict(
-            event.player,
+        const context = event.context as AbilityContext;
+        const properties = this.getProperties(context, additionalProperties);
+        context.game.initiateConflict(
+            event.player as Player,
             properties.canPass ?? true,
             properties.forcedDeclaredType,
             properties.forceProvinceTarget

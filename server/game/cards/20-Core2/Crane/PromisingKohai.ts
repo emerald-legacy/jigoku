@@ -2,6 +2,7 @@ import { Durations } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import type { LastingEffectProperties } from '../../../GameActions/LastingEffectAction.js';
 
 export default class PromisingKohai extends DrawCard {
     static id = 'promising-kohai';
@@ -15,7 +16,7 @@ export default class PromisingKohai extends DrawCard {
                 target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.modifyDuelSkill({ amount: 2, player: context.player }),
                 duration: Durations.UntilEndOfDuel
-            })),
+            } as LastingEffectProperties)),
             effect: 'add 2 to their duel total'
         });
     }
