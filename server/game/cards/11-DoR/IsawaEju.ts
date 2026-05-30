@@ -23,7 +23,7 @@ class IsawaEju extends DrawCard {
             effect: 'discard {1} and refill the province faceup',
             effectArgs: context => [context.target?.controller.getDynastyCardsInProvince(context.target.location) ?? []],
             then: context => {
-                const target = context?.target as ProvinceCard;
+                const target = context.target as ProvinceCard;
                 return {
                     gameAction: AbilityDsl.actions.refillFaceup(() => ({
                         target: target.controller,

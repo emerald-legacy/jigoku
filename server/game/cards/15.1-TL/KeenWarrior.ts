@@ -17,7 +17,7 @@ class KeenWarrior extends DrawCard {
                     return cards.some((a: BaseCard) => a.location === Locations.Hand && a.controller === context.player.opponent);
                 },
                 onLookAtCards: (event, context) => {
-                    const raw = (event as unknown as { stateBeforeResolution?: { card: BaseCard; location: Locations }[] }).stateBeforeResolution;
+                    const raw = event.stateBeforeResolution;
                     const cards = Array.isArray(raw) ? raw : raw ? [raw] : [];
                     return cards.some((a) => a.location === Locations.Hand && a.card.controller === context.player.opponent);
                 }

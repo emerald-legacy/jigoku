@@ -30,7 +30,7 @@ class StrideTheWaves extends DrawCard {
             effectArgs: context => {
                 const parent = context.source.parent;
                 return [
-                    parent as unknown as string,
+                    parent ?? '',
                     parent && parent.inConflict ? 'home' : 'into the conflict',
                     parent && parent.inConflict ? 'send' : 'move'
                 ];

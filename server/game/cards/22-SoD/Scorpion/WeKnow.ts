@@ -2,6 +2,8 @@ import { CardTypes, TargetModes, Players, CharacterStatus } from '../../../Const
 
 import { StatusToken } from '../../../StatusToken.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import type { ChoicesInterface } from '../../../Interfaces.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
@@ -30,8 +32,8 @@ export default class WeKnow extends DrawCard {
                     dependsOn: 'token',
                     mode: TargetModes.Select,
                     player: Players.Opponent,
-                    choices: ((context: any) => {
-                        const targetToken: StatusToken = context.tokens.token[0];
+                    choices: (context: AbilityContext): ChoicesInterface => {
+                        const targetToken = (context.tokens.token as StatusToken[])[0];
                         const targetCard = targetToken.card;
                         if(!(targetCard instanceof DrawCard)) {
                             return {};
@@ -46,7 +48,7 @@ export default class WeKnow extends DrawCard {
                                 AbilityDsl.actions.draw({ target: context.player, amount: 2 })
                             ])
                         };
-                    }) as any
+                    }
                 }
             },
             then: context => ({
