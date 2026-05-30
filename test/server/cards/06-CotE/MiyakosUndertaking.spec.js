@@ -158,7 +158,7 @@ describe('Miyako\'s Undertaking', function() {
                 expect(this.player1.player.hand.length).toBe(handSize);
             });
 
-            xit('should add any relevant keywords', function() {
+            it('should add any relevant keywords', function() {
                 this.player1.clickCard('miyako-s-undertaking');
                 this.player1.clickCard(this.akodoGunso);
                 this.player1.clickCard(this.bayushiLiar);
