@@ -5,19 +5,19 @@ import https from 'https';
 import jwt from 'jsonwebtoken';
 import * as socketio from 'socket.io';
 
-import { captureException } from '../ErrorMonitoring.js';
-import Game from '../game/game.js';
+import Game from '../game/Game.js';
 import { cards as cardLibrary } from '../game/cards/index.js';
-import type Player from '../game/player.js';
+import type { GameRouter } from '../game/GameRouter.js';
+import type Player from '../game/Player.js';
 import { logger } from '../logger.js';
-import type PendingGame from '../pendinggame.js';
 import Socket from '../socket.js';
 import { detectBinary } from '../util.js';
 import { SendGameStateProfiler } from './SendGameStateProfiler.js';
 import { WsSocket } from './WsSocket.js';
+import type { GameSummary, LobbyUser, PendingGameDTO } from './LobbyProtocol.js';
 import * as env from '../env.js';
 
-export class GameServer {
+export class GameServer implements GameRouter {
     private games = new Map<string, Game>();
     private userGameMap = new Map<string, Game>();
     private abandonTimers = new Map<string, ReturnType<typeof setTimeout>>();
@@ -25,7 +25,6 @@ export class GameServer {
     private host = env.domain;
     private wsSocket: WsSocket;
     private io: socketio.Server;
-    private titleCardData: any;
     private shortCardData: any;
     private lastSentMessageCount = new Map<string, number>();
     private profiler = new SendGameStateProfiler();
@@ -34,8 +33,8 @@ export class GameServer {
         let privateKey: undefined | string;
         let certificate: undefined | string;
         try {
-            privateKey = fs.readFileSync(env.gameNodeKeyPath).toString();
-            certificate = fs.readFileSync(env.gameNodeCertPath).toString();
+            privateKey = fs.readFileSync(env.gameNodeKeyPath as string).toString();
+            certificate = fs.readFileSync(env.gameNodeCertPath as string).toString();
         } catch{
             // No local certs — if HTTPS is enabled (e.g. via nginx proxy), still
             // advertise https to clients so they connect over the proxy.
@@ -141,8 +140,6 @@ export class GameServer {
             }
         }
 
-        captureException(e);
-
         const playerNames = game.getPlayers().map((p) => p.name);
         if(playerNames.length >= 2) {
             this.wsSocket.send('GAMEERROR', {
@@ -167,7 +164,7 @@ export class GameServer {
         try {
             func();
         } catch(e) {
-            this.handleError(game, e);
+            this.handleError(game, e as Error);
 
             this.sendGameState(game);
         }
@@ -214,7 +211,7 @@ export class GameServer {
         let playerCount = 0;
         let spectatorCount = 0;
 
-        for(const player of Object.values(game.getPlayersAndSpectators()) as any[]) {
+        for(const player of Object.values(game.getPlayersAndSpectators())) {
             if(player.socket && !player.left && !player.disconnected) {
                 let state: any;
                 if(game.isSpectator(player)) {
@@ -274,13 +271,23 @@ export class GameServer {
         }
     }
 
+    private clearMessageCountsForGame(game: Game): void {
+        for(const player of Object.values(game.getPlayersAndSpectators())) {
+            if(player.socket?.id) {
+                this.lastSentMessageCount.delete(player.socket.id);
+            }
+            this.lastSentMessageCount.delete(player.name);
+        }
+    }
+
     notifyAndCloseGame(game: Game): void {
-        for(const player of Object.values(game.getPlayersAndSpectators()) as any[]) {
+        for(const player of Object.values(game.getPlayersAndSpectators())) {
             if(player.socket && !player.disconnected) {
                 player.socket.send('cleargamestate');
                 player.socket.leaveChannel(game.id);
             }
         }
+        this.clearMessageCountsForGame(game);
         this.unregisterUsersForGame(game);
         this.games.delete(game.id);
         this.wsSocket.send('GAMECLOSED', { game: game.id });
@@ -350,22 +357,22 @@ export class GameServer {
         }
     }
 
-    onStartGame(pendingGame: PendingGame): void {
-        const playerNames = Object.values(pendingGame.players as any).map((p: any) => p.name).join(' vs ');
+    onStartGame(pendingGame: PendingGameDTO): void {
+        const playerNames = Object.values(pendingGame.players).map((p) => p.name).join(' vs ');
         logger.info(`Starting game ${pendingGame.id} (${playerNames}), total games: ${this.games.size + 1}`);
         const game = new Game(pendingGame as any, { router: this, shortCardData: this.shortCardData, cardLibrary });
         this.games.set(pendingGame.id, game);
         this.registerUsersForGame(game);
 
         game.started = true;
-        for(const player of Object.values(pendingGame.players as any) as Player[]) {
+        for(const player of Object.values(pendingGame.players)) {
             game.selectDeck(player.name, player.deck);
         }
 
         game.initialise();
     }
 
-    onSpectator(pendingGame: PendingGame, user) {
+    onSpectator(pendingGame: PendingGameDTO, user: LobbyUser) {
         const game = this.games.get(pendingGame.id);
         if(!game) {
             return;
@@ -377,14 +384,14 @@ export class GameServer {
         this.sendGameState(game);
     }
 
-    onGameSync(callback) {
-        const gameSummaries = [];
+    onGameSync(callback: (summaries: GameSummary[]) => void) {
+        const gameSummaries: GameSummary[] = [];
         for(const game of this.games.values()) {
             const retGame = game.getSummary();
             if(retGame) {
                 retGame.password = game.password;
+                gameSummaries.push(retGame);
             }
-            gameSummaries.push(retGame);
         }
 
         logger.info(`syncing ${gameSummaries.length} games`);
@@ -392,7 +399,7 @@ export class GameServer {
         callback(gameSummaries);
     }
 
-    onFailedConnect(gameId, username) {
+    onFailedConnect(gameId: string, username: string) {
         const game = this.findGameForUser(username);
         if(!game || game.id !== gameId) {
             return;
@@ -403,6 +410,7 @@ export class GameServer {
 
         if(game.isEmpty()) {
             this.cancelAbandonTimer(game.id);
+            this.clearMessageCountsForGame(game);
             this.unregisterUsersForGame(game);
             this.games.delete(game.id);
             this.wsSocket.send('GAMECLOSED', { game: game.id });
@@ -413,7 +421,7 @@ export class GameServer {
         this.sendGameState(game);
     }
 
-    onCloseGame(gameId) {
+    onCloseGame(gameId: string) {
         this.cancelAbandonTimer(gameId);
         const game = this.games.get(gameId);
         if(!game) {
@@ -424,26 +432,29 @@ export class GameServer {
         this.notifyAndCloseGame(game);
     }
 
-    onCardData(cardData) {
-        this.titleCardData = cardData.titleCardData;
+    onCardData(cardData: { titleCardData: unknown; shortCardData: unknown }) {
         this.shortCardData = cardData.shortCardData;
     }
 
-    onConnection(ioSocket) {
-        if(!ioSocket.request.user) {
+    onConnection(ioSocket: socketio.Socket) {
+        const req = ioSocket.request as { user?: { username: string } };
+        if(!req.user) {
             logger.info('socket connected with no user, disconnecting');
             ioSocket.disconnect();
             return;
         }
 
-        const game = this.findGameForUser(ioSocket.request.user.username);
+        const game = this.findGameForUser(req.user.username);
         if(!game) {
-            logger.info(`No game for ${ioSocket.request.user.username}, disconnecting`);
+            logger.info(`No game for ${req.user.username}, disconnecting`);
             ioSocket.disconnect();
             return;
         }
 
         const socket = new Socket(ioSocket);
+        if(!socket.user) {
+            return;
+        }
 
         const player = game.playersAndSpectators[socket.user.username];
         if(!player) {
@@ -476,7 +487,10 @@ export class GameServer {
         socket.on('disconnect', this.onSocketDisconnected.bind(this));
     }
 
-    onSocketDisconnected(socket, reason) {
+    onSocketDisconnected(socket: Socket, reason: string) {
+        if(!socket.user) {
+            return;
+        }
         const game = this.findGameForUser(socket.user.username);
         if(!game) {
             return;
@@ -484,12 +498,15 @@ export class GameServer {
 
         logger.info('user \'%s\' disconnected from a game: %s', socket.user.username, reason);
 
+        this.lastSentMessageCount.delete(socket.id);
+
         const isSpectator = game.isSpectator(game.playersAndSpectators[socket.user.username]);
 
         game.disconnect(socket.user.username);
 
         if(game.isEmpty()) {
             this.cancelAbandonTimer(game.id);
+            this.clearMessageCountsForGame(game);
             this.unregisterUsersForGame(game);
             this.games.delete(game.id);
 
@@ -509,7 +526,10 @@ export class GameServer {
         this.sendGameState(game);
     }
 
-    onLeaveGame(socket) {
+    onLeaveGame(socket: Socket) {
+        if(!socket.user) {
+            return;
+        }
         const game = this.findGameForUser(socket.user.username);
         if(!game) {
             return;
@@ -519,6 +539,7 @@ export class GameServer {
 
         game.leave(socket.user.username);
         this.userGameMap.delete(socket.user.username);
+        this.lastSentMessageCount.delete(socket.id);
 
         this.wsSocket.send('PLAYERLEFT', {
             gameId: game.id,
@@ -532,6 +553,7 @@ export class GameServer {
 
         if(game.isEmpty()) {
             this.cancelAbandonTimer(game.id);
+            this.clearMessageCountsForGame(game);
             this.unregisterUsersForGame(game);
             this.games.delete(game.id);
 
@@ -543,29 +565,34 @@ export class GameServer {
         this.sendGameState(game);
     }
 
-    private static readonly ALLOWED_GAME_COMMANDS = new Set([
-        'cardClicked',
-        'changeStat',
-        'chat',
-        'concede',
-        'drop',
-        'facedownCardClicked',
-        'menuButton',
-        'menuItemClick',
-        'ringClicked',
-        'ringMenuItemClick',
-        'selectDeck',
-        'showConflictDeck',
-        'showDynastyDeck',
-        'shuffleConflictDeck',
-        'shuffleDynastyDeck',
-        'toggleManualMode',
-        'toggleOptionSetting',
-        'togglePromptedActionWindow',
-        'toggleTimerSetting'
-    ]);
+    private static readonly GAME_COMMANDS = {
+        cardClicked: (g: Game, p: string, cardId: string) => g.cardClicked(p, cardId),
+        changeStat: (g: Game, p: string, stat: string, value: number) => g.changeStat(p, stat, value),
+        chat: (g: Game, p: string, message: string) => g.chat(p, message),
+        concede: (g: Game, p: string) => g.concede(p),
+        drop: (g: Game, p: string, cardId: string, source: string, target: string) => g.drop(p, cardId, source, target),
+        facedownCardClicked: (g: Game, p: string, location: string, controllerName: string, isProvince?: boolean) => g.facedownCardClicked(p, location, controllerName, isProvince),
+        menuButton: (g: Game, p: string, arg: string, uuid: string, method: string) => {
+            g.menuButton(p, arg, uuid, method);
+        },
+        menuItemClick: (g: Game, p: string, cardId: string, menuItem: any) => g.menuItemClick(p, cardId, menuItem),
+        ringClicked: (g: Game, p: string, ringindex: string) => g.ringClicked(p, ringindex),
+        ringMenuItemClick: (g: Game, p: string, sourceRing: { element: string }, menuItem: any) => g.ringMenuItemClick(p, sourceRing, menuItem),
+        selectDeck: (g: Game, p: string, deck: any) => g.selectDeck(p, deck),
+        showConflictDeck: (g: Game, p: string) => g.showConflictDeck(p),
+        showDynastyDeck: (g: Game, p: string) => g.showDynastyDeck(p),
+        shuffleConflictDeck: (g: Game, p: string) => g.shuffleConflictDeck(p),
+        shuffleDynastyDeck: (g: Game, p: string) => g.shuffleDynastyDeck(p),
+        toggleManualMode: (g: Game, p: string) => g.toggleManualMode(p),
+        toggleOptionSetting: (g: Game, p: string, settingName: string, toggle: boolean) => g.toggleOptionSetting(p, settingName, toggle),
+        togglePromptedActionWindow: (g: Game, p: string, windowName: string, toggle: boolean) => g.togglePromptedActionWindow(p, windowName, toggle),
+        toggleTimerSetting: (g: Game, p: string, settingName: string, toggle: boolean) => g.toggleTimerSetting(p, settingName, toggle)
+    } as const satisfies Record<string, (game: Game, player: string, ...args: any[]) => void>;
 
-    onGameMessage(socket, command, ...args) {
+    onGameMessage(socket: Socket, command: string, ...args: unknown[]) {
+        if(!socket.user) {
+            return;
+        }
         const game = this.findGameForUser(socket.user.username);
 
         if(!game) {
@@ -576,14 +603,16 @@ export class GameServer {
             return this.onLeaveGame(socket);
         }
 
-        if(!GameServer.ALLOWED_GAME_COMMANDS.has(command)) {
+        const handler = (GameServer.GAME_COMMANDS as Record<string, (game: Game, player: string, ...args: any[]) => void>)[command];
+        if(!handler) {
             logger.info(`Rejected unknown game command '${command}' from ${socket.user.username}`);
             return;
         }
 
+        const username = socket.user.username;
         this.runAndCatchErrors(game, () => {
             game.stopNonChessClocks();
-            game[command](socket.user.username, ...args);
+            handler(game, username, ...args);
 
             game.continue();
 

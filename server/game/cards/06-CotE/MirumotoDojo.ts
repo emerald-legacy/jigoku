@@ -1,8 +1,8 @@
 import { DuelTypes } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
-import type Player from '../../player.js';
+import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 
 export default class MirumotoDojo extends DrawCard {
     static id = 'mirumoto-dojo';

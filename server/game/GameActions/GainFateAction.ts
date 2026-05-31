@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
 export interface GainFateProperties extends PlayerActionProperties {
@@ -24,16 +24,16 @@ export class GainFateAction extends PlayerAction<GainFateProperties> {
 
     canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
-        return properties.amount > 0 && super.canAffect(player, context);
+        return (properties.amount ?? 0) > 0 && super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event, player: Player, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.player.modifyFate(event.amount);
     }
 }

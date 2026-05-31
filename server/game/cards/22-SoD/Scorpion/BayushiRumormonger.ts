@@ -1,6 +1,7 @@
 import { Locations } from '../../../Constants.js';
+import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class BayushiRumormonger extends DrawCard {
     static id = 'bayushi-rumormonger';
@@ -11,25 +12,34 @@ export default class BayushiRumormonger extends DrawCard {
             condition: context => context.source.isParticipating() && Boolean(context.player.opponent),
             gameAction: AbilityDsl.actions.handler({
                 handler: context => {
+                    const opponent = context.player.opponent;
+                    if(!opponent) {
+                        return;
+                    }
                     const x = this.getHighestNumberOfParticipants(context);
-                    context.player.opponent.conflictDeck.slice(0, x).forEach(card =>
-                        context.player.opponent.moveCard(card, Locations.ConflictDiscardPile)
+                    opponent.conflictDeck.slice(0, x).forEach(card =>
+                        opponent.moveCard(card, Locations.ConflictDiscardPile)
                     );
                 }
             }),
             effect: 'discard {1} card{2} from {3}\'s conflict deck',
             effectArgs: context => {
                 const x = this.getHighestNumberOfParticipants(context);
-                return [x, x === 1 ? '' : 's', context.player.opponent];
+                const opponent = context.player.opponent;
+                return [x, x === 1 ? '' : 's', opponent ?? ''];
             }
         });
     }
 
-    getHighestNumberOfParticipants(context) {
+    getHighestNumberOfParticipants(context: AbilityContext) {
         const conflict = context.game.currentConflict;
+        if(!conflict) {
+            return 0;
+        }
+        const opponent = context.player.opponent;
         return Math.max(
             conflict.getNumberOfParticipantsFor(context.player),
-            conflict.getNumberOfParticipantsFor(context.player.opponent)
+            opponent ? conflict.getNumberOfParticipantsFor(opponent) : 0
         );
     }
 }

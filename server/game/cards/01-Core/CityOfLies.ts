@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Durations, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,7 +12,7 @@ class CityOfLies extends DrawCard {
             gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
                 targetController: context.player,
                 duration: Durations.UntilEndOfPhase,
-                effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, card => card.type === CardTypes.Event)
+                effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, (card: any) => card.type === CardTypes.Event)
             }))
         });
     }

@@ -1,6 +1,6 @@
 import { Players, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class DojiGiftGiver extends DrawCard {
     static id = 'doji-gift-giver';

@@ -1,6 +1,6 @@
 import { CardTypes, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class CampfireCounsel extends DrawCard {
     static id = 'campfire-counsel';
@@ -16,12 +16,12 @@ export default class CampfireCounsel extends DrawCard {
                 gameAction: AbilityDsl.actions.ready()
             },
             then: context => ({
-                thenCondition: () => !context.player.isCharacterTraitInPlay('storyteller'),
+                thenCondition: () => !!context && !context.player.isCharacterTraitInPlay('storyteller'),
                 gameAction: AbilityDsl.actions.dishonor({
-                    target: context.target
+                    target: context?.target
                 }),
                 message: '{3} is dishonored',
-                messageArgs: _thenContext => [context.target]
+                messageArgs: () => [context?.target]
             })
         });
     }

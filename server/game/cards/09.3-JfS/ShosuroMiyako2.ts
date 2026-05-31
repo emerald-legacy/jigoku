@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes, Locations, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -28,7 +28,7 @@ class ShosuroMiyako2 extends DrawCard {
         });
     }
 
-    canDisguise(card, context, intoConflictOnly) {
+    canDisguise(card: DrawCard, context: any, intoConflictOnly: boolean) {
         return !card.isFaction('scorpion') &&
             card.allowGameAction('discardFromPlay', context) &&
             !card.isUnique() &&

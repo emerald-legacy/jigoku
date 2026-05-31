@@ -1,19 +1,20 @@
-import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, Players } from '../../Constants.js';
 
 class AncestralArmory extends DrawCard {
     static id = 'ancestral-armory';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.action({
             title: 'Return a weapon attachment in your conflict discard pile to your hand',
-            cost: ability.costs.sacrificeSelf(),
+            cost: AbilityDsl.costs.sacrificeSelf(),
             target: {
                 activePromptTitle: 'Choose a weapon attachment from your conflict discard pile',
                 cardCondition: card => card.hasTrait('weapon'),
                 location: [Locations.ConflictDiscardPile],
                 controller: Players.Self,
-                gameAction: ability.actions.moveCard({ destination: Locations.Hand })
+                gameAction: AbilityDsl.actions.moveCard({ destination: Locations.Hand })
             }
         });
     }

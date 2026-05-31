@@ -1,6 +1,6 @@
 import { Locations } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export class BaseOni extends DrawCard {
     private eventRegistrar?: EventRegistrar;

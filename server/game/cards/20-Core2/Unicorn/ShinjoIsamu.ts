@@ -1,13 +1,18 @@
-import { TargetModes } from '../../../Constants.js';
+import { EventNames, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../conflict.js';
-import DrawCard from '../../../drawcard.js';
-import type Ring from '../../../ring.js';
+import type { Conflict } from '../../../Conflict.js';
+import DrawCard from '../../../DrawCard.js';
+import type Ring from '../../../Ring.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
-function isamuWentHome(event: any, context: TriggeredAbilityContext<ShinjoIsamu>) {
+type SendOrReturnHomeEvent =
+    | EventPayload<EventNames.OnSendHome>
+    | EventPayload<EventNames.OnReturnHome>;
+
+function isamuWentHome(event: SendOrReturnHomeEvent, context: TriggeredAbilityContext<ShinjoIsamu>) {
     return event.card === context.source;
 }
 
@@ -24,10 +29,10 @@ export default class ShinjoIsamu extends DrawCard {
             target: {
                 mode: TargetModes.Ring,
                 activePromptTitle: 'Choose a ring',
-                ringCondition: (ring: Ring, context: AbilityContext) =>
-                    (context.game.currentConflict as Conflict)
+                ringCondition: ((ring: Ring, context: AbilityContext) =>
+                    (context?.game.currentConflict as Conflict)
                         .getConflictProvinces()
-                        .some((province: ProvinceCard) => province.getElement().includes(ring.element)),
+                        .some((province: ProvinceCard) => province.getElement().includes(ring.element))) as any,
                 gameAction: AbilityDsl.actions.resolveRingEffect()
             },
             effect: 'resolve the {0} effect'

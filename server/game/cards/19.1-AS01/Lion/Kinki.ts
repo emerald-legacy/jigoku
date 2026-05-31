@@ -1,6 +1,6 @@
 import { CardTypes, Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class Kinki extends DrawCard {
     static id = 'kinki';
@@ -14,9 +14,9 @@ export default class Kinki extends DrawCard {
             title: 'Remove a fate from or move home a character',
             cost: AbilityDsl.costs.sacrificeSelf(),
             condition: (context) =>
-                context.game.isDuringConflict('military') &&
+                !!(context.game.isDuringConflict('military') &&
                 context.source.parent &&
-                context.source.parent.isParticipating(),
+                context.source.parent.isParticipating()),
             targets: {
                 character: {
                     cardType: CardTypes.Character,

@@ -2,11 +2,12 @@ import { GameObject } from './GameObject.js';
 import { DuelTypes, EffectNames, EventNames, Locations } from './Constants.js';
 import { GameMode, parseGameMode } from './GameMode.js';
 import { EventRegistrar } from './EventRegistrar.js';
-import type DrawCard from './drawcard.js';
-import type Game from './game.js';
-import type Player from './player.js';
+import type DrawCard from './DrawCard.js';
+import type Game from './Game.js';
+import type Player from './Player.js';
 import { AbilityContext } from './AbilityContext.js';
-import type BaseCard from './basecard.js';
+import type BaseCard from './BaseCard.js';
+import type { CardEffect } from './Effects/types.js';
 
 /**
  * Used to track whether a player has played a specific type of duel effect yet
@@ -68,8 +69,8 @@ export class Duel extends GameObject {
         return this.loser?.[0].controller;
     }
 
-    get participants(): undefined | DrawCard[] {
-        return [...[this.challenger], ...this.targets];
+    get participants(): DrawCard[] {
+        return [this.challenger, ...this.targets];
     }
 
     public playerCanTriggerChallenge(player: Player): boolean {
@@ -115,7 +116,7 @@ export class Duel extends GameObject {
     }
 
     isInvolvedInAnyDuel(card: DrawCard): boolean {
-        return this.isInvolved(card) || (this.previousDuel && this.previousDuel.isInvolvedInAnyDuel(card));
+        return this.isInvolved(card) || (!!this.previousDuel && this.previousDuel.isInvolvedInAnyDuel(card));
     }
 
     getTotalsForDisplay(): string {
@@ -202,7 +203,7 @@ export class Duel extends GameObject {
         }
     }
 
-    #getStatsTotal(charactersOnSameSide: DrawCard[], player: Player): StatisticTotal {
+    #getStatsTotal(charactersOnSameSide: DrawCard[], player?: Player): StatisticTotal {
         let result = 0;
         const ignoreSkill = this.participants.filter((card) => card.anyEffect(EffectNames.IgnoreDuelSkill)).length > 0;
         const duelLevelModifier = this.getRawEffects().filter((effect) => effect.type === EffectNames.ModifyDuelSkill);
@@ -227,10 +228,12 @@ export class Duel extends GameObject {
     }
 
     #getDuelModifiers(card: DrawCard): number {
-        const rawEffects = card.getRawEffects().filter((effect) => effect.type === EffectNames.ModifyDuelistSkill);
+        const rawEffects = (card as unknown as { getRawEffects(): CardEffect[] })
+            .getRawEffects()
+            .filter((effect: CardEffect) => effect.type === EffectNames.ModifyDuelistSkill);
         let effectModifier = 0;
 
-        rawEffects.forEach((effect) => {
+        rawEffects.forEach((effect: any) => {
             const props = effect.getValue();
             if(props.duel === this) {
                 effectModifier += props.value;
@@ -296,7 +299,7 @@ export class Duel extends GameObject {
 
         if(this.#bidFinished) {
             challengerStats += this.challengingPlayer.honorBid;
-            if(this.targets?.length > 0) {
+            if(this.targets?.length > 0 && this.challengingPlayer.opponent) {
                 targetStats += this.challengingPlayer.opponent.honorBid;
             }
         }
@@ -371,7 +374,7 @@ export class Duel extends GameObject {
     }
 
     cleanup() {
-        this.eventRegistrar.unregisterAll();
+        this.eventRegistrar?.unregisterAll();
     }
 
     onCardAbilityTriggered({

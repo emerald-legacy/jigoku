@@ -1,7 +1,9 @@
-import DrawCard from '../../drawcard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Stages } from '../../Constants.js';
+import { EventNames, Stages } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class SententiousPoet extends DrawCard {
     static id = 'sententious-poet';
 
@@ -9,18 +11,18 @@ class SententiousPoet extends DrawCard {
         this.reaction({
             title: 'Gain 1 fate',
             when: {
-                onSpendFate: (event, context) =>
-                    event.context.player === context.player.opponent &&
+                onSpendFate: (event: EventPayload<EventNames.OnSpendFate>, context: AbilityContext) =>
+                    event.context?.player === context.player.opponent &&
                     event.amount > 0 &&
-                    event.context.stage === Stages.Cost &&
-                    event.context.ability.isCardPlayed() &&
+                    event.context?.stage === Stages.Cost &&
+                    event.context?.ability.isCardPlayed() &&
                     context.source.isParticipating(),
-                onMoveFate: (event, context) =>
-                    event.context.ability.isCardPlayed() &&
-                    event.context.player === context.player.opponent &&
+                onMoveFate: (event: EventPayload<EventNames.OnMoveFate>, context: AbilityContext) =>
+                    event.context?.ability.isCardPlayed() &&
+                    event.context?.player === context.player.opponent &&
                     event.fate > 0 &&
                     context.source.isParticipating() &&
-                    event.context.stage === Stages.Cost &&
+                    event.context?.stage === Stages.Cost &&
                     event.recipient?.type === 'ring'
             },
             gameAction: AbilityDsl.actions.gainFate()

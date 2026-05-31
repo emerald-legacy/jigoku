@@ -1,18 +1,20 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, ConflictTypes, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class BrokenBlades extends DrawCard {
     static id = 'broken-blades';
 
     public setupCardAbilities() {
-        this.reaction({
+        this.reaction<DrawCard>({
             title: 'Return all fate from a character then discard them',
             effect: 'ensure {0} is gone!{1}{2}{3}',
-            effectArgs: (context) =>
-                context.target.fate < 1
+            effectArgs: (context) => {
+                const target = context.target;
+                return !target || target.fate < 1
                     ? []
-                    : [' (', context.target.owner, ' recovers ' + context.target.fate + ' fate)'],
+                    : [' (', target.owner, ' recovers ' + target.fate + ' fate)'];
+            },
             when: {
                 afterConflict: (event, context) =>
                     context.player.isAttackingPlayer() &&

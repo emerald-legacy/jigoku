@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class UnveiledDestiny extends DrawCard {
@@ -6,8 +6,8 @@ class UnveiledDestiny extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => !!context.player.role,
-            effect: AbilityDsl.effects.addElementAsAttacker(card => card.controller.role.getElement())
+            condition: (context: any) => !!context.player.role,
+            effect: AbilityDsl.effects.addElementAsAttacker((card: any) => card.controller.role.getElement())
         });
     }
 }

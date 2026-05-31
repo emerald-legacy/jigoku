@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class ICanSwim extends DrawCard {
     static id = 'i-can-swim';
@@ -8,7 +8,7 @@ export default class ICanSwim extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Discard a dishonored character',
-            condition: (context) => context.player.opponent && context.player.showBid > context.player.opponent.showBid,
+            condition: (context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid),
             cannotBeMirrored: true,
             target: {
                 cardType: CardTypes.Character,

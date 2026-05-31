@@ -1,6 +1,6 @@
 
-import Game from '../../../build/server/game/game.js';
-import Player from '../../../build/server/game/player.js';
+import Game from '../../../build/server/game/Game.js';
+import Player from '../../../build/server/game/Player.js';
 import { Spectator } from '../../../build/server/game/Spectator.js';
 
 describe('the Game', () => {

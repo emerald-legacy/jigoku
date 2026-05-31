@@ -1,4 +1,4 @@
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { AbilityTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -9,10 +9,10 @@ class TwinSisterBlades extends DrawCard {
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
                 title: 'Draw cards',
-                condition: context => context.source.isParticipating() && context.source.hasTrait('bushi'),
+                condition: (context: any) => context.source.isParticipating() && context.source.hasTrait('bushi'),
                 effect: 'draw {1} card{2}',
-                effectArgs: context => this.getNumberOfCards(context) === 2 ? ['2', 's'] : ['a', ''],
-                gameAction: AbilityDsl.actions.draw(context => ({
+                effectArgs: (context: any) => this.getNumberOfCards(context) === 2 ? ['2', 's'] : ['a', ''],
+                gameAction: AbilityDsl.actions.draw((context: any) => ({
                     target: context.player,
                     amount: this.getNumberOfCards(context)
                 }))
@@ -20,7 +20,7 @@ class TwinSisterBlades extends DrawCard {
         });
     }
 
-    getNumberOfCards(context) {
+    getNumberOfCards(context: any) {
         if(context.source.hasTrait('duelist') && context.game.currentConflict.hasMoreParticipants(context.player.opponent)) {
             return 2;
         }

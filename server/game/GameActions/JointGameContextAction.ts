@@ -14,7 +14,8 @@ export class JointGameContextAction extends GameAction {
 
     getProperties(context: AbilityContext, additionalProperties = {}): JointGameContextProperties {
         let properties = super.getProperties(context, additionalProperties) as JointGameContextProperties;
-        for(const gameAction of properties.gameActions) {
+        const actions = properties.gameActions ?? [];
+        for(const gameAction of actions) {
             gameAction.setDefaultTarget(() => properties.target);
         }
         return properties;
@@ -22,12 +23,12 @@ export class JointGameContextAction extends GameAction {
 
     hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
-        return properties.gameActions.every((gameAction) => gameAction.hasLegalTarget(context, additionalProperties));
+        return (properties.gameActions ?? []).every((gameAction) => gameAction.hasLegalTarget(context, additionalProperties));
     }
 
     canAffect(target: GameObject, context: AbilityContext, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
-        return properties.gameActions.every((gameAction) =>
+        return (properties.gameActions ?? []).every((gameAction) =>
             gameAction.canAffect(target, context, additionalProperties)
         );
     }
@@ -35,14 +36,14 @@ export class JointGameContextAction extends GameAction {
     addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
         if(this.hasLegalTarget(context, additionalProperties)) {
-            for(const gameAction of properties.gameActions) {
+            for(const gameAction of properties.gameActions ?? []) {
                 gameAction.addEventsToArray(events, context, additionalProperties);
             }
         }
     }
 
-    hasTargetsChosenByInitiatingPlayer(context) {
+    hasTargetsChosenByInitiatingPlayer(context: AbilityContext) {
         let properties = this.getProperties(context);
-        return properties.gameActions.some((gameAction) => gameAction.hasTargetsChosenByInitiatingPlayer(context));
+        return (properties.gameActions ?? []).some((gameAction) => gameAction.hasTargetsChosenByInitiatingPlayer(context));
     }
 }

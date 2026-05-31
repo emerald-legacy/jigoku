@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ResourcefulMahoTsukai extends DrawCard {
@@ -8,7 +8,7 @@ class ResourcefulMahoTsukai extends DrawCard {
         this.persistentEffect({
             condition: context => context.source.isDishonored,
             effect: AbilityDsl.effects.reduceCost({
-                match: card => card.hasTrait('maho')
+                match: (card: any) => card.hasTrait('maho')
             })
         });
     }

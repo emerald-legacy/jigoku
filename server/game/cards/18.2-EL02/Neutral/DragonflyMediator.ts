@@ -1,4 +1,4 @@
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { Locations, Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -18,7 +18,7 @@ class DragonflyMediator extends DrawCard {
                 oppCard: {
                     activePromptTitle: 'Choose three cards to reveal',
                     mode: TargetModes.ExactlyVariable,
-                    numCardsFunc: context => Math.min(3, context.player.opponent.hand.length),
+                    numCardsFunc: context => Math.min(3, context.player.opponent?.hand.length ?? 0),
                     player: Players.Opponent,
                     location: Locations.Hand,
                     controller: Players.Opponent,

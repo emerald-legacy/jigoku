@@ -1,20 +1,22 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { AbilityContext } from '../../AbilityContext.js';
+import type { Event } from '../../Events/Event.js';
 
 const oniTyrantCost = function () {
     return {
         canPay: function () {
             return true;
         },
-        resolve: function (context, result) {
+        resolve: function (context: AbilityContext, result: { cancelled?: boolean }) {
             let creatures = context.player.outsideTheGameCards;
-            creatures = creatures.filter(card => card.printedCost <= 2 && context.game.actions.putIntoConflict().canAffect(card, context));
+            creatures = creatures.filter((card: any) => card.printedCost <= 2 && context.game.actions.putIntoConflict().canAffect(card, context));
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Select a creature to summon',
                 source: context.source,
                 cards: creatures,
                 choices: ['Cancel'],
-                cardHandler: card => {
+                cardHandler: (card: any) => {
                     context.costs.oniTyrantCostCreature = card;
                 },
                 handlers: [
@@ -26,14 +28,14 @@ const oniTyrantCost = function () {
                 ]
             });
         },
-        payEvent: function (context) {
+        payEvent: function (context: AbilityContext): Event | Event[] {
             if(context.costs.oniTyrantCostCreature) {
-                const oni = context.costs.oniTyrantCostCreature;
-                const copy = new oni.constructor(context.player, oni.cardData);
+                const oni = context.costs.oniTyrantCostCreature as DrawCard;
+                const copy = new (oni.constructor as typeof DrawCard)(context.player, oni.cardData);
                 context.game.allCards.push(copy);
                 context.costs.oniTyrantCostCreature = copy;
 
-                let action = context.game.actions.handler(); //this is a do-nothing event since the cost isn't really a cost
+                const action = context.game.actions.handler({ handler: () => true }); //this is a do-nothing event since the cost isn't really a cost
                 return action.getEvent(context.player, context);
             }
             return [];
@@ -58,11 +60,12 @@ class OniTyrant extends DrawCard {
             })),
             effect: 'summon a{2} {1} from the depths of the Shadowlands!',
             effectArgs: context => {
-                var testStr = context.costs.oniTyrantCostCreature.name;
+                const creature = context.costs.oniTyrantCostCreature as DrawCard;
+                var testStr = creature.name;
                 var vowelRegex = '^[aieouAIEOU].*';
                 var matched = testStr.match(vowelRegex);
                 return [
-                    context.costs.oniTyrantCostCreature,
+                    creature,
                     matched ? 'n' : ''
                 ];
             }

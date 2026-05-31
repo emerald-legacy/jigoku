@@ -1,5 +1,8 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
+import { EventNames } from '../../Constants.js';
 export default class MidnightProwler extends DrawCard {
     static id = 'midnight-prowler';
 
@@ -7,24 +10,29 @@ export default class MidnightProwler extends DrawCard {
         this.reaction({
             title: 'Look at the top two card of your opponents conflict deck.',
             when: {
-                afterConflict: (event, context) =>
+                afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: TriggeredAbilityContext) =>
                     this.game.isDuringConflict('military') &&
                     context.source.isParticipating() &&
                     event.conflict.winner === context.source.controller &&
                     context.player.opponent !== undefined
             },
-            handler: (context) =>
+            handler: (context: TriggeredAbilityContext) => {
+                if(!context || !context.player.opponent) {
+                    return;
+                }
+                const opponent = context.player.opponent;
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Which card do you want to discard?',
                     context: context,
-                    cards: context.player.opponent.conflictDeck.slice(0, 2),
+                    cards: opponent.conflictDeck.slice(0, 2),
                     choices: ['Do not discard either card.'],
                     handlers: [() => true],
                     cardHandler: (card: DrawCard) => {
-                        context.player.opponent.moveCard(card, 'conflict discard pile');
+                        opponent.moveCard(card, 'conflict discard pile');
                         context.game.addMessage('{0} chooses to discard {1}', context.player, card);
                     }
-                })
+                });
+            }
         });
     }
 }

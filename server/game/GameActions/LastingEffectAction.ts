@@ -1,10 +1,11 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseAbility from '../baseability.js';
+import type BaseAbility from '../BaseAbility.js';
 import { Durations, EventNames, Players } from '../Constants.js';
 import type { WhenType } from '../Interfaces.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface LastingEffectGeneralProperties extends GameActionProperties {
     duration?: Durations;
     condition?: (context: AbilityContext) => boolean;
@@ -26,7 +27,7 @@ export class LastingEffectAction<P extends LastingEffectProperties = LastingEffe
     defaultProperties: LastingEffectProperties = {
         duration: Durations.UntilEndOfConflict,
         effect: [],
-        ability: null
+        ability: undefined
     } as LastingEffectProperties;
 
     // @ts-expect-error -- overriding return type to be more specific than base class signature
@@ -54,11 +55,11 @@ export class LastingEffectAction<P extends LastingEffectProperties = LastingEffe
         }
     }
 
-    eventHandler(event: any, additionalProperties: any): void {
-        let properties = this.getProperties(event.context, additionalProperties);
+    eventHandler(event: Event, additionalProperties: any): void {
+        let properties = this.getProperties((event.context as AbilityContext), additionalProperties);
         if(!properties.ability) {
-            properties.ability = event.context.ability;
+            properties.ability = (event.context as AbilityContext).ability;
         }
-        event.context.source[properties.duration](() => properties);
+        (event.context as AbilityContext).source[properties.duration ?? Durations.UntilEndOfConflict](() => properties);
     }
 }

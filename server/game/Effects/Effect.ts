@@ -1,5 +1,13 @@
 import { Locations, Durations } from '../Constants.js';
-import type Game from '../game.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseAbility from '../BaseAbility.js';
+import type BaseCard from '../BaseCard.js';
+import type Game from '../Game.js';
+import type { GameObject } from '../GameObject.js';
+import type StaticEffect from './StaticEffect.js';
+
+export type EffectMatchFn = (target: GameObject, context?: AbilityContext) => boolean;
+type EffectMatch = EffectMatchFn | GameObject;
 
 /**
  * Represents a card based effect applied to one or more targets.
@@ -29,21 +37,21 @@ import type Game from '../game.js';
  */
 class Effect {
     game: Game;
-    source: any;
-    match: any;
+    source: BaseCard;
+    match: EffectMatch;
     duration: Durations;
-    until: Record<string, any>;
-    condition: (context: any) => boolean;
+    until: Record<string, (...args: unknown[]) => boolean>;
+    condition: (context: AbilityContext) => boolean;
     location: string;
     canChangeZoneOnce: boolean;
     canChangeZoneNTimes: number;
-    effect: any;
-    ability: any;
-    targets: any[];
-    context: any;
+    effect: StaticEffect;
+    ability: BaseAbility | undefined;
+    targets: GameObject[];
+    context!: AbilityContext;
     endingMessage: string | undefined;
 
-    constructor(game: Game, source: any, properties: any, effect: any) {
+    constructor(game: Game, source: BaseCard, properties: any, effect: StaticEffect) {
         this.game = game;
         this.source = source;
         this.match = properties.match || (() => true);
@@ -110,7 +118,7 @@ class Effect {
         if(this.duration !== Durations.Persistent) {
             return true;
         }
-        let effectOnSource = this.source.persistentEffects.some((effect: any) => effect.ref && effect.ref.includes(this));
+        let effectOnSource = this.source.persistentEffects.some((effect: { ref?: Effect[] }) => effect.ref && effect.ref.includes(this));
         return !this.source.facedown && effectOnSource;
     }
 
@@ -120,8 +128,9 @@ class Effect {
             this.cancel();
             return stateChanged;
         } else if(typeof this.match === 'function') {
+            const matchFn = this.match;
             // Get any targets which are no longer valid
-            let invalidTargets = this.targets.filter(target => !this.match(target, this.context) || !this.isValidTarget(target));
+            let invalidTargets = this.targets.filter(target => !matchFn(target, this.context) || !this.isValidTarget(target));
             // Remove invalid targets
             this.removeTargets(invalidTargets);
             stateChanged = stateChanged || invalidTargets.length > 0;

@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { Durations } from '../../Constants.js';
 
 class HawkTattoo extends DrawCard {
     static id = 'hawk-tattoo';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.attachmentConditions({
             myControl: true
         });
@@ -21,8 +22,8 @@ class HawkTattoo extends DrawCard {
                 onCardPlayed: (event, context) => context.source.parent && event.card === context.source && this.game.isDuringConflict()
             },
             gameAction: [
-                ability.actions.moveToConflict(context => ({ target: context.source.parent })),
-                ability.actions.playerLastingEffect(context => ({
+                ability.actions.moveToConflict((context: any) => ({ target: context.source.parent })),
+                ability.actions.playerLastingEffect((context: any) => ({
                     targetController: context.player,
                     duration: Durations.UntilPassPriority,
                     effect: context.source.parent.hasTrait('monk') ? ability.effects.additionalAction() : []

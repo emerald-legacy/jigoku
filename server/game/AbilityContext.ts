@@ -1,60 +1,76 @@
-import BaseAbility from './baseability.js';
-import type BaseCard from './basecard.js';
+import type { SelectChoice } from './AbilityTargets/SelectChoice.js';
+import BaseAbility from './BaseAbility.js';
+import type BaseCard from './BaseCard.js';
+import type CardAbility from './CardAbility.js';
+import type DrawCard from './DrawCard.js';
 import { Locations, PlayTypes, Stages } from './Constants.js';
 import EffectSource from './EffectSource.js';
-import type Game from './game.js';
+import type { Event } from './Events/Event.js';
+import type Game from './Game.js';
 import type { GameAction } from './GameActions/GameAction.js';
-import type Player from './player.js';
-import type Ring from './ring.js';
+import type Player from './Player.js';
+import type Ring from './Ring.js';
 import type { StatusToken } from './StatusToken.js';
 
 export interface AbilityContextProperties {
     game: Game;
-    source?: any;
+    source?: BaseCard | Ring | EffectSource;
     player?: Player;
     ability?: BaseAbility;
-    costs?: any;
-    targets?: any;
-    rings?: any;
-    selects?: any;
-    tokens?: any;
-    elements?: any;
-    events?: any[];
+    costs?: Record<string, unknown>;
+    targets?: Record<string, BaseCard | BaseCard[]>;
+    rings?: Record<string, Ring | Ring[]>;
+    selects?: Record<string, SelectChoice>;
+    tokens?: Record<string, StatusToken | StatusToken[]>;
+    elements?: Record<string, string>;
+    events?: Event[];
     stage?: Stages;
-    targetAbility?: any;
+    targetAbility?: CardAbility | null;
 }
 
-export class AbilityContext<S = any> {
+export class AbilityContext<S = any, T extends BaseCard = BaseCard> {
     game: Game;
     source: S;
     player: Player;
     ability: BaseAbility;
-    costs: any;
-    targets: any;
-    rings: any;
-    selects: any;
-    tokens: any;
-    elements: any;
-    events: any[] = [];
+    // Bags are dynamically keyed by per-ability target/cost names; values typed to
+    // the union their resolvers produce. cost results are open-ended per cost type
+    // (card/array/ring/number/boolean/string), so values are unknown — narrow at read.
+    costs: Record<string, unknown>;
+    targets: Record<string, BaseCard | BaseCard[]>;
+    rings: Record<string, Ring | Ring[]>;
+    selects: Record<string, SelectChoice>;
+    tokens: Record<string, StatusToken | StatusToken[]>;
+    elements: Record<string, string>;
+    deckSearchSelected: DrawCard[] = [];
+    events: Event[] = [];
     stage: Stages;
-    targetAbility: any;
-    target: any;
-    select: string;
-    ring: Ring;
-    token: StatusToken;
-    element: any;
-    elementCard: BaseCard;
-    provincesToRefill: any[] = [];
+    targetAbility: CardAbility | null = null;
+    /**
+     * Set by `AbilityTargetCard` when the target name is `'target'`. In
+     * multi-card selector modes (`Exactly`/`Unlimited` with numCards > 1) it
+     * is assigned a `BaseCard[]`; the few cards that use multi-card targets
+     * read from `context.targets.target` instead and cast.
+     */
+    target: T | undefined;
+    select: string = '';
+    ring: Ring | undefined;
+    token: StatusToken | undefined;
+    element: string | null = null;
+    elementCard: BaseCard | undefined;
+    provincesToRefill: { player: Player; location: Locations }[] = [];
     subResolution = false;
     choosingPlayerOverride: Player | null = null;
     gameActionsResolutionChain: GameAction[] = [];
     playType: PlayTypes | string | undefined;
-    cardStateWhenInitiated: any = null;
+    cardStateWhenInitiated: BaseCard | null = null;
+    ignoreFateCost?: boolean;
+    onPlayCardSource?: BaseCard;
 
     constructor(properties: AbilityContextProperties) {
         this.game = properties.game;
-        this.source = properties.source || new EffectSource(this.game);
-        this.player = properties.player;
+        this.source = (properties.source || new EffectSource(this.game)) as S;
+        this.player = properties.player as Player;
         this.ability = properties.ability || new BaseAbility({});
         this.costs = properties.costs || {};
         this.targets = properties.targets || {};
@@ -63,12 +79,12 @@ export class AbilityContext<S = any> {
         this.tokens = properties.tokens || {};
         this.elements = properties.elements || {};
         this.stage = properties.stage || Stages.Effect;
-        this.targetAbility = properties.targetAbility;
+        this.targetAbility = properties.targetAbility ?? null;
         // const location = this.player && this.player.playableLocations.find(location => location.contains(this.source));
         this.playType = this.player && this.player.findPlayType(this.source as BaseCard); //location && location.playingType;
     }
 
-    copy(newProps: Partial<AbilityContextProperties>): AbilityContext<this> {
+    copy(newProps: Partial<AbilityContextProperties>): AbilityContext<this, T> {
         let copy = this.createCopy(newProps);
         copy.target = this.target;
         copy.token = this.token;
@@ -84,12 +100,20 @@ export class AbilityContext<S = any> {
         return copy;
     }
 
-    createCopy(newProps: Partial<AbilityContextProperties>): AbilityContext<this> {
-        return new AbilityContext(Object.assign(this.getProps(), newProps));
+    createCopy(newProps: Partial<AbilityContextProperties>): AbilityContext<this, T> {
+        return new AbilityContext<this, T>(Object.assign(this.getProps(), newProps));
     }
 
     refillProvince(player: Player, location: Locations): void {
         this.provincesToRefill.push({ player, location });
+    }
+
+    getCards<U extends BaseCard = BaseCard>(name: string = 'target'): U[] {
+        const slot = this.targets[name];
+        if(!slot) {
+            return [];
+        }
+        return (Array.isArray(slot) ? slot : [slot]) as U[];
     }
 
     refill(): void {
@@ -109,7 +133,7 @@ export class AbilityContext<S = any> {
     getProps(): AbilityContextProperties {
         return {
             game: this.game,
-            source: this.source,
+            source: this.source as BaseCard | Ring | EffectSource,
             player: this.player,
             ability: this.ability,
             costs: Object.assign({}, this.costs),

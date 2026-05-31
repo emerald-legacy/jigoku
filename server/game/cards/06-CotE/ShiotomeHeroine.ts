@@ -1,7 +1,8 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Stages } from '../../Constants.js';
+import { EventNames, Stages } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class ShiotomeHeroine extends DrawCard {
     static id = 'shiotome-heroine';
 
@@ -9,9 +10,9 @@ class ShiotomeHeroine extends DrawCard {
         this.reaction({
             title: 'Ready this character',
             when: {
-                onModifyHonor: (event, context) =>
-                    event.amount > 0 && context.player.opponent &&
-                    event.player === context.player.opponent && event.context.stage === Stages.Effect
+                onModifyHonor: (event: EventPayload<EventNames.OnModifyHonor>, context: any) =>
+                    (event.amount ?? 0) > 0 && context.player.opponent &&
+                    event.player === context.player.opponent && event.context?.stage === Stages.Effect
             },
             gameAction: AbilityDsl.actions.ready()
         });

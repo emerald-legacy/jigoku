@@ -1,14 +1,14 @@
 import { CardTypes, CharacterStatus, Players, TargetModes } from '../../../Constants.js';
 import type { StatusToken } from '../../../StatusToken.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
 const TOKEN = 'token';
 const RECIPIENT = 'recipient';
 
 function doesCardDraw(context: AbilityContext) {
-    return context.targets[RECIPIENT].controller !== context.source.controller;
+    return (context.targets[RECIPIENT] as DrawCard).controller !== context.source.controller;
 }
 
 export default class WhiteLotusMethod extends DrawCard {

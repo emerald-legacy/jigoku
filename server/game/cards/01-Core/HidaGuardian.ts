@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class HidaGuardian extends DrawCard {
     static id = 'hida-guardian';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Give a character a bonus for each holding',
             condition: context => context.source.isParticipating(),

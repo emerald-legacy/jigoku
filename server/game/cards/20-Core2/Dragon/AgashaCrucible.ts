@@ -1,6 +1,6 @@
 import { CardTypes, Durations, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 const options = Object.fromEntries(
     ['Air', 'Earth', 'Fire', 'Void', 'Water'].map((option) => [

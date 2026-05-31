@@ -1,8 +1,10 @@
-import { CardTypes, Durations, Players } from '../../../Constants.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { CardTypes, Durations, EventNames, Players } from '../../../Constants.js';
 import { Direction } from '../../../GameActions/ModifyBidAction.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class KakitaTechnique extends DrawCard {
     static id = 'kakita-technique';
 
@@ -28,7 +30,7 @@ export default class KakitaTechnique extends DrawCard {
                     AbilityDsl.actions.cardLastingEffect((context) => ({
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
-                                onCardPlayed: (event, context) =>
+                                onCardPlayed: (event: EventPayload<EventNames.OnCardPlayed>, context: AbilityContext) =>
                                     event.player === context.player && event.card.type === CardTypes.Event
                             },
                             message: '{0} gets +1{1} and +1{2} due to the delayed effect of {3}',
@@ -66,9 +68,13 @@ export default class KakitaTechnique extends DrawCard {
         });
     }
 
-    #getExtraActionCount(context) {
+    #getExtraActionCount(context: AbilityContext) {
+        const conflict = context.game.currentConflict;
+        if(!conflict) {
+            return 0;
+        }
         return context.player.isAttackingPlayer()
-            ? context.game.currentConflict.defenders.length
-            : context.game.currentConflict.attackers.length;
+            ? conflict.defenders.length
+            : conflict.attackers.length;
     }
 }

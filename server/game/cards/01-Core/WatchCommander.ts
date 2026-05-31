@@ -1,9 +1,10 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class WatchCommander extends DrawCard {
     static id = 'watch-commander';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.attachmentConditions({
             limit: 1,
             myControl: true

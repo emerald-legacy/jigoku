@@ -2,7 +2,7 @@ import { CardTypes, Decks, PlayTypes } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandAtHome } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class UtakuTakeko extends DrawCard {
     static id = 'utaku-takeko';
@@ -20,7 +20,7 @@ export default class UtakuTakeko extends DrawCard {
                     card.isFaction('unicorn') &&
                     !card.isUnique(),
                 gameAction: AbilityDsl.actions.playCard((context) => {
-                    const target = context.targets[0];
+                    const target = context.deckSearchSelected[0];
                     return {
                         target,
                         source: this,

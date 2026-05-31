@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class IronCraneLegion extends DrawCard {
@@ -7,7 +7,7 @@ class IronCraneLegion extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.game.isDuringConflict(),
-            effect: AbilityDsl.effects.calculatePrintedMilitarySkill(card => card.controller.opponent && card.controller.opponent.hand.length)
+            effect: AbilityDsl.effects.calculatePrintedMilitarySkill((card: any) => card.controller.opponent && card.controller.opponent.hand.length)
         });
     }
 }

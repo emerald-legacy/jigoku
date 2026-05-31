@@ -1,17 +1,18 @@
-import DrawCard from '../../drawcard.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes, CharacterStatus } from '../../Constants.js';
 
 class BayushiCollector extends DrawCard {
     static id = 'bayushi-collector';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Discard an attachment and a status token',
             target: {
                 cardType: CardTypes.Attachment,
-                cardCondition: card => card.parent && card.parent.type === CardTypes.Character && card.parent.isDishonored,
+                cardCondition: (card: any) => card.parent && card.parent.type === CardTypes.Character && card.parent.isDishonored,
                 gameAction: [ability.actions.discardFromPlay(),
-                    ability.actions.discardStatusToken(context => ({
+                    ability.actions.discardStatusToken((context: any) => ({
                         target: context.target.parent.getStatusToken(CharacterStatus.Dishonored)
                     }))
                 ]

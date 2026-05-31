@@ -1,25 +1,29 @@
 import * as AbilityLimit from '../AbilityLimit.js';
+import type { Conflict } from '../Conflict.js';
 import { AbilityTypes } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
-import type DrawCard from '../drawcard.js';
-import type Game from '../game.js';
-import TriggeredAbility from '../triggeredability.js';
+import type DrawCard from '../DrawCard.js';
+import TriggeredAbility from '../TriggeredAbility.js';
 
+import type { Event } from '../Events/Event.js';
 export default class PrideAbility extends TriggeredAbility {
-    constructor(game: Game, card: DrawCard) {
-        super(game, card, AbilityTypes.KeywordReaction, {
+    constructor(card: DrawCard) {
+        super(card, AbilityTypes.KeywordReaction, {
             when: {
-                afterConflict: (event: any, context: TriggeredAbilityContext) => context.source.isParticipating() && context.source.hasPride() &&
-                                                   ((event.conflict.winner === context.player && context.source.allowGameAction('honor', context)) ||
-                                                   (event.conflict.loser === context.player && context.source.allowGameAction('dishonor', context)))
+                afterConflict: (event: Event, context: TriggeredAbilityContext) => {
+                    const conflict = event.conflict as Conflict;
+                    return context.source.isParticipating() && context.source.hasPride() &&
+                        ((conflict.winner === context.player && context.source.allowGameAction('honor', context)) ||
+                         (conflict.loser === context.player && context.source.allowGameAction('dishonor', context)));
+                }
             },
             title: card.name + '\'s Pride',
             printedAbility: false,
             message: '{0} is {1}honored due to their Pride',
-            messageArgs: (context: TriggeredAbilityContext) => [context.source, context.event.conflict.winner === context.player ? '' : 'dis'],
+            messageArgs: (context: TriggeredAbilityContext) => [context.source, (context.event.conflict as Conflict).winner === context.player ? '' : 'dis'],
             limit: AbilityLimit.perConflict(1),
             handler: (context: TriggeredAbilityContext) => {
-                if(context.event.conflict.winner === context.player) {
+                if((context.event.conflict as Conflict).winner === context.player) {
                     this.game.applyGameAction(context, { honor: context.source });
                 } else {
                     this.game.applyGameAction(context, { dishonor: context.source });

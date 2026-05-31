@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Decks, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -6,7 +6,6 @@ class FavorableDealbroker extends DrawCard {
     static id = 'favorable-dealbroker';
 
     setupCardAbilities() {
-        this.chosenCard = null;
         this.reaction({
             title: 'Put a character into play',
             when: {

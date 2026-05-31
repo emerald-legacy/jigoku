@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Durations, TargetModes, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class TogashiYokuni extends DrawCard {
     static id = 'togashi-yokuni';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Copy another character\'s ability',
             target: {
@@ -19,7 +20,7 @@ class TogashiYokuni extends DrawCard {
                 }))
             },
             effect: 'copy {1}\'s \'{2}\' ability',
-            effectArgs: context => [context.targetAbility.card, context.targetAbility.title],
+            effectArgs: context => [context.targetAbility?.card ?? '', context.targetAbility?.title ?? ''],
             max: ability.limit.perRound(1)
         });
     }

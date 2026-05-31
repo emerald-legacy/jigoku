@@ -1,6 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../BaseCard.js';
 import { CardTypes, FavorTypes, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class BeguilingMaiko extends DrawCard {
@@ -23,7 +24,7 @@ export default class BeguilingMaiko extends DrawCard {
                 if(favor === FavorTypes.Military || favor === FavorTypes.Both) {
                     gameActions.push(
                         AbilityDsl.actions.lookAt((context) => ({
-                            target: context.player.opponent.hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
+                            target: context.player.opponent.hand.slice().sort((a: BaseCard, b: BaseCard) => a.name.localeCompare(b.name)),
                             chatMessage: true
                         }))
                     );
@@ -32,7 +33,7 @@ export default class BeguilingMaiko extends DrawCard {
                     gameActions.push(
                         AbilityDsl.actions.selectCard({
                             effect: 'force {0} to dishonor one of their characters',
-                            effectArgs: (context) => [context.player.opponent],
+                            effectArgs: (context) => [context.player.opponent ?? ''],
                             cardType: CardTypes.Character,
                             player: Players.Opponent,
                             controller: Players.Opponent,

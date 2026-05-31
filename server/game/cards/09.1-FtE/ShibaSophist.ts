@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,7 +12,7 @@ class ShibaSophist extends DrawCard {
             effect: 'look at the top five cards of their deck',
             gameAction: AbilityDsl.actions.deckSearch({
                 amount: 5,
-                cardCondition: card => this.game.currentConflict.elements.some(element => card.hasTrait(element)),
+                cardCondition: card => this.game.currentConflict?.elements.some(element => card.hasTrait(element)) ?? false,
                 gameAction: AbilityDsl.actions.moveCard({
                     destination: Locations.Hand
                 })

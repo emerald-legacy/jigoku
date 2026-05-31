@@ -8,7 +8,7 @@ export default class DemonstratingExcellence extends ProvinceCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Locations.Provinces,
-            condition: (context) => context.player.role && context.player.role.hasTrait('air'),
+            condition: (context) => !!context.player.role && context.player.role.hasTrait('air'),
             effect: AbilityDsl.effects.modifyProvinceStrength(2)
         });
 

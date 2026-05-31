@@ -1,4 +1,4 @@
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 const ayubunePilotCaptureParentCost = function() {
@@ -7,7 +7,7 @@ const ayubunePilotCaptureParentCost = function() {
         canPay: function() {
             return true;
         },
-        resolve: function(context) {
+        resolve: function(context: any) {
             context.costs.ayubunePilotCaptureParentCost = context.source.parent;
         },
         pay: function() {
@@ -30,7 +30,7 @@ class AyubunePilot extends DrawCard {
                 ayubunePilotCaptureParentCost(),
                 AbilityDsl.costs.sacrificeSelf()
             ],
-            condition: context => context.source.parent && !context.source.parent.bowed,
+            condition: context => !!(context.source.parent && !context.source.parent.bowed),
             gameAction: AbilityDsl.actions.moveToConflict(context => ({ target: [context.source.parent, context.costs.ayubunePilotCaptureParentCost] }))
         });
     }

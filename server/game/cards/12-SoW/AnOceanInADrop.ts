@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, TargetModes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { shuffle } from '../../utils/shuffle.js';
@@ -9,7 +9,7 @@ class AnOceanInADrop extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Place hand on bottom of deck and draw cards',
-            condition: context => context.source.parent && context.source.parent.isParticipating(),
+            condition: context => !!(context.source.parent && context.source.parent.isParticipating()),
             cost: AbilityDsl.costs.sacrificeSelf(),
             target: {
                 mode: TargetModes.Select,
@@ -22,11 +22,11 @@ class AnOceanInADrop extends DrawCard {
             effect: 'place {1}\'s hand on the bottom of their deck and have them draw {2} cards',
             effectArgs: (context) => (context.select === this.owner.name || !this.owner.opponent) ?
                 [this.owner.name, context.player.hand.length] :
-                [this.owner.opponent.name, context.player.opponent.hand.length]
+                [this.owner.opponent.name, context.player.opponent?.hand.length ?? 0]
         });
     }
 
-    getGameActions(player) {
+    getGameActions(player: any) {
         if(!player) {
             return [];
         }

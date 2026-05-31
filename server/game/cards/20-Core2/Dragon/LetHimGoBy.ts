@@ -1,6 +1,7 @@
 import { DuelTypes } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class LetHimGoBy extends DrawCard {
     static id = 'let-him-go-by';
@@ -17,7 +18,7 @@ export default class LetHimGoBy extends DrawCard {
                     event.card.isParticipating()
             },
             gameAction: AbilityDsl.actions.bow((context) => ({
-                target: (context as any).event.card
+                target: (context as TriggeredAbilityContext).event.card
             }))
         });
 
@@ -30,13 +31,13 @@ export default class LetHimGoBy extends DrawCard {
                     AbilityDsl.actions.cardLastingEffect({
                         target: duel.winner,
                         effect: AbilityDsl.effects.modifyMilitarySkill(
-                            duel.loser.reduce((total, card) => total + card.getMilitarySkill(), 0)
+                            (duel.loser ?? []).reduce((total: number, card: any) => total + card.getMilitarySkill(), 0)
                         )
                     }),
                 message: '{0} gets +{1}{2} skill',
                 messageArgs: (duel) => [
                     duel.winner,
-                    duel.loser.reduce((total, card) => total + card.getMilitarySkill(), 0),
+                    (duel.loser ?? []).reduce((total: number, card: any) => total + card.getMilitarySkill(), 0),
                     'military'
                 ]
             },

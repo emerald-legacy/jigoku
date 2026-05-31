@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, TargetModes, CardTypes } from '../../Constants.js';
 
@@ -8,7 +8,7 @@ class CourtGames extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Honor or dishonor a character',
-            condition: () => this.game.currentConflict && this.game.currentConflict.conflictType === 'political',
+            condition: () => this.game.currentConflict?.conflictType === 'political',
             max: AbilityDsl.limit.perConflict(1),
             target: {
                 mode: TargetModes.Select,

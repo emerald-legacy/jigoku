@@ -1,4 +1,5 @@
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
+import type BaseCard from '../../../BaseCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { Locations } from '../../../Constants.js';
 
@@ -14,7 +15,7 @@ class MatsuSakura extends DrawCard {
                         event.card.location === Locations.StrongholdProvince)
             },
             effect: 'cancel the effects of {1}\'s ability',
-            effectArgs: context => context.event.card,
+            effectArgs: context => context.event.card as BaseCard,
             gameAction: AbilityDsl.actions.cancel()
         });
     }

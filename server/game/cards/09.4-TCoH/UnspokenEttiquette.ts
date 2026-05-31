@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class UnspokenEtiquette extends DrawCard {
@@ -10,7 +10,7 @@ class UnspokenEtiquette extends DrawCard {
             effect: 'dishonor each participating non-courtier.',
             condition: context => context.game.isDuringConflict('political'),
             gameAction: AbilityDsl.actions.dishonor(context => ({
-                target: context.game.currentConflict.getParticipants(card => !card.hasTrait('courtier'))
+                target: context.game.currentConflict?.getParticipants((card: any) => !card.hasTrait('courtier')) ?? []
             }))
         });
     }

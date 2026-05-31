@@ -1,6 +1,6 @@
 import { Durations, Locations, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class KitsuSpiritcaller2 extends DrawCard {
     static id = 'kitsu-spiritcaller-2';
@@ -19,14 +19,14 @@ export default class KitsuSpiritcaller2 extends DrawCard {
             effect: 'call {0} back from the dead until the end of the conflict',
             then: (context) => ({
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    target: context.target,
+                    target: context?.target,
                     duration: Durations.UntilEndOfPhase,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
                             onConflictFinished: () => true
                         },
                         message: '{0} returns to the bottom of the deck due to {1}\'s effect',
-                        messageArgs: [context.target, context.source],
+                        messageArgs: [context?.target, context?.source],
                         gameAction: AbilityDsl.actions.returnToDeck({ bottom: true })
                     })
                 })

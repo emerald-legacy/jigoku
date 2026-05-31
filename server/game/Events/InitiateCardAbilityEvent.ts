@@ -10,11 +10,12 @@ class InitiateCardAbilityEvent extends Event {
 
     constructor(params: any, handler?: (event: any) => void) {
         super(EventNames.OnInitiateAbilityEffects, params, handler);
-        if(!this.context.ability.doesNotTarget) {
-            this.cardTargets = Object.values(this.context.targets).flat();
-            this.ringTargets = Object.values(this.context.rings).flat();
-            this.selectTargets = Object.values(this.context.selects).flat();
-            this.tokenTargets = Object.values(this.context.tokens).flat();
+        const ctx = this.context;
+        if(ctx && !(ctx.ability as { doesNotTarget?: boolean })?.doesNotTarget) {
+            this.cardTargets = Object.values(ctx.targets).flat();
+            this.ringTargets = Object.values(ctx.rings).flat();
+            this.selectTargets = Object.values(ctx.selects).flat();
+            this.tokenTargets = Object.values(ctx.tokens).flat();
         } else {
             this.cardTargets = [];
             this.ringTargets = [];

@@ -1,6 +1,6 @@
 import { CardTypes, Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class SoshiYuka extends DrawCard {
     static id = 'soshi-yuka';
@@ -18,7 +18,7 @@ export default class SoshiYuka extends DrawCard {
             },
             gameAction: AbilityDsl.actions.selectCard({
                 cardType: CardTypes.Character,
-                cardCondition: (card, context) => context.target.includes(card),
+                cardCondition: (card, context) => (context.targets.target as DrawCard[]).includes(card),
                 gameAction: AbilityDsl.actions.bow(),
                 message: '{0} is bowed, as they are dragged into a web of intrigue',
                 messageArgs: (card, _player) => [card]

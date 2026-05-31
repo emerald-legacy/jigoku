@@ -4,7 +4,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
 function cardDifference(context: AbilityContext): number {
-    return Math.max(0, Math.min(5, context.player.opponent.hand.length - context.player.hand.length));
+    return Math.max(0, Math.min(5, (context.player.opponent?.hand.length ?? 0) - context.player.hand.length));
 }
 
 export default class GladeOfContemplation extends ProvinceCard {

@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
 export enum Direction {
@@ -26,7 +26,7 @@ export class ModifyBidAction extends PlayerAction {
         super(propertyFactory);
     }
 
-    defaultTargets(context) {
+    defaultTargets(context: AbilityContext) {
         return [context.player];
     }
 
@@ -61,7 +61,7 @@ export class ModifyBidAction extends PlayerAction {
                 context.game.promptWithHandlerMenu(player, {
                     context: context,
                     choices: ['Increase honor bid', 'Decrease honor bid'],
-                    choiceHandler: (choice) => {
+                    choiceHandler: (choice: string) => {
                         const event = this.getEvent(player, context, additionalProperties) as any;
                         if(choice === 'Increase honor bid') {
                             context.game.addMessage('{0} chooses to increase their honor bid', player);
@@ -77,14 +77,14 @@ export class ModifyBidAction extends PlayerAction {
         }
     }
 
-    addPropertiesToEvent(event, player: Player, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, direction } = this.getProperties(context, additionalProperties) as ModifyBidProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.direction = direction;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         if(event.direction === Direction.Increase) {
             event.player.honorBidModifier += event.amount;
         } else {

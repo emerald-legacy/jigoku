@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -8,7 +8,7 @@ class WayOfTheOpenHand extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Send home opponent\'s character',
-            condition: context => context.game.isDuringConflict() && !context.game.currentConflict.getConflictProvinces().some(a => a.location === Locations.StrongholdProvince),
+            condition: context => context.game.isDuringConflict() && !(context.game.currentConflict?.getConflictProvinces() ?? []).some((a: any) => a.location === Locations.StrongholdProvince),
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.controller !== context.player,

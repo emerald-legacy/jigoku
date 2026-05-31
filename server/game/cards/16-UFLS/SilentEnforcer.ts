@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, TargetModes, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -20,7 +20,7 @@ class SilentEnforcer extends DrawCard {
                 select: {
                     mode: TargetModes.Select,
                     dependsOn: 'character',
-                    player: context => context.targets.character.controller === context.player ? Players.Self : Players.Opponent,
+                    player: context => (context.targets.character as DrawCard).controller === context.player ? Players.Self : Players.Opponent,
                     choices: {
                         'Move this character home': AbilityDsl.actions.sendHome(context => ({ target: context.targets.character })),
                         'Bow this character': AbilityDsl.actions.bow(context => ({ target: context.targets.character }))

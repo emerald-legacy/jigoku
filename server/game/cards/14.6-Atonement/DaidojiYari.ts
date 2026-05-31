@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, CardTypes, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -7,7 +7,7 @@ class DaidojiYari extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.player.opponent && context.player.showBid < context.player.opponent.showBid,
+            condition: context => !!(context.player.opponent && context.player.showBid < context.player.opponent.showBid),
             targetController: Players.Opponent,
             targetLocation: Locations.PlayArea,
             match: card => card.type === CardTypes.Character,

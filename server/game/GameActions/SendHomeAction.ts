@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseCard from '../basecard.js';
+import type DrawCard from '../DrawCard.js';
 import { CardTypes, EffectNames, EventNames } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
@@ -12,7 +12,7 @@ export class SendHomeAction extends CardGameAction {
     effect = 'send {0} home';
     targetType = [CardTypes.Character];
 
-    canAffect(card: BaseCard, context: AbilityContext): boolean {
+    canAffect(card: DrawCard, context: AbilityContext): boolean {
         return (
             super.canAffect(card, context) &&
             card.isParticipating() &&
@@ -20,7 +20,7 @@ export class SendHomeAction extends CardGameAction {
         );
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.context.game.currentConflict.removeFromConflict(event.card);
     }
 }

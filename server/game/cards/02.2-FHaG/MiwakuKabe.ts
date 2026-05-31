@@ -1,9 +1,10 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class MiwakuKabe extends DrawCard {
     static id = 'miwaku-kabe';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.interrupt({
             title: 'Shuffle this into deck',
             when: {

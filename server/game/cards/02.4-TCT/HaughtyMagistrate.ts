@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HaughtyMagistrate extends DrawCard {
@@ -7,8 +7,8 @@ class HaughtyMagistrate extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isAttacking(),
-            effect: AbilityDsl.effects.cannotContribute((conflict, context) => {
-                return card => card.getGlory() < context.source.getGlory() && card !== context.source;
+            effect: AbilityDsl.effects.cannotContribute((conflict: any, context: any) => {
+                return (card: DrawCard) => card.getGlory() < context.source.getGlory() && card !== context.source;
             })
         });
     }

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -8,7 +8,7 @@ class JewelOfTheKhamasin extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Reduce province strength',
-            condition: context => context.source.parent && context.source.parent.isAttacking(),
+            condition: context => !!(context.source.parent && context.source.parent.isAttacking()),
             cost: AbilityDsl.costs.payHonor(1),
             limit: AbilityDsl.limit.unlimitedPerConflict(),
             gameAction: AbilityDsl.actions.selectCard(context => ({

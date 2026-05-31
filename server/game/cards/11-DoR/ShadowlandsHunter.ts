@@ -1,12 +1,13 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class ShadowlandsHunter extends DrawCard {
     static id = 'shadowlands-hunter';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isAttacking() && this.game.currentConflict.winner === context.player,
-            effect: ability.effects.forceConflictUnopposed()
+            condition: context => context.source.isAttacking() && this.game.currentConflict?.winner === context.player,
+            effect: AbilityDsl.effects.forceConflictUnopposed()
         });
     }
 }

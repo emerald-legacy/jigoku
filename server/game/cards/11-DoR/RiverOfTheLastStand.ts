@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes } from '../../Constants.js';
 
@@ -9,9 +9,9 @@ class RiverOfTheLastStand extends DrawCard {
         this.action({
             title: 'Make opponent discard two cards and draw a card',
             condition: context => {
-                if(context.player.isDefendingPlayer()) {
-                    let cards = context.game.currentConflict.getConflictProvinces().map(a => context.player.getDynastyCardsInProvince(a.location));
-                    return cards.some(c => c.some(card => card.isFaceup() && card.type === CardTypes.Holding && card.hasTrait('kaiu-wall')));
+                if(context.player.isDefendingPlayer() && context.game.currentConflict) {
+                    let cards = context.game.currentConflict.getConflictProvinces().map((a: any) => context.player.getDynastyCardsInProvince(a.location));
+                    return cards.some((c: any) => c.some((card: any) => card.isFaceup() && card.type === CardTypes.Holding && card.hasTrait('kaiu-wall')));
                 }
                 return false;
             },

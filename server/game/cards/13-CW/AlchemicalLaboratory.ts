@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, CardTypes, Elements } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,7 +12,7 @@ class AlchemicalLaboratory extends DrawCard {
             condition: context => (
                 this.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player)
             ),
-            match: (card, context) => card.getType() === CardTypes.Attachment && card.parent && card.parent.controller !== context.player,
+            match: (card, context) => card.getType() === CardTypes.Attachment && card.parent !== null && card.parent !== undefined && card.parent.controller !== context?.player,
             effect: AbilityDsl.effects.addKeyword('ancestral'),
             targetController: Players.Self
         });

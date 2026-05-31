@@ -1,6 +1,8 @@
 import { CardTypes, ConflictTypes, Durations, Players, TargetModes } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
+import type { LastingEffectProperties } from '../../../GameActions/LastingEffectAction.js';
 
 export default class ShosuroTechnique extends DrawCard {
     static id = 'shosuro-technique';
@@ -10,10 +12,10 @@ export default class ShosuroTechnique extends DrawCard {
             title: 'Apply status tokens to the duel',
             duelCondition: (duel, context) => duel.challengingPlayer && duel.challengingPlayer.opponent === context.player,
             gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
-                target: (context as any).event.duel,
+                target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.duelIgnorePrintedSkill(),
                 duration: Durations.UntilEndOfDuel
-            })),
+            } as LastingEffectProperties)),
             effect: 'ignore printed skill when resolving this duel'
         });
 
@@ -46,7 +48,11 @@ export default class ShosuroTechnique extends DrawCard {
                 }))
             ]),
             effect: 'set the {3} of {1} to {4}{3} (equal to {2}). There\'s no blade as keen as surprise.',
-            effectArgs: (context) => [context.targets.shinobi.name, context.targets.enemy.name, 'military', context.targets.enemy.militarySkill]
+            effectArgs: (context) => {
+                const shinobi = context.targets.shinobi as DrawCard;
+                const enemy = context.targets.enemy as DrawCard;
+                return [shinobi.name, enemy.name, 'military', enemy.militarySkill];
+            }
         });
     }
 }

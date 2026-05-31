@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { TargetModes, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -17,14 +17,14 @@ class SlovenlyScavenger extends DrawCard {
                 targets: true,
                 activePromptTitle: 'Choose which discard pile to shuffle:',
                 choices: {
-                    [this.getChoiceName('MyDynasty')]: context => context.player.dynastyDiscardPile.length > 0,
-                    [this.getChoiceName('MyConflict')]: context => context.player.conflictDiscardPile.length > 0,
-                    [this.getChoiceName('OppDynasty')]: context => context.player.opponent && context.player.opponent.dynastyDiscardPile.length > 0,
-                    [this.getChoiceName('OppConflict')]: context => context.player.opponent && context.player.opponent.conflictDiscardPile.length > 0
+                    [this.getChoiceName('MyDynasty')]: (context: any) => context.player.dynastyDiscardPile.length > 0,
+                    [this.getChoiceName('MyConflict')]: (context: any) => context.player.conflictDiscardPile.length > 0,
+                    [this.getChoiceName('OppDynasty')]: (context: any) => !!(context.player.opponent && context.player.opponent.dynastyDiscardPile.length > 0),
+                    [this.getChoiceName('OppConflict')]: (context: any) => !!(context.player.opponent && context.player.opponent.conflictDiscardPile.length > 0)
                 }
             },
             effect: 'shuffle {1} into their deck',
-            effectArgs: context => this.getEffectArg(context.select),
+            effectArgs: context => this.getEffectArg(context ? context.select : ''),
             handler: context => {
                 if(context.select === this.getChoiceName('MyDynasty')) {
                     this.owner.dynastyDiscardPile.forEach(card => {
@@ -38,23 +38,24 @@ class SlovenlyScavenger extends DrawCard {
                     });
                     this.owner.shuffleConflictDeck();
                 }
-                if(this.owner.opponent && context.select === this.getChoiceName('OppDynasty')) {
-                    this.owner.opponent.dynastyDiscardPile.forEach(card => {
-                        this.owner.opponent.moveCard(card, Locations.DynastyDeck);
+                const opponent = this.owner.opponent;
+                if(opponent && context.select === this.getChoiceName('OppDynasty')) {
+                    opponent.dynastyDiscardPile.forEach(card => {
+                        opponent.moveCard(card, Locations.DynastyDeck);
                     });
-                    this.owner.opponent.shuffleDynastyDeck();
+                    opponent.shuffleDynastyDeck();
                 }
-                if(this.owner.opponent && context.select === this.getChoiceName('OppConflict')) {
-                    this.owner.opponent.conflictDiscardPile.forEach(card => {
-                        this.owner.opponent.moveCard(card, Locations.ConflictDeck);
+                if(opponent && context.select === this.getChoiceName('OppConflict')) {
+                    opponent.conflictDiscardPile.forEach(card => {
+                        opponent.moveCard(card, Locations.ConflictDeck);
                     });
-                    this.owner.opponent.shuffleConflictDeck();
+                    opponent.shuffleConflictDeck();
                 }
             }
         });
     }
 
-    getEffectArg(selection) {
+    getEffectArg(selection: string) {
         if(selection === this.getChoiceName('MyDynasty')) {
             return this.owner.name + '\'s dynasty discard pile';
         }
@@ -71,7 +72,7 @@ class SlovenlyScavenger extends DrawCard {
     }
 
 
-    getChoiceName(key) {
+    getChoiceName(key: string) {
         if(key === 'MyDynasty') {
             return `${this.owner.name}'s Dynasty`;
         }

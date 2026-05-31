@@ -1,6 +1,8 @@
 import { DuelTypes, Durations, FavorTypes } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
+import type { LastingEffectProperties } from '../../../GameActions/LastingEffectAction.js';
 
 export default class SeppunRyo extends DrawCard {
     static id = 'seppun-ryo';
@@ -11,10 +13,10 @@ export default class SeppunRyo extends DrawCard {
             duelCondition: (duel, context) =>
                 context.player.imperialFavor !== '' && duel.participants.includes(context.source),
             gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
-                target: (context as any).event.duel,
+                target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.modifyDuelSkill({ amount: 1, player: context.player }),
                 duration: Durations.UntilEndOfDuel
-            })),
+            } as LastingEffectProperties)),
             effect: 'add 1 to their duel total'
         });
 

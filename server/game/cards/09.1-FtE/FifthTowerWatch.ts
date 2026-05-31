@@ -1,7 +1,8 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardTypes, Locations } from '../../Constants.js';
+import { CardTypes, EventNames, Locations, Players } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class FifthTowerWatch extends DrawCard {
     static id = 'fifth-tower-watch';
 
@@ -9,7 +10,7 @@ class FifthTowerWatch extends DrawCard {
         this.interrupt({
             title: 'Bow a character',
             when: {
-                onCardLeavesPlay: (event, context) => event.isSacrifice && event.card.controller === context.player && event.card.location === Locations.PlayArea
+                onCardLeavesPlay: (event: EventPayload<EventNames.OnCardLeavesPlay>, context) => event.isSacrifice && event.card.controller === context.player && event.card.location === Locations.PlayArea
             },
             target: {
                 player: Players.Opponent,

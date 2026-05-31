@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class DutifulAssistant extends DrawCard {
@@ -6,7 +6,7 @@ class DutifulAssistant extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            condition: context => context.source.parent && context.source.parent.isHonored,
+            condition: context => !!(context.source.parent && context.source.parent.isHonored),
             effect: AbilityDsl.effects.modifyGlory(2)
         });
     }

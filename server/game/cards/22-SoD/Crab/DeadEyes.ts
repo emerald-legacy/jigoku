@@ -1,7 +1,8 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import { ConflictTypes } from '../../../Constants.js';
+import DrawCard from '../../../DrawCard.js';
+import { ConflictTypes, EventNames } from '../../../Constants.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class DeadEyes extends DrawCard {
     static id = 'dead-eyes';
 
@@ -15,7 +16,7 @@ export default class DeadEyes extends DrawCard {
 
         this.action({
             title: 'Increase a character\'s military skill',
-            condition: context => context.game.isDuringConflict(ConflictTypes.Military) && context.source.parent,
+            condition: context => !!(context.game.isDuringConflict(ConflictTypes.Military) && context.source.parent),
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                 target: context.source.parent,
                 effect: [
@@ -27,7 +28,7 @@ export default class DeadEyes extends DrawCard {
                     }),
                     AbilityDsl.effects.delayedEffect({
                         when: {
-                            afterConflict: event => {
+                            afterConflict: (event: EventPayload<EventNames.AfterConflict>) => {
                                 if(!context.source.parent) {
                                     return false;
                                 }
@@ -47,7 +48,7 @@ export default class DeadEyes extends DrawCard {
                 ]
             })),
             effect: 'grant +2{2} to {1}, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill',
-            effectArgs: context => [context.source.parent, 'military']
+            effectArgs: context => [context.source.parent ?? '', 'military']
         });
     }
 }

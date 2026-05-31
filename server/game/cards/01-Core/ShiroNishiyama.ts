@@ -12,7 +12,7 @@ export default class ShiroNishiyama extends StrongholdCard {
             effect: 'add +1{1}/+1{2} to all defenders they control',
             effectArgs: () => ['military', 'political'],
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.player.cardsInPlay.filter((card) => card.isDefending()),
+                target: context.player.cardsInPlay.filter((card: any) => card.isDefending()),
                 effect: AbilityDsl.effects.modifyBothSkills(1)
             }))
         });

@@ -1,8 +1,8 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import type { Conflict } from '../../../conflict.js';
+import DrawCard from '../../../DrawCard.js';
+import type { Conflict } from '../../../Conflict.js';
 
 function shinobiCount(context: AbilityContext): number {
     return (
@@ -16,7 +16,7 @@ export default class SpiderwebPassage extends DrawCard {
     static id = 'spiderweb-passage';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Discard a participating character with 0 skill',
             condition: (context) => shinobiCount(context) > 0,
             cost: AbilityDsl.costs.sacrificeSelf(),
@@ -59,7 +59,7 @@ export default class SpiderwebPassage extends DrawCard {
                 };
             }),
             effect: 'ambush {1}',
-            effectArgs: (context) => context.target
+            effectArgs: (context) => context.target ?? ''
         });
     }
 }

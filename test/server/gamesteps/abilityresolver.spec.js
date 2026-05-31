@@ -28,7 +28,7 @@ describe('AbilityResolver', function() {
         this.costEvent.getResolutionEvent.and.returnValue({ cancelled: false });
         this.player = { player: 1 };
         this.game.getPlayers.and.returnValue([this.player]);
-        this.context = { foo: 'bar', player: this.player, source: this.source, ability: this.ability, targets: {}, selects: {}, rings: {} };
+        this.context = { foo: 'bar', player: this.player, source: this.source, ability: this.ability, targets: {}, selects: {}, rings: {}, tokens: {} };
         this.resolver = new AbilityResolver(this.game, this.context);
     });
 
@@ -66,7 +66,7 @@ describe('AbilityResolver', function() {
                 this.resolver.continue();
             });
 
-            xit('should raise the InitiateAbility event', function() {
+            it('should raise the InitiateAbility event', function() {
                 expect(this.game.openThenEventWindow).toHaveBeenCalledWith(jasmine.any(Object));
             });
         });

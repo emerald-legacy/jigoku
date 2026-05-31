@@ -1,7 +1,7 @@
 import ForcedTriggeredAbilityWindow from './forcedtriggeredabilitywindow.js';
 import { TriggeredAbilityWindowTitle } from './TriggeredAbilityWindowTitle.js';
 import { CardTypes, EventNames, AbilityTypes } from '../Constants.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 
 class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
     complete: boolean;
@@ -23,7 +23,7 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
         // Show a bluff prompt if we're in Step 6, the player has the approriate setting, and there's an event for the other player
         return this.abilityType === AbilityTypes.WouldInterrupt && player.timerSettings.events && this.events.some(event => (
             event.name === EventNames.OnInitiateAbilityEffects &&
-            (event as any).card.type === CardTypes.Event && event.context.player !== player
+            (event as any).card.type === CardTypes.Event && event.context && event.context.player !== player
         ));
     }
 

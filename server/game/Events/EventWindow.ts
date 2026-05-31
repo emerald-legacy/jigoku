@@ -1,10 +1,11 @@
+import type { AbilityContext } from '../AbilityContext.js';
 import { BaseStepWithPipeline } from '../gamesteps/BaseStepWithPipeline.js';
 import ForcedTriggeredAbilityWindow from '../gamesteps/forcedtriggeredabilitywindow.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import TriggeredAbilityWindow from '../gamesteps/triggeredabilitywindow.js';
 import { AbilityTypes } from '../Constants.js';
 import KeywordAbilityWindow from '../gamesteps/keywordabilitywindow.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 import type { Event } from './Event.js';
 
 export default class EventWindow extends BaseStepWithPipeline {
@@ -59,7 +60,7 @@ export default class EventWindow extends BaseStepWithPipeline {
         return event;
     }
 
-    addThenAbility(ability: any, context: any, condition: (event: Event) => boolean = event => event.isFullyResolved()) {
+    addThenAbility(ability: any, context: AbilityContext, condition: (event: Event) => boolean = event => event.isFullyResolved()) {
         this.thenAbilities.push({ ability, context, condition });
     }
 
@@ -134,7 +135,7 @@ export default class EventWindow extends BaseStepWithPipeline {
 
     checkThenAbilities() {
         for(const thenAbility of this.thenAbilities) {
-            if(thenAbility.context.events.every(event => thenAbility.condition(event))) {
+            if(thenAbility.context.events.every((event: any) => thenAbility.condition(event))) {
                 this.game.resolveAbility(thenAbility.ability.createContext(thenAbility.context.player));
             }
         }

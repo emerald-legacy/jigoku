@@ -1,7 +1,9 @@
-import { Durations } from '../../Constants.js';
+import { Durations, EventNames } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type Player from '../../Player.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class ShiroKitsuki extends StrongholdCard {
     static id = 'shiro-kitsuki';
 
@@ -18,7 +20,7 @@ export default class ShiroKitsuki extends StrongholdCard {
                 duration: Durations.UntilEndOfConflict,
                 effect: AbilityDsl.effects.delayedEffect({
                     when: {
-                        onCardPlayed: (event, context) =>
+                        onCardPlayed: (event: EventPayload<EventNames.OnCardPlayed>, context: any) =>
                             event.player === context.player.opponent &&
                             event.card.name === playerLastingEffectContext.costs.nameCardCost
                     },
@@ -33,7 +35,7 @@ export default class ShiroKitsuki extends StrongholdCard {
                 })
             })),
             effect: 'claim a ring whenever {1} plays a card named {2}',
-            effectArgs: (context) => [context.player.opponent, context.costs.nameCardCost]
+            effectArgs: (context) => [context.player.opponent as Player, context.costs.nameCardCost as string]
         });
     }
 }

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, CardTypes, Durations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -6,7 +6,7 @@ class SeizeTheMind extends DrawCard {
     static id = 'seize-the-mind';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Take control of a character',
             condition: () => this.game.isDuringConflict(),
             target: {
@@ -14,18 +14,21 @@ class SeizeTheMind extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: card => !card.isUnique(),
                 gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.loseHonor(context => ({
+                    AbilityDsl.actions.loseHonor<DrawCard>(context => ({
                         target: context.player,
-                        amount: context.target.fate
+                        amount: context.target?.fate ?? 0
                     })),
-                    AbilityDsl.actions.cardLastingEffect(context => ({
+                    AbilityDsl.actions.cardLastingEffect<DrawCard>(context => ({
                         effect: AbilityDsl.effects.takeControl(context.player),
                         duration: Durations.UntilEndOfConflict
                     }))
                 ])
             },
             effect: 'take control of {0}{1}{2}{3}',
-            effectArgs: context => context.target.getFate() > 0 ? [' and lose ', context.target.getFate(), ' honor'] : ['', '', '']
+            effectArgs: context => {
+                const fate = context.target?.getFate() ?? 0;
+                return fate > 0 ? [' and lose ', fate, ' honor'] : ['', '', ''];
+            }
         });
     }
 

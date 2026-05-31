@@ -1,4 +1,5 @@
-import DrawCard from '../../drawcard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, CardTypes, EventNames } from '../../Constants.js';
 
@@ -8,8 +9,8 @@ class AgashaProdigys extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Discard a card to try and attach it to a character',
-            cost: AbilityDsl.costs.optionalHonorTransferFromOpponentCost(context => {
-                return context.player.opponent && context.player.opponent.conflictDeck.length > 0;
+            cost: AbilityDsl.costs.optionalHonorTransferFromOpponentCost((context) => {
+                return context.player.opponent !== null && context.player.opponent !== undefined && context.player.opponent.conflictDeck.length > 0;
             }),
             targets: {
                 myCharacter: {
@@ -52,19 +53,19 @@ class AgashaProdigys extends DrawCard {
         });
     }
 
-    getDiscardedCards(context) {
-        let events = context.events.filter(event => event.name === EventNames.OnCardsDiscarded);
+    getDiscardedCards(context: AbilityContext) {
+        let events = context.events.filter((event: any) => event.name === EventNames.OnCardsDiscarded);
         if(events.length > 0) {
-            let cards = [];
-            events.forEach(a => cards = cards.concat(a.cards));
+            let cards: any[] = [];
+            events.forEach((a: any) => cards = cards.concat(a.cards));
             return cards;
         }
 
         return [];
     }
 
-    buildString(context) {
-        if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
+    buildString(context: AbilityContext) {
+        if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter) && context.player.opponent) {
             let target = context.targets.oppCharacter;
             return '.  ' + context.player.opponent.name + ' gives ' + context.player.name + ' 1 honor to discard the top card of their deck and attempt to attach it to ' + target.name;
         }

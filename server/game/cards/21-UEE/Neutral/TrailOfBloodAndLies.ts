@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Phases, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class TrailOfBloodAndLies extends DrawCard {
     static id = 'trail-of-blood-and-lies';
@@ -9,12 +9,16 @@ export default class TrailOfBloodAndLies extends DrawCard {
         this.reaction({
             title: 'Dishonor a character',
             when: {
-                onMoveFate: (event, context) =>
-                    context.game.currentPhase !== Phases.Fate &&
-                    event.fate > 0 &&
-                    event.origin &&
-                    event.origin.type === CardTypes.Character &&
-                    event.origin.controller === context.player.opponent
+                onMoveFate: (event, context) => {
+                    const origin = event.origin as { type?: string; controller?: unknown } | undefined;
+                    return (
+                        context.game.currentPhase !== Phases.Fate &&
+                        event.fate > 0 &&
+                        !!origin &&
+                        origin.type === CardTypes.Character &&
+                        origin.controller === context.player.opponent
+                    );
+                }
             },
             target: {
                 cardType: CardTypes.Character,

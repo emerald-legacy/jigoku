@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -15,7 +15,7 @@ class ShinjoAltansarnai2 extends DrawCard {
                     cards: context.player.dynastyDeck.slice(0, 8),
                     cardCondition: (card) =>
                         card.type === CardTypes.Character &&
-                        card.printedCost <= 3 &&
+                        (card.printedCost ?? 0) <= 3 &&
                         !card.isUnique() &&
                         card.allowGameAction('putIntoConflict', context),
                     choices: ['Don\'t choose a character'],

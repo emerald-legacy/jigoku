@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Players, TargetModes } from '../../Constants.js';
 
@@ -6,17 +6,17 @@ class PrepareForWar extends DrawCard {
     static id = 'prepare-for-war';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Remove honor token and any attachment',
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.multipleContext((context) => {
+                    AbilityDsl.actions.multipleContext<DrawCard>((context) => {
                         const promptActions = this.getStatusTokenPrompts(context);
                         return {
                             gameActions: [
-                                AbilityDsl.actions.selectCard((context) => ({
+                                AbilityDsl.actions.selectCard<DrawCard>((context) => ({
                                     mode: TargetModes.Unlimited,
                                     cardType: CardTypes.Attachment,
                                     controller: Players.Any,
@@ -28,23 +28,27 @@ class PrepareForWar extends DrawCard {
                                     messageArgs: (cards) => [
                                         context.player,
                                         cards.length === 0 ? 'no attachments' : cards,
-                                        context.target
+                                        context.target ?? ''
                                     ]
                                 })),
                                 ...promptActions
                             ]
                         };
                     }),
-                    AbilityDsl.actions.honor((context) => ({
-                        target: context.target.hasTrait('commander') ? context.target : []
+                    AbilityDsl.actions.honor<DrawCard>((context) => ({
+                        target: context.target?.hasTrait('commander') ? context.target : []
                     }))
                 ])
             },
             effect: '{1}{2} {0}',
             effectArgs: (context) => {
-                let isCommander = context.target.hasTrait('commander');
-                let hasAttachments = context.target.attachments.length > 0;
-                let hasToken = context.target.isDishonored || context.target.isHonored;
+                const target = context.target;
+                if(!target) {
+                    return ['', ''];
+                }
+                let isCommander = target.hasTrait('commander');
+                let hasAttachments = target.attachments.length > 0;
+                let hasToken = target.isDishonored || target.isHonored;
                 let discardMessage = '';
                 if(hasAttachments) {
                     discardMessage += 'choose to discard any number of attachments';
@@ -68,10 +72,10 @@ class PrepareForWar extends DrawCard {
         });
     }
 
-    getStatusTokenPrompts(context) {
+    getStatusTokenPrompts(context: any) {
         const tokens = context.target.statusTokens;
-        let prompts = [];
-        tokens.forEach((token) => {
+        let prompts: any[] = [];
+        tokens.forEach((token: any) => {
             prompts.push(
                 AbilityDsl.actions.menuPrompt((context) => ({
                     activePromptTitle: `Do you wish to discard ${token.name}?`,

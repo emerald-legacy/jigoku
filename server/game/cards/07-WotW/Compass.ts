@@ -1,6 +1,8 @@
-import DrawCard from '../../drawcard.js';
-import { CardTypes } from '../../Constants.js';
+import DrawCard from '../../DrawCard.js';
+import { CardTypes, EventNames } from '../../Constants.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class Compass extends DrawCard {
     static id = 'compass';
 
@@ -8,16 +10,16 @@ class Compass extends DrawCard {
         this.reaction({
             title: 'Look at top 3 cards of a deck',
             when: {
-                onCardRevealed: (event, context) =>
+                onCardRevealed: (event: EventPayload<EventNames.OnCardRevealed>, context: TriggeredAbilityContext) =>
                     event.card && event.card.type === CardTypes.Province && event.card.controller === context.player.opponent &&
-                    context.source && context.source.parent && context.source.parent.isParticipating() &&
+                    context.source && (context.source as any).parent && (context.source as any).parent.isParticipating() &&
                     (context.player.dynastyDeck.length > 0 || context.player.conflictDeck.length > 0)
             },
             effect: 'look at the top 3 cards of one of their decks',
-            handler: context => {
-                let cards = [];
-                let choices = [];
-                let handlers = [];
+            handler: (context: TriggeredAbilityContext) => {
+                let cards: any[] = [];
+                let choices: string[] = [];
+                let handlers: (() => void)[] = [];
                 if(context.player.dynastyDeck.length > 0) {
                     choices.push('Dynasty Deck');
                     handlers.push(() => {
@@ -44,7 +46,7 @@ class Compass extends DrawCard {
         });
     }
 
-    moveToBottomHandler(context, cards, deck) {
+    moveToBottomHandler(context: any, cards: any, deck: any) {
         let bottomOfDeck = deck + ' bottom';
         if(cards.length > 0) {
             this.game.promptWithHandlerMenu(context.player, {
@@ -53,10 +55,10 @@ class Compass extends DrawCard {
                 cards: cards,
                 choices: ['Done'],
                 handlers: [() => this.moveToTopHandler(context, cards, deck)],
-                cardHandler: card => {
+                cardHandler: (card: any) => {
                     this.game.addMessage('{0} places a card on the bottom of their {1}', context.player, deck);
                     context.player.moveCard(card, bottomOfDeck);
-                    cards = cards.filter(c => c !== card);
+                    cards = cards.filter((c: any) => c !== card);
                     this.moveToBottomHandler(context, cards, deck);
                 }
             });
@@ -65,16 +67,16 @@ class Compass extends DrawCard {
         }
     }
 
-    moveToTopHandler(context, cards, deck) {
+    moveToTopHandler(context: any, cards: any, deck: any) {
         if(cards.length > 1) {
             this.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Choose a card to place on the top of your deck',
                 context: context,
                 cards: cards,
-                cardHandler: card => {
+                cardHandler: (card: any) => {
                     this.game.addMessage('{0} places a card on the top of their {1}', context.player, deck);
                     context.player.moveCard(card, deck);
-                    cards = cards.filter(c => c !== card);
+                    cards = cards.filter((c: any) => c !== card);
                     this.moveToTopHandler(context, cards, deck);
                 }
             });

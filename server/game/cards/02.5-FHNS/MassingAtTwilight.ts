@@ -8,7 +8,7 @@ export default class MassingAtTwilight extends ProvinceCard {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
             effect: AbilityDsl.effects.changeConflictSkillFunction(
-                (card) => card.getMilitarySkill() + card.getPoliticalSkill()
+                (card: any) => card.getMilitarySkill() + card.getPoliticalSkill()
             )
         });
     }

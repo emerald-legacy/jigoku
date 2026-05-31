@@ -1,9 +1,10 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseCard from '../basecard.js';
+import type BaseCard from '../BaseCard.js';
 import { EventNames, Locations } from '../Constants.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface RevealProperties extends CardActionProperties {
     chatMessage?: boolean;
     player?: Player;
@@ -27,22 +28,23 @@ export class RevealAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event, card: BaseCard, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { onDeclaration } = this.getProperties(context, additionalProperties) as RevealProperties;
         event.onDeclaration = onDeclaration;
         super.addPropertiesToEvent(event, card, context, additionalProperties);
     }
 
-    eventHandler(event, additionalProperties): void {
-        let properties = this.getProperties(event.context, additionalProperties) as RevealProperties;
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+        const context = event.context as AbilityContext;
+        const properties = this.getProperties(context, additionalProperties) as RevealProperties;
         if(properties.chatMessage) {
-            event.context.game.addMessage(
+            context.game.addMessage(
                 '{0} reveals {1} due to {2}',
-                properties.player || event.context.player,
+                properties.player || context.player,
                 event.card,
-                event.context.source
+                context.source
             );
         }
-        event.card.facedown = false;
+        (event.card as BaseCard).facedown = false;
     }
 }

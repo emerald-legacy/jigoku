@@ -2,7 +2,7 @@ import { CardTypes, TargetModes } from '../../../Constants.js';
 import { GameAction } from '../../../GameActions/GameAction.js';
 import { StatusToken } from '../../../StatusToken.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 const ORIGINL_TOKEN = 'original';
 const SELECTION = 'selection';
@@ -26,7 +26,7 @@ export default class AsakoKousuke extends DrawCard {
                     dependsOn: ORIGINL_TOKEN,
                     mode: TargetModes.Select,
                     choices: (context) => {
-                        const targetToken: StatusToken = context.tokens[ORIGINL_TOKEN][0];
+                        const targetToken: StatusToken = (context.tokens[ORIGINL_TOKEN] as StatusToken[])[0];
                         const targetCard = targetToken.card;
                         if(!(targetCard instanceof DrawCard)) {
                             // should never happen
@@ -70,7 +70,7 @@ export default class AsakoKousuke extends DrawCard {
             },
             effect: 'clarify what it means to be {2}. The exposition reveals that {1} is {2}',
             effectArgs: (context) => [
-                context.tokens[ORIGINL_TOKEN][0].card,
+                (context.tokens[ORIGINL_TOKEN] as StatusToken[])[0].card as DrawCard,
                 context.selects.selection.choice === 'Turn it into Honored'
                     ? 'honored'
                     : context.selects.selection.choice === 'Turn it into Dishonored'

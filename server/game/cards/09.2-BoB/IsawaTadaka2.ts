@@ -1,6 +1,8 @@
 import { CardTypes, Locations, TargetModes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import type BaseCard from '../../BaseCard.js';
+import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 import { shuffle } from '../../utils/shuffle.js';
 
 export default class IsawaTadaka2 extends DrawCard {
@@ -37,9 +39,9 @@ export default class IsawaTadaka2 extends DrawCard {
             }),
             effect: 'look at {1} random card{3} in {2}\'s hand',
             effectArgs: (context) => [
-                context.costs.removeFromGame.length,
-                context.player.opponent,
-                context.costs.removeFromGame.length === 1 ? '' : 's'
+                (context.costs.removeFromGame as BaseCard[]).length,
+                context.player.opponent as Player,
+                (context.costs.removeFromGame as BaseCard[]).length === 1 ? '' : 's'
             ]
         });
     }

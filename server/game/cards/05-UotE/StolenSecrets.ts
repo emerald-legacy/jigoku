@@ -1,36 +1,43 @@
-import DrawCard from '../../drawcard.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import DrawCard from '../../DrawCard.js';
+import { Locations, CardTypes, EventNames } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import type Player from '../../Player.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
 
 class StolenSecrets extends DrawCard {
     static id = 'stolen-secrets';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Steal one of opponent\'s top 4 cards',
-            condition: context => this.game.isDuringConflict('political') && context.player.opponent && context.player.opponent.conflictDeck.length > 0,
+            condition: (context: AbilityContext<this>) => this.game.isDuringConflict('political') && !!context.player.opponent && context.player.opponent.conflictDeck.length > 0,
             cost: ability.costs.removeFate({
                 cardType: CardTypes.Character,
-                cardCondition: card => card.isParticipating()
+                cardCondition: (card: any) => card.isParticipating()
             }),
             effect: 'look at the top 4 cards of {1}\'s conflict deck and remove one from the game',
-            effectArgs: context => context.player.opponent,
-            handler: context => this.game.promptWithHandlerMenu(context.player, {
-                activePromptTitle: 'Choose a card to remove from the game',
-                context: context,
-                cards: context.player.opponent.conflictDeck.slice(0, 4),
-                cardHandler: card => this.stealCard(card, context.player.opponent.conflictDeck.slice(0, 4).filter(c => c !== card), context)
-            })
+            effectArgs: (context: AbilityContext<this>) => context.player.opponent as Player,
+            handler: (context: AbilityContext<this>) => {
+                const opponent = context.player.opponent as Player;
+                this.game.promptWithHandlerMenu(context.player, {
+                    activePromptTitle: 'Choose a card to remove from the game',
+                    context: context,
+                    cards: opponent.conflictDeck.slice(0, 4),
+                    cardHandler: (card: any) => this.stealCard(card, opponent.conflictDeck.slice(0, 4).filter((c: DrawCard) => c !== card), context)
+                });
+            }
         });
     }
 
-    stealCard(card, remainingCards, context) {
+    stealCard(card: DrawCard, remainingCards: DrawCard[], context: AbilityContext<this>) {
         card.owner.removeCardFromPile(card);
         card.controller = context.player;
         card.moveTo(Locations.RemovedFromGame);
         context.player.removedFromGame.unshift(card);
-        context.source.lastingEffect(ability => ({
+        context.source.lastingEffect((ability: typeof AbilityDsl) => ({
             until: {
-                onCardMoved: event => event.card === card && event.originalLocation === Locations.RemovedFromGame
+                onCardMoved: (event: EventPayload<EventNames.OnCardMoved>) => event.card === card && event.originalLocation === Locations.RemovedFromGame
             },
             match: card,
             effect: [
@@ -44,20 +51,20 @@ class StolenSecrets extends DrawCard {
         }
     }
 
-    rearrangePrompt(context, promptCards, orderedCards, promptTitle) {
+    rearrangePrompt(context: AbilityContext<this>, promptCards: DrawCard[], orderedCards: DrawCard[], promptTitle: string) {
         this.game.promptWithHandlerMenu(context.player, {
             activePromptTitle: promptTitle,
             context: context,
             cards: promptCards,
-            cardHandler: card => {
+            cardHandler: (card: DrawCard) => {
                 orderedCards.push(card);
-                promptCards = promptCards.filter(c => c !== card);
+                promptCards = promptCards.filter((c: DrawCard) => c !== card);
                 if(promptCards.length > 1) {
                     this.rearrangePrompt(context, promptCards, orderedCards, 'Which card do you want to be the second card?');
                     return;
                 }
                 orderedCards.push(promptCards[0]);
-                context.player.opponent.conflictDeck.splice(0, 3, ...orderedCards);
+                (context.player.opponent as Player).conflictDeck.splice(0, 3, ...orderedCards);
             }
         });
     }

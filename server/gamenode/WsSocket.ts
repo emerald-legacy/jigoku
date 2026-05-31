@@ -1,8 +1,17 @@
 import EventEmitter from 'events';
 import WebSocket from 'ws';
-import { z } from 'zod';
 import * as env from '../env.js';
 import { logger } from '../logger.js';
+import {
+    InboundMessageSchema,
+    PROTOCOL_VERSION,
+    type GameClosedPayload,
+    type GameErrorPayload,
+    type GameSummary,
+    type GameWinPayload,
+    type HelloPayload,
+    type PlayerLeftPayload
+} from './LobbyProtocol.js';
 
 const TEN_SECONDS = 10_000;
 const ONE_SECOND = 1_000;
@@ -76,7 +85,13 @@ export class WsSocket extends EventEmitter {
         this.reconnectDelay = Math.min(this.reconnectDelay * 2, MAX_RECONNECT_DELAY);
     }
 
-    public send(command: string, arg?: unknown) {
+    public send(command: 'HEARTBEAT' | 'PONG'): void;
+    public send(command: 'HELLO', arg: HelloPayload): void;
+    public send(command: 'GAMEERROR', arg: GameErrorPayload): void;
+    public send(command: 'GAMECLOSED', arg: GameClosedPayload): void;
+    public send(command: 'GAMEWIN', arg: GameWinPayload): void;
+    public send(command: 'PLAYERLEFT', arg: PlayerLeftPayload): void;
+    public send(command: string, arg?: unknown): void {
         if(!this.ws || this.ws.readyState !== WebSocket.OPEN) {
             logger.debug(`Cannot send ${command}, WebSocket not open`);
             return;
@@ -89,30 +104,26 @@ export class WsSocket extends EventEmitter {
         }
     }
 
-    private onGameSync(games: any) {
+    private onGameSync(games: GameSummary[]) {
         const port = env.gameNodeProxyPort ?? env.gameNodeSocketIoPort;
-        logger.info(`${env.gameNodeName} sending HELLO to lobby (address=${this.listenAddress}, port=${port}, games=${Object.keys(games).length})`);
+        logger.info(`${env.gameNodeName} sending HELLO to lobby (address=${this.listenAddress}, port=${port}, games=${games.length})`);
         this.send('HELLO', {
             maxGames: env.maxGames,
             address: this.listenAddress,
             port: port,
             protocol: this.protocol,
             version: env.buildVersion,
+            protocolVersion: PROTOCOL_VERSION,
             games: games
         });
     }
 
     private parseMsg(msg: string) {
         try {
-            return z
-                .object({
-                    command: z.enum(['PING', 'REGISTER', 'STARTGAME', 'SPECTATOR', 'CONNECTFAILED', 'CLOSEGAME', 'CARDDATA']),
-                    arg: z.any()
-                })
-                .parse(JSON.parse(msg));
+            return InboundMessageSchema.parse(JSON.parse(msg));
         } catch(e) {
             logger.info(`Failed to parse message: ${e}`);
-            return;
+            return undefined;
         }
     }
 

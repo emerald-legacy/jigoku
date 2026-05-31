@@ -136,7 +136,7 @@ class PendingGame {
 
     newGame(id: string, user: any, password: string | undefined, callback: (err?: Error) => void): void {
         if(password) {
-            bcrypt.hash(password, 10, (err: Error | null, hash: string) => {
+            bcrypt.hash(password, 10, (err: Error | undefined, hash: string) => {
                 if(err) {
                     logger.info(err.message);
                     callback(err);
@@ -170,7 +170,10 @@ class PendingGame {
         }
 
         if(this.password) {
-            bcrypt.compare(password, this.password, (err: Error | null, valid: boolean) => {
+            if(!password) {
+                return callback(new Error('Bad password'), 'Incorrect game password');
+            }
+            bcrypt.compare(password, this.password, (err: Error | undefined, valid: boolean) => {
                 if(err) {
                     return callback(new Error('Bad password'), 'Incorrect game password');
                 }
@@ -200,7 +203,10 @@ class PendingGame {
         }
 
         if(this.password) {
-            bcrypt.compare(password, this.password, (err: Error | null, valid: boolean) => {
+            if(!password) {
+                return callback(new Error('Bad password'), 'Incorrect game password');
+            }
+            bcrypt.compare(password, this.password, (err: Error | undefined, valid: boolean) => {
                 if(err) {
                     return callback(new Error('Bad password'), 'Incorrect game password');
                 }

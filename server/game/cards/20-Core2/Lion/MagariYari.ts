@@ -1,6 +1,7 @@
 import { AbilityTypes, CardTypes } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityProps } from '../../../Interfaces.js';
 
 export default class MagariYari extends DrawCard {
@@ -18,7 +19,7 @@ export default class MagariYari extends DrawCard {
                         event.card.isParticipating() &&
                         event.card.getMilitarySkill() < context.source.getMilitarySkill()
                 },
-                gameAction: AbilityDsl.actions.bow((context) => ({ target: (context as any).event.card }))
+                gameAction: AbilityDsl.actions.bow((context) => ({ target: (context as TriggeredAbilityContext).event.card }))
             } as TriggeredAbilityProps)
         });
     }

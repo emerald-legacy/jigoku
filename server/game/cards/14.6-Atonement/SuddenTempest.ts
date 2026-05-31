@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { TargetModes, Durations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -18,12 +18,12 @@ class SuddenTempest extends DrawCard {
                         until: {
                             onBeginRound: () => true
                         },
-                        target: context.ring.getElements().map(element => this.game.rings[element]),
+                        target: context.ring.getElements().map((element: any) => this.game.rings[element]),
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
                                 onRoundEnded: () => true
                             },
-                            target: context.ring.getElements().map(element => this.game.rings[element]),
+                            target: context.ring.getElements().map((element: any) => this.game.rings[element]),
                             gameAction: AbilityDsl.actions.returnRingToPlay()
                         })
                     }))

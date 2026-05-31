@@ -1,8 +1,9 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Durations } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import { CardTypes, Durations, EventNames } from '../../../Constants.js';
+import DrawCard from '../../../DrawCard.js';
 import { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class FieldsOfRollingThunder extends DrawCard {
     static id = 'fields-of-rolling-thunder';
 
@@ -32,7 +33,7 @@ export default class FieldsOfRollingThunder extends DrawCard {
                             duration: Durations.UntilEndOfPhase,
                             effect: AbilityDsl.effects.delayedEffect({
                                 when: {
-                                    onConflictFinished: (event: any, context: TriggeredAbilityContext) =>
+                                    onConflictFinished: (event: EventPayload<EventNames.OnConflictFinished>, context: TriggeredAbilityContext) =>
                                         event.conflict === conflictWhenItWasTriggered &&
                                         event.conflict.winner === context.player.opponent
                                 },

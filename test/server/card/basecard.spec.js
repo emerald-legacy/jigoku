@@ -1,4 +1,4 @@
-import BaseCard from '../../../build/server/game/basecard.js';
+import BaseCard from '../../../build/server/game/BaseCard.js';
 
 describe('BaseCard', function () {
     beforeEach(function () {

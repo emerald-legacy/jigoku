@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Elements } from '../../Constants.js';
 
@@ -27,11 +27,14 @@ class StrideTheWaves extends DrawCard {
                 }))
             }),
             effect: '{3} {1} {2}',
-            effectArgs: context => [
-                context.source.parent,
-                context.source.parent.inConflict ? 'home' : 'into the conflict',
-                context.source.parent.inConflict ? 'send' : 'move'
-            ]
+            effectArgs: context => {
+                const parent = context.source.parent;
+                return [
+                    parent ?? '',
+                    parent && parent.inConflict ? 'home' : 'into the conflict',
+                    parent && parent.inConflict ? 'send' : 'move'
+                ];
+            }
         });
     }
 

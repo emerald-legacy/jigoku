@@ -1,11 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class TalismanOfTheSun extends DrawCard {
     static id = 'talisman-of-the-sun';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Move conflict to a different province',
             condition: context => context.player.isDefendingPlayer(),

@@ -1,7 +1,7 @@
 import { DuelTypes, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
-import type Player from '../../player.js';
+import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 
 export default class TaoistAdept extends DrawCard {
     static id = 'taoist-adept';
@@ -18,7 +18,7 @@ export default class TaoistAdept extends DrawCard {
                         player: duel.winnerController === context.player ? Players.Self : Players.Opponent,
                         message: '{0} places a fate on the {1}',
                         messageArgs: (ring, player) => [player, ring],
-                        ringCondition: (ring) => duel.winner && ring.isUnclaimed(),
+                        ringCondition: (ring) => duel.winner !== undefined && ring.isUnclaimed(),
                         gameAction: AbilityDsl.actions.placeFateOnRing(),
                         optional: true,
                         onMenuCommand: (player: Player, arg: string) => {

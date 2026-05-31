@@ -1,6 +1,6 @@
 import { CardTypes, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class CorneringManeuver extends DrawCard {
     static id = 'cornering-maneuver';
@@ -27,8 +27,8 @@ export default class CorneringManeuver extends DrawCard {
                     cardType: CardTypes.Character,
                     message: '{0} moves {1} {2}',
                     messageArgs: card => Array.isArray(card)
-                        ? [context.player, '', '']
-                        : [context.player, card, card.isParticipating() ? 'home' : 'to the conflict'],
+                        ? [context?.player, '', '']
+                        : [context?.player, card, card.isParticipating() ? 'home' : 'to the conflict'],
                     gameAction: AbilityDsl.actions.multiple([
                         AbilityDsl.actions.sendHome(),
                         AbilityDsl.actions.moveToConflict()

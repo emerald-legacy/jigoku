@@ -1,7 +1,7 @@
 import { CardTypes, DuelTypes, Players } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class PolicyDebate extends DrawCard {
     static id = 'policy-debate';
@@ -24,7 +24,7 @@ export default class PolicyDebate extends DrawCard {
                         type: DuelTypes.Political,
                         challenger: context.targets.challenger,
                         message: '{0} sees {1}\'s hand and chooses a card to discard',
-                        messageArgs: (duel) => [duel.loserController.opponent, duel.loserController],
+                        messageArgs: (duel) => [duel.loserController?.opponent ?? '', duel.loserController ?? ''],
                         gameAction: (duel) =>
                             AbilityDsl.actions.sequential([
                                 AbilityDsl.actions.lookAt({
@@ -38,7 +38,7 @@ export default class PolicyDebate extends DrawCard {
                                     cards: this.#losersHand(duel),
                                     targets: true,
                                     message: '{0} chooses {1} to be discarded',
-                                    messageArgs: (card) => [duel.loserController.opponent, card],
+                                    messageArgs: (card) => [duel.loserController?.opponent ?? '', card],
                                     gameAction: AbilityDsl.actions.discardCard()
                                 })
                             ])

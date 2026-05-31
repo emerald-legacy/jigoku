@@ -1,4 +1,4 @@
-import BaseAbility from '../baseability.js';
+import BaseAbility from '../BaseAbility.js';
 import { AbilityTypes } from '../Constants.js';
 
 class CovertAbility extends BaseAbility {

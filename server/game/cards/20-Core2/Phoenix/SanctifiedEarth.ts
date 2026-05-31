@@ -1,23 +1,23 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../conflict.js';
-import { CardTypes, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
-import type Player from '../../../player.js';
+import { CardTypes, EventNames, Players } from '../../../Constants.js';
+import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 const controlledBy = (player: Player) => (character: DrawCard) => character.controller === player;
 
 const trigger = {
     onConflictDeclared: {
-        when: (event: Conflict, context: TriggeredAbilityContext) => event.attackers.some(controlledBy(context.player)),
-        cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => context.event.attackers.includes(card)
+        when: (event: EventPayload<EventNames.OnConflictDeclared>, context: TriggeredAbilityContext) => (event.attackers ?? []).some(controlledBy(context.player)),
+        cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => (context.event.attackers ?? []).includes(card)
     },
     onDefendersDeclared: {
-        when: (event: Conflict, context: TriggeredAbilityContext) => event.defenders.some(controlledBy(context.player)),
-        cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => context.event.defenders.includes(card)
+        when: (event: EventPayload<EventNames.OnDefendersDeclared>, context: TriggeredAbilityContext) => (event.defenders ?? []).some(controlledBy(context.player)),
+        cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => (context.event.defenders ?? []).includes(card)
     },
     onMoveToConflict: {
-        when: (event: any, context: TriggeredAbilityContext) => controlledBy(context.player)(event.card),
+        when: (event: EventPayload<EventNames.OnMoveToConflict>, context: TriggeredAbilityContext) => controlledBy(context.player)(event.card),
         cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => context.event.card === card
     }
 };
@@ -28,7 +28,7 @@ export default class SanctifiedEarth extends DrawCard {
     public setupCardAbilities() {
         this.attachmentConditions({ trait: 'shugenja', myControl: true });
 
-        this.reaction({
+        this.reaction<DrawCard>({
             title: 'Give character a skill bonus',
             when: {
                 onConflictDeclared: trigger.onConflictDeclared.when,
@@ -38,7 +38,7 @@ export default class SanctifiedEarth extends DrawCard {
             target: {
                 cardType: CardTypes.Character,
                 player: Players.Self,
-                cardCondition: (card, context) => trigger[context.event.name]?.cardCondition(card, context) ?? false,
+                cardCondition: (card, context) => trigger[context.event.name as keyof typeof trigger]?.cardCondition(card, context) ?? false,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.cardLastingEffect({
                         effect: AbilityDsl.effects.modifyBothSkills(2)
@@ -59,7 +59,7 @@ export default class SanctifiedEarth extends DrawCard {
                 ])
             },
             effect: 'give +2{1} and +2{2} to {3}',
-            effectArgs: (context) => ['military', 'political', context.target]
+            effectArgs: (context) => ['military', 'political', context.target ?? '']
         });
     }
 }

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes } from '../../Constants.js';
 
@@ -11,7 +11,7 @@ class PeacemakersBlade extends DrawCard {
         });
     }
 
-    canPlayOn(card) {
+    canPlayOn(card: any) {
         return (card.getType() === CardTypes.Character && !card.isAttacking()) && super.canPlayOn(card);
     }
 }

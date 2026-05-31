@@ -1,4 +1,4 @@
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Players } from '../../../Constants.js';
 
@@ -6,7 +6,7 @@ class ShosuroBotanist extends DrawCard {
     static id = 'shosuro-botanist';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Return attachment to owners hand',
             target: {
                 cardType: CardTypes.Attachment,
@@ -15,7 +15,7 @@ class ShosuroBotanist extends DrawCard {
                 gameAction: AbilityDsl.actions.returnToHand()
             },
             effect: 'return {0} to {1}\'s hand',
-            effectArgs: context => [context.target.owner]
+            effectArgs: context => [context.target?.owner ?? '']
         });
     }
 }

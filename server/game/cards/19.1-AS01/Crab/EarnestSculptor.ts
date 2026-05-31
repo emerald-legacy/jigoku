@@ -1,7 +1,10 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type BaseAction from '../../../BaseAction.js';
+import type BaseCard from '../../../BaseCard.js';
 import { CardTypes, Locations } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
 
 export default class EarnestSculptor extends DrawCard {
@@ -24,33 +27,27 @@ export default class EarnestSculptor extends DrawCard {
             title: 'Reduce cost of next Jade card',
             when: {
                 onCardPlayed: (event, context) =>
-                    // Event
                     event.card.type === CardTypes.Event &&
-                    // by player
                     event.player === context.player &&
-                    // jade
                     event.card.hasTrait('jade') &&
-                    // costing more than zero
-                    event.context.ability.getReducedCost(event.context) > 0,
+                    event.context !== undefined &&
+                    (event.context.ability as BaseAction).getReducedCost(event.context) > 0,
                 onAbilityResolverInitiated: (event, context) =>
-                    // Attachment
+                    event.context !== undefined &&
                     (event.context.source.type === CardTypes.Attachment ||
                         event.context.ability instanceof PlayAttachmentAction) &&
-                    // by player
                     event.context.player === context.player &&
-                    // jade
                     event.context.source.hasTrait('jade') &&
-                    // costing more than zero
-                    event.context.ability.getReducedCost(event.context) > 0
+                    (event.context.ability as BaseAction).getReducedCost(event.context) > 0
             },
             effect: 'reduce the cost of {1} by 1',
-            effectArgs: (context) => [context.event.context.source],
+            effectArgs: (context) => [(context.event.context as AbilityContext).source],
             gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
                 effect: AbilityDsl.effects.reduceNextPlayedCardCost(
                     1,
                     (card: BaseCard) =>
-                        card === (context as any).event.card || card === (context as any).event.context.source
+                        card === (context as TriggeredAbilityContext).event.card || card === ((context as TriggeredAbilityContext).event.context as AbilityContext).source
                 )
             }))
         });

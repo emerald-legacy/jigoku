@@ -1,16 +1,16 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { TargetModes, CardTypes, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HeroOfThreeTrees extends DrawCard {
     static id = 'hero-of-three-trees';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.action({
             title: 'Gain 1 honor or reduce the attacked province strength',
-            condition: context => context.source.isParticipating()
+            condition: context => !!(context.source.isParticipating()
                 && context.player.opponent
-                && context.player.hand.length < context.player.opponent.hand.length,
+                && context.player.hand.length < context.player.opponent.hand.length),
             target: {
                 mode: TargetModes.Select,
                 choices: {
@@ -30,7 +30,7 @@ class HeroOfThreeTrees extends DrawCard {
                         gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
                             effect: (
                                 context.target.getStrength() > 0 ?
-                                    ability.effects.modifyProvinceStrength(-1) : []
+                                    AbilityDsl.effects.modifyProvinceStrength(-1) : []
                             )
                         }))
                     }))

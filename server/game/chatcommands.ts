@@ -2,10 +2,11 @@ import { randomInt } from 'crypto';
 import * as GameActions from './GameActions/GameActions.js';
 import HonorBidPrompt from './gamesteps/honorbidprompt.js';
 import { Locations, CardTypes, Players } from './Constants.js';
-import type Game from './game.js';
-import type Player from './player.js';
-import type BaseCard from './basecard.js';
-import type Ring from './ring.js';
+import type Game from './Game.js';
+import type Player from './Player.js';
+import type BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
+import type Ring from './Ring.js';
 
 type CommandHandler = (player: Player, args: string[]) => boolean | void;
 
@@ -147,10 +148,13 @@ class ChatCommands {
                 numCards: 0,
                 multiSelect: true,
                 onSelect: (p: Player, cards: BaseCard[]) => {
+                    if(!this.game.currentConflict) {
+                        return true;
+                    }
                     if(p.isAttackingPlayer()) {
-                        this.game.currentConflict.addAttackers(cards);
+                        this.game.currentConflict.addAttackers(cards as DrawCard[]);
                     } else {
-                        this.game.currentConflict.addDefenders(cards);
+                        this.game.currentConflict.addDefenders(cards as DrawCard[]);
                     }
                     this.game.addMessage('{0} uses the /move-to-conflict command', p);
                     return true;
@@ -172,7 +176,10 @@ class ChatCommands {
                     (card as any).inConflict,
                 cardType: CardTypes.Character,
                 onSelect: (p: Player, card: BaseCard) => {
-                    this.game.currentConflict.removeFromConflict(card);
+                    if(!this.game.currentConflict) {
+                        return true;
+                    }
+                    this.game.currentConflict.removeFromConflict(card as DrawCard);
 
                     this.game.addMessage('{0} uses the /send-home command to send {1} home', p, card);
                     return true;
@@ -436,7 +443,7 @@ class ChatCommands {
     }
 
     disconnectMe(player: Player): void {
-        player.socket.disconnect();
+        player.socket?.disconnect();
     }
 
     manual(player: Player): void {

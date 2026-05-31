@@ -1,4 +1,5 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, Locations, CardTypes, TargetModes } from '../../Constants.js';
 
@@ -35,7 +36,7 @@ class ProceduralInterference extends DrawCard {
                 if(context.selects.select.choice === 'let opponent gain 2 honor') {
                     return ['gain 2 honor', ''];
                 }
-                return ['discard ', context.targets.province.controller.getDynastyCardsInProvince(context.targets.province.location)];
+                return ['discard ', (context.targets.province as ProvinceCard).controller.getDynastyCardsInProvince((context.targets.province as ProvinceCard).location)];
             }
         });
     }

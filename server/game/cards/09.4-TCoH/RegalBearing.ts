@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class RegalBearing extends DrawCard {
@@ -9,8 +9,8 @@ class RegalBearing extends DrawCard {
             title: 'Lower bid and draw bid difference as cards',
             max: AbilityDsl.limit.perConflict(1),
             condition: context => context.game.isDuringConflict('political') &&
-                context.player.opponent &&
-                context.player.anyCardsInPlay(card => card.isParticipating() && card.hasTrait('courtier')),
+                !!context.player.opponent &&
+                context.player.anyCardsInPlay((card: any) => card.isParticipating() && card.hasTrait('courtier')),
             effect: 'set their bid dial to 1 and draw {1} cards.',
             effectArgs: context => this.getHonorDialDifference(context),
             gameAction: AbilityDsl.actions.sequential([
@@ -26,7 +26,7 @@ class RegalBearing extends DrawCard {
         });
     }
 
-    getHonorDialDifference(context) {
+    getHonorDialDifference(context: any) {
         if(!context.player.opponent) {
             return 0;
         }

@@ -1,19 +1,19 @@
 import { CardTypes, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class ChroniclerOfCalamities extends DrawCard {
     static id = 'chronicler-of-calamities';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Dishonor or move home a character',
             condition: (context) => context.source.isParticipating(),
             effect: 'dishonor or send home {0}',
             effectArgs: (context) => [
-                context.target.isFacedown() ? 'a facedown card' : context.target,
-                context.target.location
+                context.target?.isFacedown() ? 'a facedown card' : (context.target ?? ''),
+                context.target?.location ?? ''
             ],
             target: {
                 cardType: CardTypes.Character,
@@ -21,9 +21,8 @@ export default class ChroniclerOfCalamities extends DrawCard {
                     card !== context.source &&
                     card.isParticipating() &&
                     card.controller !== context.player &&
-                    context.game.currentConflict
-                        .getCharacters(context.player)
-                        .some((myCard) => myCard.printedCost >= card.printedCost),
+                    (context.game.currentConflict?.getCharacters(context.player) ?? [])
+                        .some((myCard: any) => (myCard.printedCost ?? 0) >= (card.printedCost ?? 0)),
                 gameAction: AbilityDsl.actions.chooseAction((context) => ({
                     activePromptTitle: 'Select one',
                     options: {

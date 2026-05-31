@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Durations } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class HirumaSkirmisher extends DrawCard {
     static id = 'hiruma-skirmisher';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Gain covert until end of phase',
             when: {

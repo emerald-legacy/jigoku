@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { Phases } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class MountainTattoo extends DrawCard {
     static id = 'mountain-tattoo';

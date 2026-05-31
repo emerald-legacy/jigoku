@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Locations } from '../../Constants.js';
 
@@ -14,23 +14,23 @@ class FavorableAlliance extends DrawCard {
                 activePromptTitle: 'Choose a value for X'
             }),
             effect: 'set aside {1} card{2}',
-            effectArgs: (context) => [context.costs.variableFateCost, context.costs.variableFateCost > 1 ? 's' : ''],
+            effectArgs: (context) => [(context.costs.variableFateCost as number), (context.costs.variableFateCost as number) > 1 ? 's' : ''],
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.lookAt((context) => ({
-                    target: context.player.conflictDeck.slice(0, context.costs.variableFateCost),
+                    target: context.player.conflictDeck.slice(0, (context.costs.variableFateCost as number)),
                     message: '{0} sets aside the top {1} card{3} from their conflict deck: {2}',
                     messageArgs: (cards) => [context.player, cards.length, cards, cards.length > 1 ? 's' : '']
                 })),
                 AbilityDsl.actions.handler({
                     handler: (context) => {
-                        let cards = context.player.conflictDeck.slice(0, context.costs.variableFateCost);
+                        let cards = context.player.conflictDeck.slice(0, (context.costs.variableFateCost as number));
                         cards.forEach((card) => {
                             card.owner.removeCardFromPile(card);
                             card.moveTo(Locations.RemovedFromGame);
                             context.player.removedFromGame.unshift(card);
                             context.source.lastingEffect(() => ({
                                 until: {
-                                    onCardMoved: (event) =>
+                                    onCardMoved: (event: any) =>
                                         event.card === card && event.originalLocation === Locations.RemovedFromGame
                                 },
                                 match: card,

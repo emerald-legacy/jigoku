@@ -1,6 +1,7 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Locations, DuelTypes } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 class DaimyosGunbai extends DrawCard {
     static id = 'daimyo-s-gunbai';
@@ -23,7 +24,7 @@ class DaimyosGunbai extends DrawCard {
                 gameAction: AbilityDsl.actions.discardCard(context => ({
                     target: context.source.location === Locations.Hand ? context.source : []
                 })),
-                message: context => context.source.location === Locations.Hand ? '{0} discards {1}' : null
+                message: (context: AbilityContext) => context.source.location === Locations.Hand ? '{0} discards {1}' : null
             }
         });
     }

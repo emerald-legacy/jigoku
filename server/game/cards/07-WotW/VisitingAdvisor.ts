@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -18,7 +18,11 @@ class VisitingAdvisor extends DrawCard {
             },
             gameAction: AbilityDsl.actions.sendHome(context => ({ target: context.source })),
             effect: 'send {0}{1}{2} home',
-            effectArgs: (context) => context.target.length === 0 ? [context.source] : [' and ', context.source]
+            effectArgs: (context) => {
+                const t = context.targets.target;
+                const hasAny = Array.isArray(t) ? t.length > 0 : !!t;
+                return hasAny ? [' and ', context.source] : [context.source];
+            }
         });
     }
 }

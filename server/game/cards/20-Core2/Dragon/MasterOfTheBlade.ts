@@ -1,6 +1,6 @@
 import { Durations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class MasterOfTheBlade extends DrawCard {
     static id = 'master-of-the-blade';

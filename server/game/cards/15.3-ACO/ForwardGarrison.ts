@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes } from '../../Constants.js';
 
@@ -8,7 +8,7 @@ class ForwardGarrison extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.game.isTraitInPlay('battlefield'),
-            match: (card, context) => card.type === CardTypes.Character && card.controller === context.player,
+            match: (card, context) => card.type === CardTypes.Character && card.controller === context?.player,
             effect: AbilityDsl.effects.cardCannot({
                 cannot: 'removeFate',
                 restricts: 'opponentsCardAndRingEffects'

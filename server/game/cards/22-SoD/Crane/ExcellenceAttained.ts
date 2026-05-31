@@ -16,7 +16,7 @@ export default class ExcellenceAttained extends ProvinceCard {
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose an attachment',
                     cards: context.player.conflictDeck.slice(0, 5),
-                    cardCondition: (card) => card.type === CardTypes.Attachment && card.printedCost <= 1,
+                    cardCondition: (card) => card.type === CardTypes.Attachment && (card.printedCost ?? 0) <= 1,
                     choices: ['Take nothing'],
                     handlers: [
                         () => {

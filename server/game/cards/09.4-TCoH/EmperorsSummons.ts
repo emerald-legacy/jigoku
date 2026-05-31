@@ -12,7 +12,7 @@ export default class EmperorsSummons extends ProvinceCard {
                 onCardRevealed: (event, context) => event.card === context.source
             },
             gameAction: AbilityDsl.actions.cardMenu((context) => ({
-                cards: context.player.dynastyDeck.filter((card) => card.type === CardTypes.Character),
+                cards: context.player.dynastyDeck.filter((card: any) => card.type === CardTypes.Character),
                 choices: ['Select nothing'],
                 handlers: [() => this.game.addMessage('{0} selects nothing from their deck', context.player)],
                 gameAction: AbilityDsl.actions.selectCard({

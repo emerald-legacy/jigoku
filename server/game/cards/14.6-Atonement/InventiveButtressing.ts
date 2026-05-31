@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Locations, CardTypes } from '../../Constants.js';
 
@@ -13,16 +13,16 @@ class InventiveButtressing extends DrawCard {
         this.persistentEffect({
             condition: () => this.game.isDuringConflict('military'),
             targetLocation: Locations.Provinces,
-            match: (card, context) => card === context.source.parent,
+            match: (card, context) => card === context?.source.parent,
             effect: AbilityDsl.effects.modifyProvinceStrength(3)
         });
     }
 
-    canPlayOn(source) {
+    canPlayOn(source: any) {
         return source && source.getType() === 'province' && source.controller === this.controller && !source.isBroken && this.getType() === CardTypes.Attachment;
     }
 
-    canAttach(parent) {
+    canAttach(parent: any) {
         if(parent.type === CardTypes.Province && parent.isBroken) {
             return false;
         }

@@ -1,15 +1,17 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
+import { EventNames } from '../../Constants.js';
 class HidaTsuru extends DrawCard {
     static id = 'hida-tsuru';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Give this character +1/+1',
             limit: AbilityDsl.limit.unlimitedPerConflict(),
             when: {
-                onMoveToConflict: (event, context) => context.source.isParticipating()
+                onMoveToConflict: (_event: any, context: any) => context.source.isParticipating()
             },
             effect: 'give him +1{1}/+1{2}',
             effectArgs: () => ['military', 'political'],
@@ -20,7 +22,7 @@ class HidaTsuru extends DrawCard {
             title: 'Give this character +1/+1',
             limit: AbilityDsl.limit.unlimitedPerConflict(),
             when: {
-                onCardPlayed: (event, context) => event.card.isParticipating() && context.source.isParticipating()
+                onCardPlayed: (event: EventPayload<EventNames.OnCardPlayed>, context: any) => event.card.isParticipating() && context.source.isParticipating()
             },
             effect: 'give him +1{1}/+1{2}',
             effectArgs: () => ['military', 'political'],

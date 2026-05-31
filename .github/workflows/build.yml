@@ -17,7 +17,7 @@ jobs:
       HTTPS: false
       LOBBY_PORT: 4000
       LOBBY_WS_URL: ws://127.0.0.1:6000
-      SECRET: test-secret
+      SECRET: testsecret
 
     steps:
       - uses: actions/checkout@v6
@@ -31,7 +31,7 @@ jobs:
         run: npm ci
 
       - name: TypeScript compile
-        run: npx tsc
+        run: npx tsc -p tsconfig.test.json
 
       - name: Fetch card data
         run: node bin/fetchdata.js prod

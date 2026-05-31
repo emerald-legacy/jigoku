@@ -1,9 +1,9 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
+import type BaseCard from '../../../BaseCard.js';
 import CardAbility from '../../../CardAbility.js';
 import { CardTypes, ConflictTypes, EventNames, Players, TargetModes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 const TARGET_CHARACTER = 'character';
 
@@ -11,7 +11,7 @@ function selfDishonorSelect(message: string) {
     return AbilityDsl.actions.selectCard((context: AbilityContext) => ({
         cardType: CardTypes.Character,
         controller: Players.Self,
-        cardCondition: (card: BaseCard) => card.isParticipating(),
+        cardCondition: (card: DrawCard) => card.isParticipating(),
         gameAction: AbilityDsl.actions.dishonor(),
         message: message,
         messageArgs: (card: BaseCard) => [context.player, card, context.source]
@@ -26,7 +26,7 @@ export default class NaturesWrath extends DrawCard {
             title: 'Dishonor or move home a character',
             condition: (context) =>
                 context.game.isDuringConflict(ConflictTypes.Military) &&
-                context.player.anyCardsInPlay((card: BaseCard) => card.isParticipating()),
+                context.player.anyCardsInPlay((card: DrawCard) => card.isParticipating()),
             targets: {
                 [TARGET_CHARACTER]: {
                     cardType: CardTypes.Character,
@@ -48,7 +48,7 @@ export default class NaturesWrath extends DrawCard {
                 }
             },
             then: (context) => {
-                if(!context.subResolution) {
+                if(!context || !context.subResolution) {
                     return {
                         target: {
                             mode: TargetModes.Select,
@@ -61,13 +61,14 @@ export default class NaturesWrath extends DrawCard {
                         },
                         then: {
                             thenCondition: (event: any) =>
+                                !!context &&
                                 event.origin === context.target &&
                                 !event.cancelled &&
                                 event.name === EventNames.OnCardDishonored,
                             gameAction: AbilityDsl.actions.resolveAbility({
-                                ability: context.ability instanceof CardAbility ? context.ability : null,
+                                ability: (context && context.ability instanceof CardAbility ? context.ability : undefined) as CardAbility,
                                 subResolution: true,
-                                choosingPlayerOverride: context.choosingPlayerOverride
+                                choosingPlayerOverride: context?.choosingPlayerOverride ?? undefined
                             })
                         }
                     };

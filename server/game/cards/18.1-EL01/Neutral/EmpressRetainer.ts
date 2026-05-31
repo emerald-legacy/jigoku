@@ -1,12 +1,12 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 function modifier(_: unknown, context: AbilityContext<EmpressRetainer>) {
     if(context.player.imperialFavor !== '') {
         return 1;
     }
-    if(context.player.opponent.imperialFavor !== '') {
+    if((context.player.opponent?.imperialFavor ?? '') !== '') {
         return -1;
     }
     return 0;
@@ -17,7 +17,7 @@ export default class EmpressRetainer extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card, context) => card === context.source,
+            match: (card, context) => card === context?.source,
             effect: AbilityDsl.effects.modifyBothSkills(modifier)
         });
     }

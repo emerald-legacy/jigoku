@@ -1,7 +1,9 @@
 import type { AbilityContext } from '../AbilityContext.js';
+import type { Conflict } from '../Conflict.js';
 import { EffectNames, EventNames } from '../Constants.js';
-import type Player from '../player.js';
-import type Ring from '../ring.js';
+import type { Event } from '../Events/Event.js';
+import type Player from '../Player.js';
+import type Ring from '../Ring.js';
 import { ResolveElementAction } from './ResolveElementAction.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
@@ -17,7 +19,7 @@ export class ResolveConflictRingAction extends RingAction {
         return ['resolve {0}', [properties.target]];
     }
 
-    addPropertiesToEvent(event, ring: Ring, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: Event, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         let conflict = context.game.currentConflict;
 
@@ -25,25 +27,26 @@ export class ResolveConflictRingAction extends RingAction {
         event.player = context.player;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: Event): void {
         if(event.name !== this.eventName) {
             return;
         }
 
-        const cannotResolveRingEffects = event.context.player.getEffects(EffectNames.CannotResolveRings);
+        const eventContext = event.context as AbilityContext;
+        const cannotResolveRingEffects = eventContext.player.getEffects(EffectNames.CannotResolveRings);
 
         if(cannotResolveRingEffects.length) {
-            event.context.game.addMessage('{0}\'s ring effect is cancelled.', event.context.player);
+            eventContext.game.addMessage('{0}\'s ring effect is cancelled.', eventContext.player);
             event.cancel();
             return;
         }
 
-        let elements = event.ring.getElements();
-        let player = event.player;
+        let elements = (event.ring as Ring).getElements();
+        let player = event.player as Player;
         if(elements.length === 1) {
             this.resolveRingEffects(player, elements);
         } else {
-            this.chooseElementsToResolve(player, elements, event.conflict.elementsToResolve);
+            this.chooseElementsToResolve(player, elements, (event.conflict as Conflict).elementsToResolve);
         }
     }
 
@@ -81,33 +84,33 @@ export class ResolveConflictRingAction extends RingAction {
             activePromptTitle: activePromptTitle,
             buttons: buttons,
             source: 'Resolve Ring Effect',
-            ringCondition: (ring) => elements.includes(ring.element),
-            onSelect: (player, ring) => {
+            ringCondition: (ring: Ring) => elements.includes(ring.element),
+            onSelect: (selectingPlayer: Player, ring: Ring) => {
                 elementsToResolve--;
                 chosenElements.push(ring.element);
                 this.chooseElementsToResolve(
-                    player,
+                    selectingPlayer,
                     elements.filter((e) => e !== ring.element),
                     elementsToResolve,
                     chosenElements
                 );
                 return true;
             },
-            onCancel: (player) => player.game.addMessage('{0} chooses not to resolve the conflict ring', player),
-            onMenuCommand: (player, arg) => {
+            onCancel: (cancelPlayer: Player) => cancelPlayer.game.addMessage('{0} chooses not to resolve the conflict ring', cancelPlayer),
+            onMenuCommand: (menuPlayer: Player, arg: string) => {
                 if(arg === 'all') {
-                    this.resolveRingEffects(player, elements.concat(chosenElements));
+                    this.resolveRingEffects(menuPlayer, elements.concat(chosenElements));
                 } else if(elements.includes(arg)) {
                     elementsToResolve--;
                     chosenElements.push(arg);
                     this.chooseElementsToResolve(
-                        player,
+                        menuPlayer,
                         elements.filter((e) => e !== arg),
                         elementsToResolve,
                         chosenElements
                     );
                 } else if(arg === 'done') {
-                    this.resolveRingEffects(player, chosenElements);
+                    this.resolveRingEffects(menuPlayer, chosenElements);
                 }
                 return true;
             }
@@ -122,9 +125,9 @@ export class ResolveConflictRingAction extends RingAction {
         let action = new ResolveElementAction({
             target: rings,
             optional: optional,
-            physicalRing: player.game.currentConflict.ring
+            physicalRing: player.game.currentConflict?.ring
         });
-        let events = [];
+        const events: Event[] = [];
         action.addEventsToArray(events, player.game.getFrameworkContext(player));
         player.game.openThenEventWindow(events);
     }

@@ -1,6 +1,6 @@
 import { CardTypes, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class TogashiIchi extends DrawCard {
     static id = 'togashi-ichi';
@@ -8,12 +8,14 @@ export default class TogashiIchi extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Break the province',
-            condition: (context) =>
-                context.source.isAttacking() &&
-                this.game.currentConflict.getNumberOfCardsPlayed(context.player) +
-                    this.game.currentConflict.getNumberOfCardsPlayed(context.player.opponent) >=
-                    10 &&
-                this.game.currentConflict.getConflictProvinces().some((p: any) => p.location !== Locations.StrongholdProvince),
+            condition: (context) => {
+                const conflict = this.game.currentConflict;
+                const opponent = context.player.opponent;
+                return !!conflict && !!opponent && context.source.isAttacking() &&
+                    conflict.getNumberOfCardsPlayed(context.player) +
+                        conflict.getNumberOfCardsPlayed(opponent) >= 10 &&
+                    conflict.getConflictProvinces().some((p: any) => p.location !== Locations.StrongholdProvince);
+            },
             effect: 'break an attacked province',
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',

@@ -1,18 +1,19 @@
-import DrawCard from '../../drawcard.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, CardTypes, CharacterStatus } from '../../Constants.js';
 
 class CourtOfDeception extends DrawCard {
     static id = 'court-of-deception';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Discard a dishonored character\'s status token',
-            condition: context => context.player.honor <= 6,
+            condition: (context: any) => context.player.honor <= 6,
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,
-                cardCondition: card => card.isDishonored && !card.isParticipating(),
-                gameAction: ability.actions.discardStatusToken(context => ({ target: context.target.getStatusToken(CharacterStatus.Dishonored) }))
+                cardCondition: (card: any) => card.isDishonored && !card.isParticipating(),
+                gameAction: ability.actions.discardStatusToken((context: any) => ({ target: context.target.getStatusToken(CharacterStatus.Dishonored) }))
             }
         });
     }

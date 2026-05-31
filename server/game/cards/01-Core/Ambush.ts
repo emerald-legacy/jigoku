@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, Players, TargetModes, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,7 +12,7 @@ class Ambush extends DrawCard {
                 activePromptTitle: 'Choose up to two characters',
                 numCards: 2,
                 mode: TargetModes.MaxStat,
-                cardStat: card => card.getCost(),
+                cardStat: (card: DrawCard) => card.getCost() ?? 0,
                 maxStat: () => 6,
                 cardType: CardTypes.Character,
                 location: [Locations.Hand, Locations.Provinces],

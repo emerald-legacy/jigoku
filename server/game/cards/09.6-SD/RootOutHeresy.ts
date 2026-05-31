@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -10,15 +10,15 @@ class RootOutHeresy extends DrawCard {
             title: 'Discard a card at random from your oppoent\'s hand',
             condition: () => this.game.isDuringConflict('political'),
             gameAction: AbilityDsl.actions.discardAtRandom(context => ({ target: context.player.opponent })),
-            then: context => ({
+            then: (context: any) => ({
                 gameAction: AbilityDsl.actions.selectCard(({
                     activePromptTitle: 'Choose an attacked province',
                     hidePromptIfSingleCard: true,
                     cardType: CardTypes.Province,
                     location: Locations.Provinces,
-                    cardCondition: card => card.isConflictProvince(),
+                    cardCondition: (card: DrawCard) => card.isConflictProvince(),
                     message: '{0} reduces the strength of {1} by {2}',
-                    messageArgs: cards => [context.player, cards, this.getStrengthModifier(context)],
+                    messageArgs: (cards: DrawCard) => [context.player, cards, this.getStrengthModifier(context)],
                     gameAction: AbilityDsl.actions.cardLastingEffect(() => {
                         let amount = this.getStrengthModifier(context);
                         return ({
@@ -30,10 +30,10 @@ class RootOutHeresy extends DrawCard {
         });
     }
 
-    getStrengthModifier(context) {
+    getStrengthModifier(context: any) {
         //Find the event
         if(context.events) {
-            let event = context.events.find(a => a.name === 'onCardsDiscardedFromHand');
+            let event = context.events.find((a: any) => a.name === 'onCardsDiscardedFromHand');
             if(event) {
                 if(event.discardedCards && event.discardedCards.length > 0) {
                     //Grab the first one (this card should only discard one card)

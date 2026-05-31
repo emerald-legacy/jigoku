@@ -1,7 +1,7 @@
 import type { AbilityContext } from './AbilityContext.js';
-import BaseCard from './basecard.js';
-import { EffectNames } from './Constants.js';
-import type Player from './player.js';
+import BaseCard from './BaseCard.js';
+import { EffectNames, Elements } from './Constants.js';
+import type Player from './Player.js';
 
 const illegalActions = new Set([
     'bow',
@@ -26,7 +26,7 @@ export class RoleCard extends BaseCard {
     isRole = true;
 
     getInfluence(): number {
-        return this.cardData.influence_pool + this.influenceModifier;
+        return (this.cardData.influence_pool ?? 0) + this.influenceModifier;
     }
 
     flipFaceup(): void {
@@ -46,7 +46,7 @@ export class RoleCard extends BaseCard {
         return !illegalActions.has(actionType) && super.allowGameAction(actionType, context);
     }
 
-    getElement() {
+    getElement(): Elements[] {
         return [];
     }
 }

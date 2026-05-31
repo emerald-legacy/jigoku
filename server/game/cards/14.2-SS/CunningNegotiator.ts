@@ -1,7 +1,7 @@
 import { CardTypes, DuelTypes, Locations, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
-import DrawCard from '../../drawcard.js';
+import type BaseCard from '../../BaseCard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class CunningNegotiator extends DrawCard {
     static id = 'cunning-negotiator';
@@ -9,7 +9,7 @@ export default class CunningNegotiator extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Political duel to resolve the attacked province\'s action ability',
-            condition: (context) => context.game.currentConflict,
+            condition: (context) => context.game.currentConflict !== null,
             initiateDuel: {
                 type: DuelTypes.Political,
                 opponentChoosesDuelTarget: true,

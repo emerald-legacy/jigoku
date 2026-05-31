@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TargetModes, Durations, Locations, Decks } from '../../Constants.js';
 
@@ -26,7 +26,7 @@ class MasterpiecePainter extends DrawCard {
         });
     }
 
-    revealAndMayPlayAbility(player) {
+    revealAndMayPlayAbility(player: any) {
         return AbilityDsl.actions.playerLastingEffect(() => {
             let chosenPlayer = player;
             let topCard = chosenPlayer.conflictDeck[0];

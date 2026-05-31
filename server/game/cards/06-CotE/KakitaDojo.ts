@@ -1,7 +1,7 @@
 import { DuelTypes } from '../../Constants.js';
 import { Duel } from '../../Duel.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class KakitaDojo extends DrawCard {
     static id = 'kakita-dojo';

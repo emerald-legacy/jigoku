@@ -3,7 +3,7 @@ import { AllPlayerPrompt } from './AllPlayerPrompt.js';
 import { TransferHonorAction } from '../GameActions/TransferHonorAction.js';
 import { EventNames, EffectNames } from '../Constants.js';
 import { GameModes } from '../../GameModes.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 
 class HonorBidPrompt extends AllPlayerPrompt {
     menuTitle: string;
@@ -60,7 +60,7 @@ class HonorBidPrompt extends AllPlayerPrompt {
 
     transferHonorAfterBid(context = this.game.getFrameworkContext()) {
         let firstPlayer = this.game.getFirstPlayer();
-        if(!firstPlayer.opponent) {
+        if(!firstPlayer || !firstPlayer.opponent) {
             return;
         }
         let difference = firstPlayer.honorBid - firstPlayer.opponent.honorBid;
@@ -68,8 +68,11 @@ class HonorBidPrompt extends AllPlayerPrompt {
             return;
         }
         let amount = Math.abs(difference);
-        let givingPlayer = difference > 0 ? firstPlayer : firstPlayer.opponent;
+        let givingPlayer: Player = difference > 0 ? firstPlayer : firstPlayer.opponent;
         let receivingPlayer = givingPlayer.opponent;
+        if(!receivingPlayer) {
+            return;
+        }
 
         const modifyGivenAmount = givingPlayer.getEffects(EffectNames.ModifyHonorTransferGiven).reduce((a: number, b: number) => a + b, 0);
         const modifyReceivedAmount = receivingPlayer.getEffects(EffectNames.ModifyHonorTransferReceived).reduce((a: number, b: number) => a + b, 0);

@@ -1,12 +1,15 @@
+import type { PromptButton } from './PlayerPromptState.js';
+import type Socket from '../socket.js';
+
 export class Spectator {
-    buttons = [];
+    buttons: PromptButton[] = [];
     menuTitle = 'Spectator mode';
     name: string;
     emailHash: string;
     lobbyId?: string;
     left: boolean = false;
     disconnected: boolean = false;
-    socket: any;
+    socket: Socket | null | undefined;
 
     constructor(
         public id: string,

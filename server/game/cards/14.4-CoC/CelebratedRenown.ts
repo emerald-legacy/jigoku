@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,8 +12,8 @@ class CelebratedRenown extends DrawCard {
                 controller: Players.Any,
                 cardType: CardTypes.Character,
                 cardCondition: (card, context) => {
-                    let charactersInPlay = context.game.findAnyCardsInPlay(c => c.type === CardTypes.Character);
-                    return card.getFate() === Math.max(...charactersInPlay.map(c => c.getFate()));
+                    let charactersInPlay = context.game.findAnyCardsInPlay((c: any) => c.type === CardTypes.Character);
+                    return card.getFate() === Math.max(...charactersInPlay.map((c: any) => c.getFate()));
                 },
                 gameAction: AbilityDsl.actions.honor()
             }

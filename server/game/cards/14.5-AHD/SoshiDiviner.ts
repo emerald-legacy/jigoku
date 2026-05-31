@@ -1,5 +1,6 @@
-import DrawCard from '../../drawcard.js';
-import { Locations, CardTypes, Players } from '../../Constants.js';
+import DrawCard from '../../DrawCard.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
+import { Locations, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SoshiDiviner extends DrawCard {
@@ -12,7 +13,6 @@ class SoshiDiviner extends DrawCard {
             targets: {
                 cardInProvince: {
                     location: [Locations.Provinces, Locations.PlayArea],
-                    player: Players.Any,
                     cardCondition: card => (card.isInProvince() && card.type !== CardTypes.Province && card.type !== CardTypes.Stronghold)
                 },
                 province: {
@@ -20,7 +20,6 @@ class SoshiDiviner extends DrawCard {
                     dependsOn: 'cardInProvince',
                     location: [Locations.Provinces],
                     cardType: CardTypes.Province,
-                    player: Players.Any,
                     cardCondition: (card, context) =>
                         card.location !== Locations.StrongholdProvince &&
                         ( //same controller check
@@ -37,8 +36,8 @@ class SoshiDiviner extends DrawCard {
             },
             effect: 'move {1} to {2}',
             effectArgs: context => [
-                context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
-                context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province
+                (context.targets.cardInProvince as DrawCard).isFacedown() ? 'a facedown card' : context.targets.cardInProvince as DrawCard,
+                (context.targets.province as ProvinceCard).isFacedown() ? (context.targets.province as ProvinceCard).location : context.targets.province as ProvinceCard
             ]
         });
     }

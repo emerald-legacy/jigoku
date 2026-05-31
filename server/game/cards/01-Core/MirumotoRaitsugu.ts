@@ -1,6 +1,6 @@
 import { CardTypes, DuelTypes, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class MirumotoRaitsugu extends DrawCard {
     static id = 'mirumoto-raitsugu';
@@ -19,7 +19,7 @@ export default class MirumotoRaitsugu extends DrawCard {
                     gameAction: (duel) =>
                         AbilityDsl.actions.conditional({
                             target: duel.loser?.[0],
-                            condition: duel.loser?.[0]?.getFate() > 0,
+                            condition: (duel.loser?.[0]?.getFate() ?? 0) > 0,
                             trueGameAction: AbilityDsl.actions.removeFate(),
                             falseGameAction: AbilityDsl.actions.discardFromPlay()
                         })

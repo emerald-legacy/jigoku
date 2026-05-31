@@ -1,6 +1,9 @@
-import DrawCard from '../../drawcard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Durations } from '../../Constants.js';
+import { Durations, EventNames } from '../../Constants.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 
 class StudyTheNaturalWorld extends DrawCard {
     static id = 'study-the-natural-world';
@@ -8,30 +11,30 @@ class StudyTheNaturalWorld extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Add elements to the conflict ring',
-            condition: context => context.player.anyCardsInPlay(card => card.isAttacking() && card.hasTrait('scholar')),
+            condition: (context: AbilityContext) => context.player.anyCardsInPlay((card: DrawCard) => card.isAttacking() && card.hasTrait('scholar')),
             effect: 'add {1} to the conflict ring. They may resolve all elements if they win the conflict',
-            effectArgs: context => [this.getElements(context)],
+            effectArgs: (context: AbilityContext) => [this.getElements(context)],
             gameAction: AbilityDsl.actions.multiple([
-                AbilityDsl.actions.ringLastingEffect(context => ({
+                AbilityDsl.actions.ringLastingEffect((context: AbilityContext) => ({
                     duration: Durations.UntilEndOfConflict,
-                    target: context.game.currentConflict.ring,
+                    target: context.game.currentConflict?.ring,
                     effect: AbilityDsl.effects.addElement(this.getElementsOfAttackedProvinces(context))
                 })),
-                AbilityDsl.actions.playerLastingEffect(context => ({
+                AbilityDsl.actions.playerLastingEffect((context: AbilityContext) => ({
                     targetController: context.player,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
-                            afterConflict: event =>
+                            afterConflict: (event: EventPayload<typeof EventNames.AfterConflict>) =>
                                 context.player === event.conflict.winner
                         },
                         gameAction: AbilityDsl.actions.menuPrompt({
                             activePromptTitle: 'Resolve Ring Effects?',
                             choices: ['Yes', 'No'],
-                            choiceHandler: (choice, displayMessage) => {
+                            choiceHandler: (choice: string, displayMessage: boolean) => {
                                 if(displayMessage && choice === 'Yes') {
                                     context.game.addMessage('{0} chooses to resolve all elements of the contested ring due to the delayed effect of {1}', context.player, context.source);
                                 }
-                                return { target: (choice === 'Yes' ? context.game.currentConflict.ring.getElements() : []) };
+                                return { target: (choice === 'Yes' ? (context.game.currentConflict?.ring?.getElements() ?? []) : []) };
                             },
                             gameAction: AbilityDsl.actions.resolveRingEffect()
                         })
@@ -41,16 +44,16 @@ class StudyTheNaturalWorld extends DrawCard {
         });
     }
 
-    getElementsOfAttackedProvinces(context) {
-        let elements = [];
-        context.game.currentConflict.getConflictProvinces().forEach(a => {
+    getElementsOfAttackedProvinces(context: AbilityContext): string[] {
+        let elements: string[] = [];
+        context.game.currentConflict?.getConflictProvinces().forEach((a: ProvinceCard) => {
             elements = elements.concat(a.getElement());
         });
         return elements;
     }
 
-    getElements(context) {
-        const capitalize = {
+    getElements(context: AbilityContext) {
+        const capitalize: Record<string, string> = {
             air: 'Air',
             water: 'Water',
             earth: 'Earth',

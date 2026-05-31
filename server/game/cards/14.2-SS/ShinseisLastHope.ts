@@ -9,7 +9,7 @@ export default class ShinseisLastHope extends ProvinceCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.reduceCost({
                 amount: 2,
-                match: (card, source) => card.location === source.location,
+                match: (card: any, source: any) => card.location === source.location,
                 playingTypes: PlayTypes.PlayFromProvince
             })
         });
@@ -17,7 +17,7 @@ export default class ShinseisLastHope extends ProvinceCard {
         this.persistentEffect({
             targetLocation: Locations.Provinces,
             targetController: Players.Self,
-            match: (card, context) => card.type === CardTypes.Character && card.location === context.source.location,
+            match: (card, context) => card.type === CardTypes.Character && card.location === context?.source.location,
             effect: AbilityDsl.effects.entersPlayWithStatus(CharacterStatus.Dishonored)
         });
     }

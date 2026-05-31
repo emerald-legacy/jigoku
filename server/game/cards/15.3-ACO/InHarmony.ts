@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class InHarmony extends DrawCard {
@@ -13,7 +13,7 @@ class InHarmony extends DrawCard {
         });
     }
 
-    canPlay(context) {
+    canPlay(context: any) {
         return context.player.getClaimedRings().length >= 1;
     }
 }

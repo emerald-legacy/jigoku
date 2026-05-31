@@ -1,4 +1,4 @@
-import Game from '../../../build/server/game/game.js';
+import Game from '../../../build/server/game/Game.js';
 
 describe('Game - Player Management', function() {
     beforeEach(function() {

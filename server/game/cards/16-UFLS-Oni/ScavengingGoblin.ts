@@ -4,6 +4,7 @@ import AbilityDsl from '../../abilitydsl.js';
 
 export default class ScavengingGoblin extends BaseOni {
     static id = 'scavenging-goblin';
+    private messageShown?: boolean;
 
     public setupCardAbilities() {
         super.setupCardAbilities();
@@ -17,10 +18,10 @@ export default class ScavengingGoblin extends BaseOni {
                     context.player.opponent.conflictDeck.length > 0
             },
             effect: 'remove the top 3 cards of {1}\'s conflict deck from the game as well as any matching attachments',
-            effectArgs: (context) => [context.player.opponent],
+            effectArgs: (context) => [context.player.opponent ?? ''],
             gameAction: AbilityDsl.actions.multipleContext((context) => {
                 const cardsToRemove = context.player.opponent.conflictDeck.slice(0, 3);
-                let cardNames = cardsToRemove.map((card) => card.name);
+                const cardNames = cardsToRemove.map((card: any) => card.name);
                 const attachmentsToRemove = this.game.allCards.filter((card) => {
                     if(card.location !== 'play area') {
                         return false;

@@ -1,7 +1,7 @@
 import { CardTypes, Locations } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class AncientMaster extends DrawCard {
     static id = 'ancient-master';
@@ -12,9 +12,9 @@ export default class AncientMaster extends DrawCard {
             title: 'Search top 5 card for kiho or tattoo',
             when: {
                 onConflictDeclared: (event, context) =>
-                    context.source.type === CardTypes.Attachment && event.attackers.includes(context.source.parent),
+                    context.source.type === CardTypes.Attachment && (event.attackers ?? []).includes(context.source.parent),
                 onDefendersDeclared: (event, context) =>
-                    context.source.type === CardTypes.Attachment && event.defenders.includes(context.source.parent)
+                    context.source.type === CardTypes.Attachment && (event.defenders ?? []).includes(context.source.parent)
             },
             printedAbility: false,
             effect: 'look at the top five cards of their deck',

@@ -1,4 +1,5 @@
 import { AbilityContext } from '../../AbilityContext.js';
+import type DrawCard from '../../DrawCard.js';
 import { BaseStepWithPipeline } from '../BaseStepWithPipeline.js';
 import { discardCard, payFate, payFateToRing, payHonor } from '../../Costs.js';
 import CovertAbility from '../../KeywordAbilities/CovertAbility.js';
@@ -12,7 +13,7 @@ import AttackersMatrix from './attackersMatrix.js';
 
 import { Players, CardTypes, EventNames, EffectNames, Locations, ConflictTypes } from '../../Constants.js';
 import { GameModes } from '../../../GameModes.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 
 /**
 Conflict Resolution
@@ -207,7 +208,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     this.conflict.attackingPlayer,
                     totalFateCost
                 );
-                payFate(totalFateCost).addEventsToArray(
+                payFate(totalFateCost).addEventsToArray?.(
                     costEvents,
                     this.game.getFrameworkContext(this.conflict.attackingPlayer)
                 );
@@ -218,7 +219,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     this.conflict.attackingPlayer,
                     totalHonorCost
                 );
-                payHonor(totalHonorCost).addEventsToArray(
+                payHonor(totalHonorCost).addEventsToArray?.(
                     costEvents,
                     this.game.getFrameworkContext(this.conflict.attackingPlayer)
                 );
@@ -236,7 +237,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     message: '{0} discards {1}',
                     messageArgs: (cards: any, player: any) => [player, cards]
                 };
-                discardCard(props).addEventsToArray(
+                discardCard(props).addEventsToArray?.(
                     costEvents,
                     this.game.getFrameworkContext(this.conflict.attackingPlayer),
                     // @ts-expect-error -- legacy optional flag on discardCard cost
@@ -304,7 +305,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                 const costEvents: any[] = [];
                 let result = true;
                 let costToRings = province.sumEffects(EffectNames.FateCostToRingToDeclareConflictAgainst);
-                payFateToRing(costToRings).addEventsToArray(
+                payFateToRing(costToRings).addEventsToArray?.(
                     costEvents,
                     this.game.getFrameworkContext(this.conflict.attackingPlayer),
                     // @ts-expect-error -- legacy optional flag on discardCard cost
@@ -426,7 +427,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     ability: new CovertAbility()
                 })
         );
-        contexts = contexts.filter((context: any) => context.source.canInitiateKeywords(context));
+        contexts = contexts.filter((context: AbilityContext) => context.source.canInitiateKeywords(context));
 
         for(let target of targets) {
             target.covert = false;
@@ -448,9 +449,9 @@ class ConflictFlow extends BaseStepWithPipeline {
             }
             if(
                 this.covert.every(
-                    (context: any) =>
-                        context.targets.target.canBeBypassedByCovert(context) &&
-                        context.targets.target.checkRestrictions('target', context)
+                    (context: AbilityContext) =>
+                        (context.targets.target as DrawCard).canBeBypassedByCovert(context) &&
+                        (context.targets.target as DrawCard).checkRestrictions('target', context)
                 )
             ) {
                 return;
@@ -495,7 +496,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     ability: new CovertAbility()
                 })
         );
-        contexts = contexts.filter((context: any) => context.source.canInitiateKeywords(context));
+        contexts = contexts.filter((context: AbilityContext) => context.source.canInitiateKeywords(context));
 
         for(let target of targets) {
             target.covert = false;
@@ -545,12 +546,12 @@ class ConflictFlow extends BaseStepWithPipeline {
 
         if(this.game.gameMode === GameModes.Emerald) {
             let goodContext: any = undefined;
-            this.covert.forEach((context: any) => {
+            this.covert.forEach((context: AbilityContext) => {
                 if(events.length === 0 && context.source && context.target) {
                     events = [
                         new InitiateCardAbilityEvent(
                             { card: context.source, context: context },
-                            () => (context.target.covert = true)
+                            () => ((context.target as DrawCard).covert = true)
                         )
                     ];
                     goodContext = context;
@@ -564,14 +565,14 @@ class ConflictFlow extends BaseStepWithPipeline {
             );
         } else {
             events = this.covert.map(
-                (context: any) =>
+                (context: AbilityContext) =>
                     new InitiateCardAbilityEvent(
                         { card: context.source, context: context },
-                        () => (context.target.covert = true)
+                        () => ((context.target as DrawCard).covert = true)
                     )
             );
             events = events.concat(
-                this.covert.map((context: any) =>
+                this.covert.map((context: AbilityContext) =>
                     this.game.getEvent(EventNames.OnCovertResolved, { card: context.source, context: context })
                 )
             );
@@ -672,7 +673,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     this.conflict.defendingPlayer,
                     totalHonorCost
                 );
-                payHonor(totalHonorCost).addEventsToArray(
+                payHonor(totalHonorCost).addEventsToArray?.(
                     costEvents,
                     this.game.getFrameworkContext(this.conflict.defendingPlayer)
                 );

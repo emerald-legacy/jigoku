@@ -1,7 +1,8 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations } from '../../Constants.js';
+import { EventNames, Locations } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class RepentantLegion extends DrawCard {
     static id = 'repentant-legion';
 
@@ -9,7 +10,7 @@ class RepentantLegion extends DrawCard {
         this.reaction({
             title: 'fill provinces with a card',
             when: {
-                onBreakProvince: (event, context) => context.source.isParticipating() && event.conflict.getConflictProvinces().some(a => a.owner !== context.player)
+                onBreakProvince: (event: EventPayload<EventNames.OnBreakProvince>, context) => context.source.isParticipating() && (event.conflict?.getConflictProvinces().some((a: any) => a.owner !== context.player) ?? false)
             },
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.moveCard(context => ({

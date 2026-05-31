@@ -1,12 +1,15 @@
-import DrawCard from '../../drawcard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import type BaseCard from '../../BaseCard.js';
+import type Player from '../../Player.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TargetModes, Locations, Players, CardTypes } from '../../Constants.js';
 import { GameModes } from '../../../GameModes.js';
 
 class CardWrapper {
-    dynastyCard: any;
+    dynastyCard: BaseCard;
     targetLocation: string | null;
-    constructor(card) {
+    constructor(card: BaseCard) {
         this.dynastyCard = card;
         this.targetLocation = null;
     }
@@ -14,6 +17,9 @@ class CardWrapper {
 
 class GovernorsSpy extends DrawCard {
     static id = 'governor-s-spy';
+
+    dynastyCards: CardWrapper[] = [];
+    unplacedDynastyCards: BaseCard[] = [];
 
     setupCardAbilities() {
         this.dynastyCards = [];
@@ -26,54 +32,56 @@ class GovernorsSpy extends DrawCard {
                 targets: true,
                 choices: {
                     [this.owner.name]: AbilityDsl.actions.handler({
-                        handler: (context) => this.governorHandler(context, this.owner)
+                        handler: (context: AbilityContext) => this.governorHandler(context, this.owner)
                     }),
                     [(this.owner.opponent && this.owner.opponent.name) || 'NA']: AbilityDsl.actions.handler({
-                        handler: (context) => this.governorHandler(context, this.owner.opponent)
+                        handler: (context: AbilityContext) => {
+                            if(this.owner.opponent) {
+                                this.governorHandler(context, this.owner.opponent);
+                            }
+                        }
                     })
                 }
             },
             effect: 'turn facedown and rearrange all of {1}\'s dynasty cards',
-            effectArgs: (context) => (context.select === this.owner.name ? this.owner : this.owner.opponent)
+            effectArgs: (context) => (context.select === this.owner.name ? this.owner : this.owner.opponent) as Player
         });
     }
 
-    governorHandler(context, targetPlayer) {
-        //Step 1: Find all dynasty cards for the player currently in provinces
+    governorHandler(context: AbilityContext, targetPlayer: Player) {
         this.dynastyCards = targetPlayer
             .getDynastyCardsInProvince(Locations.Provinces)
-            .map((card) => new CardWrapper(card));
-        this.dynastyCards.sort((a, b) => a.dynastyCard.name.localeCompare(b.dynastyCard.name));
-        //Step 2: Flip them all face down and create a list that we'll end up using for their new location
-        this.dynastyCards.forEach((card) => {
+            .map((card: BaseCard) => new CardWrapper(card));
+        this.dynastyCards.sort((a: CardWrapper, b: CardWrapper) => a.dynastyCard.name.localeCompare(b.dynastyCard.name));
+        this.dynastyCards.forEach((card: CardWrapper) => {
             this.game.applyGameAction(context, { turnFacedown: card.dynastyCard });
         });
-        //Step 2.5: Return control of any facedown cards to their owner
-        this.dynastyCards = this.dynastyCards.filter((a) => a.dynastyCard.owner === targetPlayer);
+        this.dynastyCards = this.dynastyCards.filter((a: CardWrapper) => a.dynastyCard.owner === targetPlayer);
 
-        //Step 3: For each card, choose an eligible province.  This is done via prompt for select, which queues simple steps
-        this.unplacedDynastyCards = this.dynastyCards.map((a) => a.dynastyCard);
+        this.unplacedDynastyCards = this.dynastyCards.map((a: CardWrapper) => a.dynastyCard);
         this.governorSelectPrompt(context, targetPlayer);
 
         context.game.queueSimpleStep(() => this.governorMoveCards(context, targetPlayer));
     }
 
-    governorSelectPrompt(context, targetPlayer) {
-        let cardHandler = (currentCard) => {
+    governorSelectPrompt(context: AbilityContext, targetPlayer: Player) {
+        let cardHandler = (currentCard: BaseCard) => {
             this.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a province for ' + currentCard.name,
                 context: context,
                 location: Locations.Provinces,
                 controller: targetPlayer === context.player ? Players.Self : Players.Opponent,
-                cardCondition: (card) =>
+                cardCondition: (card: any) =>
                     card.type === CardTypes.Province &&
                     this.isProvinceValidTarget(targetPlayer, this.dynastyCards, card),
-                onSelect: (player, card) => {
+                onSelect: (player: Player, card: BaseCard) => {
                     this.game.addMessage('{0} places a card', player);
-                    this.unplacedDynastyCards = this.unplacedDynastyCards.filter((a) => a !== currentCard);
-                    let wrapper = this.dynastyCards.find((a) => a.dynastyCard === currentCard);
+                    this.unplacedDynastyCards = this.unplacedDynastyCards.filter((a: BaseCard) => a !== currentCard);
+                    let wrapper = this.dynastyCards.find((a: CardWrapper) => a.dynastyCard === currentCard);
                     let location = card.location;
-                    wrapper.targetLocation = location;
+                    if(wrapper) {
+                        wrapper.targetLocation = location;
+                    }
 
                     if(this.unplacedDynastyCards.length > 0) {
                         this.game.promptWithHandlerMenu(context.player, {
@@ -101,9 +109,9 @@ class GovernorsSpy extends DrawCard {
         });
     }
 
-    governorMoveCards(context, targetPlayer) {
-        this.dynastyCards.forEach((card) => {
-            targetPlayer.moveCard(card.dynastyCard, card.targetLocation);
+    governorMoveCards(context: AbilityContext, targetPlayer: Player) {
+        this.dynastyCards.forEach((card: CardWrapper) => {
+            targetPlayer.moveCard(card.dynastyCard, card.targetLocation as Locations);
         });
         let emptyLocations = this.getEmptyProvinces(this.dynastyCards);
         emptyLocations.forEach((location) => {
@@ -112,31 +120,27 @@ class GovernorsSpy extends DrawCard {
         this.game.addMessage('{0} has finished placing cards', context.player);
     }
 
-    isProvinceValidTarget(targetPlayer, cards, province) {
-        //Step 1: Identify empty provinces
+    isProvinceValidTarget(targetPlayer: Player, cards: CardWrapper[], province: BaseCard) {
         let emptyLocations = this.getEmptyProvinces(cards);
 
-        //Step 2: Identify how many cards we have left to place
         let location = province.location;
-        let cardsLeft = cards.filter((a) => !a.targetLocation).length;
+        let cardsLeft = cards.filter((a: CardWrapper) => !a.targetLocation).length;
 
-        //Step 2.1: We have more cards than we have empty locations
         if(cardsLeft > emptyLocations.length) {
             return true;
         }
 
-        //Step 2.2 We need to put the card in an empty location
         return emptyLocations.some((loc) => loc === location);
     }
 
-    getEmptyProvinces(cards) {
-        let emptyLocations = [];
+    getEmptyProvinces(cards: CardWrapper[]): Locations[] {
+        let emptyLocations: Locations[] = [];
         let baseLocations = [Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree];
         if(this.game.gameMode !== GameModes.Skirmish) {
             baseLocations.push(Locations.ProvinceFour);
         }
         baseLocations.forEach((p) => {
-            if(!cards.some((card) => card.targetLocation === p)) {
+            if(!cards.some((card: CardWrapper) => card.targetLocation === p)) {
                 emptyLocations.push(p);
             }
         });

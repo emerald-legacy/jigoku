@@ -1,6 +1,6 @@
 import { CardTypes, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class WayOfTheCrab extends DrawCard {
     static id = 'way-of-the-crab';
@@ -14,7 +14,7 @@ export default class WayOfTheCrab extends DrawCard {
                 cardCondition: (card: DrawCard) => card.isFaction('crab')
             }),
             effect: 'force {1} to sacrifice a character',
-            effectArgs: (context) => context.player.opponent,
+            effectArgs: (context) => context.player.opponent ?? '',
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to sacrifice',

@@ -1,6 +1,6 @@
 import { CardTypes, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class IncessantMoto extends DrawCard {
     static id = 'incessant-moto';
@@ -9,7 +9,7 @@ export default class IncessantMoto extends DrawCard {
         this.persistentEffect({
             condition: context => context.source.isParticipating(),
             targetController: Players.Any,
-            match: (card, context) => card === context.source,
+            match: (card, context) => card === context?.source,
             effect: AbilityDsl.effects.canContributeWhileBowed()
         });
 

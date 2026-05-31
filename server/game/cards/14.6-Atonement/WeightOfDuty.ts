@@ -2,8 +2,8 @@ import { AbilityContext } from '../../AbilityContext.js';
 import { CardTypes, Players, TargetModes, Elements } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import BaseCard from '../../basecard.js';
-import DrawCard from '../../drawcard.js';
+import BaseCard from '../../BaseCard.js';
+import DrawCard from '../../DrawCard.js';
 
 const ELEMENT_KEY = 'weight-of-duty-void';
 
@@ -48,7 +48,7 @@ export default class WeightOfDuty extends ProvinceCard {
             return true;
         }
 
-        return context.player.opponent.cardsInPlay.some(
+        return !!context.player.opponent?.cardsInPlay.some(
             (a: BaseCard) =>
                 !a.isUnique() && (a.allowGameAction('bow', context) || a.allowGameAction('dishonor', context))
         );

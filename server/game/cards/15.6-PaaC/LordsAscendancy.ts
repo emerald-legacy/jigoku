@@ -1,6 +1,7 @@
 import { CardTypes } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type BaseCard from '../../BaseCard.js';
 
 export default class LordsAscendancy extends ProvinceCard {
     static id = 'lord-s-ascendancy';
@@ -16,7 +17,7 @@ export default class LordsAscendancy extends ProvinceCard {
                 }))
             },
             effect: 'place a fate from {1}\'s fate pool on {0}',
-            effectArgs: (context) => [context.target.controller]
+            effectArgs: (context) => [(context.target as BaseCard).controller]
         });
     }
 }

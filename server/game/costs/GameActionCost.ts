@@ -18,7 +18,7 @@ export class GameActionCost implements Cost {
         this.action.addEventsToArray(events, context);
     }
 
-    getCostMessage(context: AbilityContext): [string, any[]] {
-        return this.action.getCostMessage(context);
+    getCostMessage(context: AbilityContext): unknown[] {
+        return this.action.getCostMessage(context) ?? [];
     }
 }

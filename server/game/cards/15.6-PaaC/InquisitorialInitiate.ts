@@ -1,7 +1,7 @@
 import { Locations, Players, TargetModes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
-import DrawCard from '../../drawcard.js';
+import type BaseCard from '../../BaseCard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class InquisitorialInitiate extends DrawCard {
     static id = 'inquisitorial-initiate';
@@ -19,7 +19,7 @@ export default class InquisitorialInitiate extends DrawCard {
                 activePromptTitle: 'Choose cards to reveal',
                 player: Players.Opponent,
                 numCardsFunc: (context) =>
-                    context.player.opponent.cardsInPlay.filter((card: BaseCard) => card.getFate() === 0).length,
+                    context.player.opponent?.cardsInPlay.filter((card: BaseCard) => card.getFate() === 0).length ?? 0,
                 mode: TargetModes.ExactlyVariable,
                 location: Locations.Hand
             },

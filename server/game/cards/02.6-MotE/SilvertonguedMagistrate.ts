@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SilverTonguedMagistrate extends DrawCard {
@@ -7,8 +7,8 @@ class SilverTonguedMagistrate extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isAttacking(),
-            effect: AbilityDsl.effects.cannotContribute((conflict, context) => {
-                return card => card.getFate() === 0 && card !== context.source;
+            effect: AbilityDsl.effects.cannotContribute((conflict: any, context: any) => {
+                return (card: DrawCard) => card.getFate() === 0 && card !== context.source;
             })
         });
     }

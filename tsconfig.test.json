@@ -4,6 +4,6 @@
         "allowJs": false,
         "types": ["jasmine", "node"]
     },
-    "include": ["server/**/*", "test/server/**/*", "test/types/**/*"],
+    "include": ["server/**/*", "test/server/**/*", "test/helpers/**/*", "test/types/**/*"],
     "exclude": ["client/**/*"]
 }

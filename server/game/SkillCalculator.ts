@@ -1,11 +1,14 @@
 import StatModifier from './StatModifier.js';
 import { EffectNames } from './Constants.js';
-import type DrawCard from './drawcard.js';
+import type DrawCard from './DrawCard.js';
+import type { CardEffect } from './Effects/types.js';
+
+export type Exclusions = EffectNames[] | ((effect: CardEffect) => boolean);
 
 interface BaseSkillModifiers {
-    baseMilitaryModifiers: any[];
+    baseMilitaryModifiers: StatModifier[];
     baseMilitarySkill: number;
-    basePoliticalModifiers: any[];
+    basePoliticalModifiers: StatModifier[];
     basePoliticalSkill: number;
 }
 
@@ -25,20 +28,20 @@ export class SkillCalculator {
             EffectNames.SetBaseGlory
         ];
 
-        const baseEffects = this.card.getRawEffects().filter((effect: any) => baseModifierEffects.includes(effect.type));
+        const baseEffects = this.card.getRawEffects().filter((effect: CardEffect) => baseModifierEffects.includes(effect.type));
         let baseMilitaryModifiers = [StatModifier.fromCard(this.card.printedMilitarySkill, this.card, 'Printed skill', false)];
         let basePoliticalModifiers = [StatModifier.fromCard(this.card.printedPoliticalSkill, this.card, 'Printed skill', false)];
         let baseMilitarySkill = this.card.printedMilitarySkill;
         let basePoliticalSkill = this.card.printedPoliticalSkill;
 
-        baseEffects.forEach((effect: any) => {
+        baseEffects.forEach((effect: CardEffect) => {
             switch(effect.type) {
                 case EffectNames.CalculatePrintedMilitarySkill: {
                     const skillFunction = effect.getValue(this.card);
                     const calculatedSkillValue = skillFunction(this.card);
                     baseMilitarySkill = calculatedSkillValue;
                     baseMilitaryModifiers = baseMilitaryModifiers.filter(
-                        (mod: any) => !mod.name.startsWith('Printed skill')
+                        (mod: StatModifier) =>!mod.name.startsWith('Printed skill')
                     );
                     baseMilitaryModifiers.push(
                         StatModifier.fromEffect(
@@ -55,10 +58,10 @@ export class SkillCalculator {
                     baseMilitarySkill = copiedCard.getPrintedSkill('military');
                     basePoliticalSkill = copiedCard.getPrintedSkill('political');
                     baseMilitaryModifiers = baseMilitaryModifiers.filter(
-                        (mod: any) => !mod.name.startsWith('Printed skill')
+                        (mod: StatModifier) =>!mod.name.startsWith('Printed skill')
                     );
                     basePoliticalModifiers = basePoliticalModifiers.filter(
-                        (mod: any) => !mod.name.startsWith('Printed skill')
+                        (mod: StatModifier) =>!mod.name.startsWith('Printed skill')
                     );
                     baseMilitaryModifiers.push(
                         StatModifier.fromEffect(
@@ -81,13 +84,13 @@ export class SkillCalculator {
                 case EffectNames.SetBaseDash:
                     if(effect.getValue(this.card) === 'military') {
                         baseMilitaryModifiers.push(
-                            StatModifier.fromEffect(undefined, effect, true, StatModifier.getEffectName(effect))
+                            StatModifier.fromEffect(NaN, effect, true, StatModifier.getEffectName(effect))
                         );
                         baseMilitarySkill = NaN;
                     }
                     if(effect.getValue(this.card) === 'political') {
                         basePoliticalModifiers.push(
-                            StatModifier.fromEffect(undefined, effect, true, StatModifier.getEffectName(effect))
+                            StatModifier.fromEffect(NaN, effect, true, StatModifier.getEffectName(effect))
                         );
                         basePoliticalSkill = NaN;
                     }
@@ -166,15 +169,15 @@ export class SkillCalculator {
             }
         });
 
-        const overridingMilModifiers = baseMilitaryModifiers.filter((mod: any) => mod.overrides);
+        const overridingMilModifiers = baseMilitaryModifiers.filter((mod: StatModifier) =>mod.overrides);
         if(overridingMilModifiers.length > 0) {
-            const lastModifier = overridingMilModifiers.at(-1);
+            const lastModifier = overridingMilModifiers[overridingMilModifiers.length - 1];
             baseMilitaryModifiers = [lastModifier];
             baseMilitarySkill = lastModifier.amount;
         }
-        const overridingPolModifiers = basePoliticalModifiers.filter((mod: any) => mod.overrides);
+        const overridingPolModifiers = basePoliticalModifiers.filter((mod: StatModifier) =>mod.overrides);
         if(overridingPolModifiers.length > 0) {
-            const lastModifier = overridingPolModifiers.at(-1);
+            const lastModifier = overridingPolModifiers[overridingPolModifiers.length - 1];
             basePoliticalModifiers = [lastModifier];
             basePoliticalSkill = lastModifier.amount;
         }
@@ -187,7 +190,7 @@ export class SkillCalculator {
         };
     }
 
-    getMilitaryModifiers(exclusions?: any): any[] {
+    getMilitaryModifiers(exclusions?: Exclusions): StatModifier[] {
         const baseSkillModifiers = this.getBaseSkillModifiers();
         if(isNaN(baseSkillModifiers.baseMilitarySkill)) {
             return baseSkillModifiers.baseMilitaryModifiers;
@@ -199,16 +202,16 @@ export class SkillCalculator {
 
         let rawEffects;
         if(typeof exclusions === 'function') {
-            rawEffects = this.card.getRawEffects().filter((effect: any) => !exclusions(effect));
+            rawEffects = this.card.getRawEffects().filter((effect: CardEffect) => !exclusions(effect));
         } else {
-            rawEffects = this.card.getRawEffects().filter((effect: any) => !exclusions.includes(effect.type));
+            rawEffects = this.card.getRawEffects().filter((effect: CardEffect) => !exclusions.includes(effect.type));
         }
 
         const setEffects = rawEffects.filter(
-            (effect: any) => effect.type === EffectNames.SetMilitarySkill || effect.type === EffectNames.SetDash
+            (effect: CardEffect) => effect.type === EffectNames.SetMilitarySkill || effect.type === EffectNames.SetDash
         );
         if(setEffects.length > 0) {
-            const latestSetEffect = setEffects.at(-1);
+            const latestSetEffect = setEffects[setEffects.length - 1];
             const setAmount = latestSetEffect.type === EffectNames.SetDash ? undefined : latestSetEffect.getValue(this.card);
             return [
                 StatModifier.fromEffect(
@@ -223,12 +226,12 @@ export class SkillCalculator {
         const modifiers = baseSkillModifiers.baseMilitaryModifiers;
 
         const modifierEffects = rawEffects.filter(
-            (effect: any) =>
+            (effect: CardEffect) =>
                 effect.type === EffectNames.AttachmentMilitarySkillModifier ||
                 effect.type === EffectNames.ModifyMilitarySkill ||
                 effect.type === EffectNames.ModifyBothSkills
         );
-        modifierEffects.forEach((modifierEffect: any) => {
+        modifierEffects.forEach((modifierEffect: CardEffect) => {
             const value = modifierEffect.getValue(this.card);
             modifiers.push(StatModifier.fromEffect(value, modifierEffect));
         });
@@ -236,11 +239,11 @@ export class SkillCalculator {
         this.adjustHonorStatusModifiers(modifiers);
 
         const multiplierEffects = rawEffects.filter(
-            (effect: any) => effect.type === EffectNames.ModifyMilitarySkillMultiplier
+            (effect: CardEffect) => effect.type === EffectNames.ModifyMilitarySkillMultiplier
         );
-        multiplierEffects.forEach((multiplierEffect: any) => {
+        multiplierEffects.forEach((multiplierEffect: CardEffect) => {
             const multiplier = multiplierEffect.getValue(this.card);
-            const currentTotal = modifiers.reduce((total: number, modifier: any) => total + modifier.amount, 0);
+            const currentTotal = modifiers.reduce((total: number, modifier: StatModifier) => total + modifier.amount, 0);
             const amount = (multiplier - 1) * currentTotal;
             modifiers.push(StatModifier.fromEffect(amount, multiplierEffect));
         });
@@ -248,7 +251,7 @@ export class SkillCalculator {
         return modifiers;
     }
 
-    getPoliticalModifiers(exclusions?: any): any[] {
+    getPoliticalModifiers(exclusions?: Exclusions): StatModifier[] {
         const baseSkillModifiers = this.getBaseSkillModifiers();
         if(isNaN(baseSkillModifiers.basePoliticalSkill)) {
             return baseSkillModifiers.basePoliticalModifiers;
@@ -260,14 +263,14 @@ export class SkillCalculator {
 
         let rawEffects;
         if(typeof exclusions === 'function') {
-            rawEffects = this.card.getRawEffects().filter((effect: any) => !exclusions(effect));
+            rawEffects = this.card.getRawEffects().filter((effect: CardEffect) => !exclusions(effect));
         } else {
-            rawEffects = this.card.getRawEffects().filter((effect: any) => !exclusions.includes(effect.type));
+            rawEffects = this.card.getRawEffects().filter((effect: CardEffect) => !exclusions.includes(effect.type));
         }
 
-        const setEffects = rawEffects.filter((effect: any) => effect.type === EffectNames.SetPoliticalSkill);
+        const setEffects = rawEffects.filter((effect: CardEffect) => effect.type === EffectNames.SetPoliticalSkill);
         if(setEffects.length > 0) {
-            const latestSetEffect = setEffects.at(-1);
+            const latestSetEffect = setEffects[setEffects.length - 1];
             const setAmount = latestSetEffect.getValue(this.card);
             return [
                 StatModifier.fromEffect(
@@ -282,12 +285,12 @@ export class SkillCalculator {
         const modifiers = baseSkillModifiers.basePoliticalModifiers;
 
         const modifierEffects = rawEffects.filter(
-            (effect: any) =>
+            (effect: CardEffect) =>
                 effect.type === EffectNames.AttachmentPoliticalSkillModifier ||
                 effect.type === EffectNames.ModifyPoliticalSkill ||
                 effect.type === EffectNames.ModifyBothSkills
         );
-        modifierEffects.forEach((modifierEffect: any) => {
+        modifierEffects.forEach((modifierEffect: CardEffect) => {
             const value = modifierEffect.getValue(this.card);
             modifiers.push(StatModifier.fromEffect(value, modifierEffect));
         });
@@ -295,11 +298,11 @@ export class SkillCalculator {
         this.adjustHonorStatusModifiers(modifiers);
 
         const multiplierEffects = rawEffects.filter(
-            (effect: any) => effect.type === EffectNames.ModifyPoliticalSkillMultiplier
+            (effect: CardEffect) => effect.type === EffectNames.ModifyPoliticalSkillMultiplier
         );
-        multiplierEffects.forEach((multiplierEffect: any) => {
+        multiplierEffects.forEach((multiplierEffect: CardEffect) => {
             const multiplier = multiplierEffect.getValue(this.card);
-            const currentTotal = modifiers.reduce((total: number, modifier: any) => total + modifier.amount, 0);
+            const currentTotal = modifiers.reduce((total: number, modifier: StatModifier) => total + modifier.amount, 0);
             const amount = (multiplier - 1) * currentTotal;
             modifiers.push(StatModifier.fromEffect(amount, multiplierEffect));
         });
@@ -307,28 +310,28 @@ export class SkillCalculator {
         return modifiers;
     }
 
-    adjustHonorStatusModifiers(modifiers: any[]): void {
+    adjustHonorStatusModifiers(modifiers: StatModifier[]): void {
         const doesNotModifyEffects = this.card.getRawEffects().filter(
-            (effect: any) => effect.type === EffectNames.HonorStatusDoesNotModifySkill
+            (effect: CardEffect) => effect.type === EffectNames.HonorStatusDoesNotModifySkill
         );
         let doesNotModifyConflictEffects = false;
         if(this.card.game.currentConflict && this.card.isParticipating()) {
             doesNotModifyConflictEffects = this.card.game.currentConflict.anyEffect(EffectNames.ConflictIgnoreStatusTokens);
         }
         if(doesNotModifyEffects.length > 0 || doesNotModifyConflictEffects) {
-            modifiers.forEach((modifier: any) => {
-                if(modifier.type === 'token' && modifier.amount !== 0) {
+            modifiers.forEach((modifier: StatModifier) => {
+                if((modifier.type as string) === 'token' && modifier.amount !== 0) {
                     modifier.amount = 0;
                     modifier.name += ` (${StatModifier.getEffectName(doesNotModifyEffects[0])})`;
                 }
             });
         }
         const reverseEffects = this.card.getRawEffects().filter(
-            (effect: any) => effect.type === EffectNames.HonorStatusReverseModifySkill
+            (effect: CardEffect) => effect.type === EffectNames.HonorStatusReverseModifySkill
         );
         if(reverseEffects.length > 0) {
-            modifiers.forEach((modifier: any) => {
-                if(modifier.type === 'token' && modifier.amount !== 0 && modifier.name === 'Dishonored Token') {
+            modifiers.forEach((modifier: StatModifier) => {
+                if((modifier.type as string) === 'token' && modifier.amount !== 0 && modifier.name === 'Dishonored Token') {
                     modifier.amount = 0 - modifier.amount;
                     modifier.name += ` (${StatModifier.getEffectName(reverseEffects[0])})`;
                 }
@@ -336,30 +339,30 @@ export class SkillCalculator {
         }
     }
 
-    getStatusTokenModifiers(): any[] {
-        let modifiers: any[] = [];
+    getStatusTokenModifiers(): StatModifier[] {
+        let modifiers: StatModifier[] = [];
         const modifierEffects = this.card.getRawEffects().filter(
-            (effect: any) => effect.type === EffectNames.ModifyBothSkills
+            (effect: CardEffect) => effect.type === EffectNames.ModifyBothSkills
         );
-        modifierEffects.forEach((modifierEffect: any) => {
+        modifierEffects.forEach((modifierEffect: CardEffect) => {
             const value = modifierEffect.getValue(this.card);
             modifiers.push(StatModifier.fromEffect(value, modifierEffect));
         });
-        modifiers = modifiers.filter((modifier: any) => modifier.type === 'token');
+        modifiers = modifiers.filter((modifier: StatModifier) => (modifier.type as string) === 'token');
         this.adjustHonorStatusModifiers(modifiers);
         return modifiers;
     }
 
     getStatusTokenSkill(): number {
         const modifiers = this.getStatusTokenModifiers();
-        const skill = modifiers.reduce((total: number, modifier: any) => total + modifier.amount, 0);
+        const skill = modifiers.reduce((total: number, modifier: StatModifier) => total + modifier.amount, 0);
         if(isNaN(skill)) {
             return 0;
         }
         return skill;
     }
 
-    getGloryModifiers(): any[] {
+    getGloryModifiers(): StatModifier[] {
         const gloryModifierEffects = [
             EffectNames.CopyCharacter,
             EffectNames.SetGlory,
@@ -371,12 +374,12 @@ export class SkillCalculator {
             return [];
         }
 
-        const gloryEffects = this.card.getRawEffects().filter((effect: any) => gloryModifierEffects.includes(effect.type));
-        const gloryModifiers: any[] = [];
+        const gloryEffects = this.card.getRawEffects().filter((effect: CardEffect) => gloryModifierEffects.includes(effect.type));
+        const gloryModifiers: StatModifier[] = [];
 
-        const setEffects = gloryEffects.filter((effect: any) => effect.type === EffectNames.SetGlory);
+        const setEffects = gloryEffects.filter((effect: CardEffect) => effect.type === EffectNames.SetGlory);
         if(setEffects.length > 0) {
-            const latestSetEffect = setEffects.at(-1);
+            const latestSetEffect = setEffects[setEffects.length - 1];
             const setAmount = latestSetEffect.getValue(this.card);
             return [
                 StatModifier.fromEffect(
@@ -388,10 +391,10 @@ export class SkillCalculator {
             ];
         }
 
-        const baseEffects = gloryEffects.filter((effect: any) => effect.type === EffectNames.SetBaseGlory);
-        const copyEffects = gloryEffects.filter((effect: any) => effect.type === EffectNames.CopyCharacter);
+        const baseEffects = gloryEffects.filter((effect: CardEffect) => effect.type === EffectNames.SetBaseGlory);
+        const copyEffects = gloryEffects.filter((effect: CardEffect) => effect.type === EffectNames.CopyCharacter);
         if(baseEffects.length > 0) {
-            const latestBaseEffect = baseEffects.at(-1);
+            const latestBaseEffect = baseEffects[baseEffects.length - 1];
             const baseAmount = latestBaseEffect.getValue(this.card);
             gloryModifiers.push(
                 StatModifier.fromEffect(
@@ -402,7 +405,7 @@ export class SkillCalculator {
                 )
             );
         } else if(copyEffects.length > 0) {
-            const latestCopyEffect = copyEffects.at(-1);
+            const latestCopyEffect = copyEffects[copyEffects.length - 1];
             const copiedCard = latestCopyEffect.getValue(this.card);
             gloryModifiers.push(
                 StatModifier.fromEffect(
@@ -416,8 +419,8 @@ export class SkillCalculator {
             gloryModifiers.push(StatModifier.fromCard(this.card.printedGlory, this.card, 'Printed glory', false));
         }
 
-        const modifierEffects = gloryEffects.filter((effect: any) => effect.type === EffectNames.ModifyGlory);
-        modifierEffects.forEach((modifierEffect: any) => {
+        const modifierEffects = gloryEffects.filter((effect: CardEffect) => effect.type === EffectNames.ModifyGlory);
+        modifierEffects.forEach((modifierEffect: CardEffect) => {
             const value = modifierEffect.getValue(this.card);
             gloryModifiers.push(StatModifier.fromEffect(value, modifierEffect));
         });
@@ -425,23 +428,23 @@ export class SkillCalculator {
         return gloryModifiers;
     }
 
-    getProvinceStrengthBonusModifiers(): any[] {
+    getProvinceStrengthBonusModifiers(): StatModifier[] {
         const strengthModifierEffects = [EffectNames.SetProvinceStrengthBonus, EffectNames.ModifyProvinceStrengthBonus];
 
         if(this.card.printedStrengthBonus === undefined) {
             return [];
         }
 
-        const strengthEffects = this.card.getRawEffects().filter((effect: any) =>
+        const strengthEffects = this.card.getRawEffects().filter((effect: CardEffect) =>
             strengthModifierEffects.includes(effect.type)
         );
-        const strengthModifiers: any[] = [];
+        const strengthModifiers: StatModifier[] = [];
 
         const setEffects = strengthEffects.filter(
-            (effect: any) => effect.type === EffectNames.SetProvinceStrengthBonus
+            (effect: CardEffect) => effect.type === EffectNames.SetProvinceStrengthBonus
         );
         if(setEffects.length > 0) {
-            const latestSetEffect = setEffects.at(-1);
+            const latestSetEffect = setEffects[setEffects.length - 1];
             const setAmount = latestSetEffect.getValue(this.card);
             return [
                 StatModifier.fromEffect(
@@ -457,9 +460,9 @@ export class SkillCalculator {
             StatModifier.fromCard(this.card.printedStrengthBonus, this.card, 'Printed province strength bonus', false)
         );
         const modifierEffects = strengthEffects.filter(
-            (effect: any) => effect.type === EffectNames.ModifyProvinceStrengthBonus
+            (effect: CardEffect) => effect.type === EffectNames.ModifyProvinceStrengthBonus
         );
-        modifierEffects.forEach((modifierEffect: any) => {
+        modifierEffects.forEach((modifierEffect: CardEffect) => {
             const value = modifierEffect.getValue(this.card);
             strengthModifiers.push(StatModifier.fromEffect(value, modifierEffect));
         });

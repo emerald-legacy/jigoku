@@ -4,8 +4,8 @@ import { PlayCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHand } from '../../PlayDisguisedCharacterAsIfFromHand.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
-import DrawCard from '../../drawcard.js';
+import type BaseCard from '../../BaseCard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class ThirdWhiskerWarrens extends DrawCard {
     static id = 'third-whisker-warrens';
@@ -14,7 +14,7 @@ export default class ThirdWhiskerWarrens extends DrawCard {
         this.persistentEffect({
             condition: (context) => this.conflictAtKaiuWall(context),
             targetLocation: Locations.DynastyDeck,
-            match: (card, context) => context && card === context.player.dynastyDeck[0],
+            match: (card, context) => context !== undefined && card === context.player.dynastyDeck[0],
             effect: [
                 AbilityDsl.effects.hideWhenFaceUp(),
                 AbilityDsl.effects.gainPlayAction(PlayCharacterAsIfFromHand),
@@ -34,6 +34,9 @@ export default class ThirdWhiskerWarrens extends DrawCard {
             return false;
         }
 
+        if(context.game.currentConflict === null) {
+            return false;
+        }
         for(const province of context.game.currentConflict.getConflictProvinces() as ProvinceCard[]) {
             for(const card of context.player.getDynastyCardsInProvince(province.location) as BaseCard[]) {
                 if(card.isFaceup() && card.type === CardTypes.Holding && card.hasTrait('kaiu-wall')) {

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -16,7 +16,7 @@ class GarantoGuardian extends DrawCard {
                 player: Players.Self,
                 targets: true,
                 message: '{0} chooses to resolve {1}\'s effect',
-                ringCondition: ring => this.game.currentConflict.getConflictProvinces().some(a => a.element.includes(ring.element)),
+                ringCondition: ring => this.game.currentConflict?.getConflictProvinces().some(a => a.element.includes(ring.element)) ?? false,
                 messageArgs: ring => [context.player, ring],
                 gameAction: AbilityDsl.actions.resolveRingEffect({ player: context.player })
             })),

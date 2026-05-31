@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Elements } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -17,7 +17,7 @@ class IsawaKaede extends DrawCard {
             effect: AbilityDsl.effects.addElementAsAttacker(() => this.getCurrentElementSymbol(elementKey))
         });
         this.persistentEffect({
-            condition: context => context.source.isAttacking() && this.game.currentConflict.winner === context.player,
+            condition: context => context.source.isAttacking() && this.game.currentConflict?.winner === context.player,
             effect: AbilityDsl.effects.modifyConflictElementsToResolve(5)
         });
     }

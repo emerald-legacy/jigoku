@@ -1,8 +1,8 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
+import type BaseCard from '../../../BaseCard.js';
 import { CardTypes, Locations, Players, PlayTypes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
-import type Player from '../../../player.js';
+import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 
 export default class TogashiTsurumi extends DrawCard {
     static id = 'togashi-tsurumi';
@@ -43,6 +43,9 @@ export default class TogashiTsurumi extends DrawCard {
                     AbilityDsl.actions.handler({
                         handler: (context) => {
                             const card = context.target;
+                            if(!(card instanceof DrawCard)) {
+                                return;
+                            }
                             context.player.moveCard(card, this.uuid);
                             card.controller = context.source.controller;
                             card.facedown = false;

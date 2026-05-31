@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, CardTypes } from '../../Constants.js';
 
@@ -9,7 +9,7 @@ class CriminalContacts extends DrawCard {
         this.action({
             title: 'Discard a fate from a character',
             cost: AbilityDsl.costs.optionalHonorTransferFromOpponentCost(),
-            condition: context => context.player.opponent && context.player.showBid > context.player.opponent.showBid,
+            condition: context => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid),
             targets: {
                 myCharacter: {
                     cardType: CardTypes.Character,
@@ -29,7 +29,7 @@ class CriminalContacts extends DrawCard {
         });
     }
 
-    buildString(context) {
+    buildString(context: any) {
         if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
             let target = context.targets.oppCharacter;
             return '.  ' + context.player.opponent.name + ' gives ' + context.player.name + ' 1 honor to discard a fate from ' + target.name;

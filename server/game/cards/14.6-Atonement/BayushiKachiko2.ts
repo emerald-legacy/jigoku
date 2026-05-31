@@ -1,10 +1,10 @@
 import { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 import { CardTypes, EventNames, Locations, Players, PlayTypes } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 
 const MAXIMUM_CARDS_ALLOWED = 3;
 
@@ -82,7 +82,7 @@ export default class BayushiKachiko2 extends DrawCard {
             match: (card, context) =>
                 card.type === CardTypes.Event &&
                 card.location === Locations.ConflictDiscardPile &&
-                card.owner === context.player.opponent,
+                card.owner === context?.player.opponent,
             effect: [
                 AbilityDsl.effects.canPlayFromOutOfPlay(
                     (player: Player, card: BaseCard) => player !== card.owner,

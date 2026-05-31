@@ -1,18 +1,19 @@
-import DrawCard from '../../drawcard.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
 
 class OutskirtsSentry extends DrawCard {
     static id = 'outskirts-sentry';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Honor a participating character',
             when: {
-                onMoveToConflict: (event, context) => context.source.isParticipating()
+                onMoveToConflict: (_event: any, context: any) => context.source.isParticipating()
             },
             target: {
                 cardType: CardTypes.Character,
-                cardCondition: card => card.isParticipating(),
+                cardCondition: (card: any) => card.isParticipating(),
                 gameAction: ability.actions.honor()
             }
         });

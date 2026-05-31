@@ -1,21 +1,22 @@
-import DrawCard from '../../drawcard.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, CardTypes } from '../../Constants.js';
 
 class SageOfGiseiToshi extends DrawCard {
     static id = 'sage-of-gisei-toshi';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Move home, then move character home',
-            condition: context => context.player.opponent && context.player.isMoreHonorable(),
+            condition: (context: any) => Boolean(context.player.opponent) && context.player.isMoreHonorable(),
             gameAction: ability.actions.sendHome(),
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Opponent,
-                cardCondition: (card, context) => card.isParticipating() && card.allowGameAction('sendHome', context)
+                cardCondition: (card: any, context: any) => card.isParticipating() && card.allowGameAction('sendHome', context)
             },
-            then: context => ({
-                gameAction: ability.actions.sendHome({ target: context.target })
+            then: (context: any) => ({
+                gameAction: ability.actions.sendHome({ target: context?.target })
             })
         });
     }

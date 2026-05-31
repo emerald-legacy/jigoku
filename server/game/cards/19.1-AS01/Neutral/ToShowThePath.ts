@@ -1,7 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import BaseCard from '../../../basecard.js';
+import BaseCard from '../../../BaseCard.js';
 import { CardTypes, Durations, Players, TargetModes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class ToShowThePath extends DrawCard {
     static id = 'to-show-the-path';
@@ -31,7 +31,7 @@ export default class ToShowThePath extends DrawCard {
                 }))
             },
             effect: 'make {1} pay 1 additional fate as a cost whenever they target {0} or its attachments with a card ability until the end of the phase',
-            effectArgs: (context) => [context.source.controller.opponent]
+            effectArgs: (context) => [context.source.controller.opponent as any]
         });
     }
 }

@@ -1,15 +1,16 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 import { EventNames, Locations, Players, PlayTypes } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 
 const MAXIMUM_CARDS_ALLOWED = 3;
 
 export default class MasterTactician extends DrawCard {
     static id = 'master-tactician';
+    private eventRegistrar?: EventRegistrar;
 
     private cardsPlayedThisRound = 0;
     private mostRecentEvent?: any;
@@ -71,7 +72,7 @@ export default class MasterTactician extends DrawCard {
             targetLocation: Locations.ConflictDeck,
             targetController: Players.Self,
             match: (card, context) =>
-                context && context.player.conflictDeck.length > 0 && card === context.player.conflictDeck[0],
+                !!(context && context.player.conflictDeck.length > 0 && card === context.player.conflictDeck[0]),
             effect: AbilityDsl.effects.canPlayFromOutOfPlay(
                 (player: Player, card: BaseCard) => player === card.owner,
                 PlayTypes.PlayFromHand
@@ -81,7 +82,7 @@ export default class MasterTactician extends DrawCard {
         this.persistentEffect({
             condition: (context) => {
                 const defending = context.game.currentConflict && context.player.isDefendingPlayer();
-                const preventShowing = defending && !context.game.currentConflict.defendersChosen;
+                const preventShowing = defending && !context.game.currentConflict?.defendersChosen;
                 return context.game.isTraitInPlay('battlefield') && context.source.isParticipating() && !preventShowing;
             },
             targetController: Players.Self,

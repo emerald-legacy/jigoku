@@ -1,5 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../BaseCard.js';
 import { EventNames } from '../Constants.js';
+import type EventWindow from './EventWindow.js';
 
 type Params = {
     amount: number;
@@ -10,15 +12,17 @@ type Params = {
 export class Event {
     cancelled = false;
     resolved = false;
-    context = null;
-    window = null;
-    replacementEvent = null;
-    condition = (_event) => true;
+    context: AbilityContext | null = null;
+    window: EventWindow | null = null;
+    replacementEvent: Event | null = null;
+    condition = (_event: Event) => true;
     order = 0;
     isContingent = false;
-    checkFullyResolved = (event) => !event.cancelled;
-    createContingentEvents = () => [];
-    preResolutionEffect = () => true;
+    checkFullyResolved = (event: Event) => !event.cancelled;
+    createContingentEvents = (): Event[] => [];
+    preResolutionEffect: () => void = () => true;
+    onPlayCardSource?: BaseCard;
+    [key: string]: any;
 
     constructor(
         public name: string,
@@ -27,7 +31,7 @@ export class Event {
     ) {
         for(const key in params) {
             if(Object.prototype.hasOwnProperty.call(params, key)) {
-                this[key] = params[key];
+                this[key] = (params as Record<string, unknown>)[key];
             }
         }
     }
@@ -39,7 +43,7 @@ export class Event {
         }
     }
 
-    setWindow(window) {
+    setWindow(window: EventWindow) {
         this.window = window;
     }
 
@@ -56,7 +60,7 @@ export class Event {
         }
     }
 
-    getResolutionEvent() {
+    getResolutionEvent(): Event {
         if(this.replacementEvent) {
             return this.replacementEvent.getResolutionEvent();
         }
@@ -70,11 +74,11 @@ export class Event {
     executeHandler() {
         this.resolved = true;
         if(this.handler) {
-            this.handler(this);
+            this.handler(this as Event & Partial<Params>);
         }
     }
 
-    replaceHandler(newHandler) {
+    replaceHandler(newHandler: (event: Event & Partial<Params>) => void) {
         this.handler = newHandler;
     }
 }

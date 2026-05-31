@@ -1,14 +1,14 @@
 import { AbilityTypes, Locations, Phases } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
-import type DrawCard from '../drawcard.js';
-import type Game from '../game.js';
-import TriggeredAbility from '../triggeredability.js';
+import type DrawCard from '../DrawCard.js';
+import TriggeredAbility from '../TriggeredAbility.js';
 
+import type { Event } from '../Events/Event.js';
 export class ThrivingAbility extends TriggeredAbility {
-    constructor(game: Game, card: DrawCard) {
-        super(game, card, AbilityTypes.KeywordInterrupt, {
+    constructor(card: DrawCard) {
+        super(card, AbilityTypes.KeywordInterrupt, {
             when: {
-                onPhaseEnded: (event: any, context: TriggeredAbilityContext<DrawCard>) =>
+                onPhaseEnded: (event: Event, context: TriggeredAbilityContext<DrawCard>) =>
                     event.phase === Phases.Fate &&
                     context.source.hasThriving() &&
                     context.player.getDynastyCardsInProvince(context.source.location).length === 1
@@ -25,7 +25,7 @@ export class ThrivingAbility extends TriggeredAbility {
             message: '{0} places a card facedown in {1} due to {2}\'s Thriving',
             messageArgs: (context: TriggeredAbilityContext<DrawCard>) => [
                 context.player,
-                context.player.getProvinceCardInProvince(context.source.location).isFacedown()
+                context.player.getProvinceCardInProvince(context.source.location)?.isFacedown()
                     ? context.source.location
                     : context.player.getProvinceCardInProvince(context.source.location),
                 context.source

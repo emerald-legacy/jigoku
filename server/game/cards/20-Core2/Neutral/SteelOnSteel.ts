@@ -1,6 +1,6 @@
 import { ConflictTypes, DuelTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class SteelOnSteel extends DrawCard {
     static id = 'steel-on-steel';
@@ -11,10 +11,10 @@ export default class SteelOnSteel extends DrawCard {
             condition: (context) => context.game.isDuringConflict(ConflictTypes.Military),
             initiateDuel: {
                 type: DuelTypes.Military,
-                gameAction: (duel) =>
+                gameAction: (duel: any) =>
                     AbilityDsl.actions.conditional({
                         target: duel.loser?.[0],
-                        condition: duel.loser?.[0]?.getFate() > 0,
+                        condition: (duel.loser?.[0]?.getFate() ?? 0) > 0,
                         trueGameAction: AbilityDsl.actions.removeFate(),
                         falseGameAction: AbilityDsl.actions.discardFromPlay()
                     })

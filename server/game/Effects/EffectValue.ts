@@ -27,7 +27,7 @@ export class EffectValue<V> {
 
     public reset(): void {}
 
-    public apply(_target): void {}
+    public apply(_target: unknown): void {}
 
-    public unapply(_target): void {}
+    public unapply(_target: unknown): void {}
 }

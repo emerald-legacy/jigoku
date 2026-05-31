@@ -1,13 +1,13 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { Players } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
-import type Player from '../player.js';
+import type DrawCard from '../DrawCard.js';
+import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { GameAction } from './GameAction.js';
 
 export interface CardMenuProperties extends CardActionProperties {
     activePromptTitle?: string;
-    player?: Players;
+    player?: Players.Self | Players.Opponent;
     cards: DrawCard[];
     cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
     choices?: string[];
@@ -20,6 +20,12 @@ export interface CardMenuProperties extends CardActionProperties {
     gameActionHasLegalTarget?: (context: AbilityContext) => boolean;
 }
 
+type ResolvedCardMenuProperties = CardMenuProperties & {
+    subActionProperties: NonNullable<CardMenuProperties['subActionProperties']>;
+    cardCondition: NonNullable<CardMenuProperties['cardCondition']>;
+    choices: NonNullable<CardMenuProperties['choices']>;
+};
+
 export class CardMenuAction extends CardGameAction<CardMenuProperties> {
     effect = 'choose a target for {0}';
     defaultProperties: CardMenuProperties = {
@@ -29,11 +35,11 @@ export class CardMenuAction extends CardGameAction<CardMenuProperties> {
         cards: [],
         choices: [],
         cardCondition: () => true,
-        gameAction: null
+        gameAction: null as unknown as GameAction
     };
 
-    getProperties(context: AbilityContext, additionalProperties = {}): CardMenuProperties {
-        let properties = super.getProperties(context, additionalProperties);
+    getProperties(context: AbilityContext, additionalProperties = {}): ResolvedCardMenuProperties {
+        let properties = super.getProperties(context, additionalProperties) as ResolvedCardMenuProperties;
         properties.gameAction.setDefaultTarget(() => properties.target);
         return properties;
     }
@@ -67,7 +73,7 @@ export class CardMenuAction extends CardGameAction<CardMenuProperties> {
 
     addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
-        let cardCondition = (card, context) =>
+        let cardCondition = (card: any, context: any) =>
             properties.gameAction.hasLegalTarget(
                 context,
                 Object.assign({}, additionalProperties, properties.subActionProperties(card))
@@ -79,7 +85,7 @@ export class CardMenuAction extends CardGameAction<CardMenuProperties> {
         ) {
             return;
         }
-        let player = properties.player === Players.Opponent ? context.player.opponent : context.player;
+        let player: Player = (properties.player === Players.Opponent ? context.player.opponent : context.player) as Player;
         if(properties.targets && context.choosingPlayerOverride) {
             player = context.choosingPlayerOverride;
         }
@@ -91,7 +97,7 @@ export class CardMenuAction extends CardGameAction<CardMenuProperties> {
                     context,
                     Object.assign({}, additionalProperties, properties.subActionProperties(card))
                 );
-                if(properties.message) {
+                if(properties.message && properties.messageArgs) {
                     let cards = properties.cards.filter((card) => cardCondition(card, context));
                     context.game.addMessage(properties.message, ...properties.messageArgs(card, player, cards));
                 }

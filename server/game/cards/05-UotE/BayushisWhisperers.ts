@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class BayushisWhisperers extends DrawCard {
@@ -7,11 +7,11 @@ class BayushisWhisperers extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Look at opponent\'s hand and name a card',
-            condition: context => context.player.opponent && this.game.isDuringConflict(),
+            condition: context => !!(context.player.opponent && this.game.isDuringConflict()),
             effect: 'look at {1}\'s hand, then name a card',
-            effectArgs: context => context.player.opponent,
+            effectArgs: context => context.player.opponent as any,
             gameAction: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.lookAt(context => ({ target: context.player.opponent.hand.slice().sort((a, b) => a.name.localeCompare(b.name)), chatMessage: true })),
+                AbilityDsl.actions.lookAt(context => ({ target: context.player.opponent.hand.slice().sort((a: any, b: any) => a.name.localeCompare(b.name)), chatMessage: true })),
                 AbilityDsl.actions.handler({
                     handler: context => this.game.promptWithMenu(context.player, this, {
                         context: context,
@@ -27,9 +27,9 @@ class BayushisWhisperers extends DrawCard {
         });
     }
 
-    selectCardName(player, cardName, context) {
+    selectCardName(player: any, cardName: any, context: any) {
         this.game.addMessage('{0} names {1} - {2} cannot play copies of this card this phase', player, cardName, player.opponent);
-        context.source.untilEndOfPhase(ability => ({
+        context.source.untilEndOfPhase((ability: any) => ({
             targetController: context.player.opponent,
             effect: ability.effects.playerCannot({
                 cannot: 'play',

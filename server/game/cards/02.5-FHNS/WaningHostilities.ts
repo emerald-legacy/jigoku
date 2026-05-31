@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Durations, Players, Phases } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class WaningHostilities extends DrawCard {
     static id = 'waning-hostilities';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Both players may only declare 1 conflict opportunity this turn',
             when: {

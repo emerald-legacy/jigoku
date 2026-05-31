@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 const steedOfTheSteppesCaptureParentCost = function() {
@@ -7,7 +7,7 @@ const steedOfTheSteppesCaptureParentCost = function() {
         canPay: function() {
             return true;
         },
-        resolve: function(context) {
+        resolve: function(context: any) {
             context.costs.steedOfTheSteppesCaptureParentCost = context.source.parent;
         },
         pay: function() {
@@ -25,7 +25,7 @@ class SteedOfTheSteppes extends DrawCard {
 
         this.action({
             title: 'Ready attached character',
-            condition: context => context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 3,
+            condition: context => !!(context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 3),
             cost: [
                 steedOfTheSteppesCaptureParentCost(),
                 AbilityDsl.costs.sacrificeSelf()

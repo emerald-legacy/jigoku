@@ -16,10 +16,10 @@ export default class BogHag extends BaseOni {
                     context.player.opponent.conflictDeck.length > 0
             },
             gameAction: AbilityDsl.actions.discardCard((context) => ({
-                target: context.player.opponent.conflictDeck.slice(0, 8)
+                target: context.player.opponent?.conflictDeck.slice(0, 8) ?? []
             })),
             effect: 'discard the top 8 cards of {1}\'s conflict deck',
-            effectArgs: (context) => [context.player.opponent]
+            effectArgs: (context) => [context.player.opponent as any]
         });
     }
 }

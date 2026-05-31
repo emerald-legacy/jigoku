@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -8,7 +8,7 @@ class DiplomaticGiftGiver extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Put fate on characters',
-            condition: context => context.source.isParticipating() && context.player.opponent && AbilityDsl.actions.loseFate().canAffect(context.player.opponent, context) && AbilityDsl.actions.loseFate().canAffect(context.player, context),
+            condition: context => !!(context.source.isParticipating() && context.player.opponent && AbilityDsl.actions.loseFate().canAffect(context.player.opponent, context) && AbilityDsl.actions.loseFate().canAffect(context.player, context)),
             targets: {
                 firstCharacter: {
                     activePromptTitle: 'Choose a character to receive the gift of fate',

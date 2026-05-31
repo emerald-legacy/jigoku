@@ -1,17 +1,18 @@
-import DrawCard from '../../drawcard.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { TargetModes, CardTypes } from '../../Constants.js';
 
 class WickedTetsubo extends DrawCard {
     static id = 'wicked-tetsubo';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.attachmentConditions({
             trait: 'berserker'
         });
 
         this.action({
             title: 'Set Military or Political skill to 0',
-            condition: context => context.source.parent && context.source.parent.isAttacking(),
+            condition: context => !!(context.source.parent && context.source.parent.isAttacking()),
             targets: {
                 character: {
                     activePromptTitle: 'Choose a defending character',
@@ -23,11 +24,11 @@ class WickedTetsubo extends DrawCard {
                     dependsOn: 'character',
                     activePromptTitle: 'Choose a skill to set to 0',
                     choices: {
-                        'Military': ability.actions.cardLastingEffect(context => ({
+                        'Military': ability.actions.cardLastingEffect((context: any) => ({
                             target: context.targets.character,
                             effect: ability.effects.setMilitarySkill(0)
                         })),
-                        'Political': ability.actions.cardLastingEffect(context => ({
+                        'Political': ability.actions.cardLastingEffect((context: any) => ({
                             target: context.targets.character,
                             effect: ability.effects.setPoliticalSkill(0)
                         }))

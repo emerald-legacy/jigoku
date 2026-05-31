@@ -1,6 +1,6 @@
-import Effect from './Effect.js';
+import Effect, { type EffectMatchFn } from './Effect.js';
 import { Players } from '../Constants.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 
 export default class PlayerEffect extends Effect {
     targetController: string;
@@ -18,15 +18,17 @@ export default class PlayerEffect extends Effect {
             return false;
         }
 
-        if(this.targetController === Players.Self && target === this.source.controller.opponent) {
+        const sourceController = this.source.controller;
+        if(this.targetController === Players.Self && target === sourceController.opponent) {
             return false;
-        } else if(this.targetController === Players.Opponent && target === this.source.controller) {
+        } else if(this.targetController === Players.Opponent && target === sourceController) {
             return false;
         }
         return true;
     }
 
     getTargets(): any[] {
-        return this.game.getPlayers().filter((player: any) => this.match(player));
+        const matchFn = this.match as EffectMatchFn;
+        return this.game.getPlayers().filter((player: any) => matchFn(player));
     }
 }

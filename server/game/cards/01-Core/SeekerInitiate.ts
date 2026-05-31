@@ -1,7 +1,8 @@
-import DrawCard from '../../drawcard.js';
-import { Locations } from '../../Constants.js';
+import DrawCard from '../../DrawCard.js';
+import { EventNames, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class SeekerInitiate extends DrawCard {
     static id = 'seeker-initiate';
 
@@ -9,7 +10,7 @@ class SeekerInitiate extends DrawCard {
         this.reaction({
             title: 'Look at top 5 cards',
             when: {
-                onClaimRing: (event, context) => context.player.role && ((event.conflict && event.conflict.elements.some(element => context.player.role.hasTrait(element))) || context.player.role.hasTrait(event.ring.element)) &&
+                onClaimRing: (event: EventPayload<EventNames.OnClaimRing>, context) => !!context.player.role && ((event.conflict && event.conflict.elements.some((element: any) => context.player.role?.hasTrait(element))) || context.player.role?.hasTrait(event.ring.element)) &&
                                                  event.player === context.player && context.player.conflictDeck.length > 0
             },
             effect: 'look at the top 5 cards of their conflict deck',

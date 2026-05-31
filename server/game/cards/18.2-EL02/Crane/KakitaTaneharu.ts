@@ -1,4 +1,4 @@
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { Locations, Players, PlayTypes } from '../../../Constants.js';
 
@@ -28,11 +28,11 @@ class KakitaTaneharu extends DrawCard {
             location: Locations.PlayArea,
             targetLocation: this.uuid,
             targetController: Players.Self,
-            match: card => {
+            match: (card: any) => {
                 return card.location === this.uuid;
             },
             effect: [
-                AbilityDsl.effects.canPlayFromOutOfPlay(player => {
+                AbilityDsl.effects.canPlayFromOutOfPlay((player: any) => {
                     return player === this.controller;
                 }, PlayTypes.PlayFromHand),
                 AbilityDsl.effects.registerToPlayFromOutOfPlay()

@@ -1,6 +1,8 @@
 import https from 'https';
 import http from 'http';
 
+type ExpressHandler = (req: unknown, res: unknown, next: (err?: unknown) => void) => unknown;
+
 export function escapeRegex(regex: string): string {
     return regex.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
 }
@@ -9,13 +11,14 @@ export function httpRequest(url: string): Promise<string> {
     return new Promise((resolve, reject) => {
         const lib = url.startsWith('https') ? https : http;
         const request = lib.get(url, (response) => {
-            if(response.statusCode < 200 || response.statusCode > 299) {
-                return reject(new Error('Failed to request, status code: ' + response.statusCode));
+            const status = response.statusCode ?? 0;
+            if(status < 200 || status > 299) {
+                return reject(new Error('Failed to request, status code: ' + status));
             }
 
-            const body = [];
+            const body: Buffer[] = [];
 
-            response.on('data', (chunk) => {
+            response.on('data', (chunk: Buffer) => {
                 body.push(chunk);
             });
 
@@ -28,18 +31,22 @@ export function httpRequest(url: string): Promise<string> {
     });
 }
 
-export function wrapAsync(fn: any): any {
+export function wrapAsync(fn: (...args: Parameters<ExpressHandler>) => Promise<unknown>): ExpressHandler {
     return function (req, res, next) {
         fn(req, res, next).catch(next);
     };
 }
 
-export function detectBinary(state: unknown, path = '', results = []): Array<{ path: string; type: string }> {
+export function detectBinary(
+    state: unknown,
+    path = '',
+    results: Array<{ path: string; type: string }> = []
+): Array<{ path: string; type: string }> {
     if(!state) {
         return results;
     }
 
-    const type = state.constructor.name;
+    const type = (state as { constructor: { name: string } }).constructor.name;
     if(
         type !== 'Array' &&
         type !== 'Boolean' &&
@@ -52,12 +59,14 @@ export function detectBinary(state: unknown, path = '', results = []): Array<{ p
     }
 
     if(type === 'Object') {
-        for(let key in state as object) {
-            detectBinary(state[key], `${path}.${key}`, results);
+        const obj = state as Record<string, unknown>;
+        for(let key in obj) {
+            detectBinary(obj[key], `${path}.${key}`, results);
         }
     } else if(type === 'Array') {
-        for(let i = 0; i < (state as Array<unknown>).length; ++i) {
-            detectBinary(state[i], `${path}[${i}]`, results);
+        const arr = state as unknown[];
+        for(let i = 0; i < arr.length; ++i) {
+            detectBinary(arr[i], `${path}[${i}]`, results);
         }
     }
 

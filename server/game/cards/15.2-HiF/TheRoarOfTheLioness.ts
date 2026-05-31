@@ -6,7 +6,7 @@ export default class TheRoarOfTheLioness extends ProvinceCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyBaseProvinceStrength((card) => Math.round(card.controller.honor / 2))
+            effect: AbilityDsl.effects.modifyBaseProvinceStrength((card: any) => Math.round(card.controller.honor / 2))
         });
     }
 }

@@ -1,6 +1,6 @@
 import { Locations, Players, PlayTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class GraspOfEarth extends DrawCard {
     static id = 'grasp-of-earth';
@@ -15,7 +15,7 @@ export default class GraspOfEarth extends DrawCard {
             location: Locations.Any,
             targetController: Players.Any,
             condition: (context) => context.player.hasAffinity('earth'),
-            effect: AbilityDsl.effects.reduceCost({ amount: 1, match: (card, source) => card === source })
+            effect: AbilityDsl.effects.reduceCost({ amount: 1, match: (card: any, source: any) => card === source })
         });
 
         this.action({

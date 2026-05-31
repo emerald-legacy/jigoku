@@ -1,4 +1,4 @@
-import Game from '../../../build/server/game/game.js';
+import Game from '../../../build/server/game/Game.js';
 import { Spectator } from '../../../build/server/game/Spectator.js';
 
 describe('Game - Chat', function() {

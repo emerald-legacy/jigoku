@@ -1,7 +1,8 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import { EventNames } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class MotoChagatai extends DrawCard {
     static id = 'moto-chagatai';
@@ -14,8 +15,8 @@ export default class MotoChagatai extends DrawCard {
         this.eventRegistrar.register([EventNames.OnBreakProvince, EventNames.OnConflictFinished]);
 
         this.persistentEffect({
-            condition: (context) =>
-                context.source.isAttacking() && this.provinceBroken.get(context.player.opponent.uuid),
+            condition: (context: AbilityContext) =>
+                Boolean(context.source.isAttacking() && context.player.opponent && this.provinceBroken.get(context.player.opponent.uuid)),
             effect: AbilityDsl.effects.doesNotBow()
         });
     }

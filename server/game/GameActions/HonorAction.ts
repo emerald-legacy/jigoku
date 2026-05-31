@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseCard from '../basecard.js';
+import type BaseCard from '../BaseCard.js';
 import { CardTypes, CharacterStatus, EventNames, Locations } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
@@ -24,7 +24,7 @@ export class HonorAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.card.honor();
         if(event.card.isHonored) {
             event.card.game.raiseEvent(EventNames.OnStatusTokenGained, {

@@ -1,12 +1,12 @@
 import { CardTypes, ConflictTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class EarthsExamination extends DrawCard {
     static id = 'earth-s-examination';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Taint a character',
             condition: (context) =>
                 context.game.isDuringConflict(ConflictTypes.Political) && context.player.isTraitInPlay('shugenja'),
@@ -25,7 +25,7 @@ export default class EarthsExamination extends DrawCard {
                 ])
             },
             effect: 'reveal {1}\'s corruption',
-            effectArgs: (context) => [context.target]
+            effectArgs: (context) => [context.target ?? '']
         });
     }
 }

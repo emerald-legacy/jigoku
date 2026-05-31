@@ -1,24 +1,24 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type DrawCard from '../../drawcard.js';
+import type DrawCard from '../../DrawCard.js';
 
 export default class UpholdingAuthority extends ProvinceCard {
     static id = 'upholding-authority';
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => context.player.role && context.player.role.hasTrait('earth'),
+            condition: (context) => !!(context.player.role && context.player.role.hasTrait('earth')),
             effect: AbilityDsl.effects.modifyProvinceStrength(2)
         });
 
         let gameAction = AbilityDsl.actions.menuPrompt((context) => ({
             activePromptTitle: 'Choose how many cards to discard',
-            choices: (properties) =>
+            choices: (properties: any) =>
                 (context.game.currentConflict.attackingPlayer.hand as DrawCard[])
                     .filter((card) => card.name === properties.target[0].name)
                     .map((_, idx) => (idx + 1).toString()),
             gameAction: AbilityDsl.actions.discardCard(),
-            choiceHandler: (choice, displayMessage, properties) => {
+            choiceHandler: (choice, displayMessage, properties: any) => {
                 let chosenCard = properties.target[0];
                 if(displayMessage) {
                     this.game.addMessage(
@@ -31,7 +31,7 @@ export default class UpholdingAuthority extends ProvinceCard {
                 }
                 return {
                     target: context.game.currentConflict.attackingPlayer.hand
-                        .filter((card) => card.name === chosenCard.name)
+                        .filter((card: any) => card.name === chosenCard.name)
                         .slice(0, parseInt(choice))
                 };
             }

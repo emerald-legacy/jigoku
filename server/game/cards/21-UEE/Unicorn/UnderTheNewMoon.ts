@@ -1,7 +1,8 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { Durations } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class UnderTheNewMoon extends DrawCard {
     static id = 'under-the-new-moon';
@@ -14,7 +15,7 @@ export default class UnderTheNewMoon extends DrawCard {
             },
             cost: AbilityDsl.costs.payHonor(1),
             effect: 'force {1} to declare defenders before attackers are chosen this conflict',
-            effectArgs: (context) => [context.player.opponent],
+            effectArgs: (context) => [context.player.opponent as any],
             gameAction: AbilityDsl.actions.menuPrompt((context) => ({
                 activePromptTitle: 'Choose how many characters will be attacking',
                 choices: this.#getChoices(context),
@@ -41,7 +42,7 @@ export default class UnderTheNewMoon extends DrawCard {
 
     #getChoices(context: AbilityContext<this>) {
         const min = 1;
-        const max = (context as any).event.attackerMatrix.maximumNumberOfAttackers;
+        const max = (context as TriggeredAbilityContext).event.attackerMatrix.maximumNumberOfAttackers;
         const array = [];
         for(let i = min; i <= max; i++) {
             array.push(i.toString());

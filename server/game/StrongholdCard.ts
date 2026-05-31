@@ -1,34 +1,45 @@
-import BaseCard from './basecard.js';
-import type Player from './player.js';
+import BaseCard from './BaseCard.js';
+import { ChildCardManager } from './ChildCardManager.js';
+import type DrawCard from './DrawCard.js';
+import type Player from './Player.js';
+import type { Locations } from './Constants.js';
 
 export class StrongholdCard extends BaseCard {
     menu = [{ command: 'bow', text: 'Bow/Ready' }];
-    bowed = false;
     isStronghold = true;
     stealFirstPlayerDuringSetupWithMsg?: string;
+    private childCardHost = new ChildCardManager(this);
+
+    get childCards(): DrawCard[] {
+        return this.childCardHost.childCards;
+    }
+
+    set childCards(value: DrawCard[]) {
+        this.childCardHost.childCards = value;
+    }
+
+    addChildCard(card: DrawCard, location: Locations): void {
+        this.childCardHost.add(card, location);
+    }
+
+    removeChildCard(card: DrawCard | null, location: Locations): void {
+        this.childCardHost.remove(card, location);
+    }
 
     getFate(): number {
-        return this.cardData.fate;
+        return this.cardData.fate ?? 0;
     }
 
     getStartingHonor(): number {
-        return this.cardData.honor;
+        return this.cardData.honor ?? 0;
     }
 
     getInfluence(): number {
-        return this.cardData.influence_pool;
+        return this.cardData.influence_pool ?? 0;
     }
 
     getProvinceStrengthBonus(): number {
-        return parseInt(this.cardData.strength_bonus);
-    }
-
-    bow(): void {
-        this.bowed = true;
-    }
-
-    ready(): void {
-        this.bowed = false;
+        return parseInt(this.cardData.strength_bonus ?? '0');
     }
 
     flipFaceup(): void {

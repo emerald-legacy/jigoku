@@ -1,9 +1,12 @@
-import DrawCard from '../../drawcard.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
+import { EventNames } from '../../Constants.js';
 class UtakuBattleSteed extends DrawCard {
     static id = 'utaku-battle-steed';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.attachmentConditions({
             faction: 'unicorn'
         });
@@ -15,11 +18,11 @@ class UtakuBattleSteed extends DrawCard {
         this.reaction({
             title: 'Honor attached character',
             when: {
-                afterConflict: (event, context) => context.source.parent && context.source.parent.isParticipating() &&
+                afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) => context.source.parent && context.source.parent.isParticipating() &&
                                                    event.conflict.winner === context.source.parent.controller &&
                                                    event.conflict.conflictType === 'military'
             },
-            gameAction: ability.actions.honor(context => ({
+            gameAction: ability.actions.honor((context: any) => ({
                 target: context.source.parent
             }))
         });

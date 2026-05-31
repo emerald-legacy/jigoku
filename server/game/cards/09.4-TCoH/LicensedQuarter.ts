@@ -1,6 +1,8 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
+import { EventNames } from '../../Constants.js';
 class LicensedQuarter extends DrawCard {
     static id = 'licensed-quarter';
 
@@ -8,10 +10,10 @@ class LicensedQuarter extends DrawCard {
         this.reaction({
             title: 'Discard the top card of your opponents conflict deck',
             when: {
-                afterConflict: (event, context) => event.conflict.winner === context.player
+                afterConflict: (event: EventPayload<EventNames.AfterConflict>, context) => event.conflict.winner === context.player
             },
             effect: 'discard the top card of {1}\'s conflict deck',
-            effectArgs: context => context.player.opponent,
+            effectArgs: context => [context.player.opponent as any],
             gameAction: AbilityDsl.actions.discardCard(context => ({
                 target: context.player.opponent && context.player.opponent.conflictDeck[0]
             })),

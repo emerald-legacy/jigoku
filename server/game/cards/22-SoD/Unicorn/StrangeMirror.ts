@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Durations, Players, AbilityTypes, Locations } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class StrangeMirror extends DrawCard {
     static id = 'strange-mirror';
@@ -9,16 +9,16 @@ export default class StrangeMirror extends DrawCard {
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
                 title: 'Put a copy of a character into play',
-                condition: context => context.source.isParticipating(),
+                condition: (context: any) => context.source.isParticipating(),
                 targets: {
                     inPlay: {
                         cardType: CardTypes.Character,
                         controller: Players.Opponent,
-                        cardCondition: card => card.isParticipating()
+                        cardCondition: (card: any) => card.isParticipating()
                     },
                     inDiscard: {
                         dependsOn: 'inPlay',
-                        cardCondition: (card, context) => card.name === context.targets.inPlay.name,
+                        cardCondition: (card: any, context: any) => card.name === context.targets.inPlay.name,
                         activePromptTitle: 'Choose a character from a discard pile',
                         location: [Locations.DynastyDiscardPile, Locations.ConflictDiscardPile],
                         controller: Players.Any,
@@ -43,7 +43,7 @@ export default class StrangeMirror extends DrawCard {
                     }
                 },
                 effect: 'put {1} into play in the conflict, removing it from the game when the conflict ends',
-                effectArgs: context => [context.targets.inDiscard]
+                effectArgs: (context: any) => [context.targets.inDiscard]
             })
         });
     }

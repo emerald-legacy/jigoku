@@ -1,16 +1,19 @@
-import DrawCard from '../../drawcard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import type CardAbility from '../../CardAbility.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardTypes, EventNames } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class HanteiXXXVIII extends DrawCard {
     static id = 'hantei-xxxviii';
 
     setupCardAbilities() {
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
-                condition:  context => context.player.opponent && !!context.player.opponent.imperialFavor,
+                condition:  (context: any) => context.player.opponent && !!context.player.opponent.imperialFavor,
                 message: '{0} is discarded from play as its controller\'s opponent has the imperial favor',
-                messageArgs: context => [context.source],
+                messageArgs: (context: any) => [context.source],
                 gameAction: AbilityDsl.actions.discardFromPlay()
             })
         });
@@ -20,7 +23,7 @@ class HanteiXXXVIII extends DrawCard {
 
             target: {
                 cardType: CardTypes.Character,
-                cardCondition: card => card.isParticipating(),
+                cardCondition: (card: any) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.bow()
             }
         });
@@ -28,12 +31,14 @@ class HanteiXXXVIII extends DrawCard {
         this.interrupt({
             title: 'Choose targets for opponent\'s ability',
             when: {
-                onCardAbilityInitiated: (event, context) =>
+                onCardAbilityInitiated: (event: EventPayload<EventNames.OnCardAbilityInitiated>, context) =>
                     event.ability.hasTargetsChosenByInitiatingPlayer(event.context) && event.context.player === context.player.opponent
             },
             effect: 'choose targets for {1}\'s {2} ability',
-            effectArgs: context => [context.event.card, context.event.ability.title],
-            handler: context => context.event.context.choosingPlayerOverride = context.player
+            effectArgs: context => context ? [context.event.card ?? '', (context.event.ability as CardAbility)?.title ?? ''] : [],
+            handler: context => {
+                (context.event.context as AbilityContext).choosingPlayerOverride = context.player;
+            }
         });
     }
 }

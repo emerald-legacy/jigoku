@@ -1,15 +1,16 @@
-import DrawCard from '../../drawcard.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations } from '../../Constants.js';
 
 class MeishodoWielder extends DrawCard {
     static id = 'meishodo-wielder';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
             location: Locations.Any,
-            condition: context => this.game.getFirstPlayer() === context.player,
+            condition: (context: any) => this.game.getFirstPlayer() === context.player,
             effect: ability.effects.reduceCost({
-                match: (card, source) => card === source
+                match: (card: any, source: any) => card === source
             })
         });
     }

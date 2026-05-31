@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
 
 class ShiotomeEncampment extends DrawCard {
     static id = 'shiotome-encampment';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.action({
             title: 'Ready a Cavalry character',
             condition: context =>
@@ -17,7 +18,7 @@ class ShiotomeEncampment extends DrawCard {
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: card => card.hasTrait('cavalry'),
-                gameAction: ability.actions.ready()
+                gameAction: AbilityDsl.actions.ready()
             }
         });
     }

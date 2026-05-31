@@ -1,7 +1,8 @@
 import type { Elements } from '../../Constants.js';
+import { isProvinceCard } from '../../ProvinceCard.js';
 import { RoleCard } from '../../RoleCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type { Conflict } from '../../conflict.js';
+import type { Conflict } from '../../Conflict.js';
 
 export function createKeeperRole(id: string, element: Elements) {
     return class KeeperRole extends RoleCard {
@@ -20,7 +21,7 @@ export function createKeeperRole(id: string, element: Elements) {
             });
         }
 
-        getElement() {
+        getElement(): Elements[] {
             return [element];
         }
     };
@@ -36,14 +37,14 @@ export function createSeekerRole(id: string, element: Elements) {
                 when: {
                     onCardRevealed: (event, context) =>
                         event.card.controller === context.player &&
-                        event.card.isProvince &&
-                        event.card.getElement().some((element: Elements) => context.source.hasTrait(element))
+                        isProvinceCard(event.card) &&
+                        event.card.getElement().some((element: string) => context.source.hasTrait(element))
                 },
                 gameAction: AbilityDsl.actions.gainFate()
             });
         }
 
-        getElement() {
+        getElement(): Elements[] {
             return [element];
         }
     };

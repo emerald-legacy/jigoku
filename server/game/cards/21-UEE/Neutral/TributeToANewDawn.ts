@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Players, TargetModes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 const FIRST = 'first';
 const SECOND = 'second';
@@ -46,10 +46,10 @@ export default class TributeToANewDawn extends DrawCard {
 
     #getAffectedAttachments(context: AbilityContext<any>) {
         const protectedAttachments = new WeakSet<DrawCard>();
-        for(const card of context.targets[FIRST]) {
+        for(const card of context.targets[FIRST] as DrawCard[]) {
             protectedAttachments.add(card);
         }
-        for(const card of context.targets[SECOND]) {
+        for(const card of context.targets[SECOND] as DrawCard[]) {
             protectedAttachments.add(card);
         }
 

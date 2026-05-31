@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class DarkSecret extends DrawCard {
     static id = 'dark-secret';
@@ -25,7 +25,10 @@ export default class DarkSecret extends DrawCard {
         return character.controller;
     }
 
-    #quote(character: DrawCard): string {
+    #quote(character: DrawCard | null | undefined): string {
+        if(!character) {
+            return '';
+        }
         switch(((character.printedCost ?? 0) + character.name.charCodeAt(0) + character.fate) % 7) {
             case 0:
                 return 'Man is not what he thinks he is, he is what he hides';
@@ -41,6 +44,8 @@ export default class DarkSecret extends DrawCard {
                 return 'Three may keep a secret, if two of them are dead';
             case 6:
                 return 'All the secrets of the world worth knowing are hiding in plain sight';
+            default:
+                return '';
         }
     }
 }

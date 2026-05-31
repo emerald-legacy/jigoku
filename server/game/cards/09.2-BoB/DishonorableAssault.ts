@@ -1,5 +1,6 @@
 import { TargetModes, CardTypes } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
+import type BaseCard from '../../BaseCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 export default class DishonorableAssault extends ProvinceCard {
@@ -9,13 +10,13 @@ export default class DishonorableAssault extends ProvinceCard {
         this.action({
             title: 'Discard cards to dishonor attackers',
             effect: 'discard {1} and dishonor {2}',
-            effectArgs: (context) => [context.costs.discardCardsUpToVariableX, context.target],
+            effectArgs: (context) => [context.costs.discardCardsUpToVariableX as BaseCard[], context.targets.target as BaseCard[]],
             cost: AbilityDsl.costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTargets(context)),
             target: {
                 mode: TargetModes.ExactlyVariable,
                 numCardsFunc: (context) => {
                     if(context && context.costs && context.costs.discardCardsUpToVariableX) {
-                        return context.costs.discardCardsUpToVariableX.length;
+                        return (context.costs.discardCardsUpToVariableX as BaseCard[]).length;
                     }
 
                     return this.getNumberOfLegalTargets(context);
@@ -28,9 +29,9 @@ export default class DishonorableAssault extends ProvinceCard {
         });
     }
 
-    getNumberOfLegalTargets(context) {
-        if(this.game.isDuringConflict()) {
-            let cards = this.game.currentConflict.getParticipants((card) => card.isAttacking());
+    getNumberOfLegalTargets(context: any) {
+        if(this.game.isDuringConflict() && this.game.currentConflict) {
+            let cards = this.game.currentConflict.getParticipants((card: any) => card.isAttacking());
             let count = 0;
             cards.forEach((card) => {
                 if(card.allowGameAction('dishonor', context)) {

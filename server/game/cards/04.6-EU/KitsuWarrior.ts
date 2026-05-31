@@ -1,13 +1,14 @@
-import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 
 class KitsuWarrior extends DrawCard {
     static id = 'kitsu-warrior';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                ability.effects.modifyMilitarySkill(() => this.twiceMilClaimedRings()),
-                ability.effects.modifyPoliticalSkill(() => this.twicePolClaimedRings())
+                AbilityDsl.effects.modifyMilitarySkill(() => this.twiceMilClaimedRings()),
+                AbilityDsl.effects.modifyPoliticalSkill(() => this.twicePolClaimedRings())
             ]
         });
     }

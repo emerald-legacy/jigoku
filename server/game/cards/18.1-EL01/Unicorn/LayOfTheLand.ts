@@ -1,13 +1,13 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Locations, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 
 export default class LayOfTheLand extends DrawCard {
     static id = 'lay-of-the-land';
 
     setupCardAbilities() {
-        this.action({
+        this.action<ProvinceCard>({
             title: 'Reveal a province and discard status tokens',
             target: {
                 activePromptTitle: 'Choose an unbroken province',
@@ -18,8 +18,13 @@ export default class LayOfTheLand extends DrawCard {
                 gameAction: [AbilityDsl.actions.reveal(), AbilityDsl.actions.turnFacedown()]
             },
             effect: '{1} {2}',
-            effectArgs: ({ target }: { target: ProvinceCard }) =>
-                target.isFaceup() ? ['flip facedown', target] : ['reveal', target.location]
+            effectArgs: (context) => {
+                const target = context.target;
+                if(!target) {
+                    return ['reveal', ''];
+                }
+                return target.isFaceup() ? ['flip facedown', target] : ['reveal', target.location];
+            }
         });
     }
 }

@@ -1,8 +1,8 @@
 import { CardTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import type { Conflict } from '../../../conflict.js';
-import type Player from '../../../player.js';
+import DrawCard from '../../../DrawCard.js';
+import type { Conflict } from '../../../Conflict.js';
+import type Player from '../../../Player.js';
 
 /**
  * Returns -1 in case there are no cavalry characters. It is not exactly correct, but it works fine

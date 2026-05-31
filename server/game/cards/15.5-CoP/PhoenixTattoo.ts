@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -16,8 +16,8 @@ class PhoenixTattoo extends DrawCard {
 
         this.persistentEffect({
             targetController: Players.Any,
-            condition: context => context.source.parent && context.source.parent.isParticipating() && context.game.isDuringConflict(),
-            match: (card, context) => card !== context.source.parent && card.isParticipating(),
+            condition: (context: any) => Boolean(context.source.parent && context.source.parent.isParticipating() && context.game.isDuringConflict()),
+            match: (card: any, context: any) => card !== context?.source.parent && card.isParticipating(),
             effect: AbilityDsl.effects.addKeyword('pride')
         });
     }

@@ -1,7 +1,8 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
 import CardAbility from '../../../CardAbility.js';
 import { CardTypes, ConflictTypes, Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class TheVoidOfWar extends DrawCard {
     static id = 'the-void-of-war';
@@ -18,27 +19,30 @@ export default class TheVoidOfWar extends DrawCard {
                 gameAction: AbilityDsl.actions.bow()
             },
             effect: 'bow {0}.',
-            then: (context) => ({
-                target: {
-                    player: context.player.opponent ? Players.Opponent : Players.Self,
-                    mode: TargetModes.Select,
-                    activePromptTitle: 'Resolve The Void of War\'s ability again?',
-                    choices: {
-                        Yes: AbilityDsl.actions.resolveAbility({
-                            ability: context.ability as CardAbility,
-                            player: context.player.opponent ? context.player.opponent : context.player,
-                            subResolution: true,
-                            choosingPlayerOverride: context.choosingPlayerOverride
-                        }),
-                        No: () => true
-                    }
-                },
-                message: '{3} chooses {4}to resolve {1}\'s ability again',
-                messageArgs: (thenContext) => [
-                    context.player.opponent ? context.player.opponent : context.player,
-                    thenContext.select === 'No' ? 'not ' : ''
-                ]
-            })
+            then: (context) => {
+                const ctx = context;
+                return {
+                    target: {
+                        player: ctx.player.opponent ? Players.Opponent : Players.Self,
+                        mode: TargetModes.Select,
+                        activePromptTitle: 'Resolve The Void of War\'s ability again?',
+                        choices: {
+                            Yes: AbilityDsl.actions.resolveAbility({
+                                ability: ctx.ability as CardAbility,
+                                player: ctx.player.opponent ?? ctx.player,
+                                subResolution: true,
+                                choosingPlayerOverride: ctx.choosingPlayerOverride ?? undefined
+                            }),
+                            No: () => true
+                        }
+                    },
+                    message: '{3} chooses {4}to resolve {1}\'s ability again',
+                    messageArgs: (thenContext: AbilityContext) => [
+                        ctx.player.opponent ?? ctx.player,
+                        thenContext.select === 'No' ? 'not ' : ''
+                    ]
+                };
+            }
         });
     }
 }

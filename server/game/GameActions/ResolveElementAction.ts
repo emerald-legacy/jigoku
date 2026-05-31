@@ -1,8 +1,8 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { EffectNames, EventNames } from '../Constants.js';
 import { Event } from '../Events/Event.js';
-import type Player from '../player.js';
-import Ring from '../ring.js';
+import type Player from '../Player.js';
+import Ring from '../Ring.js';
 import { RingEffects } from '../RingEffects.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 

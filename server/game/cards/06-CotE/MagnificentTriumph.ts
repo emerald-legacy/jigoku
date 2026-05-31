@@ -2,11 +2,12 @@ import { CardTypes, Players } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
-import DrawCard from '../../drawcard.js';
+import type BaseCard from '../../BaseCard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class MagnificentTriumph extends DrawCard {
     static id = 'magnificent-triumph';
+    private eventRegistrar?: EventRegistrar;
 
     #duelWinnersThisConflict = new Set<BaseCard>();
 

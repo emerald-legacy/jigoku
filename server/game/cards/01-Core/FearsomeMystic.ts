@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Elements } from '../../Constants.js';
 
@@ -17,7 +17,7 @@ class FearsomeMystic extends DrawCard {
             title: 'Remove fate from characters',
             condition: context => context.source.isParticipating(),
             gameAction: AbilityDsl.actions.removeFate(context => ({
-                target: this.game.currentConflict.getCharacters(context.player.opponent).filter(card => card.getGlory() < context.source.getGlory())
+                target: this.game.currentConflict?.getCharacters(context.player.opponent).filter((card: any) => card.getGlory() < context.source.getGlory()) ?? []
             }))
         });
     }

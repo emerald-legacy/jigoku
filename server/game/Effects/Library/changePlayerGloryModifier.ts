@@ -1,5 +1,5 @@
 import { EffectNames } from '../../Constants.js';
-import type Player from '../../player.js';
+import type Player from '../../Player.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 
 export type ChangePlayerGloryModifierValue = number | ((player: Player) => number);

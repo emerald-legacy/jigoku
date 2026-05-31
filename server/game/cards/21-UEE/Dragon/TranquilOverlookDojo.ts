@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { DuelTypes, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import { shuffle } from '../../../utils/shuffle.js';
 import type { AbilityLimit } from '../../../AbilityLimit.js';

@@ -1,8 +1,8 @@
 import { Durations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import type { Conflict } from '../../../conflict.js';
-import type Player from '../../../player.js';
+import DrawCard from '../../../DrawCard.js';
+import type { Conflict } from '../../../Conflict.js';
+import type Player from '../../../Player.js';
 
 function charactersToBuffAndNerf(yuaController: Player, conflict: Conflict) {
     const res = {

@@ -1,7 +1,8 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Players } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 
 type Choice = 'Even' | 'Odd';
 
@@ -20,20 +21,25 @@ export default class MazeOfIllusion extends DrawCard {
                 gameAction: [AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor()]
             },
             effect: 'bow and dishonor {0} if {1} can\'t guess whether their dial is even or odd',
-            effectArgs: (context) => context.player.opponent,
-            handler: (context) =>
+            effectArgs: (context) => context.player.opponent as Player,
+            handler: (context: AbilityContext) => {
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Choose a value to set your honor dial at',
                     context: context,
                     choices: ['1', '2', '3', '4', '5'],
                     handlers: [1, 2, 3, 4, 5].map((value) => () => this.opponentGuess(value, context))
-                })
+                });
+            }
         });
     }
 
     private opponentGuess(value: number, context: AbilityContext) {
+        const opponent = context.player.opponent;
+        if(!opponent) {
+            return;
+        }
         const choices: Choice[] = ['Even', 'Odd'];
-        this.game.promptWithHandlerMenu(context.player.opponent, {
+        this.game.promptWithHandlerMenu(opponent, {
             activePromptTitle: 'Guess whether your opponent set their dial to even or odd',
             context: context,
             choices: choices,

@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { Durations, Players, TargetModes, CardTypes } from '../../Constants.js';
 
 class SoshiAoi extends DrawCard {
     static id = 'soshi-aoi';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Give a character +1/+0 and the Bushi trait or +0/+1 and the Courtier trait',
             cost: ability.costs.payHonor(1),
@@ -17,13 +18,13 @@ class SoshiAoi extends DrawCard {
                     mode: TargetModes.Select,
                     dependsOn: 'character',
                     choices: {
-                        'Give +1/+0 and the Bushi trait': ability.actions.cardLastingEffect(context => ({
+                        'Give +1/+0 and the Bushi trait': ability.actions.cardLastingEffect((context: any) => ({
                             target: context.targets.character,
                             duration: Durations.UntilEndOfPhase,
                             effect: [ability.effects.modifyMilitarySkill(1),
                                 ability.effects.addTrait('bushi')]
                         })),
-                        'Give +0/+1 and the Courtier trait': ability.actions.cardLastingEffect(context => ({
+                        'Give +0/+1 and the Courtier trait': ability.actions.cardLastingEffect((context: any) => ({
                             target: context.targets.character,
                             duration: Durations.UntilEndOfPhase,
                             effect: [ability.effects.modifyPoliticalSkill(1),

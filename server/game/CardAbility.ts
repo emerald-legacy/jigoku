@@ -3,8 +3,8 @@ import ThenAbility from './ThenAbility.js';
 import * as Costs from './Costs.js';
 import { Locations, CardTypes, EffectNames } from './Constants.js';
 import { initiateDuel } from './DuelHelper.js';
-import type Game from './game.js';
-import type BaseCard from './basecard.js';
+import type BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
 import type { AbilityContext } from './AbilityContext.js';
 
 interface CardAbilityProperties {
@@ -48,15 +48,15 @@ class CardAbility extends ThenAbility {
     maxIdentifier: string;
     origin?: BaseCard;
 
-    constructor(game: Game, card: BaseCard, properties: CardAbilityProperties) {
+    constructor(card: BaseCard, properties: CardAbilityProperties) {
         if(properties.initiateDuel) {
-            initiateDuel(game, card, properties);
+            initiateDuel(card.game, card, properties);
         }
-        super(game, card, properties);
+        super(card, properties);
 
         this.title = properties.title;
         this.limit = properties.limit || AbilityLimit.perRound(1);
-        this.limit.registerEvents(game);
+        this.limit.registerEvents(card.game);
         this.limit.ability = this;
         this.abilityCost = this.cost;
         this.location = this.buildLocation(card, properties.location);
@@ -103,7 +103,7 @@ class CardAbility extends ThenAbility {
 
         if(
             (this.isTriggeredAbility() && !this.card.canTriggerAbilities(context, ignoredRequirements)) ||
-            (this.card.type === CardTypes.Event && !this.card.canPlay(context, context.playType))
+            (this.card.type === CardTypes.Event && !(this.card as DrawCard).canPlay(context, context.playType))
         ) {
             return 'cannotTrigger';
         }
@@ -120,7 +120,7 @@ class CardAbility extends ThenAbility {
             return 'max';
         }
 
-        if(this.isCardPlayed() && this.card.isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
+        if(this.isCardPlayed() && (this.card as DrawCard).isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
             return 'limited';
         }
 
@@ -233,6 +233,7 @@ class CardAbility extends ThenAbility {
                     [format, args] = cost.getCostMessage(context);
                     return { message: this.game.gameChat.formatMessage(format, [card].concat(args)) };
                 }
+                return undefined;
             })
             .filter((obj: any) => obj);
         if(costMessages.length > 0) {

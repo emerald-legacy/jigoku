@@ -1,8 +1,9 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseCard from '../basecard.js';
+import type BaseCard from '../BaseCard.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export type DiscardFromPlayProperties = CardActionProperties;
 
 export class DiscardFromPlayAction extends CardGameAction<DiscardFromPlayProperties> {
@@ -11,7 +12,7 @@ export class DiscardFromPlayAction extends CardGameAction<DiscardFromPlayPropert
     cost = 'sacrificing {0}';
     targetType = [CardTypes.Character, CardTypes.Attachment, CardTypes.Holding];
 
-    constructor(propertyFactory, isSacrifice = false) {
+    constructor(propertyFactory: DiscardFromPlayProperties | ((context?: AbilityContext) => DiscardFromPlayProperties), isSacrifice = false) {
         super(propertyFactory);
         if(isSacrifice) {
             this.name = 'sacrifice';
@@ -37,11 +38,11 @@ export class DiscardFromPlayAction extends CardGameAction<DiscardFromPlayPropert
         return super.canAffect(card, context);
     }
 
-    updateEvent(event, card: BaseCard, context: AbilityContext, additionalProperties): void {
+    updateEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         this.updateLeavesPlayEvent(event, card, context, additionalProperties);
     }
 
-    eventHandler(event, additionalProperties = {}): void {
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
         this.leavesPlayEventHandler(event, additionalProperties);
     }
 }

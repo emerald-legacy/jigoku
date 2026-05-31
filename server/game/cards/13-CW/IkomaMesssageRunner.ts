@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, Players, TargetModes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -35,7 +35,7 @@ class IkomaMessageRunner extends DrawCard {
         });
     }
 
-    buildString(context) {
+    buildString(context: any) {
         let string = '';
 
         if(context.targets.myCard && context.targets.myCard.length) {

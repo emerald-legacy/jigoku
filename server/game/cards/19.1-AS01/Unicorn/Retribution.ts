@@ -1,8 +1,8 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
+import type BaseCard from '../../../BaseCard.js';
 import { CardTypes, ConflictTypes, Durations, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
-import type Player from '../../../player.js';
+import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 
 function brokenProvinceCountForPlayer(player: Player): number {
     return player.getProvinceCards().reduce((sum, province) => (province.isBroken ? sum + 1 : sum), 0);
@@ -12,7 +12,7 @@ export default class Retribution extends DrawCard {
     static id = 'retribution-';
 
     public setupCardAbilities() {
-        this.reaction({
+        this.reaction<DrawCard>({
             title: 'Immediately declare a military conflict',
             when: {
                 onConflictFinished: (event, context) =>
@@ -24,7 +24,7 @@ export default class Retribution extends DrawCard {
                         brokenProvinceCountForPlayer(context.player.opponent)
             },
             effect: 'declare a military conflict, attacking with {1}',
-            effectArgs: (context) => [context.target],
+            effectArgs: (context) => [context.target ?? ''],
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,

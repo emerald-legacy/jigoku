@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { Locations } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { parseGameMode } from '../../../GameMode.js';
 
 const ACTIVE_LOCATIONS = [Locations.Hand, Locations.PlayArea];
@@ -16,8 +16,8 @@ export default class LuckyCoin extends DrawCard {
                     const totalCost = context.player
                         .getDynastyCardsInProvince(Locations.Provinces)
                         .reduce((totalCost: number, card: DrawCard) => {
-                            const cost = !card.facedown && !isNaN(card.printedCost) ? card.printedCost : 0;
-                            return totalCost + cost;
+                            const cost = !card.facedown && card.printedCost !== null && !isNaN(card.printedCost) ? card.printedCost : 0;
+                            return totalCost + (cost ?? 0);
                         }, 0);
                     return totalCost < 6 || totalCost > 12;
                 }
@@ -28,17 +28,14 @@ export default class LuckyCoin extends DrawCard {
                 handler: ({ player, game }) => {
                     const cardsToMulligan = player.getDynastyCardsInProvince(Locations.Provinces);
 
-                    for(const nonStrongholdProvince of parseGameMode(game.gameMode).setupNonStrongholdProvinces) {
-                        if(player.dynastyDeck.length > 0) {
-                            player.moveCard(player.dynastyDeck[0], nonStrongholdProvince);
-                        }
+                    for(const card of cardsToMulligan) {
+                        player.moveCard(card, 'dynasty deck bottom');
                     }
 
-                    for(const card of cardsToMulligan) {
-                        const originalLocation = card.location;
-                        player.moveCard(card, 'dynasty deck bottom');
-                        player.replaceDynastyCard(originalLocation);
+                    for(const location of parseGameMode(game.gameMode).setupNonStrongholdProvinces) {
+                        player.putTopDynastyCardInProvince(location, false);
                     }
+
                     player.shuffleDynastyDeck();
                 }
             }),

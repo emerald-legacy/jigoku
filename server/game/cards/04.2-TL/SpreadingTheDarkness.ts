@@ -1,22 +1,23 @@
-import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, CardTypes } from '../../Constants.js';
 
 class SpreadingTheDarkness extends DrawCard {
     static id = 'spreading-the-darkness';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.action({
             title: 'Give a character +4/+0',
 
-            cost: ability.costs.payHonor(2),
+            cost: AbilityDsl.costs.payHonor(2),
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,
                 cardCondition: card => card.isParticipating(),
-                gameAction: ability.actions.cardLastingEffect(context => ({
+                gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                     effect: [
-                        ability.effects.modifyMilitarySkill(4),
-                        ability.effects.cardCannot({
+                        AbilityDsl.effects.modifyMilitarySkill(4),
+                        AbilityDsl.effects.cardCannot({
                             cannot: 'target',
                             restricts: 'opponentsCardEffects',
                             applyingPlayer: context.player

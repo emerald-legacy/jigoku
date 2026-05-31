@@ -1,7 +1,7 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class BakeKujira extends DrawCard {
     static id = 'bake-kujira';
@@ -9,7 +9,7 @@ export default class BakeKujira extends DrawCard {
     setupCardAbilities() {
         this.legendary(1);
 
-        this.reaction({
+        this.reaction<DrawCard>({
             title: 'Eat a character',
             when: {
                 afterConflict: (event, context) =>
@@ -28,7 +28,7 @@ export default class BakeKujira extends DrawCard {
         });
     }
 
-    #shouldDiscardTarget(context: AbilityContext): boolean {
-        return context.target.getFate() === 0;
+    #shouldDiscardTarget(context: AbilityContext<any, DrawCard>): boolean {
+        return context.target?.getFate() === 0;
     }
 }

@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Elements, Players, TargetModes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 const VULNERABLE_ELEMENT = 'ichigo-kun-fire';
 
@@ -14,8 +14,7 @@ export default class IchigoKun extends DrawCard {
     public setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
-                context.game.currentConflict &&
-                context.game.currentConflict.hasElement(this.getCurrentElementSymbol(VULNERABLE_ELEMENT)),
+                context.game.currentConflict?.hasElement(this.getCurrentElementSymbol(VULNERABLE_ELEMENT) as Elements) ?? false,
             effect: AbilityDsl.effects.setBaseMilitarySkill(0)
         });
 

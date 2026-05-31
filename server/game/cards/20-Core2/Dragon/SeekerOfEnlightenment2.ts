@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class SeekerOfEnlightenment2 extends DrawCard {
     static id = 'seeker-of-enlightenment-2';

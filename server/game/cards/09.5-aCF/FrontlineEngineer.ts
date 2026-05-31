@@ -1,4 +1,5 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
 import { Locations, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -14,7 +15,7 @@ class FrontlineEngineer extends DrawCard {
             title: 'Place a holding from your deck faceup in the defending province',
             condition: context => context.player.dynastyDeck.length > 0 && context.source.isDefending(),
             effect: 'look at the top five cards of their dynasty deck',
-            gameAction: AbilityDsl.actions.selectCard(context => ({
+            gameAction: AbilityDsl.actions.selectCard<ProvinceCard>(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardTypes.Province,
@@ -28,7 +29,7 @@ class FrontlineEngineer extends DrawCard {
                     handler: context => this.game.promptWithHandlerMenu(context.player, {
                         activePromptTitle: 'Choose a holding',
                         context: context,
-                        cardCondition: card => card.getType() === CardTypes.Holding,
+                        cardCondition: (card: any) => card.getType() === CardTypes.Holding,
                         cards: context.player.dynastyDeck.slice(0, 5),
                         choices: ['Take nothing'],
                         handlers: [() => {
@@ -36,7 +37,10 @@ class FrontlineEngineer extends DrawCard {
                             context.player.shuffleDynastyDeck();
                             return true;
                         }],
-                        cardHandler: cardFromDeck => {
+                        cardHandler: (cardFromDeck: any) => {
+                            if(!context.target) {
+                                return;
+                            }
                             let cards = context.player.getDynastyCardsInProvince(context.target.location);
                             this.game.addMessage('{0} discards {1}, replacing it with {2}', context.player, cards, cardFromDeck);
                             context.player.moveCard(cardFromDeck, context.target.location);

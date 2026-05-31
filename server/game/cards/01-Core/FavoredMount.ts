@@ -1,9 +1,10 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class FavoredMount extends DrawCard {
     static id = 'favored-mount';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.attachmentConditions({
             myControl: true
         });

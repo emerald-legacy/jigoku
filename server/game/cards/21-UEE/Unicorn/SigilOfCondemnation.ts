@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class SigilOfCondemnation extends DrawCard {
     static id = 'sigil-of-condemnation';
@@ -8,10 +8,11 @@ export default class SigilOfCondemnation extends DrawCard {
         this.action({
             title: 'Injure attached character',
             condition: (context) =>
-                this.game.isDuringConflict('military') &&
+                !!(this.game.isDuringConflict('military') &&
                 context.source.parent &&
                 context.source.parent.isParticipating() &&
-                context.game.currentConflict.hasMoreParticipants(context.source.parent.controller.opponent),
+                context.source.parent.controller.opponent &&
+                context.game.currentConflict?.hasMoreParticipants(context.source.parent.controller.opponent, () => true)),
             gameAction: AbilityDsl.actions.conditional((context) => ({
                 condition: context.source.parent.getFate() === 0,
                 trueGameAction: AbilityDsl.actions.discardFromPlay({ target: context.source.parent }),

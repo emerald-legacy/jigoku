@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Players, TargetModes } from '../../Constants.js';
 
@@ -17,7 +17,7 @@ class DirectingTheBattle extends DrawCard {
                 select: {
                     mode: TargetModes.Select,
                     dependsOn: 'character',
-                    player: context => context.targets.character.controller === context.player ? Players.Self : Players.Opponent,
+                    player: context => (context.targets.character as DrawCard).controller === context.player ? Players.Self : Players.Opponent,
                     choices: {
                         'Move this character home': AbilityDsl.actions.sendHome(context => ({
                             target: context.targets.character

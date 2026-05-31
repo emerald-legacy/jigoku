@@ -1,6 +1,6 @@
 import { CardTypes, Durations, Locations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class ShibaYohana extends DrawCard {
     static id = 'shiba-yohana';
@@ -13,17 +13,17 @@ export default class ShibaYohana extends DrawCard {
                     event.card === context.source && event.card.location === Locations.PlayArea
             },
             effect: 'prevent {1} from leaving play - vengeance and destruction sustains her in a damned existence',
-            effectArgs: (context) => context.event.card,
+            effectArgs: (context) => context.event.card ?? '',
             gameAction: AbilityDsl.actions.cancel((context) => ({
                 target: context.source,
                 replacementGameAction: AbilityDsl.actions.taint()
             })),
             then: (context) => ({
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    target: context.source,
+                    target: context?.source,
                     duration: Durations.Custom,
                     until: {
-                        onCardLeavesPlay: (event) => event.card === context.source
+                        onCardLeavesPlay: (event) => event.card === context?.source
                     },
                     effect: AbilityDsl.effects.addTrait('spirit')
                 })

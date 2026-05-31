@@ -1,4 +1,6 @@
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
+import type { CardAction } from '../../CardAction.js';
+import type TriggeredAbility from '../../TriggeredAbility.js';
 import { AbilityTypes, EffectNames, Locations } from '../../Constants.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import { EffectValue } from '../EffectValue.js';
@@ -8,23 +10,23 @@ export class GainAllAbilities extends EffectValue<BaseCard> {
     actions: Array<GainAbility>;
     reactions: Array<GainAbility>;
     persistentEffects: Array<any>;
-    abilitiesForTargets: Record<string, undefined | { actions: Array<GainAbility>; reactions: Array<GainAbility> }>;
+    abilitiesForTargets: Record<string, undefined | { actions: CardAction[]; reactions: TriggeredAbility[] }>;
     printedOnly: boolean;
 
     constructor(card: BaseCard, printedOnly = false) {
         super(card);
         this.printedOnly = printedOnly;
         this.actions = card.abilities.actions
-            .filter(action => !this.printedOnly || action.printedAbility)
-            .map((action) => new GainAbility(AbilityTypes.Action, action));
+            .filter((action: any) => !this.printedOnly || action.printedAbility)
+            .map((action: any) => new GainAbility(AbilityTypes.Action, action));
         //Need to ignore keyword reactions or we double up on the pride / courtesy / sincerity triggers
         this.reactions = card.abilities.reactions
-            .filter(a => !this.printedOnly || a.printedAbility)
-            .filter((a) => !a.isKeywordAbility())
-            .map((ability) => new GainAbility(ability.abilityType, ability));
+            .filter((a: any) => !this.printedOnly || a.printedAbility)
+            .filter((a: any) => !a.isKeywordAbility())
+            .map((ability: any) => new GainAbility(ability.abilityType, ability));
         this.persistentEffects = card.abilities.persistentEffects
             // .filter(a => !this.printedOnly || a.printedAbility)
-            .map((effect) => Object.assign({}, effect));
+            .map((effect: any) => Object.assign({}, effect));
         this.abilitiesForTargets = {};
     }
 
@@ -32,11 +34,11 @@ export class GainAllAbilities extends EffectValue<BaseCard> {
         this.abilitiesForTargets[target.uuid] = {
             actions: this.actions.map((value) => {
                 value.apply(target);
-                return value.getValue();
+                return value.getValue() as CardAction;
             }),
             reactions: this.reactions.map((value) => {
                 value.apply(target);
-                return value.getValue();
+                return value.getValue() as TriggeredAbility;
             })
         };
         for(const effect of this.persistentEffects) {
@@ -47,9 +49,11 @@ export class GainAllAbilities extends EffectValue<BaseCard> {
     }
 
     unapply(target: BaseCard) {
-        for(const value of this.abilitiesForTargets[target.uuid].reactions) {
-            // @ts-expect-error -- GainAbility values have unregisterEvents at runtime but the type is not declared
-            value.unregisterEvents();
+        const entry = this.abilitiesForTargets[target.uuid];
+        if(entry) {
+            for(const value of entry.reactions) {
+                value.unregisterEvents();
+            }
         }
         for(const effect of this.persistentEffects) {
             if(effect.ref) {
@@ -61,15 +65,17 @@ export class GainAllAbilities extends EffectValue<BaseCard> {
     }
 
     getActions(target: BaseCard) {
-        if(this.abilitiesForTargets[target.uuid]) {
-            return this.abilitiesForTargets[target.uuid].actions;
+        const entry = this.abilitiesForTargets[target.uuid];
+        if(entry) {
+            return entry.actions;
         }
         return [];
     }
 
     getReactions(target: BaseCard) {
-        if(this.abilitiesForTargets[target.uuid]) {
-            return this.abilitiesForTargets[target.uuid].reactions;
+        const entry = this.abilitiesForTargets[target.uuid];
+        if(entry) {
+            return entry.reactions;
         }
         return [];
     }

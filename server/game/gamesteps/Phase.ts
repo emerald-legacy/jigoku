@@ -1,5 +1,5 @@
 import { EventNames, Phases } from '../Constants.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
 import { SimpleStep } from './SimpleStep.js';
 import type { Step } from './Step.js';

@@ -146,7 +146,7 @@ when: {
 }
 ```
 
-Multiple keys in `when:` are OR'd — the ability triggers if any key matches.
+Multiple keys in `when:` are OR'd — the ability triggers if any key matches. The `event` parameter can be typed with `EventPayload<EventNames.X>` — see [Typed Targets & Events](#typed-targets--events-typescript).
 
 `aggregateWhen` receives all events:
 
@@ -220,7 +220,7 @@ target: {
     cardType: CardTypes.Character,      // filter by type
     controller: Players.Opponent,       // whose cards
     location: Locations.PlayArea,       // where the card must be
-    cardCondition: (card, context) => card.isParticipating(),
+    cardCondition: (card, context) => card.isParticipating(),  // card: BaseCard — narrow if needed
     gameAction: AbilityDsl.actions.bow()
 }
 ```
@@ -286,6 +286,61 @@ targets: {
     }
 }
 ```
+
+---
+
+## Typed Targets & Events (TypeScript)
+
+The ability methods are generic over the target card type, so card code can read `context.target` with a concrete type instead of casting.
+
+### Typing the target
+
+`this.action`, `this.reaction`, `this.interrupt`, `this.forcedReaction`, `this.forcedInterrupt`, and `this.wouldInterrupt` all take a `<Target extends BaseCard>` parameter (default `BaseCard`). Pass the type your `target:` selects and `context.target` is typed to it:
+
+```typescript
+this.action<DrawCard>({
+    target: {
+        cardType: CardTypes.Character,
+        gameAction: AbilityDsl.actions.bow()
+    },
+    effect: 'bow {0}',
+    handler: (context) => {
+        // context.target: DrawCard | undefined — no cast needed
+        if(!context.target) {
+            return;
+        }
+        context.target.bow();
+    }
+});
+```
+
+Use `<ProvinceCard>` for province-targeting abilities. The default `BaseCard` covers cards that don't read `context.target` (or read it only as a `BaseCard`).
+
+Notes:
+
+- `context.target` is `Target | undefined`. Always guard (`if(!context.target) return;`) — `no-non-null-assertion` is an error, so never write `context.target!`.
+- Multi-card target modes (`Exactly`/`Unlimited` with `numCards > 1`) assign an array. Those cards read `context.targets.target as DrawCard[]`, or use the typed helper `context.getCards<DrawCard>()` (defaults to the `'target'` name), instead of `context.target`.
+- `cardCondition: (card, context) => …` receives `card: BaseCard`. Narrow with `instanceof DrawCard`, the `isProvinceCard(card)` type predicate (from `ProvinceCard.ts`), or an `as DrawCard` cast when you need subtype-only members.
+- `AbilityContext<S, T>` carries the generic — `S` is the source type, `T` the target type. Most card code never names it explicitly; the `this.action<T>()` form sets `T` for you.
+
+### Typed `when:` events
+
+Inside a `when:` predicate (or `aggregateWhen`), the event is typed. Annotate the parameter with `EventPayload<EventNames.X>` to read its payload fields with full typing:
+
+```typescript
+import type { EventPayload } from '../../Events/EventPayloads.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+
+this.reaction<DrawCard>({
+    when: {
+        afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: TriggeredAbilityContext) =>
+            event.conflict.loser === context.player && context.source.isAttacking()
+    },
+    // ...
+});
+```
+
+In a handler, `context.event` is typed too — `context.event.conflict`, `context.event.card`, etc. resolve to typed unions rather than `any`. Narrow on `context.event.name` when you need a field specific to one event.
 
 ---
 
@@ -397,6 +452,17 @@ Both `limit:` and `max:` on an ability accept a limit object. They are equivalen
 Game actions are called via `AbilityDsl.actions`. All accept an optional `propertyFactory`: either a plain properties object or `(context) => properties`. The `target` property inside the factory sets which card/player is affected.
 
 When no `target` is provided, the action defaults to `context.source`.
+
+Every factory also takes an optional `<Target extends BaseCard>` type parameter, so the `context` inside a `(context) => properties` factory is typed the same way as the ability's target (see [Typed Targets & Events](#typed-targets--events-typescript)):
+
+```typescript
+gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
+    target: context.target,   // DrawCard | undefined — no cast
+    effect: AbilityDsl.effects.modifyMilitarySkill(2)
+}))
+```
+
+Omit it (the default) and the inner `context` is the legacy untyped shape — fine for the many cards that don't read typed members off `context.target`.
 
 The tables below cover the most-used factories; the authoritative list lives in `server/game/GameActions/GameActions.ts` (~100 exports). Niche actions not listed here include `attachToRing`, `dishonorProvince`, `placeFateAttachment`, `putIntoProvince`, `performGloryCount`, `refillFaceup`, `selectRing`, `selectToken`, `resolveConflictRing`, `removeRingFromPlay`, `returnRingToPlay`, `moveStatusToken`, `flipImperialFavor`, `fateBid`, `setHonorDial`, `modifyBid`, `triggerAbility`, `duelAddParticipant`, `immediatelyResolveConflict`, `duelLastingEffect`, `cardMenu`, `chooseAction`, `onAffinity`, `jointContext`, `multipleContext`, `sequentialContext`, `playCard`.
 

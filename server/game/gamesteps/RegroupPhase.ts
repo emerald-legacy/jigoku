@@ -1,7 +1,8 @@
 import { EventNames, Locations, Phases, Players } from '../Constants.js';
 import { ready, returnRing } from '../GameActions/GameActions.js';
-import type Game from '../game.js';
-import type Player from '../player.js';
+import type DrawCard from '../DrawCard.js';
+import type Game from '../Game.js';
+import type Player from '../Player.js';
 import { Phase } from './Phase.js';
 import { SimpleStep } from './SimpleStep.js';
 import ActionWindow from './actionwindow.js';
@@ -43,8 +44,8 @@ export class RegroupPhase extends Phase {
     }
 
     discardFromProvincesForPlayer(player: Player) {
-        let cardsToDiscard = [];
-        let cardsOnUnbrokenProvinces = [];
+        let cardsToDiscard: DrawCard[] = [];
+        let cardsOnUnbrokenProvinces: DrawCard[] = [];
         for(const location of this.game.getProvinceArray()) {
             const provinceCard = player.getProvinceCardInProvince(location);
             const province = player.getSourceList(location);
@@ -68,8 +69,8 @@ export class RegroupPhase extends Phase {
                 waitingPromptTitle: 'Waiting for opponent to discard dynasty cards',
                 location: Locations.Provinces,
                 controller: Players.Self,
-                cardCondition: (card) => cardsOnUnbrokenProvinces.includes(card),
-                onSelect: (player, cards) => {
+                cardCondition: (card: DrawCard) => cardsOnUnbrokenProvinces.includes(card),
+                onSelect: (player: Player, cards: DrawCard[]) => {
                     cardsToDiscard = cardsToDiscard.concat(cards);
                     if(cardsToDiscard.length > 0) {
                         this.game.addMessage('{0} discards {1} from their provinces', player, cardsToDiscard);
@@ -107,6 +108,9 @@ export class RegroupPhase extends Phase {
 
     passFirstPlayer() {
         const firstPlayer = this.game.getFirstPlayer();
+        if(!firstPlayer) {
+            return;
+        }
         const otherPlayer = this.game.getOtherPlayer(firstPlayer);
         if(otherPlayer) {
             this.game.raiseEvent(EventNames.OnPassFirstPlayer, { player: otherPlayer }, () =>

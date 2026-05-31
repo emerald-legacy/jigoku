@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
 export interface TransferFateProperties extends PlayerActionProperties {
@@ -28,15 +28,16 @@ export class TransferFateAction extends PlayerAction {
 
     canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties) as TransferFateProperties;
+        const amount = properties.amount ?? 0;
         return (
-            player.opponent &&
-            properties.amount > 0 &&
-            player.fate >= properties.amount &&
+            !!player.opponent &&
+            amount > 0 &&
+            player.fate >= amount &&
             super.canAffect(player, context)
         );
     }
 
-    addPropertiesToEvent(event, player: Player, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, player: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties) as TransferFateProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.fate = amount;
@@ -44,11 +45,11 @@ export class TransferFateAction extends PlayerAction {
         event.recipient = player.opponent;
     }
 
-    checkEventCondition(event): boolean {
+    checkEventCondition(event: any): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         this.moveFateEventHandler(event);
     }
 }

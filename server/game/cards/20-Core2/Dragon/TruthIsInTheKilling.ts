@@ -1,6 +1,6 @@
 import { DuelTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { Duel } from '../../../Duel.js';
 
 function applyFullEffect(duel: Duel) {
@@ -17,28 +17,28 @@ export default class TruthIsInTheKilling extends DrawCard {
             initiateDuel: {
                 type: DuelTypes.Military,
                 challengerCondition: (card) => card.hasTrait('bushi') && card.isParticipating(),
-                gameAction: (duel) =>
-                    duel.loser &&
-                    AbilityDsl.actions.sequential(
-                        duel.loser.flatMap((loser) =>
-                            applyFullEffect(duel)
-                                ? [
-                                    AbilityDsl.actions.removeFate({
-                                        target: loser,
-                                        amount: loser.getFate(),
-                                        recipient: loser.controller
-                                    }),
-                                    AbilityDsl.actions.discardFromPlay({ target: loser })
-                                ]
-                                : [
-                                    AbilityDsl.actions.removeFate({
-                                        target: loser,
-                                        amount: loser.getFate(),
-                                        recipient: loser.controller
-                                    })
-                                ]
-                        )
-                    ),
+                gameAction: ((duel: Duel) =>
+                    (duel.loser ?
+                        AbilityDsl.actions.sequential(
+                            duel.loser.flatMap((loser) =>
+                                applyFullEffect(duel)
+                                    ? [
+                                        AbilityDsl.actions.removeFate({
+                                            target: loser,
+                                            amount: loser.getFate(),
+                                            recipient: loser.controller
+                                        }),
+                                        AbilityDsl.actions.discardFromPlay({ target: loser })
+                                    ]
+                                    : [
+                                        AbilityDsl.actions.removeFate({
+                                            target: loser,
+                                            amount: loser.getFate(),
+                                            recipient: loser.controller
+                                        })
+                                    ]
+                            )
+                        ) : AbilityDsl.actions.noAction())) as any,
                 message: 'return all fate on {0} to {1}\'s fate pool{2}',
                 messageArgs: (duel) => [duel.loser, duel.losingPlayer, applyFullEffect(duel) ? ' and discard them' : '']
             }

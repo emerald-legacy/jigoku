@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -16,13 +16,13 @@ class HidaBackbreaker extends DrawCard {
                 activePromptTitle: 'Choose a character to dishonor',
                 cardType: CardTypes.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating(),
+                cardCondition: (card: any) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.dishonor()
             }
         });
     }
 
-    allowAttachment(attachment) {
+    allowAttachment(attachment: any) {
         if(attachment.controller === this.controller.opponent) {
             return false;
         }

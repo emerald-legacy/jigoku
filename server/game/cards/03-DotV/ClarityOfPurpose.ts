@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class ClarityOfPurpose extends DrawCard {
     static id = 'clarity-of-purpose';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Character cannot be bowed and doesn\'t bow during political conflicts',
             condition: () => this.game.isDuringConflict(),

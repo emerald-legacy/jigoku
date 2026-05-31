@@ -5,9 +5,9 @@ import { payTargetDependentFateCost } from './Costs.js';
 import { attachToRing } from './GameActions/GameActions.js';
 import { parseGameMode } from './GameMode.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
-import type BaseCard from './basecard.js';
-import type Ring from './ring.js';
-import type DrawCard from './drawcard.js';
+import type BaseCard from './BaseCard.js';
+import type Ring from './Ring.js';
+import type DrawCard from './DrawCard.js';
 
 export class PlayAttachmentToRingAction extends BaseAction {
     title = 'Play this attachment';

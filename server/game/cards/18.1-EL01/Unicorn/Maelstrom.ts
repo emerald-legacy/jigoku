@@ -1,8 +1,10 @@
-import { TargetModes, Locations, Players, CardTypes, Durations, Elements } from '../../../Constants.js';
+import { CardTypes, Durations, Elements, EventNames, Locations, Players, TargetModes } from '../../../Constants.js';
 import type { Cost } from '../../../Costs.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
+import type DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 const maelstromCost = function (): Cost {
     return {
         getActionName(_context) {
@@ -12,7 +14,7 @@ const maelstromCost = function (): Cost {
             if(context.costs.maelstromCostPaid) {
                 return ['discarding {0}'];
             }
-            return undefined;
+            return [];
         },
         canPay: function () {
             return true;
@@ -39,7 +41,7 @@ const maelstromCost = function (): Cost {
                                 numCards: 1,
                                 location: Locations.Hand,
                                 controller: Players.Self,
-                                onSelect: (player, card) => {
+                                onSelect: (player: any, card: any) => {
                                     context.costs.maelstromCost = card;
                                     return true;
                                 },
@@ -58,7 +60,7 @@ const maelstromCost = function (): Cost {
             if(context.costs.maelstromCostPaid) {
                 let events = [];
 
-                let discardAction = context.game.actions.discardCard({ target: context.costs.maelstromCost });
+                let discardAction = context.game.actions.discardCard({ target: context.costs.maelstromCost as DrawCard });
                 events.push(discardAction.getEvent(context.costs.maelstromCost, context));
                 context.game.addMessage('{0} chooses to discard a card', context.player);
 
@@ -78,7 +80,7 @@ const elementKey = 'maelstrom-water';
 export default class Maelstrom extends ProvinceCard {
     static id = 'maelstrom';
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Move a character into the conflict',
             cost: maelstromCost(),
             conflictProvinceCondition: (province) => province.isElement(this.getCurrentElementSymbol(elementKey)),
@@ -98,7 +100,7 @@ export default class Maelstrom extends ProvinceCard {
                                 duration: Durations.UntilEndOfPhase,
                                 effect: AbilityDsl.effects.delayedEffect({
                                     when: {
-                                        afterConflict: (event, context) =>
+                                        afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) =>
                                             event.conflict.winner === target.controller &&
                                             target.isParticipating() &&
                                             target.controller === context.player
@@ -114,7 +116,7 @@ export default class Maelstrom extends ProvinceCard {
             },
             effect: 'move {0} into the conflict{1}',
             effectArgs: (context) =>
-                context.target.controller === context.player ? ['. It will be honored if it wins the conflict'] : ['']
+                context.target?.controller === context.player ? ['. It will be honored if it wins the conflict'] : ['']
         });
     }
 

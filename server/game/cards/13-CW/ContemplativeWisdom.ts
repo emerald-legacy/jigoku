@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityTypes, CardTypes } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class ContemplativeWisdom extends DrawCard {
     static id = 'contemplative-wisdom';
@@ -13,13 +13,13 @@ export default class ContemplativeWisdom extends DrawCard {
                 cost: AbilityDsl.costs.returnRings(1),
                 target: {
                     cardType: CardTypes.Character,
-                    cardCondition: (card) => card.isParticipating(),
-                    gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+                    cardCondition: (card: any) => card.isParticipating(),
+                    gameAction: AbilityDsl.actions.cardLastingEffect((context: any) => ({
                         effect: AbilityDsl.effects.gainAllAbilities(context.source)
                     }))
                 },
                 effect: 'give {0} all the printed abilities of {1}',
-                effectArgs: (context) => [context.source],
+                effectArgs: (context: any) => [context.source],
                 printedAbility: false
             })
         });

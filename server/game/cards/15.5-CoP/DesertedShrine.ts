@@ -34,19 +34,20 @@ export default class DesertedShrine extends ProvinceCard {
                             }))
                         ]);
                     }
-                    if(context.player.opponent?.dynastyDeck.length > 0) {
+                    const opponent = context.player.opponent;
+                    if(opponent && opponent.dynastyDeck.length > 0) {
                         choices.push([
-                            `${context.player.opponent.name}'s Dynasty`,
+                            `${opponent.name}'s Dynasty`,
                             AbilityDsl.actions.discardCard((context) => ({
-                                target: context.player.opponent.dynastyDeck.slice(0, 10)
+                                target: context.player.opponent ? context.player.opponent.dynastyDeck.slice(0, 10) : []
                             }))
                         ]);
                     }
-                    if(context.player.opponent?.conflictDeck.length > 0) {
+                    if(opponent && opponent.conflictDeck.length > 0) {
                         choices.push([
-                            `${context.player.opponent.name}'s Conflict`,
+                            `${opponent.name}'s Conflict`,
                             AbilityDsl.actions.discardCard((context) => ({
-                                target: context.player.opponent.conflictDeck.slice(0, 10)
+                                target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 10) : []
                             }))
                         ]);
                     }

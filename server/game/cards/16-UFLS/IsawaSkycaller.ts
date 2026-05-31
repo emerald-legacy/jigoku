@@ -1,25 +1,28 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { PlayCharacterIntoLocation, PlayCharacterAction } from '../../PlayCharacterAction.js';
 import { Elements, Locations, PlayTypes } from '../../Constants.js';
+import type BaseCard from '../../BaseCard.js';
+import type Player from '../../Player.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 const elementKey = 'isawa-skycaller-air';
 
 class IsawaSkycallerPlayAction extends PlayCharacterAction {
     static id = 'isawa-skycaller';
 
-    constructor(card) {
+    constructor(card: BaseCard) {
         super(card, PlayCharacterIntoLocation.Conflict);
     }
 
-    createContext(player = this.card.controller) {
+    createContext(player: Player = this.card.controller) {
         const context = super.createContext(player);
         context.playType = PlayTypes.PlayFromHand;
         return context;
     }
 
-    meetsRequirements(context, ignoredRequirements = []) {
-        let newIgnoredRequirements = ignoredRequirements.includes('location') ? ignoredRequirements : ignoredRequirements.concat('location');
+    meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []): string {
+        const newIgnoredRequirements = ignoredRequirements.includes('location') ? ignoredRequirements : ignoredRequirements.concat('location');
         return super.meetsRequirements(context, newIgnoredRequirements);
     }
 }

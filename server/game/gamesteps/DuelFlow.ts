@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { EffectNames, EventNames } from '../Constants.js';
 import type { Duel } from '../Duel.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
 import { SimpleStep } from './SimpleStep.js';
 
@@ -41,7 +41,7 @@ export class DuelFlow extends BaseStepWithPipeline {
     }
 
     #setCurrentDuel() {
-        this.duel.previousDuel = this.game.currentDuel;
+        this.duel.previousDuel = this.game.currentDuel ?? undefined;
         this.game.currentDuel = this.duel;
         this.game.checkGameState(true);
     }
@@ -62,7 +62,7 @@ export class DuelFlow extends BaseStepWithPipeline {
         if(this.duel.challenger.mostRecentEffect(EffectNames.WinDuel) === this.duel) {
             return;
         }
-        const prohibitedBids = {};
+        const prohibitedBids: Record<string, string[]> = {};
         for(const player of this.game.getPlayers()) {
             prohibitedBids[player.uuid] = Array.from(new Set(player.getEffects(EffectNames.CannotBidInDuels)));
         }
@@ -105,7 +105,7 @@ export class DuelFlow extends BaseStepWithPipeline {
     }
 
     #cleanUpDuel() {
-        this.game.currentDuel = this.duel.previousDuel;
+        this.game.currentDuel = this.duel.previousDuel ?? null;
         this.game.raiseEvent(EventNames.OnDuelFinished, { duel: this.duel });
         this.duel.cleanup();
     }

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -8,7 +8,7 @@ class HanteiSotorii extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Give a participating character +3 glory',
-            condition: context => context.source.isParticipating() && this.game.currentConflict.conflictType === 'military',
+            condition: context => context.source.isParticipating() && this.game.currentConflict?.conflictType === 'military',
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: card => card.isParticipating(),

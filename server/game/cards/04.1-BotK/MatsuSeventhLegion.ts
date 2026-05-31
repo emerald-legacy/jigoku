@@ -1,15 +1,16 @@
-import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
 
 class MatsuSeventhLegion extends DrawCard {
     static id = 'matsu-seventh-legion';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isAttacking(),
             match: card => card.hasTrait('courtier'),
             targetController: Players.Opponent,
-            effect: ability.effects.cardCannot('declareAsDefender')});
+            effect: AbilityDsl.effects.cardCannot('declareAsDefender')});
     }
 }
 

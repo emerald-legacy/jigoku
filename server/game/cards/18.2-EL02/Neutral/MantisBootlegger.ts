@@ -1,4 +1,4 @@
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { CardTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -13,9 +13,9 @@ class MantisBootlegger extends DrawCard {
         });
     }
 
-    numCharactersWithAttachments(context) {
+    numCharactersWithAttachments(context: any) {
         return context.player.cardsInPlay.filter(
-            (card) => card.getType() === CardTypes.Character && card.attachments.length > 0
+            (card: any) => card.getType() === CardTypes.Character && card.attachments.length > 0
         ).length;
     }
 }

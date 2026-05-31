@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseCard from '../basecard.js';
+import type BaseCard from '../BaseCard.js';
 import { CardTypes, EventNames, Locations, TokenTypes } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
@@ -33,13 +33,13 @@ export class AddTokenAction extends CardGameAction<AddTokenProperties> {
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event, card: BaseCard, context: AbilityContext, additionalProperties = {}): void {
+    addPropertiesToEvent(event: any, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const { tokenType } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.tokenType = tokenType;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.card.addToken(event.tokenType);
     }
 }

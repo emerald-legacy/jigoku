@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, CardTypes, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -8,7 +8,7 @@ const nitenCaptureParentCost = function() {
         canPay: function() {
             return true;
         },
-        resolve: function(context) {
+        resolve: function(context: any) {
             context.costs.nitenCaptureParentCost = context.source.parent;
         },
         pay: function() {
@@ -27,7 +27,7 @@ class Niten extends DrawCard {
 
         this.action({
             title: 'Put an attachment into play',
-            condition: context => context.source.parent && context.source.parent.isParticipating(),
+            condition: context => !!(context.source.parent && context.source.parent.isParticipating()),
             cost: [
                 nitenCaptureParentCost(),
                 AbilityDsl.costs.returnSelfToHand()

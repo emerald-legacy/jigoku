@@ -1,7 +1,7 @@
 import { CardTypes } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class TogashiAcolyte extends DrawCard {
     static id = 'togashi-acolyte';

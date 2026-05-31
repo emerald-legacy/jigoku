@@ -1,8 +1,8 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../conflict.js';
-import DrawCard from '../../../drawcard.js';
+import type { Conflict } from '../../../Conflict.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class TillTheLastOneFalls extends DrawCard {
     static id = 'till-the-last-one-falls-';
@@ -11,9 +11,9 @@ export default class TillTheLastOneFalls extends DrawCard {
         this.action({
             title: 'Give a character a skill bonus',
             condition: (context) =>
-                context.game.isDuringConflict() &&
+                !!(context.game.isDuringConflict() &&
                 context.player.opponent &&
-                context.game.currentConflict.hasMoreParticipants(context.player.opponent),
+                context.game.currentConflict?.hasMoreParticipants(context.player.opponent, () => true)),
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,

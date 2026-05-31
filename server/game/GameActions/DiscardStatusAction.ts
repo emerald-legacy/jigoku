@@ -27,7 +27,7 @@ export class DiscardStatusAction extends TokenAction<DiscardStatusProperties> {
         event.cards = this.#cardsLosingStatus(context);
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         const tokens = Array.isArray(event.token) ? event.token : [event.token];
         for(const token of tokens) {
             token.card.removeStatusToken(token);

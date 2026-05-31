@@ -1,7 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
+import type BaseCard from '../../../BaseCard.js';
 import { CardTypes, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { SequentialContextProperties } from '../../../GameActions/SequentialContextAction.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
@@ -51,8 +51,8 @@ export default class AncientStoneGuardian extends DrawCard {
 
             effect: 'present an opportunity to sneak around {0} and find some secrets!{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}',
             effectArgs: (context) =>
-                this.effectsForCard(context.targets.firstCharacter).concat(
-                    this.effectsForCard(context.targets.secondCharacter)
+                this.effectsForCard(context.targets.firstCharacter as DrawCard).concat(
+                    this.effectsForCard(context.targets.secondCharacter as DrawCard)
                 )
         });
     }

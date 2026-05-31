@@ -1,6 +1,6 @@
 import { CardTypes, Locations } from '../Constants.js';
-import DrawCard from '../drawcard.js';
-import type Player from '../player.js';
+import DrawCard from '../DrawCard.js';
+import type Player from '../Player.js';
 
 export class AshigaruRecruit extends DrawCard {
     constructor(public facedownCard: DrawCard) {

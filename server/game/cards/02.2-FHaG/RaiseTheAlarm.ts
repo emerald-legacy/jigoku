@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes, Locations, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -14,10 +14,10 @@ class RaiseTheAlarm extends DrawCard {
             target: {
                 controller: Players.Self,
                 location: Locations.Provinces,
-                cardCondition: card => card.isInConflictProvince() && card.isFacedown(),
+                cardCondition: (card: any) => card.isInConflictProvince() && card.isFacedown(),
                 gameAction: AbilityDsl.actions.flipDynasty()
             },
-            then: context => ({
+            then: (context: any) => ({
                 handler: () => {
                     let card = context.target;
                     if(card.type === CardTypes.Character && card.allowGameAction('putIntoConflict', context)) {

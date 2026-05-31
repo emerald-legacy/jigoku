@@ -1,12 +1,14 @@
 import { Durations, DuelTypes, ConflictTypes } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
+import type { LastingEffectProperties } from '../../../GameActions/LastingEffectAction.js';
 
 export default class MirumotoRei2 extends DrawCard {
     static id = 'mirumoto-rei-2';
 
-    getWeaponCount(context) {
-        return context.source.attachments.filter((card) => card.hasTrait('weapon')).length;
+    getWeaponCount(context: any) {
+        return context.source.attachments.filter((card: any) => card.hasTrait('weapon')).length;
     }
 
     setupCardAbilities() {
@@ -15,13 +17,13 @@ export default class MirumotoRei2 extends DrawCard {
             duelCondition: (duel, context) =>
                 duel.participants.includes(context.source) && this.getWeaponCount(context) > 0,
             gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
-                target: (context as any).event.duel,
+                target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.modifyDuelSkill({
                     amount: this.getWeaponCount(context),
                     player: context.player
                 }),
                 duration: Durations.UntilEndOfDuel
-            })),
+            } as LastingEffectProperties)),
             effect: 'add {1} to their duel total',
             effectArgs: (context) => [this.getWeaponCount(context)]
         });
@@ -33,11 +35,11 @@ export default class MirumotoRei2 extends DrawCard {
                 type: DuelTypes.Military,
                 message: 'injure {0}',
                 messageArgs: (duel) => [duel.loser],
-                gameAction: (duel) =>
+                gameAction: ((duel: any) =>
                     duel.loser &&
                     AbilityDsl.actions.multipleContext(() => {
-                        const gameActions = [];
-                        duel.loser.forEach((loser) => {
+                        const gameActions: any[] = [];
+                        duel.loser.forEach((loser: any) => {
                             if(loser.getFate() > 0) {
                                 gameActions.push(
                                     AbilityDsl.actions.removeFate({
@@ -54,7 +56,7 @@ export default class MirumotoRei2 extends DrawCard {
                             }
                         });
                         return { gameActions };
-                    })
+                    })) as any
             }
         });
     }

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -10,7 +10,7 @@ class HitsuDoDisciple extends DrawCard {
             title: 'Dishonor a character',
             condition: context => context.source.game.isDuringConflict('military') &&
                 context.source.isParticipating() &&
-                this.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 3,
+                (this.game.currentConflict?.getNumberOfCardsPlayed(context.player) ?? 0) >= 3,
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source,

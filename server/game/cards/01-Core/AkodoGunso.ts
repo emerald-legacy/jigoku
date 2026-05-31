@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AkodoGunso extends DrawCard {
@@ -9,7 +9,8 @@ class AkodoGunso extends DrawCard {
             title: 'Refill province faceup',
             when: {
                 onCharacterEntersPlay: (event, context) =>
-                    event.card === context.source && context.game.getProvinceArray().includes(event.originalLocation)
+                    event.card === context.source && event.originalLocation !== undefined &&
+                    context.game.getProvinceArray().includes(event.originalLocation)
             },
             gameAction: AbilityDsl.actions.refillFaceup((context) => ({ location: context.event.originalLocation }))
         });

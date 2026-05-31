@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -8,7 +8,7 @@ class RecklessAvenger extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Ready and honor characters',
-            condition: context => context.player.cardsInPlay.some(a => a.bowed) && context.player.opponent || context.player.opponent.cardsInPlay.some(a => a.bowed),
+            condition: context => context.player.cardsInPlay.some((a: any) => a.bowed) && !!context.player.opponent || !!context.player.opponent?.cardsInPlay.some((a: any) => a.bowed),
             targets: {
                 firstCharacter: {
                     activePromptTitle: 'Choose a character',
@@ -46,7 +46,7 @@ class RecklessAvenger extends DrawCard {
         });
     }
 
-    isTargetValid(target) {
+    isTargetValid(target: any) {
         return !!target && !Array.isArray(target);
     }
 }

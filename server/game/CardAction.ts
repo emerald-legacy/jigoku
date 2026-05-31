@@ -3,8 +3,7 @@ import CardAbility from './CardAbility.js';
 import { AbilityTypes, CardTypes, EffectNames, Phases } from './Constants.js';
 import { parseGameMode } from './GameMode.js';
 import type { ActionProps } from './Interfaces.js';
-import type BaseCard from './basecard.js';
-import type Game from './game.js';
+import type BaseCard from './BaseCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 
 /**
@@ -44,10 +43,10 @@ export class CardAction extends CardAbility {
     phase: string;
     evenDuringDynasty: boolean;
 
-    condition?: (context?: AbilityContext) => boolean;
+    condition?: (context: AbilityContext) => boolean;
 
-    constructor(game: Game, card: BaseCard, properties: ActionProps) {
-        super(game, card, properties);
+    constructor(card: BaseCard, properties: ActionProps) {
+        super(card, properties);
 
         this.phase = properties.phase ?? 'any';
         this.evenDuringDynasty = properties.evenDuringDynasty ?? false;
@@ -80,7 +79,7 @@ export class CardAction extends CardAbility {
         }
     }
 
-    meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements = []) {
+    meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []) {
         if(!ignoredRequirements.includes('location') && !this.isInValidLocation(context)) {
             return 'location';
         }

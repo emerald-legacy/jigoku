@@ -1,7 +1,8 @@
 import { GameModes } from '../../../GameModes.js';
 import { CardTypes, TargetModes, Decks, Locations, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 
 export default class KaiuShihobu extends DrawCard {
     static id = 'kaiu-shihobu';
@@ -25,7 +26,7 @@ export default class KaiuShihobu extends DrawCard {
                             event.player.moveCard(card, Locations.UnderneathStronghold);
                             card.lastingEffect(() => ({
                                 until: {
-                                    onCardMoved: (event) =>
+                                    onCardMoved: (event: any) =>
                                         event.card === card && event.originalLocation === Locations.UnderneathStronghold
                                 },
                                 match: card,
@@ -48,7 +49,7 @@ export default class KaiuShihobu extends DrawCard {
                     cardType: CardTypes.Holding,
                     controller: Players.Self,
                     location: Locations.UnderneathStronghold,
-                    cardCondition: (card: DrawCard, context) => context.player.stronghold.childCards.includes(card)
+                    cardCondition: (card: DrawCard, context) => !!context?.player.stronghold && context.player.stronghold.childCards.includes(card)
                 },
                 second: {
                     activePromptTitle: 'Choose an unbroken province',
@@ -61,21 +62,23 @@ export default class KaiuShihobu extends DrawCard {
                 }
             },
             handler: (context) => {
-                let holding = context.targets.first;
-                let province = context.targets.second;
+                let holding = context.targets.first as DrawCard;
+                let province = context.targets.second as ProvinceCard;
 
                 let cards = context.player.getDynastyCardsInProvince(province.location);
-                context.player.stronghold.removeChildCard(holding, province.location);
+                if(context.player.stronghold) {
+                    context.player.stronghold.removeChildCard(holding, province.location);
+                }
                 holding.facedown = false;
-                cards.forEach((card) => {
+                cards.forEach((card: any) => {
                     context.player.moveCard(card, Locations.DynastyDiscardPile);
                 });
             },
             effect: 'discard {1}, replacing {2} with {3}',
             effectArgs: (context) => [
-                context.player.getDynastyCardsInProvince(context.targets.second.location),
-                context.player.getDynastyCardsInProvince(context.targets.second.location).length > 1 ? 'them' : 'it',
-                context.targets.first
+                context.player.getDynastyCardsInProvince((context.targets.second as ProvinceCard).location),
+                context.player.getDynastyCardsInProvince((context.targets.second as ProvinceCard).location).length > 1 ? 'them' : 'it',
+                context.targets.first as DrawCard
             ]
         });
     }

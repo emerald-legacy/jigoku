@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Durations, Locations } from '../../Constants.js';
 
@@ -25,7 +25,7 @@ class AkodoToshiro extends DrawCard {
                     duration: Durations.UntilEndOfRound,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
-                            onConflictFinished: () => !context.player.cardsInPlay.some(card => card.hasTrait('commander'))
+                            onConflictFinished: () => !context.player.cardsInPlay.some((card: any) => card.hasTrait('commander'))
                         },
                         message: '{0} is discarded due to his delayed effect',
                         messageArgs: [context.source],

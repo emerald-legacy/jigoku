@@ -1,7 +1,8 @@
-import { CardTypes } from '../../Constants.js';
+import { CardTypes, EventNames } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class MidnightRevels extends ProvinceCard {
     static id = 'midnight-revels';
 
@@ -9,13 +10,13 @@ export default class MidnightRevels extends ProvinceCard {
         this.reaction({
             title: 'Bow a character',
             when: {
-                onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
+                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context: any) => event.conflict.declaredProvince === context.source
             },
             target: {
                 cardType: CardTypes.Character,
-                cardCondition: (card, context) => {
-                    let charactersInPlay = context.game.findAnyCardsInPlay((c) => c.type === CardTypes.Character);
-                    return card.getCost() === Math.max(...charactersInPlay.map((c) => c.getCost()));
+                cardCondition: (card: any, context: any) => {
+                    let charactersInPlay = context.game.findAnyCardsInPlay((c: any) => c.type === CardTypes.Character);
+                    return card.getCost() === Math.max(...charactersInPlay.map((c: any) => c.getCost()));
                 },
                 gameAction: AbilityDsl.actions.bow()
             }

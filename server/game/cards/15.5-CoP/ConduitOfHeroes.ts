@@ -1,37 +1,38 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { AbilityContext } from '../../AbilityContext.js';
 
 const conduitOfHeroesCost = function () {
     return {
         action: { name: 'conduitOfHeroesCost' },
-        getActionName(_context) {
+        getActionName(_context: AbilityContext) {
             return 'conduitOfHeroesCost';
         },
-        getCostMessage: function (context) {
+        getCostMessage: function (context: AbilityContext) {
             if(context.player.opponent && context.player.honor >= context.player.opponent.honor + 5) {
                 return undefined;
             }
             return ['bowing {0}'];
         },
-        canPay: function (context) {
+        canPay: function (context: AbilityContext) {
             return context.player.opponent && context.player.honor >= context.player.opponent.honor + 5 ||
                 context.game.actions.bow().canAffect(context.source, context);
         },
-        resolve: function (context) {
+        resolve: function (context: AbilityContext) {
             context.costs.conduitOfHeroesCost = context.source;
             context.costs.skipConduitCost = context.player.opponent && context.player.honor >= context.player.opponent.honor + 5;
         },
-        payEvent: function (context) {
+        payEvent: function (context: AbilityContext) {
             if(!context.costs.skipConduitCost) {
-                let events = [];
+                const events = [];
 
-                let bowAction = context.game.actions.bow({ target: context.source });
+                const bowAction = context.game.actions.bow({ target: context.source });
                 events.push(bowAction.getEvent(context.source, context));
                 return events;
             }
 
-            let action = context.game.actions.handler(); //this is a do-nothing event to allow you to "pay" a non-payment cost
+            const action = context.game.actions.handler({ handler: () => true }); //this is a do-nothing event to allow you to "pay" a non-payment cost
             return action.getEvent(context.player, context);
 
         }

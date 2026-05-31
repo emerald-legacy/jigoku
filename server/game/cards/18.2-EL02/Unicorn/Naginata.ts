@@ -1,9 +1,10 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityTypes, CardTypes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import { AbilityTypes, CardTypes, EventNames } from '../../../Constants.js';
+import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityProps } from '../../../Interfaces.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class Naginata extends DrawCard {
     static id = 'naginata';
 
@@ -11,7 +12,7 @@ export default class Naginata extends DrawCard {
         this.attachmentConditions({ myControl: true });
 
         this.whileAttached({
-            condition: (context) => context.source.parent && context.source.controller.firstPlayer,
+            condition: (context) => !!context.source.parent && context.source.controller.firstPlayer,
             effect: AbilityDsl.effects.modifyMilitarySkill(1)
         });
 
@@ -19,14 +20,14 @@ export default class Naginata extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
                 title: 'Bow a character',
                 when: {
-                    onMoveToConflict: (event, context: TriggeredAbilityContext<DrawCard>) =>
+                    onMoveToConflict: (event: EventPayload<EventNames.OnMoveToConflict>, context: TriggeredAbilityContext<DrawCard>) =>
                         context.source.isParticipating('military') &&
-                        event.card.type === CardTypes.Character &&
-                        event.card.isParticipating(),
-                    onSendHome: (event, context) =>
+                        event.card?.type === CardTypes.Character &&
+                        event.card?.isParticipating(),
+                    onSendHome: (event: EventPayload<EventNames.OnSendHome>, context: TriggeredAbilityContext<DrawCard>) =>
                         context.source.isParticipating('military') &&
-                        event.card.type === CardTypes.Character &&
-                        !event.card.isParticipating()
+                        event.card?.type === CardTypes.Character &&
+                        !event.card?.isParticipating()
                 },
                 target: {
                     cardType: CardTypes.Character,

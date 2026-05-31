@@ -41,7 +41,7 @@ export class SequentialAction extends GameAction {
         for(const gameAction of properties.gameActions) {
             context.game.queueSimpleStep(() => {
                 if(gameAction.hasLegalTarget(context, additionalProperties)) {
-                    let eventsForThisAction = [];
+                    let eventsForThisAction: any[] = [];
                     gameAction.addEventsToArray(eventsForThisAction, context, additionalProperties);
                     context.game.queueSimpleStep(() => {
                         for(const event of eventsForThisAction) {
@@ -56,7 +56,7 @@ export class SequentialAction extends GameAction {
         }
     }
 
-    hasTargetsChosenByInitiatingPlayer(context, additionalProperties = {}) {
+    hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties: Record<string, unknown> = {}) {
         let properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.some((gameAction) =>
             gameAction.hasTargetsChosenByInitiatingPlayer(context, additionalProperties)

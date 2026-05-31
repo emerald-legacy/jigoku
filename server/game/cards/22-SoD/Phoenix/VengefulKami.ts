@@ -1,17 +1,18 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { Conflict } from '../../../conflict.js';
+import { Conflict } from '../../../Conflict.js';
 import { EventNames, TargetModes, AbilityTypes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import Ring from '../../../ring.js';
+import Ring from '../../../Ring.js';
 
 export default class VengefulKami extends DrawCard {
     static id = 'vengeful-kami';
 
     private eventRegistrar?: EventRegistrar;
-    private declaredProvinces = [];
+    private declaredProvinces: string[] = [];
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
@@ -30,8 +31,8 @@ export default class VengefulKami extends DrawCard {
             target: {
                 mode: TargetModes.Ring,
                 activePromptTitle: 'Choose a ring',
-                ringCondition: (ring: Ring, context: AbilityContext) =>
-                    (context.game.currentConflict as Conflict)
+                ringCondition: (ring: Ring, context?: AbilityContext) =>
+                    !!context && (context.game.currentConflict as Conflict)
                         .getConflictProvinces()
                         .some((province: ProvinceCard) => this.wasProvinceAttacked(context.game.currentConflict, province) && province.getElement().includes(ring.element)),
                 gameAction: AbilityDsl.actions.resolveRingEffect()
@@ -52,7 +53,7 @@ export default class VengefulKami extends DrawCard {
         this.declaredProvinces = [];
     }
 
-    public onConflictDeclaredReaction(event) {
+    public onConflictDeclaredReaction(event: EventPayload<typeof EventNames.OnConflictDeclared>) {
         if(!this.declaredProvinces) {
             this.declaredProvinces = [];
         }
@@ -65,19 +66,19 @@ export default class VengefulKami extends DrawCard {
         }
     }
 
-    private getConflictString(conflict) {
+    private getConflictString(conflict?: Conflict): string | undefined {
         if(!conflict) {
             return undefined;
         }
 
-        const provinceString = this.getProvinceIdString(conflict.declaredProvince);
+        const provinceString = this.getProvinceIdString(conflict.declaredProvince ?? undefined);
         if(!provinceString) {
             return undefined;
         }
         return `${provinceString}-${conflict.uuid}`;
     }
 
-    private getProvinceIdString(province) {
+    private getProvinceIdString(province?: ProvinceCard): string | undefined {
         if(!province) {
             return undefined;
         }
@@ -86,12 +87,15 @@ export default class VengefulKami extends DrawCard {
         return `${uuid}-${id}-${location}`;
     }
 
-    private wasProvinceAttacked(conflict, province) {
+    private wasProvinceAttacked(conflict: Conflict | null, province: ProvinceCard) {
         if(!this.declaredProvinces) {
             return false;
         }
-        const conflictString = this.getConflictString(conflict);
+        const conflictString = this.getConflictString(conflict ?? undefined);
         const provinceString = this.getProvinceIdString(province);
+        if(!provinceString) {
+            return false;
+        }
 
         for(let i = 0; i < this.declaredProvinces.length; i++) {
             const a = this.declaredProvinces[i];

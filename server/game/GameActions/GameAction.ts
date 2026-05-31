@@ -1,9 +1,9 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseCard from '../basecard.js';
+import type BaseCard from '../BaseCard.js';
 import { CardTypes, EventNames, Stages } from '../Constants.js';
 import { Event } from '../Events/Event.js';
-import type Player from '../player.js';
-import type Ring from '../ring.js';
+import type Player from '../Player.js';
+import type Ring from '../Ring.js';
 import type { StatusToken } from '../StatusToken.js';
 
 type PlayerOrRingOrCardOrToken = Player | Ring | BaseCard | StatusToken;
@@ -113,11 +113,11 @@ export class GameAction<P extends GameActionProperties = GameActionProperties> {
     updateEvent(event: Event, target: any, context: AbilityContext, additionalProperties = {}): void {
         event.name = this.eventName;
         this.addPropertiesToEvent(event, target, context, additionalProperties);
-        event.replaceHandler((event) => this.eventHandler(event, additionalProperties));
+        event.replaceHandler((eventArg: Event) => this.eventHandler(eventArg, additionalProperties));
         event.condition = () => this.checkEventCondition(event, additionalProperties);
     }
 
-    createEvent(target: any, context: AbilityContext, additionalProperties): Event {
+    createEvent(target: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): Event {
         const { cannotBeCancelled } = this.getProperties(context, additionalProperties);
         const event = new Event(EventNames.Unnamed, { cannotBeCancelled });
         event.checkFullyResolved = (eventAtResolution) =>
@@ -132,13 +132,13 @@ export class GameAction<P extends GameActionProperties = GameActionProperties> {
         if(target) {
             this.setDefaultTarget(() => target);
         }
-        const events = [];
+        const events: Event[] = [];
         this.addEventsToArray(events, context);
         context.game.queueSimpleStep(() => context.game.openEventWindow(events));
     }
 
     getEventArray(context: AbilityContext, additionalProperties = {}): Event[] {
-        const events = [];
+        const events: Event[] = [];
         this.addEventsToArray(events, context, additionalProperties);
         return events;
     }
@@ -161,13 +161,13 @@ export class GameAction<P extends GameActionProperties = GameActionProperties> {
         return this.getProperties(context, additionalProperties).optional ?? false;
     }
 
-    moveFateEventCondition(event): boolean {
+    moveFateEventCondition(event: any): boolean {
         if(event.origin) {
             if(event.origin.getFate() === 0) {
                 return false;
             } else if(
                 event.origin.type === CardTypes.Character &&
-                !event.origin.allowGameAction('removeFate', event.context)
+                !event.origin.allowGameAction('removeFate', (event.context as AbilityContext))
             ) {
                 return false;
             }
@@ -175,7 +175,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties> {
         if(event.recipient) {
             if(
                 event.recipient.type === CardTypes.Character &&
-                !event.recipient.allowGameAction('placeFate', event.context)
+                !event.recipient.allowGameAction('placeFate', (event.context as AbilityContext))
             ) {
                 return false;
             }
@@ -183,7 +183,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties> {
         return !!event.origin || !!event.recipient;
     }
 
-    moveFateEventHandler(event): void {
+    moveFateEventHandler(event: any): void {
         if(event.origin) {
             event.fate = Math.min(event.fate, event.origin.getFate());
             event.origin.modifyFate(-event.fate);

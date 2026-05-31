@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TargetModes } from '../../Constants.js';
 
@@ -25,6 +25,9 @@ class MasterWhisperer extends DrawCard {
             effect: 'make {1}{2} draw 3 cards',
             effectArgs: context => {
                 let player = context.select === this.owner.name ? this.owner : this.owner.opponent;
+                if(!player) {
+                    return [this.owner, ''];
+                }
                 let handSize = player.hand.length;
                 let amountDiscarded = Math.min(3, handSize);
                 return [player, amountDiscarded > 0 ? ' discard ' + amountDiscarded + ' cards and' : ''];

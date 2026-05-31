@@ -2,7 +2,7 @@ import { AbilityContext } from '../AbilityContext.js';
 import CardSelector from '../CardSelector.js';
 import EffectSource from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 
 /**
  * General purpose prompt that asks the user to select 1 or more cards.
@@ -109,7 +109,7 @@ class SelectCardPrompt extends UiPrompt {
         this.savePreviouslySelectedCards();
     }
 
-    defaultProperties() {
+    defaultProperties(): Record<string, any> {
         return {
             buttons: [],
             controls: this.getDefaultControls(),

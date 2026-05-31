@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class ShinjoTatsuo extends DrawCard {
     static id = 'shinjo-tatsuo';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Move this and another character to the conflict',
             targets: {
@@ -24,8 +25,8 @@ class ShinjoTatsuo extends DrawCard {
             },
             effect: 'move {0}{1}{2} into the conflict',
             effectArgs: context => [
-                context.targets.optional.length !== 0 ? ' and ' : '',
-                context.targets.optional.length !== 0 ? context.targets.optional : '']
+                !Array.isArray(context.targets.optional) ? ' and ' : '',
+                !Array.isArray(context.targets.optional) ? context.targets.optional : '']
         });
     }
 }

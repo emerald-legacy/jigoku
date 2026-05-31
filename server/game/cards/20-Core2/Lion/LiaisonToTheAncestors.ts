@@ -1,6 +1,6 @@
 import { CardTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class LiaisonToTheAncestors extends DrawCard {
     static id = 'liaison-to-the-ancestors';
@@ -13,7 +13,7 @@ export default class LiaisonToTheAncestors extends DrawCard {
                     event.card.type === CardTypes.Character &&
           event.card.controller === context.player &&
           (context.player.dynastyDiscardPile as Array<DrawCard>).some(
-              (card) => event.card.printedCost < card.printedCost
+              (card) => (event.card.printedCost ?? 0) < (card.printedCost ?? 0)
           )
             },
             gameAction: AbilityDsl.actions.honor((context: any) => ({

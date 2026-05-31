@@ -1,15 +1,16 @@
-import { DuelTypes } from '../../../Constants.js';
+import { DuelTypes, EventNames } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class HojatsuDevotee extends DrawCard {
     static id = 'hojatsu-devotee';
 
     public setupCardAbilities() {
         this.interrupt({
             when: {
-                onCardLeavesPlay: (event, context) =>
-                    event.card === context.source && event.context.player === context.player.opponent
+                onCardLeavesPlay: (event: EventPayload<EventNames.OnCardLeavesPlay>, context) =>
+                    event.card === context.source && event.context?.player === context.player.opponent
             },
             title: 'Initiate a military duel, discarding the loser',
             initiateDuel: {

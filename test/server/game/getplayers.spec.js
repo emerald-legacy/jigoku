@@ -1,4 +1,4 @@
-import Game from '../../../build/server/game/game.js';
+import Game from '../../../build/server/game/Game.js';
 
 describe('Game - getPlayers', function() {
     beforeEach(function() {

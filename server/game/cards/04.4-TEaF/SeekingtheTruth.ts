@@ -8,7 +8,7 @@ export default class SeekingtheTruth extends ProvinceCard {
     public setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Locations.Provinces,
-            condition: (context) => context.player.role && context.player.role.hasTrait('water'),
+            condition: (context) => !!context.player.role && context.player.role.hasTrait('water'),
             effect: AbilityDsl.effects.modifyProvinceStrength(2)
         });
 

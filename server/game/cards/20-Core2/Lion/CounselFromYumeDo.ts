@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Locations, Players, TargetModes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class CounselFromYumeDo extends DrawCard {
     static id = 'counsel-from-yume-do';
@@ -21,7 +21,7 @@ export default class CounselFromYumeDo extends DrawCard {
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.returnToDeck({ location: Locations.ConflictDiscardPile, shuffle: true })
             },
-            then: (context) => ({
+            then: (context: any) => ({
                 gameAction: AbilityDsl.actions.onAffinity({
                     trait: 'water',
                     effect: 'draw a card',

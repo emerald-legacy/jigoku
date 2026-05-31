@@ -1,8 +1,8 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
+import type BaseCard from '../../../BaseCard.js';
 import { CardTypes, ConflictTypes, TargetModes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class ToGovernTheLand extends DrawCard {
@@ -35,9 +35,9 @@ export default class ToGovernTheLand extends DrawCard {
     private governSkill(conflictType: ConflictTypes, card: BaseCard): number {
         switch(conflictType) {
             case ConflictTypes.Political:
-                return card.getMilitarySkill();
+                return (card as DrawCard).getMilitarySkill();
             case ConflictTypes.Military:
-                return card.getPoliticalSkill();
+                return (card as DrawCard).getPoliticalSkill();
             default:
                 return NaN;
         }
@@ -61,18 +61,18 @@ export default class ToGovernTheLand extends DrawCard {
     private conditionToTrigger(conflictType: ConflictTypes, context: AbilityContext): boolean {
         return (
             context.game.isDuringConflict(conflictType) &&
-            (context.game.currentConflict.getParticipants() as BaseCard[]).some((card) =>
+            (context.game.currentConflict?.getParticipants() as BaseCard[] ?? []).some((card) =>
                 this.governFulfillTrait(conflictType, context, card)
             )
         );
     }
 
-    private conditionToTarget(conflictType: ConflictTypes, card: BaseCard, context: AbilityContext): boolean {
+    private conditionToTarget(conflictType: ConflictTypes, card: DrawCard, context: AbilityContext): boolean {
         if(!card.isParticipating()) {
             return false;
         }
 
-        const maxSkillExclusive = (context.game.currentConflict.getParticipants() as BaseCard[]).reduce(
+        const maxSkillExclusive = (context.game.currentConflict?.getParticipants() as BaseCard[] ?? []).reduce(
             (max, myCard) => {
                 if(!this.governFulfillTrait(conflictType, context, myCard)) {
                     return max;

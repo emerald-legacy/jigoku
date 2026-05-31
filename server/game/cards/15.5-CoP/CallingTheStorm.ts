@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, Players, PlayTypes, Durations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -17,7 +17,7 @@ class CallingTheStorm extends DrawCard {
                     duration: Durations.UntilEndOfPhase,
                     targetController: Players.Self,
                     canChangeZoneNTimes: 9999999, // can change zones infinite times and still be playable if it ends up in the deck
-                    effect: AbilityDsl.effects.canPlayFromOutOfPlay((player, card) => {
+                    effect: AbilityDsl.effects.canPlayFromOutOfPlay((player: any, card: any) => {
                         return player && player.conflictDeck &&
                             context.player.conflictDeck.length > 0 && card === player.conflictDeck[0] &&
                             player === card.owner && card.location === Locations.ConflictDeck;

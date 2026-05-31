@@ -1,6 +1,6 @@
 import { Players, TargetModes, CardTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class ImperialAdjutant extends DrawCard {
     static id = 'imperial-adjutant';
@@ -13,7 +13,7 @@ export default class ImperialAdjutant extends DrawCard {
         this.action({
             title: 'Move or dishonor a character',
             cost: AbilityDsl.costs.sacrificeSelf(),
-            condition: context => context.source.parent && context.source.parent.isAttacking(),
+            condition: context => !!(context.source.parent && context.source.parent.isAttacking()),
             targets: {
                 character: {
                     cardType: CardTypes.Character,

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, Players, CardTypes, TargetModes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -32,7 +32,7 @@ class JoinTheFray extends DrawCard {
         });
     }
 
-    getEffectArg(context, selection) {
+    getEffectArg(context: any, selection: any) {
         if(selection === context.player.name) {
             return context.player;
         }

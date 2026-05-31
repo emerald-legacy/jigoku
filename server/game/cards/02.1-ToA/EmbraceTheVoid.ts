@@ -1,6 +1,9 @@
-import DrawCard from '../../drawcard.js';
-import { CardTypes } from '../../Constants.js';
+import DrawCard from '../../DrawCard.js';
+import { CardTypes, EventNames } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class EmbraceTheVoid extends DrawCard {
     static id = 'embrace-the-void';
 
@@ -8,17 +11,19 @@ class EmbraceTheVoid extends DrawCard {
         this.wouldInterrupt({
             title: 'Take Fate',
             when: {
-                onMoveFate: (event, context) =>
-                    event.origin === context.source.parent && event.fate > 0 && event.recipient !== context.player
+                onMoveFate: (event: EventPayload<EventNames.OnMoveFate>, context: TriggeredAbilityContext) =>
+                    event.origin === (context.source as any).parent && event.fate > 0 && event.recipient !== context.player
             },
             effect: 'take the {1} fate being removed from {2}',
-            effectArgs: context => [context.event.fate, context.source.parent],
-            handler: context => context.event.recipient = context.player
+            effectArgs: (context: TriggeredAbilityContext) => context ? [context.event.fate, (context.source as any).parent] : [],
+            handler: (context: TriggeredAbilityContext) => {
+                context.event.recipient = context.player;
+            }
         });
     }
 
-    canPlay(context, playType) {
-        if(!context.player.cardsInPlay.some(card => card.getType() === CardTypes.Character && card.hasTrait('shugenja'))) {
+    canPlay(context: AbilityContext, playType: string) {
+        if(!context.player.cardsInPlay.some((card: any) => card.getType() === CardTypes.Character && card.hasTrait('shugenja'))) {
             return false;
         }
 

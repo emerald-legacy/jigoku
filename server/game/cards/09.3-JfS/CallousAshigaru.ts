@@ -1,7 +1,8 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { ConflictTypes, Locations } from '../../Constants.js';
+import { ConflictTypes, EventNames, Locations } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class CallousAshigaru extends DrawCard {
     static id = 'callous-ashigaru';
 
@@ -13,8 +14,8 @@ class CallousAshigaru extends DrawCard {
         this.reaction({
             title: 'Discard cards from provinces',
             when: {
-                onBreakProvince: (event, context) => event.conflict.conflictType === ConflictTypes.Military &&
-                    context.source.parent && context.source.parent.isAttacking()
+                onBreakProvince: (event: EventPayload<EventNames.OnBreakProvince>, context) => event.conflict?.conflictType === ConflictTypes.Military &&
+                    !!context.source.parent && context.source.parent.isAttacking()
             },
             gameAction: AbilityDsl.actions.discardCard(context => ({
                 target: context.player.opponent ?

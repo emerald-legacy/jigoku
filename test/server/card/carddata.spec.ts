@@ -1,5 +1,5 @@
-import BaseCard from '../../../server/game/basecard.js';
-import DrawCard from '../../../server/game/drawcard.js';
+import BaseCard from '../../../server/game/BaseCard.js';
+import DrawCard from '../../../server/game/DrawCard.js';
 import type { CardData } from '../../../server/game/types/CardData.js';
 
 function makeGame() {

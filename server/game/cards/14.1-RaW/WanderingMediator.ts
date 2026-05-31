@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Elements } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -10,7 +10,7 @@ class WanderingMediator extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Move in/out the conflict',
-            condition: context => context.game.isDuringConflict() && context.game.currentConflict.getConflictProvinces().some(a => a.isElement(this.getCurrentElementSymbol(elementKey))),
+            condition: context => context.game.isDuringConflict() && (context.game.currentConflict?.getConflictProvinces().some((a: any) => a.isElement(this.getCurrentElementSymbol(elementKey))) ?? false),
             gameAction: AbilityDsl.actions.conditional({
                 condition: context => context.source.isParticipating(),
                 trueGameAction: AbilityDsl.actions.sendHome(context => ({

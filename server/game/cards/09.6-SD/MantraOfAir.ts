@@ -1,6 +1,6 @@
 import { CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class MantraOfAir extends DrawCard {
     static id = 'mantra-of-air';
@@ -10,12 +10,12 @@ export default class MantraOfAir extends DrawCard {
             title: 'Honor a monk and draw a card',
             when: {
                 onConflictDeclared: (event, context) =>
-                    event.ring.hasElement('air') && event.conflict.attackingPlayer === context.player.opponent
+                    !!event.ring && event.ring.hasElement('air' as any) && event.conflict.attackingPlayer === context.player.opponent
             },
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card) =>
-                    card.hasTrait('monk') || card.attachments.some((card) => card.hasTrait('monk')),
+                    card.hasTrait('monk') || card.attachments.some((card: DrawCard) => card.hasTrait('monk')),
                 gameAction: AbilityDsl.actions.honor()
             },
             effect: 'honor {0} and draw a card',

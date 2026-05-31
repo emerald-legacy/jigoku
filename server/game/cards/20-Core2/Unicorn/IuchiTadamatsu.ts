@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class IuchiTadamatsu extends DrawCard {
     static id = 'iuchi-tadamatsu';
@@ -8,8 +8,8 @@ export default class IuchiTadamatsu extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: AbilityDsl.effects.reduceCost({
-                match: (card) => card.hasTrait('meishodo'),
-                targetCondition: (target, source) => target === source
+                match: (card: any) => card.hasTrait('meishodo'),
+                targetCondition: (target: any, source: any) => target === source
             })
         });
 

@@ -1,7 +1,9 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../conflict.js';
-import DrawCard from '../../../drawcard.js';
+import type { Conflict } from '../../../Conflict.js';
+import DrawCard from '../../../DrawCard.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
+import { EventNames } from '../../../Constants.js';
 export default class AMatsuProvesTheirWorth extends DrawCard {
     static id = 'a-matsu-proves-their-worth';
 
@@ -9,16 +11,22 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
         this.reaction({
             title: 'Prove yourself worthy of a Matsu name',
             when: {
-                onConflictDeclared: (event, context) =>
-                    context.player === context.game.currentConflict.attackingPlayer &&
-                    context.game.currentConflict.getNumberOfParticipantsFor(context.player) === 1 &&
-                    context.game.currentConflict.getParticipants(
-                        (participant) => participant.hasTrait('bushi') && participant.controller === context.player
-                    ).length === 1
+                onConflictDeclared: (_event, context) => {
+                    const conflict = context.game.currentConflict;
+                    return (
+                        !!conflict &&
+                        context.player === conflict.attackingPlayer &&
+                        conflict.getNumberOfParticipantsFor(context.player) === 1 &&
+                        conflict.getParticipants(
+                            (participant: any) =>
+                                participant.hasTrait('bushi') && participant.controller === context.player
+                        ).length === 1
+                    );
+                }
             },
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => {
+            gameAction: AbilityDsl.actions.cardLastingEffect((context: any) => {
                 const target = (context.game.currentConflict as Conflict).getParticipants(
-                    (participant) => participant.controller === context.player
+                    (participant: any) => participant.controller === context.player
                 )[0];
 
                 return {
@@ -26,16 +34,16 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                     effect: [
                         AbilityDsl.effects.delayedEffect({
                             when: {
-                                afterConflict: (event) =>
+                                afterConflict: (event: EventPayload<EventNames.AfterConflict>) =>
                                     event.conflict.winner !== target.controller && target.isParticipating()
                             },
                             gameAction: AbilityDsl.actions.discardFromPlay(),
                             message: '{0} is discarded from play due to failing at {1}!',
-                            messageArgs: (context) => [target, context.source]
+                            messageArgs: (context: any) => [target, context.source]
                         }),
                         AbilityDsl.effects.delayedEffect({
                             when: {
-                                afterConflict: (event) =>
+                                afterConflict: (event: EventPayload<EventNames.AfterConflict>) =>
                                     event.conflict.winner === target.controller && target.isParticipating()
                             },
                             gameAction: AbilityDsl.actions.multiple([
@@ -46,7 +54,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                             ]),
                             message:
                                 '{0} is honored and receives 1 fate, and {1} gains 1 honor and draw 1 card due to {0} succeeding at {2}!',
-                            messageArgs: (context) => [target, context.source.controller, context.source]
+                            messageArgs: (context: any) => [target, context.source.controller, context.source]
                         })
                     ]
                 };

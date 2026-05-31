@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Phases } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class ForgottenLibrary extends DrawCard {
     static id = 'forgotten-library';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Draw a card',
             when: {

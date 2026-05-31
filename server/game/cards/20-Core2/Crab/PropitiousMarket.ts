@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { Locations, Phases, Players, TargetModes, TokenTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 
 function amountOfFateGain(holding: DrawCard) {
@@ -15,7 +15,7 @@ export default class PropitiousMarket extends DrawCard {
         this.persistentEffect({
             targetLocation: Locations.Provinces,
             targetController: Players.Self,
-            match: (card, context) => card instanceof ProvinceCard && card.location === context.source.location,
+            match: (card, context) => !!context && card instanceof ProvinceCard && card.location === context?.source.location,
             effect: AbilityDsl.effects.modifyProvinceStrength(() => this.getTokenCount(TokenTypes.Honor))
         });
 
@@ -23,7 +23,7 @@ export default class PropitiousMarket extends DrawCard {
             title: 'Place an honor token',
             phase: Phases.Conflict,
             gameAction: AbilityDsl.actions.addToken(),
-            then: (context) => ({
+            then: (context: AbilityContext) => ({
                 target: {
                     mode: TargetModes.Select,
                     activePromptTitle: 'Sacrifice ' + context.source.name + '?',

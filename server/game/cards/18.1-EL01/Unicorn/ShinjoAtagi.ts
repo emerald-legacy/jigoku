@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Locations, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 
 export default class ShinjoAtagi extends DrawCard {
@@ -43,7 +43,7 @@ export default class ShinjoAtagi extends DrawCard {
                 }))
             },
             effect: 'set the {1} skill of {0} to the strength of an attacked province',
-            effectArgs: (context) => [context.game.currentConflict.conflictType]
+            effectArgs: (context) => [context.game.currentConflict?.conflictType ?? '']
         });
     }
 }

@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
 export interface SetDialProperties extends PlayerActionProperties {
@@ -26,13 +26,13 @@ export class SetDialAction extends PlayerAction {
         return properties.value > 0 && properties.value < 6 && super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event, player: Player, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { value } = this.getProperties(context, additionalProperties) as SetDialProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.value = value;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.player.setShowBid(event.value);
     }
 }

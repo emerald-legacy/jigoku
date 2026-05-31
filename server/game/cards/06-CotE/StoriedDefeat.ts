@@ -2,8 +2,8 @@ import CardAbility from '../../CardAbility.js';
 import { CardTypes, EventNames } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
-import BaseCard from '../../basecard.js';
-import DrawCard from '../../drawcard.js';
+import BaseCard from '../../BaseCard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class StoriedDefeat extends DrawCard {
     static id = 'storied-defeat';
@@ -26,7 +26,7 @@ export default class StoriedDefeat extends DrawCard {
                     AbilityDsl.actions.menuPrompt((context) => ({
                         activePromptTitle: 'Spend 1 fate to dishonor ' + context.target.name + '?',
                         choices: ['Yes'].concat(
-                            context.events.some((event) => event.name === EventNames.OnCardBowed) ? ['No'] : []
+                            context.events.some((event: any) => event.name === EventNames.OnCardBowed) ? ['No'] : []
                         ),
                         choiceHandler: (choice, displayMessage) => {
                             if(displayMessage) {
@@ -44,7 +44,7 @@ export default class StoriedDefeat extends DrawCard {
                             AbilityDsl.actions.resolveAbility({
                                 target: context.source,
                                 subResolution: true,
-                                ability: new CardAbility(this.game, context.source, {
+                                ability: new CardAbility(context.source, {
                                     title: 'Dishonor this character',
                                     gameAction: AbilityDsl.actions.dishonor({ target: context.target })
                                 })
@@ -65,6 +65,9 @@ export default class StoriedDefeat extends DrawCard {
     }
 
     public afterDuel(event: any) {
+        if(!event.duel) {
+            return;
+        }
         if(Array.isArray(event.duel.loser)) {
             (event.duel.loser as BaseCard[]).forEach((duelLoser) => this.duelLosersThisConflict.add(duelLoser));
         } else if(event.duel.loser) {

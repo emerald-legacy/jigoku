@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class IuchiSoulweaver extends DrawCard {
@@ -6,7 +6,7 @@ class IuchiSoulweaver extends DrawCard {
 
     setupCardAbilities() {
         this.dire({
-            condition: context => context.game.isDuringConflict() && context.game.currentConflict.getNumberOfParticipantsFor(context.player, card => card !== context.source) > 0,
+            condition: context => context.game.isDuringConflict() && (context.game.currentConflict?.getNumberOfParticipantsFor(context.player, (card: any) => card !== context.source) ?? 0) > 0,
             effect: AbilityDsl.effects.participatesFromHome()
         });
 

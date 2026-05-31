@@ -1,8 +1,10 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Locations, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import { CardTypes, EventNames, Locations, Players } from '../../../Constants.js';
+import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class BambooTattoo extends DrawCard {
     static id = 'bamboo-tattoo';
 
@@ -16,19 +18,19 @@ export default class BambooTattoo extends DrawCard {
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: 1,
-                targetCondition: (target) => target.type === CardTypes.Character && target.printedCost <= 3,
-                match: (card, source) => card === source
+                targetCondition: (target: any) => target.type === CardTypes.Character && target.printedCost <= 3,
+                match: (card: any, source: any) => card === source
             })
         });
 
         this.reaction({
             title: 'Ready attached character',
             when: {
-                onCardBowed: (event, context) =>
+                onCardBowed: (event: EventPayload<EventNames.OnCardBowed>, context: any) =>
                     context.source.parent &&
                     event.card === context.source.parent &&
-                    event.context.source.type !== 'ring' &&
-                    event.context.source.name !== 'Framework effect'
+                    event.context?.source.type !== 'ring' &&
+                    event.context?.source.name !== 'Framework effect'
             },
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.ready((context) => ({ target: context.source.parent })),
@@ -44,10 +46,11 @@ export default class BambooTattoo extends DrawCard {
     }
 
     private isSelfTrigger(context: TriggeredAbilityContext<this>) {
+        const triggerCtx = context.event.context as AbilityContext;
         return (
             context.source.controller &&
-            context.event.context.player &&
-            context.source.controller === context.event.context.player
+            triggerCtx.player &&
+            context.source.controller === triggerCtx.player
         );
     }
 }

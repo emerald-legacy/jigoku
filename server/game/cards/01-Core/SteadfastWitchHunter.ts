@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class SteadfastWitchHunter extends DrawCard {
     static id = 'steadfast-witch-hunter';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Ready character',
             cost: ability.costs.sacrifice({ cardType: CardTypes.Character }),

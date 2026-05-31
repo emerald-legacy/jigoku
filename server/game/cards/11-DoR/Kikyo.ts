@@ -1,7 +1,8 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityTypes } from '../../Constants.js';
+import { AbilityTypes, EventNames } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class Kikyo extends DrawCard {
     static id = 'kikyo';
 
@@ -12,12 +13,11 @@ class Kikyo extends DrawCard {
             faction: 'crab'
         });
 
-        this.grantedAbilityLimits = {};
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
                 title: 'Make opponent discard a card at random',
                 when: {
-                    onCardsDrawn: (event, context) => {
+                    onCardsDrawn: (event: EventPayload<EventNames.OnCardsDrawn>, context: any) => {
                         return context.player.opponent && event.player === context.player && context.source.isParticipating();
                     }
                 },

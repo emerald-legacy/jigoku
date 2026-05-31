@@ -1,8 +1,9 @@
 import { EventNames, Phases } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class PlantedFields extends DrawCard {
     static id = 'planted-fields';
 
@@ -16,9 +17,9 @@ export default class PlantedFields extends DrawCard {
         this.interrupt({
             title: 'Sacrifice Planted Fields',
             when: {
-                onPhaseEnded: (event, context) =>
+                onPhaseEnded: (event: EventPayload<EventNames.OnPhaseEnded>, context) =>
                     event.phase === Phases.Conflict &&
-                    !context.player.getProvinceCardInProvince(context.source.location).isBroken
+                    !context.player.getProvinceCardInProvince(context.source.location)?.isBroken
             },
             cost: AbilityDsl.costs.sacrificeSelf(),
             gameAction: AbilityDsl.actions.handler({

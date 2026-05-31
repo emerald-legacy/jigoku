@@ -1,7 +1,7 @@
 import { CardTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import type { Conflict } from '../../../conflict.js';
+import DrawCard from '../../../DrawCard.js';
+import type { Conflict } from '../../../Conflict.js';
 
 function isEvil(character: DrawCard): boolean {
     return character.isTainted || character.hasTrait('shadowlands');
@@ -11,7 +11,7 @@ export default class KaitoYoshiaki extends DrawCard {
     static id = 'kaito-yoshiaki';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Punish the wicked',
             condition: (context) => context.source.isParticipating(),
             target: {
@@ -21,7 +21,7 @@ export default class KaitoYoshiaki extends DrawCard {
                     card.isParticipating() &&
                     (context.game.currentConflict as Conflict)
                         .getCharacters(context.player)
-                        .some((myCard) => myCard.printedCost >= card.printedCost),
+                        .some((myCard) => (myCard.printedCost ?? 0) >= (card.printedCost ?? 0)),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.cardLastingEffect({
                         effect: [
@@ -37,7 +37,7 @@ export default class KaitoYoshiaki extends DrawCard {
                 ])
             },
             effect: '{3}set the base skills of {0} to 0{1}/0{2}',
-            effectArgs: (context) => ['military', 'political', isEvil(context.target) ? 'remove a fate from and ' : '']
+            effectArgs: (context) => ['military', 'political', context.target && isEvil(context.target) ? 'remove a fate from and ' : '']
         });
     }
 }

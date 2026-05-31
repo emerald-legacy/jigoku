@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TargetModes, Locations, Decks } from '../../Constants.js';
 
@@ -10,7 +10,7 @@ class SoshisMemory extends DrawCard {
             title: 'Put a card into a player\'s hand',
             condition: context => context.source.controller.isTraitInPlay('shugenja'),
             effect: 'let {1} look at the top {2} cards of their conflict deck',
-            effectArgs: context => [context.select, context.player.cardsInPlay.reduce((total, card) => total + (card.hasTrait('shugenja') ? 1 : 0), 0)],
+            effectArgs: context => [context.select, context.player.cardsInPlay.reduce((total: number, card: any) => total + (card.hasTrait('shugenja') ? 1 : 0), 0)],
             target: {
                 mode: TargetModes.Select,
                 targets: true,
@@ -23,12 +23,12 @@ class SoshisMemory extends DrawCard {
         });
     }
 
-    drawAbility(player) {
+    drawAbility(player: any) {
         return AbilityDsl.actions.deckSearch(() => ({
             player: player,
             activePromptTitle: 'Choose a card to put into your hand',
             reveal: false,
-            amount: context => context.player.cardsInPlay.reduce((total, card) => total + (card.hasTrait('shugenja') ? 1 : 0), 0),
+            amount: (context: any) => context.player.cardsInPlay.reduce((total: number, card: any) => total + (card.hasTrait('shugenja') ? 1 : 0), 0),
             deck: Decks.ConflictDeck,
             gameAction: AbilityDsl.actions.moveCard({
                 destination: Locations.Hand

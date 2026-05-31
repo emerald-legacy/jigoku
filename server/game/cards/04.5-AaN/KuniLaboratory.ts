@@ -1,13 +1,14 @@
-import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { Phases, CardTypes } from '../../Constants.js';
 
 class KuniLaboratory extends DrawCard {
     static id = 'kuni-laboratory';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.persistentEffect({
             match: card => card.getType() === CardTypes.Character,
-            effect: ability.effects.modifyBothSkills(1)
+            effect: AbilityDsl.effects.modifyBothSkills(1)
         });
 
         this.forcedReaction({
@@ -16,7 +17,7 @@ class KuniLaboratory extends DrawCard {
                 onPhaseStarted: event => event.phase === Phases.Conflict
             },
             effect: 'lose an honor',
-            gameAction: ability.actions.loseHonor(context => ({ target: context.player }))
+            gameAction: AbilityDsl.actions.loseHonor(context => ({ target: context.player }))
         });
     }
 }

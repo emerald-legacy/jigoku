@@ -1,31 +1,31 @@
 import { CardTypes, Locations, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 
-function attachedToType(context: AbilityContext): CardTypes {
-    return (context.target.parent as DrawCard).type;
+function attachedToType(context: AbilityContext<any, DrawCard>): CardTypes | undefined {
+    return context.target?.parent?.type;
 }
 
 export default class WiseQuartermaster extends DrawCard {
     static id = 'wise-quartermaster';
 
     setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Move an attachment',
             condition: (context) => !context.game.isDuringConflict(),
             target: {
                 cardType: CardTypes.Attachment,
                 controller: Players.Self,
-                gameAction: AbilityDsl.actions.selectCard((context) => {
+                gameAction: AbilityDsl.actions.selectCard<DrawCard>((context) => {
                     const isOnProvince = attachedToType(context) === CardTypes.Province;
                     return {
                         cardType: isOnProvince ? CardTypes.Province : CardTypes.Character,
                         location: isOnProvince ? Locations.Provinces : Locations.PlayArea,
                         cardCondition: (card) =>
-                            card !== context.target.parent && card.controller === context.target.parent.controller,
+                            card !== context.target?.parent && card.controller === context.target?.parent?.controller,
                         message: '{0} moves {1} to {2}',
-                        messageArgs: (card) => [context.player, context.target, card],
+                        messageArgs: (card) => [context.player, context.target ?? '', card],
                         gameAction: AbilityDsl.actions.attach({ attachment: context.target })
                     };
                 })

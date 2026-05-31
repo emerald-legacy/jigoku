@@ -1,6 +1,8 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
+import type CardAbility from '../../../CardAbility.js';
 import { CardTypes, Locations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class SoshiAya extends DrawCard {
     static id = 'soshi-aya';
@@ -10,7 +12,7 @@ export default class SoshiAya extends DrawCard {
             when: {
                 onInitiateAbilityEffects: (event, context) => event.card.type === CardTypes.Character &&
                     event.card.hasTrait('courtier') && event.card.controller === context.player.opponent &&
-                    context.event.context.ability.printedAbility
+                    ((context.event.context as AbilityContext).ability as CardAbility).printedAbility
             },
             cost: AbilityDsl.costs.putSelfIntoPlay(),
             then: {

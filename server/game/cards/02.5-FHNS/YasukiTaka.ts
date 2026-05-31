@@ -1,15 +1,19 @@
-import DrawCard from '../../drawcard.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { Phases, CardTypes, Locations } from '../../Constants.js';
 
 class YasukiTaka extends DrawCard {
     static id = 'yasuki-taka';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Gain fate',
             when: {
-                onCardLeavesPlay: event => this.game.currentPhase === Phases.Conflict && event.cardStateWhenLeftPlay.isFaction('crab') > 0 &&
-                                           event.cardStateWhenLeftPlay.type === CardTypes.Character && event.cardStateWhenLeftPlay.location === Locations.PlayArea
+                onCardLeavesPlay: event => {
+                    const state = event.cardStateWhenLeftPlay;
+                    return this.game.currentPhase === Phases.Conflict && !!state && state.isFaction('crab') &&
+                        state.type === CardTypes.Character && state.location === Locations.PlayArea;
+                }
             },
             limit: ability.limit.perPhase(Infinity),
             gameAction: ability.actions.gainFate()

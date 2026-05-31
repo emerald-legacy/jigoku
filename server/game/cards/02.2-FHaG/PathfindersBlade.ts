@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class PathfindersBlade extends DrawCard {
@@ -12,7 +12,7 @@ class PathfindersBlade extends DrawCard {
             },
             cost: AbilityDsl.costs.sacrificeSelf(),
             effect: 'cancel the effects of {1}\'s ability',
-            effectArgs: context => context.event.card,
+            effectArgs: context => context.event.card ?? '',
             gameAction: AbilityDsl.actions.cancel()
         });
     }

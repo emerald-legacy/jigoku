@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Phases, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class KuniJuurou extends DrawCard {
     static id = 'kuni-juurou';
@@ -19,7 +19,7 @@ export default class KuniJuurou extends DrawCard {
             effect: 'identify the source of Crab\'s misfortune… it is {0}! {0} is tainted.',
             phase: Phases.Conflict,
             condition: (context) =>
-                context.player.opponent && context.player.hand.length <= context.player.opponent.hand.length,
+                !!(context.player.opponent && context.player.hand.length <= context.player.opponent.hand.length),
             target: {
                 cardType: CardTypes.Character,
                 gameAction: AbilityDsl.actions.taint()

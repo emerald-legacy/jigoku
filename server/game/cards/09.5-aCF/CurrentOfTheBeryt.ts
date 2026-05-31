@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { Durations } from '../../Constants.js';
 
 class CurrentOfTheBeryt extends DrawCard {
     static id = 'current-of-the-beryt';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
             trait: 'shugenja'
@@ -14,10 +15,10 @@ class CurrentOfTheBeryt extends DrawCard {
             title: 'Take two actions',
             condition: () => this.game.isDuringConflict(),
             effect: 'take two actions',
-            gameAction: ability.actions.playerLastingEffect(context => ({
+            gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
                 targetController: context.player,
                 duration: Durations.UntilPassPriority,
-                effect: ability.effects.additionalAction(2)
+                effect: AbilityDsl.effects.additionalAction(2)
             }))
         });
     }

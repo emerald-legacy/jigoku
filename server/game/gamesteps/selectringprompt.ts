@@ -1,7 +1,7 @@
 import { AbilityContext } from '../AbilityContext.js';
 import EffectSource from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 
 /**
  * General purpose prompt that asks the user to select a ring.
@@ -59,7 +59,7 @@ class SelectRingPrompt extends UiPrompt {
         this.targets = [];
     }
 
-    defaultProperties() {
+    defaultProperties(): Record<string, any> {
         return {
             buttons: [],
             controls: this.getDefaultControls(),

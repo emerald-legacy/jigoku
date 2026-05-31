@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { CharacterStatus, EventNames, Locations } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
+import type DrawCard from '../DrawCard.js';
 import type { StatusToken } from '../StatusToken.js';
 import { TokenAction, type TokenActionProperties } from './TokenAction.js';
 
@@ -46,19 +46,19 @@ export class MoveTokenAction extends TokenAction {
         return super.canAffect(token, context, additionalProperties);
     }
 
-    addPropertiesToEvent(event, token: StatusToken, context: AbilityContext, additionalProperties = {}): void {
+    addPropertiesToEvent(event: any, token: StatusToken, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const { recipient } = this.getProperties(context) as MoveTokenProperties;
         super.addPropertiesToEvent(event, token, context, additionalProperties);
         event.recipient = recipient;
         event.donor = token.card;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         let tokens = event.token;
         if(!Array.isArray(tokens)) {
             tokens = [tokens];
         }
-        tokens.forEach((token) => {
+        tokens.forEach((token: any) => {
             token.card.removeStatusToken(token);
             event.recipient.addStatusToken(token);
             event.recipient.game.raiseEvent(EventNames.OnStatusTokenGained, { token: token, card: event.recipient });

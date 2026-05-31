@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Players } from '../../Constants.js';
 import CardAbility from '../../CardAbility.js';
@@ -9,7 +9,7 @@ class CaptivatingStory extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Give a character +X pol',
-            condition: context => context.game.isDuringConflict() && this.game.currentConflict.getNumberOfParticipantsFor(context.player) === 1,
+            condition: context => context.game.isDuringConflict() && (this.game.currentConflict?.getNumberOfParticipantsFor(context.player) ?? 0) === 1,
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,
@@ -34,7 +34,7 @@ class CaptivatingStory extends DrawCard {
                             AbilityDsl.actions.resolveAbility({
                                 target: context.source,
                                 subResolution: true,
-                                ability: new CardAbility(this.game, context.source, {
+                                ability: new CardAbility(context.source, {
                                     title: 'Honor this character',
                                     gameAction: AbilityDsl.actions.honor({ target: context.target })
                                 })

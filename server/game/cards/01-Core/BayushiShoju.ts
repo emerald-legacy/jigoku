@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -9,7 +9,7 @@ class BayushiShoju extends DrawCard {
         this.action({
             title: 'Give a character -0/-1',
             limit: AbilityDsl.limit.perRound(2),
-            condition: context => context.source.isParticipating() && this.game.currentConflict.conflictType === 'political',
+            condition: context => context.source.isParticipating() && this.game.currentConflict?.conflictType === 'political',
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Opponent,

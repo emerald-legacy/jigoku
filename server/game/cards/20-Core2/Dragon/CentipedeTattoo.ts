@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class CentipedeTattoo extends DrawCard {
     static id = 'centipede-tattoo';
@@ -11,6 +11,7 @@ export default class CentipedeTattoo extends DrawCard {
 
         this.whileAttached({
             condition: () =>
+                !!this.parent && !!this.game.currentConflict &&
                 this.parent.isParticipating() && this.game.currentConflict.loser === this.parent.controller,
             effect: AbilityDsl.effects.doesNotBow()
         });

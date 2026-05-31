@@ -1,8 +1,8 @@
 import { CardTypes, Locations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import type { Conflict } from '../../../conflict.js';
-import type Player from '../../../player.js';
+import DrawCard from '../../../DrawCard.js';
+import type { Conflict } from '../../../Conflict.js';
+import type Player from '../../../Player.js';
 
 export default class FeignedWeakness extends DrawCard {
     static id = 'feigned-weakness';
@@ -14,7 +14,7 @@ export default class FeignedWeakness extends DrawCard {
                 onInitiateAbilityEffects: (event, context) =>
                     event.card.type === CardTypes.Event &&
                     context.game.isDuringConflict() &&
-                    this.#hasEqualOrLessSkill(this.game.currentConflict, context.player)
+                    !!this.game.currentConflict && this.#hasEqualOrLessSkill(this.game.currentConflict, context.player)
             },
             cost: AbilityDsl.costs.discardCard({
                 location: Locations.Hand,

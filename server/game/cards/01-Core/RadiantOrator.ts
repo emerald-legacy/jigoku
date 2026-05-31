@@ -1,17 +1,18 @@
-import DrawCard from '../../drawcard.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, CardTypes } from '../../Constants.js';
 
 class RadiantOrator extends DrawCard {
     static id = 'radiant-orator';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Send a character home',
-            condition: context => context.source.isParticipating() && context.player.opponent && (
+            condition: context => !!context.player.opponent && context.source.isParticipating() && (
                 // My total glory
-                context.player.cardsInPlay.reduce((myTotal, card) => myTotal + (card.isParticipating() && !card.bowed ? card.getGlory() : 0), 0) >
+                context.player.cardsInPlay.reduce((myTotal: number, card: any) => myTotal + (card.isParticipating() && !card.bowed ? card.getGlory() : 0), 0) >
                 // is greater than Opponents total glory
-                context.player.opponent.cardsInPlay.reduce((oppTotal, card) => oppTotal + (card.isParticipating() && !card.bowed ? card.getGlory() : 0), 0)
+                context.player.opponent.cardsInPlay.reduce((oppTotal: number, card: any) => oppTotal + (card.isParticipating() && !card.bowed ? card.getGlory() : 0), 0)
             ),
             target: {
                 cardType: CardTypes.Character,

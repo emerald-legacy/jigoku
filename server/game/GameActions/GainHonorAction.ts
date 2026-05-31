@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { CalculateHonorLimit } from './Shared/HonorLogic.js';
 
@@ -20,7 +20,7 @@ export class GainHonorAction extends PlayerAction<GainHonorProperties> {
             context.player,
             context.game.roundNumber,
             context.game.currentPhase,
-            properties.amount
+            properties.amount ?? 0
         );
         return ['gain ' + amountToTransfer + ' honor', []];
     }
@@ -37,7 +37,7 @@ export class GainHonorAction extends PlayerAction<GainHonorProperties> {
             player,
             context.game.roundNumber,
             context.game.currentPhase,
-            properties.amount
+            properties.amount ?? 0
         );
 
         if(hasHonorLimit && !amountToTransfer) {
@@ -51,13 +51,13 @@ export class GainHonorAction extends PlayerAction<GainHonorProperties> {
         return [context.player];
     }
 
-    addPropertiesToEvent(event, player: Player, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         var [_, amountToTransfer] = CalculateHonorLimit(
             event.player,
             event.context.game.roundNumber,

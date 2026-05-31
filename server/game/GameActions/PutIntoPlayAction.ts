@@ -1,9 +1,10 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames, Locations, Players } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
-import type Player from '../player.js';
+import type DrawCard from '../DrawCard.js';
+import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface PutIntoPlayProperties extends CardActionProperties {
     fate?: number;
     status?: 'honored' | 'ordinary' | 'dishonored';
@@ -22,8 +23,8 @@ export class PutIntoPlayAction extends CardGameAction {
         fate: 0,
         status: 'ordinary',
         controller: Players.Self,
-        side: null,
-        overrideLocation: null
+        side: undefined,
+        overrideLocation: undefined
     };
     constructor(
         properties: ((context: AbilityContext) => PutIntoPlayProperties) | PutIntoPlayProperties,
@@ -86,7 +87,7 @@ export class PutIntoPlayAction extends CardGameAction {
         return true;
     }
 
-    addPropertiesToEvent(event, card: DrawCard, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: Event, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { fate, status, controller, side, overrideLocation } = this.getProperties(
             context,
             additionalProperties
@@ -100,45 +101,48 @@ export class PutIntoPlayAction extends CardGameAction {
         event.side = side || this.getDefaultSide(context);
     }
 
-    eventHandler(event, additionalProperties = {}): void {
-        let player = this.getPutIntoPlayPlayer(event.context);
-        this.checkForRefillProvince(event.card, event, additionalProperties);
-        event.card.new = true;
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+        const context = event.context as AbilityContext;
+        let player = this.getPutIntoPlayPlayer(context);
+        const card = event.card as DrawCard;
+        this.checkForRefillProvince(card, event, additionalProperties);
+        card.new = true;
         if(event.fate) {
-            event.card.fate = event.fate;
+            card.fate = event.fate;
         }
 
-        let finalController = event.context.player;
-        if(event.controller === Players.Opponent) {
+        let finalController = context.player;
+        if(event.controller === Players.Opponent && finalController.opponent) {
             finalController = finalController.opponent;
         }
 
         let targetSide = event.side;
 
         if(event.status === 'honored') {
-            event.card.honor();
+            card.honor();
         } else if(event.status === 'dishonored') {
-            event.card.dishonor();
+            card.dishonor();
         }
-        if(event.card.hasPrintedKeyword('corrupted')) {
-            event.card.taint();
+        if(card.hasPrintedKeyword('corrupted')) {
+            card.taint();
         }
 
-        player.moveCard(event.card, Locations.PlayArea);
+        player.moveCard(card, Locations.PlayArea);
 
         //moveCard sets all this stuff and only works if the owner is moving cards, so we're switching it around
-        if(event.card.controller !== finalController) {
-            event.card.controller = finalController;
-            event.card.setDefaultController(event.card.controller);
-            event.card.owner.cardsInPlay.splice(event.card.owner.cardsInPlay.indexOf(event.card), 1);
-            event.card.controller.cardsInPlay.push(event.card);
+        if(card.controller !== finalController) {
+            card.controller = finalController;
+            card.setDefaultController(card.controller);
+            card.owner.cardsInPlay.splice(card.owner.cardsInPlay.indexOf(card), 1);
+            card.controller.cardsInPlay.push(card);
         }
 
-        if(event.intoConflict) {
+        const conflict = context.game.currentConflict;
+        if(event.intoConflict && conflict) {
             if(targetSide.isAttackingPlayer()) {
-                event.context.game.currentConflict.addAttacker(event.card);
+                conflict.addAttacker(card);
             } else {
-                event.context.game.currentConflict.addDefender(event.card);
+                conflict.addDefender(card);
             }
         }
     }

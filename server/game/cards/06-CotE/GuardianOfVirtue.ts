@@ -1,11 +1,12 @@
-import DrawCard from '../../drawcard.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 
 class GuardianOfVirtue extends DrawCard {
     static id = 'guardian-of-virtue';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
-            condition: context => context.source.isDefending() && context.player.hasComposure(),
+            condition: (context: any) => context.source.isDefending() && context.player.hasComposure(),
             effect: ability.effects.doesNotBow()
         });
     }

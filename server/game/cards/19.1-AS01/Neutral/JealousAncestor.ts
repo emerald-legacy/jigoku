@@ -2,7 +2,7 @@ import { CardTypes, Elements, Players } from '../../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment.js';
 import PlayerEffect from '../../../Effects/PlayerEffect.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 const ELEMENT_KEY = 'jealous-ancestor-void';
 
@@ -43,11 +43,11 @@ export default class JealousAncestor extends DrawCard {
     private addAttachedEffectOnOpponent(effect: (game: any, source: any, props: any) => PlayerEffect) {
         this.persistentEffect({
             condition: (context) =>
-                context.source.parent &&
+                !!(context.source.parent &&
                 context.source.parent.isParticipating() &&
                 !this.game.rings[this.getCurrentElementSymbol(ELEMENT_KEY)].isConsideredClaimed(
                     context.source.parent.controller
-                ),
+                )),
             targetController: Players.Opponent,
             effect: effect
         });

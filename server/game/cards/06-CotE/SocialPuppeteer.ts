@@ -1,25 +1,28 @@
-import DrawCard from '../../drawcard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 
 class SocialPuppeteer extends DrawCard {
     static id = 'social-puppeteer';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.composure({
-            effect: ability.effects.mustBeChosen({ restricts: 'opponentsEvents' })
+            effect: AbilityDsl.effects.mustBeChosen({ restricts: 'opponentsEvents' })
         });
 
         this.action({
             title: 'Switch honor dials with opponent',
-            condition: context =>
-                context.source.isParticipating() && context.player.opponent &&
+            condition: (context: AbilityContext) =>
+                context.source.isParticipating() && !!context.player.opponent &&
                 context.player.showBid !== context.player.opponent.showBid,
             effect: 'switch honor dials with {1}',
-            effectArgs: context => context.player.opponent,
+            effectArgs: (context: AbilityContext) => context.player.opponent as Player,
             gameAction: [
-                ability.actions.setHonorDial(context => ({ value: context.player.showBid })),
-                ability.actions.setHonorDial(context => ({
+                AbilityDsl.actions.setHonorDial((context: AbilityContext) => ({ value: context.player.showBid })),
+                AbilityDsl.actions.setHonorDial((context: AbilityContext) => ({
                     target: context.player,
-                    value: context.player.opponent.showBid
+                    value: context.player.opponent ? context.player.opponent.showBid : 0
                 }))
             ]
         });

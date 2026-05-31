@@ -1,7 +1,8 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
+import type BaseCard from '../../../BaseCard.js';
 import { Locations } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class DaidojiAhma extends DrawCard {
@@ -15,7 +16,7 @@ export default class DaidojiAhma extends DrawCard {
                     event.context.ability.isTriggeredAbility() &&
                     (event.cardTargets as Array<BaseCard>).some((card) => this.targetIsDishonoredCrane(card, context)),
                 onMoveFate: (event, context) =>
-                    this.isRingEffect(event) && event.fate > 0 && this.targetIsDishonoredCrane(event.origin, context),
+                    this.isRingEffect(event) && event.fate > 0 && this.targetIsDishonoredCrane(event.origin as BaseCard, context),
                 onCardHonored: (event, context) =>
                     this.isRingEffect(event) && this.targetIsDishonoredCrane(event.card, context),
                 onCardDishonored: (event, context) =>
@@ -28,8 +29,8 @@ export default class DaidojiAhma extends DrawCard {
             gameAction: AbilityDsl.actions.cancel(),
             effect: 'cancel the effects of {1}{2}',
             effectArgs: (context) => [
-                context.event.context.source.type === 'ring' ? 'the ' : '',
-                context.event.context.source
+                (context.event.context as AbilityContext).source.type === 'ring' ? 'the ' : '',
+                (context.event.context as AbilityContext).source
             ]
         });
     }

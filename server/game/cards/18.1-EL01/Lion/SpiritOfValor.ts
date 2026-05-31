@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Locations, Players } from '../../../Constants.js';
 import type { Cost } from '../../../Costs.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 function captureParentCost(): Cost {
     return {
@@ -28,13 +28,13 @@ export default class SpiritOfValor extends DrawCard {
             location: Locations.Any,
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
-                amount: (_, player) =>
+                amount: (_: any, player: any) =>
                     player.cardsInPlay.some(
-                        (card) => card.getType() === CardTypes.Character && card.hasTrait('shugenja')
+                        (card: any) => card.getType() === CardTypes.Character && card.hasTrait('shugenja')
                     )
                         ? 1
                         : 0,
-                match: (card, source) => card === source
+                match: (card: any, source: any) => card === source
             })
         });
 

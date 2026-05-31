@@ -1,11 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes } from '../../Constants.js';
 
 class ForgedEdict extends DrawCard {
     static id = 'forged-edict';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.wouldInterrupt({
             title: 'Cancel an event',
             when: {

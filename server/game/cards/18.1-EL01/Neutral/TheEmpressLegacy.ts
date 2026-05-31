@@ -1,4 +1,4 @@
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 class TheEmpressLegacy extends DrawCard {
@@ -6,7 +6,7 @@ class TheEmpressLegacy extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.parent && context.source.parent.isFaction('crab'),
+            condition: context => !!(context.source.parent && context.source.parent.isFaction('crab')),
             effect: AbilityDsl.effects.changePlayerGloryModifier(1)
         });
 

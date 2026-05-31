@@ -1,7 +1,8 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Elements } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import { CardTypes, Elements, EventNames } from '../../../Constants.js';
+import DrawCard from '../../../DrawCard.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 const RING_CLAIM = 'henshin-seeker-fire';
 
 export default class HenshinSeeker extends DrawCard {
@@ -11,8 +12,8 @@ export default class HenshinSeeker extends DrawCard {
         this.reaction({
             title: 'Ready a character',
             when: {
-                onClaimRing: (event) => {
-                    const element = this.getCurrentElementSymbol(RING_CLAIM);
+                onClaimRing: (event: EventPayload<EventNames.OnClaimRing>) => {
+                    const element = this.getCurrentElementSymbol(RING_CLAIM) as Elements;
                     return (event.conflict && event.conflict.hasElement(element)) || event.ring.hasElement(element);
                 }
             },

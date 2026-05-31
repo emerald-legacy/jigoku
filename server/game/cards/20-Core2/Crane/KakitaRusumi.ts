@@ -1,6 +1,6 @@
 import { CardTypes, Decks, Durations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 
 function statusOfIntern(context: AbilityContext) {
@@ -19,7 +19,7 @@ export default class KakitaRusumi extends DrawCard {
                 amount: 4,
                 deck: Decks.DynastyDeck,
                 cardCondition: (card) =>
-                    card.type === CardTypes.Character && card.printedCost <= 2 && card.isFaction('crane'),
+                    card.type === CardTypes.Character && (card.printedCost ?? 0) <= 2 && card.isFaction('crane'),
                 message: '{0} puts {1} into play {2}',
                 messageArgs: (context, cards) => [context.player, cards, statusOfIntern(context)],
                 shuffle: true,
@@ -28,9 +28,10 @@ export default class KakitaRusumi extends DrawCard {
             effect: 'search their dynasty deck for a character to put into play',
             then: (context) => ({
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => {
-                    let target = [];
-                    if(context.selects['deckSearch']?.length > 0) {
-                        target = context.selects['deckSearch'][0];
+                    let target: DrawCard | DrawCard[] = [];
+                    const selected = context?.deckSearchSelected ?? [];
+                    if(selected.length > 0) {
+                        target = selected[0];
                     }
                     return {
                         target: target,
@@ -40,7 +41,7 @@ export default class KakitaRusumi extends DrawCard {
                                 onConflictFinished: () => true
                             },
                             message: '{0} is discarded from play due to {1}\'s effect',
-                            messageArgs: [target, context.source],
+                            messageArgs: [target, context?.source],
                             gameAction: AbilityDsl.actions.discardFromPlay()
                         })
                     };

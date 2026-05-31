@@ -2,22 +2,21 @@ import { v1 as uuidV1 } from 'uuid';
 
 import type { AbilityContext } from './AbilityContext.js';
 import { EffectNames, Stages } from './Constants.js';
-import type DrawCard from './drawcard.js';
 import type { CardEffect } from './Effects/types.js';
-import type Game from './game.js';
+import type Game from './Game.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import * as GameActions from './GameActions/GameActions.js';
-import type Player from './player.js';
+import type Player from './Player.js';
 
 export class GameObject {
     declare public game: Game;
-    declare public name: string;
+    private _name!: string;
     public uuid = uuidV1();
     protected id: string;
     protected printedType = '';
-    private facedown = false;
-    private effects = [] as CardEffect[];
-    private effectsByType = new Map<EffectNames, CardEffect[]>();
+    public facedown = false;
+    protected effects = [] as CardEffect[];
+    protected effectsByType = new Map<EffectNames, CardEffect[]>();
     private suppressEffectCount = 0;
 
     public constructor(
@@ -31,6 +30,14 @@ export class GameObject {
 
     public get type() {
         return this.getType();
+    }
+
+    public get name(): string {
+        return this._name;
+    }
+
+    public set name(value: string) {
+        this._name = value;
     }
 
     public addEffect(effect: CardEffect) {
@@ -92,7 +99,7 @@ export class GameObject {
     }
 
     public allowGameAction(actionType: string, context = this.game.getFrameworkContext()) {
-        const gameActionFactory = GameActions[actionType];
+        const gameActionFactory = (GameActions as Record<string, (...args: any[]) => GameAction>)[actionType];
         if(gameActionFactory) {
             const gameAction: GameAction = gameActionFactory();
             return gameAction.canAffect(this, context);
@@ -117,27 +124,27 @@ export class GameObject {
         return this.printedType;
     }
 
-    public getPrintedFaction() {
+    public getPrintedFaction(): string | null {
         return null;
     }
 
-    public hasKeyword() {
+    public hasKeyword(_keyword: string) {
         return false;
     }
 
-    public hasTrait() {
+    public hasTrait(_trait: string) {
         return false;
     }
 
-    public getTraits() {
-        return [];
+    public getTraits(): Set<string> {
+        return new Set();
     }
 
-    public isFaction() {
+    public isFaction(_faction: string) {
         return false;
     }
 
-    public hasToken() {
+    public hasToken(_type: string) {
         return false;
     }
 
@@ -177,7 +184,7 @@ export class GameObject {
                 // @ts-expect-error -- getReducedCost exists on play action abilities but is not declared on the base AbilityContext.ability type
                 fateCost = context.ability.getReducedCost(context);
             }
-            let alternateFate = context.player.getAvailableAlternateFate(context.playType, context);
+            let alternateFate = context.player.getAvailableAlternateFate(context.playType ?? '', context);
             let availableFate = Math.max(context.player.fate - Math.max(fateCost - alternateFate, 0), 0);
 
             return (
@@ -195,12 +202,8 @@ export class GameObject {
         return true;
     }
 
-    public getShortSummaryForControls(_activePlayer: Player) {
+    public getShortSummaryForControls(_activePlayer: Player): Record<string, unknown> {
         return this.getShortSummary();
-    }
-
-    public isParticipating(_card: DrawCard): boolean {
-        return this.game.currentConflict && this.game.currentConflict.isParticipating(this);
     }
 
     public isFacedown() {
@@ -216,13 +219,13 @@ export class GameObject {
         return effects[effects.length - 1];
     }
 
-    protected getRawEffects() {
+    public getRawEffects() {
         // Fast path: no suppress effects (vast majority of game objects)
         if(this.suppressEffectCount === 0) {
             return this.effects;
         }
         const suppressEffects = this.effects.filter((effect) => effect.type === EffectNames.SuppressEffects);
-        const suppressedEffects = suppressEffects.reduce((array, effect) => array.concat(effect.getValue(this)), []);
+        const suppressedEffects = suppressEffects.reduce<CardEffect[]>((array, effect) => array.concat(effect.getValue(this)), []);
         return this.effects.filter((effect) => !suppressedEffects.includes(effect));
     }
 }

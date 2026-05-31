@@ -1,7 +1,8 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Elements, EventNames } from '../../Constants.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 const elementKey = 'isawa-tsuke-fire';
 
 class IsawaTsuke extends DrawCard {
@@ -11,15 +12,15 @@ class IsawaTsuke extends DrawCard {
         this.reaction({
             title: 'Fire ring same cost characters',
             when: {
-                onCardDishonored: (event, context) => {
-                    const dishonoredByYourEffect = context.player === event.context.player;
-                    const dishonoredByRingEffect = event.context.source.type === 'ring';
+                onCardDishonored: (event: EventPayload<EventNames.OnCardDishonored>, context) => {
+                    const dishonoredByYourEffect = context.player === event.context?.player;
+                    const dishonoredByRingEffect = event.context?.source.type === 'ring';
                     const currentlyFire = this.getCurrentElementSymbol(elementKey) === Elements.Fire;
                     return dishonoredByYourEffect && dishonoredByRingEffect && currentlyFire;
                 },
-                onCardHonored: (event, context) => {
-                    const honoredByYourEffect = context.player === event.context.player;
-                    const honoredByRingEffect = event.context.source.type === 'ring';
+                onCardHonored: (event: EventPayload<EventNames.OnCardHonored>, context) => {
+                    const honoredByYourEffect = context.player === event.context?.player;
+                    const honoredByRingEffect = event.context?.source.type === 'ring';
                     const currentlyFire = this.getCurrentElementSymbol(elementKey) === Elements.Fire;
                     return honoredByYourEffect && honoredByRingEffect && currentlyFire;
                 }
@@ -35,12 +36,12 @@ class IsawaTsuke extends DrawCard {
             }))
         });
     }
-    getTsukeTargets(context) {
+    getTsukeTargets(context: any) {
         let targetedCharacter = context.event.card;
         let targetedCharacterController = context.event.card.controller;
 
         return targetedCharacterController.cardsInPlay.filter(
-            (card) => card.printedCost === targetedCharacter.printedCost
+            (card: any) => card.printedCost === targetedCharacter.printedCost
         );
     }
 

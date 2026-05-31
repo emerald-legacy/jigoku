@@ -1,33 +1,39 @@
-import DrawCard from '../../drawcard.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import { AbilityTypes, CardTypes, DuelTypes, Players } from '../../Constants.js';
+import DrawCard from '../../DrawCard.js';
+import type { Duel } from '../../Duel.js';
 import * as GameActions from '../../GameActions/GameActions.js';
-import { Players, CardTypes, AbilityTypes, DuelTypes } from '../../Constants.js';
 
 class DuelistTraining extends DrawCard {
     static id = 'duelist-training';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.whileAttached({
             effect: ability.effects.gainAbility(AbilityTypes.Action, {
                 title: 'Initiate a duel to bow',
-                condition: context => context.source.isParticipating(),
+                condition: (context: AbilityContext) => context.source.isParticipating(),
                 printedAbility: false,
                 target: {
                     cardType: CardTypes.Character,
                     controller: Players.Opponent,
-                    cardCondition: card => card.isParticipating(),
-                    gameAction: ability.actions.duel(context => ({
+                    cardCondition: (card: DrawCard) => card.isParticipating(),
+                    gameAction: ability.actions.duel((context: AbilityContext) => ({
                         type: DuelTypes.Military,
                         challenger: context.source,
-                        gameAction: duel => ability.actions.bow({ target: duel.loser }),
-                        costHandler: (context, prompt) => this.costHandler(context, prompt)
+                        gameAction: (duel: Duel) => ability.actions.bow({ target: duel.loser }),
+                        costHandler: (context: AbilityContext, prompt: any) => this.costHandler(context, prompt)
                     }))
                 }
             })
         });
     }
 
-    costHandler(context, prompt) {
+    costHandler(context: AbilityContext, prompt: any) {
         let lowBidder = this.game.getFirstPlayer();
+        if(!lowBidder || !lowBidder.opponent) {
+            return;
+        }
         let difference = lowBidder.honorBid - lowBidder.opponent.honorBid;
         if(difference < 0) {
             lowBidder = lowBidder.opponent;

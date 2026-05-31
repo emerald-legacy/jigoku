@@ -1,7 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import BaseCard from '../../../basecard.js';
+import BaseCard from '../../../BaseCard.js';
 import { CardTypes, Durations, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 const TARGET_MONK = 'myMonk';
 const TARGET_TO_BOW = 'characterToBow';
@@ -46,11 +46,11 @@ export default class PalmStrike extends DrawCard {
             effect: 'bow {1}',
             effectArgs: (context) => [context.targets[TARGET_TO_BOW]],
             then: (context) => {
-                if(context.targets[TARGET_MONK].hasTrait('tattooed')) {
+                if((context.targets[TARGET_MONK] as DrawCard).hasTrait('tattooed')) {
                     context.game.addMessage(
                         '{0} cannot ready until the end of the conflict - they are overwhelmed by the mystical tattoos of {1}{2}!',
                         context.targets[TARGET_TO_BOW],
-                        context.targets[TARGET_MONK].isUnique() ? '' : 'the ',
+                        (context.targets[TARGET_MONK] as DrawCard).isUnique() ? '' : 'the ',
                         context.targets[TARGET_MONK]
                     );
                 }
@@ -59,6 +59,6 @@ export default class PalmStrike extends DrawCard {
     }
 
     #cardHasNoWeapons(card: BaseCard) {
-        return !card.attachments.some((attachment: BaseCard) => attachment.hasTrait('weapon'));
+        return !(card as DrawCard).attachments.some((attachment: BaseCard) => attachment.hasTrait('weapon'));
     }
 }

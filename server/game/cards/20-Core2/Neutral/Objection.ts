@@ -1,11 +1,11 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, EventNames } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { Cost } from '../../../Costs.js';
-import type Player from '../../../player.js';
+import type Player from '../../../Player.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import type Game from '../../../game.js';
+import type Game from '../../../Game.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 
 const GLOBAL_TRACKER = new WeakMap<Game, WeakMap<Player, number>>();
@@ -49,6 +49,7 @@ class ObjectionCost implements Cost {
 
 export default class Objection extends DrawCard {
     static id = 'objection-';
+    private eventRegistrar?: EventRegistrar;
 
     setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);

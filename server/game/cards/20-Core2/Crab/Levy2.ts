@@ -1,6 +1,6 @@
 import { Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class Levy2 extends DrawCard {
     static id = 'levy-2';
@@ -30,8 +30,8 @@ export default class Levy2 extends DrawCard {
             effect: 'take 1 {1} from {2}{3}',
             effectArgs: context => [
                 context.select === 'Give your opponent 1 fate' ? 'fate' : 'honor',
-                context.player.opponent,
-                context.player.hand.length <= context.player.opponent.hand.length ? ' and draw a card' : ''
+                context.player.opponent ?? '',
+                context.player.hand.length <= (context.player.opponent?.hand.length ?? 0) ? ' and draw a card' : ''
             ]
         });
     }

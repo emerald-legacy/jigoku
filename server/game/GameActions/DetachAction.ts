@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
+import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export type DetachActionProperties = CardActionProperties;
@@ -16,7 +16,7 @@ export class DetachAction extends CardGameAction<DetachActionProperties> {
     }
 
     canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
-        return (
+        return !!(
             card &&
             card.location === Locations.PlayArea &&
             card.parent &&
@@ -24,7 +24,7 @@ export class DetachAction extends CardGameAction<DetachActionProperties> {
         );
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         event.card.parent.removeAttachment(event.card);
         event.card.controller.cardsInPlay.push(event.card);
     }

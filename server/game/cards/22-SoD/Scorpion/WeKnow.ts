@@ -2,8 +2,11 @@ import { CardTypes, TargetModes, Players, CharacterStatus } from '../../../Const
 
 import { StatusToken } from '../../../StatusToken.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import BaseCard from '../../../basecard.js';
-import DrawCard from '../../../drawcard.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import type { ChoicesInterface } from '../../../Interfaces.js';
+import BaseCard from '../../../BaseCard.js';
+import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 
 export default class WeKnow extends DrawCard {
     static id = 'we-know';
@@ -29,11 +32,10 @@ export default class WeKnow extends DrawCard {
                     dependsOn: 'token',
                     mode: TargetModes.Select,
                     player: Players.Opponent,
-                    choices: (context) => {
-                        const targetToken: StatusToken = context.tokens.token[0];
+                    choices: (context: AbilityContext): ChoicesInterface => {
+                        const targetToken = (context.tokens.token as StatusToken[])[0];
                         const targetCard = targetToken.card;
                         if(!(targetCard instanceof DrawCard)) {
-                            // should never happen
                             return {};
                         }
                         return {
@@ -50,26 +52,26 @@ export default class WeKnow extends DrawCard {
                 }
             },
             then: context => ({
-                thenCondition: () => context.player.honor > context.player.opponent?.honor,
+                thenCondition: () => !!context && !!context.player.opponent && context.player.honor > (context.player.opponent.honor ?? 0),
                 gameAction: AbilityDsl.actions.loseHonor({
-                    target: context.player,
+                    target: context?.player,
                     amount: 2
                 }),
                 message: '{3} loses 2 honor',
-                messageArgs: () => [context.player]
+                messageArgs: () => [context?.player]
             }),
             effect: '{1}{2}{3}',
             effectArgs: (context) => {
                 if(context.selects.select.choice === 'Lose honor and let opponent draw cards') {
                     return [
                         'draw two cards and cause ',
-                        context.player.opponent,
+                        context.player.opponent as Player,
                         ' to lose 1 honor'
                     ];
                 }
                 return [
                     'replace ',
-                    context.tokens.token[0].card,
+                    (context.tokens.token as StatusToken[])[0].card as DrawCard,
                     ' honored status token with a dishonored status token'
                 ];
 

@@ -1,17 +1,20 @@
-import DrawCard from '../../drawcard.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
+import { EventNames } from '../../Constants.js';
 class WayOfTheChrysanthemum extends DrawCard {
     static id = 'way-of-the-chrysanthemum';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Gain extra honor after bid',
             max: ability.limit.perRound(1),
             when: {
-                onTransferHonor: (event, context) => event.player === context.player.opponent && event.afterBid
+                onTransferHonor: (event: EventPayload<EventNames.OnTransferHonor>, context: any) => event.player === context.player.opponent && event.afterBid
             },
             cannotBeMirrored: true,
-            gameAction: ability.actions.gainHonor(context => ({ amount: context.event.amount }))
+            gameAction: ability.actions.gainHonor((context: any) => ({ amount: context.event.amount }))
         });
     }
 }

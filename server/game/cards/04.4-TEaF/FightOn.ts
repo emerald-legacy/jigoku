@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, CardTypes } from '../../Constants.js';
 
 class FightOn extends DrawCard {
     static id = 'fight-on';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.action({
             title: 'Ready character and move to conflict',
             condition: context => context.player.isDefendingPlayer(),
@@ -12,7 +13,7 @@ class FightOn extends DrawCard {
                 cardType: CardTypes.Character,
                 controller: Players.Self,
                 cardCondition: card => card.bowed,
-                gameAction: [ability.actions.ready(), ability.actions.moveToConflict()]
+                gameAction: [AbilityDsl.actions.ready(), AbilityDsl.actions.moveToConflict()]
             },
             effect: 'ready {0} and move it into the conflict'
         });

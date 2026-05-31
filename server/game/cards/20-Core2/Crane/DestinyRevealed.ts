@@ -1,9 +1,10 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardTypes, EventNames, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { Duel } from '../../../Duel.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class DestinyRevealed extends DrawCard {
     static id = 'destiny-revealed';
 
@@ -16,7 +17,7 @@ export default class DestinyRevealed extends DrawCard {
                 hidePromptIfSingleCard: true,
                 cardType: CardTypes.Character,
                 controller: Players.Self,
-                cardCondition: (card) => ((context as any).event.duel as Duel).isInvolved(card),
+                cardCondition: (card) => ((context as TriggeredAbilityContext).event.duel as Duel).isInvolved(card),
                 message: '{0} places a fate from their fate pool on {1}',
                 messageArgs: (cards) => [context.player, cards],
                 gameAction: AbilityDsl.actions.placeFate((context) => ({
@@ -28,9 +29,10 @@ export default class DestinyRevealed extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel a ring effect',
             when: {
-                onMoveFate: (event, context) =>
-                    event.context.source.type === 'ring' &&
-                    event.origin?.controller === context.player &&
+                onMoveFate: (event: EventPayload<EventNames.OnMoveFate>, context) =>
+                    event.context?.source.type === 'ring' &&
+                    !!event.origin && 'controller' in event.origin &&
+                    event.origin.controller === context.player &&
                     event.fate > 0,
                 onCardHonored: targetedByOpponentRingEffect,
                 onCardDishonored: targetedByOpponentRingEffect,
@@ -39,11 +41,17 @@ export default class DestinyRevealed extends DrawCard {
             },
             gameAction: AbilityDsl.actions.cancel(),
             effect: 'cancel the effects of the {1}',
-            effectArgs: (context) => [context.event.context.source]
+            effectArgs: (context) => [context.event.context?.source]
         });
     }
 }
 
-function targetedByOpponentRingEffect(event: any, context: TriggeredAbilityContext<any>) {
-    return event.card?.controller === context.player && event.context.source.type === 'ring';
+type CardStatusEvent =
+    | EventPayload<EventNames.OnCardHonored>
+    | EventPayload<EventNames.OnCardDishonored>
+    | EventPayload<EventNames.OnCardBowed>
+    | EventPayload<EventNames.OnCardReadied>;
+
+function targetedByOpponentRingEffect(event: CardStatusEvent, context: TriggeredAbilityContext<any>) {
+    return event.card?.controller === context.player && event.context?.source.type === 'ring';
 }

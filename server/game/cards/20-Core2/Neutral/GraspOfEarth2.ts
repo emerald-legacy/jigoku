@@ -1,8 +1,9 @@
-import { AbilityTypes, CardTypes, Locations, Players } from '../../../Constants.js';
+import { AbilityTypes, CardTypes, EventNames, Locations, Players } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class GraspOfEarth2 extends DrawCard {
     static id = 'grasp-of-earth-2';
 
@@ -14,8 +15,8 @@ export default class GraspOfEarth2 extends DrawCard {
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: 1,
-                targetCondition: (target, _, context) => target.controller.hasAffinity('earth', context),
-                match: (card, source) => card === source
+                targetCondition: (target: any, _: any, context: any) => target.controller.hasAffinity('earth', context),
+                match: (card: any, source: any) => card === source
             })
         });
 
@@ -23,7 +24,7 @@ export default class GraspOfEarth2 extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.WouldInterrupt, {
                 title: 'Block a character\'s movement to the conflict',
                 when: {
-                    onMoveToConflict: (event: any, context: TriggeredAbilityContext) =>
+                    onMoveToConflict: (event: EventPayload<EventNames.OnMoveToConflict>, context: TriggeredAbilityContext) =>
                         event.card.type === CardTypes.Character && context.source.isParticipating()
                 },
                 effect: 'deny {1}\'s movement',

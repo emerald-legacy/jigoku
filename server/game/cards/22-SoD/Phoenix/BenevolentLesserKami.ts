@@ -1,13 +1,13 @@
 import { TargetModes, Durations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class BenevolentLesserKami extends DrawCard {
     static id = 'benevolent-lesser-kami';
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => context.source.isParticipating() && context.game.currentConflict.elements.some(element => context.source.hasTrait(element)),
+            condition: (context) => context.source.isParticipating() && (context.game.currentConflict?.elements.some((element: any) => context.source.hasTrait(element)) ?? false),
             effect: AbilityDsl.effects.modifyBothSkills(1)
         });
 

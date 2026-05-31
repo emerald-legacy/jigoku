@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 function bonusSize(cards?: Array<DrawCard>) {
     if(!cards) {
@@ -8,7 +8,7 @@ function bonusSize(cards?: Array<DrawCard>) {
 
     let higherCost = 0;
     for(const card of cards) {
-        const cardCost = card.getCost();
+        const cardCost = card.getCost() ?? 0;
         if(cardCost > higherCost) {
             higherCost = cardCost;
         }
@@ -24,13 +24,13 @@ export default class YoungBeastmaster extends DrawCard {
         this.reaction({
             title: 'Gain a +X/+0 bonus',
             when: {
-                onConflictDeclared: (event, context) => event.attackers.includes(context.source)
+                onConflictDeclared: (event, context) => event.attackers?.includes(context.source) ?? false
             },
             cost: AbilityDsl.costs.discardCardSpecific((context) => context.player.dynastyDeck.slice(0, 2)),
             effect: 'give {0} +{1}{2}',
-            effectArgs: (context) => [bonusSize(context.costs.discardCard), 'military'],
+            effectArgs: (context) => [bonusSize(context.costs.discardCard as DrawCard[]), 'military'],
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                effect: AbilityDsl.effects.modifyMilitarySkill(bonusSize(context.costs.discardCard))
+                effect: AbilityDsl.effects.modifyMilitarySkill(bonusSize(context.costs.discardCard as DrawCard[]))
             }))
         });
     }

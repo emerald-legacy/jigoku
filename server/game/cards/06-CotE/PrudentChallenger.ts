@@ -1,6 +1,6 @@
 import { CardTypes, DuelTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class PrudentChallenger extends DrawCard {
     static id = 'prudent-challenger';

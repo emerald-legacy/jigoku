@@ -1,7 +1,7 @@
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 import { AbilityTypes, CardTypes, EventNames, Locations, Players } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
@@ -10,7 +10,7 @@ export default class WithstandTheDarkness extends DrawCard {
 
     private currentTargets = new Set<BaseCard>();
     private extraBanzaiTarget?: BaseCard;
-    private abilityRegistrar: EventRegistrar;
+    private abilityRegistrar?: EventRegistrar;
 
     setupCardAbilities() {
         this.abilityRegistrar = new EventRegistrar(this.game, this);
@@ -27,6 +27,7 @@ export default class WithstandTheDarkness extends DrawCard {
                         this.currentTargets = this.getLegalWithstandTargets(event);
                         return this.currentTargets.size > 0;
                     }
+                    return false;
                 }
             },
             title: 'Place a fate on a character',

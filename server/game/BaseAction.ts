@@ -1,8 +1,7 @@
 import { AbilityContext } from './AbilityContext.js';
-import BaseAbility from './baseability.js';
-import { Stages } from './Constants.js';
-import type Player from './player.js';
-import type BaseCard from './basecard.js';
+import BaseCardAbility from './BaseCardAbility.js';
+import type BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
 
 interface Cost {
     getReducedCost?(context: AbilityContext): number;
@@ -13,8 +12,7 @@ interface TargetProperties {
     [key: string]: any;
 }
 
-class BaseAction extends BaseAbility {
-    card: BaseCard;
+class BaseAction extends BaseCardAbility {
     abilityType = 'action';
     cannotBeCancelled = true;
     declare cost: Cost[];
@@ -28,22 +26,12 @@ class BaseAction extends BaseAbility {
         this.card = card;
     }
 
-    meetsRequirements(context: AbilityContext): string | undefined {
-        if(this.isCardPlayed() && this.card.isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
+    meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {
+        if(this.isCardPlayed() && (this.card as DrawCard).isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
             return 'limited';
         }
 
-        return super.meetsRequirements(context);
-    }
-
-    createContext(player: Player = this.card.controller): AbilityContext {
-        return new AbilityContext({
-            ability: this,
-            game: this.card.game,
-            player: player,
-            source: this.card,
-            stage: Stages.PreTarget
-        });
+        return super.meetsRequirements(context, ignoredRequirements);
     }
 
     getReducedCost(context: AbilityContext): number {

@@ -1,4 +1,5 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
+import BaseCard from '../../BaseCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Locations } from '../../Constants.js';
 
@@ -11,20 +12,14 @@ class KeenWarrior extends DrawCard {
             collectiveTrigger: true,
             when: {
                 onCardRevealed: (event, context) => {
-                    let cards = event.card;
-                    if(!Array.isArray(cards)) {
-                        cards = [cards];
-                    }
-
-                    return cards.some(a => a.location === Locations.Hand && a.controller === context.player.opponent);
+                    const raw = event.card as BaseCard | BaseCard[];
+                    const cards = Array.isArray(raw) ? raw : [raw];
+                    return cards.some((a: BaseCard) => a.location === Locations.Hand && a.controller === context.player.opponent);
                 },
                 onLookAtCards: (event, context) => {
-                    let cards = event.stateBeforeResolution;
-                    if(!Array.isArray(cards)) {
-                        cards = [cards];
-                    }
-
-                    return cards.some(a => a.location === Locations.Hand && a.card.controller === context.player.opponent);
+                    const raw = event.stateBeforeResolution;
+                    const cards = Array.isArray(raw) ? raw : raw ? [raw] : [];
+                    return cards.some((a) => a.location === Locations.Hand && a.card.controller === context.player.opponent);
                 }
             },
             gameAction: AbilityDsl.actions.sequential([

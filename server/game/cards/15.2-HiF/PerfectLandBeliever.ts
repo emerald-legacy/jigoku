@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class PerfectLandBeliever extends DrawCard {
@@ -7,7 +7,7 @@ class PerfectLandBeliever extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isOrdinary(),
-            match: (card, context) => card === context.source,
+            match: (card, context) => card === context?.source,
             effect: AbilityDsl.effects.modifyBothSkills(2)
         });
     }

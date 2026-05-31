@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, CardTypes } from '../../Constants.js';
 
@@ -9,12 +9,12 @@ class BayushiAramoro extends DrawCard {
         this.action({
             title: 'Give a character -2/-0',
             cost: AbilityDsl.costs.dishonorSelf(),
-            condition: context => context.source.isParticipating() && this.game.currentConflict.conflictType === 'military',
+            condition: (context: any) => context.source.isParticipating() && this.game.currentConflict?.conflictType === 'military',
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
+                cardCondition: (card: any) => card.isParticipating(),
+                gameAction: AbilityDsl.actions.cardLastingEffect((context: any) => ({
                     effect: [
                         AbilityDsl.effects.modifyMilitarySkill(-2),
                         AbilityDsl.effects.delayedEffect({

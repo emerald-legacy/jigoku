@@ -2,12 +2,13 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import type { GameAction } from './GameAction.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { FateBidPrompt } from '../gamesteps/FateBidPrompt.js';
 import { LoseFateAction } from './LoseFateAction.js';
 import { JointGameAction } from './JointGameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface FateBidProperties extends PlayerActionProperties {
     postBidAction?: GameAction;
     message?: string;
@@ -34,7 +35,7 @@ export class FateBidAction extends PlayerAction {
         return ['have {0} select an amount of fate from their pool', [players]];
     }
 
-    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: any): void {
+    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: any): void {
         let { postBidAction, message, messageArgs } = this.getProperties(
             context,
             additionalProperties
@@ -48,7 +49,7 @@ export class FateBidAction extends PlayerAction {
     eventHandler(
         event: { context: AbilityContext } & Pick<FateBidProperties, 'postBidAction' | 'messageArgs' | 'message'>
     ): void {
-        const context = event.context;
+        const context = (event.context as AbilityContext);
         context.game.queueStep(
             new FateBidPrompt(context.game, 'Choose an amount of fate', (result, context) => {
                 const actions: Array<LoseFateAction> = [];
@@ -62,13 +63,13 @@ export class FateBidAction extends PlayerAction {
             })
         );
         context.game.queueStep(
-            new SimpleStep(context.game, () => event.postBidAction.resolve(context.player, context))
+            new SimpleStep(context.game, () => event.postBidAction && event.postBidAction.resolve(context.player, context))
         );
         context.game.queueStep(
             new SimpleStep(context.game, () => {
                 const [message, messageArgs] = event.message
                     ? [event.message, event.messageArgs ? Array.from(event.messageArgs(context)) : []]
-                    : event.postBidAction.getEffectMessage(context);
+                    : (event.postBidAction ? event.postBidAction.getEffectMessage(context) : ['', []]);
                 context.game.addMessage(message, ...messageArgs);
             })
         );

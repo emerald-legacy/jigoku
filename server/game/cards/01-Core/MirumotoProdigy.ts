@@ -1,13 +1,14 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class MirumotoProdigy extends DrawCard {
     static id = 'mirumoto-prodigy';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
             condition: context =>
                 context.source.isAttacking() &&
-                this.game.currentConflict.getNumberOfParticipantsFor('attacker') === 1,
+                this.game.currentConflict?.getNumberOfParticipantsFor('attacker') === 1,
             effect: ability.effects.restrictNumberOfDefenders(1)
         });
     }

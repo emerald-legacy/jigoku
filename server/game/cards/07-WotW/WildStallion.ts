@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, CardTypes } from '../../Constants.js';
 
@@ -8,7 +8,7 @@ class WildStallion extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Move this and another character to the conflict',
-            condition: context => context.game.currentConflict && !context.source.isParticipating(),
+            condition: context => !!(context.game.currentConflict && !context.source.isParticipating()),
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,
@@ -18,7 +18,11 @@ class WildStallion extends DrawCard {
             },
             gameAction: AbilityDsl.actions.moveToConflict(),
             effect: 'move {0}{1}{2} into the conflict',
-            effectArgs: context => [!context.target || context.target.length === 0 ? '' : ' and ', context.source]
+            effectArgs: context => {
+                const t = context.targets.target;
+                const hasAny = Array.isArray(t) ? t.length > 0 : !!t;
+                return [hasAny ? ' and ' : '', context.source];
+            }
         });
     }
 }

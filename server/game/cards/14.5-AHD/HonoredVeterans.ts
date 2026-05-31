@@ -1,8 +1,8 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 import { CardTypes, EventNames, Players } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 
 export default class HonoredVeterans extends DrawCard {
@@ -68,10 +68,10 @@ export default class HonoredVeterans extends DrawCard {
     private getCharacters(context: AbilityContext): Array<string | DrawCard> {
         const characters: Array<string | DrawCard> = [];
         if(context.targets.myCharacter && !Array.isArray(context.targets.myCharacter)) {
-            characters.push(context.targets.myCharacter);
+            characters.push(context.targets.myCharacter as DrawCard);
         }
         if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
-            characters.push(context.targets.oppCharacter);
+            characters.push(context.targets.oppCharacter as DrawCard);
         }
         if(characters.length === 0) {
             characters.push('no one');

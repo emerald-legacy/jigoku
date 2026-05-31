@@ -1,4 +1,4 @@
-import type BaseCard from '../../basecard.js';
+import type BaseCard from '../../BaseCard.js';
 import { AbilityTypes, Locations, CardTypes, EffectNames } from '../../Constants.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import { EffectValue } from '../EffectValue.js';
@@ -18,9 +18,11 @@ class CopyCard extends EffectValue<BaseCard> {
 
     constructor(card: BaseCard) {
         super(card);
-        this.actions = card.abilities.actions.map((action) => new GainAbility(AbilityTypes.Action, action));
-        this.reactions = card.abilities.reactions.map((ability) => new GainAbility(ability.abilityType, ability));
-        this.persistentEffects = card.abilities.persistentEffects.map((effect) => Object.assign({}, effect));
+        this.actions = card.abilities.actions.map((action: any) => new GainAbility(AbilityTypes.Action, action));
+        this.reactions = card.abilities.reactions.map(
+            (ability: any) => new GainAbility(ability.abilityType, ability)
+        );
+        this.persistentEffects = card.abilities.persistentEffects.map((effect: any) => Object.assign({}, effect));
     }
 
     apply(target: BaseCard) {
@@ -46,7 +48,7 @@ class CopyCard extends EffectValue<BaseCard> {
     }
 
     unapply(target: BaseCard) {
-        for(const value of this.getReactions(target)) {
+        for(const value of this.abilitiesForTargets.get(target)?.reactions ?? []) {
             // @ts-expect-error -- GainAbility values have unregisterEvents at runtime but the type is not declared
             value.unregisterEvents();
         }
@@ -64,7 +66,11 @@ class CopyCard extends EffectValue<BaseCard> {
     }
 
     getReactions(target: BaseCard) {
-        return this.abilitiesForTargets.get(target)?.reactions ?? [];
+        const copied = this.abilitiesForTargets.get(target)?.reactions ?? [];
+        const ownKeywordReactions = target.abilities.reactions.filter(
+            (ability) => typeof ability.isKeywordAbility === 'function' && ability.isKeywordAbility()
+        );
+        return [...copied, ...ownKeywordReactions];
     }
 
     getPersistentEffects() {

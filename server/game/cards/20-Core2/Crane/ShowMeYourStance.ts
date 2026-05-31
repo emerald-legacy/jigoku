@@ -1,6 +1,8 @@
 import { CardTypes, Durations } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
+import type { LastingEffectProperties } from '../../../GameActions/LastingEffectAction.js';
 
 export default class ShowMeYourStance extends DrawCard {
     static id = 'show-me-your-stance';
@@ -9,10 +11,10 @@ export default class ShowMeYourStance extends DrawCard {
         this.duelChallenge({
             title: 'Apply status tokens to the duel',
             gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
-                target: (context as any).event.duel,
+                target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.applyStatusTokensToDuel(),
                 duration: Durations.UntilEndOfDuel
-            })),
+            } as LastingEffectProperties)),
             effect: 'have status tokens count when resolving this duel'
         });
 
@@ -22,9 +24,9 @@ export default class ShowMeYourStance extends DrawCard {
                 cardType: CardTypes.Character,
                 cardCondition: (card, context) =>
                     card.isAttacking() &&
-                    context.game.currentConflict
-                        .getCharacters(context.player)
-                        .some((myCard) => myCard.hasTrait('duelist') && myCard.glory >= card.glory),
+                    (context.game.currentConflict
+                        ?.getCharacters(context.player)
+                        .some((myCard: any) => myCard.hasTrait('duelist') && myCard.glory >= card.glory) ?? false),
                 gameAction: AbilityDsl.actions.sendHome()
             }
         });

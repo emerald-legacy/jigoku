@@ -9,8 +9,10 @@ export default class ThenEventWindow extends EventWindow {
     }
 
     resetCurrentEventWindow() {
-        for(const event of this.events) {
-            this.previousEventWindow.addEvent(event);
+        if(this.previousEventWindow) {
+            for(const event of this.events) {
+                this.previousEventWindow.addEvent(event);
+            }
         }
         super.resetCurrentEventWindow();
     }

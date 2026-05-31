@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames, Players } from '../Constants.js';
 import HonorBidPrompt from '../gamesteps/honorbidprompt.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import type { GameAction } from './GameAction.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
@@ -29,7 +29,7 @@ export class HonorBidAction extends PlayerAction {
         super(propertyFactory);
     }
 
-    defaultTargets(context) {
+    defaultTargets(context: AbilityContext) {
         return [context.player];
     }
 
@@ -55,7 +55,7 @@ export class HonorBidAction extends PlayerAction {
         return ['have {0} select a value on their honor dial', [players]];
     }
 
-    addPropertiesToEvent(event, player: Player, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { giveHonor, prohibitedBids, players, postBidAction, message, messageArgs } = this.getProperties(
             context,
             additionalProperties
@@ -69,11 +69,11 @@ export class HonorBidAction extends PlayerAction {
         event.messageArgs = messageArgs;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         const context = event.context;
 
         if(event.players === Players.Any) {
-            const prohibitedBids = {};
+            const prohibitedBids: Record<string, string[]> = {};
             for(const player of context.game.getPlayers()) {
                 prohibitedBids[player.uuid] = event.prohibitedBids;
             }

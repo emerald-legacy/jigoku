@@ -1,8 +1,8 @@
 import { CardTypes, ConflictTypes, EffectNames, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
-import type { Conflict } from '../../../conflict.js';
+import type DrawCard from '../../../DrawCard.js';
+import type { Conflict } from '../../../Conflict.js';
 
 export default class ShoreOfTheAshenFlames extends ProvinceCard {
     static id = 'shore-of-the-ashen-flames';
@@ -11,7 +11,7 @@ export default class ShoreOfTheAshenFlames extends ProvinceCard {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
             targetController: Players.Opponent,
-            effect: AbilityDsl.effects.changeConflictSkillFunctionPlayer((card: BaseCard, conflict: Conflict) => {
+            effect: AbilityDsl.effects.changeConflictSkillFunctionPlayer((card: DrawCard, conflict: Conflict) => {
                 const exclusionFunction = (effect: any) => {
                     if(effect.type === EffectNames.AttachmentMilitarySkillModifier) {
                         const value = effect.getValue(card);
@@ -32,6 +32,7 @@ export default class ShoreOfTheAshenFlames extends ProvinceCard {
                         }
                         return false;
                     }
+                    return false;
                 };
 
                 if(conflict.conflictType === ConflictTypes.Military) {

@@ -1,4 +1,4 @@
-import Player from '../player.js';
+import Player from '../Player.js';
 import { Clock, Mode } from './Clock.js';
 import type { ClockInterface } from './types.js';
 
@@ -49,11 +49,12 @@ export class ChessClock extends Clock implements ClockInterface {
         if(this.timeLeft === 0 || secs < 0) {
             return;
         }
-        if(secs <= this.delayToStartClock) {
+        const delay = this.delayToStartClock ?? 0;
+        if(secs <= delay) {
             return;
         }
 
-        secs = secs - this.delayToStartClock;
+        secs = secs - delay;
         if(this.mode === 'down') {
             this.modify(-secs);
             if(this.timeLeft < 0) {

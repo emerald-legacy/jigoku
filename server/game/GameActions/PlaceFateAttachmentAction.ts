@@ -1,8 +1,8 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
-import type DrawCard from '../drawcard.js';
-import type Player from '../player.js';
-import type Ring from '../ring.js';
+import type DrawCard from '../DrawCard.js';
+import type Player from '../Player.js';
+import type Ring from '../Ring.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export interface PlaceFateAttachmentProperties extends CardActionProperties {
@@ -43,7 +43,7 @@ export class PlaceFateAttachmentAction extends CardGameAction {
         return 'element' in x;
     }
 
-    checkOrigin(origin: Player | Ring | DrawCard, context: AbilityContext): boolean {
+    checkOrigin(origin: Player | Ring | DrawCard | undefined, context: AbilityContext): boolean {
         if(origin) {
             if(origin.fate === 0) {
                 return false;
@@ -55,7 +55,7 @@ export class PlaceFateAttachmentAction extends CardGameAction {
         return true;
     }
 
-    addPropertiesToEvent(event, card: DrawCard, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, card: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateAttachmentProperties;
         event.fate = amount;
         event.origin = origin;
@@ -63,11 +63,11 @@ export class PlaceFateAttachmentAction extends CardGameAction {
         event.recipient = card;
     }
 
-    checkEventCondition(event): boolean {
+    checkEventCondition(event: any): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event, card: DrawCard, context: AbilityContext, additionalProperties): boolean {
+    isEventFullyResolved(event: any, card: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         let { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateAttachmentProperties;
         return (
             !event.cancelled &&
@@ -78,7 +78,7 @@ export class PlaceFateAttachmentAction extends CardGameAction {
         );
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         this.moveFateEventHandler(event);
     }
 }

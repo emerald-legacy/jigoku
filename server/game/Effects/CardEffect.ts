@@ -1,6 +1,6 @@
-import Effect from './Effect.js';
+import Effect, { type EffectMatchFn } from './Effect.js';
 import { Locations, Players, CardTypes } from '../Constants.js';
-import type Game from '../game.js';
+import type Game from '../Game.js';
 
 export default class CardEffect extends Effect {
     targetController: string;
@@ -25,22 +25,24 @@ export default class CardEffect extends Effect {
             // This is a hack to check whether this is a lasting effect
             return true;
         }
+        const sourceController = this.source.controller;
         return (
             target.allowGameAction('applyEffect', this.context) &&
-            (this.targetController !== Players.Self || target.controller === this.source.controller) &&
-            (this.targetController !== Players.Opponent || target.controller !== this.source.controller)
+            (this.targetController !== Players.Self || target.controller === sourceController) &&
+            (this.targetController !== Players.Opponent || target.controller !== sourceController)
         );
     }
 
     getTargets(): any[] {
+        const matchFn = this.match as EffectMatchFn;
         if(this.targetLocation === Locations.Any) {
-            return this.game.allCards.filter((card: any) => this.match(card, this.context));
+            return this.game.allCards.filter((card: any) => matchFn(card, this.context));
         } else if(this.targetLocation === Locations.Provinces) {
             let cards = this.game.allCards.filter((card: any) => card.isInProvince());
-            return cards.filter((card: any) => this.match(card, this.context));
+            return cards.filter((card: any) => matchFn(card, this.context));
         } else if(this.targetLocation === Locations.PlayArea) {
-            return this.game.findAnyCardsInPlay((card: any) => this.match(card, this.context));
+            return this.game.findAnyCardsInPlay((card: any) => matchFn(card, this.context));
         }
-        return this.game.allCards.filter((card: any) => this.match(card, this.context) && card.location === this.targetLocation);
+        return this.game.allCards.filter((card: any) => matchFn(card, this.context) && card.location === this.targetLocation);
     }
 }

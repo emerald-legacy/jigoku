@@ -1,7 +1,7 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import { AbilityTypes, CardTypes, Durations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class DaiTsuchi extends DrawCard {
     static id = 'dai-tsuchi';
@@ -17,7 +17,7 @@ export default class DaiTsuchi extends DrawCard {
                 condition: (context: AbilityContext<DrawCard>) => context.source.isParticipating('military'),
                 target: {
                     cardType: CardTypes.Attachment,
-                    cardCondition: (card, context) =>
+                    cardCondition: (card: any, context: any) =>
                         card instanceof DrawCard &&
                         card.parent instanceof DrawCard &&
                         card.parent.isParticipatingFor(context.player.opponent),
@@ -33,7 +33,7 @@ export default class DaiTsuchi extends DrawCard {
                     })
                 })),
                 effect: 'return {0} to {1}\'s hand and prevent them from playing copies this conflict',
-                effectArgs: (context: AbilityContext) => [context.target.owner]
+                effectArgs: (context: AbilityContext<DrawCard>) => [context.target?.owner ?? '']
             })
         });
     }

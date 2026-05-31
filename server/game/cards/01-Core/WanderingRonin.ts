@@ -1,9 +1,10 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class WanderingRonin extends DrawCard {
     static id = 'wandering-ronin';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Give this character +2/+2',
             condition: () => this.game.isDuringConflict(),

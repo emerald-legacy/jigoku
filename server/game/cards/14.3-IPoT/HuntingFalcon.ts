@@ -1,7 +1,8 @@
-import DrawCard from '../../drawcard.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import DrawCard from '../../DrawCard.js';
+import { CardTypes, EventNames, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class HuntingFalcon extends DrawCard {
     static id = 'hunting-falcon';
 
@@ -9,15 +10,15 @@ class HuntingFalcon extends DrawCard {
         this.reaction({
             title: 'Look at a province',
             when: {
-                onCardAttached: (event, context) => event.card === context.source && event.originalLocation !== Locations.PlayArea
+                onCardAttached: (event: EventPayload<EventNames.OnCardAttached>, context) => event.card === context.source && event.originalLocation !== Locations.PlayArea
             },
             target: {
                 location: Locations.Provinces,
                 cardType: CardTypes.Province,
-                cardCondition: card => card.isFacedown(),
+                cardCondition: (card: any) => card.isFacedown(),
                 gameAction: AbilityDsl.actions.lookAt(context => ({
                     message: '{0} sees {1} in {2}',
-                    messageArgs: (cards) => [context.source, cards[0], cards[0].location]
+                    messageArgs: (cards: any) => [context.source, cards[0], cards[0].location]
                 }))
             }
         });

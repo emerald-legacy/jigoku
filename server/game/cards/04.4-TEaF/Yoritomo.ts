@@ -1,11 +1,12 @@
-import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 
 class Yoritomo extends DrawCard {
     static id = 'yoritomo';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.persistentEffect({
-            effect: ability.effects.modifyBothSkills(card => card.controller.fate)
+            effect: AbilityDsl.effects.modifyBothSkills((card: any) => card.controller.fate)
         });
     }
 }

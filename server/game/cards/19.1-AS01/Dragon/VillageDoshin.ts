@@ -1,8 +1,10 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Locations, Players } from '../../../Constants.js';
-import type BaseCard from '../../../basecard.js';
-import DrawCard from '../../../drawcard.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import { CardTypes, EventNames, Locations, Players } from '../../../Constants.js';
+import type BaseCard from '../../../BaseCard.js';
+import DrawCard from '../../../DrawCard.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 const DOSHIN_TAX = 2;
 
 export default class VillageDoshin extends DrawCard {
@@ -14,10 +16,11 @@ export default class VillageDoshin extends DrawCard {
             location: Locations.Hand,
             cost: AbilityDsl.costs.discardSelf(),
             when: {
-                onInitiateAbilityEffects: (event, context) =>
-                    event.cardTargets.some((card: BaseCard) => {
+                onInitiateAbilityEffects: (event: EventPayload<EventNames.OnInitiateAbilityEffects>, context) =>
+                    (event.cardTargets ?? []).some((card: BaseCard) => {
                         const attachment = card.type === CardTypes.Attachment;
                         const onCharacterYouControl =
+                            card instanceof DrawCard &&
                             card.parent &&
                             card.parent.type === CardTypes.Character &&
                             card.parent.controller === context.player;
@@ -28,8 +31,8 @@ export default class VillageDoshin extends DrawCard {
 
             gameAction: AbilityDsl.actions.conditional({
                 condition: (context) => {
-                    const opponentHasEnoughCards = context.player.opponent.hand.length >= DOSHIN_TAX;
-                    const opponentIsAllowedToDiscardCards = AbilityDsl.actions
+                    const opponentHasEnoughCards = (context.player.opponent?.hand.length ?? 0) >= DOSHIN_TAX;
+                    const opponentIsAllowedToDiscardCards = !!context.player.opponent && AbilityDsl.actions
                         .discardAtRandom({ amount: 2 })
                         .canAffect(context.player.opponent, context);
                     return opponentHasEnoughCards && opponentIsAllowedToDiscardCards;
@@ -51,11 +54,11 @@ export default class VillageDoshin extends DrawCard {
                             message: `{0} refuses to discard ${DOSHIN_TAX} cards. The effects of {2} are canceled.`
                         }
                     },
-                    messageArgs: [(context as any).event.card]
+                    messageArgs: [(context as TriggeredAbilityContext).event.card]
                 }))
             }),
             effect: 'protect {1}',
-            effectArgs: (context) => context.event.cardTargets
+            effectArgs: (context) => context.event.cardTargets ?? []
         });
     }
 }

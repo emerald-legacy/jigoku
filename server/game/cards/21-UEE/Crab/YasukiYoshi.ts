@@ -1,7 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../conflict.js';
+import type { Conflict } from '../../../Conflict.js';
 import { Decks } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class YasukiYoshi extends DrawCard {
     static id = 'yasuki-yoshi';
@@ -21,7 +21,7 @@ export default class YasukiYoshi extends DrawCard {
 
                     context.game.addMessage('{0} receives their {1}', context.source, card);
                     context.game.queueSimpleStep(() =>
-                        AbilityDsl.actions.attach({ target: context.source, attachment: card }).resolve(null, context)
+                        AbilityDsl.actions.attach({ target: context.source, attachment: card }).resolve(undefined, context)
                     );
                 }
             })

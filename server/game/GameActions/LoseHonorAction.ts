@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
 export interface LoseHonorProperties extends PlayerActionProperties {
@@ -29,14 +29,14 @@ export class LoseHonorAction extends PlayerAction<LoseHonorProperties> {
         return properties.amount === 0 ? false : super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event, player: Player, context: AbilityContext, additionalProperties): void {
+    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, dueToUnopposed } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        event.amount = -amount;
+        event.amount = -(amount ?? 0);
         event.dueToUnopposed = dueToUnopposed;
     }
 
-    eventHandler(event): void {
+    eventHandler(event: any): void {
         if(event.player) {
             event.player.modifyHonor(event.amount);
             if(event.context?.game) {

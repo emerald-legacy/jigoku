@@ -1,8 +1,8 @@
 import { CardTypes, EventNames, Locations, Phases } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
-import BaseCard from '../../basecard.js';
-import DrawCard from '../../drawcard.js';
+import BaseCard from '../../BaseCard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class SoshiShadowshaper extends DrawCard {
     static id = 'soshi-shadowshaper';

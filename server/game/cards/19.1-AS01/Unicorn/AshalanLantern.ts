@@ -2,8 +2,8 @@ import { CardTypes, Decks, Durations, Locations, PlayTypes } from '../../../Cons
 import { PlayCharacterAsIfFromHandIntoConflict } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
-import DrawCard from '../../../drawcard.js';
+import type BaseCard from '../../../BaseCard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class AshalanLantern extends DrawCard {
     static id = 'ashalan-lantern';
@@ -30,7 +30,7 @@ export default class AshalanLantern extends DrawCard {
                     shuffle: false,
                     cardCondition: (card) => card.type === CardTypes.Character && !card.isUnique(),
                     gameAction: AbilityDsl.actions.playCard((deckSearchContext) => {
-                        const target = deckSearchContext.targets[0];
+                        const target = deckSearchContext.deckSearchSelected[0];
                         return {
                             target,
                             source: this,
@@ -64,7 +64,7 @@ export default class AshalanLantern extends DrawCard {
                 }))
             ]),
             effect: 'look for a character on the top of {1}\'s dynasty deck. They reveal {2}',
-            effectArgs: (context) => [context.player.opponent, context.player.opponent.dynastyDeck.slice(0, 3)]
+            effectArgs: (context) => [context.player.opponent ?? '', context.player.opponent?.dynastyDeck.slice(0, 3) ?? []]
         });
     }
 }

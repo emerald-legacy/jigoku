@@ -1,8 +1,8 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
+import type BaseCard from '../../../BaseCard.js';
 import { CardTypes, ConflictTypes, TargetModes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class CornerThePrey extends DrawCard {
     static id = 'corner-the-prey';
@@ -30,13 +30,13 @@ export default class CornerThePrey extends DrawCard {
 
     private getFollowerCount(context: AbilityContext): number {
         if(context.costs.sacrifice) {
-            return context.costs.sacrifice.length;
+            return (context.costs.sacrifice as BaseCard[]).length;
         }
         const myFollowers = (context.game.allCards as BaseCard[]).filter(
             (card) => card.controller === context.player && card.hasTrait('follower')
         );
         const myParticipatingFollowers = myFollowers.filter(
-            (card) => card.isParticipating() || (card.parent && card.parent.isParticipating())
+            (card) => card instanceof DrawCard && (card.isParticipating() || (!!card.parent && card.parent.isParticipating()))
         );
         const amount = myParticipatingFollowers.length;
         return amount;

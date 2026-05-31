@@ -1,7 +1,8 @@
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityTypes } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import { AbilityTypes, EventNames } from '../../Constants.js';
+import DrawCard from '../../DrawCard.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class SturdyTetsubo extends DrawCard {
     static id = 'sturdy-tetsubo';
 
@@ -12,7 +13,7 @@ export default class SturdyTetsubo extends DrawCard {
                 limit: AbilityDsl.limit.perRound(2),
                 printedAbility: false,
                 when: {
-                    afterConflict: (event, context) =>
+                    afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) =>
                         context.player.opponent &&
                         context.source.isParticipating() &&
                         event.conflict.winner === context.source.controller

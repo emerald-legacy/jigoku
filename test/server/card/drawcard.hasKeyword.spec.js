@@ -1,6 +1,6 @@
-import DrawCard from '../../../build/server/game/drawcard.js';
-import Game from '../../../build/server/game/game.js';
-import Player from '../../../build/server/game/player.js';
+import DrawCard from '../../../build/server/game/DrawCard.js';
+import Game from '../../../build/server/game/Game.js';
+import Player from '../../../build/server/game/Player.js';
 
 describe('the DrawCard', function () {
     describe('the hasKeyword() function', function () {

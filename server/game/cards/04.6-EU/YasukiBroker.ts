@@ -1,17 +1,18 @@
-import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes, Players } from '../../Constants.js';
 
 class YasukiBroker extends DrawCard {
     static id = 'yasuki-broker';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isParticipating(),
             match: card => card.getType() === CardTypes.Character,
             targetController: Players.Self,
             effect: [
-                ability.effects.addKeyword('courtesy'),
-                ability.effects.addKeyword('sincerity')
+                AbilityDsl.effects.addKeyword('courtesy'),
+                AbilityDsl.effects.addKeyword('sincerity')
             ]
         });
     }

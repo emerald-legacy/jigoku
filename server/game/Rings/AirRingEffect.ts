@@ -2,7 +2,7 @@ import { GameModes } from '../../GameModes.js';
 import { TargetModes } from '../Constants.js';
 import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
 import { AbilityContext } from '../AbilityContext.js';
-import BaseAbility from '../baseability.js';
+import BaseAbility from '../BaseAbility.js';
 
 const GAIN_2 = 'Gain 2 Honor';
 const TAKE_1 = 'Take 1 Honor from opponent';
@@ -79,7 +79,7 @@ export class AirRingEffect extends BaseAbility {
             context.game.addMessage(
                 '{0} chooses not to resolve the {1} ring',
                 context.player,
-                context.game.currentConflict ? 'air' : context.game.currentConflict.element
+                context.game.currentConflict ? 'air' : (context.game.currentConflict as any)?.element
             );
             this.onResolution(false);
         }

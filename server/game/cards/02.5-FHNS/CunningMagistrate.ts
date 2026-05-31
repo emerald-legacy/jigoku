@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class CunningMagistrate extends DrawCard {
@@ -7,8 +7,8 @@ class CunningMagistrate extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isParticipating(),
-            effect: AbilityDsl.effects.cannotContribute((conflict, context) => {
-                return card => card.isDishonored && card !== context.source;
+            effect: AbilityDsl.effects.cannotContribute((conflict: any, context: any) => {
+                return (card: DrawCard) => card.isDishonored && card !== context.source;
             })
         });
     }

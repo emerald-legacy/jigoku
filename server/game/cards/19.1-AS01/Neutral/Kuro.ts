@@ -1,19 +1,19 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Locations, Players, TargetModes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class Kuro extends DrawCard {
     static id = 'kuro';
 
     public allowAttachment(attachment: DrawCard) {
-        if(attachment.printedCost < 1) {
+        if((attachment.printedCost ?? 0) < 1) {
             return false;
         }
         return super.allowAttachment(attachment);
     }
 
     public setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Play opponent discarded attachment',
             condition: (context) => context.game.isDuringConflict(),
             target: {
@@ -22,7 +22,7 @@ export default class Kuro extends DrawCard {
                 cardType: CardTypes.Attachment,
                 mode: TargetModes.Single,
                 cardCondition: (card) =>
-                    card.printedCost >= 1 && card.canAttach(this, { ignoreType: false, controller: this.controller }),
+                    (card.printedCost ?? 0) >= 1 && card.canAttach(this, { ignoreType: false, controller: this.controller }),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.playerLastingEffect((context) => ({
                         targetController: context.player,
@@ -47,7 +47,7 @@ export default class Kuro extends DrawCard {
             },
             effect: 'seek the lost treasure \'{1}\'. {2}',
             effectArgs: (context) => [
-                context.target,
+                context.target ?? '',
                 context.source.isParticipating()
                     ? 'Kuro returns home with their treasure'
                     : 'Kuro swoops into the conflict'

@@ -1,7 +1,7 @@
 import { UiPrompt } from './UiPrompt.js';
 import { EventNames, Locations, Players, EffectNames } from '../Constants.js';
-import type Game from '../game.js';
-import type Player from '../player.js';
+import type Game from '../Game.js';
+import type Player from '../Player.js';
 
 class ActionWindow extends UiPrompt {
     title: string;
@@ -20,7 +20,7 @@ class ActionWindow extends UiPrompt {
         if(this.game.currentConflict && !this.game.currentConflict.isSinglePlayer) {
             this.currentPlayer = this.game.currentConflict.defendingPlayer;
         } else {
-            this.currentPlayer = game.getFirstPlayer();
+            this.currentPlayer = game.getFirstPlayer() as Player;
         }
         this.currentPlayerConsecutiveActions = 0;
         this.opportunityCounter = 0;
@@ -146,6 +146,7 @@ class ActionWindow extends UiPrompt {
             this.pass();
             return true;
         }
+        return false;
     }
 
     getCurrentPlayerConsecutiveActions(): number {
@@ -207,10 +208,10 @@ class ActionWindow extends UiPrompt {
         }
 
         const player1 = this.game.getFirstPlayer();
-        const player2 = player1.opponent;
+        const player2 = player1?.opponent;
 
         const bonusActions = this.bonusActions;
-        if(!bonusActions) {
+        if(!bonusActions || !player1 || !player2) {
             return false;
         }
         const p1 = bonusActions[player1.uuid];
@@ -246,7 +247,10 @@ class ActionWindow extends UiPrompt {
 
     setupBonusActions(): boolean {
         const player1 = this.game.getFirstPlayer();
-        const player2 = player1.opponent;
+        const player2 = player1?.opponent;
+        if(!player1 || !player2) {
+            return false;
+        }
         let p1ActionsPostWindow = player1.sumEffects(EffectNames.AdditionalActionAfterWindowCompleted);
         let p2ActionsPostWindow = player2.sumEffects(EffectNames.AdditionalActionAfterWindowCompleted);
 

@@ -1,7 +1,8 @@
-import { Phases, TargetModes, Players, CardTypes, Durations } from '../../../Constants.js';
+import { CardTypes, Durations, EventNames, Phases, Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class IkomaMasterHunter extends DrawCard {
     static id = 'ikoma-master-hunter';
 
@@ -20,10 +21,10 @@ export default class IkomaMasterHunter extends DrawCard {
                     target: context.source,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
-                            onMoveToConflict: (event: any) => event.card === context.target,
-                            onDefendersDeclared: (event: any) =>
+                            onMoveToConflict: (event: EventPayload<EventNames.OnMoveToConflict>) => event.card === context.target,
+                            onDefendersDeclared: (event: EventPayload<EventNames.OnDefendersDeclared>) =>
                                 event.conflict.getParticipants().includes(context.target),
-                            onConflictDeclared: (event: any) =>
+                            onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>) =>
                                 event.conflict.getParticipants().includes(context.target)
                         },
                         multipleTrigger: true,

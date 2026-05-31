@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { Locations, TargetModes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 const possibleChoices = {
     'Your Dynasty Deck': {
@@ -30,20 +30,27 @@ export default class StarlitSkies extends DrawCard {
                 )
             },
             effect: 'look at the top 3 cards of {1}\'s {2}',
-            effectArgs: (context) => [context.player, context.select.toLowerCase()],
-            handler: (context) => {
+            effectArgs: (context) => [context.player, (context.select ?? '').toLowerCase()],
+            handler: (context: AbilityContext) => {
                 const choice = possibleChoices[context.select as keyof typeof possibleChoices];
                 const topThree = choice.cards(context);
+                if(topThree.length === 0) {
+                    return;
+                }
                 const messages = ['{0} places a card on the bottom of the deck', '{0} chooses to discard {1}'];
-                const destinations = [
+                const destinations: string[] = [
                     topThree[0].isDynasty ? 'dynasty deck bottom' : 'conflict deck bottom',
                     topThree[0].isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile
                 ];
-                let choices = [];
-                const handlers = [];
+                let choices: string[] = [];
+                const handlers: (() => void)[] = [];
                 const cardHandler = (card: DrawCard) => {
-                    context.game.addMessage(messages.pop(), context.player, card);
-                    choice.player(context).moveCard(card, destinations.pop());
+                    const msg = messages.pop();
+                    const dest = destinations.pop();
+                    if(msg && dest) {
+                        context.game.addMessage(msg, context.player, card);
+                        choice.player(context).moveCard(card, dest as Locations);
+                    }
                     if(messages.length > 0) {
                         const index = topThree.findIndex((x) => x === card);
                         topThree.splice(index, 1);

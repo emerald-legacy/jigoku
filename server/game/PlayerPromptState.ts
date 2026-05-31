@@ -1,6 +1,31 @@
-import type BaseCard from './basecard.js';
-import type Player from './player.js';
-import type Ring from './ring.js';
+import type BaseCard from './BaseCard.js';
+import type Player from './Player.js';
+import type Ring from './Ring.js';
+
+export interface PromptButton {
+    text?: string;
+    arg?: string;
+    method?: string;
+    timer?: boolean;
+    timerCancel?: boolean;
+    card?: BaseCard;
+    [key: string]: unknown;
+}
+
+export interface RenderedPromptButton {
+    text?: string;
+    arg?: string;
+    method?: string;
+    timer?: boolean;
+    timerCancel?: boolean;
+    card?: ReturnType<BaseCard['getShortSummary']>;
+    [key: string]: unknown;
+}
+
+export interface PromptControl {
+    type?: string;
+    [key: string]: unknown;
+}
 
 export class PlayerPromptState {
     selectCard = false;
@@ -8,8 +33,8 @@ export class PlayerPromptState {
     selectRing = false;
     menuTitle = '';
     promptTitle = '';
-    buttons = [];
-    controls = [];
+    buttons: RenderedPromptButton[] = [];
+    controls: PromptControl[] = [];
 
     selectableRings: Ring[] = [];
     selectableCards: BaseCard[] = [];
@@ -47,8 +72,8 @@ export class PlayerPromptState {
         selectRing?: boolean;
         menuTitle?: string;
         promptTitle: string;
-        buttons?: any[];
-        controls?: any[];
+        buttons?: PromptButton[];
+        controls?: PromptControl[];
     }) {
         this.promptTitle = prompt.promptTitle;
         this.selectCard = prompt.selectCard ?? false;
@@ -58,16 +83,16 @@ export class PlayerPromptState {
         this.controls = prompt.controls ?? [];
         this.buttons = !prompt.buttons
             ? []
-            : prompt.buttons.map((button) => {
-                if(button.card) {
-                    const { card, ...properties } = button;
+            : prompt.buttons.map((button): RenderedPromptButton => {
+                const { card, ...properties } = button;
+                if(card) {
                     return Object.assign(
                         { text: card.name, arg: card.uuid, card: card.getShortSummary() },
                         properties
                     );
                 }
 
-                return button;
+                return properties;
             });
     }
 
@@ -83,9 +108,7 @@ export class PlayerPromptState {
         let selectable = this.selectableCards.includes(card);
         let index = this.selectedCards?.indexOf(card) ?? -1;
         let result = {
-            // The `card.selected` property here is a hack for plot selection,
-            // which we do differently from normal card selection.
-            selected: card.selected || index !== -1,
+            selected: index !== -1,
             selectable: selectable,
             unselectable: this.selectCard && !selectable
         };

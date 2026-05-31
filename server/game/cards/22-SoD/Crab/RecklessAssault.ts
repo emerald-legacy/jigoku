@@ -1,7 +1,8 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import { Durations } from '../../../Constants.js';
+import DrawCard from '../../../DrawCard.js';
+import { Durations, EventNames } from '../../../Constants.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class RecklessAssault extends DrawCard {
     static id = 'reckless-assault';
 
@@ -9,10 +10,11 @@ export default class RecklessAssault extends DrawCard {
         this.reaction({
             title: 'Force defenders',
             when: {
-                onConflictDeclared: (event, context) =>
+                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context: any) =>
+                    !!context.game.currentConflict &&
                     context.game.currentConflict.getNumberOfParticipantsFor(context.player) === 1 &&
                     context.game.currentConflict.getParticipants(
-                        (participant) => participant.hasTrait('berserker') && participant.controller === context.player
+                        (participant: any) => participant.hasTrait('berserker') && participant.controller === context.player
                     ).length === 1 &&
                     context.player === context.game.currentConflict.attackingPlayer
             },
@@ -26,8 +28,8 @@ export default class RecklessAssault extends DrawCard {
         });
     }
 
-    getCharacters(context) {
-        const cards = context.player.opponent && context.player.opponent.cardsInPlay.filter(card => card.getMilitarySkill() < 3);
+    getCharacters(context: any) {
+        const cards = context.player.opponent && context.player.opponent.cardsInPlay.filter((card: any) => card.getMilitarySkill() < 3);
         return cards;
     }
 }

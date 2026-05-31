@@ -1,4 +1,5 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 import { Locations, CardTypes, Players, TargetModes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -6,13 +7,13 @@ class DiversionaryManeuver extends DrawCard {
     static id = 'diversionary-maneuver';
 
     setupCardAbilities() {
-        this.action({
+        this.action<ProvinceCard>({
             title: 'Move the conflict to another province',
             condition: context => context.game.isDuringConflict('military') && context.player.isAttackingPlayer(),
             target: {
                 cardType: CardTypes.Province,
                 location: Locations.Provinces,
-                cardCondition: (card, context) => !card.isConflictProvince() && card.canBeAttacked() && context.game.currentConflict.getConflictProvinces().some(a => a.controller === card.controller)
+                cardCondition: (card, context) => !card.isConflictProvince() && card.canBeAttacked() && (context.game.currentConflict?.getConflictProvinces() ?? []).some((a: any) => a.controller === card.controller)
             },
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.multiple([
@@ -22,7 +23,7 @@ class DiversionaryManeuver extends DrawCard {
                     AbilityDsl.actions.sendHome(context => ({
                         target: context.game.currentConflict.getParticipants()
                     })),
-                    AbilityDsl.actions.moveConflict(context => ({
+                    AbilityDsl.actions.moveConflict<ProvinceCard>(context => ({
                         target: context.target })),
                     AbilityDsl.actions.selectCard({
                         cardType: CardTypes.Character,
@@ -51,7 +52,7 @@ class DiversionaryManeuver extends DrawCard {
                 })
             ]),
             effect: 'move the conflict to {1} and send all participating characters home bowed',
-            effectArgs: context => [context.target]
+            effectArgs: context => [context.target ?? '']
         });
     }
 }

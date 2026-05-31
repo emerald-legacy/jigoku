@@ -1,16 +1,19 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
+import type BaseCard from '../../../BaseCard.js';
+import type { Conflict } from '../../../Conflict.js';
 import { EventNames, AbilityTypes, Locations, CardTypes, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
+import type { ProvinceCard } from '../../../ProvinceCard.js';
 
 
 export default class SongOfTheEmptyCity extends DrawCard {
     static id = 'song-of-the-empty-city';
 
     private eventRegistrar?: EventRegistrar;
-    private declaredProvinces = [];
+    private declaredProvinces: string[] = [];
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
@@ -32,10 +35,10 @@ export default class SongOfTheEmptyCity extends DrawCard {
                 target: context.source,
                 destination: context.target.location
             })),
-            then: context => ({
-                thenCondition: () => this.otherHoldingsInSameProvince(context).length > 0,
+            then: (context: AbilityContext) => ({
+                thenCondition: () => !!context && this.otherHoldingsInSameProvince(context as AbilityContext<this>).length > 0,
                 gameAction: AbilityDsl.actions.discardCard(() => ({
-                    target: this.otherHoldingsInSameProvince(context)
+                    target: context ? this.otherHoldingsInSameProvince(context as AbilityContext<this>) : []
                 })),
                 message: '{1} discards the other holdings in the province'
             })
@@ -58,7 +61,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
         this.declaredProvinces = [];
     }
 
-    public onConflictDeclaredReaction(event) {
+    public onConflictDeclaredReaction(event: EventPayload<typeof EventNames.OnConflictDeclared>) {
         if(!this.declaredProvinces) {
             this.declaredProvinces = [];
         }
@@ -71,19 +74,19 @@ export default class SongOfTheEmptyCity extends DrawCard {
         }
     }
 
-    private getConflictString(conflict) {
+    private getConflictString(conflict?: Conflict): string | undefined {
         if(!conflict) {
             return undefined;
         }
 
-        const provinceString = this.getProvinceIdString(conflict.declaredProvince);
+        const provinceString = this.getProvinceIdString(conflict.declaredProvince ?? undefined);
         if(!provinceString) {
             return undefined;
         }
         return `${provinceString}-${conflict.uuid}`;
     }
 
-    private getProvinceIdString(province) {
+    private getProvinceIdString(province?: ProvinceCard): string | undefined {
         if(!province) {
             return undefined;
         }
@@ -92,14 +95,17 @@ export default class SongOfTheEmptyCity extends DrawCard {
         return `${uuid}-${id}-${location}`;
     }
 
-    private getHonorGain(context) {
+    private getHonorGain(context: AbilityContext) {
         let currentProvince = context.player.getProvinceCardInProvince(context.source.location);
 
         if(!this.declaredProvinces) {
             return 1;
         }
-        const provinceString = this.getProvinceIdString(currentProvince);
-        return this.declaredProvinces.filter(a => a.indexOf(provinceString) >= 0).length;
+        const provinceString = this.getProvinceIdString(currentProvince as ProvinceCard | undefined);
+        if(!provinceString) {
+            return 0;
+        }
+        return this.declaredProvinces.filter((a: string) => a.indexOf(provinceString) >= 0).length;
     }
 
     private otherHoldingsInSameProvince(context: AbilityContext<this>): BaseCard[] {

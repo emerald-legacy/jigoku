@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class JadeTetsubo extends DrawCard {
     static id = 'jade-tetsubo';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.attachmentConditions({
             myControl: true
         });
@@ -12,7 +13,7 @@ class JadeTetsubo extends DrawCard {
         this.action({
             title: 'Return all fate from a character',
             cost: ability.costs.bowSelf(),
-            condition: context => context.source.parent && context.source.parent.isParticipating(),
+            condition: context => !!(context.source.parent && context.source.parent.isParticipating()),
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.militarySkill < context.source.parent.militarySkill,

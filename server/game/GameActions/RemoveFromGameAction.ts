@@ -1,8 +1,9 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type BaseCard from '../basecard.js';
+import type BaseCard from '../BaseCard.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface RemoveFromGameProperties extends CardActionProperties {
     location?: Locations | Locations[];
 }
@@ -14,7 +15,7 @@ export class RemoveFromGameAction extends CardGameAction {
     targetType = [CardTypes.Character, CardTypes.Attachment, CardTypes.Holding, CardTypes.Event];
     effect = 'remove {0} from the game';
 
-    canAffect(card: BaseCard, context: AbilityContext, additionalProperties): boolean {
+    canAffect(card: BaseCard, context: AbilityContext, additionalProperties: any = {}): boolean {
         const properties = this.getProperties(context, additionalProperties) as RemoveFromGameProperties;
         const propValidLocations = Array.isArray(properties.location)
             ? properties.location
@@ -42,12 +43,12 @@ export class RemoveFromGameAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    updateEvent(event, card: BaseCard, context: AbilityContext, additionalProperties): void {
+    updateEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: any): void {
         additionalProperties.destination = Locations.RemovedFromGame;
         this.updateLeavesPlayEvent(event, card, context, additionalProperties);
     }
 
-    eventHandler(event, additionalProperties = {}): void {
+    eventHandler(event: Event, additionalProperties: any = {}): void {
         this.leavesPlayEventHandler(event, additionalProperties);
     }
 }

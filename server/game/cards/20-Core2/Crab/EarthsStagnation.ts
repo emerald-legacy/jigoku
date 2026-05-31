@@ -1,7 +1,7 @@
 import { CardTypes } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
 function penaltyAmount(context: AbilityContext): number {

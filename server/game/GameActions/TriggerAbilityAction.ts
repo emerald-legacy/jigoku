@@ -1,9 +1,10 @@
+import type { AbilityContext } from '../AbilityContext.js';
 import type CardAbility from '../CardAbility.js';
-import type DrawCard from '../drawcard.js';
+import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import AbilityResolver from '../gamesteps/abilityresolver.js';
-import type Player from '../player.js';
-import type TriggeredAbility from '../triggeredability.js';
+import type Player from '../Player.js';
+import type TriggeredAbility from '../TriggeredAbility.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 
@@ -18,7 +19,7 @@ export interface TriggerAbilityProperties extends CardActionProperties {
 export class TriggerAbilityAction extends CardGameAction<TriggerAbilityProperties> {
     name = 'triggerAbility';
     defaultProperties: TriggerAbilityProperties = {
-        ability: null,
+        ability: null as unknown as CardAbility,
         ignoredRequirements: [],
         subResolution: false
     };
@@ -41,20 +42,20 @@ export class TriggerAbilityAction extends CardGameAction<TriggerAbilityPropertie
             return false;
         }
         let newContext = ability.createContext(player, newContextEvent);
-        let ignoredRequirements = properties.ignoredRequirements.concat('player', 'location', 'limit');
+        let ignoredRequirements = (properties.ignoredRequirements ?? []).concat('player', 'location', 'limit');
         return !ability.meetsRequirements(newContext, ignoredRequirements);
     }
 
-    eventHandler(event, additionalProperties): void {
-        let properties = this.getProperties(event.context, additionalProperties);
-        let player = properties.player || event.context.player;
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+        let properties = this.getProperties((event.context as AbilityContext), additionalProperties);
+        let player = properties.player || (event.context as AbilityContext).player;
         let newContextEvent = properties.event;
         let newContext = (properties.ability as TriggeredAbility).createContext(player, newContextEvent);
         newContext.subResolution = !!properties.subResolution;
-        event.context.game.queueStep(new AbilityResolver(event.context.game, newContext));
+        (event.context as AbilityContext).game.queueStep(new AbilityResolver((event.context as AbilityContext).game, newContext));
     }
 
-    hasTargetsChosenByInitiatingPlayer(context) {
+    hasTargetsChosenByInitiatingPlayer(context: TriggeredAbilityContext) {
         let properties = this.getProperties(context);
         return (
             properties.ability &&

@@ -1,10 +1,12 @@
-import DrawCard from '../../drawcard.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
 
 class OpiumWastrel extends DrawCard {
     static id = 'opium-wastrel';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Set a character\'s glory to 0',
             when: {
@@ -12,7 +14,7 @@ class OpiumWastrel extends DrawCard {
             },
             target: {
                 cardType: CardTypes.Character,
-                cardCondition: card => card.isParticipating(),
+                cardCondition: (card: any) => card.isParticipating(),
                 gameAction: ability.actions.cardLastingEffect({
                     effect: ability.effects.setGlory(0)
                 })
@@ -21,8 +23,8 @@ class OpiumWastrel extends DrawCard {
         });
     }
 
-    canPlay(context, playType) {
-        return context.player.opponent && context.player.isLessHonorable() && super.canPlay(context, playType);
+    canPlay(context: AbilityContext, playType: string): boolean {
+        return !!context.player.opponent && context.player.isLessHonorable() && super.canPlay(context, playType);
     }
 }
 

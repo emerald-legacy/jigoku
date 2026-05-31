@@ -1,7 +1,8 @@
 import type { AbilityContext } from './AbilityContext.js';
 import type { CardAction } from './CardAction.js';
 import { AbilityTypes, Locations, Phases } from './Constants.js';
-import type BaseCard from './basecard.js';
+import type BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 
 type RingChoices = Record<string, (context: AbilityContext) => boolean>;
@@ -41,7 +42,7 @@ export interface GameMode {
     imperialFavorHasSides: boolean;
     ringAirChoices: (optional: boolean) => RingChoices;
     ringEarthChoices: (optional: boolean) => RingChoices;
-    ringWaterTargetCondition: (card: BaseCard, context: AbilityContext) => boolean;
+    ringWaterTargetCondition: (card: DrawCard, context: AbilityContext) => boolean;
     setupFixedStartingHonor?: number;
     setupHaveProvinceCards: boolean;
     setupHaveRoles: boolean;
@@ -86,14 +87,14 @@ const Stronghold: GameMode = {
     ringAirChoices: (optional: boolean): RingChoices => ({
         [AIR_CHOICE.GAIN_2]: () => true,
         [AIR_CHOICE.TAKE_1]: (context: AbilityContext) =>
-            context.player.opponent && context.player.opponent.checkRestrictions('takeHonor', context),
+            Boolean(context.player.opponent && context.player.opponent.checkRestrictions('takeHonor', context)),
         [AIR_CHOICE.SKIP]: () => optional
     }),
     ringEarthChoices: (optional: boolean): RingChoices => ({
         [EARTH_CHOICE.DRAW_AND_FORCE_DISCARD]: () => true,
         [EARTH_CHOICE.SKIP]: () => optional
     }),
-    ringWaterTargetCondition: (card: BaseCard, context: AbilityContext) =>
+    ringWaterTargetCondition: (card: DrawCard, context: AbilityContext) =>
         card.location === Locations.PlayArea &&
         (card.bowed || (card.getFate() === 0 && card.allowGameAction('bow', context))),
     winConReachedConquestVictory: (provinceBeingBroken: ProvinceCard) =>
@@ -125,7 +126,7 @@ const Skirmish: GameMode = {
     setupStartingHandSize: 3,
     ringAirChoices: (optional: boolean): RingChoices => ({
         [AIR_CHOICE.TAKE_1]: (context: AbilityContext) =>
-            context.player.opponent && context.player.opponent.checkRestrictions('takeHonor', context),
+            Boolean(context.player.opponent && context.player.opponent.checkRestrictions('takeHonor', context)),
         [AIR_CHOICE.SKIP]: () => optional
     }),
     ringEarthChoices: (optional: boolean): RingChoices => ({
@@ -133,11 +134,11 @@ const Skirmish: GameMode = {
         [EARTH_CHOICE.FORCE_DISCARD]: (context: AbilityContext) => Boolean(context.player.opponent),
         [EARTH_CHOICE.SKIP]: () => optional
     }),
-    ringWaterTargetCondition: (card: BaseCard, context: AbilityContext) =>
+    ringWaterTargetCondition: (card: DrawCard, context: AbilityContext) =>
         card.location === Locations.PlayArea &&
         card.getFate() <= 1 &&
         !card.isParticipating() &&
-        ((card.ready && card.allowGameAction('bow', context)) ||
+        ((!card.bowed && card.allowGameAction('bow', context)) ||
             (card.bowed && card.allowGameAction('ready', context))),
     winConReachedConquestVictory: (provinceBeingBroken: ProvinceCard) =>
         provinceBeingBroken.controller.getProvinces((card: ProvinceCard) => card.isBroken).length > 2,

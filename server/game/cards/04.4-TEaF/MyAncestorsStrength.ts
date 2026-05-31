@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, Players, CardTypes } from '../../Constants.js';
 
 class MyAncestorsStrength extends DrawCard {
     static id = 'my-ancestor-s-strength';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.action({
             title: 'Modify base military and political skills',
 
@@ -21,18 +22,18 @@ class MyAncestorsStrength extends DrawCard {
                     cardType: CardTypes.Character,
                     location: Locations.DynastyDiscardPile,
                     controller: Players.Self,
-                    gameAction: ability.actions.cardLastingEffect(context => {
+                    gameAction: AbilityDsl.actions.cardLastingEffect(context => {
                         let effects = [];
                         let ancestor = context.targets.ancestor;
                         if(ancestor.hasDash('military')) {
-                            effects.push(ability.effects.setBaseDash('military'));
+                            effects.push(AbilityDsl.effects.setBaseDash('military'));
                         } else {
-                            effects.push(ability.effects.setBaseMilitarySkill(ancestor.militarySkill));
+                            effects.push(AbilityDsl.effects.setBaseMilitarySkill(ancestor.militarySkill));
                         }
                         if(ancestor.hasDash('political')) {
-                            effects.push(ability.effects.setBaseDash('political'));
+                            effects.push(AbilityDsl.effects.setBaseDash('political'));
                         } else {
-                            effects.push(ability.effects.setBasePoliticalSkill(ancestor.politicalSkill));
+                            effects.push(AbilityDsl.effects.setBasePoliticalSkill(ancestor.politicalSkill));
                         }
                         return {
                             target: context.targets.shugenja,

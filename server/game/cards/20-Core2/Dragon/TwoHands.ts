@@ -1,8 +1,10 @@
 import { CardTypes, ConflictTypes, Players, TargetModes } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import { Conflict } from '../../../conflict.js';
+import DrawCard from '../../../DrawCard.js';
+import { Conflict } from '../../../Conflict.js';
 import { AbilityContext } from '../../../AbilityContext.js';
+import type { Duel } from '../../../Duel.js';
 
 export default class TwoHands extends DrawCard {
     static id = 'two-hands';
@@ -14,7 +16,7 @@ export default class TwoHands extends DrawCard {
             target: {
                 controller: Players.Opponent,
                 gameAction: AbilityDsl.actions.duelAddParticipant((context) => ({
-                    duel: (context as any).event.duel
+                    duel: (context as TriggeredAbilityContext).event.duel as Duel
                 }))
             }
         });
@@ -58,7 +60,7 @@ export default class TwoHands extends DrawCard {
 }
 
 function calcTwoHandsEffect(context: AbilityContext) {
-    const targets = Array.isArray(context.target) ? context.target : context.target ? [context.target] : [];
+    const targets = (Array.isArray(context.target) ? context.target : context.target ? [context.target] : []) as DrawCard[];
     if((context.game.currentConflict as Conflict).conflictType === ConflictTypes.Military) {
         return {
             targets,

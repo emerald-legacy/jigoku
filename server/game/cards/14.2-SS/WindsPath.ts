@@ -10,8 +10,8 @@ export default class WindsPath extends ProvinceCard {
         this.persistentEffect({
             condition: (context) => context.game.isDuringConflict(),
             targetLocation: Locations.Provinces,
-            match: (card, context) =>
-                card.type === CardTypes.Character && card.location === context.source.location && card.isFaceup(),
+            match: (card: any, context: any) =>
+                card.type === CardTypes.Character && card.location === context?.source.location && card.isFaceup(),
             effect: [AbilityDsl.effects.gainPlayAction(PlayCharacterAsIfFromHandIntoConflict)]
         });
     }

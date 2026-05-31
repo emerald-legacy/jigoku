@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, AbilityTypes, Players } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 
 export default class TessenOfTheTsunamiLegion extends DrawCard {
@@ -16,12 +16,12 @@ export default class TessenOfTheTsunamiLegion extends DrawCard {
                 AbilityDsl.effects.addTrait('water'),
                 AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
                     title: 'Give a character +2 and move them',
-                    condition: context => context.game.isDuringConflict(),
+                    condition: (context: any) => context.game.isDuringConflict(),
                     printedAbility: false,
                     target: {
                         cardType: CardTypes.Character,
                         controller: Players.Self,
-                        cardCondition: (card, _context) => card.hasTrait('bushi'),
+                        cardCondition: (card: any, _context: any) => card.hasTrait('bushi'),
                         gameAction: AbilityDsl.actions.multiple([
                             AbilityDsl.actions.cardLastingEffect(_context => ({
                                 effect: AbilityDsl.effects.modifyMilitarySkill(2)
@@ -34,7 +34,7 @@ export default class TessenOfTheTsunamiLegion extends DrawCard {
                         ])
                     },
                     effect: 'give {0} +2{1}{2}',
-                    effectArgs: context => ['military',
+                    effectArgs: (context: any) => ['military',
                         context.source.isParticipating() === context.target.isParticipating() ? '' :
                             context.source.isParticipating() ? ' and move it to the conflict' : ' and move it home']
                 })

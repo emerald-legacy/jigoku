@@ -1,6 +1,8 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
+import { EventNames } from '../../Constants.js';
 class ChildOfThePlains extends DrawCard {
     static id = 'child-of-the-plains';
 
@@ -8,7 +10,7 @@ class ChildOfThePlains extends DrawCard {
         this.reaction({
             title: 'Get first action',
             when: {
-                onCardRevealed: (event, context) =>
+                onCardRevealed: (event: EventPayload<EventNames.OnCardRevealed>, context) =>
                     context.source.isAttacking() && event.card.isConflictProvince() && event.onDeclaration
             },
             effect: 'get the first action in this conflict',

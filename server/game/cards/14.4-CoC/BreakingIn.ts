@@ -1,6 +1,8 @@
-import { CardTypes, Locations, Players } from '../../Constants.js';
+import { CardTypes, EventNames, Locations, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class BreakingIn extends ProvinceCard {
     static id = 'breaking-in';
 
@@ -8,16 +10,16 @@ export default class BreakingIn extends ProvinceCard {
         this.reaction({
             title: 'Search for a character card',
             when: {
-                onCardRevealed: (event, context) => event.card === context.source
+                onCardRevealed: (event: EventPayload<EventNames.OnCardRevealed>, context: TriggeredAbilityContext) => event.card === context.source
             },
-            handler: (context) =>
-                this.game.promptWithHandlerMenu(context.player, {
+            handler: (context: TriggeredAbilityContext) => {
+                return this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Select a card:',
                     context: context,
-                    cards: context.player.dynastyDeck.slice(0, 8).filter((card) => card.type === CardTypes.Character),
+                    cards: context.player.dynastyDeck.slice(0, 8).filter((card: any) => card.type === CardTypes.Character),
                     choices: ['Select nothing'],
                     handlers: [() => this.game.addMessage('{0} selects nothing from their deck', context.player)],
-                    cardHandler: (cardFromDeck) => {
+                    cardHandler: (cardFromDeck: any) => {
                         if(cardFromDeck.hasTrait('cavalry')) {
                             return this.game.promptForSelect(context.player, {
                                 activePromptTitle: 'Choose a province',
@@ -25,7 +27,7 @@ export default class BreakingIn extends ProvinceCard {
                                 cardType: [CardTypes.Province],
                                 location: Locations.Provinces,
                                 controller: Players.Self,
-                                onSelect: (player, card) => {
+                                onSelect: (player: any, card: any) => {
                                     this.game.addMessage(
                                         '{0} places {1} in {2}',
                                         context.player,
@@ -45,7 +47,8 @@ export default class BreakingIn extends ProvinceCard {
                         context.player.shuffleDynastyDeck();
                         return true;
                     }
-                }),
+                });
+            },
             effect: 'choose a character to place in a province'
         });
     }

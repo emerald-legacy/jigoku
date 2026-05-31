@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Locations, CharacterStatus, CardTypes } from '../../Constants.js';
 
@@ -8,7 +8,7 @@ class GuardianDojo extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Locations.Any,
-            match: (card, context) => card.type === CardTypes.Character
+            match: (card: any, context: any) => card.type === CardTypes.Character
                 && card.isFaceup()
                 && context.player.areLocationsAdjacent(context.source.location, card.location),
             effect: [

@@ -2,8 +2,8 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, Locations, Phases, PlayTypes } from '../../../Constants.js';
 import type { Cost } from '../../../Costs.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../basecard.js';
-import DrawCard from '../../../drawcard.js';
+import type BaseCard from '../../../BaseCard.js';
+import DrawCard from '../../../DrawCard.js';
 
 function captureParentCost(): Cost {
     return {
@@ -33,7 +33,7 @@ export default class DevelopingMasterpiece extends DrawCard {
         this.action({
             title: 'Gain honor',
             phase: Phases.Fate,
-            condition: (context) => context.source.parent,
+            condition: (context) => !!context.source.parent,
             cost: [captureParentCost(), AbilityDsl.costs.removeSelfFromGame()],
             gameAction: AbilityDsl.actions.gainHonor((context) => ({
                 amount: this.getHonorGain(context),
@@ -43,7 +43,7 @@ export default class DevelopingMasterpiece extends DrawCard {
             effectArgs: (context: AbilityContext) => [this.getHonorGain(context)],
             then: (context) => {
                 const haiku = randomHaiku();
-                if(haiku) {
+                if(haiku && context) {
                     haiku.forEach((line) => context.game.addMessage(`>> ${line}`));
                     context.game.addMessage('>>>> Matsuo Bashō <<<<');
                 }
@@ -66,7 +66,7 @@ export default class DevelopingMasterpiece extends DrawCard {
 
     private getHonorGain(context: AbilityContext): number {
         return context.costs.captureParentCost
-            ? context.costs.captureParentCost.getGlory()
+            ? (context.costs.captureParentCost as DrawCard).getGlory()
             : context.source.parent.getGlory();
     }
 }

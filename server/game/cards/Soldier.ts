@@ -1,8 +1,10 @@
 import { CardTypes, Locations } from '../Constants.js';
-import DrawCard from '../drawcard.js';
-import Player from '../player.js';
+import DrawCard from '../DrawCard.js';
+import Player from '../Player.js';
 
 export default class Soldier<D extends DrawCard> extends DrawCard {
+    facedownCard: D;
+
     static createDummy(owner: Player) {
         const dummyCard = new DrawCard(owner, { id: '', name: '', type: '' });
         return new Soldier(dummyCard);

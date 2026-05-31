@@ -2,9 +2,10 @@ import { GameModes } from '../GameModes.js';
 import { CardTypes, EffectNames, EventNames, Phases, Players } from './Constants.js';
 import { ReduceableFateCost } from './costs/ReduceableFateCost.js';
 import BaseAction from './BaseAction.js';
-import BaseCard from './basecard.js';
+import BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
 import { AbilityContext } from './AbilityContext.js';
-import Player from './player.js';
+import Player from './Player.js';
 import { Cost } from './Costs.js';
 
 function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIntoLocation) {
@@ -13,7 +14,7 @@ function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIn
             (context.player.cardsInPlay as BaseCard[]).some((card) =>
                 context.source.canDisguise(card, context, intoConflictOnly)
             ),
-        resolve: (context: AbilityContext, results) =>
+        resolve: (context: AbilityContext, results: any) =>
             context.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a character to replace',
                 cardType: CardTypes.Character,
@@ -37,18 +38,18 @@ class DisguisedReduceableFateCost extends ReduceableFateCost implements Cost {
     canPay(context: AbilityContext) {
         const maxCharacterCost = Math.max(
             ...context.player.cardsInPlay.map((card) =>
-                context.source.canDisguise(card, context) ? card.getCost() : 0
+                context.source.canDisguise(card, context) ? (card.getCost() ?? 0) : 0
             )
         );
-        const minCost = Math.max(context.player.getMinimumCost(context.playType, context) - maxCharacterCost, 0);
+        const minCost = Math.max(context.player.getMinimumCost(context.playType ?? '', context) - maxCharacterCost, 0);
         return (
             context.player.fate >= minCost && (minCost === 0 || context.player.checkRestrictions('spendFate', context))
         );
     }
 
-    getReducedCost(context) {
+    getReducedCost(context: AbilityContext) {
         if(context.costs.chooseDisguisedCharacter) {
-            return Math.max(super.getReducedCost(context) - context.costs.chooseDisguisedCharacter.getCost(), 0);
+            return Math.max(super.getReducedCost(context) - ((context.costs.chooseDisguisedCharacter as DrawCard).getCost() ?? 0), 0);
         }
         return super.getReducedCost(context);
     }
@@ -91,7 +92,7 @@ export class PlayDisguisedCharacterAction extends BaseAction {
         return super.meetsRequirements(context);
     }
 
-    public executeHandler(context) {
+    public executeHandler(context: AbilityContext) {
         const legendaryFate = context.source.sumEffects(EffectNames.LegendaryFate);
         let extraFate = context.source.sumEffects(EffectNames.GainExtraFateWhenPlayed);
         if(!context.source.checkRestrictions('placeFate', context)) {
@@ -113,7 +114,7 @@ export class PlayDisguisedCharacterAction extends BaseAction {
                 playType: context.playType
             })
         ];
-        const replacedCharacter = context.costs.chooseDisguisedCharacter;
+        const replacedCharacter = context.costs.chooseDisguisedCharacter as DrawCard;
         if(!replacedCharacter) {
             return;
         }
@@ -146,7 +147,7 @@ export class PlayDisguisedCharacterAction extends BaseAction {
             gameAction.addEventsToArray(events, context);
             events.push(
                 context.game.getEvent(EventNames.Unnamed, {}, () => {
-                    const moveEvents = [];
+                    const moveEvents: any[] = [];
                     context.game.actions
                         .placeFate({
                             target: context.source,

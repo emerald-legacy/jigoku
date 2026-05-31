@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -8,7 +8,7 @@ class ByAnyMeans extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Change base skill to match another character\'s',
-            condition: context => context.player.opponent && context.player.showBid > context.player.opponent.showBid,
+            condition: context => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid),
             targets: {
                 myCharacter: {
                     activePromptTitle: 'Choose a bushi character',

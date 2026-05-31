@@ -1,8 +1,9 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { Locations } from '../Constants.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface ShuffleDeckProperties extends PlayerActionProperties {
     deck: Locations;
 }
@@ -20,12 +21,13 @@ export class ShuffleDeckAction extends PlayerAction {
         return [context.player];
     }
 
-    eventHandler(event, additionalProperties): void {
-        let { deck } = this.getProperties(event.context, additionalProperties) as ShuffleDeckProperties;
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+        let { deck } = this.getProperties((event.context as AbilityContext), additionalProperties) as ShuffleDeckProperties;
+        const player = event.player as Player;
         if(deck === Locations.ConflictDeck) {
-            event.player.shuffleConflictDeck();
+            player.shuffleConflictDeck();
         } else if(deck === Locations.DynastyDeck) {
-            event.player.shuffleDynastyDeck();
+            player.shuffleDynastyDeck();
         }
     }
 }

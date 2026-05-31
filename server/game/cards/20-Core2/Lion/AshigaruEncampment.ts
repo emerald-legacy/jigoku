@@ -1,6 +1,6 @@
 import { CardTypes, Locations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { AshigaruRecruit } from '../../AshigaruRecruit.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
@@ -9,7 +9,7 @@ function putAshigaruTokenIntoPlay(context: AbilityContext) {
     const token = context.game.createToken(card, AshigaruRecruit);
     card.owner.removeCardFromPile(card);
     card.moveTo(Locations.RemovedFromGame);
-    const moveEvents = [];
+    const moveEvents: any[] = [];
     context.game.actions.putIntoPlay({ target: token }).addEventsToArray(moveEvents, context);
     context.game.openThenEventWindow(moveEvents);
     return true;

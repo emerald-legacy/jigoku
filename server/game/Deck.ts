@@ -4,9 +4,9 @@ import { resolvePackId } from './CardPackUtil.js';
 import { ProvinceCard } from './ProvinceCard.js';
 import { RoleCard } from './RoleCard.js';
 import { StrongholdCard } from './StrongholdCard.js';
-import BaseCard from './basecard.js';
-import DrawCard from './drawcard.js';
-import Player from './player.js';
+import BaseCard from './BaseCard.js';
+import DrawCard from './DrawCard.js';
+import Player from './Player.js';
 
 export class Deck {
     constructor(public data: any) {}
@@ -17,7 +17,7 @@ export class Deck {
             conflictCards: [] as DrawCard[],
             dynastyCards: [] as DrawCard[],
             provinceCards: [] as ProvinceCard[],
-            outOfPlayCards: [],
+            outOfPlayCards: [] as DrawCard[],
             outsideTheGameCards: [] as DrawCard[],
             stronghold: undefined as StrongholdCard | undefined,
             role: undefined as RoleCard | undefined,

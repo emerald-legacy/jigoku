@@ -1,11 +1,13 @@
 import { CardTypes, Durations, Elements } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 const COVERT_ELEMENT = 'adept-of-the-waves-water';
 
 export default class AdeptOfTheWaves extends DrawCard {
     static id = 'adept-of-the-waves';
+
+    elementWhenTriggered!: string;
 
     setupCardAbilities() {
         this.action({

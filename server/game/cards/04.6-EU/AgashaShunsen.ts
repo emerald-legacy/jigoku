@@ -1,5 +1,6 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type Ring from '../../Ring.js';
 import { Players, CardTypes, Locations } from '../../Constants.js';
 
 class AgashaShunsen extends DrawCard {
@@ -14,7 +15,7 @@ class AgashaShunsen extends DrawCard {
                 cardType: CardTypes.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.cardMenu(context => ({
-                    cards: context.player.conflictDeck.filter(card =>
+                    cards: context.player.conflictDeck.filter((card: any) =>
                         card.type === CardTypes.Attachment &&
                         card.costLessThan(context.costs.returnRing ? context.costs.returnRing.length + 1 : 1)
                     ),
@@ -27,7 +28,7 @@ class AgashaShunsen extends DrawCard {
                 }))
             },
             effect: 'search their deck for an attachment costing {1} or less and attach it to {0}',
-            effectArgs: context => context.costs.returnRing.length,
+            effectArgs: context => (context.costs.returnRing as Ring[]).length,
             gameAction: AbilityDsl.actions.shuffleDeck({ deck: Locations.ConflictDeck })
         });
     }

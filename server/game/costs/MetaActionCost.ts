@@ -1,4 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../BaseCard.js';
 import { Locations, Players } from '../Constants.js';
 import type { Cost, Result } from '../Costs.js';
 import type { GameAction } from '../GameActions/GameAction.js';
@@ -30,12 +31,12 @@ export class MetaActionCost extends GameActionCost implements Cost {
 
     addEventsToArray(events: any[], context: AbilityContext, result: Result): void {
         const properties = this.action.getProperties(context) as SelectCardProperties;
-        if(properties.targets && context.choosingPlayerOverride) {
+        if(properties.targets && context.choosingPlayerOverride && properties.selector) {
             context.costs[properties.gameAction.name] = randomItem(
                 properties.selector.getAllLegalTargets(context, context.player)
             );
             context.costs[properties.gameAction.name + 'StateWhenChosen'] =
-                context.costs[properties.gameAction.name].createSnapshot();
+                (context.costs[properties.gameAction.name] as BaseCard).createSnapshot();
             return properties.gameAction.addEventsToArray(events, context, {
                 target: context.costs[properties.gameAction.name]
             });
@@ -61,8 +62,8 @@ export class MetaActionCost extends GameActionCost implements Cost {
         return this.action.hasTargetsChosenByInitiatingPlayer(context);
     }
 
-    getCostMessage(context: AbilityContext): [string, any[]] {
+    getCostMessage(context: AbilityContext): unknown[] {
         const properties = this.action.getProperties(context) as SelectCardProperties;
-        return properties.gameAction.getCostMessage(context);
+        return properties.gameAction.getCostMessage(context) ?? [];
     }
 }

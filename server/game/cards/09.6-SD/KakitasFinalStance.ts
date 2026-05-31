@@ -2,10 +2,11 @@ import { CardTypes } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class KakitasFinalStance extends DrawCard {
     static id = 'kakita-s-final-stance';
+    private eventRegistrar?: EventRegistrar;
 
     private duelParticipantsInThisConflict = new Set<DrawCard>();
 

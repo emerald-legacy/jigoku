@@ -1,7 +1,7 @@
 import { GameModes } from '../../GameModes.js';
 import { TargetModes } from '../Constants.js';
 import { AbilityContext } from '../AbilityContext.js';
-import BaseAbility from '../baseability.js';
+import BaseAbility from '../BaseAbility.js';
 
 const DRAW = 'Draw a card';
 const FORCE_DISCARD = 'Opponent discards a card';
@@ -13,7 +13,7 @@ function choices(optional: boolean, gameMode: GameModes) {
         case GameModes.Skirmish:
             return {
                 [DRAW]: () => true,
-                [FORCE_DISCARD]: (context) => context.player.opponent,
+                [FORCE_DISCARD]: (context: any) => context.player.opponent,
                 [SKIP]: () => optional
             };
         default:

@@ -1,7 +1,11 @@
-import DrawCard from '../../../drawcard.js';
-import { TargetModes, CardTypes, AbilityTypes, Durations } from '../../../Constants.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import type BaseCard from '../../../BaseCard.js';
+import DrawCard from '../../../DrawCard.js';
+import type Ring from '../../../Ring.js';
+import { TargetModes, CardTypes, AbilityTypes, Durations, EventNames } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { GameModes } from '../../../../GameModes.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 class CraftyTsukumogami extends DrawCard {
     static id = 'crafty-tsukumogami';
@@ -12,7 +16,7 @@ class CraftyTsukumogami extends DrawCard {
             target: {
                 mode: TargetModes.Ring,
                 activePromptTitle: 'Choose a ring to attach to',
-                ringCondition: (ring, context) => this.checkRingCondition(ring, context),
+                ringCondition: (ring: Ring, context?: AbilityContext) => !!context && this.checkRingCondition(ring, context),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.cardLastingEffect(context => ({
                         canChangeZoneOnce: true,
@@ -24,11 +28,11 @@ class CraftyTsukumogami extends DrawCard {
                                 title: 'Discard a card',
                                 limit: AbilityDsl.limit.unlimitedPerConflict(),
                                 when: {
-                                    onConflictDeclared: (event, context) => context.source.parent && context.source.parent === event.ring
+                                    onConflictDeclared: (event: EventPayload<typeof EventNames.OnConflictDeclared>, context: AbilityContext) => !!context.source.parent && context.source.parent === event.ring
                                 },
                                 printedAbility: false,
-                                gameAction: AbilityDsl.actions.chosenDiscard(context => ({
-                                    target: context.game.currentConflict.attackingPlayer,
+                                gameAction: AbilityDsl.actions.chosenDiscard((context: AbilityContext) => ({
+                                    target: context.game.currentConflict?.attackingPlayer,
                                     amount: 1
                                 }))
                             })
@@ -41,7 +45,7 @@ class CraftyTsukumogami extends DrawCard {
                         handler: context => {
                             const card = context.source;
                             card.controller.cardsInPlay.splice(card.controller.cardsInPlay.indexOf(card), 1);
-                            if(context.game.isDuringConflict()) {
+                            if(context.game.isDuringConflict() && context.game.currentConflict) {
                                 context.game.currentConflict.removeFromConflict(card);
                             }
                         }
@@ -52,21 +56,21 @@ class CraftyTsukumogami extends DrawCard {
         });
     }
 
-    checkRingCondition(ring, context) {
+    checkRingCondition(ring: Ring, context: AbilityContext) {
         const frameworkLimitsAttachmentsWithRepeatedNames = context.game.gameMode === GameModes.Emerald || context.game.gameMode === GameModes.Obsidian;
         if(frameworkLimitsAttachmentsWithRepeatedNames) {
             const attachment = context.source;
-            if(ring.attachments.filter(a => !a.allowDuplicatesOfAttachment).some(a => a.id === attachment.id && a.controller === attachment.controller && a !== attachment)) {
+            if(ring.attachments.filter((a: DrawCard) => !a.allowDuplicatesOfAttachment).some((a: BaseCard) => a.id === attachment.id && a.controller === attachment.controller && a !== attachment)) {
                 return false;
             }
         }
         return true;
     }
 
-    canAttach(ring) {
+    canAttach(ring: Ring) {
         return ring && ring.type === 'ring' && this.getType() === CardTypes.Attachment;
     }
-    canPlayOn(source) {
+    canPlayOn(source: BaseCard) {
         return source && source.getType() === 'ring' && this.getType() === CardTypes.Attachment;
     }
     mustAttachToRing() {

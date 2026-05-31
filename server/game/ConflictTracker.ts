@@ -1,5 +1,5 @@
-import type Player from './player.js';
-import { ConflictTypes } from './Constants.js';
+import type Player from './Player.js';
+import { ConflictTypes, Players } from './Constants.js';
 
 export interface ConflictRecord {
     attackingPlayer: Player;
@@ -30,9 +30,9 @@ export class ConflictTracker {
         }
     }
 
-    getForPlayer(player: Player | null): ConflictRecord[] {
-        if(!player) {
-            return [];
+    getForPlayer(player: Player | Players.All): ConflictRecord[] {
+        if(player === Players.All) {
+            return this.records.slice();
         }
         return this.records.filter((r) => r.attackingPlayer === player);
     }

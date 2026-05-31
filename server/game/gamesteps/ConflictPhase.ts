@@ -1,9 +1,9 @@
 import { Phases, EffectNames } from '../Constants.js';
 import { initiateConflict } from '../GameActions/GameActions.js';
 import AbilityDsl from '../abilitydsl.js';
-import { Conflict } from '../conflict.js';
-import type Game from '../game.js';
-import type Player from '../player.js';
+import { Conflict } from '../Conflict.js';
+import type Game from '../Game.js';
+import type Player from '../Player.js';
 import { Phase } from './Phase.js';
 import { SimpleStep } from './SimpleStep.js';
 import ActionWindow from './actionwindow.js';
@@ -45,6 +45,9 @@ export class ConflictPhase extends Phase {
     }
 
     startConflictChoice() {
+        if(!this.currentPlayer) {
+            return;
+        }
         if(this.currentPlayer.getConflictOpportunities() === 0 && this.currentPlayer.opponent) {
             this.currentPlayer = this.currentPlayer.opponent;
         }
@@ -56,7 +59,7 @@ export class ConflictPhase extends Phase {
             ) {
                 initiateConflict(props).resolve(this.currentPlayer, this.game.getFrameworkContext(this.currentPlayer));
             } else {
-                var conflict = new Conflict(this.game, this.currentPlayer, this.currentPlayer.opponent);
+                var conflict = new Conflict(this.game, this.currentPlayer, this.currentPlayer.opponent as Player);
                 conflict.passConflict(
                     '{0} passes their conflict opportunity as none of their characters can be declared as an attacker'
                 );
@@ -74,8 +77,11 @@ export class ConflictPhase extends Phase {
     claimImperialFavor() {
         AbilityDsl.actions
             .performGloryCount({
-                gameAction: (winner) => winner && AbilityDsl.actions.claimImperialFavor({ target: winner })
+                gameAction: ((winner: Player | null) =>
+                    winner
+                        ? AbilityDsl.actions.claimImperialFavor({ target: winner })
+                        : (null as unknown as ReturnType<typeof AbilityDsl.actions.claimImperialFavor>)) as never
             })
-            .resolve(null, this.game.getFrameworkContext());
+            .resolve(undefined, this.game.getFrameworkContext());
     }
 }

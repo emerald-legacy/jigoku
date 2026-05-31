@@ -1,14 +1,15 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class KakitaFavorite extends DrawCard {
     static id = 'kakita-favorite';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.persistentEffect({
             condition: context =>
-                this.game.currentDuel &&
+                this.game.currentDuel !== null &&
                 this.game.currentDuel.isInvolvedInAnyDuel(context.source),
-            effect: ability.effects.modifyPoliticalSkill(2)
+            effect: AbilityDsl.effects.modifyPoliticalSkill(2)
         });
     }
 }

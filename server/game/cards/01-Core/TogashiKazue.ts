@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import { CardTypes } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class TogashiKazue extends DrawCard {
     static id = 'togashi-kazue';
@@ -12,9 +12,9 @@ export default class TogashiKazue extends DrawCard {
         this.action({
             title: 'Steal a fate',
             condition: (context) =>
-                context.source.type === CardTypes.Attachment &&
+                !!(context.source.type === CardTypes.Attachment &&
                 context.source.parent &&
-                context.source.parent.isParticipating(),
+                context.source.parent.isParticipating()),
             printedAbility: false,
             target: {
                 cardType: CardTypes.Character,
@@ -24,7 +24,7 @@ export default class TogashiKazue extends DrawCard {
                 }))
             },
             effect: 'steal a fate from {0} and place it on {1}',
-            effectArgs: (context) => context.source.parent
+            effectArgs: (context) => context.source.parent ?? ''
         });
     }
 

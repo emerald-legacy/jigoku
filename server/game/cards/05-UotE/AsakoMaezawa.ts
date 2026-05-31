@@ -1,4 +1,5 @@
-import DrawCard from '../../drawcard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -8,15 +9,13 @@ class AsakoMaezawa extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Double a character\'s base political skill',
-            condition: context => context.source.isParticipating() && context.player.opponent && (
-                // My total glory
-                context.player.cardsInPlay.reduce((myTotal, card) => myTotal + (card.isParticipating() && !card.bowed ? card.getGlory() : 0), 0) >
-                // is greater than Opponents total glory
-                context.player.opponent.cardsInPlay.reduce((oppTotal, card) => oppTotal + (card.isParticipating() && !card.bowed ? card.getGlory() : 0), 0)
+            condition: (context: AbilityContext) => context.source.isParticipating() && !!context.player.opponent && (
+                context.player.cardsInPlay.reduce((myTotal: number, card: any) => myTotal + (card.isParticipating() && !card.bowed ? card.getGlory() : 0), 0) >
+                context.player.opponent.cardsInPlay.reduce((oppTotal: number, card: any) => oppTotal + (card.isParticipating() && !card.bowed ? card.getGlory() : 0), 0)
             ),
             target: {
                 cardType: CardTypes.Character,
-                cardCondition: card => card.isParticipating(),
+                cardCondition: (card: any) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     effect: AbilityDsl.effects.modifyBasePoliticalSkillMultiplier(2)
                 })

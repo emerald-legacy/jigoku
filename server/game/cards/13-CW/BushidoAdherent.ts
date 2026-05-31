@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -16,7 +16,7 @@ class BushidoAdherent extends DrawCard {
             },
             gameAction: AbilityDsl.actions.draw(context => ({ target: context.player.opponent })),
             effect: 'honor {0} and have {1} draw 1 card',
-            effectArgs: context => context.player.opponent
+            effectArgs: context => [context.player.opponent ?? context.player]
         });
     }
 }

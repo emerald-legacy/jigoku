@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { EventNames, FavorTypes, Locations, Phases, Stages } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
@@ -16,11 +16,11 @@ export default class Funeral extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel honor loss',
             when: {
-                onModifyHonor: (event, context) =>
+                onModifyHonor: (event: any, context) =>
                     event.player === context.player &&
                     -event.amount >= context.player.honor &&
                     event.context.stage === Stages.Effect,
-                onTransferHonor: (event, context) =>
+                onTransferHonor: (event: any, context) =>
                     event.player === context.player &&
                     event.amount >= context.player.honor &&
                     event.context.stage === Stages.Effect

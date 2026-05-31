@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -8,7 +8,7 @@ class MatsuAgetoki extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Move the conflict to another eligible province',
-            condition: context => context.player && context.player.opponent && context.player.isMoreHonorable() && context.source.isAttacking(),
+            condition: context => !!(context.player && context.player.opponent && context.player.isMoreHonorable() && context.source.isAttacking()),
             gameAction: AbilityDsl.actions.selectCard(context => ({
                 cardType: CardTypes.Province,
                 location: Locations.Provinces,

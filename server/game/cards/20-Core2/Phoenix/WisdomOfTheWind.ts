@@ -1,6 +1,6 @@
 import { CardTypes, Durations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class WisdomOfTheWind extends DrawCard {
     static id = 'wisdom-of-the-wind';

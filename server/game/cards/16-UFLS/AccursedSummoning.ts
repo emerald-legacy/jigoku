@@ -1,24 +1,24 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 const accursedSummoningCost = function () {
     return {
         action: { name: 'accursedSummoningCost' },
-        getActionName(_context) {
+        getActionName(_context: any) {
             return 'accursedSummoningCost';
         },
-        getCostMessage: function (_context) {
+        getCostMessage: function (_context: any) {
             return ['losing {0} honor'];
         },
-        canPay: function (context) {
+        canPay: function (context: any) {
             return context.game.actions.loseHonor().canAffect(context.player, context);
         },
-        resolve: function (context, result) {
+        resolve: function (context: any, result: any) {
             let creatures = context.player.outsideTheGameCards;
-            creatures = creatures.filter(card => context.game.actions.putIntoConflict().canAffect(card, context));
+            creatures = creatures.filter((card: any) => context.game.actions.putIntoConflict().canAffect(card, context));
 
-            const creaturesByCost = [[], [], [], [], []];
-            creatures.forEach(creature => {
+            const creaturesByCost: any[][] = [[], [], [], [], []];
+            creatures.forEach((creature: any) => {
                 creaturesByCost[creature.printedCost].push(creature);
             });
             context.costs.accursedSummoningCostCreature = undefined;
@@ -51,12 +51,12 @@ const accursedSummoningCost = function () {
                 ]
             });
 
-            const promptForCards = (creatures) => context.game.promptWithHandlerMenu(context.player, {
+            const promptForCards = (creatures: any) => context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Select a creature to summon',
                 source: context.source,
                 cards: creatures,
                 choices: ['Back', 'Cancel'],
-                cardHandler: card => {
+                cardHandler: (card: any) => {
                     context.costs.accursedSummoningCostCreature = card;
                     context.costs.accursedSummoningCost = card.printedCost;
                 },
@@ -75,7 +75,7 @@ const accursedSummoningCost = function () {
 
             promptForCost();
         },
-        payEvent: function (context) {
+        payEvent: function (context: any) {
             if(context.costs.accursedSummoningCostCreature) {
                 const oni = context.costs.accursedSummoningCostCreature;
                 const copy = new oni.constructor(context.player, oni.cardData);
@@ -106,11 +106,12 @@ class AccursedSummoning extends DrawCard {
             })),
             effect: 'summon a{2} {1} from the depths of the Shadowlands!',
             effectArgs: context => {
-                var testStr = context.costs.accursedSummoningCostCreature.name;
+                const creature = context.costs.accursedSummoningCostCreature as DrawCard;
+                var testStr = creature.name;
                 var vowelRegex = '^[aieouAIEOU].*';
                 var matched = testStr.match(vowelRegex);
                 return [
-                    context.costs.accursedSummoningCostCreature,
+                    creature,
                     matched ? 'n' : ''
                 ];
             }

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Durations } from '../../Constants.js';
 
@@ -6,7 +6,7 @@ class AgashaHiyori extends DrawCard {
     static id = 'agasha-hiyori';
 
     setupCardAbilities() {
-        this.reaction({
+        this.reaction<DrawCard>({
             title: 'Blank an attachment',
             when: {
                 onPhaseStarted: (event) => event.phase !== 'setup'
@@ -22,7 +22,7 @@ class AgashaHiyori extends DrawCard {
                 })
             },
             effect: 'treat {1} as if its printed text box were blank and as if it had no skill modifiers until the end of the phase',
-            effectArgs: (context) => context.target
+            effectArgs: (context) => context.target ?? ''
         });
     }
 }

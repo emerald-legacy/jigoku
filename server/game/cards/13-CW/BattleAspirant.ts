@@ -1,7 +1,8 @@
-import DrawCard from '../../drawcard.js';
-import { Durations, CardTypes, Players } from '../../Constants.js';
+import DrawCard from '../../DrawCard.js';
+import { CardTypes, Durations, EventNames, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class BattleAspirant extends DrawCard {
     static id = 'battle-aspirant';
 
@@ -9,7 +10,7 @@ class BattleAspirant extends DrawCard {
         this.reaction({
             title: 'Force a character to defend',
             when: {
-                onConflictDeclared: (event, context) => event.attackers.includes(context.source) && this.game.currentConflict.conflictType === 'military'
+                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context) => event.attackers?.includes(context.source) && this.game.currentConflict?.conflictType === 'military'
             },
             target: {
                 controller: Players.Opponent,

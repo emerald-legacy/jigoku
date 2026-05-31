@@ -1,6 +1,6 @@
 import { CardTypes, Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class ABadDeath extends DrawCard {
     static id = 'a-bad-death';
@@ -18,13 +18,13 @@ export default class ABadDeath extends DrawCard {
             cannotTargetFirst: true,
             target: {
                 mode: TargetModes.UpToVariable,
-                numCardsFunc: (context) => context.costs.dishonorAndSacrificeStateWhenChosen?.hasTrait('berserker') ? 2 : 1,
+                numCardsFunc: (context) => (context.costs.dishonorAndSacrificeStateWhenChosen as DrawCard)?.hasTrait('berserker') ? 2 : 1,
                 cardType: CardTypes.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating(),
+                cardCondition: (card: any) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.dishonor()
             },
-            then: context => ({
+            then: (context: any) => ({
                 message: '{0} draws a card',
                 gameAction: AbilityDsl.actions.draw({
                     target: context.player,

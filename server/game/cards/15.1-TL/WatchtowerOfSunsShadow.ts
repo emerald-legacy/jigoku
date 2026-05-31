@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Players } from '../../Constants.js';
 
@@ -11,15 +11,15 @@ class WatchtowerOfSunsShadow extends DrawCard {
                 if(!context.player.isDefendingPlayer()) {
                     return false;
                 }
-                let cardsInProvinces = [];
-                context.game.currentConflict.getConflictProvinces().forEach(p => {
+                let cardsInProvinces: any[] = [];
+                context.game.currentConflict?.getConflictProvinces().forEach(p => {
                     cardsInProvinces = cardsInProvinces.concat(context.player.getDynastyCardsInProvince(p.location));
                 });
-                return cardsInProvinces.some(card => card.isFaceup() && card.type === CardTypes.Holding && card.hasTrait('kaiu-wall'));
+                return cardsInProvinces.some((card: any) => card.isFaceup() && card.type === CardTypes.Holding && card.hasTrait('kaiu-wall'));
             },
             targetController: Players.Opponent,
             match: (card) => card.isAttacking(),
-            effect: AbilityDsl.effects.modifyBothSkills(card => -card.getFate())
+            effect: AbilityDsl.effects.modifyBothSkills((card: any) => -card.getFate())
         });
 
         this.forcedInterrupt({

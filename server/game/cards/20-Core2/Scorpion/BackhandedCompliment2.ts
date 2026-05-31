@@ -1,7 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { TargetModes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
-import Game from '../../../game.js';
+import DrawCard from '../../../DrawCard.js';
+import Game from '../../../Game.js';
 
 export default class BackhandedCompliment2 extends DrawCard {
     static id = 'backhanded-compliment-2';
@@ -25,7 +25,7 @@ export default class BackhandedCompliment2 extends DrawCard {
                 )
             },
             effect: 'make {1} lose an honor and draw a card',
-            effectArgs: (context) => (context.select === this.owner.name ? this.owner : this.owner.opponent)
+            effectArgs: (context) => (context.select === this.owner.name ? this.owner : this.owner.opponent) as any
         });
     }
 }

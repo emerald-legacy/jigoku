@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Locations } from '../../Constants.js';
 
@@ -15,7 +15,7 @@ class AppealToSympathy extends DrawCard {
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cancel(),
                 AbilityDsl.actions.conditional({
-                    condition: (context) => context.event.card.isConflict,
+                    condition: (context) => !!context.event.card?.isConflict,
                     trueGameAction: AbilityDsl.actions.moveCard((context) => ({
                         target: context.event.card,
                         destination: Locations.ConflictDeck
@@ -27,12 +27,15 @@ class AppealToSympathy extends DrawCard {
                 })
             ]),
             effect: 'cancel the effects of {1} and {2}',
-            effectArgs: (context) => [
-                context.event.card,
-                context.event.card.isConflict
-                    ? 'return it to the top of its owner\'s conflict deck'
-                    : 'move it to its owner\'s dynasty discard pile'
-            ]
+            effectArgs: (context) => {
+                const card = context.event.card;
+                return [
+                    card ?? '',
+                    card?.isConflict
+                        ? 'return it to the top of its owner\'s conflict deck'
+                        : 'move it to its owner\'s dynasty discard pile'
+                ];
+            }
         });
     }
 }

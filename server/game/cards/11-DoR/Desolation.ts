@@ -1,6 +1,6 @@
 import { Durations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class Desolation extends DrawCard {
     static id = 'desolation';
@@ -16,7 +16,7 @@ export default class Desolation extends DrawCard {
                 effect: AbilityDsl.effects.blank()
             })),
             effect: 'blank {1}\'s provinces until the end of the phase',
-            effectArgs: (context) => context.player.opponent.name
+            effectArgs: (context) => context.player.opponent?.name ?? ''
         });
     }
 }

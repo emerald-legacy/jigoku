@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Locations, Players, CardTypes, PlayTypes} from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -8,7 +8,7 @@ class WarmWelcome extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Play a conflict card from discard',
-            condition: context => context.player.opponent && context.player.showBid < context.player.opponent.showBid,
+            condition: context => !!(context.player.opponent && context.player.showBid < context.player.opponent.showBid),
             target: {
                 location: Locations.ConflictDiscardPile,
                 controller: Players.Self,

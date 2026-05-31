@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class TeacherOfEmptyThought extends DrawCard {
@@ -7,7 +7,7 @@ class TeacherOfEmptyThought extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Draw a card',
-            condition: context => context.source.isParticipating() && context.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 3,
+            condition: context => !!(context.source.isParticipating() && context.game.currentConflict && context.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 3),
             gameAction: AbilityDsl.actions.draw()
         });
     }

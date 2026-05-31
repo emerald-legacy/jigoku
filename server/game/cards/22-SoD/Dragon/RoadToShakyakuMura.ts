@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, Locations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { Cost } from '../../../Costs.js';
 
 function captureLocationCost(): Cost {
@@ -47,7 +47,7 @@ export default class RoadToShakyakuMura extends DrawCard {
                 ])
             })),
             effect: 'prevent {1} from leaving play, putting it into {2} instead',
-            effectArgs: (context) => [context.event.card, context.costs.captureLocationCost]
+            effectArgs: (context) => [context.event.card ?? '', (context.costs.captureLocationCost as string) ?? '']
         });
     }
 }

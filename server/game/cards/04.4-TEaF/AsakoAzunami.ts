@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Elements } from '../../Constants.js';
 
@@ -11,7 +11,7 @@ class AsakoAzunami extends DrawCard {
         this.wouldInterrupt({
             title: 'Bow and ready two characters instead of the ring effect',
             when: {
-                onResolveRingElement: (event, context) => event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
+                onResolveRingElement: (event, context) => !!event.ring && event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
             },
             effect: 'replace the {1} ring effect with bowing and readying two characters',
             effectArgs: () => [this.getCurrentElementSymbol(elementKey)],

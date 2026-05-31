@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Locations, Players, CardTypes } from '../../Constants.js';
 
@@ -12,7 +12,7 @@ class AsahinaAugur extends DrawCard {
             effect: AbilityDsl.effects.canBeSeenWhenFacedown()
         });
 
-        this.action({
+        this.action<DrawCard>({
             title: 'Discard a card in a province',
             target: {
                 cardType: [CardTypes.Character, CardTypes.Holding, CardTypes.Event],
@@ -21,7 +21,7 @@ class AsahinaAugur extends DrawCard {
                 gameAction: AbilityDsl.actions.discardCard()
             },
             effect: 'discard {1} in {2}',
-            effectArgs: context => [context.target.isFacedown() ? 'a facedown card' : context.target, context.target.location],
+            effectArgs: context => [context.target?.isFacedown() ? 'a facedown card' : context.target ?? '', context.target?.location ?? ''],
             limit: AbilityDsl.limit.perRound(3)
         });
     }

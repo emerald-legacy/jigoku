@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ObsidianTalisman extends DrawCard {
@@ -18,7 +18,7 @@ class ObsidianTalisman extends DrawCard {
                 gameAction: AbilityDsl.actions.discardStatusToken()
             })),
             effect: 'discard a status token from {1}',
-            effectArgs: context => [context.source.parent]
+            effectArgs: context => [context.source.parent as any]
         });
     }
 }

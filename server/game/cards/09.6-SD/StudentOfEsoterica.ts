@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class StudentOfEsoterica extends DrawCard {
@@ -6,7 +6,7 @@ class StudentOfEsoterica extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.alternateFatePool(card => {
+            effect: AbilityDsl.effects.alternateFatePool((card: any) => {
                 if(card.hasTrait('spell')) {
                     return this;
                 }

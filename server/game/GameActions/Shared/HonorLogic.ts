@@ -1,11 +1,12 @@
 import { EffectNames } from '../../Constants.js';
+import type Player from '../../Player.js';
 
-export function CalculateHonorLimit(player, round, phase, plannedHonorAmount): [boolean, number] {
+export function CalculateHonorLimit(player: Player, round: number, phase: string, plannedHonorAmount: number): [boolean, number] {
     if(!player || !player.getEffects) {
         return [false, plannedHonorAmount];
     }
 
-    const honorGainLimitPerPhase = Math.min(player.getEffects(EffectNames.LimitHonorGainPerPhase));
+    const honorGainLimitPerPhase = Math.min(...player.getEffects(EffectNames.LimitHonorGainPerPhase));
     const honorGainedThisPhase = player.honorGained(round, phase, true);
 
     const maxAmountToChange = Math.max(honorGainLimitPerPhase - honorGainedThisPhase, 0);

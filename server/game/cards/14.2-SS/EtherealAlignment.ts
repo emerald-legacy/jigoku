@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Phases, CardTypes, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -15,7 +15,7 @@ class EtherealAlignment extends DrawCard {
                 location: Locations.Provinces,
                 cardType: CardTypes.Province,
                 cardCondition: (card, context) => {
-                    return card.isBroken && card.element.some(element => {
+                    return card.isBroken && card.element.some((element: any) => {
                         if(element === 'all') {
                             return true;
                         }

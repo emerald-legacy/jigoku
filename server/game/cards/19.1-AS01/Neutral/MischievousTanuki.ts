@@ -1,6 +1,6 @@
 import { Phases } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class MischievousTanuki extends DrawCard {
     static id = 'mischievous-tanuki';
@@ -14,7 +14,7 @@ export default class MischievousTanuki extends DrawCard {
             gameAction: AbilityDsl.actions.honorBid({
                 message: '{0}{1}{2}{3}',
                 messageArgs: (context) => {
-                    if(context.player.showBid % 2 === context.player.opponent.showBid % 2) {
+                    if(context.player.showBid % 2 === (context.player.opponent?.showBid ?? 0) % 2) {
                         // @ts-expect-error -- fateTaken is dynamically added to context during ability resolution
                         return [context.player, ` takes ${context.fateTaken} fate from `, context.player.opponent, ''];
                     } else if(context.player.showBid % 2 === 0) {
@@ -23,7 +23,7 @@ export default class MischievousTanuki extends DrawCard {
                     return [context.player, ' draws 2 cards and ', context.player.opponent, ' gains 2 honor'];
                 },
                 postBidAction: AbilityDsl.actions.conditional({
-                    condition: (context) => context.player.showBid % 2 === context.player.opponent.showBid % 2,
+                    condition: (context) => context.player.showBid % 2 === (context.player.opponent?.showBid ?? 0) % 2,
                     trueGameAction: AbilityDsl.actions.sequential([
                         AbilityDsl.actions.handler((context) => ({
                             handler: () => {

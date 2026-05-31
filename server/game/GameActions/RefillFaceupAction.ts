@@ -1,8 +1,9 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type { Locations } from '../Constants.js';
-import type Player from '../player.js';
+import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
+import type { Event } from '../Events/Event.js';
 export interface RefillFaceupProperties extends PlayerActionProperties {
     location: Locations | Locations[];
 }
@@ -20,18 +21,20 @@ export class RefillFaceupAction extends PlayerAction {
         return [context.player];
     }
 
-    eventHandler(event, additionalProperties): void {
-        let { location } = this.getProperties(event.context, additionalProperties) as RefillFaceupProperties;
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+        const context = event.context as AbilityContext;
+        let { location } = this.getProperties(context, additionalProperties) as RefillFaceupProperties;
         if(!Array.isArray(location)) {
             location = [location];
         }
 
+        const player = event.player as Player;
         location.forEach((loc) => {
-            event.context.game.queueSimpleStep(() => {
-                if(event.player.replaceDynastyCard(loc)) {
-                    event.context.game.queueSimpleStep(() => {
-                        let cards = event.player.getDynastyCardsInProvince(loc);
-                        cards.forEach((card) => {
+            context.game.queueSimpleStep(() => {
+                if(player.replaceDynastyCard(loc)) {
+                    context.game.queueSimpleStep(() => {
+                        let cards = player.getDynastyCardsInProvince(loc);
+                        cards.forEach((card: any) => {
                             if(card) {
                                 card.facedown = false;
                             }

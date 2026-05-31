@@ -1,4 +1,4 @@
-import type Game from './game.js';
+import type Game from './Game.js';
 
 interface EventHandler {
     name: string;
@@ -14,7 +14,7 @@ export class EventRegistrar {
 
     constructor(
         private game: Game,
-        private context: unknown
+        private context: object
     ) {
         this.events = [];
     }
@@ -53,12 +53,12 @@ export class EventRegistrar {
      * Registers a single event handler.
      */
     public registerEvent(eventName: string, methodName = '') {
-        const method = this.context[methodName || eventName];
+        const method = (this.context as Record<string, unknown>)[methodName || eventName];
         if(typeof method !== 'function') {
             throw new Error(`Cannot bind event handler for ${eventName}`);
         }
 
-        const boundHandler = method.bind(this.context);
+        const boundHandler = (method as (event: any) => void).bind(this.context);
         this.game.on(eventName, boundHandler);
         this.events.push({ name: eventName, handler: boundHandler });
     }

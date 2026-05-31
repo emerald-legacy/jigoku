@@ -1,6 +1,6 @@
 import { Phases, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class MeddlingMediator extends DrawCard {
     static id = 'meddling-mediator';
@@ -10,6 +10,7 @@ export default class MeddlingMediator extends DrawCard {
             title: 'Take 1 fate or 1 honor',
             phase: Phases.Conflict,
             condition: (context) =>
+                context.player.opponent !== undefined &&
                 this.game.getConflicts(context.player.opponent).filter((conflict) => !conflict.passed).length > 1,
             target: {
                 mode: TargetModes.Select,

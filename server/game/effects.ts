@@ -113,10 +113,10 @@ const Effects: Record<string, any> = {
                 (card.abilities.playActions = card.abilities.playActions.filter((action: any) => action !== playAction))
         }),
     hideWhenFaceUp: () => EffectBuilder.card.static(EffectNames.HideWhenFaceUp, true),
-    honorStatusDoesNotAffectLeavePlay: () => EffectBuilder.card.flexible(EffectNames.HonorStatusDoesNotAffectLeavePlay),
-    honorStatusDoesNotModifySkill: () => EffectBuilder.card.flexible(EffectNames.HonorStatusDoesNotModifySkill),
-    taintedStatusDoesNotCostHonor: () => EffectBuilder.card.flexible(EffectNames.TaintedStatusDoesNotCostHonor),
-    honorStatusReverseModifySkill: () => EffectBuilder.card.flexible(EffectNames.HonorStatusReverseModifySkill),
+    honorStatusDoesNotAffectLeavePlay: () => EffectBuilder.card.flexible(EffectNames.HonorStatusDoesNotAffectLeavePlay, true),
+    honorStatusDoesNotModifySkill: () => EffectBuilder.card.flexible(EffectNames.HonorStatusDoesNotModifySkill, true),
+    taintedStatusDoesNotCostHonor: () => EffectBuilder.card.flexible(EffectNames.TaintedStatusDoesNotCostHonor, true),
+    honorStatusReverseModifySkill: () => EffectBuilder.card.flexible(EffectNames.HonorStatusReverseModifySkill, true),
     immunity: (properties: any) => EffectBuilder.card.static(EffectNames.AbilityRestrictions, new Restriction(properties)),
     increaseLimitOnAbilities: (abilities: any) => EffectBuilder.card.static(EffectNames.IncreaseLimitOnAbilities, abilities),
     increaseLimitOnPrintedAbilities: (abilities: any) =>

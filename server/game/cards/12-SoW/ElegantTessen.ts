@@ -1,7 +1,8 @@
-import DrawCard from '../../drawcard.js';
-import { Locations } from '../../Constants.js';
+import DrawCard from '../../DrawCard.js';
+import { EventNames, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
+import type { EventPayload } from '../../Events/EventPayloads.js';
 class ElegantTessen extends DrawCard {
     static id = 'elegant-tessen';
 
@@ -9,7 +10,7 @@ class ElegantTessen extends DrawCard {
         this.reaction({
             title: 'Ready attached character',
             when: {
-                onCardAttached: (event, context) => (
+                onCardAttached: (event: EventPayload<EventNames.OnCardAttached>, context) => (
                     context.source.parent && event.card === context.source && context.source.parent.getCost() <= 2 &&
                     event.originalLocation !== Locations.PlayArea
                 )

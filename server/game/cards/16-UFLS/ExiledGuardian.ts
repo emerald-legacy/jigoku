@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { TargetModes, CardTypes, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -17,7 +17,7 @@ class ExiledGuardian extends DrawCard {
             },
             effect: 'discard {1}\'s {2}',
             effectArgs: context => [
-                context.token[0].card,
+                (context.token as any)?.[0]?.card,
                 context.token
             ]
         });

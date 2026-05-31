@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes, Durations, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -6,7 +6,7 @@ class AgashaTaiko extends DrawCard {
     static id = 'agasha-taiko';
 
     setupCardAbilities() {
-        this.reaction({
+        this.reaction<DrawCard>({
             title: 'Choose a province',
             when: {
                 onCardPlayed: (event, context) => event.card === context.source
@@ -23,9 +23,9 @@ class AgashaTaiko extends DrawCard {
             },
             effect: 'prevent {1}\'s {2} in {3} from being attacked this round',
             effectArgs: context => [
-                context.target.controller,
-                context.target.isFacedown() ? 'hidden province' : context.target,
-                context.target.location
+                context.target?.controller ?? '',
+                context.target?.isFacedown() ? 'hidden province' : context.target ?? '',
+                context.target?.location ?? ''
             ]
         });
     }

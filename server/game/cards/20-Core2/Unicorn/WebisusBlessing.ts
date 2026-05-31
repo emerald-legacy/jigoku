@@ -1,6 +1,7 @@
 import { TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
+import type { StatusToken } from '../../../StatusToken.js';
 
 export default class WebisusBlessing extends DrawCard {
     static id = 'webisu-s-blessing';
@@ -27,14 +28,14 @@ export default class WebisusBlessing extends DrawCard {
             effectArgs: (context) =>
                 context.tokens.second
                     ? [
-                        context.tokens.first[0].card,
+                        (context.tokens.first as StatusToken[])[0].card as DrawCard,
                         context.tokens.first,
                         ' and ',
-                        context.tokens.second[0].card,
+                        (context.tokens.second as StatusToken[])[0].card as DrawCard,
                         '\'s ',
                         context.tokens.second
                     ]
-                    : [context.tokens.first[0].card, context.tokens.first, '', '', '', '']
+                    : [(context.tokens.first as StatusToken[])[0].card as DrawCard, context.tokens.first, '', '', '', '']
         });
     }
 }

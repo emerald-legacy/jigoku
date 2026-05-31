@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, CardTypes } from '../../Constants.js';
 
@@ -8,9 +8,9 @@ class MotoAriq extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Move a ready character to the conflict',
-            condition: context => context.source.isParticipating()
+            condition: context => !!(context.source.isParticipating()
                 && context.player.opponent
-                && context.player.opponent.isMoreHonorable(),
+                && context.player.opponent.isMoreHonorable()),
             target: {
                 player: Players.Opponent,
                 cardCondition: card => !card.bowed,

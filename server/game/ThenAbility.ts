@@ -1,9 +1,6 @@
 import { AbilityContext } from './AbilityContext.js';
-import BaseAbility from './baseability.js';
-import { Stages } from './Constants.js';
-import type Game from './game.js';
-import type BaseCard from './basecard.js';
-import type Player from './player.js';
+import BaseCardAbility from './BaseCardAbility.js';
+import type BaseCard from './BaseCard.js';
 
 interface ThenAbilityProperties {
     cost?: any;
@@ -17,30 +14,17 @@ interface ThenAbilityProperties {
     [key: string]: any;
 }
 
-class ThenAbility extends BaseAbility {
-    game: Game;
-    card: BaseCard;
+class ThenAbility extends BaseCardAbility {
     properties: ThenAbilityProperties;
     handler: (context: AbilityContext) => void;
     cannotTargetFirst = true;
 
-    constructor(game: Game, card: BaseCard, properties: ThenAbilityProperties) {
+    constructor(card: BaseCard, properties: ThenAbilityProperties) {
         super(properties);
 
-        this.game = game;
         this.card = card;
         this.properties = properties;
         this.handler = properties.handler || this.executeGameActions.bind(this);
-    }
-
-    createContext(player: Player = this.card.controller): AbilityContext {
-        return new AbilityContext({
-            ability: this,
-            game: this.game,
-            player: player,
-            source: this.card,
-            stage: Stages.PreTarget
-        });
     }
 
     checkGameActionsForPotential(context: AbilityContext): boolean {
@@ -49,7 +33,7 @@ class ThenAbility extends BaseAbility {
         } else if(this.gameAction.every((gameAction: any) => gameAction.isOptional(context)) && this.properties.then) {
             const then =
                 typeof this.properties.then === 'function' ? this.properties.then(context) : this.properties.then;
-            const thenAbility = new ThenAbility(this.game, this.card, then);
+            const thenAbility = new ThenAbility(this.card, then);
             return thenAbility.meetsRequirements(thenAbility.createContext(context.player)) === '';
         }
         return false;
@@ -102,10 +86,10 @@ class ThenAbility extends BaseAbility {
             if(eventsToResolve.length > 0) {
                 const window = this.openEventWindow(eventsToResolve);
                 if(then) {
-                    window.addThenAbility(new ThenAbility(this.game, this.card, then), context, (then as ThenAbilityProperties).thenCondition);
+                    window.addThenAbility(new ThenAbility(this.card, then), context, (then as ThenAbilityProperties).thenCondition);
                 }
             } else if(then && (then as ThenAbilityProperties).thenCondition && (then as ThenAbilityProperties).thenCondition?.(context)) {
-                const thenAbility = new ThenAbility(this.game, this.card, then as ThenAbilityProperties);
+                const thenAbility = new ThenAbility(this.card, then as ThenAbilityProperties);
                 this.game.resolveAbility(thenAbility.createContext(context.player));
             }
         });

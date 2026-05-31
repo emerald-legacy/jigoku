@@ -1,6 +1,6 @@
 import { Locations, PlayTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 const CARD_COUNT = 3;
 
@@ -12,9 +12,9 @@ export default class ASwallowsReturn extends DrawCard {
             title: 'Reveal cards and take ones matching named type',
             condition: (context) =>
                 context.game.currentConflict !== null &&
-        context.player.opponent !== null &&
+        context.player.opponent !== undefined &&
         context.player.opponent.conflictDeck.length >= CARD_COUNT,
-            cost: AbilityDsl.costs.reveal((context) => context.player.opponent.conflictDeck.slice(0, CARD_COUNT)),
+            cost: AbilityDsl.costs.reveal((context) => context.player.opponent?.conflictDeck.slice(0, CARD_COUNT) ?? []),
             cannotBeMirrored: true,
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardMenu((context) => ({
@@ -36,10 +36,10 @@ export default class ASwallowsReturn extends DrawCard {
                         source: context.source
                     }),
                     message: '{0} chooses to play {1} and discard {2}',
-                    messageArgs: (card, player) => [player, card.name, context.costs.reveal.filter((c) => c !== card)]
+                    messageArgs: (card: any, player: any) => [player, card.name, context.costs.reveal.filter((c: any) => c !== card)]
                 })),
                 AbilityDsl.actions.discardCard((context) => ({
-                    target: (context.costs.reveal ?? []).filter((card) => card.location === Locations.ConflictDeck)
+                    target: (context.costs.reveal ?? []).filter((card: any) => card.location === Locations.ConflictDeck)
                 }))
             ]),
             effect: 'choose one of those to play'

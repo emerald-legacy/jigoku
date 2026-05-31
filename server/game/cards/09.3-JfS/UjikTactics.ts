@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Durations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -10,7 +10,7 @@ class UjikTactics extends DrawCard {
             title: 'Give each non-unique character +1 military during this conflict',
             condition: () => this.game.isDuringConflict(),
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: context.player.cardsInPlay.filter(card => !card.isUnique()),
+                target: context.player.cardsInPlay.filter((card: any) => !card.isUnique()),
                 effect: AbilityDsl.effects.modifyMilitarySkill(1),
                 duration: Durations.UntilEndOfConflict
             })),

@@ -12,13 +12,13 @@ export default class FestivalOfTheDeparted extends ProvinceCard {
             targetController: Players.Any,
             effect: [
                 AbilityDsl.effects.suppressEffects(
-                    (effect) =>
+                    (effect: any) =>
                         effect.context.source.type === CardTypes.Event &&
                         effect.isSkillModifier() &&
                         effect.getValue() > 0
                 ),
                 AbilityDsl.effects.cannotApplyLastingEffects(
-                    (effect) =>
+                    (effect: any) =>
                         effect.context.source.type === CardTypes.Event &&
                         effect.isSkillModifier() &&
                         effect.getValue() > 0

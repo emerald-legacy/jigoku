@@ -1,6 +1,6 @@
 import { ConflictTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class DiplomatOfTheSteppes extends DrawCard {
     static id = 'diplomat-of-the-steppes';
@@ -13,7 +13,11 @@ export default class DiplomatOfTheSteppes extends DrawCard {
                 if(!(context.source as DrawCard).isParticipating('political')) {
                     return false;
                 }
-                let diff = this.game.currentConflict.attackerSkill - this.game.currentConflict.defenderSkill;
+                const conflict = this.game.currentConflict;
+                if(!conflict) {
+                    return false;
+                }
+                const diff = conflict.attackerSkill - conflict.defenderSkill;
                 return context.player.isAttackingPlayer() ? diff >= 0 : diff <= 0;
             },
             effect: 'switch the conflict type to {1}',

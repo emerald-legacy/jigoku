@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
 
 class TaintedKoku extends DrawCard {
     static id = 'tainted-koku';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.interrupt({
             title: 'Move attachment to another character',
             when: {
@@ -13,7 +14,7 @@ class TaintedKoku extends DrawCard {
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card, context) => context.source.parent && card.controller === context.source.parent.controller && card !== context.source.parent,
-                gameAction: ability.actions.attach(context => ({ attachment: context.source }))
+                gameAction: AbilityDsl.actions.attach(context => ({ attachment: context.source }))
             }
         });
     }

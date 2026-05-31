@@ -1,7 +1,7 @@
 import { CardTypes, Players } from '../../Constants.js';
 import { BaseOni } from './_BaseOni.js';
 import AbilityDsl from '../../abilitydsl.js';
-import BaseCard from '../../basecard.js';
+import BaseCard from '../../BaseCard.js';
 
 export default class OniOfObsidianAndBlood extends BaseOni {
     static id = 'oni-of-obsidian-and-blood';

@@ -1,7 +1,8 @@
-import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardTypes, EventNames, Players, TargetModes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class DeedsNotWords extends DrawCard {
     static id = 'deeds-not-words';
 
@@ -21,7 +22,7 @@ export default class DeedsNotWords extends DrawCard {
                         targetController: context.player,
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
-                                afterConflict: event =>
+                                afterConflict: (event: EventPayload<EventNames.AfterConflict>) =>
                                     context.player === event.conflict.winner
                             },
                             gameAction: AbilityDsl.actions.claimImperialFavor(context => ({ target: context.player })),
@@ -32,16 +33,16 @@ export default class DeedsNotWords extends DrawCard {
                 ])
             },
             then: context => ({
-                thenCondition: () => context.player.imperialFavor !== '',
+                thenCondition: () => !!context && context.player.imperialFavor !== '',
                 target: {
                     mode: TargetModes.Select,
                     choices: {
                         'Discard the Imperial Favor': AbilityDsl.actions.joint([
                             AbilityDsl.actions.loseImperialFavor(() => ({
-                                target: context.player
+                                target: context?.player
                             })),
                             AbilityDsl.actions.honor(() => ({
-                                target: context.target
+                                target: context?.target
                             }))
                         ]),
                         'Done': () => true

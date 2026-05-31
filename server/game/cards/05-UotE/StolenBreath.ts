@@ -1,9 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import DrawCard from '../../DrawCard.js';
 
 class StolenBreath extends DrawCard {
     static id = 'stolen-breath';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.whileAttached({
             effect: [
                 ability.effects.cannotParticipateAsAttacker('political'),
@@ -12,7 +14,7 @@ class StolenBreath extends DrawCard {
         });
     }
 
-    canPlay(context, playType) {
+    canPlay(context: AbilityContext, playType: string) {
         if(this.game.isDuringConflict()) {
             return false;
         }

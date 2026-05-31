@@ -1,10 +1,11 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Players, Phases } from '../../Constants.js';
+import AbilityDsl from '../../abilitydsl.js';
 
 class SecludedTemple extends DrawCard {
     static id = 'secluded-temple';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities(ability: typeof AbilityDsl) {
         this.reaction({
             title: 'Remove a fate from opponent\'s characters',
             when: {

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Durations } from '../../Constants.js';
 
@@ -13,7 +13,7 @@ class NeverYield extends DrawCard {
             },
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                 duration: Durations.UntilEndOfConflict,
-                target: context.player.cardsInPlay.filter(card => card.type === CardTypes.Character),
+                target: context.player.cardsInPlay.filter((card: any) => card.type === CardTypes.Character),
                 effect: [
                     AbilityDsl.effects.cardCannot({
                         cannot: 'sendHome',
@@ -28,7 +28,7 @@ class NeverYield extends DrawCard {
                 ]
             })),
             effect: 'make it so {1}\'s card effects can\'t bow or send home {2}\'s characters currently in play until the end of the conflict.',
-            effectArgs: context => [context.player.opponent, context.player]
+            effectArgs: context => [context.player.opponent as any, context.player]
         });
     }
 }

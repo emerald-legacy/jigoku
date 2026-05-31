@@ -1,6 +1,6 @@
 import { CardTypes, Locations, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { Duel } from '../../../Duel.js';
 
 export default class ForeignCustoms extends DrawCard {

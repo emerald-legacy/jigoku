@@ -1,6 +1,6 @@
 import { CardTypes, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class IkomaYumikosDagger extends DrawCard {
     static id = 'ikoma-yumiko-s-dagger';
@@ -13,7 +13,7 @@ export default class IkomaYumikosDagger extends DrawCard {
                     context.source.allowGameAction('discardFromPlay', context)
             },
             effect: 'discard itself instead of the Imperial Favor',
-            effectArgs: context => context.event.player,
+            effectArgs: context => context.event.player ?? '',
             gameAction: AbilityDsl.actions.cancel(context => ({
                 target: context.source,
                 replacementGameAction: AbilityDsl.actions.discardFromPlay()

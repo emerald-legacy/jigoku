@@ -1,7 +1,8 @@
+import type BaseCard from '../../BaseCard.js';
 import { CardTypes, Locations, Players } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class SereneIseZumi extends DrawCard {
     static id = 'serene-ise-zumi';
@@ -15,10 +16,10 @@ export default class SereneIseZumi extends DrawCard {
             title: 'Move attached character home',
             printedAbility: false,
             condition: (context) =>
-                context.source.parent &&
+                !!(context.source.parent &&
                 context.game.isDuringConflict() &&
                 context.source.type === CardTypes.Attachment &&
-                context.source.parent.isParticipating(),
+                context.source.parent.isParticipating()),
             gameAction: AbilityDsl.actions.sendHome((context) => ({
                 target: context.source.parent
             }))
@@ -34,8 +35,8 @@ export default class SereneIseZumi extends DrawCard {
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: 2,
-                targetCondition: (target) => target.type === CardTypes.Character,
-                match: (card, source) => card === source
+                targetCondition: (target: BaseCard) => target.type === CardTypes.Character,
+                match: (card: BaseCard, source: BaseCard) => card === source
             })
         });
     }

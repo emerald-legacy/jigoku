@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes } from '../../Constants.js';
 
@@ -12,15 +12,15 @@ class KarmicTwist extends DrawCard {
                 activePromptTitle: 'Choose a donor character',
                 cardType: CardTypes.Character,
                 cardCondition: card => !card.isUnique() && card.getFate() > 0,
-                gameAction: AbilityDsl.actions.selectCard(context => ({
+                gameAction: AbilityDsl.actions.selectCard<DrawCard>(context => ({
                     cardType: CardTypes.Character,
                     activePromptTitle: 'Choose a recipient character',
-                    cardCondition: (card, context) => !card.isUnique() && card.getFate() === 0 && card.controller === context.target.controller,
+                    cardCondition: (card) => !card.isUnique() && card.getFate() === 0 && card.controller === context.target?.controller,
                     message: '{0} moves {1} fate from {2} to {3}',
-                    messageArgs: card => [context.player, context.target.getFate(), context.target, card],
+                    messageArgs: card => [context.player, context.target?.getFate() ?? 0, context.target ?? '', card],
                     gameAction: AbilityDsl.actions.placeFate({
                         origin: context.target,
-                        amount: context.target.getFate()
+                        amount: context.target?.getFate() ?? 0
                     })
                 }))
             },

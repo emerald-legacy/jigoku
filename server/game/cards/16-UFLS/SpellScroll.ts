@@ -1,7 +1,7 @@
 import AbilityDsl from '../../abilitydsl.js';
-import { Conflict } from '../../conflict.js';
+import { Conflict } from '../../Conflict.js';
 import { CardTypes, Locations, Players } from '../../Constants.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 
 export default class SpellScroll extends DrawCard {
     static id = 'spell-scroll';
@@ -9,16 +9,16 @@ export default class SpellScroll extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             condition: (context) =>
-                context.source.parent?.isParticipating() &&
-                (context.game.currentConflict as Conflict).elements.some((element) =>
+                !!(context.source.parent?.isParticipating() &&
+                (context.game.currentConflict as Conflict).elements.some((element: any) =>
                     (context.source.parent as DrawCard).hasTrait(element)
-                ),
+                )),
             effect: AbilityDsl.effects.modifyPoliticalSkill(3)
         });
 
-        this.action({
+        this.action<DrawCard>({
             title: 'Put a card into your hand',
-            condition: (context) => context.source.parent,
+            condition: (context) => !!context.source.parent,
             target: {
                 location: Locations.ConflictDiscardPile,
                 controller: Players.Self,
@@ -26,7 +26,7 @@ export default class SpellScroll extends DrawCard {
                     card.type !== CardTypes.Character &&
                     (context.source.parent as DrawCard).hasSomeTrait(card.getTraitSet()),
                 gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.moveCard((context) => ({
+                    AbilityDsl.actions.moveCard<DrawCard>((context) => ({
                         target: context.target,
                         destination: Locations.Hand
                     })),
@@ -34,7 +34,7 @@ export default class SpellScroll extends DrawCard {
                 ])
             },
             effect: 'move {1} to their hand and sacrifice {2}',
-            effectArgs: (context) => [context.target, context.source]
+            effectArgs: (context) => [context.target ?? '', context.source]
         });
     }
 }

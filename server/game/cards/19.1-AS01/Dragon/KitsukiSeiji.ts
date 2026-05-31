@@ -1,8 +1,12 @@
 import { AbilityContext } from '../../../AbilityContext.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { Elements } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import { Elements, EventNames } from '../../../Constants.js';
+import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
+import type Ring from '../../../Ring.js';
 
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 const ELEMENT_KEY = 'kitsuki-seiji-water';
 
 export default class KitsukiSeiji extends DrawCard {
@@ -21,14 +25,14 @@ export default class KitsukiSeiji extends DrawCard {
         this.wouldInterrupt({
             title: 'Put fate on this character',
             when: {
-                onMoveFate: (event) => this.fateRecipientIsSeijisRing(event.recipient),
-                onPlaceFateOnUnclaimedRings: (event) =>
-                    event.recipients.some((recipient: any) => this.fateRecipientIsSeijisRing(recipient.ring))
+                onMoveFate: (event: EventPayload<EventNames.OnMoveFate>) => this.fateRecipientIsSeijisRing(event.recipient),
+                onPlaceFateOnUnclaimedRings: (event: EventPayload<EventNames.OnPlaceFateOnUnclaimedRings>) =>
+                    (event.recipients ?? []).some((recipient: any) => this.fateRecipientIsSeijisRing(recipient.ring))
             },
             effect: 'put the fate that would go on the {1} ring on {0} instead',
             effectArgs: () => [this.getCurrentElementSymbol(ELEMENT_KEY)],
             gameAction: AbilityDsl.actions.cancel((context) => {
-                switch((context as any).event.name) {
+                switch((context as TriggeredAbilityContext).event.name) {
                     case 'onPlaceFateOnUnclaimedRings':
                         return { replacementGameAction: this.replacementForPlaceFateOnUnclaimedRings(context) };
                     case 'onMoveFate':
@@ -57,16 +61,17 @@ export default class KitsukiSeiji extends DrawCard {
     }
 
     private replacementForMoveFate(context: AbilityContext) {
+        const event = (context as TriggeredAbilityContext).event;
         return AbilityDsl.actions.placeFate({
-            origin: (context as any).event.origin,
+            origin: event.origin as DrawCard | Player | Ring | undefined,
             target: context.source,
-            amount: (context as any).event.fate
+            amount: event.fate
         });
     }
 
     private replacementForPlaceFateOnUnclaimedRings(context: AbilityContext) {
         return AbilityDsl.actions.joint(
-            (context as any).event.recipients.map((recipient) => {
+            ((context as TriggeredAbilityContext).event.recipients ?? []).map((recipient: any) => {
                 const isSeijisRing = recipient.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY));
                 if(isSeijisRing) {
                     return AbilityDsl.actions.placeFate({

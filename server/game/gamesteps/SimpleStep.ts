@@ -1,4 +1,4 @@
-import type Game from '../game.js';
+import type Game from '../Game.js';
 import { BaseStep } from './BaseStep.js';
 
 export class SimpleStep extends BaseStep {
@@ -6,7 +6,7 @@ export class SimpleStep extends BaseStep {
         super(game);
     }
 
-    continue() {
+    continue(): undefined {
         this.continueFunc();
         return undefined;
     }

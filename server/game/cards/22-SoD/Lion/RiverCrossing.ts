@@ -15,7 +15,7 @@ export default class RiverCrossing extends ProvinceCard {
             gameAction: AbilityDsl.actions.playerLastingEffect({
                 duration: Durations.UntilEndOfConflict,
                 targetController: Players.Any,
-                effect: AbilityDsl.effects.changeConflictSkillFunction(_card => 1)
+                effect: AbilityDsl.effects.changeConflictSkillFunction((_card: any) => 1)
             })
         });
     }

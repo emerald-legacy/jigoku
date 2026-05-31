@@ -1,18 +1,21 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes, Players, CharacterStatus } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 import type { StatusToken } from '../../../StatusToken.js';
 
 export default class ForcedRetirement extends DrawCard {
     static id = 'forced-retirement';
 
     public setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Remove negative status tokens from a character, and discard it from play',
             effect: 'expiate {0}\'s misdeeds by retiring them to the nearest monatery{1} Let them contemplate their sins.',
-            effectArgs: (context) => [
-                context.target.fate > 0 ? ', recovering their ' + context.target.fate + ' fate.' : '.'
-            ],
+            effectArgs: (context) => {
+                const target = context.target;
+                return [
+                    target && target.fate > 0 ? ', recovering their ' + target.fate + ' fate.' : '.'
+                ];
+            },
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,

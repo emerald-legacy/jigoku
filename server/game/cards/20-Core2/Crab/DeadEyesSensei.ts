@@ -1,6 +1,6 @@
 import { CardTypes, Durations, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 export default class DeadEyesSensei extends DrawCard {
     static id = 'dead-eyes-sensei';

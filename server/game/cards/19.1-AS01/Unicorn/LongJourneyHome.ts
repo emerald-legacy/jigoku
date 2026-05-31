@@ -1,7 +1,12 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Durations } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import { CardTypes, Durations, EventNames } from '../../../Constants.js';
+import DrawCard from '../../../DrawCard.js';
 import { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
+
+type SendOrReturnHomeEvent =
+    | EventPayload<EventNames.OnSendHome>
+    | EventPayload<EventNames.OnReturnHome>;
 
 export default class LongJourneyHome extends DrawCard {
     static id = 'long-journey-home';
@@ -25,11 +30,11 @@ export default class LongJourneyHome extends DrawCard {
                 ])
             },
             effect: 'make {1} take the long way home. {1} is bowed and cannot ready until the end of the phase',
-            effectArgs: (context) => [context.event.card]
+            effectArgs: (context) => [context.event.card as DrawCard]
         });
     }
 
-    private affectedOpponentsCharacter(event: any, context: TriggeredAbilityContext<this>) {
-        return event.card.type === CardTypes.Character && event.card.controller === context.source.controller.opponent;
+    private affectedOpponentsCharacter(event: SendOrReturnHomeEvent, context: TriggeredAbilityContext<this>) {
+        return !!event.card && event.card.type === CardTypes.Character && event.card.controller === context.source.controller.opponent;
     }
 }

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import { Phases, EventNames } from '../../Constants.js';
 
 class SeizeTheDay extends DrawCard {
@@ -12,6 +12,9 @@ class SeizeTheDay extends DrawCard {
             },
             handler: () => {
                 let firstPlayer = this.game.getFirstPlayer();
+                if(!firstPlayer) {
+                    return;
+                }
                 let otherPlayer = this.game.getOtherPlayer(firstPlayer);
                 if(otherPlayer) {
                     this.game.raiseEvent(EventNames.OnPassFirstPlayer, { player: otherPlayer }, () => this.game.setFirstPlayer(otherPlayer));

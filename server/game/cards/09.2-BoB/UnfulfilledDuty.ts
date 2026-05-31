@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TargetModes, CardTypes } from '../../Constants.js';
 
@@ -11,7 +11,7 @@ class UnfulfilledDuty extends DrawCard {
             target: {
                 mode: TargetModes.MaxStat,
                 activePromptTitle: 'Choose characters',
-                cardStat: (card) => card.getCost(),
+                cardStat: (card: DrawCard) => card.getCost() ?? 0,
                 maxStat: () => 6,
                 numCards: 0,
                 cardType: CardTypes.Character,

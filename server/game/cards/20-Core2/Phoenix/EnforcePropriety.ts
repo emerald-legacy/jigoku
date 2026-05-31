@@ -1,7 +1,8 @@
 import { CardTypes, Players } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import type Player from '../../../player.js';
+import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 
 function countReadyShugenja(player: Player): number {
     return player.cardsInPlay.reduce(
@@ -36,7 +37,7 @@ export default class EnforcePropriety extends DrawCard {
                         message: '{0} refuses to appease the fortunes - the effects of {3} are canceled'
                     }
                 },
-                messageArgs: [context.player, (context as any).event.card]
+                messageArgs: [context.player, (context as TriggeredAbilityContext).event.card]
             })),
             effect: 'enforce the proper protocol'
         });

@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, CardTypes } from '../../Constants.js';
 
@@ -8,7 +8,7 @@ class TestOfCourage extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Move a character into conflict',
-            condition: context => context.player.opponent && context.player.showBid < context.player.opponent.showBid,
+            condition: context => !!(context.player.opponent && context.player.showBid < context.player.opponent.showBid),
             target: {
                 cardType: CardTypes.Character,
                 controller: Players.Self,

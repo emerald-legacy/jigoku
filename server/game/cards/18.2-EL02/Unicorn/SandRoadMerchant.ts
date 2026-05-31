@@ -1,7 +1,7 @@
 import { Locations, PlayTypes, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import DrawCard from '../../../drawcard.js';
-import Player from '../../../player.js';
+import DrawCard from '../../../DrawCard.js';
+import Player from '../../../Player.js';
 
 export default class SandRoadMerchant extends DrawCard {
     static id = 'sand-road-merchant';
@@ -26,9 +26,9 @@ export default class SandRoadMerchant extends DrawCard {
             effect: 'look at the top two cards of their opponent\'s conflict deck',
             when: {
                 onConflictDeclared: (event, context) =>
-                    event.attackers.includes(context.source) && context.player.opponent !== undefined,
+                    (event.attackers ?? []).includes(context.source) && context.player.opponent !== undefined,
                 onDefendersDeclared: (event, context) =>
-                    event.defenders.includes(context.source) && context.player.opponent !== undefined
+                    (event.defenders ?? []).includes(context.source) && context.player.opponent !== undefined
             },
             gameAction: AbilityDsl.actions.sequentialContext((context) => ({
                 gameActions: [

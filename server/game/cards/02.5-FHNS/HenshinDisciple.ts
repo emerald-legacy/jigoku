@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Elements } from '../../Constants.js';
 
@@ -15,19 +15,19 @@ class HenshinDisciple extends DrawCard {
         this.persistentEffect({
             condition: context =>
                 this.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player) ||
-                (this.game.isDuringConflict(this.getCurrentElementSymbol(elementKeys.air)) && this.game.currentConflict.ring.isContested()),
+                !!(this.game.isDuringConflict(this.getCurrentElementSymbol(elementKeys.air)) && this.game.currentConflict?.ring?.isContested()),
             effect: AbilityDsl.effects.modifyPoliticalSkill(2)
         });
         this.persistentEffect({
             condition: context =>
                 this.game.rings[this.getCurrentElementSymbol(elementKeys.earth)].isConsideredClaimed(context.player) ||
-                (this.game.isDuringConflict(this.getCurrentElementSymbol(elementKeys.earth)) && this.game.currentConflict.ring.isContested()),
+                !!(this.game.isDuringConflict(this.getCurrentElementSymbol(elementKeys.earth)) && this.game.currentConflict?.ring?.isContested()),
             effect: AbilityDsl.effects.modifyMilitarySkill(2)
         });
         this.persistentEffect({
             condition: context =>
                 this.game.rings[this.getCurrentElementSymbol(elementKeys.fire)].isConsideredClaimed(context.player) ||
-                (this.game.isDuringConflict(this.getCurrentElementSymbol(elementKeys.fire)) && this.game.currentConflict.ring.isContested()),
+                !!(this.game.isDuringConflict(this.getCurrentElementSymbol(elementKeys.fire)) && this.game.currentConflict?.ring?.isContested()),
             effect: AbilityDsl.effects.addKeyword('pride')
         });
     }

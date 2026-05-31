@@ -1,12 +1,13 @@
-import DrawCard from '../../drawcard.js';
+import AbilityDsl from '../../abilitydsl.js';
+import DrawCard from '../../DrawCard.js';
 
 class ShikshaScout extends DrawCard {
     static id = 'shiksha-scout';
 
-    setupCardAbilities(ability) {
+    setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isParticipating(),
-            effect: ability.effects.additionalCharactersInConflict(1)
+            effect: AbilityDsl.effects.additionalCharactersInConflict(1)
         });
     }
 }

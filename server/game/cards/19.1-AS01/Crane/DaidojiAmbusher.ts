@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardTypes } from '../../../Constants.js';
-import DrawCard from '../../../drawcard.js';
+import DrawCard from '../../../DrawCard.js';
 
 const enum Timing {
     BEFORE_PENALTY,
@@ -12,7 +12,7 @@ export default class DaidojiAmbusher extends DrawCard {
     static id = 'daidoji-ambusher';
 
     public setupCardAbilities() {
-        this.action({
+        this.action<DrawCard>({
             title: 'Give someone -2 military',
             condition: (context) => context.game.isDuringConflict('military') && context.source.isParticipating(),
             target: {
@@ -43,17 +43,21 @@ export default class DaidojiAmbusher extends DrawCard {
         });
     }
 
-    private triggerKickerEffect(context: AbilityContext, timing: Timing): boolean {
+    private triggerKickerEffect(context: AbilityContext<any, DrawCard>, timing: Timing): boolean {
         const isDishonored = context.source.isDishonored;
+        const target = context.target;
+        if(!target) {
+            return false;
+        }
         const targetZero =
             timing === Timing.BEFORE_PENALTY
-                ? context.target.getMilitarySkill() <= 2
-                : context.target.getMilitarySkill() === 0;
+                ? target.getMilitarySkill() <= 2
+                : target.getMilitarySkill() === 0;
 
         return isDishonored && targetZero;
     }
 
-    private shouldDiscardTarget(context: AbilityContext): boolean {
-        return context.target.getFate() === 0;
+    private shouldDiscardTarget(context: AbilityContext<any, DrawCard>): boolean {
+        return context.target?.getFate() === 0;
     }
 }

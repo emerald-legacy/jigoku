@@ -1,5 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 export default class AgashaSumiko2 extends DrawCard {
@@ -27,7 +27,7 @@ export default class AgashaSumiko2 extends DrawCard {
                 }))
             ]),
             effect: 'make {1} {2}',
-            effectArgs: (context) => [context.player.opponent, this.getChatMessage(context)]
+            effectArgs: (context) => [context.player.opponent as any, this.getChatMessage(context)]
         });
     }
 

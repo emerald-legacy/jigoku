@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Locations } from '../../Constants.js';
 
@@ -15,7 +15,7 @@ class SharpenTheMind extends DrawCard {
                 effect: AbilityDsl.effects.modifyBothSkills(3)
             })),
             effect: 'give +3{1}/+3{2} to {3}',
-            effectArgs: context => ['military', 'political', context.source.parent]
+            effectArgs: context => ['military', 'political', context.source.parent as any]
         });
     }
 }

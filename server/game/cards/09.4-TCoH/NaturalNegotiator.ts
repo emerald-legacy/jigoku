@@ -1,4 +1,4 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Durations } from '../../Constants.js';
 
@@ -14,7 +14,7 @@ class NaturalNegotiator extends DrawCard {
         this.action({
             title: 'Switch attached characters base skills',
             effect: 'switch {1}\'s base {2} and {3} skill',
-            effectArgs: (context) => [context.source.parent, 'military', 'political'],
+            effectArgs: ((context: any) => [context.source.parent as any, 'military', 'political']) as any,
             cost: AbilityDsl.costs.giveHonorToOpponent(),
             condition: (context) => context.game.isDuringConflict(),
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({

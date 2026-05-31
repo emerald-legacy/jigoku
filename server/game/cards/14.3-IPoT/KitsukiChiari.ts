@@ -1,4 +1,5 @@
-import DrawCard from '../../drawcard.js';
+import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { shuffle } from '../../utils/shuffle.js';
 
@@ -31,16 +32,16 @@ class KitsukiChiari extends DrawCard {
                 });
             }),
             effect: 'look at 4 random cards in {1}\'s hand and discard all cards named {2}',
-            effectArgs: context => [context.player.opponent, context.costs.nameCardCost]
+            effectArgs: context => [context.player.opponent as Player, context.costs.nameCardCost as string]
         });
     }
 
-    selectCardName(player, cardName, context) {
+    selectCardName(player: any, cardName: any, context: any) {
         context.costs.kitsukiChiariCost = cardName;
         return true;
     }
 
-    allowAttachment(attachment) {
+    allowAttachment(attachment: any) {
         if(attachment.hasTrait('poison') && !this.isBlank()) {
             return false;
         }
