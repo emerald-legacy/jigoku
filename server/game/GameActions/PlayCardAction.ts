@@ -6,7 +6,7 @@ import { Locations, PlayTypes, Stages } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import type Game from '../Game.js';
-import AbilityResolver from '../gamesteps/abilityresolver.js';
+import AbilityResolver from '../gamesteps/AbilityResolver.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 

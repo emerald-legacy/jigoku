@@ -1,4 +1,4 @@
-import ForcedTriggeredAbilityWindow from './forcedtriggeredabilitywindow.js';
+import ForcedTriggeredAbilityWindow from './ForcedTriggeredAbilityWindow.js';
 import type Game from '../Game.js';
 import type { AbilityTypes } from '../Constants.js';
 import type EventWindow from '../Events/EventWindow.js';

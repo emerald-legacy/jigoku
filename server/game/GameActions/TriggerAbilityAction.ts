@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type CardAbility from '../CardAbility.js';
 import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
-import AbilityResolver from '../gamesteps/abilityresolver.js';
+import AbilityResolver from '../gamesteps/AbilityResolver.js';
 import type Player from '../Player.js';
 import type TriggeredAbility from '../TriggeredAbility.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';

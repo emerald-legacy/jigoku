@@ -1,6 +1,6 @@
 import { UiPrompt } from '../UiPrompt.js';
 import { Locations, CardTypes } from '../../Constants.js';
-import AttackersMatrix from './attackersMatrix.js';
+import AttackersMatrix from './AttackersMatrix.js';
 import { AbilityContext } from '../../AbilityContext.js';
 import CovertAbility from '../../KeywordAbilities/CovertAbility.js';
 import { GameModes } from '../../../GameModes.js';

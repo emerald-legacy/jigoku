@@ -1,5 +1,5 @@
 import EventWindow from './EventWindow.js';
-import TriggeredAbilityWindow from '../gamesteps/triggeredabilitywindow.js';
+import TriggeredAbilityWindow from '../gamesteps/TriggeredAbilityWindow.js';
 import { EventNames, AbilityTypes } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from './Event.js';

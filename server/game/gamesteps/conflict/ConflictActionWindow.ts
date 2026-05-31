@@ -1,7 +1,7 @@
-import ActionWindow from '../actionwindow.js';
+import ActionWindow from '../ActionWindow.js';
 import type Game from '../../Game.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
-import type AbilityResolver from '../abilityresolver.js';
+import type AbilityResolver from '../AbilityResolver.js';
 
 const capitalize: Record<string, string> = {
     military: 'Military',

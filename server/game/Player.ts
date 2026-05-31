@@ -4,7 +4,7 @@ import { PlayerZones } from './PlayerZones.js';
 
 import { GameObject } from './GameObject.js';
 import { Deck } from './Deck.js';
-import AttachmentPrompt from './gamesteps/attachmentprompt.js';
+import AttachmentPrompt from './gamesteps/AttachmentPrompt.js';
 import { clockFor } from './Clocks/ClockSelector.js';
 import { CostReducer } from './CostReducer.js';
 import * as GameActions from './GameActions/GameActions.js';
@@ -28,7 +28,7 @@ import {
 } from './Constants.js';
 import { GameModes } from '../GameModes.js';
 import type Game from './Game.js';
-import type Socket from '../socket.js';
+import type Socket from '../Socket.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';

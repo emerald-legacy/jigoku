@@ -1,6 +1,6 @@
 import { randomInt } from 'crypto';
 import * as GameActions from './GameActions/GameActions.js';
-import HonorBidPrompt from './gamesteps/honorbidprompt.js';
+import HonorBidPrompt from './gamesteps/HonorBidPrompt.js';
 import { Locations, CardTypes, Players } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';

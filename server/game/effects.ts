@@ -1,6 +1,6 @@
 import * as AbilityLimit from './AbilityLimit.js';
 import GainAllAbiliitesDynamic from './Effects/GainAllAbilitiesDynamic.js';
-import Restriction from './Effects/restriction.js';
+import Restriction from './Effects/Restriction.js';
 import { SuppressEffect } from './Effects/SuppressEffect.js';
 import { EffectBuilder } from './Effects/EffectBuilder.js';
 import { attachmentMilitarySkillModifier } from './Effects/Library/attachmentMilitarySkillModifier.js';

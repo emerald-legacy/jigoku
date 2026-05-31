@@ -2,7 +2,7 @@ import { EffectNames, EventNames } from '../../Constants.js';
 import { parseGameMode } from '../../GameMode.js';
 import type Game from '../../Game.js';
 import type { Event } from '../../Events/Event.js';
-import ActionWindow from '../actionwindow.js';
+import ActionWindow from '../ActionWindow.js';
 
 export class DynastyActionWindow extends ActionWindow {
     constructor(game: Game) {

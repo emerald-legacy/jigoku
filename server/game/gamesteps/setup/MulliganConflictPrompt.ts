@@ -1,4 +1,4 @@
-import MulliganDynastyPrompt from './mulligandynastyprompt.js';
+import MulliganDynastyPrompt from './MulliganDynastyPrompt.js';
 import { Locations } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type BaseCard from '../../BaseCard.js';

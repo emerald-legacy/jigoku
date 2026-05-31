@@ -1,4 +1,4 @@
-import ForcedTriggeredAbilityWindow from './forcedtriggeredabilitywindow.js';
+import ForcedTriggeredAbilityWindow from './ForcedTriggeredAbilityWindow.js';
 import { TriggeredAbilityWindowTitle } from './TriggeredAbilityWindowTitle.js';
 import { CardTypes, EventNames, AbilityTypes } from '../Constants.js';
 import type Player from '../Player.js';
@@ -7,7 +7,7 @@ import type { Event } from '../Events/Event.js';
 import type EventWindow from '../Events/EventWindow.js';
 import type TriggeredAbility from '../TriggeredAbility.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
-import type AbilityResolver from './abilityresolver.js';
+import type AbilityResolver from './AbilityResolver.js';
 import type CardAbility from '../CardAbility.js';
 
 class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {

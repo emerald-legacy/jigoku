@@ -3,7 +3,7 @@ import type { Duel } from '../Duel.js';
 import type Game from '../Game.js';
 import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
 import { SimpleStep } from './SimpleStep.js';
-import type HonorBidPrompt from './honorbidprompt.js';
+import type HonorBidPrompt from './HonorBidPrompt.js';
 
 /**
 D. Duel Timing

@@ -3,8 +3,8 @@ import { draw } from '../GameActions/GameActions.js';
 import type Game from '../Game.js';
 import { Phase } from './Phase.js';
 import { SimpleStep } from './SimpleStep.js';
-import ActionWindow from './actionwindow.js';
-import HonorBidPrompt from './honorbidprompt.js';
+import ActionWindow from './ActionWindow.js';
+import HonorBidPrompt from './HonorBidPrompt.js';
 
 /**
  * II Draw Phase

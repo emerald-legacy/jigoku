@@ -11,7 +11,7 @@ import type TriggeredAbility from '../TriggeredAbility.js';
 import type CardAbility from '../CardAbility.js';
 import type Ring from '../Ring.js';
 import type EffectSource from '../EffectSource.js';
-import type AbilityResolver from './abilityresolver.js';
+import type AbilityResolver from './AbilityResolver.js';
 
 class ForcedTriggeredAbilityWindow extends BaseStep {
     choices: TriggeredAbilityContext[];

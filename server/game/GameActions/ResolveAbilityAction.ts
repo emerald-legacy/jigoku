@@ -5,7 +5,7 @@ import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent.js';
 import type Game from '../Game.js';
-import AbilityResolver from '../gamesteps/abilityresolver.js';
+import AbilityResolver from '../gamesteps/AbilityResolver.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import type Player from '../Player.js';
 import type TriggeredAbility from '../TriggeredAbility.js';

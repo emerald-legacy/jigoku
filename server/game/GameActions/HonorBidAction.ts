@@ -1,7 +1,7 @@
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames, Players } from '../Constants.js';
-import HonorBidPrompt from '../gamesteps/honorbidprompt.js';
+import HonorBidPrompt from '../gamesteps/HonorBidPrompt.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import type Player from '../Player.js';
 import type { GameAction } from './GameAction.js';

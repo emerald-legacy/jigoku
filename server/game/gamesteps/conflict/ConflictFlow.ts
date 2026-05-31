@@ -5,11 +5,11 @@ import { discardCard, payFate, payFateToRing, payHonor } from '../../Costs.js';
 import CovertAbility from '../../KeywordAbilities/CovertAbility.js';
 import { bow, loseHonor, resolveConflictRing } from '../../GameActions/GameActions.js';
 import { SimpleStep } from '../SimpleStep.js';
-import ConflictActionWindow from './conflictactionwindow.js';
-import InitiateConflictPrompt from './initiateconflictprompt.js';
-import SelectDefendersPrompt from './selectdefendersprompt.js';
+import ConflictActionWindow from './ConflictActionWindow.js';
+import InitiateConflictPrompt from './InitiateConflictPrompt.js';
+import SelectDefendersPrompt from './SelectDefendersPrompt.js';
 import InitiateCardAbilityEvent from '../../Events/InitiateCardAbilityEvent.js';
-import AttackersMatrix from './attackersMatrix.js';
+import AttackersMatrix from './AttackersMatrix.js';
 
 import { Players, CardTypes, EventNames, EffectNames, Locations, ConflictTypes } from '../../Constants.js';
 import { GameModes } from '../../../GameModes.js';

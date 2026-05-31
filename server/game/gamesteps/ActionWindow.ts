@@ -4,7 +4,7 @@ import type Game from '../Game.js';
 import type Player from '../Player.js';
 import type BaseCard from '../BaseCard.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type AbilityResolver from './abilityresolver.js';
+import type AbilityResolver from './AbilityResolver.js';
 
 class ActionWindow extends UiPrompt {
     title: string;

@@ -6,7 +6,7 @@ import type Game from '../Game.js';
 import type Player from '../Player.js';
 import { Phase } from './Phase.js';
 import { SimpleStep } from './SimpleStep.js';
-import ActionWindow from './actionwindow.js';
+import ActionWindow from './ActionWindow.js';
 
 /**
  * III Conflict Phase

@@ -1,4 +1,4 @@
-import ForcedTriggeredAbilityWindow from './forcedtriggeredabilitywindow.js';
+import ForcedTriggeredAbilityWindow from './ForcedTriggeredAbilityWindow.js';
 import type Game from '../Game.js';
 
 class SimultaneousEffectWindow extends ForcedTriggeredAbilityWindow {

@@ -3,7 +3,7 @@ import { Conflict } from './Conflict.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type Game from './Game.js';
-import ConflictFlow from './gamesteps/conflict/conflictflow.js';
+import ConflictFlow from './gamesteps/conflict/ConflictFlow.js';
 import type Player from './Player.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type Ring from './Ring.js';

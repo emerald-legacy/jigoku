@@ -1,4 +1,4 @@
-import ChatCommands from './chatcommands.js';
+import ChatCommands from './ChatCommands.js';
 import { GameChat } from './GameChat.js';
 import { EffectEngine } from './EffectEngine.js';
 import Player from './Player.js';
@@ -19,13 +19,13 @@ import InitiateCardAbilityEvent from './Events/InitiateCardAbilityEvent.js';
 import EventWindow from './Events/EventWindow.js';
 import ThenEventWindow from './Events/ThenEventWindow.js';
 import InitiateAbilityEventWindow from './Events/InitiateAbilityEventWindow.js';
-import AbilityResolver from './gamesteps/abilityresolver.js';
+import AbilityResolver from './gamesteps/AbilityResolver.js';
 import SimultaneousEffectWindow from './gamesteps/SimultaneousEffectWindow.js';
 import { AbilityContext } from './AbilityContext.js';
 import Ring from './Ring.js';
 import { Conflict } from './Conflict.js';
 import { Duel } from './Duel.js';
-import ConflictFlow from './gamesteps/conflict/conflictflow.js';
+import ConflictFlow from './gamesteps/conflict/ConflictFlow.js';
 import * as MenuCommands from './MenuCommands.js';
 import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
 

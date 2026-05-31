@@ -1,10 +1,10 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { BaseStepWithPipeline } from '../gamesteps/BaseStepWithPipeline.js';
-import ForcedTriggeredAbilityWindow from '../gamesteps/forcedtriggeredabilitywindow.js';
+import ForcedTriggeredAbilityWindow from '../gamesteps/ForcedTriggeredAbilityWindow.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
-import TriggeredAbilityWindow from '../gamesteps/triggeredabilitywindow.js';
+import TriggeredAbilityWindow from '../gamesteps/TriggeredAbilityWindow.js';
 import { AbilityTypes } from '../Constants.js';
-import KeywordAbilityWindow from '../gamesteps/keywordabilitywindow.js';
+import KeywordAbilityWindow from '../gamesteps/KeywordAbilityWindow.js';
 import type Game from '../Game.js';
 import type { Event } from './Event.js';
 
