@@ -19,7 +19,7 @@ import StaticEffect from './StaticEffect.js';
 
 type PlayerOrRingOrCardOrToken = Player | Ring | BaseCard | StatusToken;
 
-type EffectTarget = PlayerOrRingOrCardOrToken;
+export type EffectTarget = PlayerOrRingOrCardOrToken;
 type StaticValue = unknown;
 type DynamicValue = (target: EffectTarget, context: AbilityContext) => unknown;
 type DetachedValue = {

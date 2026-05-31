@@ -3,13 +3,14 @@ import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { AshigaruRecruit } from '../../AshigaruRecruit.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
+import type { Event } from '../../../Events/Event.js';
 
 function putAshigaruTokenIntoPlay(context: AbilityContext) {
     const card = context.player.dynastyDeck[0];
     const token = context.game.createToken(card, AshigaruRecruit);
     card.owner.removeCardFromPile(card);
     card.moveTo(Locations.RemovedFromGame);
-    const moveEvents: any[] = [];
+    const moveEvents: Event[] = [];
     context.game.actions.putIntoPlay({ target: token }).addEventsToArray(moveEvents, context);
     context.game.openThenEventWindow(moveEvents);
     return true;

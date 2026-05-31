@@ -1,15 +1,22 @@
-import BaseCardSelector from './BaseCardSelector.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import BaseCardSelector, { type BaseCardSelectorProperties } from './BaseCardSelector.js';
+
+type SelectChoices = Record<string, (context: AbilityContext) => boolean>;
+
+interface SelectSelectorProperties extends BaseCardSelectorProperties {
+    choices: SelectChoices;
+}
 
 class SelectSelector extends BaseCardSelector {
-    choices: Record<string, (context: any) => boolean>;
+    choices: SelectChoices;
 
-    constructor(properties: any) {
+    constructor(properties: SelectSelectorProperties) {
         super(properties);
         this.choices = properties.choices;
     }
 
-    hasEnoughTargets(context: any): boolean {
-        return Object.values(this.choices).some((condition: (context: any) => boolean) => condition(context));
+    hasEnoughTargets(context: AbilityContext): boolean {
+        return Object.values(this.choices).some((condition: (context: AbilityContext) => boolean) => condition(context));
     }
 
     defaultActivePromptTitle(): string {

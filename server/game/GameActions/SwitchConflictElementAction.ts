@@ -1,4 +1,6 @@
+import type { Event } from '../Events/Event.js';
 import { AbilityContext } from '../AbilityContext.js';
+import type { Conflict } from '../Conflict.js';
 import { EventNames } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
@@ -19,7 +21,8 @@ export class SwitchConflictElementAction extends RingAction {
         );
     }
 
-    eventHandler(event: any): void {
-        event.context.game.currentConflict.switchElement(event.ring.element);
+    eventHandler(event: Event): void {
+        const context = event.context as AbilityContext;
+        (context.game.currentConflict as Conflict).switchElement(event.ring.element);
     }
 }

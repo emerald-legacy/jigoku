@@ -15,9 +15,9 @@ export interface SelectTokenProperties extends TokenActionProperties {
     singleToken?: boolean;
     tokenCondition?: (token: StatusToken, context: AbilityContext) => boolean;
     cancelHandler?: () => void;
-    subActionProperties?: (token: any) => Record<string, unknown>;
+    subActionProperties?: (tokens: StatusToken | StatusToken[]) => Record<string, unknown>;
     message?: string;
-    messageArgs?: (token: any, player: Player) => unknown[];
+    messageArgs?: (tokens: StatusToken | StatusToken[], player: Player) => unknown[];
     gameAction: GameAction;
     effect?: string;
     effectArgs?: (context: AbilityContext) => string[];
@@ -58,7 +58,7 @@ export class SelectTokenAction extends TokenAction {
         }
         return Object.assign(properties, {
             tokenCondition: properties.tokenCondition ?? (() => true),
-            subActionProperties: properties.subActionProperties ?? ((token: any) => ({ target: token })),
+            subActionProperties: properties.subActionProperties ?? ((tokens: StatusToken | StatusToken[]) => ({ target: tokens })),
             card: properties.card
         });
     }

@@ -1,5 +1,3 @@
-import type { AbilityContext } from '../AbilityContext.js';
-import type BaseCard from '../BaseCard.js';
 import { AddTokenAction, AddTokenProperties } from './AddTokenAction.js';
 import { AffinityAction, AffinityActionProperties } from './AffinityAction.js';
 import { AttachAction, AttachActionProperties } from './AttachAction.js';
@@ -102,7 +100,7 @@ import { TriggerAbilityAction, TriggerAbilityProperties } from './TriggerAbility
 import { TurnCardFacedownAction, TurnCardFacedownProperties } from './TurnCardFacedownAction.js';
 
 type PropsFactory<Props, Target = unknown> =
-    Props | ((context: [Target] extends [BaseCard] ? AbilityContext<any, Target> : any) => Props);
+    Props | ((context: any) => Props);
 
 //////////////
 // CARD

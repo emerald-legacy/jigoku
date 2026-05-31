@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames } from '../Constants.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
@@ -19,12 +20,12 @@ export class BreakAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event: any, card: ProvinceCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, card: ProvinceCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.conflict = context.game.currentConflict;
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         event.card.breakProvince();
     }
 }

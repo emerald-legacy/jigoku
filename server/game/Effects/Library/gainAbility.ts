@@ -5,11 +5,10 @@ import type {
     TriggeredAbilityProps,
     TriggeredAbilityWhenProps
 } from '../../Interfaces.js';
-import type CardEffect from '../CardEffect.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import GainAbility from '../GainAbility.js';
 
-type Res = (game: any, source: any, props: any) => CardEffect;
+type Res = ReturnType<typeof EffectBuilder.card.static>;
 
 export function gainAbility(abilityType: AbilityTypes.Action, properties: ActionProps): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overloads are not true redeclarations

@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CharacterStatus, EventNames } from '../Constants.js';
@@ -32,18 +33,18 @@ export class GainStatusTokenAction extends CardGameAction<GainStatusTokenPropert
         return super.canAffect(card, context);
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context);
         return ['give {0} a {1} status token', [properties.target, properties.token]];
     }
 
-    addPropertiesToEvent(event: any, card: BaseCard, context: AbilityContext, additionalProperties = {}): void {
+    addPropertiesToEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties = {}): void {
         const { token } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.token = token;
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         event.card.addStatusToken(event.token);
     }
 }

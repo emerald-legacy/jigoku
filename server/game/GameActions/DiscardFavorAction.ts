@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
 import Player from '../Player.js';
@@ -15,7 +16,7 @@ export class DiscardFavorAction extends PlayerAction<DiscardFavorProperties> {
         return !!player.imperialFavor && super.canAffect(player, context);
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         event.player.loseImperialFavor();
     }
 }

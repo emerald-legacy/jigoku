@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
 import type Player from '../Player.js';
@@ -30,7 +31,7 @@ export class ModifyBidAction extends PlayerAction {
         return [context.player];
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties: ModifyBidProperties = this.getProperties(context);
         if(properties.direction === Direction.Prompt) {
             return ['modify their honor bid by {0}', [properties.amount]];
@@ -46,14 +47,14 @@ export class ModifyBidAction extends PlayerAction {
         return super.canAffect(player, context);
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties: any = {}): void {
+    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let properties: ModifyBidProperties = this.getProperties(context, additionalProperties);
         if(properties.direction !== Direction.Prompt) {
             return super.addEventsToArray(events, context);
         }
         for(const player of properties.target as Player[]) {
             if(player.honorBid === 0) {
-                const event = this.getEvent(player, context, additionalProperties) as any;
+                const event = this.getEvent(player, context, additionalProperties);
                 event.direction = Direction.Increase;
                 context.game.addMessage('{0} chooses to increase their honor bid', player);
                 events.push(event);
@@ -62,7 +63,7 @@ export class ModifyBidAction extends PlayerAction {
                     context: context,
                     choices: ['Increase honor bid', 'Decrease honor bid'],
                     choiceHandler: (choice: string) => {
-                        const event = this.getEvent(player, context, additionalProperties) as any;
+                        const event = this.getEvent(player, context, additionalProperties);
                         if(choice === 'Increase honor bid') {
                             context.game.addMessage('{0} chooses to increase their honor bid', player);
                             event.direction = Direction.Increase;
@@ -77,14 +78,14 @@ export class ModifyBidAction extends PlayerAction {
         }
     }
 
-    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, direction } = this.getProperties(context, additionalProperties) as ModifyBidProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.direction = direction;
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         if(event.direction === Direction.Increase) {
             event.player.honorBidModifier += event.amount;
         } else {

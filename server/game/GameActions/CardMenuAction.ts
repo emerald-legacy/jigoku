@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { Players } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -11,11 +12,11 @@ export interface CardMenuProperties extends CardActionProperties {
     cards: DrawCard[];
     cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
     choices?: string[];
-    handlers?: ((...args: any[]) => any)[];
+    handlers?: ((...args: unknown[]) => unknown)[];
     targets?: boolean;
     message?: string;
-    messageArgs?: (card: DrawCard, player: Player, cards: DrawCard[]) => any[];
-    subActionProperties?: (card: DrawCard) => any;
+    messageArgs?: (card: DrawCard, player: Player, cards: DrawCard[]) => unknown[];
+    subActionProperties?: (card: DrawCard) => Record<string, unknown>;
     gameAction: GameAction;
     gameActionHasLegalTarget?: (context: AbilityContext) => boolean;
 }
@@ -71,9 +72,9 @@ export class CardMenuAction extends CardGameAction<CardMenuProperties> {
         );
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
-        let cardCondition = (card: any, context: any) =>
+        let cardCondition = (card: DrawCard, context: AbilityContext) =>
             properties.gameAction.hasLegalTarget(
                 context,
                 Object.assign({}, additionalProperties, properties.subActionProperties(card))

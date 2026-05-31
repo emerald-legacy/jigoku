@@ -19,7 +19,7 @@ export class FillProvinceAction extends PlayerAction<FillProvinceProperties> {
         return [context.player];
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as FillProvinceProperties;
         return ['fills {0} to {1} cards!', [properties.location, properties.fillTo]];
     }
@@ -34,7 +34,7 @@ export class FillProvinceAction extends PlayerAction<FillProvinceProperties> {
         if(properties.faceup) {
             context.game.queueSimpleStep(() => {
                 let cards = player.getDynastyCardsInProvince(properties.location);
-                cards.forEach((card: any) => {
+                cards.forEach((card) => {
                     if(card) {
                         card.facedown = false;
                     }

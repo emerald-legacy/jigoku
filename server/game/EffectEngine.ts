@@ -196,7 +196,8 @@ export class EffectEngine {
     createCustomDurationHandler(customDurationEffect: Effect) {
         return (...args: unknown[]) => {
             const event = args[0] as Event;
-            const listener = customDurationEffect.until?.[event.name];
+            const until: any = customDurationEffect.until;
+            const listener = until?.[event.name];
             if(listener && listener(...args)) {
                 customDurationEffect.cancel();
                 this.unregisterCustomDurationEvents(customDurationEffect);

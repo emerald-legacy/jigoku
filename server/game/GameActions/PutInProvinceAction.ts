@@ -32,12 +32,12 @@ export class PutInProvinceAction extends CardGameAction {
         super(properties);
     }
 
-    getCostMessage(context: AbilityContext): [string, any[]] {
+    getCostMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as PutInProvinceProperties;
         return ['putting {0} into {1}}', [properties.target, properties.destination]];
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as PutInProvinceProperties;
         const target = properties.target as BaseCard | BaseCard[];
         let destinationController = Array.isArray(target)

@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAction from '../BaseAction.js';
+import type BaseCard from '../BaseCard.js';
 import type BaseCardAbility from '../BaseCardAbility.js';
 import { Locations, PlayTypes, Stages } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -104,7 +105,7 @@ export interface PlayCardProperties extends CardActionProperties {
     destinationOptions?: { bottom?: boolean; [key: string]: unknown };
     payCosts?: boolean;
     ignoreFateCost?: boolean;
-    source?: any;
+    source?: BaseCard;
     allowReactions?: boolean;
     ignoredRequirements?: string[];
     playAction?: BaseAction | BaseAction[];
@@ -122,7 +123,7 @@ export class PlayCardAction extends CardGameAction {
         allowReactions: false,
         ignoredRequirements: [],
         playAction: undefined,
-        source: null
+        source: undefined
     };
     constructor(properties: ((context: AbilityContext) => PlayCardProperties) | PlayCardProperties) {
         super(properties);

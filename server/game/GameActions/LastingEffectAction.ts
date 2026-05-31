@@ -34,7 +34,7 @@ export class LastingEffectAction<P extends LastingEffectProperties = LastingEffe
     getProperties(
         context: AbilityContext,
         additionalProperties = {}
-    ): LastingEffectProperties & { effect?: Array<any> } {
+    ): LastingEffectProperties & { effect: Array<any> } {
         let properties = super.getProperties(context, additionalProperties) as LastingEffectProperties & {
             effect: Array<any>;
         };
@@ -49,13 +49,13 @@ export class LastingEffectAction<P extends LastingEffectProperties = LastingEffe
         return properties.effect.length > 0;
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties: any): void {
+    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties: Record<string, unknown>): void {
         if(this.hasLegalTarget(context, additionalProperties)) {
             events.push(this.getEvent(null, context, additionalProperties));
         }
     }
 
-    eventHandler(event: Event, additionalProperties: any): void {
+    eventHandler(event: Event, additionalProperties: Record<string, unknown>): void {
         let properties = this.getProperties((event.context as AbilityContext), additionalProperties);
         if(!properties.ability) {
             properties.ability = (event.context as AbilityContext).ability;

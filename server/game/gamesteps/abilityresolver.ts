@@ -5,6 +5,29 @@ import InitiateAbilityEventWindow from '../Events/InitiateAbilityEventWindow.js'
 import { Locations, Stages, CardTypes, EventNames } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from '../Events/Event.js';
+import type BaseAbility from '../BaseAbility.js';
+import type CardAbility from '../CardAbility.js';
+
+type AbilityResolverTarget = Parameters<BaseAbility['resolveRemainingTargets']>[1];
+
+interface AbilityResolverTargetResults {
+    canIgnoreAllCosts?: boolean;
+    cancelled?: boolean;
+    payCostsFirst?: boolean;
+    delayTargeting?: AbilityResolverTarget | null;
+    playCosts?: boolean;
+    triggerCosts?: boolean;
+    events?: Event[];
+    canCancel?: boolean;
+}
+
+interface AbilityResolverCostResults {
+    cancelled: boolean;
+    canCancel: boolean;
+    events: Event[];
+    playCosts: boolean;
+    triggerCosts: boolean;
+}
 
 class AbilityResolver extends BaseStepWithPipeline {
     context: any;
@@ -12,9 +35,9 @@ class AbilityResolver extends BaseStepWithPipeline {
     initiateAbility: boolean;
     passPriority: boolean;
     events: Event[];
-    provincesToRefill: any[];
-    targetResults: any;
-    costResults: any;
+    provincesToRefill: unknown[];
+    targetResults: AbilityResolverTargetResults;
+    costResults: AbilityResolverCostResults;
     cancelled?: boolean;
 
     constructor(game: Game, context: any) {
@@ -52,7 +75,7 @@ class AbilityResolver extends BaseStepWithPipeline {
             return;
         }
         let eventName = EventNames.OnAbilityResolverInitiated;
-        let eventProps: any = {
+        let eventProps: Record<string, unknown> = {
             context: this.context
         };
         if(this.context.ability.isCardAbility()) {
@@ -99,7 +122,7 @@ class AbilityResolver extends BaseStepWithPipeline {
 
     resolveEarlyTargets() {
         this.context.stage = Stages.PreTarget;
-        if(!this.context.ability.cannotTargetFirst) {
+        if(!(this.context.ability as CardAbility).cannotTargetFirst) {
             this.targetResults = this.context.ability.resolveTargets(this.context);
         }
     }
@@ -191,12 +214,13 @@ class AbilityResolver extends BaseStepWithPipeline {
         }
 
         // Increment limits (limits aren't used up on cards in hand)
-        if(this.context.ability.limit && this.context.source.location !== Locations.Hand &&
+        const cardAbility = this.context.ability as CardAbility;
+        if(cardAbility.limit && this.context.source.location !== Locations.Hand &&
            (!this.context.cardStateWhenInitiated || this.context.cardStateWhenInitiated.location === this.context.source.location)) {
-            this.context.ability.limit.increment(this.context.player);
+            cardAbility.limit.increment(this.context.player);
         }
-        if(this.context.ability.max) {
-            this.context.player.incrementAbilityMax(this.context.ability.maxIdentifier);
+        if(cardAbility.max) {
+            this.context.player.incrementAbilityMax(cardAbility.maxIdentifier);
         }
         this.context.ability.displayMessage(this.context);
 

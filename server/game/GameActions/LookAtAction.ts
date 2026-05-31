@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { EventNames, Locations } from '../Constants.js';
@@ -5,7 +6,7 @@ import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 
 export interface LookAtProperties extends CardActionProperties {
     message?: string | ((context: AbilityContext) => string);
-    messageArgs?: (cards: any) => any[];
+    messageArgs?: (cards: BaseCard[]) => unknown[];
 }
 
 export class LookAtAction extends CardGameAction {
@@ -23,7 +24,7 @@ export class LookAtAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
         let { target } = this.getProperties(context, additionalProperties);
         let cards = (target as BaseCard[]).filter((card) => this.canAffect(card, context));
         if(cards.length === 0) {
@@ -34,22 +35,23 @@ export class LookAtAction extends CardGameAction {
         events.push(event);
     }
 
-    addPropertiesToEvent(event: any, cards: any, context: AbilityContext, additionalProperties: any): void {
+    addPropertiesToEvent(event: Event, cards: unknown, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+        let resolved: BaseCard[];
         if(!cards) {
-            cards = this.getProperties(context, additionalProperties).target;
+            const target = this.getProperties(context, additionalProperties).target;
+            resolved = (Array.isArray(target) ? target : [target]) as BaseCard[];
+        } else {
+            resolved = (Array.isArray(cards) ? cards : [cards]) as BaseCard[];
         }
-        if(!Array.isArray(cards)) {
-            cards = [cards];
-        }
-        event.cards = cards;
-        event.stateBeforeResolution = cards.map((a: BaseCard) => {
+        event.cards = resolved;
+        event.stateBeforeResolution = resolved.map((a: BaseCard) => {
             return { card: a, location: a.location };
         });
         event.context = context;
     }
 
-    eventHandler(event: any, additionalProperties = {}): void {
-        let context = event.context;
+    eventHandler(event: Event, additionalProperties = {}): void {
+        let context = event.context as AbilityContext;
         let properties = this.getProperties(context, additionalProperties) as LookAtProperties;
         let messageArgs = properties.messageArgs ? properties.messageArgs(event.cards) : [context.source, event.cards];
         context.game.addMessage(this.getMessage(properties.message, context), ...messageArgs);
@@ -62,7 +64,7 @@ export class LookAtAction extends CardGameAction {
         return message ?? '';
     }
 
-    isEventFullyResolved(event: any): boolean {
+    isEventFullyResolved(event: Event): boolean {
         return !event.cancelled && event.name === this.eventName;
     }
 

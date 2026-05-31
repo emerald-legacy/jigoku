@@ -1,15 +1,49 @@
 import CardSelector from '../CardSelector.js';
 import { Stages, Players } from '../Constants.js';
+import type { CardTypes } from '../Constants.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../BaseCard.js';
+import type Player from '../Player.js';
+import type CardAbility from '../CardAbility.js';
+import type { GameAction } from '../GameActions/GameAction.js';
+
+type CardSelectorInstance = ReturnType<typeof CardSelector.for>;
+
+interface OwningAbility {
+    targets: { name: string }[];
+}
+
+interface AbilityTargetAbilityProperties {
+    gameAction: GameAction[];
+    cardType?: CardTypes | CardTypes[];
+    abilityCondition?: (ability: CardAbility) => boolean;
+    cardCondition?: (card: BaseCard, context: AbilityContext) => boolean;
+    dependsOn?: string;
+    player?: ((context: AbilityContext) => Players) | Players;
+    [key: string]: unknown;
+}
+
+interface AbilityTargetResults {
+    cancelled?: boolean;
+    payCostsFirst?: boolean;
+    delayTargeting?: AbilityTargetAbility | null;
+    costsFirst?: boolean;
+}
+
+interface PromptButton {
+    text: string;
+    arg: string;
+}
 
 class AbilityTargetAbility {
     name: string;
-    properties: any;
-    abilityCondition: (ability: any) => boolean;
-    selector: any;
+    properties: AbilityTargetAbilityProperties;
+    abilityCondition: (ability: CardAbility) => boolean;
+    selector: CardSelectorInstance;
     dependentTarget: AbilityTargetAbility | null;
-    dependentCost: any;
+    dependentCost: { canPay(context: AbilityContext): boolean } | null;
 
-    constructor(name: string, properties: any, ability: any) {
+    constructor(name: string, properties: AbilityTargetAbilityProperties, ability: OwningAbility) {
         this.name = name;
         this.properties = properties;
         this.abilityCondition = properties.abilityCondition || (() => true);
@@ -17,45 +51,47 @@ class AbilityTargetAbility {
         this.dependentTarget = null;
         this.dependentCost = null;
         if(this.properties.dependsOn) {
-            let dependsOnTarget = ability.targets.find((target: any) => target.name === this.properties.dependsOn);
-            dependsOnTarget.dependentTarget = this;
+            let dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
+            if(dependsOnTarget) {
+                (dependsOnTarget as AbilityTargetAbility).dependentTarget = this;
+            }
         }
     }
 
-    getSelector(properties: any): any {
-        let cardCondition = (card: any, context: any) => {
-            let abilities = card.actions.concat(card.reactions).filter((ability: any) => ability.isTriggeredAbility() && this.abilityCondition(ability));
-            return abilities.some((ability: any) => {
-                let contextCopy = context.copy();
+    getSelector(properties: AbilityTargetAbilityProperties): CardSelectorInstance {
+        let cardCondition = (card: BaseCard, context: AbilityContext) => {
+            let abilities = (card.actions as CardAbility[]).concat(card.reactions).filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
+            return abilities.some((ability) => {
+                let contextCopy = context.copy({});
                 contextCopy.targetAbility = ability;
                 if(context.stage === Stages.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
                     return false;
                 }
                 return (!properties.cardCondition || properties.cardCondition(card, contextCopy)) &&
                        (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
-                       properties.gameAction.some((gameAction: any) => gameAction.hasLegalTarget(contextCopy));
+                       properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy));
             });
         };
         return CardSelector.for(Object.assign({}, properties, { cardCondition: cardCondition, targets: false }));
     }
 
-    canResolve(context: any): boolean {
+    canResolve(context: AbilityContext): boolean {
         return !!this.properties.dependsOn || this.hasLegalTarget(context);
     }
 
-    hasLegalTarget(context: any): boolean {
+    hasLegalTarget(context: AbilityContext): boolean {
         return this.selector.optional || this.selector.hasEnoughTargets(context, this.getChoosingPlayer(context));
     }
 
-    getAllLegalTargets(context: any): any[] {
+    getAllLegalTargets(context: AbilityContext): BaseCard[] {
         return this.selector.getAllLegalTargets(context, this.getChoosingPlayer(context));
     }
 
-    getGameAction(context: any): any[] {
-        return this.properties.gameAction.filter((gameAction: any) => gameAction.hasLegalTarget(context));
+    getGameAction(context: AbilityContext): GameAction[] {
+        return this.properties.gameAction.filter((gameAction) => gameAction.hasLegalTarget(context));
     }
 
-    resolve(context: any, targetResults: any): void {
+    resolve(context: AbilityContext, targetResults: AbilityTargetResults): void {
         if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
             return;
         }
@@ -64,7 +100,7 @@ class AbilityTargetAbility {
             targetResults.delayTargeting = this;
             return;
         }
-        let buttons: any[] = [];
+        let buttons: PromptButton[] = [];
         let waitingPromptTitle = '';
         if(context.stage === Stages.PreTarget) {
             buttons.push({ text: 'Cancel', arg: 'cancel' });
@@ -79,20 +115,20 @@ class AbilityTargetAbility {
             buttons: buttons,
             context: context,
             selector: this.selector,
-            onSelect: (player: any, card: any) => {
-                let abilities = card.actions.concat(card.reactions).filter((ability: any) => ability.isTriggeredAbility() && this.abilityCondition(ability));
+            onSelect: (player: Player, card: BaseCard) => {
+                let abilities = (card.actions as CardAbility[]).concat(card.reactions).filter((ability) => ability.isTriggeredAbility() && this.abilityCondition(ability));
                 if(abilities.length === 1) {
                     context.targetAbility = abilities[0];
                 } else if(abilities.length > 1) {
                     context.game.promptWithHandlerMenu(player, {
                         activePromptTitle: 'Choose an ability',
                         context: context,
-                        choices: abilities.map((ability: any) => ability.title).concat('Back'),
+                        choices: abilities.map((ability) => ability.title).concat('Back'),
                         choiceHandler: (choice: string) => {
                             if(choice === 'Back') {
                                 context.game.queueSimpleStep(() => this.resolve(context, targetResults));
                             } else {
-                                context.targetAbility = abilities.find((ability: any) => ability.title === choice);
+                                context.targetAbility = abilities.find((ability) => ability.title === choice) as CardAbility;
                             }
                         }
                     });
@@ -103,7 +139,7 @@ class AbilityTargetAbility {
                 targetResults.cancelled = true;
                 return true;
             },
-            onMenuCommand: (player: any, arg: string) => {
+            onMenuCommand: (_player: Player, arg: string) => {
                 if(arg === 'costsFirst') {
                     targetResults.costsFirst = true;
                     return true;
@@ -114,7 +150,7 @@ class AbilityTargetAbility {
         context.game.promptForSelect(player, Object.assign(promptProperties, this.properties));
     }
 
-    checkTarget(context: any): boolean {
+    checkTarget(context: AbilityContext): boolean {
         if(!context.targetAbility || context.choosingPlayerOverride && this.getChoosingPlayer(context) === context.player) {
             return false;
         }
@@ -123,16 +159,16 @@ class AbilityTargetAbility {
                this.abilityCondition(context.targetAbility);
     }
 
-    getChoosingPlayer(context: any): any {
+    getChoosingPlayer(context: AbilityContext): Player {
         let playerProp = this.properties.player;
         if(typeof playerProp === 'function') {
             playerProp = playerProp(context);
         }
-        return playerProp === Players.Opponent ? context.player.opponent : context.player;
+        return playerProp === Players.Opponent ? (context.player.opponent as Player) : context.player;
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: any): boolean {
-        if(this.properties.gameAction.some((action: any) => action.hasTargetsChosenByInitiatingPlayer(context))) {
+    hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
+        if(this.properties.gameAction.some((action) => action.hasTargetsChosenByInitiatingPlayer(context))) {
             return true;
         }
         return this.getChoosingPlayer(context) === context.player;

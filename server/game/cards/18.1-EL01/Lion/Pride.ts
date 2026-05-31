@@ -2,6 +2,7 @@ import { CardTypes, Locations, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import Soldier from '../../Soldier.js';
+import type { Event } from '../../../Events/Event.js';
 
 export default class Pride extends StrongholdCard {
     static id = 'pride';
@@ -25,7 +26,7 @@ export default class Pride extends StrongholdCard {
                         const token = context.game.createToken(card, Soldier);
                         card.owner.removeCardFromPile(card);
                         card.moveTo(Locations.RemovedFromGame);
-                        const moveEvents: any[] = [];
+                        const moveEvents: Event[] = [];
                         context.game.actions
                             .attach({ target: context.target, attachment: token })
                             .addEventsToArray(moveEvents, context);

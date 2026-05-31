@@ -1,17 +1,29 @@
 import { EffectValue } from './EffectValue.js';
 import GainAbility from './GainAbility.js';
 import { AbilityTypes } from '../Constants.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../BaseCard.js';
+import type CardAbility from '../CardAbility.js';
+import type { CardAction } from '../CardAction.js';
+import type TriggeredAbility from '../TriggeredAbility.js';
+
+type DynamicMatch = ((target: BaseCard, context: AbilityContext) => BaseCard | BaseCard[]) | BaseCard | BaseCard[];
+
+interface GainedAbilities {
+    actions: unknown[];
+    reactions: TriggeredAbility[];
+}
 
 // This ignores persistent effects since it's used by Shosuro Deceiver who only takes triggered abilities
-export default class GainAllAbilitiesDynamic extends EffectValue<any> {
-    match: any;
+export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch> {
+    match: DynamicMatch;
     createdAbilities: Record<string, GainAbility>;
-    abilitiesForTargets: Record<string, { actions: any[]; reactions: any[] }>;
+    abilitiesForTargets: Record<string, GainedAbilities>;
     actions: GainAbility[];
     reactions: GainAbility[];
-    persistentEffects: any[];
+    persistentEffects: unknown[];
 
-    constructor(match: any) {
+    constructor(match: DynamicMatch) {
         super(match);
         this.match = match;
         this.createdAbilities = {};
@@ -21,31 +33,29 @@ export default class GainAllAbilitiesDynamic extends EffectValue<any> {
         this.persistentEffects = [];
     }
 
-    _setAbilities(cards: any, target: any) {
-        if(!Array.isArray(cards)) {
-            cards = [cards];
-        }
+    _setAbilities(cards: BaseCard | BaseCard[], target: BaseCard) {
+        const cardList: BaseCard[] = Array.isArray(cards) ? cards : [cards];
 
         this.actions = [];
         this.reactions = [];
         this.persistentEffects = [];
-        cards.forEach((card: any) => {
+        cardList.forEach((card: BaseCard) => {
             card._getActions(true)
-                .filter((a: any) => a.isTriggeredAbility() && (!card.isBlank() || !a.printedAbility))
-                .forEach((action: any) => this.actions.push(this.getAbility(AbilityTypes.Action, action, target)));
+                .filter((a: CardAction) => a.isTriggeredAbility() && (!card.isBlank() || !a.printedAbility))
+                .forEach((action: CardAction) => this.actions.push(this.getAbility(AbilityTypes.Action, action, target)));
             card._getReactions(true)
-                .filter((a: any) => a.isTriggeredAbility() && (!card.isBlank() || !a.printedAbility))
-                .forEach((ability: any) => {
+                .filter((a: TriggeredAbility) => a.isTriggeredAbility() && (!card.isBlank() || !a.printedAbility))
+                .forEach((ability: TriggeredAbility) => {
                     this.reactions.push(this.getAbility(ability.abilityType, ability, target));
                 });
         });
     }
 
-    getAbilityIdentifier(ability: any): string {
+    getAbilityIdentifier(ability: CardAbility): string {
         return `${ability.abilityIdentifier}-${ability.card.uuid}`;
     }
 
-    getAbility(abilityType: string, ability: any, target: any): GainAbility {
+    getAbility(abilityType: string, ability: CardAbility, target: BaseCard): GainAbility {
         const id = this.getAbilityIdentifier(ability);
         if(!this.createdAbilities[id]) {
             const res = new GainAbility(abilityType, ability);
@@ -55,8 +65,8 @@ export default class GainAllAbilitiesDynamic extends EffectValue<any> {
         return this.createdAbilities[id];
     }
 
-    calculate(target: any, context: any) {
-        let cards: any[] = [];
+    calculate(target: BaseCard, context: AbilityContext) {
+        let cards: BaseCard | BaseCard[] = [];
         if(typeof this.match === 'function') {
             cards = this.match(target, context);
         } else {
@@ -76,7 +86,7 @@ export default class GainAllAbilitiesDynamic extends EffectValue<any> {
         this._applyAbilities(target);
     }
 
-    _applyAbilities(target: any) {
+    _applyAbilities(target: BaseCard) {
         if(this.abilitiesForTargets[target.uuid]) {
             for(const value of this.abilitiesForTargets[target.uuid].reactions) {
                 value.registerEvents();
@@ -84,11 +94,11 @@ export default class GainAllAbilitiesDynamic extends EffectValue<any> {
         }
     }
 
-    _unapplyAbilities(target: any) {
+    _unapplyAbilities(target: BaseCard) {
         this.unapply(target);
     }
 
-    unapply(target: any) {
+    unapply(target: BaseCard) {
         if(this.abilitiesForTargets[target.uuid]) {
             for(const value of this.abilitiesForTargets[target.uuid].reactions) {
                 value.unregisterEvents();
@@ -96,21 +106,21 @@ export default class GainAllAbilitiesDynamic extends EffectValue<any> {
         }
     }
 
-    getActions(target: any): any[] {
+    getActions(target: BaseCard): unknown[] {
         if(this.abilitiesForTargets[target.uuid]) {
             return this.abilitiesForTargets[target.uuid].actions;
         }
         return [];
     }
 
-    getReactions(target: any): any[] {
+    getReactions(target: BaseCard): TriggeredAbility[] {
         if(this.abilitiesForTargets[target.uuid]) {
             return this.abilitiesForTargets[target.uuid].reactions;
         }
         return [];
     }
 
-    getPersistentEffects(): any[] {
+    getPersistentEffects(): unknown[] {
         return this.persistentEffects;
     }
 }

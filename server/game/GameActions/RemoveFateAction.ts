@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
@@ -20,12 +21,12 @@ export class RemoveFateAction extends CardGameAction {
         super(properties);
     }
 
-    getCostMessage(context: AbilityContext): [string, any[]] {
+    getCostMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as RemoveFateProperties;
         return ['removing {1} fate from {0}', [properties.amount]];
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as RemoveFateProperties;
         return ['remove {1} fate from {0}', [properties.target, properties.amount]];
     }
@@ -48,7 +49,7 @@ export class RemoveFateAction extends CardGameAction {
         return true;
     }
 
-    addPropertiesToEvent(event: any, card: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, recipient } = this.getProperties(context, additionalProperties) as RemoveFateProperties;
         event.fate = amount;
         event.recipient = recipient;
@@ -56,11 +57,11 @@ export class RemoveFateAction extends CardGameAction {
         event.context = context;
     }
 
-    checkEventCondition(event: any): boolean {
+    checkEventCondition(event: Event): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: any, card: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         let { amount, recipient } = this.getProperties(context, additionalProperties) as RemoveFateProperties;
         return (
             !event.cancelled &&
@@ -71,7 +72,7 @@ export class RemoveFateAction extends CardGameAction {
         );
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         this.moveFateEventHandler(event);
     }
 }

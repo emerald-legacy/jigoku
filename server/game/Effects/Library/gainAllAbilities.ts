@@ -17,16 +17,16 @@ export class GainAllAbilities extends EffectValue<BaseCard> {
         super(card);
         this.printedOnly = printedOnly;
         this.actions = card.abilities.actions
-            .filter((action: any) => !this.printedOnly || action.printedAbility)
-            .map((action: any) => new GainAbility(AbilityTypes.Action, action));
+            .filter((action: CardAction) => !this.printedOnly || action.printedAbility)
+            .map((action: CardAction) => new GainAbility(AbilityTypes.Action, action));
         //Need to ignore keyword reactions or we double up on the pride / courtesy / sincerity triggers
         this.reactions = card.abilities.reactions
-            .filter((a: any) => !this.printedOnly || a.printedAbility)
-            .filter((a: any) => !a.isKeywordAbility())
-            .map((ability: any) => new GainAbility(ability.abilityType, ability));
+            .filter((a: TriggeredAbility) => !this.printedOnly || a.printedAbility)
+            .filter((a: TriggeredAbility) => !a.isKeywordAbility())
+            .map((ability: TriggeredAbility) => new GainAbility(ability.abilityType, ability));
         this.persistentEffects = card.abilities.persistentEffects
             // .filter(a => !this.printedOnly || a.printedAbility)
-            .map((effect: any) => Object.assign({}, effect));
+            .map((effect) => Object.assign({}, effect));
         this.abilitiesForTargets = {};
     }
 

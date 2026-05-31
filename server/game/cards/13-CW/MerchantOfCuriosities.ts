@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import { Locations, TargetModes, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { Event } from '../../Events/Event.js';
 
 const merchantOfCuriositiesCost = function () {
     return {
@@ -52,7 +53,7 @@ const merchantOfCuriositiesCost = function () {
         },
         payEvent: function (context: any) {
             if(context.costs.merchantOfCuriositiesCostPaid) {
-                let events: any[] = [];
+                let events: Event[] = [];
 
                 let discardAction = context.game.actions.discardCard({ target: context.costs.merchantOfCuriositiesCostDiscardedCard });
                 events.push(discardAction.getEvent(context.costs.merchantOfCuriositiesCostDiscardedCard, context));

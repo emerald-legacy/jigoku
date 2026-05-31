@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
 import type Ring from '../Ring.js';
@@ -16,7 +17,7 @@ export class TakeFateRingAction extends RingAction {
         super(properties);
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as TakeFateRingProperties;
         return [
             '{2} {1} fate from {0}',
@@ -34,7 +35,7 @@ export class TakeFateRingAction extends RingAction {
         );
     }
 
-    addPropertiesToEvent(event: any, ring: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties(context, additionalProperties) as TakeFateRingProperties;
         event.fate = properties.amount;
         event.origin = ring;
@@ -42,11 +43,11 @@ export class TakeFateRingAction extends RingAction {
         event.recipient = properties.removeOnly ? null : context.player;
     }
 
-    checkEventCondition(event: any): boolean {
+    checkEventCondition(event: Event): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: any, ring: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: Event, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         let { amount } = this.getProperties(context, additionalProperties) as TakeFateRingProperties;
         return (
             !event.cancelled &&
@@ -57,7 +58,7 @@ export class TakeFateRingAction extends RingAction {
         );
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         this.moveFateEventHandler(event);
     }
 }

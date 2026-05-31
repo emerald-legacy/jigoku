@@ -1,32 +1,41 @@
-import BaseCardSelector from './BaseCardSelector.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../BaseCard.js';
+import type Player from '../Player.js';
+import BaseCardSelector, { type BaseCardSelectorProperties } from './BaseCardSelector.js';
+
+export interface MaxStatCardSelectorProperties extends BaseCardSelectorProperties {
+    cardStat: (card: BaseCard) => number;
+    maxStat: () => number;
+    numCards: number;
+}
 
 class MaxStatCardSelector extends BaseCardSelector {
-    cardStat: (card: any) => number;
+    cardStat: (card: BaseCard) => number;
     maxStat: () => number;
     numCards: number;
 
-    constructor(properties: any) {
+    constructor(properties: MaxStatCardSelectorProperties) {
         super(properties);
         this.cardStat = properties.cardStat;
         this.maxStat = properties.maxStat;
         this.numCards = properties.numCards;
     }
 
-    canTarget(card: any, context: any, choosingPlayer: any, selectedCards: any[] = []): boolean {
+    canTarget(card: BaseCard, context: AbilityContext, choosingPlayer?: Player, selectedCards: BaseCard[] = []): boolean {
         return super.canTarget(card, context, choosingPlayer, selectedCards) && this.cardStat(card) <= this.maxStat();
     }
 
-    wouldExceedLimit(selectedCards: any[], card: any): boolean {
-        let currentStatSum = selectedCards.reduce((sum: number, c: any) => sum + this.cardStat(c), 0);
+    wouldExceedLimit(selectedCards: BaseCard[], card: BaseCard): boolean {
+        let currentStatSum = selectedCards.reduce((sum: number, c: BaseCard) => sum + this.cardStat(c), 0);
         return this.cardStat(card) + currentStatSum > this.maxStat();
     }
 
-    hasReachedLimit(selectedCards: any[]): boolean {
+    hasReachedLimit(selectedCards: BaseCard[]): boolean {
         return this.numCards > 0 && selectedCards.length >= this.numCards;
     }
 
-    hasExceededLimit(selectedCards: any[]): boolean {
-        let currentStatSum = selectedCards.reduce((sum: number, c: any) => sum + this.cardStat(c), 0);
+    hasExceededLimit(selectedCards: BaseCard[]): boolean {
+        let currentStatSum = selectedCards.reduce((sum: number, c: BaseCard) => sum + this.cardStat(c), 0);
         return currentStatSum > this.maxStat() || (this.numCards > 0 && selectedCards.length > this.numCards);
     }
 }

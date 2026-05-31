@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
 import type { StatusToken } from '../StatusToken.js';
@@ -10,7 +11,7 @@ export class DiscardStatusAction extends TokenAction<DiscardStatusProperties> {
     eventName = EventNames.OnStatusTokenDiscarded;
     cost = 'discarding a status token';
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         const cardsLosingStatus = this.#cardsLosingStatus(context);
         return cardsLosingStatus.length === 0
             ? ['discard a status token', []]
@@ -18,16 +19,16 @@ export class DiscardStatusAction extends TokenAction<DiscardStatusProperties> {
     }
 
     addPropertiesToEvent(
-        event: any,
+        event: Event,
         token: StatusToken,
-        context: AbilityContext<any>,
-        additionalProperties: any
+        context: AbilityContext,
+        additionalProperties: Record<string, unknown>
     ): void {
         super.addPropertiesToEvent(event, token, context, additionalProperties);
         event.cards = this.#cardsLosingStatus(context);
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         const tokens = Array.isArray(event.token) ? event.token : [event.token];
         for(const token of tokens) {
             token.card.removeStatusToken(token);

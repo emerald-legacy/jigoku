@@ -3,6 +3,38 @@ import CardSelector from '../CardSelector.js';
 import EffectSource from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
 import type Player from '../Player.js';
+import type Game from '../Game.js';
+import type BaseCard from '../BaseCard.js';
+import type { GameAction } from '../GameActions/GameAction.js';
+import type BaseCardSelector from '../CardSelectors/BaseCardSelector.js';
+import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
+
+interface PromptButton {
+    text: string;
+    arg: string;
+    [key: string]: unknown;
+}
+
+interface SelectCardPromptProperties {
+    source?: EffectSource | string;
+    context?: AbilityContext;
+    selector?: BaseCardSelector;
+    buttons: PromptButton[];
+    controls?: Array<{ type: string; source: unknown; targets: unknown[] }>;
+    selectCard?: boolean;
+    ordered?: boolean;
+    hideIfNoLegalTargets: boolean;
+    activePromptTitle?: string;
+    waitingPromptTitle?: string;
+    mustSelect?: BaseCard[];
+    gameAction?: GameAction | GameAction[];
+    cardCondition: (card: BaseCard, context: AbilityContext) => boolean;
+    onSelect: (player: Player, cards: BaseCard | BaseCard[]) => boolean;
+    onMenuCommand: (player: Player, arg: string) => boolean;
+    onCancel: (player: Player) => boolean;
+    onCardToggle?: (player: Player, card: BaseCard) => void;
+    [key: string]: unknown;
+}
 
 /**
  * General purpose prompt that asks the user to select 1 or more cards.
@@ -48,17 +80,17 @@ import type Player from '../Player.js';
  */
 class SelectCardPrompt extends UiPrompt {
     choosingPlayer: Player;
-    properties: any;
-    context: any;
+    properties: SelectCardPromptProperties;
+    context: AbilityContext;
     hideIfNoLegalTargets: boolean;
-    selector: any;
-    selectedCards: any[];
-    previouslySelectedCards: any[];
+    selector: BaseCardSelector;
+    selectedCards: BaseCard[];
+    previouslySelectedCards: BaseCard[];
     onlyMustSelectMayBeChosen: boolean;
     cannotUnselectMustSelect: boolean;
-    targets: any[];
+    targets: BaseCard[];
 
-    constructor(game: any, choosingPlayer: Player, properties: any) {
+    constructor(game: Game, choosingPlayer: Player, properties: SelectCardPromptProperties) {
         super(game);
 
         this.choosingPlayer = choosingPlayer;
@@ -68,14 +100,14 @@ class SelectCardPrompt extends UiPrompt {
             properties.source = properties.context.source;
         }
         if(properties.source && !properties.waitingPromptTitle) {
-            properties.waitingPromptTitle = 'Waiting for opponent to use ' + properties.source.name;
+            properties.waitingPromptTitle = 'Waiting for opponent to use ' + (properties.source as EffectSource).name;
         }
         if(!properties.source) {
             properties.source = new EffectSource(game);
         }
 
         this.properties = properties;
-        this.context = properties.context || new AbilityContext({ game: game, player: choosingPlayer, source: properties.source });
+        this.context = properties.context || new AbilityContext({ game: game, player: choosingPlayer, source: properties.source as EffectSource });
         // Apply defaults for missing properties
         const defaults = this.defaultProperties();
         for(const key in defaults) {
@@ -88,8 +120,8 @@ class SelectCardPrompt extends UiPrompt {
                 this.properties.gameAction = [properties.gameAction];
             }
             let cardCondition = this.properties.cardCondition;
-            this.properties.cardCondition = (card: any, context: any) =>
-                cardCondition(card, context) && this.properties.gameAction.some((gameAction: any) => gameAction.canAffect(card, context));
+            this.properties.cardCondition = (card: BaseCard, context: AbilityContext) =>
+                cardCondition(card, context) && (this.properties.gameAction as GameAction[]).some((gameAction: GameAction) => gameAction.canAffect(card, context));
         }
         this.hideIfNoLegalTargets = properties.hideIfNoLegalTargets;
         this.selector = properties.selector || CardSelector.for(this.properties);
@@ -99,7 +131,8 @@ class SelectCardPrompt extends UiPrompt {
         this.targets = [];
         this.previouslySelectedCards = [];
         if(properties.mustSelect) {
-            if(this.selector.hasEnoughSelected(properties.mustSelect, properties.context) && this.selector.numCards > 0 && properties.mustSelect.length >= this.selector.numCards) {
+            const numCards = (this.selector as { numCards?: number }).numCards ?? 0;
+            if(this.selector.hasEnoughSelected(properties.mustSelect, properties.context) && numCards > 0 && properties.mustSelect.length >= numCards) {
                 this.onlyMustSelectMayBeChosen = true;
             } else {
                 this.selectedCards = [...properties.mustSelect];
@@ -109,7 +142,7 @@ class SelectCardPrompt extends UiPrompt {
         this.savePreviouslySelectedCards();
     }
 
-    defaultProperties(): Record<string, any> {
+    defaultProperties(): Record<string, unknown> {
         return {
             buttons: [],
             controls: this.getDefaultControls(),
@@ -122,16 +155,17 @@ class SelectCardPrompt extends UiPrompt {
         };
     }
 
-    getDefaultControls(): any[] {
-        let targets = this.context.targets ? Object.values(this.context.targets) : [];
-        targets = (targets as any[]).reduce((array: any[], target: any) => array.concat(target), []);
-        if((targets as any[]).length === 0 && this.context.event && this.context.event.card) {
-            this.targets = [this.context.event.card];
+    getDefaultControls(): Array<{ type: string; source: unknown; targets: unknown[] }> {
+        const rawTargets: Array<BaseCard | BaseCard[]> = this.context.targets ? Object.values(this.context.targets) : [];
+        const targets = rawTargets.reduce((array: BaseCard[], target: BaseCard | BaseCard[]) => array.concat(target), []);
+        const triggeredContext = this.context as TriggeredAbilityContext;
+        if(targets.length === 0 && triggeredContext.event && triggeredContext.event.card) {
+            this.targets = [triggeredContext.event.card];
         }
         return [{
             type: 'targeting',
             source: this.context.source.getShortSummary(),
-            targets: (targets as any[]).map((target: any) => target.getShortSummaryForControls(this.choosingPlayer))
+            targets: targets.map((target: BaseCard) => target.getShortSummaryForControls(this.choosingPlayer))
         }];
     }
 
@@ -154,7 +188,7 @@ class SelectCardPrompt extends UiPrompt {
     }
 
     highlightSelectableCards(): void {
-        this.choosingPlayer.setSelectableCards(this.selector.findPossibleCards(this.context).filter((card: any) => this.checkCardCondition(card)));
+        this.choosingPlayer.setSelectableCards(this.selector.findPossibleCards(this.context).filter((card: BaseCard) => this.checkCardCondition(card)));
     }
 
     activeCondition(player: Player): boolean {
@@ -164,11 +198,11 @@ class SelectCardPrompt extends UiPrompt {
     activePrompt() {
         let buttons = this.properties.buttons;
         if(!this.selector.automaticFireOnSelect(this.context) && this.selector.hasEnoughSelected(this.selectedCards, this.context) || this.selector.optional) {
-            if(buttons.every((button: any) => button.arg !== 'done')) {
+            if(buttons.every((button: PromptButton) => button.arg !== 'done')) {
                 buttons = [{ text: 'Done', arg: 'done' }].concat(buttons);
             }
         }
-        if(this.game.manualMode && buttons.every((button: any) => button.arg !== 'cancel')) {
+        if(this.game.manualMode && buttons.every((button: PromptButton) => button.arg !== 'cancel')) {
             buttons = buttons.concat({ text: 'Cancel Prompt', arg: 'cancel' });
         }
         return {
@@ -177,7 +211,7 @@ class SelectCardPrompt extends UiPrompt {
             selectOrder: this.properties.ordered,
             menuTitle: this.properties.activePromptTitle || this.selector.defaultActivePromptTitle(this.context),
             buttons: buttons,
-            promptTitle: this.properties.source ? this.properties.source.name : undefined,
+            promptTitle: this.properties.source ? (this.properties.source as EffectSource).name : undefined,
             controls: this.properties.controls
         };
     }
@@ -186,7 +220,7 @@ class SelectCardPrompt extends UiPrompt {
         return { menuTitle: this.properties.waitingPromptTitle || 'Waiting for opponent' };
     }
 
-    onCardClicked(player: Player, card: any): boolean {
+    onCardClicked(player: Player, card: BaseCard): boolean {
         if(player !== this.choosingPlayer) {
             return false;
         }
@@ -206,8 +240,8 @@ class SelectCardPrompt extends UiPrompt {
         return true;
     }
 
-    checkCardCondition(card: any): boolean {
-        if(this.onlyMustSelectMayBeChosen && !this.properties.mustSelect.includes(card)) {
+    checkCardCondition(card: BaseCard): boolean {
+        if(this.onlyMustSelectMayBeChosen && !this.properties.mustSelect?.includes(card)) {
             return false;
         } else if(this.selectedCards.includes(card)) {
             return true;
@@ -219,10 +253,10 @@ class SelectCardPrompt extends UiPrompt {
         );
     }
 
-    selectCard(card: any): boolean {
+    selectCard(card: BaseCard): boolean {
         if(this.selector.hasReachedLimit(this.selectedCards, this.context) && !this.selectedCards.includes(card)) {
             return false;
-        } else if(this.cannotUnselectMustSelect && this.properties.mustSelect.includes(card)) {
+        } else if(this.cannotUnselectMustSelect && this.properties.mustSelect?.includes(card)) {
             return false;
         }
 

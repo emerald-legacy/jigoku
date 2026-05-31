@@ -24,9 +24,9 @@ export interface DeckSearchProperties extends PlayerActionProperties {
     player?: Player;
     choosingPlayer?: Player;
     placeOnBottomInRandomOrder?: boolean;
-    messageArgs?: (context: AbilityContext, cards: DrawCard[]) => any | any[];
-    selectedCardsHandler?: (context: AbilityContext, event: any, cards: DrawCard[]) => void;
-    remainingCardsHandler?: (context: AbilityContext, event: any, cards: DrawCard[]) => void;
+    messageArgs?: (context: AbilityContext, cards: DrawCard[]) => unknown[];
+    selectedCardsHandler?: (context: AbilityContext, event: Event, cards: DrawCard[]) => void;
+    remainingCardsHandler?: (context: AbilityContext, event: Event, cards: DrawCard[]) => void;
     cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
     takesNothingGameAction?: GameAction;
 }
@@ -95,10 +95,10 @@ export class DeckSearchAction extends PlayerAction {
         event.amount = fAmount;
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
         const properties = this.getProperties(context, additionalProperties) as DeckSearchProperties;
         const player = properties.player || context.player;
-        const event = this.getEvent(player, context) as any;
+        const event = this.getEvent(player, context);
         const amount = event.amount > -1 ? event.amount : this.#getDeck(player, properties).length;
         let cards = this.#getDeck(player, properties).slice(0, amount);
         const cardCondition = properties.cardCondition ?? (() => true);
@@ -195,7 +195,7 @@ export class DeckSearchAction extends PlayerAction {
     #handleDone(
         properties: DeckSearchProperties,
         context: AbilityContext,
-        event: any,
+        event: Event,
         selectedCards: Set<DrawCard>,
         allCards: DrawCard[]
     ): void {
@@ -218,7 +218,7 @@ export class DeckSearchAction extends PlayerAction {
     #defaultRemainingCardsHandler(
         properties: DeckSearchProperties,
         context: AbilityContext,
-        event: any,
+        event: Event,
         selectedCards: Set<DrawCard>,
         allCards: DrawCard[]
     ): void {
@@ -252,7 +252,7 @@ export class DeckSearchAction extends PlayerAction {
     #defaultHandleDone(
         properties: DeckSearchProperties,
         context: AbilityContext,
-        event: any,
+        event: Event,
         selectedCards: Set<DrawCard>
     ): void {
         this.#doneMessage(properties, context, event, selectedCards);
@@ -263,7 +263,7 @@ export class DeckSearchAction extends PlayerAction {
             gameAction.setDefaultTarget(() => selectedArray);
             context.game.queueSimpleStep(() => {
                 if(gameAction.hasLegalTarget(context)) {
-                    gameAction.resolve(null as any, context);
+                    gameAction.resolve(undefined, context);
                 }
                 return true;
             });
@@ -273,7 +273,7 @@ export class DeckSearchAction extends PlayerAction {
     #doneMessage(
         properties: DeckSearchProperties,
         context: AbilityContext,
-        event: any,
+        event: Event,
         selectedCards: Set<DrawCard>
     ): void {
         const choosingPlayer = (properties.choosingPlayer || event.player) as Player;
@@ -298,14 +298,14 @@ export class DeckSearchAction extends PlayerAction {
         );
     }
 
-    #takesNothing(properties: DeckSearchProperties, context: AbilityContext, event: any): void {
+    #takesNothing(properties: DeckSearchProperties, context: AbilityContext, event: Event): void {
         const choosingPlayer = (properties.choosingPlayer || event.player) as Player;
         context.game.addMessage('{0} takes nothing', choosingPlayer);
         if(properties.takesNothingGameAction) {
             const action = properties.takesNothingGameAction;
             context.game.queueSimpleStep(() => {
                 if(action.hasLegalTarget(context)) {
-                    action.resolve(null as any, context);
+                    action.resolve(undefined, context);
                 }
                 return true;
             });

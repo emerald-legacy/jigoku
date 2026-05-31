@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardTypes, EventNames } from '../Constants.js';
@@ -16,19 +17,20 @@ export class TurnCardFacedownAction extends CardGameAction {
         return card.isFaceup() && super.canAffect(card, context) && card.isInProvince();
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
+        const context = event.context as AbilityContext;
         if(event.card.controller !== event.card.owner) {
             event.card.owner.moveCard(event.card, event.card.location);
         }
 
         event.card.leavesPlay();
         if(event.card.isConflictProvince()) {
-            event.context.game.addMessage('{0} is immediately revealed again!', event.card);
+            context.game.addMessage('{0} is immediately revealed again!', event.card);
             event.card.inConflict = true;
 
-            event.context.game.raiseEvent(EventNames.OnCardRevealed, {
+            context.game.raiseEvent(EventNames.OnCardRevealed, {
                 card: event.card,
-                context: event.context.game.getFrameworkContext()
+                context: context.game.getFrameworkContext()
             });
         } else {
             event.card.facedown = true;

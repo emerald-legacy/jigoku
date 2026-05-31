@@ -1,11 +1,13 @@
 import { EffectValue } from './EffectValue.js';
 import { AbilityTypes, Locations } from '../Constants.js';
+import type { AbilityLimit } from '../AbilityLimit.js';
+import type BaseCard from '../BaseCard.js';
 
 export default class GainAbility extends EffectValue<any> {
     abilityType: string;
     createCopies: boolean;
-    forCopying: any;
-    grantedAbilityLimits: Record<string, any>;
+    forCopying: { abilityType: string; ability: any } | undefined;
+    grantedAbilityLimits: Record<string, AbilityLimit>;
     properties: any;
 
     constructor(abilityType: string, ability: any) {
@@ -14,9 +16,7 @@ export default class GainAbility extends EffectValue<any> {
         this.createCopies = false;
         if(ability.createCopies) {
             this.createCopies = true;
-            this.forCopying = {};
-            this.forCopying.abilityType = abilityType;
-            this.forCopying.ability = ability;
+            this.forCopying = { abilityType: abilityType, ability: ability };
         }
         this.grantedAbilityLimits = {};
         if(ability.properties) {
@@ -44,7 +44,7 @@ export default class GainAbility extends EffectValue<any> {
     }
 
     getCopy(): GainAbility {
-        if(this.createCopies) {
+        if(this.createCopies && this.forCopying) {
             const ability = new GainAbility(this.forCopying.abilityType, this.forCopying.ability);
             ability.context = this.context;
             return ability;
@@ -56,7 +56,7 @@ export default class GainAbility extends EffectValue<any> {
         this.grantedAbilityLimits = {};
     }
 
-    apply(target: any) {
+    apply(target: BaseCard) {
         let properties = Object.assign({ origin: this.context.source }, this.properties);
         if(this.abilityType === AbilityTypes.Persistent) {
             const activeLocations: Record<string, string[]> = {
@@ -71,7 +71,7 @@ export default class GainAbility extends EffectValue<any> {
         } else if(this.abilityType === AbilityTypes.Action) {
             this.value = target.createAction(properties);
         } else {
-            this.value = target.createTriggeredAbility(this.abilityType, properties);
+            this.value = target.createTriggeredAbility(this.abilityType as AbilityTypes, properties);
             this.value.registerEvents();
         }
         if(!this.grantedAbilityLimits[target.uuid]) {
@@ -82,7 +82,7 @@ export default class GainAbility extends EffectValue<any> {
         this.grantedAbilityLimits[target.uuid].currentUser = target.uuid;
     }
 
-    unapply(target: any) {
+    unapply(target: BaseCard) {
         if(this.grantedAbilityLimits[target.uuid]) {
             this.grantedAbilityLimits[target.uuid].currentUser = null;
         }

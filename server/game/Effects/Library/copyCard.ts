@@ -1,5 +1,7 @@
 import type BaseCard from '../../BaseCard.js';
 import { AbilityTypes, Locations, CardTypes, EffectNames } from '../../Constants.js';
+import type { CardAction } from '../../CardAction.js';
+import type TriggeredAbility from '../../TriggeredAbility.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import { EffectValue } from '../EffectValue.js';
 import GainAbility from '../GainAbility.js';
@@ -18,11 +20,11 @@ class CopyCard extends EffectValue<BaseCard> {
 
     constructor(card: BaseCard) {
         super(card);
-        this.actions = card.abilities.actions.map((action: any) => new GainAbility(AbilityTypes.Action, action));
+        this.actions = card.abilities.actions.map((action: CardAction) => new GainAbility(AbilityTypes.Action, action));
         this.reactions = card.abilities.reactions.map(
-            (ability: any) => new GainAbility(ability.abilityType, ability)
+            (ability: TriggeredAbility) => new GainAbility(ability.abilityType, ability)
         );
-        this.persistentEffects = card.abilities.persistentEffects.map((effect: any) => Object.assign({}, effect));
+        this.persistentEffects = card.abilities.persistentEffects.map((effect) => Object.assign({}, effect));
     }
 
     apply(target: BaseCard) {

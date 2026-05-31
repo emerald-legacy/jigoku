@@ -1,4 +1,6 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import type { GameObject } from '../GameObject.js';
 import { Players } from '../Constants.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
@@ -6,7 +8,7 @@ export interface MenuPromptProperties extends GameActionProperties {
     activePromptTitle: string;
     player?: Players.Self | Players.Opponent;
     gameAction: GameAction;
-    choices: string[] | ((properties: any) => string[]);
+    choices: string[] | ((properties: MenuPromptProperties) => string[]);
     choiceHandler: (choice: string, displayMessage: boolean, properties: MenuPromptProperties) => object;
 }
 
@@ -15,7 +17,7 @@ export class MenuPromptAction extends GameAction {
         super(properties);
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let { target } = this.getProperties(context);
         return ['make a choice for {0}', [target]];
     }
@@ -28,7 +30,7 @@ export class MenuPromptAction extends GameAction {
         return properties;
     }
 
-    canAffect(target: any, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(target: GameObject, context: AbilityContext, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
         return (properties.choices as string[]).some((choice) => {
             let childProperties = properties.choiceHandler(choice, false, properties);
@@ -44,7 +46,7 @@ export class MenuPromptAction extends GameAction {
         });
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties(context, additionalProperties);
         const choices = properties.choices as string[];
         if(choices.length === 0 || (properties.player === Players.Opponent && !context.player.opponent)) {

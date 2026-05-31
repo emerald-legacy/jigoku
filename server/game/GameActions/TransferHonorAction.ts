@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EffectNames, EventNames } from '../Constants.js';
 import type Player from '../Player.js';
@@ -37,7 +38,7 @@ export class TransferHonorAction extends PlayerAction {
         super(propertyFactory);
     }
 
-    getCostMessage(context: AbilityContext): [string, any[]] {
+    getCostMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as TransferHonorProperties;
         const opponent = context.player.opponent;
         if(!opponent) {
@@ -52,7 +53,7 @@ export class TransferHonorAction extends PlayerAction {
         return ['giving {1} honor to {2}', [amountToTransfer, opponent]];
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as TransferHonorProperties;
         const opponent = context.player.opponent;
         if(!opponent) {
@@ -94,18 +95,18 @@ export class TransferHonorAction extends PlayerAction {
         return super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: any): void {
+    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
         let { afterBid, amount } = this.getProperties(context, additionalProperties) as TransferHonorProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.afterBid = afterBid;
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         var amountToTransfer = this.getAmountToTransfer(
             event.player,
-            event.player.opponent,
-            event.context,
+            event.player.opponent as Player,
+            event.context as AbilityContext,
             event.amount
         );
 

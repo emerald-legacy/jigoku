@@ -1,49 +1,50 @@
 import { AbilityTypes } from '../Constants.js';
+import type { Event } from '../Events/Event.js';
 
-const EventToTitleFunc: Record<string, (event: any) => string> = {
-    onCardBowed(event: any) {
+const EventToTitleFunc: Record<string, (event: Event) => string> = {
+    onCardBowed(event: Event) {
         return `${event.card.name} being bowed`;
     },
-    onCardDishonored(event: any) {
+    onCardDishonored(event: Event) {
         return `${event.card.name} being dishonored`;
     },
-    onCardHonored(event: any) {
+    onCardHonored(event: Event) {
         return `${event.card.name} being honored`;
     },
-    onCardLeavesPlay(event: any) {
+    onCardLeavesPlay(event: Event) {
         return `${event.card.name} leaving play`;
     },
-    onCardPlayed(event: any) {
+    onCardPlayed(event: Event) {
         return `${event.card.name} being played`;
     },
-    onCharacterEntersPlay(event: any) {
+    onCharacterEntersPlay(event: Event) {
         return `${event.card.name} entering play`;
     },
-    onClaimRing(event: any) {
+    onClaimRing(event: Event) {
         return `to the ${event.ring.element} ring being claimed`;
     },
-    onInitiateAbilityEffects(event: any) {
+    onInitiateAbilityEffects(event: Event) {
         return `the effects of ${event.card.name}`;
     },
     onMoveCharactersToConflict() {
         return 'characters moving to the conflict';
     },
-    onMoveFate(event: any) {
+    onMoveFate(event: Event) {
         return `Fate being moved from ${event.origin ? event.origin.name : event.card ? event.card.name : 'somewhere'}`;
     },
-    onPhaseEnded(event: any) {
+    onPhaseEnded(event: Event) {
         return `${event.phase} phase ending`;
     },
-    onPhaseStarted(event: any) {
+    onPhaseStarted(event: Event) {
         return `${event.phase} phase starting`;
     },
-    onRemovedFromChallenge(event: any) {
+    onRemovedFromChallenge(event: Event) {
         return `${event.card.name} being removed from the challenge`;
     },
-    onReturnRing(event: any) {
+    onReturnRing(event: Event) {
         return `returning the ${event.ring.element} ring`;
     },
-    onSacrificed(event: any) {
+    onSacrificed(event: Event) {
         return `${event.card.name} being sacrificed`;
     }
 };
@@ -67,10 +68,6 @@ function FormatTitles(titles: string[]) {
         return title + ', ' + string;
     }, '');
 }
-
-type Event = {
-    name: string;
-};
 
 export const TriggeredAbilityWindowTitle = {
     getTitle(abilityType: string, eventsaa: Event[] | Event) {

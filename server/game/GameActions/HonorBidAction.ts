@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames, Players } from '../Constants.js';
 import HonorBidPrompt from '../gamesteps/honorbidprompt.js';
@@ -12,7 +13,7 @@ export interface HonorBidProperties extends PlayerActionProperties {
     players?: Players;
     postBidAction?: GameAction;
     message?: string;
-    messageArgs?: (context: AbilityContext) => any | any[];
+    messageArgs?: (context: AbilityContext) => unknown[];
 }
 
 export class HonorBidAction extends PlayerAction {
@@ -33,7 +34,7 @@ export class HonorBidAction extends PlayerAction {
         return [context.player];
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties: HonorBidProperties = this.getProperties(context);
         if(properties.giveHonor) {
             return ['bid honor', []];
@@ -55,7 +56,7 @@ export class HonorBidAction extends PlayerAction {
         return ['have {0} select a value on their honor dial', [players]];
     }
 
-    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { giveHonor, prohibitedBids, players, postBidAction, message, messageArgs } = this.getProperties(
             context,
             additionalProperties
@@ -69,8 +70,8 @@ export class HonorBidAction extends PlayerAction {
         event.messageArgs = messageArgs;
     }
 
-    eventHandler(event: any): void {
-        const context = event.context;
+    eventHandler(event: Event): void {
+        const context = event.context as AbilityContext;
 
         if(event.players === Players.Any) {
             const prohibitedBids: Record<string, string[]> = {};
@@ -93,11 +94,11 @@ export class HonorBidAction extends PlayerAction {
                 })
             );
         } else {
-            const player = event.players === Players.Self ? context.player : context.player.opponent;
+            const player = (event.players === Players.Self ? context.player : context.player.opponent) as Player;
 
-            event.context.game.promptWithHandlerMenu(player, {
+            context.game.promptWithHandlerMenu(player, {
                 activePromptTitle: 'Choose a value to set your honor dial at',
-                context: event.context,
+                context: context,
                 choices: ['1', '2', '3', '4', '5'],
                 handlers: [1, 2, 3, 4, 5].map(
                     (value) => () => context.game.actions.setHonorDial({ value }).resolve(player, context)

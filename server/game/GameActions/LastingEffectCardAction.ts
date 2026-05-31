@@ -30,7 +30,7 @@ export class LastingEffectCardAction<
         ability: null as unknown as BaseAbility
     };
 
-    getEffectMessage(context: AbilityContext, additionalProperties = {}): [string, any[]] {
+    getEffectMessage(context: AbilityContext, additionalProperties = {}): [string, unknown[]] {
         let properties = this.getProperties(context, additionalProperties);
         const message = properties.message || this.effect;
 

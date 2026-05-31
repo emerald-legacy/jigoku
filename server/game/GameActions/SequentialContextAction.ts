@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 import type { GameObject } from '../GameObject.js';
 import type { AbilityContext } from '../AbilityContext.js';
@@ -9,7 +10,7 @@ export interface SequentialContextProperties extends GameActionProperties {
 export class SequentialContextAction extends GameAction {
     declare defaultProperties: SequentialContextProperties;
 
-    getEffectMessage(context: AbilityContext): [string, any] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = super.getProperties(context) as SequentialContextProperties;
         return properties.gameActions[0].getEffectMessage(context);
     }
@@ -32,12 +33,12 @@ export class SequentialContextAction extends GameAction {
         return properties.gameActions.some((gameAction) => gameAction.canAffect(target, context));
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             context.game.queueSimpleStep(() => {
                 if(gameAction.hasLegalTarget(context, additionalProperties)) {
-                    let eventsForThisAction: any[] = [];
+                    let eventsForThisAction: Event[] = [];
                     gameAction.addEventsToArray(eventsForThisAction, context, additionalProperties);
                     context.game.queueSimpleStep(() => {
                         for(const event of eventsForThisAction) {

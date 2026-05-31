@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
@@ -19,7 +20,7 @@ export class ReadyAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         event.card.ready();
     }
 }

@@ -1,4 +1,6 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import type { GameObject } from '../GameObject.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface ConditionalActionProperties extends GameActionProperties {
@@ -24,11 +26,11 @@ export class ConditionalAction extends GameAction<ConditionalActionProperties> {
         return condition ? properties.trueGameAction : properties.falseGameAction;
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         return this.getGameAction(context).getEffectMessage(context);
     }
 
-    canAffect(target: any, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(target: GameObject, context: AbilityContext, additionalProperties = {}): boolean {
         return this.getGameAction(context, additionalProperties).canAffect(target, context, additionalProperties);
     }
 
@@ -36,7 +38,7 @@ export class ConditionalAction extends GameAction<ConditionalActionProperties> {
         return this.getGameAction(context, additionalProperties).hasLegalTarget(context, additionalProperties);
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
         this.getGameAction(context, additionalProperties).addEventsToArray(events, context, additionalProperties);
     }
 

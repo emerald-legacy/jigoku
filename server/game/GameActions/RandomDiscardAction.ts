@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames, Locations } from '../Constants.js';
 import type Player from '../Player.js';
@@ -17,7 +18,7 @@ export class RandomDiscardAction extends PlayerAction {
         super(propertyFactory);
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties: RandomDiscardProperties = this.getProperties(context);
         return [
             'make {0} discard {1} {2} at random',
@@ -30,14 +31,14 @@ export class RandomDiscardAction extends PlayerAction {
         return (properties.amount ?? 0) > 0 && player.hand.length > 0 && super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties) as RandomDiscardProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.discardedAtRandom = true;
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         let player = event.player;
         let amount = Math.min(event.amount, player.hand.length);
         if(amount === 0) {

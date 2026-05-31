@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames } from '../Constants.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
@@ -13,7 +14,7 @@ export class DishonorProvinceAction extends CardGameAction {
     cost = 'dishonoring {0}';
     effect = 'dishonor {0}';
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         const properties = this.getProperties(context) as DishonorProvinceProperties;
         const targetArray = [];
         if(properties.target) {
@@ -41,7 +42,7 @@ export class DishonorProvinceAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         event.card.dishonor();
     }
 }

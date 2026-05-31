@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
@@ -17,7 +18,7 @@ export class IfAbleAction extends GameAction {
         return properties;
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let { ifAbleAction, otherwiseAction } = this.getProperties(context);
         return ifAbleAction.hasLegalTarget(context)
             ? ifAbleAction.getEffectMessage(context)
@@ -40,7 +41,7 @@ export class IfAbleAction extends GameAction {
         );
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}) {
+    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}) {
         let { ifAbleAction, otherwiseAction } = this.getProperties(context, additionalProperties);
         let gameAction = ifAbleAction.hasLegalTarget(context) ? ifAbleAction : otherwiseAction;
         gameAction.addEventsToArray(events, context, additionalProperties);

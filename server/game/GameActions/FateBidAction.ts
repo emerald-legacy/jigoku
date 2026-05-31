@@ -12,7 +12,7 @@ import type { Event } from '../Events/Event.js';
 export interface FateBidProperties extends PlayerActionProperties {
     postBidAction?: GameAction;
     message?: string;
-    messageArgs?: (context: AbilityContext) => any | any[];
+    messageArgs?: (context: AbilityContext) => unknown[];
 }
 
 export class FateBidAction extends PlayerAction {
@@ -30,12 +30,12 @@ export class FateBidAction extends PlayerAction {
         return [context.player];
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         const players = [context.player, context.player.opponent];
         return ['have {0} select an amount of fate from their pool', [players]];
     }
 
-    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: any): void {
+    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
         let { postBidAction, message, messageArgs } = this.getProperties(
             context,
             additionalProperties
@@ -46,9 +46,7 @@ export class FateBidAction extends PlayerAction {
         event.messageArgs = messageArgs;
     }
 
-    eventHandler(
-        event: { context: AbilityContext } & Pick<FateBidProperties, 'postBidAction' | 'messageArgs' | 'message'>
-    ): void {
+    eventHandler(event: Event): void {
         const context = (event.context as AbilityContext);
         context.game.queueStep(
             new FateBidPrompt(context.game, 'Choose an amount of fate', (result, context) => {

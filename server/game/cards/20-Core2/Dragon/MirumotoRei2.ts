@@ -3,6 +3,7 @@ import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.j
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { LastingEffectProperties } from '../../../GameActions/LastingEffectAction.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class MirumotoRei2 extends DrawCard {
     static id = 'mirumoto-rei-2';
@@ -38,7 +39,7 @@ export default class MirumotoRei2 extends DrawCard {
                 gameAction: ((duel: any) =>
                     duel.loser &&
                     AbilityDsl.actions.multipleContext(() => {
-                        const gameActions: any[] = [];
+                        const gameActions: GameAction[] = [];
                         duel.loser.forEach((loser: any) => {
                             if(loser.getFate() > 0) {
                                 gameActions.push(

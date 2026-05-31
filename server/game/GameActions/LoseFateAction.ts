@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
 import type Player from '../Player.js';
@@ -16,12 +17,12 @@ export class LoseFateAction extends PlayerAction {
         super(propertyFactory);
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties: LoseFateProperties = this.getProperties(context);
         return ['make {0} lose {1} fate', [properties.target, properties.amount]];
     }
 
-    getCostMessage(context: AbilityContext): [string, any[]] {
+    getCostMessage(context: AbilityContext): [string, unknown[]] {
         let properties: LoseFateProperties = this.getProperties(context);
         return ['spending {1} fate', [properties.amount]];
     }
@@ -31,13 +32,13 @@ export class LoseFateAction extends PlayerAction {
         return (properties.amount ?? 0) > 0 && player.fate > 0 && super.canAffect(player, context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties) as LoseFateProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = -(amount ?? 0);
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         event.player.modifyFate(event.amount);
     }
 }

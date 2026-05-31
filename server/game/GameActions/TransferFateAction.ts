@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
 import type Player from '../Player.js';
@@ -16,12 +17,12 @@ export class TransferFateAction extends PlayerAction {
         super(propertyFactory);
     }
 
-    getCostMessage(context: AbilityContext): [string, any[]] {
+    getCostMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as TransferFateProperties;
         return ['giving {1} fate to {2}', [properties.amount, context.player.opponent]];
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as TransferFateProperties;
         return ['take {1} fate from {0}', [properties.target, properties.amount]];
     }
@@ -37,7 +38,7 @@ export class TransferFateAction extends PlayerAction {
         );
     }
 
-    addPropertiesToEvent(event: any, player: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties) as TransferFateProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.fate = amount;
@@ -45,11 +46,11 @@ export class TransferFateAction extends PlayerAction {
         event.recipient = player.opponent;
     }
 
-    checkEventCondition(event: any): boolean {
+    checkEventCondition(event: Event): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         this.moveFateEventHandler(event);
     }
 }

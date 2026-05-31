@@ -1,14 +1,16 @@
 import { AllPlayerPrompt } from '../AllPlayerPrompt.js';
 import { Locations } from '../../Constants.js';
 import type Player from '../../Player.js';
+import type Game from '../../Game.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 
 class SetupProvincesPrompt extends AllPlayerPrompt {
-    strongholdProvince: Record<string, any>;
+    strongholdProvince: Record<string, ProvinceCard | null>;
     clickedDone: Record<string, boolean>;
-    selectedCards: Record<string, any[]>;
-    selectableCards: Record<string, any[]>;
+    selectedCards: Record<string, ProvinceCard[]>;
+    selectableCards: Record<string, ProvinceCard[]>;
 
-    constructor(game: any) {
+    constructor(game: Game) {
         super(game);
         this.strongholdProvince = {};
         this.clickedDone = {};
@@ -16,7 +18,7 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
         this.selectableCards = {};
         for(let player of game.getPlayers()) {
             this.selectedCards[player.uuid] = [];
-            this.selectableCards[player.uuid] = player.provinceDeck.slice();
+            this.selectableCards[player.uuid] = player.provinceDeck.slice() as ProvinceCard[];
         }
     }
 
@@ -36,7 +38,7 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
         this.game.getPlayers().forEach((player: Player) => {
             let cards = this.selectableCards[player.uuid];
             if(!this.strongholdProvince[player.uuid]) {
-                cards = cards.filter((card: any) => !card.cannotBeStrongholdProvince());
+                cards = cards.filter((card: ProvinceCard) => !card.cannotBeStrongholdProvince());
             }
             player.setSelectableCards(cards);
         });
@@ -58,7 +60,7 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
         };
     }
 
-    onCardClicked(player: Player, card: any): boolean {
+    onCardClicked(player: Player, card: ProvinceCard): boolean {
         if(!player || !this.activeCondition(player) || !card) {
             return false;
         } else if(!this.selectableCards[player.uuid].includes(card)) {
@@ -69,14 +71,14 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
             }
             this.strongholdProvince[player.uuid] = card;
             card.inConflict = true;
-            this.selectableCards[player.uuid] = this.selectableCards[player.uuid].filter((c: any) => c !== card);
+            this.selectableCards[player.uuid] = this.selectableCards[player.uuid].filter((c: ProvinceCard) => c !== card);
             return true;
         }
 
         if(!this.selectedCards[player.uuid].includes(card)) {
             this.selectedCards[player.uuid].push(card);
         } else {
-            this.selectedCards[player.uuid] = this.selectedCards[player.uuid].filter((c: any) => c !== card);
+            this.selectedCards[player.uuid] = this.selectedCards[player.uuid].filter((c: ProvinceCard) => c !== card);
         }
         player.setSelectedCards(this.selectedCards[player.uuid]);
         return true;
@@ -89,23 +91,24 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
     }
 
     menuCommand(player: Player, arg: string): boolean {
-        if(arg === 'change' || !this.strongholdProvince[player.uuid]) {
-            this.strongholdProvince[player.uuid].inConflict = false;
+        let stronghold = this.strongholdProvince[player.uuid];
+        if(arg === 'change' || !stronghold) {
+            (stronghold as ProvinceCard).inConflict = false;
             this.strongholdProvince[player.uuid] = null;
-            this.selectableCards[player.uuid] = (player as any).provinceDeck.slice();
+            this.selectableCards[player.uuid] = player.provinceDeck.slice() as ProvinceCard[];
             this.selectedCards[player.uuid] = [];
             return true;
         } else if(arg !== 'done') {
             return false;
         }
 
-        this.strongholdProvince[player.uuid].inConflict = false;
-        if(!this.strongholdProvince[player.uuid].startsGameFaceup()) {
-            this.strongholdProvince[player.uuid].facedown = true;
+        stronghold.inConflict = false;
+        if(!stronghold.startsGameFaceup()) {
+            stronghold.facedown = true;
         }
         this.clickedDone[player.uuid] = true;
         this.game.addMessage('{0} has placed their provinces', player);
-        (player as any).moveCard(this.strongholdProvince[player.uuid], Locations.StrongholdProvince);
+        player.moveCard(this.strongholdProvince[player.uuid] as ProvinceCard, Locations.StrongholdProvince);
         // Shuffle remaining selectable cards using Fisher-Yates
         const shuffled = [...this.selectableCards[player.uuid]];
         for(let i = shuffled.length - 1; i > 0; i--) {
@@ -118,9 +121,9 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
             if(!provinceCard.startsGameFaceup()) {
                 provinceCard.facedown = true;
             }
-            (player as any).moveCard(provinceCard, 'province ' + i.toString());
+            player.moveCard(provinceCard, 'province ' + i.toString());
         }
-        (player as any).hideProvinceDeck = true;
+        player.hideProvinceDeck = true;
 
         return true;
     }

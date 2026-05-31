@@ -1,15 +1,19 @@
 import { EffectNames } from '../../Constants.js';
 import type Player from '../../Player.js';
+import type Ring from '../../Ring.js';
+import type DrawCard from '../../DrawCard.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
+import type Game from '../../Game.js';
 
 class AttackerInfo {
-    ring: any;
+    ring: Ring;
     conflictType: string;
-    province: any;
-    availableAttackers: any[];
-    forcedAttackersDueToDeclarationAmountRequirement: any[];
-    forcedAttackersDueToDeclarationRequirement: any[];
+    province: ProvinceCard;
+    availableAttackers: DrawCard[];
+    forcedAttackersDueToDeclarationAmountRequirement: DrawCard[];
+    forcedAttackersDueToDeclarationRequirement: DrawCard[];
 
-    constructor(ring: any, conflictType: string, province: any, availableAttackers: any[], forcedAttackersDueToDeclarationAmountRequirement: any[], forcedAttackersDueToDeclarationRequirement: any[]) {
+    constructor(ring: Ring, conflictType: string, province: ProvinceCard, availableAttackers: DrawCard[], forcedAttackersDueToDeclarationAmountRequirement: DrawCard[], forcedAttackersDueToDeclarationRequirement: DrawCard[]) {
         this.ring = ring;
         this.conflictType = conflictType;
         this.province = province;
@@ -29,18 +33,18 @@ class AttackerInfo {
 
 class AttackersMatrix {
     player: Player;
-    characters: any[];
-    attackers: Record<string, Record<string, Record<any, AttackerInfo>>>;
+    characters: DrawCard[];
+    attackers: Record<string, Record<string, Record<string, AttackerInfo>>>;
     forcedNumberOfAttackers: number;
     requiredNumberOfAttackers: number;
     maximumNumberOfAttackers: number;
-    defaultAttackers: any[];
+    defaultAttackers: DrawCard[];
     canPass: boolean;
-    game: any;
-    defaultRing: any;
+    game: Game;
+    defaultRing: Ring | null;
     defaultType: string;
 
-    constructor(player: Player, characters: any[], game: any) {
+    constructor(player: Player, characters: DrawCard[], game: Game) {
         this.player = player;
         this.characters = characters;
         this.attackers = {};
@@ -55,12 +59,12 @@ class AttackersMatrix {
         this.buildMatrix(game);
     }
 
-    isCombinationValid(ring: any, conflictType: string, province?: any): boolean {
-        if(province && !Object.prototype.hasOwnProperty.call(this.attackers[ring.name][conflictType], province)) {
+    isCombinationValid(ring: Ring, conflictType: string, province?: ProvinceCard): boolean {
+        if(province && !Object.prototype.hasOwnProperty.call(this.attackers[ring.name][conflictType], String(province))) {
             return false;
         }
 
-        let max = province ? this.attackers[ring.name][conflictType][province].getMaximumAvailableAttackers() : Math.max(...Object.values(this.attackers[ring.name][conflictType]).map(a => a.getMaximumAvailableAttackers()));
+        let max = province ? this.attackers[ring.name][conflictType][String(province)].getMaximumAvailableAttackers() : Math.max(...Object.values(this.attackers[ring.name][conflictType]).map(a => a.getMaximumAvailableAttackers()));
         let enoughAttackers = this.requiredNumberOfAttackers <= max;
         if(this.requiredNumberOfAttackers > 0) {
             return enoughAttackers;
@@ -68,30 +72,30 @@ class AttackersMatrix {
             return true;
         }
         if(province) {
-            return this.attackers[ring.name][conflictType][province].getNumberOfForcedAttackers() === this.forcedNumberOfAttackers && enoughAttackers;
+            return this.attackers[ring.name][conflictType][String(province)].getNumberOfForcedAttackers() === this.forcedNumberOfAttackers && enoughAttackers;
         }
         return Object.values(this.attackers[ring.name][conflictType]).some(a => a.getNumberOfForcedAttackers() === this.forcedNumberOfAttackers && enoughAttackers);
     }
 
-    buildMatrix(game: any): void {
-        const rings = [game.rings.air, game.rings.earth, game.rings.fire, game.rings.void, game.rings.water];
+    buildMatrix(game: Game): void {
+        const rings: Ring[] = [game.rings.air, game.rings.earth, game.rings.fire, game.rings.void, game.rings.water];
         const conflictTypes = ['military', 'political'];
-        const provinces = (this.player as any).opponent ? (this.player as any).opponent.getProvinces() : [];
+        const provinces: ProvinceCard[] = this.player.opponent ? this.player.opponent.getProvinces() : [];
 
         this.forcedNumberOfAttackers = 0;
         this.defaultRing = game.rings.air;
         this.defaultType = 'military';
-        rings.forEach((ring: any) => {
+        rings.forEach((ring: Ring) => {
             this.attackers[ring.name] = {};
             conflictTypes.forEach(type => {
                 this.attackers[ring.name][type] = {};
-                provinces.forEach((province: any) => {
+                provinces.forEach((province: ProvinceCard) => {
                     if(province.canDeclare(type, ring)) {
                         let forcedAttackersDueToDeclarationAmountRequirement = this.getForcedAttackersByDeclarationAmountRequirement(ring, type, province);
                         let forcedAttackersDueToDeclarationRequirement = this.getForcedAttackersByDeclarationRequirement(ring, type, province);
                         let availableAttackers = this.getAvailableAttackers(ring, type, province);
                         let matrix = new AttackerInfo(ring, type, province, availableAttackers, forcedAttackersDueToDeclarationAmountRequirement, forcedAttackersDueToDeclarationRequirement);
-                        this.attackers[ring.name][type][province] = matrix;
+                        this.attackers[ring.name][type][String(province)] = matrix;
                         if(matrix.getMaximumAvailableAttackers() > this.maximumNumberOfAttackers) {
                             this.maximumNumberOfAttackers = matrix.getMaximumAvailableAttackers();
                         }
@@ -107,13 +111,13 @@ class AttackersMatrix {
         });
     }
 
-    getAvailableAttackers(ring: any, conflictType: string, province: any): any[] {
-        if(!(this.player as any).hasLegalConflictDeclaration({ type: conflictType, ring: ring })) {
+    getAvailableAttackers(ring: Ring, conflictType: string, province: ProvinceCard): DrawCard[] {
+        if(!this.player.hasLegalConflictDeclaration({ type: conflictType, ring: ring })) {
             return [];
         }
 
         let cards = this.characters;
-        let availableAttackers: any[] = [];
+        let availableAttackers: DrawCard[] = [];
         cards.forEach(card => {
             if(card.canDeclareAsAttacker(conflictType, ring, province, availableAttackers)) {
                 availableAttackers.push(card);
@@ -122,7 +126,7 @@ class AttackersMatrix {
         return availableAttackers;
     }
 
-    getForcedAttackers(ring: any, conflictType: string, province: any): any[] {
+    getForcedAttackers(ring: Ring, conflictType: string, province: ProvinceCard): DrawCard[] {
         const optional = this.getOptionallyForcedAttackersByDeclarationRequirement(ring, conflictType, province);
         const optionalNumberOfAttackers = optional.length;
         if(this.requiredNumberOfAttackers + optionalNumberOfAttackers <= 0) {
@@ -135,14 +139,14 @@ class AttackersMatrix {
     }
 
     //Internal use only
-    getForcedAttackersByDeclarationAmountRequirement(ring: any, conflictType: string, province: any): any[] {
-        if(!(this.player as any).hasLegalConflictDeclaration({ type: conflictType, ring: ring, province: province })) {
+    getForcedAttackersByDeclarationAmountRequirement(ring: Ring, conflictType: string, province: ProvinceCard): DrawCard[] {
+        if(!this.player.hasLegalConflictDeclaration({ type: conflictType, ring: ring, province: province })) {
             return [];
         }
 
-        if((this.player as any).getEffects(EffectNames.MustDeclareMaximumAttackers).some((effect: any) => effect === 'both' || effect === conflictType)) {
+        if(this.player.getEffects(EffectNames.MustDeclareMaximumAttackers).some((effect: string) => effect === 'both' || effect === conflictType)) {
             let cards = this.characters;
-            let forcedAttackers: any[] = [];
+            let forcedAttackers: DrawCard[] = [];
             cards.forEach(card => {
                 if(card.canDeclareAsAttacker(conflictType, ring, province, forcedAttackers)) {
                     forcedAttackers.push(card);
@@ -156,26 +160,26 @@ class AttackersMatrix {
 
         return this.characters.filter(card =>
             card.canDeclareAsAttacker(conflictType, ring, province) &&
-            card.getEffects(EffectNames.MustBeDeclaredAsAttacker).some((effect: any) => effect === 'both' || effect === conflictType));
+            card.getEffects(EffectNames.MustBeDeclaredAsAttacker).some((effect: string) => effect === 'both' || effect === conflictType));
     }
 
     //Internal use only
-    getOptionallyForcedAttackersByDeclarationRequirement(ring: any, conflictType: string, province: any): any[] {
-        if(!(this.player as any).hasLegalConflictDeclaration({ type: conflictType, ring: ring, province: province })) {
+    getOptionallyForcedAttackersByDeclarationRequirement(ring: Ring, conflictType: string, province: ProvinceCard): DrawCard[] {
+        if(!this.player.hasLegalConflictDeclaration({ type: conflictType, ring: ring, province: province })) {
             return [];
         }
         return this.characters.filter(card =>
             card.canDeclareAsAttacker(conflictType, ring, province) &&
-            card.getEffects(EffectNames.MustBeDeclaredAsAttackerIfType).some((effect: any) => effect === 'both' || effect === conflictType));
+            card.getEffects(EffectNames.MustBeDeclaredAsAttackerIfType).some((effect: string) => effect === 'both' || effect === conflictType));
     }
 
-    getForcedAttackersByDeclarationRequirement(ring: any, conflictType: string, province: any): any[] {
-        if(!(this.player as any).hasLegalConflictDeclaration({ type: conflictType, ring: ring, province: province })) {
+    getForcedAttackersByDeclarationRequirement(ring: Ring, conflictType: string, province: ProvinceCard): DrawCard[] {
+        if(!this.player.hasLegalConflictDeclaration({ type: conflictType, ring: ring, province: province })) {
             return [];
         }
         return this.characters.filter(card =>
             card.canDeclareAsAttacker(conflictType, ring, province) &&
-            card.getEffects(EffectNames.MustBeDeclaredAsAttacker).some((effect: any) => effect === 'both' || effect === conflictType));
+            card.getEffects(EffectNames.MustBeDeclaredAsAttacker).some((effect: string) => effect === 'both' || effect === conflictType));
     }
 }
 

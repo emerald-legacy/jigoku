@@ -24,7 +24,7 @@ export class TriggerAbilityAction extends CardGameAction<TriggerAbilityPropertie
         subResolution: false
     };
 
-    getEffectMessage(context: TriggeredAbilityContext): [string, any[]] {
+    getEffectMessage(context: TriggeredAbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context);
         return ['resolve {0}\'s {1} ability', [properties.target, properties.ability.title]];
     }

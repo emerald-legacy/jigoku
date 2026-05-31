@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardTypes } from '../Constants.js';
@@ -22,12 +23,12 @@ export class PlaceCardUnderneathAction extends CardGameAction {
         super(properties);
     }
 
-    getCostMessage(context: AbilityContext): [string, any[]] {
+    getCostMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as PlaceCardUnderneathProperties;
         return ['placing {0} underneath {1}', [properties.target, properties.destination]];
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as PlaceCardUnderneathProperties;
         return ['place {0} underneath {1}', [properties.target, properties.destination]];
     }
@@ -37,8 +38,8 @@ export class PlaceCardUnderneathAction extends CardGameAction {
         return !!(destination && destination.uuid) && super.canAffect(card, context);
     }
 
-    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
-        let context = event.context;
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+        let context = event.context as AbilityContext;
         let card = event.card;
         event.cardStateWhenMoved = card.createSnapshot();
         let properties = this.getProperties(context, additionalProperties) as PlaceCardUnderneathProperties;
@@ -53,7 +54,7 @@ export class PlaceCardUnderneathAction extends CardGameAction {
         if(properties.hideWhenFaceup) {
             card.lastingEffect(() => ({
                 until: {
-                    onCardMoved: (event: any) => event.card === card && event.originalLocation === destination
+                    onCardMoved: (event: Event) => event.card === card && event.originalLocation === destination
                 },
                 match: card,
                 effect: Effects.hideWhenFaceUp()
