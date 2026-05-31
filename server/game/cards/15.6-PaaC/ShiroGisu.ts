@@ -1,4 +1,6 @@
 import { Locations } from '../../Constants.js';
+import type Player from '../../Player.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -9,7 +11,7 @@ export default class ShiroGisu extends StrongholdCard {
         this.action({
             title: 'Draw a card',
             cost: AbilityDsl.costs.bowSelf(),
-            condition: (context) => this.getCharactersWithoutFate(context) && context.player.conflictDeck.length > 0,
+            condition: (context) => !!(this.getCharactersWithoutFate(context) && context.player.conflictDeck.length > 0),
             effect: 'look at the top {1} cards of their conflict deck',
             effectArgs: (context) => this.getCharactersWithoutFate(context),
             gameAction: AbilityDsl.actions.deckSearch({
@@ -25,7 +27,7 @@ export default class ShiroGisu extends StrongholdCard {
         });
     }
 
-    getCharactersWithoutFate(context: any) {
-        return context.player.opponent.cardsInPlay.filter((card: any) => card.getFate() === 0).length;
+    getCharactersWithoutFate(context: AbilityContext) {
+        return (context.player.opponent as Player).cardsInPlay.filter((card: any) => card.getFate() === 0).length;
     }
 }

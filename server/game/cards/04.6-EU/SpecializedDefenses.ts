@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { Locations, CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -8,9 +9,9 @@ class SpecializedDefenses extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Double province strength',
-            condition: (context: any) => context.game.isDuringConflict(),
+            condition: (context: AbilityContext) => context.game.isDuringConflict(),
             effect: 'double the province strength of an attacked province',
-            gameAction: AbilityDsl.actions.selectCard((context: any) => ({
+            gameAction: AbilityDsl.actions.selectCard((context: AbilityContext) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardTypes.Province,

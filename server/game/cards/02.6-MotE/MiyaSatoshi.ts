@@ -12,7 +12,7 @@ class MiyaSatoshi extends DrawCard {
             title: 'Discard dynasty cards until you find an Imperial',
             condition: (context: AbilityContext) => context.player.dynastyDeck.length > 0,
             effect: 'search for an Imperial card and place it in a province',
-            handler: (context: any) => {
+            handler: (context: AbilityContext) => {
                 const firstImperial = context.player.dynastyDeck.find((card: DrawCard) => card.hasTrait('imperial'));
                 if(!firstImperial) {
                     this.game.addMessage('{0} discards their entire dynasty deck: {1}', context.player, context.player.dynastyDeck.slice());

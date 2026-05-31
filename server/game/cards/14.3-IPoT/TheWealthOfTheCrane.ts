@@ -32,7 +32,7 @@ class TheWealthOfTheCrane extends DrawCard {
             effect: 'look at the top ten cards of their dynasty deck',
             condition: (context: AbilityContext) => context.player.dynastyDeck.length > 0,
             max: AbilityDsl.limit.perPhase(1),
-            handler: (context: any) => {
+            handler: (context: AbilityContext) => {
                 this.cards = context.player.dynastyDeck.slice(0, 10);
                 this.chosenProvinces = [];
 

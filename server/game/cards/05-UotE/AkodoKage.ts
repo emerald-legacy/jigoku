@@ -1,4 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -16,7 +17,7 @@ export default class AkodoKage extends DrawCard {
                     context.player.honorBid < context.player.opponent.honorBid &&
                     context.player.isMoreHonorable()
             },
-            gameAction: AbilityDsl.actions.setHonorDial((context: any) => ({ value: context.player.showBid }))
+            gameAction: AbilityDsl.actions.setHonorDial((context: AbilityContext) => ({ value: context.player.showBid }))
         });
     }
 }

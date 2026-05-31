@@ -1,4 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
 
@@ -16,9 +18,9 @@ class MantisTenkinja extends DrawCard {
             },
             cost: ability.costs.payHonor(1),
             effect: 'reduce the cost of their next event by 1',
-            gameAction: ability.actions.playerLastingEffect((context: any) => ({
+            gameAction: ability.actions.playerLastingEffect((context: AbilityContext) => ({
                 targetController: context.player,
-                effect: ability.effects.reduceNextPlayedCardCost(1, (card: any) => card === context.event.card)
+                effect: ability.effects.reduceNextPlayedCardCost(1, (card: any) => card === (context as TriggeredAbilityContext).event.card)
             }))
         });
     }

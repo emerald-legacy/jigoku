@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { EventNames, Locations } from '../../Constants.js';
 
@@ -8,7 +9,7 @@ class UtakuKamoko extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context: any) => context.source.isDishonored,
+            condition: (context: AbilityContext) => context.source.isDishonored,
             effect: AbilityDsl.effects.honorStatusDoesNotModifySkill()
         });
         this.reaction({

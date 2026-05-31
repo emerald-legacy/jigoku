@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
 
@@ -14,8 +15,8 @@ class IAmReady extends DrawCard {
             }),
             cannotBeMirrored: true,
             effect: 'ready {1}',
-            effectArgs: (context: any) => context.costs.removeFate,
-            handler: (context: any) => ability.actions.ready().resolve(context.costs.removeFate, context)
+            effectArgs: (context: AbilityContext) => context.costs.removeFate as DrawCard,
+            handler: (context: AbilityContext) => ability.actions.ready().resolve(context.costs.removeFate as DrawCard, context)
         });
     }
 }

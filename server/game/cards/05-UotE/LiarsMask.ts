@@ -8,8 +8,8 @@ class LiarsMask extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Discard status token from attached character',
-            condition: (context: any) => !!context.source.parent,
-            gameAction: AbilityDsl.actions.selectToken((context: any) => ({
+            condition: (context: AbilityContext) => !!context.source.parent,
+            gameAction: AbilityDsl.actions.selectToken((context: AbilityContext) => ({
                 card: context.source.parent,
                 activePromptTitle: 'Which token do you wish to discard?',
                 message: '{0} discards {1}',
@@ -17,7 +17,7 @@ class LiarsMask extends DrawCard {
                 gameAction: AbilityDsl.actions.discardStatusToken()
             })),
             effect: 'discard a status token from {1}',
-            effectArgs: (context: any) => [context.source.parent]
+            effectArgs: (context: AbilityContext) => [context.source.parent]
         });
     }
 

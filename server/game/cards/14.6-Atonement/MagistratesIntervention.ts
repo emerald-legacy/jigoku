@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { CardTypes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -14,9 +15,9 @@ class MagistratesIntervention extends DrawCard {
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.dishonor(),
                     AbilityDsl.actions.conditional({
-                        condition: (context: any) =>
-                            context.player.opponent && context.target.controller === context.player.opponent &&
-                            context.game.getConflicts(context.player.opponent).filter((conflict: any) => !conflict.passed).length > 1,
+                        condition: (context: AbilityContext) => !!(
+                            context.player.opponent && (context.target as DrawCard).controller === context.player.opponent &&
+                            context.game.getConflicts(context.player.opponent).filter((conflict: any) => !conflict.passed).length > 1),
                         trueGameAction: AbilityDsl.actions.dishonor(),
                         falseGameAction: AbilityDsl.actions.draw({ amount: 0 }) //do nothing
                     })
@@ -24,7 +25,7 @@ class MagistratesIntervention extends DrawCard {
                 ])
             },
             effect: 'dishonor {0}{1}',
-            effectArgs: (context: any) => [context.player.opponent && context.game.getConflicts(context.player.opponent).filter((conflict: any) => !conflict.passed).length > 1 ? ', then dishonor it again' : '']
+            effectArgs: (context: AbilityContext) => [context.player.opponent && context.game.getConflicts(context.player.opponent).filter((conflict: any) => !conflict.passed).length > 1 ? ', then dishonor it again' : '']
         });
     }
 

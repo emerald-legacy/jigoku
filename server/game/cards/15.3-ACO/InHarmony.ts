@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class InHarmony extends DrawCard {
@@ -13,7 +14,7 @@ class InHarmony extends DrawCard {
         });
     }
 
-    canPlay(context: any) {
+    canPlay(context: AbilityContext) {
         return context.player.getClaimedRings().length >= 1;
     }
 }

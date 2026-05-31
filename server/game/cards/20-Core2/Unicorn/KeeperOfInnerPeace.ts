@@ -1,4 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, EventNames } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -19,7 +21,7 @@ export default class KeeperOfInnerPeace extends DrawCard {
                     event.origin.controller === context.player &&
                     event.context?.player === context.player.opponent
             },
-            gameAction: AbilityDsl.actions.placeFate((context: any) => ({ target: context.event.origin }))
+            gameAction: AbilityDsl.actions.placeFate((context: AbilityContext) => ({ target: (context as TriggeredAbilityContext).event.origin as DrawCard }))
         });
     }
 }

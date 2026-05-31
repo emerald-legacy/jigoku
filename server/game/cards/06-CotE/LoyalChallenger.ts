@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { DuelTypes, EventNames } from '../../Constants.js';
 
@@ -15,7 +16,7 @@ class LoyalChallenger extends DrawCard {
                             context.source.isParticipating()
                     },
                     message: '{0} gains 1 honor due to {1} winning a conflict',
-                    messageArgs: (context: any) => [context.player, context.source],
+                    messageArgs: (context: AbilityContext) => [context.player, context.source],
                     gameAction: AbilityDsl.actions.gainHonor(context => ({ target: context.player }))
                 })
                 ,
@@ -25,7 +26,7 @@ class LoyalChallenger extends DrawCard {
                             context.source.isParticipating()
                     },
                     message: '{0} loses 1 honor due to {1} losing a conflict',
-                    messageArgs: (context: any) => [context.player, context.source],
+                    messageArgs: (context: AbilityContext) => [context.player, context.source],
                     gameAction: AbilityDsl.actions.loseHonor(context => ({ target: context.player }))
                 })
             ]

@@ -1,4 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
+import type Player from '../../Player.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class MeekInformant extends DrawCard {
@@ -11,9 +13,9 @@ export default class MeekInformant extends DrawCard {
                 onCardPlayed: (event, context) => event.card === context.source && context.player.opponent !== undefined
             },
             effect: 'look at {1}\'s hand',
-            effectArgs: (context: any) => context.player.opponent as any,
-            gameAction: AbilityDsl.actions.lookAt((context: any) => ({
-                target: context.player.opponent.hand.slice().sort((a: any, b: any) => a.name.localeCompare(b.name)),
+            effectArgs: (context: AbilityContext) => context.player.opponent as any,
+            gameAction: AbilityDsl.actions.lookAt((context: AbilityContext) => ({
+                target: (context.player.opponent as Player).hand.slice().sort((a: any, b: any) => a.name.localeCompare(b.name)),
                 chatMessage: true
             }))
         });

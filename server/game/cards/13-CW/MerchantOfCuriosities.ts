@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 import type BaseCard from '../../BaseCard.js';
 import { Locations, TargetModes, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -94,7 +95,7 @@ class MerchantOfCuriosities extends DrawCard {
 
     buildString(context: any) {
         if(context.costs.merchantOfCuriositiesCostPaid) {
-            return '.  ' + context.player.opponent.name + ' gives ' + context.player.name + ' 1 honor to discard ' +
+            return '.  ' + (context.player.opponent as Player).name + ' gives ' + context.player.name + ' 1 honor to discard ' +
                 context.costs.merchantOfCuriositiesCostDiscardedCard.name + ' and draw a card';
         }
         return '';

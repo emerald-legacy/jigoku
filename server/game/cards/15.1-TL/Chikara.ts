@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityTypes, CardTypes, EventNames } from '../../Constants.js';
 
@@ -24,16 +25,16 @@ class Chikara extends DrawCard {
                 },
                 printedAbility: false,
                 effect: 'force {1} to sacrifice {0}, returning all its fate to {1}\'s fate pool',
-                effectArgs: (context: any) => [context.target.controller],
+                effectArgs: (context: AbilityContext) => [(context.target as DrawCard).controller],
                 target: {
                     cardType: CardTypes.Character,
                     cardCondition: (card: any) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.sequential([
-                        AbilityDsl.actions.removeFate((context: any) => ({
-                            amount: context.target.getFate(),
-                            recipient: context.target.owner
+                        AbilityDsl.actions.removeFate((context: AbilityContext) => ({
+                            amount: (context.target as DrawCard).getFate(),
+                            recipient: (context.target as DrawCard).owner
                         })),
-                        AbilityDsl.actions.sacrifice((context: any) => ({
+                        AbilityDsl.actions.sacrifice((context: AbilityContext) => ({
                             target: context.target
                         }))
                     ])

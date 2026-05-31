@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, EventNames, Players, TargetModes } from '../../Constants.js';
 
@@ -13,7 +14,7 @@ class Aranat extends DrawCard {
                 onCardPlayed: (event: EventPayload<EventNames.OnCardPlayed>, context: any) => context.player.opponent && event.card === context.source
             },
             effect: 'give {1} the opportunity to reveal provinces',
-            effectArgs: (context: any) => context.player.opponent ?? '',
+            effectArgs: (context: AbilityContext) => context.player.opponent ?? '',
             gameAction: AbilityDsl.actions.selectCard({
                 cardType: CardTypes.Province,
                 location: this.game.getProvinceArray(false),
@@ -28,9 +29,9 @@ class Aranat extends DrawCard {
             }),
             then: {
                 message: '{3} has {4} facedown provinces so {4} fate is placed on {1}',
-                messageArgs: (context: any) => [context.player.opponent, context.player.getNumberOfOpponentsFacedownProvinces()],
+                messageArgs: (context: AbilityContext) => [context.player.opponent, context.player.getNumberOfOpponentsFacedownProvinces()],
                 thenCondition: () => true,
-                gameAction: AbilityDsl.actions.placeFate((context: any) => ({
+                gameAction: AbilityDsl.actions.placeFate((context: AbilityContext) => ({
                     target: context.source,
                     amount: context.player.getNumberOfOpponentsFacedownProvinces()
                 }))

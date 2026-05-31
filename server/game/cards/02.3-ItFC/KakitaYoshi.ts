@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
 
@@ -13,7 +14,7 @@ class KakitaYoshi extends DrawCard {
             effect: 'draw 3 cards, and reduce the cost of events this conflict',
             gameAction: [
                 ability.actions.draw({ amount: 3 }),
-                ability.actions.playerLastingEffect((context: any) => ({
+                ability.actions.playerLastingEffect((context: AbilityContext) => ({
                     targetController: context.player,
                     effect: ability.effects.reduceCost({
                         amount: 2,

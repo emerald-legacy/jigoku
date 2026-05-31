@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
 
@@ -8,7 +9,7 @@ class TryAgainTomorrow extends DrawCard {
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Send a Character home',
-            condition: (context: any) =>
+            condition: (context: AbilityContext) =>
                 context.player.anyCardsInPlay((card: any) => card.isParticipating() &&
                 card.hasTrait('courtier') && card.isHonored),
             cannotBeMirrored: true,

@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, CardTypes } from '../../Constants.js';
 
@@ -29,10 +31,10 @@ class CriminalContacts extends DrawCard {
         });
     }
 
-    buildString(context: any) {
+    buildString(context: AbilityContext) {
         if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
             let target = context.targets.oppCharacter;
-            return '.  ' + context.player.opponent.name + ' gives ' + context.player.name + ' 1 honor to discard a fate from ' + target.name;
+            return '.  ' + (context.player.opponent as Player).name + ' gives ' + context.player.name + ' 1 honor to discard a fate from ' + target.name;
         }
         return '';
     }

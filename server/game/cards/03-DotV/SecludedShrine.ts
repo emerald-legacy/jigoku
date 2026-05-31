@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Durations, TargetModes, Phases } from '../../Constants.js';
 
@@ -14,7 +15,7 @@ class SecludedShrine extends DrawCard {
             target: {
                 mode: TargetModes.Ring,
                 ringCondition: () => true,
-                gameAction: ability.actions.ringLastingEffect((context: any) => ({
+                gameAction: ability.actions.ringLastingEffect((context: AbilityContext) => ({
                     duration: Durations.UntilEndOfPhase,
                     effect: ability.effects.considerRingAsClaimed((player: any) => player === context.player)
                 }))

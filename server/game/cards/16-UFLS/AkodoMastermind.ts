@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import type BaseCard from '../../BaseCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { Locations, CardTypes, TargetModes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -24,9 +26,9 @@ class AkodoMastermind extends DrawCard {
         });
     }
 
-    getGloryCheck(context: any) {
+    getGloryCheck(context: AbilityContext) {
         if(context.costs.removeFromGame) {
-            return context.costs.removeFromGame.length;
+            return (context.costs.removeFromGame as BaseCard[]).length;
         }
         return context.player.conflictDiscardPile.filter((card: any) => card.hasTrait('tactic')).length;
     }

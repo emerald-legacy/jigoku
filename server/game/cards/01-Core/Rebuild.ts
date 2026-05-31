@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Locations, Players, CardTypes } from '../../Constants.js';
 
@@ -17,8 +18,8 @@ class Rebuild extends DrawCard {
                 cardType: CardTypes.Holding,
                 location: Locations.DynastyDiscardPile,
                 controller: Players.Self,
-                gameAction: ability.actions.moveCard((context: any) => ({
-                    destination: context.costs.moveStateWhenChosen ? context.costs.moveStateWhenChosen.location : Locations.ProvinceOne,
+                gameAction: ability.actions.moveCard((context: AbilityContext) => ({
+                    destination: context.costs.moveStateWhenChosen ? (context.costs.moveStateWhenChosen as DrawCard).location : Locations.ProvinceOne,
                     facedown: false
                 }))
             },

@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Durations, Locations, Players } from '../../Constants.js';
 
@@ -16,7 +17,7 @@ class KitsuSpiritcaller extends DrawCard {
                 gameAction: AbilityDsl.actions.putIntoConflict()
             },
             effect: 'call {0} back from the dead until the end of the conflict',
-            then: (context: any) => ({
+            then: (context: AbilityContext) => ({
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     target: context.target,
                     duration: Durations.UntilEndOfPhase,

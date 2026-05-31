@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { Players, CardTypes, Durations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -8,13 +10,13 @@ class WhispersOfPower extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Gain political power according to fateless characters',
-            condition: (context: any) => context.game.isDuringConflict(),
+            condition: (context: AbilityContext) => context.game.isDuringConflict(),
             cost: AbilityDsl.costs.payHonor(),
             target:{
                 cardType: CardTypes.Character,
                 controller: Players.Any
             },
-            gameAction: AbilityDsl.actions.cardLastingEffect((context: any) => ({
+            gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => ({
                 duration: Durations.UntilEndOfConflict,
                 target: context.target,
                 effect: AbilityDsl.effects.modifyPoliticalSkill(
@@ -22,12 +24,12 @@ class WhispersOfPower extends DrawCard {
                 )
             })),
             effect: 'grant {0} +{1} {2} until the end of the conflict',
-            effectArgs: (context: any) => [this.getPoliticalPowerChange(context), 'political']
+            effectArgs: (context: AbilityContext) => [this.getPoliticalPowerChange(context), 'political']
         });
     }
 
-    getPoliticalPowerChange(context: any) {
-        return context.player.opponent.filterCardsInPlay((card: any) => card.type === CardTypes.Character && card.getFate() === 0).length * 3;
+    getPoliticalPowerChange(context: AbilityContext) {
+        return (context.player.opponent as Player).filterCardsInPlay((card: any) => card.type === CardTypes.Character && card.getFate() === 0).length * 3;
     }
 
     isTemptationsMaho() {

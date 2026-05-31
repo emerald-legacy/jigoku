@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 class Smoke extends DrawCard {
@@ -9,7 +10,7 @@ class Smoke extends DrawCard {
             title: 'Give non-unique characters -2/+0',
             condition: context => !!(this.game.isDuringConflict() && context.source.parent && context.source.parent.isParticipating()),
             cost: [ability.costs.bowSelf(), ability.costs.sacrificeSelf()],
-            gameAction: ability.actions.cardLastingEffect((context: any) => ({
+            gameAction: ability.actions.cardLastingEffect((context: AbilityContext) => ({
                 target: context.game.currentConflict?.getParticipants().filter((card: DrawCard) => !card.isUnique()) ?? [],
                 effect: ability.effects.modifyMilitarySkill(-2)
             })),

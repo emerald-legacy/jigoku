@@ -1,4 +1,5 @@
 import { CardTypes, EventNames, Locations, Players } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -11,7 +12,7 @@ export default class GoldenPlains extends ProvinceCard {
             match: (card: any, context: any) => card.controller === context?.player && card.location === Locations.PlayArea,
             targetController: Players.Self,
             effect: AbilityDsl.effects.addTrait('cavalry'),
-            condition: (context: any) => context.player.stronghold?.name === 'Golden Plains Outpost'
+            condition: (context: AbilityContext) => context.player.stronghold?.name === 'Golden Plains Outpost'
         });
 
         this.reaction({

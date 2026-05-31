@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Players, TargetModes } from '../../Constants.js';
 
@@ -9,7 +10,7 @@ class WarriorsOfTheWind extends DrawCard {
         this.action({
             title: 'Re-arrange participating cavalry characters',
             gameAction: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.sendHome((context: any) => ({
+                AbilityDsl.actions.sendHome((context: AbilityContext) => ({
                     target: context.player.filterCardsInPlay((card: any) => card.hasTrait('cavalry') && card.isParticipating())
                 })),
                 AbilityDsl.actions.selectCard({

@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
 
@@ -12,7 +13,7 @@ class SupernaturalStorm extends DrawCard {
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card: any) => card.isParticipating(),
-                gameAction: ability.actions.cardLastingEffect((context: any) => ({
+                gameAction: ability.actions.cardLastingEffect((context: AbilityContext) => ({
                     effect: ability.effects.modifyBothSkills(context.player.cardsInPlay.reduce((total: number, card: any) => total + (card.hasTrait('shugenja') ? 1 : 0), 0))
                 }))
             },

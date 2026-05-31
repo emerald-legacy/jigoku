@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -24,7 +25,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                     );
                 }
             },
-            gameAction: AbilityDsl.actions.cardLastingEffect((context: any) => {
+            gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => {
                 const target = (context.game.currentConflict as Conflict).getParticipants(
                     (participant: any) => participant.controller === context.player
                 )[0];
@@ -39,7 +40,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                             },
                             gameAction: AbilityDsl.actions.discardFromPlay(),
                             message: '{0} is discarded from play due to failing at {1}!',
-                            messageArgs: (context: any) => [target, context.source]
+                            messageArgs: (context: AbilityContext) => [target, context.source]
                         }),
                         AbilityDsl.effects.delayedEffect({
                             when: {
@@ -54,7 +55,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                             ]),
                             message:
                                 '{0} is honored and receives 1 fate, and {1} gains 1 honor and draw 1 card due to {0} succeeding at {2}!',
-                            messageArgs: (context: any) => [target, context.source.controller, context.source]
+                            messageArgs: (context: AbilityContext) => [target, context.source.controller, context.source]
                         })
                     ]
                 };

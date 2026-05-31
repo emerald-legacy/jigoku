@@ -1,4 +1,5 @@
 import { TargetModes, CardTypes } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import type BaseCard from '../../BaseCard.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -29,7 +30,7 @@ export default class DishonorableAssault extends ProvinceCard {
         });
     }
 
-    getNumberOfLegalTargets(context: any) {
+    getNumberOfLegalTargets(context: AbilityContext) {
         if(this.game.isDuringConflict() && this.game.currentConflict) {
             let cards = this.game.currentConflict.getParticipants((card: any) => card.isAttacking());
             let count = 0;

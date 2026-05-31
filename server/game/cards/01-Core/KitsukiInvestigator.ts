@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class KitsukiInvestigator extends DrawCard {
@@ -13,11 +15,11 @@ class KitsukiInvestigator extends DrawCard {
             effect: 'reveal {1}\'s hand and discard a card from it',
             effectArgs: context => context.player.opponent ?? context.player,
             gameAction: [
-                AbilityDsl.actions.lookAt((context: any) => ({
-                    target: context.player.opponent.hand.slice().sort((a: any, b: any) => a.name.localeCompare(b.name))
+                AbilityDsl.actions.lookAt((context: AbilityContext) => ({
+                    target: (context.player.opponent as Player).hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name))
                 })),
-                AbilityDsl.actions.cardMenu((context: any) => ({
-                    cards: context.player.opponent.hand.slice().sort((a: any, b: any) => a.name.localeCompare(b.name)),
+                AbilityDsl.actions.cardMenu((context: AbilityContext) => ({
+                    cards: (context.player.opponent as Player).hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)),
                     targets: true,
                     message: '{0} chooses {1} to be discarded',
                     messageArgs: (card: any) => [context.player, card],

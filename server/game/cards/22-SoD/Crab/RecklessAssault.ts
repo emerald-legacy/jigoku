@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import { Durations, EventNames } from '../../../Constants.js';
 
@@ -28,8 +29,8 @@ export default class RecklessAssault extends DrawCard {
         });
     }
 
-    getCharacters(context: any) {
+    getCharacters(context: AbilityContext) {
         const cards = context.player.opponent && context.player.opponent.cardsInPlay.filter((card: any) => card.getMilitarySkill() < 3);
-        return cards;
+        return cards || [];
     }
 }

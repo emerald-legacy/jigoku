@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, PlayTypes } from '../../Constants.js';
 
@@ -7,7 +8,7 @@ class UtakuTetsuko extends DrawCard {
 
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
-            condition: (context: any) => context.source.isAttacking(),
+            condition: (context: AbilityContext) => context.source.isAttacking(),
             targetController: Players.Opponent,
             effect: ability.effects.increaseCost({
                 amount: 1,

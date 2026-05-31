@@ -1,4 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, Elements } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 const elementKeys = {
@@ -59,7 +60,7 @@ class AsakoReina extends DrawCard {
         });
     }
 
-    createEffectMessage(context: any) {
+    createEffectMessage(context: AbilityContext) {
         const strings = [];
         if(context.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player)) {
             strings.push('gain 1 honor');

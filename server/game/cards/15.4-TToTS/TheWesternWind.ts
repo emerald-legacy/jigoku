@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Locations, CardTypes, Players, TargetModes, Decks } from '../../Constants.js';
 
@@ -19,7 +20,7 @@ class TheWesternWind extends DrawCard {
                 gameAction: AbilityDsl.actions.deckSearch({
                     cardCondition: (card: any) => card.type === CardTypes.Character,
                     targetMode: TargetModes.UpToVariable,
-                    numCards: (context: any) => context.player.getNumberOfOpponentsFaceupProvinces((province: any) => province.location !== Locations.StrongholdProvince),
+                    numCards: (context: AbilityContext) => context.player.getNumberOfOpponentsFaceupProvinces((province: any) => province.location !== Locations.StrongholdProvince),
                     amount: 8,
                     deck: Decks.DynastyDeck,
                     selectedCardsHandler: (context: any, event: any, cards: any) => {

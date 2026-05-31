@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -22,7 +23,7 @@ class UtakuBattleSteed extends DrawCard {
                                                    event.conflict.winner === context.source.parent.controller &&
                                                    event.conflict.conflictType === 'military'
             },
-            gameAction: ability.actions.honor((context: any) => ({
+            gameAction: ability.actions.honor((context: AbilityContext) => ({
                 target: context.source.parent
             }))
         });

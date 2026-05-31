@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Players, TargetModes } from '../../Constants.js';
 
@@ -72,8 +73,8 @@ class PrepareForWar extends DrawCard {
         });
     }
 
-    getStatusTokenPrompts(context: any) {
-        const tokens = context.target.statusTokens;
+    getStatusTokenPrompts(context: AbilityContext) {
+        const tokens = (context.target as DrawCard).statusTokens;
         let prompts: any[] = [];
         tokens.forEach((token: any) => {
             prompts.push(

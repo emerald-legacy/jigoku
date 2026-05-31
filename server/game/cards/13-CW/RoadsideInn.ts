@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, CardTypes, Phases } from '../../Constants.js';
 
@@ -33,7 +34,7 @@ class RoadsideInn extends DrawCard {
         });
     }
 
-    buildString(context: any) {
+    buildString(context: AbilityContext) {
         if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
             let target = context.targets.oppCharacter;
             return '.  ' + target.controller.name + ' gives ' + context.player.name + ' 1 honor to place a fate from their pool on ' + target.name;

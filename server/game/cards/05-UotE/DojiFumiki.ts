@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
 
@@ -8,7 +9,7 @@ class DojiFumiki extends DrawCard {
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Bow a dishonored character',
-            condition: (context: any) => context.source.isParticipating(),
+            condition: (context: AbilityContext) => context.source.isParticipating(),
             target: {
                 cardType: CardTypes.Character,
                 cardCondition: (card: any) => card.isDishonored && card.isParticipating(),

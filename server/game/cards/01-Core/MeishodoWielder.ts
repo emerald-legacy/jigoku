@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Locations } from '../../Constants.js';
 
@@ -8,7 +9,7 @@ class MeishodoWielder extends DrawCard {
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
             location: Locations.Any,
-            condition: (context: any) => this.game.getFirstPlayer() === context.player,
+            condition: (context: AbilityContext) => this.game.getFirstPlayer() === context.player,
             effect: ability.effects.reduceCost({
                 match: (card: any, source: any) => card === source
             })

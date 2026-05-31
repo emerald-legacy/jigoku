@@ -1,4 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -14,7 +16,7 @@ class WayOfTheChrysanthemum extends DrawCard {
                 onTransferHonor: (event: EventPayload<EventNames.OnTransferHonor>, context: any) => event.player === context.player.opponent && event.afterBid
             },
             cannotBeMirrored: true,
-            gameAction: ability.actions.gainHonor((context: any) => ({ amount: context.event.amount }))
+            gameAction: ability.actions.gainHonor((context: AbilityContext) => ({ amount: (context as TriggeredAbilityContext).event.amount }))
         });
     }
 }

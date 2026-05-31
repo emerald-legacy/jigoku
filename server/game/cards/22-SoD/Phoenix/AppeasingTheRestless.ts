@@ -1,4 +1,5 @@
 import { TargetModes, Players, CardTypes } from '../../../Constants.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import BaseCard from '../../../BaseCard.js';
@@ -25,7 +26,7 @@ export default class AppeasingTheRestless extends DrawCard {
                         activePromptTitle: 'Select spirits',
                         targets: false,
                         mode: TargetModes.UpToVariable,
-                        numCardsFunc: (context: any) => context.player.fate,
+                        numCardsFunc: (context: AbilityContext) => context.player.fate,
                         optional: true,
                         cardType: CardTypes.Character,
                         controller: Players.Self,

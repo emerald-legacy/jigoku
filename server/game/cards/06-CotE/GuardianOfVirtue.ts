@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 class GuardianOfVirtue extends DrawCard {
@@ -6,7 +7,7 @@ class GuardianOfVirtue extends DrawCard {
 
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
-            condition: (context: any) => context.source.isDefending() && context.player.hasComposure(),
+            condition: (context: AbilityContext) => context.source.isDefending() && context.player.hasComposure(),
             effect: ability.effects.doesNotBow()
         });
     }
