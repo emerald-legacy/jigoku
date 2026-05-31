@@ -166,6 +166,16 @@ describe('Miyako\'s Undertaking', function() {
                 expect(this.player1).toHavePrompt('Any interrupts to Akodo Gunsō being honored?');
             });
 
+            it('should honor the character via the Pride keyword gained from the copy', function() {
+                this.player1.clickCard('miyako-s-undertaking');
+                this.player1.clickCard(this.akodoGunso);
+                this.player1.clickCard(this.bayushiLiar);
+                this.noMoreActions();
+                expect(this.player1).toHavePrompt('Any interrupts to Akodo Gunsō being honored?');
+                this.player1.clickPrompt('Pass');
+                expect(this.bayushiLiar.isHonored).toBe(true);
+            });
+
             it('should allow dashes to be changed', function() {
                 this.player1.clickCard('miyako-s-undertaking');
                 this.player1.clickCard(this.akodoGunso);
@@ -221,6 +231,51 @@ describe('Miyako\'s Undertaking', function() {
                 this.player1.clickCard(this.matsuBerserker);
                 this.player1.clickCard(this.bayushiLiar);
                 expect(this.bayushiLiar.hasDash('political')).toBe(true);
+            });
+        });
+
+        describe('a character\'s own keyword reactions and a copy effect', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        honor: 6,
+                        inPlay: ['honorable-challenger'],
+                        hand: ['miyako-s-undertaking']
+                    },
+                    player2: {
+                        inPlay: ['shiba-tsukune'],
+                        dynastyDiscard: ['kitsu-spiritcaller']
+                    }
+                });
+                this.challenger = this.player1.findCardByName('honorable-challenger');
+                this.kitsu = this.player2.findCardByName('kitsu-spiritcaller');
+            });
+
+            it('still triggers the character\'s own Pride after the copy effect expires', function() {
+                this.noMoreActions();
+                this.initiateConflict({ type: 'military', attackers: [this.challenger], defenders: [] });
+                this.player2.pass();
+                this.player1.clickCard('miyako-s-undertaking');
+                this.player1.clickCard(this.kitsu);
+                this.player1.clickCard(this.challenger);
+                expect(this.challenger.name).toBe('Kitsu Spiritcaller');
+                expect(this.challenger.hasPride()).toBe(false);
+                this.player2.pass();
+                this.player1.clickPrompt('Pass');
+                this.player1.clickPrompt('Don\'t Resolve');
+                expect(this.challenger.isHonored).toBe(false);
+                expect(this.challenger.name).toBe('Honorable Challenger');
+
+                this.challenger.ready();
+                this.noMoreActions();
+                this.player2.passConflict();
+                this.noMoreActions();
+                this.initiateConflict({ type: 'political', ring: 'water', attackers: [this.challenger], defenders: [] });
+                this.player2.pass();
+                this.player1.clickPrompt('Pass');
+                this.player1.clickPrompt('Don\'t Resolve');
+                expect(this.challenger.isHonored).toBe(true);
             });
         });
     });
