@@ -1,9 +1,10 @@
 import type Player from './Player.js';
+import type { Conflict } from './Conflict.js';
 import { ConflictTypes, Players } from './Constants.js';
 
 export interface ConflictRecord {
     attackingPlayer: Player;
-    declaredType: ConflictTypes | string;
+    declaredType: ConflictTypes | string | null;
     passed: boolean;
     uuid: string;
     completed?: boolean;
@@ -14,7 +15,7 @@ export interface ConflictRecord {
 export class ConflictTracker {
     records: ConflictRecord[] = [];
 
-    record(conflict: any): void {
+    record(conflict: Conflict): void {
         this.records.push({
             attackingPlayer: conflict.attackingPlayer,
             declaredType: conflict.declaredType,
@@ -26,7 +27,7 @@ export class ConflictTracker {
         } else if(conflict.forcedDeclaredType) {
             conflict.attackingPlayer.declaredConflictOpportunities[ConflictTypes.Forced]++;
         } else {
-            conflict.attackingPlayer.declaredConflictOpportunities[conflict.declaredType]++;
+            conflict.attackingPlayer.declaredConflictOpportunities[conflict.declaredType as ConflictTypes]++;
         }
     }
 
@@ -37,7 +38,7 @@ export class ConflictTracker {
         return this.records.filter((r) => r.attackingPlayer === player);
     }
 
-    recordWinner(conflict: any): void {
+    recordWinner(conflict: Conflict): void {
         const record = this.records.find((r) => r.uuid === conflict.uuid);
         if(record) {
             record.completed = true;

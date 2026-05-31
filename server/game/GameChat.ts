@@ -8,9 +8,15 @@ type Player = {
     };
 };
 
-type MsgArg = string | { name: string } | { getShortSummary: () => string };
-
 type MessageText = string | Array<string | number>;
+
+type MsgArg =
+    | string
+    | number
+    | { name: string }
+    | { getShortSummary: () => string }
+    | { message: MessageText }
+    | Array<MsgArg>;
 
 export class GameChat {
     messages: Array<{
@@ -18,7 +24,7 @@ export class GameChat {
         message: MessageText | { alert: { type: string; message: string | Array<string> } };
     }> = [];
 
-    addChatMessage(player: Player, message: any): void {
+    addChatMessage(player: Player, message: MsgArg): void {
         const playerArg = {
             name: player.user.username,
             emailHash: player.user.emailHash,

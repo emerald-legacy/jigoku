@@ -3,6 +3,11 @@ import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 
+export interface AdditionalPile {
+    cards: BaseCard[];
+    [key: string]: unknown;
+}
+
 export class PlayerZones {
     dynastyDeck: DrawCard[] = [];
     conflictDeck: DrawCard[] = [];
@@ -17,10 +22,10 @@ export class PlayerZones {
     dynastyDiscardPile: DrawCard[] = [];
     conflictDiscardPile: DrawCard[] = [];
     removedFromGame: BaseCard[] = [];
-    additionalPiles: Record<string, any> = {};
+    additionalPiles: Record<string, AdditionalPile> = {};
     underneathStronghold: BaseCard[] = [];
 
-    getSourceList(source: string): any[] {
+    getSourceList(source: string): BaseCard[] {
         switch(source) {
             case Locations.Hand:
                 return this.hand;
@@ -49,7 +54,7 @@ export class PlayerZones {
             case Locations.ProvinceDeck:
                 return this.provinceDeck;
             case Locations.Provinces:
-                return ([] as any[]).concat(
+                return ([] as BaseCard[]).concat(
                     this.provinceOne,
                     this.provinceTwo,
                     this.provinceThree,
@@ -69,28 +74,28 @@ export class PlayerZones {
         }
     }
 
-    updateSourceList(source: string, targetList: any[]): void {
+    updateSourceList(source: string, targetList: BaseCard[]): void {
         switch(source) {
             case Locations.Hand:
-                this.hand = targetList;
+                this.hand = targetList as DrawCard[];
                 break;
             case Locations.ConflictDeck:
-                this.conflictDeck = targetList;
+                this.conflictDeck = targetList as DrawCard[];
                 break;
             case Locations.DynastyDeck:
-                this.dynastyDeck = targetList;
+                this.dynastyDeck = targetList as DrawCard[];
                 break;
             case Locations.ConflictDiscardPile:
-                this.conflictDiscardPile = targetList;
+                this.conflictDiscardPile = targetList as DrawCard[];
                 break;
             case Locations.DynastyDiscardPile:
-                this.dynastyDiscardPile = targetList;
+                this.dynastyDiscardPile = targetList as DrawCard[];
                 break;
             case Locations.RemovedFromGame:
                 this.removedFromGame = targetList;
                 break;
             case Locations.PlayArea:
-                this.cardsInPlay = targetList;
+                this.cardsInPlay = targetList as DrawCard[];
                 break;
             case Locations.ProvinceOne:
                 this.provinceOne = targetList;
@@ -120,23 +125,19 @@ export class PlayerZones {
         }
     }
 
-    createAdditionalPile(name: string, properties?: any): void {
+    createAdditionalPile(name: string, properties?: Record<string, unknown>): void {
         this.additionalPiles[name] = Object.assign({ cards: [] }, properties);
     }
 
     getDynastyCardInProvince(location: string): DrawCard | undefined {
-        return this.getSourceList(location).find((card: any) => card.isDynasty);
+        return this.getSourceList(location).find((card: BaseCard) => card.isDynasty) as DrawCard | undefined;
     }
 
     getDynastyCardsInProvince(location: string): DrawCard[] {
-        let cards = this.getSourceList(location).filter((card: any) => card.isDynasty);
-        if(!Array.isArray(cards)) {
-            cards = [cards];
-        }
-        return cards;
+        return this.getSourceList(location).filter((card: BaseCard) => card.isDynasty) as DrawCard[];
     }
 
     getProvinceCardInProvince(location: string): ProvinceCard | undefined {
-        return this.getSourceList(location).find((card: any) => card.isProvince) as ProvinceCard | undefined;
+        return this.getSourceList(location).find((card: BaseCard) => card.isProvince) as ProvinceCard | undefined;
     }
 }

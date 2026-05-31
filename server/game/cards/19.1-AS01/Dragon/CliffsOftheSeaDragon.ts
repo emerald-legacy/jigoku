@@ -1,16 +1,8 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { ConflictTypes, Players } from '../../../Constants.js';
-import type Player from '../../../Player.js';
+import { Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-
-type ConflictRecord = {
-    attackingPlayer: Player;
-    winner?: Player;
-    declaredType: ConflictTypes | string;
-    passed: boolean;
-    uuid: string;
-};
+import type { ConflictRecord } from '../../../ConflictTracker.js';
 
 export default class CliffsOfTheSeaDragon extends ProvinceCard {
     static id = 'cliffs-of-the-sea-dragon';
