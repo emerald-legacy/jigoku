@@ -8,6 +8,11 @@ import type { GameAction } from './GameActions/GameAction.js';
 import * as GameActions from './GameActions/GameActions.js';
 import type Player from './Player.js';
 
+export interface ShortSummary {
+    name: string;
+    [key: string]: unknown;
+}
+
 export class GameObject {
     declare public game: Game;
     private _name!: string;
@@ -152,7 +157,7 @@ export class GameObject {
         return false;
     }
 
-    public getShortSummary() {
+    public getShortSummary(): ShortSummary {
         return {
             id: this.id,
             label: this.name,

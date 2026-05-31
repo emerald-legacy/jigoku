@@ -67,6 +67,12 @@ interface CardAbilities {
 
 import { type PrintedKeyword, parseKeywords as parseKeywordsFromText } from './KeywordParser.js';
 
+export interface CardSummary {
+    attachments?: CardSummary[];
+    childCards?: CardSummary[];
+    [key: string]: unknown;
+}
+
 class BaseCard extends EffectSource {
     controller: Player;
     declare game: Game;
@@ -1119,7 +1125,7 @@ class BaseCard extends EffectSource {
         return limits.length > 0 ? limits : undefined;
     }
 
-    getSummary(activePlayer: Player, hideWhenFaceup: boolean) {
+    getSummary(activePlayer: Player, hideWhenFaceup: boolean): CardSummary {
         let isActivePlayer = activePlayer === this.controller;
         let selectionState = activePlayer.getCardSelectionState(this);
 

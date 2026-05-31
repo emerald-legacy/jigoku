@@ -30,11 +30,18 @@ import { GameModes } from '../GameModes.js';
 import type Game from './Game.js';
 import type Socket from '../Socket.js';
 import type BaseCard from './BaseCard.js';
+import type { CardSummary } from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type Ring from './Ring.js';
 import type { ClockInterface } from './Clocks/types.js';
 import type { AbilityContext } from './AbilityContext.js';
+
+export interface PlayerState {
+    cardPiles: { [pile: string]: CardSummary[] };
+    provinces: { one: CardSummary[]; two: CardSummary[]; three: CardSummary[]; four: CardSummary[] };
+    [key: string]: unknown;
+}
 
 class Player extends GameObject {
     user: any;
@@ -1452,37 +1459,37 @@ class Player extends GameObject {
         this.promptState.clearSelectableRings();
     }
 
-    getSummaryForHand(list: any[], activePlayer: Player, hideWhenFaceup: boolean): any[] {
+    getSummaryForHand(list: BaseCard[], activePlayer: Player, hideWhenFaceup: boolean): CardSummary[] {
         if(this.optionSettings.sortHandByName) {
             return this.getSortedSummaryForCardList(list, activePlayer, hideWhenFaceup);
         }
         return this.getSummaryForCardList(list, activePlayer, hideWhenFaceup);
     }
 
-    getSummaryForCardList(list: any[], activePlayer: Player, hideWhenFaceup?: boolean): any[] {
-        return list.map((card: any) => {
-            return card.getSummary(activePlayer, hideWhenFaceup);
+    getSummaryForCardList(list: BaseCard[], activePlayer: Player, hideWhenFaceup?: boolean): CardSummary[] {
+        return list.map((card: BaseCard) => {
+            return card.getSummary(activePlayer, hideWhenFaceup ?? false);
         });
     }
 
-    getSortedSummaryForCardList(list: any[], activePlayer: Player, hideWhenFaceup?: boolean): any[] {
+    getSortedSummaryForCardList(list: BaseCard[], activePlayer: Player, hideWhenFaceup?: boolean): CardSummary[] {
         const cards = list.slice();
-        cards.sort((a: any, b: any) => a.printedName.localeCompare(b.printedName));
+        cards.sort((a: BaseCard, b: BaseCard) => a.printedName.localeCompare(b.printedName));
 
-        return cards.map((card: any) => {
-            return card.getSummary(activePlayer, hideWhenFaceup);
+        return cards.map((card: BaseCard) => {
+            return card.getSummary(activePlayer, hideWhenFaceup ?? false);
         });
     }
 
-    getCardSelectionState(card: BaseCard): any {
+    getCardSelectionState(card: BaseCard) {
         return this.promptState.getCardSelectionState(card);
     }
 
-    getRingSelectionState(ring: Ring): any {
+    getRingSelectionState(ring: Ring) {
         return this.promptState.getRingSelectionState(ring);
     }
 
-    currentPrompt(): any {
+    currentPrompt() {
         return this.promptState.getState();
     }
 
@@ -1565,7 +1572,7 @@ class Player extends GameObject {
         );
     }
 
-    getStats(): any {
+    getStats() {
         return {
             fate: this.fate,
             honor: this.getTotalHonor(),
@@ -1575,10 +1582,10 @@ class Player extends GameObject {
         };
     }
 
-    getState(activePlayer: Player): any {
+    getState(activePlayer: Player): PlayerState {
         const isActivePlayer = activePlayer === this;
         const promptState = isActivePlayer ? this.promptState.getState() : {};
-        const state: any = {
+        const state: PlayerState = {
             cardPiles: {
                 cardsInPlay: this.getSummaryForCardList(this.cardsInPlay, activePlayer),
                 conflictDiscardPile: this.getSummaryForCardList(this.conflictDiscardPile, activePlayer),
@@ -1665,7 +1672,7 @@ class Player extends GameObject {
         return Object.assign(state, promptState);
     }
 
-    getShortSummary(): any {
+    getShortSummary() {
         return {
             name: this.name,
             faction: this.faction
