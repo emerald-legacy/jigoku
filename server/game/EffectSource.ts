@@ -1,4 +1,4 @@
-import AbilityDsl from './abilitydsl.js';
+import { getAbilityDsl, type AbilityDslType } from './AbilityDslProvider.js';
 import { GameObject } from './GameObject.js';
 import { Locations, Durations } from './Constants.js';
 import type Game from './Game.js';
@@ -15,7 +15,7 @@ interface EffectProperties {
     [key: string]: any;
 }
 
-type PropertyFactory = (dsl: typeof AbilityDsl) => EffectProperties;
+type PropertyFactory = (dsl: AbilityDslType) => EffectProperties;
 
 // This class is inherited by Ring and BaseCard and also represents Framework effects
 
@@ -25,7 +25,7 @@ class EffectSource extends GameObject {
     }
 
     private applyDurationEffect(duration: Durations, propertyFactory: PropertyFactory): void {
-        const properties = propertyFactory(AbilityDsl);
+        const properties = propertyFactory(getAbilityDsl());
         this.addEffectToEngine(Object.assign({ duration, location: Locations.Any }, properties));
     }
 

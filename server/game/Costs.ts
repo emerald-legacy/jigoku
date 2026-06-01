@@ -9,13 +9,13 @@ import { ReturnToDeckProperties } from './GameActions/ReturnToDeckAction.js';
 import { SelectCardProperties } from './GameActions/SelectCardAction.js';
 import { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import { Derivable, derive } from './utils/helpers.js';
-import BaseCard from './BaseCard.js';
+import type BaseCard from './BaseCard.js';
 import { GameActionCost } from './costs/GameActionCost.js';
 import { MetaActionCost } from './costs/MetaActionCost.js';
 import { ReduceableFateCost } from './costs/ReduceableFateCost.js';
 import { TargetDependentFateCost } from './costs/TargetDependentFateCost.js';
-import DrawCard from './DrawCard.js';
-import Player from './Player.js';
+import type DrawCard from './DrawCard.js';
+import type Player from './Player.js';
 import Ring from './Ring.js';
 
 type SelectCostProperties = Omit<SelectCardProperties, 'gameAction'>;

@@ -5,7 +5,7 @@ import { EffectNames, Stages } from './Constants.js';
 import type { CardEffect } from './Effects/types.js';
 import type Game from './Game.js';
 import type { GameAction } from './GameActions/GameAction.js';
-import * as GameActions from './GameActions/GameActions.js';
+import { getGameAction } from './GameActions/GameActionRegistry.js';
 import type Player from './Player.js';
 
 export interface ShortSummary {
@@ -104,7 +104,7 @@ export class GameObject {
     }
 
     public allowGameAction(actionType: string, context = this.game.getFrameworkContext()) {
-        const gameActionFactory = (GameActions as Record<string, (...args: any[]) => GameAction>)[actionType];
+        const gameActionFactory = getGameAction(actionType);
         if(gameActionFactory) {
             const gameAction: GameAction = gameActionFactory();
             return gameAction.canAffect(this, context);
