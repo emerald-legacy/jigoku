@@ -616,7 +616,7 @@ class DrawCard extends BaseCard {
      * the state of the card should be here. This is also called in some strange corner cases e.g. for attachments
      * which aren't actually in play themselves when their parent (which is in play) leaves play.
      */
-    leavesPlay(): void {
+    leavesPlay(_destination?: string): void {
         // If this is an attachment and is attached to another card, we need to remove all links between them
         if(this.parent && this.parent.attachments) {
             this.parent.removeAttachment(this);
