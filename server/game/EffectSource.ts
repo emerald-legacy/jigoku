@@ -34,6 +34,41 @@ class EffectSource extends GameObject {
         super(game, name);
     }
 
+    // Card-descriptor defaults shared by cards/rings/tokens (all EffectSources).
+    // BaseCard overrides them with real implementations; non-card EffectSources
+    // (Ring/StatusToken/ElementSymbol) inherit these null-object defaults.
+    public isUnique() {
+        return false;
+    }
+
+    public getPrintedFaction(): string | null {
+        return null;
+    }
+
+    public hasKeyword(_keyword: string) {
+        return false;
+    }
+
+    public hasTrait(_trait: string) {
+        return false;
+    }
+
+    public getTraits(): Set<string> {
+        return new Set();
+    }
+
+    public isFaction(_faction: string) {
+        return false;
+    }
+
+    public hasToken(_type: string) {
+        return false;
+    }
+
+    public isTemptationsMaho() {
+        return false;
+    }
+
     private applyDurationEffect(duration: Durations, propertyFactory: PropertyFactory): void {
         const properties = propertyFactory(getAbilityDsl());
         this.addEffectToEngine(Object.assign({ duration, location: Locations.Any }, properties));

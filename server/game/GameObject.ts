@@ -118,43 +118,11 @@ export class GameObject {
         );
     }
 
-    public isUnique() {
-        return false;
-    }
-
     public getType() {
         if(this.anyEffect(EffectNames.ChangeType)) {
             return this.mostRecentEffect(EffectNames.ChangeType);
         }
         return this.printedType;
-    }
-
-    public getPrintedFaction(): string | null {
-        return null;
-    }
-
-    public hasKeyword(_keyword: string) {
-        return false;
-    }
-
-    public hasTrait(_trait: string) {
-        return false;
-    }
-
-    public getTraits(): Set<string> {
-        return new Set();
-    }
-
-    public isFaction(_faction: string) {
-        return false;
-    }
-
-    public hasToken(_type: string) {
-        return false;
-    }
-
-    public isTemptationsMaho() {
-        return false;
     }
 
     public getShortSummary(): ShortSummary {
