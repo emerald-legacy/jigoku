@@ -14,7 +14,7 @@ export interface ChosenReturnToDeckProperties extends PlayerActionProperties {
     bottom?: boolean;
 }
 
-export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckProperties> {
+export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckProperties, EventNames.OnCardMoved> {
     defaultProperties: ChosenReturnToDeckProperties = {
         amount: 1,
         targets: true,
@@ -65,7 +65,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
                     controller: player === context.player ? Players.Self : Players.Opponent,
                     onSelect: (selectingPlayer: Player, cards: BaseCard | BaseCard[]) => {
                         let event = this.getEvent(selectingPlayer, context);
-                        event.cards = cards;
+                        event.cards = Array.isArray(cards) ? cards : [cards];
                         events.push(event);
                         return true;
                     }

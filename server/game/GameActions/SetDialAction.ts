@@ -8,7 +8,7 @@ export interface SetDialProperties extends PlayerActionProperties {
     value: number;
 }
 
-export class SetDialAction extends PlayerAction {
+export class SetDialAction extends PlayerAction<SetDialProperties, EventNames.OnSetHonorDial> {
     defaultProperties: SetDialProperties = { value: 0 };
 
     name = 'setDial';

@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
+import type DrawCard from '../DrawCard.js';
 import { CardTypes, EventNames, Stages } from '../Constants.js';
 import { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
@@ -163,7 +164,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         return this.getProperties(context, additionalProperties).optional ?? false;
     }
 
-    moveFateEventCondition(event: Event): boolean {
+    moveFateEventCondition(event: GameEvent<EventNames.OnMoveFate>): boolean {
         if(event.origin) {
             if(event.origin.getFate() === 0) {
                 return false;
@@ -185,13 +186,13 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         return !!event.origin || !!event.recipient;
     }
 
-    moveFateEventHandler(event: Event): void {
+    moveFateEventHandler(event: GameEvent<EventNames.OnMoveFate>): void {
         if(event.origin) {
             event.fate = Math.min(event.fate, event.origin.getFate());
-            event.origin.modifyFate(-event.fate);
+            (event.origin as DrawCard | Player).modifyFate(-event.fate);
         }
         if(event.recipient) {
-            event.recipient.modifyFate(event.fate);
+            (event.recipient as DrawCard | Player).modifyFate(event.fate);
         }
     }
 

@@ -3,6 +3,7 @@ import { CardTypes, Durations, EventNames, Locations, type DuelTypes } from '../
 import type DrawCard from '../DrawCard.js';
 import { Duel } from '../Duel.js';
 import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import { DuelFlow } from '../gamesteps/DuelFlow.js';
 import type Player from '../Player.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
@@ -150,7 +151,7 @@ export class DuelAction extends CardGameAction {
         }
     }
 
-    addPropertiesToEvent(event: Event, cards: unknown, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnDuelInitiated>, cards: unknown, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         let resolvedCards: DrawCard | DrawCard[] = cards as DrawCard | DrawCard[];
         if(!resolvedCards) {
@@ -178,7 +179,7 @@ export class DuelAction extends CardGameAction {
         event.duel = duel;
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventNames.OnDuelInitiated>, additionalProperties: Record<string, unknown> = {}): void {
         const context: AbilityContext = (event.context as AbilityContext);
         const cards: DrawCard[] = event.cards as DrawCard[];
         const properties = this.getProperties(context, additionalProperties);
@@ -226,7 +227,7 @@ export class DuelAction extends CardGameAction {
         );
     }
 
-    checkEventCondition(event: Event, additionalProperties: Record<string, unknown> = {}): boolean {
+    checkEventCondition(event: GameEvent<EventNames.OnDuelInitiated>, additionalProperties: Record<string, unknown> = {}): boolean {
         return (event.cards as DrawCard[]).some((card: DrawCard) => this.canAffect(card, (event.context as AbilityContext), additionalProperties));
     }
 

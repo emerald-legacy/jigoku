@@ -1,6 +1,6 @@
-import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
@@ -35,19 +35,19 @@ export class TakeFateRingAction extends RingAction {
         );
     }
 
-    addPropertiesToEvent(event: Event, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnMoveFate>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties(context, additionalProperties) as TakeFateRingProperties;
-        event.fate = properties.amount;
+        event.fate = properties.amount ?? 0;
         event.origin = ring;
         event.context = context;
-        event.recipient = properties.removeOnly ? null : context.player;
+        event.recipient = properties.removeOnly ? undefined : context.player;
     }
 
-    checkEventCondition(event: Event): boolean {
+    checkEventCondition(event: GameEvent<EventNames.OnMoveFate>): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: Event, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: GameEvent<EventNames.OnMoveFate>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         let { amount } = this.getProperties(context, additionalProperties) as TakeFateRingProperties;
         return (
             !event.cancelled &&
@@ -58,7 +58,7 @@ export class TakeFateRingAction extends RingAction {
         );
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnMoveFate>): void {
         this.moveFateEventHandler(event);
     }
 }

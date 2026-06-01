@@ -3,7 +3,7 @@ import type { ProvinceCard } from '../ProvinceCard.js';
 import { CardTypes, EventNames } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 export type MoveConflictProperties = CardActionProperties;
 
 export class MoveConflictAction extends CardGameAction {
@@ -31,9 +31,9 @@ export class MoveConflictAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: Event, _additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventNames.OnConflictMoved>, _additionalProperties: Record<string, unknown> = {}): void {
         let context = (event.context as AbilityContext);
-        let newProvince = event.card as ProvinceCard;
+        let newProvince = event.card;
         const conflict = context.game.currentConflict;
         if(!conflict || !conflict.conflictProvince) {
             return;

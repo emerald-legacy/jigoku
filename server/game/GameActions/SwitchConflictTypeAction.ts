@@ -1,4 +1,4 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { Conflict } from '../Conflict.js';
 import { ConflictTypes, EventNames } from '../Constants.js';
@@ -35,7 +35,7 @@ export class SwitchConflictTypeAction extends RingAction<SwitchConflictTypePrope
         return ring.conflictType !== targetConflictType;
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnSwitchConflictType>): void {
         const context = event.context as AbilityContext;
         (context.game.currentConflict as Conflict).switchType();
     }

@@ -1,7 +1,7 @@
-import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
@@ -12,7 +12,7 @@ export interface RemoveFateProperties extends CardActionProperties {
     recipient?: DrawCard | Player | Ring;
 }
 
-export class RemoveFateAction extends CardGameAction {
+export class RemoveFateAction extends CardGameAction<RemoveFateProperties> {
     name = 'removeFate';
     eventName = EventNames.OnMoveFate;
     targetType = [CardTypes.Character];
@@ -49,19 +49,19 @@ export class RemoveFateAction extends CardGameAction {
         return true;
     }
 
-    addPropertiesToEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnMoveFate>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, recipient } = this.getProperties(context, additionalProperties) as RemoveFateProperties;
-        event.fate = amount;
+        event.fate = amount ?? 0;
         event.recipient = recipient;
         event.origin = card;
         event.context = context;
     }
 
-    checkEventCondition(event: Event): boolean {
+    checkEventCondition(event: GameEvent<EventNames.OnMoveFate>): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: GameEvent<EventNames.OnMoveFate>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         let { amount, recipient } = this.getProperties(context, additionalProperties) as RemoveFateProperties;
         return (
             !event.cancelled &&
@@ -72,7 +72,7 @@ export class RemoveFateAction extends CardGameAction {
         );
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnMoveFate>): void {
         this.moveFateEventHandler(event);
     }
 }

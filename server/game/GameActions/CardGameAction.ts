@@ -34,7 +34,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
     }
 
     checkEventCondition(event: GameEvent<N>, additionalProperties = {}): boolean {
-        return this.canAffect(event.card as BaseCard, event.context as AbilityContext, additionalProperties);
+        return this.canAffect((event as { card?: BaseCard }).card as BaseCard, event.context as AbilityContext, additionalProperties);
     }
 
     canAffect(target: BaseCard | Ring, context: AbilityContext, additionalProperties = {}): boolean {
@@ -134,16 +134,16 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
 
     addPropertiesToEvent(event: GameEvent<N>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
-        event.card = card;
+        (event as { card?: BaseCard }).card = card;
     }
 
     isEventFullyResolved(event: GameEvent<N>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown>): boolean {
-        return event.card === card && super.isEventFullyResolved(event, card, context, additionalProperties);
+        return (event as { card?: BaseCard }).card === card && super.isEventFullyResolved(event, card, context, additionalProperties);
     }
 
-    updateLeavesPlayEvent(event: GameEvent<N>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+    updateLeavesPlayEvent(event: GameEvent<EventNames.OnCardLeavesPlay>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
         let properties = this.getProperties(context, additionalProperties) as P & { destination?: Locations };
-        super.updateEvent(event, card, context, additionalProperties);
+        super.updateEvent(event as Event as GameEvent<N>, card, context, additionalProperties);
         event.isSacrifice = this.name === 'sacrifice';
         event.destination =
             properties.destination || (card.isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile);
@@ -192,7 +192,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         };
     }
 
-    leavesPlayEventHandler(event: GameEvent<N>, additionalProperties: Record<string, unknown> = {}): void {
+    leavesPlayEventHandler(event: GameEvent<EventNames.OnCardLeavesPlay>, additionalProperties: Record<string, unknown> = {}): void {
         const card = event.card as DrawCard;
         this.checkForRefillProvince(card, event, additionalProperties);
         if(!card.owner.isLegalLocationForCard(card, event.destination as Locations)) {
@@ -206,7 +206,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         card.owner.moveCard(card, event.destination as Locations, event.options || {});
     }
 
-    checkForRefillProvince(card: BaseCard, event: GameEvent<N>, additionalProperties: Record<string, unknown> = {}): void {
+    checkForRefillProvince(card: BaseCard, event: Event, additionalProperties: Record<string, unknown> = {}): void {
         if(!card.isInProvince() || card.location === Locations.StrongholdProvince) {
             return;
         }

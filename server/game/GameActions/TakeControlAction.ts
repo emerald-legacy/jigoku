@@ -1,12 +1,12 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { Durations, Locations } from '../Constants.js';
+import { Durations, EventNames, Locations } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import Effects from '../effects.js';
 import type { WhenType } from '../Interfaces.js';
 import type { GameActionProperties } from './GameAction.js';
 import { LastingEffectCardAction, type LastingEffectCardProperties } from './LastingEffectCardAction.js';
 
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 export interface TakeControlProperties extends GameActionProperties {
     duration?: Durations;
     until?: WhenType;
@@ -39,7 +39,7 @@ export class TakeControlAction extends LastingEffectCardAction {
         return !card.anotherUniqueInPlay(context.player) && super.canAffect(card, context, additionalProperties);
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventNames.OnEffectApplied>, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties((event.context as AbilityContext), additionalProperties);
         (event.context as AbilityContext).source[properties.duration ?? Durations.Custom](() => Object.assign({ match: event.card }, properties));
     }

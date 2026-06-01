@@ -16,7 +16,7 @@ export interface HonorBidProperties extends PlayerActionProperties {
     messageArgs?: (context: AbilityContext) => unknown[];
 }
 
-export class HonorBidAction extends PlayerAction {
+export class HonorBidAction extends PlayerAction<HonorBidProperties, EventNames.OnHonorBid> {
     name = 'honorBid';
     eventName = EventNames.OnHonorBid;
     defaultProperties: HonorBidProperties = {
@@ -76,20 +76,20 @@ export class HonorBidAction extends PlayerAction {
         if(event.players === Players.Any) {
             const prohibitedBids: Record<string, string[]> = {};
             for(const player of context.game.getPlayers()) {
-                prohibitedBids[player.uuid] = event.prohibitedBids;
+                prohibitedBids[player.uuid] = (event.prohibitedBids ?? []).map((bid) => String(bid));
             }
             const costHandler = event.giveHonor ? undefined : () => {};
             context.game.queueStep(
                 new HonorBidPrompt(context.game, 'Choose your bid', costHandler, prohibitedBids, null, true)
             );
             context.game.queueStep(
-                new SimpleStep(context.game, () => event.postBidAction.resolve(context.player, context))
+                new SimpleStep(context.game, () => event.postBidAction && event.postBidAction.resolve(context.player, context))
             );
             context.game.queueStep(
                 new SimpleStep(context.game, () => {
                     const [message, messageArgs] = event.message
                         ? [event.message, event.messageArgs ? Array.from(event.messageArgs(context)) : []]
-                        : event.postBidAction.getEffectMessage(context);
+                        : (event.postBidAction ? event.postBidAction.getEffectMessage(context) : ['', []]);
                     context.game.addMessage(message, ...messageArgs);
                 })
             );

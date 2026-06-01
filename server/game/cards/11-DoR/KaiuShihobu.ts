@@ -1,7 +1,9 @@
 import { GameModes } from '../../../GameModes.js';
-import { CardTypes, TargetModes, Decks, Locations, Players } from '../../Constants.js';
+import { CardTypes, EventNames, TargetModes, Decks, Locations, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
+import type { GameEvent } from '../../Events/EventPayloads.js';
+import type Player from '../../Player.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 
 export default class KaiuShihobu extends DrawCard {
@@ -19,11 +21,12 @@ export default class KaiuShihobu extends DrawCard {
                 targetMode: TargetModes.Unlimited,
                 deck: Decks.DynastyDeck,
                 selectedCardsHandler: (context, event, cards) => {
+                    const searchEvent = event as GameEvent<EventNames.OnDeckSearch> & { player: Player };
                     if(cards.length > 0) {
-                        this.game.addMessage('{0} selects {1}', event.player, cards);
+                        this.game.addMessage('{0} selects {1}', searchEvent.player, cards);
                         cards.forEach((card) => {
-                            event.player.stronghold.addChildCard(card, Locations.UnderneathStronghold);
-                            event.player.moveCard(card, Locations.UnderneathStronghold);
+                            searchEvent.player.stronghold?.addChildCard(card, Locations.UnderneathStronghold);
+                            searchEvent.player.moveCard(card, Locations.UnderneathStronghold);
                             card.lastingEffect(() => ({
                                 until: {
                                     onCardMoved: (event: any) =>
@@ -34,7 +37,7 @@ export default class KaiuShihobu extends DrawCard {
                             }));
                         });
                     } else {
-                        this.game.addMessage('{0} selects no holdings', event.player);
+                        this.game.addMessage('{0} selects no holdings', searchEvent.player);
                     }
                 }
             })

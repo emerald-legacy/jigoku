@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, Players, PlayTypes, TargetModes, Decks } from '../../Constants.js';
+import { EventNames, Locations, Players, PlayTypes, TargetModes, Decks } from '../../Constants.js';
+import type { GameEvent } from '../../Events/EventPayloads.js';
+import type Player from '../../Player.js';
 
 class DaidojiUji2 extends DrawCard {
     static id = 'daidoji-uji-2';
@@ -15,8 +17,9 @@ class DaidojiUji2 extends DrawCard {
                 deck: Decks.ConflictDeck,
                 reveal: false,
                 selectedCardsHandler: (context, event, cards) => {
+                    const searchEvent = event as GameEvent<EventNames.OnDeckSearch> & { player: Player };
                     if(cards.length > 0) {
-                        this.game.addMessage('{0} selects {1} cards', event.player, cards.length);
+                        this.game.addMessage('{0} selects {1} cards', searchEvent.player, cards.length);
                         cards.forEach(card => {
                             context.player.moveCard(card, this.uuid);
                             card.controller = context.source.controller;
@@ -32,7 +35,7 @@ class DaidojiUji2 extends DrawCard {
                             }));
                         });
                     } else {
-                        this.game.addMessage('{0} selects no cards', event.player);
+                        this.game.addMessage('{0} selects no cards', searchEvent.player);
                     }
                 }
             })

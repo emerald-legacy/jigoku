@@ -14,11 +14,11 @@ export class RingAction<P extends RingActionProperties = RingActionProperties, N
     }
 
     checkEventCondition(event: GameEvent<N>, additionalProperties = {}): boolean {
-        return this.canAffect(event.ring, (event.context as AbilityContext), additionalProperties);
+        return this.canAffect((event as { ring: Ring }).ring, (event.context as AbilityContext), additionalProperties);
     }
 
     addPropertiesToEvent(event: GameEvent<N>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
-        event.ring = ring;
+        (event as { ring: Ring }).ring = ring;
     }
 }

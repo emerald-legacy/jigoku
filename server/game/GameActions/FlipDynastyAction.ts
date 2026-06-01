@@ -1,4 +1,4 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardTypes, EventNames } from '../Constants.js';
@@ -21,7 +21,7 @@ export class FlipDynastyAction extends CardGameAction<FlipDynastyProperties> {
         return card.isInProvince() && card.isDynasty && card.isFacedown() && super.canAffect(card, context);
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnCardRevealed>): void {
         event.card.facedown = false;
     }
 }

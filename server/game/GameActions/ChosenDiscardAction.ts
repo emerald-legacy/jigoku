@@ -17,7 +17,7 @@ type ResolvedChosenDiscardProperties = ChosenDiscardProperties & {
     cardCondition: NonNullable<ChosenDiscardProperties['cardCondition']>;
 };
 
-export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties> {
+export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties, EventNames.OnCardsDiscardedFromHand> {
     defaultProperties: ChosenDiscardProperties = {
         amount: 1,
         targets: true,

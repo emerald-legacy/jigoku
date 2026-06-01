@@ -16,7 +16,7 @@ export interface ModifyBidProperties extends PlayerActionProperties {
     direction?: Direction;
 }
 
-export class ModifyBidAction extends PlayerAction {
+export class ModifyBidAction extends PlayerAction<ModifyBidProperties, EventNames.OnModifyBid> {
     name = 'modifyBid';
     eventName = EventNames.OnModifyBid;
     defaultProperties: ModifyBidProperties = {

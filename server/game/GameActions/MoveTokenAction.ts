@@ -9,7 +9,7 @@ export interface MoveTokenProperties extends TokenActionProperties {
     recipient: DrawCard;
 }
 
-export class MoveTokenAction extends TokenAction {
+export class MoveTokenAction extends TokenAction<MoveTokenProperties, EventNames.OnStatusTokenMoved> {
     name = 'moveStatusToken';
     eventName = EventNames.OnStatusTokenMoved;
 
@@ -56,11 +56,12 @@ export class MoveTokenAction extends TokenAction {
 
     eventHandler(event: GameEvent<EventNames.OnStatusTokenMoved>): void {
         const eventToken = event.token as StatusToken | StatusToken[];
+        const recipient = event.recipient as DrawCard;
         let tokens: StatusToken[] = Array.isArray(eventToken) ? eventToken : [eventToken];
         tokens.forEach((token: StatusToken) => {
             token.card?.removeStatusToken(token);
-            event.recipient.addStatusToken(token);
-            event.recipient.game.raiseEvent(EventNames.OnStatusTokenGained, { token: token, card: event.recipient });
+            recipient.addStatusToken(token);
+            recipient.game.raiseEvent(EventNames.OnStatusTokenGained, { token: token, card: recipient });
         });
     }
 }

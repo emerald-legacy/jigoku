@@ -18,6 +18,7 @@ import type Game from '../../Game.js';
 import type Ring from '../../Ring.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 import type { Event } from '../../Events/Event.js';
+import type { GameEvent } from '../../Events/EventPayloads.js';
 
 /**
 Conflict Resolution
@@ -79,7 +80,7 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     declareConflict(): void {
-        this.game.raiseEvent(EventNames.OnConflictDeclared, { conflict: this.conflict }, (event: Event) => {
+        this.game.raiseEvent(EventNames.OnConflictDeclared, { conflict: this.conflict }, (event: GameEvent<EventNames.OnConflictDeclared>) => {
             this.game.queueSimpleStep(() => this.promptForNewConflict());
             this.game.queueSimpleStep(() => {
                 if(!this.conflict.conflictPassed && !this.conflict.conflictFailedToInitiate) {
@@ -333,7 +334,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                             '{0} places {1} fate on the {2}',
                             this.conflict.attackingPlayer,
                             costToRings,
-                            costEvents[0].recipient || 'ring'
+                            (costEvents[0] as GameEvent<EventNames.OnMoveFate>).recipient || 'ring'
                         );
                     }
                     this.game.openThenEventWindow(costEvents);
@@ -921,25 +922,26 @@ class ConflictFlow extends BaseStepWithPipeline {
             bow().getEvent(card, this.game.getFrameworkContext())
         );
         // Cancel any events where attacker shouldn't bow
-        attackerBowEvents.forEach((event: Event) => (event.cancelled = !event.card.bowsOnReturnHome()));
+        attackerBowEvents.forEach((event: Event) => (event.cancelled = !(event as Event & { card: DrawCard }).card.bowsOnReturnHome()));
 
         // Create bow events for defenders
         let defenderBowEvents = this.conflict.defenders.map((card: DrawCard) =>
             bow().getEvent(card, this.game.getFrameworkContext())
         );
         // Cancel any events where defender shouldn't bow
-        defenderBowEvents.forEach((event: Event) => (event.cancelled = !event.card.bowsOnReturnHome()));
+        defenderBowEvents.forEach((event: Event) => (event.cancelled = !(event as Event & { card: DrawCard }).card.bowsOnReturnHome()));
 
         let bowEvents = attackerBowEvents.concat(defenderBowEvents);
 
         // Create a return home event for every bow event
-        let returnHomeEvents = bowEvents.map((event: Event) =>
-            this.game.getEvent(
+        let returnHomeEvents = bowEvents.map((e: Event) => {
+            const event = e as Event & { card: DrawCard };
+            return this.game.getEvent(
                 EventNames.OnReturnHome,
                 { conflict: this.conflict, bowEvent: event, card: event.card },
                 () => this.conflict.removeFromConflict(event.card)
-            )
-        );
+            );
+        });
         let events = bowEvents.concat(returnHomeEvents);
         events.push(
             this.game.getEvent(EventNames.OnParticipantsReturnHome, {

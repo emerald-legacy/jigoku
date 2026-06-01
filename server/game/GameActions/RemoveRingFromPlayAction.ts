@@ -3,7 +3,7 @@ import { EventNames } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 export type RemoveRingFromPlayProperties = RingActionProperties;
 
 export class RemoveRingFromPlayAction extends RingAction {
@@ -24,8 +24,8 @@ export class RemoveRingFromPlayAction extends RingAction {
         return super.canAffect(ring, context);
     }
 
-    eventHandler(event: Event, _additionalProperties: Record<string, unknown> = {}): void {
-        const ring = event.ring as Ring;
+    eventHandler(event: GameEvent<EventNames.OnRemoveRingFromPlay>, _additionalProperties: Record<string, unknown> = {}): void {
+        const ring = event.ring;
         const context = event.context as AbilityContext;
 
         context.game.raiseEvent(EventNames.OnRemoveRingFromPlay, { ring: ring }, () => ring.removeRingFromPlay());

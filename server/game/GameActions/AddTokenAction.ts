@@ -41,6 +41,6 @@ export class AddTokenAction extends CardGameAction<AddTokenProperties> {
     }
 
     eventHandler(event: GameEvent<EventNames.OnAddTokenToCard>): void {
-        event.card.addToken(event.tokenType);
+        event.card.addToken(event.tokenType ?? '');
     }
 }

@@ -12,7 +12,7 @@ export interface MatchingDiscardProperties extends PlayerActionProperties {
     match?: (context: AbilityContext, card: BaseCard) => boolean;
 }
 
-export class MatchingDiscardAction extends PlayerAction {
+export class MatchingDiscardAction extends PlayerAction<MatchingDiscardProperties, EventNames.OnCardsDiscardedFromHand> {
     defaultProperties: MatchingDiscardProperties = {
         amount: -1,
         reveal: false,
@@ -50,7 +50,7 @@ export class MatchingDiscardAction extends PlayerAction {
     eventHandler(event: GameEvent<EventNames.OnCardsDiscardedFromHand>): void {
         let context = event.context as AbilityContext;
         let player = event.player as Player;
-        let amount = Math.min(event.amount, player.hand.length);
+        let amount = Math.min(event.amount ?? -1, player.hand.length);
         if(amount < 0) {
             amount = player.hand.length;
         }
@@ -59,7 +59,8 @@ export class MatchingDiscardAction extends PlayerAction {
             return;
         }
         let cards = event.cards as BaseCard[];
-        let cardsToDiscard = cards.filter((a: BaseCard) => event.match(context, a));
+        const match = event.match ?? (() => true);
+        let cardsToDiscard = cards.filter((a: BaseCard) => match(context, a));
         if(amount < cardsToDiscard.length) {
             cardsToDiscard = cardsToDiscard.slice(0, amount);
         }

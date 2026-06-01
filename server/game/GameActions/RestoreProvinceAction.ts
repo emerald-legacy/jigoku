@@ -6,7 +6,7 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export type RestoreProvinceProperties = CardActionProperties;
 
-export class RestoreProvinceAction extends CardGameAction {
+export class RestoreProvinceAction extends CardGameAction<CardActionProperties, EventNames.OnRestoreProvince> {
     name = 'restoreProvince';
     eventName = EventNames.OnRestoreProvince;
     targetType = [CardTypes.Province];

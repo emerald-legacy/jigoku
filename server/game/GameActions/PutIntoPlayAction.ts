@@ -139,7 +139,7 @@ export class PutIntoPlayAction extends CardGameAction {
 
         const conflict = context.game.currentConflict;
         if(event.intoConflict && conflict) {
-            if(targetSide.isAttackingPlayer()) {
+            if(targetSide?.isAttackingPlayer()) {
                 conflict.addAttacker(card);
             } else {
                 conflict.addDefender(card);

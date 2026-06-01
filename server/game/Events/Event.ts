@@ -16,7 +16,6 @@ export class Event {
     createContingentEvents = (): Event[] => [];
     preResolutionEffect: () => void = () => true;
     onPlayCardSource?: BaseCard;
-    [key: string]: any;
 
     constructor(
         public name: string,
@@ -25,7 +24,7 @@ export class Event {
     ) {
         for(const key in params) {
             if(Object.prototype.hasOwnProperty.call(params, key)) {
-                this[key] = params[key];
+                (this as Record<string, unknown>)[key] = params[key];
             }
         }
     }

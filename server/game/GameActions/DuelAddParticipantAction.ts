@@ -9,7 +9,7 @@ export interface DuelAddParticipantProperties extends CardActionProperties {
     duel: Duel;
 }
 
-export class DuelAddParticipantAction extends CardGameAction<DuelAddParticipantProperties> {
+export class DuelAddParticipantAction extends CardGameAction<DuelAddParticipantProperties, EventNames.OnAddDuelParticipant> {
     name = 'onAddDuelParticipant';
     eventName = EventNames.OnAddDuelParticipant;
 

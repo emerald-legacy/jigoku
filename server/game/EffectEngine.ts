@@ -2,6 +2,7 @@ import { Durations, EffectNames, EventNames } from './Constants.js';
 import type Effect from './Effects/Effect.js';
 import type EffectSource from './EffectSource.js';
 import type { Event } from './Events/Event.js';
+import type { GameEvent } from './Events/EventPayloads.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import type Game from './Game.js';
 
@@ -142,7 +143,7 @@ export class EffectEngine {
         this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Durations.UntilEndOfRound);
     }
 
-    onPassActionPhasePriority(event: Event) {
+    onPassActionPhasePriority(event: GameEvent<EventNames.OnPassActionPhasePriority>) {
         for(const effect of this.effects) {
             if(
                 effect.duration === Durations.UntilSelfPassPriority &&

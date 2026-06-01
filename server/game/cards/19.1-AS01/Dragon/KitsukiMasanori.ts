@@ -1,5 +1,6 @@
 import { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Decks, Durations } from '../../../Constants.js';
+import { CardTypes, Decks, Durations, EventNames } from '../../../Constants.js';
+import type { GameEvent } from '../../../Events/EventPayloads.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
@@ -61,7 +62,7 @@ export default class KitsukiMasanori extends DrawCard {
 
                                     context.game.addMessage(
                                         '{0} takes {1} and attaches it to {2}',
-                                        event.player,
+                                        (event as GameEvent<EventNames.OnDeckSearch>).player,
                                         card,
                                         context.source
                                     );

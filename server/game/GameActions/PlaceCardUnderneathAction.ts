@@ -1,7 +1,7 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardTypes } from '../Constants.js';
+import { CardTypes, EventNames } from '../Constants.js';
 import Effects from '../effects.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
@@ -38,9 +38,9 @@ export class PlaceCardUnderneathAction extends CardGameAction {
         return !!(destination && destination.uuid) && super.canAffect(card, context);
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventNames.Unnamed>, additionalProperties: Record<string, unknown> = {}): void {
         let context = event.context as AbilityContext;
-        let card = event.card;
+        let card = event.card as BaseCard;
         event.cardStateWhenMoved = card.createSnapshot();
         let properties = this.getProperties(context, additionalProperties) as PlaceCardUnderneathProperties;
         if(!properties.destination) {
@@ -54,7 +54,7 @@ export class PlaceCardUnderneathAction extends CardGameAction {
         if(properties.hideWhenFaceup) {
             card.lastingEffect(() => ({
                 until: {
-                    onCardMoved: (event: Event) => event.card === card && event.originalLocation === destination
+                    onCardMoved: (event: GameEvent<EventNames.OnCardMoved>) => event.card === card && event.originalLocation === destination
                 },
                 match: card,
                 effect: Effects.hideWhenFaceUp()

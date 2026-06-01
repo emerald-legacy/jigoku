@@ -1,4 +1,4 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -6,7 +6,7 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export type DetachActionProperties = CardActionProperties;
 
-export class DetachAction extends CardGameAction<DetachActionProperties> {
+export class DetachAction extends CardGameAction<DetachActionProperties, EventNames.OnCardDetached> {
     name = 'detach';
     eventName = EventNames.OnCardDetached;
     targetType = [CardTypes.Attachment];
@@ -25,8 +25,9 @@ export class DetachAction extends CardGameAction<DetachActionProperties> {
         );
     }
 
-    eventHandler(event: Event): void {
-        event.card.parent.removeAttachment(event.card);
-        event.card.controller.cardsInPlay.push(event.card);
+    eventHandler(event: GameEvent<EventNames.OnCardDetached>): void {
+        const card = event.card as DrawCard;
+        (card.parent as DrawCard).removeAttachment(card);
+        card.controller.cardsInPlay.push(card);
     }
 }

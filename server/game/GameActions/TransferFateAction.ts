@@ -8,7 +8,7 @@ export interface TransferFateProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class TransferFateAction extends PlayerAction {
+export class TransferFateAction extends PlayerAction<TransferFateProperties, EventNames.OnMoveFate> {
     name = 'takeFate';
     eventName = EventNames.OnMoveFate;
     defaultProperties: TransferFateProperties = { amount: 1 };
