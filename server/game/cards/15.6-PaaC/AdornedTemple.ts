@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -20,10 +22,10 @@ class AdornedTemple extends DrawCard {
                 }
             },
             effect: 'draw {1} card{2}',
-            effectArgs: (context: any) => (context.event.recipient?.isOrdinary() ? ['2', 's'] : ['a', '']),
-            gameAction: AbilityDsl.actions.draw((context: any) => ({
+            effectArgs: (context: AbilityContext) => (((context as TriggeredAbilityContext).event.recipient as DrawCard)?.isOrdinary() ? ['2', 's'] : ['a', '']),
+            gameAction: AbilityDsl.actions.draw((context: AbilityContext) => ({
                 target: context.player,
-                amount: context.event.recipient?.isOrdinary() ? 2 : 1
+                amount: ((context as TriggeredAbilityContext).event.recipient as DrawCard)?.isOrdinary() ? 2 : 1
             }))
         });
     }

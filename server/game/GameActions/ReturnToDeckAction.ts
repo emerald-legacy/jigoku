@@ -23,7 +23,7 @@ export class ReturnToDeckAction extends CardGameAction {
         super(properties);
     }
 
-    getCostMessage(context: AbilityContext): [string, any[]] {
+    getCostMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as ReturnToDeckProperties;
         return [
             properties.shuffle
@@ -33,7 +33,7 @@ export class ReturnToDeckAction extends CardGameAction {
         ];
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as ReturnToDeckProperties;
         if(properties.shuffle) {
             return ['shuffle {0} into its owner\'s deck', [properties.target]];

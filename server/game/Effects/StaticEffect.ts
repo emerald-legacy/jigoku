@@ -1,6 +1,7 @@
 import { EffectValue } from './EffectValue.js';
 import { CardTypes, EffectNames, Durations, AbilityTypes } from '../Constants.js';
 import GainAbility from './GainAbility.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import type DrawCard from '../DrawCard.js';
 import type { GameObject } from '../GameObject.js';
 import type { CardEffect } from './types.js';
@@ -116,7 +117,7 @@ class StaticEffect {
         target.addEffect(this);
         if(this.value instanceof GainAbility && this.value.abilityType === AbilityTypes.Persistent) {
             const copy = this.value.getCopy();
-            copy.apply(target);
+            copy.apply(target as DrawCard);
             this.copies.push(copy);
         } else {
             this.value.apply(target);
@@ -126,7 +127,7 @@ class StaticEffect {
     unapply(target: GameObject) {
         target.removeEffect(this);
         this.value.unapply(target);
-        this.copies.forEach((a) => a.unapply(target));
+        this.copies.forEach((a) => a.unapply(target as DrawCard));
         this.copies = [];
     }
 
@@ -138,7 +139,7 @@ class StaticEffect {
         return this.value.recalculate();
     }
 
-    setContext(context: any) {
+    setContext(context: AbilityContext) {
         this.context = context;
         this.value.setContext(context);
     }
@@ -168,12 +169,12 @@ class StaticEffect {
 
     checkConflictingEffects(type: EffectNames, target: any): boolean {
         if(binaryCardEffects.includes(type)) {
-            let matchingEffects = target.effects.filter((effect: any) => effect.type === type);
-            return matchingEffects.every((effect: any) => this.hasLongerDuration(effect) || effect.isConditional);
+            let matchingEffects = target.effects.filter((effect: CardEffect) => effect.type === type);
+            return matchingEffects.every((effect: CardEffect) => this.hasLongerDuration(effect) || effect.isConditional);
         }
         if(conflictingEffects[type]) {
             let matchingEffects = conflictingEffects[type](target, this.getValue());
-            return matchingEffects.every((effect: any) => this.hasLongerDuration(effect) || effect.isConditional);
+            return matchingEffects.every((effect: CardEffect) => this.hasLongerDuration(effect) || effect.isConditional);
         }
         if(type === EffectNames.ModifyBothSkills) {
             return (

@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardTypes } from '../../Constants.js';
 
@@ -9,7 +10,7 @@ class FormalInvitation extends DrawCard {
         this.action({
             title: 'Move attached character into the conflict',
             condition: () => this.game.isDuringConflict('political'),
-            gameAction: ability.actions.moveToConflict((context: any) => ({ target: context.source.parent }))
+            gameAction: ability.actions.moveToConflict((context: AbilityContext) => ({ target: context.source.parent }))
         });
     }
 

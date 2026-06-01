@@ -1,7 +1,8 @@
-import ForcedTriggeredAbilityWindow from './forcedtriggeredabilitywindow.js';
+import ForcedTriggeredAbilityWindow from './ForcedTriggeredAbilityWindow.js';
+import type Game from '../Game.js';
 
 class SimultaneousEffectWindow extends ForcedTriggeredAbilityWindow {
-    constructor(game: any) {
+    constructor(game: Game) {
         super(game, 'delayedeffects' as any, undefined as any);
     }
 
@@ -13,7 +14,7 @@ class SimultaneousEffectWindow extends ForcedTriggeredAbilityWindow {
     }
 
     filterChoices(): boolean {
-        let choices = this.choices.filter(choice => choice.condition());
+        let choices = this.choices.filter((choice: any) => choice.condition());
         if(choices.length === 0) {
             return true;
         }

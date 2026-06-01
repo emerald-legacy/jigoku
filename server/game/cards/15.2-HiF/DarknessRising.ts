@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class DarknessRising extends DrawCard {
@@ -10,7 +11,7 @@ class DarknessRising extends DrawCard {
             condition: context => context.game.isDuringConflict(),
             cost: AbilityDsl.costs.dishonor({ cardCondition: (card: any, context: any) => card.isParticipating() && this.getLegalTargetsForCard(card, context).length > 0 }),
             cannotTargetFirst: true,
-            gameAction: AbilityDsl.actions.bow((context: any) => ({
+            gameAction: AbilityDsl.actions.bow((context: AbilityContext) => ({
                 target: this.getLegalTargetsForCard(context.costs.dishonor, context)
             }))
         });

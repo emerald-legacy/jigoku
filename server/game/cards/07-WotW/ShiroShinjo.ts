@@ -1,4 +1,5 @@
 import { EventNames, Locations } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -13,7 +14,7 @@ export default class ShiroShinjo extends StrongholdCard {
             when: {
                 onFateCollected: (event: EventPayload<EventNames.OnFateCollected>, context: any) => event.player === context.player
             },
-            gameAction: AbilityDsl.actions.gainFate((context: any) => ({
+            gameAction: AbilityDsl.actions.gainFate((context: AbilityContext) => ({
                 amount: context.player.getNumberOfOpponentsFaceupProvinces(
                     (province: any) => province.location !== Locations.StrongholdProvince
                 )

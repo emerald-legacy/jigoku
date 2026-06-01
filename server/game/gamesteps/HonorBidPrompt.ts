@@ -4,16 +4,20 @@ import { TransferHonorAction } from '../GameActions/TransferHonorAction.js';
 import { EventNames, EffectNames } from '../Constants.js';
 import { GameModes } from '../../GameModes.js';
 import type Player from '../Player.js';
+import type Game from '../Game.js';
+import type { Duel } from '../Duel.js';
+
+type HonorBidCostHandler = (prompt: HonorBidPrompt) => void;
 
 class HonorBidPrompt extends AllPlayerPrompt {
     menuTitle: string;
-    costHandler: any;
+    costHandler?: HonorBidCostHandler;
     prohibitedBids: Record<string, string[]>;
-    duel: any;
+    duel: Duel | null;
     bid: Record<string, number>;
     raiseEvent: boolean;
 
-    constructor(game: any, menuTitle: string, costHandler?: any, prohibitedBids: Record<string, string[]> = {}, duel: any = null, raiseEvent = true) {
+    constructor(game: Game, menuTitle: string, costHandler?: HonorBidCostHandler, prohibitedBids: Record<string, string[]> = {}, duel: Duel | null = null, raiseEvent = true) {
         super(game);
         this.menuTitle = menuTitle || 'Choose a bid';
         this.costHandler = costHandler;
@@ -49,7 +53,8 @@ class HonorBidPrompt extends AllPlayerPrompt {
                 this.game.raiseEvent(EventNames.OnDuelFocus, eventProps);
             }
             if(this.costHandler) {
-                this.game.queueSimpleStep(() => this.costHandler(this));
+                const costHandler = this.costHandler;
+                this.game.queueSimpleStep(() => costHandler(this));
             } else {
                 this.game.queueSimpleStep(() => this.transferHonorAfterBid());
             }

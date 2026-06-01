@@ -1,13 +1,15 @@
 import { Durations, DuelTypes, ConflictTypes } from '../../../Constants.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { LastingEffectProperties } from '../../../GameActions/LastingEffectAction.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
 
 export default class MirumotoRei2 extends DrawCard {
     static id = 'mirumoto-rei-2';
 
-    getWeaponCount(context: any) {
+    getWeaponCount(context: AbilityContext) {
         return context.source.attachments.filter((card: any) => card.hasTrait('weapon')).length;
     }
 
@@ -38,7 +40,7 @@ export default class MirumotoRei2 extends DrawCard {
                 gameAction: ((duel: any) =>
                     duel.loser &&
                     AbilityDsl.actions.multipleContext(() => {
-                        const gameActions: any[] = [];
+                        const gameActions: GameAction[] = [];
                         duel.loser.forEach((loser: any) => {
                             if(loser.getFate() > 0) {
                                 gameActions.push(

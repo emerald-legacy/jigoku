@@ -42,7 +42,7 @@ export class PutIntoPlayAction extends CardGameAction {
         return context.player;
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let { target } = this.getProperties(context);
         return ['put {0} into play' + (this.intoConflict ? ' in the conflict' : ''), [target]];
     }

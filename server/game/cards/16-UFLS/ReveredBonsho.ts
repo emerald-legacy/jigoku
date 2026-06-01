@@ -2,6 +2,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
+import type { Event } from '../../Events/Event.js';
 import type Ring from '../../Ring.js';
 
 type RingFate = { ring: Ring; fate: number };
@@ -65,7 +66,7 @@ class ReveredBonsho extends DrawCard {
     }
 
     placeFate(context: AbilityContext, targetPlayer: Player, ringFate: RingFate[]) {
-        const moveEvents: any[] = [];
+        const moveEvents: Event[] = [];
         ringFate.forEach((obj: RingFate) => {
             if(obj.fate > 0) {
                 context.game.actions.placeFate({ target: obj.ring as any, amount: obj.fate }).addEventsToArray(moveEvents, context);

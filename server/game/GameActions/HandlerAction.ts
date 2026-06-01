@@ -22,7 +22,7 @@ export class HandlerAction extends GameAction<HandlerProperties> {
         return true;
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
         events.push(this.getEvent(null, context, additionalProperties));
     }
 

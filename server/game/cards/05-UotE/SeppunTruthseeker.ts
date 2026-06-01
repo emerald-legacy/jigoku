@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -13,7 +14,7 @@ class SeppunTruthseeker extends DrawCard {
                 onCardLeavesPlay: (event: EventPayload<EventNames.OnCardLeavesPlay>, context: any) => event.card === context.source
             },
             effect: 'make both players draw 2 cards',
-            gameAction: ability.actions.draw((context: any) => ({
+            gameAction: ability.actions.draw((context: AbilityContext) => ({
                 target: context.game.getPlayers(),
                 amount: 2
             }))

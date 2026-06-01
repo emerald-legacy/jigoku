@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, Locations, Players, TargetModes } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -21,7 +22,7 @@ export default class CounselFromYumeDo extends DrawCard {
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.returnToDeck({ location: Locations.ConflictDiscardPile, shuffle: true })
             },
-            then: (context: any) => ({
+            then: (context: AbilityContext) => ({
                 gameAction: AbilityDsl.actions.onAffinity({
                     trait: 'water',
                     effect: 'draw a card',

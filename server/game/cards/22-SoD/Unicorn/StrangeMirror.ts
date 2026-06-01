@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, Durations, Players, AbilityTypes, Locations } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,7 +10,7 @@ export default class StrangeMirror extends DrawCard {
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
                 title: 'Put a copy of a character into play',
-                condition: (context: any) => context.source.isParticipating(),
+                condition: (context: AbilityContext) => context.source.isParticipating(),
                 targets: {
                     inPlay: {
                         cardType: CardTypes.Character,
@@ -43,7 +44,7 @@ export default class StrangeMirror extends DrawCard {
                     }
                 },
                 effect: 'put {1} into play in the conflict, removing it from the game when the conflict ends',
-                effectArgs: (context: any) => [context.targets.inDiscard]
+                effectArgs: (context: AbilityContext) => [context.targets.inDiscard]
             })
         });
     }

@@ -382,8 +382,8 @@ class PlayerInteractionWrapper {
 
     hasPrompt(title: string): boolean {
         const currentPrompt = this.player.currentPrompt();
-        return (
-            !!currentPrompt &&
+        return !!(
+            currentPrompt &&
             ((currentPrompt.menuTitle && currentPrompt.menuTitle.toLowerCase() === title.toLowerCase()) ||
                 (currentPrompt.promptTitle && currentPrompt.promptTitle.toLowerCase() === title.toLowerCase()))
         );
@@ -397,7 +397,7 @@ class PlayerInteractionWrapper {
         const textStr = text.toString();
         const currentPrompt = this.player.currentPrompt();
         const promptButton = currentPrompt.buttons.find(
-            (button: { text: string | number }) => button.text.toString().toLowerCase() === textStr.toLowerCase()
+            (button) => button.text?.toString().toLowerCase() === textStr.toLowerCase()
         );
 
         if(!promptButton || promptButton.disabled) {
@@ -406,7 +406,7 @@ class PlayerInteractionWrapper {
             );
         }
 
-        this.game.menuButton(this.player.name, promptButton.arg, promptButton.uuid, promptButton.method);
+        this.game.menuButton(this.player.name, promptButton.arg as string, promptButton.uuid as string, promptButton.method as string);
         this.game.continue();
         this.checkUnserializableGameState();
     }
@@ -428,7 +428,7 @@ class PlayerInteractionWrapper {
             );
         }
 
-        this.game.menuButton(this.player.name, promptButton.arg, promptButton.uuid, promptButton.method);
+        this.game.menuButton(this.player.name, promptButton.arg as string, promptButton.uuid as string, promptButton.method as string);
         this.game.continue();
         this.checkUnserializableGameState();
     }
@@ -437,7 +437,7 @@ class PlayerInteractionWrapper {
         const currentPrompt = this.player.currentPrompt();
 
         const promptControl = currentPrompt.controls.find(
-            (control: { name: string }) => control.name.toLowerCase() === controlName.toLowerCase()
+            (control) => (control.name as string).toLowerCase() === controlName.toLowerCase()
         );
 
         if(!promptControl) {
@@ -446,7 +446,7 @@ class PlayerInteractionWrapper {
             );
         }
 
-        this.game.menuButton(this.player.name, cardName, promptControl.uuid, promptControl.method);
+        this.game.menuButton(this.player.name, cardName, promptControl.uuid as string, promptControl.method as string);
         this.game.continue();
         this.checkUnserializableGameState();
     }

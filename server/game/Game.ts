@@ -1,4 +1,4 @@
-import ChatCommands from './chatcommands.js';
+import ChatCommands from './ChatCommands.js';
 import { GameChat } from './GameChat.js';
 import { EffectEngine } from './EffectEngine.js';
 import Player from './Player.js';
@@ -19,13 +19,13 @@ import InitiateCardAbilityEvent from './Events/InitiateCardAbilityEvent.js';
 import EventWindow from './Events/EventWindow.js';
 import ThenEventWindow from './Events/ThenEventWindow.js';
 import InitiateAbilityEventWindow from './Events/InitiateAbilityEventWindow.js';
-import AbilityResolver from './gamesteps/abilityresolver.js';
+import AbilityResolver from './gamesteps/AbilityResolver.js';
 import SimultaneousEffectWindow from './gamesteps/SimultaneousEffectWindow.js';
 import { AbilityContext } from './AbilityContext.js';
 import Ring from './Ring.js';
 import { Conflict } from './Conflict.js';
 import { Duel } from './Duel.js';
-import ConflictFlow from './gamesteps/conflict/conflictflow.js';
+import ConflictFlow from './gamesteps/conflict/ConflictFlow.js';
 import * as MenuCommands from './MenuCommands.js';
 import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
 
@@ -40,6 +40,18 @@ import type DrawCard from './DrawCard.js';
 import type { AnimationEvent } from './AnimationEvent.js';
 import type { GameRouter } from './GameRouter.js';
 import type { GameSaveState, GameSummary } from '../gamenode/LobbyProtocol.js';
+import type { PlayerState } from './Player.js';
+
+export interface SharedGameState {
+    [key: string]: unknown;
+}
+
+export interface GameState {
+    players: Record<string, PlayerState>;
+    rings: Record<string, unknown>;
+    messages: unknown[];
+    [key: string]: unknown;
+}
 
 interface GameDetails {
     id: string;
@@ -326,7 +338,7 @@ class Game {
         let foundCards: DrawCard[] = [];
 
         this.getPlayers().forEach((player) => {
-            foundCards = foundCards.concat(player.findCards(player.cardsInPlay, predicate));
+            foundCards = foundCards.concat(player.findCards(player.cardsInPlay, predicate as (card: BaseCard) => boolean) as DrawCard[]);
         });
 
         return foundCards;
@@ -1383,12 +1395,12 @@ class Game {
      * Pre-compute state shared across all viewers (conflict, messages, spectators, metadata).
      * Pass the result to getState() to avoid redundant work when sending to multiple clients.
      */
-    getSharedState(): any {
+    getSharedState(): SharedGameState | null {
         if(!this.started) {
             return null;
         }
 
-        let conflictState: any = {};
+        let conflictState: Record<string, unknown> = {};
         if(this.currentPhase === 'conflict' && this.currentConflict) {
             conflictState = this.currentConflict.getSummary();
         }
@@ -1415,7 +1427,7 @@ class Game {
         };
     }
 
-    getState(activePlayerName?: string, sharedState?: any): any {
+    getState(activePlayerName?: string, sharedState?: SharedGameState | null): GameState | GameSummary | undefined {
         const activePlayer = (activePlayerName && this.playersAndSpectators[activePlayerName]) || new AnonymousSpectator();
 
         if(!this.started) {
@@ -1424,8 +1436,8 @@ class Game {
 
         const shared = sharedState || this.getSharedState();
 
-        const playerState: Record<string, any> = {};
-        const ringState: Record<string, any> = {};
+        const playerState: Record<string, PlayerState> = {};
+        const ringState: Record<string, unknown> = {};
 
         for(const player of this.getPlayers()) {
             playerState[player.name] = player.getState(activePlayer as Player);
@@ -1471,10 +1483,10 @@ class Game {
         this.hiddenInfoLog.push(this.getHiddenInfo());
     }
 
-    getHiddenInfo(): any {
-        const info: Record<string, any> = {};
+    getHiddenInfo(): Record<string, unknown> {
+        const info: Record<string, unknown> = {};
         for(const player of this.getPlayers()) {
-            const cardSummary = (card: any) => ({
+            const cardSummary = (card: BaseCard) => ({
                 id: card.cardData.id,
                 name: card.cardData.name,
                 packId: card.packId,

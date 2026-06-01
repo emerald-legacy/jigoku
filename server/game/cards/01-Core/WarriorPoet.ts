@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 class WarriorPoet extends DrawCard {
@@ -7,9 +8,9 @@ class WarriorPoet extends DrawCard {
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Reduce skill of opponent\'s characters',
-            condition: (context: any) => context.source.isParticipating(),
+            condition: (context: AbilityContext) => context.source.isParticipating(),
             effect: 'reduce the skill of all opposing characters',
-            gameAction: ability.actions.cardLastingEffect((context: any) => ({
+            gameAction: ability.actions.cardLastingEffect((context: AbilityContext) => ({
                 target: this.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                 effect: ability.effects.modifyBothSkills(-1)
             }))

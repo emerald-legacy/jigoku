@@ -1,4 +1,5 @@
 import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -24,7 +25,7 @@ export default class ABadDeath extends DrawCard {
                 cardCondition: (card: any) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.dishonor()
             },
-            then: (context: any) => ({
+            then: (context: AbilityContext) => ({
                 message: '{0} draws a card',
                 gameAction: AbilityDsl.actions.draw({
                     target: context.player,

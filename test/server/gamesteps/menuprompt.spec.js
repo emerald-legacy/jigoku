@@ -1,4 +1,4 @@
-import MenuPrompt from '../../../build/server/game/gamesteps/menuprompt.js';
+import MenuPrompt from '../../../build/server/game/gamesteps/MenuPrompt.js';
 import Player from '../../../build/server/game/Player.js';
 
 describe('the MenuPrompt', function() {

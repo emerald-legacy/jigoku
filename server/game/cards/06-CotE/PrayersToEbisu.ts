@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class PrayersToEbisu extends DrawCard {
@@ -8,15 +9,15 @@ class PrayersToEbisu extends DrawCard {
         this.action({
             title: 'Re-balance honor and draw a card',
             gameAction: AbilityDsl.actions.multiple([
-                AbilityDsl.actions.loseHonor((context: any) => ({
+                AbilityDsl.actions.loseHonor((context: AbilityContext) => ({
                     target: context.game.getPlayers().filter((player: any) => player.honor >= 19),
                     amount: 4
                 })),
-                AbilityDsl.actions.gainHonor((context: any) => ({
+                AbilityDsl.actions.gainHonor((context: AbilityContext) => ({
                     target: context.game.getPlayers().filter((player: any) => player.honor <= 6),
                     amount: 4
                 })),
-                AbilityDsl.actions.draw((context: any) => ({
+                AbilityDsl.actions.draw((context: AbilityContext) => ({
                     target: context.player
                 }))
             ]),

@@ -1,4 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type Ring from '../../Ring.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { TargetModes } from '../../Constants.js';
 
@@ -17,9 +19,9 @@ class BeingAndBecoming extends DrawCard {
                 mode: TargetModes.Ring,
                 activePromptTitle: 'Choose an unclaimed ring to move fate from',
                 ringCondition: (ring: any) => ring.isUnclaimed() && ring.fate > 0,
-                gameAction: ability.actions.placeFate((context: any) => ({
+                gameAction: ability.actions.placeFate((context: AbilityContext) => ({
                     origin: context.ring,
-                    amount: context.ring.fate,
+                    amount: (context.ring as Ring).fate,
                     target: context.source.parent
                 }))
             },

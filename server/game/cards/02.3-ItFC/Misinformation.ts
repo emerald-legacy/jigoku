@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 class Misinformation extends DrawCard {
@@ -11,7 +12,7 @@ class Misinformation extends DrawCard {
                                   !!context.player.opponent && context.player.showBid > context.player.opponent.showBid + 1,
             effect: 'give all opposing characters -1{1}/-1{2}',
             effectArgs: () => ['military', 'political'],
-            gameAction: ability.actions.cardLastingEffect((context: any) => ({
+            gameAction: ability.actions.cardLastingEffect((context: AbilityContext) => ({
                 target: this.game.currentConflict?.getCharacters(context.player.opponent) ?? [],
                 effect: ability.effects.modifyBothSkills(-1)
             }))

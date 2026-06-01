@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, TargetModes } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -20,7 +21,7 @@ export default class SerenadeOfAThousandLanterns extends DrawCard {
                 gameAction: AbilityDsl.actions.sendHome()
             },
             max: AbilityDsl.limit.perConflict(1),
-            then: (context: any) => ({
+            then: (context: AbilityContext) => ({
                 gameAction: AbilityDsl.actions.onAffinity({
                     trait: 'fire',
                     gameAction: AbilityDsl.actions.gainHonor(() => ({

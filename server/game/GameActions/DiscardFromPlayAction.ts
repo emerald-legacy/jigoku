@@ -19,7 +19,7 @@ export class DiscardFromPlayAction extends CardGameAction<DiscardFromPlayPropert
         }
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context);
         return [this.name === 'sacrifice' ? 'sacrifice {0}' : 'discard {0}', [properties.target]];
     }

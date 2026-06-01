@@ -1,6 +1,8 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
+import type { Event } from '../Events/Event.js';
+import type { GameObject } from '../GameObject.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export type DiscardCardProperties = CardActionProperties;
@@ -19,7 +21,7 @@ export class DiscardCardAction extends CardGameAction<DiscardCardProperties> {
         );
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
         let { target } = this.getProperties(context, additionalProperties);
         let cards = (target as DrawCard[]).filter((card) => this.canAffect(card, context));
         if(cards.length === 0) {
@@ -30,20 +32,20 @@ export class DiscardCardAction extends CardGameAction<DiscardCardProperties> {
         events.push(event);
     }
 
-    addPropertiesToEvent(event: any, cards: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, cards: GameObject | GameObject[] | null | undefined, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let resolved: DrawCard[];
         if(!cards) {
             const target = this.getProperties(context, additionalProperties).target as DrawCard | DrawCard[];
             resolved = Array.isArray(target) ? target : [target];
         } else {
-            resolved = Array.isArray(cards) ? cards : [cards];
+            resolved = (Array.isArray(cards) ? cards : [cards]) as DrawCard[];
         }
         event.originalCardStateInfo = resolved.map((a: DrawCard) => ({ location: a.location, owner: a.owner }));
         event.cards = resolved;
         event.context = context;
     }
 
-    eventHandler(event: any, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
         for(const card of event.cards as DrawCard[]) {
             this.checkForRefillProvince(card, event, additionalProperties);
             card.controller.moveCard(
@@ -53,7 +55,7 @@ export class DiscardCardAction extends CardGameAction<DiscardCardProperties> {
         }
     }
 
-    isEventFullyResolved(event: any): boolean {
+    isEventFullyResolved(event: Event): boolean {
         return !event.cancelled && event.name === this.eventName;
     }
 

@@ -5,15 +5,22 @@ import type Game from '../Game.js';
 import type { Event } from '../Events/Event.js';
 import type EventWindow from '../Events/EventWindow.js';
 import type Player from '../Player.js';
+import type BaseCard from '../BaseCard.js';
+import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
+import type TriggeredAbility from '../TriggeredAbility.js';
+import type CardAbility from '../CardAbility.js';
+import type Ring from '../Ring.js';
+import type EffectSource from '../EffectSource.js';
+import type AbilityResolver from './AbilityResolver.js';
 
 class ForcedTriggeredAbilityWindow extends BaseStep {
-    choices: any[];
+    choices: TriggeredAbilityContext[];
     events: Event[];
     eventWindow: EventWindow;
     eventsToExclude: Event[];
     abilityType: AbilityTypes;
     currentPlayer: Player;
-    resolvedAbilities: Array<{ ability: any; event: any }>;
+    resolvedAbilities: Array<{ ability: TriggeredAbility; event: Event }>;
     complete?: boolean;
 
     constructor(game: Game, abilityType: AbilityTypes, window: EventWindow, eventsToExclude: Event[] = []) {
@@ -41,7 +48,7 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         return false;
     }
 
-    addChoice(context: any) {
+    addChoice(context: TriggeredAbilityContext) {
         if(!context.event.cancelled && !this.hasAbilityBeenTriggered(context) && context.ability && !context.ability.isKeywordAbility()) {
             this.choices.push(context);
         }
@@ -67,10 +74,10 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         return false;
     }
 
-    promptBetweenSources(choices: any[]) {
+    promptBetweenSources(choices: TriggeredAbilityContext[]) {
         this.game.promptForSelect(this.currentPlayer, Object.assign({}, this.getPromptForSelectProperties(), {
-            cardCondition: (card: any) => choices.some(context => context.source === card),
-            onSelect: (_player: Player, card: any) => {
+            cardCondition: (card: BaseCard) => choices.some(context => context.source === card),
+            onSelect: (_player: Player, card: BaseCard) => {
                 this.promptBetweenAbilities(choices.filter(context => context.source === card));
                 return true;
             }
@@ -91,18 +98,18 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
     }
 
     getPromptControls() {
-        let map = new Map();
+        let map = new Map<BaseCard | Ring | EffectSource, BaseCard[]>();
         for(const event of this.events) {
             if(event.context && event.context.source) {
                 let targets = map.get(event.context.source) || [];
                 if(event.context.target) {
                     targets = targets.concat(event.context.target);
-                } else if((event as any).card && (event as any).card !== event.context.source) {
-                    targets = targets.concat((event as any).card);
-                } else if((event.context as any).event && (event.context as any).event.card) {
-                    targets = targets.concat((event.context as any).event.card);
-                } else if((event as any).card) {
-                    targets = targets.concat((event as any).card);
+                } else if(event.card && event.card !== event.context.source) {
+                    targets = targets.concat(event.card as BaseCard);
+                } else if((event.context as TriggeredAbilityContext).event && (event.context as TriggeredAbilityContext).event.card) {
+                    targets = targets.concat((event.context as TriggeredAbilityContext).event.card as BaseCard);
+                } else if(event.card) {
+                    targets = targets.concat(event.card as BaseCard);
                 }
                 map.set(event.context.source, [...new Set(targets)]);
             }
@@ -110,19 +117,19 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         return [...map.entries()].map(([source, targets]) => ({
             type: 'targeting',
             source: source.getShortSummary(),
-            targets: targets.map((target: any) => target.getShortSummaryForControls(this.currentPlayer))
+            targets: targets.map((target: BaseCard) => target.getShortSummaryForControls(this.currentPlayer))
         }));
     }
 
-    promptBetweenAbilities(choices: any[], addBackButton = true) {
-        let menuChoices = [...new Set(choices.map(context => context.ability.title))];
+    promptBetweenAbilities(choices: TriggeredAbilityContext[], addBackButton = true) {
+        let menuChoices = [...new Set(choices.map(context => (context.ability as CardAbility).title))];
         if(menuChoices.length === 1) {
             // this card has only one ability which can be triggered
             this.promptBetweenEventCards(choices, addBackButton);
             return;
         }
         // This card has multiple abilities which can be used in this window - prompt the player to pick one
-        let handlers = menuChoices.map(title => (() => this.promptBetweenEventCards(choices.filter(context => context.ability.title === title))));
+        let handlers = menuChoices.map(title => (() => this.promptBetweenEventCards(choices.filter(context => (context.ability as CardAbility).title === title))));
         if(addBackButton) {
             menuChoices.push('Back');
             handlers.push(() => this.promptBetweenSources(this.choices));
@@ -134,8 +141,8 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         }));
     }
 
-    promptBetweenEventCards(choices: any[], addBackButton = true) {
-        if(choices[0].ability.collectiveTrigger) {
+    promptBetweenEventCards(choices: TriggeredAbilityContext[], addBackButton = true) {
+        if((choices[0].ability as TriggeredAbility).collectiveTrigger) {
             // This ability only triggers once for all events in this window
             this.resolveAbility(choices[0]);
             return;
@@ -150,9 +157,9 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         // Several cards could be affected by this ability - prompt the player to choose which they want to affect
         this.game.promptForSelect(this.currentPlayer, Object.assign({}, this.getPromptForSelectProperties(), {
             activePromptTitle: 'Select a card to affect',
-            cardCondition: (card: any) => choices.some(context => context.event.card === card),
+            cardCondition: (card: BaseCard) => choices.some(context => context.event.card === card),
             buttons: addBackButton ? [{ text: 'Back', arg: 'back' }] : [],
-            onSelect: (_player: Player, card: any) => {
+            onSelect: (_player: Player, card: BaseCard) => {
                 this.promptBetweenEvents(choices.filter(context => context.event.card === card));
                 return true;
             },
@@ -166,7 +173,7 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         }));
     }
 
-    promptBetweenEvents(choices: any[], addBackButton = true) {
+    promptBetweenEvents(choices: TriggeredAbilityContext[], addBackButton = true) {
         // Get unique choices by event
         const seenEvents = new Set();
         choices = choices.filter(context => {
@@ -195,7 +202,7 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         }));
     }
 
-    resolveAbility(context: any) {
+    resolveAbility(context: TriggeredAbilityContext) {
         let resolver = this.game.resolveAbility(context);
         this.game.queueSimpleStep(() => {
             if(resolver.passPriority) {
@@ -204,12 +211,13 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         });
     }
 
-    postResolutionUpdate(resolver: any) {
-        this.resolvedAbilities.push({ ability: resolver.context.ability, event: resolver.context.event });
+    postResolutionUpdate(resolver: AbilityResolver) {
+        const context = resolver.context as TriggeredAbilityContext;
+        this.resolvedAbilities.push({ ability: context.ability as TriggeredAbility, event: context.event });
     }
 
-    hasAbilityBeenTriggered(context: any): boolean {
-        return this.resolvedAbilities.some(resolved => resolved.ability === context.ability && (context.ability.collectiveTrigger || resolved.event === context.event));
+    hasAbilityBeenTriggered(context: TriggeredAbilityContext): boolean {
+        return this.resolvedAbilities.some(resolved => resolved.ability === context.ability && ((context.ability as TriggeredAbility).collectiveTrigger || resolved.event === context.event));
     }
 
     emitEvents() {

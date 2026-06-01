@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import type BaseCard from '../../BaseCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { Locations, Players, TargetModes } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -35,16 +37,16 @@ class IkomaMessageRunner extends DrawCard {
         });
     }
 
-    buildString(context: any) {
+    buildString(context: AbilityContext) {
         let string = '';
 
-        if(context.targets.myCard && context.targets.myCard.length) {
-            const myCard = context.targets.myCard[0];
+        if(context.targets.myCard && (context.targets.myCard as BaseCard[]).length) {
+            const myCard = (context.targets.myCard as BaseCard[])[0];
             string = string.concat(` ${myCard.name} is revealed in ${myCard.controller.name}'s ${myCard.location}.`);
         }
 
-        if(context.targets.opponentsCard && context.targets.opponentsCard.length) {
-            const opponentCard = context.targets.opponentsCard[0];
+        if(context.targets.opponentsCard && (context.targets.opponentsCard as BaseCard[]).length) {
+            const opponentCard = (context.targets.opponentsCard as BaseCard[])[0];
             string = string.concat(` ${opponentCard.name} is revealed in ${opponentCard.controller.name}'s ${opponentCard.location}.`);
         }
         return string;

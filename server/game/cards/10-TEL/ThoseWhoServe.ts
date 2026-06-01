@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import {CardTypes, Durations, Phases} from '../../Constants.js';
 
@@ -10,7 +11,7 @@ class ThoseWhoServe extends DrawCard {
             title: 'Reduce the cost of your characters by 1 this phase',
             phase: Phases.Dynasty,
             effect: 'reduce the cost of their characters by 1 this phase',
-            gameAction: ability.actions.playerLastingEffect((context: any) => ({
+            gameAction: ability.actions.playerLastingEffect((context: AbilityContext) => ({
                 targetController: context.player,
                 duration: Durations.UntilEndOfPhase,
                 effect: ability.effects.reduceCost({

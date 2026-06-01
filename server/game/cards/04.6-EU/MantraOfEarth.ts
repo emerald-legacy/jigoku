@@ -1,4 +1,5 @@
 import { CardTypes, EventNames } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -17,7 +18,7 @@ export default class MantraOfEarth extends DrawCard {
                 cardType: CardTypes.Character,
                 cardCondition: (card: any) =>
                     card.hasTrait('monk') || card.attachments.some((card: any) => card.hasTrait('monk')),
-                gameAction: AbilityDsl.actions.cardLastingEffect((context: any) => ({
+                gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => ({
                     effect: AbilityDsl.effects.cardCannot({
                         cannot: 'target',
                         restricts: 'opponentsCardEffects',

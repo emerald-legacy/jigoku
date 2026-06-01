@@ -4,10 +4,27 @@ import type BaseAbility from '../BaseAbility.js';
 import type BaseCard from '../BaseCard.js';
 import type Game from '../Game.js';
 import type { GameObject } from '../GameObject.js';
+import type { WhenType } from '../Interfaces.js';
 import type StaticEffect from './StaticEffect.js';
 
 export type EffectMatchFn = (target: GameObject, context?: AbilityContext) => boolean;
 type EffectMatch = EffectMatchFn | GameObject;
+
+export interface EffectProperties {
+    match?: EffectMatch;
+    duration?: Durations;
+    until?: WhenType;
+    condition?: (context: AbilityContext) => boolean;
+    location?: string;
+    canChangeZoneOnce?: boolean;
+    canChangeZoneNTimes?: number;
+    ability?: BaseAbility;
+    endingMessage?: string;
+    targetController?: string;
+    targetLocation?: Locations | Locations[];
+    target?: GameObject | GameObject[];
+    [key: string]: unknown;
+}
 
 /**
  * Represents a card based effect applied to one or more targets.
@@ -40,7 +57,7 @@ class Effect {
     source: BaseCard;
     match: EffectMatch;
     duration: Durations;
-    until: Record<string, (...args: unknown[]) => boolean>;
+    until: WhenType;
     condition: (context: AbilityContext) => boolean;
     location: string;
     canChangeZoneOnce: boolean;
@@ -51,11 +68,11 @@ class Effect {
     context!: AbilityContext;
     endingMessage: string | undefined;
 
-    constructor(game: Game, source: BaseCard, properties: any, effect: StaticEffect) {
+    constructor(game: Game, source: BaseCard, properties: EffectProperties, effect: StaticEffect) {
         this.game = game;
         this.source = source;
         this.match = properties.match || (() => true);
-        this.duration = properties.duration;
+        this.duration = properties.duration as Durations;
         this.until = properties.until || {};
         this.condition = properties.condition || (() => true);
         this.location = properties.location || Locations.PlayArea;
@@ -79,33 +96,33 @@ class Effect {
         this.effect.setContext(this.context);
     }
 
-    isValidTarget(_target: any): boolean {
+    isValidTarget(_target: GameObject): boolean {
         return true;
     }
 
-    getDefaultTarget(_context: any): any {
+    getDefaultTarget(_context: AbilityContext): GameObject | null {
         return null;
     }
 
-    getTargets(): any[] {
+    getTargets(): GameObject[] {
         return [];
     }
 
-    addTarget(target: any) {
+    addTarget(target: GameObject) {
         this.targets.push(target);
         this.effect.apply(target);
     }
 
-    removeTarget(target: any) {
+    removeTarget(target: GameObject) {
         this.removeTargets([target]);
     }
 
-    removeTargets(targets: any[]) {
+    removeTargets(targets: GameObject[]) {
         targets.forEach(target => this.effect.unapply(target));
         this.targets = this.targets.filter(t => !targets.includes(t));
     }
 
-    hasTarget(target: any): boolean {
+    hasTarget(target: GameObject): boolean {
         return this.targets.includes(target);
     }
 

@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { CardTypes, Locations, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -17,9 +18,9 @@ class RaiseTheAlarm extends DrawCard {
                 cardCondition: (card: any) => card.isInConflictProvince() && card.isFacedown(),
                 gameAction: AbilityDsl.actions.flipDynasty()
             },
-            then: (context: any) => ({
+            then: (context: AbilityContext) => ({
                 handler: () => {
-                    let card = context.target;
+                    let card = context.target as DrawCard;
                     if(card.type === CardTypes.Character && card.allowGameAction('putIntoConflict', context)) {
                         this.game.addMessage('{0} is revealed and brought into the conflict!', card);
                         AbilityDsl.actions.putIntoConflict().resolve(card, context);

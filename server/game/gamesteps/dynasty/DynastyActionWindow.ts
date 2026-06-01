@@ -1,7 +1,8 @@
 import { EffectNames, EventNames } from '../../Constants.js';
 import { parseGameMode } from '../../GameMode.js';
 import type Game from '../../Game.js';
-import ActionWindow from '../actionwindow.js';
+import type { Event } from '../../Events/Event.js';
+import ActionWindow from '../ActionWindow.js';
 
 export class DynastyActionWindow extends ActionWindow {
     constructor(game: Game) {
@@ -51,7 +52,7 @@ export class DynastyActionWindow extends ActionWindow {
         this.game.raiseEvent(
             EventNames.OnPassDuringDynasty,
             { player: this.currentPlayer, firstToPass: true },
-            (event: any) => event.player.modifyFate(1)
+            (event: Event) => event.player.modifyFate(1)
         );
     }
 

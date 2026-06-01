@@ -1,5 +1,7 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
+import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
@@ -21,7 +23,7 @@ export class PlaceFateAttachmentAction extends CardGameAction {
         super(properties);
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let { amount, target } = this.getProperties(context) as PlaceFateAttachmentProperties;
         return ['place {1} fate on {0}', [target, amount]];
     }
@@ -39,7 +41,7 @@ export class PlaceFateAttachmentAction extends CardGameAction {
         return super.canAffect(card, context) && this.checkOrigin(origin, context) && card !== origin;
     }
 
-    isRing(x: any): x is Ring {
+    isRing(x: DrawCard | Player | Ring): x is Ring {
         return 'element' in x;
     }
 
@@ -55,7 +57,7 @@ export class PlaceFateAttachmentAction extends CardGameAction {
         return true;
     }
 
-    addPropertiesToEvent(event: any, card: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateAttachmentProperties;
         event.fate = amount;
         event.origin = origin;
@@ -63,11 +65,11 @@ export class PlaceFateAttachmentAction extends CardGameAction {
         event.recipient = card;
     }
 
-    checkEventCondition(event: any): boolean {
+    checkEventCondition(event: Event): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: any, card: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         let { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateAttachmentProperties;
         return (
             !event.cancelled &&
@@ -78,7 +80,7 @@ export class PlaceFateAttachmentAction extends CardGameAction {
         );
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         this.moveFateEventHandler(event);
     }
 }

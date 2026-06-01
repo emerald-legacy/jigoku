@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, AbilityTypes, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -16,7 +17,7 @@ export default class TessenOfTheTsunamiLegion extends DrawCard {
                 AbilityDsl.effects.addTrait('water'),
                 AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
                     title: 'Give a character +2 and move them',
-                    condition: (context: any) => context.game.isDuringConflict(),
+                    condition: (context: AbilityContext) => context.game.isDuringConflict(),
                     printedAbility: false,
                     target: {
                         cardType: CardTypes.Character,
@@ -34,8 +35,8 @@ export default class TessenOfTheTsunamiLegion extends DrawCard {
                         ])
                     },
                     effect: 'give {0} +2{1}{2}',
-                    effectArgs: (context: any) => ['military',
-                        context.source.isParticipating() === context.target.isParticipating() ? '' :
+                    effectArgs: (context: AbilityContext) => ['military',
+                        context.source.isParticipating() === (context.target as DrawCard).isParticipating() ? '' :
                             context.source.isParticipating() ? ' and move it to the conflict' : ' and move it home']
                 })
             ]

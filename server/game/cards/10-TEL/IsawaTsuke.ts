@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Elements, EventNames } from '../../Constants.js';
 
@@ -26,7 +28,7 @@ class IsawaTsuke extends DrawCard {
                 }
             },
             gameAction: AbilityDsl.actions.conditional((context) => ({
-                condition: context.event.name === EventNames.OnCardDishonored,
+                condition: (context as TriggeredAbilityContext).event.name === EventNames.OnCardDishonored,
                 trueGameAction: AbilityDsl.actions.dishonor({
                     target: this.getTsukeTargets(context)
                 }),
@@ -36,9 +38,9 @@ class IsawaTsuke extends DrawCard {
             }))
         });
     }
-    getTsukeTargets(context: any) {
-        let targetedCharacter = context.event.card;
-        let targetedCharacterController = context.event.card.controller;
+    getTsukeTargets(context: AbilityContext) {
+        let targetedCharacter = (context as TriggeredAbilityContext).event.card as DrawCard;
+        let targetedCharacterController = ((context as TriggeredAbilityContext).event.card as DrawCard).controller;
 
         return targetedCharacterController.cardsInPlay.filter(
             (card: any) => card.printedCost === targetedCharacter.printedCost

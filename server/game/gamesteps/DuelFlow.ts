@@ -1,9 +1,9 @@
-import type { AbilityContext } from '../AbilityContext.js';
 import { EffectNames, EventNames } from '../Constants.js';
 import type { Duel } from '../Duel.js';
 import type Game from '../Game.js';
 import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
 import { SimpleStep } from './SimpleStep.js';
+import type HonorBidPrompt from './HonorBidPrompt.js';
 
 /**
 D. Duel Timing
@@ -22,7 +22,7 @@ export class DuelFlow extends BaseStepWithPipeline {
         game: Game,
         private duel: Duel,
         private resolutionHandler: (duel: Duel) => void,
-        private costHandler?: (context: AbilityContext, prompt: any) => void
+        private costHandler?: (prompt: HonorBidPrompt) => void
     ) {
         super(game);
         this.pipeline.initialise([

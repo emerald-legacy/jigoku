@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 class CurvedBlade extends DrawCard {
@@ -10,7 +11,7 @@ class CurvedBlade extends DrawCard {
         });
 
         this.whileAttached({
-            condition: (context: any) => Boolean(context.source.parent && context.source.parent.isAttacking()),
+            condition: (context: AbilityContext) => Boolean(context.source.parent && context.source.parent.isAttacking()),
             effect: ability.effects.modifyMilitarySkill(2)
         });
     }

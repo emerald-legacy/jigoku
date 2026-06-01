@@ -17,7 +17,7 @@ export class ResolveElementAction extends RingAction<ResolveElementProperties> {
     eventName = EventNames.OnResolveRingElement;
     effect = 'resolve {0} effect';
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties: any = {}): void {
+    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const target = properties.target as Ring[];
         const rings = target.flatMap((element) => {
@@ -56,7 +56,7 @@ export class ResolveElementAction extends RingAction<ResolveElementProperties> {
         }
     }
 
-    addPropertiesToEvent(event: any, ring: Ring, context: AbilityContext, additionalProperties: any): void {
+    addPropertiesToEvent(event: Event, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
         let { physicalRing, optional, player } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         event.player = player || context.player;
@@ -65,16 +65,17 @@ export class ResolveElementAction extends RingAction<ResolveElementProperties> {
         event.effectivellyResolvedEffect = false;
     }
 
-    eventHandler(event: any): void {
-        const cannotResolveRingEffects = event.context.player.getEffects(EffectNames.CannotResolveRings);
+    eventHandler(event: Event): void {
+        const context = event.context as AbilityContext;
+        const cannotResolveRingEffects = context.player.getEffects(EffectNames.CannotResolveRings);
 
         if(cannotResolveRingEffects.length) {
-            event.context.game.addMessage('{0}\'s ring effect is cancelled.', event.context.player);
+            context.game.addMessage('{0}\'s ring effect is cancelled.', context.player);
             event.cancel();
             return;
         }
 
-        event.context.game.resolveAbility(
+        context.game.resolveAbility(
             RingEffects.contextFor(event.player, event.ring.element, event.optional, (resolved) => {
                 event.effectivellyResolvedEffect = resolved;
             })

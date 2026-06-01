@@ -1,9 +1,12 @@
-import BaseCardSelector from './BaseCardSelector.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../BaseCard.js';
+import type Player from '../Player.js';
+import BaseCardSelector, { type BaseCardSelectorProperties } from './BaseCardSelector.js';
 
 class ExactlyXCardSelector extends BaseCardSelector {
     numCards: number;
 
-    constructor(numCards: number, properties: any) {
+    constructor(numCards: number, properties: BaseCardSelectorProperties) {
         super(properties);
         this.numCards = numCards;
     }
@@ -15,13 +18,13 @@ class ExactlyXCardSelector extends BaseCardSelector {
         return this.numCards === 1 ? 'Select a card' : `Select ${this.numCards} cards`;
     }
 
-    hasEnoughSelected(selectedCards: any[]): boolean {
+    hasEnoughSelected(selectedCards: BaseCard[]): boolean {
         return selectedCards.length === this.numCards;
     }
 
-    hasEnoughTargets(context: any, choosingPlayer: any): boolean {
-        let matchedCards: any[] = [];
-        let numMatchingCards = context.game.allCards.reduce((total: number, card: any) => {
+    hasEnoughTargets(context: AbilityContext, choosingPlayer: Player): boolean {
+        let matchedCards: BaseCard[] = [];
+        let numMatchingCards = context.game.allCards.reduce((total: number, card: BaseCard) => {
             if(this.canTarget(card, context, choosingPlayer, matchedCards)) {
                 matchedCards.push(card);
                 return total + 1;
@@ -32,7 +35,7 @@ class ExactlyXCardSelector extends BaseCardSelector {
         return numMatchingCards >= this.numCards;
     }
 
-    hasReachedLimit(selectedCards: any[]): boolean {
+    hasReachedLimit(selectedCards: BaseCard[]): boolean {
         return selectedCards.length >= this.numCards;
     }
 

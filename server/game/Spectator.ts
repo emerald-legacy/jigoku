@@ -1,5 +1,5 @@
 import type { PromptButton } from './PlayerPromptState.js';
-import type Socket from '../socket.js';
+import type Socket from '../Socket.js';
 
 export class Spectator {
     buttons: PromptButton[] = [];

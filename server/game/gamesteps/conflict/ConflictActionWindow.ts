@@ -1,4 +1,7 @@
-import ActionWindow from '../actionwindow.js';
+import ActionWindow from '../ActionWindow.js';
+import type Game from '../../Game.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
+import type AbilityResolver from '../AbilityResolver.js';
 
 const capitalize: Record<string, string> = {
     military: 'Military',
@@ -14,7 +17,7 @@ class ConflictActionWindow extends ActionWindow {
     conflict: any;
     displayTotals: boolean;
 
-    constructor(game: any, title: string, conflict: any) {
+    constructor(game: Game, title: string, conflict: any) {
         super(game, title, 'conflict');
         this.conflict = conflict;
         this.displayTotals = true;
@@ -27,14 +30,14 @@ class ConflictActionWindow extends ActionWindow {
             let conflictText = capitalize[this.conflict.conflictType] + ' ' + capitalize[this.conflict.element] + ' conflict';
             this.game.addMessage('{0} - Attacker: {1} Defender: {2}', conflictText, this.conflict.attackerSkill, this.conflict.defenderSkill);
             let winnerText = 'Attacker is winning the conflict';
-            let breakingProvinces: any[] = [];
+            let breakingProvinces: ProvinceCard[] = [];
             if(this.conflict.attackerSkill === 0 && this.conflict.defenderSkill === 0) {
                 winnerText = 'No-one is winning the conflict';
             } else if(this.conflict.defenderSkill > this.conflict.attackerSkill) {
                 winnerText = 'Defender is winning the conflict';
             } else {
                 const provinces = this.conflict.getConflictProvinces();
-                provinces.forEach((province: any) => {
+                provinces.forEach((province: ProvinceCard) => {
                     if(province && !province.isBroken && province.allowGameAction('break') && this.conflict.attackerSkill >= this.conflict.defenderSkill + province.getStrength()) {
                         breakingProvinces.push(province);
                     }
@@ -64,7 +67,7 @@ class ConflictActionWindow extends ActionWindow {
         };
     }
 
-    postResolutionUpdate(resolver: any): void {
+    postResolutionUpdate(resolver: AbilityResolver): void {
         super.postResolutionUpdate(resolver);
         if(!this.game.manualMode) {
             this.displayTotals = true;

@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { Durations, Players, TargetModes, Phases } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -16,7 +18,7 @@ class ExpertInterpreter extends DrawCard {
                 myRing: {
                     mode: TargetModes.Ring,
                     ringCondition: () => true,
-                    gameAction: AbilityDsl.actions.ringLastingEffect((context: any) => ({
+                    gameAction: AbilityDsl.actions.ringLastingEffect((context: AbilityContext) => ({
                         duration: Durations.UntilEndOfPhase,
                         targetController: Players.Any,
                         condition: () => this.game.currentConflict !== null && this.game.currentConflict.ring === context.rings.myRing,
@@ -32,7 +34,7 @@ class ExpertInterpreter extends DrawCard {
                     hideIfNoLegalTargets: true,
                     mode: TargetModes.Ring,
                     ringCondition: (ring: any, context: any) => context && context.costs.optionalHonorTransferFromOpponentCostPaid,
-                    gameAction: AbilityDsl.actions.ringLastingEffect((context: any) => ({
+                    gameAction: AbilityDsl.actions.ringLastingEffect((context: AbilityContext) => ({
                         duration: Durations.UntilEndOfPhase,
                         targetController: Players.Any,
                         condition: () => this.game.currentConflict !== null && this.game.currentConflict.ring === context.rings.oppRing,
@@ -48,10 +50,10 @@ class ExpertInterpreter extends DrawCard {
         });
     }
 
-    buildString(context: any) {
+    buildString(context: AbilityContext) {
         if(context.rings.oppRing && !Array.isArray(context.rings.oppRing)) {
             let ring = context.rings.oppRing;
-            return '.  ' + context.player.opponent.name + ' gives ' + context.player.name + ' 1 honor to also apply this effect to the ' + ring.name;
+            return '.  ' + (context.player.opponent as Player).name + ' gives ' + context.player.name + ' 1 honor to also apply this effect to the ' + ring.name;
         }
         return '';
     }

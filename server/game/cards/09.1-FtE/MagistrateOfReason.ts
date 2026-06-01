@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Players } from '../../Constants.js';
 
@@ -9,7 +10,7 @@ class MagistrateOfReason extends DrawCard {
         this.persistentEffect({
             condition: context => context.source.isAttacking(),
             targetController: Players.Opponent,
-            effect: AbilityDsl.effects.additionalTriggerCost((context: any) =>
+            effect: AbilityDsl.effects.additionalTriggerCost((context: AbilityContext) =>
                 context.source.type === CardTypes.Character ? [AbilityDsl.costs.payFateToRing(1)] : []
             )
         });

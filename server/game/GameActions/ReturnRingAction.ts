@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
 import type Ring from '../Ring.js';
@@ -14,7 +15,7 @@ export class ReturnRingAction extends RingAction {
         return !ring.isUnclaimed() && super.canAffect(ring, context);
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         event.ring.resetRing();
     }
 }

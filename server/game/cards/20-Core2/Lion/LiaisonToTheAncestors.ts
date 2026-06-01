@@ -1,4 +1,6 @@
 import { CardTypes } from '../../../Constants.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -16,8 +18,8 @@ export default class LiaisonToTheAncestors extends DrawCard {
               (card) => (event.card.printedCost ?? 0) < (card.printedCost ?? 0)
           )
             },
-            gameAction: AbilityDsl.actions.honor((context: any) => ({
-                target: context.event.card
+            gameAction: AbilityDsl.actions.honor((context: AbilityContext) => ({
+                target: (context as TriggeredAbilityContext).event.card
             }))
         });
     }

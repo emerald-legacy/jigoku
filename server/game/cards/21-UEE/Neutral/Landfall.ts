@@ -1,4 +1,5 @@
 import { GameModes } from '../../../../GameModes.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardTypes, Locations, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type DrawCard from '../../../DrawCard.js';
@@ -21,7 +22,7 @@ export default class Landfall extends ProvinceCard {
                     event.card === context.source && context.player.dynastyDeck.length > 0
             },
             effect: 'look at the top 8 cards of their dynasty deck',
-            handler: (context: any) => {
+            handler: (context: AbilityContext) => {
                 this.cards = context.player.dynastyDeck.slice(0, 8);
                 this.chosenProvinces = [];
 
@@ -30,7 +31,7 @@ export default class Landfall extends ProvinceCard {
         });
     }
 
-    wealthSelectPrompt(context: any) {
+    wealthSelectPrompt(context: AbilityContext) {
         if(!this.cards || this.cards.length <= 0 || !this.hasRemainingTarget()) {
             context.player.shuffleDynastyDeck();
             return;

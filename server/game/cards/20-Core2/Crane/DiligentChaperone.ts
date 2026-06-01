@@ -1,18 +1,19 @@
 import { Locations, CardTypes, CharacterStatus, EventNames } from '../../../Constants.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
-function targetsFromEvent(context: any): WeakSet<BaseCard> {
-    switch(context.event.name) {
+function targetsFromEvent(context: AbilityContext): WeakSet<BaseCard> {
+    switch((context as TriggeredAbilityContext).event.name) {
         case EventNames.OnStatusTokenMoved:
-            return new WeakSet([context.event.donor]);
+            return new WeakSet([(context as TriggeredAbilityContext).event.donor as BaseCard]);
         case EventNames.OnCardDishonored:
-            return new WeakSet([context.event.card]);
+            return new WeakSet([(context as TriggeredAbilityContext).event.card as BaseCard]);
         case EventNames.OnStatusTokenDiscarded:
-            return new WeakSet(context.event.cards);
+            return new WeakSet((context as TriggeredAbilityContext).event.cards);
         default:
             return new WeakSet();
     }

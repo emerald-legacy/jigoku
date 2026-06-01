@@ -5,7 +5,7 @@ import type Game from '../Game.js';
 import type Player from '../Player.js';
 import { Phase } from './Phase.js';
 import { SimpleStep } from './SimpleStep.js';
-import ActionWindow from './actionwindow.js';
+import ActionWindow from './ActionWindow.js';
 
 function characterShouldBeDiscarded(character: DrawCard) {
     return character.fate === 0 && character.allowGameAction('discardFromPlay');
@@ -127,7 +127,7 @@ export class FatePhase extends Phase {
         for(const location of this.game.getProvinceArray()) {
             const provinceCard = player.getProvinceCardInProvince(location);
             const province = player.getSourceList(location);
-            const dynastyCards = province.filter((card: DrawCard) => card.isDynasty && card.isFaceup());
+            const dynastyCards = province.filter((card) => card.isDynasty && card.isFaceup()) as DrawCard[];
             if(dynastyCards.length > 0 && provinceCard) {
                 if(provinceCard.isBroken && this.game.gameMode !== GameModes.Skirmish) {
                     cardsToDiscard = cardsToDiscard.concat(dynastyCards);

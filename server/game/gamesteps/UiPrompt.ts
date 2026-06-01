@@ -2,15 +2,19 @@ import { v1 as uuid } from 'uuid';
 import type Player from '../Player.js';
 import { BaseStep } from './BaseStep.js';
 
+type PromptButton = { text?: string; arg?: string | number; command?: string; uuid?: string; [key: string]: unknown };
+type PromptControl = { type: string; source: unknown; targets: unknown; uuid?: string; [key: string]: unknown };
+
 type ActivePrompt = {
-    buttons: Array<{ text: string; arg?: string; command?: string }>;
-    menuTitle: string;
+    buttons: Array<PromptButton>;
+    menuTitle?: string;
     promptTitle?: string;
 
-    controls?: Array<{ type: string; source: any; targets: any }>;
+    controls?: Array<PromptControl>;
     selectCard?: boolean;
     selectOrder?: unknown;
     selectRing?: boolean;
+    [key: string]: unknown;
 };
 
 export class UiPrompt extends BaseStep {
@@ -54,13 +58,13 @@ export class UiPrompt extends BaseStep {
         if(newPrompt.buttons) {
             for(const button of newPrompt.buttons) {
                 button.command = button.command || 'menuButton';
-                (button as any).uuid = this.uuid;
+                button.uuid = this.uuid;
             }
         }
 
         if(newPrompt.controls) {
             for(const controls of newPrompt.controls) {
-                (controls as any).uuid = this.uuid;
+                controls.uuid = this.uuid;
             }
         }
         return newPrompt;

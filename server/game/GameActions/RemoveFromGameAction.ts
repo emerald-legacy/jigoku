@@ -15,7 +15,7 @@ export class RemoveFromGameAction extends CardGameAction {
     targetType = [CardTypes.Character, CardTypes.Attachment, CardTypes.Holding, CardTypes.Event];
     effect = 'remove {0} from the game';
 
-    canAffect(card: BaseCard, context: AbilityContext, additionalProperties: any = {}): boolean {
+    canAffect(card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         const properties = this.getProperties(context, additionalProperties) as RemoveFromGameProperties;
         const propValidLocations = Array.isArray(properties.location)
             ? properties.location
@@ -43,12 +43,12 @@ export class RemoveFromGameAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    updateEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: any): void {
+    updateEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
         additionalProperties.destination = Locations.RemovedFromGame;
         this.updateLeavesPlayEvent(event, card, context, additionalProperties);
     }
 
-    eventHandler(event: Event, additionalProperties: any = {}): void {
+    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
         this.leavesPlayEventHandler(event, additionalProperties);
     }
 }

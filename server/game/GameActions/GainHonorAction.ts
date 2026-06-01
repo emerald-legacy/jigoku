@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
 import type Player from '../Player.js';
@@ -14,7 +15,7 @@ export class GainHonorAction extends PlayerAction<GainHonorProperties> {
     name: string = 'gainHonor';
     eventName = EventNames.OnModifyHonor;
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context);
         var [_, amountToTransfer] = CalculateHonorLimit(
             context.player,
@@ -51,22 +52,23 @@ export class GainHonorAction extends PlayerAction<GainHonorProperties> {
         return [context.player];
     }
 
-    addPropertiesToEvent(event: any, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
+        const context = event.context as AbilityContext;
         var [_, amountToTransfer] = CalculateHonorLimit(
             event.player,
-            event.context.game.roundNumber,
-            event.context.game.currentPhase,
+            context.game.roundNumber,
+            context.game.currentPhase,
             event.amount
         );
         event.player.modifyHonor(amountToTransfer);
-        if(amountToTransfer && event.context?.game) {
-            event.context.game.addAnimation({ type: 'honor', playerName: event.player.name, amount: amountToTransfer });
+        if(amountToTransfer && context?.game) {
+            context.game.addAnimation({ type: 'honor', playerName: event.player.name, amount: amountToTransfer });
         }
     }
 }

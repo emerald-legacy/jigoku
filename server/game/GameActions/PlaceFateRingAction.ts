@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -18,12 +19,12 @@ export class PlaceFateRingAction extends RingAction {
         super(properties);
     }
 
-    getCostMessage(context: AbilityContext): [string, any[]] {
+    getCostMessage(context: AbilityContext): [string, unknown[]] {
         let properties: PlaceFateRingProperties = this.getProperties(context);
         return ['placing {1} fate on the {0}', [properties.amount, properties.target]];
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties: PlaceFateRingProperties = this.getProperties(context);
         if(properties.origin) {
             return ['move {1} fate from {2} to {0}', [properties.target, properties.amount, properties.origin]];
@@ -42,7 +43,7 @@ export class PlaceFateRingAction extends RingAction {
         return (properties.amount ?? 0) > 0 && super.canAffect(ring, context);
     }
 
-    addPropertiesToEvent(event: any, ring: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateRingProperties;
         event.fate = amount;
         event.origin = origin;
@@ -50,11 +51,11 @@ export class PlaceFateRingAction extends RingAction {
         event.recipient = ring;
     }
 
-    checkEventCondition(event: any): boolean {
+    checkEventCondition(event: Event): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: any, ring: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: Event, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         let { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateRingProperties;
         return (
             !event.cancelled &&
@@ -65,7 +66,7 @@ export class PlaceFateRingAction extends RingAction {
         );
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         this.moveFateEventHandler(event);
     }
 }

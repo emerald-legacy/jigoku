@@ -1,14 +1,21 @@
-import ForcedTriggeredAbilityWindow from './forcedtriggeredabilitywindow.js';
+import ForcedTriggeredAbilityWindow from './ForcedTriggeredAbilityWindow.js';
 import { TriggeredAbilityWindowTitle } from './TriggeredAbilityWindowTitle.js';
 import { CardTypes, EventNames, AbilityTypes } from '../Constants.js';
 import type Player from '../Player.js';
+import type Game from '../Game.js';
+import type { Event } from '../Events/Event.js';
+import type EventWindow from '../Events/EventWindow.js';
+import type TriggeredAbility from '../TriggeredAbility.js';
+import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
+import type AbilityResolver from './AbilityResolver.js';
+import type CardAbility from '../CardAbility.js';
 
 class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
     complete: boolean;
     prevPlayerPassed: boolean;
-    resolvedAbilitiesPerPlayer: Record<string, Array<{ ability: any; event: any }>>;
+    resolvedAbilitiesPerPlayer: Record<string, Array<{ ability: TriggeredAbility; event: Event }>>;
 
-    constructor(game: any, abilityType: AbilityTypes, window: any, eventsToExclude: any[] = []) {
+    constructor(game: Game, abilityType: AbilityTypes, window: EventWindow, eventsToExclude: Event[] = []) {
         super(game, abilityType, window, eventsToExclude);
         this.complete = false;
         this.prevPlayerPassed = false;
@@ -23,7 +30,7 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
         // Show a bluff prompt if we're in Step 6, the player has the approriate setting, and there's an event for the other player
         return this.abilityType === AbilityTypes.WouldInterrupt && player.timerSettings.events && this.events.some(event => (
             event.name === EventNames.OnInitiateAbilityEffects &&
-            (event as any).card.type === CardTypes.Event && event.context && event.context.player !== player
+            event.card.type === CardTypes.Event && event.context && event.context.player !== player
         ));
     }
 
@@ -45,9 +52,9 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
     }
 
     pass(player?: Player, arg?: string): boolean {
-        if(arg === 'pauseRound') {
-            (player as any).noTimer = true;
-            (player as any).resetTimerAtEndOfRound = true;
+        if(arg === 'pauseRound' && player) {
+            player.noTimer = true;
+            player.resetTimerAtEndOfRound = true;
         }
         if(this.prevPlayerPassed || !this.currentPlayer.opponent) {
             this.complete = true;
@@ -69,12 +76,12 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
             this.choices = this.choices.filter(context => !(
                 context.player === this.currentPlayer &&
                 context.event.name === EventNames.OnInitiateAbilityEffects &&
-                context.event.context.player === this.currentPlayer
+                context.event.context?.player === this.currentPlayer
             ));
         }
 
         // if the current player has no available choices in this window, check to see if they should get a bluff prompt
-        if(!this.choices.some(context => context.player === this.currentPlayer && context.ability.isInValidLocation(context))) {
+        if(!this.choices.some(context => context.player === this.currentPlayer && (context.ability as CardAbility).isInValidLocation(context))) {
             if(this.showBluffPrompt(this.currentPlayer)) {
                 this.promptWithBluffPrompt(this.currentPlayer);
                 return false;
@@ -85,23 +92,24 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
         }
 
         // Filter choices for current player, and prompt
-        this.choices = this.choices.filter(context => context.player === this.currentPlayer && context.ability.isInValidLocation(context));
+        this.choices = this.choices.filter(context => context.player === this.currentPlayer && (context.ability as CardAbility).isInValidLocation(context));
         this.promptBetweenSources(this.choices);
         return false;
     }
 
-    postResolutionUpdate(resolver: any): void {
+    postResolutionUpdate(resolver: AbilityResolver): void {
         super.postResolutionUpdate(resolver);
         if(!this.resolvedAbilitiesPerPlayer[resolver.context.player.uuid]) {
             this.resolvedAbilitiesPerPlayer[resolver.context.player.uuid] = [];
         }
-        this.resolvedAbilitiesPerPlayer[resolver.context.player.uuid].push({ ability: resolver.context.ability, event: resolver.context.event });
+        const context = resolver.context as TriggeredAbilityContext;
+        this.resolvedAbilitiesPerPlayer[context.player.uuid].push({ ability: context.ability as TriggeredAbility, event: context.event });
 
         this.prevPlayerPassed = false;
         this.currentPlayer = this.currentPlayer.opponent || this.currentPlayer;
     }
 
-    getPromptForSelectProperties(): any {
+    getPromptForSelectProperties() {
         return Object.assign({}, super.getPromptForSelectProperties(), {
             selectCard: this.currentPlayer.optionSettings.markCardsUnselectable,
             buttons: [{ text: 'Pass', arg: 'pass' }],
@@ -112,10 +120,10 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
         });
     }
 
-    hasAbilityBeenTriggered(context: any): boolean {
+    hasAbilityBeenTriggered(context: TriggeredAbilityContext): boolean {
         let alreadyResolved = false;
         if(Array.isArray(this.resolvedAbilitiesPerPlayer[context.player.uuid])) {
-            alreadyResolved = this.resolvedAbilitiesPerPlayer[context.player.uuid].some(resolved => resolved.ability === context.ability && (context.ability.collectiveTrigger || resolved.event === context.event));
+            alreadyResolved = this.resolvedAbilitiesPerPlayer[context.player.uuid].some(resolved => resolved.ability === context.ability && ((context.ability as TriggeredAbility).collectiveTrigger || resolved.event === context.event));
         }
         return alreadyResolved;
     }

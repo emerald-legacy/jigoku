@@ -1,8 +1,17 @@
 import { EffectValue } from './EffectValue.js';
 import { AbilityTypes, CardTypes, Locations, Phases, Stages } from '../Constants.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../BaseCard.js';
 import { MoveCardAction } from '../GameActions/MoveCardAction.js';
+import type Player from '../Player.js';
 
-const checkRestrictions: Record<string, (context: any, effect: any, card?: any) => boolean> = {
+// Restriction predicates read ability/card/game internals (ability.card, ability.properties,
+// game.phase, card.printedCost) that live on subtypes, not the declared base types — so the
+// context/effect/card params are genuinely open here.
+type RestrictionCheck = (context: any, effect: Restriction, card?: any) => boolean;
+type RestrictionType = string | RestrictionCheck | (string | RestrictionCheck)[];
+
+const checkRestrictions: Record<string, RestrictionCheck> = {
     abilitiesTriggeredByOpponents: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent &&
         context.ability.isTriggeredAbility() &&
@@ -38,7 +47,7 @@ const checkRestrictions: Record<string, (context: any, effect: any, card?: any) 
             CardTypes.Role
         ].includes(context.source.type),
     ringEffects: (context) => context.source.type === 'ring',
-    cardAndRingEffects: (context) => checkRestrictions.cardEffects(context, null) || checkRestrictions.ringEffects(context, null),
+    cardAndRingEffects: (context, effect) => checkRestrictions.cardEffects(context, effect) || checkRestrictions.ringEffects(context, effect),
     characters: (context) => context.source.type === CardTypes.Character,
     charactersWithNoFate: (context) => context.source.type === CardTypes.Character && context.source.getFate() === 0,
     copiesOfDiscardEvents: (context) =>
@@ -132,30 +141,37 @@ const checkRestrictions: Record<string, (context: any, effect: any, card?: any) 
     }
 };
 
-const getApplyingPlayer = (effect: any) => {
+const getApplyingPlayer = (effect: Restriction): Player => {
     return effect.applyingPlayer || effect.context.player;
 };
 
-const isMoveToHandAction = (gameAction: any) =>
+const isMoveToHandAction = (gameAction: unknown) =>
     // @ts-expect-error -- properties.destination exists on MoveCardAction but not on the base type
     gameAction instanceof MoveCardAction && gameAction.properties.destination === Locations.Hand;
 
 const leavePlayTypes = new Set(['discardFromPlay', 'sacrifice', 'returnToHand', 'returnToDeck', 'removeFromGame']);
 
-class Restriction extends EffectValue<any> {
+interface RestrictionProperties {
     type: string;
-    restriction: any;
-    applyingPlayer: any;
-    params: any;
+    restricts?: RestrictionType;
+    applyingPlayer?: Player;
+    params?: unknown;
+}
 
-    constructor(properties: any) {
+class Restriction extends EffectValue<Restriction | undefined> {
+    type: string;
+    restriction!: RestrictionType;
+    applyingPlayer!: Player;
+    params: unknown;
+
+    constructor(properties: string | RestrictionProperties) {
         super(undefined);
         if(typeof properties === 'string') {
             this.type = properties;
         } else {
             this.type = properties.type;
-            this.restriction = properties.restricts;
-            this.applyingPlayer = properties.applyingPlayer;
+            this.restriction = properties.restricts as RestrictionType;
+            this.applyingPlayer = properties.applyingPlayer as Player;
             this.params = properties.params;
         }
     }
@@ -164,7 +180,7 @@ class Restriction extends EffectValue<any> {
         return this;
     }
 
-    isMatch(type: string, context: any, card: any): boolean {
+    isMatch(type: string, context: AbilityContext, card?: BaseCard): boolean {
         if(this.type === 'leavePlay') {
             return leavePlayTypes.has(type) && this.checkCondition(context, card);
         }
@@ -172,16 +188,17 @@ class Restriction extends EffectValue<any> {
         return (!this.type || this.type === type) && this.checkCondition(context, card);
     }
 
-    checkCondition(context: any, card: any): boolean {
-        if(Array.isArray(this.restriction)) {
-            const vals = this.restriction.map((a: any) => this.checkRestriction(a, context, card));
+    checkCondition(context: AbilityContext, card?: BaseCard): boolean {
+        const restriction = this.restriction;
+        if(Array.isArray(restriction)) {
+            const vals = restriction.map((a) => this.checkRestriction(a, context, card));
             return vals.every((a: boolean) => a);
         }
 
-        return this.checkRestriction(this.restriction, context, card);
+        return this.checkRestriction(restriction, context, card);
     }
 
-    checkRestriction(restriction: any, context: any, card: any): boolean {
+    checkRestriction(restriction: string | RestrictionCheck | undefined, context: AbilityContext, card?: BaseCard): boolean {
         if(!restriction) {
             return true;
         } else if(!context) {

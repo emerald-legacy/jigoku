@@ -1,6 +1,6 @@
 import * as AbilityLimit from './AbilityLimit.js';
 import GainAllAbiliitesDynamic from './Effects/GainAllAbilitiesDynamic.js';
-import Restriction from './Effects/restriction.js';
+import Restriction from './Effects/Restriction.js';
 import { SuppressEffect } from './Effects/SuppressEffect.js';
 import { EffectBuilder } from './Effects/EffectBuilder.js';
 import { attachmentMilitarySkillModifier } from './Effects/Library/attachmentMilitarySkillModifier.js';
@@ -22,27 +22,29 @@ import { EffectNames, PlayTypes, CardTypes, Players } from './Constants.js';
     3. Detached effects - do something when applied, and on expiration, but can be ignored in the interim
 */
 
-const Effects: Record<string, any> = {
+type Flexible<T> = T | ((...args: any[]) => T);
+
+const Effects = {
     // Card effects
-    addElementAsAttacker: (element: any) => EffectBuilder.card.flexible(EffectNames.AddElementAsAttacker, element),
-    addFaction: (faction: any) => EffectBuilder.card.static(EffectNames.AddFaction, faction),
-    loseFaction: (faction: any) => EffectBuilder.card.static(EffectNames.LoseFaction, faction),
-    addKeyword: (keyword: any) => EffectBuilder.card.static(EffectNames.AddKeyword, keyword),
-    addTrait: (trait: any) => EffectBuilder.card.static(EffectNames.AddTrait, trait),
+    addElementAsAttacker: (element: Flexible<string>) => EffectBuilder.card.flexible(EffectNames.AddElementAsAttacker, element),
+    addFaction: (faction: string) => EffectBuilder.card.static(EffectNames.AddFaction, faction),
+    loseFaction: (faction: string) => EffectBuilder.card.static(EffectNames.LoseFaction, faction),
+    addKeyword: (keyword: string) => EffectBuilder.card.static(EffectNames.AddKeyword, keyword),
+    addTrait: (trait: string) => EffectBuilder.card.static(EffectNames.AddTrait, trait),
     additionalTriggerCostForCard: (func: any) => EffectBuilder.card.static(EffectNames.AdditionalTriggerCost, func),
     attachmentCardCondition: (func: any) => EffectBuilder.card.static(EffectNames.AttachmentCardCondition, func),
     attachmentFactionRestriction: (factions: any) =>
         EffectBuilder.card.static(EffectNames.AttachmentFactionRestriction, factions),
-    attachmentLimit: (amount: any) => EffectBuilder.card.static(EffectNames.AttachmentLimit, amount),
+    attachmentLimit: (amount: number) => EffectBuilder.card.static(EffectNames.AttachmentLimit, amount),
     attachmentMyControlOnly: () => EffectBuilder.card.static(EffectNames.AttachmentMyControlOnly, true),
     attachmentOpponentControlOnly: () => EffectBuilder.card.static(EffectNames.AttachmentOpponentControlOnly, true),
     attachmentRestrictTraitAmount: (object: any) =>
         EffectBuilder.card.static(EffectNames.AttachmentRestrictTraitAmount, object),
     attachmentTraitRestriction: (traits: any) => EffectBuilder.card.static(EffectNames.AttachmentTraitRestriction, traits),
     attachmentUniqueRestriction: () => EffectBuilder.card.static(EffectNames.AttachmentUniqueRestriction, true),
-    blank: (blankTraits: any = false) => EffectBuilder.card.static(EffectNames.Blank, blankTraits),
+    blank: (blankTraits: boolean = false) => EffectBuilder.card.static(EffectNames.Blank, blankTraits),
     calculatePrintedMilitarySkill: (func: any) => EffectBuilder.card.static(EffectNames.CalculatePrintedMilitarySkill, func),
-    canPlayFromOutOfPlay: (player: any, playType: any = PlayTypes.PlayFromHand) =>
+    canPlayFromOutOfPlay: (player: any, playType: PlayTypes = PlayTypes.PlayFromHand) =>
         EffectBuilder.card.flexible(
             EffectNames.CanPlayFromOutOfPlay,
             Object.assign({ player: player, playType: playType })
@@ -58,30 +60,30 @@ const Effects: Record<string, any> = {
         }),
     canBeSeenWhenFacedown: () => EffectBuilder.card.static(EffectNames.CanBeSeenWhenFacedown, true),
     canBeTriggeredByOpponent: () => EffectBuilder.card.static(EffectNames.CanBeTriggeredByOpponent, true),
-    canOnlyBeDeclaredAsAttackerWithElement: (element: any) =>
+    canOnlyBeDeclaredAsAttackerWithElement: (element: Flexible<string>) =>
         EffectBuilder.card.flexible(EffectNames.CanOnlyBeDeclaredAsAttackerWithElement, element),
     cannotApplyLastingEffects: (condition: any) =>
         EffectBuilder.card.static(EffectNames.CannotApplyLastingEffects, condition),
     cannotBeAttacked: () => EffectBuilder.card.static(EffectNames.CannotBeAttacked, true),
-    cannotHaveConflictsDeclaredOfType: (type: any) =>
+    cannotHaveConflictsDeclaredOfType: (type: Flexible<string>) =>
         EffectBuilder.card.flexible(EffectNames.CannotHaveConflictsDeclaredOfType, type),
     cannotHaveOtherRestrictedAttachments: (card: any) =>
         EffectBuilder.card.static(EffectNames.CannotHaveOtherRestrictedAttachments, card),
-    cannotParticipateAsAttacker: (type: any = 'both') =>
+    cannotParticipateAsAttacker: (type: string = 'both') =>
         EffectBuilder.card.static(EffectNames.CannotParticipateAsAttacker, type),
-    cannotParticipateAsDefender: (type: any = 'both') =>
+    cannotParticipateAsDefender: (type: string = 'both') =>
         EffectBuilder.card.static(EffectNames.CannotParticipateAsDefender, type),
     cardCannot,
     changeContributionFunction: (func: any) => EffectBuilder.card.static(EffectNames.ChangeContributionFunction, func),
-    changeType: (type: any) => EffectBuilder.card.static(EffectNames.ChangeType, type),
-    characterProvidesAdditionalConflict: (type: any) =>
+    changeType: (type: CardTypes) => EffectBuilder.card.static(EffectNames.ChangeType, type),
+    characterProvidesAdditionalConflict: (type: string) =>
         EffectBuilder.card.detached(EffectNames.AdditionalConflict, {
             apply: (card: any) => card.controller.addConflictOpportunity(type),
             unapply: (card: any) => card.controller.removeConflictOpportunity(type)
         }),
     contributeToConflict: (player: any) => EffectBuilder.card.flexible(EffectNames.ContributeToConflict, player),
-    canContributeWhileBowed: (properties: any) => EffectBuilder.card.static(EffectNames.CanContributeWhileBowed, properties),
-    canContributeGloryWhileBowed: (properties: any) =>
+    canContributeWhileBowed: (properties?: any) => EffectBuilder.card.static(EffectNames.CanContributeWhileBowed, properties),
+    canContributeGloryWhileBowed: (properties?: any) =>
         EffectBuilder.card.static(EffectNames.CanContributeGloryWhileBowed, properties),
     copyCard,
     customDetachedCard: (properties: any) => EffectBuilder.card.detached(EffectNames.CustomEffect, properties),
@@ -91,17 +93,17 @@ const Effects: Record<string, any> = {
     doesNotReady: () => EffectBuilder.card.static(EffectNames.DoesNotReady, true),
     entersPlayWithStatus: (status: any) => EffectBuilder.card.static(EffectNames.EntersPlayWithStatus, status),
     entersPlayForOpponent: () => EffectBuilder.card.static(EffectNames.EntersPlayForOpponent, true),
-    fateCostToAttack: (amount: any = 1) => EffectBuilder.card.flexible(EffectNames.FateCostToAttack, amount),
-    cardCostToAttackMilitary: (amount: any = 1) => EffectBuilder.card.flexible(EffectNames.CardCostToAttackMilitary, amount),
-    honorCostToDeclare: (amount: any = 1) => EffectBuilder.card.flexible(EffectNames.HonorCostToDeclare, amount),
-    fateCostToRingToDeclareConflictAgainst: (amount: any = 1) =>
+    fateCostToAttack: (amount: Flexible<number> = 1) => EffectBuilder.card.flexible(EffectNames.FateCostToAttack, amount),
+    cardCostToAttackMilitary: (amount: Flexible<number> = 1) => EffectBuilder.card.flexible(EffectNames.CardCostToAttackMilitary, amount),
+    honorCostToDeclare: (amount: Flexible<number> = 1) => EffectBuilder.card.flexible(EffectNames.HonorCostToDeclare, amount),
+    fateCostToRingToDeclareConflictAgainst: (amount: Flexible<number> = 1) =>
         EffectBuilder.card.flexible(EffectNames.FateCostToRingToDeclareConflictAgainst, amount),
     fateCostToTarget: (properties: any) => EffectBuilder.card.flexible(EffectNames.FateCostToTarget, properties),
     gainAbility,
     gainAllAbilities,
     gainAllAbilitiesDynamic: (match: any) =>
         EffectBuilder.card.static(EffectNames.GainAllAbilitiesDynamic, new GainAllAbiliitesDynamic(match)),
-    gainExtraFateWhenPlayed: (amount: any = 1) => EffectBuilder.card.flexible(EffectNames.GainExtraFateWhenPlayed, amount),
+    gainExtraFateWhenPlayed: (amount: Flexible<number> = 1) => EffectBuilder.card.flexible(EffectNames.GainExtraFateWhenPlayed, amount),
     gainPlayAction: (playActionClass: any) =>
         EffectBuilder.card.detached(EffectNames.GainPlayAction, {
             apply: (card: any) => {
@@ -118,35 +120,35 @@ const Effects: Record<string, any> = {
     taintedStatusDoesNotCostHonor: () => EffectBuilder.card.flexible(EffectNames.TaintedStatusDoesNotCostHonor, true),
     honorStatusReverseModifySkill: () => EffectBuilder.card.flexible(EffectNames.HonorStatusReverseModifySkill, true),
     immunity: (properties: any) => EffectBuilder.card.static(EffectNames.AbilityRestrictions, new Restriction(properties)),
-    increaseLimitOnAbilities: (abilities: any) => EffectBuilder.card.static(EffectNames.IncreaseLimitOnAbilities, abilities),
-    increaseLimitOnPrintedAbilities: (abilities: any) =>
+    increaseLimitOnAbilities: (abilities?: any) => EffectBuilder.card.static(EffectNames.IncreaseLimitOnAbilities, abilities),
+    increaseLimitOnPrintedAbilities: (abilities?: any) =>
         EffectBuilder.card.static(EffectNames.IncreaseLimitOnPrintedAbilities, abilities),
-    legendaryFate: (amount: any = 1) => EffectBuilder.card.flexible(EffectNames.LegendaryFate, amount),
+    legendaryFate: (amount: Flexible<number> = 1) => EffectBuilder.card.flexible(EffectNames.LegendaryFate, amount),
     loseAllNonKeywordAbilities: () => EffectBuilder.card.static(EffectNames.LoseAllNonKeywordAbilities, true),
-    loseKeyword: (keyword: any) => EffectBuilder.card.static(EffectNames.LoseKeyword, keyword),
-    loseTrait: (trait: any) => EffectBuilder.card.static(EffectNames.LoseTrait, trait),
-    modifyBaseMilitarySkillMultiplier: (value: any) =>
+    loseKeyword: (keyword: string) => EffectBuilder.card.static(EffectNames.LoseKeyword, keyword),
+    loseTrait: (trait: string) => EffectBuilder.card.static(EffectNames.LoseTrait, trait),
+    modifyBaseMilitarySkillMultiplier: (value: Flexible<number>) =>
         EffectBuilder.card.flexible(EffectNames.ModifyBaseMilitarySkillMultiplier, value),
-    modifyBasePoliticalSkillMultiplier: (value: any) =>
+    modifyBasePoliticalSkillMultiplier: (value: Flexible<number>) =>
         EffectBuilder.card.flexible(EffectNames.ModifyBasePoliticalSkillMultiplier, value),
-    modifyBaseProvinceStrength: (value: any) => EffectBuilder.card.flexible(EffectNames.ModifyBaseProvinceStrength, value),
-    modifyBothSkills: (value: any) => EffectBuilder.card.flexible(EffectNames.ModifyBothSkills, value),
-    modifyDuelistSkill: (value: any, duel?: any) => EffectBuilder.card.flexible(EffectNames.ModifyDuelistSkill, duel !== undefined ? { value, duel } : value),
-    modifyGlory: (value: any) => EffectBuilder.card.flexible(EffectNames.ModifyGlory, value),
-    modifyMilitarySkill: (value: any) => EffectBuilder.card.flexible(EffectNames.ModifyMilitarySkill, value),
+    modifyBaseProvinceStrength: (value: Flexible<number>) => EffectBuilder.card.flexible(EffectNames.ModifyBaseProvinceStrength, value),
+    modifyBothSkills: (value: Flexible<number>) => EffectBuilder.card.flexible(EffectNames.ModifyBothSkills, value),
+    modifyDuelistSkill: (value: Flexible<number>, duel?: any) => EffectBuilder.card.flexible(EffectNames.ModifyDuelistSkill, duel !== undefined ? { value, duel } : value),
+    modifyGlory: (value: Flexible<number>) => EffectBuilder.card.flexible(EffectNames.ModifyGlory, value),
+    modifyMilitarySkill: (value: Flexible<number>) => EffectBuilder.card.flexible(EffectNames.ModifyMilitarySkill, value),
     switchAttachmentSkillModifiers,
     attachmentMilitarySkillModifier,
-    modifyMilitarySkillMultiplier: (value: any) =>
+    modifyMilitarySkillMultiplier: (value: Flexible<number>) =>
         EffectBuilder.card.flexible(EffectNames.ModifyMilitarySkillMultiplier, value),
-    modifyPoliticalSkill: (value: any) => EffectBuilder.card.flexible(EffectNames.ModifyPoliticalSkill, value),
+    modifyPoliticalSkill: (value: Flexible<number>) => EffectBuilder.card.flexible(EffectNames.ModifyPoliticalSkill, value),
     attachmentPoliticalSkillModifier,
-    modifyPoliticalSkillMultiplier: (value: any) =>
+    modifyPoliticalSkillMultiplier: (value: Flexible<number>) =>
         EffectBuilder.card.flexible(EffectNames.ModifyPoliticalSkillMultiplier, value),
-    modifyProvinceStrength: (value: any) => EffectBuilder.card.flexible(EffectNames.ModifyProvinceStrength, value),
-    modifyProvinceStrengthMultiplier: (value: any) =>
+    modifyProvinceStrength: (value: Flexible<number>) => EffectBuilder.card.flexible(EffectNames.ModifyProvinceStrength, value),
+    modifyProvinceStrengthMultiplier: (value: Flexible<number>) =>
         EffectBuilder.card.flexible(EffectNames.ModifyProvinceStrengthMultiplier, value),
-    modifyProvinceStrengthBonus: (value: any) => EffectBuilder.card.flexible(EffectNames.ModifyProvinceStrengthBonus, value),
-    modifyRestrictedAttachmentAmount: (value: any) =>
+    modifyProvinceStrengthBonus: (value: Flexible<number>) => EffectBuilder.card.flexible(EffectNames.ModifyProvinceStrengthBonus, value),
+    modifyRestrictedAttachmentAmount: (value: Flexible<number>) =>
         EffectBuilder.card.flexible(EffectNames.ModifyRestrictedAttachmentAmount, value),
     mustBeChosen: (properties: any) =>
         EffectBuilder.card.static(
@@ -154,23 +156,23 @@ const Effects: Record<string, any> = {
             new Restriction(Object.assign({ type: 'target' }, properties))
         ),
     mustBeDeclaredAsAttacker,
-    mustBeDeclaredAsAttackerIfType: (type: any = 'both') =>
+    mustBeDeclaredAsAttackerIfType: (type: string = 'both') =>
         EffectBuilder.card.static(EffectNames.MustBeDeclaredAsAttackerIfType, type),
-    mustBeDeclaredAsDefender: (type: any = 'both') => EffectBuilder.card.static(EffectNames.MustBeDeclaredAsDefender, type),
-    refillProvinceTo: (refillAmount: any) => EffectBuilder.card.flexible(EffectNames.RefillProvinceTo, refillAmount),
-    setApparentFate: (value: any) => EffectBuilder.card.static(EffectNames.SetApparentFate, value),
+    mustBeDeclaredAsDefender: (type: string = 'both') => EffectBuilder.card.static(EffectNames.MustBeDeclaredAsDefender, type),
+    refillProvinceTo: (refillAmount: Flexible<number>) => EffectBuilder.card.flexible(EffectNames.RefillProvinceTo, refillAmount),
+    setApparentFate: (value: number) => EffectBuilder.card.static(EffectNames.SetApparentFate, value),
     setBaseDash: (type: any) => EffectBuilder.card.static(EffectNames.SetBaseDash, type),
-    setBaseMilitarySkill: (value: any) => EffectBuilder.card.static(EffectNames.SetBaseMilitarySkill, value),
-    setBasePoliticalSkill: (value: any) => EffectBuilder.card.static(EffectNames.SetBasePoliticalSkill, value),
-    setBaseProvinceStrength: (value: any) => EffectBuilder.card.static(EffectNames.SetBaseProvinceStrength, value),
+    setBaseMilitarySkill: (value: number) => EffectBuilder.card.static(EffectNames.SetBaseMilitarySkill, value),
+    setBasePoliticalSkill: (value: number) => EffectBuilder.card.static(EffectNames.SetBasePoliticalSkill, value),
+    setBaseProvinceStrength: (value: number) => EffectBuilder.card.static(EffectNames.SetBaseProvinceStrength, value),
     setDash: (type: any) => EffectBuilder.card.static(EffectNames.SetDash, type),
-    setGlory: (value: any) => EffectBuilder.card.static(EffectNames.SetGlory, value),
-    setBaseGlory: (value: any) => EffectBuilder.card.static(EffectNames.SetBaseGlory, value),
-    setMilitarySkill: (value: any) => EffectBuilder.card.static(EffectNames.SetMilitarySkill, value),
-    setPoliticalSkill: (value: any) => EffectBuilder.card.static(EffectNames.SetPoliticalSkill, value),
-    setProvinceStrength: (value: any) => EffectBuilder.card.static(EffectNames.SetProvinceStrength, value),
-    setProvinceStrengthBonus: (value: any) => EffectBuilder.card.flexible(EffectNames.SetProvinceStrengthBonus, value),
-    provinceCannotHaveSkillIncreased: (value: any) =>
+    setGlory: (value: number) => EffectBuilder.card.static(EffectNames.SetGlory, value),
+    setBaseGlory: (value: number) => EffectBuilder.card.static(EffectNames.SetBaseGlory, value),
+    setMilitarySkill: (value: number) => EffectBuilder.card.static(EffectNames.SetMilitarySkill, value),
+    setPoliticalSkill: (value: number) => EffectBuilder.card.static(EffectNames.SetPoliticalSkill, value),
+    setProvinceStrength: (value: number) => EffectBuilder.card.static(EffectNames.SetProvinceStrength, value),
+    setProvinceStrengthBonus: (value: Flexible<number>) => EffectBuilder.card.flexible(EffectNames.SetProvinceStrengthBonus, value),
+    provinceCannotHaveSkillIncreased: (value?: any) =>
         EffectBuilder.card.static(EffectNames.ProvinceCannotHaveSkillIncreased, value),
     switchBaseSkills: () => EffectBuilder.card.static(EffectNames.SwitchBaseSkills, true),
     suppressEffects: (condition: any) =>
@@ -178,29 +180,29 @@ const Effects: Record<string, any> = {
     takeControl: (player: any) => EffectBuilder.card.static(EffectNames.TakeControl, player),
     triggersAbilitiesFromHome: (properties: any) =>
         EffectBuilder.card.static(EffectNames.TriggersAbilitiesFromHome, properties),
-    participatesFromHome: (properties: any) => EffectBuilder.card.static(EffectNames.ParticipatesFromHome, properties),
+    participatesFromHome: (properties?: any) => EffectBuilder.card.static(EffectNames.ParticipatesFromHome, properties),
     unlessActionCost: (properties: any) => EffectBuilder.card.static(EffectNames.UnlessActionCost, properties),
     replacePrintedElement: (value: any) => EffectBuilder.card.static(EffectNames.ReplacePrintedElement, value),
     winDuel: (duel: any) => EffectBuilder.card.static(EffectNames.WinDuel, duel),
     winDuelTies: () => EffectBuilder.card.static(EffectNames.WinDuelTies, true),
     ignoreDuelSkill: () => EffectBuilder.card.static(EffectNames.IgnoreDuelSkill, true),
     // Ring effects
-    addElement: (element: any) => EffectBuilder.ring.flexible(EffectNames.AddElement, element),
-    cannotBidInDuels: (num: any) => EffectBuilder.player.static(EffectNames.CannotBidInDuels, num),
+    addElement: (element: Flexible<string | string[]>) => EffectBuilder.ring.flexible(EffectNames.AddElement, element),
+    cannotBidInDuels: (num: number | string) => EffectBuilder.player.static(EffectNames.CannotBidInDuels, num),
     cannotDeclareRing: (match: any) => EffectBuilder.ring.static(EffectNames.CannotDeclareRing, match),
     considerRingAsClaimed: (match: any) => EffectBuilder.ring.static(EffectNames.ConsiderRingAsClaimed, match),
     // Player effects
-    additionalAction: (amount: any = 1) => EffectBuilder.player.static(EffectNames.AdditionalAction, amount),
-    additionalCardPlayed: (amount: any = 1) => EffectBuilder.player.flexible(EffectNames.AdditionalCardPlayed, amount),
-    additionalCharactersInConflict: (amount: any) =>
+    additionalAction: (amount: number = 1) => EffectBuilder.player.static(EffectNames.AdditionalAction, amount),
+    additionalCardPlayed: (amount: Flexible<number> = 1) => EffectBuilder.player.flexible(EffectNames.AdditionalCardPlayed, amount),
+    additionalCharactersInConflict: (amount: Flexible<number>) =>
         EffectBuilder.player.flexible(EffectNames.AdditionalCharactersInConflict, amount),
-    additionalConflict: (type: any) => EffectBuilder.player.static(EffectNames.AdditionalConflict, type),
+    additionalConflict: (type?: string) => EffectBuilder.player.static(EffectNames.AdditionalConflict, type),
     additionalTriggerCost: (func: any) => EffectBuilder.player.static(EffectNames.AdditionalTriggerCost, func),
     additionalPlayCost: (func: any) => EffectBuilder.player.static(EffectNames.AdditionalPlayCost, func),
     alternateFatePool: (match: any) => EffectBuilder.player.static(EffectNames.AlternateFatePool, match),
-    cannotDeclareConflictsOfType: (type: any) => EffectBuilder.player.static(EffectNames.CannotDeclareConflictsOfType, type),
+    cannotDeclareConflictsOfType: (type: string) => EffectBuilder.player.static(EffectNames.CannotDeclareConflictsOfType, type),
     canPlayFromOwn,
-    canPlayFromOpponents: (location: any, cards: any, sourceOfEffect: any, playType: any = PlayTypes.PlayFromHand) =>
+    canPlayFromOpponents: (location: any, cards: any, sourceOfEffect: any, playType: PlayTypes = PlayTypes.PlayFromHand) =>
         EffectBuilder.player.detached(EffectNames.CanPlayFromOpponents, {
             apply: (player: any) => {
                 if(!player.opponent) {
@@ -233,21 +235,21 @@ const Effects: Record<string, any> = {
                 }
             }
         }),
-    limitHonorGainPerPhase: (amount: any) => EffectBuilder.player.static(EffectNames.LimitHonorGainPerPhase, amount),
-    modifyHonorTransferGiven: (amount: any) => EffectBuilder.player.static(EffectNames.ModifyHonorTransferGiven, amount),
-    modifyHonorTransferReceived: (amount: any) =>
+    limitHonorGainPerPhase: (amount: number) => EffectBuilder.player.static(EffectNames.LimitHonorGainPerPhase, amount),
+    modifyHonorTransferGiven: (amount: number) => EffectBuilder.player.static(EffectNames.ModifyHonorTransferGiven, amount),
+    modifyHonorTransferReceived: (amount: number) =>
         EffectBuilder.player.static(EffectNames.ModifyHonorTransferReceived, amount),
     cannotResolveRings: () => EffectBuilder.player.static(EffectNames.CannotResolveRings, true),
     changePlayerGloryModifier,
-    changePlayerSkillModifier: (value: any) => EffectBuilder.player.flexible(EffectNames.ChangePlayerSkillModifier, value),
+    changePlayerSkillModifier: (value: Flexible<number>) => EffectBuilder.player.flexible(EffectNames.ChangePlayerSkillModifier, value),
     customDetachedPlayer: (properties: any) => EffectBuilder.player.detached(EffectNames.CustomEffect, properties),
     gainActionPhasePriority: () =>
         EffectBuilder.player.detached(EffectNames.GainActionPhasePriority, {
             apply: (player: any) => (player.actionPhasePriority = true),
             unapply: (player: any) => (player.actionPhasePriority = false)
         }),
-    increaseCost: (properties: any) => Effects.reduceCost(Object.assign({}, properties, { amount: -properties.amount })),
-    modifyCardsDrawnInDrawPhase: (amount: any) =>
+    increaseCost: (properties: any) => reduceCost(Object.assign({}, properties, { amount: -properties.amount })),
+    modifyCardsDrawnInDrawPhase: (amount: Flexible<number>) =>
         EffectBuilder.player.flexible(EffectNames.ModifyCardsDrawnInDrawPhase, amount),
     playerCannot: (properties: any) =>
         EffectBuilder.player.static(
@@ -261,28 +263,28 @@ const Effects: Record<string, any> = {
             properties
         ),
     reduceCost,
-    reduceNextPlayedCardCost: (amount: any, match: any) =>
+    reduceNextPlayedCardCost: (amount: any, match?: any) =>
         EffectBuilder.player.detached(EffectNames.CostReducer, {
             apply: (player: any, context: any) =>
                 player.addCostReducer(context.source, { amount: amount, match: match, limit: AbilityLimit.fixed(1) }),
             unapply: (player: any, context: any, reducer: any) => player.removeCostReducer(reducer)
         }),
     satisfyAffinity: (traits: any) => EffectBuilder.player.static(EffectNames.SatisfyAffinity, traits),
-    setConflictDeclarationType: (type: any) => EffectBuilder.player.static(EffectNames.SetConflictDeclarationType, type),
-    provideConflictDeclarationType: (type: any) =>
+    setConflictDeclarationType: (type: string) => EffectBuilder.player.static(EffectNames.SetConflictDeclarationType, type),
+    provideConflictDeclarationType: (type: string) =>
         EffectBuilder.player.static(EffectNames.ProvideConflictDeclarationType, type),
-    forceConflictDeclarationType: (type: any) => EffectBuilder.player.static(EffectNames.ForceConflictDeclarationType, type),
-    setMaxConflicts: (amount: any) => EffectBuilder.player.static(EffectNames.SetMaxConflicts, amount),
-    setConflictTotalSkill: (value: any) => EffectBuilder.player.static(EffectNames.SetConflictTotalSkill, value),
-    showTopConflictCard: (players: any = Players.Any) =>
+    forceConflictDeclarationType: (type: string) => EffectBuilder.player.static(EffectNames.ForceConflictDeclarationType, type),
+    setMaxConflicts: (amount: number) => EffectBuilder.player.static(EffectNames.SetMaxConflicts, amount),
+    setConflictTotalSkill: (value: number) => EffectBuilder.player.static(EffectNames.SetConflictTotalSkill, value),
+    showTopConflictCard: (players: Players = Players.Any) =>
         EffectBuilder.player.static(EffectNames.ShowTopConflictCard, players),
     showTopDynastyCard: () => EffectBuilder.player.static(EffectNames.ShowTopDynastyCard, true),
     eventsCannotBeCancelled: () => EffectBuilder.player.static(EffectNames.EventsCannotBeCancelled, true),
-    mustDeclareMaximumAttackers: (type: any = 'both') =>
+    mustDeclareMaximumAttackers: (type: string = 'both') =>
         EffectBuilder.player.static(EffectNames.MustDeclareMaximumAttackers, type),
     restartDynastyPhase: (source: any) => EffectBuilder.player.static(EffectNames.RestartDynastyPhase, source),
     strongholdCanBeAttacked: () => EffectBuilder.player.static(EffectNames.StrongholdCanBeAttacked, true),
-    defendersChosenFirstDuringConflict: (amountOfAttackers: any) =>
+    defendersChosenFirstDuringConflict: (amountOfAttackers: number) =>
         EffectBuilder.player.static(EffectNames.DefendersChosenFirstDuringConflict, amountOfAttackers),
     costToDeclareAnyParticipants: (properties: any) =>
         EffectBuilder.player.static(EffectNames.CostToDeclareAnyParticipants, properties),
@@ -292,7 +294,7 @@ const Effects: Record<string, any> = {
     changeConflictSkillFunctionPlayer: (func: any) =>
         EffectBuilder.player.static(EffectNames.ChangeConflictSkillFunction, func),
     limitLegalAttackers: (matchFunc: any) => EffectBuilder.player.static(EffectNames.LimitLegalAttackers, matchFunc),
-    additionalActionAfterWindowCompleted: (amount: any = 1) =>
+    additionalActionAfterWindowCompleted: (amount: number = 1) =>
         EffectBuilder.player.static(EffectNames.AdditionalActionAfterWindowCompleted, amount),
     // Conflict effects
     charactersCannot: (properties: any) =>
@@ -304,12 +306,12 @@ const Effects: Record<string, any> = {
         ),
     cannotContribute: (func: any) => EffectBuilder.conflict.dynamic(EffectNames.CannotContribute, func),
     changeConflictSkillFunction: (func: any) => EffectBuilder.conflict.static(EffectNames.ChangeConflictSkillFunction, func),
-    modifyConflictElementsToResolve: (value: any) =>
+    modifyConflictElementsToResolve: (value: number) =>
         EffectBuilder.conflict.static(EffectNames.ModifyConflictElementsToResolve, value),
-    restrictNumberOfDefenders: (value: any) => EffectBuilder.conflict.static(EffectNames.RestrictNumberOfDefenders, value),
+    restrictNumberOfDefenders: (value: number) => EffectBuilder.conflict.static(EffectNames.RestrictNumberOfDefenders, value),
     resolveConflictEarly: () => EffectBuilder.player.static(EffectNames.ResolveConflictEarly, true),
     forceConflictUnopposed: () => EffectBuilder.conflict.static(EffectNames.ForceConflictUnopposed, true),
-    modifyUnopposedHonorLoss: (amount: any = 1) =>
+    modifyUnopposedHonorLoss: (amount: number = 1) =>
         EffectBuilder.conflict.static(EffectNames.ModifyUnopposedHonorLoss, amount),
     additionalAttackedProvince: (province: any) =>
         EffectBuilder.conflict.static(EffectNames.AdditionalAttackedProvince, province),

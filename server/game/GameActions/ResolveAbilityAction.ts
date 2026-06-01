@@ -5,7 +5,7 @@ import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent.js';
 import type Game from '../Game.js';
-import AbilityResolver from '../gamesteps/abilityresolver.js';
+import AbilityResolver from '../gamesteps/AbilityResolver.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import type Player from '../Player.js';
 import type TriggeredAbility from '../TriggeredAbility.js';
@@ -108,10 +108,10 @@ export class ResolveAbilityAction extends CardGameAction {
     constructor(
         properties: ((context: TriggeredAbilityContext) => ResolveAbilityProperties) | ResolveAbilityProperties
     ) {
-        super(properties);
+        super(properties as CardActionProperties | ((context: AbilityContext) => CardActionProperties));
     }
 
-    getEffectMessage(context: TriggeredAbilityContext): [string, any[]] {
+    getEffectMessage(context: TriggeredAbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as ResolveAbilityProperties;
         return ['resolve {0}\'s {1} ability', [properties.target, properties.ability.title]];
     }
@@ -138,7 +138,7 @@ export class ResolveAbilityAction extends CardGameAction {
         return !ability.meetsRequirements(newContext, ignoredRequirements);
     }
 
-    eventHandler(event: Event, additionalProperties: any): void {
+    eventHandler(event: Event, additionalProperties: Record<string, unknown>): void {
         let properties = this.getProperties((event.context as AbilityContext), additionalProperties) as ResolvedResolveAbilityProperties;
         let player = properties.player || (event.context as AbilityContext).player;
         let newContextEvent = properties.event;

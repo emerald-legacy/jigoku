@@ -5,15 +5,19 @@ import { discardCard, payFate, payFateToRing, payHonor } from '../../Costs.js';
 import CovertAbility from '../../KeywordAbilities/CovertAbility.js';
 import { bow, loseHonor, resolveConflictRing } from '../../GameActions/GameActions.js';
 import { SimpleStep } from '../SimpleStep.js';
-import ConflictActionWindow from './conflictactionwindow.js';
-import InitiateConflictPrompt from './initiateconflictprompt.js';
-import SelectDefendersPrompt from './selectdefendersprompt.js';
+import ConflictActionWindow from './ConflictActionWindow.js';
+import InitiateConflictPrompt from './InitiateConflictPrompt.js';
+import SelectDefendersPrompt from './SelectDefendersPrompt.js';
 import InitiateCardAbilityEvent from '../../Events/InitiateCardAbilityEvent.js';
-import AttackersMatrix from './attackersMatrix.js';
+import AttackersMatrix from './AttackersMatrix.js';
 
 import { Players, CardTypes, EventNames, EffectNames, Locations, ConflictTypes } from '../../Constants.js';
 import { GameModes } from '../../../GameModes.js';
 import type Player from '../../Player.js';
+import type Game from '../../Game.js';
+import type Ring from '../../Ring.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
+import type { Event } from '../../Events/Event.js';
 
 /**
 Conflict Resolution
@@ -29,12 +33,24 @@ Conflict Resolution
 3.2.8 Return home. Go to (3.3).
  */
 
+interface ParticipantCost {
+    hasLegalTarget(context: AbilityContext): boolean;
+    resolve(player: Player, context: AbilityContext): void;
+    getEffectMessage(context: AbilityContext): string;
+}
+
+interface ParticipantCostEffect {
+    type: string;
+    cost: ParticipantCost | ((player: Player) => ParticipantCost);
+    message?: string;
+}
+
 class ConflictFlow extends BaseStepWithPipeline {
     conflict: any;
     canPass: boolean;
-    covert: any[];
+    covert: AbilityContext[];
 
-    constructor(game: any, conflict: any, canPass: boolean = true) {
+    constructor(game: Game, conflict: any, canPass: boolean = true) {
         super(game);
         this.conflict = conflict;
         this.canPass = canPass;
@@ -63,7 +79,7 @@ class ConflictFlow extends BaseStepWithPipeline {
     }
 
     declareConflict(): void {
-        this.game.raiseEvent(EventNames.OnConflictDeclared, { conflict: this.conflict }, (event: any) => {
+        this.game.raiseEvent(EventNames.OnConflictDeclared, { conflict: this.conflict }, (event: Event) => {
             this.game.queueSimpleStep(() => this.promptForNewConflict());
             this.game.queueSimpleStep(() => {
                 if(!this.conflict.conflictPassed && !this.conflict.conflictFailedToInitiate) {
@@ -157,11 +173,11 @@ class ConflictFlow extends BaseStepWithPipeline {
             activePromptTitle: 'Choose a ring for ' + this.conflict.attackingPlayer.name + '\'s conflict',
             source: 'Defender chooses conflict ring',
             waitingPromptTitle: 'Waiting for defender to choose conflict ring',
-            ringCondition: (ring: any) =>
+            ringCondition: (ring: Ring) =>
                 this.conflict.attackingPlayer.hasLegalConflictDeclaration({ ring }) &&
                 (attackerMatrix.isCombinationValid(ring, 'political') ||
                     attackerMatrix.isCombinationValid(ring, 'military')),
-            onSelect: (_player: Player, ring: any) => {
+            onSelect: (_player: Player, ring: Ring) => {
                 if(!this.conflict.attackingPlayer.hasLegalConflictDeclaration({ type: ring.conflictType, ring })) {
                     ring.flipConflictType();
                 }
@@ -187,21 +203,21 @@ class ConflictFlow extends BaseStepWithPipeline {
         this.game.updateCurrentConflict(null);
         if(!this.conflict.conflictPassed) {
             const totalFateCost = this.conflict.attackers.reduce(
-                (total: number, card: any) => total + card.sumEffects(EffectNames.FateCostToAttack),
+                (total: number, card: DrawCard) => total + card.sumEffects(EffectNames.FateCostToAttack),
                 0
             );
             const totalHonorCost = this.conflict.attackers.reduce(
-                (total: number, card: any) => total + card.sumEffects(EffectNames.HonorCostToDeclare),
+                (total: number, card: DrawCard) => total + card.sumEffects(EffectNames.HonorCostToDeclare),
                 0
             );
             const totalCardCost =
                 this.conflict.conflictType === ConflictTypes.Military
                     ? this.conflict.attackers.reduce(
-                        (total: number, card: any) => total + card.sumEffects(EffectNames.CardCostToAttackMilitary),
+                        (total: number, card: DrawCard) => total + card.sumEffects(EffectNames.CardCostToAttackMilitary),
                         0
                     )
                     : 0;
-            const costEvents: any[] = [];
+            const costEvents: Event[] = [];
             if(!this.conflict.conflictPassed && totalFateCost > 0) {
                 this.game.addMessage(
                     '{0} pays {1} fate to declare their attackers',
@@ -235,7 +251,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     numCards: totalCardCost,
                     manuallyRaiseEvent: true,
                     message: '{0} discards {1}',
-                    messageArgs: (cards: any, player: any) => [player, cards]
+                    messageArgs: (cards: DrawCard[], player: Player) => [player, cards]
                 };
                 discardCard(props).addEventsToArray?.(
                     costEvents,
@@ -250,7 +266,7 @@ class ConflictFlow extends BaseStepWithPipeline {
             this.conflict.attackerDeclarationFailed = false;
             const additionalCosts = this.conflict.attackingPlayer
                 .getEffects(EffectNames.CostToDeclareAnyParticipants)
-                .filter((properties: any) => properties.type === 'attackers');
+                .filter((properties: ParticipantCostEffect) => properties.type === 'attackers');
             if(additionalCosts.length > 0) {
                 for(const properties of additionalCosts) {
                     this.game.queueSimpleStep(() => {
@@ -302,7 +318,7 @@ class ConflictFlow extends BaseStepWithPipeline {
                     totalFateCost,
                     provinceName
                 );
-                const costEvents: any[] = [];
+                const costEvents: Event[] = [];
                 let result = true;
                 let costToRings = province.sumEffects(EffectNames.FateCostToRingToDeclareConflictAgainst);
                 payFateToRing(costToRings).addEventsToArray?.(
@@ -355,14 +371,14 @@ class ConflictFlow extends BaseStepWithPipeline {
         };
 
         this.game.openThenEventWindow(
-            this.game.getEvent(EventNames.OnConflictDeclaredBeforeProvinceReveal, params, (event: any) => {
-                if(this.conflict.attackers.some((a: any) => a.location === Locations.PlayArea)) {
+            this.game.getEvent(EventNames.OnConflictDeclaredBeforeProvinceReveal, params, (event: Event) => {
+                if(this.conflict.attackers.some((a: DrawCard) => a.location === Locations.PlayArea)) {
                     this.game.updateCurrentConflict(this.conflict);
                     this.conflict.declaredProvince = this.conflict.conflictProvince;
                     this.conflict.conflictProvince.inConflict = true;
-                    this.conflict.attackers.forEach((card: any) => (card.inConflict = true));
+                    this.conflict.attackers.forEach((card: DrawCard) => (card.inConflict = true));
                     this.game.recordConflict(this.conflict);
-                    const events: any[] = [];
+                    const events: Event[] = [];
                     if(
                         this.conflict.ring.fate > 0 &&
                         this.conflict.attackingPlayer.checkRestrictions(
@@ -416,10 +432,10 @@ class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
-        let targets = this.conflict.defendingPlayer.cardsInPlay.filter((card: any) => card.covert);
-        let sources = this.conflict.attackers.filter((card: any) => card.isCovert());
+        let targets = this.conflict.defendingPlayer.cardsInPlay.filter((card: DrawCard) => card.covert);
+        let sources = this.conflict.attackers.filter((card: DrawCard) => card.isCovert());
         let contexts = sources.map(
-            (card: any) =>
+            (card: DrawCard) =>
                 new AbilityContext({
                     game: this.game,
                     player: this.conflict.attackingPlayer,
@@ -467,9 +483,9 @@ class ConflictFlow extends BaseStepWithPipeline {
                     cardType: CardTypes.Character,
                     controller: Players.Opponent,
                     source: 'Choose Covert',
-                    cardCondition: (card: any) =>
+                    cardCondition: (card: DrawCard) =>
                         card.canBeBypassedByCovert(context) && card.checkRestrictions('target', context),
-                    onSelect: (_player: Player, card: any) => {
+                    onSelect: (_player: Player, card: DrawCard) => {
                         context['target'] = context.targets.target = card;
                         this.covert.push(context);
                         return true;
@@ -485,10 +501,10 @@ class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
-        let targets = this.conflict.defendingPlayer.cardsInPlay.filter((card: any) => card.covert);
-        let sources = this.conflict.attackers.filter((card: any) => card.isCovert());
+        let targets = this.conflict.defendingPlayer.cardsInPlay.filter((card: DrawCard) => card.covert);
+        let sources = this.conflict.attackers.filter((card: DrawCard) => card.isCovert());
         let contexts = sources.map(
-            (card: any) =>
+            (card: DrawCard) =>
                 new AbilityContext({
                     game: this.game,
                     player: this.conflict.attackingPlayer,
@@ -518,14 +534,14 @@ class ConflictFlow extends BaseStepWithPipeline {
             cardType: CardTypes.Character,
             controller: Players.Opponent,
             source: 'Choose Covert',
-            cardCondition: (card: any) => {
+            cardCondition: (card: DrawCard) => {
                 let valid = false;
                 for(const context of contexts) {
                     valid = valid || (card.canBeBypassedByCovert(context) && card.checkRestrictions('target', context));
                 }
                 return valid;
             },
-            onSelect: (_player: Player, card: any) => {
+            onSelect: (_player: Player, card: DrawCard) => {
                 for(const context of contexts) {
                     if(card.canBeBypassedByCovert(context) && card.checkRestrictions('target', context)) {
                         context['target'] = context.targets.target = card;
@@ -542,10 +558,10 @@ class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
-        let events: any[] = [];
+        let events: Event[] = [];
 
         if(this.game.gameMode === GameModes.Emerald) {
-            let goodContext: any = undefined;
+            let goodContext: AbilityContext | undefined = undefined;
             this.covert.forEach((context: AbilityContext) => {
                 if(events.length === 0 && context.source && context.target) {
                     events = [
@@ -559,7 +575,7 @@ class ConflictFlow extends BaseStepWithPipeline {
             });
             events = events.concat(
                 this.game.getEvent(EventNames.OnCovertResolved, {
-                    card: this.covert.map((a: any) => a.source),
+                    card: this.covert.map((a: AbilityContext) => a.source),
                     context: goodContext
                 })
             );
@@ -590,7 +606,7 @@ class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
-        const events: any[] = [];
+        const events: Event[] = [];
         this.game.actions
             .reveal({
                 chatMessage: true,
@@ -634,7 +650,7 @@ class ConflictFlow extends BaseStepWithPipeline {
             this.conflict.defenderDeclarationFailed = false;
             const additionalCosts = this.conflict.defendingPlayer
                 .getEffects(EffectNames.CostToDeclareAnyParticipants)
-                .filter((properties: any) => properties.type === 'defenders');
+                .filter((properties: ParticipantCostEffect) => properties.type === 'defenders');
             if(additionalCosts.length > 0) {
                 for(const properties of additionalCosts) {
                     this.game.queueSimpleStep(() => {
@@ -663,11 +679,11 @@ class ConflictFlow extends BaseStepWithPipeline {
             }
 
             const totalHonorCost = this.conflict.defenders.reduce(
-                (total: number, card: any) => total + card.sumEffects(EffectNames.HonorCostToDeclare),
+                (total: number, card: DrawCard) => total + card.sumEffects(EffectNames.HonorCostToDeclare),
                 0
             );
             if(!this.conflict.conflictPassed && totalHonorCost > 0) {
-                const costEvents: any[] = [];
+                const costEvents: Event[] = [];
                 this.game.addMessage(
                     '{0} pays {1} honor to declare their defenders',
                     this.conflict.defendingPlayer,
@@ -691,8 +707,8 @@ class ConflictFlow extends BaseStepWithPipeline {
             this.conflict.defenders = [];
         }
 
-        this.conflict.defenders.forEach((card: any) => (card.inConflict = true));
-        this.conflict.defendingPlayer.cardsInPlay.forEach((card: any) => (card.covert = false));
+        this.conflict.defenders.forEach((card: DrawCard) => (card.inConflict = true));
+        this.conflict.defendingPlayer.cardsInPlay.forEach((card: DrawCard) => (card.covert = false));
 
         if(this.conflict.defenders.length > 0) {
             this.game.addMessage(
@@ -842,7 +858,7 @@ class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
-        this.conflict.provinceStrengthsAtResolution.forEach((a: any) => {
+        this.conflict.provinceStrengthsAtResolution.forEach((a: { province: ProvinceCard; strength: number }) => {
             let province = a.province;
             let strength = a.strength === undefined ? province.getStrength() : a.strength;
             if(
@@ -901,23 +917,23 @@ class ConflictFlow extends BaseStepWithPipeline {
         }
 
         // Create bow events for attackers
-        let attackerBowEvents = this.conflict.attackers.map((card: any) =>
+        let attackerBowEvents = this.conflict.attackers.map((card: DrawCard) =>
             bow().getEvent(card, this.game.getFrameworkContext())
         );
         // Cancel any events where attacker shouldn't bow
-        attackerBowEvents.forEach((event: any) => (event.cancelled = !event.card.bowsOnReturnHome()));
+        attackerBowEvents.forEach((event: Event) => (event.cancelled = !event.card.bowsOnReturnHome()));
 
         // Create bow events for defenders
-        let defenderBowEvents = this.conflict.defenders.map((card: any) =>
+        let defenderBowEvents = this.conflict.defenders.map((card: DrawCard) =>
             bow().getEvent(card, this.game.getFrameworkContext())
         );
         // Cancel any events where defender shouldn't bow
-        defenderBowEvents.forEach((event: any) => (event.cancelled = !event.card.bowsOnReturnHome()));
+        defenderBowEvents.forEach((event: Event) => (event.cancelled = !event.card.bowsOnReturnHome()));
 
         let bowEvents = attackerBowEvents.concat(defenderBowEvents);
 
         // Create a return home event for every bow event
-        let returnHomeEvents = bowEvents.map((event: any) =>
+        let returnHomeEvents = bowEvents.map((event: Event) =>
             this.game.getEvent(
                 EventNames.OnReturnHome,
                 { conflict: this.conflict, bowEvent: event, card: event.card },

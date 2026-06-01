@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 class HeartlessIntimidator extends DrawCard {
@@ -12,7 +13,7 @@ class HeartlessIntimidator extends DrawCard {
                 onModifyHonor: (event, context) => event.player === context.player.opponent && (event.amount ?? 0) < 0,
                 onTransferHonor: (event, context) => event.player === context.player.opponent && (event.amount ?? 0) > 0
             },
-            gameAction: ability.actions.discardCard((context: any) => ({
+            gameAction: ability.actions.discardCard((context: AbilityContext) => ({
                 target: context.player.opponent ? context.player.opponent.conflictDeck[0] : []
             })),
             effect: 'discard the top card of {1}\'s conflict deck',

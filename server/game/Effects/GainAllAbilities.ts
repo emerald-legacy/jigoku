@@ -1,25 +1,33 @@
 import { EffectValue } from './EffectValue.js';
 import GainAbility from './GainAbility.js';
 import { AbilityTypes, Locations } from '../Constants.js';
+import type BaseCard from '../BaseCard.js';
+import type { CardAction } from '../CardAction.js';
+import type TriggeredAbility from '../TriggeredAbility.js';
 
-export default class GainAllAbilities extends EffectValue<any> {
+interface GainedAbilities {
+    actions: unknown[];
+    reactions: TriggeredAbility[];
+}
+
+export default class GainAllAbilities extends EffectValue<BaseCard> {
     actions: GainAbility[];
     reactions: GainAbility[];
     persistentEffects: any[];
-    abilitiesForTargets: Record<string, { actions: any[]; reactions: any[] }>;
+    abilitiesForTargets: Record<string, GainedAbilities>;
 
-    constructor(card: any) {
+    constructor(card: BaseCard) {
         super(card);
-        this.actions = card.abilities.actions.map((action: any) => new GainAbility(AbilityTypes.Action, action));
+        this.actions = card.abilities.actions.map((action: CardAction) => new GainAbility(AbilityTypes.Action, action));
         //Need to ignore keyword reactions or we double up on the pride / courtesy / sincerity triggers
         this.reactions = card.abilities.reactions
-            .filter((a: any) => !a.isKeywordAbility())
-            .map((ability: any) => new GainAbility(ability.abilityType, ability));
-        this.persistentEffects = card.abilities.persistentEffects.map((effect: any) => Object.assign({}, effect));
+            .filter((a: TriggeredAbility) => !a.isKeywordAbility())
+            .map((ability: TriggeredAbility) => new GainAbility(ability.abilityType, ability));
+        this.persistentEffects = card.abilities.persistentEffects.map((effect) => Object.assign({}, effect));
         this.abilitiesForTargets = {};
     }
 
-    apply(target: any) {
+    apply(target: BaseCard) {
         this.abilitiesForTargets[target.uuid] = {
             actions: this.actions.map((value) => {
                 value.apply(target);
@@ -37,7 +45,7 @@ export default class GainAllAbilities extends EffectValue<any> {
         }
     }
 
-    unapply(target: any) {
+    unapply(target: BaseCard) {
         for(const value of this.abilitiesForTargets[target.uuid].reactions) {
             value.unregisterEvents();
         }
@@ -50,14 +58,14 @@ export default class GainAllAbilities extends EffectValue<any> {
         delete this.abilitiesForTargets[target.uuid];
     }
 
-    getActions(target: any): any[] {
+    getActions(target: BaseCard): unknown[] {
         if(this.abilitiesForTargets[target.uuid]) {
             return this.abilitiesForTargets[target.uuid].actions;
         }
         return [];
     }
 
-    getReactions(target: any): any[] {
+    getReactions(target: BaseCard): TriggeredAbility[] {
         if(this.abilitiesForTargets[target.uuid]) {
             return this.abilitiesForTargets[target.uuid].reactions;
         }

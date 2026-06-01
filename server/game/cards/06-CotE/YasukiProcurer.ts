@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Durations, CardTypes } from '../../Constants.js';
 
@@ -10,7 +11,7 @@ class YasukiProcurer extends DrawCard {
             title: 'Reduce the cost of the next attachment or character',
             cost: AbilityDsl.costs.dishonorSelf(),
             effect: 'reduce the cost of their next attachment or character played this phase by 1',
-            gameAction: AbilityDsl.actions.playerLastingEffect((context: any) => ({
+            gameAction: AbilityDsl.actions.playerLastingEffect((context: AbilityContext) => ({
                 targetController: context.player,
                 duration: Durations.UntilEndOfPhase,
                 effect: AbilityDsl.effects.reduceCost({

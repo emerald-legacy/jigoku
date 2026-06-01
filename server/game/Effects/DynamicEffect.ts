@@ -1,12 +1,16 @@
 import StaticEffect from './StaticEffect.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import type { EffectNames } from '../Constants.js';
+import type { EffectTarget } from './EffectBuilder.js';
 import type { GameObject } from '../GameObject.js';
 
-export default class DynamicEffect extends StaticEffect {
-    values: Record<string, any>;
-    calculate: (target: any, context: any) => any;
+type DynamicCalculate = (target: EffectTarget, context: AbilityContext) => unknown;
 
-    constructor(type: EffectNames, calculate: (target: any, context: any) => any) {
+export default class DynamicEffect extends StaticEffect {
+    values: Record<string, unknown>;
+    calculate: DynamicCalculate;
+
+    constructor(type: EffectNames, calculate: DynamicCalculate) {
         super(type, undefined);
         this.values = {};
         this.calculate = calculate;
@@ -22,7 +26,7 @@ export default class DynamicEffect extends StaticEffect {
             return false;
         }
         let oldValue = this.getValue(target);
-        let newValue = this.setValue(target, this.calculate(target, this.context));
+        let newValue = this.setValue(target, this.calculate(target as EffectTarget, this.context));
         if(typeof oldValue === 'function' && typeof newValue === 'function') {
             return oldValue.toString() !== newValue.toString();
         }
@@ -40,13 +44,14 @@ export default class DynamicEffect extends StaticEffect {
         return oldValue !== newValue;
     }
 
-    getValue(target?: GameObject) {
+    getValue(target?: GameObject): unknown {
         if(target) {
             return this.values[target.uuid];
         }
+        return undefined;
     }
 
-    setValue(target: GameObject, value: any) {
+    setValue(target: GameObject, value: unknown) {
         this.values[target.uuid] = value;
         return value;
     }

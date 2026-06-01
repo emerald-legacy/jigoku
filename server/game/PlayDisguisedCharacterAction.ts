@@ -7,6 +7,7 @@ import type DrawCard from './DrawCard.js';
 import { AbilityContext } from './AbilityContext.js';
 import Player from './Player.js';
 import { Cost } from './Costs.js';
+import type { Event } from './Events/Event.js';
 
 function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIntoLocation) {
     return {
@@ -147,7 +148,7 @@ export class PlayDisguisedCharacterAction extends BaseAction {
             gameAction.addEventsToArray(events, context);
             events.push(
                 context.game.getEvent(EventNames.Unnamed, {}, () => {
-                    const moveEvents: any[] = [];
+                    const moveEvents: Event[] = [];
                     context.game.actions
                         .placeFate({
                             target: context.source,

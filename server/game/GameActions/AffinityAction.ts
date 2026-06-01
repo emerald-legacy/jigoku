@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
 import { Derivable, derive } from '../utils/helpers.js';
@@ -6,7 +7,7 @@ import { GameAction, type GameActionProperties } from './GameAction.js';
 export interface AffinityActionProperties extends GameActionProperties {
     gameAction: GameAction;
     effect?: string;
-    effectArgs?: Derivable<Array<any>, AbilityContext>;
+    effectArgs?: Derivable<Array<unknown>, AbilityContext>;
     trait: string;
     noAffinityGameAction?: GameAction;
     promptTitleForConfirmingAffinity?: string;
@@ -20,7 +21,7 @@ export class AffinityAction extends GameAction<AffinityActionProperties> {
         return properties;
     }
 
-    getEffectMessage(context: AbilityContext, additionalProperties = {}): [string, any[]] {
+    getEffectMessage(context: AbilityContext, additionalProperties = {}): [string, unknown[]] {
         let properties = this.getProperties(context, additionalProperties);
         if(context.player.hasAffinity(properties.trait, context)) {
             return properties.gameAction.getEffectMessage(context);
@@ -47,7 +48,7 @@ export class AffinityAction extends GameAction<AffinityActionProperties> {
         return properties.noAffinityGameAction?.canAffect(target, context, additionalProperties) ?? false;
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
         if(!context.player.hasAffinity(properties.trait, context)) {
             return properties.noAffinityGameAction?.addEventsToArray(events, context, additionalProperties);
@@ -77,7 +78,7 @@ export class AffinityAction extends GameAction<AffinityActionProperties> {
 
     #resolveAffinity(
         properties: AffinityActionProperties,
-        events: any[],
+        events: Event[],
         context: AbilityContext,
         additionalProperties = {}
     ) {

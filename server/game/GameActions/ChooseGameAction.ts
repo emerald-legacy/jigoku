@@ -1,10 +1,12 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import type { GameObject } from '../GameObject.js';
 import { Players } from '../Constants.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface ChooseActionProperties extends GameActionProperties {
     activePromptTitle?: string;
-    messageArgs?: any[];
+    messageArgs?: unknown[];
     player?: Players.Self | Players.Opponent;
     options: { [label: string]: { action: GameAction; message?: string } };
 }
@@ -33,7 +35,7 @@ export class ChooseGameAction extends GameAction {
         return Object.values(options).some(({ action }) => action.hasLegalTarget(context));
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         const legalChoices = Object.entries(properties.options).filter(([_, option]) =>
             option.action.hasLegalTarget(context)
@@ -65,7 +67,7 @@ export class ChooseGameAction extends GameAction {
         });
     }
 
-    canAffect(target: any, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(target: GameObject, context: AbilityContext, additionalProperties = {}): boolean {
         const { options } = this.getProperties(context, additionalProperties);
         return Object.values(options).some(({ action }) => action.canAffect(target, context));
     }

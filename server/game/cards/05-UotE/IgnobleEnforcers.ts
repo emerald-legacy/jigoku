@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -14,8 +15,8 @@ class IgnobleEnforcers extends DrawCard {
             },
             cost: ability.costs.variableHonorCost(() => 3),
             effect: 'place {1} fate on {0}',
-            effectArgs: (context: any) => context.costs.variableHonorCost,
-            gameAction: ability.actions.placeFate((context: any) => ({ amount: context.costs.variableHonorCost }))
+            effectArgs: (context: AbilityContext) => context.costs.variableHonorCost as number,
+            gameAction: ability.actions.placeFate((context: AbilityContext) => ({ amount: context.costs.variableHonorCost as number }))
         });
     }
 }

@@ -11,9 +11,9 @@ class HanteiXXXVIII extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
-                condition:  (context: any) => context.player.opponent && !!context.player.opponent.imperialFavor,
+                condition:  (context: AbilityContext) => context.player.opponent && !!context.player.opponent.imperialFavor,
                 message: '{0} is discarded from play as its controller\'s opponent has the imperial favor',
-                messageArgs: (context: any) => [context.source],
+                messageArgs: (context: AbilityContext) => [context.source],
                 gameAction: AbilityDsl.actions.discardFromPlay()
             })
         });

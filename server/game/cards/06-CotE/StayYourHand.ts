@@ -1,4 +1,5 @@
 import type { AbilityContext } from '../../AbilityContext.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -18,8 +19,8 @@ class StayYourHand extends DrawCard {
             },
             cannotBeMirrored: true,
             effect: 'cancel the duel originating from {1}',
-            effectArgs: (context: any) => context.event.context.source,
-            handler: (context: any) => context.cancel()
+            effectArgs: (context: AbilityContext) => ((context as TriggeredAbilityContext).event.context as AbilityContext).source,
+            handler: (context: AbilityContext) => (context as TriggeredAbilityContext).cancel()
         });
     }
 }

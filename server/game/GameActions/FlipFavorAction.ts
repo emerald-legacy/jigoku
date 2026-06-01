@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
 import type Player from '../Player.js';
@@ -24,7 +25,7 @@ export class FlipFavorAction extends PlayerAction<FlipFavorProperties> {
         return !!player && this.playerHasFlippableFavor(player) && super.canAffect(player, context);
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         if(event.player.imperialFavor === 'military') {
             event.player.imperialFavor = 'political';
         } else if(event.player.imperialFavor === 'political') {

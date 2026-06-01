@@ -1,4 +1,4 @@
-import ChatCommands from '../../../build/server/game/chatcommands.js';
+import ChatCommands from '../../../build/server/game/ChatCommands.js';
 
 describe('ChatCommands', function() {
     beforeEach(function() {

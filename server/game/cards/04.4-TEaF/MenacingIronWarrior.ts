@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 class MenacingIronWarrior extends DrawCard {
@@ -8,7 +9,7 @@ class MenacingIronWarrior extends DrawCard {
         this.action({
             title: 'Disable abilities of weaker military characters',
             condition: context => this.game.isDuringConflict('military') && context.source.isParticipating(),
-            gameAction: ability.actions.cardLastingEffect((context: any) => ({
+            gameAction: ability.actions.cardLastingEffect((context: AbilityContext) => ({
                 target: context.game.currentConflict ? context.game.currentConflict.getCharacters(context.player.opponent).filter((card: any) => card.getMilitarySkill() <= context.source.getMilitarySkill() && card !== context.source) : [],
                 effect: ability.effects.cardCannot('triggerAbilities')
             })),

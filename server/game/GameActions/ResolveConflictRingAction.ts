@@ -14,7 +14,7 @@ export class ResolveConflictRingAction extends RingAction {
         super(properties);
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties: RingActionProperties = this.getProperties(context);
         return ['resolve {0}', [properties.target]];
     }

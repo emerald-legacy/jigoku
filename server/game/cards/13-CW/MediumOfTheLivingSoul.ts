@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityTypes, CardTypes, EventNames, Players } from '../../Constants.js';
 
@@ -24,7 +26,7 @@ class MediumOfTheLivingSoul extends DrawCard {
                             }
                         },
                         cost: AbilityDsl.costs.removeFateFromSelf(),
-                        gameAction: AbilityDsl.actions.resolveRingEffect((context: any) => ({ target: context.event.ring }))
+                        gameAction: AbilityDsl.actions.resolveRingEffect((context: AbilityContext) => ({ target: (context as TriggeredAbilityContext).event.ring }))
                     })
                 }))
             },

@@ -1,10 +1,14 @@
-import MulliganDynastyPrompt from './mulligandynastyprompt.js';
+import MulliganDynastyPrompt from './MulliganDynastyPrompt.js';
 import { Locations } from '../../Constants.js';
 import type Player from '../../Player.js';
+import type BaseCard from '../../BaseCard.js';
+import type DrawCard from '../../DrawCard.js';
 
 class MulliganConflictPrompt extends MulliganDynastyPrompt {
+    readyToStart?: boolean;
+
     completionCondition(player: Player): boolean {
-        return !!(player as any).takenConflictMulligan;
+        return !!player.takenConflictMulligan;
     }
 
     activePrompt() {
@@ -17,13 +21,13 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
     highlightSelectableCards(): void {
         this.game.getPlayers().forEach((player: Player) => {
             if(!this.selectableCards[player.name]) {
-                this.selectableCards[player.name] = (player as any).hand.slice();
+                this.selectableCards[player.name] = player.hand.slice();
             }
             player.setSelectableCards(this.selectableCards[player.name]);
         });
     }
 
-    cardCondition(card: any): boolean {
+    cardCondition(card: BaseCard): boolean {
         return card.location === Locations.Hand;
     }
 
@@ -35,17 +39,17 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
         if(arg === 'done') {
             if(this.selectedCards[player.name].length > 0) {
                 for(const card of this.selectedCards[player.name]) {
-                    (player as any).moveCard(card, 'conflict deck bottom');
+                    player.moveCard(card, 'conflict deck bottom');
                 }
-                (player as any).drawCardsToHand(this.selectedCards[player.name].length);
-                (player as any).shuffleConflictDeck();
+                player.drawCardsToHand(this.selectedCards[player.name].length);
+                player.shuffleConflictDeck();
                 this.game.addMessage('{0} has mulliganed {1} cards from the conflict deck', player, this.selectedCards[player.name].length);
             } else {
                 this.game.addMessage('{0} has kept all conflict cards', player);
             }
-            this.game.getProvinceArray(false).forEach((location: any) => {
-                let cards = (player as any).getDynastyCardsInProvince(location);
-                cards.forEach((card: any) => {
+            this.game.getProvinceArray(false).forEach((location: Locations) => {
+                let cards = player.getDynastyCardsInProvince(location);
+                cards.forEach((card: DrawCard) => {
                     if(card) {
                         card.facedown = true;
                     }
@@ -53,8 +57,8 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
             });
             player.clearSelectedCards();
             player.clearSelectableCards();
-            (player as any).takenConflictMulligan = true;
-            (this as any).readyToStart = true;
+            player.takenConflictMulligan = true;
+            this.readyToStart = true;
             return true;
         }
         return false;

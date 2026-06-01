@@ -2,6 +2,7 @@ import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type Player from '../../Player.js';
 import type Ring from '../../Ring.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
+import type { Event } from '../../Events/Event.js';
 import DrawCard from '../../DrawCard.js';
 import { EventNames, Phases } from '../../Constants.js';
 
@@ -35,7 +36,7 @@ class ShibaTsukune extends DrawCard {
                             onSelect: (player: Player, secondRing: Ring) => {
                                 this.game.addMessage('{0} resolves {1}', player, [firstRing, secondRing]);
                                 let action = this.game.actions.resolveRingEffect({ target: [firstRing, secondRing]});
-                                let events: any[] = [];
+                                let events: Event[] = [];
                                 action.addEventsToArray(events, this.game.getFrameworkContext(player));
                                 this.game.openThenEventWindow(events);
                                 return true;

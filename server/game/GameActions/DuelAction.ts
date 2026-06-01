@@ -96,7 +96,7 @@ export class DuelAction extends CardGameAction {
                 ? [properties.message, properties.messageArgs ? ([] as unknown[]).concat(properties.messageArgs(duel, context) as unknown[]) : []]
                 : gameAction.getEffectMessage(context);
             context.game.addMessage('Duel Effect: ' + message, ...messageArgs);
-            gameAction.resolve(null as any, context);
+            gameAction.resolve(undefined, context);
         } else {
             context.game.addMessage('The duel has no effect');
         }
@@ -119,7 +119,7 @@ export class DuelAction extends CardGameAction {
             if(cards.length === 0) {
                 return;
             }
-            const event = this.createEvent(null as any, context, additionalProperties);
+            const event = this.createEvent(null, context, additionalProperties);
             this.updateEvent(event, cards, context, additionalProperties);
             events.push(event);
         };
@@ -150,9 +150,9 @@ export class DuelAction extends CardGameAction {
         }
     }
 
-    addPropertiesToEvent(event: Event, cards: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, cards: unknown, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const properties = this.getProperties(context, additionalProperties);
-        let resolvedCards = cards;
+        let resolvedCards: DrawCard | DrawCard[] = cards as DrawCard | DrawCard[];
         if(!resolvedCards) {
             resolvedCards = this.getProperties(context, additionalProperties).target as DrawCard | DrawCard[];
         }
@@ -195,10 +195,10 @@ export class DuelAction extends CardGameAction {
         if(properties.challengerEffect) {
             context.game.actions
                 .cardLastingEffect({
-                    effect: properties.challengerEffect as any,
+                    effect: properties.challengerEffect,
                     duration: Durations.Custom,
                     until: {
-                        onDuelFinished: (e: any) => e.duel === duel
+                        onDuelFinished: (event) => event.duel === duel
                     }
                 })
                 .resolve(properties.challenger, context);
@@ -206,10 +206,10 @@ export class DuelAction extends CardGameAction {
         if(properties.targetEffect) {
             context.game.actions
                 .cardLastingEffect({
-                    effect: properties.targetEffect as any,
+                    effect: properties.targetEffect,
                     duration: Durations.Custom,
                     until: {
-                        onDuelFinished: (e: any) => e.duel === duel
+                        onDuelFinished: (event) => event.duel === duel
                     }
                 })
                 .resolve(properties.target, context);

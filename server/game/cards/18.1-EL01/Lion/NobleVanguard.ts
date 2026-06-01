@@ -2,6 +2,7 @@ import DrawCard from '../../../DrawCard.js';
 import { CardTypes, Players, Locations } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import Soldier from '../../Soldier.js';
+import type { Event } from '../../../Events/Event.js';
 
 class NobleVanguard extends DrawCard {
     static id = 'noble-vanguard';
@@ -26,7 +27,7 @@ class NobleVanguard extends DrawCard {
                         let token = context.game.createToken(card, Soldier);
                         card.owner.removeCardFromPile(card);
                         card.moveTo(Locations.RemovedFromGame);
-                        const moveEvents: any[] = [];
+                        const moveEvents: Event[] = [];
                         context.game.actions.attach({ target: context.target, attachment: token }).addEventsToArray(moveEvents, context);
                         context.game.openThenEventWindow(moveEvents);
                         return true;

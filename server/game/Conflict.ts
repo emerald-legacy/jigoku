@@ -355,7 +355,7 @@ export class Conflict extends GameObject {
         return characters.length + _player.sumEffects(EffectNames.AdditionalCharactersInConflict);
     }
 
-    hasMoreParticipants(player: Player, predicate: Predicate) {
+    hasMoreParticipants(player: Player | undefined, predicate: Predicate = () => true) {
         if(!player) {
             return false;
         }

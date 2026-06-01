@@ -8,6 +8,7 @@ import type { WhenType } from '../Interfaces.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import type { StatusToken } from '../StatusToken.js';
+import type Effect from './Effect.js';
 import CardEffect from './CardEffect.js';
 import ConflictEffect from './ConflictEffect.js';
 import DetachedEffect from './DetachedEffect.js';
@@ -19,7 +20,7 @@ import StaticEffect from './StaticEffect.js';
 
 type PlayerOrRingOrCardOrToken = Player | Ring | BaseCard | StatusToken;
 
-type EffectTarget = PlayerOrRingOrCardOrToken;
+export type EffectTarget = PlayerOrRingOrCardOrToken;
 type StaticValue = unknown;
 type DynamicValue = (target: EffectTarget, context: AbilityContext) => unknown;
 type DetachedValue = {
@@ -27,6 +28,8 @@ type DetachedValue = {
     unapply: (target: EffectTarget, context: AbilityContext, state?: unknown) => unknown;
 };
 type FlexibleValue = StaticValue | DynamicValue;
+
+export type EffectFactory = (game: Game, source: BaseCard, props: Props) => Effect;
 
 type Props = {
     targetLocation?: Locations | Locations[];

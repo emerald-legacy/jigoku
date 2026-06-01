@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HumbleMagistrate extends DrawCard {
@@ -6,7 +7,7 @@ class HumbleMagistrate extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context: any) => context.source.isAttacking(),
+            condition: (context: AbilityContext) => context.source.isAttacking(),
             effect: AbilityDsl.effects.cannotContribute(() => {
                 return (card: any) => card.printedCost >= 4;
             })

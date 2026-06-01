@@ -2,7 +2,7 @@ import type BaseCard from '../../BaseCard.js';
 import { EffectNames } from '../../Constants.js';
 import type Player from '../../Player.js';
 import { EffectBuilder } from '../EffectBuilder.js';
-import Restriction from '../restriction.js';
+import Restriction from '../Restriction.js';
 
 type Props =
     | string

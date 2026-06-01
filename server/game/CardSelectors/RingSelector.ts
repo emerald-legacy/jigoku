@@ -1,17 +1,25 @@
-import BaseCardSelector from './BaseCardSelector.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import type { GameAction } from '../GameActions/GameAction.js';
+import type Ring from '../Ring.js';
+import BaseCardSelector, { type BaseCardSelectorProperties } from './BaseCardSelector.js';
+
+interface RingSelectorProperties extends BaseCardSelectorProperties {
+    ringCondition: (ring: Ring, context: AbilityContext) => boolean;
+    gameAction?: GameAction;
+}
 
 class RingSelector extends BaseCardSelector {
-    ringCondition: (ring: any, context: any) => boolean;
-    gameAction: any;
+    ringCondition: (ring: Ring, context: AbilityContext) => boolean;
+    gameAction?: GameAction;
 
-    constructor(properties: any) {
+    constructor(properties: RingSelectorProperties) {
         super(properties);
         this.ringCondition = properties.ringCondition;
         this.gameAction = properties.gameAction;
     }
 
-    hasEnoughTargets(context: any): boolean {
-        return Object.values(context.game.rings).some((ring: any) => this.ringCondition(ring, context));
+    hasEnoughTargets(context: AbilityContext): boolean {
+        return Object.values(context.game.rings).some((ring: Ring) => this.ringCondition(ring, context));
     }
 
     defaultActivePromptTitle(): string {

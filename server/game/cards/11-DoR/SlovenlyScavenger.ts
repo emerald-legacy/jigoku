@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { TargetModes, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -17,10 +18,10 @@ class SlovenlyScavenger extends DrawCard {
                 targets: true,
                 activePromptTitle: 'Choose which discard pile to shuffle:',
                 choices: {
-                    [this.getChoiceName('MyDynasty')]: (context: any) => context.player.dynastyDiscardPile.length > 0,
-                    [this.getChoiceName('MyConflict')]: (context: any) => context.player.conflictDiscardPile.length > 0,
-                    [this.getChoiceName('OppDynasty')]: (context: any) => !!(context.player.opponent && context.player.opponent.dynastyDiscardPile.length > 0),
-                    [this.getChoiceName('OppConflict')]: (context: any) => !!(context.player.opponent && context.player.opponent.conflictDiscardPile.length > 0)
+                    [this.getChoiceName('MyDynasty')]: (context: AbilityContext) => context.player.dynastyDiscardPile.length > 0,
+                    [this.getChoiceName('MyConflict')]: (context: AbilityContext) => context.player.conflictDiscardPile.length > 0,
+                    [this.getChoiceName('OppDynasty')]: (context: AbilityContext) => !!(context.player.opponent && context.player.opponent.dynastyDiscardPile.length > 0),
+                    [this.getChoiceName('OppConflict')]: (context: AbilityContext) => !!(context.player.opponent && context.player.opponent.conflictDiscardPile.length > 0)
                 }
             },
             effect: 'shuffle {1} into their deck',

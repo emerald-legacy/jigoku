@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
@@ -9,7 +10,7 @@ export interface MultipleContextActionProperties extends GameActionProperties {
 export class MultipleContextGameAction extends GameAction {
     declare defaultProperties: MultipleContextActionProperties;
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let { gameActions } = this.getProperties(context);
         let legalGameActions = gameActions.filter((action) => action.hasLegalTarget(context));
         let message = '{0}';
@@ -43,7 +44,7 @@ export class MultipleContextGameAction extends GameAction {
         return properties.gameActions.some((gameAction) => gameAction.hasLegalTarget(context, additionalProperties));
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             context.game.queueSimpleStep(() => {

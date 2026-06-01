@@ -1,4 +1,6 @@
+import type { Event } from '../Events/Event.js';
 import { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../BaseCard.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
@@ -19,7 +21,7 @@ export class PlaceFateAction extends CardGameAction {
         super(properties);
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         const { amount, target } = this.getProperties(context) as PlaceFateProperties;
         return ['place {1} fate on {0}', [target, amount]];
     }
@@ -48,7 +50,7 @@ export class PlaceFateAction extends CardGameAction {
         );
     }
 
-    addPropertiesToEvent(event: any, card: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateProperties;
         event.fate = amount;
         event.origin = origin;
@@ -56,11 +58,11 @@ export class PlaceFateAction extends CardGameAction {
         event.recipient = card;
     }
 
-    checkEventCondition(event: any): boolean {
+    checkEventCondition(event: Event): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: any, card: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         const { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateProperties;
         return (
             !event.cancelled &&
@@ -71,7 +73,7 @@ export class PlaceFateAction extends CardGameAction {
         );
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         this.moveFateEventHandler(event);
     }
 }

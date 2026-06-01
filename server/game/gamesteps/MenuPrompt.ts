@@ -1,5 +1,20 @@
 import { UiPrompt } from './UiPrompt.js';
 import type Player from '../Player.js';
+import type Game from '../Game.js';
+
+type MenuCommandHandler = (player: Player, arg: string, context?: unknown) => boolean;
+
+type MenuContext = Record<string, MenuCommandHandler>;
+
+type MenuPromptButton = { text?: string; arg?: string; method?: string; [key: string]: unknown };
+
+interface MenuPromptProperties {
+    source?: { name: string };
+    waitingPromptTitle?: string;
+    promptTitle?: string;
+    activePrompt: { buttons: MenuPromptButton[]; [key: string]: unknown };
+    context?: unknown;
+}
 
 /**
  * General purpose menu prompt. By specifying a context object, the buttons in
@@ -15,10 +30,10 @@ import type Player from '../Player.js';
  */
 class MenuPrompt extends UiPrompt {
     player: Player;
-    context: any;
-    properties: any;
+    context: MenuContext;
+    properties: MenuPromptProperties;
 
-    constructor(game: any, player: Player, context: any, properties: any) {
+    constructor(game: Game, player: Player, context: MenuContext, properties: MenuPromptProperties) {
         super(game);
         this.player = player;
         this.context = context;
@@ -54,7 +69,7 @@ class MenuPrompt extends UiPrompt {
     }
 
     hasMethodButton(method: string): boolean {
-        return this.properties.activePrompt.buttons.some((button: any) => button.method === method);
+        return this.properties.activePrompt.buttons.some((button: MenuPromptButton) => button.method === method);
     }
 }
 

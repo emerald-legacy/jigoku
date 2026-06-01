@@ -1,4 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardTypes, EventNames } from '../../Constants.js';
 
@@ -15,7 +17,7 @@ class KireiKo extends DrawCard {
                     event.ability.isTriggeredAbility()
             },
             cannotBeMirrored: true,
-            gameAction: ability.actions.bow((context: any) => ({ target: context.event.card }))
+            gameAction: ability.actions.bow((context: AbilityContext) => ({ target: (context as TriggeredAbilityContext).event.card }))
         });
     }
 }

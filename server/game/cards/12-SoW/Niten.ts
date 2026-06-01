@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { Players, CardTypes, Locations } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -8,7 +9,7 @@ const nitenCaptureParentCost = function() {
         canPay: function() {
             return true;
         },
-        resolve: function(context: any) {
+        resolve: function(context: AbilityContext) {
             context.costs.nitenCaptureParentCost = context.source.parent;
         },
         pay: function() {

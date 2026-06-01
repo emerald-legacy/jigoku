@@ -1,10 +1,11 @@
-import BaseCardSelector from './BaseCardSelector.js';
+import type BaseCard from '../BaseCard.js';
 import { CardTypes } from '../Constants.js';
+import BaseCardSelector, { type BaseCardSelectorProperties } from './BaseCardSelector.js';
 
 class SingleCardSelector extends BaseCardSelector {
     numCards: number;
 
-    constructor(properties: any) {
+    constructor(properties: BaseCardSelectorProperties) {
         super(properties);
         this.numCards = 1;
     }
@@ -23,15 +24,15 @@ class SingleCardSelector extends BaseCardSelector {
         return true;
     }
 
-    hasReachedLimit(selectedCards: any[]): boolean {
+    hasReachedLimit(selectedCards: BaseCard[]): boolean {
         return selectedCards.length >= this.numCards;
     }
 
-    hasExceededLimit(selectedCards: any[]): boolean {
+    hasExceededLimit(selectedCards: BaseCard[]): boolean {
         return selectedCards.length > this.numCards;
     }
 
-    formatSelectParam(cards: any[]): any {
+    formatSelectParam(cards: BaseCard[]): BaseCard | BaseCard[] {
         return cards[0] ? cards[0] : cards;
     }
 }

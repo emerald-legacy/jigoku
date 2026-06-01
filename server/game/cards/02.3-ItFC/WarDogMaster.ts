@@ -17,7 +17,7 @@ class WarDogMaster extends DrawCard {
             effectArgs: context => [context.costs.discardCard && typeof (context.costs.discardCard as DrawCard[])[0].getCost() === 'number' ? ((context.costs.discardCard as DrawCard[])[0].getCost() ?? 0) : 0, 'military'],
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                 effect: AbilityDsl.effects.modifyMilitarySkill(
-                    context.costs.discardCard && typeof (context.costs.discardCard as DrawCard[])[0].getCost() === 'number' ? (context.costs.discardCard as DrawCard[])[0].getCost() : 0
+                    context.costs.discardCard && typeof (context.costs.discardCard as DrawCard[])[0].getCost() === 'number' ? ((context.costs.discardCard as DrawCard[])[0].getCost() ?? 0) : 0
                 )
             }))
         });

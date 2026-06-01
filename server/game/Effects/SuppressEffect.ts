@@ -1,6 +1,7 @@
 import { EffectValue } from './EffectValue.js';
+import type StaticEffect from './StaticEffect.js';
 
-export class SuppressEffect extends EffectValue<any[]> {
+export class SuppressEffect extends EffectValue<StaticEffect[]> {
     constructor(private predicate: (effect: unknown) => boolean) {
         super([]);
     }

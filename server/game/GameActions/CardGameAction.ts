@@ -11,6 +11,11 @@ export interface CardActionProperties extends GameActionProperties {
     target?: BaseCard | BaseCard[];
 }
 
+interface UnlessActionCost {
+    actionName: string;
+    cost: GameAction | ((card: BaseCard) => GameAction);
+}
+
 export class CardGameAction<P extends CardActionProperties = CardActionProperties> extends GameAction<P> {
     targetType = [
         CardTypes.Character,
@@ -35,13 +40,13 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         return super.canAffect(target, context, additionalProperties);
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
         const { target } = this.getProperties(context, additionalProperties);
         for(const card of target as BaseCard[]) {
             let allCostsPaid = true;
             const additionalCosts = card
-                .getEffects(EffectNames.UnlessActionCost)
-                .filter((properties: any) => properties.actionName === this.name);
+                .getEffects<UnlessActionCost>(EffectNames.UnlessActionCost)
+                .filter((properties) => properties.actionName === this.name);
 
             if(context.player && context.ability && context.ability.targets && context.ability.targets.length > 0) {
                 let targetForCost = [card];
@@ -126,17 +131,17 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         }
     }
 
-    addPropertiesToEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: any = {}): void {
+    addPropertiesToEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.card = card;
     }
 
-    isEventFullyResolved(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: any): boolean {
+    isEventFullyResolved(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown>): boolean {
         return event.card === card && super.isEventFullyResolved(event, card, context, additionalProperties);
     }
 
-    updateLeavesPlayEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: any): void {
-        let properties = this.getProperties(context, additionalProperties) as any;
+    updateLeavesPlayEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+        let properties = this.getProperties(context, additionalProperties) as P & { destination?: Locations };
         super.updateEvent(event, card, context, additionalProperties);
         event.isSacrifice = this.name === 'sacrifice';
         event.destination =
@@ -186,7 +191,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         };
     }
 
-    leavesPlayEventHandler(event: Event, additionalProperties: any = {}): void {
+    leavesPlayEventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
         const card = event.card as DrawCard;
         this.checkForRefillProvince(card, event, additionalProperties);
         if(!card.owner.isLegalLocationForCard(card, event.destination as Locations)) {
@@ -200,11 +205,14 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         card.owner.moveCard(card, event.destination as Locations, event.options || {});
     }
 
-    checkForRefillProvince(card: BaseCard, event: any, additionalProperties: any = {}): void {
+    checkForRefillProvince(card: BaseCard, event: Event, additionalProperties: Record<string, unknown> = {}): void {
         if(!card.isInProvince() || card.location === Locations.StrongholdProvince) {
             return;
         }
-        const context = additionalProperties.replacementEffect ? event.context.event.context : event.context;
+        const eventContext = event.context as AbilityContext & { event?: Event };
+        const context = additionalProperties.replacementEffect && eventContext.event
+            ? (eventContext.event.context as AbilityContext)
+            : eventContext;
         context.refillProvince(card.controller, card.location);
     }
 }

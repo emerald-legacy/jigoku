@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import { Locations, Players } from '../../Constants.js';
@@ -16,7 +17,7 @@ class InvokeTheDivine extends DrawCard {
                 resetOnCancel: true,
                 payCosts: false,
                 source: this,
-                postHandler: (context: any) => {
+                postHandler: (context: AbilityContext) => {
                     if(spellsCast < 2) {
                         getSelectCardAction(fate - (context.source.getCost() ?? 0), spellsCast + 1).resolve(undefined, invokeContext);
                     }

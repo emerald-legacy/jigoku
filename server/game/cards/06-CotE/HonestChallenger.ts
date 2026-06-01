@@ -1,4 +1,5 @@
 import { CardTypes, DuelTypes, Players } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -12,7 +13,7 @@ export default class HonestChallenger extends DrawCard {
 
         this.action({
             title: 'Initiate a military duel',
-            initiateDuel: (context: any) => ({
+            initiateDuel: (context: AbilityContext) => ({
                 type: DuelTypes.Military,
                 message: '{0} chooses a character to move to the conflict',
                 messageArgs: (duel: any) => duel.winnerController,

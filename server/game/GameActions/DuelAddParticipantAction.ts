@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -12,7 +13,7 @@ export class DuelAddParticipantAction extends CardGameAction<DuelAddParticipantP
     name = 'onAddDuelParticipant';
     eventName = EventNames.OnAddDuelParticipant;
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context);
         return ['extend the duel challenge to {0}', [properties.target]];
     }
@@ -34,13 +35,13 @@ export class DuelAddParticipantAction extends CardGameAction<DuelAddParticipantP
         return properties.duel.canAddToDuel(card, context);
     }
 
-    addPropertiesToEvent(event: any, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { duel } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.duel = duel;
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         event.duel.addTargetToDuel(event.card);
     }
 }

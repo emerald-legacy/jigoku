@@ -32,12 +32,12 @@ export class PutInProvinceAction extends CardGameAction {
         super(properties);
     }
 
-    getCostMessage(context: AbilityContext): [string, any[]] {
+    getCostMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as PutInProvinceProperties;
         return ['putting {0} into {1}}', [properties.target, properties.destination]];
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as PutInProvinceProperties;
         const target = properties.target as BaseCard | BaseCard[];
         let destinationController = Array.isArray(target)
@@ -83,7 +83,7 @@ export class PutInProvinceAction extends CardGameAction {
             properties.destination &&
             context.game.getProvinceArray(false).includes(properties.destination)
         ) {
-            let cardsToDiscard = player.getSourceList(properties.destination).filter((c: DrawCard) => c.isDynasty);
+            let cardsToDiscard = player.getSourceList(properties.destination).filter((c) => c.isDynasty);
             for(const c of cardsToDiscard) {
                 player.moveCard(c, Locations.DynastyDiscardPile);
             }

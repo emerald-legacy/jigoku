@@ -1,4 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -18,7 +20,7 @@ class CurryFavor extends DrawCard {
                 }
             },
             cannotBeMirrored: true,
-            gameAction: ability.actions.ready((context: any) => ({ target: context.event.card }))
+            gameAction: ability.actions.ready((context: AbilityContext) => ({ target: (context as TriggeredAbilityContext).event.card }))
         });
     }
 }

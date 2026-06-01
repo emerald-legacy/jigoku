@@ -60,7 +60,7 @@ class ExposedCourtyard extends DrawCard {
                                     },
                                     onConflictFinished: () => true
                                 },
-                                effect: AbilityDsl.effects.canPlayFromOwn(Locations.ConflictDiscardPile, [context.target], this)
+                                effect: AbilityDsl.effects.canPlayFromOwn(Locations.ConflictDiscardPile, [context.target as DrawCard], this)
                             };
                         }),
                         AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({

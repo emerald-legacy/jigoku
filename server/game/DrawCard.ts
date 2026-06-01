@@ -1,4 +1,4 @@
-import BaseCard from './BaseCard.js';
+import BaseCard, { type CardSummary } from './BaseCard.js';
 import { AttachmentManager } from './AttachmentManager.js';
 import { ChildCardManager } from './ChildCardManager.js';
 import AbilityDsl from './abilitydsl.js';
@@ -907,7 +907,7 @@ class DrawCard extends BaseCard {
         return matching;
     }
 
-    getSummary(activePlayer: Player, hideWhenFaceup?: boolean): any {
+    getSummary(activePlayer: Player, hideWhenFaceup?: boolean): CardSummary {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup ?? false);
 
         return Object.assign(baseSummary, {

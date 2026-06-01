@@ -1,4 +1,5 @@
 import type AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { TargetModes } from '../../Constants.js';
 
@@ -11,11 +12,11 @@ class WindsweptYurt extends DrawCard {
             target: {
                 mode: TargetModes.Select,
                 choices: {
-                    'Each player gains 2 fate': ability.actions.gainFate((context: any) => ({
+                    'Each player gains 2 fate': ability.actions.gainFate((context: AbilityContext) => ({
                         amount: 2,
                         target: context.game.getPlayers()
                     })),
-                    'Each player gains 2 honor': ability.actions.gainHonor((context: any) => ({
+                    'Each player gains 2 honor': ability.actions.gainHonor((context: AbilityContext) => ({
                         amount: 2,
                         target: context.game.getPlayers()
                     }))
@@ -24,7 +25,7 @@ class WindsweptYurt extends DrawCard {
             cost: ability.costs.sacrificeSelf(),
             effect: 'give each player 2 {1}',
             effectArgs: context => context.select === 'Each player gains 2 fate' ? 'fate' : 'honor',
-            gameAction: ability.actions.refillFaceup((context: any) => ({ location: context.cardStateWhenInitiated.location }))
+            gameAction: ability.actions.refillFaceup((context: AbilityContext) => ({ location: (context.cardStateWhenInitiated as DrawCard).location }))
         });
     }
 }

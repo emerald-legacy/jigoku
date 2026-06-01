@@ -1,4 +1,4 @@
-import Socket from '../../server/socket.js';
+import Socket from '../../server/Socket.js';
 import jwt from 'jsonwebtoken';
 
 const TEST_SECRET = 'testsecret';

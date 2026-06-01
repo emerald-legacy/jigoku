@@ -1,5 +1,7 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
+import type { Conflict } from '../Conflict.js';
 import type DrawCard from '../DrawCard.js';
 import { CardTypes, EffectNames, EventNames, Locations } from '../Constants.js';
 import type Player from '../Player.js';
@@ -42,19 +44,21 @@ export class MoveToConflictAction extends CardGameAction {
         return card.location === Locations.PlayArea;
     }
 
-    addPropertiesToEvent(event: any, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties(context) as MoveToConflictProperties;
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.side = properties.side || card.controller;
     }
 
-    eventHandler(event: any): void {
-        const player = event.side;
+    eventHandler(event: Event): void {
+        const context = event.context as AbilityContext;
+        const player = event.side as Player;
+        const conflict = context.game.currentConflict as Conflict;
 
         if(player.isAttackingPlayer()) {
-            event.context.game.currentConflict.addAttacker(event.card);
+            conflict.addAttacker(event.card);
         } else {
-            event.context.game.currentConflict.addDefender(event.card);
+            conflict.addDefender(event.card);
         }
     }
 }

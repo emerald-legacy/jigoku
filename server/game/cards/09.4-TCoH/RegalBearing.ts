@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class RegalBearing extends DrawCard {
@@ -26,7 +27,7 @@ class RegalBearing extends DrawCard {
         });
     }
 
-    getHonorDialDifference(context: any) {
+    getHonorDialDifference(context: AbilityContext) {
         if(!context.player.opponent) {
             return 0;
         }

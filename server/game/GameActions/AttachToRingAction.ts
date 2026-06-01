@@ -1,4 +1,6 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../BaseCard.js';
 import { EventNames, Locations } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Ring from '../Ring.js';
@@ -13,7 +15,7 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
     eventName = EventNames.OnCardAttached;
     targetType = ['ring'];
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context);
         return ['attach {1} to {0}', [properties.target, properties.attachment]];
     }
@@ -32,16 +34,16 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
         return super.canAffect(ring, context);
     }
 
-    checkEventCondition(event: any, additionalProperties: Record<string, unknown> = {}): boolean {
-        return this.canAffect(event.parent, event.context, additionalProperties);
+    checkEventCondition(event: Event, additionalProperties: Record<string, unknown> = {}): boolean {
+        return this.canAffect(event.parent, event.context as AbilityContext, additionalProperties);
     }
 
-    isEventFullyResolved(event: any, card: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: Event, card: BaseCard | Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         let { attachment } = this.getProperties(context, additionalProperties);
         return event.parent === card && event.card === attachment && event.name === this.eventName && !event.cancelled;
     }
 
-    addPropertiesToEvent(event: any, card: any, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, card: BaseCard | Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { attachment } = this.getProperties(context, additionalProperties);
         event.name = this.eventName;
         event.parent = card;
@@ -49,7 +51,7 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
         event.context = context;
     }
 
-    eventHandler(event: any): void {
+    eventHandler(event: Event): void {
         if(event.card.location === Locations.PlayArea && event.card.parent) {
             event.card.parent.removeAttachment(event.card);
         } else {
@@ -63,10 +65,11 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
         event.card.covert = false;
         event.card.fate = 0;
 
+        const context = event.context as AbilityContext;
         event.parent.attachments.push(event.card);
         event.card.parent = event.parent;
-        if(event.card.controller !== event.context.player) {
-            event.card.controller = event.context.player;
+        if(event.card.controller !== context.player) {
+            event.card.controller = context.player;
             event.card.updateEffectContexts();
         }
     }

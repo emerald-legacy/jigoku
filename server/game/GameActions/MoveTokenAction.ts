@@ -1,3 +1,4 @@
+import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CharacterStatus, EventNames, Locations } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -12,7 +13,7 @@ export class MoveTokenAction extends TokenAction {
     name = 'moveStatusToken';
     eventName = EventNames.OnStatusTokenMoved;
 
-    getEffectMessage(context: AbilityContext, additionalProperties = {}): [string, any[]] {
+    getEffectMessage(context: AbilityContext, additionalProperties = {}): [string, unknown[]] {
         const { target, recipient } = this.getProperties(context, additionalProperties) as MoveTokenProperties;
         let card = undefined;
         if(Array.isArray(target)) {
@@ -46,20 +47,17 @@ export class MoveTokenAction extends TokenAction {
         return super.canAffect(token, context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: any, token: StatusToken, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: Event, token: StatusToken, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const { recipient } = this.getProperties(context) as MoveTokenProperties;
         super.addPropertiesToEvent(event, token, context, additionalProperties);
         event.recipient = recipient;
         event.donor = token.card;
     }
 
-    eventHandler(event: any): void {
-        let tokens = event.token;
-        if(!Array.isArray(tokens)) {
-            tokens = [tokens];
-        }
-        tokens.forEach((token: any) => {
-            token.card.removeStatusToken(token);
+    eventHandler(event: Event): void {
+        let tokens: StatusToken[] = Array.isArray(event.token) ? event.token : [event.token];
+        tokens.forEach((token: StatusToken) => {
+            token.card?.removeStatusToken(token);
             event.recipient.addStatusToken(token);
             event.recipient.game.raiseEvent(EventNames.OnStatusTokenGained, { token: token, card: event.recipient });
         });

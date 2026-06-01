@@ -33,12 +33,12 @@ export class MoveCardAction extends CardGameAction {
         super(properties);
     }
 
-    getCostMessage(context: AbilityContext): [string, any[]] {
+    getCostMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as MoveCardProperties;
         return ['shuffling {0} into their deck', [properties.target]];
     }
 
-    getEffectMessage(context: AbilityContext): [string, any[]] {
+    getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context) as MoveCardProperties;
         const target = properties.target as BaseCard | BaseCard[];
         let destinationController = Array.isArray(target)

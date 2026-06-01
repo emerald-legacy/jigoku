@@ -1,5 +1,3 @@
-import type { AbilityContext } from '../AbilityContext.js';
-import type BaseCard from '../BaseCard.js';
 import { AddTokenAction, AddTokenProperties } from './AddTokenAction.js';
 import { AffinityAction, AffinityActionProperties } from './AffinityAction.js';
 import { AttachAction, AttachActionProperties } from './AttachAction.js';
@@ -101,8 +99,8 @@ import { TransferHonorAction, TransferHonorProperties } from './TransferHonorAct
 import { TriggerAbilityAction, TriggerAbilityProperties } from './TriggerAbilityAction.js';
 import { TurnCardFacedownAction, TurnCardFacedownProperties } from './TurnCardFacedownAction.js';
 
-type PropsFactory<Props, Target = unknown> =
-    Props | ((context: [Target] extends [BaseCard] ? AbilityContext<any, Target> : any) => Props);
+type PropsFactory<Props, _Target = unknown> =
+    Props | ((context: any) => Props);
 
 //////////////
 // CARD
@@ -442,7 +440,7 @@ export function moveStatusToken<Target = unknown>(propertyFactory: PropsFactory<
 export function cancel<Target = unknown>(propertyFactory: PropsFactory<CancelActionProperties, NoInfer<Target>> = {}): GameAction {
     return new CancelAction(propertyFactory as ConstructorParameters<typeof CancelAction>[0]);
 }
-export function handler<Target = unknown>(propertyFactory: PropsFactory<HandlerProperties, NoInfer<Target>>): GameAction {
+export function handler<Target = unknown>(propertyFactory: PropsFactory<HandlerProperties, NoInfer<Target>> = {}): GameAction {
     return new HandlerAction(propertyFactory as ConstructorParameters<typeof HandlerAction>[0]);
 }
 export function noAction(): GameAction {

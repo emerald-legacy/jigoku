@@ -1,9 +1,9 @@
 import type Player from './Player.js';
-import MenuPrompt from './gamesteps/menuprompt.js';
-import HandlerMenuPrompt from './gamesteps/handlermenuprompt.js';
-import HonorBidPrompt from './gamesteps/honorbidprompt.js';
-import SelectCardPrompt from './gamesteps/selectcardprompt.js';
-import SelectRingPrompt from './gamesteps/selectringprompt.js';
+import MenuPrompt from './gamesteps/MenuPrompt.js';
+import HandlerMenuPrompt from './gamesteps/HandlerMenuPrompt.js';
+import HonorBidPrompt from './gamesteps/HonorBidPrompt.js';
+import SelectCardPrompt from './gamesteps/SelectCardPrompt.js';
+import SelectRingPrompt from './gamesteps/SelectRingPrompt.js';
 
 export class GamePromptHelper {
     constructor(private game: any) {}

@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import type { Conflict } from '../../Conflict.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TargetModes, CardTypes, Elements } from '../../Constants.js';
@@ -40,8 +42,8 @@ class IsawaTsuke2 extends DrawCard {
         });
     }
 
-    getNumberOfLegalTargets(context: any) {
-        const cards = context.game.currentConflict.getParticipants((card: any) => card.allowGameAction('removeFate'));
+    getNumberOfLegalTargets(context: AbilityContext) {
+        const cards = (context.game.currentConflict as Conflict).getParticipants((card: any) => card.allowGameAction('removeFate'));
         const selectedCards: any[] = [];
         cards.forEach((card: any) => {
             if(card.canBeTargeted(context, selectedCards)) {

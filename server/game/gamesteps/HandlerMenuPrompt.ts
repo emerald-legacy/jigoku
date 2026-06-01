@@ -2,6 +2,27 @@ import { AbilityContext } from '../AbilityContext.js';
 import EffectSource from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
 import type Player from '../Player.js';
+import type Game from '../Game.js';
+import type BaseCard from '../BaseCard.js';
+import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
+
+type HandlerMenuButton = { text: string; arg: string | number; card?: BaseCard; disabled?: boolean };
+
+interface HandlerMenuPromptProperties {
+    source?: EffectSource | string;
+    context?: AbilityContext;
+    waitingPromptTitle?: string;
+    activePromptTitle?: string;
+    choices: string[];
+    handlers?: Array<() => void>;
+    choiceHandler?: (choice: string) => void;
+    cards?: BaseCard[];
+    cardCondition?: (card: BaseCard, context: AbilityContext) => boolean;
+    cardHandler?: (card: BaseCard) => void;
+    controls?: { type: string; targets: BaseCard[] };
+    target?: BaseCard | BaseCard[];
+    [key: string]: unknown;
+}
 
 /**
  * General purpose menu prompt. Takes a choices object with menu options and
@@ -23,11 +44,11 @@ import type Player from '../Player.js';
  */
 class HandlerMenuPrompt extends UiPrompt {
     player: Player;
-    properties: any;
-    cardCondition: (card: any, context: any) => boolean;
-    context: any;
+    properties: HandlerMenuPromptProperties;
+    cardCondition: (card: BaseCard, context: AbilityContext) => boolean;
+    context: AbilityContext;
 
-    constructor(game: any, player: Player, properties: any) {
+    constructor(game: Game, player: Player, properties: HandlerMenuPromptProperties) {
         super(game);
         this.player = player;
         if(typeof properties.source === 'string') {
@@ -36,14 +57,14 @@ class HandlerMenuPrompt extends UiPrompt {
             properties.source = properties.context.source;
         }
         if(properties.source && !properties.waitingPromptTitle) {
-            properties.waitingPromptTitle = 'Waiting for opponent to use ' + properties.source.name;
+            properties.waitingPromptTitle = 'Waiting for opponent to use ' + (properties.source as EffectSource).name;
         } else if(!properties.source) {
             properties.source = new EffectSource(game);
         }
         this.properties = properties;
         this.properties.choices = properties.choices || [];
         this.cardCondition = properties.cardCondition || (() => true);
-        this.context = properties.context || new AbilityContext({ game: game, player: player, source: properties.source });
+        this.context = properties.context || new AbilityContext({ game: game, player: player, source: properties.source as EffectSource });
     }
 
     activeCondition(player: Player): boolean {
@@ -51,10 +72,10 @@ class HandlerMenuPrompt extends UiPrompt {
     }
 
     activePrompt() {
-        let buttons: any[] = [];
+        let buttons: HandlerMenuButton[] = [];
         if(this.properties.cards) {
             let cardQuantities: Record<string, number> = {};
-            this.properties.cards.forEach((card: any) => {
+            this.properties.cards.forEach((card: BaseCard) => {
                 if(cardQuantities[card.id]) {
                     cardQuantities[card.id] += 1;
                 } else {
@@ -63,14 +84,14 @@ class HandlerMenuPrompt extends UiPrompt {
             });
             // Get unique cards by id
             const seenIds = new Set<string>();
-            let cards = this.properties.cards.filter((card: any) => {
+            let cards = this.properties.cards.filter((card: BaseCard) => {
                 if(seenIds.has(card.id)) {
                     return false;
                 }
                 seenIds.add(card.id);
                 return true;
             });
-            buttons = cards.map((card: any) => {
+            buttons = cards.map((card: BaseCard) => {
                 let text = card.name;
                 if(cardQuantities[card.id] > 1) {
                     text = text + ' (' + cardQuantities[card.id].toString() + ')';
@@ -88,33 +109,34 @@ class HandlerMenuPrompt extends UiPrompt {
             menuTitle: this.properties.activePromptTitle || 'Select one',
             buttons: buttons,
             controls: this.getAdditionalPromptControls(),
-            promptTitle: this.properties.source.name
+            promptTitle: (this.properties.source as EffectSource).name
         };
     }
 
-    getAdditionalPromptControls(): any[] {
+    getAdditionalPromptControls(): Array<{ type: string; source: unknown; targets: unknown[] }> {
         if(this.properties.controls && this.properties.controls.type === 'targeting') {
             return [{
                 type: 'targeting',
-                source: this.properties.source.getShortSummary(),
-                targets: this.properties.controls.targets.map((target: any) => target.getShortSummaryForControls(this.player))
+                source: (this.properties.source as EffectSource).getShortSummary(),
+                targets: this.properties.controls.targets.map((target: BaseCard) => target.getShortSummaryForControls(this.player))
             }];
         }
         if(this.context.source.type === '') {
             return [];
         }
-        let targets = this.context.targets ? Object.values(this.context.targets) : [];
-        targets = (targets as any[]).reduce((array: any[], target: any) => array.concat(target), []);
+        const rawTargets: Array<BaseCard | BaseCard[]> = this.context.targets ? Object.values(this.context.targets) : [];
+        let targets: BaseCard[] = rawTargets.reduce((array: BaseCard[], target: BaseCard | BaseCard[]) => array.concat(target), [] as BaseCard[]);
         if(this.properties.target) {
             targets = Array.isArray(this.properties.target) ? this.properties.target : [this.properties.target];
         }
-        if((targets as any[]).length === 0 && this.context.event && this.context.event.card) {
-            targets = [this.context.event.card];
+        const triggeredContext = this.context as TriggeredAbilityContext;
+        if(targets.length === 0 && triggeredContext.event && triggeredContext.event.card) {
+            targets = [triggeredContext.event.card];
         }
         return [{
             type: 'targeting',
             source: this.context.source.getShortSummary(),
-            targets: (targets as any[]).map((target: any) => target.getShortSummaryForControls(this.player))
+            targets: targets.map((target: BaseCard) => target.getShortSummaryForControls(this.player))
         }];
     }
 
@@ -122,13 +144,13 @@ class HandlerMenuPrompt extends UiPrompt {
         return { menuTitle: this.properties.waitingPromptTitle || 'Waiting for opponent' };
     }
 
-    menuCommand(player: Player, arg: any): boolean {
+    menuCommand(player: Player, arg: string | number): boolean {
         if(typeof arg === 'string') {
             if(arg === 'cancel') {
                 this.complete();
                 return true;
             }
-            let card = this.properties.cards && this.properties.cards.find((card: any) => card.id === arg);
+            let card = this.properties.cards && this.properties.cards.find((card: BaseCard) => card.id === arg);
             if(card && this.properties.cardHandler) {
                 if(!this.cardCondition(card, this.context)) {
                     return false;
@@ -146,11 +168,12 @@ class HandlerMenuPrompt extends UiPrompt {
             return true;
         }
 
-        if(!this.properties.handlers[arg]) {
+        const handlers = this.properties.handlers as Array<() => void>;
+        if(!handlers[arg]) {
             return false;
         }
 
-        this.properties.handlers[arg]();
+        handlers[arg]();
         this.complete();
 
         return true;

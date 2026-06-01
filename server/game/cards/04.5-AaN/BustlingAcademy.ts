@@ -1,4 +1,5 @@
 import { CardTypes, Locations } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -17,7 +18,7 @@ export default class BustlingAcademy extends DrawCard {
                 gameAction: AbilityDsl.actions.moveCard({ destination: Locations.DynastyDiscardPile })
             },
             effect: 'discard {0} and refill it faceup',
-            then: (context: any) => ({
+            then: (context: AbilityContext) => ({
                 gameAction: AbilityDsl.actions.refillFaceup(() => ({
                     target: context.events[0].cardStateWhenMoved.controller,
                     location: context.events[0].cardStateWhenMoved.location

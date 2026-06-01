@@ -1,4 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { AbilityTypes, EventNames } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { TriggeredAbilityProps } from '../../Interfaces.js';
@@ -23,7 +24,7 @@ export default class SelfUnderstanding extends DrawCard {
                     afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) =>
                         event.conflict.winner === context.source.controller && context.source.isParticipating()
                 },
-                condition: (context: any) => context.player.getClaimedRings().length > 0,
+                condition: (context: AbilityContext) => context.player.getClaimedRings().length > 0,
                 gameAction: AbilityDsl.actions.resolveRingEffect((context) => ({
                     player: context.player,
                     target: context.player.getClaimedRings()

@@ -1,6 +1,8 @@
 import { UiPrompt } from '../UiPrompt.js';
 import { CardTypes, EffectNames, EventNames } from '../../Constants.js';
 import type Player from '../../Player.js';
+import type Game from '../../Game.js';
+import type DrawCard from '../../DrawCard.js';
 
 const capitalize: Record<string, string> = {
     military: 'Military',
@@ -16,13 +18,13 @@ class SelectDefendersPrompt extends UiPrompt {
     player: Player;
     conflict: any;
 
-    constructor(game: any, player: Player, conflict: any) {
+    constructor(game: Game, player: Player, conflict: any) {
         super(game);
 
         this.player = player;
         this.conflict = conflict;
-        let mustBeDeclared = this.player.cardsInPlay.filter((card: any) =>
-            card.getEffects(EffectNames.MustBeDeclaredAsDefender).some((effect: any) => effect === 'both' || effect === conflict.conflictType));
+        let mustBeDeclared = this.player.cardsInPlay.filter((card: DrawCard) =>
+            card.getEffects(EffectNames.MustBeDeclaredAsDefender).some((effect) => effect === 'both' || effect === conflict.conflictType));
         for(const card of mustBeDeclared) {
             if(this.checkCardCondition(card) && !this.conflict.defenders.includes(card)) {
                 this.selectCard(card);
@@ -52,7 +54,7 @@ class SelectDefendersPrompt extends UiPrompt {
         return { menuTitle: 'Waiting for opponent to choose defenders' };
     }
 
-    onCardClicked(player: Player, card: any): boolean {
+    onCardClicked(player: Player, card: DrawCard): boolean {
         if(player !== this.player) {
             return false;
         }
@@ -64,8 +66,8 @@ class SelectDefendersPrompt extends UiPrompt {
         return this.selectCard(card);
     }
 
-    checkCardCondition(card: any): boolean {
-        if(this.conflict.defenders.includes(card) && card.getEffects(EffectNames.MustBeDeclaredAsDefender).some((effect: any) => effect === 'both' || effect === this.conflict.conflictType)) {
+    checkCardCondition(card: DrawCard): boolean {
+        if(this.conflict.defenders.includes(card) && card.getEffects(EffectNames.MustBeDeclaredAsDefender).some((effect) => effect === 'both' || effect === this.conflict.conflictType)) {
             return false;
         }
         return (
@@ -75,7 +77,7 @@ class SelectDefendersPrompt extends UiPrompt {
         );
     }
 
-    selectCard(card: any): boolean {
+    selectCard(card: DrawCard): boolean {
         if(this.conflict.maxAllowedDefenders > -1 && this.conflict.defenders.length >= this.conflict.maxAllowedDefenders && !this.conflict.defenders.includes(card)) {
             return false;
         }
@@ -92,7 +94,7 @@ class SelectDefendersPrompt extends UiPrompt {
     }
 
     menuCommand(): boolean {
-        this.conflict.defenders.forEach((card: any) => card.covert = false);
+        this.conflict.defenders.forEach((card: DrawCard) => card.covert = false);
         this.conflict.setDefendersChosen(true);
         this.complete();
         this.game.raiseEvent(EventNames.OnDefendersDeclared, { conflict: this.conflict, defenders: this.conflict.defenders.slice() });

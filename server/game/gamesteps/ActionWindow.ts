@@ -2,6 +2,9 @@ import { UiPrompt } from './UiPrompt.js';
 import { EventNames, Locations, Players, EffectNames } from '../Constants.js';
 import type Game from '../Game.js';
 import type Player from '../Player.js';
+import type BaseCard from '../BaseCard.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import type AbilityResolver from './AbilityResolver.js';
 
 class ActionWindow extends UiPrompt {
     title: string;
@@ -31,21 +34,21 @@ class ActionWindow extends UiPrompt {
         return player === this.currentPlayer;
     }
 
-    onCardClicked(player: Player, card: any): boolean {
+    onCardClicked(player: Player, card: BaseCard): boolean {
         if(player !== this.currentPlayer) {
             return false;
         }
 
         let actions = card.getActions();
 
-        let legalActions = actions.filter((action: any) => action.meetsRequirements(action.createContext(player)) === '');
+        let legalActions = actions.filter((action) => action.meetsRequirements(action.createContext(player)) === '');
 
         if(legalActions.length === 0) {
             return false;
         } else if(legalActions.length === 1) {
             let action = legalActions[0];
-            let targetPrompts = action.targets.some((target: any) => target.properties.player !== Players.Opponent);
-            if(!this.currentPlayer.optionSettings.confirmOneClick || action.cost.some((cost: any) => cost.promptsPlayer) || targetPrompts) {
+            let targetPrompts = action.targets.some((target) => target.properties.player !== Players.Opponent);
+            if(!this.currentPlayer.optionSettings.confirmOneClick || action.cost.some((cost) => cost.promptsPlayer) || targetPrompts) {
                 this.resolveAbility(action.createContext(player));
                 return true;
             }
@@ -53,13 +56,13 @@ class ActionWindow extends UiPrompt {
         this.game.promptWithHandlerMenu(player, {
             activePromptTitle: (card.location === Locations.PlayArea ? 'Choose an ability:' : 'Play ' + card.name + ':'),
             source: card,
-            choices: legalActions.map((action: any) => action.title).concat('Cancel'),
-            handlers: legalActions.map((action: any) => (() => this.resolveAbility(action.createContext(player)))).concat(() => true)
+            choices: legalActions.map((action) => action.title).concat('Cancel'),
+            handlers: legalActions.map((action) => (() => this.resolveAbility(action.createContext(player)))).concat(() => true)
         });
         return true;
     }
 
-    resolveAbility(context: any) {
+    resolveAbility(context: AbilityContext) {
         const resolver = this.game.resolveAbility(context);
         this.game.queueSimpleStep(() => {
             if(resolver.passPriority) {
@@ -68,7 +71,7 @@ class ActionWindow extends UiPrompt {
         });
     }
 
-    postResolutionUpdate(_resolver: any) {
+    postResolutionUpdate(_resolver: AbilityResolver) {
         this.currentPlayerConsecutiveActions += 1;
         this.prevPlayerPassed = false;
         let allowableConsecutiveActions = this.getCurrentPlayerConsecutiveActions();
@@ -131,8 +134,8 @@ class ActionWindow extends UiPrompt {
                 activePrompt: 'Which ability are you using?',
                 location: Locations.Any,
                 controller: Players.Self,
-                cardCondition: (card: any) => card.isFaceup(),
-                onSelect: (player: Player, card: any) => {
+                cardCondition: (card: BaseCard) => card.isFaceup(),
+                onSelect: (player: Player, card: BaseCard) => {
                     this.game.addMessage('{0} uses {1}\'s ability', player, card);
                     this.prevPlayerPassed = false;
                     this.nextPlayer();

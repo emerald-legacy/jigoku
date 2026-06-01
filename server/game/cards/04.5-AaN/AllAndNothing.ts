@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TargetModes } from '../../Constants.js';
 
@@ -15,10 +17,10 @@ class AllAndNothing extends DrawCard {
             target: {
                 mode: TargetModes.Ring,
                 ringCondition: (ring: any, context: any) =>
-                    context?.event?.physicalRing ? ring !== context.event.physicalRing : ring.element !== 'void',
-                gameAction: AbilityDsl.actions.cancel((context: any) => ({
+                    context?.event?.physicalRing ? ring !== (context as TriggeredAbilityContext).event.physicalRing : ring.element !== 'void',
+                gameAction: AbilityDsl.actions.cancel((context: AbilityContext) => ({
                     replacementGameAction: AbilityDsl.actions.resolveRingEffect({
-                        optional: context.event.optional,
+                        optional: (context as TriggeredAbilityContext).event.optional,
                         physicalRing: context.ring
                     })
                 }))
