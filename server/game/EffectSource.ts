@@ -2,9 +2,9 @@ import { getAbilityDsl, type AbilityDslType } from './AbilityDslProvider.js';
 import { GameObject } from './GameObject.js';
 import { Locations, Durations } from './Constants.js';
 import type Game from './Game.js';
+import type Player from './Player.js';
 import type Effect from './Effects/Effect.js';
-
-type EffectFactory = (game: Game, source: any, properties: EffectProperties) => Effect;
+import type { EffectFactory } from './Effects/EffectBuilder.js';
 
 interface EffectProperties {
     duration?: Durations;
@@ -18,6 +18,16 @@ interface EffectProperties {
 type PropertyFactory = (dsl: AbilityDslType) => EffectProperties;
 
 // This class is inherited by Ring and BaseCard and also represents Framework effects
+
+// State the effect engine reads off a source. Subclasses expose these in
+// incompatible forms (BaseCard.controller is a field, StatusToken.controller a
+// getter; persistentEffects is a getter on BaseCard but a field on StatusToken/
+// ElementSymbol), so they can't be hoisted as a single class member — effect
+// sites narrow to this type instead.
+export type SourceWithState = EffectSource & {
+    controller?: Player;
+    persistentEffects?: { ref?: Effect[] }[];
+};
 
 class EffectSource extends GameObject {
     constructor(game: Game, name = 'Framework effect') {

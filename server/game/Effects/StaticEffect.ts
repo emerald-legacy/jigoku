@@ -92,10 +92,10 @@ const conflictingEffects: Record<string, (target: GameObject, value?: unknown) =
     }
 };
 
-class StaticEffect {
+class StaticEffect implements CardEffect {
     type: EffectNames;
     value: EffectValue<any>;
-    context: any;
+    context!: AbilityContext;
     duration: Durations | null;
     copies: GainAbility[];
     isConditional?: boolean;
@@ -108,7 +108,6 @@ class StaticEffect {
             this.value = new EffectValue(value);
         }
         this.value.reset();
-        this.context = null;
         this.duration = null;
         this.copies = [];
     }
@@ -131,7 +130,7 @@ class StaticEffect {
         this.copies = [];
     }
 
-    getValue() {
+    getValue<T = any>(_target?: GameObject): T {
         return this.value.getValue();
     }
 

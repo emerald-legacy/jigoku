@@ -724,7 +724,7 @@ class BaseCard extends EffectSource {
         const effects = this.getRawEffects().filter((effect: CardEffect) => effect.type === EffectNames.IncreaseLimitOnAbilities);
         let total = max;
         effects.forEach((effect: CardEffect) => {
-            const value = effect.getValue(this as any);
+            const value = effect.getValue(this) as { applyingPlayer?: Player; targetAbility?: CardAbility };
             const applyingPlayer = value.applyingPlayer || effect.context.player;
             const targetAbility = value.targetAbility;
             if((!targetAbility || targetAbility === ability) && applyingPlayer === player) {
@@ -736,7 +736,7 @@ class BaseCard extends EffectSource {
             (effect: CardEffect) => effect.type === EffectNames.IncreaseLimitOnPrintedAbilities
         );
         printedEffects.forEach((effect: CardEffect) => {
-            const value = effect.getValue(this as any);
+            const value = effect.getValue(this);
             if(ability.printedAbility && (value === true || value === ability) && effect.context.player === player) {
                 total++;
             }
@@ -933,7 +933,7 @@ class BaseCard extends EffectSource {
         }
 
         const attachmentController = properties.controller ?? this.controller;
-        for(const effect of this.getRawEffects() as CardEffect[]) {
+        for(const effect of this.getRawEffects()) {
             switch(effect.type) {
                 case EffectNames.AttachmentMyControlOnly: {
                     if(attachmentController !== parent.controller) {
@@ -954,21 +954,21 @@ class BaseCard extends EffectSource {
                     break;
                 }
                 case EffectNames.AttachmentFactionRestriction: {
-                    const factions = effect.getValue<Faction[]>(this as any);
+                    const factions = effect.getValue(this) as Faction[];
                     if(!factions.some((faction) => parent.isFaction(faction))) {
                         return false;
                     }
                     break;
                 }
                 case EffectNames.AttachmentTraitRestriction: {
-                    const traits = effect.getValue<string[]>(this as any);
+                    const traits = effect.getValue(this) as string[];
                     if(!traits.some((trait) => parent.hasTrait(trait))) {
                         return false;
                     }
                     break;
                 }
                 case EffectNames.AttachmentCardCondition: {
-                    const cardCondition = effect.getValue<(card: BaseCard) => boolean>(this as any);
+                    const cardCondition = effect.getValue(this) as (card: BaseCard) => boolean;
                     if(!cardCondition(parent)) {
                         return false;
                     }

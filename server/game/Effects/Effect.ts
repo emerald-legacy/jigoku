@@ -1,7 +1,8 @@
 import { Locations, Durations } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAbility from '../BaseAbility.js';
-import type BaseCard from '../BaseCard.js';
+import type EffectSource from '../EffectSource.js';
+import type { SourceWithState } from '../EffectSource.js';
 import type Game from '../Game.js';
 import type { GameObject } from '../GameObject.js';
 import type { WhenType } from '../Interfaces.js';
@@ -54,7 +55,7 @@ export interface EffectProperties {
  */
 class Effect {
     game: Game;
-    source: BaseCard;
+    source: EffectSource;
     match: EffectMatch;
     duration: Durations;
     until: WhenType;
@@ -68,7 +69,7 @@ class Effect {
     context!: AbilityContext;
     endingMessage: string | undefined;
 
-    constructor(game: Game, source: BaseCard, properties: EffectProperties, effect: StaticEffect) {
+    constructor(game: Game, source: EffectSource, properties: EffectProperties, effect: StaticEffect) {
         this.game = game;
         this.source = source;
         this.match = properties.match || (() => true);
@@ -88,7 +89,7 @@ class Effect {
     }
 
     refreshContext() {
-        this.context = this.game.getFrameworkContext(this.source.controller);
+        this.context = this.game.getFrameworkContext((this.source as SourceWithState).controller ?? null);
         this.context.source = this.source;
         if(this.ability) {
             this.context.ability = this.ability;
@@ -135,7 +136,7 @@ class Effect {
         if(this.duration !== Durations.Persistent) {
             return true;
         }
-        let effectOnSource = this.source.persistentEffects.some((effect: { ref?: Effect[] }) => effect.ref && effect.ref.includes(this));
+        let effectOnSource = (this.source as SourceWithState).persistentEffects?.some((effect) => effect.ref && effect.ref.includes(this)) ?? false;
         return !this.source.facedown && effectOnSource;
     }
 
