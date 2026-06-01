@@ -279,11 +279,11 @@ class Player extends GameObject {
         this.zones.underneathStronghold = v;
     }
 
-    getSourceList(source: string): any[] {
+    getSourceList(source: string): BaseCard[] {
         return this.zones.getSourceList(source);
     }
 
-    updateSourceList(source: string, targetList: any[]): void {
+    updateSourceList(source: string, targetList: BaseCard[]): void {
         this.zones.updateSourceList(source, targetList);
     }
 
@@ -354,7 +354,7 @@ class Player extends GameObject {
         return this.findCard(this.cardsInPlay, (card) => card.uuid === uuid) as DrawCard | null;
     }
 
-    findCard(cardList: any[], predicate: (card: any) => boolean): any | undefined {
+    findCard(cardList: BaseCard[], predicate: (card: BaseCard) => boolean): BaseCard | undefined {
         const cards = this.findCards(cardList, predicate);
         if(!cards || cards.length === 0) {
             return undefined;
@@ -363,20 +363,21 @@ class Player extends GameObject {
         return cards[0];
     }
 
-    findCards(cardList: any[], predicate: (card: any) => boolean): any[] {
+    findCards(cardList: BaseCard[], predicate: (card: BaseCard) => boolean): BaseCard[] {
         if(!cardList) {
             return [];
         }
 
-        const cardsToReturn: any[] = [];
+        const cardsToReturn: BaseCard[] = [];
 
         for(const card of cardList) {
             if(predicate(card)) {
                 cardsToReturn.push(card);
             }
 
-            if(card.attachments) {
-                cardsToReturn.push(...card.attachments.filter(predicate));
+            const attachments = (card as DrawCard).attachments;
+            if(attachments) {
+                cardsToReturn.push(...attachments.filter(predicate));
             }
         }
 
@@ -439,19 +440,19 @@ class Player extends GameObject {
 
     anyCardsInPlay(predicate: (card: DrawCard) => boolean): boolean {
         return this.game.allCards.some(
-            (card: any) => card.controller === this && card.location === Locations.PlayArea && predicate(card)
+            (card) => card.controller === this && card.location === Locations.PlayArea && predicate(card as DrawCard)
         );
     }
 
     getAllConflictCards(predicate: (card: DrawCard) => boolean = () => true): DrawCard[] {
         return this.game.allCards.filter(
-            (card: any) => card.owner === this && card.isConflict && predicate(card)
+            (card) => card.owner === this && card.isConflict && predicate(card as DrawCard)
         ) as DrawCard[];
     }
 
     filterCardsInPlay(predicate: (card: DrawCard) => boolean): DrawCard[] {
         return this.game.allCards.filter(
-            (card: any) => card.controller === this && card.location === Locations.PlayArea && predicate(card)
+            (card) => card.controller === this && card.location === Locations.PlayArea && predicate(card as DrawCard)
         ) as DrawCard[];
     }
 
@@ -629,39 +630,39 @@ class Player extends GameObject {
         return this.defaultAllowedConflicts[type] + additionalConflictsForType;
     }
 
-    getProvinces(predicate: (card: any) => boolean = () => true): any[] {
+    getProvinces(predicate: (card: ProvinceCard) => boolean = () => true): ProvinceCard[] {
         return this.game
             .getProvinceArray()
             .reduce(
-                (array: any[], location: Locations) =>
+                (array: ProvinceCard[], location: Locations) =>
                     array.concat(
                         this.getSourceList(location).filter(
-                            (card: any) => card.type === CardTypes.Province && predicate(card)
-                        )
+                            (card) => card.type === CardTypes.Province && predicate(card as ProvinceCard)
+                        ) as ProvinceCard[]
                     ),
                 []
             );
     }
 
-    getNumberOfFaceupProvinces(predicate: (card: any) => boolean = () => true): number {
+    getNumberOfFaceupProvinces(predicate: (card: ProvinceCard) => boolean = () => true): number {
         return this.getProvinces((card) => card.isFaceup() && predicate(card)).length;
     }
 
-    getNumberOfOpponentsFaceupProvinces(predicate: (card: any) => boolean = () => true): number {
+    getNumberOfOpponentsFaceupProvinces(predicate: (card: ProvinceCard) => boolean = () => true): number {
         return (this.opponent && this.opponent.getNumberOfFaceupProvinces(predicate)) || 0;
     }
 
-    getNumberOfFacedownProvinces(predicate: (card: any) => boolean = () => true): number {
+    getNumberOfFacedownProvinces(predicate: (card: ProvinceCard) => boolean = () => true): number {
         return this.getProvinces((card) => card.isFacedown() && predicate(card)).length;
     }
 
-    getNumberOfOpponentsFacedownProvinces(predicate: (card: any) => boolean = () => true): number {
+    getNumberOfOpponentsFacedownProvinces(predicate: (card: ProvinceCard) => boolean = () => true): number {
         return (this.opponent && this.opponent.getNumberOfFacedownProvinces(predicate)) || 0;
     }
 
-    getNumberOfCardsInPlay(predicate: (card: any) => boolean): number {
-        return this.game.allCards.reduce((num: number, card: any) => {
-            if(card.controller === this && card.location === Locations.PlayArea && predicate(card)) {
+    getNumberOfCardsInPlay(predicate: (card: DrawCard) => boolean): number {
+        return this.game.allCards.reduce((num: number, card) => {
+            if(card.controller === this && card.location === Locations.PlayArea && predicate(card as DrawCard)) {
                 return num + 1;
             }
             return num;
@@ -679,7 +680,7 @@ class Player extends GameObject {
                 (array: BaseCard[], province: Locations) =>
                     array.concat(
                         this.getSourceList(province).filter(
-                            (card: any) => card.getType() === CardTypes.Holding && card.isFaceup()
+                            (card) => card.getType() === CardTypes.Holding && card.isFaceup()
                         )
                     ),
                 []
@@ -715,9 +716,9 @@ class Player extends GameObject {
             return undefined;
         }
 
-        return this.findCard(this.cardsInPlay, (playCard: DrawCard) => {
+        return this.findCard(this.cardsInPlay, (playCard) => {
             return playCard !== card && (playCard.id === card.id || playCard.name === card.name);
-        });
+        }) as DrawCard | undefined;
     }
 
     drawCardsToHand(numCards: number): void {

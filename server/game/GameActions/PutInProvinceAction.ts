@@ -83,7 +83,7 @@ export class PutInProvinceAction extends CardGameAction {
             properties.destination &&
             context.game.getProvinceArray(false).includes(properties.destination)
         ) {
-            let cardsToDiscard = player.getSourceList(properties.destination).filter((c: DrawCard) => c.isDynasty);
+            let cardsToDiscard = player.getSourceList(properties.destination).filter((c) => c.isDynasty);
             for(const c of cardsToDiscard) {
                 player.moveCard(c, Locations.DynastyDiscardPile);
             }

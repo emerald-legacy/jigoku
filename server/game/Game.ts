@@ -338,7 +338,7 @@ class Game {
         let foundCards: DrawCard[] = [];
 
         this.getPlayers().forEach((player) => {
-            foundCards = foundCards.concat(player.findCards(player.cardsInPlay, predicate));
+            foundCards = foundCards.concat(player.findCards(player.cardsInPlay, predicate as (card: BaseCard) => boolean) as DrawCard[]);
         });
 
         return foundCards;
