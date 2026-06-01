@@ -1,10 +1,10 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardTypes, EffectNames, Locations } from '../Constants.js';
+import { CardTypes, EffectNames, EventNames, Locations } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 export interface MoveCardProperties extends CardActionProperties {
     destination?: Locations;
     switch?: boolean;
@@ -69,7 +69,7 @@ export class MoveCardAction extends CardGameAction {
         );
     }
 
-    eventHandler(event: Event, additionalProperties = {}): void {
+    eventHandler(event: GameEvent<EventNames.Unnamed>, additionalProperties = {}): void {
         let context = (event.context as AbilityContext);
         let card = event.card as DrawCard;
         event.cardStateWhenMoved = card.createSnapshot();

@@ -2,6 +2,7 @@ import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { EventNames, Locations, Players, TargetModes } from '../Constants.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
@@ -78,7 +79,7 @@ export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties> {
         }
     }
 
-    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnCardsDiscardedFromHand>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
         let { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
@@ -86,12 +87,12 @@ export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties> {
         event.discardedAtRandom = false;
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnCardsDiscardedFromHand>): void {
         const context = event.context as AbilityContext;
         context.game.addMessage('{0} discards {1}', event.player, event.cards);
         event.discardedCards = event.cards;
-        for(let card of event.cards) {
-            event.player.moveCard(card, card.isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile);
+        for(let card of event.cards as BaseCard[]) {
+            (event.player as Player).moveCard(card, card.isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile);
         }
     }
 }

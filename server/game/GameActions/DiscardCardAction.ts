@@ -2,6 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { GameObject } from '../GameObject.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
@@ -32,7 +33,7 @@ export class DiscardCardAction extends CardGameAction<DiscardCardProperties> {
         events.push(event);
     }
 
-    addPropertiesToEvent(event: Event, cards: GameObject | GameObject[] | null | undefined, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnCardsDiscarded>, cards: GameObject | GameObject[] | null | undefined, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let resolved: DrawCard[];
         if(!cards) {
             const target = this.getProperties(context, additionalProperties).target as DrawCard | DrawCard[];
@@ -45,7 +46,7 @@ export class DiscardCardAction extends CardGameAction<DiscardCardProperties> {
         event.context = context;
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventNames.OnCardsDiscarded>, additionalProperties: Record<string, unknown> = {}): void {
         for(const card of event.cards as DrawCard[]) {
             this.checkForRefillProvince(card, event, additionalProperties);
             card.controller.moveCard(
@@ -55,7 +56,7 @@ export class DiscardCardAction extends CardGameAction<DiscardCardProperties> {
         }
     }
 
-    isEventFullyResolved(event: Event): boolean {
+    isEventFullyResolved(event: GameEvent<EventNames.OnCardsDiscarded>): boolean {
         return !event.cancelled && event.name === this.eventName;
     }
 

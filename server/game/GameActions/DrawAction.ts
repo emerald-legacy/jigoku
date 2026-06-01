@@ -1,4 +1,4 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
 import type Player from '../Player.js';
@@ -30,13 +30,13 @@ export class DrawAction extends PlayerAction<DrawProperties> {
         return [context.player];
     }
 
-    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnCardsDrawn>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        event.amount = amount;
+        event.amount = amount as number;
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnCardsDrawn>): void {
         event.player.drawCardsToHand(event.amount);
     }
 }

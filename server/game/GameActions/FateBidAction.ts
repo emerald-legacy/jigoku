@@ -8,7 +8,7 @@ import { FateBidPrompt } from '../gamesteps/FateBidPrompt.js';
 import { LoseFateAction } from './LoseFateAction.js';
 import { JointGameAction } from './JointGameAction.js';
 
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 export interface FateBidProperties extends PlayerActionProperties {
     postBidAction?: GameAction;
     message?: string;
@@ -35,7 +35,7 @@ export class FateBidAction extends PlayerAction {
         return ['have {0} select an amount of fate from their pool', [players]];
     }
 
-    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.Unnamed>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
         let { postBidAction, message, messageArgs } = this.getProperties(
             context,
             additionalProperties
@@ -46,7 +46,7 @@ export class FateBidAction extends PlayerAction {
         event.messageArgs = messageArgs;
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.Unnamed>): void {
         const context = (event.context as AbilityContext);
         context.game.queueStep(
             new FateBidPrompt(context.game, 'Choose an amount of fate', (result, context) => {

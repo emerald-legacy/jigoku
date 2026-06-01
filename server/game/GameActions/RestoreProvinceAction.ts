@@ -1,4 +1,4 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames } from '../Constants.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
@@ -23,11 +23,11 @@ export class RestoreProvinceAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event: Event, card: ProvinceCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnRestoreProvince>, card: ProvinceCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
     }
 
-    eventHandler(event: Event): void {
-        event.card.restoreProvince();
+    eventHandler(event: GameEvent<EventNames.OnRestoreProvince>): void {
+        (event.card as ProvinceCard).restoreProvince();
     }
 }

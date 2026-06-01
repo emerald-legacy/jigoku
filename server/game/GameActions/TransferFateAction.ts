@@ -1,4 +1,4 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
 import type Player from '../Player.js';
@@ -38,19 +38,19 @@ export class TransferFateAction extends PlayerAction {
         );
     }
 
-    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnMoveFate>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties) as TransferFateProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        event.fate = amount;
+        event.fate = amount ?? 0;
         event.origin = player;
         event.recipient = player.opponent;
     }
 
-    checkEventCondition(event: Event): boolean {
+    checkEventCondition(event: GameEvent<EventNames.OnMoveFate>): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnMoveFate>): void {
         this.moveFateEventHandler(event);
     }
 }

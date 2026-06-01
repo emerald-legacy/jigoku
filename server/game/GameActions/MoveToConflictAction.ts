@@ -1,4 +1,4 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type { Conflict } from '../Conflict.js';
@@ -44,13 +44,13 @@ export class MoveToConflictAction extends CardGameAction {
         return card.location === Locations.PlayArea;
     }
 
-    addPropertiesToEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnMoveToConflict>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties(context) as MoveToConflictProperties;
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.side = properties.side || card.controller;
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnMoveToConflict>): void {
         const context = event.context as AbilityContext;
         const player = event.side as Player;
         const conflict = context.game.currentConflict as Conflict;

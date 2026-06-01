@@ -1,4 +1,5 @@
 import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
 import type Player from '../Player.js';
@@ -78,18 +79,20 @@ export class ModifyBidAction extends PlayerAction {
         }
     }
 
-    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnModifyBid>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, direction } = this.getProperties(context, additionalProperties) as ModifyBidProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.direction = direction;
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnModifyBid>): void {
+        const player = event.player as Player;
+        const amount = event.amount as number;
         if(event.direction === Direction.Increase) {
-            event.player.honorBidModifier += event.amount;
+            player.honorBidModifier += amount;
         } else {
-            event.player.honorBidModifier -= event.amount;
+            player.honorBidModifier -= amount;
         }
     }
 }

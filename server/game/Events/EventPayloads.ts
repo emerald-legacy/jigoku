@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAbility from '../BaseAbility.js';
 import type BaseCard from '../BaseCard.js';
 import type { Conflict } from '../Conflict.js';
-import type { ConflictTypes, Decks, EventNames, Locations, Phases } from '../Constants.js';
+import type { CharacterStatus, ConflictTypes, Decks, EventNames, Locations, Phases } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { Duel } from '../Duel.js';
 import type { Event } from './Event.js';
@@ -169,7 +169,7 @@ export interface EventPayloadMap {
     };
     [EventNames.OnStatusTokenGained]: BaseEventPayload & {
         card?: BaseCard;
-        token?: StatusToken;
+        token?: StatusToken | CharacterStatus;
         recipient?: BaseCard;
     };
     [EventNames.OnStatusTokenMoved]: BaseEventPayload & {
@@ -279,14 +279,22 @@ export interface EventPayloadMap {
 export type EventPayload<K extends string> =
     K extends keyof EventPayloadMap ? EventPayloadMap[K] : BaseEventPayload & Record<string, unknown>;
 
-type AllPayloadKeys = EventPayloadMap[keyof EventPayloadMap] extends infer P
+// An event of a specific name, carrying its precise payload fields alongside the
+// framework Event surface. Produced by the typed event factory.
+export type GameEvent<N extends string = EventNames> = Event & EventPayload<N>;
+
+export type AllPayloadKeys = EventPayloadMap[keyof EventPayloadMap] extends infer P
     ? P extends object ? keyof P : never
     : never;
 
-type PayloadValueAt<K extends PropertyKey> = EventPayloadMap[keyof EventPayloadMap] extends infer P
+// The union of every value `K` can take across all payloads — used to type the
+// fallback fields declared on the Event class.
+export type PayloadValueAt<K extends PropertyKey> = EventPayloadMap[keyof EventPayloadMap] extends infer P
     ? P extends object ? (K extends keyof P ? P[K] : never) : never
     : never;
 
+// All-fields-optional view, for typing an event whose specific name is not known
+// at the use site (e.g. the triggering event on a TriggeredAbilityContext).
 export type EventUnion = {
     [K in AllPayloadKeys]?: PayloadValueAt<K>;
 };

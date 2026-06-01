@@ -1,12 +1,13 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardTypes, EffectNames, Locations } from '../Constants.js';
+import { CardTypes, EffectNames, EventNames, Locations } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Ring from '../Ring.js';
 import { GameAction, GameActionProperties } from './GameAction.js';
 import { LoseFateAction } from './LoseFateAction.js';
 
 import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 export interface CardActionProperties extends GameActionProperties {
     target?: BaseCard | BaseCard[];
 }
@@ -16,7 +17,7 @@ interface UnlessActionCost {
     cost: GameAction | ((card: BaseCard) => GameAction);
 }
 
-export class CardGameAction<P extends CardActionProperties = CardActionProperties> extends GameAction<P> {
+export class CardGameAction<P extends CardActionProperties = CardActionProperties, N extends EventNames = EventNames> extends GameAction<P, N> {
     targetType = [
         CardTypes.Character,
         CardTypes.Attachment,
@@ -32,7 +33,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         return [context.source];
     }
 
-    checkEventCondition(event: Event, additionalProperties = {}): boolean {
+    checkEventCondition(event: GameEvent<N>, additionalProperties = {}): boolean {
         return this.canAffect(event.card as BaseCard, event.context as AbilityContext, additionalProperties);
     }
 
@@ -131,16 +132,16 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         }
     }
 
-    addPropertiesToEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<N>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.card = card;
     }
 
-    isEventFullyResolved(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown>): boolean {
+    isEventFullyResolved(event: GameEvent<N>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown>): boolean {
         return event.card === card && super.isEventFullyResolved(event, card, context, additionalProperties);
     }
 
-    updateLeavesPlayEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+    updateLeavesPlayEvent(event: GameEvent<N>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
         let properties = this.getProperties(context, additionalProperties) as P & { destination?: Locations };
         super.updateEvent(event, card, context, additionalProperties);
         event.isSacrifice = this.name === 'sacrifice';
@@ -191,7 +192,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         };
     }
 
-    leavesPlayEventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+    leavesPlayEventHandler(event: GameEvent<N>, additionalProperties: Record<string, unknown> = {}): void {
         const card = event.card as DrawCard;
         this.checkForRefillProvince(card, event, additionalProperties);
         if(!card.owner.isLegalLocationForCard(card, event.destination as Locations)) {
@@ -205,7 +206,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         card.owner.moveCard(card, event.destination as Locations, event.options || {});
     }
 
-    checkForRefillProvince(card: BaseCard, event: Event, additionalProperties: Record<string, unknown> = {}): void {
+    checkForRefillProvince(card: BaseCard, event: GameEvent<N>, additionalProperties: Record<string, unknown> = {}): void {
         if(!card.isInProvince() || card.location === Locations.StrongholdProvince) {
             return;
         }

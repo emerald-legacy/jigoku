@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAbility from '../BaseAbility.js';
 import type BaseCard from '../BaseCard.js';
 import { Durations, EffectNames, EventNames, Locations } from '../Constants.js';
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import { CardGameAction } from './CardGameAction.js';
 import type { LastingEffectGeneralProperties } from './LastingEffectAction.js';
 
@@ -60,7 +60,7 @@ export class LastingEffectCardAction<
         );
     }
 
-    addPropertiesToEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnEffectApplied>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         const { effect: _effect, ...otherProperties } = this.getProperties(context, additionalProperties);
         const eventContext = event.context as AbilityContext;
@@ -74,7 +74,7 @@ export class LastingEffectCardAction<
         event.matches = Array.isArray(matches) ? matches : [matches];
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventNames.OnEffectApplied>, additionalProperties: Record<string, unknown> = {}): void {
         const eventContext = event.context as AbilityContext;
         let properties = this.getProperties(eventContext, additionalProperties);
         if(!properties.ability) {

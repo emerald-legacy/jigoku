@@ -257,8 +257,8 @@ export class ReduceableFateCost implements Cost {
         const amount = this.getReducedCost(context);
         context.costs.fate = amount;
         return new Event(EventNames.OnSpendFate, { amount, context }, (event) => {
-            event.context.player.markUsedReducers(context.playType ?? '', event.context.source);
-            event.context.player.fate -= this.getFinalFatecost(context, amount);
+            context.player.markUsedReducers(context.playType ?? '', context.source);
+            context.player.fate -= this.getFinalFatecost(context, amount);
             this.afterPayHook(event);
         });
     }

@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export interface ReturnToDeckProperties extends CardActionProperties {
@@ -60,7 +60,7 @@ export class ReturnToDeckAction extends CardGameAction {
         );
     }
 
-    updateEvent(event: Event, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    updateEvent(event: GameEvent<EventNames.OnCardLeavesPlay>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const { shuffle, target, bottom } = this.getProperties(context, additionalProperties) as ReturnToDeckProperties;
         this.updateLeavesPlayEvent(event, card, context, additionalProperties);
         event.destination = card.isDynasty ? Locations.DynastyDeck : Locations.ConflictDeck;
@@ -72,7 +72,7 @@ export class ReturnToDeckAction extends CardGameAction {
         }
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventNames.OnCardLeavesPlay>, additionalProperties: Record<string, unknown> = {}): void {
         this.leavesPlayEventHandler(event, additionalProperties);
         const card = event.card as DrawCard;
         if(event.shuffle) {

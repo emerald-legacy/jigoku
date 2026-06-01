@@ -7,6 +7,7 @@ import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type Player from '../Player.js';
 
 import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 type Derivable<T> = T | ((context: AbilityContext) => T);
 
 export interface DeckSearchProperties extends PlayerActionProperties {
@@ -88,7 +89,7 @@ export class DeckSearchAction extends PlayerAction {
         return [context.player];
     }
 
-    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnDeckSearch>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const { amount } = this.getProperties(context, additionalProperties) as DeckSearchProperties;
         const fAmount = this.#getAmount(amount ?? -1, context);
         super.addPropertiesToEvent(event, player, context, additionalProperties);

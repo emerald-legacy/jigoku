@@ -3,12 +3,6 @@ import type BaseCard from '../BaseCard.js';
 import { EventNames } from '../Constants.js';
 import type EventWindow from './EventWindow.js';
 
-type Params = {
-    amount: number;
-    context: AbilityContext;
-    cannotBeCancelled: boolean;
-};
-
 export class Event {
     cancelled = false;
     resolved = false;
@@ -26,12 +20,12 @@ export class Event {
 
     constructor(
         public name: string,
-        params: Partial<Params>,
-        private handler?: (event: Event & Partial<Params>) => void
+        params: Record<string, unknown>,
+        private handler?: (event: Event) => void
     ) {
         for(const key in params) {
             if(Object.prototype.hasOwnProperty.call(params, key)) {
-                this[key] = (params as Record<string, unknown>)[key];
+                this[key] = params[key];
             }
         }
     }
@@ -74,11 +68,11 @@ export class Event {
     executeHandler() {
         this.resolved = true;
         if(this.handler) {
-            this.handler(this as Event & Partial<Params>);
+            this.handler(this);
         }
     }
 
-    replaceHandler(newHandler: (event: Event & Partial<Params>) => void) {
+    replaceHandler(newHandler: (event: Event) => void) {
         this.handler = newHandler;
     }
 }
