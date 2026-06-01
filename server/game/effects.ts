@@ -2,7 +2,7 @@ import * as AbilityLimit from './AbilityLimit.js';
 import GainAllAbiliitesDynamic from './Effects/GainAllAbilitiesDynamic.js';
 import Restriction from './Effects/Restriction.js';
 import { SuppressEffect } from './Effects/SuppressEffect.js';
-import { EffectBuilder, type EffectTarget } from './Effects/EffectBuilder.js';
+import { EffectBuilder } from './Effects/EffectBuilder.js';
 import { attachmentMilitarySkillModifier } from './Effects/Library/attachmentMilitarySkillModifier.js';
 import { attachmentPoliticalSkillModifier } from './Effects/Library/attachmentPoliticalSkillModifier.js';
 import { canPlayFromOwn } from './Effects/Library/canPlayFromOwn.js';
@@ -15,7 +15,6 @@ import { mustBeDeclaredAsAttacker } from './Effects/Library/mustBeDeclaredAsAtta
 import { reduceCost } from './Effects/Library/reduceCost.js';
 import { switchAttachmentSkillModifiers } from './Effects/Library/switchAttachmentSkillModifiers.js';
 import { EffectNames, PlayTypes, CardTypes, Players } from './Constants.js';
-import type { AbilityContext } from './AbilityContext.js';
 
 /* Types of effect
     1. Static effects - do something for a period
@@ -23,9 +22,9 @@ import type { AbilityContext } from './AbilityContext.js';
     3. Detached effects - do something when applied, and on expiration, but can be ignored in the interim
 */
 
-type Flexible<T> = T | ((target: EffectTarget, context: AbilityContext) => T);
+type Flexible<T> = T | ((...args: any[]) => T);
 
-const Effects: Record<string, any> = {
+const Effects = {
     // Card effects
     addElementAsAttacker: (element: Flexible<string>) => EffectBuilder.card.flexible(EffectNames.AddElementAsAttacker, element),
     addFaction: (faction: string) => EffectBuilder.card.static(EffectNames.AddFaction, faction),
@@ -83,8 +82,8 @@ const Effects: Record<string, any> = {
             unapply: (card: any) => card.controller.removeConflictOpportunity(type)
         }),
     contributeToConflict: (player: any) => EffectBuilder.card.flexible(EffectNames.ContributeToConflict, player),
-    canContributeWhileBowed: (properties: any) => EffectBuilder.card.static(EffectNames.CanContributeWhileBowed, properties),
-    canContributeGloryWhileBowed: (properties: any) =>
+    canContributeWhileBowed: (properties?: any) => EffectBuilder.card.static(EffectNames.CanContributeWhileBowed, properties),
+    canContributeGloryWhileBowed: (properties?: any) =>
         EffectBuilder.card.static(EffectNames.CanContributeGloryWhileBowed, properties),
     copyCard,
     customDetachedCard: (properties: any) => EffectBuilder.card.detached(EffectNames.CustomEffect, properties),
@@ -121,8 +120,8 @@ const Effects: Record<string, any> = {
     taintedStatusDoesNotCostHonor: () => EffectBuilder.card.flexible(EffectNames.TaintedStatusDoesNotCostHonor, true),
     honorStatusReverseModifySkill: () => EffectBuilder.card.flexible(EffectNames.HonorStatusReverseModifySkill, true),
     immunity: (properties: any) => EffectBuilder.card.static(EffectNames.AbilityRestrictions, new Restriction(properties)),
-    increaseLimitOnAbilities: (abilities: any) => EffectBuilder.card.static(EffectNames.IncreaseLimitOnAbilities, abilities),
-    increaseLimitOnPrintedAbilities: (abilities: any) =>
+    increaseLimitOnAbilities: (abilities?: any) => EffectBuilder.card.static(EffectNames.IncreaseLimitOnAbilities, abilities),
+    increaseLimitOnPrintedAbilities: (abilities?: any) =>
         EffectBuilder.card.static(EffectNames.IncreaseLimitOnPrintedAbilities, abilities),
     legendaryFate: (amount: Flexible<number> = 1) => EffectBuilder.card.flexible(EffectNames.LegendaryFate, amount),
     loseAllNonKeywordAbilities: () => EffectBuilder.card.static(EffectNames.LoseAllNonKeywordAbilities, true),
@@ -173,7 +172,7 @@ const Effects: Record<string, any> = {
     setPoliticalSkill: (value: number) => EffectBuilder.card.static(EffectNames.SetPoliticalSkill, value),
     setProvinceStrength: (value: number) => EffectBuilder.card.static(EffectNames.SetProvinceStrength, value),
     setProvinceStrengthBonus: (value: Flexible<number>) => EffectBuilder.card.flexible(EffectNames.SetProvinceStrengthBonus, value),
-    provinceCannotHaveSkillIncreased: (value: any) =>
+    provinceCannotHaveSkillIncreased: (value?: any) =>
         EffectBuilder.card.static(EffectNames.ProvinceCannotHaveSkillIncreased, value),
     switchBaseSkills: () => EffectBuilder.card.static(EffectNames.SwitchBaseSkills, true),
     suppressEffects: (condition: any) =>
@@ -181,15 +180,15 @@ const Effects: Record<string, any> = {
     takeControl: (player: any) => EffectBuilder.card.static(EffectNames.TakeControl, player),
     triggersAbilitiesFromHome: (properties: any) =>
         EffectBuilder.card.static(EffectNames.TriggersAbilitiesFromHome, properties),
-    participatesFromHome: (properties: any) => EffectBuilder.card.static(EffectNames.ParticipatesFromHome, properties),
+    participatesFromHome: (properties?: any) => EffectBuilder.card.static(EffectNames.ParticipatesFromHome, properties),
     unlessActionCost: (properties: any) => EffectBuilder.card.static(EffectNames.UnlessActionCost, properties),
-    replacePrintedElement: (value: string) => EffectBuilder.card.static(EffectNames.ReplacePrintedElement, value),
+    replacePrintedElement: (value: any) => EffectBuilder.card.static(EffectNames.ReplacePrintedElement, value),
     winDuel: (duel: any) => EffectBuilder.card.static(EffectNames.WinDuel, duel),
     winDuelTies: () => EffectBuilder.card.static(EffectNames.WinDuelTies, true),
     ignoreDuelSkill: () => EffectBuilder.card.static(EffectNames.IgnoreDuelSkill, true),
     // Ring effects
-    addElement: (element: Flexible<string>) => EffectBuilder.ring.flexible(EffectNames.AddElement, element),
-    cannotBidInDuels: (num: number) => EffectBuilder.player.static(EffectNames.CannotBidInDuels, num),
+    addElement: (element: Flexible<string | string[]>) => EffectBuilder.ring.flexible(EffectNames.AddElement, element),
+    cannotBidInDuels: (num: number | string) => EffectBuilder.player.static(EffectNames.CannotBidInDuels, num),
     cannotDeclareRing: (match: any) => EffectBuilder.ring.static(EffectNames.CannotDeclareRing, match),
     considerRingAsClaimed: (match: any) => EffectBuilder.ring.static(EffectNames.ConsiderRingAsClaimed, match),
     // Player effects
@@ -197,7 +196,7 @@ const Effects: Record<string, any> = {
     additionalCardPlayed: (amount: Flexible<number> = 1) => EffectBuilder.player.flexible(EffectNames.AdditionalCardPlayed, amount),
     additionalCharactersInConflict: (amount: Flexible<number>) =>
         EffectBuilder.player.flexible(EffectNames.AdditionalCharactersInConflict, amount),
-    additionalConflict: (type: string) => EffectBuilder.player.static(EffectNames.AdditionalConflict, type),
+    additionalConflict: (type?: string) => EffectBuilder.player.static(EffectNames.AdditionalConflict, type),
     additionalTriggerCost: (func: any) => EffectBuilder.player.static(EffectNames.AdditionalTriggerCost, func),
     additionalPlayCost: (func: any) => EffectBuilder.player.static(EffectNames.AdditionalPlayCost, func),
     alternateFatePool: (match: any) => EffectBuilder.player.static(EffectNames.AlternateFatePool, match),
@@ -249,7 +248,7 @@ const Effects: Record<string, any> = {
             apply: (player: any) => (player.actionPhasePriority = true),
             unapply: (player: any) => (player.actionPhasePriority = false)
         }),
-    increaseCost: (properties: any) => Effects.reduceCost(Object.assign({}, properties, { amount: -properties.amount })),
+    increaseCost: (properties: any) => reduceCost(Object.assign({}, properties, { amount: -properties.amount })),
     modifyCardsDrawnInDrawPhase: (amount: Flexible<number>) =>
         EffectBuilder.player.flexible(EffectNames.ModifyCardsDrawnInDrawPhase, amount),
     playerCannot: (properties: any) =>
@@ -264,7 +263,7 @@ const Effects: Record<string, any> = {
             properties
         ),
     reduceCost,
-    reduceNextPlayedCardCost: (amount: any, match: any) =>
+    reduceNextPlayedCardCost: (amount: any, match?: any) =>
         EffectBuilder.player.detached(EffectNames.CostReducer, {
             apply: (player: any, context: any) =>
                 player.addCostReducer(context.source, { amount: amount, match: match, limit: AbilityLimit.fixed(1) }),

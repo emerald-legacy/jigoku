@@ -45,7 +45,7 @@ export default class EbbAndFlow extends DrawCard {
                                 target: ctx.targets.mine,
                                 effect: [
                                     AbilityDsl.effects.blank(),
-                                    AbilityDsl.effects.gainAllAbilities(ctx.targets.opponents, true)
+                                    AbilityDsl.effects.gainAllAbilities(ctx.targets.opponents as DrawCard, true)
                                 ],
                                 duration: Durations.UntilEndOfConflict
                             }),
@@ -53,7 +53,7 @@ export default class EbbAndFlow extends DrawCard {
                                 target: ctx.targets.opponents,
                                 effect: [
                                     AbilityDsl.effects.blank(),
-                                    AbilityDsl.effects.gainAllAbilities(ctx.targets.mine, true)
+                                    AbilityDsl.effects.gainAllAbilities(ctx.targets.mine as DrawCard, true)
                                 ],
                                 duration: Durations.UntilEndOfConflict
                             })

@@ -1,6 +1,7 @@
 import type { AbilityContext } from './AbilityContext.js';
 import type { AbilityLimit } from './AbilityLimit.js';
 import type BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
 import type { CardTypes, PlayTypes } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
@@ -11,7 +12,7 @@ export type CostReducerProps = {
     limit?: AbilityLimit;
     playingTypes?: PlayTypes;
     amount?: number | ((card: BaseCard, player: Player) => number);
-    match?: (card: BaseCard, source: BaseCard) => boolean;
+    match?: (card: DrawCard, source: BaseCard) => boolean;
     targetCondition?: (target: BaseCard, source: BaseCard, context: AbilityContext) => boolean;
 };
 
@@ -19,7 +20,7 @@ export class CostReducer {
     uses = 0;
     private amount: number | ((card: BaseCard, player: Player) => number);
     private costFloor: number;
-    private match?: (card: BaseCard, source: BaseCard) => boolean;
+    private match?: (card: DrawCard, source: BaseCard) => boolean;
     private cardType?: CardTypes;
     private targetCondition?: (target: BaseCard, source: BaseCard, context: AbilityContext<any>) => boolean;
     private limit?: AbilityLimit;
@@ -77,7 +78,7 @@ export class CostReducer {
     }
 
     private checkMatch(card: BaseCard) {
-        return !this.match || this.match(card, this.source);
+        return !this.match || this.match(card as DrawCard, this.source);
     }
 
     private checkTargetCondition(context: AbilityContext, target?: BaseCard): boolean {

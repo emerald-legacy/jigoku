@@ -28,7 +28,7 @@ export default class GraspOfEarth2 extends DrawCard {
                         event.card.type === CardTypes.Character && context.source.isParticipating()
                 },
                 effect: 'deny {1}\'s movement',
-                effectArgs: (context: TriggeredAbilityContext) => [context.event.card],
+                effectArgs: (context: TriggeredAbilityContext) => [context.event.card as DrawCard],
                 gameAction: AbilityDsl.actions.cancel()
             })
         });

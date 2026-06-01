@@ -8,6 +8,7 @@ import type { WhenType } from '../Interfaces.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import type { StatusToken } from '../StatusToken.js';
+import type Effect from './Effect.js';
 import CardEffect from './CardEffect.js';
 import ConflictEffect from './ConflictEffect.js';
 import DetachedEffect from './DetachedEffect.js';
@@ -27,6 +28,8 @@ type DetachedValue = {
     unapply: (target: EffectTarget, context: AbilityContext, state?: unknown) => unknown;
 };
 type FlexibleValue = StaticValue | DynamicValue;
+
+export type EffectFactory = (game: Game, source: BaseCard, props: Props) => Effect;
 
 type Props = {
     targetLocation?: Locations | Locations[];
