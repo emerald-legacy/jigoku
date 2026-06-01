@@ -233,4 +233,17 @@ export class GameObject {
         const suppressedEffects = suppressEffects.reduce<CardEffect[]>((array, effect) => array.concat(effect.getValue(this)), []);
         return this.effects.filter((effect) => !suppressedEffects.includes(effect));
     }
+
+    // Copies this object's effect-tracking state onto a target (used by createSnapshot,
+    // which bypasses the constructor). Keeps the private suppressEffectCount in sync —
+    // hand-copying in subclasses could not reach it and silently dropped it.
+    protected cloneEffectStateInto(target: GameObject): void {
+        target.effects = [...this.effects];
+        const clonedIndex = new Map<EffectNames, CardEffect[]>();
+        for(const [type, bucket] of this.effectsByType) {
+            clonedIndex.set(type, [...bucket]);
+        }
+        target.effectsByType = clonedIndex;
+        target.suppressEffectCount = this.suppressEffectCount;
+    }
 }

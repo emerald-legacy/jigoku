@@ -370,13 +370,8 @@ class DrawCard extends BaseCard {
         clone.printedGlory = this.printedGlory;
         clone.printedStrengthBonus = this.printedStrengthBonus;
 
-        // Shallow copy arrays
-        clone.effects = [...this.effects];
-        const clonedIndex = new Map();
-        for(const [k, v] of this.effectsByType) {
-            clonedIndex.set(k, [...v]);
-        }
-        clone.effectsByType = clonedIndex;
+        // Copy effect-tracking state (incl. suppressEffectCount) via GameObject helper
+        this.cloneEffectStateInto(clone);
         clone.statusManager = this.statusManager.cloneFor(clone);
         clone.skillCalculator = new SkillCalculator(clone);
         clone.traits = Array.from(this.getTraits());
