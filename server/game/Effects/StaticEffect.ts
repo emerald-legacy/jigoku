@@ -97,7 +97,7 @@ class StaticEffect implements CardEffect {
     value: EffectValue<any>;
     context!: AbilityContext;
     duration: Durations | null;
-    copies: GainAbility[];
+    copies: Map<string, GainAbility>;
     isConditional?: boolean;
 
     constructor(type: EffectNames, value: any) {
@@ -109,7 +109,7 @@ class StaticEffect implements CardEffect {
         }
         this.value.reset();
         this.duration = null;
-        this.copies = [];
+        this.copies = new Map();
     }
 
     apply(target: GameObject) {
@@ -117,7 +117,7 @@ class StaticEffect implements CardEffect {
         if(this.value instanceof GainAbility && this.value.abilityType === AbilityTypes.Persistent) {
             const copy = this.value.getCopy();
             copy.apply(target as DrawCard);
-            this.copies.push(copy);
+            this.copies.set(target.uuid, copy);
         } else {
             this.value.apply(target);
         }
@@ -125,9 +125,13 @@ class StaticEffect implements CardEffect {
 
     unapply(target: GameObject) {
         target.removeEffect(this);
-        this.value.unapply(target);
-        this.copies.forEach((a) => a.unapply(target as DrawCard));
-        this.copies = [];
+        const copy = this.copies.get(target.uuid);
+        if(copy) {
+            copy.unapply(target as DrawCard);
+            this.copies.delete(target.uuid);
+        } else {
+            this.value.unapply(target);
+        }
     }
 
     getValue<T = any>(_target?: GameObject): T {
