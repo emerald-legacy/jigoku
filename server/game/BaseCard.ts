@@ -146,8 +146,8 @@ class BaseCard extends EffectSource {
         if(mostRecentEffect) {
             actions = mostRecentEffect.value.getActions(this);
         }
-        const effectActions = this.getEffects(EffectNames.GainAbility).filter(
-            (ability: any) => ability.abilityType === AbilityTypes.Action
+        const effectActions = this.getEffects<CardAction>(EffectNames.GainAbility).filter(
+            (ability) => ability.abilityType === AbilityTypes.Action
         );
 
         for(const effect of this.getRawEffects()) {
@@ -171,7 +171,7 @@ class BaseCard extends EffectSource {
         const lostAllNonKeywordsAbilities = this.anyEffect(EffectNames.LoseAllNonKeywordAbilities);
         let allAbilities = actions.concat(effectActions);
         if(lostAllNonKeywordsAbilities) {
-            allAbilities = allAbilities.filter((a: any) => a.isKeywordAbility());
+            allAbilities = allAbilities.filter((a) => a.isKeywordAbility());
         }
         return allAbilities;
     }
@@ -181,7 +181,7 @@ class BaseCard extends EffectSource {
     }
 
     _getReactions(ignoreDynamicGains = false): TriggeredAbility[] {
-        const TriggeredAbilityTypes = [
+        const TriggeredAbilityTypes: string[] = [
             AbilityTypes.ForcedInterrupt,
             AbilityTypes.ForcedReaction,
             AbilityTypes.Interrupt,
@@ -193,7 +193,7 @@ class BaseCard extends EffectSource {
         if(mostRecentEffect) {
             reactions = mostRecentEffect.value.getReactions(this);
         }
-        const effectReactions = this.getEffects(EffectNames.GainAbility).filter((ability: any) =>
+        const effectReactions = this.getEffects<TriggeredAbility>(EffectNames.GainAbility).filter((ability) =>
             TriggeredAbilityTypes.includes(ability.abilityType)
         );
         for(const effect of this.getRawEffects()) {
@@ -217,7 +217,7 @@ class BaseCard extends EffectSource {
         const lostAllNonKeywordsAbilities = this.anyEffect(EffectNames.LoseAllNonKeywordAbilities);
         let allAbilities = reactions.concat(effectReactions);
         if(lostAllNonKeywordsAbilities) {
-            allAbilities = allAbilities.filter((a: any) => a.isKeywordAbility());
+            allAbilities = allAbilities.filter((a) => a.isKeywordAbility());
         }
         return allAbilities;
     }

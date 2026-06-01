@@ -22,8 +22,7 @@ class BaseAction extends BaseCardAbility {
         if(target) {
             properties.target = target;
         }
-        super(properties);
-        this.card = card;
+        super(card, properties);
     }
 
     meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {

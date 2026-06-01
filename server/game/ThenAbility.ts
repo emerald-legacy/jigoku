@@ -20,9 +20,8 @@ class ThenAbility extends BaseCardAbility {
     cannotTargetFirst = true;
 
     constructor(card: BaseCard, properties: ThenAbilityProperties) {
-        super(properties);
+        super(card, properties);
 
-        this.card = card;
         this.properties = properties;
         this.handler = properties.handler || this.executeGameActions.bind(this);
     }
