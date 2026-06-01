@@ -1,4 +1,4 @@
-import AbilityResolver from '../../../build/server/game/gamesteps/abilityresolver.js';
+import AbilityResolver from '../../../build/server/game/gamesteps/AbilityResolver.js';
 
 describe('AbilityResolver', function() {
     beforeEach(function() {

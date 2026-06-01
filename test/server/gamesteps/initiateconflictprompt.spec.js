@@ -1,4 +1,4 @@
-import InitateConflictPrompt from '../../../build/server/game/gamesteps/conflict/initiateconflictprompt.js';
+import InitateConflictPrompt from '../../../build/server/game/gamesteps/conflict/InitiateConflictPrompt.js';
 
 describe('InitateConflictPrompt: ', function() {
     beforeEach(function() {

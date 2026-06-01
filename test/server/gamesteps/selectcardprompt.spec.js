@@ -1,4 +1,4 @@
-import SelectCardPrompt from '../../../build/server/game/gamesteps/selectcardprompt.js';
+import SelectCardPrompt from '../../../build/server/game/gamesteps/SelectCardPrompt.js';
 
 describe('the SelectCardPrompt', function() {
     function createCardSpy(properties = {}) {
