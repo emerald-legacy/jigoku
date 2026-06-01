@@ -99,7 +99,7 @@ import { TransferHonorAction, TransferHonorProperties } from './TransferHonorAct
 import { TriggerAbilityAction, TriggerAbilityProperties } from './TriggerAbilityAction.js';
 import { TurnCardFacedownAction, TurnCardFacedownProperties } from './TurnCardFacedownAction.js';
 
-type PropsFactory<Props, Target = unknown> =
+type PropsFactory<Props, _Target = unknown> =
     Props | ((context: any) => Props);
 
 //////////////
@@ -440,7 +440,7 @@ export function moveStatusToken<Target = unknown>(propertyFactory: PropsFactory<
 export function cancel<Target = unknown>(propertyFactory: PropsFactory<CancelActionProperties, NoInfer<Target>> = {}): GameAction {
     return new CancelAction(propertyFactory as ConstructorParameters<typeof CancelAction>[0]);
 }
-export function handler<Target = unknown>(propertyFactory: PropsFactory<HandlerProperties, NoInfer<Target>>): GameAction {
+export function handler<Target = unknown>(propertyFactory: PropsFactory<HandlerProperties, NoInfer<Target>> = {}): GameAction {
     return new HandlerAction(propertyFactory as ConstructorParameters<typeof HandlerAction>[0]);
 }
 export function noAction(): GameAction {

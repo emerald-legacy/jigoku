@@ -1,6 +1,8 @@
 import DrawCard from '../../../DrawCard.js';
 import { AbilityTypes } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import type { Conflict } from '../../../Conflict.js';
 
 class TwinSisterBlades extends DrawCard {
     static id = 'twin-sister-blades';
@@ -20,8 +22,8 @@ class TwinSisterBlades extends DrawCard {
         });
     }
 
-    getNumberOfCards(context: any) {
-        if(context.source.hasTrait('duelist') && context.game.currentConflict.hasMoreParticipants(context.player.opponent)) {
+    getNumberOfCards(context: AbilityContext) {
+        if(context.source.hasTrait('duelist') && (context.game.currentConflict as Conflict).hasMoreParticipants(context.player.opponent)) {
             return 2;
         }
         return 1;

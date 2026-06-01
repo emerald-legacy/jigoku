@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, Players, TargetModes, Locations, AbilityTypes } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import type CardAbility from '../../CardAbility.js';
 
 class BattlefieldOrders extends DrawCard {
     static id = 'battlefield-orders';
@@ -23,16 +25,16 @@ class BattlefieldOrders extends DrawCard {
                 cardType: CardTypes.Character,
                 cardCondition: (card: any) => card.isParticipating(),
                 controller: Players.Any,
-                gameAction: AbilityDsl.actions.resolveAbility((context: any) => ({
-                    target: context.targetAbility.card,
-                    ability: context.targetAbility,
-                    player: context.targetAbility.card.controller,
+                gameAction: AbilityDsl.actions.resolveAbility((context: AbilityContext) => ({
+                    target: (context.targetAbility as CardAbility).card,
+                    ability: context.targetAbility as CardAbility,
+                    player: (context.targetAbility as CardAbility).card.controller,
                     ignoredRequirements: ['player'],
-                    choosingPlayerOverride: context.choosingPlayerOverride
+                    choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
                 }))
             },
             effect: 'trigger {1}\'s \'{2}\' ability',
-            effectArgs: (context: any) => [context.targetAbility.card, context.targetAbility.title]
+            effectArgs: (context: AbilityContext) => [(context.targetAbility as CardAbility).card, (context.targetAbility as CardAbility).title as string]
         });
     }
 }

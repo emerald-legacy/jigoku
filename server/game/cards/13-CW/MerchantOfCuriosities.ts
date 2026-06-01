@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import type BaseCard from '../../BaseCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { Locations, TargetModes, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { Event } from '../../Events/Event.js';
@@ -52,15 +53,15 @@ const merchantOfCuriositiesCost = function () {
                 });
             }
         },
-        payEvent: function (context: any) {
+        payEvent: function (context: AbilityContext) {
             if(context.costs.merchantOfCuriositiesCostPaid) {
                 let events: Event[] = [];
 
-                let discardAction = context.game.actions.discardCard({ target: context.costs.merchantOfCuriositiesCostDiscardedCard });
-                events.push(discardAction.getEvent(context.costs.merchantOfCuriositiesCostDiscardedCard, context));
+                let discardAction = context.game.actions.discardCard({ target: context.costs.merchantOfCuriositiesCostDiscardedCard as DrawCard });
+                events.push(discardAction.getEvent(context.costs.merchantOfCuriositiesCostDiscardedCard as DrawCard, context));
 
-                let honorAction = context.game.actions.takeHonor({ target: context.player.opponent });
-                events.push(honorAction.getEvent(context.player.opponent, context));
+                let honorAction = context.game.actions.takeHonor({ target: context.player.opponent as Player });
+                events.push(honorAction.getEvent(context.player.opponent as Player, context));
                 context.game.addMessage('{0} chooses to discard a card and give {1} 1 honor', context.player.opponent, context.player);
 
                 return events;
@@ -93,10 +94,10 @@ class MerchantOfCuriosities extends DrawCard {
         });
     }
 
-    buildString(context: any) {
+    buildString(context: AbilityContext) {
         if(context.costs.merchantOfCuriositiesCostPaid) {
             return '.  ' + (context.player.opponent as Player).name + ' gives ' + context.player.name + ' 1 honor to discard ' +
-                context.costs.merchantOfCuriositiesCostDiscardedCard.name + ' and draw a card';
+                (context.costs.merchantOfCuriositiesCostDiscardedCard as DrawCard).name + ' and draw a card';
         }
         return '';
     }

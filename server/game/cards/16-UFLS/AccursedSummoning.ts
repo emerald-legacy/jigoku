@@ -1,5 +1,9 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import type Player from '../../Player.js';
+import type { CardData } from '../../types/CardData.js';
+import type { Event } from '../../Events/Event.js';
 
 const accursedSummoningCost = function () {
     return {
@@ -75,15 +79,15 @@ const accursedSummoningCost = function () {
 
             promptForCost();
         },
-        payEvent: function (context: any) {
+        payEvent: function (context: AbilityContext) {
             if(context.costs.accursedSummoningCostCreature) {
-                const oni = context.costs.accursedSummoningCostCreature;
-                const copy = new oni.constructor(context.player, oni.cardData);
+                const oni = context.costs.accursedSummoningCostCreature as DrawCard;
+                const copy = new (oni.constructor as new (owner: Player, cardData: CardData) => DrawCard)(context.player, oni.cardData);
                 context.game.allCards.push(copy);
                 context.costs.accursedSummoningCostCreature = copy;
 
-                let events = [];
-                const honorAmount = context.costs.accursedSummoningCost;
+                let events: Event[] = [];
+                const honorAmount = context.costs.accursedSummoningCost as number;
                 let honorAction = context.game.actions.loseHonor({ target: context.player, amount: honorAmount });
                 events.push(honorAction.getEvent(context.player, context));
                 return events;
