@@ -157,7 +157,7 @@ export class GameObject {
                 // @ts-expect-error -- getReducedCost exists on play action abilities but is not declared on the base AbilityContext.ability type
                 fateCost = context.ability.getReducedCost(context);
             }
-            let alternateFate = context.player.getAvailableAlternateFate(context.playType ?? '', context);
+            let alternateFate = context.player.getAvailableAlternateFate(context.playType, context);
             let availableFate = Math.max(context.player.fate - Math.max(fateCost - alternateFate, 0), 0);
 
             return (

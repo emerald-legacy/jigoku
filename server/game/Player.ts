@@ -687,7 +687,7 @@ class Player extends GameObject {
             );
     }
 
-    isCardInPlayableLocation(card: BaseCard, playingType: string | null = null): boolean {
+    isCardInPlayableLocation(card: BaseCard, playingType: PlayTypes | null = null): boolean {
         if(card.getEffects(EffectNames.CanPlayFromOutOfPlay).filter((a: any) => a.player(this, card)).length > 0) {
             return true;
         }
@@ -697,7 +697,7 @@ class Player extends GameObject {
         );
     }
 
-    findPlayType(card: BaseCard): string | undefined {
+    findPlayType(card: BaseCard): PlayTypes | undefined {
         if(card.getEffects(EffectNames.CanPlayFromOutOfPlay).filter((a: any) => a.player(this, card)).length > 0) {
             const effects = card.getEffects(EffectNames.CanPlayFromOutOfPlay).filter((a: any) => a.player(this, card));
             return effects[effects.length - 1].playType || PlayTypes.PlayFromHand;
@@ -890,7 +890,7 @@ class Player extends GameObject {
         }
     }
 
-    addPlayableLocation(type: PlayTypes | string, player: Player, location: Locations, cards: BaseCard[] = []): PlayableLocation | undefined {
+    addPlayableLocation(type: PlayTypes, player: Player, location: Locations, cards: BaseCard[] = []): PlayableLocation | undefined {
         if(!player) {
             return undefined;
         }
@@ -903,7 +903,7 @@ class Player extends GameObject {
         this.playableLocations = this.playableLocations.filter((l) => l !== location);
     }
 
-    getAlternateFatePools(playingType: string, card: DrawCard, context?: AbilityContext): any[] {
+    getAlternateFatePools(playingType: PlayTypes | undefined, card: DrawCard, context?: AbilityContext): any[] {
         const effects = this.getEffects(EffectNames.AlternateFatePool);
         let alternateFatePools = effects
             .filter((match: any) => match(card) && match(card).getFate() > 0)
@@ -938,7 +938,7 @@ class Player extends GameObject {
         return [...new Set(alternateFatePools)];
     }
 
-    getMinimumCost(playingType: string, context: AbilityContext, target?: any, ignoreType: boolean = false): number {
+    getMinimumCost(playingType: PlayTypes | undefined, context: AbilityContext, target?: any, ignoreType: boolean = false): number {
         const card = context.source;
         const reducedCost = this.getReducedCost(playingType, card as DrawCard, target, ignoreType);
         const alternateFatePools = this.getAlternateFatePools(playingType, card as DrawCard, context);
@@ -960,7 +960,7 @@ class Player extends GameObject {
         return Math.max(reducedCost - triggeredCostReducers - alternateFate, 0);
     }
 
-    getReducedCost(playingType: PlayTypes | string, card: DrawCard, target?: any, ignoreType: boolean = false): number {
+    getReducedCost(playingType: PlayTypes | undefined, card: DrawCard, target?: any, ignoreType: boolean = false): number {
         const matchingReducers = this.costReducers.filter((reducer) =>
             reducer.canReduce(playingType as PlayTypes, card, target, ignoreType)
         );
@@ -978,7 +978,7 @@ class Player extends GameObject {
         return Math.max(reducedCost, costFloor);
     }
 
-    getTotalCostModifiers(playingType: PlayTypes | string, card: DrawCard, target?: any, ignoreType: boolean = false): number {
+    getTotalCostModifiers(playingType: PlayTypes | undefined, card: DrawCard, target?: any, ignoreType: boolean = false): number {
         const baseCost = 0;
         const matchingReducers = this.costReducers.filter((reducer) =>
             reducer.canReduce(playingType as PlayTypes, card, target, ignoreType)
@@ -987,7 +987,7 @@ class Player extends GameObject {
         return reducedCost;
     }
 
-    getAvailableAlternateFate(playingType: string, context: AbilityContext): number {
+    getAvailableAlternateFate(playingType: PlayTypes | undefined, context: AbilityContext): number {
         const card = context.source as DrawCard;
         const alternateFatePools = this.getAlternateFatePools(playingType, card);
         const alternateFate = alternateFatePools.reduce((total: number, pool: any) => total + pool.fate, 0);
@@ -1030,7 +1030,7 @@ class Player extends GameObject {
         return targetCost;
     }
 
-    markUsedReducers(playingType: PlayTypes | string, card: DrawCard, target: any = null): void {
+    markUsedReducers(playingType: PlayTypes | undefined, card: DrawCard, target: any = null): void {
         const matchingReducers = this.costReducers.filter((reducer) => reducer.canReduce(playingType as PlayTypes, card, target));
         matchingReducers.forEach((reducer) => {
             reducer.markUsed();
@@ -1164,27 +1164,31 @@ class Player extends GameObject {
             Locations.RemovedFromGame,
             Locations.UnderneathStronghold
         ];
-        const legalLocations: Record<string, Locations[]> = {
-            stronghold: [Locations.StrongholdProvince],
-            role: [Locations.Role],
-            province: [...this.game.getProvinceArray(), Locations.ProvinceDeck],
-            holding: dynastyCardLocations,
+        // A character's printed type is always 'character'; dynasty and conflict
+        // characters live in different zones, so split that one type into two
+        // derived categories. These are not CardTypes — they are lookup keys.
+        type LocationCategory = CardTypes | 'dynastyCharacter' | 'conflictCharacter';
+        const legalLocations: Partial<Record<LocationCategory, Locations[]>> = {
+            [CardTypes.Stronghold]: [Locations.StrongholdProvince],
+            [CardTypes.Role]: [Locations.Role],
+            [CardTypes.Province]: [...this.game.getProvinceArray(), Locations.ProvinceDeck],
+            [CardTypes.Holding]: dynastyCardLocations,
             conflictCharacter: [...conflictCardLocations, Locations.PlayArea],
             dynastyCharacter: [...dynastyCardLocations, Locations.PlayArea],
-            event: [...new Set([...conflictCardLocations, ...dynastyCardLocations, Locations.BeingPlayed])],
-            attachment: [...conflictCardLocations, Locations.PlayArea]
+            [CardTypes.Event]: [...new Set([...conflictCardLocations, ...dynastyCardLocations, Locations.BeingPlayed])],
+            [CardTypes.Attachment]: [...conflictCardLocations, Locations.PlayArea]
         };
 
-        let type: CardTypes | string = card.type;
+        let category: LocationCategory = card.type;
         if(location === Locations.DynastyDiscardPile || location === Locations.ConflictDiscardPile) {
-            type = card.printedType || card.type;
+            category = (card.printedType as CardTypes) || card.type;
         }
 
-        if(type === 'character') {
-            type = card.isDynasty ? 'dynastyCharacter' : 'conflictCharacter';
+        if(category === CardTypes.Character) {
+            category = card.isDynasty ? 'dynastyCharacter' : 'conflictCharacter';
         }
 
-        return legalLocations[type] && legalLocations[type].includes(location as Locations);
+        return !!legalLocations[category]?.includes(location as Locations);
     }
 
     promptForAttachment(card: DrawCard, playingType?: string): void {

@@ -55,7 +55,7 @@ export interface StoredPersistentEffect {
     createCopies?: boolean;
     ref?: Effect[];
     type?: EffectNames;
-    abilityType?: AbilityTypes | string;
+    abilityType?: AbilityTypes;
     isKeywordEffect?: boolean;
 }
 

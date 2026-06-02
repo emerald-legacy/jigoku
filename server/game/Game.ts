@@ -1099,7 +1099,7 @@ class Game {
     initiateConflict(
         player: Player,
         canPass: boolean,
-        forcedDeclaredType?: ConflictTypes | string,
+        forcedDeclaredType?: ConflictTypes,
         forceProvinceTarget?: any
     ): void {
         const conflict = new Conflict(
@@ -1108,7 +1108,7 @@ class Game {
             player.opponent as Player,
             undefined,
             forceProvinceTarget ?? undefined,
-            forcedDeclaredType as ConflictTypes
+            forcedDeclaredType
         );
         this.queueStep(new ConflictFlow(this, conflict, canPass));
     }

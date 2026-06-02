@@ -4,13 +4,13 @@ import type { AbilityLimit } from '../AbilityLimit.js';
 import type BaseCard from '../BaseCard.js';
 
 export default class GainAbility extends EffectValue<any> {
-    abilityType: string;
+    abilityType: AbilityTypes;
     createCopies: boolean;
-    forCopying: { abilityType: string; ability: any } | undefined;
+    forCopying: { abilityType: AbilityTypes; ability: any } | undefined;
     grantedAbilityLimits: Record<string, AbilityLimit>;
     properties: any;
 
-    constructor(abilityType: string, ability: any) {
+    constructor(abilityType: AbilityTypes, ability: any) {
         super(true);
         this.abilityType = abilityType;
         this.createCopies = false;
