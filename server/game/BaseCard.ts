@@ -182,7 +182,7 @@ class BaseCard extends EffectSource {
     }
 
     _getReactions(ignoreDynamicGains = false): TriggeredAbility[] {
-        const TriggeredAbilityTypes: string[] = [
+        const TriggeredAbilityTypes: AbilityTypes[] = [
             AbilityTypes.ForcedInterrupt,
             AbilityTypes.ForcedReaction,
             AbilityTypes.Interrupt,

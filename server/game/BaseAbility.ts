@@ -49,7 +49,7 @@ interface TargetResults {
  * ability is generated from.
  */
 class BaseAbility {
-    abilityType: AbilityTypes | string = 'action';
+    abilityType: AbilityTypes = AbilityTypes.Action;
     gameAction: GameAction[];
     targets: AbilityTarget[];
     cost: any[];
