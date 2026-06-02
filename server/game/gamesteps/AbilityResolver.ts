@@ -7,6 +7,7 @@ import type Game from '../Game.js';
 import type { Event } from '../Events/Event.js';
 import type BaseAbility from '../BaseAbility.js';
 import type CardAbility from '../CardAbility.js';
+import type { AbilityContext } from '../AbilityContext.js';
 
 type AbilityResolverTarget = Parameters<BaseAbility['resolveRemainingTargets']>[1];
 
@@ -30,7 +31,7 @@ interface AbilityResolverCostResults {
 }
 
 class AbilityResolver extends BaseStepWithPipeline {
-    context: any;
+    context: AbilityContext;
     canCancel: boolean;
     initiateAbility: boolean;
     passPriority: boolean;
@@ -40,7 +41,7 @@ class AbilityResolver extends BaseStepWithPipeline {
     costResults: AbilityResolverCostResults;
     cancelled?: boolean;
 
-    constructor(game: Game, context: any) {
+    constructor(game: Game, context: AbilityContext) {
         super(game);
 
         this.context = context;

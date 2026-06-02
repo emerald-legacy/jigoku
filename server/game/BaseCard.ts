@@ -55,6 +55,7 @@ export interface StoredPersistentEffect {
     createCopies?: boolean;
     ref?: Effect[];
     type?: EffectNames;
+    abilityType?: AbilityTypes | string;
     isKeywordEffect?: boolean;
 }
 
@@ -226,9 +227,9 @@ class BaseCard extends EffectSource {
         return this._getReactions();
     }
 
-    _getPersistentEffects(ignoreDynamicGains = false): any[] {
-        let gainedPersistentEffects = this.getEffects(EffectNames.GainAbility).filter(
-            (ability: any) => ability.abilityType === AbilityTypes.Persistent
+    _getPersistentEffects(ignoreDynamicGains = false): StoredPersistentEffect[] {
+        let gainedPersistentEffects = this.getEffects<StoredPersistentEffect>(EffectNames.GainAbility).filter(
+            (ability) => ability.abilityType === AbilityTypes.Persistent
         );
 
         const mostRecentEffect = this.#mostRecentEffect((effect) => effect.type === EffectNames.CopyCharacter);
@@ -261,7 +262,7 @@ class BaseCard extends EffectSource {
         const lostAllNonKeywordsAbilities = this.anyEffect(EffectNames.LoseAllNonKeywordAbilities);
         if(lostAllNonKeywordsAbilities) {
             let allAbilities = this.abilities.persistentEffects.concat(gainedPersistentEffects);
-            allAbilities = allAbilities.filter((a: any) => a.isKeywordEffect || a.type === EffectNames.AddKeyword);
+            allAbilities = allAbilities.filter((a) => a.isKeywordEffect || a.type === EffectNames.AddKeyword);
             return allAbilities;
         }
         return this.isBlank()
@@ -269,7 +270,7 @@ class BaseCard extends EffectSource {
             : this.abilities.persistentEffects.concat(gainedPersistentEffects);
     }
 
-    get persistentEffects(): any[] {
+    get persistentEffects(): StoredPersistentEffect[] {
         return this._getPersistentEffects();
     }
 
@@ -595,7 +596,7 @@ class BaseCard extends EffectSource {
     applyAnyLocationPersistentEffects(): void {
         for(const effect of this.persistentEffects) {
             if(effect.location === Locations.Any) {
-                effect.ref = this.addEffectToEngine(effect);
+                effect.ref = this.addEffectToEngine({ ...effect, location: effect.location });
             }
         }
     }
@@ -656,11 +657,14 @@ class BaseCard extends EffectSource {
             if(effect.location === Locations.Any) {
                 continue;
             }
-            const locationEntry = activeLocations[effect.location];
+            const location = effect.location as Locations;
+            const locationEntry = activeLocations[location];
             if(locationEntry && locationEntry.includes(to) && !locationEntry.includes(from)) {
-                effect.ref = this.addEffectToEngine(effect);
+                effect.ref = this.addEffectToEngine({ ...effect, location });
             } else if(locationEntry && !locationEntry.includes(to) && locationEntry.includes(from)) {
-                this.removeEffectFromEngine(effect.ref);
+                if(effect.ref) {
+                    this.removeEffectFromEngine(effect.ref);
+                }
                 effect.ref = [];
             }
         }

@@ -1,4 +1,5 @@
 import { getAbilityDsl, type AbilityDslType } from './AbilityDslProvider.js';
+import type { AbilityContext } from './AbilityContext.js';
 import { GameObject } from './GameObject.js';
 import { Locations, Durations } from './Constants.js';
 import type Game from './Game.js';
@@ -11,7 +12,7 @@ interface EffectProperties {
     location?: Locations;
     effect?: EffectFactory | EffectFactory[];
     match?: any;
-    condition?: () => boolean;
+    condition?: (context: AbilityContext) => boolean;
     [key: string]: any;
 }
 
