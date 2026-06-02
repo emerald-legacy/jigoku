@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class EarthBecomesSky extends DrawCard {
     static id = 'earth-becomes-sky';
@@ -10,7 +10,7 @@ class EarthBecomesSky extends DrawCard {
             title: 'Bow a character that just readied',
             when: {
                 onCardReadied: (event, context) =>
-                    event.card.type === CardTypes.Character && event.card.controller === context.player.opponent
+                    event.card.type === CardType.Character && event.card.controller === context.player.opponent
             },
             gameAction: AbilityDsl.actions.bow((context) => ({ target: context.event.card }))
         });

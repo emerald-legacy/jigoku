@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Locations } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class WayOfTheOpenHand extends DrawCard {
@@ -8,9 +8,9 @@ class WayOfTheOpenHand extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Send home opponent\'s character',
-            condition: context => context.game.isDuringConflict() && !(context.game.currentConflict?.getConflictProvinces() ?? []).some((a: any) => a.location === Locations.StrongholdProvince),
+            condition: context => context.game.isDuringConflict() && !(context.game.currentConflict?.getConflictProvinces() ?? []).some((a: any) => a.location === Location.StrongholdProvince),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.controller !== context.player,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.sendHome(),

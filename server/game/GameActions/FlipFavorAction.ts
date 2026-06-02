@@ -1,6 +1,6 @@
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
@@ -8,9 +8,9 @@ export interface FlipFavorProperties extends PlayerActionProperties {
     target?: Player;
 }
 
-export class FlipFavorAction extends PlayerAction<FlipFavorProperties, EventNames.OnFlipFavor> {
+export class FlipFavorAction extends PlayerAction<FlipFavorProperties, EventName.OnFlipFavor> {
     name = 'claimFavor';
-    eventName = EventNames.OnFlipFavor;
+    eventName = EventName.OnFlipFavor;
     effect = 'flip the Imperial favor';
 
     hasLegalTarget(context: AbilityContext, _additionalProperties = {}): boolean {
@@ -25,7 +25,7 @@ export class FlipFavorAction extends PlayerAction<FlipFavorProperties, EventName
         return !!player && this.playerHasFlippableFavor(player) && super.canAffect(player, context);
     }
 
-    eventHandler(event: GameEvent<EventNames.OnFlipFavor>): void {
+    eventHandler(event: GameEvent<EventName.OnFlipFavor>): void {
         const player = event.player;
         if(player.imperialFavor === 'military') {
             player.imperialFavor = 'political';

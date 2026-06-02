@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 
 const elementKey = 'inscribed-tanto-void';
 
@@ -21,7 +21,7 @@ class InscribedTanto extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Claimed Ring',
-            element: Elements.Void
+            element: Element.Void
         });
         return symbols;
     }

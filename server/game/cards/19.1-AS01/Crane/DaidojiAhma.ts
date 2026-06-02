@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { Locations } from '../../../Constants.js';
+import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
@@ -43,7 +43,7 @@ export default class DaidojiAhma extends DrawCard {
         return (
             card.isDishonored &&
             card.controller === context.player &&
-            card.location === Locations.PlayArea &&
+            card.location === Location.PlayArea &&
             card.isFaction('crane')
         );
     }

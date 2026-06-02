@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class DiscouragePursuit extends DrawCard {
     static id = 'discourage-pursuit';
@@ -11,7 +11,7 @@ class DiscouragePursuit extends DrawCard {
 
             cost: AbilityDsl.costs.dishonor({ cardCondition: card => card.hasTrait('shinobi') }),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
                     effect: AbilityDsl.effects.modifyMilitarySkill(-4)

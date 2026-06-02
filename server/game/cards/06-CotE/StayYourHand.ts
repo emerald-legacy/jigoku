@@ -3,7 +3,7 @@ import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventNames } from '../../Constants.js';
+import { EventName } from '../../Constants.js';
 class StayYourHand extends DrawCard {
     static id = 'stay-your-hand';
 
@@ -11,7 +11,7 @@ class StayYourHand extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel a duel',
             when: {
-                onDuelInitiated: (event: EventPayload<EventNames.OnDuelInitiated>, context: AbilityContext) =>
+                onDuelInitiated: (event: EventPayload<EventName.OnDuelInitiated>, context: AbilityContext) =>
                     !!event.context &&
                     event.context.player === context.player.opponent &&
                     (Object.values(event.context.targets).some((card: any) => card.controller === context.player) ||

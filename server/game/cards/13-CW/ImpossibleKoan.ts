@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ImpossibleKoan extends DrawCard {
@@ -10,7 +10,7 @@ class ImpossibleKoan extends DrawCard {
             title: 'Make all participating characters have base skills of 1/1',
             condition: () => this.game.isDuringConflict(),
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: context.game.findAnyCardsInPlay((card: any) => card.type === CardTypes.Character),
+                target: context.game.findAnyCardsInPlay((card: any) => card.type === CardType.Character),
                 effect: [
                     AbilityDsl.effects.setBaseMilitarySkill(1),
                     AbilityDsl.effects.setBasePoliticalSkill(1)

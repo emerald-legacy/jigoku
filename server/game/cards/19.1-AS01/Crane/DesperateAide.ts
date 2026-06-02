@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityTypes, CardTypes } from '../../../Constants.js';
+import { AbilityType, CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { ActionProps } from '../../../Interfaces.js';
 import type Player from '../../../Player.js';
@@ -10,7 +10,7 @@ export default class DesperateAide extends DrawCard {
 
     public setupCardAbilities() {
         this.composure({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Draw a card',
                 condition: (context) => context.source.isParticipating(),
                 gameAction: AbilityDsl.actions.sequential([
@@ -36,7 +36,7 @@ export default class DesperateAide extends DrawCard {
     private participatingPolSkillTotal(player: Player): number {
         return player.cardsInPlay.reduce(
             (total, card) =>
-                card.type === CardTypes.Character && card.isParticipating() ? total + card.politicalSkill : total,
+                card.type === CardType.Character && card.isParticipating() ? total + card.politicalSkill : total,
             0
         );
     }

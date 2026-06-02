@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,7 +11,7 @@ export default class Coward extends DrawCard {
             title: 'Dishonor a character',
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose a duel participant',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 hidePromptIfSingleCard: true,
                 cardCondition: (card: DrawCard) => {
@@ -40,7 +40,7 @@ export default class Coward extends DrawCard {
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player.opponent
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 gameAction: AbilityDsl.actions.dishonor()
             }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Locations, Players } from '../../Constants.js';
+import { CardType, Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class FieldTactician extends DrawCard {
@@ -13,8 +13,8 @@ class FieldTactician extends DrawCard {
             },
             target: {
                 activePromptTitle: 'Choose a conflict card',
-                location: Locations.ConflictDiscardPile,
-                cardType: [CardTypes.Character, CardTypes.Attachment, CardTypes.Event],
+                location: Location.ConflictDiscardPile,
+                cardType: [CardType.Character, CardType.Attachment, CardType.Event],
                 controller: Players.Any,
                 gameAction: AbilityDsl.actions.handler({
                     handler: context => {
@@ -23,7 +23,7 @@ class FieldTactician extends DrawCard {
                             return;
                         }
                         const player = card.owner;
-                        player.moveCard(card, Locations.ConflictDeck);
+                        player.moveCard(card, Location.ConflictDeck);
                         const index = player.conflictDeck.indexOf(card);
                         player.conflictDeck.splice(index, 1);
                         const orderedCards = player.conflictDeck.slice(0, 2);

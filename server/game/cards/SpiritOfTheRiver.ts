@@ -1,6 +1,6 @@
 import DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
-import { Locations, CardTypes } from '../Constants.js';
+import { Location, CardType } from '../Constants.js';
 
 class SpiritOfTheRiver extends DrawCard {
     facedownCard: DrawCard;
@@ -16,7 +16,7 @@ class SpiritOfTheRiver extends DrawCard {
             political: null,
             side: 'dynasty',
             text: '',
-            type: CardTypes.Character,
+            type: CardType.Character,
             traits: ['spirit', 'cavalry'],
             is_unique: false
         });
@@ -24,7 +24,7 @@ class SpiritOfTheRiver extends DrawCard {
     }
 
     leavesPlay() {
-        this.owner.moveCard(this.facedownCard, Locations.DynastyDiscardPile);
+        this.owner.moveCard(this.facedownCard, Location.DynastyDiscardPile);
         this.game.queueSimpleStep(() => {
             this.owner.removeCardFromPile(this);
             this.game.allCards = this.owner.removeCardByUuid(this.game.allCards, this.uuid);

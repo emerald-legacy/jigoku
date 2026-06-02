@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { TargetModes } from '../../Constants.js';
+import { TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class IdeTrader extends DrawCard {
@@ -14,7 +14,7 @@ class IdeTrader extends DrawCard {
             collectiveTrigger: true,
             limit: ability.limit.perConflict(1),
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 choices: {
                     'Gain 1 fate': ability.actions.gainFate(),
                     'Draw 1 card': ability.actions.draw()

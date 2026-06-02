@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class ShamelessGossip extends DrawCard {
     static id = 'shameless-gossip';
@@ -12,14 +12,14 @@ class ShamelessGossip extends DrawCard {
             targets: {
                 first: {
                     activePromptTitle: 'Choose a Character to move a status token from',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Any,
                     cardCondition: card => card.isHonored || card.isDishonored || card.isTainted
                 },
                 second: {
                     activePromptTitle: 'Choose a Character to move the status token to',
                     dependsOn: 'first',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: (card, context) =>
                         card.controller === context.targets.first.controller &&
                         card !== context.targets.first,

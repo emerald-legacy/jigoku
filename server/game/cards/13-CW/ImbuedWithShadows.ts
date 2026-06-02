@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes, CardTypes } from '../../Constants.js';
+import { TargetMode, CardType } from '../../Constants.js';
 
 class ImbuedWithShadows extends DrawCard {
     static id = 'imbued-with-shadows';
@@ -14,7 +14,7 @@ class ImbuedWithShadows extends DrawCard {
             effectArgs: (context) => [context.costs.variableHonorCost as number, context.targets.target as BaseCard[]],
             cost: AbilityDsl.costs.variableHonorCost((context) => this.getNumberOfLegalTargets(context)),
             target: {
-                mode: TargetModes.ExactlyVariable,
+                mode: TargetMode.ExactlyVariable,
                 numCardsFunc: (context) => {
                     if(context && context.costs && context.costs.variableHonorCost) {
                         return context.costs.variableHonorCost as number;
@@ -22,7 +22,7 @@ class ImbuedWithShadows extends DrawCard {
 
                     return this.getNumberOfLegalTargets(context);
                 },
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.multipleContext((context) => {
                     let targets = Object.values(context.targets).flat();
                     targets = targets.concat(Object.values(context.selects).flat());

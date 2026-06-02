@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { AbilityTypes, CardTypes, EventNames, Locations } from '../../../Constants.js';
+import { AbilityType, CardType, EventName, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityProps } from '../../../Interfaces.js';
 
@@ -17,8 +17,8 @@ export default class ShibasOath extends DrawCard {
         this.reaction({
             title: 'Honor attached character',
             when: {
-                onCardAttached: (event: EventPayload<EventNames.OnCardAttached>, context) =>
-                    event.card === context.source && event.originalLocation !== Locations.PlayArea
+                onCardAttached: (event: EventPayload<EventName.OnCardAttached>, context) =>
+                    event.card === context.source && event.originalLocation !== Location.PlayArea
             },
             gameAction: AbilityDsl.actions.honor((context) => ({
                 target: context.source.parent
@@ -28,16 +28,16 @@ export default class ShibasOath extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.WouldInterrupt, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.WouldInterrupt, {
                 title: 'Cancel an ability',
                 when: {
                     onInitiateAbilityEffects: (event, context) =>
                         (event.cardTargets as Array<BaseCard>).some(
                             (card) =>
                                 // In play
-                                card.location === Locations.PlayArea &&
+                                card.location === Location.PlayArea &&
                                 // Character
-                                card.getType() === CardTypes.Character &&
+                                card.getType() === CardType.Character &&
                                 // Friendly
                                 card.controller === context.player &&
                                 // Not a Bushi
@@ -49,7 +49,7 @@ export default class ShibasOath extends DrawCard {
                     AbilityDsl.actions.cancel(),
                     AbilityDsl.actions.moveCard({
                         target: this,
-                        destination: Locations.Hand
+                        destination: Location.Hand
                     })
                 ]),
                 effect: 'cancel the effects of {1} and return {2} to their hand',

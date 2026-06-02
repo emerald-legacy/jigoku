@@ -1,4 +1,4 @@
-import { TargetModes } from '../../Constants.js';
+import { TargetMode } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
@@ -13,7 +13,7 @@ class Truthseeker extends DrawCard {
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             },
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 targets: true,
                 activePromptTitle: 'Choose which deck to look at:',
                 choices: {

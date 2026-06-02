@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import { ConflictTypes, EventNames } from '../../../Constants.js';
+import { ConflictType, EventName } from '../../../Constants.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class DeadEyes extends DrawCard {
@@ -16,7 +16,7 @@ export default class DeadEyes extends DrawCard {
 
         this.action({
             title: 'Increase a character\'s military skill',
-            condition: context => !!(context.game.isDuringConflict(ConflictTypes.Military) && context.source.parent),
+            condition: context => !!(context.game.isDuringConflict(ConflictType.Military) && context.source.parent),
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                 target: context.source.parent,
                 effect: [
@@ -28,7 +28,7 @@ export default class DeadEyes extends DrawCard {
                     }),
                     AbilityDsl.effects.delayedEffect({
                         when: {
-                            afterConflict: (event: EventPayload<EventNames.AfterConflict>) => {
+                            afterConflict: (event: EventPayload<EventName.AfterConflict>) => {
                                 if(!context.source.parent) {
                                     return false;
                                 }

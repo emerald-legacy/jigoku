@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class MotoAriq extends DrawCard {
     static id = 'moto-ariq';
@@ -14,7 +14,7 @@ class MotoAriq extends DrawCard {
             target: {
                 player: Players.Opponent,
                 cardCondition: card => !card.bowed,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 activePromptTitle: 'Choose a character to move to the conflict',
                 controller: Players.Opponent,
                 gameAction: AbilityDsl.actions.moveToConflict()

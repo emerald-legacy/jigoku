@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityTypes } from '../../../Constants.js';
+import { AbilityType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityProps } from '../../../Interfaces.js';
 
@@ -8,7 +8,7 @@ export default class Spyglass2 extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Draw a card',
                 when: {
                     onConflictDeclared: (event, context) => (event.attackers ?? []).includes(context.source),

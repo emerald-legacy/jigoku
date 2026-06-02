@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class WayOfTheScorpion extends DrawCard {
@@ -9,7 +9,7 @@ class WayOfTheScorpion extends DrawCard {
         this.action({
             title: 'Dishonor a participating character',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isParticipating() && !card.isFaction('scorpion'),
                 gameAction: ability.actions.dishonor()
             }

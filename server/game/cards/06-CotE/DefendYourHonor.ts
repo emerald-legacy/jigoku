@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, DuelTypes, EventNames } from '../../Constants.js';
+import { CardType, DuelType, EventName } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 class DefendYourHonor extends DrawCard {
@@ -11,12 +11,12 @@ class DefendYourHonor extends DrawCard {
         this.wouldInterrupt({
             title: 'Initiate a military duel',
             when: {
-                onInitiateAbilityEffects: (event: EventPayload<EventNames.OnInitiateAbilityEffects>, context: any) =>
+                onInitiateAbilityEffects: (event: EventPayload<EventName.OnInitiateAbilityEffects>, context: any) =>
                     context.game.isDuringConflict() && context.player.opponent &&
-                    event.card.type === CardTypes.Event && event.context.player === context.player.opponent
+                    event.card.type === CardType.Event && event.context.player === context.player.opponent
             },
             initiateDuel: (context: AbilityContext) => ({
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
                 gameAction: (duel: any) => (duel.winner && duel.winningPlayer === context.player) ? AbilityDsl.actions.cancel() : AbilityDsl.actions.noAction()
             })

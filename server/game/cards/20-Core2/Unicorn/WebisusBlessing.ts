@@ -1,4 +1,4 @@
-import { TargetModes } from '../../../Constants.js';
+import { TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { StatusToken } from '../../../StatusToken.js';
@@ -12,13 +12,13 @@ export default class WebisusBlessing extends DrawCard {
             targets: {
                 first: {
                     activePromptTitle: 'Choose a status token',
-                    mode: TargetModes.Token,
+                    mode: TargetMode.Token,
                     gameAction: AbilityDsl.actions.discardStatusToken()
                 },
                 second: {
                     activePromptTitle: 'Choose a status token',
                     dependsOn: 'first',
-                    mode: TargetModes.Token,
+                    mode: TargetMode.Token,
                     optional: true,
                     tokenCondition: (token, context) => token !== context.tokens.first[0],
                     gameAction: AbilityDsl.actions.discardStatusToken()

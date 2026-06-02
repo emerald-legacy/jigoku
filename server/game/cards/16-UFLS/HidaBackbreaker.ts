@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HidaBackbreaker extends DrawCard {
@@ -14,7 +14,7 @@ class HidaBackbreaker extends DrawCard {
             },
             target: {
                 activePromptTitle: 'Choose a character to dishonor',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card: any) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.dishonor()

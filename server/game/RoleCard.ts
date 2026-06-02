@@ -1,6 +1,6 @@
 import type { AbilityContext } from './AbilityContext.js';
 import BaseCard from './BaseCard.js';
-import { EffectNames, Elements } from './Constants.js';
+import { EffectName, Element } from './Constants.js';
 import type Player from './Player.js';
 
 const illegalActions = new Set([
@@ -16,7 +16,7 @@ const illegalActions = new Set([
     'putIntoConflict',
     'break',
     'returnToHand',
-    EffectNames.TakeControl,
+    EffectName.TakeControl,
     'placeFate',
     'removeFate'
 ]);
@@ -46,7 +46,7 @@ export class RoleCard extends BaseCard {
         return !illegalActions.has(actionType) && super.allowGameAction(actionType, context);
     }
 
-    getElement(): Elements[] {
+    getElement(): Element[] {
         return [];
     }
 }

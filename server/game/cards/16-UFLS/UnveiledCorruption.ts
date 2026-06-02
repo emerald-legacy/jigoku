@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class UnveiledCorruption extends DrawCard {
     static id = 'unveiled-corruption';
@@ -9,7 +9,7 @@ class UnveiledCorruption extends DrawCard {
         this.action({
             title: 'Force opponent to discard cards to match your hand size',
             cost: AbilityDsl.costs.taint({ cardCondition: (card: any) => {
-                return card.type === CardTypes.Province && !card.isBroken;
+                return card.type === CardType.Province && !card.isBroken;
             }}),
             gameAction: AbilityDsl.actions.chosenDiscard(context => ({
                 target: context.player.opponent,

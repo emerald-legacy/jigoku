@@ -1,9 +1,9 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { Locations } from '../../../Constants.js';
+import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { parseGameMode } from '../../../GameMode.js';
 
-const ACTIVE_LOCATIONS = [Locations.Hand, Locations.PlayArea];
+const ACTIVE_LOCATIONS = [Location.Hand, Location.PlayArea];
 
 export default class LuckyCoin extends DrawCard {
     static id = 'lucky-coin';
@@ -14,7 +14,7 @@ export default class LuckyCoin extends DrawCard {
             when: {
                 onRevealFacedownDynastyCards: (_, context) => {
                     const totalCost = context.player
-                        .getDynastyCardsInProvince(Locations.Provinces)
+                        .getDynastyCardsInProvince(Location.Provinces)
                         .reduce((totalCost: number, card: DrawCard) => {
                             const cost = !card.facedown && card.printedCost !== null && !isNaN(card.printedCost) ? card.printedCost : 0;
                             return totalCost + (cost ?? 0);
@@ -26,7 +26,7 @@ export default class LuckyCoin extends DrawCard {
             location: ACTIVE_LOCATIONS,
             gameAction: AbilityDsl.actions.handler({
                 handler: ({ player, game }) => {
-                    const cardsToMulligan = player.getDynastyCardsInProvince(Locations.Provinces);
+                    const cardsToMulligan = player.getDynastyCardsInProvince(Location.Provinces);
 
                     for(const card of cardsToMulligan) {
                         player.moveCard(card, 'dynasty deck bottom');

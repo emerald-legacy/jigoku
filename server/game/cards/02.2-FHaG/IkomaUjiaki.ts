@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Players, TargetModes, CardTypes } from '../../Constants.js';
+import { Location, Players, TargetMode, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class IkomaUjiaki extends DrawCard {
@@ -12,16 +12,16 @@ class IkomaUjiaki extends DrawCard {
             cost: AbilityDsl.costs.discardImperialFavor(),
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.reveal(context => ({
-                    target: context.player.getDynastyCardsInProvince(Locations.Provinces)
+                    target: context.player.getDynastyCardsInProvince(Location.Provinces)
                 })),
                 AbilityDsl.actions.selectCard(context => ({
                     activePromptTitle: 'Choose up to two characters',
                     numCards: 2,
                     targets: true,
-                    mode: TargetModes.UpTo,
+                    mode: TargetMode.UpTo,
                     optional: true,
-                    cardType: CardTypes.Character,
-                    location: [Locations.Provinces],
+                    cardType: CardType.Character,
+                    location: [Location.Provinces],
                     controller: Players.Self,
                     cardCondition: card => card.isFaceup() && card.allowGameAction('putIntoConflict', context),
                     message: '{0} puts {1} into play into the conflict',

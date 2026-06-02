@@ -1,4 +1,4 @@
-import { Durations, EventNames, Phases } from '../../Constants.js';
+import { Duration, EventName, Phases } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { FatePhase } from '../../gamesteps/FatePhase.js';
@@ -17,10 +17,10 @@ export default class JurojinsCurse extends DrawCard {
             },
             effect: 'resolve a second fate phase after this',
             gameAction: AbilityDsl.actions.playerLastingEffect({
-                duration: Durations.UntilEndOfRound,
+                duration: Duration.UntilEndOfRound,
                 effect: AbilityDsl.effects.playerDelayedEffect({
                     when: {
-                        onPhaseEnded: (event: EventPayload<EventNames.OnPhaseEnded>) => event.phase === Phases.Fate
+                        onPhaseEnded: (event: EventPayload<EventName.OnPhaseEnded>) => event.phase === Phases.Fate
                     },
                     message: '{0} takes hold!',
                     messageArgs: (context: AbilityContext) => [context.source],

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class BayushiYunako extends DrawCard {
@@ -10,7 +10,7 @@ class BayushiYunako extends DrawCard {
             title: 'Switch a character\'s M and P skill',
             condition: context => context.source.isParticipating(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => !card.hasDash(),
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     effect: AbilityDsl.effects.switchBaseSkills()

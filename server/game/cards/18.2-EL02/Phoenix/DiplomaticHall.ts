@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { TargetModes } from '../../../Constants.js';
+import { TargetMode } from '../../../Constants.js';
 
 class DiplomaticHall extends DrawCard {
     static id = 'diplomatic-hall';
@@ -10,7 +10,7 @@ class DiplomaticHall extends DrawCard {
             condition: context => context.game.isDuringConflict('political'),
             title: 'Select a player to draw a card',
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 targets: true,
                 choices:  {
                     [this.owner.name]: AbilityDsl.actions.draw({ target: this.owner }),

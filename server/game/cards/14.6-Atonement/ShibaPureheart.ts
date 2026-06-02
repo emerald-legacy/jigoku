@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class ShibaPureheart extends DrawCard {
     static id = 'shiba-pureheart';
@@ -19,7 +19,7 @@ class ShibaPureheart extends DrawCard {
                 }
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.honor()
             }
         });

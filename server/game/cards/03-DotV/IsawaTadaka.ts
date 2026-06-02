@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, Elements } from '../../Constants.js';
+import { Players, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'isawa-tadaka-earth';
@@ -23,7 +23,7 @@ class IsawaTadaka extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Claimed Ring',
-            element: Elements.Earth
+            element: Element.Earth
         });
         return symbols;
     }

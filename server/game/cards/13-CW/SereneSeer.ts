@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, Players, CardTypes, Elements } from '../../Constants.js';
+import { Location, Players, CardType, Element } from '../../Constants.js';
 
 const elementKey = 'serene-seer-void';
 
@@ -14,8 +14,8 @@ class SereneSeer extends DrawCard {
             effect: 'look at a province',
             gameAction: AbilityDsl.actions.selectCard({
                 activePromptTitle: 'Choose a province to look at',
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 controller: Players.Opponent,
                 gameAction: AbilityDsl.actions.lookAt(context => ({
                     message: '{0} sees {1} in {2}',
@@ -30,7 +30,7 @@ class SereneSeer extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Claimed Ring',
-            element: Elements.Void
+            element: Element.Void
         });
         return symbols;
     }

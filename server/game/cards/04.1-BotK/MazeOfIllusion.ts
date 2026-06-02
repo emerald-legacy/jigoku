@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 
@@ -15,7 +15,7 @@ export default class MazeOfIllusion extends DrawCard {
             condition: (context) => context.player.opponent !== undefined,
 
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: [AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor()]

@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { Locations, Players } from '../Constants.js';
+import { Location, Players } from '../Constants.js';
 import type { Cost, Result } from '../Costs.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type { SelectCardProperties } from '../GameActions/SelectCardAction.js';
@@ -24,7 +24,7 @@ export class MetaActionCost extends GameActionCost implements Cost {
         const properties = this.action.getProperties(context) as SelectCardProperties;
         let additionalProps = {
             controller: Players.Self,
-            location: properties.location || Locations.Any
+            location: properties.location || Location.Any
         };
         return this.action.hasLegalTarget(context, additionalProps);
     }
@@ -44,7 +44,7 @@ export class MetaActionCost extends GameActionCost implements Cost {
 
         const additionalProps = {
             activePromptTitle: this.activePromptTitle,
-            location: properties.location || Locations.Any,
+            location: properties.location || Location.Any,
             controller: Players.Self,
             cancelHandler: !result.canCancel ? null : () => (result.cancelled = true),
             subActionProperties: (target: any) => {

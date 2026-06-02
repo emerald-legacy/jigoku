@@ -1,4 +1,4 @@
-import { EffectNames } from '../../Constants.js';
+import { EffectName } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type Ring from '../../Ring.js';
 import type DrawCard from '../../DrawCard.js';
@@ -144,7 +144,7 @@ class AttackersMatrix {
             return [];
         }
 
-        if(this.player.getEffects(EffectNames.MustDeclareMaximumAttackers).some((effect: string) => effect === 'both' || effect === conflictType)) {
+        if(this.player.getEffects(EffectName.MustDeclareMaximumAttackers).some((effect: string) => effect === 'both' || effect === conflictType)) {
             let cards = this.characters;
             let forcedAttackers: DrawCard[] = [];
             cards.forEach(card => {
@@ -160,7 +160,7 @@ class AttackersMatrix {
 
         return this.characters.filter(card =>
             card.canDeclareAsAttacker(conflictType, ring, province) &&
-            card.getEffects(EffectNames.MustBeDeclaredAsAttacker).some((effect: string) => effect === 'both' || effect === conflictType));
+            card.getEffects(EffectName.MustBeDeclaredAsAttacker).some((effect: string) => effect === 'both' || effect === conflictType));
     }
 
     //Internal use only
@@ -170,7 +170,7 @@ class AttackersMatrix {
         }
         return this.characters.filter(card =>
             card.canDeclareAsAttacker(conflictType, ring, province) &&
-            card.getEffects(EffectNames.MustBeDeclaredAsAttackerIfType).some((effect: string) => effect === 'both' || effect === conflictType));
+            card.getEffects(EffectName.MustBeDeclaredAsAttackerIfType).some((effect: string) => effect === 'both' || effect === conflictType));
     }
 
     getForcedAttackersByDeclarationRequirement(ring: Ring, conflictType: string, province: ProvinceCard): DrawCard[] {
@@ -179,7 +179,7 @@ class AttackersMatrix {
         }
         return this.characters.filter(card =>
             card.canDeclareAsAttacker(conflictType, ring, province) &&
-            card.getEffects(EffectNames.MustBeDeclaredAsAttacker).some((effect: string) => effect === 'both' || effect === conflictType));
+            card.getEffects(EffectName.MustBeDeclaredAsAttacker).some((effect: string) => effect === 'both' || effect === conflictType));
     }
 }
 

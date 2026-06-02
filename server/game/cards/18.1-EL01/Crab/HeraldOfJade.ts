@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { TargetModes, Locations } from '../../../Constants.js';
+import { TargetMode, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 class HeraldOfJade extends DrawCard {
@@ -12,8 +12,8 @@ class HeraldOfJade extends DrawCard {
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             },
             target: {
-                mode: TargetModes.Token,
-                location: Locations.Any,
+                mode: TargetMode.Token,
+                location: Location.Any,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.discardStatusToken(),
                     AbilityDsl.actions.gainHonor(context => ({

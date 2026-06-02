@@ -1,4 +1,4 @@
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +15,7 @@ export default class ProtectedMerchant extends DrawCard {
     private getHoldingsInPlay(): number {
         return (this.game.allCards as BaseCard[]).reduce(
             (sum, card) =>
-                card.type === CardTypes.Holding &&
+                card.type === CardType.Holding &&
                 card.controller === this.controller &&
                 card.isFaceup() &&
                 card.isInProvince()

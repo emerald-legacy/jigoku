@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Players, CardTypes } from '../../Constants.js';
+import { Location, Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Charge extends DrawCard {
@@ -10,8 +10,8 @@ class Charge extends DrawCard {
             title: 'Put a character into play from a province',
             condition: () => this.game.currentConflict?.conflictType === 'military',
             target: {
-                cardType: CardTypes.Character,
-                location: Locations.Provinces,
+                cardType: CardType.Character,
+                location: Location.Provinces,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.putIntoConflict()
             }

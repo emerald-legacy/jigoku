@@ -3,7 +3,7 @@ import type BaseCard from '../../BaseCard.js';
 import type Player from '../../Player.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes, Locations, Players, CardTypes } from '../../Constants.js';
+import { TargetMode, Location, Players, CardType } from '../../Constants.js';
 import { GameModes } from '../../../GameModes.js';
 
 class CardWrapper {
@@ -28,7 +28,7 @@ class GovernorsSpy extends DrawCard {
             title: 'Flip a player\'s dynasty cards facedown and rearrange them',
             condition: (context) => context.source.isParticipating(),
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 targets: true,
                 choices: {
                     [this.owner.name]: AbilityDsl.actions.handler({
@@ -50,7 +50,7 @@ class GovernorsSpy extends DrawCard {
 
     governorHandler(context: AbilityContext, targetPlayer: Player) {
         this.dynastyCards = targetPlayer
-            .getDynastyCardsInProvince(Locations.Provinces)
+            .getDynastyCardsInProvince(Location.Provinces)
             .map((card: BaseCard) => new CardWrapper(card));
         this.dynastyCards.sort((a: CardWrapper, b: CardWrapper) => a.dynastyCard.name.localeCompare(b.dynastyCard.name));
         this.dynastyCards.forEach((card: CardWrapper) => {
@@ -69,10 +69,10 @@ class GovernorsSpy extends DrawCard {
             this.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a province for ' + currentCard.name,
                 context: context,
-                location: Locations.Provinces,
+                location: Location.Provinces,
                 controller: targetPlayer === context.player ? Players.Self : Players.Opponent,
                 cardCondition: (card: any) =>
-                    card.type === CardTypes.Province &&
+                    card.type === CardType.Province &&
                     this.isProvinceValidTarget(targetPlayer, this.dynastyCards, card),
                 onSelect: (player: Player, card: BaseCard) => {
                     this.game.addMessage('{0} places a card', player);
@@ -111,7 +111,7 @@ class GovernorsSpy extends DrawCard {
 
     governorMoveCards(context: AbilityContext, targetPlayer: Player) {
         this.dynastyCards.forEach((card: CardWrapper) => {
-            targetPlayer.moveCard(card.dynastyCard, card.targetLocation as Locations);
+            targetPlayer.moveCard(card.dynastyCard, card.targetLocation as Location);
         });
         let emptyLocations = this.getEmptyProvinces(this.dynastyCards);
         emptyLocations.forEach((location) => {
@@ -133,11 +133,11 @@ class GovernorsSpy extends DrawCard {
         return emptyLocations.some((loc) => loc === location);
     }
 
-    getEmptyProvinces(cards: CardWrapper[]): Locations[] {
-        let emptyLocations: Locations[] = [];
-        let baseLocations = [Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree];
+    getEmptyProvinces(cards: CardWrapper[]): Location[] {
+        let emptyLocations: Location[] = [];
+        let baseLocations = [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
         if(this.game.gameMode !== GameModes.Skirmish) {
-            baseLocations.push(Locations.ProvinceFour);
+            baseLocations.push(Location.ProvinceFour);
         }
         baseLocations.forEach((p) => {
             if(!cards.some((card: CardWrapper) => card.targetLocation === p)) {

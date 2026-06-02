@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 
 const elementKeys = {
     water: 'battle-maiden-recruit-water',
@@ -25,12 +25,12 @@ class BattleMaidenRecruit extends DrawCard {
         symbols.push({
             key: elementKeys.water,
             prettyName: 'Claimed Ring',
-            element: Elements.Water
+            element: Element.Water
         });
         symbols.push({
             key: elementKeys.void,
             prettyName: 'Claimed Ring',
-            element: Elements.Void
+            element: Element.Void
         });
         return symbols;
     }

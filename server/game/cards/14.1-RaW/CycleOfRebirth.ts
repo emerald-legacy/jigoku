@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import { Locations, Players, CardTypes } from '../../Constants.js';
+import { Location, Players, CardType } from '../../Constants.js';
 
 class CycleOfRebirth extends DrawCard {
     static id = 'cycle-of-rebirth';
@@ -11,20 +11,20 @@ class CycleOfRebirth extends DrawCard {
             title: 'Shuffle this and target into deck',
             max: AbilityDsl.limit.perRound(1),
             target: {
-                location: Locations.Provinces,
+                location: Location.Provinces,
                 controller: Players.Any,
-                cardCondition: card => card.type !== CardTypes.Province && card.type !== CardTypes.Stronghold
+                cardCondition: card => card.type !== CardType.Province && card.type !== CardType.Stronghold
             },
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.multiple([
                     AbilityDsl.actions.moveCard<DrawCard>(context => ({
-                        destination: Locations.DynastyDeck,
+                        destination: Location.DynastyDeck,
                         target: context.target,
                         shuffle: true,
                         bottom: true
                     })),
                     AbilityDsl.actions.moveCard(context => ({
-                        destination: Locations.DynastyDeck,
+                        destination: Location.DynastyDeck,
                         target: context.source,
                         shuffle: true,
                         bottom: true

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class JadeTetsubo extends DrawCard {
@@ -15,7 +15,7 @@ class JadeTetsubo extends DrawCard {
             cost: ability.costs.bowSelf(),
             condition: context => !!(context.source.parent && context.source.parent.isParticipating()),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.militarySkill < context.source.parent.militarySkill,
                 gameAction: ability.actions.removeFate(context => ({
                     amount: context.target.getFate(),

@@ -1,5 +1,5 @@
 import AbilityDsl from './abilitydsl.js';
-import { Durations, CardTypes } from './Constants.js';
+import { Duration, CardType } from './Constants.js';
 import { PlayAttachmentAction } from './PlayAttachmentAction.js';
 import DrawCard from './DrawCard.js';
 
@@ -12,9 +12,9 @@ export class PlayCharacterAsAttachment extends PlayAttachmentAction {
     public executeHandler(context: any) {
         AbilityDsl.actions
             .cardLastingEffect({
-                duration: Durations.Custom,
+                duration: Duration.Custom,
                 canChangeZoneOnce: true,
-                effect: AbilityDsl.effects.changeType(CardTypes.Attachment)
+                effect: AbilityDsl.effects.changeType(CardType.Attachment)
             })
             .resolve(this.card, context);
         super.executeHandler(context);

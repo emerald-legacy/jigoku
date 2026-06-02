@@ -1,4 +1,4 @@
-import { CardTypes, TargetModes } from '../../Constants.js';
+import { CardType, TargetMode } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { StatusToken } from '../../StatusToken.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -27,14 +27,14 @@ export default class DiscipleOfDeception extends DrawCard {
             targets: {
                 first: {
                     activePromptTitle: 'Choose the status token to copy',
-                    mode: TargetModes.Token,
-                    cardType: CardTypes.Character
+                    mode: TargetMode.Token,
+                    cardType: CardType.Character
                 },
                 second: {
                     dependsOn: 'first',
                     activePromptTitle: 'Choose the status token to overwrite',
-                    mode: TargetModes.Token,
-                    cardType: CardTypes.Character,
+                    mode: TargetMode.Token,
+                    cardType: CardType.Character,
                     cardCondition: (card, context) =>
                         card !== context.tokens.first[0].card &&
                         !card.hasStatusToken(context.tokens.first[0].grantedStatus),

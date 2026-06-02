@@ -1,4 +1,4 @@
-import { CardTypes, Decks, Elements, Locations, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Decks, Element, Location, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,12 +11,12 @@ export default class CinderSalamander extends DrawCard {
     public setupCardAbilities() {
         this.reaction({
             title: 'Shuffle this character back into the deck',
-            location: Locations.DynastyDiscardPile,
+            location: Location.DynastyDiscardPile,
             when: {
                 onCardLeavesPlay: (event, context) => event.card === context.source
             },
             gameAction: AbilityDsl.actions.moveCard({
-                destination: Locations.DynastyDeck,
+                destination: Location.DynastyDeck,
                 shuffle: true
             })
         });
@@ -30,7 +30,7 @@ export default class CinderSalamander extends DrawCard {
                 AbilityDsl.actions.deckSearch({
                     activePromptTitle: 'Select characters to put into play from your deck',
                     deck: Decks.DynastyDeck,
-                    targetMode: TargetModes.UpTo,
+                    targetMode: TargetMode.UpTo,
                     numCards: 3,
                     cardCondition: (card) => this.isSalamanderCard(card),
                     shuffle: true,
@@ -41,9 +41,9 @@ export default class CinderSalamander extends DrawCard {
                 AbilityDsl.actions.selectCard({
                     activePromptTitle: 'Select characters to put into play from your provinces',
                     controller: Players.Self,
-                    cardType: CardTypes.Character,
-                    location: Locations.Provinces,
-                    mode: TargetModes.UpTo,
+                    cardType: CardType.Character,
+                    location: Location.Provinces,
+                    mode: TargetMode.UpTo,
                     numCards: 3,
                     cardCondition: (card) => this.isSalamanderCard(card),
                     gameAction: AbilityDsl.actions.putIntoPlay(),
@@ -61,7 +61,7 @@ export default class CinderSalamander extends DrawCard {
         symbols.push({
             key: ELEMENT_KEY,
             prettyName: 'Claimed Ring',
-            element: Elements.Fire
+            element: Element.Fire
         });
         return symbols;
     }

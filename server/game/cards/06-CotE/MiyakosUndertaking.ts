@@ -1,5 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Locations, Players } from '../../Constants.js';
+import { CardType, Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
@@ -12,14 +12,14 @@ export default class MiyakosUndertaking extends DrawCard {
 
             targets: {
                 cardToCopy: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
-                    location: Locations.DynastyDiscardPile,
+                    location: Location.DynastyDiscardPile,
                     cardCondition: (card) => !card.isUnique()
                 },
                 myCharacter: {
                     dependsOn: 'cardToCopy',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: (card) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({

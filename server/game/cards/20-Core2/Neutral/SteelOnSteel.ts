@@ -1,4 +1,4 @@
-import { ConflictTypes, DuelTypes } from '../../../Constants.js';
+import { ConflictType, DuelType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -8,9 +8,9 @@ export default class SteelOnSteel extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Initiate a military duel, discarding the loser',
-            condition: (context) => context.game.isDuringConflict(ConflictTypes.Military),
+            condition: (context) => context.game.isDuringConflict(ConflictType.Military),
             initiateDuel: {
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 gameAction: (duel: any) =>
                     AbilityDsl.actions.conditional({
                         target: duel.loser?.[0],

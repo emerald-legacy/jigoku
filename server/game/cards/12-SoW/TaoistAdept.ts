@@ -1,4 +1,4 @@
-import { DuelTypes, Players } from '../../Constants.js';
+import { DuelType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
@@ -10,7 +10,7 @@ export default class TaoistAdept extends DrawCard {
         this.action({
             title: 'Initiate a military duel',
             initiateDuel: {
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 message: 'choose whether to place a fate on a ring',
                 gameAction: (duel) =>
                     AbilityDsl.actions.selectRing((context) => ({

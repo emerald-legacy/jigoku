@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
-import { CardTypes, EventNames, Stages } from '../Constants.js';
+import { CardType, EventName, Stage } from '../Constants.js';
 import { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { GameObject } from '../GameObject.js';
@@ -19,11 +19,11 @@ export interface GameActionProperties {
     parentAction?: GameAction<GameActionProperties>;
 }
 
-export class GameAction<P extends GameActionProperties = GameActionProperties, N extends EventNames = EventNames> {
+export class GameAction<P extends GameActionProperties = GameActionProperties, N extends EventName = EventName> {
     propertyFactory?: (context: AbilityContext) => P;
     properties?: P;
     targetType: string[] = [];
-    eventName = EventNames.Unnamed;
+    eventName = EventName.Unnamed;
     name = '';
     cost = '';
     effect = '';
@@ -73,7 +73,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         return (
             this.targetType.includes(target.type) &&
             !context.gameActionsResolutionChain.includes(this) &&
-            ((context.stage === Stages.Effect && cannotBeCancelled) || target.checkRestrictions(this.name, context))
+            ((context.stage === Stage.Effect && cannotBeCancelled) || target.checkRestrictions(this.name, context))
         );
     }
 
@@ -122,7 +122,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
 
     createEvent(target: TargetValue, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): GameEvent<N> {
         const { cannotBeCancelled } = this.getProperties(context, additionalProperties);
-        const event = new Event(EventNames.Unnamed, { cannotBeCancelled }) as GameEvent<N>;
+        const event = new Event(EventName.Unnamed, { cannotBeCancelled }) as GameEvent<N>;
         event.checkFullyResolved = (eventAtResolution) =>
             this.isEventFullyResolved(eventAtResolution as GameEvent<N>, target, context, additionalProperties);
         return event;
@@ -164,12 +164,12 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         return this.getProperties(context, additionalProperties).optional ?? false;
     }
 
-    moveFateEventCondition(event: GameEvent<EventNames.OnMoveFate>): boolean {
+    moveFateEventCondition(event: GameEvent<EventName.OnMoveFate>): boolean {
         if(event.origin) {
             if(event.origin.getFate() === 0) {
                 return false;
             } else if(
-                event.origin.type === CardTypes.Character &&
+                event.origin.type === CardType.Character &&
                 !event.origin.allowGameAction('removeFate', (event.context as AbilityContext))
             ) {
                 return false;
@@ -177,7 +177,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         }
         if(event.recipient) {
             if(
-                event.recipient.type === CardTypes.Character &&
+                event.recipient.type === CardType.Character &&
                 !event.recipient.allowGameAction('placeFate', (event.context as AbilityContext))
             ) {
                 return false;
@@ -186,7 +186,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         return !!event.origin || !!event.recipient;
     }
 
-    moveFateEventHandler(event: GameEvent<EventNames.OnMoveFate>): void {
+    moveFateEventHandler(event: GameEvent<EventName.OnMoveFate>): void {
         if(event.origin) {
             event.fate = Math.min(event.fate, event.origin.getFate());
             (event.origin as DrawCard | Player).modifyFate(-event.fate);

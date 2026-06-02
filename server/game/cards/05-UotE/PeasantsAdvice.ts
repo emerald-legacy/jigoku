@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, Phases, CardTypes } from '../../Constants.js';
+import { Location, Phases, CardType } from '../../Constants.js';
 
 class PeasantsAdvice extends DrawCard {
     static id = 'peasant-s-advice';
@@ -11,8 +11,8 @@ class PeasantsAdvice extends DrawCard {
             phase: Phases.Conflict,
             cost: AbilityDsl.costs.dishonor(),
             target: {
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.lookAt(context => ({
                         message: '{0} sees {1} in {2}',
@@ -24,12 +24,12 @@ class PeasantsAdvice extends DrawCard {
                             card.location === context.target?.location &&
                             card.controller === context.target?.controller &&
                             card.isDynasty && !card.facedown,
-                        location: Locations.Provinces,
+                        location: Location.Provinces,
                         optional: true,
                         message: '{0} chooses to shuffle {1} into its owner\'s deck',
                         messageArgs: card => [context.player, card],
                         gameAction: AbilityDsl.actions.moveCard({
-                            destination: Locations.DynastyDeck,
+                            destination: Location.DynastyDeck,
                             shuffle: true
                         })
                     }))

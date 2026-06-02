@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Locations } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class IronMine extends DrawCard {
@@ -9,7 +9,7 @@ class IronMine extends DrawCard {
         this.wouldInterrupt({
             title: 'Prevent a character from leaving play',
             when: {
-                onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.type === CardTypes.Character && event.card.location === Locations.PlayArea
+                onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.type === CardType.Character && event.card.location === Location.PlayArea
             },
             effect: 'prevent {1} from leaving play',
             effectArgs: context => context.event.card ?? '',

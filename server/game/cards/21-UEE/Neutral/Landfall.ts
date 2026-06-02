@@ -1,6 +1,6 @@
 import { GameModes } from '../../../../GameModes.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -41,9 +41,9 @@ export default class Landfall extends ProvinceCard {
             this.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a province for ' + currentCard.name,
                 context: context,
-                location: Locations.Provinces,
+                location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: (card: any, _context?: any) => card.type === CardTypes.Province && this.isProvinceValidTarget(card),
+                cardCondition: (card: any, _context?: any) => card.type === CardType.Province && this.isProvinceValidTarget(card),
                 onSelect: (player: any, card: any) => {
                     this.game.addMessage(
                         '{0} puts {1} into {2}',
@@ -85,13 +85,13 @@ export default class Landfall extends ProvinceCard {
     }
 
     isProvinceValidTarget(province: any) {
-        return province.location !== Locations.StrongholdProvince && !this.chosenProvinces.some((a: any) => a === province);
+        return province.location !== Location.StrongholdProvince && !this.chosenProvinces.some((a: any) => a === province);
     }
 
     hasRemainingTarget() {
-        let baseLocations = [Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree];
+        let baseLocations = [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
         if(this.game.gameMode !== GameModes.Skirmish) {
-            baseLocations.push(Locations.ProvinceFour);
+            baseLocations.push(Location.ProvinceFour);
         }
 
         return this.chosenProvinces.length < baseLocations.length;

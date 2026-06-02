@@ -1,4 +1,4 @@
-export enum EffectNames {
+export enum EffectName {
     AbilityRestrictions = 'abilityRestrictions',
     AddElementAsAttacker = 'addElementAsAttacker',
     AddFaction = 'addFaction',

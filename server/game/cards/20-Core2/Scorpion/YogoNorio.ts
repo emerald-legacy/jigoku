@@ -1,4 +1,4 @@
-import { CardTypes, Durations, ConflictTypes, Phases } from '../../../Constants.js';
+import { CardType, Duration, ConflictType, Phases } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,12 +12,12 @@ export default class YogoNorio extends DrawCard {
             effectArgs: (context) => [context.player],
             condition: (context) => context.game.currentPhase === Phases.Conflict,
             cost: AbilityDsl.costs.sacrifice({
-                cardType: CardTypes.Character
+                cardType: CardType.Character
             }),
             gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
-                duration: Durations.UntilEndOfPhase,
-                effect: AbilityDsl.effects.additionalConflict(ConflictTypes.Political)
+                duration: Duration.UntilEndOfPhase,
+                effect: AbilityDsl.effects.additionalConflict(ConflictType.Political)
             }))
         });
     }

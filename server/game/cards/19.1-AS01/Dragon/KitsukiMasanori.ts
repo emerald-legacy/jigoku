@@ -1,5 +1,5 @@
 import { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Decks, Durations, EventNames } from '../../../Constants.js';
+import { CardType, Decks, Duration, EventName } from '../../../Constants.js';
 import type { GameEvent } from '../../../Events/EventPayloads.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import BaseCard from '../../../BaseCard.js';
@@ -9,7 +9,7 @@ const selectAttachmentPrompt = 'Select an attachment';
 
 function isSearchableCard(card: BaseCard, context: AbilityContext) {
     return (
-        card.type === CardTypes.Attachment &&
+        card.type === CardType.Attachment &&
         (card.hasTrait('title') || card.hasTrait('technique')) &&
         card.canAttach(context.source)
     );
@@ -62,7 +62,7 @@ export default class KitsukiMasanori extends DrawCard {
 
                                     context.game.addMessage(
                                         '{0} takes {1} and attaches it to {2}',
-                                        (event as GameEvent<EventNames.OnDeckSearch>).player,
+                                        (event as GameEvent<EventName.OnDeckSearch>).player,
                                         card,
                                         context.source
                                     );
@@ -82,7 +82,7 @@ export default class KitsukiMasanori extends DrawCard {
                     return {
                         target: fetchedAttachment,
                         condition: (context) => fetchedAttachment.parent === context.source,
-                        duration: Durations.Custom,
+                        duration: Duration.Custom,
                         effect: AbilityDsl.effects.cardCannot({
                             cannot: 'target',
                             restricts: 'opponentsCardAbilities',

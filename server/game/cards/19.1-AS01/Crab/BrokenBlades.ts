@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, ConflictTypes, Players } from '../../../Constants.js';
+import { CardType, ConflictType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class BrokenBlades extends DrawCard {
@@ -19,15 +19,15 @@ export default class BrokenBlades extends DrawCard {
                 afterConflict: (event, context) =>
                     context.player.isAttackingPlayer() &&
                     event.conflict.winner === context.player &&
-                    event.conflict.conflictType === ConflictTypes.Military
+                    event.conflict.conflictType === ConflictType.Military
             },
 
             cost: AbilityDsl.costs.sacrifice({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('berserker')
             }),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.sequential([

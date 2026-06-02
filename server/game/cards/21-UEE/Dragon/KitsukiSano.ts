@@ -1,4 +1,4 @@
-import { Durations } from '../../../Constants.js';
+import { Duration } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -22,7 +22,7 @@ export default class KitsukiSano extends DrawCard {
                     amount: 2,
                     player: context.player
                 }),
-                duration: Durations.UntilEndOfDuel
+                duration: Duration.UntilEndOfDuel
             } as LastingEffectProperties)),
             effect: 'add 2 to their duel total'
         });

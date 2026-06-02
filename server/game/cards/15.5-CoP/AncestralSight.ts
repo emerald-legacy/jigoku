@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import BaseCard from '../../BaseCard.js';
-import { CardTypes, Players, AbilityTypes, TargetModes, Locations } from '../../Constants.js';
+import { CardType, Players, AbilityType, TargetMode, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
@@ -29,9 +29,9 @@ const ancestralSightCost = function () {
             context.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a card to return to your deck',
                 context: context,
-                mode: TargetModes.Single,
-                location: Locations.DynastyDiscardPile,
-                cardType: CardTypes.Character,
+                mode: TargetMode.Single,
+                location: Location.DynastyDiscardPile,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card: BaseCard, ctx: AbilityContext) => isCopyInPlay(card, ctx),
                 onSelect: (_player: Player, card: BaseCard) => {
@@ -45,7 +45,7 @@ const ancestralSightCost = function () {
             });
         },
         payEvent: function (context: AbilityContext) {
-            const action = context.game.actions.returnToDeck({ target: context.costs.ancestralSightCost as DrawCard, bottom: true, location: Locations.DynastyDiscardPile });
+            const action = context.game.actions.returnToDeck({ target: context.costs.ancestralSightCost as DrawCard, bottom: true, location: Location.DynastyDiscardPile });
             return action.getEvent(context.costs.ancestralSightCost, context);
         },
         promptsPlayer: true
@@ -61,13 +61,13 @@ class AncestralSight extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Put a fate on a character',
                 cost: ancestralSightCost(),
                 printedAbility: false,
                 cannotTargetFirst: true,
                 target: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: (card: any, context: AbilityContext) => {
                         return !context.costs.ancestralSightCost || context.costs.ancestralSightCost && card.name === (context.costs.ancestralSightCost as DrawCard).name;
                     },

@@ -1,4 +1,4 @@
-import { CardTypes, Locations } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 import { BaseOni } from './_BaseOni.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -26,7 +26,7 @@ export default class ScavengingGoblin extends BaseOni {
                     if(card.location !== 'play area') {
                         return false;
                     }
-                    if(card.type !== CardTypes.Attachment) {
+                    if(card.type !== CardType.Attachment) {
                         return false;
                     }
                     if(card.controller === context.player) {
@@ -40,7 +40,7 @@ export default class ScavengingGoblin extends BaseOni {
                     gameActions: [
                         AbilityDsl.actions.removeFromGame({
                             target: cardsToRemove,
-                            location: Locations.ConflictDeck
+                            location: Location.ConflictDeck
                         }),
                         AbilityDsl.actions.removeFromGame({
                             target: attachmentsToRemove

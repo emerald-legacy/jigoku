@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class VisitingAdvisor extends DrawCard {
@@ -11,7 +11,7 @@ class VisitingAdvisor extends DrawCard {
             condition: context => context.source.isParticipating(),
             target: {
                 controller: Players.Self,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 optional: true,
                 cardCondition: (card, context) => card !== context.source,
                 gameAction: AbilityDsl.actions.sendHome()

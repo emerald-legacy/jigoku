@@ -1,4 +1,4 @@
-import { CardTypes, Durations, Elements, EventNames, Locations, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Duration, Element, EventName, Location, Players, TargetMode } from '../../../Constants.js';
 import type { Cost } from '../../../Costs.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type DrawCard from '../../../DrawCard.js';
@@ -37,9 +37,9 @@ const maelstromCost = function (): Cost {
                             context.game.promptForSelect(context.player, {
                                 activePromptTitle: 'Choose a card to discard',
                                 context: context,
-                                mode: TargetModes.Single,
+                                mode: TargetMode.Single,
                                 numCards: 1,
-                                location: Locations.Hand,
+                                location: Location.Hand,
                                 controller: Players.Self,
                                 onSelect: (player: any, card: any) => {
                                     context.costs.maelstromCost = card;
@@ -86,7 +86,7 @@ export default class Maelstrom extends ProvinceCard {
             conflictProvinceCondition: (province) => province.isElement(this.getCurrentElementSymbol(elementKey)),
             cannotTargetFirst: true,
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) =>
                     context.costs.maelstromCostPaid ? true : card.controller === context.player,
@@ -97,10 +97,10 @@ export default class Maelstrom extends ProvinceCard {
                             AbilityDsl.actions.moveToConflict(),
                             AbilityDsl.actions.cardLastingEffect({
                                 target: target,
-                                duration: Durations.UntilEndOfPhase,
+                                duration: Duration.UntilEndOfPhase,
                                 effect: AbilityDsl.effects.delayedEffect({
                                     when: {
-                                        afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) =>
+                                        afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) =>
                                             event.conflict.winner === target.controller &&
                                             target.isParticipating() &&
                                             target.controller === context.player
@@ -125,7 +125,7 @@ export default class Maelstrom extends ProvinceCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Ability - Province Element',
-            element: Elements.Water
+            element: Element.Water
         });
         return symbols;
     }

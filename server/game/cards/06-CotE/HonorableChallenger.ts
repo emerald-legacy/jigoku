@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { DuelTypes } from '../../Constants.js';
+import { DuelType } from '../../Constants.js';
 
 class HonorableChallenger extends DrawCard {
     static id = 'honorable-challenger';
@@ -9,7 +9,7 @@ class HonorableChallenger extends DrawCard {
         this.action({
             title: 'Initiate a military duel',
             initiateDuel: {
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 message: '{0} will not bow as a result of this conflict\'s resolution',
                 messageArgs: duel => duel.winner,
                 gameAction: duel => AbilityDsl.actions.cardLastingEffect({

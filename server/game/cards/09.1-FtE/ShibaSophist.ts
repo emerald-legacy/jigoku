@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ShibaSophist extends DrawCard {
@@ -14,7 +14,7 @@ class ShibaSophist extends DrawCard {
                 amount: 5,
                 cardCondition: card => this.game.currentConflict?.elements.some(element => card.hasTrait(element)) ?? false,
                 gameAction: AbilityDsl.actions.moveCard({
-                    destination: Locations.Hand
+                    destination: Location.Hand
                 })
             })
         });

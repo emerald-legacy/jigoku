@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { DuelTypes } from '../../Constants.js';
+import { DuelType } from '../../Constants.js';
 
 class Heresy extends DrawCard {
     static id = 'heresy';
@@ -9,7 +9,7 @@ class Heresy extends DrawCard {
         this.action({
             title: 'Initiate a political duel',
             initiateDuel: {
-                type: DuelTypes.Political,
+                type: DuelType.Political,
                 opponentChoosesChallenger: true,
                 message: 'remove a fate from {0}',
                 messageArgs: duel => [duel.loser],

@@ -1,4 +1,4 @@
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 import { createKeeperRole } from './_createRoles.js';
 
-export default createKeeperRole('keeper-of-earth', Elements.Earth);
+export default createKeeperRole('keeper-of-earth', Element.Earth);

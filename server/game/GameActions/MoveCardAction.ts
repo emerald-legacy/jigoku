@@ -1,12 +1,12 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardTypes, EffectNames, EventNames, Locations } from '../Constants.js';
+import { CardType, EffectName, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 import type { GameEvent } from '../Events/EventPayloads.js';
 export interface MoveCardProperties extends CardActionProperties {
-    destination?: Locations;
+    destination?: Location;
     switch?: boolean;
     switchTarget?: DrawCard;
     shuffle?: boolean;
@@ -18,7 +18,7 @@ export interface MoveCardProperties extends CardActionProperties {
 
 export class MoveCardAction extends CardGameAction {
     name = 'move';
-    targetType = [CardTypes.Character, CardTypes.Attachment, CardTypes.Event, CardTypes.Holding];
+    targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
     defaultProperties: MoveCardProperties = {
         destination: undefined,
         switch: false,
@@ -61,15 +61,15 @@ export class MoveCardAction extends CardGameAction {
         const { changePlayer, destination } = this.getProperties(context, additionalProperties) as MoveCardProperties;
         return (
             (!changePlayer ||
-                (card.checkRestrictions(EffectNames.TakeControl, context) &&
+                (card.checkRestrictions(EffectName.TakeControl, context) &&
                     !(card as DrawCard).anotherUniqueInPlay(context.player))) &&
             (!destination || context.player.isLegalLocationForCard(card, destination)) &&
-            card.location !== Locations.PlayArea &&
+            card.location !== Location.PlayArea &&
             super.canAffect(card, context)
         );
     }
 
-    eventHandler(event: GameEvent<EventNames.Unnamed>, additionalProperties = {}): void {
+    eventHandler(event: GameEvent<EventName.Unnamed>, additionalProperties = {}): void {
         let context = (event.context as AbilityContext);
         let card = event.card as DrawCard;
         event.cardStateWhenMoved = card.createSnapshot();
@@ -88,16 +88,16 @@ export class MoveCardAction extends CardGameAction {
         ) {
             let cardsToDiscard = player.getSourceList(properties.destination).filter((card: BaseCard) => (card as DrawCard).isDynasty);
             for(const card of cardsToDiscard) {
-                player.moveCard(card, Locations.DynastyDiscardPile);
+                player.moveCard(card, Location.DynastyDiscardPile);
             }
         }
-        player.moveCard(card, properties.destination as Locations, { bottom: !!properties.bottom });
+        player.moveCard(card, properties.destination as Location, { bottom: !!properties.bottom });
         let target = properties.target as BaseCard | BaseCard[] | undefined;
         const targetArr = Array.isArray(target) ? target : target ? [target] : [];
         if(properties.shuffle && (targetArr.length === 0 || card === targetArr[targetArr.length - 1])) {
-            if(properties.destination === Locations.ConflictDeck) {
+            if(properties.destination === Location.ConflictDeck) {
                 card.owner.shuffleConflictDeck();
-            } else if(properties.destination === Locations.DynastyDeck) {
+            } else if(properties.destination === Location.DynastyDeck) {
                 card.owner.shuffleDynastyDeck();
             }
         } else if(properties.faceup) {

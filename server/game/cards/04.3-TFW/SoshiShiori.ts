@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { TargetModes } from '../../Constants.js';
+import { TargetMode } from '../../Constants.js';
 
 class SoshiShiori extends DrawCard {
     static id = 'soshi-shiori';
@@ -13,7 +13,7 @@ class SoshiShiori extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.player
             },
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 activePromptTitle:'Choose a player to lose 1 honor',
                 targets: true,
                 choices: {

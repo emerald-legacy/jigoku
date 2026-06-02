@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardTypes, Locations, Players } from '../Constants.js';
+import { CardType, Location, Players } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
@@ -11,9 +11,9 @@ export type NumCardsFunc = (context: AbilityContext) => number;
 
 export interface BaseCardSelectorProperties {
     cardCondition?: (card: any, context: AbilityContext) => boolean;
-    cardType?: CardTypes | CardTypes[];
+    cardType?: CardType | CardType[];
     optional?: boolean;
-    location?: Locations | Locations[];
+    location?: Location | Location[];
     controller?: ControllerProp;
     targets?: boolean;
     sameDiscardPile?: boolean;
@@ -22,16 +22,16 @@ export interface BaseCardSelectorProperties {
 
 class BaseCardSelector {
     cardCondition: (card: BaseCard, context: AbilityContext) => boolean = () => true;
-    cardType: CardTypes[];
+    cardType: CardType[];
     optional: boolean;
-    location: Locations[];
+    location: Location[];
     controller: ControllerProp;
     checkTarget: boolean;
     sameDiscardPile: boolean;
 
     constructor(properties: BaseCardSelectorProperties) {
         this.cardCondition = properties.cardCondition ?? (() => true);
-        this.cardType = (properties.cardType as CardTypes[]) ?? [];
+        this.cardType = (properties.cardType as CardType[]) ?? [];
         this.optional = properties.optional ?? false;
         this.location = this.buildLocation(properties.location);
         this.controller = properties.controller || Players.Any;
@@ -39,26 +39,26 @@ class BaseCardSelector {
         this.sameDiscardPile = !!properties.sameDiscardPile;
 
         if(!Array.isArray(properties.cardType)) {
-            this.cardType = [properties.cardType as CardTypes];
+            this.cardType = [properties.cardType as CardType];
         }
     }
 
-    buildLocation(property?: Locations | Locations[]): Locations[] {
-        let location: Locations[] = property
+    buildLocation(property?: Location | Location[]): Location[] {
+        let location: Location[] = property
             ? Array.isArray(property)
                 ? property
                 : [property]
-            : [Locations.PlayArea];
-        let index = location.indexOf(Locations.Provinces);
+            : [Location.PlayArea];
+        let index = location.indexOf(Location.Provinces);
         if(index > -1) {
             location.splice(
                 index,
                 1,
-                Locations.ProvinceOne,
-                Locations.ProvinceTwo,
-                Locations.ProvinceThree,
-                Locations.ProvinceFour,
-                Locations.StrongholdProvince
+                Location.ProvinceOne,
+                Location.ProvinceTwo,
+                Location.ProvinceThree,
+                Location.ProvinceFour,
+                Location.StrongholdProvince
             );
         }
         return location;
@@ -70,7 +70,7 @@ class BaseCardSelector {
             controllerProp = controllerProp(context);
         }
 
-        if(this.location.includes(Locations.Any)) {
+        if(this.location.includes(Location.Any)) {
             if(controllerProp === Players.Self) {
                 return context.game.allCards.filter((card: BaseCard) => card.controller === context.player);
             } else if(controllerProp === Players.Opponent) {
@@ -101,9 +101,9 @@ class BaseCardSelector {
         }
         let possibleCards: BaseCard[] = [];
         if(controllerProp !== Players.Opponent) {
-            possibleCards = this.location.reduce((array: BaseCard[], location: Locations) => {
+            possibleCards = this.location.reduce((array: BaseCard[], location: Location) => {
                 let cards = context.player.getSourceList(location).slice();
-                if(location === Locations.PlayArea) {
+                if(location === Location.PlayArea) {
                     return array.concat(
                         cards,
                         attachments.filter((card: BaseCard) => card.controller === context.player)
@@ -114,9 +114,9 @@ class BaseCardSelector {
         }
         let opponent = context.player.opponent;
         if(controllerProp !== Players.Self && opponent) {
-            possibleCards = this.location.reduce((array: BaseCard[], location: Locations) => {
+            possibleCards = this.location.reduce((array: BaseCard[], location: Location) => {
                 let cards = opponent.getSourceList(location).slice();
-                if(location === Locations.PlayArea) {
+                if(location === Location.PlayArea) {
                     return array.concat(
                         cards,
                         attachments.filter((card: BaseCard) => card.controller === opponent)
@@ -151,10 +151,10 @@ class BaseCardSelector {
         if(controllerProp === Players.Opponent && card.controller !== context.player.opponent) {
             return false;
         }
-        if(!this.location.includes(Locations.Any) && !this.location.includes(card.location as Locations)) {
+        if(!this.location.includes(Location.Any) && !this.location.includes(card.location as Location)) {
             return false;
         }
-        if(card.location === Locations.Hand && card.controller !== choosingPlayer) {
+        if(card.location === Location.Hand && card.controller !== choosingPlayer) {
             return false;
         }
         return this.cardType.includes(card.getType()) && this.cardCondition(card, context);

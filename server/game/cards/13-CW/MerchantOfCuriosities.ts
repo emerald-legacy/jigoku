@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import type BaseCard from '../../BaseCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { Locations, TargetModes, Players } from '../../Constants.js';
+import { Location, TargetMode, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { Event } from '../../Events/Event.js';
 
@@ -34,9 +34,9 @@ const merchantOfCuriositiesCost = function () {
                             context.game.promptForSelect(context.player.opponent, {
                                 activePromptTitle: 'Choose a card to discard',
                                 context: context,
-                                mode: TargetModes.Single,
+                                mode: TargetMode.Single,
                                 numCards: 1,
-                                location: Locations.Hand,
+                                location: Location.Hand,
                                 controller: Players.Opponent,
                                 onSelect: (player: any, card: any) => {
                                     context.costs.merchantOfCuriositiesCostDiscardedCard = card;

@@ -1,4 +1,4 @@
-import { TargetModes } from '../../Constants.js';
+import { TargetMode } from '../../Constants.js';
 import type { CardGameAction } from '../../GameActions/CardGameAction.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -13,7 +13,7 @@ export default class DesertedShrine extends ProvinceCard {
                 onCardRevealed: (event, context) => event.card === context.source
             },
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 targets: true,
                 activePromptTitle: 'Choose a deck',
                 choices: (context) => {

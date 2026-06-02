@@ -2,7 +2,7 @@ import BaseCard from './BaseCard.js';
 import { ChildCardManager } from './ChildCardManager.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
-import type { Locations } from './Constants.js';
+import type { Location } from './Constants.js';
 
 export class StrongholdCard extends BaseCard {
     menu = [{ command: 'bow', text: 'Bow/Ready' }];
@@ -18,11 +18,11 @@ export class StrongholdCard extends BaseCard {
         this.childCardHost.childCards = value;
     }
 
-    addChildCard(card: DrawCard, location: Locations): void {
+    addChildCard(card: DrawCard, location: Location): void {
         this.childCardHost.add(card, location);
     }
 
-    removeChildCard(card: DrawCard | null, location: Locations): void {
+    removeChildCard(card: DrawCard | null, location: Location): void {
         this.childCardHost.remove(card, location);
     }
 

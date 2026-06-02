@@ -2,7 +2,7 @@ import type AbilityDsl from '../../abilitydsl.js';
 import type Ring from '../../Ring.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { TargetModes } from '../../Constants.js';
+import { TargetMode } from '../../Constants.js';
 
 class BeingAndBecoming extends DrawCard {
     static id = 'being-and-becoming';
@@ -16,7 +16,7 @@ class BeingAndBecoming extends DrawCard {
             title: 'Move each fate from an unclaimed ring to attached character',
             cost: ability.costs.bowParent(),
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 activePromptTitle: 'Choose an unclaimed ring to move fate from',
                 ringCondition: (ring: any) => ring.isUnclaimed() && ring.fate > 0,
                 gameAction: ability.actions.placeFate((context: AbilityContext) => ({

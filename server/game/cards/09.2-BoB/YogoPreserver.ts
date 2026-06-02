@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class YogoPreserver extends DrawCard {
@@ -7,7 +7,7 @@ class YogoPreserver extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: card => card.getType() === CardTypes.Character && card.isDishonored,
+            match: card => card.getType() === CardType.Character && card.isDishonored,
             effect: AbilityDsl.effects.addKeyword('sincerity')
         });
     }

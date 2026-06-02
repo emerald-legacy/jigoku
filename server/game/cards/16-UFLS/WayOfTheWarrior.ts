@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class WayOfTheWarrior extends DrawCard {
@@ -10,7 +10,7 @@ class WayOfTheWarrior extends DrawCard {
             title: 'Let a bushi embrace the way of the warrior',
 
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isParticipating() && card.hasTrait('bushi'),
                 gameAction: AbilityDsl.actions.sequential([

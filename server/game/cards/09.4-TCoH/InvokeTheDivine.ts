@@ -2,14 +2,14 @@ import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import { Locations, Players } from '../../Constants.js';
+import { Location, Players } from '../../Constants.js';
 
 class InvokeTheDivine extends DrawCard {
     static id = 'invoke-the-divine';
 
     setupCardAbilities() {
         const getSelectCardAction = (fate: number, spellsCast: number) => AbilityDsl.actions.selectCard({
-            location: Locations.Hand,
+            location: Location.Hand,
             controller: Players.Self,
             cardCondition: (card: DrawCard) => card.hasTrait('spell') && (card.getCost() ?? 0) <= fate,
             optional: spellsCast > 0,

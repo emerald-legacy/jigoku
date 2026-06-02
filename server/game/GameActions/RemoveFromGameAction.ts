@@ -1,18 +1,18 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardTypes, EventNames, Locations } from '../Constants.js';
+import { CardType, EventName, Location } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 import type { GameEvent } from '../Events/EventPayloads.js';
 export interface RemoveFromGameProperties extends CardActionProperties {
-    location?: Locations | Locations[];
+    location?: Location | Location[];
 }
 
 export class RemoveFromGameAction extends CardGameAction {
     name = 'removeFromGame';
-    eventName = EventNames.OnCardLeavesPlay;
+    eventName = EventName.OnCardLeavesPlay;
     cost = 'removing {0} from the game';
-    targetType = [CardTypes.Character, CardTypes.Attachment, CardTypes.Holding, CardTypes.Event];
+    targetType = [CardType.Character, CardType.Attachment, CardType.Holding, CardType.Event];
     effect = 'remove {0} from the game';
 
     canAffect(card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
@@ -25,30 +25,30 @@ export class RemoveFromGameAction extends CardGameAction {
 
         if(propValidLocations) {
             for(const validLocation of propValidLocations) {
-                if(validLocation === Locations.Any || card.location === validLocation) {
+                if(validLocation === Location.Any || card.location === validLocation) {
                     return true;
                 }
             }
             return false;
         }
 
-        if(card.type === CardTypes.Holding) {
+        if(card.type === CardType.Holding) {
             if(!card.location.includes('province')) {
                 return false;
             }
-        } else if(card.location !== Locations.PlayArea) {
+        } else if(card.location !== Location.PlayArea) {
             return false;
         }
 
         return super.canAffect(card, context);
     }
 
-    updateEvent(event: GameEvent<EventNames.OnCardLeavesPlay>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
-        additionalProperties.destination = Locations.RemovedFromGame;
+    updateEvent(event: GameEvent<EventName.OnCardLeavesPlay>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+        additionalProperties.destination = Location.RemovedFromGame;
         this.updateLeavesPlayEvent(event, card, context, additionalProperties);
     }
 
-    eventHandler(event: GameEvent<EventNames.OnCardLeavesPlay>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventName.OnCardLeavesPlay>, additionalProperties: Record<string, unknown> = {}): void {
         this.leavesPlayEventHandler(event, additionalProperties);
     }
 }

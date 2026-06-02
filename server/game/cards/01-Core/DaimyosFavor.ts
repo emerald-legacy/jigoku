@@ -1,6 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Durations, CardTypes } from '../../Constants.js';
+import { Duration, CardType } from '../../Constants.js';
 
 class DaimyosFavor extends DrawCard {
     static id = 'daimyo-s-favor';
@@ -17,10 +17,10 @@ class DaimyosFavor extends DrawCard {
             effectArgs: context => context.source.parent as any,
             gameAction: ability.actions.playerLastingEffect(context => ({
                 targetController: context.player,
-                duration: Durations.UntilEndOfPhase,
+                duration: Duration.UntilEndOfPhase,
                 effect: ability.effects.reduceCost({
                     amount: 1,
-                    cardType: CardTypes.Attachment,
+                    cardType: CardType.Attachment,
                     targetCondition: (target: any) => target === context.source.parent,
                     limit: ability.limit.fixed(1)
                 })

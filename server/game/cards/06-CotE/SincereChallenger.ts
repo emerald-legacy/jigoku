@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { DuelTypes } from '../../Constants.js';
+import { DuelType } from '../../Constants.js';
 
 class SincereChallenger extends DrawCard {
     static id = 'sincere-challenger';
@@ -12,7 +12,7 @@ class SincereChallenger extends DrawCard {
         this.action({
             title: 'Initiate a Political duel',
             initiateDuel: {
-                type: DuelTypes.Political,
+                type: DuelType.Political,
                 message: '{0} is immune to events until the end of the conflict',
                 messageArgs: duel => duel.winner,
                 gameAction: duel => AbilityDsl.actions.cardLastingEffect({

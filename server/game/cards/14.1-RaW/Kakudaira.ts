@@ -1,4 +1,4 @@
-import { Durations, EventNames } from '../../Constants.js';
+import { Duration, EventName } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -10,12 +10,12 @@ export default class Kakudaira extends ProvinceCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.playerDelayedEffect({
                 when: {
-                    onPhaseStarted: (event: EventPayload<EventNames.OnPhaseStarted>, context: any) =>
+                    onPhaseStarted: (event: EventPayload<EventName.OnPhaseStarted>, context: any) =>
                         context.source.isFaceup() &&
                         !context.source.isBroken &&
                         context.player.getDynastyCardsInProvince(context.source.location).some((a: any) => a.isFacedown())
                 },
-                duration: Durations.Persistent,
+                duration: Duration.Persistent,
                 message: '{0} reveals {1} due to the constant effect of {2}',
                 messageArgs: (effectContext: any) => [
                     effectContext.player,

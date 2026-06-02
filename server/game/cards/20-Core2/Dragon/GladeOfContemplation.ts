@@ -1,4 +1,4 @@
-import { TargetModes } from '../../../Constants.js';
+import { TargetMode } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -20,7 +20,7 @@ export default class GladeOfContemplation extends ProvinceCard {
                     context.player.hand.length < context.player.opponent.hand.length
             },
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 choices: {
                     'Draw cards': AbilityDsl.actions.draw((context) => ({
                         amount: cardDifference(context)

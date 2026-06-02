@@ -1,5 +1,5 @@
 import { GameModes } from '../../GameModes.js';
-import { Phases, CardTypes, Players, EffectNames, EventNames, Locations } from '../Constants.js';
+import { Phases, CardType, Players, EffectName, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Game from '../Game.js';
 import type Player from '../Player.js';
@@ -64,7 +64,7 @@ export class FatePhase extends Phase {
             activePromptTitle: 'Choose character to discard\n(or click Done to discard all characters with no fate)',
             waitingPromptTitle: 'Waiting for opponent to discard characters with no fate',
             cardCondition: (card: DrawCard) => cardsToDiscard.has(card),
-            cardType: CardTypes.Character,
+            cardType: CardType.Character,
             controller: Players.Self,
             buttons: [{ text: 'Done', arg: 'cancel' }],
             onSelect: (player: Player, selectedCard: DrawCard) => {
@@ -93,7 +93,7 @@ export class FatePhase extends Phase {
             for(const player of this.game.getPlayersInFirstPlayerOrder()) {
                 if(!processed) {
                     const numFate = events.filter((a) => !('recipient' in a) || a.recipient === null || a.recipient === undefined).length;
-                    const postFunc = player.mostRecentEffect(EffectNames.CustomFatePhaseFateRemoval);
+                    const postFunc = player.mostRecentEffect(EffectName.CustomFatePhaseFateRemoval);
                     if(postFunc) {
                         postFunc(player, numFate);
                         processed = true;
@@ -110,7 +110,7 @@ export class FatePhase extends Phase {
         const recipients = Object.values(this.game.rings)
             .filter((ring) => ring.isUnclaimed())
             .map((ring) => ({ ring: ring, amount: 1 }));
-        this.game.raiseEvent(EventNames.OnPlaceFateOnUnclaimedRings, { recipients: recipients }, () => {
+        this.game.raiseEvent(EventName.OnPlaceFateOnUnclaimedRings, { recipients: recipients }, () => {
             recipients.forEach((recipient) => recipient.ring.modifyFate(recipient.amount));
         });
     }
@@ -145,7 +145,7 @@ export class FatePhase extends Phase {
                 optional: true,
                 activePromptTitle: 'Select dynasty cards to discard',
                 waitingPromptTitle: 'Waiting for opponent to discard dynasty cards',
-                location: Locations.Provinces,
+                location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card: DrawCard) => cardsOnUnbrokenProvinces.includes(card),
                 onSelect: (player: Player, cards: DrawCard[]) => {
@@ -196,7 +196,7 @@ export class FatePhase extends Phase {
         }
         const otherPlayer = this.game.getOtherPlayer(firstPlayer);
         if(otherPlayer) {
-            this.game.raiseEvent(EventNames.OnPassFirstPlayer, { player: otherPlayer }, () =>
+            this.game.raiseEvent(EventName.OnPassFirstPlayer, { player: otherPlayer }, () =>
                 this.game.setFirstPlayer(otherPlayer)
             );
         }

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Locations } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 
 class AppealToSympathy extends DrawCard {
     static id = 'appeal-to-sympathy';
@@ -9,7 +9,7 @@ class AppealToSympathy extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel an event',
             when: {
-                onInitiateAbilityEffects: (event) => event.card.type === CardTypes.Event
+                onInitiateAbilityEffects: (event) => event.card.type === CardType.Event
             },
             cannotBeMirrored: true,
             gameAction: AbilityDsl.actions.multiple([
@@ -18,11 +18,11 @@ class AppealToSympathy extends DrawCard {
                     condition: (context) => !!context.event.card?.isConflict,
                     trueGameAction: AbilityDsl.actions.moveCard((context) => ({
                         target: context.event.card,
-                        destination: Locations.ConflictDeck
+                        destination: Location.ConflictDeck
                     })),
                     falseGameAction: AbilityDsl.actions.moveCard((context) => ({
                         target: context.event.card,
-                        destination: Locations.DynastyDiscardPile
+                        destination: Location.DynastyDiscardPile
                     }))
                 })
             ]),

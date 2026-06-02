@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class EmissaryOfLies extends DrawCard {
     static id = 'emissary-of-lies';
@@ -9,7 +9,7 @@ class EmissaryOfLies extends DrawCard {
             title: 'Move a character home',
             condition: context => context.source.isParticipating(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.controller === context.player.opponent
             },
             handler: (context) => {

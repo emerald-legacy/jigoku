@@ -1,4 +1,4 @@
-import { AbilityTypes, CardTypes, EventNames, Locations, Players } from '../../../Constants.js';
+import { AbilityType, CardType, EventName, Location, Players } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,7 +11,7 @@ export default class GraspOfEarth2 extends DrawCard {
         this.attachmentConditions({ trait: 'shugenja' });
 
         this.persistentEffect({
-            location: Locations.Any,
+            location: Location.Any,
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: 1,
@@ -21,11 +21,11 @@ export default class GraspOfEarth2 extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.WouldInterrupt, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.WouldInterrupt, {
                 title: 'Block a character\'s movement to the conflict',
                 when: {
-                    onMoveToConflict: (event: EventPayload<EventNames.OnMoveToConflict>, context: TriggeredAbilityContext) =>
-                        event.card.type === CardTypes.Character && context.source.isParticipating()
+                    onMoveToConflict: (event: EventPayload<EventName.OnMoveToConflict>, context: TriggeredAbilityContext) =>
+                        event.card.type === CardType.Character && context.source.isParticipating()
                 },
                 effect: 'deny {1}\'s movement',
                 effectArgs: (context: TriggeredAbilityContext) => [context.event.card as DrawCard],

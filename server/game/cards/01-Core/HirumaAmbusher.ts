@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HirumaAmbusher extends DrawCard {
@@ -12,7 +12,7 @@ class HirumaAmbusher extends DrawCard {
                 onCharacterEntersPlay: (event, context) => event.card === context.source && context.source.isDefending()
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: ability.actions.cardLastingEffect({
                     effect: ability.effects.cardCannot('triggerAbilities')
                 })

@@ -1,4 +1,4 @@
-import { CardTypes, ConflictTypes, EffectNames, Players } from '../../../Constants.js';
+import { CardType, ConflictType, EffectName, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type DrawCard from '../../../DrawCard.js';
@@ -13,29 +13,29 @@ export default class ShoreOfTheAshenFlames extends ProvinceCard {
             targetController: Players.Opponent,
             effect: AbilityDsl.effects.changeConflictSkillFunctionPlayer((card: DrawCard, conflict: Conflict) => {
                 const exclusionFunction = (effect: any) => {
-                    if(effect.type === EffectNames.AttachmentMilitarySkillModifier) {
+                    if(effect.type === EffectName.AttachmentMilitarySkillModifier) {
                         const value = effect.getValue(card);
                         return value > 0;
                     }
-                    if(effect.type === EffectNames.AttachmentPoliticalSkillModifier) {
+                    if(effect.type === EffectName.AttachmentPoliticalSkillModifier) {
                         const value = effect.getValue(card);
                         return value > 0;
                     }
                     if(
-                        effect.type === EffectNames.ModifyMilitarySkill ||
-                        effect.type === EffectNames.ModifyPoliticalSkill ||
-                        effect.type === EffectNames.ModifyBothSkills
+                        effect.type === EffectName.ModifyMilitarySkill ||
+                        effect.type === EffectName.ModifyPoliticalSkill ||
+                        effect.type === EffectName.ModifyBothSkills
                     ) {
                         if(effect.context && effect.context.source) {
                             const source = effect.context.source;
-                            return source && source.type === CardTypes.Attachment;
+                            return source && source.type === CardType.Attachment;
                         }
                         return false;
                     }
                     return false;
                 };
 
-                if(conflict.conflictType === ConflictTypes.Military) {
+                if(conflict.conflictType === ConflictType.Military) {
                     return card.getMilitarySkillExcludingModifiers(exclusionFunction);
                 }
                 return card.getPoliticalSkillExcludingModifiers(exclusionFunction);

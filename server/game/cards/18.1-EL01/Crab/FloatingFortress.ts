@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class FloatingFortress extends DrawCard {
@@ -11,9 +11,9 @@ export default class FloatingFortress extends DrawCard {
             condition: (context) => context.player.isDefendingPlayer(),
             cost: AbilityDsl.costs.payFate(1),
             target: {
-                cardType: CardTypes.Holding,
+                cardType: CardType.Holding,
                 controller: Players.Self,
-                location: Locations.DynastyDiscardPile,
+                location: Location.DynastyDiscardPile,
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.cardLastingEffect((context) => ({
                         target: context.source,
@@ -26,8 +26,8 @@ export default class FloatingFortress extends DrawCard {
                                 action: AbilityDsl.actions.selectCard((context) => ({
                                     activePromptTitle: 'Choose an attacked province',
                                     hidePromptIfSingleCard: true,
-                                    cardType: CardTypes.Province,
-                                    location: Locations.Provinces,
+                                    cardType: CardType.Province,
+                                    location: Location.Provinces,
                                     message: '{0} moves {1} to {2}',
                                     messageArgs: (province, player) => [player, context.source, province],
                                     cardCondition: (card) => card.isConflictProvince(),

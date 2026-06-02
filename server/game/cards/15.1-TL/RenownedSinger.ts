@@ -1,4 +1,4 @@
-import { CardTypes, Locations, Players, TargetModes } from '../../Constants.js';
+import { CardType, Location, Players, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -12,11 +12,11 @@ export default class RenownedSinger extends DrawCard {
                 context.player.honorGained(context.game.roundNumber, this.game.currentPhase, true) >= 2 &&
                 context.player.opponent !== undefined,
             target: {
-                mode: TargetModes.Exactly,
+                mode: TargetMode.Exactly,
                 activePromptTitle: 'Choose two conflict cards',
                 numCards: 2,
-                location: Locations.ConflictDiscardPile,
-                cardType: [CardTypes.Character, CardTypes.Attachment, CardTypes.Event],
+                location: Location.ConflictDiscardPile,
+                cardType: [CardType.Character, CardType.Attachment, CardType.Event],
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) => {
@@ -38,11 +38,11 @@ export default class RenownedSinger extends DrawCard {
                                 let gameAction = AbilityDsl.actions.multiple([
                                     AbilityDsl.actions.moveCard({
                                         target: handCard,
-                                        destination: Locations.Hand
+                                        destination: Location.Hand
                                     }),
                                     AbilityDsl.actions.returnToDeck({
                                         target: bottomCard,
-                                        location: Locations.ConflictDiscardPile,
+                                        location: Location.ConflictDiscardPile,
                                         bottom: true,
                                         shuffle: false
                                     })

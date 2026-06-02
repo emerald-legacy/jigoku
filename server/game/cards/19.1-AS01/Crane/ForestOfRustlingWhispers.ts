@@ -1,4 +1,4 @@
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -11,7 +11,7 @@ export default class ForestOfRustlingWhispers extends ProvinceCard {
             effect: 'honor or dishonor {0}',
             target: {
                 activePromptTitle: 'Choose a character to honor or dishonor',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.chooseAction({
                     options: {

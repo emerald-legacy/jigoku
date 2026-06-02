@@ -1,5 +1,5 @@
 import { AbilityContext } from '../../../AbilityContext.js';
-import { Locations } from '../../../Constants.js';
+import { Location } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type DrawCard from '../../../DrawCard.js';
@@ -55,15 +55,15 @@ class Process {
                 this.context.player.opponent
             );
             for(const card of this.cardsToSteal) {
-                this.context.player.moveCard(card, Locations.RemovedFromGame);
+                this.context.player.moveCard(card, Location.RemovedFromGame);
                 card.controller = this.context.player;
                 this.context.source.lastingEffect(() => ({
                     until: {
                         onCardMoved: (event: any) =>
-                            event.card === card && event.originalLocation === Locations.RemovedFromGame
+                            event.card === card && event.originalLocation === Location.RemovedFromGame
                     },
                     match: card,
-                    effect: [AbilityDsl.effects.canPlayFromOwn(Locations.RemovedFromGame, [card], this.context.source)]
+                    effect: [AbilityDsl.effects.canPlayFromOwn(Location.RemovedFromGame, [card], this.context.source)]
                 }));
             }
         }

@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Durations, Players, AbilityTypes, Locations } from '../../../Constants.js';
+import { CardType, Duration, Players, AbilityType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class StrangeMirror extends DrawCard {
@@ -8,12 +8,12 @@ export default class StrangeMirror extends DrawCard {
 
     public setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Put a copy of a character into play',
                 condition: (context: AbilityContext) => context.source.isParticipating(),
                 targets: {
                     inPlay: {
-                        cardType: CardTypes.Character,
+                        cardType: CardType.Character,
                         controller: Players.Opponent,
                         cardCondition: (card: any) => card.isParticipating()
                     },
@@ -21,7 +21,7 @@ export default class StrangeMirror extends DrawCard {
                         dependsOn: 'inPlay',
                         cardCondition: (card: any, context: any) => card.name === context.targets.inPlay.name,
                         activePromptTitle: 'Choose a character from a discard pile',
-                        location: [Locations.DynastyDiscardPile, Locations.ConflictDiscardPile],
+                        location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                         controller: Players.Any,
                         gameAction: AbilityDsl.actions.joint([
                             AbilityDsl.actions.putIntoConflict(context => ({
@@ -29,8 +29,8 @@ export default class StrangeMirror extends DrawCard {
                             })),
                             AbilityDsl.actions.cardLastingEffect(context => ({
                                 target: context.targets.inDiscard,
-                                duration: Durations.UntilEndOfPhase,
-                                location: [Locations.DynastyDiscardPile, Locations.PlayArea],
+                                duration: Duration.UntilEndOfPhase,
+                                location: [Location.DynastyDiscardPile, Location.PlayArea],
                                 effect: AbilityDsl.effects.delayedEffect({
                                     when: {
                                         onConflictFinished: () => true

@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 
 const testOfSkillCost = function() {
     return {
@@ -11,7 +11,7 @@ const testOfSkillCost = function() {
             return true;
         },
         resolve: function(context: AbilityContext, result: { resolved: boolean; value?: boolean } = { resolved: false }) {
-            let choices = [CardTypes.Attachment, CardTypes.Character, CardTypes.Event];
+            let choices = [CardType.Attachment, CardType.Character, CardType.Event];
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Select a card type',
                 context: context,
@@ -45,7 +45,7 @@ class TestOfSkill extends DrawCard {
             cannotBeMirrored: true,
             effect: 'take cards into their hand',
             handler: (context: AbilityContext) => {
-                const isMatching = (card: BaseCard) => card.type === context.costs.testOfSkillCost && card.location === Locations.ConflictDeck;
+                const isMatching = (card: BaseCard) => card.type === context.costs.testOfSkillCost && card.location === Location.ConflictDeck;
                 let matchingCards: BaseCard[] = (context.costs.reveal as BaseCard[]).filter(isMatching);
                 let cardsToDiscard: BaseCard[] = (context.costs.reveal as BaseCard[]).filter((card: BaseCard) => !isMatching(card));
                 matchingCards = matchingCards.filter((c: BaseCard) => c.uuid !== context.source.uuid);
@@ -54,12 +54,12 @@ class TestOfSkill extends DrawCard {
                     cardsToDiscard = cardsToDiscard.concat(matchingCards);
                     this.game.addMessage('{0} discards {1}', context.player, cardsToDiscard);
                     cardsToDiscard.forEach((card: BaseCard) => {
-                        context.player.moveCard(card, Locations.ConflictDiscardPile);
+                        context.player.moveCard(card, Location.ConflictDiscardPile);
                     });
                 };
                 let takeCardHandler = (card: BaseCard) => {
                     this.game.addMessage('{0} adds {1} to their hand', context.player, card);
-                    context.player.moveCard(card, Locations.Hand);
+                    context.player.moveCard(card, Location.Hand);
                     return matchingCards.filter((c: BaseCard) => c.uuid !== card.uuid);
                 };
                 if(matchingCards.length === 0) {

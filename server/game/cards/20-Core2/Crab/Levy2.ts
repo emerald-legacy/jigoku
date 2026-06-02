@@ -1,4 +1,4 @@
-import { Players, TargetModes } from '../../../Constants.js';
+import { Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -11,7 +11,7 @@ export default class Levy2 extends DrawCard {
             condition: (context) => context.player.opponent !== undefined,
             target: {
                 player: Players.Opponent,
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 choices: {
                     'Give your opponent 1 fate': AbilityDsl.actions.takeFate(),
                     'Give your opponent 1 honor': AbilityDsl.actions.takeHonor()

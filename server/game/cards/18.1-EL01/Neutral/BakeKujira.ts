@@ -1,5 +1,5 @@
 import { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -16,7 +16,7 @@ export default class BakeKujira extends DrawCard {
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source,
                 gameAction: AbilityDsl.actions.conditional({

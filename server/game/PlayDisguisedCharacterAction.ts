@@ -1,5 +1,5 @@
 import { GameModes } from '../GameModes.js';
-import { CardTypes, EffectNames, EventNames, Phases, Players } from './Constants.js';
+import { CardType, EffectName, EventName, Phases, Players } from './Constants.js';
 import { ReduceableFateCost } from './costs/ReduceableFateCost.js';
 import BaseAction from './BaseAction.js';
 import BaseCard from './BaseCard.js';
@@ -18,7 +18,7 @@ function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIn
         resolve: (context: AbilityContext, results: any) =>
             context.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a character to replace',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card: BaseCard) => context.source.canDisguise(card, context, intoConflictOnly),
                 context: context,
@@ -94,15 +94,15 @@ export class PlayDisguisedCharacterAction extends BaseAction {
     }
 
     public executeHandler(context: AbilityContext) {
-        const legendaryFate = context.source.sumEffects(EffectNames.LegendaryFate);
-        let extraFate = context.source.sumEffects(EffectNames.GainExtraFateWhenPlayed);
+        const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
+        let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
         if(!context.source.checkRestrictions('placeFate', context)) {
             extraFate = 0;
         }
         extraFate = extraFate + legendaryFate;
-        const status = context.source.getEffects(EffectNames.EntersPlayWithStatus)[0] || '';
+        const status = context.source.getEffects(EffectName.EntersPlayWithStatus)[0] || '';
         const events = [
-            context.game.getEvent(EventNames.OnCardPlayed, {
+            context.game.getEvent(EventName.OnCardPlayed, {
                 player: context.player,
                 card: context.source,
                 context: context,
@@ -147,7 +147,7 @@ export class PlayDisguisedCharacterAction extends BaseAction {
                 : context.game.actions.putIntoPlay({ target: context.source, fate: extraFate, status });
             gameAction.addEventsToArray(events, context);
             events.push(
-                context.game.getEvent(EventNames.Unnamed, {}, () => {
+                context.game.getEvent(EventName.Unnamed, {}, () => {
                     const moveEvents: Event[] = [];
                     context.game.actions
                         .placeFate({
@@ -167,7 +167,7 @@ export class PlayDisguisedCharacterAction extends BaseAction {
                             .addEventsToArray(moveEvents, context);
                     }
                     moveEvents.push(
-                        context.game.getEvent(EventNames.Unnamed, {}, () => {
+                        context.game.getEvent(EventName.Unnamed, {}, () => {
                             context.game.checkGameState(true);
                             context.game.openThenEventWindow(
                                 context.game.actions

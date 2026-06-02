@@ -1,6 +1,6 @@
 import { BaseStep } from './BaseStep.js';
 import { TriggeredAbilityWindowTitle } from './TriggeredAbilityWindowTitle.js';
-import { Locations, AbilityTypes } from '../Constants.js';
+import { Location, AbilityType } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from '../Events/Event.js';
 import type EventWindow from '../Events/EventWindow.js';
@@ -18,12 +18,12 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
     events: Event[];
     eventWindow: EventWindow;
     eventsToExclude: Event[];
-    abilityType: AbilityTypes;
+    abilityType: AbilityType;
     currentPlayer: Player;
     resolvedAbilities: Array<{ ability: TriggeredAbility; event: Event }>;
     complete?: boolean;
 
-    constructor(game: Game, abilityType: AbilityTypes, window: EventWindow, eventsToExclude: Event[] = []) {
+    constructor(game: Game, abilityType: AbilityType, window: EventWindow, eventsToExclude: Event[] = []) {
         super(game);
         this.choices = [];
         this.events = [];
@@ -85,7 +85,7 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
     }
 
     getPromptForSelectProperties() {
-        return Object.assign({ location: Locations.Any }, this.getPromptProperties());
+        return Object.assign({ location: Location.Any }, this.getPromptProperties());
     }
 
     getPromptProperties() {

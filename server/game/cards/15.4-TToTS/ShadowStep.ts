@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ShadowStep extends DrawCard {
@@ -9,7 +9,7 @@ class ShadowStep extends DrawCard {
         this.action({
             title: 'Remove a character from the game and put it into play',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => !card.hasTrait('mythic'),
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.sequential([

@@ -2,7 +2,7 @@ import { GameModes } from '../../../GameModes.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
-import { CardTypes, Locations, Players } from '../../Constants.js';
+import { CardType, Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
@@ -17,7 +17,7 @@ class TheWealthOfTheCrane extends DrawCard {
         this.cards = [];
         this.chosenProvinces = [];
         this.persistentEffect({
-            location: Locations.Any,
+            location: Location.Any,
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: (card: BaseCard, player: Player) => {
@@ -51,9 +51,9 @@ class TheWealthOfTheCrane extends DrawCard {
             this.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a province for ' + currentCard.name,
                 context: context,
-                location: Locations.Provinces,
+                location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: (card: BaseCard) => card.type === CardTypes.Province && this.isProvinceValidTarget(card),
+                cardCondition: (card: BaseCard) => card.type === CardType.Province && this.isProvinceValidTarget(card),
                 onSelect: (player: Player, card: BaseCard) => {
                     this.game.addMessage(
                         '{0} puts {1} into {2}',
@@ -95,13 +95,13 @@ class TheWealthOfTheCrane extends DrawCard {
     }
 
     isProvinceValidTarget(province: BaseCard) {
-        return province.location !== Locations.StrongholdProvince && !this.chosenProvinces.some((a: BaseCard) => a === province);
+        return province.location !== Location.StrongholdProvince && !this.chosenProvinces.some((a: BaseCard) => a === province);
     }
 
     hasRemainingTarget() {
-        const baseLocations = [Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree];
+        const baseLocations = [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
         if(this.game.gameMode !== GameModes.Skirmish) {
-            baseLocations.push(Locations.ProvinceFour);
+            baseLocations.push(Location.ProvinceFour);
         }
 
         return this.chosenProvinces.length < baseLocations.length;

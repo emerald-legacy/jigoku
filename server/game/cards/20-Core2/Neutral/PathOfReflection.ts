@@ -1,4 +1,4 @@
-import { CardTypes, Elements } from '../../../Constants.js';
+import { CardType, Element } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -12,10 +12,10 @@ export default class PathOfReflection extends ProvinceCard {
         this.action({
             title: 'switch a character\'s base skills',
             conflictProvinceCondition: (province, context) =>
-                province.isElement(this.getCurrentElementSymbol(this.#provinceElement) as Elements) ||
-                (context.game.currentConflict?.hasElement?.(this.getCurrentElementSymbol(this.#conflictElement) as Elements) ?? false),
+                province.isElement(this.getCurrentElementSymbol(this.#provinceElement) as Element) ||
+                (context.game.currentConflict?.hasElement?.(this.getCurrentElementSymbol(this.#conflictElement) as Element) ?? false),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && !card.hasDash(),
                 gameAction: AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.switchBaseSkills() })
             },
@@ -26,8 +26,8 @@ export default class PathOfReflection extends ProvinceCard {
     getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
         symbols.push(
-            { prettyName: 'Conflict Element', key: this.#conflictElement, element: Elements.Water },
-            { prettyName: 'Province Element', key: this.#provinceElement, element: Elements.Water }
+            { prettyName: 'Conflict Element', key: this.#conflictElement, element: Element.Water },
+            { prettyName: 'Province Element', key: this.#provinceElement, element: Element.Water }
         );
         return symbols;
     }

@@ -1,5 +1,5 @@
 import { AbilityContext } from '../AbilityContext.js';
-import { CardTypes } from '../Constants.js';
+import { CardType } from '../Constants.js';
 import BaseAbility from '../BaseAbility.js';
 import DrawCard from '../DrawCard.js';
 
@@ -17,7 +17,7 @@ export class VoidRingEffect extends BaseAbility {
                 activePromptTitle: 'Choose character to remove fate from',
                 source: 'Void Ring',
                 buttons: optional ? [{ text: 'Don\'t resolve', arg: 'dontResolve' }] : [],
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
 
                 cardCondition: <C extends DrawCard>(card: C, context: AbilityContext) =>
                     card.allowGameAction('removeFate', context)

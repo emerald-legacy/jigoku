@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 class MantisBootlegger extends DrawCard {
@@ -16,7 +16,7 @@ class MantisBootlegger extends DrawCard {
 
     numCharactersWithAttachments(context: AbilityContext) {
         return context.player.cardsInPlay.filter(
-            (card: any) => card.getType() === CardTypes.Character && card.attachments.length > 0
+            (card: any) => card.getType() === CardType.Character && card.attachments.length > 0
         ).length;
     }
 }

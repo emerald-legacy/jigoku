@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class YasukiFuzake extends DrawCard {
     static id = 'yasuki-fuzake';
@@ -14,14 +14,14 @@ class YasukiFuzake extends DrawCard {
             targets: {
                 first: {
                     optional: true,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     gameAction: AbilityDsl.actions.discardStatusToken(context => ({
                         target: context.targets.first.statusTokens
                     }))
                 },
                 second: {
                     dependsOn: 'first',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     optional: true,
                     cardCondition: (card, context) => card.controller !== context.targets.first.controller,
                     gameAction: AbilityDsl.actions.discardStatusToken(context => ({

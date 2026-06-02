@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class GuidanceOfTheAncestors extends DrawCard {
@@ -8,7 +8,7 @@ class GuidanceOfTheAncestors extends DrawCard {
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Play this from the discard pile',
-            location: Locations.ConflictDiscardPile,
+            location: Location.ConflictDiscardPile,
             gameAction: ability.actions.playCard({
                 source: this
             })

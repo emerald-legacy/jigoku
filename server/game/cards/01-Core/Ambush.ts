@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Players, TargetModes, CardTypes } from '../../Constants.js';
+import { Location, Players, TargetMode, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Ambush extends DrawCard {
@@ -11,11 +11,11 @@ class Ambush extends DrawCard {
             target: {
                 activePromptTitle: 'Choose up to two characters',
                 numCards: 2,
-                mode: TargetModes.MaxStat,
+                mode: TargetMode.MaxStat,
                 cardStat: (card: DrawCard) => card.getCost() ?? 0,
                 maxStat: () => 6,
-                cardType: CardTypes.Character,
-                location: [Locations.Hand, Locations.Provinces],
+                cardType: CardType.Character,
+                location: [Location.Hand, Location.Provinces],
                 controller: Players.Self,
                 cardCondition: card => card.isFaction('scorpion'),
                 gameAction: AbilityDsl.actions.putIntoConflict()

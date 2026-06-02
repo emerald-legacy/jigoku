@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Players, CardTypes } from '../../Constants.js';
+import { Location, Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HidaEtsuji extends DrawCard {
@@ -7,8 +7,8 @@ class HidaEtsuji extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card, context) => card.type === CardTypes.Province && card.controller === context?.player,
-            targetLocation: Locations.Provinces,
+            match: (card, context) => card.type === CardType.Province && card.controller === context?.player,
+            targetLocation: Location.Provinces,
             targetController: Players.Self,
             effect: AbilityDsl.effects.increaseLimitOnAbilities()
         });

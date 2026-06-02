@@ -1,6 +1,6 @@
 import StaticEffect from '../../server/game/Effects/StaticEffect.js';
 import GainAbility from '../../server/game/Effects/GainAbility.js';
-import { EffectNames, AbilityTypes } from '../../server/game/Constants.js';
+import { EffectName, AbilityType } from '../../server/game/Constants.js';
 
 describe('StaticEffect', function() {
     let target: jasmine.SpyObj<{ addEffect: (e: unknown) => void; removeEffect: (e: unknown) => void }>;
@@ -11,19 +11,19 @@ describe('StaticEffect', function() {
 
     describe('getValue()', function() {
         it('should return the wrapped value', function() {
-            const effect = new StaticEffect(EffectNames.ModifyMilitarySkill, 5);
+            const effect = new StaticEffect(EffectName.ModifyMilitarySkill, 5);
             expect(effect.getValue()).toBe(5);
         });
     });
 
     describe('context', function() {
         it('should be unset until setContext is called', function() {
-            const effect = new StaticEffect(EffectNames.ModifyMilitarySkill, 5);
+            const effect = new StaticEffect(EffectName.ModifyMilitarySkill, 5);
             expect(effect.context).toBeUndefined();
         });
 
         it('should be assigned by setContext', function() {
-            const effect = new StaticEffect(EffectNames.ModifyMilitarySkill, 5);
+            const effect = new StaticEffect(EffectName.ModifyMilitarySkill, 5);
             const context = { name: 'ctx' };
             effect.setContext(context as never);
             expect(effect.context).toBe(context as never);
@@ -32,7 +32,7 @@ describe('StaticEffect', function() {
 
     describe('apply()', function() {
         it('should register itself on the target', function() {
-            const effect = new StaticEffect(EffectNames.ModifyMilitarySkill, 5);
+            const effect = new StaticEffect(EffectName.ModifyMilitarySkill, 5);
             effect.apply(target as never);
             expect(target.addEffect).toHaveBeenCalledWith(effect);
         });
@@ -40,7 +40,7 @@ describe('StaticEffect', function() {
 
     describe('unapply()', function() {
         it('should deregister itself from the target', function() {
-            const effect = new StaticEffect(EffectNames.ModifyMilitarySkill, 5);
+            const effect = new StaticEffect(EffectName.ModifyMilitarySkill, 5);
             effect.unapply(target as never);
             expect(target.removeEffect).toHaveBeenCalledWith(effect);
         });
@@ -64,11 +64,11 @@ describe('StaticEffect', function() {
             copy2 = jasmine.createSpyObj('copy2', ['apply', 'unapply']);
 
             gain = Object.create(GainAbility.prototype);
-            gain.abilityType = AbilityTypes.Persistent;
+            gain.abilityType = AbilityType.Persistent;
             const queued = [copy1, copy2];
             spyOn(gain, 'getCopy').and.callFake(() => queued.shift() as unknown as GainAbility);
 
-            effect = new StaticEffect(EffectNames.GainAbility, gain);
+            effect = new StaticEffect(EffectName.GainAbility, gain);
             effect.apply(target1);
             effect.apply(target2);
         });

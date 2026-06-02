@@ -1,7 +1,7 @@
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { EventNames, Locations } from '../Constants.js';
+import { EventName, Location } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
@@ -12,7 +12,7 @@ export interface MatchingDiscardProperties extends PlayerActionProperties {
     match?: (context: AbilityContext, card: BaseCard) => boolean;
 }
 
-export class MatchingDiscardAction extends PlayerAction<MatchingDiscardProperties, EventNames.OnCardsDiscardedFromHand> {
+export class MatchingDiscardAction extends PlayerAction<MatchingDiscardProperties, EventName.OnCardsDiscardedFromHand> {
     defaultProperties: MatchingDiscardProperties = {
         amount: -1,
         reveal: false,
@@ -21,7 +21,7 @@ export class MatchingDiscardAction extends PlayerAction<MatchingDiscardPropertie
     };
 
     name = 'discard';
-    eventName = EventNames.OnCardsDiscardedFromHand;
+    eventName = EventName.OnCardsDiscardedFromHand;
     constructor(propertyFactory: MatchingDiscardProperties | ((context: AbilityContext) => MatchingDiscardProperties)) {
         super(propertyFactory);
     }
@@ -35,7 +35,7 @@ export class MatchingDiscardAction extends PlayerAction<MatchingDiscardPropertie
         return player.hand.length > 0 && super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnCardsDiscardedFromHand>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnCardsDiscardedFromHand>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let properties: MatchingDiscardProperties = this.getProperties(
             context,
             additionalProperties
@@ -47,7 +47,7 @@ export class MatchingDiscardAction extends PlayerAction<MatchingDiscardPropertie
         event.match = properties.match;
     }
 
-    eventHandler(event: GameEvent<EventNames.OnCardsDiscardedFromHand>): void {
+    eventHandler(event: GameEvent<EventName.OnCardsDiscardedFromHand>): void {
         let context = event.context as AbilityContext;
         let player = event.player as Player;
         let amount = Math.min(event.amount ?? -1, player.hand.length);
@@ -76,7 +76,7 @@ export class MatchingDiscardAction extends PlayerAction<MatchingDiscardPropertie
         }
 
         for(const card of cardsToDiscard) {
-            player.moveCard(card, card.isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile);
+            player.moveCard(card, card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
         }
     }
 }

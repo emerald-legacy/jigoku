@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import type { Cost } from '../../../Costs.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -25,12 +25,12 @@ export default class SpiritOfValor extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            location: Locations.Any,
+            location: Location.Any,
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: (_: any, player: any) =>
                     player.cardsInPlay.some(
-                        (card: any) => card.getType() === CardTypes.Character && card.hasTrait('shugenja')
+                        (card: any) => card.getType() === CardType.Character && card.hasTrait('shugenja')
                     )
                         ? 1
                         : 0,
@@ -43,7 +43,7 @@ export default class SpiritOfValor extends DrawCard {
             cost: [captureParentCost(), AbilityDsl.costs.sacrificeSelf()],
             target: {
                 activePromptTitle: 'Choose a character from a discard pile',
-                location: [Locations.DynastyDiscardPile, Locations.ConflictDiscardPile],
+                location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                 controller: Players.Self,
                 cardCondition: (card) => card.isFaction('lion'),
                 gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({

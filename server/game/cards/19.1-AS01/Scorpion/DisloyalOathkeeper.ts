@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import { CardTypes, Locations, Players, PlayTypes } from '../../../Constants.js';
+import { CardType, Location, Players, PlayType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 
@@ -9,14 +9,14 @@ export default class DisloyalOathkeeper extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            location: Locations.PlayArea,
+            location: Location.PlayArea,
             targetLocation: this.uuid,
             targetController: Players.Self,
             match: (card) => card.location === this.uuid,
             effect: [
                 AbilityDsl.effects.canPlayFromOutOfPlay(
                     (player: Player) => player === this.controller,
-                    PlayTypes.PlayFromHand
+                    PlayType.PlayFromHand
                 ),
                 AbilityDsl.effects.registerToPlayFromOutOfPlay()
             ]
@@ -27,7 +27,7 @@ export default class DisloyalOathkeeper extends DrawCard {
             when: {
                 onCardPlayed: (event, context) =>
                     event.player === context.player.opponent &&
-                    event.card.type === CardTypes.Event &&
+                    event.card.type === CardType.Event &&
                     !event.card.hasEphemeral() &&
                     context.source.controller.getSourceList(this.uuid).length === 0
             },

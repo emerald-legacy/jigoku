@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class StrengthInNumbers extends DrawCard {
@@ -10,7 +10,7 @@ class StrengthInNumbers extends DrawCard {
             title: 'Send home defending character',
             condition: context => context.player.isAttackingPlayer(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: any) =>
                     card.isDefending() &&
                     card.getGlory() <= (this.game.currentConflict?.getNumberOfParticipantsFor('attacker') ?? 0),

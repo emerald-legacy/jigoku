@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Elements } from '../../Constants.js';
+import { CardType, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'katana-of-fire-fire';
@@ -15,7 +15,7 @@ class KatanaOfFire extends DrawCard {
     }
 
     canPlay(context: AbilityContext, playType: string) {
-        if(!context.player.cardsInPlay.some((card: DrawCard) => card.getType() === CardTypes.Character && card.hasTrait('shugenja'))) {
+        if(!context.player.cardsInPlay.some((card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja'))) {
             return false;
         }
 
@@ -40,7 +40,7 @@ class KatanaOfFire extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Claimed Ring',
-            element: Elements.Fire
+            element: Element.Fire
         });
         return symbols;
     }

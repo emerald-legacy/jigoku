@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class GanzuWarrior extends DrawCard {
@@ -10,7 +10,7 @@ class GanzuWarrior extends DrawCard {
             title: 'Resolve a ring effect',
             when: {
                 onCardRevealed: (event, context) =>
-                    event.card && event.card.type === CardTypes.Province && context.source.isParticipating()
+                    event.card && event.card.type === CardType.Province && context.source.isParticipating()
             },
             gameAction: AbilityDsl.actions.selectRing((context) => ({
                 activePromptTitle: 'Choose a ring effect to resolve',

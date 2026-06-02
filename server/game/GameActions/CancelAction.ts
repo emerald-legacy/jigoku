@@ -1,6 +1,6 @@
 import type { Event } from '../Events/Event.js';
 import type EventWindow from '../Events/EventWindow.js';
-import { CardTypes, EventNames } from '../Constants.js';
+import { CardType, EventName } from '../Constants.js';
 import type { GameObject } from '../GameObject.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
@@ -39,14 +39,14 @@ export class CancelAction extends GameAction {
         if(
             context.event.card &&
             typeof context.event.card.getType === 'function' &&
-            context.event.card.getType() === CardTypes.Event &&
+            context.event.card.getType() === CardType.Event &&
             context.event.card.owner &&
             context.event.card.owner.eventsCannotBeCancelled()
         ) {
             cannotBeCancelled = true;
         }
         if(
-            context.event.name === EventNames.OnCardLeavesPlay &&
+            context.event.name === EventName.OnCardLeavesPlay &&
             context.event.card &&
             !context.event.card.checkRestrictions('preventedFromLeavingPlay', context)
         ) {

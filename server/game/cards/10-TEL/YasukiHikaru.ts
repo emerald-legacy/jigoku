@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class YasukiHikaru extends DrawCard {
     static id = 'yasuki-hikaru';
@@ -10,7 +10,7 @@ class YasukiHikaru extends DrawCard {
             title: 'Send home character',
             condition: (context) => context.source.isDefending(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card.isAttacking() && card.getMilitarySkill() > context.source.getMilitarySkill(),
                 gameAction: AbilityDsl.actions.sendHome()
             }

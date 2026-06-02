@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type CardAbility from '../../../CardAbility.js';
-import { CardTypes, Players, TargetModes, EventNames } from '../../../Constants.js';
+import { CardType, Players, TargetMode, EventName } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,7 +12,7 @@ export default class ALegionOfOne extends DrawCard {
             title: 'Give a solitary character +3/+0',
             condition: () => this.game.isDuringConflict('military'),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     card.isParticipating() &&
@@ -28,7 +28,7 @@ export default class ALegionOfOne extends DrawCard {
                 if(ctx.subResolution) {
                     return {
                         target: {
-                            mode: TargetModes.Select,
+                            mode: TargetMode.Select,
                             choices: {
                                 'Remove 1 fate for no effect': AbilityDsl.actions.removeFate({
                                     target: ctx.target
@@ -42,7 +42,7 @@ export default class ALegionOfOne extends DrawCard {
                 }
                 return {
                     target: {
-                        mode: TargetModes.Select,
+                        mode: TargetMode.Select,
                         choices: {
                             'Remove 1 fate to resolve this ability again': AbilityDsl.actions.removeFate({
                                 target: ctx.target
@@ -54,7 +54,7 @@ export default class ALegionOfOne extends DrawCard {
                     messageArgs: (innerContext: AbilityContext) => (innerContext.select === 'Done' ? 'not ' : ''),
                     then: {
                         thenCondition: (event: any) =>
-                            event.origin === ctx.target && !event.cancelled && event.name === EventNames.OnMoveFate,
+                            event.origin === ctx.target && !event.cancelled && event.name === EventName.OnMoveFate,
                         gameAction: AbilityDsl.actions.resolveAbility({
                             ability: ctx.ability as CardAbility,
                             subResolution: true,

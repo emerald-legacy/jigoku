@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Locations, Players } from '../../Constants.js';
+import { CardType, Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ShosuroMiyako2 extends DrawCard {
@@ -7,7 +7,7 @@ class ShosuroMiyako2 extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            location: Locations.Any,
+            location: Location.Any,
             effect: AbilityDsl.effects.playerCannot({
                 cannot: 'playCharacter',
                 restricts: 'source'
@@ -20,7 +20,7 @@ class ShosuroMiyako2 extends DrawCard {
                 onCardPlayed: (event, context) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => !card.isUnique(),
                 gameAction: AbilityDsl.actions.dishonor()

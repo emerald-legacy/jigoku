@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, EventNames } from '../../Constants.js';
+import { CardType, EventName } from '../../Constants.js';
 
 class YoungRumormonger extends DrawCard {
     static id = 'young-rumormonger';
@@ -9,16 +9,16 @@ class YoungRumormonger extends DrawCard {
         this.wouldInterrupt({
             title: 'Honor/dishonor a different character',
             when: {
-                onCardHonored: (event) => event.card.type === CardTypes.Character,
-                onCardDishonored: (event) => event.card.type === CardTypes.Character
+                onCardHonored: (event) => event.card.type === CardType.Character,
+                onCardDishonored: (event) => event.card.type === CardType.Character
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card !== context.event.card && card.controller === context.event.card.controller,
                 gameAction: AbilityDsl.actions.cancel((context) => ({
                     replacementGameAction:
-                        context.event.name === EventNames.OnCardHonored
+                        context.event.name === EventName.OnCardHonored
                             ? AbilityDsl.actions.honor()
                             : AbilityDsl.actions.dishonor()
                 }))

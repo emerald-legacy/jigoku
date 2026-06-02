@@ -1,4 +1,4 @@
-import { Durations, TargetModes } from '../../Constants.js';
+import { Duration, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
@@ -13,13 +13,13 @@ export default class WayOfThePhoenix extends DrawCard {
             title: 'Prevent an opponent contesting a ring',
             condition: (context) => context.player.opponent !== undefined,
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 ringCondition: () => true
             },
             effect: 'prevent {1} from declaring a conflict with {0}',
             effectArgs: (context) => context.player.opponent ?? '',
             gameAction: AbilityDsl.actions.ringLastingEffect((context) => ({
-                duration: Durations.UntilEndOfPhase,
+                duration: Duration.UntilEndOfPhase,
                 target: (context.ring.getElements() as Element[]).map((element) => this.game.rings[element]),
                 effect: AbilityDsl.effects.cannotDeclareRing((player: Player) => player === context.player.opponent)
             })),

@@ -1,4 +1,4 @@
-import { Elements, EventNames, Players, TargetModes } from '../../../Constants.js';
+import { Element, EventName, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -16,13 +16,13 @@ export default class OtterFisherman extends DrawCard {
         this.reaction({
             title: 'Gain resource after claiming water',
             when: {
-                onClaimRing: (event: EventPayload<EventNames.OnClaimRing>, context) =>
+                onClaimRing: (event: EventPayload<EventName.OnClaimRing>, context) =>
                     event.player === context.player &&
-                    ((event.conflict && event.conflict.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY) as Elements)) ||
-                        event.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY) as Elements))
+                    ((event.conflict && event.conflict.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY) as Element)) ||
+                        event.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY) as Element))
             },
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 player: Players.Opponent,
                 activePromptTitle: 'Choose an option for your opponent',
                 choices: {
@@ -48,7 +48,7 @@ export default class OtterFisherman extends DrawCard {
         symbols.push({
             key: ELEMENT_KEY,
             prettyName: 'Ring',
-            element: Elements.Water
+            element: Element.Water
         });
         return symbols;
     }

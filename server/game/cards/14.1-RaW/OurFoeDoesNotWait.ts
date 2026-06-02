@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Players, CardTypes, Decks } from '../../Constants.js';
+import { Location, Players, CardType, Decks } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class OurFoeDoesNotWait extends DrawCard {
@@ -15,10 +15,10 @@ class OurFoeDoesNotWait extends DrawCard {
             max: AbilityDsl.limit.perConflictOpportunity(1),
             effect: 'look at the top eight cards of their dynasty deck',
             target: {
-                cardType: CardTypes.Province,
+                cardType: CardType.Province,
                 controller: Players.Self,
-                location: Locations.Provinces,
-                cardCondition: card => card.location !== Locations.StrongholdProvince && !card.isBroken
+                location: Location.Provinces,
+                cardCondition: card => card.location !== Location.StrongholdProvince && !card.isBroken
             },
             gameAction: AbilityDsl.actions.deckSearch(context => ({
                 amount: 8,

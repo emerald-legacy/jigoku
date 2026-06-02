@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, CardTypes, EventNames } from '../../Constants.js';
+import { Location, CardType, EventName } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
@@ -13,7 +13,7 @@ class StolenSecrets extends DrawCard {
             title: 'Steal one of opponent\'s top 4 cards',
             condition: (context: AbilityContext<this>) => this.game.isDuringConflict('political') && !!context.player.opponent && context.player.opponent.conflictDeck.length > 0,
             cost: ability.costs.removeFate({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: any) => card.isParticipating()
             }),
             effect: 'look at the top 4 cards of {1}\'s conflict deck and remove one from the game',
@@ -33,16 +33,16 @@ class StolenSecrets extends DrawCard {
     stealCard(card: DrawCard, remainingCards: DrawCard[], context: AbilityContext<this>) {
         card.owner.removeCardFromPile(card);
         card.controller = context.player;
-        card.moveTo(Locations.RemovedFromGame);
+        card.moveTo(Location.RemovedFromGame);
         context.player.removedFromGame.unshift(card);
         context.source.lastingEffect((ability: typeof AbilityDsl) => ({
             until: {
-                onCardMoved: (event: EventPayload<EventNames.OnCardMoved>) => event.card === card && event.originalLocation === Locations.RemovedFromGame
+                onCardMoved: (event: EventPayload<EventName.OnCardMoved>) => event.card === card && event.originalLocation === Location.RemovedFromGame
             },
             match: card,
             effect: [
                 ability.effects.hideWhenFaceUp(),
-                ability.effects.canPlayFromOwn(Locations.RemovedFromGame, [card], this)
+                ability.effects.canPlayFromOwn(Location.RemovedFromGame, [card], this)
             ]
         }));
         this.game.checkGameState();

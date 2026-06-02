@@ -1,6 +1,6 @@
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
@@ -12,7 +12,7 @@ export class GainFateAction extends PlayerAction<GainFateProperties> {
     defaultProperties: GainFateProperties = { amount: 1 };
 
     name = 'gainFate';
-    eventName = EventNames.OnModifyFate;
+    eventName = EventName.OnModifyFate;
 
     defaultTargets(context: AbilityContext): Player[] {
         return [context.player];
@@ -28,13 +28,13 @@ export class GainFateAction extends PlayerAction<GainFateProperties> {
         return (properties.amount ?? 0) > 0 && super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnModifyFate>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnModifyFate>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
     }
 
-    eventHandler(event: GameEvent<EventNames.OnModifyFate>): void {
+    eventHandler(event: GameEvent<EventName.OnModifyFate>): void {
         (event.player as Player).modifyFate(event.amount as number);
     }
 }

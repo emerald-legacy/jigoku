@@ -1,5 +1,5 @@
 import CardAbility from '../../CardAbility.js';
-import { CardTypes, EventNames } from '../../Constants.js';
+import { CardType, EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
 import BaseCard from '../../BaseCard.js';
@@ -19,14 +19,14 @@ export default class StoriedDefeat extends DrawCard {
             title: 'Bow a character who lost a duel',
             condition: (context) => context.game.isDuringConflict(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => this.duelLosersThisConflict.has(card),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.bow(),
                     AbilityDsl.actions.menuPrompt((context) => ({
                         activePromptTitle: 'Spend 1 fate to dishonor ' + context.target.name + '?',
                         choices: ['Yes'].concat(
-                            context.events.some((event: any) => event.name === EventNames.OnCardBowed) ? ['No'] : []
+                            context.events.some((event: any) => event.name === EventName.OnCardBowed) ? ['No'] : []
                         ),
                         choiceHandler: (choice, displayMessage) => {
                             if(displayMessage) {

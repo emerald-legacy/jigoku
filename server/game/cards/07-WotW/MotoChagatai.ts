@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import { EventNames } from '../../Constants.js';
+import { EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -12,7 +12,7 @@ export default class MotoChagatai extends DrawCard {
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventNames.OnBreakProvince, EventNames.OnConflictFinished]);
+        this.eventRegistrar.register([EventName.OnBreakProvince, EventName.OnConflictFinished]);
 
         this.persistentEffect({
             condition: (context: AbilityContext) =>

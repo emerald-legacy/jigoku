@@ -1,6 +1,6 @@
 import type { AbilityContext } from './AbilityContext.js';
 import BaseAction from './BaseAction.js';
-import { CardTypes, EventNames, Locations, Phases } from './Constants.js';
+import { CardType, EventName, Location, Phases } from './Constants.js';
 import { payTargetDependentFateCost } from './Costs.js';
 import { attach } from './GameActions/GameActions.js';
 import { parseGameMode } from './GameMode.js';
@@ -11,7 +11,7 @@ export class PlayAttachmentAction extends BaseAction {
 
     constructor(card: BaseCard, ignoreType = false) {
         super(card, [payTargetDependentFateCost('target', ignoreType)], {
-            location: [Locations.PlayArea, Locations.Provinces],
+            location: [Location.PlayArea, Location.Provinces],
             gameAction: attach((context) => ({
                 attachment: context.source,
                 ignoreType: ignoreType,
@@ -47,12 +47,12 @@ export class PlayAttachmentAction extends BaseAction {
 
     displayMessage(context: AbilityContext) {
         const t = context.target as BaseCard;
-        const target = t.type === CardTypes.Province && t.isFacedown() ? t.location : t;
+        const target = t.type === CardType.Province && t.isFacedown() ? t.location : t;
         context.game.addMessage('{0} plays {1}, attaching it to {2}', context.player, context.source, target);
     }
 
     executeHandler(context: AbilityContext) {
-        const cardPlayedEvent = context.game.getEvent(EventNames.OnCardPlayed, {
+        const cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
             player: context.player,
             card: context.source,
             context: context,

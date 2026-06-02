@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class JadeStrike extends DrawCard {
@@ -10,7 +10,7 @@ class JadeStrike extends DrawCard {
             title: 'Set a characters base skills to 0/0',
 
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.hasStatusTokens && card.isParticipating(),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.cardLastingEffect({
@@ -30,7 +30,7 @@ class JadeStrike extends DrawCard {
     }
 
     canPlay(context: any, playType: any) {
-        if(!context.player.cardsInPlay.some((card: any) => card.getType() === CardTypes.Character && card.hasTrait('shugenja'))) {
+        if(!context.player.cardsInPlay.some((card: any) => card.getType() === CardType.Character && card.hasTrait('shugenja'))) {
             return false;
         }
 

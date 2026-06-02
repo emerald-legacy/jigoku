@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { Locations, CardTypes, TargetModes } from '../../Constants.js';
+import { Location, CardType, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AkodoMastermind extends DrawCard {
@@ -12,13 +12,13 @@ class AkodoMastermind extends DrawCard {
             title: 'Remove tactics to bow a character',
             condition: context => context.source.isParticipating(),
             cost: AbilityDsl.costs.removeFromGame({
-                cardType: [CardTypes.Event, CardTypes.Character, CardTypes.Attachment],
-                location: Locations.ConflictDiscardPile,
-                mode: TargetModes.Unlimited,
+                cardType: [CardType.Event, CardType.Character, CardType.Attachment],
+                location: Location.ConflictDiscardPile,
+                mode: TargetMode.Unlimited,
                 cardCondition: card => card.hasTrait('tactic')
             }),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.getGlory() <= this.getGloryCheck(context),
                 gameAction: AbilityDsl.actions.bow()
             },

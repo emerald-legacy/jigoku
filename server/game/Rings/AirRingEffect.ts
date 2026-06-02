@@ -1,5 +1,5 @@
 import { GameModes } from '../../GameModes.js';
-import { TargetModes } from '../Constants.js';
+import { TargetMode } from '../Constants.js';
 import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
 import { AbilityContext } from '../AbilityContext.js';
 import BaseAbility from '../BaseAbility.js';
@@ -38,7 +38,7 @@ export class AirRingEffect extends BaseAbility {
     ) {
         super({
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 activePromptTitle: 'Choose an effect to resolve',
                 source: 'Air Ring',
                 choices: choices(optional, gameMode)

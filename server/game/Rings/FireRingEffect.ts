@@ -1,5 +1,5 @@
 import { AbilityContext } from '../AbilityContext.js';
-import { CardTypes } from '../Constants.js';
+import { CardType } from '../Constants.js';
 import BaseAbility from '../BaseAbility.js';
 import DrawCard from '../DrawCard.js';
 
@@ -15,7 +15,7 @@ export class FireRingEffect extends BaseAbility {
         super({
             target: {
                 activePromptTitle: 'Choose character to honor or dishonor',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: <C extends DrawCard>(card: C, context: AbilityContext) =>
                     card.allowGameAction('honor', context) || card.allowGameAction('dishonor', context),
                 buttons: optional ? [{ text: 'Don\'t resolve', arg: 'dontResolve' }] : []

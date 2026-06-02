@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Phases } from '../../Constants.js';
+import { CardType, Phases } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class KaitoMai extends DrawCard {
@@ -17,7 +17,7 @@ class KaitoMai extends DrawCard {
                     event.origin === context.source && event.fate > 0 && context.game.currentPhase !== Phases.Fate
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.removeFate({amount: 1})
             }
         });

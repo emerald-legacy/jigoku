@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 
 class ShosuroBotanist extends DrawCard {
     static id = 'shosuro-botanist';
@@ -9,7 +9,7 @@ class ShosuroBotanist extends DrawCard {
         this.action<DrawCard>({
             title: 'Return attachment to owners hand',
             target: {
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 controller: Players.Self,
                 cardCondition: card => !card.hasTrait('weapon'),
                 gameAction: AbilityDsl.actions.returnToHand()

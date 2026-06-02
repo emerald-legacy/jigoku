@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class CompellingTestimony extends DrawCard {
@@ -10,7 +10,7 @@ class CompellingTestimony extends DrawCard {
             title: 'Give a character -4 political',
             condition: () => this.game.isDuringConflict('political'),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     effect: AbilityDsl.effects.modifyPoliticalSkill(-4)

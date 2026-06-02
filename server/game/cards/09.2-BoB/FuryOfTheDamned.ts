@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes, Durations, TargetModes } from '../../Constants.js';
+import { Players, CardType, Duration, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class FuryOfTheDamned extends DrawCard {
@@ -11,8 +11,8 @@ class FuryOfTheDamned extends DrawCard {
 
             target: {
                 activePromptTitle: 'Choose bushi characters',
-                mode: TargetModes.Unlimited,
-                cardType: CardTypes.Character,
+                mode: TargetMode.Unlimited,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('bushi') && card.isParticipating(),
                 gameAction: AbilityDsl.actions.multiple([
@@ -20,7 +20,7 @@ class FuryOfTheDamned extends DrawCard {
                         effect: AbilityDsl.effects.modifyBaseMilitarySkillMultiplier(2)
                     }),
                     AbilityDsl.actions.cardLastingEffect(context => ({
-                        duration: Durations.UntilEndOfPhase,
+                        duration: Duration.UntilEndOfPhase,
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
                                 onConflictFinished: () => true

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class FavorableGround extends DrawCard {
@@ -10,7 +10,7 @@ class FavorableGround extends DrawCard {
             title: 'Move a character into or out of the conflict',
             cost: ability.costs.sacrificeSelf(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: [ability.actions.sendHome(), ability.actions.moveToConflict()]
             }

@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAction from '../BaseAction.js';
 import type BaseCard from '../BaseCard.js';
 import type BaseCardAbility from '../BaseCardAbility.js';
-import { Locations, PlayTypes, Stages } from '../Constants.js';
+import { Location, PlayType, Stage } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import type Game from '../Game.js';
@@ -27,7 +27,7 @@ class PlayCardResolver extends AbilityResolver {
 
     resolveEarlyTargets() {
         if(this.gameActionProperties.playCardTarget) {
-            this.context.stage = Stages.PreTarget;
+            this.context.stage = Stage.PreTarget;
             this.targetResults = {
                 canIgnoreAllCosts: false,
                 cancelled: false,
@@ -65,17 +65,17 @@ class PlayCardResolver extends AbilityResolver {
     }
 
     moveEventCardToDiscard() {
-        if(this.context.source.location === Locations.BeingPlayed) {
+        if(this.context.source.location === Location.BeingPlayed) {
             const location =
-                (this.initiateAbility && this.gameActionProperties.destination) || Locations.ConflictDiscardPile;
-            if(location === Locations.RemovedFromGame) {
+                (this.initiateAbility && this.gameActionProperties.destination) || Location.ConflictDiscardPile;
+            if(location === Location.RemovedFromGame) {
                 this.game.addMessage(
                     '{0} is removed from the game by {1}\'s effect',
                     this.context.source,
                     this.gameActionContext.source
                 );
             }
-            if(location === Locations.ConflictDeck && this.gameActionProperties.destinationOptions?.bottom) {
+            if(location === Location.ConflictDeck && this.gameActionProperties.destinationOptions?.bottom) {
                 this.game.addMessage(
                     '{0} is placed on the bottom of {1}\'s deck by {2}\'s effect',
                     this.context.source,
@@ -98,10 +98,10 @@ class PlayCardResolver extends AbilityResolver {
 export interface PlayCardProperties extends CardActionProperties {
     resetOnCancel?: boolean;
     postHandler?: (context: AbilityContext) => void;
-    playType?: PlayTypes;
+    playType?: PlayType;
     playCardTarget?: (context: AbilityContext, properties: PlayCardProperties) => void;
-    location?: Locations;
-    destination?: Locations;
+    location?: Location;
+    destination?: Location;
     destinationOptions?: { bottom?: boolean; [key: string]: unknown };
     payCosts?: boolean;
     ignoreFateCost?: boolean;
@@ -155,7 +155,7 @@ export class PlayCardAction extends CardGameAction {
             let newContext = ability.createContext(context.player);
             newContext.gameActionsResolutionChain = context.gameActionsResolutionChain.concat(this);
             newContext.ignoreFateCost = properties.ignoreFateCost;
-            this.setPlayType(newContext, properties.playType ?? PlayTypes.Other, card.location);
+            this.setPlayType(newContext, properties.playType ?? PlayType.Other, card.location);
             return !ability.meetsRequirements(newContext, ignoredRequirements);
         });
     }
@@ -178,13 +178,13 @@ export class PlayCardAction extends CardGameAction {
         return card.getReactions();
     }
 
-    setPlayType(context: AbilityContext, playType: PlayTypes, location: Locations): void {
+    setPlayType(context: AbilityContext, playType: PlayType, location: Location): void {
         context.playType =
             playType ||
             context.playType ||
-            (location.includes('province') && PlayTypes.PlayFromProvince) ||
-            (location === 'hand' && PlayTypes.PlayFromHand) ||
-            PlayTypes.Other;
+            (location.includes('province') && PlayType.PlayFromProvince) ||
+            (location === 'hand' && PlayType.PlayFromHand) ||
+            PlayType.Other;
     }
 
     cancelAction(context: AbilityContext, properties: PlayCardProperties): number {
@@ -241,7 +241,7 @@ export class PlayCardAction extends CardGameAction {
         let properties = this.getProperties(context, additionalProperties);
         let event = this.createEvent(card, context, additionalProperties);
         this.updateEvent(event, card, context, additionalProperties);
-        this.setPlayType(actionContext, properties.playType ?? PlayTypes.Other, card.location);
+        this.setPlayType(actionContext, properties.playType ?? PlayType.Other, card.location);
         event.replaceHandler(() =>
             context.game.queueStep(new PlayCardResolver(context.game, actionContext, this, context, properties))
         );

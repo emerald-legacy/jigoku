@@ -1,4 +1,4 @@
-import { CardTypes, Durations } from '../../Constants.js';
+import { CardType, Duration } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -10,9 +10,9 @@ export default class IsawaMoriSeido extends StrongholdCard {
             title: 'Bow this stronghold',
             cost: AbilityDsl.costs.bowSelf(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    duration: Durations.UntilEndOfPhase,
+                    duration: Duration.UntilEndOfPhase,
                     effect: AbilityDsl.effects.modifyGlory(2)
                 })
             },

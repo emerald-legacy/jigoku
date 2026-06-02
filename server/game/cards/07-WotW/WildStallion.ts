@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class WildStallion extends DrawCard {
     static id = 'wild-stallion';
@@ -10,7 +10,7 @@ class WildStallion extends DrawCard {
             title: 'Move this and another character to the conflict',
             condition: context => !!(context.game.currentConflict && !context.source.isParticipating()),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card !== context.source,
                 optional: true,

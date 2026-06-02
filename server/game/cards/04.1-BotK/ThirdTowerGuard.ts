@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 
 const elementKeys = {
     earth: 'third-tower-guard-earth',
@@ -25,12 +25,12 @@ class ThirdTowerGuard extends DrawCard {
         symbols.push({
             key: elementKeys.earth,
             prettyName: 'Claimed Ring',
-            element: Elements.Earth
+            element: Element.Earth
         });
         symbols.push({
             key: elementKeys.water,
             prettyName: 'Claimed Ring',
-            element: Elements.Water
+            element: Element.Water
         });
         return symbols;
     }

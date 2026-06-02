@@ -1,9 +1,9 @@
 import EventWindow from './EventWindow.js';
-import { AbilityTypes } from '../Constants.js';
+import { AbilityType } from '../Constants.js';
 
 export default class ThenEventWindow extends EventWindow {
-    openWindow(abilityType: AbilityTypes) {
-        if(abilityType !== AbilityTypes.ForcedReaction && abilityType !== AbilityTypes.Reaction && abilityType !== AbilityTypes.DuelReaction) {
+    openWindow(abilityType: AbilityType) {
+        if(abilityType !== AbilityType.ForcedReaction && abilityType !== AbilityType.Reaction && abilityType !== AbilityType.DuelReaction) {
             super.openWindow(abilityType);
         }
     }

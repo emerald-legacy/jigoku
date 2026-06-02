@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class BayushiAramoro extends DrawCard {
     static id = 'bayushi-aramoro';
@@ -12,7 +12,7 @@ class BayushiAramoro extends DrawCard {
             cost: AbilityDsl.costs.dishonorSelf(),
             condition: (context: AbilityContext) => context.source.isParticipating() && this.game.currentConflict?.conflictType === 'military',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card: any) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => ({

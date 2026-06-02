@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Durations, TargetModes } from '../../../Constants.js';
+import { CardType, Duration, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShinjoArcher extends DrawCard {
@@ -11,12 +11,12 @@ export default class ShinjoArcher extends DrawCard {
 
             cost: AbilityDsl.costs.switchLocation(),
             target: {
-                mode: TargetModes.Single,
-                cardType: CardTypes.Character,
+                mode: TargetMode.Single,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     effect: AbilityDsl.effects.modifyBothSkills(-2),
-                    duration: Durations.UntilEndOfConflict
+                    duration: Duration.UntilEndOfConflict
                 })
             },
             effect: 'give {0} -2{2}/-2{3}',

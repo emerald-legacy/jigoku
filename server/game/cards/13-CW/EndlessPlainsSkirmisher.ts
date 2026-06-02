@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { TargetModes } from '../../Constants.js';
+import { TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class EndlessPlainsSkirmisher extends DrawCard {
@@ -9,7 +9,7 @@ class EndlessPlainsSkirmisher extends DrawCard {
         this.action({
             title: 'Move this character to the confict',
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 targets: true,
                 activePromptTitle: 'Which side should this character be on?',
                 choices: {

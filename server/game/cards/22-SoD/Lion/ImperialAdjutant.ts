@@ -1,4 +1,4 @@
-import { Players, TargetModes, CardTypes } from '../../../Constants.js';
+import { Players, TargetMode, CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -16,12 +16,12 @@ export default class ImperialAdjutant extends DrawCard {
             condition: context => !!(context.source.parent && context.source.parent.isAttacking()),
             targets: {
                 character: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: card => !card.isParticipating()
                 },
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: 'character',
                     player: Players.Opponent,
                     choices: {

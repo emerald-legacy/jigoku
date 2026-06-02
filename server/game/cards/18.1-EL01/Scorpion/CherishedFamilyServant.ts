@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CherishedFamilyServant extends DrawCard {
@@ -7,14 +7,14 @@ export default class CherishedFamilyServant extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            location: Locations.Any,
-            targetLocation: Locations.Any,
+            location: Location.Any,
+            targetLocation: Location.Any,
             effect: AbilityDsl.effects.entersPlayForOpponent()
         });
 
         this.persistentEffect({
             match: (card, context) =>
-                !!(card.getType() === CardTypes.Attachment &&
+                !!(card.getType() === CardType.Attachment &&
                 card.hasTrait('poison') &&
                 card.parent &&
                 context?.source.controller === card.parent.controller),

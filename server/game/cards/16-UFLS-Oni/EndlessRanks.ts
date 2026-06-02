@@ -1,4 +1,4 @@
-import { Players, CardTypes, Locations } from '../../Constants.js';
+import { Players, CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { BaseOni } from './_BaseOni.js';
 
@@ -15,11 +15,11 @@ export default class EndlessRanks extends BaseOni {
             },
             target: {
                 controller: Players.Self,
-                cardType: CardTypes.Character,
-                location: Locations.DynastyDiscardPile,
+                cardType: CardType.Character,
+                location: Location.DynastyDiscardPile,
                 gameAction: AbilityDsl.actions.moveCard((context) => ({
                     target: context.target,
-                    destination: Locations.DynastyDeck
+                    destination: Location.DynastyDeck
                 }))
             }
         });

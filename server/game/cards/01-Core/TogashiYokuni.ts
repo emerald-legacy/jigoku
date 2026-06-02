@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Durations, TargetModes, CardTypes } from '../../Constants.js';
+import { Duration, TargetMode, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class TogashiYokuni extends DrawCard {
@@ -10,12 +10,12 @@ class TogashiYokuni extends DrawCard {
             title: 'Copy another character\'s ability',
             target: {
                 activePromptTitle: 'Select a character to copy from',
-                mode: TargetModes.Ability,
-                cardType: CardTypes.Character,
+                mode: TargetMode.Ability,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card !== context.source,
                 abilityCondition: ability => ability.printedAbility,
                 gameAction: ability.actions.cardLastingEffect(context => ({
-                    duration: Durations.UntilEndOfPhase,
+                    duration: Duration.UntilEndOfPhase,
                     effect: ability.effects.gainAbility(context.targetAbility.abilityType, context.targetAbility)
                 }))
             },

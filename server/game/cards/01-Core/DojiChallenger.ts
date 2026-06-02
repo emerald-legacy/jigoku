@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class DojiChallenger extends DrawCard {
@@ -10,7 +10,7 @@ class DojiChallenger extends DrawCard {
             title: 'Move a character into the conflict',
             condition: context => context.source.isAttacking(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 gameAction: ability.actions.moveToConflict()
             }

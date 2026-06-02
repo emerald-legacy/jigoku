@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import {CardTypes, Durations, Locations} from '../../Constants.js';
+import {CardType, Duration, Location} from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
 class ChampionsOfYomi extends DrawCard {
@@ -9,9 +9,9 @@ class ChampionsOfYomi extends DrawCard {
     setupCardAbilities() {
         this.reaction({
             title: 'Put into play',
-            location: Locations.DynastyDiscardPile,
+            location: Location.DynastyDiscardPile,
             cost: AbilityDsl.costs.bow({
-                cardType: CardTypes.Stronghold
+                cardType: CardType.Stronghold
             }),
             when: {
                 afterConflict: (event, context) => event.conflict.loser === context.player
@@ -24,7 +24,7 @@ class ChampionsOfYomi extends DrawCard {
                 })),
                 AbilityDsl.actions.cardLastingEffect(context => ({
                     target: context.source,
-                    duration: Durations.UntilEndOfRound,
+                    duration: Duration.UntilEndOfRound,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
                             onPhaseEnded: () => true

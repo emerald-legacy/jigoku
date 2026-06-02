@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -9,7 +9,7 @@ export default class ObsidianCaves extends ProvinceCard {
         this.action({
             title: 'Attacker moves a character home',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: (context) => (context.player.isAttackingPlayer() ? Players.Self : Players.Opponent),
                 player: (context) => (context.player.isAttackingPlayer() ? Players.Self : Players.Opponent),
                 activePromptTitle: 'Choose a character to send home',

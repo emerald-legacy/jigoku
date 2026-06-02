@@ -1,4 +1,4 @@
-import { Locations, PlayTypes, Players } from '../../../Constants.js';
+import { Location, PlayType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import Player from '../../../Player.js';
@@ -8,14 +8,14 @@ export default class SandRoadMerchant extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            location: Locations.PlayArea,
+            location: Location.PlayArea,
             targetLocation: this.uuid,
             targetController: Players.Self,
             match: (card) => card.location === this.uuid,
             effect: [
                 AbilityDsl.effects.canPlayFromOutOfPlay(
                     (player: Player) => player === this.controller,
-                    PlayTypes.PlayFromHand
+                    PlayType.PlayFromHand
                 ),
                 AbilityDsl.effects.registerToPlayFromOutOfPlay()
             ]
@@ -57,7 +57,7 @@ export default class SandRoadMerchant extends DrawCard {
                                         handler: () => {
                                             context.player.opponent.moveCard(
                                                 topCard,
-                                                Locations.ConflictDeck + ' bottom'
+                                                Location.ConflictDeck + ' bottom'
                                             );
                                         }
                                     }),

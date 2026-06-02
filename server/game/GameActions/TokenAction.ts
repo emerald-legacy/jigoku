@@ -2,12 +2,12 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 import type { StatusToken } from '../StatusToken.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
-import type { EventNames } from '../Constants.js';
+import type { EventName } from '../Constants.js';
 
 import type { Event } from '../Events/Event.js';
 export type TokenActionProperties = GameActionProperties;
 
-export class TokenAction<P extends TokenActionProperties = TokenActionProperties, N extends EventNames = EventNames> extends GameAction<P, N> {
+export class TokenAction<P extends TokenActionProperties = TokenActionProperties, N extends EventName = EventName> extends GameAction<P, N> {
     targetType = ['token'];
 
     defaultTargets(context: AbilityContext): StatusToken[] {

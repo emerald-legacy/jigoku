@@ -1,4 +1,4 @@
-import { CardTypes, Players, Decks } from '../../../Constants.js';
+import { CardType, Players, Decks } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type Ring from '../../../Ring.js';
@@ -11,12 +11,12 @@ export default class KaiuNoIshiTauro extends DrawCard {
             title: 'Return rings to fetch an attachment',
             cost: AbilityDsl.costs.returnRings(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.deckSearch(context => ({
                     activePromptTitle: 'Select an attachment',
                     deck: Decks.ConflictDeck,
-                    cardCondition: (card: any) => card.type === CardTypes.Attachment &&
+                    cardCondition: (card: any) => card.type === CardType.Attachment &&
                         (card.hasTrait('weapon') || card.hasTrait('armor') || card.hasTrait('item')) &&
                         (context.game.actions.attach({ attachment: card }).canAffect(context.target, context)) &&
                         card.costLessThan(context.costs.returnRing ? context.costs.returnRing.length + 1 : 1),

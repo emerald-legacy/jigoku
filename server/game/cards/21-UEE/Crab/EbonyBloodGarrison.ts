@@ -1,5 +1,5 @@
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import { CardTypes, EventNames, Locations, Phases, Players } from '../../../Constants.js';
+import { CardType, EventName, Location, Phases, Players } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import type Player from '../../../Player.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
@@ -18,24 +18,24 @@ export default class EbonyBloodGarrison extends StrongholdCard {
         this.reaction({
             title: 'Break a province from each player',
             when: {
-                onPhaseEnded: (event: EventPayload<EventNames.OnPhaseEnded>, context: TriggeredAbilityContext) => event.phase === Phases.Dynasty && context.game.roundNumber === 1
+                onPhaseEnded: (event: EventPayload<EventName.OnPhaseEnded>, context: TriggeredAbilityContext) => event.phase === Phases.Dynasty && context.game.roundNumber === 1
             },
             cost: AbilityDsl.costs.bowSelf(),
             targets: {
                 [MY_PROVINCE]: {
                     controller: Players.Self,
-                    cardType: CardTypes.Province,
-                    location: Locations.Provinces,
+                    cardType: CardType.Province,
+                    location: Location.Provinces,
                     cardCondition: (card: ProvinceCard) =>
-                        card.facedown && card.location !== Locations.StrongholdProvince
+                        card.facedown && card.location !== Location.StrongholdProvince
                 },
                 [OPP_PROVINCE]: {
                     dependsOn: MY_PROVINCE,
                     controller: Players.Opponent,
-                    cardType: CardTypes.Province,
-                    location: Locations.Provinces,
+                    cardType: CardType.Province,
+                    location: Location.Provinces,
                     cardCondition: (card: ProvinceCard) =>
-                        card.facedown && card.location !== Locations.StrongholdProvince
+                        card.facedown && card.location !== Location.StrongholdProvince
                 }
             },
             handler: (context: TriggeredAbilityContext) => {

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes, Locations } from '../../Constants.js';
+import { Players, CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class DojiDiplomat extends DrawCard {
@@ -13,16 +13,16 @@ class DojiDiplomat extends DrawCard {
             },
             targets: {
                 myProvince: {
-                    cardType: CardTypes.Province,
+                    cardType: CardType.Province,
                     controller: Players.Opponent,
-                    location: Locations.Provinces,
+                    location: Location.Provinces,
                     gameAction: AbilityDsl.actions.reveal()
                 },
                 oppProvince: {
                     player: Players.Opponent,
                     controller: Players.Self,
-                    cardType: CardTypes.Province,
-                    location: Locations.Provinces,
+                    cardType: CardType.Province,
+                    location: Location.Provinces,
                     gameAction: AbilityDsl.actions.reveal()
                 }
             },

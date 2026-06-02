@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Phases, Players } from '../../../Constants.js';
+import { CardType, Phases, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KuniJuurou extends DrawCard {
@@ -10,7 +10,7 @@ export default class KuniJuurou extends DrawCard {
 
         this.persistentEffect({
             targetController: Players.Any,
-            match: (card) => card.type === CardTypes.Character && (card.isTainted || card.hasTrait('shadowlands')),
+            match: (card) => card.type === CardType.Character && (card.isTainted || card.hasTrait('shadowlands')),
             effect: AbilityDsl.effects.modifyBothSkills(-2)
         });
 
@@ -21,7 +21,7 @@ export default class KuniJuurou extends DrawCard {
             condition: (context) =>
                 !!(context.player.opponent && context.player.hand.length <= context.player.opponent.hand.length),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.taint()
             }
         });

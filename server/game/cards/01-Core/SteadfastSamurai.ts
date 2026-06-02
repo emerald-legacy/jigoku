@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Durations, Phases } from '../../Constants.js';
+import { Duration, Phases } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SteadfastSamurai extends DrawCard {
@@ -14,7 +14,7 @@ class SteadfastSamurai extends DrawCard {
             },
             effect: 'stop him being discarded or losing fate in this phase',
             gameAction: ability.actions.cardLastingEffect({
-                duration: Durations.UntilEndOfPhase,
+                duration: Duration.UntilEndOfPhase,
                 effect: [
                     ability.effects.cardCannot('removeFate'),
                     ability.effects.cardCannot('discardFromPlay')

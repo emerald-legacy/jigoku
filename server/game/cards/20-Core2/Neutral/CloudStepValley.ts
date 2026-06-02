@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -15,13 +15,13 @@ export default class CloudStepValley extends ProvinceCard {
             targets: {
                 [STARTED_IN_CONFLICT]: {
                     activePromptTitle: 'Choose a participating character to send home',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: (card, context) => AbilityDsl.actions.sendHome().canAffect(card, context)
                 },
                 [STARTED_AT_HOME]: {
                     dependsOn: STARTED_IN_CONFLICT,
                     activePromptTitle: 'Choose a character to move to the conflict',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     player: (context) =>
                         (context.targets[STARTED_IN_CONFLICT] as DrawCard).controller === context.player
                             ? Players.Self

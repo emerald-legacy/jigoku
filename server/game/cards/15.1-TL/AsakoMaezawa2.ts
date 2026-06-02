@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -15,7 +15,7 @@ export default class AsakoMaezawa2 extends DrawCard {
                     context.player.opponent !== undefined
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.getFate() === 0,
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.bow(),

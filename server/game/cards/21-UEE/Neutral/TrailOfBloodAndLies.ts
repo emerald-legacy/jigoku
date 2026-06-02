@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Phases, Players } from '../../../Constants.js';
+import { CardType, Phases, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TrailOfBloodAndLies extends DrawCard {
@@ -15,13 +15,13 @@ export default class TrailOfBloodAndLies extends DrawCard {
                         context.game.currentPhase !== Phases.Fate &&
                         event.fate > 0 &&
                         !!origin &&
-                        origin.type === CardTypes.Character &&
+                        origin.type === CardType.Character &&
                         origin.controller === context.player.opponent
                     );
                 }
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent,
                 gameAction: AbilityDsl.actions.dishonor()
@@ -32,7 +32,7 @@ export default class TrailOfBloodAndLies extends DrawCard {
                     falseGameAction: AbilityDsl.actions.noAction(),
                     trueGameAction: AbilityDsl.actions.selectCard({
                         activePromptTitle: 'Choose a character to dishonor',
-                        cardType: CardTypes.Character,
+                        cardType: CardType.Character,
                         player: Players.Opponent,
                         controller: Players.Opponent,
                         gameAction: AbilityDsl.actions.dishonor()

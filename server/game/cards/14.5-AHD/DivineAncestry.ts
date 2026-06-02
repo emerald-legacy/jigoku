@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Durations } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class DivineAncestry extends DrawCard {
@@ -12,7 +12,7 @@ class DivineAncestry extends DrawCard {
                 onPhaseStarted: event => event.phase !== 'setup'
             },
             gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
-                duration: Durations.UntilEndOfPhase,
+                duration: Duration.UntilEndOfPhase,
                 targetController: context.player,
                 effect: [
                     AbilityDsl.effects.playerCannot({

@@ -1,4 +1,4 @@
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,7 +9,7 @@ export default class LetGo extends DrawCard {
         this.action({
             title: 'Discard an attachment',
             target: {
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 gameAction: AbilityDsl.actions.discardFromPlay()
             }
         });

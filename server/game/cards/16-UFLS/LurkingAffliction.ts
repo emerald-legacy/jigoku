@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class LurkingAffliction extends DrawCard {
     static id = 'lurking-affliction';
@@ -10,7 +10,7 @@ class LurkingAffliction extends DrawCard {
             title: 'Taint a participating character',
 
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isParticipating(),
                 gameAction: AbilityDsl.actions.taint()
             }

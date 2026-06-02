@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class RighteousSamurai extends DrawCard {
     static id = 'righteous-samurai';
@@ -33,7 +33,7 @@ class RighteousSamurai extends DrawCard {
                 }
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.honor()
             }
         });

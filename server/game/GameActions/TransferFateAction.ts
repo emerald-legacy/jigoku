@@ -1,6 +1,6 @@
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
@@ -8,9 +8,9 @@ export interface TransferFateProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class TransferFateAction extends PlayerAction<TransferFateProperties, EventNames.OnMoveFate> {
+export class TransferFateAction extends PlayerAction<TransferFateProperties, EventName.OnMoveFate> {
     name = 'takeFate';
-    eventName = EventNames.OnMoveFate;
+    eventName = EventName.OnMoveFate;
     defaultProperties: TransferFateProperties = { amount: 1 };
 
     constructor(propertyFactory: TransferFateProperties | ((context: AbilityContext) => TransferFateProperties)) {
@@ -38,7 +38,7 @@ export class TransferFateAction extends PlayerAction<TransferFateProperties, Eve
         );
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnMoveFate>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnMoveFate>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties) as TransferFateProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.fate = amount ?? 0;
@@ -46,11 +46,11 @@ export class TransferFateAction extends PlayerAction<TransferFateProperties, Eve
         event.recipient = player.opponent;
     }
 
-    checkEventCondition(event: GameEvent<EventNames.OnMoveFate>): boolean {
+    checkEventCondition(event: GameEvent<EventName.OnMoveFate>): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    eventHandler(event: GameEvent<EventNames.OnMoveFate>): void {
+    eventHandler(event: GameEvent<EventName.OnMoveFate>): void {
         this.moveFateEventHandler(event);
     }
 }

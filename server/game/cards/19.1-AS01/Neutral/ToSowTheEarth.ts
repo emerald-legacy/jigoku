@@ -1,4 +1,4 @@
-import { CardTypes, Players, Locations, TargetModes } from '../../../Constants.js';
+import { CardType, Players, Location, TargetMode } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -12,10 +12,10 @@ export default class ToSowTheEarth extends DrawCard {
         this.action({
             title: 'Play a peasant from the discard pile',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
-                location: [Locations.ConflictDiscardPile, Locations.DynastyDiscardPile],
-                mode: TargetModes.Single,
+                location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
+                mode: TargetMode.Single,
                 cardCondition: (card) => card.hasTrait('peasant'),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.cardLastingEffect((context) => ({
@@ -39,8 +39,8 @@ export default class ToSowTheEarth extends DrawCard {
                 cardCondition: (card: BaseCard) => card.hasTrait('peasant')
             }),
             target: {
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 controller: Players.Any,
                 cardCondition: (card) => card.isBroken === false,
                 gameAction: AbilityDsl.actions.turnFacedown()

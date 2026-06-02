@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class BayushiShoju extends DrawCard {
@@ -11,7 +11,7 @@ class BayushiShoju extends DrawCard {
             limit: AbilityDsl.limit.perRound(2),
             condition: context => context.source.isParticipating() && this.game.currentConflict?.conflictType === 'political',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect(context => ({

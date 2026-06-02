@@ -1,4 +1,4 @@
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 import { createSeekerRole } from './_createRoles.js';
 
-export default createSeekerRole('seeker-of-water', Elements.Water);
+export default createSeekerRole('seeker-of-water', Element.Water);

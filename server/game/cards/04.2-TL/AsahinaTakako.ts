@@ -1,4 +1,4 @@
-import { Locations, CardTypes, Players } from '../../Constants.js';
+import { Location, CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -7,7 +7,7 @@ export default class AsahinaTakako extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            targetLocation: Locations.Provinces,
+            targetLocation: Location.Provinces,
             match: (card) => card.isDynasty && card.isFacedown(),
             effect: AbilityDsl.effects.canBeSeenWhenFacedown()
         });
@@ -15,8 +15,8 @@ export default class AsahinaTakako extends DrawCard {
         this.action<DrawCard>({
             title: 'Discard a card or switch with another card',
             target: {
-                cardType: [CardTypes.Character, CardTypes.Holding, CardTypes.Event],
-                location: Locations.Provinces,
+                cardType: [CardType.Character, CardType.Holding, CardType.Event],
+                location: Location.Provinces,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.chooseAction<DrawCard>((context) => ({
                     options: {
@@ -26,8 +26,8 @@ export default class AsahinaTakako extends DrawCard {
                         'Switch with another card': {
                             action: AbilityDsl.actions.selectCard({
                                 activePromptTitle: 'Choose a card to switch with',
-                                cardType: [CardTypes.Character, CardTypes.Holding, CardTypes.Event],
-                                location: Locations.Provinces,
+                                cardType: [CardType.Character, CardType.Holding, CardType.Event],
+                                location: Location.Provinces,
                                 controller: Players.Self,
                                 message: '{0} switches {1} in {2} and {3} in {4}',
                                 messageArgs: (card) => [

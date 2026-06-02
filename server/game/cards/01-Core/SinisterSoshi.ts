@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SinisterSoshi extends DrawCard {
@@ -10,7 +10,7 @@ class SinisterSoshi extends DrawCard {
             title: 'Give a character -2/-2',
 
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isParticipating(),
                 gameAction: ability.actions.cardLastingEffect({ effect: ability.effects.modifyBothSkills(-2) })
             },

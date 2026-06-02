@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ByAnyMeans extends DrawCard {
@@ -12,14 +12,14 @@ class ByAnyMeans extends DrawCard {
             targets: {
                 myCharacter: {
                     activePromptTitle: 'Choose a bushi character',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: (card) => card.isParticipating() && card.hasTrait('bushi')
                 },
                 oppCharacter: {
                     dependsOn: 'myCharacter',
                     activePromptTitle: 'Choose an opponent\'s character',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: (card) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.cardLastingEffect(context => {

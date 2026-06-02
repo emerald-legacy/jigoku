@@ -1,7 +1,7 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class IAmReady extends DrawCard {
     static id = 'i-am-ready';
@@ -10,7 +10,7 @@ class IAmReady extends DrawCard {
         this.action({
             title: 'Ready a character',
             cost: ability.costs.removeFate({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: any) => card.isFaction('unicorn') && card.bowed
             }),
             cannotBeMirrored: true,

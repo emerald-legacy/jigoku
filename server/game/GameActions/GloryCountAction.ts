@@ -1,5 +1,5 @@
 import { AbilityContext } from '../AbilityContext.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import Player from '../Player.js';
 import { GameAction, GameActionProperties } from './GameAction.js';
 
@@ -11,7 +11,7 @@ export interface GloryCountProperties extends GameActionProperties {
 
 export class GloryCountAction extends GameAction<GloryCountProperties> {
     name = 'gloryCount';
-    eventName = EventNames.OnGloryCount;
+    eventName = EventName.OnGloryCount;
 
     hasLegalTarget(): boolean {
         return true;
@@ -21,7 +21,7 @@ export class GloryCountAction extends GameAction<GloryCountProperties> {
         events.push(this.getEvent(null, context, additionalProperties));
     }
 
-    eventHandler(event: GameEvent<EventNames.OnGloryCount>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventName.OnGloryCount>, additionalProperties: Record<string, unknown> = {}): void {
         let game = (event.context as AbilityContext).game;
         let properties = this.getProperties((event.context as AbilityContext), additionalProperties);
 
@@ -32,7 +32,7 @@ export class GloryCountAction extends GameAction<GloryCountProperties> {
         if(winner && winner.opponent) {
             if(gloryTotals[0] === gloryTotals[1]) {
                 game.addMessage('Both players are tied in glory at {0}.', gloryTotals[0]);
-                game.raiseEvent(EventNames.OnFavorGloryTied);
+                game.raiseEvent(EventName.OnFavorGloryTied);
                 winner = null;
             } else if(gloryTotals[0] < gloryTotals[1]) {
                 winner = winner.opponent;

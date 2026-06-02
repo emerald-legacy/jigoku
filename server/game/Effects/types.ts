@@ -1,12 +1,12 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type { EffectNames, Durations } from '../Constants.js';
+import type { EffectName, Duration } from '../Constants.js';
 import type { GameObject } from '../GameObject.js';
 
 export interface CardEffect {
-    type: EffectNames;
+    type: EffectName;
     value: any;
     context: AbilityContext;
-    duration?: Durations | null;
+    duration?: Duration | null;
     isConditional?: boolean;
     getValue<T = any>(obj?: GameObject): T;
 }

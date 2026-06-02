@@ -1,4 +1,4 @@
-import { CardTypes, Decks, Durations, Locations, PlayTypes } from '../../../Constants.js';
+import { CardType, Decks, Duration, Location, PlayType } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHandIntoConflict } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -15,7 +15,7 @@ export default class AshalanLantern extends DrawCard {
             cost: AbilityDsl.costs.nameCard(),
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.playerLastingEffect((context) => ({
-                    duration: Durations.UntilPassPriority,
+                    duration: Duration.UntilPassPriority,
                     targetController: context.player,
                     effect: AbilityDsl.effects.reduceNextPlayedCardCost(
                         3,
@@ -28,14 +28,14 @@ export default class AshalanLantern extends DrawCard {
                     player: context.player.opponent,
                     choosingPlayer: context.player,
                     shuffle: false,
-                    cardCondition: (card) => card.type === CardTypes.Character && !card.isUnique(),
+                    cardCondition: (card) => card.type === CardType.Character && !card.isUnique(),
                     gameAction: AbilityDsl.actions.playCard((deckSearchContext) => {
                         const target = deckSearchContext.deckSearchSelected[0];
                         return {
                             target,
                             source: this,
                             resetOnCancel: false,
-                            playType: PlayTypes.PlayFromHand,
+                            playType: PlayType.PlayFromHand,
                             playAction: target
                                 ? [
                                     new PlayCharacterAsIfFromHandIntoConflict(target),
@@ -43,7 +43,7 @@ export default class AshalanLantern extends DrawCard {
                                 ]
                                 : undefined,
                             ignoredRequirements: ['phase'],
-                            postHandler: () => context.player.moveCard(context.source, Locations.ConflictDiscardPile)
+                            postHandler: () => context.player.moveCard(context.source, Location.ConflictDiscardPile)
                         };
                     }),
                     remainingCardsHandler: (context, event, cards) => {

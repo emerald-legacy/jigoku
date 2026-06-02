@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class TsangusuriWard extends DrawCard {
@@ -20,7 +20,7 @@ class TsangusuriWard extends DrawCard {
     }
 
     canPlay(context: any, playType: any) {
-        if(!context.player.cardsInPlay.some((card: any) => card.getType() === CardTypes.Character && card.hasTrait('shugenja'))) {
+        if(!context.player.cardsInPlay.some((card: any) => card.getType() === CardType.Character && card.hasTrait('shugenja'))) {
             return false;
         }
 

@@ -1,6 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class CrisisBreaker extends DrawCard {
     static id = 'crisis-breaker';
@@ -16,7 +16,7 @@ class CrisisBreaker extends DrawCard {
                 return false;
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card: DrawCard) => card.hasTrait('berserker'),
                 gameAction: [ability.actions.ready(), ability.actions.moveToConflict()]

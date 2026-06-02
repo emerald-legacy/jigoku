@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Durations } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 
 class NaturalNegotiator extends DrawCard {
     static id = 'natural-negotiator';
@@ -19,7 +19,7 @@ class NaturalNegotiator extends DrawCard {
             cost: AbilityDsl.costs.giveHonorToOpponent(),
             condition: (context) => context.game.isDuringConflict(),
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                duration: Durations.UntilEndOfConflict,
+                duration: Duration.UntilEndOfConflict,
                 target: context.source.parent,
                 effect: AbilityDsl.effects.switchBaseSkills()
             }))

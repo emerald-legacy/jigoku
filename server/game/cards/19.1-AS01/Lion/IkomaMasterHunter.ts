@@ -1,4 +1,4 @@
-import { CardTypes, Durations, EventNames, Phases, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Duration, EventName, Phases, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,18 +13,18 @@ export default class IkomaMasterHunter extends DrawCard {
                 onPhaseStarted: (event) => event.phase === Phases.Conflict
             },
             target: {
-                mode: TargetModes.Single,
+                mode: TargetMode.Single,
                 controller: Players.Opponent,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                    duration: Durations.UntilEndOfPhase,
+                    duration: Duration.UntilEndOfPhase,
                     target: context.source,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
-                            onMoveToConflict: (event: EventPayload<EventNames.OnMoveToConflict>) => event.card === context.target,
-                            onDefendersDeclared: (event: EventPayload<EventNames.OnDefendersDeclared>) =>
+                            onMoveToConflict: (event: EventPayload<EventName.OnMoveToConflict>) => event.card === context.target,
+                            onDefendersDeclared: (event: EventPayload<EventName.OnDefendersDeclared>) =>
                                 event.conflict.getParticipants().includes(context.target),
-                            onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>) =>
+                            onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>) =>
                                 event.conflict.getParticipants().includes(context.target)
                         },
                         multipleTrigger: true,

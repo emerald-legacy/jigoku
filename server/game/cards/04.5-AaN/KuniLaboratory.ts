@@ -1,13 +1,13 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Phases, CardTypes } from '../../Constants.js';
+import { Phases, CardType } from '../../Constants.js';
 
 class KuniLaboratory extends DrawCard {
     static id = 'kuni-laboratory';
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: card => card.getType() === CardTypes.Character,
+            match: card => card.getType() === CardType.Character,
             effect: AbilityDsl.effects.modifyBothSkills(1)
         });
 

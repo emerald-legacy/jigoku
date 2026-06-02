@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, TargetModes } from '../../Constants.js';
+import { Players, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class RampartsOfStone extends DrawCard {
@@ -11,7 +11,7 @@ class RampartsOfStone extends DrawCard {
             condition: context => context.game.isDuringConflict(),
             targets: {
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     player: (context) => {
                         if(context.player.isAttackingPlayer()) {
                             return Players.Self;

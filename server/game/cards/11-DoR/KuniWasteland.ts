@@ -1,4 +1,4 @@
-import { Players, Locations, CardTypes } from '../../Constants.js';
+import { Players, Location, CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -9,8 +9,8 @@ export default class KuniWasteland extends ProvinceCard {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
             targetController: Players.Opponent,
-            targetLocation: Locations.PlayArea,
-            match: (card) => card.type === CardTypes.Character,
+            targetLocation: Location.PlayArea,
+            match: (card) => card.type === CardType.Character,
             effect: [
                 AbilityDsl.effects.cardCannot({
                     cannot: 'triggerAbilities',

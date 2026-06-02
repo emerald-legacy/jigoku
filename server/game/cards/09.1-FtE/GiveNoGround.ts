@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, ConflictTypes, Players } from '../../Constants.js';
+import { CardType, ConflictType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class GiveNoGround extends DrawCard {
@@ -8,9 +8,9 @@ class GiveNoGround extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Increase a character\'s military skill',
-            condition: () => this.game.isDuringConflict(ConflictTypes.Military),
+            condition: () => this.game.isDuringConflict(ConflictType.Military),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.isDefending(),
                 gameAction: AbilityDsl.actions.cardLastingEffect(context => ({

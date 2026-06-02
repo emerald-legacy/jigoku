@@ -1,4 +1,4 @@
-import { CardTypes, Locations } from '../../../Constants.js';
+import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,13 +12,13 @@ export default class DesperateDefense extends DrawCard {
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince(),
                 message: '{0} increases the strength of {1}',
                 messageArgs: (cards) => [context.player, cards],
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    targetLocation: Locations.Provinces,
+                    targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.modifyProvinceStrength(3)
                 })
             })),

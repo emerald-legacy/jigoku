@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ExposedSecrets extends DrawCard {
@@ -10,7 +10,7 @@ class ExposedSecrets extends DrawCard {
             title: 'Bow attacking character',
             condition: context => context.game.isDuringConflict('political'),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isParticipating() && card.getPoliticalSkill() <= card.controller.showBid,
                 gameAction: AbilityDsl.actions.bow()
             }

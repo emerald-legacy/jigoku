@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { DuelTypes } from '../../../Constants.js';
+import { DuelType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShochuBrawl extends DrawCard {
@@ -10,7 +10,7 @@ export default class ShochuBrawl extends DrawCard {
             title: 'Initiate a Military Duel, bowing the loser and dishonoring the winner',
             condition: (context) => context.game.isDuringConflict('political'),
             initiateDuel: {
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 gameAction: (duel) =>
                     AbilityDsl.actions.multiple([
                         AbilityDsl.actions.bow({ target: duel.loser }),

@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventNames, Locations, Players, TargetModes } from '../Constants.js';
+import { EventName, Location, Players, TargetMode } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import type { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
@@ -14,7 +14,7 @@ export interface ChosenReturnToDeckProperties extends PlayerActionProperties {
     bottom?: boolean;
 }
 
-export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckProperties, EventNames.OnCardMoved> {
+export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckProperties, EventName.OnCardMoved> {
     defaultProperties: ChosenReturnToDeckProperties = {
         amount: 1,
         targets: true,
@@ -22,7 +22,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
         bottom: false
     };
     name = 'returnToDeck';
-    eventName = EventNames.OnCardMoved;
+    eventName = EventName.OnCardMoved;
 
     getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context);
@@ -59,9 +59,9 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
                     activePromptTitle:
                         'Choose ' + (amount === 1 ? 'a card' : amount + ' cards') + ' to return to your deck',
                     context: context,
-                    mode: TargetModes.Exactly,
+                    mode: TargetMode.Exactly,
                     numCards: amount,
-                    location: Locations.Hand,
+                    location: Location.Hand,
                     controller: player === context.player ? Players.Self : Players.Opponent,
                     onSelect: (selectingPlayer: Player, cards: BaseCard | BaseCard[]) => {
                         let event = this.getEvent(selectingPlayer, context);
@@ -74,7 +74,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
         }
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnCardMoved>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnCardMoved>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, shuffle, bottom } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.options = { bottom };
@@ -84,7 +84,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
         event.bottom = bottom;
     }
 
-    eventHandler(event: GameEvent<EventNames.OnCardMoved>): void {
+    eventHandler(event: GameEvent<EventName.OnCardMoved>): void {
         const cards = event.cards as BaseCard[];
         const context = event.context as AbilityContext;
         context.game.addMessage(
@@ -97,7 +97,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
         event.discardedCards = cards;
         const players: Player[] = [];
         for(let card of cards) {
-            card.owner.moveCard(card, Locations.ConflictDeck, event.options);
+            card.owner.moveCard(card, Location.ConflictDeck, event.options);
             if(!players.includes(card.owner)) {
                 players.push(card.owner);
             }

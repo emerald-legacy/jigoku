@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
@@ -11,7 +11,7 @@ export interface TakeFateRingProperties extends RingActionProperties {
 
 export class TakeFateRingAction extends RingAction {
     name = 'takeFate';
-    eventName = EventNames.OnMoveFate;
+    eventName = EventName.OnMoveFate;
     defaultProperties: TakeFateRingProperties = { amount: 1, removeOnly: false };
     constructor(properties: ((context: AbilityContext) => TakeFateRingProperties) | TakeFateRingProperties) {
         super(properties);
@@ -35,7 +35,7 @@ export class TakeFateRingAction extends RingAction {
         );
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnMoveFate>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnMoveFate>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties(context, additionalProperties) as TakeFateRingProperties;
         event.fate = properties.amount ?? 0;
         event.origin = ring;
@@ -43,11 +43,11 @@ export class TakeFateRingAction extends RingAction {
         event.recipient = properties.removeOnly ? undefined : context.player;
     }
 
-    checkEventCondition(event: GameEvent<EventNames.OnMoveFate>): boolean {
+    checkEventCondition(event: GameEvent<EventName.OnMoveFate>): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: GameEvent<EventNames.OnMoveFate>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: GameEvent<EventName.OnMoveFate>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         let { amount } = this.getProperties(context, additionalProperties) as TakeFateRingProperties;
         return (
             !event.cancelled &&
@@ -58,7 +58,7 @@ export class TakeFateRingAction extends RingAction {
         );
     }
 
-    eventHandler(event: GameEvent<EventNames.OnMoveFate>): void {
+    eventHandler(event: GameEvent<EventName.OnMoveFate>): void {
         this.moveFateEventHandler(event);
     }
 }

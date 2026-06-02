@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Durations, EventNames } from '../../Constants.js';
+import { Duration, EventName } from '../../Constants.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 
@@ -16,7 +16,7 @@ class StudyTheNaturalWorld extends DrawCard {
             effectArgs: (context: AbilityContext) => [this.getElements(context)],
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.ringLastingEffect((context: AbilityContext) => ({
-                    duration: Durations.UntilEndOfConflict,
+                    duration: Duration.UntilEndOfConflict,
                     target: context.game.currentConflict?.ring,
                     effect: AbilityDsl.effects.addElement(this.getElementsOfAttackedProvinces(context))
                 })),
@@ -24,7 +24,7 @@ class StudyTheNaturalWorld extends DrawCard {
                     targetController: context.player,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
-                            afterConflict: (event: EventPayload<typeof EventNames.AfterConflict>) =>
+                            afterConflict: (event: EventPayload<typeof EventName.AfterConflict>) =>
                                 context.player === event.conflict.winner
                         },
                         gameAction: AbilityDsl.actions.menuPrompt({

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, Players, CardTypes } from '../../Constants.js';
+import { Location, Players, CardType } from '../../Constants.js';
 
 class IkomaEiji extends DrawCard {
     static id = 'ikoma-eiji';
@@ -13,8 +13,8 @@ class IkomaEiji extends DrawCard {
             },
             effect: 'put a character into play',
             gameAction: AbilityDsl.actions.selectCard(context => ({
-                cardType: CardTypes.Character,
-                location: [Locations.Provinces, Locations.DynastyDiscardPile],
+                cardType: CardType.Character,
+                location: [Location.Provinces, Location.DynastyDiscardPile],
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('bushi') && card.costLessThan(4),
                 message: '{0} puts {1} into play with {2}\'s ability',

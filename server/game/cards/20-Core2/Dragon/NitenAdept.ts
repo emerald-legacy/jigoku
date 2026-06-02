@@ -1,4 +1,4 @@
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,11 +10,11 @@ export default class NitenAdept extends DrawCard {
             title: 'Bow character',
             condition: (context) => context.source.attachments.length > 0 && context.source.isParticipating(),
             cost: AbilityDsl.costs.bow({
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 cardCondition: (card, context) => card.parent === context.source
             }),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.attachments.length === 0,
                 gameAction: AbilityDsl.actions.bow()
             }

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SpecializedDefenses extends DrawCard {
@@ -14,8 +14,8 @@ class SpecializedDefenses extends DrawCard {
             gameAction: AbilityDsl.actions.selectCard((context: AbilityContext) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 cardCondition: (card: any) => card.isConflictProvince() && card.element.some((element: string) => {
                     if(element === 'all') {
                         return true;
@@ -26,7 +26,7 @@ class SpecializedDefenses extends DrawCard {
                 message: '{0} doubles the province strength of {1}',
                 messageArgs: (cards: any) => [context.player, cards],
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
-                    targetLocation: Locations.Provinces,
+                    targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.modifyProvinceStrengthMultiplier(2)
                 }))
             }))

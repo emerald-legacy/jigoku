@@ -1,5 +1,5 @@
 import { AbilityContext } from './AbilityContext.js';
-import { CharacterStatus, Decks, EventNames, Locations, PlayTypes, Players, TargetModes } from './Constants.js';
+import { CharacterStatus, Decks, EventName, Location, PlayType, Players, TargetMode } from './Constants.js';
 import { Event } from './Events/Event.js';
 import { CardGameAction } from './GameActions/CardGameAction.js';
 import { GameAction } from './GameActions/GameAction.js';
@@ -137,7 +137,7 @@ export function returnSelfToHand(): Cost {
  */
 export function shuffleIntoDeck(properties: SelectCostProperties): Cost {
     return getSelectCost(
-        GameActions.moveCard({ destination: Locations.DynastyDeck, shuffle: true }),
+        GameActions.moveCard({ destination: Location.DynastyDeck, shuffle: true }),
         properties,
         'Select card to shuffle into deck'
     );
@@ -163,7 +163,7 @@ export function discardSelf(): Cost {
 export function discardCard(properties?: SelectCostProperties): Cost {
     return getSelectCost(
         GameActions.discardCard(),
-        Object.assign({ location: Locations.Hand, mode: TargetModes.Exactly }, properties),
+        Object.assign({ location: Location.Hand, mode: TargetMode.Exactly }, properties),
         (properties?.numCards ?? 0) > 1 ? `Select ${properties?.numCards} cards to discard` : 'Select card to discard'
     );
 }
@@ -174,7 +174,7 @@ export function discardTopCardsFromDeck(properties: { amount: number; deck: Deck
             ? (context: AbilityContext) => context.player.dynastyDeck
             : (context: AbilityContext) => context.player.conflictDeck;
     const destination =
-        properties.deck === Decks.DynastyDeck ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile;
+        properties.deck === Decks.DynastyDeck ? Location.DynastyDiscardPile : Location.ConflictDiscardPile;
     return {
         getActionName: (_context) => 'discardTopCardsFromDeck',
         getCostMessage: (_context) => ['discarding {0}'],
@@ -221,7 +221,7 @@ export function removeFromGame(properties: SelectCostProperties): Cost {
 /**
  * Cost that requires removing a card selected by the player from the game.
  */
-export function removeSelfFromGame(properties?: { location: Array<Locations> }): Cost {
+export function removeSelfFromGame(properties?: { location: Array<Location> }): Cost {
     return new GameActionCost(GameActions.removeFromGame(properties));
 }
 
@@ -333,7 +333,7 @@ export function payPrintedFateCost(): Cost {
         payEvent(context: TriggeredAbilityContext) {
             const amount = context.source.getCost();
             return new Event(
-                EventNames.OnSpendFate,
+                EventName.OnSpendFate,
                 { amount, context },
                 (event: any) => (event.context.player.fate -= event.amount)
             );
@@ -447,7 +447,7 @@ export function variableFateCost(properties: {
             if((context as any).ignoreFateCost) {
                 return true;
             }
-            const costModifiers = context.player.getTotalCostModifiers(PlayTypes.PlayFromHand, context.source);
+            const costModifiers = context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source);
             return (
                 costModifiers < 0 ||
                 (context.player.fate >= deriveMinAmount(context) + costModifiers &&
@@ -457,7 +457,7 @@ export function variableFateCost(properties: {
         resolve(context: TriggeredAbilityContext, result) {
             const costModifiers = (context as any).ignoreFateCost
                 ? -1000
-                : context.player.getTotalCostModifiers(PlayTypes.PlayFromHand, context.source);
+                : context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source);
 
             const maxAmount = deriveMaxAmount(context);
             const min = deriveMinAmount(context);
@@ -494,7 +494,7 @@ export function variableFateCost(properties: {
                 return payZeroFate.getEvent(context.player, context);
             }
 
-            const costModifiers = context.player.getTotalCostModifiers(PlayTypes.PlayFromHand, context.source);
+            const costModifiers = context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source);
             const cost = (context.costs.variableFateCost as number) + Math.min(0, costModifiers); //+ve cost modifiers are applied by the engine
             if(cost > 0) {
                 const action = context.game.actions.loseFate({ amount: cost });
@@ -578,7 +578,7 @@ export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context:
     };
 }
 
-export function chooseFate(type: PlayTypes): Cost {
+export function chooseFate(type: PlayType): Cost {
     return {
         canPay() {
             return true;
@@ -592,7 +592,7 @@ export function chooseFate(type: PlayTypes): Cost {
             }
             if(
                 !context.player.checkRestrictions('placeFateWhenPlayingCharacterFromProvince', context) &&
-                type === PlayTypes.PlayFromProvince
+                type === PlayType.PlayFromProvince
             ) {
                 extrafate = 0;
             }
@@ -684,10 +684,10 @@ export function discardCardsUpToVariableX(amountDerivable: Derivable<number, Tri
             context.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose up to ' + max + ' card' + (amount === 1 ? '' : 's') + ' to discard',
                 context: context,
-                mode: TargetModes.UpTo,
+                mode: TargetMode.UpTo,
                 numCards: amount,
                 ordered: false,
-                location: Locations.Hand,
+                location: Location.Hand,
                 controller: Players.Self,
                 onSelect: (player: Player, cards: DrawCard[]) => {
                     if(cards.length === 0) {
@@ -725,10 +725,10 @@ export function discardCardsExactlyVariableX(amountDerivable: Derivable<number, 
             context.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose ' + amount + ' card' + (amount === 1 ? '' : 's') + ' to discard',
                 context: context,
-                mode: TargetModes.Exactly,
+                mode: TargetMode.Exactly,
                 numCards: amount,
                 ordered: false,
-                location: Locations.Hand,
+                location: Location.Hand,
                 controller: Players.Self,
                 onSelect: (player: Player, cards: DrawCard[]) => {
                     if(cards.length === 0) {

@@ -1,4 +1,4 @@
-import { TargetModes, Players, CardTypes } from '../../../Constants.js';
+import { TargetMode, Players, CardType } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,7 +11,7 @@ export default class AppeasingTheRestless extends DrawCard {
         this.action({
             title: 'Place fates on spirits',
             cost: AbilityDsl.costs.bow({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: BaseCard) => card.hasTrait('shugenja')
             }),
             cannotTargetFirst: true,
@@ -25,10 +25,10 @@ export default class AppeasingTheRestless extends DrawCard {
                     gameActions.push(AbilityDsl.actions.selectCard(context => ({
                         activePromptTitle: 'Select spirits',
                         targets: false,
-                        mode: TargetModes.UpToVariable,
+                        mode: TargetMode.UpToVariable,
                         numCardsFunc: (context: AbilityContext) => context.player.fate,
                         optional: true,
-                        cardType: CardTypes.Character,
+                        cardType: CardType.Character,
                         controller: Players.Self,
                         cardCondition: card => card.hasTrait('spirit') && card.allowGameAction('placeFate', context),
                         message: '{0} moves fate from their pool onto {1}',

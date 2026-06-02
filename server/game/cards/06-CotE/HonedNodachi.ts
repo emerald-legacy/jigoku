@@ -1,6 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, EventNames, Players } from '../../Constants.js';
+import { CardType, EventName, Players } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 class HonedNodachi extends DrawCard {
@@ -14,14 +14,14 @@ class HonedNodachi extends DrawCard {
         this.reaction({
             title: 'Remove a fate from attached character and force opponent to discard a participating character',
             when: {
-                afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) => context.source.parent && context.source.parent.isParticipating() &&
+                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) => context.source.parent && context.source.parent.isParticipating() &&
                                                    event.conflict.winner === context.source.parent.controller &&
                                                    event.conflict.conflictType === 'military'
             },
             cost: ability.costs.removeFateFromParent(),
             target: {
                 activePromptTitle: 'Choose a character to discard',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent,
                 cardCondition: (card: any) => card.isParticipating(),

@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardTypes, EventNames, Locations, Players } from '../Constants.js';
+import { CardType, EventName, Location, Players } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -10,14 +10,14 @@ export interface PutIntoPlayProperties extends CardActionProperties {
     status?: 'honored' | 'ordinary' | 'dishonored';
     controller?: Players;
     side?: Player;
-    overrideLocation?: Locations;
+    overrideLocation?: Location;
 }
 
 export class PutIntoPlayAction extends CardGameAction {
     name = 'putIntoPlay';
-    eventName = EventNames.OnCharacterEntersPlay;
+    eventName = EventName.OnCharacterEntersPlay;
     cost = 'putting {0} into play';
-    targetType = [CardTypes.Character];
+    targetType = [CardType.Character];
     intoConflict: boolean;
     defaultProperties: PutIntoPlayProperties = {
         fate: 0,
@@ -57,7 +57,7 @@ export class PutIntoPlayAction extends CardGameAction {
             return false;
         } else if(!player || card.anotherUniqueInPlay(player)) {
             return false;
-        } else if(card.location === Locations.PlayArea || card.isFacedown()) {
+        } else if(card.location === Location.PlayArea || card.isFacedown()) {
             return false;
         } else if(!card.checkRestrictions('putIntoPlay', context)) {
             return false;
@@ -87,7 +87,7 @@ export class PutIntoPlayAction extends CardGameAction {
         return true;
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnCharacterEntersPlay>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnCharacterEntersPlay>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { fate, status, controller, side, overrideLocation } = this.getProperties(
             context,
             additionalProperties
@@ -101,7 +101,7 @@ export class PutIntoPlayAction extends CardGameAction {
         event.side = side || this.getDefaultSide(context);
     }
 
-    eventHandler(event: GameEvent<EventNames.OnCharacterEntersPlay>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventName.OnCharacterEntersPlay>, additionalProperties: Record<string, unknown> = {}): void {
         const context = event.context as AbilityContext;
         let player = this.getPutIntoPlayPlayer(context);
         const card = event.card as DrawCard;
@@ -127,7 +127,7 @@ export class PutIntoPlayAction extends CardGameAction {
             card.taint();
         }
 
-        player.moveCard(card, Locations.PlayArea);
+        player.moveCard(card, Location.PlayArea);
 
         //moveCard sets all this stuff and only works if the owner is moving cards, so we're switching it around
         if(card.controller !== finalController) {

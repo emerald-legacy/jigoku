@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Durations } from '../../Constants.js';
+import { CardType, Duration } from '../../Constants.js';
 
 class NeverYield extends DrawCard {
     static id = 'never-yield';
@@ -12,8 +12,8 @@ class NeverYield extends DrawCard {
                 onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player
             },
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                duration: Durations.UntilEndOfConflict,
-                target: context.player.cardsInPlay.filter((card: any) => card.type === CardTypes.Character),
+                duration: Duration.UntilEndOfConflict,
+                target: context.player.cardsInPlay.filter((card: any) => card.type === CardType.Character),
                 effect: [
                     AbilityDsl.effects.cardCannot({
                         cannot: 'sendHome',

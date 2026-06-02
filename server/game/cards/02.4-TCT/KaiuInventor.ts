@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Durations, Players, CardTypes } from '../../Constants.js';
+import { Location, Duration, Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class KaiuInventor extends DrawCard {
@@ -9,13 +9,13 @@ class KaiuInventor extends DrawCard {
         this.action({
             title: 'Add an additional ability use to a holding',
             target: {
-                cardType: CardTypes.Holding,
-                location: Locations.Provinces,
+                cardType: CardType.Holding,
+                location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: card => card.isFaceup(),
                 gameAction: ability.actions.cardLastingEffect({
-                    duration: Durations.UntilEndOfRound,
-                    targetLocation: Locations.Provinces,
+                    duration: Duration.UntilEndOfRound,
+                    targetLocation: Location.Provinces,
                     effect: ability.effects.increaseLimitOnAbilities()
                 })
             },

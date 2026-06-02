@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityTypes, Locations } from '../../Constants.js';
+import { AbilityType, Location } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
 class ShojusDiviner extends DrawCard {
@@ -8,7 +8,7 @@ class ShojusDiviner extends DrawCard {
 
     setupCardAbilities() {
         this.dire({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Divine your conflict deck',
                 printedAbility: false,
                 condition: (context: AbilityContext) => context.player.conflictDeck.length > 0,
@@ -67,7 +67,7 @@ class ShojusDiviner extends DrawCard {
     handleCards(context: AbilityContext, cards: DrawCard[], chosenCards: DrawCard[]) {
         if(cards && cards.length > 0) {
             this.game.addMessage('{0} discards {1}', context.player, cards);
-            cards.forEach((card: DrawCard) => context.player.moveCard(card, Locations.ConflictDiscardPile));
+            cards.forEach((card: DrawCard) => context.player.moveCard(card, Location.ConflictDiscardPile));
         }
         if(chosenCards.length > 0) {
             this.game.addMessage('{0} places {1} card{2} on top of their deck', context.player, chosenCards.length, chosenCards.length > 1 ? 's' : '');

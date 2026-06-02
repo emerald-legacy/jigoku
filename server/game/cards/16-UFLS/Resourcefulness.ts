@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Resourcefulness extends DrawCard {
@@ -11,7 +11,7 @@ class Resourcefulness extends DrawCard {
             cost: AbilityDsl.costs.dishonor(),
             target: {
                 activePromptTitle: 'Choose a character to honor',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.honor()
             }
         });

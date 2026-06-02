@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
-import { Locations, CardTypes, Players } from '../../Constants.js';
+import { Location, CardType, Players } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type BaseCard from '../../BaseCard.js';
 
@@ -11,9 +11,9 @@ class KaiuForges extends DrawCard {
         this.action<ProvinceCard>({
             title: 'Choose a province',
             target: {
-                location: Locations.Provinces,
+                location: Location.Provinces,
                 controller: Players.Self,
-                cardType: CardTypes.Province
+                cardType: CardType.Province
             },
             effect: 'look at the top ten cards of their dynasty deck',
             handler: (context) => {
@@ -24,7 +24,7 @@ class KaiuForges extends DrawCard {
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Choose a holding to swap with a Kaiu Wall',
                     context: context,
-                    cardCondition: (card: BaseCard) => card.getType() === CardTypes.Holding,
+                    cardCondition: (card: BaseCard) => card.getType() === CardType.Holding,
                     cards: context.player.dynastyDeck.slice(0, 10),
                     choices: ['Take nothing'],
                     handlers: [() => {
@@ -35,11 +35,11 @@ class KaiuForges extends DrawCard {
                     cardHandler: (cardFromDeck: DrawCard) => {
                         const provinceLocation = province.location;
                         const cards = context.player.getDynastyCardsInProvince(provinceLocation);
-                        if(cards.some((a: BaseCard) => a.getType() === CardTypes.Holding && a.hasTrait('kaiu-wall'))) {
+                        if(cards.some((a: BaseCard) => a.getType() === CardType.Holding && a.hasTrait('kaiu-wall'))) {
                             this.game.promptForSelect(context.player, {
                                 activePrompt: 'Choose a Kaiu Wall to swap with',
-                                cardType: CardTypes.Holding,
-                                location: Locations.Provinces,
+                                cardType: CardType.Holding,
+                                location: Location.Provinces,
                                 controller: Players.Self,
                                 context: context,
                                 targets: false,
@@ -47,7 +47,7 @@ class KaiuForges extends DrawCard {
                                 onSelect: (player: Player, card: DrawCard) => {
                                     this.game.addMessage('{0} chooses to replace {1} with {2}', player, card, cardFromDeck);
                                     context.player.moveCard(cardFromDeck, provinceLocation);
-                                    context.player.moveCard(card, Locations.DynastyDeck);
+                                    context.player.moveCard(card, Location.DynastyDeck);
                                     cardFromDeck.facedown = false;
                                     context.player.shuffleDynastyDeck();
                                     return true;

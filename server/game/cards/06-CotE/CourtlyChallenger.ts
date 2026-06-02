@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import { DuelTypes } from '../../Constants.js';
+import { DuelType } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -34,7 +34,7 @@ export default class CourtlyChallenger extends DrawCard {
         this.action({
             title: 'Initiate a Political duel',
             initiateDuel: {
-                type: DuelTypes.Political,
+                type: DuelType.Political,
                 gameAction: (duel) => AbilityDsl.actions.draw({ amount: 2, target: duel.winnerController })
             }
         });

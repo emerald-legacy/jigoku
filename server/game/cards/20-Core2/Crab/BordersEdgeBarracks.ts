@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class BordersEdgeBarracks extends DrawCard {
             title: 'Move a character to the conflict',
             condition: (context) => context.player.isDefendingPlayer(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.moveToConflict()
             },

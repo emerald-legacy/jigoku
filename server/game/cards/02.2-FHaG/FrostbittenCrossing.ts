@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -9,7 +9,7 @@ export default class FrostbittenCrossing extends ProvinceCard {
         this.action({
             title: 'Discard all attachments from a character',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.attachments.length > 0
             },
             effect: 'remove all attachments from {0}',

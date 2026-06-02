@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Durations, Locations, Players } from '../../Constants.js';
+import { CardType, Duration, Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ForebearersEchoes extends DrawCard {
@@ -11,17 +11,17 @@ class ForebearersEchoes extends DrawCard {
             condition: context => context.game.isDuringConflict('military'),
             target: {
                 activePromptTitle: 'Choose a character from your dynasty discard pile',
-                location: Locations.DynastyDiscardPile,
+                location: Location.DynastyDiscardPile,
                 controller: Players.Self,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.joint([
                     AbilityDsl.actions.putIntoConflict(context => ({
                         target: context.target
                     })),
                     AbilityDsl.actions.cardLastingEffect(context => ({
                         target: context.target,
-                        duration: Durations.UntilEndOfPhase,
-                        location: [Locations.DynastyDiscardPile, Locations.PlayArea],
+                        duration: Duration.UntilEndOfPhase,
+                        location: [Location.DynastyDiscardPile, Location.PlayArea],
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
                                 onConflictFinished: () => true

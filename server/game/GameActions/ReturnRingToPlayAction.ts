@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
@@ -8,7 +8,7 @@ export type ReturnRingToPlayProperties = RingActionProperties;
 
 export class ReturnRingToPlayAction extends RingAction {
     name = 'returnRingToPlay';
-    eventName = EventNames.OnReturnRingToPlay;
+    eventName = EventName.OnReturnRingToPlay;
     effect = 'return the {0} to play';
     constructor(properties: ((context: AbilityContext) => ReturnRingToPlayProperties) | ReturnRingToPlayProperties) {
         super(properties);
@@ -22,10 +22,10 @@ export class ReturnRingToPlayAction extends RingAction {
         return super.canAffect(ring, context);
     }
 
-    eventHandler(event: GameEvent<EventNames.OnReturnRingToPlay>, _additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventName.OnReturnRingToPlay>, _additionalProperties: Record<string, unknown> = {}): void {
         const ring = event.ring;
         const context = event.context as AbilityContext;
 
-        context.game.raiseEvent(EventNames.OnReturnRingToPlay, { ring: ring }, () => ring.returnRingToPlay());
+        context.game.raiseEvent(EventName.OnReturnRingToPlay, { ring: ring }, () => ring.returnRingToPlay());
     }
 }

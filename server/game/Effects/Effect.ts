@@ -1,4 +1,4 @@
-import { Locations, Durations } from '../Constants.js';
+import { Location, Duration } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAbility from '../BaseAbility.js';
 import type EffectSource from '../EffectSource.js';
@@ -13,7 +13,7 @@ type EffectMatch = EffectMatchFn | GameObject;
 
 export interface EffectProperties {
     match?: EffectMatch;
-    duration?: Durations;
+    duration?: Duration;
     until?: WhenType;
     condition?: (context: AbilityContext) => boolean;
     location?: string;
@@ -22,7 +22,7 @@ export interface EffectProperties {
     ability?: BaseAbility;
     endingMessage?: string;
     targetController?: string;
-    targetLocation?: Locations | Locations[];
+    targetLocation?: Location | Location[];
     target?: GameObject | GameObject[];
     [key: string]: unknown;
 }
@@ -57,7 +57,7 @@ class Effect {
     game: Game;
     source: EffectSource;
     match: EffectMatch;
-    duration: Durations;
+    duration: Duration;
     until: WhenType;
     condition: (context: AbilityContext) => boolean;
     location: string;
@@ -73,10 +73,10 @@ class Effect {
         this.game = game;
         this.source = source;
         this.match = properties.match || (() => true);
-        this.duration = properties.duration as Durations;
+        this.duration = properties.duration as Duration;
         this.until = properties.until || {};
         this.condition = properties.condition || (() => true);
-        this.location = properties.location || Locations.PlayArea;
+        this.location = properties.location || Location.PlayArea;
         this.canChangeZoneOnce = !!properties.canChangeZoneOnce;
         this.canChangeZoneNTimes = properties.canChangeZoneNTimes || 0;
         this.effect = effect;
@@ -133,7 +133,7 @@ class Effect {
     }
 
     isEffectActive(): boolean {
-        if(this.duration !== Durations.Persistent) {
+        if(this.duration !== Duration.Persistent) {
             return true;
         }
         let effectOnSource = (this.source as SourceWithState).persistentEffects?.some((effect) => effect.ref && effect.ref.includes(this)) ?? false;

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class StewardOfLaw extends DrawCard {
@@ -9,7 +9,7 @@ class StewardOfLaw extends DrawCard {
         this.persistentEffect({
             condition: context => context.source.isParticipating(),
             targetController: Players.Any,
-            match: card => card.getType() === CardTypes.Character,
+            match: card => card.getType() === CardType.Character,
             effect: ability.effects.cardCannot('receiveDishonorToken')
         });
     }

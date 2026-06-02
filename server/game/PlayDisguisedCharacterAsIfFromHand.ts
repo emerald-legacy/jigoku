@@ -1,5 +1,5 @@
 import { AbilityContext } from './AbilityContext.js';
-import { PlayTypes } from './Constants.js';
+import { PlayType } from './Constants.js';
 import { PlayDisguisedCharacterAction, PlayDisguisedCharacterIntoLocation } from './PlayDisguisedCharacterAction.js';
 import DrawCard from './DrawCard.js';
 import Player from './Player.js';
@@ -11,7 +11,7 @@ export class PlayDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAc
 
     createContext(player: Player = this.card.controller) {
         const context = super.createContext(player);
-        context.playType = PlayTypes.PlayFromHand;
+        context.playType = PlayType.PlayFromHand;
         return context;
     }
 
@@ -30,7 +30,7 @@ export class PlayDisguisedCharacterAsIfFromHandIntoConflict extends PlayDisguise
 
     createContext(player: Player = this.card.controller) {
         const context = super.createContext(player);
-        context.playType = PlayTypes.PlayFromHand;
+        context.playType = PlayType.PlayFromHand;
         return context;
     }
 
@@ -49,7 +49,7 @@ export class PlayDisguisedCharacterAsIfFromHandAtHome extends PlayDisguisedChara
 
     createContext(player: Player = this.card.controller) {
         const context = super.createContext(player);
-        context.playType = PlayTypes.PlayFromHand;
+        context.playType = PlayType.PlayFromHand;
         return context;
     }
 

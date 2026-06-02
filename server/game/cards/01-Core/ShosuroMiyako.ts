@@ -1,4 +1,4 @@
-import { CardTypes, PlayTypes, Players, TargetModes } from '../../Constants.js';
+import { CardType, PlayType, Players, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -11,12 +11,12 @@ export default class ShosuroMiyako extends DrawCard {
             when: {
                 onCardPlayed: (event, context) =>
                     event.player === context.player &&
-                    event.playType === PlayTypes.PlayFromHand &&
-                    event.card.type === CardTypes.Character &&
+                    event.playType === PlayType.PlayFromHand &&
+                    event.card.type === CardType.Character &&
                     context.player.opponent !== undefined
             },
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 player: Players.Opponent,
                 choices: {
                     'Discard at random': AbilityDsl.actions.discardAtRandom(),

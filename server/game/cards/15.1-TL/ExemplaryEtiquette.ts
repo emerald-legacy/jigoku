@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Durations } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 
 class ExemplaryEtiquette extends DrawCard {
     static id = 'exemplary-etiquette';
@@ -10,7 +10,7 @@ class ExemplaryEtiquette extends DrawCard {
             title: 'Stop characters from triggering abilities',
             condition: () => this.game.isDuringConflict(),
             gameAction: AbilityDsl.actions.conflictLastingEffect({
-                duration: Durations.UntilEndOfConflict,
+                duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.charactersCannot({
                     cannot: 'triggerAbilities'
                 })

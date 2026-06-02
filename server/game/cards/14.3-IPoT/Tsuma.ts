@@ -1,4 +1,4 @@
-import { Locations, Players, CardTypes, CharacterStatus } from '../../Constants.js';
+import { Location, Players, CardType, CharacterStatus } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -7,9 +7,9 @@ export default class Tsuma extends ProvinceCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            targetLocation: Locations.Provinces,
+            targetLocation: Location.Provinces,
             targetController: Players.Self,
-            match: (card, context) => card.type === CardTypes.Character && card.location === context?.source.location,
+            match: (card, context) => card.type === CardType.Character && card.location === context?.source.location,
             effect: AbilityDsl.effects.entersPlayWithStatus(CharacterStatus.Honored)
         });
     }

@@ -1,6 +1,6 @@
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardTypes, EventNames } from '../Constants.js';
+import { CardType, EventName } from '../Constants.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
 import type BaseCard from '../BaseCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -9,8 +9,8 @@ export type DishonorProvinceProperties = CardActionProperties;
 
 export class DishonorProvinceAction extends CardGameAction {
     name = 'dishonor';
-    eventName = EventNames.OnCardDishonored;
-    targetType = [CardTypes.Province];
+    eventName = EventName.OnCardDishonored;
+    targetType = [CardType.Province];
     cost = 'dishonoring {0}';
     effect = 'dishonor {0}';
 
@@ -34,7 +34,7 @@ export class DishonorProvinceAction extends CardGameAction {
     }
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if(card.type !== CardTypes.Province || card.isDishonored) {
+        if(card.type !== CardType.Province || card.isDishonored) {
             return false;
         } else if(!card.isHonored && !card.checkRestrictions('receiveDishonorToken', context)) {
             return false;
@@ -42,7 +42,7 @@ export class DishonorProvinceAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: GameEvent<EventNames.OnCardDishonored>): void {
+    eventHandler(event: GameEvent<EventName.OnCardDishonored>): void {
         event.card.dishonor();
     }
 }

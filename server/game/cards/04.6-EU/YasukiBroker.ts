@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 
 class YasukiBroker extends DrawCard {
     static id = 'yasuki-broker';
@@ -8,7 +8,7 @@ class YasukiBroker extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isParticipating(),
-            match: card => card.getType() === CardTypes.Character,
+            match: card => card.getType() === CardType.Character,
             targetController: Players.Self,
             effect: [
                 AbilityDsl.effects.addKeyword('courtesy'),

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { EventNames, Locations, Players, PlayTypes, TargetModes, Decks } from '../../Constants.js';
+import { EventName, Location, Players, PlayType, TargetMode, Decks } from '../../Constants.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
 import type Player from '../../Player.js';
 
@@ -12,12 +12,12 @@ class DaidojiUji2 extends DrawCard {
             title: 'Search your conflict deck',
             when: { onCharacterEntersPlay: (event, context) => event.card === context.source },
             gameAction: AbilityDsl.actions.deckSearch({
-                targetMode: TargetModes.UpTo,
+                targetMode: TargetMode.UpTo,
                 numCards: 4,
                 deck: Decks.ConflictDeck,
                 reveal: false,
                 selectedCardsHandler: (context, event, cards) => {
-                    const searchEvent = event as GameEvent<EventNames.OnDeckSearch> & { player: Player };
+                    const searchEvent = event as GameEvent<EventName.OnDeckSearch> & { player: Player };
                     if(cards.length > 0) {
                         this.game.addMessage('{0} selects {1} cards', searchEvent.player, cards.length);
                         cards.forEach(card => {
@@ -43,7 +43,7 @@ class DaidojiUji2 extends DrawCard {
 
         this.persistentEffect({
             condition: context => context.source.isHonored,
-            location: Locations.PlayArea,
+            location: Location.PlayArea,
             targetLocation: this.uuid,
             targetController: Players.Self,
             match: card => {
@@ -52,7 +52,7 @@ class DaidojiUji2 extends DrawCard {
             effect: [
                 AbilityDsl.effects.canPlayFromOutOfPlay((player: any) => {
                     return player === this.controller;
-                }, PlayTypes.PlayFromHand),
+                }, PlayType.PlayFromHand),
                 AbilityDsl.effects.registerToPlayFromOutOfPlay()
             ]
         });

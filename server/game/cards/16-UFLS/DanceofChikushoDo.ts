@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes, Locations } from '../../Constants.js';
+import { TargetMode, Location } from '../../Constants.js';
 import { GameModes } from '../../../GameModes.js';
 import type Player from '../../Player.js';
 
@@ -11,7 +11,7 @@ class DanceOfChikushoDo extends DrawCard {
         this.action({
             title: 'Put cards into provinces',
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 targets: true,
                 activePromptTitle: 'Choose any number of players',
                 choices: {
@@ -44,11 +44,11 @@ class DanceOfChikushoDo extends DrawCard {
         });
     }
 
-    getUnbrokenProvinces(player: Player): Locations[] {
-        const unbrokenLocations: Locations[] = [];
-        const baseLocations = [Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree];
+    getUnbrokenProvinces(player: Player): Location[] {
+        const unbrokenLocations: Location[] = [];
+        const baseLocations = [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
         if(this.game.gameMode !== GameModes.Skirmish) {
-            baseLocations.push(Locations.ProvinceFour);
+            baseLocations.push(Location.ProvinceFour);
         }
         baseLocations.forEach(p => {
             const province = player.getProvinceCardInProvince(p);

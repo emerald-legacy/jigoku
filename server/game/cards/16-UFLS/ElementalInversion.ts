@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes } from '../../Constants.js';
+import { TargetMode } from '../../Constants.js';
 
 class ElementalInversion extends DrawCard {
     static id = 'elemental-inversion';
@@ -10,7 +10,7 @@ class ElementalInversion extends DrawCard {
             title: 'Switch the contested ring',
             condition: context => context.game.isDuringConflict(),
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 activePromptTitle: 'Choose an uncontested ring',
                 ringCondition: ring => !ring.isContested() && !ring.isRemovedFromGame(),
                 gameAction: AbilityDsl.actions.sequential([

@@ -1,6 +1,6 @@
 
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardTypes, Locations } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 class MiyaLibrary extends DrawCard {
@@ -15,15 +15,15 @@ class MiyaLibrary extends DrawCard {
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'select an imperial character to replace miya library',
                     context: context,
-                    cardCondition: (card: DrawCard) => card.hasTrait('imperial') && card.getType() === CardTypes.Character,
+                    cardCondition: (card: DrawCard) => card.hasTrait('imperial') && card.getType() === CardType.Character,
                     cards: context.player.dynastyDeck.slice(0, 4),
                     choices: ['Do not replace Miya Library'],
                     handlers: [() => this.miyaLibraryPrompt(context, context.player.dynastyDeck.slice(0, 4), [], 'Select the card you would like to place on top of your dynasty deck')],
                     cardHandler: (card: DrawCard) => {
-                        if(card.hasTrait('imperial') && card.getType() === CardTypes.Character) {
+                        if(card.hasTrait('imperial') && card.getType() === CardType.Character) {
                             context.player.moveCard(card, context.source.location);
                             card.facedown = false;
-                            context.player.moveCard(context.source, Locations.DynastyDeck);
+                            context.player.moveCard(context.source, Location.DynastyDeck);
                         }
                         this.miyaLibraryPrompt(context, context.player.dynastyDeck.slice(0, 4), [], 'Select the card you would like to place on top of your dynasty deck');
                     }

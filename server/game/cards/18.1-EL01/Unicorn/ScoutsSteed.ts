@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Durations, Locations } from '../../../Constants.js';
+import { CardType, Duration, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 
@@ -15,8 +15,8 @@ export default class ScoutsSteed extends DrawCard {
                 onCardPlayed: (event, context) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 cardCondition: (card, context) => card.isFacedown() && card.canBeAttacked() && card.controller !== context.player
             },
             gameAction: AbilityDsl.actions.sequentialContext(
@@ -26,13 +26,13 @@ export default class ScoutsSteed extends DrawCard {
                         AbilityDsl.actions.cardLastingEffect({
                             target: character,
                             effect: AbilityDsl.effects.mustBeDeclaredAsAttacker(),
-                            duration: Durations.UntilEndOfConflict
+                            duration: Duration.UntilEndOfConflict
                         }),
                         AbilityDsl.actions.cardLastingEffect(() => ({
                             target: province,
-                            targetLocation: Locations.Provinces,
+                            targetLocation: Location.Provinces,
                             effect: AbilityDsl.effects.cardCannot('break'),
-                            duration: Durations.UntilEndOfConflict
+                            duration: Duration.UntilEndOfConflict
                         })),
                         AbilityDsl.actions.initiateConflict({
                             target: player,

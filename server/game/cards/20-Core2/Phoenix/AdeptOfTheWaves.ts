@@ -1,4 +1,4 @@
-import { CardTypes, Durations, Elements } from '../../../Constants.js';
+import { CardType, Duration, Element } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,7 +13,7 @@ export default class AdeptOfTheWaves extends DrawCard {
         this.action({
             title: 'Grant Covert to a character',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.handler({
                         handler: () => {
@@ -21,7 +21,7 @@ export default class AdeptOfTheWaves extends DrawCard {
                         }
                     }),
                     AbilityDsl.actions.cardLastingEffect(() => ({
-                        duration: Durations.UntilEndOfPhase,
+                        duration: Duration.UntilEndOfPhase,
                         condition: () => this.game.isDuringConflict(this.elementWhenTriggered),
                         effect: AbilityDsl.effects.addKeyword('covert')
                     }))
@@ -37,7 +37,7 @@ export default class AdeptOfTheWaves extends DrawCard {
         symbols.push({
             key: COVERT_ELEMENT,
             prettyName: 'Contested Ring',
-            element: Elements.Water
+            element: Element.Water
         });
         return symbols;
     }

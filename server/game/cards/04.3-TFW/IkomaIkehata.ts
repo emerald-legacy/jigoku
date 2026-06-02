@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class IkomaIkehata extends DrawCard {
     static id = 'ikoma-ikehata';
@@ -13,7 +13,7 @@ class IkomaIkehata extends DrawCard {
             },
             target: {
                 activePromptTitle: 'Choose a character to honor',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.honor()
             },

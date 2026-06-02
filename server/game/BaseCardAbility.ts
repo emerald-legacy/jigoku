@@ -1,6 +1,6 @@
 import { AbilityContext } from './AbilityContext.js';
 import BaseAbility from './BaseAbility.js';
-import { Stages } from './Constants.js';
+import { Stage } from './Constants.js';
 import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
 import type Game from './Game.js';
@@ -30,7 +30,7 @@ abstract class BaseCardAbility extends BaseAbility {
             game: this.card.game,
             player: player,
             source: this.card,
-            stage: Stages.PreTarget
+            stage: Stage.PreTarget
         });
     }
 }

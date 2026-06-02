@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, EventNames, Players, Locations } from '../../Constants.js';
+import { CardType, EventName, Players, Location } from '../../Constants.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 
@@ -11,9 +11,9 @@ class KnowTheTerrain extends DrawCard {
             title: 'Switch the attacked province with a facedown province',
             effect: 'switch the attacked province card',
             when: {
-                onConflictDeclaredBeforeProvinceReveal: (event: EventPayload<EventNames.OnConflictDeclaredBeforeProvinceReveal>, context: TriggeredAbilityContext) => !!event.conflict.conflictProvince && event.conflict.conflictProvince.isFacedown() &&
+                onConflictDeclaredBeforeProvinceReveal: (event: EventPayload<EventName.OnConflictDeclaredBeforeProvinceReveal>, context: TriggeredAbilityContext) => !!event.conflict.conflictProvince && event.conflict.conflictProvince.isFacedown() &&
                     event.conflict.defendingPlayer === context.player &&
-                    event.conflict.conflictProvince.location !== Locations.StrongholdProvince
+                    event.conflict.conflictProvince.location !== Location.StrongholdProvince
             },
             handler: (context: TriggeredAbilityContext) => {
                 const conflict = context.event.conflict;
@@ -22,11 +22,11 @@ class KnowTheTerrain extends DrawCard {
                 }
                 return this.game.promptForSelect(context.player, {
                     activePromptTitle: 'Choose an unbroken province',
-                    cardType: CardTypes.Province,
+                    cardType: CardType.Province,
                     context: context,
-                    location: Locations.Provinces,
+                    location: Location.Provinces,
                     controller: Players.Self,
-                    cardCondition: (card: any, innerContext: any) => card.location !== Locations.StrongholdProvince && !card.isBroken && card.isFacedown() && card !== innerContext.event.conflict.conflictProvince,
+                    cardCondition: (card: any, innerContext: any) => card.location !== Location.StrongholdProvince && !card.isBroken && card.isFacedown() && card !== innerContext.event.conflict.conflictProvince,
                     onSelect: (player: any, card: any) => {
                         let attackedprovince = conflict.conflictProvince;
                         if(!attackedprovince) {

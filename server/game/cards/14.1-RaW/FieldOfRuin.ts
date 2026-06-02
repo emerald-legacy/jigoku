@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
-import { CardTypes, Locations, Phases, Players } from '../../Constants.js';
+import { CardType, Location, Phases, Players } from '../../Constants.js';
 import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 
 export default class FieldOfRuin extends BattlefieldAttachment {
@@ -10,11 +10,11 @@ export default class FieldOfRuin extends BattlefieldAttachment {
         super.setupCardAbilities();
 
         this.persistentEffect({
-            location: Locations.Any,
+            location: Location.Any,
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: 1,
-                targetCondition: (target: BaseCard) => target.type === CardTypes.Province && (target as any).isBroken,
+                targetCondition: (target: BaseCard) => target.type === CardType.Province && (target as any).isBroken,
                 match: (card: BaseCard, source: BaseCard) => card === source
             })
         });

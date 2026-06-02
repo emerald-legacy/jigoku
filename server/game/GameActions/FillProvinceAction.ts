@@ -1,17 +1,17 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventNames, Locations } from '../Constants.js';
+import { EventName, Location } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
 import type { GameEvent } from '../Events/EventPayloads.js';
 export interface FillProvinceProperties extends PlayerActionProperties {
-    location: Locations;
+    location: Location;
     fillTo?: number;
     faceup?: boolean;
 }
 
 export class FillProvinceAction extends PlayerAction<FillProvinceProperties> {
-    defaultProperties: FillProvinceProperties = { location: Locations.ProvinceOne, fillTo: 1, faceup: false };
+    defaultProperties: FillProvinceProperties = { location: Location.ProvinceOne, fillTo: 1, faceup: false };
     name = 'fill';
     effect = 'fills {0} with more cards';
 
@@ -24,7 +24,7 @@ export class FillProvinceAction extends PlayerAction<FillProvinceProperties> {
         return ['fills {0} to {1} cards!', [properties.location, properties.fillTo]];
     }
 
-    eventHandler(event: GameEvent<EventNames.Unnamed>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventName.Unnamed>, additionalProperties: Record<string, unknown> = {}): void {
         const context = event.context as AbilityContext;
         let properties = this.getProperties(context, additionalProperties) as FillProvinceProperties;
         const player = event.player as Player;

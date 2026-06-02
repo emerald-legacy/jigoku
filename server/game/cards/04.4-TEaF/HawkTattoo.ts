@@ -1,7 +1,7 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { Durations } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 
 class HawkTattoo extends DrawCard {
     static id = 'hawk-tattoo';
@@ -26,7 +26,7 @@ class HawkTattoo extends DrawCard {
                 ability.actions.moveToConflict((context: AbilityContext) => ({ target: context.source.parent })),
                 ability.actions.playerLastingEffect((context: AbilityContext) => ({
                     targetController: context.player,
-                    duration: Durations.UntilPassPriority,
+                    duration: Duration.UntilPassPriority,
                     effect: context.source.parent.hasTrait('monk') ? ability.effects.additionalAction() : []
                 }))
             ]

@@ -1,4 +1,4 @@
-import { CardTypes, Locations, Phases, PlayTypes } from '../../Constants.js';
+import { CardType, Location, Phases, PlayType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type DrawCard from '../../DrawCard.js';
@@ -22,13 +22,13 @@ export default class KyudenHida extends StrongholdCard {
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose a character',
                     cards: this.kyudenHidaCards,
-                    cardCondition: (card) => card.type === CardTypes.Character,
+                    cardCondition: (card) => card.type === CardType.Character,
                     choices: ['Take nothing'],
                     handlers: [
                         () => {
                             const cards = this.kyudenHidaCards;
                             cards.forEach((card) => {
-                                context.player.moveCard(card, Locations.DynastyDiscardPile);
+                                context.player.moveCard(card, Location.DynastyDiscardPile);
                             });
                             this.game.addMessage('{0} chooses not to play a character', context.player);
                             this.game.addMessage('{0} discards {1}', context.player, cards);
@@ -39,11 +39,11 @@ export default class KyudenHida extends StrongholdCard {
                         AbilityDsl.actions.playCard({
                             source: this,
                             resetOnCancel: false,
-                            playType: PlayTypes.PlayFromProvince,
+                            playType: PlayType.PlayFromProvince,
                             postHandler: (hidaContext) => {
                                 const card = hidaContext.source;
                                 let discardedCards = this.kyudenHidaCards;
-                                if(card.location !== Locations.PlayArea) {
+                                if(card.location !== Location.PlayArea) {
                                     this.game.addMessage('{0} chooses not to play a character', context.player);
                                 } else {
                                     discardedCards = this.kyudenHidaCards.filter((a) => a !== card);
@@ -53,7 +53,7 @@ export default class KyudenHida extends StrongholdCard {
                         }),
                         AbilityDsl.actions.moveCard((context) => ({
                             target: this.kyudenHidaCards.filter((a) => a !== context.target),
-                            destination: Locations.DynastyDiscardPile
+                            destination: Location.DynastyDiscardPile
                         }))
                     ])
                 }))

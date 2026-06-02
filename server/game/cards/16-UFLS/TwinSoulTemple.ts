@@ -1,4 +1,4 @@
-import { TargetModes, Locations, Durations, Elements } from '../../Constants.js';
+import { TargetMode, Location, Duration, Element } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -11,14 +11,14 @@ export default class TwinSoulTemple extends StrongholdCard {
             cost: AbilityDsl.costs.bowSelf(),
             target: {
                 activePromptTitle: 'Choose an element to replace',
-                mode: TargetModes.ElementSymbol,
-                location: [Locations.PlayArea, Locations.Provinces],
+                mode: TargetMode.ElementSymbol,
+                location: [Location.PlayArea, Location.Provinces],
                 gameAction: AbilityDsl.actions.menuPrompt((context) => ({
                     activePromptTitle: 'Choose the new element',
                     choices: this.getChoices(context),
                     gameAction: AbilityDsl.actions.cardLastingEffect({
                         target: context.elementCard,
-                        duration: Durations.UntilEndOfPhase
+                        duration: Duration.UntilEndOfPhase
                     }),
                     choiceHandler: (choice, displayMessage) => {
                         let newElement = choice.toLowerCase();
@@ -46,14 +46,14 @@ export default class TwinSoulTemple extends StrongholdCard {
     }
 
     getChoices(context: any) {
-        let els = [Elements.Air, Elements.Earth, Elements.Fire, Elements.Void, Elements.Water];
+        let els = [Element.Air, Element.Earth, Element.Fire, Element.Void, Element.Water];
         let currentEl = context.element.element;
 
         const index = els.indexOf(currentEl);
         if(index > -1) {
             els.splice(index, 1);
         }
-        els.forEach((e, i) => (els[i] = this.capitalize(e) as Elements));
+        els.forEach((e, i) => (els[i] = this.capitalize(e) as Element));
         return els;
     }
 

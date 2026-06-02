@@ -1,4 +1,4 @@
-import { CardTypes, Elements, Locations } from '../../Constants.js';
+import { CardType, Element, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -19,8 +19,8 @@ export default class StewardOfCrypticLore extends DrawCard {
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince(),
                 subActionProperties: (card) => {
                     context.target = card;
@@ -30,14 +30,14 @@ export default class StewardOfCrypticLore extends DrawCard {
                     options: {
                         'Raise attacked province\'s strength by 3': {
                             action: AbilityDsl.actions.cardLastingEffect(() => ({
-                                targetLocation: Locations.Provinces,
+                                targetLocation: Location.Provinces,
                                 effect: AbilityDsl.effects.modifyProvinceStrength(3)
                             })),
                             message: '{0} chooses to increase {1}\'s strength by 3'
                         },
                         'Lower attacked province\'s strength by 3': {
                             action: AbilityDsl.actions.cardLastingEffect(() => ({
-                                targetLocation: Locations.Provinces,
+                                targetLocation: Location.Provinces,
                                 effect: AbilityDsl.effects.modifyProvinceStrength(-3)
                             })),
                             message: '{0} chooses to reduce {1}\'s strength by 3'
@@ -53,7 +53,7 @@ export default class StewardOfCrypticLore extends DrawCard {
         symbols.push({
             key: ELEMENT,
             prettyName: 'Conflict Type',
-            element: Elements.Earth
+            element: Element.Earth
         });
         return symbols;
     }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Players, CardTypes, PlayTypes} from '../../Constants.js';
+import { Location, Players, CardType, PlayType} from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class WarmWelcome extends DrawCard {
@@ -10,17 +10,17 @@ class WarmWelcome extends DrawCard {
             title: 'Play a conflict card from discard',
             condition: context => !!(context.player.opponent && context.player.showBid < context.player.opponent.showBid),
             target: {
-                location: Locations.ConflictDiscardPile,
+                location: Location.ConflictDiscardPile,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.playCard(context => ({
                         source: this,
                         target: context.target,
-                        playType: PlayTypes.PlayFromHand
+                        playType: PlayType.PlayFromHand
                     })),
                     AbilityDsl.actions.moveCard(context => ({
-                        target: context.target.type === CardTypes.Event ? context.target : [],
-                        destination: Locations.ConflictDeck, bottom: true
+                        target: context.target.type === CardType.Event ? context.target : [],
+                        destination: Location.ConflictDeck, bottom: true
                     }))
                 ])
             }

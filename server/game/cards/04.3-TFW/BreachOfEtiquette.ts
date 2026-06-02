@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, EventNames } from '../../Constants.js';
+import { CardType, EventName } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 class BreachOfEtiquette extends DrawCard {
@@ -18,8 +18,8 @@ class BreachOfEtiquette extends DrawCard {
                     targetController: context.player,
                     effect: AbilityDsl.effects.playerDelayedEffect({
                         when: {
-                            onCardAbilityTriggered: (event: EventPayload<EventNames.OnCardAbilityTriggered>) =>
-                                event.player === context.player && event.card.type === CardTypes.Character && !event.card.hasTrait('courtier')
+                            onCardAbilityTriggered: (event: EventPayload<EventName.OnCardAbilityTriggered>) =>
+                                event.player === context.player && event.card.type === CardType.Character && !event.card.hasTrait('courtier')
                         },
                         message: '{1} loses 1 honor due to {0}',
                         messageArgs: (effectContext: AbilityContext) => [context.player, effectContext.source],
@@ -31,8 +31,8 @@ class BreachOfEtiquette extends DrawCard {
                     targetController: context.player.opponent,
                     effect: AbilityDsl.effects.playerDelayedEffect({
                         when: {
-                            onCardAbilityTriggered: (event: EventPayload<EventNames.OnCardAbilityTriggered>) =>
-                                event.player === context.player.opponent && event.card.type === CardTypes.Character && !event.card.hasTrait('courtier')
+                            onCardAbilityTriggered: (event: EventPayload<EventName.OnCardAbilityTriggered>) =>
+                                event.player === context.player.opponent && event.card.type === CardType.Character && !event.card.hasTrait('courtier')
                         },
                         message: '{1} loses 1 honor due to {0}',
                         messageArgs: (effectContext: AbilityContext) => [context.player.opponent, effectContext.source],

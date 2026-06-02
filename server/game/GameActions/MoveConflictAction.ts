@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
-import { CardTypes, EventNames } from '../Constants.js';
+import { CardType, EventName } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 import type { GameEvent } from '../Events/EventPayloads.js';
@@ -8,8 +8,8 @@ export type MoveConflictProperties = CardActionProperties;
 
 export class MoveConflictAction extends CardGameAction {
     name = 'moveConflict';
-    eventName = EventNames.OnConflictMoved;
-    targetType = [CardTypes.Province];
+    eventName = EventName.OnConflictMoved;
+    targetType = [CardType.Province];
     effect = 'move the conflict to {0}';
     cost = 'moves the conflict to {0}';
     defaultProperties: MoveConflictProperties = {};
@@ -21,7 +21,7 @@ export class MoveConflictAction extends CardGameAction {
         if(
             !card ||
             !context.game.isDuringConflict() ||
-            card.type !== CardTypes.Province ||
+            card.type !== CardType.Province ||
             card.isConflictProvince() ||
             !card.canBeAttacked() ||
             !context.game.currentConflict || !context.game.currentConflict.getConflictProvinces().some((a) => a.controller === card.controller)
@@ -31,7 +31,7 @@ export class MoveConflictAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: GameEvent<EventNames.OnConflictMoved>, _additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventName.OnConflictMoved>, _additionalProperties: Record<string, unknown> = {}): void {
         let context = (event.context as AbilityContext);
         let newProvince = event.card;
         const conflict = context.game.currentConflict;

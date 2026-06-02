@@ -1,4 +1,4 @@
-import { CardTypes, ConflictTypes, Players } from '../../../Constants.js';
+import { CardType, ConflictType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class OurDuty extends DrawCard {
             title: 'Make your opponent sacrifice a character',
             condition: (context) => context.game.roundNumber > 1 && Boolean(context.player.opponent),
             cost: AbilityDsl.costs.sacrifice({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: DrawCard) => card.isFaction('crab')
             }),
             effect: 'force {1} to sacrifice a character',
@@ -18,7 +18,7 @@ export default class OurDuty extends DrawCard {
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to sacrifice',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 message: '{0} sacrifices {1} to {2}',
                 messageArgs: (card) => [context.player.opponent, card, context.source],
@@ -29,13 +29,13 @@ export default class OurDuty extends DrawCard {
 
         this.action({
             title: 'Move an attacker home',
-            condition: (context) => context.game.isDuringConflict(ConflictTypes.Military),
+            condition: (context) => context.game.isDuringConflict(ConflictType.Military),
             cost: AbilityDsl.costs.sacrifice({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending()
             }),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking(),
                 gameAction: AbilityDsl.actions.sendHome()
             }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { AbilityTypes, CardTypes } from '../../Constants.js';
+import { AbilityType, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class YogoParamour extends DrawCard {
@@ -7,11 +7,11 @@ class YogoParamour extends DrawCard {
 
     setupCardAbilities() {
         this.dire({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Dishonor any character',
                 cost: AbilityDsl.costs.bowSelf(),
                 target: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     gameAction: AbilityDsl.actions.dishonor()
                 }
             })

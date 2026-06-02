@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { TargetModes, Locations } from '../../Constants.js';
+import { TargetMode, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SlovenlyScavenger extends DrawCard {
@@ -14,7 +14,7 @@ class SlovenlyScavenger extends DrawCard {
             },
             cost: AbilityDsl.costs.sacrificeSelf(),
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 targets: true,
                 activePromptTitle: 'Choose which discard pile to shuffle:',
                 choices: {
@@ -29,26 +29,26 @@ class SlovenlyScavenger extends DrawCard {
             handler: context => {
                 if(context.select === this.getChoiceName('MyDynasty')) {
                     this.owner.dynastyDiscardPile.forEach(card => {
-                        this.owner.moveCard(card, Locations.DynastyDeck);
+                        this.owner.moveCard(card, Location.DynastyDeck);
                     });
                     this.owner.shuffleDynastyDeck();
                 }
                 if(context.select === this.getChoiceName('MyConflict')) {
                     this.owner.conflictDiscardPile.forEach(card => {
-                        this.owner.moveCard(card, Locations.ConflictDeck);
+                        this.owner.moveCard(card, Location.ConflictDeck);
                     });
                     this.owner.shuffleConflictDeck();
                 }
                 const opponent = this.owner.opponent;
                 if(opponent && context.select === this.getChoiceName('OppDynasty')) {
                     opponent.dynastyDiscardPile.forEach(card => {
-                        opponent.moveCard(card, Locations.DynastyDeck);
+                        opponent.moveCard(card, Location.DynastyDeck);
                     });
                     opponent.shuffleDynastyDeck();
                 }
                 if(opponent && context.select === this.getChoiceName('OppConflict')) {
                     opponent.conflictDiscardPile.forEach(card => {
-                        opponent.moveCard(card, Locations.ConflictDeck);
+                        opponent.moveCard(card, Location.ConflictDeck);
                     });
                     opponent.shuffleConflictDeck();
                 }

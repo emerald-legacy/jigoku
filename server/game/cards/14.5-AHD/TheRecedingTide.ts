@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, CardTypes, Players, TargetModes } from '../../Constants.js';
+import { Location, CardType, Players, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class TheRecedingTide extends DrawCard {
@@ -9,16 +9,16 @@ class TheRecedingTide extends DrawCard {
         this.action({
             title: 'Return a character to a province',
             target: {
-                cardType: CardTypes.Character,
-                location: Locations.PlayArea,
-                mode: TargetModes.Single,
+                cardType: CardType.Character,
+                location: Location.PlayArea,
+                mode: TargetMode.Single,
                 cardCondition: card => !card.hasTrait('mythic') && card.owner === this.controller,
                 gameAction: AbilityDsl.actions.selectCard(context => ({
                     targets: false,
-                    cardType: CardTypes.Province,
+                    cardType: CardType.Province,
                     controller: Players.Self,
-                    location: Locations.Provinces,
-                    cardCondition: card => card.location !== Locations.StrongholdProvince,
+                    location: Location.Provinces,
+                    cardCondition: card => card.location !== Location.StrongholdProvince,
                     subActionProperties: card => ({ destination: card.location }),
                     gameAction: AbilityDsl.actions.putIntoProvince({
                         target: context.target

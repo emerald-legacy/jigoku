@@ -1,4 +1,4 @@
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -11,9 +11,9 @@ export class BaseOni extends DrawCard {
     }
 
     public onCardLeavesPlay(event: any) {
-        if(event.card === this && this.location !== Locations.RemovedFromGame) {
+        if(event.card === this && this.location !== Location.RemovedFromGame) {
             this.game.addMessage('{0} is removed from the game due to being a Shadowlands character', this);
-            this.owner.moveCard(this, Locations.RemovedFromGame);
+            this.owner.moveCard(this, Location.RemovedFromGame);
         }
     }
 }

@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { EventNames, FavorTypes, Locations, Phases, Stages } from '../../../Constants.js';
+import { EventName, FavorType, Location, Phases, Stage } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -11,7 +11,7 @@ export default class Funeral extends DrawCard {
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventNames.OnCardPlayed]);
+        this.eventRegistrar.register([EventName.OnCardPlayed]);
 
         this.wouldInterrupt({
             title: 'Cancel honor loss',
@@ -19,11 +19,11 @@ export default class Funeral extends DrawCard {
                 onModifyHonor: (event: any, context) =>
                     event.player === context.player &&
                     -event.amount >= context.player.honor &&
-                    event.context.stage === Stages.Effect,
+                    event.context.stage === Stage.Effect,
                 onTransferHonor: (event: any, context) =>
                     event.player === context.player &&
                     event.amount >= context.player.honor &&
-                    event.context.stage === Stages.Effect
+                    event.context.stage === Stage.Effect
             },
             cannotBeMirrored: true,
             effect: 'cancel their honor loss, then gain 1 honor',
@@ -37,16 +37,16 @@ export default class Funeral extends DrawCard {
     public canPlay(context: TriggeredAbilityContext, playType: string) {
         return (
             context.game.currentPhase !== Phases.Draw &&
-            context.game.getFavorSide() === FavorTypes.Political &&
+            context.game.getFavorSide() === FavorType.Political &&
             super.canPlay(context, playType)
         );
     }
 
     public onCardPlayed(event: any) {
         if(event.card === this) {
-            if(this.location !== Locations.RemovedFromGame) {
+            if(this.location !== Location.RemovedFromGame) {
                 this.game.addMessage('{0} is removed from the game due the effects of {0}', this);
-                this.owner.moveCard(this, Locations.RemovedFromGame);
+                this.owner.moveCard(this, Location.RemovedFromGame);
             }
         }
     }

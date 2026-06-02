@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Decks, EventNames, Locations, Players } from '../../../Constants.js';
+import { CardType, Decks, EventName, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameEvent } from '../../../Events/EventPayloads.js';
 import type Player from '../../../Player.js';
@@ -15,18 +15,18 @@ export default class AsahinaEnvoy extends DrawCard {
                 onCardLeavesPlay: (event, context) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: (card) => card.location !== Locations.StrongholdProvince,
+                cardCondition: (card) => card.location !== Location.StrongholdProvince,
                 gameAction: AbilityDsl.actions.deckSearch<ProvinceCard>({
                     cardCondition: (card) =>
-                        card.type === CardTypes.Character && (card.printedCost ?? 0) >= 4 && card.isFaction('crane'),
+                        card.type === CardType.Character && (card.printedCost ?? 0) >= 4 && card.isFaction('crane'),
                     amount: 6,
                     deck: Decks.DynastyDeck,
                     shuffle: true,
                     selectedCardsHandler: (context, event, cards) => {
-                        const searchEvent = event as GameEvent<EventNames.OnDeckSearch> & { player: Player };
+                        const searchEvent = event as GameEvent<EventName.OnDeckSearch> & { player: Player };
                         if(cards.length === 0) {
                             return this.game.addMessage('{0} selects no characters', searchEvent.player);
                         }

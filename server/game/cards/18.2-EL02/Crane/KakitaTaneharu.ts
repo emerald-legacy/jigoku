@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { Locations, Players, PlayTypes } from '../../../Constants.js';
+import { Location, Players, PlayType } from '../../../Constants.js';
 
 class KakitaTaneharu extends DrawCard {
     static id = 'kakita-taneharu';
@@ -25,7 +25,7 @@ class KakitaTaneharu extends DrawCard {
         });
 
         this.persistentEffect({
-            location: Locations.PlayArea,
+            location: Location.PlayArea,
             targetLocation: this.uuid,
             targetController: Players.Self,
             match: (card: any) => {
@@ -34,7 +34,7 @@ class KakitaTaneharu extends DrawCard {
             effect: [
                 AbilityDsl.effects.canPlayFromOutOfPlay((player: any) => {
                     return player === this.controller;
-                }, PlayTypes.PlayFromHand),
+                }, PlayType.PlayFromHand),
                 AbilityDsl.effects.registerToPlayFromOutOfPlay()
             ]
         });

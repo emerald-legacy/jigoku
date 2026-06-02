@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Durations } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AustereExemplar extends DrawCard {
@@ -14,7 +14,7 @@ class AustereExemplar extends DrawCard {
             effect: 'take three actions',
             gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
                 targetController: context.player,
-                duration: Durations.UntilPassPriority,
+                duration: Duration.UntilPassPriority,
                 effect: AbilityDsl.effects.additionalAction(3)
             }))
         });

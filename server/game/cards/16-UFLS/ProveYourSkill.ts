@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { TargetModes, CardTypes } from '../../Constants.js';
+import { TargetMode, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ProveYourSkill extends DrawCard {
@@ -9,8 +9,8 @@ class ProveYourSkill extends DrawCard {
         this.action({
             title: 'Discard a status token off a character',
             target: {
-                mode: TargetModes.Token,
-                cardType: CardTypes.Character,
+                mode: TargetMode.Token,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.discardStatusToken()
             },
             effect: 'discard {1}\'s {2}',

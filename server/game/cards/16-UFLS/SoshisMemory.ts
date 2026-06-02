@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes, Locations, Decks } from '../../Constants.js';
+import { TargetMode, Location, Decks } from '../../Constants.js';
 
 class SoshisMemory extends DrawCard {
     static id = 'soshi-s-memory';
@@ -13,7 +13,7 @@ class SoshisMemory extends DrawCard {
             effect: 'let {1} look at the top {2} cards of their conflict deck',
             effectArgs: context => [context.select, context.player.cardsInPlay.reduce((total: number, card: any) => total + (card.hasTrait('shugenja') ? 1 : 0), 0)],
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 targets: true,
                 activePromptTitle: 'Choose a player',
                 choices: {
@@ -32,7 +32,7 @@ class SoshisMemory extends DrawCard {
             amount: (context: AbilityContext) => context.player.cardsInPlay.reduce((total: number, card: any) => total + (card.hasTrait('shugenja') ? 1 : 0), 0),
             deck: Decks.ConflictDeck,
             gameAction: AbilityDsl.actions.moveCard({
-                destination: Locations.Hand
+                destination: Location.Hand
             })
         }));
     }

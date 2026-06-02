@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class PreeminentDecree extends DrawCard {
@@ -10,7 +10,7 @@ class PreeminentDecree extends DrawCard {
             title: 'Give all participating characters a political penalty',
             condition: context => context.game.isDuringConflict(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => {
                     return card.hasTrait('courtier') && card.isParticipating() && card.glory > 0;

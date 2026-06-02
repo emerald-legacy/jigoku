@@ -1,4 +1,4 @@
-import { TokenTypes } from '../../Constants.js';
+import { TokenType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -16,7 +16,7 @@ export default class FortifiedAssembly extends ProvinceCard {
             effectArgs: (context) => context.source
         });
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyProvinceStrength(() => this.getTokenCount(TokenTypes.Honor) * 2)
+            effect: AbilityDsl.effects.modifyProvinceStrength(() => this.getTokenCount(TokenType.Honor) * 2)
         });
     }
 

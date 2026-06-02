@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class ContemplateTheEternal extends DrawCard {
             title: 'Return rings to put fate on character',
             cost: AbilityDsl.costs.returnRings(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card: DrawCard) =>
                     !card.bowed && !card.attachments.some((attachment) => !attachment.hasTrait('tattoo')),

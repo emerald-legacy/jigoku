@@ -1,7 +1,7 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { TargetModes, CardTypes } from '../../Constants.js';
+import { TargetMode, CardType } from '../../Constants.js';
 
 class WickedTetsubo extends DrawCard {
     static id = 'wicked-tetsubo';
@@ -17,11 +17,11 @@ class WickedTetsubo extends DrawCard {
             targets: {
                 character: {
                     activePromptTitle: 'Choose a defending character',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: card => card.isDefending()
                 },
                 effect: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: 'character',
                     activePromptTitle: 'Choose a skill to set to 0',
                     choices: {

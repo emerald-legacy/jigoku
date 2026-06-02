@@ -1,15 +1,15 @@
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardTypes, EventNames } from '../Constants.js';
+import { CardType, EventName } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export type FlipDynastyProperties = CardActionProperties;
 
 export class FlipDynastyAction extends CardGameAction<FlipDynastyProperties> {
     name = 'reveal';
-    eventName = EventNames.OnCardRevealed;
-    targetType = [CardTypes.Character, CardTypes.Holding, CardTypes.Event];
+    eventName = EventName.OnCardRevealed;
+    targetType = [CardType.Character, CardType.Holding, CardType.Event];
 
     getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context);
@@ -21,7 +21,7 @@ export class FlipDynastyAction extends CardGameAction<FlipDynastyProperties> {
         return card.isInProvince() && card.isDynasty && card.isFacedown() && super.canAffect(card, context);
     }
 
-    eventHandler(event: GameEvent<EventNames.OnCardRevealed>): void {
+    eventHandler(event: GameEvent<EventName.OnCardRevealed>): void {
         event.card.facedown = false;
     }
 }

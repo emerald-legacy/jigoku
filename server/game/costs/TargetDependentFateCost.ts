@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import type { Cost } from '../Costs.js';
 import { Event } from '../Events/Event.js';
 import { ReduceableFateCost } from './ReduceableFateCost.js';
@@ -31,7 +31,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
 
     public payEvent(context: AbilityContext): Event {
         const amount = (context.costs.targetDependentFate = this.getReducedCost(context));
-        return new Event(EventNames.OnSpendFate, { amount, context }, () => {
+        return new Event(EventName.OnSpendFate, { amount, context }, () => {
             context.player.markUsedReducers(
                 context.playType,
                 context.source,

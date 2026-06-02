@@ -1,4 +1,4 @@
-import { CardTypes, Durations } from '../../../Constants.js';
+import { CardType, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -11,7 +11,7 @@ export default class ZealousInspector extends DrawCard {
             when: {
                 onCardDishonored: (event, context) =>
                     // character
-                    event.card.type === CardTypes.Character &&
+                    event.card.type === CardType.Character &&
                     // controlled by opponent
                     event.card.controller === context.player.opponent &&
                     // dishonored by your card effect
@@ -20,7 +20,7 @@ export default class ZealousInspector extends DrawCard {
             },
             gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
-                duration: Durations.UntilPassPriority,
+                duration: Duration.UntilPassPriority,
                 effect: AbilityDsl.effects.additionalAction(1)
             })),
             effect: 'gain an additional action — time to deliver swift punishment for the wicked'

@@ -1,4 +1,4 @@
-import { CardTypes, ConflictTypes, Durations, Players, TargetModes } from '../../../Constants.js';
+import { CardType, ConflictType, Duration, Players, TargetMode } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -14,35 +14,35 @@ export default class ShosuroTechnique extends DrawCard {
             gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
                 target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.duelIgnorePrintedSkill(),
-                duration: Durations.UntilEndOfDuel
+                duration: Duration.UntilEndOfDuel
             } as LastingEffectProperties)),
             effect: 'ignore printed skill when resolving this duel'
         });
 
         this.action({
             title: 'Set shinobi\'s skills to that of an enemy',
-            condition: (context) => context.game.isDuringConflict(ConflictTypes.Military),
+            condition: (context) => context.game.isDuringConflict(ConflictType.Military),
             targets: {
                 shinobi: {
                     activePromptTitle: 'Choose a Shinobi you control',
-                    mode: TargetModes.Single,
-                    cardType: CardTypes.Character,
+                    mode: TargetMode.Single,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     optional: false,
                     cardCondition: (card) => card.hasTrait('shinobi') && card.isParticipating()
                 },
                 enemy: {
-                    mode: TargetModes.Single,
+                    mode: TargetMode.Single,
                     dependsOn: 'shinobi',
                     controller: Players.Opponent,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     optional: false,
                     cardCondition: (card) => card.isParticipating()
                 }
             },
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cardLastingEffect((context) => ({
-                    duration: Durations.UntilEndOfConflict,
+                    duration: Duration.UntilEndOfConflict,
                     target: context.targets.shinobi,
                     effect: AbilityDsl.effects.setMilitarySkill(context.targets.enemy.militarySkill)
                 }))

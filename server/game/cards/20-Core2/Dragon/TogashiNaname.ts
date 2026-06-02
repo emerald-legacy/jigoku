@@ -1,4 +1,4 @@
-import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Players, TargetMode } from '../../../Constants.js';
 import { RingEffects } from '../../../RingEffects.js';
 import type Ring from '../../../Ring.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -17,17 +17,17 @@ export default class TogashiNaname extends DrawCard {
             condition: (context) => context.source.isParticipating(),
             targets: {
                 character: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: (card: DrawCard) => card.isParticipating() && card.fate > 0
                 },
                 ring: {
                     dependsOn: 'character',
-                    mode: TargetModes.Ring,
+                    mode: TargetMode.Ring,
                     ringCondition: (ring) => ring.isUnclaimed()
                 },
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: 'ring',
                     player: Players.Opponent,
                     choices: (context) => ({

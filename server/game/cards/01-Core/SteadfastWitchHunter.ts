@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SteadfastWitchHunter extends DrawCard {
@@ -8,10 +8,10 @@ class SteadfastWitchHunter extends DrawCard {
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Ready character',
-            cost: ability.costs.sacrifice({ cardType: CardTypes.Character }),
+            cost: ability.costs.sacrifice({ cardType: CardType.Character }),
             target: {
                 activePromptTitle: 'Choose a character to ready',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: ability.actions.ready()
             }
         });

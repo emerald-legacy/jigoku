@@ -1,4 +1,4 @@
-import { DuelTypes } from '../../Constants.js';
+import { DuelType } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -11,7 +11,7 @@ export default class MirumotoDojo extends DrawCard {
         this.action({
             title: 'Initiate a military duel',
             initiateDuel: {
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 message: '{0}{1}{2}{3}{4}',
                 messageArgs: (duel) =>
                     duel.loser ? (this.#wonByDuelist(duel)

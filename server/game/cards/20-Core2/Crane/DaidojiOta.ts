@@ -1,4 +1,4 @@
-import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class DaidojiOta extends DrawCard {
             targetController: Players.Opponent,
             condition: (context) =>
                 context.player.cardsInPlay.some(
-                    (card) => card.getType() === CardTypes.Character && card.isParticipating()
+                    (card) => card.getType() === CardType.Character && card.isParticipating()
                 ),
             effect: AbilityDsl.effects.reduceCost({
                 amount: (card: any, player: any) => {
@@ -21,7 +21,7 @@ export default class DaidojiOta extends DrawCard {
                     }
                     return 0;
                 },
-                match: (card: any) => card.type === CardTypes.Event
+                match: (card: any) => card.type === CardType.Event
             })
         });
 
@@ -30,10 +30,10 @@ export default class DaidojiOta extends DrawCard {
             condition: (context) => context.source.isParticipating(),
             target: {
                 player: Players.Opponent,
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 choices: {
                     'Discard an event': AbilityDsl.actions.chosenDiscard({
-                        cardCondition: (card) => card.type === CardTypes.Event
+                        cardCondition: (card) => card.type === CardType.Event
                     }),
                     'Reveal your hand': AbilityDsl.actions.lookAt((context) => ({
                         target: context.player.opponent.hand.slice().sort((a: any, b: any) => a.name.localeCompare(b.name)),

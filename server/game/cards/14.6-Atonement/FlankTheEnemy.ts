@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class FlankTheEnemy extends DrawCard {
@@ -11,7 +11,7 @@ class FlankTheEnemy extends DrawCard {
             condition: context => !!(context.player.opponent && context.game.isDuringConflict() && context.game.currentConflict?.hasMoreParticipants(context.player, () => true)),
             target: {
                 player: Players.Opponent,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating(),
                 gameAction: AbilityDsl.actions.bow()

@@ -1,6 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class VoidFist extends DrawCard {
     static id = 'void-fist';
@@ -13,7 +13,7 @@ class VoidFist extends DrawCard {
                 !!this.game.currentConflict &&
                 this.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 2,
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() && !!this.game.currentConflict && this.game.currentConflict.getCharacters(context.player).some((myCard: DrawCard) =>
                         myCard.hasTrait('monk') && (myCard.militarySkill ?? 0) >= (card.militarySkill ?? 0)

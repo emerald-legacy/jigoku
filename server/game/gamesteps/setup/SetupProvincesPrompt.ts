@@ -1,5 +1,5 @@
 import { AllPlayerPrompt } from '../AllPlayerPrompt.js';
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type Game from '../../Game.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
@@ -108,7 +108,7 @@ class SetupProvincesPrompt extends AllPlayerPrompt {
         }
         this.clickedDone[player.uuid] = true;
         this.game.addMessage('{0} has placed their provinces', player);
-        player.moveCard(this.strongholdProvince[player.uuid] as ProvinceCard, Locations.StrongholdProvince);
+        player.moveCard(this.strongholdProvince[player.uuid] as ProvinceCard, Location.StrongholdProvince);
         // Shuffle remaining selectable cards using Fisher-Yates
         const shuffled = [...this.selectableCards[player.uuid]];
         for(let i = shuffled.length - 1; i > 0; i--) {

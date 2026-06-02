@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Durations, Phases } from '../../Constants.js';
+import { Location, Duration, Phases } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ASeasonOfWar extends DrawCard {
@@ -11,19 +11,19 @@ class ASeasonOfWar extends DrawCard {
             effect: 'discard all cards in all provinces, and refill each province faceup',
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.discardCard(context => ({
-                    target: context.player.getDynastyCardsInProvince(Locations.Provinces).concat(context.player.opponent ?
-                        context.player.opponent.getDynastyCardsInProvince(Locations.Provinces) : [])
+                    target: context.player.getDynastyCardsInProvince(Location.Provinces).concat(context.player.opponent ?
+                        context.player.opponent.getDynastyCardsInProvince(Location.Provinces) : [])
                 })),
                 AbilityDsl.actions.refillFaceup(context => ({
                     target: context.player,
-                    location: [Locations.StrongholdProvince, Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree, Locations.ProvinceFour]
+                    location: [Location.StrongholdProvince, Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree, Location.ProvinceFour]
                 })),
                 AbilityDsl.actions.refillFaceup(context => ({
                     target: context.player.opponent,
-                    location: [Locations.StrongholdProvince, Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree, Locations.ProvinceFour]
+                    location: [Location.StrongholdProvince, Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree, Location.ProvinceFour]
                 })),
                 AbilityDsl.actions.playerLastingEffect(context => ({
-                    duration: Durations.Custom,
+                    duration: Duration.Custom,
                     until: {
                         onPhaseStarted: event => event.phase === Phases.Dynasty
                     },

@@ -1,5 +1,5 @@
 import { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -20,7 +20,7 @@ export default class AsakoShun extends DrawCard {
             title: 'Give a skill penalty to a participating character',
             condition: (context) => context.source.isParticipating(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({

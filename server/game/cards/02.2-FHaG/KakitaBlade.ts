@@ -2,7 +2,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventNames } from '../../Constants.js';
+import { EventName } from '../../Constants.js';
 export default class KakitaBlade extends DrawCard {
     static id = 'kakita-blade';
 
@@ -15,7 +15,7 @@ export default class KakitaBlade extends DrawCard {
         this.reaction({
             title: 'Gain honor on duel win',
             when: {
-                afterDuel: (event: EventPayload<EventNames.AfterDuel>, context) => event.winner?.includes(context.source.parent) ?? false
+                afterDuel: (event: EventPayload<EventName.AfterDuel>, context) => event.winner?.includes(context.source.parent) ?? false
             },
             gameAction: AbilityDsl.actions.gainHonor()
         });

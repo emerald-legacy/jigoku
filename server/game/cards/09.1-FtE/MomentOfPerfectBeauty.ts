@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Durations } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 
 class MomentOfPerfectBeauty extends DrawCard {
     static id = 'moment-of-perfect-beauty';
@@ -15,7 +15,7 @@ class MomentOfPerfectBeauty extends DrawCard {
                     conflict.getNumberOfParticipantsFor(context.player.opponent, (card: any) => card.isHonored);
             },
             gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
-                duration: Durations.UntilEndOfConflict,
+                duration: Duration.UntilEndOfConflict,
                 targetController: context.player.opponent,
                 effect: AbilityDsl.effects.resolveConflictEarly()
             })),

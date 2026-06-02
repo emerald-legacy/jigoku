@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Durations, EventNames } from '../../../Constants.js';
+import { CardType, Duration, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
@@ -23,17 +23,17 @@ export default class FieldsOfRollingThunder extends DrawCard {
             effect: 'honor {0}. They will be dishonored at the end of the conflict if {1} loses the conflict.',
             effectArgs: (context) => [context.source.controller],
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.isFaction('unicorn'),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.honor(),
                     AbilityDsl.actions.cardLastingEffect((context) => {
                         const conflictWhenItWasTriggered = this.game.currentConflict;
                         return {
-                            duration: Durations.UntilEndOfPhase,
+                            duration: Duration.UntilEndOfPhase,
                             effect: AbilityDsl.effects.delayedEffect({
                                 when: {
-                                    onConflictFinished: (event: EventPayload<EventNames.OnConflictFinished>, context: TriggeredAbilityContext) =>
+                                    onConflictFinished: (event: EventPayload<EventName.OnConflictFinished>, context: TriggeredAbilityContext) =>
                                         event.conflict === conflictWhenItWasTriggered &&
                                         event.conflict.winner === context.player.opponent
                                 },

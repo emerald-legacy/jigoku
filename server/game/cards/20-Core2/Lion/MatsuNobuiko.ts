@@ -1,4 +1,4 @@
-import { DuelTypes } from '../../../Constants.js';
+import { DuelType } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -16,7 +16,7 @@ export default class MatsuNobuiko extends DrawCard {
                     (context.source as DrawCard).isParticipating()
             },
             initiateDuel: ((context: AbilityContext) => ({
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
                 gameAction: (duel: any) =>
                     duel.winner && duel.winningPlayer === context.player ? AbilityDsl.actions.cancel() : AbilityDsl.actions.noAction()

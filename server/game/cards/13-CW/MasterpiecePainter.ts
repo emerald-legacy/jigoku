@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes, Durations, Locations, Decks } from '../../Constants.js';
+import { TargetMode, Duration, Location, Decks } from '../../Constants.js';
 
 class MasterpiecePainter extends DrawCard {
     static id = 'masterpiece-painter';
@@ -9,7 +9,7 @@ class MasterpiecePainter extends DrawCard {
         this.action({
             title: 'Reveal and may play top conflict card',
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 targets: true,
                 activePromptTitle: 'Choose any number of players',
                 choices: {
@@ -33,15 +33,15 @@ class MasterpiecePainter extends DrawCard {
 
             return {
                 targetController: player,
-                duration: Durations.Custom,
+                duration: Duration.Custom,
                 until: {
-                    onCardMoved: event => event.card === topCard && event.originalLocation === Locations.ConflictDeck,
+                    onCardMoved: event => event.card === topCard && event.originalLocation === Location.ConflictDeck,
                     onPhaseEnded: () => true,
                     onDeckShuffled: event => event.player === chosenPlayer && event.deck === Decks.ConflictDeck
                 },
                 effect: [
                     AbilityDsl.effects.showTopConflictCard(),
-                    AbilityDsl.effects.canPlayFromOwn(Locations.ConflictDeck, [topCard], this)
+                    AbilityDsl.effects.canPlayFromOwn(Location.ConflictDeck, [topCard], this)
                 ]
             };
         });

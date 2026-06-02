@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardTypes, TargetModes } from '../../Constants.js';
+import { Players, CardType, TargetMode } from '../../Constants.js';
 
 class RideOn extends DrawCard {
     static id = 'ride-on';
@@ -10,12 +10,12 @@ class RideOn extends DrawCard {
             title: 'Move a character into or out of the conflict',
             targets: {
                 character: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: card => card.hasTrait('cavalry')
                 },
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: 'character',
                     choices: {
                         'Move to conflict': AbilityDsl.actions.moveToConflict(context => ({ target: context.targets.character })),

@@ -1,4 +1,4 @@
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
@@ -15,7 +15,7 @@ export default class KaitoYoshiaki extends DrawCard {
             title: 'Punish the wicked',
             condition: (context) => context.source.isParticipating(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: DrawCard, context) =>
                     card !== context.source &&
                     card.isParticipating() &&

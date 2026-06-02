@@ -1,6 +1,6 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Durations, EventNames, Players } from '../../../Constants.js';
+import { CardType, Duration, EventName, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -11,14 +11,14 @@ export default class BayushiShinobu extends DrawCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
                 when: {
-                    onCharacterEntersPlay: (event: EventPayload<EventNames.OnCharacterEntersPlay>, context: AbilityContext) => event.card === context.source
+                    onCharacterEntersPlay: (event: EventPayload<EventName.OnCharacterEntersPlay>, context: AbilityContext) => event.card === context.source
                 },
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) => {
                         context.source.dishonor();
                     }
                 }),
-                duration: Durations.Persistent,
+                duration: Duration.Persistent,
                 multipleTrigger: true
             })
         });
@@ -27,19 +27,19 @@ export default class BayushiShinobu extends DrawCard {
             title: 'Take control of a character',
             cost: AbilityDsl.costs.bowSelf(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => !card.anotherUniqueInPlay(context.player) && card.isDishonored && !card.isUnique(),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.cardLastingEffect(context => ({
                         effect: AbilityDsl.effects.takeControl(context.player),
-                        duration: Durations.UntilEndOfPhase
+                        duration: Duration.UntilEndOfPhase
                     })),
                     AbilityDsl.actions.playerLastingEffect(context => ({
                         target: context.player,
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
-                                onCardLeavesPlay: (event: EventPayload<EventNames.OnCardLeavesPlay>) => event.card === context.target
+                                onCardLeavesPlay: (event: EventPayload<EventName.OnCardLeavesPlay>) => event.card === context.target
                             },
                             onlyRemoveOnSuccess: true,
                             gameAction: AbilityDsl.actions.loseHonor(({
@@ -49,7 +49,7 @@ export default class BayushiShinobu extends DrawCard {
                             message: '{0} loses 2 honor due to the delayed effect of {1}',
                             messageArgs: [context.player, context.source]
                         }),
-                        duration: Durations.UntilEndOfPhase
+                        duration: Duration.UntilEndOfPhase
                     }))
                 ])
             },

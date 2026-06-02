@@ -1,4 +1,4 @@
-import { EventNames, Locations, Phases, Players } from '../Constants.js';
+import { EventName, Location, Phases, Players } from '../Constants.js';
 import { ready, returnRing } from '../GameActions/GameActions.js';
 import type DrawCard from '../DrawCard.js';
 import type Game from '../Game.js';
@@ -67,7 +67,7 @@ export class RegroupPhase extends Phase {
                 optional: true,
                 activePromptTitle: 'Select dynasty cards to discard',
                 waitingPromptTitle: 'Waiting for opponent to discard dynasty cards',
-                location: Locations.Provinces,
+                location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card: DrawCard) => cardsOnUnbrokenProvinces.includes(card),
                 onSelect: (player: Player, cards: DrawCard[]) => {
@@ -113,13 +113,13 @@ export class RegroupPhase extends Phase {
         }
         const otherPlayer = this.game.getOtherPlayer(firstPlayer);
         if(otherPlayer) {
-            this.game.raiseEvent(EventNames.OnPassFirstPlayer, { player: otherPlayer }, () =>
+            this.game.raiseEvent(EventName.OnPassFirstPlayer, { player: otherPlayer }, () =>
                 this.game.setFirstPlayer(otherPlayer)
             );
         }
     }
 
     roundEnded() {
-        this.game.raiseEvent(EventNames.OnRoundEnded);
+        this.game.raiseEvent(EventName.OnRoundEnded);
     }
 }

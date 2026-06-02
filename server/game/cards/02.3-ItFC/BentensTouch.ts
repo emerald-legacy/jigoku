@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class BentensTouch extends DrawCard {
@@ -10,11 +10,11 @@ class BentensTouch extends DrawCard {
             title: 'Bow and Honor a character',
 
             cost: ability.costs.bow({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isFaction('phoenix') && card.hasTrait('shugenja')
             }),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 activePromptTitle: 'Choose a character to honor',
                 controller: Players.Self,
                 cardCondition: card => card.isParticipating(),

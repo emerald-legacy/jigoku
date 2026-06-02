@@ -1,7 +1,7 @@
 import AbilityDsl from './abilitydsl.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
-import { CardTypes, Players } from './Constants.js';
+import { CardType, Players } from './Constants.js';
 import type DrawCard from './DrawCard.js';
 import type Game from './Game.js';
 import { InitiateDuel } from './Interfaces.js';
@@ -15,7 +15,7 @@ interface InitiateDuelHelperProps {
 
 export const initiateDuel = (game: Game, card: BaseCard, properties: InitiateDuelHelperProps): void => {
     if(properties.initiateDuel) {
-        if(card.type === CardTypes.Character) {
+        if(card.type === CardType.Character) {
             initiateDuelFromCharacter(game, card as DrawCard, properties);
         } else {
             initiateDuelFromOther(game, card, properties);
@@ -53,7 +53,7 @@ const initiateDuelFromCharacter = (_game: Game, card: DrawCard, properties: Init
 const initiateDuelFromOther = (_game: Game, _card: BaseCard, properties: InitiateDuelHelperProps): void => {
     properties.targets = {
         challenger: {
-            cardType: CardTypes.Character,
+            cardType: CardType.Character,
             player: (context: AbilityContext) => {
                 const opponentChoosesChallenger = getProperty(properties, context, 'opponentChoosesChallenger');
                 return opponentChoosesChallenger ? Players.Opponent : Players.Self;
@@ -74,7 +74,7 @@ const initiateDuelFromOther = (_game: Game, _card: BaseCard, properties: Initiat
 
 const getBaselineDuelTargetProperties = (challenger: DrawCard | undefined, properties: InitiateDuelHelperProps) => {
     const props = {
-        cardType: CardTypes.Character,
+        cardType: CardType.Character,
         player: (context: AbilityContext) => {
             const opponentChoosesDuelTarget = getProperty(properties, context, 'opponentChoosesDuelTarget');
             return opponentChoosesDuelTarget ? Players.Opponent : Players.Self;

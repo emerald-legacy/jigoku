@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, TargetModes, CardTypes } from '../../Constants.js';
+import { Players, TargetMode, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class RelentlessInquisitor extends DrawCard {
@@ -11,12 +11,12 @@ class RelentlessInquisitor extends DrawCard {
             condition: context => context.source.isParticipating(),
             targets: {
                 character: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: card => card.isParticipating() && !card.bowed
                 },
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: 'character',
                     player: Players.Opponent,
                     choices: {

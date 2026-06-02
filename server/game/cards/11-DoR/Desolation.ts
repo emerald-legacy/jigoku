@@ -1,4 +1,4 @@
-import { Durations } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -12,7 +12,7 @@ export default class Desolation extends DrawCard {
             condition: (context) => context.player.opponent !== undefined,
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: this.game.provinceCards.filter((a: any) => a.controller === context.player.opponent),
-                duration: Durations.UntilEndOfPhase,
+                duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.blank()
             })),
             effect: 'blank {1}\'s provinces until the end of the phase',

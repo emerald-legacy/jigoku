@@ -1,5 +1,5 @@
 import { GameModes } from '../../../GameModes.js';
-import { CardTypes, EventNames, TargetModes, Decks, Locations, Players } from '../../Constants.js';
+import { CardType, EventName, TargetMode, Decks, Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
@@ -17,20 +17,20 @@ export default class KaiuShihobu extends DrawCard {
                     event.card === context.source && context.game.gameMode !== GameModes.Skirmish
             },
             gameAction: AbilityDsl.actions.deckSearch({
-                cardCondition: (card) => card.type === CardTypes.Holding,
-                targetMode: TargetModes.Unlimited,
+                cardCondition: (card) => card.type === CardType.Holding,
+                targetMode: TargetMode.Unlimited,
                 deck: Decks.DynastyDeck,
                 selectedCardsHandler: (context, event, cards) => {
-                    const searchEvent = event as GameEvent<EventNames.OnDeckSearch> & { player: Player };
+                    const searchEvent = event as GameEvent<EventName.OnDeckSearch> & { player: Player };
                     if(cards.length > 0) {
                         this.game.addMessage('{0} selects {1}', searchEvent.player, cards);
                         cards.forEach((card) => {
-                            searchEvent.player.stronghold?.addChildCard(card, Locations.UnderneathStronghold);
-                            searchEvent.player.moveCard(card, Locations.UnderneathStronghold);
+                            searchEvent.player.stronghold?.addChildCard(card, Location.UnderneathStronghold);
+                            searchEvent.player.moveCard(card, Location.UnderneathStronghold);
                             card.lastingEffect(() => ({
                                 until: {
                                     onCardMoved: (event: any) =>
-                                        event.card === card && event.originalLocation === Locations.UnderneathStronghold
+                                        event.card === card && event.originalLocation === Location.UnderneathStronghold
                                 },
                                 match: card,
                                 effect: [AbilityDsl.effects.hideWhenFaceUp()]
@@ -49,19 +49,19 @@ export default class KaiuShihobu extends DrawCard {
             targets: {
                 first: {
                     activePromptTitle: 'Choose a holding',
-                    cardType: CardTypes.Holding,
+                    cardType: CardType.Holding,
                     controller: Players.Self,
-                    location: Locations.UnderneathStronghold,
+                    location: Location.UnderneathStronghold,
                     cardCondition: (card: DrawCard, context) => !!context?.player.stronghold && context.player.stronghold.childCards.includes(card)
                 },
                 second: {
                     activePromptTitle: 'Choose an unbroken province',
                     dependsOn: 'first',
                     optional: false,
-                    cardType: CardTypes.Province,
-                    location: Locations.Provinces,
+                    cardType: CardType.Province,
+                    location: Location.Provinces,
                     controller: Players.Self,
-                    cardCondition: (card) => card.location !== Locations.StrongholdProvince && !card.isBroken
+                    cardCondition: (card) => card.location !== Location.StrongholdProvince && !card.isBroken
                 }
             },
             handler: (context) => {
@@ -74,7 +74,7 @@ export default class KaiuShihobu extends DrawCard {
                 }
                 holding.facedown = false;
                 cards.forEach((card: any) => {
-                    context.player.moveCard(card, Locations.DynastyDiscardPile);
+                    context.player.moveCard(card, Location.DynastyDiscardPile);
                 });
             },
             effect: 'discard {1}, replacing {2} with {3}',

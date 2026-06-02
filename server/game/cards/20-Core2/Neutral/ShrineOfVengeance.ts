@@ -1,4 +1,4 @@
-import { CardTypes, Locations } from '../../../Constants.js';
+import { CardType, Location } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -12,8 +12,8 @@ export default class ShrineOfVengeance extends ProvinceCard {
                 onBreakProvince: (event, context) => event.card === context.source
             },
             target: {
-                location: Locations.Provinces,
-                cardType: CardTypes.Province,
+                location: Location.Provinces,
+                cardType: CardType.Province,
                 cardCondition: (card: ProvinceCard) => card.facedown,
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.dishonorProvince(),

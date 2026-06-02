@@ -2,11 +2,11 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type Ring from '../Ring.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
-import type { EventNames } from '../Constants.js';
+import type { EventName } from '../Constants.js';
 
 export type RingActionProperties = GameActionProperties;
 
-export class RingAction<P extends RingActionProperties = RingActionProperties, N extends EventNames = EventNames> extends GameAction<P, N> {
+export class RingAction<P extends RingActionProperties = RingActionProperties, N extends EventName = EventName> extends GameAction<P, N> {
     targetType = ['ring'];
 
     defaultTargets(context: AbilityContext): Ring[] {

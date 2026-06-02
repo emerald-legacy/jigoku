@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Elements, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Element, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 const VULNERABLE_ELEMENT = 'ichigo-kun-fire';
@@ -14,7 +14,7 @@ export default class IchigoKun extends DrawCard {
     public setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
-                context.game.currentConflict?.hasElement(this.getCurrentElementSymbol(VULNERABLE_ELEMENT) as Elements) ?? false,
+                context.game.currentConflict?.hasElement(this.getCurrentElementSymbol(VULNERABLE_ELEMENT) as Element) ?? false,
             effect: AbilityDsl.effects.setBaseMilitarySkill(0)
         });
 
@@ -22,12 +22,12 @@ export default class IchigoKun extends DrawCard {
             title: 'Modify military skill and glory',
             targets: {
                 otherCharacter: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: (card, context) => card.isParticipating() && card !== context.source
                 },
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: 'otherCharacter',
                     choices: (context) => ({
                         [MORE_MIL_LESS_GLORY]: this.actionSequence(context, { military: +2, glory: -2 }),
@@ -45,7 +45,7 @@ export default class IchigoKun extends DrawCard {
 
     public getPrintedElementSymbols() {
         const symbols = super.getPrintedElementSymbols();
-        symbols.push({ key: VULNERABLE_ELEMENT, prettyName: 'Restricted Ring', element: Elements.Fire });
+        symbols.push({ key: VULNERABLE_ELEMENT, prettyName: 'Restricted Ring', element: Element.Fire });
         return symbols;
     }
 

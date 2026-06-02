@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type DrawCard from '../../../DrawCard.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
@@ -13,7 +13,7 @@ export default class BreezeOfDawnLodge extends StrongholdCard {
             title: 'Move a character into or out of the conflict',
             cost: AbilityDsl.costs.bowSelf(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card: DrawCard) => !card.bowed,
                 gameAction: AbilityDsl.actions.conditional(({ target }) => ({

@@ -1,10 +1,10 @@
-import type { Elements } from '../../Constants.js';
+import type { Element } from '../../Constants.js';
 import { isProvinceCard } from '../../ProvinceCard.js';
 import { RoleCard } from '../../RoleCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { Conflict } from '../../Conflict.js';
 
-export function createKeeperRole(id: string, element: Elements) {
+export function createKeeperRole(id: string, element: Element) {
     return class KeeperRole extends RoleCard {
         static id = id;
 
@@ -21,13 +21,13 @@ export function createKeeperRole(id: string, element: Elements) {
             });
         }
 
-        getElement(): Elements[] {
+        getElement(): Element[] {
             return [element];
         }
     };
 }
 
-export function createSeekerRole(id: string, element: Elements) {
+export function createSeekerRole(id: string, element: Element) {
     return class SeekerRole extends RoleCard {
         static id = id;
 
@@ -44,7 +44,7 @@ export function createSeekerRole(id: string, element: Elements) {
             });
         }
 
-        getElement(): Elements[] {
+        getElement(): Element[] {
             return [element];
         }
     };

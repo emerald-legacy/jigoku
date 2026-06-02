@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class KaradaDistrict extends DrawCard {
@@ -10,13 +10,13 @@ class KaradaDistrict extends DrawCard {
             title: 'Take control of an attachment',
             cost: AbilityDsl.costs.giveFateToOpponent(1),
             target: {
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 cardCondition: (card, context) => card.parent && card.parent.controller === context.player.opponent
             },
             gameAction: AbilityDsl.actions.ifAble(context => ({
                 ifAbleAction: AbilityDsl.actions.selectCard({
                     target: context.target,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     gameAction: AbilityDsl.actions.attach({
                         attachment: context.target,

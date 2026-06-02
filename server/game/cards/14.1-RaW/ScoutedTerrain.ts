@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Durations } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 
 class ScoutedTerrain extends DrawCard {
     static id = 'scouted-terrain';
@@ -13,7 +13,7 @@ class ScoutedTerrain extends DrawCard {
             effectArgs: context => [context.player.opponent as any],
             gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
                 targetController: context.player.opponent,
-                duration: Durations.UntilEndOfPhase,
+                duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.strongholdCanBeAttacked()
             }))
         });

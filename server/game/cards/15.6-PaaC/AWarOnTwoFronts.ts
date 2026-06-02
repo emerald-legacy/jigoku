@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
-import { Locations, CardTypes, Durations, ConflictTypes } from '../../Constants.js';
+import { Location, CardType, Duration, ConflictType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AWarOnTwoFronts extends DrawCard {
@@ -10,16 +10,16 @@ class AWarOnTwoFronts extends DrawCard {
         this.reaction<ProvinceCard>({
             title: 'Attack a second province',
             when: {
-                onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player && event.conflict.conflictType === ConflictTypes.Military && context.player.isMoreHonorable()
+                onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player && event.conflict.conflictType === ConflictType.Military && context.player.isMoreHonorable()
             },
             target: {
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 cardCondition: (card: any, context: any) => !card.isConflictProvince() && card.canBeAttacked() && context.game.currentConflict.getConflictProvinces().some((a: any) => a.controller === card.controller),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.reveal(),
                     AbilityDsl.actions.conflictLastingEffect<ProvinceCard>(context => ({
-                        duration: Durations.UntilEndOfConflict,
+                        duration: Duration.UntilEndOfConflict,
                         effect: AbilityDsl.effects.additionalAttackedProvince(context.target)
                     }))
                 ])

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class OniMask extends DrawCard {
@@ -15,7 +15,7 @@ class OniMask extends DrawCard {
             cost: ability.costs.removeFateFromParent(),
 
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isParticipating(),
                 gameAction: ability.actions.cardLastingEffect({ effect: ability.effects.blank() })
             },

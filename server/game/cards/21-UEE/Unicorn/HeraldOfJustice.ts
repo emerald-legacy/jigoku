@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, ConflictTypes, Durations, Phases } from '../../../Constants.js';
+import { CardType, ConflictType, Duration, Phases } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class HeraldOfJustice extends DrawCard {
@@ -11,11 +11,11 @@ export default class HeraldOfJustice extends DrawCard {
             effect: 'allow {1} to declare an additional military conflict this phase',
             effectArgs: (context) => [context.player],
             condition: (context) => context.game.currentPhase === Phases.Conflict,
-            cost: AbilityDsl.costs.sacrifice({ cardType: CardTypes.Character }),
+            cost: AbilityDsl.costs.sacrifice({ cardType: CardType.Character }),
             gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
-                duration: Durations.UntilEndOfPhase,
-                effect: AbilityDsl.effects.additionalConflict(ConflictTypes.Military)
+                duration: Duration.UntilEndOfPhase,
+                effect: AbilityDsl.effects.additionalConflict(ConflictType.Military)
             }))
         });
     }

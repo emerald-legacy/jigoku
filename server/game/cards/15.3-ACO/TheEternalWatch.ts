@@ -1,4 +1,4 @@
-import { CardTypes, Players, TargetModes } from '../../Constants.js';
+import { CardType, Players, TargetMode } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import type DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
@@ -12,11 +12,11 @@ export default class TheEternalWatch extends ProvinceCard {
             title: 'Bow a character or take an honor from your opponent',
             targets: {
                 character: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: (card, context) => card.isAttacking() && card.allowGameAction('bow', context)
                 },
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: 'character',
                     player: Players.Opponent,
                     choices: {

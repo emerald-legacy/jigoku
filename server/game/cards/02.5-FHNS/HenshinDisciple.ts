@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 
 const elementKeys = {
     air: 'hallowed-ground-air',
@@ -37,17 +37,17 @@ class HenshinDisciple extends DrawCard {
         symbols.push({
             key: elementKeys.air,
             prettyName: '+2 Political',
-            element: Elements.Air
+            element: Element.Air
         });
         symbols.push({
             key: elementKeys.earth,
             prettyName: '+2 Military',
-            element: Elements.Earth
+            element: Element.Earth
         });
         symbols.push({
             key: elementKeys.fire,
             prettyName: 'Pride',
-            element: Elements.Fire
+            element: Element.Fire
         });
         return symbols;
     }

@@ -1,4 +1,4 @@
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 import { makeTempleOfFortuneX } from './_makeTempleOfFortuneX.js';
 
-export default makeTempleOfFortuneX('temple-of-jikoju', Elements.Air);
+export default makeTempleOfFortuneX('temple-of-jikoju', Element.Air);

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ReturnFromShadows extends DrawCard {
@@ -13,8 +13,8 @@ class ReturnFromShadows extends DrawCard {
                 afterConflict: (event, context) => event.conflict && event.conflict.winner === context.player && event.conflict.conflictUnopposed
             },
             target: {
-                location: Locations.Provinces,
-                cardType: CardTypes.Province,
+                location: Location.Provinces,
+                cardType: CardType.Province,
                 cardCondition: (card, context) => context.game.currentConflict && context.game.currentConflict.loser && card.controller === context.game.currentConflict.loser,
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.dishonorProvince(),

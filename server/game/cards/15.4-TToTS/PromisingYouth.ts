@@ -1,4 +1,4 @@
-import { CardTypes, Durations } from '../../Constants.js';
+import { CardType, Duration } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -19,8 +19,8 @@ export default class PromisingYouth extends DrawCard {
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cardLastingEffect((context) => ({
                     target: context.source,
-                    duration: Durations.Custom,
-                    effect: AbilityDsl.effects.changeType(CardTypes.Character)
+                    duration: Duration.Custom,
+                    effect: AbilityDsl.effects.changeType(CardType.Character)
                 })),
                 AbilityDsl.actions.detach((context) => ({ target: context.source }))
             ])
@@ -28,7 +28,7 @@ export default class PromisingYouth extends DrawCard {
     }
 
     leavesPlay() {
-        this.printedType = CardTypes.Character;
+        this.printedType = CardType.Character;
         super.leavesPlay();
     }
 }

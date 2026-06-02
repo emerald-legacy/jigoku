@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Phases, Players, TargetModes } from '../../Constants.js';
+import { CardType, Phases, Players, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class KamiOfAncientWisdom extends DrawCard {
@@ -10,15 +10,15 @@ class KamiOfAncientWisdom extends DrawCard {
             title: 'Give or take fate',
             when: {
                 onMoveFate: (event, context) => context.game.currentPhase !== Phases.Fate &&
-                    event.origin && event.origin.type === CardTypes.Character && event.fate > 0
+                    event.origin && event.origin.type === CardType.Character && event.fate > 0
             },
             targets: {
                 character: {
                     controller: Players.Any,
-                    cardType: CardTypes.Character
+                    cardType: CardType.Character
                 },
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: 'character',
                     choices: {
                         'Place 1 Fate': AbilityDsl.actions.placeFate(context => ({ target: context.targets.character })),

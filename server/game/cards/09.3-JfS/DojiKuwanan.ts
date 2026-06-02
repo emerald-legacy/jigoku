@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class DojiKuwanan extends DrawCard {
     static id = 'doji-kuwanan';
@@ -26,7 +26,7 @@ class DojiKuwanan extends DrawCard {
             condition: (context) =>
                 context.source.game.isDuringConflict('military') && context.source.isParticipating(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: any, context: any) =>
                     card.getMilitarySkill() < context.source.getMilitarySkill() && card.isParticipating(),
                 gameAction: AbilityDsl.actions.bow()

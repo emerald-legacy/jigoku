@@ -1,12 +1,12 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardTypes, EffectNames, EventNames, Locations } from '../Constants.js';
+import { CardType, EffectName, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 import type { GameEvent } from '../Events/EventPayloads.js';
 export interface PutInProvinceProperties extends CardActionProperties {
-    destination?: Locations;
+    destination?: Location;
     switch?: boolean;
     switchTarget?: DrawCard;
     faceup?: boolean;
@@ -15,10 +15,10 @@ export interface PutInProvinceProperties extends CardActionProperties {
     discardDestinationCards?: boolean;
 }
 
-export class PutInProvinceAction extends CardGameAction<PutInProvinceProperties, EventNames.OnCardLeavesPlay> {
+export class PutInProvinceAction extends CardGameAction<PutInProvinceProperties, EventName.OnCardLeavesPlay> {
     name = 'putInProvince';
-    eventName = EventNames.OnCardLeavesPlay;
-    targetType = [CardTypes.Character, CardTypes.Attachment];
+    eventName = EventName.OnCardLeavesPlay;
+    targetType = [CardType.Character, CardType.Attachment];
     defaultProperties: PutInProvinceProperties = {
         destination: undefined,
         switch: false,
@@ -56,17 +56,17 @@ export class PutInProvinceAction extends CardGameAction<PutInProvinceProperties,
             additionalProperties
         ) as PutInProvinceProperties;
         const canMove =
-            (!changePlayer || card.checkRestrictions(EffectNames.TakeControl, context)) &&
+            (!changePlayer || card.checkRestrictions(EffectName.TakeControl, context)) &&
             (!destination || context.player.isLegalLocationForCard(card, destination)) &&
-            card.location === Locations.PlayArea &&
+            card.location === Location.PlayArea &&
             super.canAffect(card, context);
         return canMove;
     }
 
-    eventHandler(event: GameEvent<EventNames.OnCardLeavesPlay>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventName.OnCardLeavesPlay>, additionalProperties: Record<string, unknown> = {}): void {
         let context = event.context as AbilityContext;
         let card = event.card as DrawCard;
-        (event as GameEvent<EventNames.OnCardLeavesPlay> & { cardStateWhenMoved: DrawCard }).cardStateWhenMoved = card.createSnapshot();
+        (event as GameEvent<EventName.OnCardLeavesPlay> & { cardStateWhenMoved: DrawCard }).cardStateWhenMoved = card.createSnapshot();
         let properties = this.getProperties(context, additionalProperties) as PutInProvinceProperties;
         if(properties.switch && properties.switchTarget) {
             let otherCard = properties.switchTarget;
@@ -76,7 +76,7 @@ export class PutInProvinceAction extends CardGameAction<PutInProvinceProperties,
         const player = card.owner;
         if(properties.destination && card.isConflict && [...context.game.getProvinceArray()].includes(properties.destination)) {
             context.game.addMessage('{0} is discarded instead since it can\'t enter a province legally!', card);
-            properties.destination = Locations.ConflictDiscardPile;
+            properties.destination = Location.ConflictDiscardPile;
         }
         if(
             properties.discardDestinationCards &&
@@ -85,7 +85,7 @@ export class PutInProvinceAction extends CardGameAction<PutInProvinceProperties,
         ) {
             let cardsToDiscard = player.getSourceList(properties.destination).filter((c) => c.isDynasty);
             for(const c of cardsToDiscard) {
-                player.moveCard(c, Locations.DynastyDiscardPile);
+                player.moveCard(c, Location.DynastyDiscardPile);
             }
         }
         if(properties.destination) {

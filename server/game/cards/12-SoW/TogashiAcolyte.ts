@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -15,7 +15,7 @@ export default class TogashiAcolyte extends DrawCard {
                 onCardPlayed: (event, context) =>
                     context.source.parent &&
                     event.player === context.player &&
-                    context.source.type === CardTypes.Attachment &&
+                    context.source.type === CardType.Attachment &&
                     context.source.parent.isParticipating()
             },
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
@@ -28,7 +28,7 @@ export default class TogashiAcolyte extends DrawCard {
     }
 
     leavesPlay() {
-        this.printedType = CardTypes.Character;
+        this.printedType = CardType.Character;
         super.leavesPlay();
     }
 }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ShinjoTatsuo extends DrawCard {
@@ -10,13 +10,13 @@ class ShinjoTatsuo extends DrawCard {
             title: 'Move this and another character to the conflict',
             targets: {
                 self: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: (card, context) => card === context.source,
                     gameAction: ability.actions.moveToConflict()
                 },
                 optional: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: (card, context) => card !== context.source,
                     optional: true,

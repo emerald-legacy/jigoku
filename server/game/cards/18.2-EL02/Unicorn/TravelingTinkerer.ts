@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TravelingTinkerer extends DrawCard {
@@ -10,7 +10,7 @@ export default class TravelingTinkerer extends DrawCard {
             title: 'Flip the modifiers of an attachment',
             condition: (context) => context.game.isDuringConflict(),
             target: {
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     effect: AbilityDsl.effects.switchAttachmentSkillModifiers()
                 })

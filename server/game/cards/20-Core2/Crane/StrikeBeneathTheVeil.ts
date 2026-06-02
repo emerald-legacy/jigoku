@@ -1,4 +1,4 @@
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -14,7 +14,7 @@ export default class StrikeBeneathTheVeil extends DrawCard {
             title: 'Give a military penalty to a participating character',
 
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
                     effect: AbilityDsl.effects.modifyBothSkills(context.target ? penalty(context.target) : 0)

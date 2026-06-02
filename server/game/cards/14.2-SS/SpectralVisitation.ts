@@ -1,4 +1,4 @@
-import { CardTypes, Decks, Durations, Locations, Players } from '../../Constants.js';
+import { CardType, Decks, Duration, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -18,14 +18,14 @@ export default class SpectralVisitation extends ProvinceCard {
                     handler: () => true
                 }),
                 AbilityDsl.actions.selectCard((context) => ({
-                    location: Locations.DynastyDiscardPile,
-                    cardType: CardTypes.Character,
+                    location: Location.DynastyDiscardPile,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     targets: true,
                     gameAction: AbilityDsl.actions.multiple([
                         AbilityDsl.actions.putIntoPlay(),
                         AbilityDsl.actions.cardLastingEffect((context) => ({
-                            duration: Durations.UntilEndOfRound,
+                            duration: Duration.UntilEndOfRound,
                             effect: AbilityDsl.effects.delayedEffect({
                                 when: {
                                     onPhaseEnded: () => true

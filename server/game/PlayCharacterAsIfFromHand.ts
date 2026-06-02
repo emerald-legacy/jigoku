@@ -1,5 +1,5 @@
 import { AbilityContext } from './AbilityContext.js';
-import { PlayTypes } from './Constants.js';
+import { PlayType } from './Constants.js';
 import { PlayCharacterAction, PlayCharacterIntoLocation } from './PlayCharacterAction.js';
 import DrawCard from './DrawCard.js';
 import Player from './Player.js';
@@ -11,7 +11,7 @@ export class PlayCharacterAsIfFromHand extends PlayCharacterAction {
 
     public createContext(player: Player = this.card.controller) {
         const context = super.createContext(player);
-        context.playType = PlayTypes.PlayFromHand;
+        context.playType = PlayType.PlayFromHand;
         return context;
     }
 
@@ -30,7 +30,7 @@ export class PlayCharacterAsIfFromHandIntoConflict extends PlayCharacterAction {
 
     public createContext(player: Player = this.card.controller) {
         const context = super.createContext(player);
-        context.playType = PlayTypes.PlayFromHand;
+        context.playType = PlayType.PlayFromHand;
         return context;
     }
 
@@ -49,7 +49,7 @@ export class PlayCharacterAsIfFromHandAtHome extends PlayCharacterAction {
 
     public createContext(player: Player = this.card.controller) {
         const context = super.createContext(player);
-        context.playType = PlayTypes.PlayFromHand;
+        context.playType = PlayType.PlayFromHand;
         return context;
     }
 

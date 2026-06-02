@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 class AsahinaDiviner extends DrawCard {
@@ -11,7 +11,7 @@ class AsahinaDiviner extends DrawCard {
 
             max: AbilityDsl.limit.perConflict(1),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source,
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
                     effect: AbilityDsl.effects.modifyGlory(3)

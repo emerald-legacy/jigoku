@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
-import { CardTypes, Durations, EventNames, Locations } from '../Constants.js';
+import { CardType, Duration, EventName, Location } from '../Constants.js';
 import Effects from '../effects.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
@@ -13,12 +13,12 @@ export interface CreateTokenProperties extends CardActionProperties {
 export class CreateTokenAction extends CardGameAction<CreateTokenProperties> {
     name = 'createToken';
     effect = 'create a token';
-    eventName = EventNames.OnCreateTokenCharacter;
-    targetType = [CardTypes.Character, CardTypes.Holding, CardTypes.Event];
+    eventName = EventName.OnCreateTokenCharacter;
+    targetType = [CardType.Character, CardType.Holding, CardType.Event];
     defaultProperties: CreateTokenProperties = { atHome: false };
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if(!card.isFacedown() || !card.isInProvince() || card.location === Locations.StrongholdProvince) {
+        if(!card.isFacedown() || !card.isInProvince() || card.location === Location.StrongholdProvince) {
             return false;
         } else if(!context.game.isDuringConflict('military')) {
             return false;
@@ -26,15 +26,15 @@ export class CreateTokenAction extends CardGameAction<CreateTokenProperties> {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: GameEvent<EventNames.OnCreateTokenCharacter>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventName.OnCreateTokenCharacter>, additionalProperties: Record<string, unknown> = {}): void {
         let context = event.context as AbilityContext;
         let { atHome } = this.getProperties(context, additionalProperties);
         let card = event.card as DrawCard;
         let token = context.game.createToken(card);
         card.owner.removeCardFromPile(card);
         this.checkForRefillProvince(card, event, additionalProperties);
-        card.moveTo(Locations.RemovedFromGame);
-        card.owner.moveCard(token, Locations.PlayArea);
+        card.moveTo(Location.RemovedFromGame);
+        card.owner.moveCard(token, Location.PlayArea);
         const conflict = context.game.currentConflict;
         if(!atHome && conflict) {
             if(context.player.isAttackingPlayer()) {
@@ -46,7 +46,7 @@ export class CreateTokenAction extends CardGameAction<CreateTokenProperties> {
 
         context.game.actions
             .cardLastingEffect({
-                duration: Durations.UntilEndOfPhase,
+                duration: Duration.UntilEndOfPhase,
                 effect: Effects.delayedEffect({
                     when: {
                         onConflictFinished: () => true
@@ -58,6 +58,6 @@ export class CreateTokenAction extends CardGameAction<CreateTokenProperties> {
             })
             .resolve(token, context);
 
-        context.game.raiseEvent(EventNames.OnCreateTokenCharacter, { tokenCharacter: token });
+        context.game.raiseEvent(EventName.OnCreateTokenCharacter, { tokenCharacter: token });
     }
 }

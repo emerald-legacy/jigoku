@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { DuelTypes, Players } from '../../../Constants.js';
+import { DuelType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import { shuffle } from '../../../utils/shuffle.js';
@@ -10,12 +10,12 @@ export default class TranquilOverlookDojo extends StrongholdCard {
 
     setupCardAbilities() {
         const limit = AbilityDsl.limit.perRound(1);
-        actionVersion(this, limit, DuelTypes.Military, 'Initiate a Military duel');
-        actionVersion(this, limit, DuelTypes.Political, 'Initiate a Political duel');
+        actionVersion(this, limit, DuelType.Military, 'Initiate a Military duel');
+        actionVersion(this, limit, DuelType.Political, 'Initiate a Political duel');
     }
 }
 
-function actionVersion(self: TranquilOverlookDojo, limit: AbilityLimit, type: DuelTypes, title: string) {
+function actionVersion(self: TranquilOverlookDojo, limit: AbilityLimit, type: DuelType, title: string) {
     self.action({
         title,
         cost: AbilityDsl.costs.bowSelf(),

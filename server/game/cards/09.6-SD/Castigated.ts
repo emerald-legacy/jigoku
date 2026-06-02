@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import type Ring from '../../Ring.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Castigated extends DrawCard {
@@ -24,7 +24,7 @@ class Castigated extends DrawCard {
     }
 
     canPlay(context: AbilityContext, playType: string) {
-        if(!context.game.isDuringConflict('political') || !context.player.cardsInPlay.some((card: DrawCard) => card.getType() === CardTypes.Character && card.hasTrait('imperial'))) {
+        if(!context.game.isDuringConflict('political') || !context.player.cardsInPlay.some((card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('imperial'))) {
             return false;
         }
 

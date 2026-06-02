@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes, Durations } from '../../Constants.js';
+import { TargetMode, Duration } from '../../Constants.js';
 
 class KujirasHireling extends DrawCard {
     static id = 'kujira-s-hireling';
@@ -12,15 +12,15 @@ class KujirasHireling extends DrawCard {
             anyPlayer: true,
             limit: AbilityDsl.limit.unlimitedPerConflict(),
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 choices: {
                     '+1/+1': AbilityDsl.actions.cardLastingEffect({
                         effect: AbilityDsl.effects.modifyBothSkills(1),
-                        duration: Durations.UntilEndOfPhase
+                        duration: Duration.UntilEndOfPhase
                     }),
                     '-1/-1': AbilityDsl.actions.cardLastingEffect({
                         effect: AbilityDsl.effects.modifyBothSkills(-1),
-                        duration: Durations.UntilEndOfPhase
+                        duration: Duration.UntilEndOfPhase
                     })
                 }
             },

@@ -1,6 +1,6 @@
 import type { AbilityContext } from './AbilityContext.js';
 import BaseAction from './BaseAction.js';
-import { EffectNames, EventNames, Locations, Phases, PlayTypes, Players } from './Constants.js';
+import { EffectName, EventName, Location, Phases, PlayType, Players } from './Constants.js';
 import { chooseFate, payReduceableFateCost } from './Costs.js';
 import { putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
 import { parseGameMode } from './GameMode.js';
@@ -18,7 +18,7 @@ export class PlayCharacterAction extends BaseAction {
     public title = 'Play this character';
 
     public constructor(card: BaseCard, private intoLocation = PlayCharacterIntoLocation.Any) {
-        super(card, [chooseFate(PlayTypes.PlayFromHand), payReduceableFateCost()]);
+        super(card, [chooseFate(PlayType.PlayFromHand), payReduceableFateCost()]);
     }
 
     public meetsRequirements(context = this.createContext(), ignoredRequirements: string[] = []): string {
@@ -31,13 +31,13 @@ export class PlayCharacterAction extends BaseAction {
         }
         if(
             !ignoredRequirements.includes('location') &&
-            !context.player.isCardInPlayableLocation(context.source, PlayTypes.PlayFromHand)
+            !context.player.isCardInPlayableLocation(context.source, PlayType.PlayFromHand)
         ) {
             return 'location';
         }
         if(
             !ignoredRequirements.includes('cannotTrigger') &&
-            !context.source.canPlay(context, PlayTypes.PlayFromHand)
+            !context.source.canPlay(context, PlayType.PlayFromHand)
         ) {
             return 'cannotTrigger';
         }
@@ -54,13 +54,13 @@ export class PlayCharacterAction extends BaseAction {
     }
 
     public executeHandler(context: ExecutionContext): void {
-        const legendaryFate = context.source.sumEffects(EffectNames.LegendaryFate);
-        let extraFate = context.source.sumEffects(EffectNames.GainExtraFateWhenPlayed);
+        const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
+        let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
         if(!context.source.checkRestrictions('placeFate', context)) {
             extraFate = 0;
         }
         extraFate = extraFate + legendaryFate;
-        const cardPlayedEvent = context.game.getEvent(EventNames.OnCardPlayed, {
+        const cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
             player: context.player,
             card: context.source,
             context: context,
@@ -68,7 +68,7 @@ export class PlayCharacterAction extends BaseAction {
             originallyOnTopOfConflictDeck:
                 context.player && context.player.conflictDeck && context.player.conflictDeck[0] === context.source,
             onPlayCardSource: context.onPlayCardSource,
-            playType: PlayTypes.PlayFromHand
+            playType: PlayType.PlayFromHand
         });
         const atHomeHandler = () => {
             context.game.addMessage(
@@ -77,13 +77,13 @@ export class PlayCharacterAction extends BaseAction {
                 context.source,
                 context.chooseFate
             );
-            const effect = context.source.getEffects(EffectNames.EntersPlayForOpponent);
+            const effect = context.source.getEffects(EffectName.EntersPlayForOpponent);
             const player = effect.length > 0 ? Players.Opponent : Players.Self;
             context.game.openEventWindow([
                 putIntoPlay({
                     fate: context.chooseFate + extraFate,
                     controller: player,
-                    overrideLocation: Locations.Hand
+                    overrideLocation: Location.Hand
                 }).getEvent(context.source, context),
                 cardPlayedEvent
             ]);

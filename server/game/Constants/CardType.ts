@@ -1,4 +1,4 @@
-export enum CardTypes {
+export enum CardType {
     Stronghold = 'stronghold',
     Role = 'role',
     Province = 'province',

@@ -1,4 +1,4 @@
-import { CardTypes, EventNames } from '../../Constants.js';
+import { CardType, EventName } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -10,11 +10,11 @@ export default class MantraOfFire extends DrawCard {
         this.reaction({
             title: 'Add 1 fate to a monk and draw a card',
             when: {
-                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context: any) =>
+                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context: any) =>
                     event.ring?.hasElement('fire' as any) && event.conflict.attackingPlayer === context.player.opponent
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: any) =>
                     card.hasTrait('monk') || card.attachments.some((card: any) => card.hasTrait('monk')),
                 gameAction: AbilityDsl.actions.placeFate()

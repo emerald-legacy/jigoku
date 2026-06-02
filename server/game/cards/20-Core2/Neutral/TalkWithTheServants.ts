@@ -1,4 +1,4 @@
-import { ConflictTypes } from '../../../Constants.js';
+import { ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class TalkWithTheServants extends DrawCard {
             title: 'Force opponent to discard 2 cards',
             when: {
                 afterConflict: (event, context) =>
-                    event.conflict.winner === context.player && event.conflict.conflictType === ConflictTypes.Political
+                    event.conflict.winner === context.player && event.conflict.conflictType === ConflictType.Political
             },
             cost: AbilityDsl.costs.dishonor({
                 optional: true,

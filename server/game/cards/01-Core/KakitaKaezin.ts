@@ -1,4 +1,4 @@
-import { DuelTypes, Players } from '../../Constants.js';
+import { DuelType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -15,7 +15,7 @@ export default class KakitaKaezin extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.duel((context) => ({
-                    type: DuelTypes.Military,
+                    type: DuelType.Military,
                     challenger: context.source,
                     gameAction: (duel) =>
                         AbilityDsl.actions.sendHome({

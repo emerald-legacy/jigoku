@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,11 +10,11 @@ export default class DojiShigenobu extends DrawCard {
             title: 'Bow a character',
             condition: (context) => context.source.isParticipating(),
             cost: AbilityDsl.costs.bow({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.bow()

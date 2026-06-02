@@ -1,6 +1,6 @@
 import { EffectValue } from './EffectValue.js';
 import GainAbility from './GainAbility.js';
-import { AbilityTypes, Locations } from '../Constants.js';
+import { AbilityType, Location } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import type { CardAction } from '../CardAction.js';
 import type TriggeredAbility from '../TriggeredAbility.js';
@@ -18,7 +18,7 @@ export default class GainAllAbilities extends EffectValue<BaseCard> {
 
     constructor(card: BaseCard) {
         super(card);
-        this.actions = card.abilities.actions.map((action: CardAction) => new GainAbility(AbilityTypes.Action, action));
+        this.actions = card.abilities.actions.map((action: CardAction) => new GainAbility(AbilityType.Action, action));
         //Need to ignore keyword reactions or we double up on the pride / courtesy / sincerity triggers
         this.reactions = card.abilities.reactions
             .filter((a: TriggeredAbility) => !a.isKeywordAbility())
@@ -39,7 +39,7 @@ export default class GainAllAbilities extends EffectValue<BaseCard> {
             })
         };
         for(const effect of this.persistentEffects) {
-            if(effect.location === Locations.PlayArea || effect.location === Locations.Any) {
+            if(effect.location === Location.PlayArea || effect.location === Location.Any) {
                 effect.ref = target.addEffectToEngine(effect);
             }
         }

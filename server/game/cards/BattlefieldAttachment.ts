@@ -1,4 +1,4 @@
-import { CardTypes } from '../Constants.js';
+import { CardType } from '../Constants.js';
 import BaseCard from '../BaseCard.js';
 import DrawCard from '../DrawCard.js';
 import { ProvinceCard } from '../ProvinceCard.js';
@@ -15,7 +15,7 @@ export class BattlefieldAttachment extends DrawCard {
             source &&
             source.getType() === 'province' &&
             (!this.unbrokenOnly() || !source.isBroken) &&
-            this.getType() === CardTypes.Attachment
+            this.getType() === CardType.Attachment
         );
     }
 
@@ -24,7 +24,7 @@ export class BattlefieldAttachment extends DrawCard {
             return false;
         }
 
-        return parent && parent.getType() === CardTypes.Province && this.getType() === CardTypes.Attachment;
+        return parent && parent.getType() === CardType.Province && this.getType() === CardType.Attachment;
     }
 
     protected unbrokenOnly(): boolean {

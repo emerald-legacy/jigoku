@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class MasterOfTheSwiftWaves extends DrawCard {
     static id = 'master-of-the-swift-waves';
@@ -11,14 +11,14 @@ class MasterOfTheSwiftWaves extends DrawCard {
             targets: {
                 characterInConflict: {
                     activePromptTitle: 'Choose a participating character to send home',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: card => card.isParticipating()
                 },
                 characterAtHome: {
                     dependsOn: 'characterInConflict',
                     activePromptTitle: 'Choose a character to move to the conflict',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     gameAction: AbilityDsl.actions.joint([
                         AbilityDsl.actions.sendHome(context => ({ target: context.targets.characterInConflict })),

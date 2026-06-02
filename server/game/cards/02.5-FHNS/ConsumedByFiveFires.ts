@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
-import { CardTypes, Locations } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import * as GameActions from '../../GameActions/GameActions.js';
 import type Player from '../../Player.js';
@@ -46,8 +46,8 @@ class ConsumedByFiveFires extends DrawCard {
         }
         this.game.promptForSelect(context.player, {
             context: context,
-            cardType: CardTypes.Character,
-            cardCondition: (card: BaseCard) => card.location === Locations.PlayArea && card.allowGameAction('removeFate', context) && card.controller !== context.player && !Object.keys(targets).includes(card.uuid),
+            cardType: CardType.Character,
+            cardCondition: (card: BaseCard) => card.location === Location.PlayArea && card.allowGameAction('removeFate', context) && card.controller !== context.player && !Object.keys(targets).includes(card.uuid),
             onSelect: (player: Player, card: BaseCard) => {
                 const maxFate = Math.min(fateRemaining, card.getFate());
                 const choices: (number | string)[] = Array.from({ length: maxFate }, (_, i) => i + 1);

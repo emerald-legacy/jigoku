@@ -1,4 +1,4 @@
-import { CardTypes, Durations } from '../../Constants.js';
+import { CardType, Duration } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -20,13 +20,13 @@ export default class HisuMoriToride extends StrongholdCard {
             cost: [
                 AbilityDsl.costs.bowSelf(),
                 AbilityDsl.costs.sacrifice({
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: (card) => card.hasTrait('cavalry')
                 })
             ],
             gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
-                duration: Durations.UntilEndOfPhase,
+                duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.additionalConflict('military')
             }))
         });

@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class MatsuMitsuko extends DrawCard {
     static id = 'matsu-mitsuko';
@@ -10,7 +10,7 @@ class MatsuMitsuko extends DrawCard {
             title: 'Move a character to the conflict',
             condition: context => !!(this.game.isDuringConflict('military') && context.player && context.player.opponent && context.player.isMoreHonorable()),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.moveToConflict()
             }

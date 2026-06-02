@@ -1,7 +1,7 @@
 import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
 import { AllPlayerPrompt } from './AllPlayerPrompt.js';
 import { TransferHonorAction } from '../GameActions/TransferHonorAction.js';
-import { EventNames, EffectNames } from '../Constants.js';
+import { EventName, EffectName } from '../Constants.js';
 import { GameModes } from '../../GameModes.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
@@ -39,7 +39,7 @@ class HonorBidPrompt extends AllPlayerPrompt {
         let completed = super.continue();
 
         if(completed) {
-            const eventName = this.raiseEvent ? EventNames.OnHonorDialsRevealed : EventNames.Unnamed;
+            const eventName = this.raiseEvent ? EventName.OnHonorDialsRevealed : EventName.Unnamed;
             const eventProps = { duel: this.duel, isHonorBid: typeof this.costHandler !== 'function' };
             this.game.raiseEvent(eventName, eventProps, () => {
                 for(const player of this.game.getPlayers()) {
@@ -50,7 +50,7 @@ class HonorBidPrompt extends AllPlayerPrompt {
                 }
             });
             if(this.duel) {
-                this.game.raiseEvent(EventNames.OnDuelFocus, eventProps);
+                this.game.raiseEvent(EventName.OnDuelFocus, eventProps);
             }
             if(this.costHandler) {
                 const costHandler = this.costHandler;
@@ -79,8 +79,8 @@ class HonorBidPrompt extends AllPlayerPrompt {
             return;
         }
 
-        const modifyGivenAmount = givingPlayer.getEffects(EffectNames.ModifyHonorTransferGiven).reduce((a: number, b: number) => a + b, 0);
-        const modifyReceivedAmount = receivingPlayer.getEffects(EffectNames.ModifyHonorTransferReceived).reduce((a: number, b: number) => a + b, 0);
+        const modifyGivenAmount = givingPlayer.getEffects(EffectName.ModifyHonorTransferGiven).reduce((a: number, b: number) => a + b, 0);
+        const modifyReceivedAmount = receivingPlayer.getEffects(EffectName.ModifyHonorTransferReceived).reduce((a: number, b: number) => a + b, 0);
         amount = amount + modifyGivenAmount + modifyReceivedAmount;
 
         var [, amountToTransfer] = CalculateHonorLimit(receivingPlayer, context.game.roundNumber, context.game.currentPhase, amount);

@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-import { Durations, Players } from '../../Constants.js';
+import { Duration, Players } from '../../Constants.js';
 
 class GracefulGuardian extends DrawCard {
     static id = 'graceful-guardian';
@@ -13,7 +13,7 @@ class GracefulGuardian extends DrawCard {
             effect: 'increase the cost of cards played by 1 for each player\'s next action opportunity',
             gameAction: AbilityDsl.actions.playerLastingEffect({
                 targetController: Players.Any,
-                duration: Durations.UntilNextPassPriority,
+                duration: Duration.UntilNextPassPriority,
                 effect: AbilityDsl.effects.increaseCost({
                     amount: 1
                 })

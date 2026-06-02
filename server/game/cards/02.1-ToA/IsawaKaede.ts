@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'isawa-kaede-void';
@@ -27,7 +27,7 @@ class IsawaKaede extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Element to Add',
-            element: Elements.Void
+            element: Element.Void
         });
         return symbols;
     }

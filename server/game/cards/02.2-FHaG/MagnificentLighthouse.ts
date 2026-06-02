@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import type Player from '../../Player.js';
 import DrawCard from '../../DrawCard.js';
-import { Locations, TargetModes } from '../../Constants.js';
+import { Location, TargetMode } from '../../Constants.js';
 
 class MagnificentLighthouse extends DrawCard {
     static id = 'magnificent-lighthouse';
@@ -11,7 +11,7 @@ class MagnificentLighthouse extends DrawCard {
         this.action({
             title: 'Look at top 3 cards',
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 activePromptTitle: 'Choose which deck to look at:',
                 choices: {
                     'Dynasty Deck': (context: AbilityContext) => !!context.player.opponent && context.player.opponent.dynastyDeck.length > 0,
@@ -37,7 +37,7 @@ class MagnificentLighthouse extends DrawCard {
                 let messages = ['{0} places a card on the bottom of the deck', '{0} chooses to discard {1}'];
                 let destinations: string[] = [
                     topThree[0].isDynasty ? 'dynasty deck bottom' : 'conflict deck bottom',
-                    topThree[0].isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile
+                    topThree[0].isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile
                 ];
                 let choices: string[] = [];
                 let handlers: (() => void)[] = [];
@@ -46,7 +46,7 @@ class MagnificentLighthouse extends DrawCard {
                     const dest = destinations.pop();
                     if(msg && dest) {
                         this.game.addMessage(msg, context.player, card);
-                        opponent.moveCard(card, dest as Locations);
+                        opponent.moveCard(card, dest as Location);
                     }
                     if(messages.length > 0) {
                         let index = topThree.indexOf(card);

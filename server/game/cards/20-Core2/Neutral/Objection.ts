@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, EventNames } from '../../../Constants.js';
+import { CardType, EventName } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Cost } from '../../../Costs.js';
@@ -53,13 +53,13 @@ export default class Objection extends DrawCard {
 
     setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventNames.OnPhaseStarted]);
+        this.eventRegistrar.register([EventName.OnPhaseStarted]);
 
         this.wouldInterrupt({
             title: 'Cancel an event',
             when: {
                 onInitiateAbilityEffects: (event, context) =>
-                    event.card.type === CardTypes.Event && context.player.imperialFavor !== ''
+                    event.card.type === CardType.Event && context.player.imperialFavor !== ''
             },
             cannotBeMirrored: true,
             cost: new ObjectionCost(),

@@ -1,4 +1,4 @@
-import { CardTypes, Durations } from '../../../Constants.js';
+import { CardType, Duration } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -13,7 +13,7 @@ export default class ShowMeYourStance extends DrawCard {
             gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
                 target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.applyStatusTokensToDuel(),
-                duration: Durations.UntilEndOfDuel
+                duration: Duration.UntilEndOfDuel
             } as LastingEffectProperties)),
             effect: 'have status tokens count when resolving this duel'
         });
@@ -21,7 +21,7 @@ export default class ShowMeYourStance extends DrawCard {
         this.action({
             title: 'Send a character home',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isAttacking() &&
                     (context.game.currentConflict

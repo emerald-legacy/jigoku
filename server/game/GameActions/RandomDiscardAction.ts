@@ -1,6 +1,6 @@
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventNames, Locations } from '../Constants.js';
+import { EventName, Location } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { shuffle } from '../utils/shuffle.js';
@@ -13,7 +13,7 @@ export class RandomDiscardAction extends PlayerAction {
     defaultProperties: RandomDiscardProperties = { amount: 1 };
 
     name = 'discard';
-    eventName = EventNames.OnCardsDiscardedFromHand;
+    eventName = EventName.OnCardsDiscardedFromHand;
     constructor(propertyFactory: RandomDiscardProperties | ((context: AbilityContext) => RandomDiscardProperties)) {
         super(propertyFactory);
     }
@@ -31,14 +31,14 @@ export class RandomDiscardAction extends PlayerAction {
         return (properties.amount ?? 0) > 0 && player.hand.length > 0 && super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnCardsDiscardedFromHand>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnCardsDiscardedFromHand>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties) as RandomDiscardProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.discardedAtRandom = true;
     }
 
-    eventHandler(event: GameEvent<EventNames.OnCardsDiscardedFromHand>): void {
+    eventHandler(event: GameEvent<EventName.OnCardsDiscardedFromHand>): void {
         let player = event.player as Player;
         let amount = Math.min(event.amount as number, player.hand.length);
         if(amount === 0) {
@@ -50,7 +50,7 @@ export class RandomDiscardAction extends PlayerAction {
         player.game.addMessage('{0} discards {1} at random', player, cardsToDiscard);
 
         for(const card of cardsToDiscard) {
-            player.moveCard(card, card.isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile);
+            player.moveCard(card, card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
         }
     }
 }

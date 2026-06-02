@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 
 class SaadiyahAlMozedu extends DrawCard {
     static id = 'saadiyah-al-mozedu';
@@ -9,11 +9,11 @@ class SaadiyahAlMozedu extends DrawCard {
         this.action({
             title: 'Flip province facedown',
             cost: AbilityDsl.costs.discardCard({
-                location: Locations.Hand
+                location: Location.Hand
             }),
             target: {
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 cardCondition: card => !card.isBroken && !card.isConflictProvince(),
                 gameAction: AbilityDsl.actions.turnFacedown()
             }

@@ -1,4 +1,4 @@
-import { CardTypes, Locations } from '../Constants.js';
+import { CardType, Location } from '../Constants.js';
 import DrawCard from '../DrawCard.js';
 import Player from '../Player.js';
 
@@ -23,7 +23,7 @@ export default class Soldier<D extends DrawCard> extends DrawCard {
             political: null,
             side: 'conflict',
             text: '',
-            type: CardTypes.Attachment,
+            type: CardType.Attachment,
             traits: ['follower'],
             is_unique: false,
             attachment_allow_duplicates: true
@@ -31,7 +31,7 @@ export default class Soldier<D extends DrawCard> extends DrawCard {
         this.facedownCard = facedownCard;
     }
 
-    leavesPlay(destination = Locations.ConflictDiscardPile): void {
+    leavesPlay(destination = Location.ConflictDiscardPile): void {
         this.owner.moveCard(this.facedownCard, destination);
         this.game.queueSimpleStep(() => {
             this.owner.removeCardFromPile(this);

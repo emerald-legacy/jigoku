@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class TogashiGaijutsu extends DrawCard {
@@ -11,7 +11,7 @@ class TogashiGaijutsu extends DrawCard {
             when: {
                 onCardPlayed: (event, context) =>
                     event.card.parent &&
-                    event.card.type === CardTypes.Attachment &&
+                    event.card.type === CardType.Attachment &&
                     event.card.hasTrait('tattoo') &&
                     event.card.controller === context.player
             },

@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { Conflict } from '../../../Conflict.js';
-import { CardTypes, Decks, Durations } from '../../../Constants.js';
+import { CardType, Decks, Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KakitaMio extends DrawCard {
@@ -31,12 +31,12 @@ export default class KakitaMio extends DrawCard {
             title: 'Give Corrupt to a character',
             condition: (context) => context.game.currentConflict !== null,
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() &&
                     context.game.currentConflict.getNumberOfParticipantsFor(card.controller) === 1,
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    duration: Durations.UntilEndOfConflict,
+                    duration: Duration.UntilEndOfConflict,
                     effect: AbilityDsl.effects.addTrait('shadowlands')
                 })
             }
@@ -47,7 +47,7 @@ export default class KakitaMio extends DrawCard {
                 context.game.currentConflict instanceof Conflict &&
                 context.game.currentConflict.getNumberOfParticipantsFor(context.player.opponent, (card) => (card.hasTrait('shadowlands') || card.isTainted)) > 0,
             match: (card, context) =>
-                card.type === CardTypes.Character &&
+                card.type === CardType.Character &&
                 card.isParticipatingFor(context?.player) &&
                 (card.hasTrait('imperial') || card.attachments.some((attachment: any) => attachment.hasTrait('imperial'))),
             effect: AbilityDsl.effects.modifyBothSkills(1)

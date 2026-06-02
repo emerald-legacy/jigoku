@@ -1,6 +1,6 @@
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EffectNames, EventNames } from '../Constants.js';
+import { EffectName, EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { CalculateHonorLimit } from './Shared/HonorLogic.js';
@@ -12,16 +12,16 @@ export interface TransferHonorProperties extends PlayerActionProperties {
 
 export class TransferHonorAction extends PlayerAction {
     name = 'takeHonor';
-    eventName = EventNames.OnTransferHonor;
+    eventName = EventName.OnTransferHonor;
     defaultProperties: TransferHonorProperties = { amount: 1, afterBid: false };
 
     getAmountToTransfer(givingPlayer: Player, receivingPlayer: Player, context: AbilityContext, baseAmount: number) {
         let amount = baseAmount;
         const modifyGivenAmount = givingPlayer
-            .getEffects(EffectNames.ModifyHonorTransferGiven)
+            .getEffects(EffectName.ModifyHonorTransferGiven)
             .reduce((a, b) => a + b, 0);
         const modifyReceivedAmount = receivingPlayer
-            .getEffects(EffectNames.ModifyHonorTransferReceived)
+            .getEffects(EffectName.ModifyHonorTransferReceived)
             .reduce((a, b) => a + b, 0);
         amount = amount + modifyGivenAmount + modifyReceivedAmount;
 
@@ -95,14 +95,14 @@ export class TransferHonorAction extends PlayerAction {
         return super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnTransferHonor>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnTransferHonor>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
         let { afterBid, amount } = this.getProperties(context, additionalProperties) as TransferHonorProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.afterBid = afterBid;
     }
 
-    eventHandler(event: GameEvent<EventNames.OnTransferHonor>): void {
+    eventHandler(event: GameEvent<EventName.OnTransferHonor>): void {
         var amountToTransfer = this.getAmountToTransfer(
             event.player as Player,
             (event.player as Player).opponent as Player,

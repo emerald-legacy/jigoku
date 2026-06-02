@@ -1,4 +1,4 @@
-import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type DrawCard from '../../../DrawCard.js';
 import { BattlefieldAttachment } from '../../BattlefieldAttachment.js';
@@ -15,10 +15,10 @@ export default class DeclarationOfDominion extends BattlefieldAttachment {
             targets: {
                 myCard: {
                     activePromptTitle: 'Choose a character on your side',
-                    mode: TargetModes.UpTo,
+                    mode: TargetMode.UpTo,
                     numCards: 1,
                     optional: true,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: (card: DrawCard) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.cardLastingEffect({
@@ -27,10 +27,10 @@ export default class DeclarationOfDominion extends BattlefieldAttachment {
                 },
                 opponentsCard: {
                     activePromptTitle: 'Choose a character on the enemy side',
-                    mode: TargetModes.UpTo,
+                    mode: TargetMode.UpTo,
                     numCards: 1,
                     optional: true,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: (card: DrawCard) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.cardLastingEffect({

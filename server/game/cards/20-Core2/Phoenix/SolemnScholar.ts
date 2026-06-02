@@ -1,4 +1,4 @@
-import { CardTypes, Elements } from '../../../Constants.js';
+import { CardType, Element } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,7 +13,7 @@ export default class SolemnScholar extends DrawCard {
             condition: (context) =>
                 this.game.rings[this.getCurrentElementSymbol(BOW_ELEMENT)].isConsideredClaimed(context.player),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking(),
                 gameAction: AbilityDsl.actions.bow()
             }
@@ -25,7 +25,7 @@ export default class SolemnScholar extends DrawCard {
         symbols.push({
             key: BOW_ELEMENT,
             prettyName: 'Claimed Ring',
-            element: Elements.Earth
+            element: Element.Earth
         });
         return symbols;
     }

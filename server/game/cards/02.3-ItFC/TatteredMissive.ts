@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class TatteredMissive extends DrawCard {
@@ -19,7 +19,7 @@ class TatteredMissive extends DrawCard {
             gameAction: AbilityDsl.actions.deckSearch({
                 amount: 5,
                 gameAction: AbilityDsl.actions.moveCard({
-                    destination: Locations.Hand
+                    destination: Location.Hand
                 })
             })
         });

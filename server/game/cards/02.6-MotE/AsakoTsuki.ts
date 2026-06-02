@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Elements, EventNames } from '../../Constants.js';
+import { CardType, Element, EventName } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 const elementKey = 'asako-tsuki-water';
@@ -12,10 +12,10 @@ class AsakoTsuki extends DrawCard {
         this.reaction({
             title: 'Honor a scholar character',
             when: {
-                onClaimRing: (event: EventPayload<EventNames.OnClaimRing>) => (event.conflict && event.conflict.hasElement(this.getCurrentElementSymbol(elementKey) as Elements)) || event.ring.hasElement(this.getCurrentElementSymbol(elementKey) as Elements)
+                onClaimRing: (event: EventPayload<EventName.OnClaimRing>) => (event.conflict && event.conflict.hasElement(this.getCurrentElementSymbol(elementKey) as Element)) || event.ring.hasElement(this.getCurrentElementSymbol(elementKey) as Element)
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: any) => card.hasTrait('scholar'),
                 gameAction: AbilityDsl.actions.honor()
             }
@@ -27,7 +27,7 @@ class AsakoTsuki extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Claimed Ring',
-            element: Elements.Water
+            element: Element.Water
         });
         return symbols;
     }

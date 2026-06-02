@@ -1,4 +1,4 @@
-import { Locations } from './Constants.js';
+import { Location } from './Constants.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
@@ -27,33 +27,33 @@ export class PlayerZones {
 
     getSourceList(source: string): BaseCard[] {
         switch(source) {
-            case Locations.Hand:
+            case Location.Hand:
                 return this.hand;
-            case Locations.ConflictDeck:
+            case Location.ConflictDeck:
                 return this.conflictDeck;
-            case Locations.DynastyDeck:
+            case Location.DynastyDeck:
                 return this.dynastyDeck;
-            case Locations.ConflictDiscardPile:
+            case Location.ConflictDiscardPile:
                 return this.conflictDiscardPile;
-            case Locations.DynastyDiscardPile:
+            case Location.DynastyDiscardPile:
                 return this.dynastyDiscardPile;
-            case Locations.RemovedFromGame:
+            case Location.RemovedFromGame:
                 return this.removedFromGame;
-            case Locations.PlayArea:
+            case Location.PlayArea:
                 return this.cardsInPlay;
-            case Locations.ProvinceOne:
+            case Location.ProvinceOne:
                 return this.provinceOne;
-            case Locations.ProvinceTwo:
+            case Location.ProvinceTwo:
                 return this.provinceTwo;
-            case Locations.ProvinceThree:
+            case Location.ProvinceThree:
                 return this.provinceThree;
-            case Locations.ProvinceFour:
+            case Location.ProvinceFour:
                 return this.provinceFour;
-            case Locations.StrongholdProvince:
+            case Location.StrongholdProvince:
                 return this.strongholdProvince;
-            case Locations.ProvinceDeck:
+            case Location.ProvinceDeck:
                 return this.provinceDeck;
-            case Locations.Provinces:
+            case Location.Provinces:
                 return ([] as BaseCard[]).concat(
                     this.provinceOne,
                     this.provinceTwo,
@@ -61,7 +61,7 @@ export class PlayerZones {
                     this.provinceFour,
                     this.strongholdProvince
                 );
-            case Locations.UnderneathStronghold:
+            case Location.UnderneathStronghold:
                 return this.underneathStronghold;
             default:
                 if(source) {
@@ -76,46 +76,46 @@ export class PlayerZones {
 
     updateSourceList(source: string, targetList: BaseCard[]): void {
         switch(source) {
-            case Locations.Hand:
+            case Location.Hand:
                 this.hand = targetList as DrawCard[];
                 break;
-            case Locations.ConflictDeck:
+            case Location.ConflictDeck:
                 this.conflictDeck = targetList as DrawCard[];
                 break;
-            case Locations.DynastyDeck:
+            case Location.DynastyDeck:
                 this.dynastyDeck = targetList as DrawCard[];
                 break;
-            case Locations.ConflictDiscardPile:
+            case Location.ConflictDiscardPile:
                 this.conflictDiscardPile = targetList as DrawCard[];
                 break;
-            case Locations.DynastyDiscardPile:
+            case Location.DynastyDiscardPile:
                 this.dynastyDiscardPile = targetList as DrawCard[];
                 break;
-            case Locations.RemovedFromGame:
+            case Location.RemovedFromGame:
                 this.removedFromGame = targetList;
                 break;
-            case Locations.PlayArea:
+            case Location.PlayArea:
                 this.cardsInPlay = targetList as DrawCard[];
                 break;
-            case Locations.ProvinceOne:
+            case Location.ProvinceOne:
                 this.provinceOne = targetList;
                 break;
-            case Locations.ProvinceTwo:
+            case Location.ProvinceTwo:
                 this.provinceTwo = targetList;
                 break;
-            case Locations.ProvinceThree:
+            case Location.ProvinceThree:
                 this.provinceThree = targetList;
                 break;
-            case Locations.ProvinceFour:
+            case Location.ProvinceFour:
                 this.provinceFour = targetList;
                 break;
-            case Locations.StrongholdProvince:
+            case Location.StrongholdProvince:
                 this.strongholdProvince = targetList;
                 break;
-            case Locations.ProvinceDeck:
+            case Location.ProvinceDeck:
                 this.provinceDeck = targetList;
                 break;
-            case Locations.UnderneathStronghold:
+            case Location.UnderneathStronghold:
                 this.underneathStronghold = targetList;
                 break;
             default:

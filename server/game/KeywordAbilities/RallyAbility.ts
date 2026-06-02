@@ -1,4 +1,4 @@
-import { AbilityTypes, EventNames, Locations } from '../Constants.js';
+import { AbilityType, EventName, Location } from '../Constants.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
 import TriggeredAbility from '../TriggeredAbility.js';
@@ -7,21 +7,21 @@ import type { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 export class RallyAbility extends TriggeredAbility {
     constructor(card: DrawCard) {
-        super(card, AbilityTypes.KeywordReaction, {
+        super(card, AbilityType.KeywordReaction, {
             when: {
                 onCardRevealed: (event: Event, context: TriggeredAbilityContext) => {
-                    const revealed = event as GameEvent<EventNames.OnCardRevealed>;
+                    const revealed = event as GameEvent<EventName.OnCardRevealed>;
                     return revealed.card === context.source &&
                         !!revealed.card && context.game.getProvinceArray().includes(revealed.card.location) &&
                         context.source.hasRally();
                 }
             },
             location: [
-                Locations.StrongholdProvince,
-                Locations.ProvinceOne,
-                Locations.ProvinceTwo,
-                Locations.ProvinceThree,
-                Locations.ProvinceFour
+                Location.StrongholdProvince,
+                Location.ProvinceOne,
+                Location.ProvinceTwo,
+                Location.ProvinceThree,
+                Location.ProvinceFour
             ],
             title: `${card.name}'s Rally`,
             printedAbility: false,

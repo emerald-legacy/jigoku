@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class CallingInFavors extends DrawCard {
             title: 'Take control of an attachment',
             cost: AbilityDsl.costs.dishonor(),
             target: {
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 controller: Players.Opponent
             },
             gameAction: AbilityDsl.actions.ifAble((context) => ({

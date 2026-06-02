@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, CardTypes, Players } from '../../Constants.js';
+import { Location, CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Overrun extends DrawCard {
@@ -12,8 +12,8 @@ class Overrun extends DrawCard {
                 onBreakProvince: (event, context) => event.card.owner !== context.player
             },
             target: {
-                location: Locations.Provinces,
-                cardType: CardTypes.Province,
+                location: Location.Provinces,
+                cardType: CardType.Province,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => card.controller !== context.player,
                 gameAction: AbilityDsl.actions.sequential([

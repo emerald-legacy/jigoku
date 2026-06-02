@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +15,7 @@ export default class TillTheLastOneFalls extends DrawCard {
                 context.player.opponent &&
                 context.game.currentConflict?.hasMoreParticipants(context.player.opponent, () => true)),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({

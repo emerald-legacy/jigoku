@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, EventNames } from '../../Constants.js';
+import { CardType, EventName } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 class ArdentOmoidasu extends DrawCard {
@@ -10,11 +10,11 @@ class ArdentOmoidasu extends DrawCard {
         this.reaction({
             title: 'Steal 2 honor',
             when: {
-                onCardDishonored: (event: EventPayload<EventNames.OnCardDishonored>, context) => {
+                onCardDishonored: (event: EventPayload<EventName.OnCardDishonored>, context) => {
                     if(!event.context) {
                         return false;
                     }
-                    const isCharacter = event.card.type === CardTypes.Character;
+                    const isCharacter = event.card.type === CardType.Character;
                     const dishonoredByOpponentsEffect = (context.player.opponent === event.context.player);
                     const dishonoredByRingEffect = (event.context.source.type === 'ring');
                     const dishonoredByCardEffect = event.context.ability.isCardAbility();

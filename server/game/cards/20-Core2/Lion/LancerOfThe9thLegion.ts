@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class LancerOfThe9thLegion extends DrawCard {
             title: 'Bow a character',
             condition: (context) => context.source.isParticipating('military'),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.getMilitarySkill() <= context.source.getMilitarySkill(),

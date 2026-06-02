@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, EventNames, Players, TargetModes } from '../../Constants.js';
+import { CardType, EventName, Players, TargetMode } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 class Aranat extends DrawCard {
@@ -11,17 +11,17 @@ class Aranat extends DrawCard {
         this.reaction({
             title: 'Place additional fate',
             when: {
-                onCardPlayed: (event: EventPayload<EventNames.OnCardPlayed>, context: any) => context.player.opponent && event.card === context.source
+                onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context: any) => context.player.opponent && event.card === context.source
             },
             effect: 'give {1} the opportunity to reveal provinces',
             effectArgs: (context: AbilityContext) => context.player.opponent ?? '',
             gameAction: AbilityDsl.actions.selectCard({
-                cardType: CardTypes.Province,
+                cardType: CardType.Province,
                 location: this.game.getProvinceArray(false),
                 controller: Players.Opponent,
                 player: Players.Opponent,
                 optional: true,
-                mode: TargetModes.Unlimited,
+                mode: TargetMode.Unlimited,
                 cardCondition: (card: any) => card.isFacedown(),
                 message: '{0} chooses to reveal {1}',
                 messageArgs: (card: any, player: any) => [player, card],

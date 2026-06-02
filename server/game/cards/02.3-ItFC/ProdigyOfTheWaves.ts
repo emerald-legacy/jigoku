@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'prodigy-of-the-waves-water';
@@ -20,7 +20,7 @@ class ProdigyOfTheWaves extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Claimed Ring',
-            element: Elements.Water
+            element: Element.Water
         });
         return symbols;
     }

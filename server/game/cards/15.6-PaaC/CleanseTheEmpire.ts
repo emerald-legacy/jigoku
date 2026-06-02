@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 
 class CleanseTheEmpire extends DrawCard {
     static id = 'cleanse-the-empire';
@@ -13,11 +13,11 @@ class CleanseTheEmpire extends DrawCard {
             },
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.removeFate(context => ({
-                    target: context.player.opponent?.filterCardsInPlay((card: any) => card.getType() === CardTypes.Character) ?? []
+                    target: context.player.opponent?.filterCardsInPlay((card: any) => card.getType() === CardType.Character) ?? []
                 })),
                 AbilityDsl.actions.selectCard({
                     activePromptTitle: 'Choose a character to bow',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     targets: true,
                     cardCondition: (card: any) => card.getFate() === 0,

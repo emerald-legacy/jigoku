@@ -1,4 +1,4 @@
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -7,7 +7,7 @@ export default class DemonstratingExcellence extends ProvinceCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            targetLocation: Locations.Provinces,
+            targetLocation: Location.Provinces,
             condition: (context) => !!context.player.role && context.player.role.hasTrait('air'),
             effect: AbilityDsl.effects.modifyProvinceStrength(2)
         });

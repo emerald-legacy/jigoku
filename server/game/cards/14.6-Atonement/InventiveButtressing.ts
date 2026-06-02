@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 
 class InventiveButtressing extends DrawCard {
     static id = 'inventive-buttressing';
@@ -12,18 +12,18 @@ class InventiveButtressing extends DrawCard {
 
         this.persistentEffect({
             condition: () => this.game.isDuringConflict('military'),
-            targetLocation: Locations.Provinces,
+            targetLocation: Location.Provinces,
             match: (card, context) => card === context?.source.parent,
             effect: AbilityDsl.effects.modifyProvinceStrength(3)
         });
     }
 
     canPlayOn(source: any) {
-        return source && source.getType() === 'province' && source.controller === this.controller && !source.isBroken && this.getType() === CardTypes.Attachment;
+        return source && source.getType() === 'province' && source.controller === this.controller && !source.isBroken && this.getType() === CardType.Attachment;
     }
 
     canAttach(parent: any) {
-        if(parent.type === CardTypes.Province && parent.isBroken) {
+        if(parent.type === CardType.Province && parent.isBroken) {
             return false;
         }
 
@@ -31,7 +31,7 @@ class InventiveButtressing extends DrawCard {
             return false;
         }
 
-        return parent && parent.getType() === CardTypes.Province && this.getType() === CardTypes.Attachment;
+        return parent && parent.getType() === CardType.Province && this.getType() === CardType.Attachment;
     }
 }
 

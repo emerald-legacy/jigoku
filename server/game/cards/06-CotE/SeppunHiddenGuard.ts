@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardTypes, EventNames, Locations } from '../../Constants.js';
+import { CardType, EventName, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -12,13 +12,13 @@ class SeppunHiddenGuard extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel ability',
             when: {
-                onInitiateAbilityEffects: (event: EventPayload<EventNames.OnInitiateAbilityEffects>, context: any) =>
-                    event.card.type === CardTypes.Character &&
+                onInitiateAbilityEffects: (event: EventPayload<EventName.OnInitiateAbilityEffects>, context: any) =>
+                    event.card.type === CardType.Character &&
                     (event.cardTargets ?? []).some(
                         (card: any) =>
                             card.isUnique() &&
                             card.controller === context.player &&
-                            card.location === Locations.PlayArea
+                            card.location === Location.PlayArea
                     )
             },
             cost: AbilityDsl.costs.sacrificeSelf(),

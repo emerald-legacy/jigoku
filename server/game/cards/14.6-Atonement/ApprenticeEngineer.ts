@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Players, CardTypes } from '../../Constants.js';
+import { Location, Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ApprenticeEngineer extends DrawCard {
@@ -12,15 +12,15 @@ class ApprenticeEngineer extends DrawCard {
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Holding,
+                cardType: CardType.Holding,
                 controller: Players.Self,
-                location: Locations.DynastyDiscardPile,
+                location: Location.DynastyDiscardPile,
                 gameAction: AbilityDsl.actions.selectCard(context => ({
                     activePromptTitle: 'Choose an unbroken province',
-                    cardType: CardTypes.Province,
-                    location: Locations.Provinces,
+                    cardType: CardType.Province,
+                    location: Location.Provinces,
                     controller: Players.Self,
-                    cardCondition: card => card.location !== Locations.StrongholdProvince && !card.isBroken,
+                    cardCondition: card => card.location !== Location.StrongholdProvince && !card.isBroken,
                     message: '{0} places {1} in {2}, discarding {3}',
                     messageArgs: card => [context.player, context.target, card.facedown ? card.location : card, context.player.getDynastyCardsInProvince(card.location)],
                     subActionProperties: card => ({ destination: card.location, target: context.player.getDynastyCardsInProvince(card.location) }),

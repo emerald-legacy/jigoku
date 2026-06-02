@@ -1,4 +1,4 @@
-import { EventNames, TargetModes } from '../../../Constants.js';
+import { EventName, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
@@ -9,8 +9,8 @@ import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.j
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 type SendOrReturnHomeEvent =
-    | EventPayload<EventNames.OnSendHome>
-    | EventPayload<EventNames.OnReturnHome>;
+    | EventPayload<EventName.OnSendHome>
+    | EventPayload<EventName.OnReturnHome>;
 
 function isamuWentHome(event: SendOrReturnHomeEvent, context: TriggeredAbilityContext<ShinjoIsamu>) {
     return event.card === context.source;
@@ -27,7 +27,7 @@ export default class ShinjoIsamu extends DrawCard {
                 onReturnHome: isamuWentHome
             },
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 activePromptTitle: 'Choose a ring',
                 ringCondition: ((ring: Ring, context: AbilityContext) =>
                     (context?.game.currentConflict as Conflict)

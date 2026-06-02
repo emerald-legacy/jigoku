@@ -1,5 +1,5 @@
 import { PlayerZones } from '../../build/server/game/PlayerZones.js';
-import { Locations } from '../../build/server/game/Constants.js';
+import { Location } from '../../build/server/game/Constants.js';
 
 describe('PlayerZones', function () {
     beforeEach(function () {
@@ -10,7 +10,7 @@ describe('PlayerZones', function () {
         it('returns the backing array for a known location', function () {
             const card = { uuid: 'h1' };
             this.zones.hand.push(card);
-            expect(this.zones.getSourceList(Locations.Hand)).toBe(this.zones.hand);
+            expect(this.zones.getSourceList(Location.Hand)).toBe(this.zones.hand);
         });
 
         it('concatenates every province for the Provinces location', function () {
@@ -18,7 +18,7 @@ describe('PlayerZones', function () {
             const sh = { uuid: 'sh' };
             this.zones.provinceOne.push(p1);
             this.zones.strongholdProvince.push(sh);
-            const result = this.zones.getSourceList(Locations.Provinces);
+            const result = this.zones.getSourceList(Location.Provinces);
             expect(result).toContain(p1);
             expect(result).toContain(sh);
         });
@@ -37,7 +37,7 @@ describe('PlayerZones', function () {
     describe('updateSourceList', function () {
         it('replaces the backing array for a known location', function () {
             const newHand = [{ uuid: 'x' }];
-            this.zones.updateSourceList(Locations.Hand, newHand);
+            this.zones.updateSourceList(Location.Hand, newHand);
             expect(this.zones.hand).toBe(newHand);
         });
 
@@ -65,15 +65,15 @@ describe('PlayerZones', function () {
         });
 
         it('finds the dynasty card in a province', function () {
-            expect(this.zones.getDynastyCardInProvince(Locations.ProvinceOne)).toBe(this.dynastyCard);
+            expect(this.zones.getDynastyCardInProvince(Location.ProvinceOne)).toBe(this.dynastyCard);
         });
 
         it('returns all dynasty cards in a province', function () {
-            expect(this.zones.getDynastyCardsInProvince(Locations.ProvinceOne)).toEqual([this.dynastyCard]);
+            expect(this.zones.getDynastyCardsInProvince(Location.ProvinceOne)).toEqual([this.dynastyCard]);
         });
 
         it('finds the province card in a province', function () {
-            expect(this.zones.getProvinceCardInProvince(Locations.ProvinceOne)).toBe(this.provinceCard);
+            expect(this.zones.getProvinceCardInProvince(Location.ProvinceOne)).toBe(this.provinceCard);
         });
     });
 });

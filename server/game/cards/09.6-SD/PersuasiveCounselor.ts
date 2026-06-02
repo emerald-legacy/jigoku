@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Durations } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class PersuasiveCounselor extends DrawCard {
@@ -11,7 +11,7 @@ class PersuasiveCounselor extends DrawCard {
             condition: context => context.source.isParticipating(),
             effect: 'prevent their events from being cancelled this conflict',
             gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
-                duration: Durations.UntilEndOfConflict,
+                duration: Duration.UntilEndOfConflict,
                 targetController: context.player,
                 effect: AbilityDsl.effects.eventsCannotBeCancelled()
             }))

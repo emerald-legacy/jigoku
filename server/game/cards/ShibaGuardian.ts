@@ -1,4 +1,4 @@
-import { CardTypes, Locations } from '../Constants.js';
+import { CardType, Location } from '../Constants.js';
 import DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 
@@ -14,14 +14,14 @@ export class ShibaGuardian extends DrawCard {
             political: '1',
             side: 'dynasty',
             text: '',
-            type: CardTypes.Character,
+            type: CardType.Character,
             traits: ['bushi', 'yojimbo'],
             is_unique: false
         });
     }
 
     leavesPlay() {
-        this.owner.moveCard(this.facedownCard, Locations.DynastyDiscardPile);
+        this.owner.moveCard(this.facedownCard, Location.DynastyDiscardPile);
         this.game.queueSimpleStep(() => {
             this.owner.removeCardFromPile(this);
             this.game.allCards = this.owner.removeCardByUuid(this.game.allCards, this.uuid);

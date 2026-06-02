@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class MagistratesIntervention extends DrawCard {
@@ -10,7 +10,7 @@ class MagistratesIntervention extends DrawCard {
         this.action({
             title: 'Dishonor a character',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isAttacking(),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.dishonor(),
@@ -30,7 +30,7 @@ class MagistratesIntervention extends DrawCard {
     }
 
     canPlay(context: any, playType: any) {
-        if(!context.player.cardsInPlay.some((card: any) => card.getType() === CardTypes.Character && (card.hasTrait('courtier') || card.hasTrait('magistrate')))) {
+        if(!context.player.cardsInPlay.some((card: any) => card.getType() === CardType.Character && (card.hasTrait('courtier') || card.hasTrait('magistrate')))) {
             return false;
         }
 

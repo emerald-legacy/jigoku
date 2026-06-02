@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, TargetModes, CardTypes } from '../../Constants.js';
+import { Players, TargetMode, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SilentEnforcer extends DrawCard {
@@ -9,16 +9,16 @@ class SilentEnforcer extends DrawCard {
         this.reaction({
             title: 'Bow or move home a character',
             when: {
-                onCardPlayed: (event, context) => event.card.type === CardTypes.Event && event.card.controller === context.player && context.source.isParticipating()
+                onCardPlayed: (event, context) => event.card.type === CardType.Event && event.card.controller === context.player && context.source.isParticipating()
             },
             targets: {
                 character: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Any,
                     cardCondition: card => card.isParticipating() && card.costLessThan(4)
                 },
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: 'character',
                     player: context => (context.targets.character as DrawCard).controller === context.player ? Players.Self : Players.Opponent,
                     choices: {

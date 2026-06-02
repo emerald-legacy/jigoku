@@ -1,4 +1,4 @@
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
@@ -11,7 +11,7 @@ export default class MiokosSong extends StrongholdCard {
         this.persistentEffect({
             match: (card, context) =>
                 !!context && card.controller === context.player &&
-                card.type === CardTypes.Character &&
+                card.type === CardType.Character &&
                 card.isDishonored &&
                 card.isFaction('crane'),
             effect: AbilityDsl.effects.modifyBothSkills(1)
@@ -23,16 +23,16 @@ export default class MiokosSong extends StrongholdCard {
                 onCardPlayed: (event, context) =>
                     context.player.opponent &&
                     event.player === context.player &&
-                    event.card.type === CardTypes.Character
+                    event.card.type === CardType.Character
             },
             cost: [
                 AbilityDsl.costs.bowSelf(),
                 AbilityDsl.costs.dishonor({ cardCondition: (card, context: any) => card === context.event.card })
             ],
             target: {
-                location: Locations.Provinces,
+                location: Location.Provinces,
                 controller: Players.Opponent,
-                cardType: CardTypes.Province,
+                cardType: CardType.Province,
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) => {
                         const opponent = context.player.opponent;

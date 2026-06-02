@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Elements } from '../../Constants.js';
+import { CardType, Element } from '../../Constants.js';
 
 const elementKey = 'asako-azunami-water';
 
@@ -19,7 +19,7 @@ class AsakoAzunami extends DrawCard {
                 replacementGameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.selectCard({
                         activePromptTitle: 'Choose a character to bow',
-                        cardType: CardTypes.Character,
+                        cardType: CardType.Character,
                         optional: true,
                         gameAction: AbilityDsl.actions.bow(),
                         targets: true,
@@ -28,7 +28,7 @@ class AsakoAzunami extends DrawCard {
                     }),
                     AbilityDsl.actions.selectCard({
                         activePromptTitle: 'Choose a character to ready',
-                        cardType: CardTypes.Character,
+                        cardType: CardType.Character,
                         optional: true,
                         gameAction: AbilityDsl.actions.ready(),
                         targets: true,
@@ -45,7 +45,7 @@ class AsakoAzunami extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Resolved Ring',
-            element: Elements.Water
+            element: Element.Water
         });
         return symbols;
     }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, TargetModes } from '../../Constants.js';
+import { CardType, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class TogashiDreamer extends DrawCard {
@@ -13,11 +13,11 @@ class TogashiDreamer extends DrawCard {
             },
             targets: {
                 character: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: card => card.hasStatusTokens && card.isParticipating()
                 },
                 ring: {
-                    mode: TargetModes.Ring,
+                    mode: TargetMode.Ring,
                     dependsOn: 'character',
                     activePromptTitle: 'Choose an unclaimed ring to move fate to',
                     ringCondition: ring => ring.isUnclaimed(),

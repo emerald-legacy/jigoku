@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class CalledToWar extends DrawCard {
     static id = 'called-to-war';
@@ -13,13 +13,13 @@ class CalledToWar extends DrawCard {
             cost: AbilityDsl.costs.optionalHonorTransferFromOpponentCost(),
             targets: {
                 myCharacter: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: card => card.hasTrait('bushi'),
                     gameAction: AbilityDsl.actions.placeFate()
                 },
                 oppCharacter: {
                     player: Players.Opponent,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     optional: true,
                     hideIfNoLegalTargets: true,
                     cardCondition: (card, context) => card.hasTrait('bushi') && context.costs.optionalHonorTransferFromOpponentCostPaid,

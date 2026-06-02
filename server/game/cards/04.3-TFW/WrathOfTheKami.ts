@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 
 class WrathOfTheKami extends DrawCard {
     static id = 'the-wrath-of-the-kami';
@@ -16,7 +16,7 @@ class WrathOfTheKami extends DrawCard {
             effectArgs: context => [context.source.controller.getProvinceCardInProvince(context.source.location)],
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                 target: context.source.controller.getProvinceCardInProvince(context.source.location),
-                targetLocation: Locations.Provinces,
+                targetLocation: Location.Provinces,
                 effect: AbilityDsl.effects.modifyProvinceStrength(1)
             }))
         });

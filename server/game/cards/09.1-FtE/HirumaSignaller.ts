@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class HirumaSignaller extends DrawCard {
     static id = 'hiruma-signaller';
@@ -11,7 +11,7 @@ class HirumaSignaller extends DrawCard {
             cost: AbilityDsl.costs.sacrificeSelf(),
             condition: context => context.source.isDefending(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.ready(),

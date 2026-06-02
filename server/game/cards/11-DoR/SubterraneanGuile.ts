@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Locations } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SubterraneanGuile extends DrawCard {
@@ -14,11 +14,11 @@ class SubterraneanGuile extends DrawCard {
     }
 
     isHoldingOnUnbrokenProvince(context: AbilityContext) {
-        return context.game.getProvinceArray().some((location: Locations) => {
+        return context.game.getProvinceArray().some((location: Location) => {
             const province = context.player.getProvinceCardInProvince(location);
             if(province && !province.isBroken) {
                 let cards = context.player.getDynastyCardsInProvince(location);
-                if(cards.some((card: any) => card.isFaceup() && card.type === CardTypes.Holding)) {
+                if(cards.some((card: any) => card.isFaceup() && card.type === CardType.Holding)) {
                     return true;
                 }
             }

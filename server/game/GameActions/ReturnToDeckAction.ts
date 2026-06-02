@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardTypes, EventNames, Locations } from '../Constants.js';
+import { CardType, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -7,17 +7,17 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 export interface ReturnToDeckProperties extends CardActionProperties {
     bottom?: boolean;
     shuffle?: boolean;
-    location?: Locations | Locations[];
+    location?: Location | Location[];
 }
 
 export class ReturnToDeckAction extends CardGameAction {
     name = 'returnToDeck';
-    eventName = EventNames.OnCardLeavesPlay;
-    targetType = [CardTypes.Character, CardTypes.Attachment, CardTypes.Event, CardTypes.Holding];
+    eventName = EventName.OnCardLeavesPlay;
+    targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
     defaultProperties: ReturnToDeckProperties = {
         bottom: false,
         shuffle: false,
-        location: Locations.PlayArea
+        location: Location.PlayArea
     };
     constructor(properties: ((context: AbilityContext) => ReturnToDeckProperties) | ReturnToDeckProperties) {
         super(properties);
@@ -46,24 +46,24 @@ export class ReturnToDeckAction extends CardGameAction {
 
     canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
         const properties = this.getProperties(context) as ReturnToDeckProperties;
-        const rawLocation = properties.location ?? Locations.PlayArea;
-        let location: Locations[] = Array.isArray(rawLocation) ? [...rawLocation] : [rawLocation];
-        const index = location.indexOf(Locations.Provinces);
+        const rawLocation = properties.location ?? Location.PlayArea;
+        let location: Location[] = Array.isArray(rawLocation) ? [...rawLocation] : [rawLocation];
+        const index = location.indexOf(Location.Provinces);
         if(index > -1) {
             location.splice(index, 1);
             location = location.concat(context.game.getProvinceArray());
         }
 
         return (
-            (location.includes(Locations.Any) || location.includes(card.location)) &&
+            (location.includes(Location.Any) || location.includes(card.location)) &&
             super.canAffect(card, context, additionalProperties)
         );
     }
 
-    updateEvent(event: GameEvent<EventNames.OnCardLeavesPlay>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    updateEvent(event: GameEvent<EventName.OnCardLeavesPlay>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const { shuffle, target, bottom } = this.getProperties(context, additionalProperties) as ReturnToDeckProperties;
         this.updateLeavesPlayEvent(event, card, context, additionalProperties);
-        event.destination = card.isDynasty ? Locations.DynastyDeck : Locations.ConflictDeck;
+        event.destination = card.isDynasty ? Location.DynastyDeck : Location.ConflictDeck;
         event.options = { bottom };
         const targets = target as DrawCard | DrawCard[] | undefined;
         const lastTarget = Array.isArray(targets) ? targets[targets.length - 1] : targets;
@@ -72,13 +72,13 @@ export class ReturnToDeckAction extends CardGameAction {
         }
     }
 
-    eventHandler(event: GameEvent<EventNames.OnCardLeavesPlay>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventName.OnCardLeavesPlay>, additionalProperties: Record<string, unknown> = {}): void {
         this.leavesPlayEventHandler(event, additionalProperties);
         const card = event.card as DrawCard;
         if(event.shuffle) {
-            if(event.destination === Locations.DynastyDeck) {
+            if(event.destination === Location.DynastyDeck) {
                 card.owner.shuffleDynastyDeck();
-            } else if(event.destination === Locations.ConflictDeck) {
+            } else if(event.destination === Location.ConflictDeck) {
                 card.owner.shuffleConflictDeck();
             }
         }

@@ -1,8 +1,8 @@
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
-export function makeTempleOfFortuneX(id: string, element: Elements) {
+export function makeTempleOfFortuneX(id: string, element: Element) {
     const elementKeys = [`${id}-${element}-0`, `${id}-${element}-1`];
 
     return class TempleOfFortuneX extends ProvinceCard {

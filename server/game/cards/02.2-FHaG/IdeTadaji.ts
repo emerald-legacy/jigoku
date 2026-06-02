@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class IdeTadaji extends DrawCard {
@@ -11,13 +11,13 @@ class IdeTadaji extends DrawCard {
             condition: context => context.source.isParticipating(),
             targets: {
                 myChar: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: card => !card.bowed && card.costLessThan(3),
                     gameAction: ability.actions.moveToConflict()
                 },
                 oppChar: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: card => !card.bowed && card.costLessThan(3),
                     gameAction: ability.actions.moveToConflict()

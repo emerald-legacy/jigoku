@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 
 class SwellOfSeafoam extends DrawCard {
     static id = 'swell-of-seafoam';
@@ -10,7 +10,7 @@ class SwellOfSeafoam extends DrawCard {
             title: 'Prevent bowing after conflict',
 
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk'),
                 gameAction: AbilityDsl.actions.multiple([

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, ConflictTypes, EventNames, Players } from '../../Constants.js';
+import { CardType, ConflictType, EventName, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -9,9 +9,9 @@ class APerfectCut extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Increase a character\'s military skill',
-            condition: () => this.game.isDuringConflict(ConflictTypes.Military),
+            condition: () => this.game.isDuringConflict(ConflictType.Military),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isParticipating() && card.hasTrait('bushi'),
                 gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
@@ -19,7 +19,7 @@ class APerfectCut extends DrawCard {
                         AbilityDsl.effects.modifyMilitarySkill(2),
                         AbilityDsl.effects.delayedEffect({
                             when: {
-                                afterConflict: (event: EventPayload<EventNames.AfterConflict>) =>
+                                afterConflict: (event: EventPayload<EventName.AfterConflict>) =>
                                     context.target.isParticipating() &&
                                     context.target.controller === event.conflict.winner
                             },

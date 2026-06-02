@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Locations } from '../../../Constants.js';
+import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Cost } from '../../../Costs.js';
@@ -28,9 +28,9 @@ export default class RoadToShakyakuMura extends DrawCard {
                 onCardLeavesPlay: (event, context) => {
                     return (
                         event.card.controller === context.player &&
-                        event.card.type === CardTypes.Character &&
+                        event.card.type === CardType.Character &&
                         !event.card.isUnique() &&
-                        event.card.location === Locations.PlayArea
+                        event.card.location === Location.PlayArea
                     );
                 }
             },

@@ -1,4 +1,4 @@
-import { PlayTypes } from '../../Constants.js';
+import { PlayType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
@@ -19,7 +19,7 @@ export default class Infiltrator extends DrawCard {
                         'Play this card': {
                             action: AbilityDsl.actions.playCard({
                                 target: topCard,
-                                playType: PlayTypes.PlayFromHand,
+                                playType: PlayType.PlayFromHand,
                                 source: this
                             })
                         },

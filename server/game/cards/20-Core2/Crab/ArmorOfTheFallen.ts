@@ -1,5 +1,5 @@
 import { AbilityContext } from '../../../AbilityContext.js';
-import { AbilityTypes, CardTypes, Locations, TargetModes } from '../../../Constants.js';
+import { AbilityType, CardType, Location, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,16 +11,16 @@ export default class ArmorOfTheFallen extends DrawCard {
         this.attachmentConditions({ trait: 'bushi' });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Remove characters from your discard pile to bow a character',
                 condition: (context: AbilityContext) => context.source.isParticipating(),
                 cost: AbilityDsl.costs.removeFromGame({
-                    cardType: CardTypes.Character,
-                    location: [Locations.DynastyDiscardPile, Locations.ConflictDiscardPile],
-                    mode: TargetModes.Unlimited
+                    cardType: CardType.Character,
+                    location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
+                    mode: TargetMode.Unlimited
                 }),
                 target: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: (card: DrawCard, context: AbilityContext) =>
                         card.isParticipating() && (card.printedCost ?? 0) <= this.#maxCostReachable(context),
                     gameAction: AbilityDsl.actions.bow()
@@ -41,6 +41,6 @@ export default class ArmorOfTheFallen extends DrawCard {
     }
 
     #sumCharactersInPile(pile: DrawCard[]): number {
-        return pile.reduce((sum: number, card: DrawCard) => (card.type === CardTypes.Character ? sum + 1 : sum), 0);
+        return pile.reduce((sum: number, card: DrawCard) => (card.type === CardType.Character ? sum + 1 : sum), 0);
     }
 }

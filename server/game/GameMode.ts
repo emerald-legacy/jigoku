@@ -1,6 +1,6 @@
 import type { AbilityContext } from './AbilityContext.js';
 import type { CardAction } from './CardAction.js';
-import { AbilityTypes, Locations, Phases } from './Constants.js';
+import { AbilityType, Location, Phases } from './Constants.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
@@ -47,7 +47,7 @@ export interface GameMode {
     setupHaveProvinceCards: boolean;
     setupHaveRoles: boolean;
     setupHaveStrongholds: boolean;
-    setupNonStrongholdProvinces: Locations[];
+    setupNonStrongholdProvinces: Location[];
     setupStartingHandSize: number;
     winConReachedConquestVictory: (provinceBeingBroken: ProvinceCard) => boolean;
     winConRequiredHonorForWin: number;
@@ -78,10 +78,10 @@ const Stronghold: GameMode = {
     setupHaveRoles: true,
     setupHaveStrongholds: true,
     setupNonStrongholdProvinces: [
-        Locations.ProvinceOne,
-        Locations.ProvinceTwo,
-        Locations.ProvinceThree,
-        Locations.ProvinceFour
+        Location.ProvinceOne,
+        Location.ProvinceTwo,
+        Location.ProvinceThree,
+        Location.ProvinceFour
     ],
     setupStartingHandSize: 4,
     ringAirChoices: (optional: boolean): RingChoices => ({
@@ -95,10 +95,10 @@ const Stronghold: GameMode = {
         [EARTH_CHOICE.SKIP]: () => optional
     }),
     ringWaterTargetCondition: (card: DrawCard, context: AbilityContext) =>
-        card.location === Locations.PlayArea &&
+        card.location === Location.PlayArea &&
         (card.bowed || (card.getFate() === 0 && card.allowGameAction('bow', context))),
     winConReachedConquestVictory: (provinceBeingBroken: ProvinceCard) =>
-        provinceBeingBroken.location === Locations.StrongholdProvince,
+        provinceBeingBroken.location === Location.StrongholdProvince,
     winConRequiredHonorForWin: 25
 };
 
@@ -122,7 +122,7 @@ const Skirmish: GameMode = {
     setupHaveProvinceCards: false,
     setupHaveRoles: false,
     setupHaveStrongholds: false,
-    setupNonStrongholdProvinces: [Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree],
+    setupNonStrongholdProvinces: [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree],
     setupStartingHandSize: 3,
     ringAirChoices: (optional: boolean): RingChoices => ({
         [AIR_CHOICE.TAKE_1]: (context: AbilityContext) =>
@@ -135,7 +135,7 @@ const Skirmish: GameMode = {
         [EARTH_CHOICE.SKIP]: () => optional
     }),
     ringWaterTargetCondition: (card: DrawCard, context: AbilityContext) =>
-        card.location === Locations.PlayArea &&
+        card.location === Location.PlayArea &&
         card.getFate() <= 1 &&
         !card.isParticipating() &&
         ((!card.bowed && card.allowGameAction('bow', context)) ||
@@ -155,7 +155,7 @@ const Emerald: GameMode = {
     duelRules: 'printedSkill',
     dynastyPhaseCanPlayAttachments: false,
     dynastyPhaseCanPlayConflictEvents: (action) =>
-        action.abilityType !== AbilityTypes.Action ||
+        action.abilityType !== AbilityType.Action ||
         action.phase === Phases.Dynasty ||
         (action.card as BaseCard).isDynasty,
     dynastyPhaseCanPlayConflictCharacters: false,

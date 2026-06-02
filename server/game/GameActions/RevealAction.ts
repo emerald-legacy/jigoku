@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { EventNames, Locations } from '../Constants.js';
+import { EventName, Location } from '../Constants.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
@@ -13,7 +13,7 @@ export interface RevealProperties extends CardActionProperties {
 
 export class RevealAction extends CardGameAction {
     name = 'reveal';
-    eventName = EventNames.OnCardRevealed;
+    eventName = EventName.OnCardRevealed;
     effect = 'reveal a card';
     cost = 'revealing {0}';
     defaultProperties: RevealProperties = { chatMessage: false };
@@ -22,19 +22,19 @@ export class RevealAction extends CardGameAction {
     }
 
     canAffect(card: BaseCard, context: AbilityContext): boolean {
-        if(!card.isFacedown() && (card.isInProvince() || card.location === Locations.PlayArea)) {
+        if(!card.isFacedown() && (card.isInProvince() || card.location === Location.PlayArea)) {
             return false;
         }
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnCardRevealed>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnCardRevealed>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { onDeclaration } = this.getProperties(context, additionalProperties) as RevealProperties;
         event.onDeclaration = onDeclaration;
         super.addPropertiesToEvent(event, card, context, additionalProperties);
     }
 
-    eventHandler(event: GameEvent<EventNames.OnCardRevealed>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventName.OnCardRevealed>, additionalProperties: Record<string, unknown> = {}): void {
         const context = event.context as AbilityContext;
         const properties = this.getProperties(context, additionalProperties) as RevealProperties;
         if(properties.chatMessage) {

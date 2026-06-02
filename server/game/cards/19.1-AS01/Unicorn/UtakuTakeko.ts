@@ -1,4 +1,4 @@
-import { CardTypes, Decks, PlayTypes } from '../../../Constants.js';
+import { CardType, Decks, PlayType } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHandAtHome } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandAtHome } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -15,7 +15,7 @@ export default class UtakuTakeko extends DrawCard {
                 amount: 8,
                 deck: Decks.DynastyDeck,
                 cardCondition: (card) =>
-                    card.type === CardTypes.Character &&
+                    card.type === CardType.Character &&
                     card.glory >= 1 &&
                     card.isFaction('unicorn') &&
                     !card.isUnique(),
@@ -25,7 +25,7 @@ export default class UtakuTakeko extends DrawCard {
                         target,
                         source: this,
                         resetOnCancel: false,
-                        playType: PlayTypes.PlayFromHand,
+                        playType: PlayType.PlayFromHand,
                         playAction: target
                             ? [
                                 new PlayCharacterAsIfFromHandAtHome(target),

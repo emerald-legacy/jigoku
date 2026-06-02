@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class KuniRitsuko extends DrawCard {
@@ -12,7 +12,7 @@ class KuniRitsuko extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isDefending()
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isAttacking(),
                 gameAction: ability.actions.removeFate()
             }

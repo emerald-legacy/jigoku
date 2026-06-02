@@ -1,6 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, EventNames, Locations, Players } from '../../Constants.js';
+import { CardType, EventName, Location, Players } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 class IuchiFarseer extends DrawCard {
@@ -10,11 +10,11 @@ class IuchiFarseer extends DrawCard {
         this.reaction({
             title: 'Reveal an opponent\'s province',
             when: {
-                onCharacterEntersPlay: (event: EventPayload<EventNames.OnCharacterEntersPlay>, context: any) => event.card === context.source
+                onCharacterEntersPlay: (event: EventPayload<EventName.OnCharacterEntersPlay>, context: any) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 controller: Players.Opponent,
                 gameAction: ability.actions.reveal()
             },

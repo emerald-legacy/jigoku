@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type CardAbility from '../../../CardAbility.js';
-import { CardTypes, Locations } from '../../../Constants.js';
+import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class SoshiAya extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel an ability',
             when: {
-                onInitiateAbilityEffects: (event, context) => event.card.type === CardTypes.Character &&
+                onInitiateAbilityEffects: (event, context) => event.card.type === CardType.Character &&
                     event.card.hasTrait('courtier') && event.card.controller === context.player.opponent &&
                     ((context.event.context as AbilityContext).ability as CardAbility).printedAbility
             },
@@ -18,7 +18,7 @@ export default class SoshiAya extends DrawCard {
             then: {
                 gameAction: AbilityDsl.actions.placeFate()
             },
-            location: Locations.Hand,
+            location: Location.Hand,
             gameAction: AbilityDsl.actions.cancel()
         });
     }

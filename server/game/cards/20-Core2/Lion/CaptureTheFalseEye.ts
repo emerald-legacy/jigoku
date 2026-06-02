@@ -1,4 +1,4 @@
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class CaptureTheFalseEye extends DrawCard {
             title: 'Bow a character',
             condition: (context) => context.game.isDuringConflict(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() &&
                     (context.game.currentConflict
@@ -24,7 +24,7 @@ export default class CaptureTheFalseEye extends DrawCard {
                         targetController: context.player,
                         effect: AbilityDsl.effects.increaseCost({
                             amount: 1,
-                            match: (card: any) => card.type === CardTypes.Event
+                            match: (card: any) => card.type === CardType.Event
                         })
                     }))
                 ]

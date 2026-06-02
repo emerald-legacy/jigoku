@@ -3,7 +3,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventNames } from '../../Constants.js';
+import { EventName } from '../../Constants.js';
 class IgnobleEnforcers extends DrawCard {
     static id = 'ignoble-enforcers';
 
@@ -11,7 +11,7 @@ class IgnobleEnforcers extends DrawCard {
         this.reaction({
             title: 'Place additional fate on this character',
             when: {
-                onCardPlayed: (event: EventPayload<EventNames.OnCardPlayed>, context: any) => event.card === context.source
+                onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context: any) => event.card === context.source
             },
             cost: ability.costs.variableHonorCost(() => 3),
             effect: 'place {1} fate on {0}',

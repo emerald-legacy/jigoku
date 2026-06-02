@@ -1,4 +1,4 @@
-import { EffectNames, EventNames } from '../../Constants.js';
+import { EffectName, EventName } from '../../Constants.js';
 import { parseGameMode } from '../../GameMode.js';
 import type Game from '../../Game.js';
 import type { Event } from '../../Events/Event.js';
@@ -51,23 +51,23 @@ export class DynastyActionWindow extends ActionWindow {
     #handlePassingFate(): void {
         this.game.addMessage('{0} is the first to pass, and gains 1 fate', this.currentPlayer);
         this.game.raiseEvent(
-            EventNames.OnPassDuringDynasty,
+            EventName.OnPassDuringDynasty,
             { player: this.currentPlayer, firstToPass: true },
-            (event: Event) => (event as GameEvent<EventNames.OnPassDuringDynasty>).player?.modifyFate(1)
+            (event: Event) => (event as GameEvent<EventName.OnPassDuringDynasty>).player?.modifyFate(1)
         );
     }
 
     #handleSimplePass(): void {
         this.game.addMessage('{0} passes', this.currentPlayer);
-        this.game.raiseEvent(EventNames.OnPassDuringDynasty, { player: this.currentPlayer, firstToPass: false });
+        this.game.raiseEvent(EventName.OnPassDuringDynasty, { player: this.currentPlayer, firstToPass: false });
     }
 
     #checkPhaseRestart() {
         if(
-            this.currentPlayer.anyEffect(EffectNames.RestartDynastyPhase) ||
-            this.currentPlayer.opponent?.anyEffect?.(EffectNames.RestartDynastyPhase)
+            this.currentPlayer.anyEffect(EffectName.RestartDynastyPhase) ||
+            this.currentPlayer.opponent?.anyEffect?.(EffectName.RestartDynastyPhase)
         ) {
-            const effectSource = this.currentPlayer.mostRecentEffect(EffectNames.RestartDynastyPhase);
+            const effectSource = this.currentPlayer.mostRecentEffect(EffectName.RestartDynastyPhase);
             this.game.addMessage('The dynasty phase is ended due to the effects of {0}', effectSource);
             this.complete();
         }

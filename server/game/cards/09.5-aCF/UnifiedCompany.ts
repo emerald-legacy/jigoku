@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players, Locations } from '../../Constants.js';
+import { CardType, Players, Location } from '../../Constants.js';
 
 class UnifiedCompany extends DrawCard {
     static id = 'unified-company';
@@ -17,8 +17,8 @@ class UnifiedCompany extends DrawCard {
                 }
             },
             gameAction: AbilityDsl.actions.selectCard(() => ({
-                cardType: CardTypes.Character,
-                location: Locations.DynastyDiscardPile,
+                cardType: CardType.Character,
+                location: Location.DynastyDiscardPile,
                 controller: Players.Self,
                 cardCondition: (card) => {
                     return card.hasTrait('bushi') &&

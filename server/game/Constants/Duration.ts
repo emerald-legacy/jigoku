@@ -1,4 +1,4 @@
-export enum Durations {
+export enum Duration {
     UntilEndOfDuel = 'untilEndOfDuel',
     UntilEndOfConflict = 'untilEndOfConflict',
     UntilEndOfPhase = 'untilEndOfPhase',

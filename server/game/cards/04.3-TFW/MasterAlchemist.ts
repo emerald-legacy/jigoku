@@ -1,4 +1,4 @@
-import { CardTypes, Elements } from '../../Constants.js';
+import { CardType, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -14,7 +14,7 @@ export default class MasterAlchemist extends DrawCard {
             condition: () => this.game.isDuringConflict(),
             target: {
                 activePromptTitle: 'Choose a character to honor or dishonor',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.chooseAction({
                     options: {
                         'Honor this character': {
@@ -36,7 +36,7 @@ export default class MasterAlchemist extends DrawCard {
         symbols.push({
             key: ELEMENT,
             prettyName: 'Ring for Fate',
-            element: Elements.Fire
+            element: Element.Fire
         });
         return symbols;
     }

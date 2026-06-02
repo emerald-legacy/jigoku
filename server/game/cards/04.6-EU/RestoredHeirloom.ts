@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, Players, CardTypes, Elements } from '../../Constants.js';
+import { Location, Players, CardType, Element } from '../../Constants.js';
 
 const elementKey = 'restored-heirloom-water';
 
@@ -15,9 +15,9 @@ class RestoredHeirloom extends DrawCard {
             },
             effect: 'attach {1} to {0} instead of resolving the {2}',
             effectArgs: context => [context.source, context.event.ring],
-            location: [Locations.Hand,Locations.ConflictDiscardPile],
+            location: [Location.Hand,Location.ConflictDiscardPile],
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.cancel(context => ({
                     replacementGameAction: AbilityDsl.actions.attach({ attachment: context.source })
@@ -32,7 +32,7 @@ class RestoredHeirloom extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Resolved Ring',
-            element: Elements.Water
+            element: Element.Water
         });
         return symbols;
     }

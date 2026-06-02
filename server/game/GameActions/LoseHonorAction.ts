@@ -1,6 +1,6 @@
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
@@ -13,7 +13,7 @@ export class LoseHonorAction extends PlayerAction<LoseHonorProperties> {
     defaultProperties: LoseHonorProperties = { amount: 1, dueToUnopposed: false };
 
     name = 'loseHonor';
-    eventName = EventNames.OnModifyHonor;
+    eventName = EventName.OnModifyHonor;
 
     getCostMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context);
@@ -30,14 +30,14 @@ export class LoseHonorAction extends PlayerAction<LoseHonorProperties> {
         return properties.amount === 0 ? false : super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnModifyHonor>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnModifyHonor>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, dueToUnopposed } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = -(amount ?? 0);
         event.dueToUnopposed = dueToUnopposed;
     }
 
-    eventHandler(event: GameEvent<EventNames.OnModifyHonor>): void {
+    eventHandler(event: GameEvent<EventName.OnModifyHonor>): void {
         if(event.player) {
             event.player.modifyHonor(event.amount as number);
             if(event.context?.game) {

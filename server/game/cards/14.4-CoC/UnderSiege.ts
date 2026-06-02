@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Durations } from '../../Constants.js';
+import { Location, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type Player from '../../Player.js';
 
@@ -23,7 +23,7 @@ class UnderSiege extends DrawCard {
             effectArgs: context => [context.game.currentConflict ? context.game.currentConflict.defendingPlayer : ''],
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.playerLastingEffect(context => ({
-                    duration: Durations.UntilEndOfRound,
+                    duration: Duration.UntilEndOfRound,
                     targetController: context.game.currentConflict ? context.game.currentConflict.defendingPlayer : undefined,
                     effect: AbilityDsl.effects.playerDelayedEffect({
                         when: {
@@ -40,7 +40,7 @@ class UnderSiege extends DrawCard {
                                         context.game.addMessage('{0} picks up their original hand', targetPlayer);
 
                                         this.setAsideCards.forEach((card: any) => {
-                                            targetPlayer.moveCard(card, Locations.Hand);
+                                            targetPlayer.moveCard(card, Location.Hand);
                                         });
                                     }
                                 }
@@ -67,10 +67,10 @@ class UnderSiege extends DrawCard {
                                 this.game.addMessage('{0} sets their hand aside and draws 5 cards', player);
                                 if(setAsideCards.length > 0) {
                                     setAsideCards.forEach((card: any) => {
-                                        player.moveCard(card, Locations.RemovedFromGame);
+                                        player.moveCard(card, Location.RemovedFromGame);
                                         card.lastingEffect(() => ({
                                             until: {
-                                                onCardMoved: (event: any) => event.card === card && event.originalLocation === Locations.RemovedFromGame
+                                                onCardMoved: (event: any) => event.card === card && event.originalLocation === Location.RemovedFromGame
                                             },
                                             match: card,
                                             effect: AbilityDsl.effects.hideWhenFaceUp()

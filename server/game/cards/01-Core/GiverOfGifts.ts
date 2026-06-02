@@ -1,7 +1,7 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class GiverOfGifts extends DrawCard {
     static id = 'giver-of-gifts';
@@ -10,7 +10,7 @@ class GiverOfGifts extends DrawCard {
         this.action({
             title: 'Move an attachment',
             target: {
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 controller: Players.Self,
                 gameAction: ability.actions.selectCard((context: AbilityContext) => ({
                     controller: Players.Self,

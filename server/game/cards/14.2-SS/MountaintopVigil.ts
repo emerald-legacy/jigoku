@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Durations, Players } from '../../Constants.js';
+import { Duration, Players } from '../../Constants.js';
 
 class MountaintopVigil extends DrawCard {
     static id = 'mountaintop-vigil';
@@ -11,7 +11,7 @@ class MountaintopVigil extends DrawCard {
             effect: 'cancel all ring effects until the end of the conflict',
             condition: () => this.game.isDuringConflict(),
             gameAction: AbilityDsl.actions.playerLastingEffect({
-                duration: Durations.UntilEndOfConflict,
+                duration: Duration.UntilEndOfConflict,
                 targetController: Players.Any,
                 effect: AbilityDsl.effects.cannotResolveRings()
             })

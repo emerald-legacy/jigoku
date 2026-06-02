@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,7 +12,7 @@ export default class Brushfires extends ProvinceCard {
                 onCardRevealed: (event, context) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking(),
                 gameAction: AbilityDsl.actions.removeFate({ amount: 2 })
             }

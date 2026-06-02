@@ -1,13 +1,13 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAbility from '../BaseAbility.js';
-import { Durations, EventNames, Players } from '../Constants.js';
+import { Duration, EventName, Players } from '../Constants.js';
 import type { WhenType } from '../Interfaces.js';
 import type Player from '../Player.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
 import type { Event } from '../Events/Event.js';
 export interface LastingEffectGeneralProperties extends GameActionProperties {
-    duration?: Durations;
+    duration?: Duration;
     condition?: (context: AbilityContext) => boolean;
     until?: WhenType;
     effect?: any;
@@ -21,11 +21,11 @@ export interface LastingEffectProperties extends LastingEffectGeneralProperties 
 
 export class LastingEffectAction<P extends LastingEffectProperties = LastingEffectProperties> extends GameAction<P> {
     name = 'applyLastingEffect';
-    eventName = EventNames.OnEffectApplied;
+    eventName = EventName.OnEffectApplied;
     effect = 'apply a lasting effect';
     // @ts-expect-error -- intentionally narrowing defaultProperties type from base class generic P to LastingEffectProperties
     defaultProperties: LastingEffectProperties = {
-        duration: Durations.UntilEndOfConflict,
+        duration: Duration.UntilEndOfConflict,
         effect: [],
         ability: undefined
     } as LastingEffectProperties;
@@ -60,6 +60,6 @@ export class LastingEffectAction<P extends LastingEffectProperties = LastingEffe
         if(!properties.ability) {
             properties.ability = (event.context as AbilityContext).ability;
         }
-        (event.context as AbilityContext).source[properties.duration ?? Durations.UntilEndOfConflict](() => properties);
+        (event.context as AbilityContext).source[properties.duration ?? Duration.UntilEndOfConflict](() => properties);
     }
 }

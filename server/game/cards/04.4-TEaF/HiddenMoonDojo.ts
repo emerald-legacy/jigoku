@@ -1,4 +1,4 @@
-import { Locations, Players } from '../../Constants.js';
+import { Location, Players } from '../../Constants.js';
 import { PlayCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -8,7 +8,7 @@ export default class HiddenMoonDojo extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            targetLocation: Locations.Provinces,
+            targetLocation: Location.Provinces,
             match: (card, context) =>
                 !!context &&
                 card.isDynasty &&
@@ -21,7 +21,7 @@ export default class HiddenMoonDojo extends DrawCard {
             title: 'Turn an adjacent card face up',
             condition: () => this.game.isDuringConflict(),
             gameAction: AbilityDsl.actions.selectCard({
-                location: Locations.Provinces,
+                location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     context.player.areLocationsAdjacent(context.source.location, card.location),

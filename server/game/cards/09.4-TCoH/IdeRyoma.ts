@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class IdeRyoma extends DrawCard {
@@ -13,13 +13,13 @@ class IdeRyoma extends DrawCard {
             targets: {
                 unicorn: {
                     activePromptTitle: 'Choose a unicorn character',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: card => card.isFaction('unicorn')
                 },
                 nonunicorn: {
                     activePromptTitle: 'Choose a non-unicorn character',
                     dependsOn: 'unicorn',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: (card, context) =>
                         !card.isFaction('unicorn') &&
                         card.controller === context.targets.unicorn.controller,

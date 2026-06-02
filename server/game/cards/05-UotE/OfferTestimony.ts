@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, Players, CardTypes, EventNames } from '../../Constants.js';
+import { Location, Players, CardType, EventName } from '../../Constants.js';
 
 class OfferTestimony extends DrawCard {
     static id = 'offer-testimony';
@@ -11,13 +11,13 @@ class OfferTestimony extends DrawCard {
             condition: context => !!(context.player.opponent && context.game.isDuringConflict('political')),
             targets: {
                 myCharacter: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: (card, context) => card.isParticipating() && card.allowGameAction('bow', context)
                 },
                 oppCharacter: {
                     player: Players.Opponent,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: (card, context) => card.isParticipating() && card.allowGameAction('bow', context)
                 }
@@ -27,20 +27,20 @@ class OfferTestimony extends DrawCard {
             gameAction: [
                 AbilityDsl.actions.selectCard({
                     activePromptTitle: 'Choose a card to reveal',
-                    location: Locations.Hand,
+                    location: Location.Hand,
                     controller: Players.Self,
                     gameAction: AbilityDsl.actions.reveal({ chatMessage: true })
                 }),
                 AbilityDsl.actions.selectCard({
                     activePromptTitle: 'Choose a card to reveal',
                     player: Players.Opponent,
-                    location: Locations.Hand,
+                    location: Location.Hand,
                     controller: Players.Opponent,
                     gameAction: AbilityDsl.actions.reveal(context => ({ chatMessage: true, player: context.player.opponent }))
                 }),
                 // @ts-expect-error context.targets values are dynamically typed, filter returns unknown[] but game engine handles it
                 AbilityDsl.actions.bow(context => {
-                    let events = context.events.filter((event: any) => event.name === EventNames.OnCardRevealed);
+                    let events = context.events.filter((event: any) => event.name === EventName.OnCardRevealed);
                     let revealedCards = events.map((event: any) => event.card);
                     let lowestCost = Math.min(...revealedCards.map((card: any) => card.getCost()).filter((number: any) => Number.isInteger(number)));
                     let lowestCostPlayers = revealedCards.filter((card: any) => card.getCost() === lowestCost).map((card: any) => card.controller);

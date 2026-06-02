@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class FestivalForTheFortunes extends DrawCard {
     static id = 'festival-for-the-fortunes';
@@ -11,7 +11,7 @@ class FestivalForTheFortunes extends DrawCard {
             effect: 'honor each character',
             gameAction:
                 AbilityDsl.actions.honor(() => ({
-                    target: this.game.findAnyCardsInPlay(card => card.getType() === CardTypes.Character)
+                    target: this.game.findAnyCardsInPlay(card => card.getType() === CardType.Character)
                 }))
         });
     }

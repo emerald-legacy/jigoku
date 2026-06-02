@@ -1,7 +1,7 @@
 import type { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
@@ -16,9 +16,9 @@ export interface ModifyBidProperties extends PlayerActionProperties {
     direction?: Direction;
 }
 
-export class ModifyBidAction extends PlayerAction<ModifyBidProperties, EventNames.OnModifyBid> {
+export class ModifyBidAction extends PlayerAction<ModifyBidProperties, EventName.OnModifyBid> {
     name = 'modifyBid';
-    eventName = EventNames.OnModifyBid;
+    eventName = EventName.OnModifyBid;
     defaultProperties: ModifyBidProperties = {
         amount: 1,
         direction: Direction.Increase
@@ -79,14 +79,14 @@ export class ModifyBidAction extends PlayerAction<ModifyBidProperties, EventName
         }
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnModifyBid>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnModifyBid>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, direction } = this.getProperties(context, additionalProperties) as ModifyBidProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.direction = direction;
     }
 
-    eventHandler(event: GameEvent<EventNames.OnModifyBid>): void {
+    eventHandler(event: GameEvent<EventName.OnModifyBid>): void {
         const player = event.player as Player;
         const amount = event.amount as number;
         if(event.direction === Direction.Increase) {

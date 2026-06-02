@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class GiverOfGifts2 extends DrawCard {
@@ -9,7 +9,7 @@ export default class GiverOfGifts2 extends DrawCard {
         this.action({
             title: 'Move an attachment',
             target: {
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.selectCard((context) => ({
                     cardCondition: (card) =>

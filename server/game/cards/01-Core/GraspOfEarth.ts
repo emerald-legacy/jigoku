@@ -1,4 +1,4 @@
-import { Locations, Players, PlayTypes } from '../../Constants.js';
+import { Location, Players, PlayType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -12,7 +12,7 @@ export default class GraspOfEarth extends DrawCard {
         });
 
         this.persistentEffect({
-            location: Locations.Any,
+            location: Location.Any,
             targetController: Players.Any,
             condition: (context) => context.player.hasAffinity('earth'),
             effect: AbilityDsl.effects.reduceCost({ amount: 1, match: (card: any, source: any) => card === source })
@@ -31,7 +31,7 @@ export default class GraspOfEarth extends DrawCard {
                 AbilityDsl.actions.playerLastingEffect((context) => ({
                     targetController: context.player.opponent,
                     effect: AbilityDsl.effects.playerCannot({
-                        cannot: PlayTypes.PlayFromHand,
+                        cannot: PlayType.PlayFromHand,
                         restricts: 'characters'
                     })
                 }))

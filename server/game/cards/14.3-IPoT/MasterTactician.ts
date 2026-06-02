@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
-import { EventNames, Locations, Players, PlayTypes } from '../../Constants.js';
+import { EventName, Location, Players, PlayType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type Player from '../../Player.js';
@@ -17,7 +17,7 @@ export default class MasterTactician extends DrawCard {
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventNames.OnRoundEnded, EventNames.OnCharacterEntersPlay]);
+        this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCharacterEntersPlay]);
 
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
@@ -28,7 +28,7 @@ export default class MasterTactician extends DrawCard {
                         }
                         this.mostRecentEvent = event;
                         return (
-                            event.originalLocation === Locations.ConflictDeck &&
+                            event.originalLocation === Location.ConflictDeck &&
                             !event.onPlayCardSource &&
                             !event.card.fromOutOfPlaySource &&
                             event.originallyOnTopOfConflictDeck &&
@@ -69,13 +69,13 @@ export default class MasterTactician extends DrawCard {
                 context.game.isTraitInPlay('battlefield') &&
                 context.source.isParticipating() &&
                 this.cardsPlayedThisRound < MAXIMUM_CARDS_ALLOWED,
-            targetLocation: Locations.ConflictDeck,
+            targetLocation: Location.ConflictDeck,
             targetController: Players.Self,
             match: (card, context) =>
                 !!(context && context.player.conflictDeck.length > 0 && card === context.player.conflictDeck[0]),
             effect: AbilityDsl.effects.canPlayFromOutOfPlay(
                 (player: Player, card: BaseCard) => player === card.owner,
-                PlayTypes.PlayFromHand
+                PlayType.PlayFromHand
             )
         });
 

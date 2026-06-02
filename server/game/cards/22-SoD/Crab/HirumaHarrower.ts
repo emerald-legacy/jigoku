@@ -1,4 +1,4 @@
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,7 +9,7 @@ export default class HirumaHarrower extends DrawCard {
         this.reaction({
             title: 'Gain military skill',
             when: {
-                onCardLeavesPlay: (event, context) => context.game.isDuringConflict() && event.card.type === CardTypes.Character
+                onCardLeavesPlay: (event, context) => context.game.isDuringConflict() && event.card.type === CardType.Character
             },
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                 target: context.source,

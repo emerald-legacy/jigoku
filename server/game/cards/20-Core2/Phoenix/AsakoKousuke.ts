@@ -1,4 +1,4 @@
-import { CardTypes, TargetModes } from '../../../Constants.js';
+import { CardType, TargetMode } from '../../../Constants.js';
 import { GameAction } from '../../../GameActions/GameAction.js';
 import { StatusToken } from '../../../StatusToken.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -17,14 +17,14 @@ export default class AsakoKousuke extends DrawCard {
             cannotTargetFirst: true,
             targets: {
                 [ORIGINL_TOKEN]: {
-                    mode: TargetModes.Token,
-                    cardType: CardTypes.Character,
+                    mode: TargetMode.Token,
+                    cardType: CardType.Character,
                     cardCondition: (card: DrawCard, context) =>
                         card.isParticipating() && card.getGlory() <= context.source.getGlory()
                 },
                 [SELECTION]: {
                     dependsOn: ORIGINL_TOKEN,
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     choices: (context) => {
                         const targetToken: StatusToken = (context.tokens[ORIGINL_TOKEN] as StatusToken[])[0];
                         const targetCard = targetToken.card;

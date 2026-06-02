@@ -1,4 +1,4 @@
-import { CardTypes, Locations } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -12,9 +12,9 @@ export default class AncientMaster extends DrawCard {
             title: 'Search top 5 card for kiho or tattoo',
             when: {
                 onConflictDeclared: (event, context) =>
-                    context.source.type === CardTypes.Attachment && (event.attackers ?? []).includes(context.source.parent),
+                    context.source.type === CardType.Attachment && (event.attackers ?? []).includes(context.source.parent),
                 onDefendersDeclared: (event, context) =>
-                    context.source.type === CardTypes.Attachment && (event.defenders ?? []).includes(context.source.parent)
+                    context.source.type === CardType.Attachment && (event.defenders ?? []).includes(context.source.parent)
             },
             printedAbility: false,
             effect: 'look at the top five cards of their deck',
@@ -22,14 +22,14 @@ export default class AncientMaster extends DrawCard {
                 amount: 5,
                 cardCondition: (card) => card.hasTrait('kiho') || card.hasTrait('tattoo'),
                 gameAction: AbilityDsl.actions.moveCard({
-                    destination: Locations.Hand
+                    destination: Location.Hand
                 })
             })
         });
     }
 
     leavesPlay() {
-        this.printedType = CardTypes.Character;
+        this.printedType = CardType.Character;
         super.leavesPlay();
     }
 }

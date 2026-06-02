@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityContext } from '../../AbilityContext.js';
 
@@ -11,7 +11,7 @@ class Blackmail extends DrawCard {
             title: 'Take control of a character',
             condition: () => this.game.isDuringConflict(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => !card.anotherUniqueInPlay(context.player) && card.costLessThan(3),
                 gameAction: AbilityDsl.actions.cardLastingEffect(context => ({

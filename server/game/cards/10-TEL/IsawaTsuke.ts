@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Elements, EventNames } from '../../Constants.js';
+import { Element, EventName } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 const elementKey = 'isawa-tsuke-fire';
@@ -14,21 +14,21 @@ class IsawaTsuke extends DrawCard {
         this.reaction({
             title: 'Fire ring same cost characters',
             when: {
-                onCardDishonored: (event: EventPayload<EventNames.OnCardDishonored>, context) => {
+                onCardDishonored: (event: EventPayload<EventName.OnCardDishonored>, context) => {
                     const dishonoredByYourEffect = context.player === event.context?.player;
                     const dishonoredByRingEffect = event.context?.source.type === 'ring';
-                    const currentlyFire = this.getCurrentElementSymbol(elementKey) === Elements.Fire;
+                    const currentlyFire = this.getCurrentElementSymbol(elementKey) === Element.Fire;
                     return dishonoredByYourEffect && dishonoredByRingEffect && currentlyFire;
                 },
-                onCardHonored: (event: EventPayload<EventNames.OnCardHonored>, context) => {
+                onCardHonored: (event: EventPayload<EventName.OnCardHonored>, context) => {
                     const honoredByYourEffect = context.player === event.context?.player;
                     const honoredByRingEffect = event.context?.source.type === 'ring';
-                    const currentlyFire = this.getCurrentElementSymbol(elementKey) === Elements.Fire;
+                    const currentlyFire = this.getCurrentElementSymbol(elementKey) === Element.Fire;
                     return honoredByYourEffect && honoredByRingEffect && currentlyFire;
                 }
             },
             gameAction: AbilityDsl.actions.conditional((context) => ({
-                condition: (context as TriggeredAbilityContext).event.name === EventNames.OnCardDishonored,
+                condition: (context as TriggeredAbilityContext).event.name === EventName.OnCardDishonored,
                 trueGameAction: AbilityDsl.actions.dishonor({
                     target: this.getTsukeTargets(context)
                 }),
@@ -52,7 +52,7 @@ class IsawaTsuke extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Ring Effect',
-            element: Elements.Fire
+            element: Element.Fire
         });
         return symbols;
     }

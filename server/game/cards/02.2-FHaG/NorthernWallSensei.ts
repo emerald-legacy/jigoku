@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class NorthernWallSensei extends DrawCard {
             title: 'Grant immunity to events',
             condition: (context) => context.source.isParticipating(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.attachments.length > 0,
                 gameAction: AbilityDsl.actions.cardLastingEffect({

@@ -2,11 +2,11 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type Player from '../Player.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
-import type { EventNames } from '../Constants.js';
+import type { EventName } from '../Constants.js';
 
 export type PlayerActionProperties = GameActionProperties;
 
-export class PlayerAction<P extends PlayerActionProperties = PlayerActionProperties, N extends EventNames = EventNames> extends GameAction<P, N> {
+export class PlayerAction<P extends PlayerActionProperties = PlayerActionProperties, N extends EventName = EventName> extends GameAction<P, N> {
     targetType = ['player'];
 
     defaultTargets(context: AbilityContext): Player[] {

@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -11,7 +11,7 @@ export default class RiotInTheStreets extends ProvinceCard {
             condition: (context) =>
                 context.player.getNumberOfCardsInPlay((card: any) => card.hasTrait('bushi') && card.isParticipating()) >= 3,
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.bow()
             }

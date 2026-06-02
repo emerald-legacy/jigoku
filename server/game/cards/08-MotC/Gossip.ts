@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
-import { PlayTypes } from '../../Constants.js';
+import { PlayType } from '../../Constants.js';
 
 class Gossip extends DrawCard {
     static id = 'gossip';
@@ -28,7 +28,7 @@ class Gossip extends DrawCard {
         context.source.untilEndOfPhase((ability: any) => ({
             targetController: context.player.opponent,
             effect: ability.effects.playerCannot({
-                cannot: PlayTypes.PlayFromHand,
+                cannot: PlayType.PlayFromHand,
                 restricts: 'copiesOfX',
                 source: context.source,
                 params: cardName

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Locations } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class KeeperOfSecretNames extends DrawCard {
@@ -10,8 +10,8 @@ class KeeperOfSecretNames extends DrawCard {
             title: 'Resolve the ability on a province',
             condition: () => this.game.isDuringConflict(),
             target: {
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 cardCondition: card => card.abilities.actions.length > 0 && !card.isBroken,
                 gameAction: AbilityDsl.actions.resolveAbility(context => ({
                     target: context.target,

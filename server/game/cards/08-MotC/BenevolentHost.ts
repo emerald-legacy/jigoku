@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, Players, CardTypes } from '../../Constants.js';
+import { Location, Players, CardType } from '../../Constants.js';
 
 class BenevolentHost extends DrawCard {
     static id = 'benevolent-host';
@@ -12,8 +12,8 @@ class BenevolentHost extends DrawCard {
                 onCardPlayed: (event, context) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Character,
-                location: Locations.Provinces,
+                cardType: CardType.Character,
+                location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('courtier'),
                 gameAction: AbilityDsl.actions.putIntoPlay()

@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Locations, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Location, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
@@ -14,7 +14,7 @@ export default class ToConnectThePeople extends DrawCard {
             condition: (context) =>
                 !context.game.isDuringConflict() &&
                 (context.player.cardsInPlay as DrawCard[]).some(
-                    (card) => card.getType() === CardTypes.Character && card.hasTrait('merchant')
+                    (card) => card.getType() === CardType.Character && card.hasTrait('merchant')
                 ),
             effect: 'discard the top 3 cards of {1}\'s dynasty deck',
             effectArgs: (context) => [context.player.opponent as any],
@@ -24,8 +24,8 @@ export default class ToConnectThePeople extends DrawCard {
                         const cards = context.player.opponent?.dynastyDeck.slice(0, 3) ?? [];
                         for(const card of cards) {
                             const destination = card.isDynasty
-                                ? Locations.DynastyDiscardPile
-                                : Locations.ConflictDiscardPile;
+                                ? Location.DynastyDiscardPile
+                                : Location.ConflictDiscardPile;
                             card.controller.moveCard(card, destination);
                         }
                         if(cards.length > 0) {
@@ -34,12 +34,12 @@ export default class ToConnectThePeople extends DrawCard {
                     }
                 }),
                 AbilityDsl.actions.selectCard({
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
-                    location: [Locations.ConflictDiscardPile, Locations.DynastyDiscardPile],
+                    location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
                     targets: true,
                     cardCondition: (card, context) => !card.isUnique() && card.glory <= this.maxMerchantGlory(context),
-                    mode: TargetModes.Single,
+                    mode: TargetMode.Single,
                     gameAction: AbilityDsl.actions.sequential([
                         AbilityDsl.actions.cardLastingEffect({
                             effect: [
@@ -58,7 +58,7 @@ export default class ToConnectThePeople extends DrawCard {
     private maxMerchantGlory(context: AbilityContext) {
         return (context.player.cardsInPlay as DrawCard[]).reduce(
             (maxGlory, card) =>
-                card.getType() === CardTypes.Character && card.hasTrait('merchant') && card.glory > maxGlory
+                card.getType() === CardType.Character && card.hasTrait('merchant') && card.glory > maxGlory
                     ? card.glory
                     : maxGlory,
             0

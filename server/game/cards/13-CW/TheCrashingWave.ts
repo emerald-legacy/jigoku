@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, EventNames, Locations } from '../../Constants.js';
+import { CardType, EventName, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 
@@ -10,11 +10,11 @@ class TheCrashingWave extends DrawCard {
         this.reaction({
             title: 'Move the conflict',
             when: {
-                onTheCrashingWave: (event: EventPayload<EventNames.OnTheCrashingWave>, context) => event.conflict.defendingPlayer === context.player
+                onTheCrashingWave: (event: EventPayload<EventName.OnTheCrashingWave>, context) => event.conflict.defendingPlayer === context.player
             },
             target: {
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 gameAction: AbilityDsl.actions.moveConflict()
             }
         });

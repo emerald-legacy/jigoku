@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import type EventWindow from './EventWindow.js';
 
 export class Event {
@@ -45,7 +45,7 @@ export class Event {
     }
 
     checkCondition() {
-        if(this.cancelled || this.resolved || this.name === EventNames.Unnamed) {
+        if(this.cancelled || this.resolved || this.name === EventName.Unnamed) {
             return;
         }
         if(!this.condition(this)) {

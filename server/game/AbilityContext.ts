@@ -3,7 +3,7 @@ import BaseAbility from './BaseAbility.js';
 import type BaseCard from './BaseCard.js';
 import type CardAbility from './CardAbility.js';
 import type DrawCard from './DrawCard.js';
-import { Locations, PlayTypes, Stages } from './Constants.js';
+import { Location, PlayType, Stage } from './Constants.js';
 import EffectSource from './EffectSource.js';
 import type { Event } from './Events/Event.js';
 import type Game from './Game.js';
@@ -24,7 +24,7 @@ export interface AbilityContextProperties {
     tokens?: Record<string, StatusToken | StatusToken[]>;
     elements?: Record<string, string>;
     events?: Event[];
-    stage?: Stages;
+    stage?: Stage;
     targetAbility?: CardAbility | null;
 }
 
@@ -44,7 +44,7 @@ export class AbilityContext<S = any, T extends BaseCard = BaseCard> {
     elements: Record<string, string>;
     deckSearchSelected: DrawCard[] = [];
     events: Event[] = [];
-    stage: Stages;
+    stage: Stage;
     targetAbility: CardAbility | null = null;
     /**
      * Set by `AbilityTargetCard` when the target name is `'target'`. In
@@ -58,11 +58,11 @@ export class AbilityContext<S = any, T extends BaseCard = BaseCard> {
     token: StatusToken | undefined;
     element: string | null = null;
     elementCard: BaseCard | undefined;
-    provincesToRefill: { player: Player; location: Locations }[] = [];
+    provincesToRefill: { player: Player; location: Location }[] = [];
     subResolution = false;
     choosingPlayerOverride: Player | null = null;
     gameActionsResolutionChain: GameAction[] = [];
-    playType: PlayTypes | undefined;
+    playType: PlayType | undefined;
     cardStateWhenInitiated: BaseCard | null = null;
     ignoreFateCost?: boolean;
     onPlayCardSource?: BaseCard;
@@ -78,7 +78,7 @@ export class AbilityContext<S = any, T extends BaseCard = BaseCard> {
         this.selects = properties.selects || {};
         this.tokens = properties.tokens || {};
         this.elements = properties.elements || {};
-        this.stage = properties.stage || Stages.Effect;
+        this.stage = properties.stage || Stage.Effect;
         this.targetAbility = properties.targetAbility ?? null;
         // const location = this.player && this.player.playableLocations.find(location => location.contains(this.source));
         this.playType = this.player && this.player.findPlayType(this.source as BaseCard); //location && location.playingType;
@@ -104,7 +104,7 @@ export class AbilityContext<S = any, T extends BaseCard = BaseCard> {
         return new AbilityContext<this, T>(Object.assign(this.getProps(), newProps));
     }
 
-    refillProvince(player: Player, location: Locations): void {
+    refillProvince(player: Player, location: Location): void {
         this.provincesToRefill.push({ player, location });
     }
 

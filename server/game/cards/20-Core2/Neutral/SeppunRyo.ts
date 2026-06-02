@@ -1,4 +1,4 @@
-import { DuelTypes, Durations, FavorTypes } from '../../../Constants.js';
+import { DuelType, Duration, FavorType } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +15,7 @@ export default class SeppunRyo extends DrawCard {
             gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
                 target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.modifyDuelSkill({ amount: 1, player: context.player }),
-                duration: Durations.UntilEndOfDuel
+                duration: Duration.UntilEndOfDuel
             } as LastingEffectProperties)),
             effect: 'add 1 to their duel total'
         });
@@ -23,7 +23,7 @@ export default class SeppunRyo extends DrawCard {
         this.action({
             title: 'Initiate a military duel to bow',
             initiateDuel: {
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 refuseGameAction: AbilityDsl.actions.claimImperialFavor((context) => ({
                     target: context.player.opponent?.imperialFavor !== '' ? context.player : null,
                     side: this.getFavorSide(context.player.opponent?.imperialFavor)
@@ -38,11 +38,11 @@ export default class SeppunRyo extends DrawCard {
     getFavorSide(favor: string) {
         switch(favor) {
             case 'military':
-                return FavorTypes.Military;
+                return FavorType.Military;
             case 'political':
-                return FavorTypes.Political;
+                return FavorType.Political;
             default:
-                return FavorTypes.Both;
+                return FavorType.Both;
         }
     }
 }

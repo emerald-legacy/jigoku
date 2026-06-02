@@ -1,4 +1,4 @@
-import { PlayTypes, Locations, Players, CardTypes, CharacterStatus } from '../../Constants.js';
+import { PlayType, Location, Players, CardType, CharacterStatus } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -10,14 +10,14 @@ export default class ShinseisLastHope extends ProvinceCard {
             effect: AbilityDsl.effects.reduceCost({
                 amount: 2,
                 match: (card: any, source: any) => card.location === source.location,
-                playingTypes: PlayTypes.PlayFromProvince
+                playingTypes: PlayType.PlayFromProvince
             })
         });
 
         this.persistentEffect({
-            targetLocation: Locations.Provinces,
+            targetLocation: Location.Provinces,
             targetController: Players.Self,
-            match: (card, context) => card.type === CardTypes.Character && card.location === context?.source.location,
+            match: (card, context) => card.type === CardType.Character && card.location === context?.source.location,
             effect: AbilityDsl.effects.entersPlayWithStatus(CharacterStatus.Dishonored)
         });
     }

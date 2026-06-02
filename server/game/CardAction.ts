@@ -1,6 +1,6 @@
 import type { AbilityContext } from './AbilityContext.js';
 import CardAbility from './CardAbility.js';
-import { AbilityTypes, CardTypes, EffectNames, Phases } from './Constants.js';
+import { AbilityType, CardType, EffectName, Phases } from './Constants.js';
 import { parseGameMode } from './GameMode.js';
 import type { ActionProps } from './Interfaces.js';
 import type BaseCard from './BaseCard.js';
@@ -34,7 +34,7 @@ import type { ProvinceCard } from './ProvinceCard.js';
  *                   the card is clicked.
  */
 export class CardAction extends CardAbility {
-    abilityType = AbilityTypes.Action;
+    abilityType = AbilityType.Action;
 
     anyPlayer: boolean;
     canTriggerOutsideConflict: boolean;
@@ -64,14 +64,14 @@ export class CardAction extends CardAbility {
 
         const gameMode = parseGameMode(this.game.gameMode);
         switch(this.card.type) {
-            case CardTypes.Holding:
+            case CardType.Holding:
                 return gameMode.dynastyPhaseActionsFromCardsInPlay;
 
-            case CardTypes.Event:
+            case CardType.Event:
                 return gameMode.dynastyPhaseCanPlayConflictEvents(this);
 
-            case CardTypes.Character:
-            case CardTypes.Attachment:
+            case CardType.Character:
+            case CardType.Attachment:
                 return gameMode.dynastyPhaseActionsFromCardsInPlay;
 
             default:
@@ -101,11 +101,11 @@ export class CardAction extends CardAbility {
         }
 
         const canOpponentTrigger =
-            this.card.anyEffect(EffectNames.CanBeTriggeredByOpponent) &&
-            this.abilityType !== AbilityTypes.ForcedInterrupt &&
-            this.abilityType !== AbilityTypes.ForcedReaction;
+            this.card.anyEffect(EffectName.CanBeTriggeredByOpponent) &&
+            this.abilityType !== AbilityType.ForcedInterrupt &&
+            this.abilityType !== AbilityType.ForcedReaction;
         const canPlayerTrigger = this.anyPlayer || context.player === this.card.controller || canOpponentTrigger;
-        if(!ignoredRequirements.includes('player') && this.card.type !== CardTypes.Event && !canPlayerTrigger) {
+        if(!ignoredRequirements.includes('player') && this.card.type !== CardType.Event && !canPlayerTrigger) {
             return 'player';
         }
 
@@ -118,7 +118,7 @@ export class CardAction extends CardAbility {
 
     checkProvinceCondition(context: AbilityContext) {
         return (
-            this.card.type !== CardTypes.Province ||
+            this.card.type !== CardType.Province ||
             this.canTriggerOutsideConflict ||
             (this.game.currentConflict &&
                 this.game.currentConflict

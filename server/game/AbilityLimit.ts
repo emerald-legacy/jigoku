@@ -1,4 +1,4 @@
-import { EventNames } from './Constants.js';
+import { EventName } from './Constants.js';
 import Player from './Player.js';
 import type CardAbility from './CardAbility.js';
 import type { EventHandler } from './GameEventBus.js';
@@ -115,7 +115,7 @@ class FixedAbilityLimit {
 class RepeatableAbilityLimit extends FixedAbilityLimit {
     constructor(
         max: number,
-        private eventName: Set<EventNames>
+        private eventName: Set<EventName>
     ) {
         super(max);
     }
@@ -145,24 +145,24 @@ export function fixed(max: number) {
     return new FixedAbilityLimit(max);
 }
 
-export function repeatable(max: number, eventName: EventNames) {
+export function repeatable(max: number, eventName: EventName) {
     return new RepeatableAbilityLimit(max, new Set([eventName]));
 }
 
 export function perConflict(max: number) {
-    return new RepeatableAbilityLimit(max, new Set([EventNames.OnConflictFinished]));
+    return new RepeatableAbilityLimit(max, new Set([EventName.OnConflictFinished]));
 }
 
 export function perConflictOpportunity(max: number) {
-    return new RepeatableAbilityLimit(max, new Set([EventNames.OnConflictFinished, EventNames.OnConflictPass]));
+    return new RepeatableAbilityLimit(max, new Set([EventName.OnConflictFinished, EventName.OnConflictPass]));
 }
 
 export function perPhase(max: number) {
-    return new RepeatableAbilityLimit(max, new Set([EventNames.OnPhaseEnded]));
+    return new RepeatableAbilityLimit(max, new Set([EventName.OnPhaseEnded]));
 }
 
 export function perRound(max: number) {
-    return new RepeatableAbilityLimit(max, new Set([EventNames.OnRoundEnded]));
+    return new RepeatableAbilityLimit(max, new Set([EventName.OnRoundEnded]));
 }
 
 export function perGame(max: number) {
@@ -170,11 +170,11 @@ export function perGame(max: number) {
 }
 
 export function perDuel(max: number) {
-    return new RepeatableAbilityLimit(max, new Set([EventNames.OnDuelFinished]));
+    return new RepeatableAbilityLimit(max, new Set([EventName.OnDuelFinished]));
 }
 
 export function unlimitedPerConflict() {
-    return new RepeatableAbilityLimit(Infinity, new Set([EventNames.OnConflictFinished]));
+    return new RepeatableAbilityLimit(Infinity, new Set([EventName.OnConflictFinished]));
 }
 
 export function unlimited() {

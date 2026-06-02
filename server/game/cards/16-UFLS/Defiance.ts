@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Defiance extends DrawCard {
@@ -11,7 +11,7 @@ class Defiance extends DrawCard {
             condition: context => !!(context.game.isDuringConflict() && context.player.opponent &&
                 context.player.hand.length < context.player.opponent.hand.length),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                     effect: AbilityDsl.effects.modifyBothSkills(context.player.opponent?.showBid ?? 0)
                 }))

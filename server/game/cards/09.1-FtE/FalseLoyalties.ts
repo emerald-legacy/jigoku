@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class FalseLoyalties extends DrawCard {
@@ -17,14 +17,14 @@ class FalseLoyalties extends DrawCard {
             targets: {
                 characterInConflict: {
                     activePromptTitle: 'Choose a participating character to send home',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: card => card.isParticipating()
                 },
                 characterAtHome: {
                     dependsOn: 'characterInConflict',
                     activePromptTitle: 'Choose a character to move to the conflict',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     gameAction: AbilityDsl.actions.joint([
                         AbilityDsl.actions.sendHome(context => ({ target: context.targets.characterInConflict })),

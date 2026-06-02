@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Durations } from '../../Constants.js';
+import { CardType, Duration } from '../../Constants.js';
 
 class TrickOfTheLight extends DrawCard {
     static id = 'trick-of-the-light';
@@ -9,11 +9,11 @@ class TrickOfTheLight extends DrawCard {
         this.action({
             title: 'blanks printed text for conflict',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
                     effect: AbilityDsl.effects.blank(),
-                    duration: Durations.UntilEndOfConflict
+                    duration: Duration.UntilEndOfConflict
                 }))
             }
         });

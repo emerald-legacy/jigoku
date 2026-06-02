@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players, TargetModes } from '../../Constants.js';
+import { CardType, Players, TargetMode } from '../../Constants.js';
 
 class PrepareForWar extends DrawCard {
     static id = 'prepare-for-war';
@@ -10,7 +10,7 @@ class PrepareForWar extends DrawCard {
         this.action<DrawCard>({
             title: 'Remove honor token and any attachment',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.multipleContext<DrawCard>((context) => {
@@ -18,8 +18,8 @@ class PrepareForWar extends DrawCard {
                         return {
                             gameActions: [
                                 AbilityDsl.actions.selectCard<DrawCard>((context) => ({
-                                    mode: TargetModes.Unlimited,
-                                    cardType: CardTypes.Attachment,
+                                    mode: TargetMode.Unlimited,
+                                    cardType: CardType.Attachment,
                                     controller: Players.Any,
                                     cardCondition: (card) => card.parent === context.target,
                                     activePromptTitle: 'Choose any amount of attachments',

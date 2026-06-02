@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
-import { AbilityTypes, CardTypes, EventNames, Locations, Players } from '../../Constants.js';
+import { AbilityType, CardType, EventName, Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
@@ -16,14 +16,14 @@ export default class WithstandTheDarkness extends DrawCard {
         this.abilityRegistrar = new EventRegistrar(this.game, this);
         this.abilityRegistrar.register([
             {
-                [`${EventNames.OnInitiateAbilityEffects}:${AbilityTypes.WouldInterrupt}`]: 'onInitiateAbility'
+                [`${EventName.OnInitiateAbilityEffects}:${AbilityType.WouldInterrupt}`]: 'onInitiateAbility'
             }
         ]);
 
         this.reaction({
             when: {
                 onCardPlayed: (event, context) => {
-                    if(event.card.type === CardTypes.Event && event.card.controller === context.player.opponent) {
+                    if(event.card.type === CardType.Event && event.card.controller === context.player.opponent) {
                         this.currentTargets = this.getLegalWithstandTargets(event);
                         return this.currentTargets.size > 0;
                     }
@@ -33,7 +33,7 @@ export default class WithstandTheDarkness extends DrawCard {
             title: 'Place a fate on a character',
             target: {
                 activePromptTitle: 'Choose a character to receive a fate',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     this.currentTargets.has(card) && this.isValidTargetForWithstand(card, context),
@@ -89,10 +89,10 @@ export default class WithstandTheDarkness extends DrawCard {
 
     private isValidTargetForWithstand(card: BaseCard, context: TriggeredAbilityContext) {
         return (
-            card.type === CardTypes.Character &&
+            card.type === CardType.Character &&
             card.isFaction('crab') &&
             card.controller === context.player &&
-            card.location === Locations.PlayArea
+            card.location === Location.PlayArea
         );
     }
 }

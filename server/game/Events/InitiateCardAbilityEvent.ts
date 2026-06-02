@@ -1,5 +1,5 @@
 import { Event } from './Event.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 
 class InitiateCardAbilityEvent extends Event {
     cardTargets: any[];
@@ -9,7 +9,7 @@ class InitiateCardAbilityEvent extends Event {
     allTargets: any[];
 
     constructor(params: any, handler?: (event: any) => void) {
-        super(EventNames.OnInitiateAbilityEffects, params, handler);
+        super(EventName.OnInitiateAbilityEffects, params, handler);
         const ctx = this.context;
         if(ctx && !(ctx.ability as { doesNotTarget?: boolean })?.doesNotTarget) {
             this.cardTargets = Object.values(ctx.targets).flat();

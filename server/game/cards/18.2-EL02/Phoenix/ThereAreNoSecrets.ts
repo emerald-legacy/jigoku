@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
@@ -20,7 +20,7 @@ export default class ThereAreNoSecrets extends DrawCard {
     canPlay(context: TriggeredAbilityContext, playType: string) {
         return (
             context.player.cardsInPlay.some(
-                (card: DrawCard) => card.getType() === CardTypes.Character && card.hasTrait('shugenja')
+                (card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja')
             ) && super.canPlay(context, playType)
         );
     }

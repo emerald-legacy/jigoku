@@ -1,4 +1,4 @@
-import { EventNames, Locations, Players, TargetModes } from '../../../Constants.js';
+import { EventName, Location, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
@@ -23,32 +23,32 @@ export default class BayushisSaboteurs extends DrawCard {
         this.reaction({
             title: 'Discard or flip facedown cards in the defender\'s provinces',
             when: {
-                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context) => event.attackers?.includes(context.source),
-                onDefendersDeclared: (event: EventPayload<EventNames.OnDefendersDeclared>, context) => event.defenders?.includes(context.source),
-                onMoveToConflict: (event: EventPayload<EventNames.OnMoveToConflict>, context) => event.card === context.source
+                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) => event.attackers?.includes(context.source),
+                onDefendersDeclared: (event: EventPayload<EventName.OnDefendersDeclared>, context) => event.defenders?.includes(context.source),
+                onMoveToConflict: (event: EventPayload<EventName.OnMoveToConflict>, context) => event.card === context.source
             },
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 player: (context) =>
                     context.player !== context.game.currentConflict?.defendingPlayer ? Players.Opponent : Players.Self,
                 choices: {
                     [DISCARD]: AbilityDsl.actions.sequential([
                         AbilityDsl.actions.discardCard((context) => ({
-                            target: defender(context).getDynastyCardsInProvince(Locations.Provinces)
+                            target: defender(context).getDynastyCardsInProvince(Location.Provinces)
                         })),
                         AbilityDsl.actions.refillFaceup((context) => ({
                             target: defender(context),
                             location: [
-                                Locations.StrongholdProvince,
-                                Locations.ProvinceOne,
-                                Locations.ProvinceTwo,
-                                Locations.ProvinceThree,
-                                Locations.ProvinceFour
+                                Location.StrongholdProvince,
+                                Location.ProvinceOne,
+                                Location.ProvinceTwo,
+                                Location.ProvinceThree,
+                                Location.ProvinceFour
                             ]
                         }))
                     ]),
                     [FLIP]: AbilityDsl.actions.turnFacedown((context) => ({
-                        target: defender(context).getDynastyCardsInProvince(Locations.Provinces)
+                        target: defender(context).getDynastyCardsInProvince(Location.Provinces)
                     }))
                 }
             },

@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import { CardTypes, EventNames, Locations, Players } from '../../../Constants.js';
+import { CardType, EventName, Location, Players } from '../../../Constants.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -13,18 +13,18 @@ export default class VillageDoshin extends DrawCard {
     public setupCardAbilities() {
         this.wouldInterrupt({
             title: 'Protect attachment from leaving play',
-            location: Locations.Hand,
+            location: Location.Hand,
             cost: AbilityDsl.costs.discardSelf(),
             when: {
-                onInitiateAbilityEffects: (event: EventPayload<EventNames.OnInitiateAbilityEffects>, context) =>
+                onInitiateAbilityEffects: (event: EventPayload<EventName.OnInitiateAbilityEffects>, context) =>
                     (event.cardTargets ?? []).some((card: BaseCard) => {
-                        const attachment = card.type === CardTypes.Attachment;
+                        const attachment = card.type === CardType.Attachment;
                         const onCharacterYouControl =
                             card instanceof DrawCard &&
                             card.parent &&
-                            card.parent.type === CardTypes.Character &&
+                            card.parent.type === CardType.Character &&
                             card.parent.controller === context.player;
-                        const inPlay = card.location === Locations.PlayArea;
+                        const inPlay = card.location === Location.PlayArea;
                         return attachment && onCharacterYouControl && inPlay;
                     })
             },

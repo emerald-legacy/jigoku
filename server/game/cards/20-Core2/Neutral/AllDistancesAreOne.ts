@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Locations } from '../../../Constants.js';
+import { CardType, Location } from '../../../Constants.js';
 import type { Cost } from '../../../Costs.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -31,14 +31,14 @@ export default class AllDistancesAreOne extends DrawCard {
             condition: (context) =>
                 !!((context.game.currentConflict as Conflict | undefined)
                     ?.getConflictProvinces()
-                    .every((province: any) => province.location !== Locations.StrongholdProvince) &&
+                    .every((province: any) => province.location !== Location.StrongholdProvince) &&
                 context.player.cardsInPlay.some(
                     (card: DrawCard) => card.isParticipating() && card.hasTrait('shugenja')
                 )),
             cost: captureOriginalProvince(),
             gameAction: AbilityDsl.actions.selectCard((context) => ({
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 gameAction: AbilityDsl.actions.moveConflict(),
                 message: '{0} moves the conflict to {1}',
                 messageArgs: (card) => [context.player, card]

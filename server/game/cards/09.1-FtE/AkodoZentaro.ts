@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Locations, Players } from '../../Constants.js';
+import { CardType, Location, Players } from '../../Constants.js';
 
 class AkodoZentaro extends DrawCard {
     static id = 'akodo-zentaro';
@@ -10,16 +10,16 @@ class AkodoZentaro extends DrawCard {
             title: 'Take control of holding',
             condition: context => context.source.isAttacking(),
             target: {
-                cardType: CardTypes.Holding,
+                cardType: CardType.Holding,
                 controller: Players.Opponent,
-                location: Locations.Provinces,
+                location: Location.Provinces,
                 cardCondition: card => card.isInConflictProvince() && !card.isUnique() && card.isFaceup(),
                 gameAction: AbilityDsl.actions.ifAble(context => ({
                     ifAbleAction: AbilityDsl.actions.selectCard({
-                        cardType: CardTypes.Province,
-                        location: Locations.Provinces,
+                        cardType: CardType.Province,
+                        location: Location.Provinces,
                         controller: Players.Self,
-                        cardCondition: card => card.location !== Locations.StrongholdProvince && !card.isBroken,
+                        cardCondition: card => card.location !== Location.StrongholdProvince && !card.isBroken,
                         subActionProperties: card => ({ destination: card.location, target: context.player.getDynastyCardsInProvince(card.location) }),
                         gameAction: AbilityDsl.actions.multiple([
                             AbilityDsl.actions.moveCard({

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ShinjoAmbusher extends DrawCard {
@@ -15,13 +15,13 @@ class ShinjoAmbusher extends DrawCard {
             gameAction: AbilityDsl.actions.selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 cardCondition: card => card.isConflictProvince(),
                 message: '{0} prevents {1} from triggering its abilities',
                 messageArgs: cards => [context.player, cards],
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
-                    targetLocation: Locations.Provinces,
+                    targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.cardCannot('triggerAbilities')
                 }))
             }))

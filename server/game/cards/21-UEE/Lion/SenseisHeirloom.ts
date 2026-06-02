@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { Locations } from '../../../Constants.js';
+import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SenseisHeirloom extends DrawCard {
@@ -16,7 +16,7 @@ export default class SenseisHeirloom extends DrawCard {
             gameAction: AbilityDsl.actions.deckSearch((context) => ({
                 reveal: false,
                 amount: 2 * (context.source.parent as DrawCard).printedGlory,
-                gameAction: AbilityDsl.actions.moveCard({ destination: Locations.Hand })
+                gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand })
             }))
         });
     }

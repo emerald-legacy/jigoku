@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, FavorTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, FavorType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 
@@ -14,18 +14,18 @@ export default class WhispersOfTheLordsOfDeath extends DrawCard {
 
         this.reaction({
             title: 'Put into play',
-            location: [Locations.Hand],
+            location: [Location.Hand],
             when: {
                 onCardLeavesPlay: (event, context) =>
-                    event.card.type === CardTypes.Character &&
-                    event.cardStateWhenLeftPlay?.location === Locations.PlayArea &&
+                    event.card.type === CardType.Character &&
+                    event.cardStateWhenLeftPlay?.location === Location.PlayArea &&
                     context.game.isDuringConflict()
             },
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.putIntoPlay((context) => ({ target: context.source })),
                 AbilityDsl.actions.claimImperialFavor((context) => ({
                     target: context.player,
-                    side: FavorTypes.Military
+                    side: FavorType.Military
                 }))
             ]),
             effect: 'put {0} into play and claim the Imperial Favor'
@@ -34,7 +34,7 @@ export default class WhispersOfTheLordsOfDeath extends DrawCard {
 
     private highestMilitaryForPlayer(player: Player) {
         return player.cardsInPlay.reduce((maxMil, card) => {
-            if(card.type !== CardTypes.Character) {
+            if(card.type !== CardType.Character) {
                 return maxMil;
             }
 

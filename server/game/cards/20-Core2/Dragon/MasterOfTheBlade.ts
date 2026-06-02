@@ -1,4 +1,4 @@
-import { Durations } from '../../../Constants.js';
+import { Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,7 +12,7 @@ export default class MasterOfTheBlade extends DrawCard {
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.source,
                 condition: (context) => context.game.isDuringConflict(),
-                duration: Durations.UntilEndOfConflict,
+                duration: Duration.UntilEndOfConflict,
                 effect: [
                     AbilityDsl.effects.doesNotBow(),
                     AbilityDsl.effects.cardCannot({

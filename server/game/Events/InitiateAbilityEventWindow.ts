@@ -1,15 +1,15 @@
 import EventWindow from './EventWindow.js';
 import TriggeredAbilityWindow from '../gamesteps/TriggeredAbilityWindow.js';
-import { EventNames, AbilityTypes } from '../Constants.js';
+import { EventName, AbilityType } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from './Event.js';
 
 class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
     playEvent: any;
 
-    constructor(game: Game, abilityType: AbilityTypes, eventWindow: EventWindow) {
+    constructor(game: Game, abilityType: AbilityType, eventWindow: EventWindow) {
         super(game, abilityType, eventWindow);
-        this.playEvent = eventWindow.events.find(event => event.name === EventNames.OnCardPlayed);
+        this.playEvent = eventWindow.events.find(event => event.name === EventName.OnCardPlayed);
     }
 
     getPromptForSelectProperties() {
@@ -51,8 +51,8 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
 export default class InitiateAbilityEventWindow extends EventWindow {
     eventsToExecute: Event[] = [];
 
-    openWindow(abilityType: AbilityTypes) {
-        if(this.events.length && abilityType === AbilityTypes.Interrupt) {
+    openWindow(abilityType: AbilityType) {
+        if(this.events.length && abilityType === AbilityType.Interrupt) {
             this.queueStep(new InitiateAbilityInterruptWindow(this.game, abilityType, this));
         } else {
             super.openWindow(abilityType);

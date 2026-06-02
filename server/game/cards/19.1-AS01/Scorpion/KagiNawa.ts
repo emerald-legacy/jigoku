@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityTypes, CardTypes, Players } from '../../../Constants.js';
+import { AbilityType, CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { ActionProps } from '../../../Interfaces.js';
 
@@ -9,11 +9,11 @@ export default class KagiNawa extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             match: (card) => card.hasTrait('shinobi'),
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Move a character to the conflict',
                 condition: (context) => context.source.isParticipating(),
                 target: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Any,
                     activePromptTitle: 'Choose a character with printed cost 2 or lower to move in',
                     cardCondition: (card) => card.printedCost <= 2,

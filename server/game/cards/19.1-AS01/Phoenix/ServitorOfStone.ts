@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ServitorOfStone extends DrawCard {
@@ -26,7 +26,7 @@ export default class ServitorOfStone extends DrawCard {
     private controllerHasShugenjaAtSameLocation(context: AbilityContext) {
         return context.player.anyCardsInPlay(
             (otherCard: BaseCard) =>
-                otherCard.type === CardTypes.Character &&
+                otherCard.type === CardType.Character &&
                 otherCard.hasTrait('shugenja') &&
                 context.source.isInConflict() === otherCard.isInConflict()
         );

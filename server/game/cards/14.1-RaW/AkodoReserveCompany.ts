@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AkodoReserveCompany extends DrawCard {
@@ -10,7 +10,7 @@ class AkodoReserveCompany extends DrawCard {
             title: 'Bow an attacking character',
             condition: context => context.game.isTraitInPlay('battlefield'),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.controller === context.player,
                 gameAction: AbilityDsl.actions.joint([
                     AbilityDsl.actions.moveToConflict(context => ({ target: context.source })),

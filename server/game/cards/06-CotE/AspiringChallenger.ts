@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { DuelTypes } from '../../Constants.js';
+import { DuelType } from '../../Constants.js';
 
 class AspiringChallenger extends DrawCard {
     static id = 'aspiring-challenger';
@@ -12,7 +12,7 @@ class AspiringChallenger extends DrawCard {
         this.action({
             title: 'Initiate a Military duel',
             initiateDuel: {
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 gameAction: duel => AbilityDsl.actions.honor({
                     target: duel.winner
                 })

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 
 class Reprieve extends DrawCard {
     static id = 'reprieve';
@@ -9,7 +9,7 @@ class Reprieve extends DrawCard {
         this.wouldInterrupt({
             title: 'Prevent a character from leaving play',
             when: {
-                onCardLeavesPlay: (event, context) => event.card === context.source.parent && event.card.location === Locations.PlayArea &&
+                onCardLeavesPlay: (event, context) => event.card === context.source.parent && event.card.location === Location.PlayArea &&
                                                       context.source.allowGameAction('discardFromPlay', context)
             },
             effect: 'prevent {1} from leaving play',

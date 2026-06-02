@@ -1,4 +1,4 @@
-import { EventNames, Phases } from '../../../Constants.js';
+import { EventName, Phases } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -12,12 +12,12 @@ export default class PlantedFields extends DrawCard {
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventNames.OnRoundEnded]);
+        this.eventRegistrar.register([EventName.OnRoundEnded]);
 
         this.interrupt({
             title: 'Sacrifice Planted Fields',
             when: {
-                onPhaseEnded: (event: EventPayload<EventNames.OnPhaseEnded>, context) =>
+                onPhaseEnded: (event: EventPayload<EventName.OnPhaseEnded>, context) =>
                     event.phase === Phases.Conflict &&
                     !context.player.getProvinceCardInProvince(context.source.location)?.isBroken
             },

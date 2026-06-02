@@ -1,4 +1,4 @@
-import { Durations, EventNames } from '../../Constants.js';
+import { Duration, EventName } from '../../Constants.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type { AbilityContext } from '../../AbilityContext.js';
@@ -21,7 +21,7 @@ export default class SevenStingsKeep extends StrongholdCard {
                 activePromptTitle: 'Choose how many characters will be attacking',
                 choices: this.getChoices(context),
                 gameAction: AbilityDsl.actions.playerLastingEffect({
-                    duration: Durations.UntilEndOfConflict
+                    duration: Duration.UntilEndOfConflict
                 }),
                 choiceHandler: (choice, displayMessage) => {
                     const amount = parseInt(choice);
@@ -43,7 +43,7 @@ export default class SevenStingsKeep extends StrongholdCard {
 
     getChoices(context: AbilityContext) {
         const min = 1;
-        const max = ((context as TriggeredAbilityContext).event as GameEvent<EventNames.OnConflictOpportunityAvailable>).attackerMatrix?.maximumNumberOfAttackers ?? 0;
+        const max = ((context as TriggeredAbilityContext).event as GameEvent<EventName.OnConflictOpportunityAvailable>).attackerMatrix?.maximumNumberOfAttackers ?? 0;
         const array = [];
         for(let i = min; i <= max; i++) {
             array.push(i.toString());

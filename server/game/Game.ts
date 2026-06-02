@@ -30,7 +30,7 @@ import ConflictFlow from './gamesteps/conflict/ConflictFlow.js';
 import * as MenuCommands from './MenuCommands.js';
 import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
 
-import { EffectNames, Phases, EventNames, Locations, ConflictTypes, Elements, Players } from './Constants.js';
+import { EffectName, Phases, EventName, Location, ConflictType, Element, Players } from './Constants.js';
 import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
 import { GameEventBus, type EventHandler } from './GameEventBus.js';
 import { GamePromptHelper } from './GamePromptHelper.js';
@@ -154,11 +154,11 @@ class Game {
         this.conflictTracker = new ConflictTracker();
         this.prompts = new GamePromptHelper(this);
         this.rings = {
-            air: new Ring(this, Elements.Air, ConflictTypes.Military),
-            earth: new Ring(this, Elements.Earth, ConflictTypes.Political),
-            fire: new Ring(this, Elements.Fire, ConflictTypes.Military),
-            void: new Ring(this, Elements.Void, ConflictTypes.Political),
-            water: new Ring(this, Elements.Water, ConflictTypes.Military)
+            air: new Ring(this, Element.Air, ConflictType.Military),
+            earth: new Ring(this, Element.Earth, ConflictType.Political),
+            fire: new Ring(this, Element.Fire, ConflictType.Military),
+            void: new Ring(this, Element.Void, ConflictType.Political),
+            water: new Ring(this, Element.Water, ConflictType.Military)
         };
         this.shortCardData = options.shortCardData || [];
         this.cardLibrary = options.cardLibrary ?? new Map();
@@ -352,18 +352,18 @@ class Game {
         return this.getPlayers().some((player) => player.isTraitInPlay(trait));
     }
 
-    getProvinceArray(includeStronghold: boolean = true): Locations[] {
+    getProvinceArray(includeStronghold: boolean = true): Location[] {
         if(this.gameMode === GameModes.Skirmish) {
-            return [Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree];
+            return [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
         }
-        let array: Locations[] = [
-            Locations.ProvinceOne,
-            Locations.ProvinceTwo,
-            Locations.ProvinceThree,
-            Locations.ProvinceFour
+        let array: Location[] = [
+            Location.ProvinceOne,
+            Location.ProvinceTwo,
+            Location.ProvinceThree,
+            Location.ProvinceFour
         ];
         if(includeStronghold) {
-            array.push(Locations.StrongholdProvince);
+            array.push(Location.StrongholdProvince);
         }
         return array;
     }
@@ -929,7 +929,7 @@ class Game {
     beginRound(): void {
         this.resetLimitedForPlayer();
         this.roundNumber++;
-        this.raiseEvent(EventNames.OnBeginRound);
+        this.raiseEvent(EventName.OnBeginRound);
         this.queueStep(new DynastyPhase(this));
         this.queueStep(new DrawPhase(this));
         this.queueStep(new ConflictPhase(this));
@@ -940,7 +940,7 @@ class Game {
     }
 
     roundEnded(): void {
-        this.raiseEvent(EventNames.OnRoundEnded);
+        this.raiseEvent(EventName.OnRoundEnded);
     }
 
     resetLimitedForPlayer(): void {
@@ -990,7 +990,7 @@ class Game {
         this.queueStep(window);
     }
 
-    getEvent<N extends EventNames>(eventName: N, params?: EventPayload<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N>;
+    getEvent<N extends EventName>(eventName: N, params?: EventPayload<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N>;
     getEvent(eventName: string, params?: Record<string, unknown>, handler?: (event: Event) => void): Event;
     getEvent(eventName: string, params: Record<string, unknown> = {}, handler?: (event: Event) => void): Event {
         return new Event(eventName, params, handler);
@@ -999,7 +999,7 @@ class Game {
     /**
      * Creates a game Event, and opens a window for it.
      */
-    raiseEvent<N extends EventNames>(eventName: N, params?: EventPayload<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N>;
+    raiseEvent<N extends EventName>(eventName: N, params?: EventPayload<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N>;
     raiseEvent(eventName: string, params?: Record<string, unknown>, handler?: (event: Event) => void): Event;
     raiseEvent(eventName: string, params: Record<string, unknown> = {}, handler: (event: Event) => void = () => true): Event {
         const event = this.getEvent(eventName, params, handler);
@@ -1099,7 +1099,7 @@ class Game {
     initiateConflict(
         player: Player,
         canPass: boolean,
-        forcedDeclaredType?: ConflictTypes,
+        forcedDeclaredType?: ConflictType,
         forceProvinceTarget?: any
     ): void {
         const conflict = new Conflict(
@@ -1125,7 +1125,7 @@ class Game {
     takeControl(player: Player, card: DrawCard): void {
         if(
             card.controller === player ||
-            !card.checkRestrictions(EffectNames.TakeControl, this.getFrameworkContext())
+            !card.checkRestrictions(EffectName.TakeControl, this.getFrameworkContext())
         ) {
             return;
         }

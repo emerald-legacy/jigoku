@@ -1,7 +1,7 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class AdoptedKin extends DrawCard {
     static id = 'adopted-kin';
@@ -13,7 +13,7 @@ class AdoptedKin extends DrawCard {
 
         this.persistentEffect({
             condition: (context: AbilityContext) => !!context.source.parent,
-            match: (card: any, context: any) => card !== context.source && card.getType() === CardTypes.Attachment && context.source.parent === card.parent,
+            match: (card: any, context: any) => card !== context.source && card.getType() === CardType.Attachment && context.source.parent === card.parent,
             effect: ability.effects.addKeyword('ancestral'),
             targetController: Players.Any
         });

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Durations, Locations } from '../../Constants.js';
+import { Duration, Location } from '../../Constants.js';
 
 class AkodoToshiro extends DrawCard {
     static id = 'akodo-toshiro';
@@ -13,7 +13,7 @@ class AkodoToshiro extends DrawCard {
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cardLastingEffect(() => ({
                     target: this.game.provinceCards,
-                    targetLocation: Locations.Provinces,
+                    targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.cardCannot('break')
                 })),
                 AbilityDsl.actions.cardLastingEffect(context => ({
@@ -22,7 +22,7 @@ class AkodoToshiro extends DrawCard {
                 })),
                 AbilityDsl.actions.cardLastingEffect(context => ({
                     target: context.source,
-                    duration: Durations.UntilEndOfRound,
+                    duration: Duration.UntilEndOfRound,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
                             onConflictFinished: () => !context.player.cardsInPlay.some((card: any) => card.hasTrait('commander'))

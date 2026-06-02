@@ -1,4 +1,4 @@
-import { CardTypes, Players, ConflictTypes } from '../../../Constants.js';
+import { CardType, Players, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { Conflict } from '../../../Conflict.js';
@@ -9,9 +9,9 @@ export default class ToStormAFortress extends DrawCard {
     public setupCardAbilities() {
         this.action({
             title: 'Increase a character\'s military skill',
-            condition: (context) => context.game.isDuringConflict(ConflictTypes.Military),
+            condition: (context) => context.game.isDuringConflict(ConflictType.Military),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.hasSomeTrait('bushi', 'monk'),
                 gameAction: AbilityDsl.actions.sequential([

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class RiverOfTheLastStand extends DrawCard {
     static id = 'river-of-the-last-stand';
@@ -11,7 +11,7 @@ class RiverOfTheLastStand extends DrawCard {
             condition: context => {
                 if(context.player.isDefendingPlayer() && context.game.currentConflict) {
                     let cards = context.game.currentConflict.getConflictProvinces().map((a: any) => context.player.getDynastyCardsInProvince(a.location));
-                    return cards.some((c: any) => c.some((card: any) => card.isFaceup() && card.type === CardTypes.Holding && card.hasTrait('kaiu-wall')));
+                    return cards.some((c: any) => c.some((card: any) => card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall')));
                 }
                 return false;
             },

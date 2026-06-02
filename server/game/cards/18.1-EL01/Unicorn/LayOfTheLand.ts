@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 
@@ -11,10 +11,10 @@ export default class LayOfTheLand extends DrawCard {
             title: 'Reveal a province and discard status tokens',
             target: {
                 activePromptTitle: 'Choose an unbroken province',
-                cardType: CardTypes.Province,
+                cardType: CardType.Province,
                 controller: Players.Any,
-                location: Locations.Provinces,
-                cardCondition: (card: ProvinceCard) => !card.isBroken && card.location !== Locations.StrongholdProvince,
+                location: Location.Provinces,
+                cardCondition: (card: ProvinceCard) => !card.isBroken && card.location !== Location.StrongholdProvince,
                 gameAction: [AbilityDsl.actions.reveal(), AbilityDsl.actions.turnFacedown()]
             },
             effect: '{1} {2}',

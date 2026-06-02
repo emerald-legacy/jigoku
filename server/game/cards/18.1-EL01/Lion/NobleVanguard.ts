@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { CardTypes, Players, Locations } from '../../../Constants.js';
+import { CardType, Players, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import Soldier from '../../Soldier.js';
 import type { Event } from '../../../Events/Event.js';
@@ -18,7 +18,7 @@ class NobleVanguard extends DrawCard {
                 }
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => context.game.actions.attach({ attachment: DummyAttachment }).canAffect(card, context),
                 gameAction: AbilityDsl.actions.handler({
@@ -26,7 +26,7 @@ class NobleVanguard extends DrawCard {
                         const card = context.player.conflictDeck[0];
                         let token = context.game.createToken(card, Soldier);
                         card.owner.removeCardFromPile(card);
-                        card.moveTo(Locations.RemovedFromGame);
+                        card.moveTo(Location.RemovedFromGame);
                         const moveEvents: Event[] = [];
                         context.game.actions.attach({ target: context.target, attachment: token }).addEventsToArray(moveEvents, context);
                         context.game.openThenEventWindow(moveEvents);

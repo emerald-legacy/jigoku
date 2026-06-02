@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { Elements } from '../../../Constants.js';
+import { Element } from '../../../Constants.js';
 
 const elementKey = 'void-acolyte-void';
 
@@ -23,7 +23,7 @@ class VoidAcolyte extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Ring',
-            element: Elements.Void
+            element: Element.Void
         });
         return symbols;
     }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Elements, Durations } from '../../Constants.js';
+import { CardType, Element, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class IsawaHeiko extends DrawCard {
@@ -10,15 +10,15 @@ class IsawaHeiko extends DrawCard {
             title: 'Switch a character\'s base skills',
             when: {
                 onCardPlayed: (event, context) => {
-                    return event.card.hasTrait(Elements.Water) &&
+                    return event.card.hasTrait(Element.Water) &&
                         event.player === context.player;
                 }
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => !card.hasDash(),
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    duration: Durations.UntilEndOfPhase,
+                    duration: Duration.UntilEndOfPhase,
                     effect: AbilityDsl.effects.switchBaseSkills()
                 })
             },

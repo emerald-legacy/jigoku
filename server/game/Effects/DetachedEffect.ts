@@ -1,6 +1,6 @@
 import StaticEffect from './StaticEffect.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { EffectNames } from '../Constants.js';
+import type { EffectName } from '../Constants.js';
 import type { EffectTarget } from './EffectBuilder.js';
 import type { GameObject } from '../GameObject.js';
 
@@ -11,7 +11,7 @@ export default class DetachedEffect extends StaticEffect {
     unapplyFunc: DetachedFunc;
     state: Record<string, unknown>;
 
-    constructor(type: EffectNames, applyFunc: DetachedFunc, unapplyFunc: DetachedFunc) {
+    constructor(type: EffectName, applyFunc: DetachedFunc, unapplyFunc: DetachedFunc) {
         super(type, undefined);
         this.applyFunc = applyFunc;
         this.unapplyFunc = unapplyFunc;

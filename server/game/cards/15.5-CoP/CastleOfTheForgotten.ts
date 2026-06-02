@@ -1,4 +1,4 @@
-import { Players, ConflictTypes, Durations } from '../../Constants.js';
+import { Players, ConflictType, Duration } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -14,8 +14,8 @@ export default class CastleOfTheForgotten extends StrongholdCard {
             },
             gameAction: AbilityDsl.actions.playerLastingEffect({
                 targetController: Players.Any,
-                effect: AbilityDsl.effects.setConflictDeclarationType(ConflictTypes.Military),
-                duration: Durations.UntilEndOfPhase
+                effect: AbilityDsl.effects.setConflictDeclarationType(ConflictType.Military),
+                duration: Duration.UntilEndOfPhase
             }),
             effect: 'make all future conflicts {1} for this phase',
             effectArgs: ['military']

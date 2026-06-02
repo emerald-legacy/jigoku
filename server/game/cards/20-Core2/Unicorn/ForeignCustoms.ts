@@ -1,4 +1,4 @@
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Duel } from '../../../Duel.js';
@@ -13,8 +13,8 @@ export default class ForeignCustoms extends DrawCard {
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose a character',
                 hidePromptIfSingleCard: true,
-                cardType: CardTypes.Character,
-                location: Locations.Provinces,
+                cardType: CardType.Character,
+                location: Location.Provinces,
                 controller: Players.Self,
                 message: '{0} puts into the conflict {1} - they challenge the traditions of the empire',
                 messageArgs: (cards) => [context.player, cards],
@@ -33,7 +33,7 @@ export default class ForeignCustoms extends DrawCard {
                         card.attachments?.some((a: DrawCard) => a.isFaction('unicorn'))
                 ),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isAtHome() && (!card.isFaction('unicorn') || card.hasTrait('gaijin')),
                 gameAction: AbilityDsl.actions.ready()
             }

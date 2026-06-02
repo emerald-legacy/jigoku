@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 
 class SharpenTheMind extends DrawCard {
     static id = 'sharpen-the-mind';
@@ -8,7 +8,7 @@ class SharpenTheMind extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Give +3/+3 to attached character',
-            cost: AbilityDsl.costs.discardCard({ location: Locations.Hand }),
+            cost: AbilityDsl.costs.discardCard({ location: Location.Hand }),
             condition: context => context.game.isDuringConflict(),
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                 target: context.source.parent,

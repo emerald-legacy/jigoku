@@ -1,4 +1,4 @@
-import { Locations } from '../../../Constants.js';
+import { Location } from '../../../Constants.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -18,7 +18,7 @@ export default class BayushiRumormonger extends DrawCard {
                     }
                     const x = this.getHighestNumberOfParticipants(context);
                     opponent.conflictDeck.slice(0, x).forEach(card =>
-                        opponent.moveCard(card, Locations.ConflictDiscardPile)
+                        opponent.moveCard(card, Location.ConflictDiscardPile)
                     );
                 }
             }),

@@ -1,4 +1,4 @@
-import { EventNames, Phases } from '../Constants.js';
+import { EventName, Phases } from '../Constants.js';
 import type Game from '../Game.js';
 import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
 import { SimpleStep } from './SimpleStep.js';
@@ -22,7 +22,7 @@ export class Phase extends BaseStepWithPipeline {
     }
 
     createPhase(): void {
-        this.game.raiseEvent(EventNames.OnPhaseCreated, { phase: this.name }, () => {
+        this.game.raiseEvent(EventName.OnPhaseCreated, { phase: this.name }, () => {
             for(const step of this.steps) {
                 this.game.queueStep(step);
             }
@@ -30,7 +30,7 @@ export class Phase extends BaseStepWithPipeline {
     }
 
     startPhase(): void {
-        this.game.raiseEvent(EventNames.OnPhaseStarted, { phase: this.name }, () => {
+        this.game.raiseEvent(EventName.OnPhaseStarted, { phase: this.name }, () => {
             this.game.currentPhase = this.name;
             if(this.name !== 'setup') {
                 this.game.addAlert('endofround', 'Round {0} - {1} phase', this.game.roundNumber, this.name);
@@ -39,7 +39,7 @@ export class Phase extends BaseStepWithPipeline {
     }
 
     endPhase(): void {
-        this.game.raiseEvent(EventNames.OnPhaseEnded, { phase: this.name });
+        this.game.raiseEvent(EventName.OnPhaseEnded, { phase: this.name });
         this.game.currentPhase = '';
     }
 }

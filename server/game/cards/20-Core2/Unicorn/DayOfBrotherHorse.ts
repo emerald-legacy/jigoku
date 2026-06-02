@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { Durations, TargetModes } from '../../../Constants.js';
+import { Duration, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 
@@ -34,13 +34,13 @@ export default class DayOfBrotherHorse extends DrawCard {
                     (context.player.cardsInPlay as DrawCard[]).some((card: DrawCard) => !card.bowed)
             },
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 ringCondition: () => true
             },
             gameAction: AbilityDsl.actions.sequentialContext((context) => ({
                 gameActions: [
                     AbilityDsl.actions.ringLastingEffect({
-                        duration: Durations.UntilEndOfPhase,
+                        duration: Duration.UntilEndOfPhase,
                         target: (context.ring.getElements() as Element[]).map((element) => context.game.rings[element]),
                         effect: AbilityDsl.effects.cannotDeclareRing(
                             (player: Player) => player === context.player.opponent

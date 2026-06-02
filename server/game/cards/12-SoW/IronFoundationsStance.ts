@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 
 class IronFoundationsStance extends DrawCard {
     static id = 'iron-foundations-stance';
@@ -10,7 +10,7 @@ class IronFoundationsStance extends DrawCard {
             title: 'Prevent opponent\'s bow and send home effects',
 
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk'),
                 gameAction: AbilityDsl.actions.multiple([

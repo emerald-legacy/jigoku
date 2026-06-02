@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
@@ -8,7 +8,7 @@ export type RemoveRingFromPlayProperties = RingActionProperties;
 
 export class RemoveRingFromPlayAction extends RingAction {
     name = 'removeRingFromPlay';
-    eventName = EventNames.OnRemoveRingFromPlay;
+    eventName = EventName.OnRemoveRingFromPlay;
     effect = 'remove the {0} from play';
     constructor(
         properties: ((context: AbilityContext) => RemoveRingFromPlayProperties) | RemoveRingFromPlayProperties
@@ -24,10 +24,10 @@ export class RemoveRingFromPlayAction extends RingAction {
         return super.canAffect(ring, context);
     }
 
-    eventHandler(event: GameEvent<EventNames.OnRemoveRingFromPlay>, _additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventName.OnRemoveRingFromPlay>, _additionalProperties: Record<string, unknown> = {}): void {
         const ring = event.ring;
         const context = event.context as AbilityContext;
 
-        context.game.raiseEvent(EventNames.OnRemoveRingFromPlay, { ring: ring }, () => ring.removeRingFromPlay());
+        context.game.raiseEvent(EventName.OnRemoveRingFromPlay, { ring: ring }, () => ring.removeRingFromPlay());
     }
 }

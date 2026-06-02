@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Durations, Locations } from '../../Constants.js';
+import { CardType, Duration, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AgashaTaiko extends DrawCard {
@@ -12,12 +12,12 @@ class AgashaTaiko extends DrawCard {
                 onCardPlayed: (event, context) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 cardCondition: card => card.location !== 'stronghold province',
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    targetLocation: Locations.Provinces,
-                    duration: Durations.UntilEndOfRound,
+                    targetLocation: Location.Provinces,
+                    duration: Duration.UntilEndOfRound,
                     effect: AbilityDsl.effects.cannotBeAttacked()
                 })
             },

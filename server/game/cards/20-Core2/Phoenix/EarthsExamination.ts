@@ -1,4 +1,4 @@
-import { CardTypes, ConflictTypes } from '../../../Constants.js';
+import { CardType, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,9 +9,9 @@ export default class EarthsExamination extends DrawCard {
         this.action<DrawCard>({
             title: 'Taint a character',
             condition: (context) =>
-                context.game.isDuringConflict(ConflictTypes.Political) && context.player.isTraitInPlay('shugenja'),
+                context.game.isDuringConflict(ConflictType.Political) && context.player.isTraitInPlay('shugenja'),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.taint(),

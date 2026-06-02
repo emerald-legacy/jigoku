@@ -1,4 +1,4 @@
-import { Durations, Players } from '../../../Constants.js';
+import { Duration, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -13,7 +13,7 @@ export default class RiverCrossing extends ProvinceCard {
             },
             effect: 'make it so each character contributes 1 skill to the conflict',
             gameAction: AbilityDsl.actions.playerLastingEffect({
-                duration: Durations.UntilEndOfConflict,
+                duration: Duration.UntilEndOfConflict,
                 targetController: Players.Any,
                 effect: AbilityDsl.effects.changeConflictSkillFunction((_card: any) => 1)
             })

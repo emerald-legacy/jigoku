@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,11 +12,11 @@ export default class SharingShineisWisdom extends ProvinceCard {
                 onCardRevealed: (event, context) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 gameAction: AbilityDsl.actions.selectCard((context) => ({
                     activePromptTitle: 'Choose a character to receive a fate',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: context.target.controller === context.player ? Players.Self : Players.Opponent,
                     cardCondition: (card, context) => card !== context.target,
                     message: '{0} moves 1 fate from {1} to {2}',

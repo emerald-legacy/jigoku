@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { EventNames, Locations, TargetModes } from '../../../Constants.js';
+import { EventName, Location, TargetMode } from '../../../Constants.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 class Stowaway extends DrawCard {
@@ -10,15 +10,15 @@ class Stowaway extends DrawCard {
         this.reaction({
             title: 'Place cards underneath self',
             when: {
-                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context: any) => !!event.attackers?.includes(context.source),
-                onDefendersDeclared: (event: EventPayload<EventNames.OnDefendersDeclared>, context: any) => !!event.defenders?.includes(context.source),
-                onCharacterEntersPlay: (event: EventPayload<EventNames.OnCharacterEntersPlay>, context: any) => event.card === context.source && context.game.isDuringConflict() && context.source.isParticipating()
+                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context: any) => !!event.attackers?.includes(context.source),
+                onDefendersDeclared: (event: EventPayload<EventName.OnDefendersDeclared>, context: any) => !!event.defenders?.includes(context.source),
+                onCharacterEntersPlay: (event: EventPayload<EventName.OnCharacterEntersPlay>, context: any) => event.card === context.source && context.game.isDuringConflict() && context.source.isParticipating()
             },
             effect: 'place {0} beneath {1}',
             effectArgs: context => [context.source],
             target: {
-                location: [Locations.DynastyDiscardPile, Locations.ConflictDiscardPile],
-                mode: TargetModes.UpTo,
+                location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
+                mode: TargetMode.UpTo,
                 numCards: 2,
                 activePromptTitle: 'Choose up to 2 cards in a discard pile',
                 sameDiscardPile: true,

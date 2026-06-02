@@ -1,4 +1,4 @@
-import { CardTypes, Locations, Players } from '../../Constants.js';
+import { CardType, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -7,11 +7,11 @@ export default class FoothillsKeep extends ProvinceCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            targetLocation: Locations.Provinces,
+            targetLocation: Location.Provinces,
             targetController: Players.Self,
             condition: () => true,
             match: (card, context) =>
-                card.type === CardTypes.Province && card !== context?.source && card.controller === context?.player,
+                card.type === CardType.Province && card !== context?.source && card.controller === context?.player,
             effect: AbilityDsl.effects.fateCostToRingToDeclareConflictAgainst()
         });
     }

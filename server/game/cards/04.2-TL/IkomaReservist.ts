@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 
 const elementKeys = {
     fire: 'ikoma-reservist-fire',
@@ -25,12 +25,12 @@ class IkomaReservist extends DrawCard {
         symbols.push({
             key: elementKeys.fire,
             prettyName: 'Claimed Ring',
-            element: Elements.Fire
+            element: Element.Fire
         });
         symbols.push({
             key: elementKeys.water,
             prettyName: 'Claimed Ring',
-            element: Elements.Water
+            element: Element.Water
         });
         return symbols;
     }

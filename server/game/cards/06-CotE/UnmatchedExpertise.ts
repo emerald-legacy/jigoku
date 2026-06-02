@@ -2,7 +2,7 @@ import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventNames } from '../../Constants.js';
+import { EventName } from '../../Constants.js';
 class UnmatchedExpertise extends DrawCard {
     static id = 'unmatched-expertise';
 
@@ -13,7 +13,7 @@ class UnmatchedExpertise extends DrawCard {
         this.forcedReaction({
             title: 'Removed after attached character loses a conflict',
             when: {
-                afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) => context.source.parent && context.source.parent.isParticipating() &&
+                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) => context.source.parent && context.source.parent.isParticipating() &&
                                                    event.conflict.loser === context.source.parent.controller
             },
             gameAction: ability.actions.discardFromPlay()

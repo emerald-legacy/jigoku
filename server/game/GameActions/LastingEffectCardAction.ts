@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAbility from '../BaseAbility.js';
 import type BaseCard from '../BaseCard.js';
-import { Durations, EffectNames, EventNames, Locations } from '../Constants.js';
+import { Duration, EffectName, EventName, Location } from '../Constants.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import { CardGameAction } from './CardGameAction.js';
 import type { LastingEffectGeneralProperties } from './LastingEffectAction.js';
@@ -9,7 +9,7 @@ import type { LastingEffectGeneralProperties } from './LastingEffectAction.js';
 type LastingEffectFactory = (game: unknown, source: unknown, props: unknown) => { effect: { canBeApplied: (card: BaseCard) => boolean; type: string }; match: unknown };
 
 export interface LastingEffectCardProperties extends LastingEffectGeneralProperties {
-    targetLocation?: Locations | Locations[];
+    targetLocation?: Location | Location[];
     canChangeZoneOnce?: boolean;
     canChangeZoneNTimes?: number;
 }
@@ -19,11 +19,11 @@ export class LastingEffectCardAction<
 // @ts-expect-error -- P extends LastingEffectCardProperties but CardGameAction expects CardGameActionProperties; intentional for lasting effect specialization
 > extends CardGameAction<P> {
     name = 'applyLastingEffect';
-    eventName = EventNames.OnEffectApplied;
+    eventName = EventName.OnEffectApplied;
     effect = 'apply a lasting effect to {0}';
     // @ts-expect-error -- intentionally narrowing defaultProperties type from base class generic P to LastingEffectCardProperties
     defaultProperties: LastingEffectCardProperties = {
-        duration: Durations.UntilEndOfConflict,
+        duration: Duration.UntilEndOfConflict,
         canChangeZoneOnce: false,
         canChangeZoneNTimes: 0,
         effect: [],
@@ -49,7 +49,7 @@ export class LastingEffectCardAction<
     canAffect(card: BaseCard, context: AbilityContext, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
         properties.effect = properties.effect.map((factory: LastingEffectFactory) => factory(context.game, context.source, properties));
-        const lastingEffectRestrictions = card.getEffects(EffectNames.CannotApplyLastingEffects);
+        const lastingEffectRestrictions = card.getEffects(EffectName.CannotApplyLastingEffects);
         return (
             super.canAffect(card, context) &&
             properties.effect.some(
@@ -60,11 +60,11 @@ export class LastingEffectCardAction<
         );
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnEffectApplied>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnEffectApplied>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         const { effect: _effect, ...otherProperties } = this.getProperties(context, additionalProperties);
         const eventContext = event.context as AbilityContext;
-        const effectProperties = Object.assign({ match: event.card, location: Locations.Any }, otherProperties);
+        const effectProperties = Object.assign({ match: event.card, location: Location.Any }, otherProperties);
         let effects = _effect.map((factory: LastingEffectFactory) =>
             factory(eventContext.game, eventContext.source, effectProperties)
         );
@@ -74,7 +74,7 @@ export class LastingEffectCardAction<
         event.matches = Array.isArray(matches) ? matches : [matches];
     }
 
-    eventHandler(event: GameEvent<EventNames.OnEffectApplied>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventName.OnEffectApplied>, additionalProperties: Record<string, unknown> = {}): void {
         const eventContext = event.context as AbilityContext;
         let properties = this.getProperties(eventContext, additionalProperties);
         if(!properties.ability) {
@@ -82,9 +82,9 @@ export class LastingEffectCardAction<
         }
 
         const card = event.card as BaseCard;
-        const lastingEffectRestrictions = card.getEffects(EffectNames.CannotApplyLastingEffects);
+        const lastingEffectRestrictions = card.getEffects(EffectName.CannotApplyLastingEffects);
         const { effect: _effect, ...otherProperties } = properties;
-        const effectProperties = Object.assign({ match: card, location: Locations.Any }, otherProperties);
+        const effectProperties = Object.assign({ match: card, location: Location.Any }, otherProperties);
         let effects = properties.effect.map((factory: LastingEffectFactory) =>
             factory(eventContext.game, eventContext.source, effectProperties)
         );

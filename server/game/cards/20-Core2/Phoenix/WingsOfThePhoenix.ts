@@ -1,4 +1,4 @@
-import { CardTypes, Durations, Players } from '../../../Constants.js';
+import { CardType, Duration, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,7 +12,7 @@ export default class WingsOfThePhoenix extends DrawCard {
                 context.game.isDuringConflict() &&
                 context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('shugenja')),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.sendHome(),
@@ -22,7 +22,7 @@ export default class WingsOfThePhoenix extends DrawCard {
                         gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                             target: context.game.currentConflict.getCharacters(context.player.opponent),
                             effect: AbilityDsl.effects.modifyBothSkills(-1),
-                            duration: Durations.UntilEndOfConflict
+                            duration: Duration.UntilEndOfConflict
                         })),
                         effect: 'give all participating enemies -1{1}/-1{2} until the end of the conflict',
                         effectArgs: ['military', 'political']

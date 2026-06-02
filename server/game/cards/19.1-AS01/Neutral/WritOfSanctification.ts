@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { AbilityTypes, CardTypes, Players, TargetModes } from '../../../Constants.js';
+import { AbilityType, CardType, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { ActionProps } from '../../../Interfaces.js';
 
@@ -16,19 +16,19 @@ export default class WritOfSanctification extends DrawCard {
         this.persistentEffect({
             condition: (context) =>
                 !(context.player.cardsInPlay as BaseCard[]).some(
-                    (card) => card.hasTrait('shadowlands') && card.type === CardTypes.Character
+                    (card) => card.hasTrait('shadowlands') && card.type === CardType.Character
                 ),
             effect: AbilityDsl.effects.addKeyword('ancestral')
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Bow corrupt character',
                 condition: (context) => context.source.isParticipating(),
                 target: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Any,
-                    mode: TargetModes.Single,
+                    mode: TargetMode.Single,
                     cardCondition: (card) => card.isParticipating() && (card.hasTrait('shadowlands') || card.isTainted),
                     gameAction: AbilityDsl.actions.bow()
                 }

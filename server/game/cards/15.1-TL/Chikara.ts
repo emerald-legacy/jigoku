@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityTypes, CardTypes, EventNames } from '../../Constants.js';
+import { AbilityType, CardType, EventName } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 class Chikara extends DrawCard {
@@ -16,10 +16,10 @@ class Chikara extends DrawCard {
 
         this.whileAttached({
             match: (card: any) => card.hasTrait('champion'),
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Return all fate from, then sacrifice a character',
                 when: {
-                    afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) => {
+                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) => {
                         return event.conflict.winner === context.source.controller && context.source.isParticipating();
                     }
                 },
@@ -27,7 +27,7 @@ class Chikara extends DrawCard {
                 effect: 'force {1} to sacrifice {0}, returning all its fate to {1}\'s fate pool',
                 effectArgs: (context: AbilityContext) => [(context.target as DrawCard).controller],
                 target: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: (card: any) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.sequential([
                         AbilityDsl.actions.removeFate((context: AbilityContext) => ({

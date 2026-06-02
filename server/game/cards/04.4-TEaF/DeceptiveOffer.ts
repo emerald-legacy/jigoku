@@ -1,7 +1,7 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
-import { Players, TargetModes, CardTypes } from '../../Constants.js';
+import { Players, TargetMode, CardType } from '../../Constants.js';
 
 class DeceptiveOffer extends DrawCard {
     static id = 'deceptive-offer';
@@ -11,12 +11,12 @@ class DeceptiveOffer extends DrawCard {
             title: 'Increase a character\'s military and political skill or take an honor from your opponent',
             targets: {
                 character: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: card => card.isParticipating()
                 },
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: 'character',
                     player: Players.Opponent,
                     choices: {

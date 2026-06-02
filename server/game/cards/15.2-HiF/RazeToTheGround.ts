@@ -1,4 +1,4 @@
-import { CardTypes, Locations } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -20,9 +20,9 @@ export default class RazeToTheGround extends DrawCard {
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
-                cardCondition: (card) => card.isConflictProvince() && card.location !== Locations.StrongholdProvince,
+                cardType: CardType.Province,
+                location: Location.Provinces,
+                cardCondition: (card) => card.isConflictProvince() && card.location !== Location.StrongholdProvince,
                 message: '{0} breaks {1}',
                 messageArgs: (cards) => [context.player, cards],
                 gameAction: AbilityDsl.actions.breakProvince()

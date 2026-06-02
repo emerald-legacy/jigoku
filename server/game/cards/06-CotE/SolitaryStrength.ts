@@ -3,7 +3,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventNames } from '../../Constants.js';
+import { EventName } from '../../Constants.js';
 class SolitaryStrength extends DrawCard {
     static id = 'solitary-strength';
 
@@ -30,7 +30,7 @@ class SolitaryStrength extends DrawCard {
         this.reaction({
             title: 'Gain 1 honor',
             when: {
-                afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) => context.source.parent && context.source.parent.isParticipating() &&
+                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) => context.source.parent && context.source.parent.isParticipating() &&
                                                    event.conflict.winner === context.source.parent.controller
             },
             gameAction: AbilityDsl.actions.gainHonor()

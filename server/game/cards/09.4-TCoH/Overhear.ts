@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import CardAbility from '../../CardAbility.js';
-import { Locations, TargetModes } from '../../Constants.js';
+import { Location, TargetMode } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { shuffle } from '../../utils/shuffle.js';
 
@@ -24,7 +24,7 @@ export default class Overhear extends DrawCard {
                         })),
                         AbilityDsl.actions.moveCard(() => ({
                             target: card,
-                            destination: Locations.ConflictDeck
+                            destination: Location.ConflictDeck
                         }))
                     ]
                 };
@@ -44,7 +44,7 @@ export default class Overhear extends DrawCard {
                 if(context.subResolution) {
                     return {
                         target: {
-                            mode: TargetModes.Select,
+                            mode: TargetMode.Select,
                             choices: {
                                 'Give 1 honor for no effect': AbilityDsl.actions.takeHonor({ target: context.player }),
                                 Done: () => true
@@ -60,7 +60,7 @@ export default class Overhear extends DrawCard {
                 const ability = context.ability instanceof CardAbility ? context.ability : undefined;
                 return {
                     target: {
-                        mode: TargetModes.Select,
+                        mode: TargetMode.Select,
                         choices: {
                             'Give 1 honor to resolve this ability again': AbilityDsl.actions.takeHonor({
                                 target: context.player

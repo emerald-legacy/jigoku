@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, Locations, CardTypes } from '../../Constants.js';
+import { Players, Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Leniency extends DrawCard {
@@ -12,8 +12,8 @@ class Leniency extends DrawCard {
                 onResolveRingElement: (event, context) => event.player === context.player
             },
             target: {
-                cardType: CardTypes.Character,
-                location: Locations.Provinces,
+                cardType: CardType.Character,
+                location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: card => card.printedCost < 3,
                 gameAction: AbilityDsl.actions.cancel({

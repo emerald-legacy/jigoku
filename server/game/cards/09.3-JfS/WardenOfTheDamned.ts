@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Phases, Players } from '../../Constants.js';
+import { CardType, Phases, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class WardenOfTheDamned extends DrawCard {
@@ -15,7 +15,7 @@ class WardenOfTheDamned extends DrawCard {
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.selectCard(context => ({
                     activePromptTitle: 'Choose a character to sacrifice',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: context.player.firstPlayer ? Players.Self : Players.Opponent,
                     player: context.player.firstPlayer ? Players.Self : Players.Opponent,
                     cardCondition: card => card.isDishonored,
@@ -23,7 +23,7 @@ class WardenOfTheDamned extends DrawCard {
                 })),
                 AbilityDsl.actions.selectCard(context => ({
                     activePromptTitle: 'Choose a character to sacrifice',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: context.player.firstPlayer ? Players.Opponent : Players.Self,
                     player: context.player.firstPlayer ? Players.Opponent : Players.Self,
                     cardCondition: card => card.isDishonored,

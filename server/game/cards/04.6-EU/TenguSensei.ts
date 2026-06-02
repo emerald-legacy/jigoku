@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
-import { Durations } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 
 class TenguSensei extends DrawCard {
     static id = 'tengu-sensei';
@@ -22,7 +22,7 @@ class TenguSensei extends DrawCard {
             gameAction: AbilityDsl.actions.cardLastingEffect(context => {
                 return ({
                     target: (context.event.context as AbilityContext).target,
-                    duration: Durations.UntilEndOfPhase,
+                    duration: Duration.UntilEndOfPhase,
                     effect: AbilityDsl.effects.cardCannot('declareAsAttacker')
                 });
             })

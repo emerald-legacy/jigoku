@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class InvocationOfAsh extends DrawCard {
     static id = 'invocation-of-ash';
@@ -10,7 +10,7 @@ class InvocationOfAsh extends DrawCard {
             title: 'Move to another character',
             cost: AbilityDsl.costs.payHonor(1),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.attach(context => ({ attachment: context.source })),

@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 
 class NightshadeInfiltrator extends DrawCard {
     static id = 'nightshade-infiltrator';
@@ -12,7 +12,7 @@ class NightshadeInfiltrator extends DrawCard {
             condition: context => context.source.isParticipating(),
             target: {
                 player: Players.Self,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                     target: context.target,

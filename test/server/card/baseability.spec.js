@@ -1,5 +1,5 @@
 import BaseAbility from '../../../build/server/game/BaseAbility.js';
-import { Stages } from '../../../build/server/game/Constants.js';
+import { Stage } from '../../../build/server/game/Constants.js';
 
 describe('BaseAbility', function () {
     beforeEach(function () {
@@ -172,7 +172,7 @@ describe('BaseAbility', function () {
             this.card2.canBeTargeted.and.returnValue(true);
             this.card2.getType.and.returnValue('holding');
             let game = { allCards: [this.card1, this.card2] };
-            this.context = { game: game, stage: Stages.Target, targets: {} };
+            this.context = { game: game, stage: Stage.Target, targets: {} };
             this.context.copy = () => this.context;
         });
 

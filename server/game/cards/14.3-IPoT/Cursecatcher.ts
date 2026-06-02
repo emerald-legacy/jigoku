@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class Cursecatcher extends DrawCard {
     static id = 'cursecatcher';
@@ -9,7 +9,7 @@ class Cursecatcher extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel province ability',
             when: {
-                onInitiateAbilityEffects: event => event.card.type === CardTypes.Province && //province
+                onInitiateAbilityEffects: event => event.card.type === CardType.Province && //province
                     event.card.controller && event.card.controller.getDynastyCardsInProvince(event.card.location).some(a => a.isFacedown()) //any facedown cards
             },
             effect: 'cancel the effects of {1}\'s ability',

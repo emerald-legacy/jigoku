@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Durations } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 
 class CurrentOfTheBeryt extends DrawCard {
     static id = 'current-of-the-beryt';
@@ -17,7 +17,7 @@ class CurrentOfTheBeryt extends DrawCard {
             effect: 'take two actions',
             gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
                 targetController: context.player,
-                duration: Durations.UntilPassPriority,
+                duration: Duration.UntilPassPriority,
                 effect: AbilityDsl.effects.additionalAction(2)
             }))
         });

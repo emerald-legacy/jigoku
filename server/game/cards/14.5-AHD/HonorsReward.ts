@@ -1,4 +1,4 @@
-import { CardTypes, Players, Elements } from '../../Constants.js';
+import { CardType, Players, Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,7 +12,7 @@ export default class HonorsReward extends ProvinceCard {
             title: 'give target character +3 glory',
             conflictProvinceCondition: (province) => province.isElement(this.getCurrentElementSymbol(elementKey)),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
@@ -28,7 +28,7 @@ export default class HonorsReward extends ProvinceCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Ability - Province Element',
-            element: Elements.Fire
+            element: Element.Fire
         });
         return symbols;
     }

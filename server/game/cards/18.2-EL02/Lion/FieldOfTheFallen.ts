@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { Locations } from '../../../Constants.js';
+import { Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 class FieldOfTheFallen extends DrawCard {
@@ -9,7 +9,7 @@ class FieldOfTheFallen extends DrawCard {
         this.action({
             title: 'Discard then draw a card',
             condition: context => context.game.isDuringConflict('military'),
-            cost: AbilityDsl.costs.discardCard({ location: Locations.Hand }),
+            cost: AbilityDsl.costs.discardCard({ location: Location.Hand }),
             gameAction: AbilityDsl.actions.sequentialContext(context => {
                 let moreHonorable = context.player.isMoreHonorable();
                 let gameActions = [];
@@ -20,12 +20,12 @@ class FieldOfTheFallen extends DrawCard {
                 );
                 if(moreHonorable) {
                     gameActions.push(AbilityDsl.actions.selectCard(context => ({
-                        location: [Locations.DynastyDiscardPile, Locations.ConflictDiscardPile],
+                        location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                         activePromptTitle: 'Select a card to place on the bottom of a deck',
                         message: '{0} places {1} on the bottom of {2}\'s {3} deck',
                         messageArgs: card => [context.player, card, card.owner, card.isDynasty ? 'dynasty' : 'conflict'],
                         gameAction: AbilityDsl.actions.returnToDeck({
-                            location: Locations.Any,
+                            location: Location.Any,
                             bottom: true
                         })
                     })));

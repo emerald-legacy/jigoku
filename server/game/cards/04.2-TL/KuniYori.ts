@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, TargetModes, Elements } from '../../Constants.js';
+import { CardType, TargetMode, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'kuni-yori-earth';
@@ -10,7 +10,7 @@ class KuniYori extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: () => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
-            match: card => card.getType() === CardTypes.Character,
+            match: card => card.getType() === CardType.Character,
             effect: AbilityDsl.effects.modifyBothSkills(1)
         });
 
@@ -19,7 +19,7 @@ class KuniYori extends DrawCard {
             condition: () => this.game.isDuringConflict(),
             cost: AbilityDsl.costs.payHonor(1),
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 activePromptTitle:'Select a player to discard a random card from his/her hand',
                 targets: true,
                 choices: {
@@ -35,7 +35,7 @@ class KuniYori extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Conflict Type',
-            element: Elements.Earth
+            element: Element.Earth
         });
         return symbols;
     }

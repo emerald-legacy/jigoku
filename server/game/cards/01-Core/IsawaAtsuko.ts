@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 
 const elementKey = 'isawa-atsuko-void';
 
@@ -30,7 +30,7 @@ class IsawaAtsuko extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Contested Ring',
-            element: Elements.Void
+            element: Element.Void
         });
         return symbols;
     }

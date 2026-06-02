@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardTypes, Phases } from '../../Constants.js';
+import { Players, CardType, Phases } from '../../Constants.js';
 
 class RoadsideInn extends DrawCard {
     static id = 'roadside-inn';
@@ -17,12 +17,12 @@ class RoadsideInn extends DrawCard {
             },
             targets: {
                 myCharacter: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     gameAction: AbilityDsl.actions.placeFate(context => ({ origin: context.player }))
                 },
                 oppCharacter: {
                     player: Players.Opponent,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     optional: true,
                     hideIfNoLegalTargets: true,
                     cardCondition: (card, context) => context.costs.optionalHonorTransferFromOpponentCostPaid,

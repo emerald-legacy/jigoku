@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, Players } from '../../Constants.js';
+import { Location, Players } from '../../Constants.js';
 
 class SpiritcallerProdigy extends DrawCard {
     static id = 'spiritcaller-prodigy';
@@ -11,7 +11,7 @@ class SpiritcallerProdigy extends DrawCard {
             cost: AbilityDsl.costs.sacrificeSelf(),
             target: {
                 activePromptTitle: 'Choose a character from your dynasty discard pile',
-                location: [Locations.DynastyDiscardPile],
+                location: [Location.DynastyDiscardPile],
                 cardCondition: card => card.isFaction('lion') && card.costLessThan(4),
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.putIntoPlay()

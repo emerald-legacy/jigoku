@@ -1,5 +1,5 @@
 import CardSelector from '../CardSelector.js';
-import { Stages, Players, EffectNames, TargetModes } from '../Constants.js';
+import { Stage, Players, EffectName, TargetMode } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
@@ -14,7 +14,7 @@ interface OwningAbility {
 interface AbilityTargetCardProperties {
     gameAction: GameAction[];
     dependsOn?: string;
-    mode?: TargetModes;
+    mode?: TargetMode;
     cardCondition?: (card: any, context: AbilityContext) => boolean;
     player?: ((context: AbilityContext) => Players) | Players;
     [key: string]: unknown;
@@ -59,7 +59,7 @@ class AbilityTargetCard {
     getSelector(properties: AbilityTargetCardProperties): CardSelectorInstance {
         let cardCondition = (card: BaseCard, context: AbilityContext) => {
             let contextCopy = this.getContextCopy(card, context);
-            if(context.stage === Stages.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
+            if(context.stage === Stage.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
                 return false;
             }
             return (!properties.cardCondition || properties.cardCondition(card, contextCopy)) &&
@@ -100,11 +100,11 @@ class AbilityTargetCard {
             return;
         }
         let player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
-        if(player === context.player.opponent && context.stage === Stages.PreTarget) {
+        if(player === context.player.opponent && context.stage === Stage.PreTarget) {
             targetResults.delayTargeting = this;
             return;
         }
-        if(this.properties.mode === TargetModes.AutoSingle) {
+        if(this.properties.mode === TargetMode.AutoSingle) {
             let legalTargets = this.selector.getAllLegalTargets(context, player);
             if(legalTargets.length === 1) {
                 context.targets[this.name] = legalTargets[0];
@@ -115,7 +115,7 @@ class AbilityTargetCard {
 
         let buttons: PromptButton[] = [];
         let waitingPromptTitle = '';
-        if(context.stage === Stages.PreTarget) {
+        if(context.stage === Stage.PreTarget) {
             if(!targetResults.noCostsFirstButton) {
                 buttons.push({ text: 'Pay costs first', arg: 'costsFirst' });
             }
@@ -127,7 +127,7 @@ class AbilityTargetCard {
             }
         }
         let mustSelect = this.selector.getAllLegalTargets(context, player).filter((card: BaseCard) =>
-            card.getEffects(EffectNames.MustBeChosen).some((restriction) => restriction.isMatch('target', context))
+            card.getEffects(EffectName.MustBeChosen).some((restriction) => restriction.isMatch('target', context))
         );
         let promptProperties = {
             waitingPromptTitle: waitingPromptTitle,

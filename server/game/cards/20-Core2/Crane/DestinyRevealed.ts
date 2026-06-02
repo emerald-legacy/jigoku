@@ -1,4 +1,4 @@
-import { CardTypes, EventNames, Players } from '../../../Constants.js';
+import { CardType, EventName, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { Duel } from '../../../Duel.js';
@@ -15,7 +15,7 @@ export default class DestinyRevealed extends DrawCard {
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose a duel participant',
                 hidePromptIfSingleCard: true,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => ((context as TriggeredAbilityContext).event.duel as Duel).isInvolved(card),
                 message: '{0} places a fate from their fate pool on {1}',
@@ -29,7 +29,7 @@ export default class DestinyRevealed extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel a ring effect',
             when: {
-                onMoveFate: (event: EventPayload<EventNames.OnMoveFate>, context) =>
+                onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context) =>
                     event.context?.source.type === 'ring' &&
                     !!event.origin && 'controller' in event.origin &&
                     event.origin.controller === context.player &&
@@ -47,10 +47,10 @@ export default class DestinyRevealed extends DrawCard {
 }
 
 type CardStatusEvent =
-    | EventPayload<EventNames.OnCardHonored>
-    | EventPayload<EventNames.OnCardDishonored>
-    | EventPayload<EventNames.OnCardBowed>
-    | EventPayload<EventNames.OnCardReadied>;
+    | EventPayload<EventName.OnCardHonored>
+    | EventPayload<EventName.OnCardDishonored>
+    | EventPayload<EventName.OnCardBowed>
+    | EventPayload<EventName.OnCardReadied>;
 
 function targetedByOpponentRingEffect(event: CardStatusEvent, context: TriggeredAbilityContext<any>) {
     return event.card?.controller === context.player && event.context?.source.type === 'ring';
