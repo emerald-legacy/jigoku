@@ -34,10 +34,7 @@ export class DuelAction extends CardGameAction {
     eventName = EventName.OnDuelInitiated;
     targetType = [CardType.Character];
 
-    defaultProperties: DuelProperties = {
-        type: undefined as unknown as DuelType,
-        gameAction: null as unknown as GameAction
-    };
+    defaultProperties: DuelProperties = { cannotBeCancelled: false, optional: false } as DuelProperties;
 
     getProperties(context: AbilityContext, additionalProperties = {}): ResolvedDuelProperties {
         const properties = super.getProperties(context, additionalProperties) as DuelProperties;
