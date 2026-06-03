@@ -12,8 +12,13 @@ import type Game from './Game.js';
  * card action/play/reaction menus share one type instead of falling back to `any`.
  */
 abstract class BaseCardAbility extends BaseAbility {
-    card!: BaseCard;
+    card: BaseCard;
     title?: string;
+
+    constructor(card: BaseCard, properties: ConstructorParameters<typeof BaseAbility>[0]) {
+        super(properties);
+        this.card = card;
+    }
 
     get game(): Game {
         return this.card.game;

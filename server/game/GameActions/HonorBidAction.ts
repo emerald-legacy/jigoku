@@ -1,4 +1,4 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames, Players } from '../Constants.js';
 import HonorBidPrompt from '../gamesteps/HonorBidPrompt.js';
@@ -16,7 +16,7 @@ export interface HonorBidProperties extends PlayerActionProperties {
     messageArgs?: (context: AbilityContext) => unknown[];
 }
 
-export class HonorBidAction extends PlayerAction {
+export class HonorBidAction extends PlayerAction<HonorBidProperties, EventNames.OnHonorBid> {
     name = 'honorBid';
     eventName = EventNames.OnHonorBid;
     defaultProperties: HonorBidProperties = {
@@ -56,7 +56,7 @@ export class HonorBidAction extends PlayerAction {
         return ['have {0} select a value on their honor dial', [players]];
     }
 
-    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnHonorBid>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { giveHonor, prohibitedBids, players, postBidAction, message, messageArgs } = this.getProperties(
             context,
             additionalProperties
@@ -70,26 +70,26 @@ export class HonorBidAction extends PlayerAction {
         event.messageArgs = messageArgs;
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnHonorBid>): void {
         const context = event.context as AbilityContext;
 
         if(event.players === Players.Any) {
             const prohibitedBids: Record<string, string[]> = {};
             for(const player of context.game.getPlayers()) {
-                prohibitedBids[player.uuid] = event.prohibitedBids;
+                prohibitedBids[player.uuid] = (event.prohibitedBids ?? []).map((bid) => String(bid));
             }
             const costHandler = event.giveHonor ? undefined : () => {};
             context.game.queueStep(
                 new HonorBidPrompt(context.game, 'Choose your bid', costHandler, prohibitedBids, null, true)
             );
             context.game.queueStep(
-                new SimpleStep(context.game, () => event.postBidAction.resolve(context.player, context))
+                new SimpleStep(context.game, () => event.postBidAction && event.postBidAction.resolve(context.player, context))
             );
             context.game.queueStep(
                 new SimpleStep(context.game, () => {
                     const [message, messageArgs] = event.message
                         ? [event.message, event.messageArgs ? Array.from(event.messageArgs(context)) : []]
-                        : event.postBidAction.getEffectMessage(context);
+                        : (event.postBidAction ? event.postBidAction.getEffectMessage(context) : ['', []]);
                     context.game.addMessage(message, ...messageArgs);
                 })
             );

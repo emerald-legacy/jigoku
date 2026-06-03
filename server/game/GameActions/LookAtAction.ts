@@ -1,4 +1,5 @@
 import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { EventNames, Locations } from '../Constants.js';
@@ -9,7 +10,7 @@ export interface LookAtProperties extends CardActionProperties {
     messageArgs?: (cards: BaseCard[]) => unknown[];
 }
 
-export class LookAtAction extends CardGameAction {
+export class LookAtAction extends CardGameAction<CardActionProperties, EventNames.OnLookAtCards> {
     name = 'lookAt';
     eventName = EventNames.OnLookAtCards;
     effect = 'look at a facedown card';
@@ -35,7 +36,7 @@ export class LookAtAction extends CardGameAction {
         events.push(event);
     }
 
-    addPropertiesToEvent(event: Event, cards: unknown, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnLookAtCards>, cards: unknown, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
         let resolved: BaseCard[];
         if(!cards) {
             const target = this.getProperties(context, additionalProperties).target;
@@ -50,10 +51,11 @@ export class LookAtAction extends CardGameAction {
         event.context = context;
     }
 
-    eventHandler(event: Event, additionalProperties = {}): void {
+    eventHandler(event: GameEvent<EventNames.OnLookAtCards>, additionalProperties = {}): void {
         let context = event.context as AbilityContext;
         let properties = this.getProperties(context, additionalProperties) as LookAtProperties;
-        let messageArgs = properties.messageArgs ? properties.messageArgs(event.cards) : [context.source, event.cards];
+        let cards = event.cards as BaseCard[];
+        let messageArgs = properties.messageArgs ? properties.messageArgs(cards) : [context.source, cards];
         context.game.addMessage(this.getMessage(properties.message, context), ...messageArgs);
     }
 
@@ -64,7 +66,7 @@ export class LookAtAction extends CardGameAction {
         return message ?? '';
     }
 
-    isEventFullyResolved(event: Event): boolean {
+    isEventFullyResolved(event: GameEvent<EventNames.OnLookAtCards>): boolean {
         return !event.cancelled && event.name === this.eventName;
     }
 

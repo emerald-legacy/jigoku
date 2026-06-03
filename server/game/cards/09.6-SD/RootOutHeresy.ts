@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { CardTypes, EventNames, Locations } from '../../Constants.js';
+import type { GameEvent } from '../../Events/EventPayloads.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class RootOutHeresy extends DrawCard {
@@ -34,12 +35,12 @@ class RootOutHeresy extends DrawCard {
     getStrengthModifier(context: AbilityContext) {
         //Find the event
         if(context.events) {
-            let event = context.events.find((a: any) => a.name === 'onCardsDiscardedFromHand');
+            let event = context.events.find((a: any) => a.name === 'onCardsDiscardedFromHand') as GameEvent<EventNames.OnCardsDiscardedFromHand> | undefined;
             if(event) {
                 if(event.discardedCards && event.discardedCards.length > 0) {
                     //Grab the first one (this card should only discard one card)
-                    let card = event.discardedCards[0];
-                    let cost = card.printedCost;
+                    let card = event.discardedCards[0] as DrawCard;
+                    let cost = card.printedCost ?? 0;
 
                     return -1 * cost;
                 }

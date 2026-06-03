@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardTypes, EventNames, Players, CharacterStatus } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
+import type { StatusToken } from '../../StatusToken.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -22,7 +23,7 @@ class FinalWhisper extends DrawCard {
                 cardCondition: (card: DrawCard, context: AbilityContext) =>
                     card !== (context as TriggeredAbilityContext).event.card && card.controller === ((context as TriggeredAbilityContext).event.card as DrawCard).controller,
                 gameAction: AbilityDsl.actions.gainStatusToken((context: AbilityContext) => ({
-                    token: ((context as TriggeredAbilityContext).event.token?.grantedStatus || (context as TriggeredAbilityContext).event.token) as CharacterStatus
+                    token: (((context as TriggeredAbilityContext).event.token as StatusToken)?.grantedStatus || (context as TriggeredAbilityContext).event.token) as CharacterStatus
                 }))
             }
         });

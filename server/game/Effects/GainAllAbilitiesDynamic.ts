@@ -55,7 +55,7 @@ export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch> {
         return `${ability.abilityIdentifier}-${ability.card.uuid}`;
     }
 
-    getAbility(abilityType: string, ability: CardAbility, target: BaseCard): GainAbility {
+    getAbility(abilityType: AbilityTypes, ability: CardAbility, target: BaseCard): GainAbility {
         const id = this.getAbilityIdentifier(ability);
         if(!this.createdAbilities[id]) {
             const res = new GainAbility(abilityType, ability);

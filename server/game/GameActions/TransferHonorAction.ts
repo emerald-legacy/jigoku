@@ -1,4 +1,4 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EffectNames, EventNames } from '../Constants.js';
 import type Player from '../Player.js';
@@ -95,19 +95,19 @@ export class TransferHonorAction extends PlayerAction {
         return super.canAffect(player, context);
     }
 
-    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnTransferHonor>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
         let { afterBid, amount } = this.getProperties(context, additionalProperties) as TransferHonorProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.afterBid = afterBid;
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnTransferHonor>): void {
         var amountToTransfer = this.getAmountToTransfer(
-            event.player,
-            event.player.opponent as Player,
+            event.player as Player,
+            (event.player as Player).opponent as Player,
             event.context as AbilityContext,
-            event.amount
+            event.amount ?? 0
         );
 
         if(event.player && event.player.opponent) {

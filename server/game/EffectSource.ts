@@ -1,31 +1,77 @@
-import AbilityDsl from './abilitydsl.js';
+import { getAbilityDsl, type AbilityDslType } from './AbilityDslProvider.js';
+import type { AbilityContext } from './AbilityContext.js';
 import { GameObject } from './GameObject.js';
 import { Locations, Durations } from './Constants.js';
 import type Game from './Game.js';
+import type Player from './Player.js';
 import type Effect from './Effects/Effect.js';
-
-type EffectFactory = (game: Game, source: any, properties: EffectProperties) => Effect;
+import type { EffectFactory } from './Effects/EffectBuilder.js';
 
 interface EffectProperties {
     duration?: Durations;
     location?: Locations;
     effect?: EffectFactory | EffectFactory[];
     match?: any;
-    condition?: () => boolean;
+    condition?: (context: AbilityContext) => boolean;
     [key: string]: any;
 }
 
-type PropertyFactory = (dsl: typeof AbilityDsl) => EffectProperties;
+type PropertyFactory = (dsl: AbilityDslType) => EffectProperties;
 
 // This class is inherited by Ring and BaseCard and also represents Framework effects
+
+// State the effect engine reads off a source. Subclasses expose these in
+// incompatible forms (BaseCard.controller is a field, StatusToken.controller a
+// getter; persistentEffects is a getter on BaseCard but a field on StatusToken/
+// ElementSymbol), so they can't be hoisted as a single class member — effect
+// sites narrow to this type instead.
+export type SourceWithState = EffectSource & {
+    controller?: Player;
+    persistentEffects?: { ref?: Effect[] }[];
+};
 
 class EffectSource extends GameObject {
     constructor(game: Game, name = 'Framework effect') {
         super(game, name);
     }
 
+    // Card-descriptor defaults shared by cards/rings/tokens (all EffectSources).
+    // BaseCard overrides them with real implementations; non-card EffectSources
+    // (Ring/StatusToken/ElementSymbol) inherit these null-object defaults.
+    public isUnique() {
+        return false;
+    }
+
+    public getPrintedFaction(): string | null {
+        return null;
+    }
+
+    public hasKeyword(_keyword: string) {
+        return false;
+    }
+
+    public hasTrait(_trait: string) {
+        return false;
+    }
+
+    public getTraits(): Set<string> {
+        return new Set();
+    }
+
+    public isFaction(_faction: string) {
+        return false;
+    }
+
+    public hasToken(_type: string) {
+        return false;
+    }
+
+    public isTemptationsMaho() {
+        return false;
+    }
+
     private applyDurationEffect(duration: Durations, propertyFactory: PropertyFactory): void {
-        const properties = propertyFactory(AbilityDsl);
+        const properties = propertyFactory(getAbilityDsl());
         this.addEffectToEngine(Object.assign({ duration, location: Locations.Any }, properties));
     }
 

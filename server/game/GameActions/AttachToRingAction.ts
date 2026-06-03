@@ -1,7 +1,7 @@
-import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { EventNames, Locations } from '../Constants.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type DrawCard from '../DrawCard.js';
 import type Ring from '../Ring.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -34,43 +34,44 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
         return super.canAffect(ring, context);
     }
 
-    checkEventCondition(event: Event, additionalProperties: Record<string, unknown> = {}): boolean {
-        return this.canAffect(event.parent, event.context as AbilityContext, additionalProperties);
+    checkEventCondition(event: GameEvent<EventNames.OnCardAttached>, additionalProperties: Record<string, unknown> = {}): boolean {
+        return this.canAffect(event.parent as Ring, event.context as AbilityContext, additionalProperties);
     }
 
-    isEventFullyResolved(event: Event, card: BaseCard | Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: GameEvent<EventNames.OnCardAttached>, card: BaseCard | Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         let { attachment } = this.getProperties(context, additionalProperties);
         return event.parent === card && event.card === attachment && event.name === this.eventName && !event.cancelled;
     }
 
-    addPropertiesToEvent(event: Event, card: BaseCard | Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnCardAttached>, card: BaseCard | Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { attachment } = this.getProperties(context, additionalProperties);
         event.name = this.eventName;
-        event.parent = card;
-        event.card = attachment;
+        event.parent = card as Ring;
+        event.card = attachment as DrawCard;
         event.context = context;
     }
 
-    eventHandler(event: Event): void {
-        if(event.card.location === Locations.PlayArea && event.card.parent) {
-            event.card.parent.removeAttachment(event.card);
+    eventHandler(event: GameEvent<EventNames.OnCardAttached>): void {
+        const card = event.card as DrawCard;
+        if(card.location === Locations.PlayArea && card.parent) {
+            card.parent.removeAttachment(card);
         } else {
-            event.card.controller.removeCardFromPile(event.card);
-            event.card.new = true;
-            event.card.moveTo(Locations.PlayArea);
+            card.controller.removeCardFromPile(card);
+            card.new = true;
+            card.moveTo(Locations.PlayArea);
         }
-        event.card.untaint();
-        event.card.makeOrdinary();
-        event.card.bowed = false;
-        event.card.covert = false;
-        event.card.fate = 0;
+        card.untaint();
+        card.makeOrdinary();
+        card.bowed = false;
+        card.covert = false;
+        card.fate = 0;
 
         const context = event.context as AbilityContext;
-        event.parent.attachments.push(event.card);
-        event.card.parent = event.parent;
-        if(event.card.controller !== context.player) {
-            event.card.controller = context.player;
-            event.card.updateEffectContexts();
+        event.parent.attachments.push(card);
+        card.parent = event.parent as DrawCard;
+        if(card.controller !== context.player) {
+            card.controller = context.player;
+            card.updateEffectContexts();
         }
     }
 }

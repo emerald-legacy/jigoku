@@ -3,14 +3,17 @@ import type BaseCard from './BaseCard.js';
 import type { Event } from './Events/Event.js';
 import type { EventUnion } from './Events/EventPayloads.js';
 
-export type TypedEvent = Event & Omit<EventUnion, 'context' | 'name' | 'cancelled' | 'resolved'>;
+// An event whose specific name is not statically known here: the framework Event
+// surface plus every payload field as optional. (Precise per-event typing is
+// GameEvent<N>, produced by the typed event factory at known-name call sites.)
+export type AnyEvent = Event & Omit<EventUnion, 'context' | 'name' | 'cancelled' | 'resolved'>;
 
 interface TriggeredAbilityContextProperties extends AbilityContextProperties {
-    event: TypedEvent;
+    event: AnyEvent;
 }
 
 export class TriggeredAbilityContext<S = any, T extends BaseCard = BaseCard> extends AbilityContext<S, T> {
-    event: TypedEvent;
+    event: AnyEvent;
 
     constructor(properties: TriggeredAbilityContextProperties) {
         super(properties);

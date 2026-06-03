@@ -1,4 +1,4 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CharacterStatus, EventNames, Locations } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -9,7 +9,7 @@ export interface MoveTokenProperties extends TokenActionProperties {
     recipient: DrawCard;
 }
 
-export class MoveTokenAction extends TokenAction {
+export class MoveTokenAction extends TokenAction<MoveTokenProperties, EventNames.OnStatusTokenMoved> {
     name = 'moveStatusToken';
     eventName = EventNames.OnStatusTokenMoved;
 
@@ -47,19 +47,21 @@ export class MoveTokenAction extends TokenAction {
         return super.canAffect(token, context, additionalProperties);
     }
 
-    addPropertiesToEvent(event: Event, token: StatusToken, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnStatusTokenMoved>, token: StatusToken, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const { recipient } = this.getProperties(context) as MoveTokenProperties;
         super.addPropertiesToEvent(event, token, context, additionalProperties);
         event.recipient = recipient;
-        event.donor = token.card;
+        event.donor = token.card ?? undefined;
     }
 
-    eventHandler(event: Event): void {
-        let tokens: StatusToken[] = Array.isArray(event.token) ? event.token : [event.token];
+    eventHandler(event: GameEvent<EventNames.OnStatusTokenMoved>): void {
+        const eventToken = event.token as StatusToken | StatusToken[];
+        const recipient = event.recipient as DrawCard;
+        let tokens: StatusToken[] = Array.isArray(eventToken) ? eventToken : [eventToken];
         tokens.forEach((token: StatusToken) => {
             token.card?.removeStatusToken(token);
-            event.recipient.addStatusToken(token);
-            event.recipient.game.raiseEvent(EventNames.OnStatusTokenGained, { token: token, card: event.recipient });
+            recipient.addStatusToken(token);
+            recipient.game.raiseEvent(EventNames.OnStatusTokenGained, { token: token, card: recipient });
         });
     }
 }

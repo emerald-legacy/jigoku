@@ -59,10 +59,12 @@ class ResolveAbilityActionResolver extends AbilityResolver {
                 event.cancel();
             }
             return;
-        } else if(this.context.ability.max && !this.context.subResolution) {
-            this.context.player.incrementAbilityMax(this.context.ability.maxIdentifier);
         }
-        this.context.ability.displayMessage(this.context, 'resolves');
+        const cardAbility = this.context.ability as CardAbility;
+        if(cardAbility.max && !this.context.subResolution) {
+            this.context.player.incrementAbilityMax(cardAbility.maxIdentifier);
+        }
+        cardAbility.displayMessage(this.context, 'resolves');
         this.game.openEventWindow(
             new InitiateCardAbilityEvent(
                 { card: this.context.source, context: this.context },

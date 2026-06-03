@@ -1,4 +1,5 @@
-import { Durations } from '../../Constants.js';
+import { Durations, EventNames } from '../../Constants.js';
+import type { GameEvent } from '../../Events/EventPayloads.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
@@ -42,7 +43,7 @@ export default class SevenStingsKeep extends StrongholdCard {
 
     getChoices(context: AbilityContext) {
         const min = 1;
-        const max = (context as TriggeredAbilityContext).event.attackerMatrix.maximumNumberOfAttackers;
+        const max = ((context as TriggeredAbilityContext).event as GameEvent<EventNames.OnConflictOpportunityAvailable>).attackerMatrix?.maximumNumberOfAttackers ?? 0;
         const array = [];
         for(let i = min; i <= max; i++) {
             array.push(i.toString());

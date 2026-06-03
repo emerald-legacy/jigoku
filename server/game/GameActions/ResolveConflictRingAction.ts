@@ -2,6 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type { Conflict } from '../Conflict.js';
 import { EffectNames, EventNames } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import { ResolveElementAction } from './ResolveElementAction.js';
@@ -19,15 +20,15 @@ export class ResolveConflictRingAction extends RingAction {
         return ['resolve {0}', [properties.target]];
     }
 
-    addPropertiesToEvent(event: Event, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnResolveConflictRing>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         let conflict = context.game.currentConflict;
 
-        event.conflict = conflict;
+        event.conflict = conflict ?? undefined;
         event.player = context.player;
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnResolveConflictRing>): void {
         if(event.name !== this.eventName) {
             return;
         }

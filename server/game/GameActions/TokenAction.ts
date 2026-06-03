@@ -1,11 +1,13 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 import type { StatusToken } from '../StatusToken.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
+import type { EventNames } from '../Constants.js';
 
 import type { Event } from '../Events/Event.js';
 export type TokenActionProperties = GameActionProperties;
 
-export class TokenAction<P extends TokenActionProperties = TokenActionProperties> extends GameAction<P> {
+export class TokenAction<P extends TokenActionProperties = TokenActionProperties, N extends EventNames = EventNames> extends GameAction<P, N> {
     targetType = ['token'];
 
     defaultTargets(context: AbilityContext): StatusToken[] {
@@ -19,11 +21,11 @@ export class TokenAction<P extends TokenActionProperties = TokenActionProperties
         return target.type === 'token';
     }
 
-    checkEventCondition(event: Event, additionalProperties = {}): boolean {
-        return this.canAffect(event.token as StatusToken, (event.context as AbilityContext), additionalProperties);
+    checkEventCondition(event: GameEvent<N>, additionalProperties = {}): boolean {
+        return this.canAffect((event as { token?: StatusToken | StatusToken[] }).token as StatusToken, (event.context as AbilityContext), additionalProperties);
     }
 
-    addPropertiesToEvent(event: Event, token: StatusToken, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<N>, token: StatusToken, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, token, context, additionalProperties);
         const typedEvent = event as Event & { token: StatusToken | StatusToken[] };
         typedEvent.token = token;

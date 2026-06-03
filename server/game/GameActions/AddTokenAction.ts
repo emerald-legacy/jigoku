@@ -1,4 +1,4 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardTypes, EventNames, Locations, TokenTypes } from '../Constants.js';
@@ -34,13 +34,13 @@ export class AddTokenAction extends CardGameAction<AddTokenProperties> {
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnAddTokenToCard>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const { tokenType } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.tokenType = tokenType;
     }
 
-    eventHandler(event: Event): void {
-        event.card.addToken(event.tokenType);
+    eventHandler(event: GameEvent<EventNames.OnAddTokenToCard>): void {
+        event.card.addToken(event.tokenType ?? '');
     }
 }

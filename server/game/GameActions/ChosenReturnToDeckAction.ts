@@ -2,6 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames, Locations, Players, TargetModes } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { shuffle } from '../utils/shuffle.js';
@@ -13,7 +14,7 @@ export interface ChosenReturnToDeckProperties extends PlayerActionProperties {
     bottom?: boolean;
 }
 
-export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckProperties> {
+export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckProperties, EventNames.OnCardMoved> {
     defaultProperties: ChosenReturnToDeckProperties = {
         amount: 1,
         targets: true,
@@ -64,7 +65,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
                     controller: player === context.player ? Players.Self : Players.Opponent,
                     onSelect: (selectingPlayer: Player, cards: BaseCard | BaseCard[]) => {
                         let event = this.getEvent(selectingPlayer, context);
-                        event.cards = cards;
+                        event.cards = Array.isArray(cards) ? cards : [cards];
                         events.push(event);
                         return true;
                     }
@@ -73,7 +74,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
         }
     }
 
-    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnCardMoved>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, shuffle, bottom } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.options = { bottom };
@@ -83,7 +84,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
         event.bottom = bottom;
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnCardMoved>): void {
         const cards = event.cards as BaseCard[];
         const context = event.context as AbilityContext;
         context.game.addMessage(

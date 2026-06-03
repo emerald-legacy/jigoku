@@ -4,7 +4,7 @@ import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 export interface PutIntoPlayProperties extends CardActionProperties {
     fate?: number;
     status?: 'honored' | 'ordinary' | 'dishonored';
@@ -87,7 +87,7 @@ export class PutIntoPlayAction extends CardGameAction {
         return true;
     }
 
-    addPropertiesToEvent(event: Event, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnCharacterEntersPlay>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { fate, status, controller, side, overrideLocation } = this.getProperties(
             context,
             additionalProperties
@@ -101,7 +101,7 @@ export class PutIntoPlayAction extends CardGameAction {
         event.side = side || this.getDefaultSide(context);
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventNames.OnCharacterEntersPlay>, additionalProperties: Record<string, unknown> = {}): void {
         const context = event.context as AbilityContext;
         let player = this.getPutIntoPlayPlayer(context);
         const card = event.card as DrawCard;
@@ -139,7 +139,7 @@ export class PutIntoPlayAction extends CardGameAction {
 
         const conflict = context.game.currentConflict;
         if(event.intoConflict && conflict) {
-            if(targetSide.isAttackingPlayer()) {
+            if(targetSide?.isAttackingPlayer()) {
                 conflict.addAttacker(card);
             } else {
                 conflict.addDefender(card);

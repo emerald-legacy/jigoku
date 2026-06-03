@@ -1,4 +1,4 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { Conflict } from '../Conflict.js';
 import type DrawCard from '../DrawCard.js';
@@ -22,8 +22,10 @@ export class SendHomeAction extends CardGameAction {
         );
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnSendHome>): void {
         const context = event.context as AbilityContext;
-        (context.game.currentConflict as Conflict).removeFromConflict(event.card);
+        if(event.card) {
+            (context.game.currentConflict as Conflict).removeFromConflict(event.card);
+        }
     }
 }

@@ -1,6 +1,8 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { Decks, Durations } from '../../../Constants.js';
+import { Decks, Durations, EventNames } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import type { GameEvent } from '../../../Events/EventPayloads.js';
+import type Player from '../../../Player.js';
 
 export function makeTwin(id: string, opt: { siblingName: string; title: string; effect: string }) {
     return class Twin extends DrawCard {
@@ -16,8 +18,9 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                     shuffle: false,
                     activePromptTitle: `Find a copy of ${opt.siblingName}`,
                     selectedCardsHandler: (context, event, cards) => {
+                        const searchEvent = event as GameEvent<EventNames.OnDeckSearch> & { player: Player };
                         if(cards.length === 0) {
-                            context.game.addMessage(`{0} finds no copies of ${opt.siblingName}`, event.player);
+                            context.game.addMessage(`{0} finds no copies of ${opt.siblingName}`, searchEvent.player);
                             return;
                         }
 
@@ -62,7 +65,7 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
 
                         context.game.addMessage(
                             '{0} replaces {1} with {2}',
-                            event.player,
+                            searchEvent.player,
                             replacedCharacter,
                             newCharacter
                         );

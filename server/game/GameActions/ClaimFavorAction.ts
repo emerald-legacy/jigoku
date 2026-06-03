@@ -3,7 +3,7 @@ import { EventNames, FavorTypes } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 export interface ClaimFavorProperties extends PlayerActionProperties {
     target?: Player;
     side?: FavorTypes;
@@ -26,7 +26,7 @@ export class ClaimFavorAction extends PlayerAction<ClaimFavorProperties> {
         return !!player && super.canAffect(player, context);
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventNames.OnClaimFavor>, additionalProperties: Record<string, unknown> = {}): void {
         let { side } = this.getProperties((event.context as AbilityContext), additionalProperties);
         if(event.player) {
             event.player.claimImperialFavor(side);

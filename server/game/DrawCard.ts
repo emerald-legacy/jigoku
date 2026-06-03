@@ -370,13 +370,8 @@ class DrawCard extends BaseCard {
         clone.printedGlory = this.printedGlory;
         clone.printedStrengthBonus = this.printedStrengthBonus;
 
-        // Shallow copy arrays
-        clone.effects = [...this.effects];
-        const clonedIndex = new Map();
-        for(const [k, v] of this.effectsByType) {
-            clonedIndex.set(k, [...v]);
-        }
-        clone.effectsByType = clonedIndex;
+        // Copy effect-tracking state (incl. suppressEffectCount) via GameObject helper
+        this.cloneEffectStateInto(clone);
         clone.statusManager = this.statusManager.cloneFor(clone);
         clone.skillCalculator = new SkillCalculator(clone);
         clone.traits = Array.from(this.getTraits());
@@ -616,7 +611,7 @@ class DrawCard extends BaseCard {
      * the state of the card should be here. This is also called in some strange corner cases e.g. for attachments
      * which aren't actually in play themselves when their parent (which is in play) leaves play.
      */
-    leavesPlay(): void {
+    leavesPlay(_destination?: string): void {
         // If this is an attachment and is attached to another card, we need to remove all links between them
         if(this.parent && this.parent.attachments) {
             this.parent.removeAttachment(this);

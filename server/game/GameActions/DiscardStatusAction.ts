@@ -1,5 +1,6 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../BaseCard.js';
 import { EventNames } from '../Constants.js';
 import type { StatusToken } from '../StatusToken.js';
 import { TokenAction, TokenActionProperties } from './TokenAction.js';
@@ -19,16 +20,16 @@ export class DiscardStatusAction extends TokenAction<DiscardStatusProperties> {
     }
 
     addPropertiesToEvent(
-        event: Event,
+        event: GameEvent<EventNames.OnStatusTokenDiscarded>,
         token: StatusToken,
         context: AbilityContext,
         additionalProperties: Record<string, unknown>
     ): void {
         super.addPropertiesToEvent(event, token, context, additionalProperties);
-        event.cards = this.#cardsLosingStatus(context);
+        event.cards = this.#cardsLosingStatus(context) as BaseCard[];
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnStatusTokenDiscarded>): void {
         const tokens = Array.isArray(event.token) ? event.token : [event.token];
         for(const token of tokens) {
             token.card.removeStatusToken(token);

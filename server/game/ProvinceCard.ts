@@ -1,5 +1,5 @@
 import { GameModes } from '../GameModes.js';
-import { EffectNames, Locations } from './Constants.js';
+import { EffectNames, Elements, Locations } from './Constants.js';
 import AbilityDsl from './abilitydsl.js';
 import BaseCard from './BaseCard.js';
 import { AttachmentManager } from './AttachmentManager.js';
@@ -160,10 +160,10 @@ export class ProvinceCard extends BaseCard {
         return this.getElement();
     }
 
-    getElement(): string[] {
+    getElement(): Elements[] {
         const symbols = this.getCurrentElementSymbols();
-        const elementArray: string[] = [];
-        symbols.forEach((symbol: { key: string; element: string }) => {
+        const elementArray: Elements[] = [];
+        symbols.forEach((symbol) => {
             if(symbol.key.startsWith('province-element')) {
                 elementArray.push(symbol.element);
             }
@@ -173,7 +173,7 @@ export class ProvinceCard extends BaseCard {
     }
 
     isElement(element: string): boolean {
-        return this.element.includes(element);
+        return (this.element as string[]).includes(element);
     }
 
     hasElementSymbols(): boolean {

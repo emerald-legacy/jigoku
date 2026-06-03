@@ -1,9 +1,10 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type { Locations } from '../Constants.js';
+import type { EventNames } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 export interface RefillFaceupProperties extends PlayerActionProperties {
     location: Locations | Locations[];
 }
@@ -21,7 +22,7 @@ export class RefillFaceupAction extends PlayerAction {
         return [context.player];
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventNames.Unnamed>, additionalProperties: Record<string, unknown> = {}): void {
         const context = event.context as AbilityContext;
         let { location } = this.getProperties(context, additionalProperties) as RefillFaceupProperties;
         if(!Array.isArray(location)) {

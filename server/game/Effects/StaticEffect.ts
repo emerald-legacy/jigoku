@@ -92,12 +92,12 @@ const conflictingEffects: Record<string, (target: GameObject, value?: unknown) =
     }
 };
 
-class StaticEffect {
+class StaticEffect implements CardEffect {
     type: EffectNames;
     value: EffectValue<any>;
-    context: any;
+    context!: AbilityContext;
     duration: Durations | null;
-    copies: GainAbility[];
+    copies: Map<string, GainAbility>;
     isConditional?: boolean;
 
     constructor(type: EffectNames, value: any) {
@@ -108,9 +108,8 @@ class StaticEffect {
             this.value = new EffectValue(value);
         }
         this.value.reset();
-        this.context = null;
         this.duration = null;
-        this.copies = [];
+        this.copies = new Map();
     }
 
     apply(target: GameObject) {
@@ -118,7 +117,7 @@ class StaticEffect {
         if(this.value instanceof GainAbility && this.value.abilityType === AbilityTypes.Persistent) {
             const copy = this.value.getCopy();
             copy.apply(target as DrawCard);
-            this.copies.push(copy);
+            this.copies.set(target.uuid, copy);
         } else {
             this.value.apply(target);
         }
@@ -126,12 +125,16 @@ class StaticEffect {
 
     unapply(target: GameObject) {
         target.removeEffect(this);
-        this.value.unapply(target);
-        this.copies.forEach((a) => a.unapply(target as DrawCard));
-        this.copies = [];
+        const copy = this.copies.get(target.uuid);
+        if(copy) {
+            copy.unapply(target as DrawCard);
+            this.copies.delete(target.uuid);
+        } else {
+            this.value.unapply(target);
+        }
     }
 
-    getValue() {
+    getValue<T = any>(_target?: GameObject): T {
         return this.value.getValue();
     }
 

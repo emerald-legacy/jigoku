@@ -62,7 +62,7 @@ export class AbilityContext<S = any, T extends BaseCard = BaseCard> {
     subResolution = false;
     choosingPlayerOverride: Player | null = null;
     gameActionsResolutionChain: GameAction[] = [];
-    playType: PlayTypes | string | undefined;
+    playType: PlayTypes | undefined;
     cardStateWhenInitiated: BaseCard | null = null;
     ignoreFateCost?: boolean;
     onPlayCardSource?: BaseCard;

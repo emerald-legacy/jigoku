@@ -1,7 +1,7 @@
-import type { Event } from '../Events/Event.js';
 import { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import Ring from '../Ring.js';
@@ -12,7 +12,7 @@ export interface PlaceFateProperties extends CardActionProperties {
     origin?: DrawCard | Player | Ring;
 }
 
-export class PlaceFateAction extends CardGameAction {
+export class PlaceFateAction extends CardGameAction<PlaceFateProperties> {
     name = 'placeFate';
     eventName = EventNames.OnMoveFate;
     targetType = [CardTypes.Character];
@@ -50,19 +50,19 @@ export class PlaceFateAction extends CardGameAction {
         );
     }
 
-    addPropertiesToEvent(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnMoveFate>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateProperties;
-        event.fate = amount;
+        event.fate = amount ?? 0;
         event.origin = origin;
         event.context = context;
         event.recipient = card;
     }
 
-    checkEventCondition(event: Event): boolean {
+    checkEventCondition(event: GameEvent<EventNames.OnMoveFate>): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: Event, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: GameEvent<EventNames.OnMoveFate>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         const { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateProperties;
         return (
             !event.cancelled &&
@@ -73,7 +73,7 @@ export class PlaceFateAction extends CardGameAction {
         );
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnMoveFate>): void {
         this.moveFateEventHandler(event);
     }
 }

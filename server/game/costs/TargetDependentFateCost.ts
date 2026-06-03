@@ -18,7 +18,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
             return true;
         }
         const reducedCost = context.player.getMinimumCost(
-            context.playType ?? '',
+            context.playType,
             context,
             context.targets[this.dependsOn],
             this.ignoreType
@@ -31,19 +31,19 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
 
     public payEvent(context: AbilityContext): Event {
         const amount = (context.costs.targetDependentFate = this.getReducedCost(context));
-        return new Event(EventNames.OnSpendFate, { amount, context }, (event) => {
-            event.context.player.markUsedReducers(
-                context.playType ?? '',
-                event.context.source,
-                event.context.targets[this.dependsOn]
+        return new Event(EventNames.OnSpendFate, { amount, context }, () => {
+            context.player.markUsedReducers(
+                context.playType,
+                context.source,
+                context.targets[this.dependsOn]
             );
-            event.context.player.fate -= this.getFinalFatecost(context, amount);
+            context.player.fate -= this.getFinalFatecost(context, amount);
         });
     }
 
     protected getReducedCost(context: AbilityContext): number {
         return context.player.getReducedCost(
-            context.playType ?? '',
+            context.playType,
             context.source,
             context.targets[this.dependsOn],
             this.ignoreType

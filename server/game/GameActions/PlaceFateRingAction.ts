@@ -1,6 +1,6 @@
-import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
@@ -43,19 +43,19 @@ export class PlaceFateRingAction extends RingAction {
         return (properties.amount ?? 0) > 0 && super.canAffect(ring, context);
     }
 
-    addPropertiesToEvent(event: Event, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnMoveFate>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateRingProperties;
-        event.fate = amount;
+        event.fate = amount ?? 0;
         event.origin = origin;
         event.context = context;
         event.recipient = ring;
     }
 
-    checkEventCondition(event: Event): boolean {
+    checkEventCondition(event: GameEvent<EventNames.OnMoveFate>): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: Event, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: GameEvent<EventNames.OnMoveFate>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         let { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateRingProperties;
         return (
             !event.cancelled &&
@@ -66,7 +66,7 @@ export class PlaceFateRingAction extends RingAction {
         );
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnMoveFate>): void {
         this.moveFateEventHandler(event);
     }
 }

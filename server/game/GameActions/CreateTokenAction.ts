@@ -5,7 +5,7 @@ import { CardTypes, Durations, EventNames, Locations } from '../Constants.js';
 import Effects from '../effects.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 export interface CreateTokenProperties extends CardActionProperties {
     atHome?: boolean;
 }
@@ -26,7 +26,7 @@ export class CreateTokenAction extends CardGameAction<CreateTokenProperties> {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventNames.OnCreateTokenCharacter>, additionalProperties: Record<string, unknown> = {}): void {
         let context = event.context as AbilityContext;
         let { atHome } = this.getProperties(context, additionalProperties);
         let card = event.card as DrawCard;

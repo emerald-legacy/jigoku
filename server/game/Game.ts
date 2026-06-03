@@ -15,6 +15,7 @@ import { SimpleStep } from './gamesteps/SimpleStep.js';
 import GameWonPrompt from './gamesteps/GameWonPrompt.js';
 import * as GameActions from './GameActions/GameActions.js';
 import { Event } from './Events/Event.js';
+import type { EventPayload, GameEvent } from './Events/EventPayloads.js';
 import InitiateCardAbilityEvent from './Events/InitiateCardAbilityEvent.js';
 import EventWindow from './Events/EventWindow.js';
 import ThenEventWindow from './Events/ThenEventWindow.js';
@@ -989,20 +990,24 @@ class Game {
         this.queueStep(window);
     }
 
-    getEvent(eventName: string, params?: any, handler?: (event: any) => any): Event {
+    getEvent<N extends EventNames>(eventName: N, params?: EventPayload<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N>;
+    getEvent(eventName: string, params?: Record<string, unknown>, handler?: (event: Event) => void): Event;
+    getEvent(eventName: string, params: Record<string, unknown> = {}, handler?: (event: Event) => void): Event {
         return new Event(eventName, params, handler);
     }
 
     /**
      * Creates a game Event, and opens a window for it.
      */
-    raiseEvent(eventName: string, params: any = {}, handler: (event?: any) => any = () => true): Event {
+    raiseEvent<N extends EventNames>(eventName: N, params?: EventPayload<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N>;
+    raiseEvent(eventName: string, params?: Record<string, unknown>, handler?: (event: Event) => void): Event;
+    raiseEvent(eventName: string, params: Record<string, unknown> = {}, handler: (event: Event) => void = () => true): Event {
         const event = this.getEvent(eventName, params, handler);
         this.openEventWindow([event]);
         return event;
     }
 
-    emitEvent(eventName: string, params: any = {}): void {
+    emitEvent(eventName: string, params: Record<string, unknown> = {}): void {
         const event = this.getEvent(eventName, params);
         this.emit(event.name, event);
     }
@@ -1094,7 +1099,7 @@ class Game {
     initiateConflict(
         player: Player,
         canPass: boolean,
-        forcedDeclaredType?: ConflictTypes | string,
+        forcedDeclaredType?: ConflictTypes,
         forceProvinceTarget?: any
     ): void {
         const conflict = new Conflict(
@@ -1103,7 +1108,7 @@ class Game {
             player.opponent as Player,
             undefined,
             forceProvinceTarget ?? undefined,
-            forcedDeclaredType as ConflictTypes
+            forcedDeclaredType
         );
         this.queueStep(new ConflictFlow(this, conflict, canPass));
     }

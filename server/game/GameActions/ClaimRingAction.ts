@@ -3,13 +3,13 @@ import { ConflictTypes, EventNames } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 export interface ClaimRingProperties extends RingActionProperties {
     takeFate?: boolean;
     type?: string;
 }
 
-export class ClaimRingAction extends RingAction<ClaimRingProperties> {
+export class ClaimRingAction extends RingAction<ClaimRingProperties, EventNames.OnClaimRing> {
     name = 'claimRing';
     eventName = EventNames.OnClaimRing;
     effect = 'claim {0}';
@@ -23,7 +23,7 @@ export class ClaimRingAction extends RingAction<ClaimRingProperties> {
         return !ring.isRemovedFromGame() && ring.claimedBy !== context.player.name && super.canAffect(ring, context);
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventNames.OnClaimRing>, additionalProperties: Record<string, unknown> = {}): void {
         let context = event.context as AbilityContext;
         let { takeFate, type } = this.getProperties(context, additionalProperties) as ClaimRingProperties;
         let ring = event.ring as Ring;

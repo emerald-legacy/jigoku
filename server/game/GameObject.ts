@@ -5,7 +5,7 @@ import { EffectNames, Stages } from './Constants.js';
 import type { CardEffect } from './Effects/types.js';
 import type Game from './Game.js';
 import type { GameAction } from './GameActions/GameAction.js';
-import * as GameActions from './GameActions/GameActions.js';
+import { getGameAction } from './GameActions/GameActionRegistry.js';
 import type Player from './Player.js';
 
 export interface ShortSummary {
@@ -18,7 +18,7 @@ export class GameObject {
     private _name!: string;
     public uuid = uuidV1();
     protected id: string;
-    protected printedType = '';
+    public printedType = '';
     public facedown = false;
     protected effects = [] as CardEffect[];
     protected effectsByType = new Map<EffectNames, CardEffect[]>();
@@ -104,7 +104,7 @@ export class GameObject {
     }
 
     public allowGameAction(actionType: string, context = this.game.getFrameworkContext()) {
-        const gameActionFactory = (GameActions as Record<string, (...args: any[]) => GameAction>)[actionType];
+        const gameActionFactory = getGameAction(actionType);
         if(gameActionFactory) {
             const gameAction: GameAction = gameActionFactory();
             return gameAction.canAffect(this, context);
@@ -118,43 +118,11 @@ export class GameObject {
         );
     }
 
-    public isUnique() {
-        return false;
-    }
-
     public getType() {
         if(this.anyEffect(EffectNames.ChangeType)) {
             return this.mostRecentEffect(EffectNames.ChangeType);
         }
         return this.printedType;
-    }
-
-    public getPrintedFaction(): string | null {
-        return null;
-    }
-
-    public hasKeyword(_keyword: string) {
-        return false;
-    }
-
-    public hasTrait(_trait: string) {
-        return false;
-    }
-
-    public getTraits(): Set<string> {
-        return new Set();
-    }
-
-    public isFaction(_faction: string) {
-        return false;
-    }
-
-    public hasToken(_type: string) {
-        return false;
-    }
-
-    public isTemptationsMaho() {
-        return false;
     }
 
     public getShortSummary(): ShortSummary {
@@ -189,7 +157,7 @@ export class GameObject {
                 // @ts-expect-error -- getReducedCost exists on play action abilities but is not declared on the base AbilityContext.ability type
                 fateCost = context.ability.getReducedCost(context);
             }
-            let alternateFate = context.player.getAvailableAlternateFate(context.playType ?? '', context);
+            let alternateFate = context.player.getAvailableAlternateFate(context.playType, context);
             let availableFate = Math.max(context.player.fate - Math.max(fateCost - alternateFate, 0), 0);
 
             return (
@@ -232,5 +200,18 @@ export class GameObject {
         const suppressEffects = this.effects.filter((effect) => effect.type === EffectNames.SuppressEffects);
         const suppressedEffects = suppressEffects.reduce<CardEffect[]>((array, effect) => array.concat(effect.getValue(this)), []);
         return this.effects.filter((effect) => !suppressedEffects.includes(effect));
+    }
+
+    // Copies this object's effect-tracking state onto a target (used by createSnapshot,
+    // which bypasses the constructor). Keeps the private suppressEffectCount in sync —
+    // hand-copying in subclasses could not reach it and silently dropped it.
+    protected cloneEffectStateInto(target: GameObject): void {
+        target.effects = [...this.effects];
+        const clonedIndex = new Map<EffectNames, CardEffect[]>();
+        for(const [type, bucket] of this.effectsByType) {
+            clonedIndex.set(type, [...bucket]);
+        }
+        target.effectsByType = clonedIndex;
+        target.suppressEffectCount = this.suppressEffectCount;
     }
 }

@@ -1,4 +1,4 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames, Locations } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -9,7 +9,7 @@ export interface DuelAddParticipantProperties extends CardActionProperties {
     duel: Duel;
 }
 
-export class DuelAddParticipantAction extends CardGameAction<DuelAddParticipantProperties> {
+export class DuelAddParticipantAction extends CardGameAction<DuelAddParticipantProperties, EventNames.OnAddDuelParticipant> {
     name = 'onAddDuelParticipant';
     eventName = EventNames.OnAddDuelParticipant;
 
@@ -35,13 +35,13 @@ export class DuelAddParticipantAction extends CardGameAction<DuelAddParticipantP
         return properties.duel.canAddToDuel(card, context);
     }
 
-    addPropertiesToEvent(event: Event, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnAddDuelParticipant>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { duel } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.duel = duel;
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnAddDuelParticipant>): void {
         event.duel.addTargetToDuel(event.card);
     }
 }

@@ -4,7 +4,7 @@ import { CardTypes, EffectNames, EventNames, Locations } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 export interface PutInProvinceProperties extends CardActionProperties {
     destination?: Locations;
     switch?: boolean;
@@ -15,7 +15,7 @@ export interface PutInProvinceProperties extends CardActionProperties {
     discardDestinationCards?: boolean;
 }
 
-export class PutInProvinceAction extends CardGameAction {
+export class PutInProvinceAction extends CardGameAction<PutInProvinceProperties, EventNames.OnCardLeavesPlay> {
     name = 'putInProvince';
     eventName = EventNames.OnCardLeavesPlay;
     targetType = [CardTypes.Character, CardTypes.Attachment];
@@ -63,10 +63,10 @@ export class PutInProvinceAction extends CardGameAction {
         return canMove;
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventNames.OnCardLeavesPlay>, additionalProperties: Record<string, unknown> = {}): void {
         let context = event.context as AbilityContext;
         let card = event.card as DrawCard;
-        event.cardStateWhenMoved = card.createSnapshot();
+        (event as GameEvent<EventNames.OnCardLeavesPlay> & { cardStateWhenMoved: DrawCard }).cardStateWhenMoved = card.createSnapshot();
         let properties = this.getProperties(context, additionalProperties) as PutInProvinceProperties;
         if(properties.switch && properties.switchTarget) {
             let otherCard = properties.switchTarget;

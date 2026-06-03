@@ -5,7 +5,7 @@ import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 export interface AttachActionProperties extends CardActionProperties {
     attachment?: DrawCard;
     ignoreType?: boolean;
@@ -96,24 +96,24 @@ export class AttachAction extends CardGameAction<AttachActionProperties> {
         return (properties.attachment as DrawCard).controller;
     }
 
-    checkEventCondition(event: Event, additionalProperties: Record<string, unknown>): boolean {
+    checkEventCondition(event: GameEvent<EventNames.OnCardAttached>, additionalProperties: Record<string, unknown>): boolean {
         return this.canAffect(event.parent as DrawCard, (event.context as AbilityContext), additionalProperties);
     }
 
-    isEventFullyResolved(event: Event, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown>): boolean {
+    isEventFullyResolved(event: GameEvent<EventNames.OnCardAttached>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown>): boolean {
         let { attachment } = this.getProperties(context, additionalProperties);
         return event.parent === card && event.card === attachment && event.name === this.eventName && !event.cancelled;
     }
 
-    addPropertiesToEvent(event: Event, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnCardAttached>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
         let { attachment } = this.getProperties(context, additionalProperties);
         event.name = this.eventName;
         event.parent = card;
-        event.card = attachment;
+        event.card = attachment as DrawCard;
         event.context = context;
     }
 
-    eventHandler(event: Event, additionalProperties = {}): void {
+    eventHandler(event: GameEvent<EventNames.OnCardAttached>, additionalProperties = {}): void {
         const card = event.card as DrawCard;
         const parent = event.parent as DrawCard;
         const context = event.context as AbilityContext;

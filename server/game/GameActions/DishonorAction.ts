@@ -1,5 +1,5 @@
-import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import { CardTypes, CharacterStatus, EventNames, Locations } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
@@ -22,7 +22,7 @@ export class DishonorAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnCardDishonored>): void {
         event.card.dishonor();
         if(event.card.isDishonored) {
             event.card.game.raiseEvent(EventNames.OnStatusTokenGained, {

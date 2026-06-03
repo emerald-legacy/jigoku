@@ -29,7 +29,7 @@ export class ReduceableFateCost implements Cost {
             return false;
         }
 
-        const minCost = context.player.getMinimumCost(context.playType ?? '', context, null, this.ignoreType);
+        const minCost = context.player.getMinimumCost(context.playType, context, null, this.ignoreType);
         if(minCost === 0) {
             return true;
         }
@@ -42,7 +42,7 @@ export class ReduceableFateCost implements Cost {
     }
 
     protected getAlternateFatePools(context: AbilityContext): Set<BaseCard | Ring> {
-        return new Set(context.player.getAlternateFatePools(context.playType ?? '', context.source, context));
+        return new Set(context.player.getAlternateFatePools(context.playType, context.source, context));
     }
 
     public resolve(context: AbilityContext, result: Result): void {
@@ -139,7 +139,7 @@ export class ReduceableFateCost implements Cost {
     }
 
     protected getReducedCost(context: AbilityContext): number {
-        return context.player.getReducedCost(context.playType ?? '', context.source, null, this.ignoreType);
+        return context.player.getReducedCost(context.playType, context.source, null, this.ignoreType);
     }
 
     protected getFinalFatecost(context: AbilityContext, reducedCost: number) {
@@ -257,8 +257,8 @@ export class ReduceableFateCost implements Cost {
         const amount = this.getReducedCost(context);
         context.costs.fate = amount;
         return new Event(EventNames.OnSpendFate, { amount, context }, (event) => {
-            event.context.player.markUsedReducers(context.playType ?? '', event.context.source);
-            event.context.player.fate -= this.getFinalFatecost(context, amount);
+            context.player.markUsedReducers(context.playType, context.source);
+            context.player.fate -= this.getFinalFatecost(context, amount);
             this.afterPayHook(event);
         });
     }

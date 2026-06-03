@@ -4,7 +4,7 @@ import { ConflictTypes, Players } from './Constants.js';
 
 export interface ConflictRecord {
     attackingPlayer: Player;
-    declaredType: ConflictTypes | string | null;
+    declaredType: ConflictTypes | null;
     passed: boolean;
     uuid: string;
     completed?: boolean;

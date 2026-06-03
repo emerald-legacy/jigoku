@@ -4,6 +4,7 @@ import Player from '../Player.js';
 import { GameAction, GameActionProperties } from './GameAction.js';
 
 import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 export interface GloryCountProperties extends GameActionProperties {
     gameAction: ((gloryCountWinner: Player | null, context: AbilityContext) => GameAction) | GameAction;
 }
@@ -20,7 +21,7 @@ export class GloryCountAction extends GameAction<GloryCountProperties> {
         events.push(this.getEvent(null, context, additionalProperties));
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventNames.OnGloryCount>, additionalProperties: Record<string, unknown> = {}): void {
         let game = (event.context as AbilityContext).game;
         let properties = this.getProperties((event.context as AbilityContext), additionalProperties);
 

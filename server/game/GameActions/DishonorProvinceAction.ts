@@ -1,4 +1,4 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardTypes, EventNames } from '../Constants.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
@@ -42,7 +42,7 @@ export class DishonorProvinceAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnCardDishonored>): void {
         event.card.dishonor();
     }
 }

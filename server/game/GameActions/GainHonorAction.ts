@@ -1,4 +1,4 @@
-import type { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventNames } from '../Constants.js';
 import type Player from '../Player.js';
@@ -52,23 +52,24 @@ export class GainHonorAction extends PlayerAction<GainHonorProperties> {
         return [context.player];
     }
 
-    addPropertiesToEvent(event: Event, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventNames.OnModifyHonor>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
     }
 
-    eventHandler(event: Event): void {
+    eventHandler(event: GameEvent<EventNames.OnModifyHonor>): void {
         const context = event.context as AbilityContext;
+        const player = event.player as Player;
         var [_, amountToTransfer] = CalculateHonorLimit(
-            event.player,
+            player,
             context.game.roundNumber,
             context.game.currentPhase,
-            event.amount
+            event.amount as number
         );
-        event.player.modifyHonor(amountToTransfer);
+        player.modifyHonor(amountToTransfer);
         if(amountToTransfer && context?.game) {
-            context.game.addAnimation({ type: 'honor', playerName: event.player.name, amount: amountToTransfer });
+            context.game.addAnimation({ type: 'honor', playerName: player.name, amount: amountToTransfer });
         }
     }
 }

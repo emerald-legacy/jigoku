@@ -1,5 +1,5 @@
-import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import type BaseCard from '../BaseCard.js';
 import { CardTypes, CharacterStatus, EventNames, Locations } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -29,11 +29,12 @@ export class TaintAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: Event): void {
-        event.card.taint();
-        event.card.game.raiseEvent(EventNames.OnStatusTokenGained, {
-            token: event.card.getStatusToken(CharacterStatus.Tainted),
-            card: event.card
+    eventHandler(event: GameEvent<EventNames.OnCardTainted>): void {
+        const card = event.card as BaseCard;
+        card.taint();
+        card.game.raiseEvent(EventNames.OnStatusTokenGained, {
+            token: card.getStatusToken(CharacterStatus.Tainted),
+            card: card
         });
     }
 }
