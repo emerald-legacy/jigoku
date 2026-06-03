@@ -1,6 +1,6 @@
 import * as AbilityLimit from './AbilityLimit.js';
 import ThenAbility from './ThenAbility.js';
-import * as Costs from './Costs.js';
+import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { Location, CardType, EffectName } from './Constants.js';
 import { initiateDuel } from './DuelHelper.js';
 import type BaseCard from './BaseCard.js';
@@ -77,7 +77,7 @@ class CardAbility extends ThenAbility {
         }
 
         if(card.getType() === CardType.Event && !this.isKeywordAbility()) {
-            this.cost = this.cost.concat(Costs.payReduceableFateCost());
+            this.cost = this.cost.concat(payReduceableFateCost());
         }
     }
 

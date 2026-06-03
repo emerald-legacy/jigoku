@@ -1,7 +1,7 @@
 import type { AbilityLimit } from '../../../AbilityLimit.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { CardType } from '../../../Constants.js';
-import type { Cost } from '../../../Costs.js';
+import type { Cost } from '../../../costs/Cost.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 

@@ -1,7 +1,8 @@
 import type { AbilityContext } from './AbilityContext.js';
 import BaseAction from './BaseAction.js';
 import { EffectName, EventName, Location, Phases, PlayType, Players } from './Constants.js';
-import { chooseFate, payReduceableFateCost } from './Costs.js';
+import { chooseFate } from './costs/variableAndOptionalCosts.js';
+import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
 import { parseGameMode } from './GameMode.js';
 import type BaseCard from './BaseCard.js';

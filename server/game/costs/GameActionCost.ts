@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type { Cost, Result } from '../Costs.js';
+import type { Cost, Result } from './Cost.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 
 export class GameActionCost implements Cost {

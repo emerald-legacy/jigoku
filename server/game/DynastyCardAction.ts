@@ -1,5 +1,6 @@
 import BaseAction from './BaseAction.js';
-import * as Costs from './Costs.js';
+import { chooseFate } from './costs/variableAndOptionalCosts.js';
+import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import * as GameActions from './GameActions/GameActions.js';
 import { EffectName, Phases, PlayType, EventName } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
@@ -11,7 +12,7 @@ class DynastyCardAction extends BaseAction {
     declare card: DrawCard;
 
     constructor(card: BaseCard) {
-        super(card, [Costs.chooseFate(PlayType.PlayFromProvince), Costs.payReduceableFateCost()]);
+        super(card, [chooseFate(PlayType.PlayFromProvince), payReduceableFateCost()]);
     }
 
     meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []): string {

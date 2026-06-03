@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
-import type { Cost } from '../Costs.js';
+import type { Cost } from './Cost.js';
 import { Event } from '../Events/Event.js';
 import { ReduceableFateCost } from './ReduceableFateCost.js';
 
