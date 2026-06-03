@@ -82,7 +82,7 @@ describe('Foreign Customs', function () {
                     },
                     player2: {
                         inPlay: ['kakita-toshimoko', 'shiba-tsukune', 'doji-diplomat'],
-                        dynastyDeck: ['moto-chagatai'],
+                        dynastyDeck: ['moto-chagatai', 'utaku-infantry'],
                         hand: ['embrace-the-void', 'policy-debate', 'foreign-customs']
                     }
                 });
@@ -97,6 +97,10 @@ describe('Foreign Customs', function () {
                 this.foreignCustoms = this.player2.findCardByName('foreign-customs');
                 this.chagatai = this.player2.placeCardInProvince('moto-chagatai', 'province 2');
                 this.chagatai.facedown = false;
+                // Pin a second face-up province character so Foreign Customs always has >1 legal
+                // target. With only Chagatai, selectCard's hidePromptIfSingleCard auto-resolves (no
+                // 'Choose a character' prompt) and this test flakes on shuffles that leave no filler character.
+                this.player2.placeCardInProvince('utaku-infantry', 'province 1');
             });
 
             it('should react if you lose', function () {
