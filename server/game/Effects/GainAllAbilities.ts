@@ -46,6 +46,9 @@ export default class GainAllAbilities extends EffectValue<BaseCard> {
     }
 
     unapply(target: BaseCard) {
+        if(!this.abilitiesForTargets[target.uuid]) {
+            return;
+        }
         for(const value of this.abilitiesForTargets[target.uuid].reactions) {
             value.unregisterEvents();
         }
