@@ -17,13 +17,15 @@ export class Event {
     preResolutionEffect: () => void = () => true;
     onPlayCardSource?: BaseCard;
 
+    private static readonly RESERVED_PARAM_KEYS = new Set(['cancelled', 'resolved', 'handler', 'window']);
+
     constructor(
         public name: string,
         params: Record<string, unknown>,
         private handler?: (event: Event) => void
     ) {
         for(const key in params) {
-            if(Object.prototype.hasOwnProperty.call(params, key)) {
+            if(Object.prototype.hasOwnProperty.call(params, key) && !Event.RESERVED_PARAM_KEYS.has(key)) {
                 (this as Record<string, unknown>)[key] = params[key];
             }
         }
