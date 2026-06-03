@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -11,7 +11,7 @@ export default class HighHouseOfLight extends StrongholdCard {
             cost: AbilityDsl.costs.bowSelf(),
             condition: () => this.game.isDuringConflict(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk'),
                 gameAction: AbilityDsl.actions.multiple([

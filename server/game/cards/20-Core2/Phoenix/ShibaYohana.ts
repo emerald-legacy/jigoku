@@ -1,4 +1,4 @@
-import { CardTypes, Durations, Locations } from '../../../Constants.js';
+import { CardType, Duration, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class ShibaYohana extends DrawCard {
             title: 'Prevent this character from leaving play',
             when: {
                 onCardLeavesPlay: (event, context) =>
-                    event.card === context.source && event.card.location === Locations.PlayArea
+                    event.card === context.source && event.card.location === Location.PlayArea
             },
             effect: 'prevent {1} from leaving play - vengeance and destruction sustains her in a damned existence',
             effectArgs: (context) => context.event.card ?? '',
@@ -21,7 +21,7 @@ export default class ShibaYohana extends DrawCard {
             then: (context) => ({
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     target: context?.source,
-                    duration: Durations.Custom,
+                    duration: Duration.Custom,
                     until: {
                         onCardLeavesPlay: (event) => event.card === context?.source
                     },
@@ -34,7 +34,7 @@ export default class ShibaYohana extends DrawCard {
             title: 'Move a character into the conflict',
             condition: (context) => context.source.isParticipating(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isHonored || card.isDishonored,
                 gameAction: AbilityDsl.actions.moveToConflict()
             }

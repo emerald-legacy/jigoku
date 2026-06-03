@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardTypes, ConflictTypes, TargetModes } from '../../../Constants.js';
+import { CardType, ConflictType, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CornerThePrey extends DrawCard {
@@ -10,16 +10,16 @@ export default class CornerThePrey extends DrawCard {
     public setupCardAbilities() {
         this.action({
             title: 'Sacrifice followers to kill',
-            condition: (context) => context.game.isDuringConflict(ConflictTypes.Military),
+            condition: (context) => context.game.isDuringConflict(ConflictType.Military),
             cost: AbilityDsl.costs.sacrifice({
-                cardType: [CardTypes.Character, CardTypes.Attachment],
-                mode: TargetModes.Unlimited,
+                cardType: [CardType.Character, CardType.Attachment],
+                mode: TargetMode.Unlimited,
                 cardCondition: (card) =>
                     card.hasTrait('follower') &&
                     (card.isParticipating() || (card.parent && card.parent.isParticipating()))
             }),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.printedCost <= this.getFollowerCount(context),
                 gameAction: AbilityDsl.actions.discardFromPlay()

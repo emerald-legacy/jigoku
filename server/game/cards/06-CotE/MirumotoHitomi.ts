@@ -1,4 +1,4 @@
-import { CardTypes, DuelTypes, Players, TargetModes } from '../../Constants.js';
+import { CardType, DuelType, Players, TargetMode } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -11,13 +11,13 @@ export default class MirumotoHitomi extends DrawCard {
             title: 'Initiate a military duel',
             condition: (context) => context.source.isParticipating(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating(),
-                mode: TargetModes.UpTo,
+                mode: TargetMode.UpTo,
                 numCards: 2,
                 gameAction: AbilityDsl.actions.duel(((context: AbilityContext) => ({
-                    type: DuelTypes.Military,
+                    type: DuelType.Military,
                     challenger: context.source,
                     message: '{0} chooses whether to dishonor or bow {1}',
                     messageArgs: (duel: any) => [

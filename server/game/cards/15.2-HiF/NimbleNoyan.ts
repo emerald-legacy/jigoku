@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 
 class NimbleNoyan extends DrawCard {
     static id = 'nimble-noyan';
@@ -9,7 +9,7 @@ class NimbleNoyan extends DrawCard {
         this.dire({
             condition: context => context.source.isParticipating(),
             targetController: Players.Any,
-            match: card => card.type === CardTypes.Character && card.isParticipating(),
+            match: card => card.type === CardType.Character && card.isParticipating(),
             effect: AbilityDsl.effects.canContributeWhileBowed()
         });
     }

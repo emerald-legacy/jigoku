@@ -8,13 +8,13 @@ import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type CardAbility from './CardAbility.js';
 import type { DuelProperties } from './GameActions/DuelAction.js';
-import type { Players, TargetModes, CardTypes, Locations, EventNames, Phases } from './Constants.js';
+import type { Players, TargetMode, CardType, Location, EventName, Phases } from './Constants.js';
 import type { StatusToken } from './StatusToken.js';
 import type Player from './Player.js';
 
 interface BaseTarget {
     activePromptTitle?: string;
-    location?: Locations | Locations[];
+    location?: Location | Location[];
     controller?: ((context: AbilityContext) => Players) | Players;
     player?: ((context: AbilityContext) => Players.Self | Players.Opponent) | Players.Self | Players.Opponent;
     hideIfNoLegalTargets?: boolean;
@@ -26,67 +26,67 @@ export interface ChoicesInterface {
 }
 
 interface TargetSelect extends BaseTarget {
-    mode: TargetModes.Select;
+    mode: TargetMode.Select;
     choices: (ChoicesInterface | Record<string, never>) | ((context: AbilityContext) => ChoicesInterface | Record<string, never>);
     condition?: (context: AbilityContext) => boolean;
     targets?: boolean;
 }
 
 interface TargetRing extends BaseTarget {
-    mode: TargetModes.Ring;
+    mode: TargetMode.Ring;
     optional?: boolean;
     ringCondition: (ring: Ring, context?: AbilityContext) => boolean;
 }
 
 interface TargetAbility extends BaseTarget {
-    mode: TargetModes.Ability;
-    cardType?: CardTypes | CardTypes[];
+    mode: TargetMode.Ability;
+    cardType?: CardType | CardType[];
     cardCondition?: (card: any, context?: any) => boolean;
     abilityCondition?: (ability: CardAbility) => boolean;
 }
 
 interface TargetToken extends BaseTarget {
-    mode: TargetModes.Token;
+    mode: TargetMode.Token;
     optional?: boolean;
-    location?: Locations | Locations[];
-    cardType?: CardTypes | CardTypes[];
+    location?: Location | Location[];
+    cardType?: CardType | CardType[];
     singleToken?: boolean;
     cardCondition?: (card: any, context?: any) => boolean;
     tokenCondition?: (token: StatusToken, context?: any) => boolean;
 }
 
 interface TargetElementSymbol extends BaseTarget {
-    mode: TargetModes.ElementSymbol;
-    location?: Locations | Locations[];
-    cardType?: CardTypes | CardTypes[];
+    mode: TargetMode.ElementSymbol;
+    location?: Location | Location[];
+    cardType?: CardType | CardType[];
 }
 
 interface BaseTargetCard extends BaseTarget {
-    cardType?: CardTypes | CardTypes[];
-    location?: Locations | Locations[];
+    cardType?: CardType | CardType[];
+    location?: Location | Location[];
     optional?: boolean;
 }
 
 interface TargetCardExactlyUpTo extends BaseTargetCard {
-    mode: TargetModes.Exactly | TargetModes.UpTo;
+    mode: TargetMode.Exactly | TargetMode.UpTo;
     numCards: number;
     sameDiscardPile?: boolean;
 }
 
 interface TargetCardExactlyUpToVariable extends BaseTargetCard {
-    mode: TargetModes.ExactlyVariable | TargetModes.UpToVariable;
+    mode: TargetMode.ExactlyVariable | TargetMode.UpToVariable;
     numCardsFunc: (context: AbilityContext) => number;
 }
 
 interface TargetCardMaxStat extends BaseTargetCard {
-    mode: TargetModes.MaxStat;
+    mode: TargetMode.MaxStat;
     numCards: number;
     cardStat: (card: DrawCard) => number;
     maxStat: () => number;
 }
 
 interface TargetCardSingleUnlimited extends BaseTargetCard {
-    mode?: TargetModes.Single | TargetModes.Unlimited;
+    mode?: TargetMode.Single | TargetMode.Unlimited;
 }
 
 type TargetCard =
@@ -133,12 +133,12 @@ export type EffectArg =
     | ProvinceCard
     | Ring
     | StatusToken
-    | { id: string; label: string; name: string; facedown: boolean; type: CardTypes }
+    | { id: string; label: string; name: string; facedown: boolean; type: CardType }
     | EffectArg[];
 
 interface AbilityProps<Context> {
     title: string;
-    location?: Locations | Locations[];
+    location?: Location | Location[];
     cost?: any;
     limit?: any;
     max?: any;
@@ -186,7 +186,7 @@ interface TriggeredAbilityTargets {
 }
 
 export type WhenType = {
-    [EventName in EventNames]?: (event: EventPayload<EventName>, context: TriggeredAbilityContext) => unknown;
+    [Evt in EventName]?: (event: EventPayload<Evt>, context: TriggeredAbilityContext) => unknown;
 };
 
 export interface TriggeredAbilityWhenProps<Target extends BaseCard = BaseCard> extends AbilityProps<TriggeredAbilityContext<any, Target>> {
@@ -211,11 +211,11 @@ export interface TriggeredAbilityAggregateWhenProps<Target extends BaseCard = Ba
 export type TriggeredAbilityProps<Target extends BaseCard = BaseCard> = TriggeredAbilityWhenProps<Target> | TriggeredAbilityAggregateWhenProps<Target>;
 
 export interface PersistentEffectProps<Source = any> {
-    location?: Locations | Locations[];
+    location?: Location | Location[];
     condition?: (context: AbilityContext<Source>) => boolean;
     match?: (card: any, context?: AbilityContext<Source>) => boolean;
     targetController?: Players;
-    targetLocation?: Locations | (string & {});
+    targetLocation?: Location | (string & {});
     effect: ((...args: any[]) => any) | ((...args: any[]) => any)[];
     createCopies?: boolean;
 }

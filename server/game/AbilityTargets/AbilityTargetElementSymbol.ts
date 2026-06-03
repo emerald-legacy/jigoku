@@ -1,5 +1,5 @@
 import CardSelector from '../CardSelector.js';
-import { CardTypes, Stages, Players, Locations } from '../Constants.js';
+import { CardType, Stage, Players, Location } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
@@ -13,8 +13,8 @@ interface OwningAbility {
 
 interface AbilityTargetElementSymbolProperties {
     gameAction: GameAction[];
-    location?: Locations | Locations[];
-    cardType?: CardTypes | CardTypes[];
+    location?: Location | Location[];
+    cardType?: CardType | CardType[];
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
     [key: string]: unknown;
@@ -42,7 +42,7 @@ class AbilityTargetElementSymbol {
     constructor(name: string, properties: AbilityTargetElementSymbolProperties, ability: OwningAbility) {
         this.name = name;
         this.properties = properties;
-        this.properties.location = this.properties.location || Locations.PlayArea;
+        this.properties.location = this.properties.location || Location.PlayArea;
         this.selector = this.getSelector(properties);
         for(let gameAction of this.properties.gameAction) {
             gameAction.setDefaultTarget((context: AbilityContext) => context.elements[name]);
@@ -73,14 +73,14 @@ class AbilityTargetElementSymbol {
             // if(this.name === 'target') {
             //     contextCopy.element = elements;
             // }
-            // if(context.stage === Stages.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
+            // if(context.stage === Stage.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
             //     return false;
             // }
 
             // return (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
             //         (properties.gameAction.length === 0 || properties.gameAction.some(gameAction => gameAction.hasLegalTarget(contextCopy)));
         };
-        let cardType = properties.cardType || [CardTypes.Attachment, CardTypes.Character, CardTypes.Event, CardTypes.Holding, CardTypes.Province, CardTypes.Role, CardTypes.Stronghold];
+        let cardType = properties.cardType || [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding, CardType.Province, CardType.Role, CardType.Stronghold];
         return CardSelector.for(Object.assign({}, properties, { cardType: cardType, cardCondition: cardCondition, targets: false }));
     }
 
@@ -105,13 +105,13 @@ class AbilityTargetElementSymbol {
             return;
         }
         let player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
-        if(player === context.player.opponent && context.stage === Stages.PreTarget) {
+        if(player === context.player.opponent && context.stage === Stage.PreTarget) {
             targetResults.delayTargeting = this;
             return;
         }
         let buttons: PromptButton[] = [];
         let waitingPromptTitle = '';
-        if(context.stage === Stages.PreTarget) {
+        if(context.stage === Stage.PreTarget) {
             buttons.push({ text: 'Cancel', arg: 'cancel' });
             if(context.ability.abilityType === 'action') {
                 waitingPromptTitle = 'Waiting for opponent to take an action or pass';

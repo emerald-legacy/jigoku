@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes, CardTypes, Locations } from '../../Constants.js';
+import { TargetMode, CardType, Location } from '../../Constants.js';
 
 class CountrysideTrader extends DrawCard {
     static id = 'countryside-trader';
@@ -12,9 +12,9 @@ class CountrysideTrader extends DrawCard {
             condition: context => context.game.isDuringConflict() && context.source.isAttacking(),
             target: {
                 activePromptTitle: 'Select a province to trigger from',
-                mode: TargetModes.Ability,
-                location: Locations.Provinces,
-                cardType: CardTypes.Province,
+                mode: TargetMode.Ability,
+                location: Location.Provinces,
+                cardType: CardType.Province,
                 cardCondition: card => card.isConflictProvince(),
                 abilityCondition: ability => ability.printedAbility,
                 gameAction: AbilityDsl.actions.resolveAbility(context => ({

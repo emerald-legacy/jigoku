@@ -2,7 +2,7 @@ import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import type Player from '../../Player.js';
-import { Locations, Players, CardTypes } from '../../Constants.js';
+import { Location, Players, CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 class WalkingTheWay extends DrawCard {
@@ -10,7 +10,7 @@ class WalkingTheWay extends DrawCard {
 
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
-            location: Locations.Any,
+            location: Location.Any,
             targetController: Players.Any,
             match: (player: Player) => player.cardsInPlay.some((card: BaseCard) => card.hasTrait('shugenja')),
             effect: ability.effects.reduceCost({ match: (card: BaseCard, source: BaseCard) => card === source })
@@ -28,14 +28,14 @@ class WalkingTheWay extends DrawCard {
                     cardHandler: (cardFromDeck: BaseCard) => this.game.promptForSelect(context.player, {
                         activePromptTitle: 'Choose a card to replace with ' + cardFromDeck.name,
                         context: context,
-                        cardType: [CardTypes.Holding, CardTypes.Character, CardTypes.Event],
-                        location: Locations.Provinces,
+                        cardType: [CardType.Holding, CardType.Character, CardType.Event],
+                        location: Location.Provinces,
                         controller: Players.Self,
                         onSelect: (player: Player, card: BaseCard) => {
                             this.game.addMessage('{0} discards {1}, replacing it with {2}', player, card, cardFromDeck);
                             player.moveCard(cardFromDeck, card.location);
                             cardFromDeck.facedown = false;
-                            player.moveCard(card, Locations.DynastyDiscardPile);
+                            player.moveCard(card, Location.DynastyDiscardPile);
                             player.shuffleDynastyDeck();
                             return true;
                         }

@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class CampfireCounsel extends DrawCard {
             title: 'Ready a character',
             cost: AbilityDsl.costs.sacrificeSelf(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.printedCost <= 3,
                 gameAction: AbilityDsl.actions.ready()

@@ -1,4 +1,4 @@
-import { CardTypes, ConflictTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardType, ConflictType, Players, TargetMode } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -33,9 +33,9 @@ export default class TwoHands extends DrawCard {
                     context.game.currentConflict.getNumberOfParticipantsFor(context.player),
             target: {
                 activePromptTitle: 'Choose two characters',
-                mode: TargetModes.Exactly,
+                mode: TargetMode.Exactly,
                 numCards: 2,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 player: Players.Opponent,
                 cardCondition: (card) => card.isParticipating(),
@@ -61,7 +61,7 @@ export default class TwoHands extends DrawCard {
 
 function calcTwoHandsEffect(context: AbilityContext) {
     const targets = (Array.isArray(context.target) ? context.target : context.target ? [context.target] : []) as DrawCard[];
-    if((context.game.currentConflict as Conflict).conflictType === ConflictTypes.Military) {
+    if((context.game.currentConflict as Conflict).conflictType === ConflictType.Military) {
         return {
             targets,
             type: 'military',

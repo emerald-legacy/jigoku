@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, CardTypes, Players, Elements } from '../../Constants.js';
+import { Location, CardType, Players, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'inventive-mirumoto-water';
@@ -12,8 +12,8 @@ class InventiveMirumoto extends DrawCard {
             title: 'Play attachment onto this character',
             condition: context => context.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player),
             target: {
-                cardCondition: card => card.type === CardTypes.Attachment,
-                location: Locations.ConflictDiscardPile,
+                cardCondition: card => card.type === CardType.Attachment,
+                location: Location.ConflictDiscardPile,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.playCard<DrawCard>(context => ({
                     payCosts: true,
@@ -35,7 +35,7 @@ class InventiveMirumoto extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Claimed Ring',
-            element: Elements.Water
+            element: Element.Water
         });
         return symbols;
     }

@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Ring from '../../../Ring.js';
 
@@ -9,7 +9,7 @@ export default class GreaterUnderstanding extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            targetLocation: Locations.Any,
+            targetLocation: Location.Any,
             effect: AbilityDsl.effects.immunity({
                 restricts: 'opponentsCardEffects'
             })
@@ -41,7 +41,7 @@ export default class GreaterUnderstanding extends DrawCard {
     }
 
     canPlayOn(source: any) {
-        return source && source.getType() === 'ring' && this.getType() === CardTypes.Attachment;
+        return source && source.getType() === 'ring' && this.getType() === CardType.Attachment;
     }
 
     mustAttachToRing() {

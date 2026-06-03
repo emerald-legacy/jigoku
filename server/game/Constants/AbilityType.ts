@@ -1,4 +1,4 @@
-export enum AbilityTypes {
+export enum AbilityType {
     Action = 'action',
     WouldInterrupt = 'cancelinterrupt',
     ForcedInterrupt = 'forcedinterrupt',

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ThirdWhiskerSneak extends DrawCard {
@@ -27,7 +27,7 @@ class ThirdWhiskerSneak extends DrawCard {
                 amount: (context) => context.player.getProvinces(a => !a.isBroken).length,
                 reveal: false,
                 gameAction: AbilityDsl.actions.moveCard({
-                    destination: Locations.Hand
+                    destination: Location.Hand
                 })
             })
         });

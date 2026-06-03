@@ -1,4 +1,4 @@
-import { AbilityTypes, Durations } from '../../../Constants.js';
+import { AbilityType, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -7,7 +7,7 @@ export default class KakitaBlade2 extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Take an action',
                 when: {
                     onConflictStarted: (_event: any, context: any) =>
@@ -15,7 +15,7 @@ export default class KakitaBlade2 extends DrawCard {
                 },
                 gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
                     targetController: context.player,
-                    duration: Durations.UntilSelfPassPriority,
+                    duration: Duration.UntilSelfPassPriority,
                     effect: [AbilityDsl.effects.gainActionPhasePriority(), AbilityDsl.effects.additionalAction()]
                 })),
                 effect: 'take an action at the start of the conflict'

@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Durations, EventNames, Locations, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Duration, EventName, Location, Players, TargetMode } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -13,7 +13,7 @@ export default class TheEmptyCity extends ProvinceCard {
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventNames.OnRoundEnded, EventNames.OnCardLeavesPlay]);
+        this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
 
         const sharedLimit = AbilityDsl.limit.perRound(1);
 
@@ -21,11 +21,11 @@ export default class TheEmptyCity extends ProvinceCard {
             title: 'Claim a ring',
             canTriggerOutsideConflict: true,
             cost: AbilityDsl.costs.bow({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: BaseCard) => card.hasTrait('spirit')
             }),
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 activePromptTitle: 'Choose an unclaimed ring',
                 ringCondition: (ring) => ring.isUnclaimed(),
                 gameAction: AbilityDsl.actions.claimRing({
@@ -41,16 +41,16 @@ export default class TheEmptyCity extends ProvinceCard {
             title: 'Put a Spirit character into play',
             canTriggerOutsideConflict: true,
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
-                location: [Locations.ConflictDiscardPile, Locations.DynastyDiscardPile],
+                location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
                 cardCondition: (card) => card.hasTrait('spirit') && card.getCost() <= 3,
                 gameAction: AbilityDsl.actions.joint([
                     AbilityDsl.actions.putIntoPlay(),
                     AbilityDsl.actions.cardLastingEffect((context) => ({
                         target: context.source,
                         effect: AbilityDsl.effects.cardCannot('triggerAbilities'),
-                        duration: Durations.UntilEndOfRound
+                        duration: Duration.UntilEndOfRound
                     }))
                 ])
             },
@@ -68,13 +68,13 @@ export default class TheEmptyCity extends ProvinceCard {
     }
 
     public onCardLeavesPlay(event: any) {
-        if(this.invokedSpirit && this.invokedSpirit === event.card && this.location !== Locations.RemovedFromGame) {
+        if(this.invokedSpirit && this.invokedSpirit === event.card && this.location !== Location.RemovedFromGame) {
             this.game.addMessage(
                 '{1} is removed from the game, as it was invoked by the {0} this round',
                 this,
                 event.card
             );
-            this.owner.moveCard(event.card, Locations.RemovedFromGame);
+            this.owner.moveCard(event.card, Location.RemovedFromGame);
         }
     }
 }

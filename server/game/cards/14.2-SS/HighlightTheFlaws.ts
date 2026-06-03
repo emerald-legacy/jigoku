@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class HighlightTheFlaws extends DrawCard {
     static id = 'highlight-the-flaws';
@@ -9,7 +9,7 @@ class HighlightTheFlaws extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel conflict province ability',
             when: {
-                onInitiateAbilityEffects: event => event.card.type === CardTypes.Province
+                onInitiateAbilityEffects: event => event.card.type === CardType.Province
             },
             effect: 'cancel the effects of {1}\'s ability',
             effectArgs: context => context.event.card ?? '',

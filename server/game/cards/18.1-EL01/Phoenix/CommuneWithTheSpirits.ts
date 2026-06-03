@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { TargetModes } from '../../../Constants.js';
+import { TargetMode } from '../../../Constants.js';
 
 class CommuneWithTheSpirits extends DrawCard {
     static id = 'commune-with-the-spirits';
@@ -9,7 +9,7 @@ class CommuneWithTheSpirits extends DrawCard {
         this.action({
             title: 'Claim a ring',
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 activePromptTitle: 'Choose an unclaimed ring',
                 ringCondition: ring => ring.isUnclaimed(),
                 gameAction: AbilityDsl.actions.sequential([

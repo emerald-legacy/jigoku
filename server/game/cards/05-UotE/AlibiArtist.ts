@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AlibiArtist extends DrawCard {
@@ -13,7 +13,7 @@ class AlibiArtist extends DrawCard {
             gameAction: AbilityDsl.actions.deckSearch({
                 amount: 2,
                 gameAction: AbilityDsl.actions.moveCard({
-                    destination: Locations.Hand
+                    destination: Location.Hand
                 }),
                 shuffle: false,
                 reveal: false,

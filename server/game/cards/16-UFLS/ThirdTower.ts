@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, EventNames } from '../../Constants.js';
+import { CardType, EventName } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -10,7 +10,7 @@ class ThirdTower extends DrawCard {
         this.reaction({
             title: 'Take an honor from your opponent',
             when: {
-                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context) => {
+                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) => {
                     if(event.conflict.attackingPlayer === context.player) {
                         return false;
                     }
@@ -18,7 +18,7 @@ class ThirdTower extends DrawCard {
                         return false;
                     }
                     let cards = context.player.getDynastyCardsInProvince(event.conflict.declaredProvince.location);
-                    return !cards.some((card: any) => card.isFaceup() && card.type === CardTypes.Holding && card.hasTrait('kaiu-wall'));
+                    return !cards.some((card: any) => card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall'));
                 }
             },
             gameAction: AbilityDsl.actions.takeHonor(),

@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { Durations } from '../../../Constants.js';
+import { Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class WolfsProposal extends DrawCard {
@@ -13,14 +13,14 @@ export default class WolfsProposal extends DrawCard {
                     'Increase glory': {
                         action: AbilityDsl.actions.cardLastingEffect((context) => ({
                             target: context.source.parent,
-                            duration: Durations.UntilEndOfPhase,
+                            duration: Duration.UntilEndOfPhase,
                             effect: AbilityDsl.effects.modifyGlory(2)
                         }))
                     },
                     'Decrease glory': {
                         action: AbilityDsl.actions.cardLastingEffect((context) => ({
                             target: context.source.parent,
-                            duration: Durations.UntilEndOfPhase,
+                            duration: Duration.UntilEndOfPhase,
                             effect: AbilityDsl.effects.modifyGlory(-2)
                         }))
                     }

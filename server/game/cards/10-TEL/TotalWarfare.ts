@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -15,7 +15,7 @@ export default class TotalWarfare extends BattlefieldAttachment {
                     context.source.parent && event.conflict.loser && context.source.parent.isConflictProvince()
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 player: (context) =>
                     context.player === this.game.currentConflict?.loser ? Players.Self : Players.Opponent,
                 cardCondition: (card) => card.isParticipating() && card.controller === this.game.currentConflict?.loser,

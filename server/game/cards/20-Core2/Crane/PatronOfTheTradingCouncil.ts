@@ -1,4 +1,4 @@
-import { Locations } from '../../../Constants.js';
+import { Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
@@ -35,7 +35,7 @@ export default class PatronOfTheTradingCouncil extends DrawCard {
                     targets: true,
                     message: '{0} chooses {1} to give to {2}',
                     messageArgs: (card, player) => [player, card, context.player],
-                    gameAction: AbilityDsl.actions.moveCard({ destination: Locations.Hand })
+                    gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand })
                 })),
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to give your opponent',
@@ -43,15 +43,15 @@ export default class PatronOfTheTradingCouncil extends DrawCard {
                     targets: true,
                     message: '{0} chooses {1} to give to {2}',
                     messageArgs: (card, player) => [player, card, context.player.opponent],
-                    gameAction: AbilityDsl.actions.moveCard({ destination: Locations.Hand })
+                    gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand })
                 })),
                 AbilityDsl.actions.shuffleDeck((context) => ({
                     target: context.player,
-                    deck: Locations.ConflictDeck
+                    deck: Location.ConflictDeck
                 })),
                 AbilityDsl.actions.shuffleDeck((context) => ({
                     target: context.player.opponent || [],
-                    deck: Locations.ConflictDeck
+                    deck: Location.ConflictDeck
                 }))
             ])
         });

@@ -1,5 +1,5 @@
 import BaseAction from './BaseAction.js';
-import { Phases, PlayTypes } from './Constants.js';
+import { Phases, PlayType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type DrawCard from './DrawCard.js';
 
@@ -20,7 +20,7 @@ class DuplicateUniqueAction extends BaseAction {
             return 'phase';
         }
 
-        if(!this.card.controller.isCardInPlayableLocation(this.card, PlayTypes.PlayFromProvince) && !this.card.controller.isCardInPlayableLocation(this.card, PlayTypes.PlayFromHand)) {
+        if(!this.card.controller.isCardInPlayableLocation(this.card, PlayType.PlayFromProvince) && !this.card.controller.isCardInPlayableLocation(this.card, PlayType.PlayFromHand)) {
             if(!ignoredRequirements.includes('location')) {
                 return 'location';
             }

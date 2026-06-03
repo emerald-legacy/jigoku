@@ -1,12 +1,12 @@
-import type { Locations, PlayTypes } from './Constants.js';
+import type { Location, PlayType } from './Constants.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
 
 export class PlayableLocation {
     public constructor(
-        public playingType: PlayTypes,
+        public playingType: PlayType,
         private player: Player,
-        private location: Locations,
+        private location: Location,
         public cards = new Set<DrawCard>()
     ) {}
 

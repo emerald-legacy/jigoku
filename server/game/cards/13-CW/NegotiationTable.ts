@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class NegotiationTable extends DrawCard {
@@ -95,14 +95,14 @@ export default class NegotiationTable extends DrawCard {
         const opponent = context.player.opponent;
         this.game.addMessage('{0} chooses to have each player ready a character', opponent);
         let bowedCharacters =
-            context.player.cardsInPlay.filter((a: DrawCard) => a.type === CardTypes.Character && a.bowed).length +
-            opponent.cardsInPlay.filter((a: DrawCard) => a.type === CardTypes.Character && a.bowed).length;
+            context.player.cardsInPlay.filter((a: DrawCard) => a.type === CardType.Character && a.bowed).length +
+            opponent.cardsInPlay.filter((a: DrawCard) => a.type === CardType.Character && a.bowed).length;
 
         if(bowedCharacters > 0) {
             AbilityDsl.actions
                 .selectCard((ctx: AbilityContext) => ({
                     player: Players.Opponent,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     targets: true,
                     message: '{0} chooses to ready {1}',
                     messageArgs: (card: any) => [ctx.player.opponent, card],
@@ -116,7 +116,7 @@ export default class NegotiationTable extends DrawCard {
             AbilityDsl.actions
                 .selectCard((ctx: AbilityContext) => ({
                     player: Players.Self,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     targets: true,
                     message: '{0} chooses to ready {1}',
                     messageArgs: (card: any) => [ctx.player, card],

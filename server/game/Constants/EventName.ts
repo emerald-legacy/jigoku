@@ -1,4 +1,4 @@
-export enum EventNames {
+export enum EventName {
     OnMoveFate = 'onMoveFate',
     OnBeginRound = 'onBeginRound',
     OnCreateTokenCharacter = 'onCreateTokenCharacter',

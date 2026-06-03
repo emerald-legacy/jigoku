@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Durations, Locations, Players } from '../../Constants.js';
+import { Duration, Location, Players } from '../../Constants.js';
 
 class KitsuSpiritcaller extends DrawCard {
     static id = 'kitsu-spiritcaller';
@@ -12,7 +12,7 @@ class KitsuSpiritcaller extends DrawCard {
             cost: AbilityDsl.costs.bowSelf(),
             target: {
                 activePromptTitle: 'Choose a character from a discard pile',
-                location: [Locations.DynastyDiscardPile, Locations.ConflictDiscardPile],
+                location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.putIntoConflict()
             },
@@ -20,7 +20,7 @@ class KitsuSpiritcaller extends DrawCard {
             then: (context: AbilityContext) => ({
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     target: context.target,
-                    duration: Durations.UntilEndOfPhase,
+                    duration: Duration.UntilEndOfPhase,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
                             onConflictFinished: () => true

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class BayushiTraitor extends DrawCard {
@@ -7,7 +7,7 @@ class BayushiTraitor extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            location: Locations.Any,
+            location: Location.Any,
             condition: context => context.player.opponent !== undefined && context.source.controller !== context.source.owner,
             effect: [
                 AbilityDsl.effects.cannotParticipateAsAttacker(),
@@ -16,14 +16,14 @@ class BayushiTraitor extends DrawCard {
         });
 
         this.persistentEffect({
-            location: Locations.Any,
-            targetLocation: Locations.Any,
+            location: Location.Any,
+            targetLocation: Location.Any,
             effect: AbilityDsl.effects.cardCannot('putIntoConflict')
         });
 
         this.persistentEffect({
-            location: Locations.Any,
-            targetLocation: Locations.Any,
+            location: Location.Any,
+            targetLocation: Location.Any,
             effect: AbilityDsl.effects.entersPlayForOpponent()
         });
     }

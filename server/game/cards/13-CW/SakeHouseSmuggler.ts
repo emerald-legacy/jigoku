@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Durations, CardTypes, Phases } from '../../Constants.js';
+import { Duration, CardType, Phases } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SakeHouseSmuggler extends DrawCard {
@@ -13,13 +13,13 @@ class SakeHouseSmuggler extends DrawCard {
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.playerLastingEffect(context => ({
                     targetController: context.player,
-                    duration: Durations.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, (card: any) => card.type !== CardTypes.Event)
+                    duration: Duration.UntilEndOfPhase,
+                    effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, (card: any) => card.type !== CardType.Event)
                 })),
                 AbilityDsl.actions.playerLastingEffect(context => ({
-                    duration: Durations.UntilEndOfPhase,
+                    duration: Duration.UntilEndOfPhase,
                     targetController: context.player.opponent,
-                    effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, (card: any) => card.type !== CardTypes.Event)
+                    effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, (card: any) => card.type !== CardType.Event)
                 }))
             ])
         });

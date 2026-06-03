@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class ScholarOfOldRempet extends DrawCard {
     static id = 'scholar-of-old-rempet';
@@ -11,7 +11,7 @@ class ScholarOfOldRempet extends DrawCard {
             condition: () => this.game.isDuringConflict(),
             cost: AbilityDsl.costs.payHonor(1),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => !card.isUnique(),
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     effect: AbilityDsl.effects.immunity({ restricts: 'events' })

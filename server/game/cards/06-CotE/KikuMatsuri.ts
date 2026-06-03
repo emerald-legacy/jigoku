@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -10,13 +10,13 @@ export default class KikuMatsuri extends ProvinceCard {
             title: 'Honor a character home from each side',
             targets: {
                 myCharacter: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: (card) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.honor()
                 },
                 oppCharacter: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: (card) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.honor()

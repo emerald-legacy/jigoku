@@ -1,4 +1,4 @@
-import { CardTypes, Locations } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
@@ -10,8 +10,8 @@ export default class BorderFortress extends ProvinceCard {
         this.action({
             title: 'Reveal a province',
             target: {
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 cardCondition: (card) => card.isFacedown(),
                 gameAction: AbilityDsl.actions.reveal({ chatMessage: true })
             },

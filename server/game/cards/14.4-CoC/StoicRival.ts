@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class StoicRival extends DrawCard {
             title: 'Dishonor a participating character with fewer attachments',
             condition: (context) => context.source.attachments.length > 0 && context.source.isParticipating(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.attachments.length < context.source.attachments.length,
                 gameAction: AbilityDsl.actions.dishonor()

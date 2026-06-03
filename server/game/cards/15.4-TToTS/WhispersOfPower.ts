@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { Players, CardTypes, Durations } from '../../Constants.js';
+import { Players, CardType, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class WhispersOfPower extends DrawCard {
@@ -13,11 +13,11 @@ class WhispersOfPower extends DrawCard {
             condition: (context: AbilityContext) => context.game.isDuringConflict(),
             cost: AbilityDsl.costs.payHonor(),
             target:{
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any
             },
             gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => ({
-                duration: Durations.UntilEndOfConflict,
+                duration: Duration.UntilEndOfConflict,
                 target: context.target,
                 effect: AbilityDsl.effects.modifyPoliticalSkill(
                     this.getPoliticalPowerChange(context)
@@ -29,7 +29,7 @@ class WhispersOfPower extends DrawCard {
     }
 
     getPoliticalPowerChange(context: AbilityContext) {
-        return (context.player.opponent as Player).filterCardsInPlay((card: any) => card.type === CardTypes.Character && card.getFate() === 0).length * 3;
+        return (context.player.opponent as Player).filterCardsInPlay((card: any) => card.type === CardType.Character && card.getFate() === 0).length * 3;
     }
 
     isTemptationsMaho() {

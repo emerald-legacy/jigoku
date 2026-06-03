@@ -1,4 +1,4 @@
-import { Durations } from '../../../Constants.js';
+import { Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,7 +12,7 @@ export default class PassionatePoet extends DrawCard {
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.game.currentConflict.getCharacters(context.player.opponent),
                 effect: AbilityDsl.effects.modifyBothSkills(-1),
-                duration: Durations.UntilEndOfConflict
+                duration: Duration.UntilEndOfConflict
             })),
             effect: 'give all participating enemies -1{1}/-1{2} until the end of the conflict',
             effectArgs: ['military', 'political']

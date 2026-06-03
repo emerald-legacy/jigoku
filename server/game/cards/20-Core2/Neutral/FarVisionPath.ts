@@ -1,4 +1,4 @@
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -12,8 +12,8 @@ export default class FarVisionPath extends ProvinceCard {
                 onCardRevealed: (event, context) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.moveConflict()
             }

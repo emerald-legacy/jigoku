@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Outwit extends DrawCard {
@@ -9,7 +9,7 @@ class Outwit extends DrawCard {
         this.action({
             title: 'Send a character home.',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card: any, context: any) => context.player.cardsInPlay.some((myCard: any) => (
                     myCard.hasTrait('courtier') && myCard.isParticipating() &&

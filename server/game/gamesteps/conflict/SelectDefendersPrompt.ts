@@ -1,5 +1,5 @@
 import { UiPrompt } from '../UiPrompt.js';
-import { CardTypes, EffectNames, EventNames } from '../../Constants.js';
+import { CardType, EffectName, EventName } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type Game from '../../Game.js';
 import type DrawCard from '../../DrawCard.js';
@@ -24,7 +24,7 @@ class SelectDefendersPrompt extends UiPrompt {
         this.player = player;
         this.conflict = conflict;
         let mustBeDeclared = this.player.cardsInPlay.filter((card: DrawCard) =>
-            card.getEffects(EffectNames.MustBeDeclaredAsDefender).some((effect) => effect === 'both' || effect === conflict.conflictType));
+            card.getEffects(EffectName.MustBeDeclaredAsDefender).some((effect) => effect === 'both' || effect === conflict.conflictType));
         for(const card of mustBeDeclared) {
             if(this.checkCardCondition(card) && !this.conflict.defenders.includes(card)) {
                 this.selectCard(card);
@@ -67,11 +67,11 @@ class SelectDefendersPrompt extends UiPrompt {
     }
 
     checkCardCondition(card: DrawCard): boolean {
-        if(this.conflict.defenders.includes(card) && card.getEffects(EffectNames.MustBeDeclaredAsDefender).some((effect) => effect === 'both' || effect === this.conflict.conflictType)) {
+        if(this.conflict.defenders.includes(card) && card.getEffects(EffectName.MustBeDeclaredAsDefender).some((effect) => effect === 'both' || effect === this.conflict.conflictType)) {
             return false;
         }
         return (
-            card.getType() === CardTypes.Character &&
+            card.getType() === CardType.Character &&
             card.controller === this.player &&
             card.canDeclareAsDefender(this.conflict.conflictType)
         );
@@ -97,7 +97,7 @@ class SelectDefendersPrompt extends UiPrompt {
         this.conflict.defenders.forEach((card: DrawCard) => card.covert = false);
         this.conflict.setDefendersChosen(true);
         this.complete();
-        this.game.raiseEvent(EventNames.OnDefendersDeclared, { conflict: this.conflict, defenders: this.conflict.defenders.slice() });
+        this.game.raiseEvent(EventName.OnDefendersDeclared, { conflict: this.conflict, defenders: this.conflict.defenders.slice() });
         return true;
     }
 }

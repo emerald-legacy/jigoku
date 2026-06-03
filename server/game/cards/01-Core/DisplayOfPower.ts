@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import * as GameActions from '../../GameActions/GameActions.js';
-import { EventNames, AbilityTypes } from '../../Constants.js';
+import { EventName, AbilityType } from '../../Constants.js';
 
 class DisplayOfPower extends DrawCard {
     static id = 'display-of-power';
@@ -15,7 +15,7 @@ class DisplayOfPower extends DrawCard {
             cannotBeMirrored: true,
             effect: 'resolve and claim the ring when the ring effect resolves',
             handler: context => {
-                this.game.once(EventNames.OnResolveConflictRing + ':' + AbilityTypes.WouldInterrupt, (event: any) => this.onResolveConflictRing(event, context));
+                this.game.once(EventName.OnResolveConflictRing + ':' + AbilityType.WouldInterrupt, (event: any) => this.onResolveConflictRing(event, context));
             }
         });
     }
@@ -36,7 +36,7 @@ class DisplayOfPower extends DrawCard {
         event.window.addEvent(GameActions.resolveConflictRing().getEvent(ring, context));
 
         if(context.player.checkRestrictions('claimRings', context)) {
-            event.window.addEvent(this.game.getEvent(EventNames.OnClaimRing, { player: this.controller, ring:ring, conflict: event.conflict }, () => ring.claimRing(context.player)));
+            event.window.addEvent(this.game.getEvent(EventName.OnClaimRing, { player: this.controller, ring:ring, conflict: event.conflict }, () => ring.claimRing(context.player)));
         }
         event.cancel();
     }

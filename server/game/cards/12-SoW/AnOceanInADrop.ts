@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, TargetModes } from '../../Constants.js';
+import { Location, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { shuffle } from '../../utils/shuffle.js';
 
@@ -12,7 +12,7 @@ class AnOceanInADrop extends DrawCard {
             condition: context => !!(context.source.parent && context.source.parent.isParticipating()),
             cost: AbilityDsl.costs.sacrificeSelf(),
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 targets: true,
                 choices:  {
                     [this.owner.name]: AbilityDsl.actions.sequential(this.getGameActions(this.owner)),
@@ -34,7 +34,7 @@ class AnOceanInADrop extends DrawCard {
             AbilityDsl.actions.moveCard(() => ({
                 shuffle: false,
                 bottom: true,
-                destination: Locations.ConflictDeck,
+                destination: Location.ConflictDeck,
                 target: shuffle(player.hand)
             })),
             AbilityDsl.actions.draw((context) => ({ target: player, amount: context.events.length }))

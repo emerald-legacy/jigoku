@@ -1,7 +1,7 @@
 import type { GameEvent } from '../Events/EventPayloads.js';
 import { AbilityContext } from '../AbilityContext.js';
 import type { Conflict } from '../Conflict.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
@@ -11,7 +11,7 @@ export class SwitchConflictElementAction extends RingAction {
     name = 'switchConflictElement';
     cost = 'switching the contested ring to {0}';
     effect = 'switch the contested ring to {0}';
-    eventName = EventNames.OnSwitchConflictElement;
+    eventName = EventName.OnSwitchConflictElement;
 
     canAffect(ring: Ring, context: AbilityContext, additionalProperties = {}): boolean {
         return (
@@ -21,7 +21,7 @@ export class SwitchConflictElementAction extends RingAction {
         );
     }
 
-    eventHandler(event: GameEvent<EventNames.OnSwitchConflictElement>): void {
+    eventHandler(event: GameEvent<EventName.OnSwitchConflictElement>): void {
         const context = event.context as AbilityContext;
         (context.game.currentConflict as Conflict).switchElement(event.ring.element);
     }

@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 import type Ring from '../../../Ring.js';
-import { TargetModes, CardTypes, AbilityTypes, Durations, EventNames } from '../../../Constants.js';
+import { TargetMode, CardType, AbilityType, Duration, EventName } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { GameModes } from '../../../../GameModes.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -14,21 +14,21 @@ class CraftyTsukumogami extends DrawCard {
         this.action({
             title: 'Attach to a ring',
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 activePromptTitle: 'Choose a ring to attach to',
                 ringCondition: (ring: Ring, context?: AbilityContext) => !!context && this.checkRingCondition(ring, context),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.cardLastingEffect(context => ({
                         canChangeZoneOnce: true,
-                        duration: Durations.Custom,
+                        duration: Duration.Custom,
                         target: context.source,
                         effect: [
-                            AbilityDsl.effects.changeType(CardTypes.Attachment),
-                            AbilityDsl.effects.gainAbility(AbilityTypes.ForcedReaction, {
+                            AbilityDsl.effects.changeType(CardType.Attachment),
+                            AbilityDsl.effects.gainAbility(AbilityType.ForcedReaction, {
                                 title: 'Discard a card',
                                 limit: AbilityDsl.limit.unlimitedPerConflict(),
                                 when: {
-                                    onConflictDeclared: (event: EventPayload<typeof EventNames.OnConflictDeclared>, context: AbilityContext) => !!context.source.parent && context.source.parent === event.ring
+                                    onConflictDeclared: (event: EventPayload<typeof EventName.OnConflictDeclared>, context: AbilityContext) => !!context.source.parent && context.source.parent === event.ring
                                 },
                                 printedAbility: false,
                                 gameAction: AbilityDsl.actions.chosenDiscard((context: AbilityContext) => ({
@@ -68,13 +68,13 @@ class CraftyTsukumogami extends DrawCard {
     }
 
     canAttach(ring: Ring) {
-        return ring && ring.type === 'ring' && this.getType() === CardTypes.Attachment;
+        return ring && ring.type === 'ring' && this.getType() === CardType.Attachment;
     }
     canPlayOn(source: BaseCard) {
-        return source && source.getType() === 'ring' && this.getType() === CardTypes.Attachment;
+        return source && source.getType() === 'ring' && this.getType() === CardType.Attachment;
     }
     mustAttachToRing() {
-        return this.getType() === CardTypes.Attachment;
+        return this.getType() === CardType.Attachment;
     }
 }
 

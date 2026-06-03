@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class OneWithTheSea extends DrawCard {
@@ -9,7 +9,7 @@ export default class OneWithTheSea extends DrawCard {
         this.action({
             title: 'Move a character you control to the conflict',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.moveToConflict()
             }
@@ -22,7 +22,7 @@ export default class OneWithTheSea extends DrawCard {
             condition: (context) =>
                 context.game.isDuringConflict() && context.game.rings['water'].isConsideredClaimed(context.player),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 gameAction: AbilityDsl.actions.moveToConflict()
             }

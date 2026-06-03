@@ -1,7 +1,7 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { EventNames, AbilityTypes, Locations, CardTypes, Players } from '../../../Constants.js';
+import { EventName, AbilityType, Location, CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -14,17 +14,17 @@ export default class StormFromSakkaku extends DrawCard {
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([
-            { [`${EventNames.OnResolveRingElement}:${AbilityTypes.WouldInterrupt}`]: 'cancelRingEffect' }
+            { [`${EventName.OnResolveRingElement}:${AbilityType.WouldInterrupt}`]: 'cancelRingEffect' }
         ]);
 
         this.action({
             title: 'Move holding to another province',
             target: {
-                location: Locations.Provinces,
-                cardType: CardTypes.Province,
+                location: Location.Provinces,
+                cardType: CardType.Province,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
-                    card.location !== context.source.location && card.location !== Locations.StrongholdProvince
+                    card.location !== context.source.location && card.location !== Location.StrongholdProvince
             },
             gameAction: AbilityDsl.actions.moveCard((context) => ({
                 target: context.source,
@@ -49,7 +49,7 @@ export default class StormFromSakkaku extends DrawCard {
             (card) =>
                 card.location === context.source.location &&
                 card.controller === context.source.controller &&
-                card.type === CardTypes.Holding &&
+                card.type === CardType.Holding &&
                 !card.facedown &&
                 card !== context.source
         );

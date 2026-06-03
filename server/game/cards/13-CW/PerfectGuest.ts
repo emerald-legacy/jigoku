@@ -1,4 +1,4 @@
-import { Durations } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -22,7 +22,7 @@ export default class PerfectGuest extends DrawCard {
                 this.triggeredThisRound = true;
                 return {
                     effect: AbilityDsl.effects.takeControl(context.player.opponent),
-                    duration: Durations.Custom
+                    duration: Duration.Custom
                 };
             })
         });

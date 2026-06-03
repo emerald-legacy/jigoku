@@ -1,6 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, EventNames } from '../../Constants.js';
+import { CardType, EventName } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type CardAbility from '../../CardAbility.js';
@@ -18,7 +18,7 @@ class TheMirrorsGaze extends DrawCard {
         this.reaction({
             title: 'Mirror an opponent\'s event',
             when: {
-                onCardAbilityTriggered: (event: EventPayload<EventNames.OnCardAbilityTriggered>, context: any) => event.card.type === CardTypes.Event && !(event.context.ability as any).cannotBeMirrored &&
+                onCardAbilityTriggered: (event: EventPayload<EventName.OnCardAbilityTriggered>, context: any) => event.card.type === CardType.Event && !(event.context.ability as any).cannotBeMirrored &&
                     event.context.player === context.player.opponent && !event.cancelled
             },
             gameAction: ability.actions.resolveAbility((context: AbilityContext) => ({

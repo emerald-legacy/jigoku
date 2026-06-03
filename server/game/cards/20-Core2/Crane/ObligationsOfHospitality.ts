@@ -1,4 +1,4 @@
-import { CardTypes, Players, Locations } from '../../../Constants.js';
+import { CardType, Players, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -8,7 +8,7 @@ export default class ObligationsOfHospitality extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            location: Locations.Any,
+            location: Location.Any,
             targetController: Players.Any,
             match: (player) => player.imperialFavor !== '',
             effect: AbilityDsl.effects.reduceCost({ match: (card: any, source: any) => card === source })
@@ -18,7 +18,7 @@ export default class ObligationsOfHospitality extends DrawCard {
             title: 'Take control of a character',
             condition: () => this.game.isDuringConflict(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => !card.anotherUniqueInPlay(context.player) && card.costLessThan(3),
                 gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({

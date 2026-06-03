@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Durations, CardTypes } from '../../Constants.js';
+import { Duration, CardType } from '../../Constants.js';
 
 class PurityOfSpirit extends DrawCard {
     static id = 'purity-of-spirit';
@@ -11,12 +11,12 @@ class PurityOfSpirit extends DrawCard {
 
             effect: 'honor {0}. Their status token will be discarded at the end of the conflict',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.hasTrait('bushi') && card.isParticipating(),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.honor(),
                     AbilityDsl.actions.cardLastingEffect(context => ({
-                        duration: Durations.UntilEndOfPhase,
+                        duration: Duration.UntilEndOfPhase,
                         effect: AbilityDsl.effects.delayedEffect({
                             when : {
                                 onConflictFinished: () => true

@@ -1,5 +1,5 @@
 import { GameObject } from './GameObject.js';
-import { DuelTypes, EffectNames, EventNames, Locations } from './Constants.js';
+import { DuelType, EffectName, EventName, Location } from './Constants.js';
 import { GameMode, parseGameMode } from './GameMode.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import type DrawCard from './DrawCard.js';
@@ -45,7 +45,7 @@ export class Duel extends GameObject {
         public game: Game,
         public challenger: DrawCard,
         public targets: DrawCard[],
-        public duelType: DuelTypes,
+        public duelType: DuelType,
         public properties: {
             requiresConflict?: boolean;
             targetCondition?: (card: DrawCard, context: AbilityContext) => boolean;
@@ -58,7 +58,7 @@ export class Duel extends GameObject {
         this.#initializeDuelModifiers(challenger.controller);
 
         this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventNames.OnCardAbilityTriggered]);
+        this.eventRegistrar.register([EventName.OnCardAbilityTriggered]);
     }
 
     get winnerController(): undefined | Player {
@@ -110,7 +110,7 @@ export class Duel extends GameObject {
 
     isInvolved(card: BaseCard): boolean {
         return (
-            card.location === Locations.PlayArea &&
+            card.location === Location.PlayArea &&
             (card === this.challenger || this.targets.includes(card as DrawCard))
         );
     }
@@ -134,9 +134,9 @@ export class Duel extends GameObject {
     }
 
     determineResult(): void {
-        const challengerWins = this.challenger.mostRecentEffect(EffectNames.WinDuel) === this;
-        const challengerWinsTies = this.challenger.anyEffect(EffectNames.WinDuelTies);
-        const targetWinsTies = this.targets.filter((target) => target.anyEffect(EffectNames.WinDuelTies)).length > 0;
+        const challengerWins = this.challenger.mostRecentEffect(EffectName.WinDuel) === this;
+        const challengerWinsTies = this.challenger.anyEffect(EffectName.WinDuelTies);
+        const targetWinsTies = this.targets.filter((target) => target.anyEffect(EffectName.WinDuelTies)).length > 0;
 
         this.#setDuelDifference();
 
@@ -205,8 +205,8 @@ export class Duel extends GameObject {
 
     #getStatsTotal(charactersOnSameSide: DrawCard[], player?: Player): StatisticTotal {
         let result = 0;
-        const ignoreSkill = this.participants.filter((card) => card.anyEffect(EffectNames.IgnoreDuelSkill)).length > 0;
-        const duelLevelModifier = this.getRawEffects().filter((effect) => effect.type === EffectNames.ModifyDuelSkill);
+        const ignoreSkill = this.participants.filter((card) => card.anyEffect(EffectName.IgnoreDuelSkill)).length > 0;
+        const duelLevelModifier = this.getRawEffects().filter((effect) => effect.type === EffectName.ModifyDuelSkill);
 
         for(const effect of duelLevelModifier) {
             const effectProps = effect.value.value;
@@ -216,7 +216,7 @@ export class Duel extends GameObject {
         }
 
         for(const card of charactersOnSameSide) {
-            if(card.location !== Locations.PlayArea) {
+            if(card.location !== Location.PlayArea) {
                 return InvalidStats;
             }
             if(!ignoreSkill) {
@@ -230,7 +230,7 @@ export class Duel extends GameObject {
     #getDuelModifiers(card: DrawCard): number {
         const rawEffects = (card as unknown as { getRawEffects(): CardEffect[] })
             .getRawEffects()
-            .filter((effect: CardEffect) => effect.type === EffectNames.ModifyDuelistSkill);
+            .filter((effect: CardEffect) => effect.type === EffectName.ModifyDuelistSkill);
         let effectModifier = 0;
 
         rawEffects.forEach((effect: any) => {
@@ -245,15 +245,15 @@ export class Duel extends GameObject {
 
     #deriveBaseStatistic(card: DrawCard): number {
         switch(this.duelType) {
-            case DuelTypes.Military:
+            case DuelType.Military:
                 return this.gameModeOpts.duelRules === 'printedSkill'
                     ? card.printedMilitarySkill
                     : card.getMilitarySkill();
-            case DuelTypes.Political:
+            case DuelType.Political:
                 return this.gameModeOpts.duelRules === 'printedSkill'
                     ? card.printedPoliticalSkill
                     : card.getPoliticalSkill();
-            case DuelTypes.Glory:
+            case DuelType.Glory:
                 return this.gameModeOpts.duelRules === 'printedSkill' ? card.printedGlory : card.glory;
         }
     }
@@ -268,8 +268,8 @@ export class Duel extends GameObject {
         // Some effects for the new duel framework
         if(this.gameModeOpts.duelRules === 'printedSkill') {
             let statusTokenBonus = 0;
-            const useStatusTokens = this.getEffects(EffectNames.ApplyStatusTokensToDuel).length > 0;
-            const ignorePrintedSkill = this.getEffects(EffectNames.DuelIgnorePrintedSkill).length > 0;
+            const useStatusTokens = this.getEffects(EffectName.ApplyStatusTokensToDuel).length > 0;
+            const ignorePrintedSkill = this.getEffects(EffectName.DuelIgnorePrintedSkill).length > 0;
 
             if(ignorePrintedSkill) {
                 baseStatistic = 0;
@@ -380,7 +380,7 @@ export class Duel extends GameObject {
     onCardAbilityTriggered({
         context: { event, player }
     }: {
-        context: { event?: { duel?: Duel; name: EventNames }; player: Player };
+        context: { event?: { duel?: Duel; name: EventName }; player: Player };
     }): void {
         if(event?.duel !== this) {
             return;
@@ -392,15 +392,15 @@ export class Duel extends GameObject {
         }
 
         switch(event.name) {
-            case EventNames.OnDuelChallenge:
+            case EventName.OnDuelChallenge:
                 playersModifiers.challenge = true;
                 break;
 
-            case EventNames.OnDuelFocus:
+            case EventName.OnDuelFocus:
                 playersModifiers.focus = true;
                 break;
 
-            case EventNames.OnDuelStrike:
+            case EventName.OnDuelStrike:
                 playersModifiers.strike = true;
                 break;
         }

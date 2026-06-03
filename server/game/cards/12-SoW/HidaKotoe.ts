@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HidaKotoe extends DrawCard {
@@ -12,7 +12,7 @@ class HidaKotoe extends DrawCard {
             },
             title: 'Discard an attachment',
             target: {
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 gameAction: AbilityDsl.actions.discardFromPlay()
             }
         });

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SiegeWarfare extends DrawCard {
@@ -12,13 +12,13 @@ class SiegeWarfare extends DrawCard {
             gameAction: AbilityDsl.actions.selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 cardCondition: card => card.isConflictProvince() && card.getStrength() > 0,
                 message: '{0} reduces the strength of {1} by 2',
                 messageArgs: cards => [context.player, cards],
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
-                    targetLocation: Locations.Provinces,
+                    targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.modifyProvinceStrength(-2)
                 }))
             })),

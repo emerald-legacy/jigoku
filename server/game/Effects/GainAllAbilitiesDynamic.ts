@@ -1,6 +1,6 @@
 import { EffectValue } from './EffectValue.js';
 import GainAbility from './GainAbility.js';
-import { AbilityTypes } from '../Constants.js';
+import { AbilityType } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type CardAbility from '../CardAbility.js';
@@ -42,7 +42,7 @@ export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch> {
         cardList.forEach((card: BaseCard) => {
             card._getActions(true)
                 .filter((a: CardAction) => a.isTriggeredAbility() && (!card.isBlank() || !a.printedAbility))
-                .forEach((action: CardAction) => this.actions.push(this.getAbility(AbilityTypes.Action, action, target)));
+                .forEach((action: CardAction) => this.actions.push(this.getAbility(AbilityType.Action, action, target)));
             card._getReactions(true)
                 .filter((a: TriggeredAbility) => a.isTriggeredAbility() && (!card.isBlank() || !a.printedAbility))
                 .forEach((ability: TriggeredAbility) => {
@@ -55,7 +55,7 @@ export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch> {
         return `${ability.abilityIdentifier}-${ability.card.uuid}`;
     }
 
-    getAbility(abilityType: AbilityTypes, ability: CardAbility, target: BaseCard): GainAbility {
+    getAbility(abilityType: AbilityType, ability: CardAbility, target: BaseCard): GainAbility {
         const id = this.getAbilityIdentifier(ability);
         if(!this.createdAbilities[id]) {
             const res = new GainAbility(abilityType, ability);

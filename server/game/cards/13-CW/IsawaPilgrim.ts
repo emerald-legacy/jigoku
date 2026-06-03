@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Durations, Elements } from '../../Constants.js';
+import { Duration, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'isawa-pilgrim-water';
@@ -15,7 +15,7 @@ class IsawaPilgrim extends DrawCard {
             condition: context => !!(context.player.opponent && context.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player.opponent)),
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                 effect: AbilityDsl.effects.takeControl(context.player.opponent),
-                duration: Durations.Custom
+                duration: Duration.Custom
             }))
         });
     }
@@ -25,7 +25,7 @@ class IsawaPilgrim extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Claimed Ring',
-            element: Elements.Water
+            element: Element.Water
         });
         return symbols;
     }

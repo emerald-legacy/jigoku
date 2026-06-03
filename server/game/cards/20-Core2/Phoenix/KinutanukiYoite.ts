@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -16,7 +16,7 @@ export default class KinutanukiYoite extends DrawCard {
             },
             target: {
                 activePromptTitle: 'Choose a character',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card: DrawCard, context) =>
                     card.isParticipating() && card.militarySkill <= (context.source as DrawCard).militarySkill,

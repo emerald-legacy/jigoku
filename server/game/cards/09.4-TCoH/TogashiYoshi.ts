@@ -3,7 +3,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventNames } from '../../Constants.js';
+import { EventName } from '../../Constants.js';
 class TogashiYoshi extends DrawCard {
     static id = 'togashi-yoshi';
 
@@ -11,7 +11,7 @@ class TogashiYoshi extends DrawCard {
         this.reaction({
             title: 'Gain 1 fate from an unclaimed ring',
             when: {
-                afterConflict: (event: EventPayload<EventNames.AfterConflict>, context) => event.conflict.winner === context.source.controller &&
+                afterConflict: (event: EventPayload<EventName.AfterConflict>, context) => event.conflict.winner === context.source.controller &&
                     context.source.isParticipating()
             },
             effect: 'gain 1 fate from the {1}',

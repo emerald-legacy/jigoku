@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Players, TargetModes } from '../../Constants.js';
+import { CardType, Players, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class TheFiresOfJustice extends DrawCard {
@@ -13,13 +13,13 @@ class TheFiresOfJustice extends DrawCard {
             },
             targets: {
                 character: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     player: Players.Opponent,
                     controller: Players.Opponent,
                     cardCondition: card => card.isParticipating()
                 },
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: 'character',
                     choices: {
                         'Remove all fate': AbilityDsl.actions.removeFate(context => ({ target: context.targets.character, amount: context.targets.character.getFate() })),

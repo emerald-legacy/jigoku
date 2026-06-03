@@ -1,7 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 
 export default class AwakeTheFearfulHeart extends DrawCard {
     static id = 'awake-the-fearful-heart';
@@ -24,7 +24,7 @@ export default class AwakeTheFearfulHeart extends DrawCard {
                     trait: 'air',
                     gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                         target: context.game.findAnyCardsInPlay(
-                            (card: DrawCard) => card.getType() === CardTypes.Character
+                            (card: DrawCard) => card.getType() === CardType.Character
                         ),
                         effect: AbilityDsl.effects.cardCannot('moveToConflict')
                     })),

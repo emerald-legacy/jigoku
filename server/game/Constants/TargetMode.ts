@@ -1,4 +1,4 @@
-export enum TargetModes {
+export enum TargetMode {
     Ring = 'ring',
     Select = 'select',
     Ability = 'ability',

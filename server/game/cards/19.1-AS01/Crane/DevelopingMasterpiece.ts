@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Locations, Phases, PlayTypes } from '../../../Constants.js';
+import { CardType, Location, Phases, PlayType } from '../../../Constants.js';
 import type { Cost } from '../../../Costs.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -26,8 +26,8 @@ export default class DevelopingMasterpiece extends DrawCard {
         });
 
         this.persistentEffect({
-            location: Locations.ConflictDiscardPile,
-            effect: AbilityDsl.effects.canPlayFromOwn(Locations.ConflictDiscardPile, [this], this, PlayTypes.Other)
+            location: Location.ConflictDiscardPile,
+            effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
 
         this.action({
@@ -54,7 +54,7 @@ export default class DevelopingMasterpiece extends DrawCard {
     public canAttach(card: BaseCard): boolean {
         return (
             card.controller === this.controller &&
-            card.getType() === CardTypes.Character &&
+            card.getType() === CardType.Character &&
             (card.hasTrait('courtier') || card.hasTrait('artisan') || card.isFaction('crane')) &&
             super.canAttach(card)
         );

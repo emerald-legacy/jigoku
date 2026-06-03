@@ -1,7 +1,7 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, TargetModes, CardTypes } from '../../Constants.js';
+import { Players, TargetMode, CardType } from '../../Constants.js';
 
 class ForShame extends DrawCard {
     static id = 'for-shame';
@@ -12,12 +12,12 @@ class ForShame extends DrawCard {
             condition: context => context.player.anyCardsInPlay((card: any) => card.isParticipating() && card.hasTrait('courtier')),
             targets: {
                 character: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: (card: any) => card.isParticipating()
                 },
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: 'character',
                     player: Players.Opponent,
                     choices: {

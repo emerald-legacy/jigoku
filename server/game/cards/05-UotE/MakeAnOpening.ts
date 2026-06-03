@@ -1,7 +1,7 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class MakeAnOpening extends DrawCard {
     static id = 'make-an-opening';
@@ -22,7 +22,7 @@ class MakeAnOpening extends DrawCard {
                     context.player.showBid !== opponent.showBid;
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card: any) =>
                     card.isParticipating(),

@@ -1,5 +1,5 @@
 import type BaseCard from '../../BaseCard.js';
-import { EffectNames } from '../../Constants.js';
+import { EffectName } from '../../Constants.js';
 import type Player from '../../Player.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import Restriction from '../Restriction.js';
@@ -15,7 +15,7 @@ type Props =
 
 export function cardCannot(properties: Props) {
     return EffectBuilder.card.static(
-        EffectNames.AbilityRestrictions,
+        EffectName.AbilityRestrictions,
         new Restriction(
             typeof properties === 'string'
                 ? { type: properties }

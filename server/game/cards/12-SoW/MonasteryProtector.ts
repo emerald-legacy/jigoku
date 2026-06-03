@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class MonasteryProtector extends DrawCard {
@@ -7,10 +7,10 @@ class MonasteryProtector extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card, context) => card.getType() === CardTypes.Character && card.controller === context?.player && card.hasTrait('tattooed'),
+            match: (card, context) => card.getType() === CardType.Character && card.controller === context?.player && card.hasTrait('tattooed'),
             effect: AbilityDsl.effects.fateCostToTarget({
                 amount: 1,
-                cardType: CardTypes.Event,
+                cardType: CardType.Event,
                 targetPlayer: Players.Opponent
             })
         });

@@ -1,7 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
-import { Durations, EventNames } from '../../../Constants.js';
+import { Duration, EventName } from '../../../Constants.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class RecklessAssault extends DrawCard {
@@ -11,7 +11,7 @@ export default class RecklessAssault extends DrawCard {
         this.reaction({
             title: 'Force defenders',
             when: {
-                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context: any) =>
+                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context: any) =>
                     !!context.game.currentConflict &&
                     context.game.currentConflict.getNumberOfParticipantsFor(context.player) === 1 &&
                     context.game.currentConflict.getParticipants(
@@ -23,7 +23,7 @@ export default class RecklessAssault extends DrawCard {
             effectArgs: (context) => ['military', this.getCharacters(context)],
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: this.getCharacters(context),
-                duration: Durations.UntilEndOfConflict,
+                duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.cardCannot('declareAsDefender')
             }))
         });

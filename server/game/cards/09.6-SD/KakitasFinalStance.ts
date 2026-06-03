@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -17,7 +17,7 @@ export default class KakitasFinalStance extends DrawCard {
             title: 'Character cannot be bowed and doesn\'t bow during resolution',
             condition: () => this.game.isDuringConflict('military'),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: [
                     AbilityDsl.actions.cardLastingEffect((context) => ({

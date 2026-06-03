@@ -1,5 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class ShosuroActor extends DrawCard {
@@ -11,7 +11,7 @@ export default class ShosuroActor extends DrawCard {
             condition: (context) => context.source.isParticipating(),
             target: {
                 player: Players.Self,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => !card.isUnique(),
                 gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({

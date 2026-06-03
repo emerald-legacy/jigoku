@@ -1,4 +1,4 @@
-import { Locations, Players, TargetModes } from '../../Constants.js';
+import { Location, Players, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
@@ -20,8 +20,8 @@ export default class InquisitorialInitiate extends DrawCard {
                 player: Players.Opponent,
                 numCardsFunc: (context) =>
                     context.player.opponent?.cardsInPlay.filter((card: BaseCard) => card.getFate() === 0).length ?? 0,
-                mode: TargetModes.ExactlyVariable,
-                location: Locations.Hand
+                mode: TargetMode.ExactlyVariable,
+                location: Location.Hand
             },
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.lookAt((context) => ({

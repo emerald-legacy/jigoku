@@ -1,4 +1,4 @@
-import { CardTypes, Locations, Players } from '../../Constants.js';
+import { CardType, Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -15,9 +15,9 @@ export default class GoldenPlainsRaider extends DrawCard {
                     context.player.opponent !== undefined
             },
             target: {
-                location: Locations.Provinces,
+                location: Location.Provinces,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isFaceup() && card.type !== CardTypes.Province,
+                cardCondition: (card) => card.isFaceup() && card.type !== CardType.Province,
                 gameAction: AbilityDsl.actions.discardCard()
             }
         });

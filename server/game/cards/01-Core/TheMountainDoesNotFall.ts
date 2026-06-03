@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Durations, CardTypes } from '../../Constants.js';
+import { Duration, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class TheMountainDoesNotFall extends DrawCard {
@@ -9,9 +9,9 @@ class TheMountainDoesNotFall extends DrawCard {
         this.action({
             title: 'Choose a character to not bow when defending',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: ability.actions.cardLastingEffect(context => ({
-                    duration: Durations.UntilEndOfPhase,
+                    duration: Duration.UntilEndOfPhase,
                     condition: () => context.target.isDefending(),
                     effect: ability.effects.doesNotBow()
                 }))

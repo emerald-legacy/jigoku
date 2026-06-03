@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityTypes, CardTypes, EventNames } from '../../../Constants.js';
+import { AbilityType, CardType, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityProps } from '../../../Interfaces.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -17,20 +17,20 @@ export default class Naginata extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Bow a character',
                 when: {
-                    onMoveToConflict: (event: EventPayload<EventNames.OnMoveToConflict>, context: TriggeredAbilityContext<DrawCard>) =>
+                    onMoveToConflict: (event: EventPayload<EventName.OnMoveToConflict>, context: TriggeredAbilityContext<DrawCard>) =>
                         context.source.isParticipating('military') &&
-                        event.card?.type === CardTypes.Character &&
+                        event.card?.type === CardType.Character &&
                         event.card?.isParticipating(),
-                    onSendHome: (event: EventPayload<EventNames.OnSendHome>, context: TriggeredAbilityContext<DrawCard>) =>
+                    onSendHome: (event: EventPayload<EventName.OnSendHome>, context: TriggeredAbilityContext<DrawCard>) =>
                         context.source.isParticipating('military') &&
-                        event.card?.type === CardTypes.Character &&
+                        event.card?.type === CardType.Character &&
                         !event.card?.isParticipating()
                 },
                 target: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: (card, context) =>
                         card.isParticipating() && card.getMilitarySkill() < context.source.getMilitarySkill(),
                     gameAction: AbilityDsl.actions.bow()

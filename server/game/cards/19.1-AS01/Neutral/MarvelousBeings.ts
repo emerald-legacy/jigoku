@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, ConflictTypes, Durations } from '../../../Constants.js';
+import { CardType, ConflictType, Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class MarvelousBeings extends DrawCard {
@@ -9,14 +9,14 @@ export default class MarvelousBeings extends DrawCard {
     public setupCardAbilities() {
         this.action({
             title: 'Move character to conflict and gain skill bonus',
-            condition: (context) => context.game.isDuringConflict(ConflictTypes.Political),
+            condition: (context) => context.game.isDuringConflict(ConflictType.Political),
             cost: AbilityDsl.costs.moveToConflict({
                 cardCondition: (card: DrawCard) =>
-                    card.type === CardTypes.Character && (card.hasTrait('spirit') || card.hasTrait('creature'))
+                    card.type === CardType.Character && (card.hasTrait('spirit') || card.hasTrait('creature'))
             }),
             gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
                 target: context.player,
-                duration: Durations.UntilEndOfConflict,
+                duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.changePlayerSkillModifier(this.marvelousSkillBonus(context))
             })),
             effect: 'entrance the court, giving their side an extra {1}{2} this conflict',

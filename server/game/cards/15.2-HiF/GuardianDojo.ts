@@ -1,14 +1,14 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, CharacterStatus, CardTypes } from '../../Constants.js';
+import { Location, CharacterStatus, CardType } from '../../Constants.js';
 
 class GuardianDojo extends DrawCard {
     static id = 'guardian-dojo';
 
     setupCardAbilities() {
         this.persistentEffect({
-            targetLocation: Locations.Any,
-            match: (card: any, context: any) => card.type === CardTypes.Character
+            targetLocation: Location.Any,
+            match: (card: any, context: any) => card.type === CardType.Character
                 && card.isFaceup()
                 && context.player.areLocationsAdjacent(context.source.location, card.location),
             effect: [
@@ -17,7 +17,7 @@ class GuardianDojo extends DrawCard {
         });
 
         this.persistentEffect({
-            targetLocation: Locations.Any,
+            targetLocation: Location.Any,
             effect: AbilityDsl.effects.playerCannot({
                 cannot: 'placeFateWhenPlayingCharacterFromProvince',
                 restricts: 'adjacentCharacters'

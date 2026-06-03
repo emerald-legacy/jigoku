@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { Locations } from '../../../Constants.js';
+import { Location } from '../../../Constants.js';
 
 class MatsuSakura extends DrawCard {
     static id = 'matsu-sakura';
@@ -12,7 +12,7 @@ class MatsuSakura extends DrawCard {
             when: {
                 onInitiateAbilityEffects: (event, context) => context.source.isAttacking() && event.card.isConflictProvince() && event.card.controller &&
                     (event.card.controller.getDynastyCardsInProvince(event.card.location).some(a => a.isFaceup()) || //any faceup cards
-                        event.card.location === Locations.StrongholdProvince)
+                        event.card.location === Location.StrongholdProvince)
             },
             effect: 'cancel the effects of {1}\'s ability',
             effectArgs: context => context.event.card as BaseCard,

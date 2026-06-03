@@ -1,4 +1,4 @@
-import { CardTypes, Durations, Elements } from '../../Constants.js';
+import { CardType, Duration, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -10,18 +10,18 @@ export default class MantraOfVoid extends DrawCard {
             title: 'Reduce the cost to attach to a monk by 1',
             when: {
                 onConflictDeclared: (event, context) =>
-                    event.ring !== undefined && event.ring.hasElement(Elements.Void) && event.conflict.attackingPlayer === context.player.opponent
+                    event.ring !== undefined && event.ring.hasElement(Element.Void) && event.conflict.attackingPlayer === context.player.opponent
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) =>
                     card.hasTrait('monk') || card.attachments.some((card: any) => card.hasTrait('monk')),
                 gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
                     targetController: context.player,
-                    duration: Durations.UntilEndOfConflict,
+                    duration: Duration.UntilEndOfConflict,
                     effect: AbilityDsl.effects.reduceCost({
                         amount: 1,
-                        cardType: CardTypes.Attachment,
+                        cardType: CardType.Attachment,
                         targetCondition: (target: any) => target === context.target
                     })
                 }))

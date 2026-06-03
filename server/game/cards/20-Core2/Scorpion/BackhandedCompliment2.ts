@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { TargetModes } from '../../../Constants.js';
+import { TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import Game from '../../../Game.js';
 
@@ -10,7 +10,7 @@ export default class BackhandedCompliment2 extends DrawCard {
         this.action({
             title: 'Select a player to lose an honor and draw a card',
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 targets: true,
                 choices: Object.fromEntries(
                     (this.game as Game)

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HitsuDoDisciple extends DrawCard {
@@ -12,7 +12,7 @@ class HitsuDoDisciple extends DrawCard {
                 context.source.isParticipating() &&
                 (this.game.currentConflict?.getNumberOfCardsPlayed(context.player) ?? 0) >= 3,
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source,
                 gameAction: AbilityDsl.actions.dishonor()
             }

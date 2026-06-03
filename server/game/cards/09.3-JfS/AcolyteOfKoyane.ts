@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players, TargetModes } from '../../Constants.js';
+import { CardType, Players, TargetMode } from '../../Constants.js';
 
 class AcolyteOfKoyane extends DrawCard {
     static id = 'acolyte-of-koyane';
@@ -12,11 +12,11 @@ class AcolyteOfKoyane extends DrawCard {
             targets: {
                 character: {
                     controller: Players.Any,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: card => card.isParticipating()
                 },
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: 'character',
                     choices: {
                         'Gain Pride': AbilityDsl.actions.cardLastingEffect(context => ({

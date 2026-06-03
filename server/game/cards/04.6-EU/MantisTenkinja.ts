@@ -2,7 +2,7 @@ import type AbilityDsl from '../../abilitydsl.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class MantisTenkinja extends DrawCard {
     static id = 'mantis-tenkinja';
@@ -12,7 +12,7 @@ class MantisTenkinja extends DrawCard {
             title: 'Reduce cost of next event',
             when: {
                 onCardPlayed: (event, context) =>
-                    event.card.type === CardTypes.Event && event.player === context.player &&
+                    event.card.type === CardType.Event && event.player === context.player &&
                     !!event.context &&
                     ((event.context.ability as any).getReducedCost?.(event.context) ?? 0) > 0
             },

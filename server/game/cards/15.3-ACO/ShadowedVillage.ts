@@ -1,6 +1,6 @@
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, EventNames, Phases } from '../../Constants.js';
+import { CardType, EventName, Phases } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -11,10 +11,10 @@ class ShadowedVillage extends DrawCard {
         this.reaction({
             title: 'Draw cards',
             when: {
-                onMoveFate: (event: EventPayload<EventNames.OnMoveFate>, context: any) =>
+                onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context: any) =>
                     context.game.currentPhase !== Phases.Fate &&
                     event.origin &&
-                    event.origin.type === CardTypes.Character &&
+                    event.origin.type === CardType.Character &&
                     'controller' in event.origin &&
                     event.origin.controller === context.player &&
                     event.fate > 0

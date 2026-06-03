@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -13,7 +13,7 @@ export default class GuardiansOfTheSeikitsu extends ProvinceCard {
             },
             gameAction: AbilityDsl.actions.bow(() => ({
                 target: this.game.findAnyCardsInPlay(
-                    (card) => card.getType() === CardTypes.Character && card.costLessThan(3)
+                    (card) => card.getType() === CardType.Character && card.costLessThan(3)
                 )
             }))
         });

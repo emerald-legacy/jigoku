@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AsahinaStoryteller extends DrawCard {
@@ -7,7 +7,7 @@ class AsahinaStoryteller extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: card => card.getType() === CardTypes.Character && card.isHonored && card.isFaction('crane'),
+            match: card => card.getType() === CardType.Character && card.isHonored && card.isFaction('crane'),
             effect: AbilityDsl.effects.addKeyword('sincerity')
         });
     }

@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -19,7 +19,7 @@ class GreaterUnderstanding extends DrawCard {
         return ring && ring.type === 'ring';
     }
     canPlayOn(source: any) {
-        return source && source.getType() === 'ring' && this.getType() === CardTypes.Attachment;
+        return source && source.getType() === 'ring' && this.getType() === CardType.Attachment;
     }
     mustAttachToRing() {
         return true;

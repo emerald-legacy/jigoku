@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class CriminalContacts extends DrawCard {
     static id = 'criminal-contacts';
@@ -14,12 +14,12 @@ class CriminalContacts extends DrawCard {
             condition: context => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid),
             targets: {
                 myCharacter: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     gameAction: AbilityDsl.actions.removeFate()
                 },
                 oppCharacter: {
                     player: Players.Opponent,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     optional: true,
                     hideIfNoLegalTargets: true,
                     cardCondition: (card, context) => context.costs.optionalHonorTransferFromOpponentCostPaid,

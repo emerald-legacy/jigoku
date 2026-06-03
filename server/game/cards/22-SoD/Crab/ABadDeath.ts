@@ -1,4 +1,4 @@
-import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Players, TargetMode } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -13,14 +13,14 @@ export default class ABadDeath extends DrawCard {
                 afterConflict: (event, context) => event.conflict.loser === context.player && !!context.player.opponent
             },
             cost: AbilityDsl.costs.dishonorAndSacrifice({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: DrawCard) => card.isParticipating()
             }),
             cannotTargetFirst: true,
             target: {
-                mode: TargetModes.UpToVariable,
+                mode: TargetMode.UpToVariable,
                 numCardsFunc: (context) => (context.costs.dishonorAndSacrificeStateWhenChosen as DrawCard)?.hasTrait('berserker') ? 2 : 1,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card: any) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.dishonor()

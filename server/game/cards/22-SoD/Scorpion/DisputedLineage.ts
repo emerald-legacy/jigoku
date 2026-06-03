@@ -1,4 +1,4 @@
-import { CardTypes, Durations } from '../../../Constants.js';
+import { CardType, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -10,14 +10,14 @@ export default class DisputedLineage extends DrawCard {
         this.action({
             title: 'Choose a character',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.cardLastingEffect(context => ({
                         effect: AbilityDsl.effects.loseFaction(context.target.printedFaction),
-                        duration: Durations.UntilEndOfRound
+                        duration: Duration.UntilEndOfRound
                     })),
                     AbilityDsl.actions.playerLastingEffect(context => ({
-                        duration: Durations.UntilEndOfRound,
+                        duration: Duration.UntilEndOfRound,
                         targetController: context.target.controller,
                         condition: () => context.target.isParticipating(),
                         effect: AbilityDsl.effects.playerCannot({
@@ -42,7 +42,7 @@ export default class DisputedLineage extends DrawCard {
     canPlay(context: TriggeredAbilityContext, playType: string) {
         return (
             context.player.cardsInPlay.some(
-                (card) => card.getType() === CardTypes.Character && card.hasTrait('courtier')
+                (card) => card.getType() === CardType.Character && card.hasTrait('courtier')
             ) && super.canPlay(context, playType)
         );
     }

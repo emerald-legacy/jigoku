@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes, Durations } from '../../Constants.js';
+import { Players, CardType, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SeizeTheMind extends DrawCard {
@@ -10,7 +10,7 @@ class SeizeTheMind extends DrawCard {
             title: 'Take control of a character',
             condition: () => this.game.isDuringConflict(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => !card.isUnique(),
                 gameAction: AbilityDsl.actions.multiple([
@@ -20,7 +20,7 @@ class SeizeTheMind extends DrawCard {
                     })),
                     AbilityDsl.actions.cardLastingEffect<DrawCard>(context => ({
                         effect: AbilityDsl.effects.takeControl(context.player),
-                        duration: Durations.UntilEndOfConflict
+                        duration: Duration.UntilEndOfConflict
                     }))
                 ])
             },

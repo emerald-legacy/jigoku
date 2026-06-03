@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 
 const elementKeys = {
     fire: 'impulsive-novice-fire',
@@ -25,12 +25,12 @@ class ImpulsiveNovice extends DrawCard {
         symbols.push({
             key: elementKeys.fire,
             prettyName: 'Claimed Ring',
-            element: Elements.Fire
+            element: Element.Fire
         });
         symbols.push({
             key: elementKeys.void,
             prettyName: 'Claimed Ring',
-            element: Elements.Void
+            element: Element.Void
         });
         return symbols;
     }

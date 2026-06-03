@@ -1,4 +1,4 @@
-import { TargetModes, Players } from '../../Constants.js';
+import { TargetMode, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,7 +12,7 @@ export default class OfferingsToTheKami extends ProvinceCard {
                 onCardRevealed: (event, context) => event.card === context.source
             },
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 activePromptTitle: 'Choose a ring to claim and resolve',
                 player: Players.Self,
                 ringCondition: (ring) => ring.isUnclaimed(),

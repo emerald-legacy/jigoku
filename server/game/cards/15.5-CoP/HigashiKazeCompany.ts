@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HigashiKazeCompany extends DrawCard {
@@ -12,7 +12,7 @@ class HigashiKazeCompany extends DrawCard {
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isParticipating()
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) => card.getFate() === 0 && card.isParticipating() && card !== context.source,
                 gameAction: AbilityDsl.actions.cardLastingEffect({

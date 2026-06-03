@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes, Locations } from '../../Constants.js';
+import { Players, CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class DaidojiYari extends DrawCard {
@@ -9,8 +9,8 @@ class DaidojiYari extends DrawCard {
         this.persistentEffect({
             condition: context => !!(context.player.opponent && context.player.showBid < context.player.opponent.showBid),
             targetController: Players.Opponent,
-            targetLocation: Locations.PlayArea,
-            match: card => card.type === CardTypes.Character,
+            targetLocation: Location.PlayArea,
+            match: card => card.type === CardType.Character,
             effect: AbilityDsl.effects.loseKeyword('covert')
         });
     }

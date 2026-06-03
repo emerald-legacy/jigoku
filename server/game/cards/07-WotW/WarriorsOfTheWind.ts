@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players, TargetModes } from '../../Constants.js';
+import { CardType, Players, TargetMode } from '../../Constants.js';
 
 class WarriorsOfTheWind extends DrawCard {
     static id = 'warriors-of-the-wind';
@@ -15,9 +15,9 @@ class WarriorsOfTheWind extends DrawCard {
                 })),
                 AbilityDsl.actions.selectCard({
                     activePromptTitle: 'Choose characters',
-                    mode: TargetModes.Unlimited,
+                    mode: TargetMode.Unlimited,
                     optional: true,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     targets: true,
                     cardCondition: (card: any) => card.hasTrait('cavalry'),

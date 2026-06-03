@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,7 +12,7 @@ export default class CycleOfVengeance extends ProvinceCard {
                 onBreakProvince: (event, context) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.placeFate({ amount: 1 }),
                     AbilityDsl.actions.honor()

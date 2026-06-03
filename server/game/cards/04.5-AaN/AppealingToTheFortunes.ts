@@ -1,4 +1,4 @@
-import { CardTypes, Locations, Players } from '../../Constants.js';
+import { CardType, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -17,9 +17,9 @@ export default class AppealingToTheFortunes extends ProvinceCard {
                 onBreakProvince: (event, context) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
-                location: [Locations.Provinces, Locations.Hand],
+                location: [Location.Provinces, Location.Hand],
                 gameAction: AbilityDsl.actions.putIntoPlay()
             }
         });

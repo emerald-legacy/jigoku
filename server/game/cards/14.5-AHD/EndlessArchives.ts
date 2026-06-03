@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TokenTypes } from '../../Constants.js';
+import { TokenType } from '../../Constants.js';
 
 class EndlessArchives extends DrawCard {
     static id = 'endless-archives';
@@ -21,7 +21,7 @@ class EndlessArchives extends DrawCard {
                         targets: false,
                         shuffle: false,
                         bottom: true,
-                        amount: context.source.getTokenCount(TokenTypes.Honor)
+                        amount: context.source.getTokenCount(TokenType.Honor)
                     })),
                     AbilityDsl.actions.draw(context => ({
                         target: context.player,

@@ -1,6 +1,6 @@
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { CalculateHonorLimit } from './Shared/HonorLogic.js';
@@ -13,7 +13,7 @@ export class GainHonorAction extends PlayerAction<GainHonorProperties> {
     defaultProperties: GainHonorProperties = { amount: 1 };
 
     name: string = 'gainHonor';
-    eventName = EventNames.OnModifyHonor;
+    eventName = EventName.OnModifyHonor;
 
     getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let properties = this.getProperties(context);
@@ -52,13 +52,13 @@ export class GainHonorAction extends PlayerAction<GainHonorProperties> {
         return [context.player];
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnModifyHonor>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnModifyHonor>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
     }
 
-    eventHandler(event: GameEvent<EventNames.OnModifyHonor>): void {
+    eventHandler(event: GameEvent<EventName.OnModifyHonor>): void {
         const context = event.context as AbilityContext;
         const player = event.player as Player;
         var [_, amountToTransfer] = CalculateHonorLimit(

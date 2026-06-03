@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { Locations, Players, TargetModes } from '../../../Constants.js';
+import { Location, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 class DragonflyMediator extends DrawCard {
@@ -11,16 +11,16 @@ class DragonflyMediator extends DrawCard {
             targets: {
                 myCard: {
                     activePromptTitle: 'Choose a card to reveal',
-                    location: Locations.Hand,
+                    location: Location.Hand,
                     controller: Players.Self,
                     gameAction: AbilityDsl.actions.reveal({ chatMessage: true })
                 },
                 oppCard: {
                     activePromptTitle: 'Choose three cards to reveal',
-                    mode: TargetModes.ExactlyVariable,
+                    mode: TargetMode.ExactlyVariable,
                     numCardsFunc: context => Math.min(3, context.player.opponent?.hand.length ?? 0),
                     player: Players.Opponent,
-                    location: Locations.Hand,
+                    location: Location.Hand,
                     controller: Players.Opponent,
                     gameAction: AbilityDsl.actions.reveal(context => ({ chatMessage: true, player: context.player.opponent }))
                 }

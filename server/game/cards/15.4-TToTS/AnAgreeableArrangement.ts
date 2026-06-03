@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardTypes, Players, Durations, TargetModes, Locations } from '../../Constants.js';
+import { CardType, Players, Duration, TargetMode, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 const agreeableCost = () => ({
@@ -18,10 +18,10 @@ const agreeableCost = () => ({
         context.game.promptForSelect(context.player, {
             activePromptTitle: 'Choose a card to give to your opponent',
             context: context,
-            mode: TargetModes.Single,
+            mode: TargetMode.Single,
             numCards: 1,
-            location: Locations.PlayArea,
-            cardType: CardTypes.Character,
+            location: Location.PlayArea,
+            cardType: CardType.Character,
             controller: Players.Self,
             cardCondition: (card: any) => card.printedCost >= 2 && !card.bowed && !card.anotherUniqueInPlay(context.player.opponent),
             onSelect: (_player: any, card: any) => {
@@ -39,7 +39,7 @@ const agreeableCost = () => ({
         const action = context.game.actions.cardLastingEffect((innerContext: any) => ({
             target: card,
             effect: AbilityDsl.effects.takeControl(innerContext.player.opponent),
-            duration: Durations.Custom
+            duration: Duration.Custom
         }));
         const events = [];
         events.push(action.getEvent(card, context));
@@ -55,7 +55,7 @@ class AnAgreeableArrangement extends DrawCard {
             title: 'Bow a non-champion',
             cost: [agreeableCost()],
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => !card.hasTrait('champion'),
                 activePromptTitle: 'Bow a non-champion',

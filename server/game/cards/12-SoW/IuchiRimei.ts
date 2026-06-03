@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class IuchiRimei extends DrawCard {
@@ -9,11 +9,11 @@ class IuchiRimei extends DrawCard {
         this.action({
             title: 'Move an attachment',
             target: {
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 controller: Players.Opponent,
-                cardCondition: card => card.costLessThan(2) && card.parent && card.parent.type === CardTypes.Character,
+                cardCondition: card => card.costLessThan(2) && card.parent && card.parent.type === CardType.Character,
                 gameAction: AbilityDsl.actions.selectCard(context => ({
-                    cardCondition: card => card !== context.target.parent && card.controller === context.target.parent.controller && card.type === CardTypes.Character,
+                    cardCondition: card => card !== context.target.parent && card.controller === context.target.parent.controller && card.type === CardType.Character,
                     message: '{0} moves {1} to {2}',
                     messageArgs: card => [context.player, context.target, card],
                     gameAction: AbilityDsl.actions.ifAble(context => ({

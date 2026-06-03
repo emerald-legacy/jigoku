@@ -1,5 +1,5 @@
 import type BaseCard from '../BaseCard.js';
-import { CardTypes } from '../Constants.js';
+import { CardType } from '../Constants.js';
 import BaseCardSelector, { type BaseCardSelectorProperties } from './BaseCardSelector.js';
 
 class SingleCardSelector extends BaseCardSelector {
@@ -12,7 +12,7 @@ class SingleCardSelector extends BaseCardSelector {
 
     defaultActivePromptTitle(): string {
         if(this.cardType.length === 1) {
-            if(this.cardType[0] === CardTypes.Attachment) {
+            if(this.cardType[0] === CardType.Attachment) {
                 return 'Choose an attachment';
             }
             return 'Choose a ' + this.cardType[0];

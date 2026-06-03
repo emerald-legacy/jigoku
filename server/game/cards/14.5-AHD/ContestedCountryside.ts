@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, Locations } from '../../Constants.js';
+import { Players, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ContestedCountryside extends DrawCard {
@@ -8,7 +8,7 @@ class ContestedCountryside extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             match: card => card.isConflictProvince(),
-            targetLocation: Locations.Provinces,
+            targetLocation: Location.Provinces,
             condition: context => context.player.isAttackingPlayer(),
             targetController: Players.Opponent,
             effect: AbilityDsl.effects.canBeTriggeredByOpponent()

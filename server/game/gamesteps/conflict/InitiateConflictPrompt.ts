@@ -1,5 +1,5 @@
 import { UiPrompt } from '../UiPrompt.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 import AttackersMatrix from './AttackersMatrix.js';
 import { AbilityContext } from '../../AbilityContext.js';
 import CovertAbility from '../../KeywordAbilities/CovertAbility.js';
@@ -216,7 +216,7 @@ class InitiateConflictPrompt extends UiPrompt {
                 ring: this.conflict.ring,
                 province: card
             });
-        } else if(card.type === CardTypes.Character && card.location === Locations.PlayArea) {
+        } else if(card.type === CardType.Character && card.location === Location.PlayArea) {
             if(card.controller === this.choosingPlayer) {
                 if(this.conflict.attackers.includes(card)) {
                     let forced = this.attackerMatrix.getForcedAttackers(this.conflict.ring, this.conflict.conflictType, this.conflict.conflictProvince).includes(card as DrawCard);
@@ -287,7 +287,7 @@ class InitiateConflictPrompt extends UiPrompt {
                 this.conflict.conflictProvince = card;
                 this.conflict.conflictProvince.inConflict = true;
             }
-        } else if(card.type === CardTypes.Character) {
+        } else if(card.type === CardType.Character) {
             if(card.controller === this.choosingPlayer) {
                 if(!this.conflict.attackers.includes(card)) {
                     this.conflict.addAttacker(card);

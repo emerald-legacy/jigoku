@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardTypes, Durations, EventNames, Locations, type DuelTypes } from '../Constants.js';
+import { CardType, Duration, EventName, Location, type DuelType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { Duel } from '../Duel.js';
 import type { Event } from '../Events/Event.js';
@@ -11,7 +11,7 @@ import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import { type GameAction } from './GameAction.js';
 
 export interface DuelProperties extends CardActionProperties {
-    type: DuelTypes;
+    type: DuelType;
     challenger?: DrawCard;
     challengerCondition?: (card: DrawCard, context: TriggeredAbilityContext) => boolean;
     requiresConflict?: boolean;
@@ -31,11 +31,11 @@ type ResolvedDuelProperties = DuelProperties & { challenger: DrawCard };
 
 export class DuelAction extends CardGameAction {
     name = 'duel';
-    eventName = EventNames.OnDuelInitiated;
-    targetType = [CardTypes.Character];
+    eventName = EventName.OnDuelInitiated;
+    targetType = [CardType.Character];
 
     defaultProperties: DuelProperties = {
-        type: undefined as unknown as DuelTypes,
+        type: undefined as unknown as DuelType,
         gameAction: null as unknown as GameAction
     };
 
@@ -82,7 +82,7 @@ export class DuelAction extends CardGameAction {
         return !!(
             properties.challenger &&
             !properties.challenger.hasDash(properties.type) &&
-            card.location === Locations.PlayArea &&
+            card.location === Location.PlayArea &&
             !card.hasDash(properties.type)
         );
     }
@@ -151,7 +151,7 @@ export class DuelAction extends CardGameAction {
         }
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnDuelInitiated>, cards: unknown, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnDuelInitiated>, cards: unknown, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         let resolvedCards: DrawCard | DrawCard[] = cards as DrawCard | DrawCard[];
         if(!resolvedCards) {
@@ -179,13 +179,13 @@ export class DuelAction extends CardGameAction {
         event.duel = duel;
     }
 
-    eventHandler(event: GameEvent<EventNames.OnDuelInitiated>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventName.OnDuelInitiated>, additionalProperties: Record<string, unknown> = {}): void {
         const context: AbilityContext = (event.context as AbilityContext);
         const cards: DrawCard[] = event.cards as DrawCard[];
         const properties = this.getProperties(context, additionalProperties);
         if(
-            properties.challenger.location !== Locations.PlayArea ||
-            cards.every((card: DrawCard) => card.location !== Locations.PlayArea)
+            properties.challenger.location !== Location.PlayArea ||
+            cards.every((card: DrawCard) => card.location !== Location.PlayArea)
         ) {
             context.game.addMessage(
                 'The duel cannot proceed as at least one participant for each side has to be in play'
@@ -197,7 +197,7 @@ export class DuelAction extends CardGameAction {
             context.game.actions
                 .cardLastingEffect({
                     effect: properties.challengerEffect,
-                    duration: Durations.Custom,
+                    duration: Duration.Custom,
                     until: {
                         onDuelFinished: (event) => event.duel === duel
                     }
@@ -208,7 +208,7 @@ export class DuelAction extends CardGameAction {
             context.game.actions
                 .cardLastingEffect({
                     effect: properties.targetEffect,
-                    duration: Durations.Custom,
+                    duration: Duration.Custom,
                     until: {
                         onDuelFinished: (event) => event.duel === duel
                     }
@@ -227,7 +227,7 @@ export class DuelAction extends CardGameAction {
         );
     }
 
-    checkEventCondition(event: GameEvent<EventNames.OnDuelInitiated>, additionalProperties: Record<string, unknown> = {}): boolean {
+    checkEventCondition(event: GameEvent<EventName.OnDuelInitiated>, additionalProperties: Record<string, unknown> = {}): boolean {
         return (event.cards as DrawCard[]).some((card: DrawCard) => this.canAffect(card, (event.context as AbilityContext), additionalProperties));
     }
 

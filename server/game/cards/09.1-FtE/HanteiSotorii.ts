@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HanteiSotorii extends DrawCard {
@@ -10,7 +10,7 @@ class HanteiSotorii extends DrawCard {
             title: 'Give a participating character +3 glory',
             condition: context => context.source.isParticipating() && this.game.currentConflict?.conflictType === 'military',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
                     effect: AbilityDsl.effects.modifyGlory(3)

@@ -1,5 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityTypes, EventNames } from '../../Constants.js';
+import { AbilityType, EventName } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -9,11 +9,11 @@ export default class ScarletSabre extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             match: (card) => card.controller.firstPlayer,
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Make opponent lose 1 fate',
                 printedAbility: false,
                 when: {
-                    afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) =>
+                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) =>
                         context.player.opponent &&
                         context.source.isParticipating() &&
                         event.conflict.winner === context.source.controller

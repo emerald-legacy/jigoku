@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -8,7 +8,7 @@ export default class MeditationsOnTheTao extends ProvinceCard {
         this.action({
             title: 'Remove a fate from a character',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking(),
                 gameAction: AbilityDsl.actions.removeFate()
             }

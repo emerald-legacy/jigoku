@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Players, Durations } from '../../../Constants.js';
+import { CardType, Players, Duration } from '../../../Constants.js';
 
 class SurgingWave extends DrawCard {
     static id = 'surging-wave';
@@ -10,7 +10,7 @@ class SurgingWave extends DrawCard {
             title: 'Prevent bowing after conflict',
 
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating() && card.hasTrait('monk'),
                 gameAction: AbilityDsl.actions.sequentialContext((context) => {
@@ -18,7 +18,7 @@ class SurgingWave extends DrawCard {
                     let gameActions = [];
                     gameActions.push(
                         AbilityDsl.actions.cardLastingEffect((context) => ({
-                            duration: Durations.UntilEndOfPhase,
+                            duration: Duration.UntilEndOfPhase,
                             effect: AbilityDsl.effects.delayedEffect({
                                 when: {
                                     onConflictFinished: () => true

@@ -1,7 +1,7 @@
 import * as AbilityLimit from './AbilityLimit.js';
 import ThenAbility from './ThenAbility.js';
 import * as Costs from './Costs.js';
-import { Locations, CardTypes, EffectNames } from './Constants.js';
+import { Location, CardType, EffectName } from './Constants.js';
 import { initiateDuel } from './DuelHelper.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
@@ -10,7 +10,7 @@ import type { AbilityContext } from './AbilityContext.js';
 interface CardAbilityProperties {
     title?: string;
     limit?: any;
-    location?: Locations | Locations[];
+    location?: Location | Location[];
     printedAbility?: boolean;
     cannotBeCancelled?: boolean;
     cannotTargetFirst?: boolean;
@@ -26,19 +26,19 @@ interface CardAbilityProperties {
     [key: string]: any;
 }
 
-const DefaultLocationForType: Record<string, Locations> = {
-    event: Locations.Hand,
-    holding: Locations.Provinces,
-    province: Locations.Provinces,
-    role: Locations.Role,
-    stronghold: Locations.StrongholdProvince
+const DefaultLocationForType: Record<string, Location> = {
+    event: Location.Hand,
+    holding: Location.Provinces,
+    province: Location.Provinces,
+    role: Location.Role,
+    stronghold: Location.StrongholdProvince
 };
 
 class CardAbility extends ThenAbility {
     title?: string;
     limit: any;
     abilityCost: any;
-    location: Locations[];
+    location: Location[];
     printedAbility: boolean;
     cannotBeCancelled?: boolean;
     declare cannotTargetFirst: boolean;
@@ -76,20 +76,20 @@ class CardAbility extends ThenAbility {
             this.card.owner.registerAbilityMax(this.maxIdentifier, this.max);
         }
 
-        if(card.getType() === CardTypes.Event && !this.isKeywordAbility()) {
+        if(card.getType() === CardType.Event && !this.isKeywordAbility()) {
             this.cost = this.cost.concat(Costs.payReduceableFateCost());
         }
     }
 
-    buildLocation(card: BaseCard, location?: Locations | Locations[]): Locations[] {
-        let defaultedLocation: Locations | Locations[] = location || DefaultLocationForType[card.getType()] || Locations.PlayArea;
+    buildLocation(card: BaseCard, location?: Location | Location[]): Location[] {
+        let defaultedLocation: Location | Location[] = location || DefaultLocationForType[card.getType()] || Location.PlayArea;
 
         if(!Array.isArray(defaultedLocation)) {
             defaultedLocation = [defaultedLocation];
         }
 
-        if(defaultedLocation.some((loc) => loc === Locations.Provinces)) {
-            defaultedLocation = defaultedLocation.filter((loc) => loc !== Locations.Provinces);
+        if(defaultedLocation.some((loc) => loc === Location.Provinces)) {
+            defaultedLocation = defaultedLocation.filter((loc) => loc !== Location.Provinces);
             defaultedLocation = defaultedLocation.concat(this.game.getProvinceArray());
         }
 
@@ -103,7 +103,7 @@ class CardAbility extends ThenAbility {
 
         if(
             (this.isTriggeredAbility() && !this.card.canTriggerAbilities(context, ignoredRequirements)) ||
-            (this.card.type === CardTypes.Event && !(this.card as DrawCard).canPlay(context, context.playType))
+            (this.card.type === CardType.Event && !(this.card as DrawCard).canPlay(context, context.playType))
         ) {
             return 'cannotTrigger';
         }
@@ -128,7 +128,7 @@ class CardAbility extends ThenAbility {
             !ignoredRequirements.includes('phase') &&
             !this.isKeywordAbility() &&
             this.card.isDynasty &&
-            this.card.type === CardTypes.Event &&
+            this.card.type === CardType.Event &&
             context.game.currentPhase !== 'dynasty'
         ) {
             return 'phase';
@@ -139,21 +139,21 @@ class CardAbility extends ThenAbility {
 
     getCosts(context: AbilityContext, playCosts = true, triggerCosts = true): any[] {
         let costs = super.getCosts(context, playCosts);
-        if(!context.subResolution && triggerCosts && context.player.anyEffect(EffectNames.AdditionalTriggerCost)) {
+        if(!context.subResolution && triggerCosts && context.player.anyEffect(EffectName.AdditionalTriggerCost)) {
             const additionalTriggerCosts = context.player
-                .getEffects(EffectNames.AdditionalTriggerCost)
+                .getEffects(EffectName.AdditionalTriggerCost)
                 .map((effect: any) => effect(context));
             costs = costs.concat(...additionalTriggerCosts);
         }
-        if(!context.subResolution && triggerCosts && context.source.anyEffect(EffectNames.AdditionalTriggerCost)) {
+        if(!context.subResolution && triggerCosts && context.source.anyEffect(EffectName.AdditionalTriggerCost)) {
             const additionalTriggerCosts = context.source
-                .getEffects(EffectNames.AdditionalTriggerCost)
+                .getEffects(EffectName.AdditionalTriggerCost)
                 .map((effect: any) => effect(context));
             costs = costs.concat(...additionalTriggerCosts);
         }
-        if(!context.subResolution && playCosts && context.player.anyEffect(EffectNames.AdditionalPlayCost)) {
+        if(!context.subResolution && playCosts && context.player.anyEffect(EffectName.AdditionalPlayCost)) {
             const additionalPlayCosts = context.player
-                .getEffects(EffectNames.AdditionalPlayCost)
+                .getEffects(EffectName.AdditionalPlayCost)
                 .map((effect: any) => effect(context));
             return costs.concat(...additionalPlayCosts);
         }
@@ -166,9 +166,9 @@ class CardAbility extends ThenAbility {
     }
 
     isInValidLocation(context: AbilityContext): boolean {
-        return this.card.type === CardTypes.Event
+        return this.card.type === CardType.Event
             ? context.player.isCardInPlayableLocation(context.source, context.playType)
-            : this.location.includes(this.card.location as Locations);
+            : this.location.includes(this.card.location as Location);
     }
 
     getLocationMessage(location: string, context: AbilityContext): string {
@@ -183,12 +183,12 @@ class CardAbility extends ThenAbility {
         return location;
     }
 
-    displayMessage(context: AbilityContext, messageVerb = context.source.type === CardTypes.Event ? 'plays' : 'uses'): void {
+    displayMessage(context: AbilityContext, messageVerb = context.source.type === CardType.Event ? 'plays' : 'uses'): void {
         if(
-            context.source.type === CardTypes.Event &&
+            context.source.type === CardType.Event &&
             context.source.isConflict &&
-            context.source.location !== Locations.Hand &&
-            context.source.location !== Locations.BeingPlayed
+            context.source.location !== Location.Hand &&
+            context.source.location !== Location.BeingPlayed
         ) {
             this.game.addMessage(
                 '{0} plays {1} from {2} {3}',
@@ -275,7 +275,7 @@ class CardAbility extends ThenAbility {
     }
 
     isCardPlayed(): boolean {
-        return !this.isKeywordAbility() && this.card.getType() === CardTypes.Event;
+        return !this.isKeywordAbility() && this.card.getType() === CardType.Event;
     }
 
     isTriggeredAbility(): boolean {

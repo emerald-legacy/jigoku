@@ -1,7 +1,7 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class OpiumWastrel extends DrawCard {
     static id = 'opium-wastrel';
@@ -13,7 +13,7 @@ class OpiumWastrel extends DrawCard {
                 onCharacterEntersPlay: (event, context) => event.card === context.source && this.game.isDuringConflict()
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: any) => card.isParticipating(),
                 gameAction: ability.actions.cardLastingEffect({
                     effect: ability.effects.setGlory(0)

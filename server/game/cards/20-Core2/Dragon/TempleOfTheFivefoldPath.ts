@@ -1,4 +1,4 @@
-import { TargetModes } from '../../../Constants.js';
+import { TargetMode } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -12,14 +12,14 @@ export default class TempleOfTheFivefoldPath extends StrongholdCard {
             title: 'Place fate on a ring without fate',
             cost: AbilityDsl.costs.bowSelf(),
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 ringCondition: (ring) => ring.getFate() === 0,
                 gameAction: AbilityDsl.actions.placeFateOnRing()
             },
             limit: sharedLimit
             /*
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 activePromptTitle: 'Choose a ring',
                 ringCondition: (ring) => ring.isUnclaimed(),
                 gameAction: AbilityDsl.actions.conditional({
@@ -44,12 +44,12 @@ export default class TempleOfTheFivefoldPath extends StrongholdCard {
             cost: AbilityDsl.costs.bowSelf(),
             targets: {
                 donor: {
-                    mode: TargetModes.Ring,
+                    mode: TargetMode.Ring,
                     activePromptTitle: 'Choose a ring to lose fate',
                     ringCondition: (ring) => ring.getFate() > 0
                 },
                 receiver: {
-                    mode: TargetModes.Ring,
+                    mode: TargetMode.Ring,
                     activePromptTitle: 'Choose a ring to gain fate',
                     ringCondition: (ring, context) => ring !== context?.rings.donor,
                     gameAction: AbilityDsl.actions.placeFateOnRing((context) => ({

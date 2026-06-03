@@ -1,4 +1,4 @@
-import { CardTypes, Players, Locations } from '../../Constants.js';
+import { CardType, Players, Location } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -9,9 +9,9 @@ export default class UntamedSteppe extends ProvinceCard {
         this.action({
             title: 'Turn another unbroken province facedown',
             target: {
-                cardType: CardTypes.Province,
+                cardType: CardType.Province,
                 controller: Players.Any,
-                location: Locations.Provinces,
+                location: Location.Provinces,
                 cardCondition: (card, context) => !card.isBroken && card !== context.source,
                 gameAction: AbilityDsl.actions.turnFacedown()
             }

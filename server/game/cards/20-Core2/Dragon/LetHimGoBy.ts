@@ -1,4 +1,4 @@
-import { DuelTypes } from '../../../Constants.js';
+import { DuelType } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -25,7 +25,7 @@ export default class LetHimGoBy extends DrawCard {
         this.action({
             title: 'Challenge a character anywhere to a duel',
             initiateDuel: {
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 targetCondition: () => true,
                 gameAction: (duel) =>
                     AbilityDsl.actions.cardLastingEffect({

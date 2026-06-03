@@ -1,7 +1,7 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class KakitaYoshi extends DrawCard {
     static id = 'kakita-yoshi';
@@ -18,7 +18,7 @@ class KakitaYoshi extends DrawCard {
                     targetController: context.player,
                     effect: ability.effects.reduceCost({
                         amount: 2,
-                        match: (card: DrawCard) => card.type === CardTypes.Event
+                        match: (card: DrawCard) => card.type === CardType.Event
                     })
                 }))
             ]

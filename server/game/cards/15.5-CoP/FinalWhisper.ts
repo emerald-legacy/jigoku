@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, EventNames, Players, CharacterStatus } from '../../Constants.js';
+import { CardType, EventName, Players, CharacterStatus } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type { StatusToken } from '../../StatusToken.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
@@ -13,11 +13,11 @@ class FinalWhisper extends DrawCard {
         this.reaction({
             title: 'Copy status token',
             when: {
-                onStatusTokenGained: (event: EventPayload<EventNames.OnStatusTokenGained>, context: any) =>
-                    event.card?.type === CardTypes.Character && event.card?.controller === context.player.opponent
+                onStatusTokenGained: (event: EventPayload<EventName.OnStatusTokenGained>, context: any) =>
+                    event.card?.type === CardType.Character && event.card?.controller === context.player.opponent
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent,
                 cardCondition: (card: DrawCard, context: AbilityContext) =>

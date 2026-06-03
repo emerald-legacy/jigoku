@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Elements, EventNames, Players } from '../../Constants.js';
+import { Element, EventName, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -26,7 +26,7 @@ class HallowedGround extends DrawCard {
             condition: context => context.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player.opponent),
             effect: AbilityDsl.effects.playerDelayedEffect({
                 when: {
-                    afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) => event.conflict.loser === context.player.opponent && event.conflict.conflictUnopposed
+                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) => event.conflict.loser === context.player.opponent && event.conflict.conflictUnopposed
                 },
                 message: '{0} loses 1 honor due to the constant effect of {1}',
                 messageArgs: (effectContext: any) => [effectContext.player.opponent, effectContext.source],
@@ -41,17 +41,17 @@ class HallowedGround extends DrawCard {
         symbols.push({
             key: elementKeys.air,
             prettyName: 'Honor Loss',
-            element: Elements.Air
+            element: Element.Air
         });
         symbols.push({
             key: elementKeys.earth,
             prettyName: 'Cannot Claim Rings',
-            element: Elements.Earth
+            element: Element.Earth
         });
         symbols.push({
             key: elementKeys.fire,
             prettyName: 'Cannot Fate Characters',
-            element: Elements.Fire
+            element: Element.Fire
         });
         return symbols;
     }

@@ -1,4 +1,4 @@
-export enum Locations {
+export enum Location {
     Any = 'any',
     Hand = 'hand',
     ConflictDeck = 'conflict deck',

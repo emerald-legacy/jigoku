@@ -1,4 +1,4 @@
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -7,12 +7,12 @@ export default class Shineko extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            location: Locations.Any,
+            location: Location.Any,
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: (_: any, player: any) =>
                     player.cardsInPlay.some(
-                        (card: DrawCard) => card.getType() === CardTypes.Character && card.hasSomeTrait('scout', 'beastmaster')
+                        (card: DrawCard) => card.getType() === CardType.Character && card.hasSomeTrait('scout', 'beastmaster')
                     )
                         ? 1
                         : 0,

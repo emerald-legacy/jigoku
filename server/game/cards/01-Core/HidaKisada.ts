@@ -1,4 +1,4 @@
-import { AbilityTypes, CardTypes, EventNames, Locations } from '../../Constants.js';
+import { AbilityType, CardType, EventName, Location } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -12,17 +12,17 @@ export default class HidaKisada extends DrawCard {
         this.abilityRegistrar = new EventRegistrar(this.game, this);
         this.abilityRegistrar.register([
             {
-                [EventNames.OnInitiateAbilityEffects + ':' + AbilityTypes.WouldInterrupt]:
+                [EventName.OnInitiateAbilityEffects + ':' + AbilityType.WouldInterrupt]:
                     'onInitiateAbilityEffectsWouldInterrupt'
             }
         ]);
         this.abilityRegistrar.register([
             {
-                [EventNames.OnInitiateAbilityEffects + ':' + AbilityTypes.OtherEffects]:
+                [EventName.OnInitiateAbilityEffects + ':' + AbilityType.OtherEffects]:
                     'onInitiateAbilityEffectsOtherEffects'
             }
         ]);
-        this.abilityRegistrar.register([EventNames.OnConflictDeclared]);
+        this.abilityRegistrar.register([EventName.OnConflictDeclared]);
     }
 
     public onInitiateAbilityEffectsWouldInterrupt(event: any) {
@@ -42,7 +42,7 @@ export default class HidaKisada extends DrawCard {
             this.firstActionEvent.get(event.context.player.uuid) === event &&
             event.context.player === this.controller.opponent &&
             !event.cancelled &&
-            this.location === Locations.PlayArea &&
+            this.location === Location.PlayArea &&
             !this.isBlank() &&
             !this.game.conflictRecord.some((conflict) => conflict.winner === this.controller.opponent)
         ) {
@@ -51,7 +51,7 @@ export default class HidaKisada extends DrawCard {
                 '{0} attempts to initiate {1}{2}, but {3} cancels it',
                 event.context.player,
                 event.card,
-                event.card.type === CardTypes.Event ? '' : '\'s ability',
+                event.card.type === CardType.Event ? '' : '\'s ability',
                 this
             );
         }

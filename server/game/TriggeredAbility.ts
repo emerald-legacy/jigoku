@@ -1,6 +1,6 @@
 import CardAbility from './CardAbility.js';
 import { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
-import { Stages, CardTypes, EffectNames, AbilityTypes } from './Constants.js';
+import { Stage, CardType, EffectName, AbilityType } from './Constants.js';
 import type BaseCard from './BaseCard.js';
 import type Player from './Player.js';
 import type { Event } from './Events/Event.js';
@@ -57,7 +57,7 @@ class TriggeredAbility extends CardAbility {
     collectiveTrigger: boolean;
     events: RegisteredEvent[] | null = null;
 
-    constructor(card: BaseCard, abilityType: AbilityTypes, properties: TriggeredAbilityProperties) {
+    constructor(card: BaseCard, abilityType: AbilityType, properties: TriggeredAbilityProperties) {
         super(card, properties);
         this.when = properties.when;
         this.aggregateWhen = properties.aggregateWhen;
@@ -68,14 +68,14 @@ class TriggeredAbility extends CardAbility {
 
     meetsRequirements(context: TriggeredAbilityContext, ignoredRequirements: string[] = []): string {
         const canOpponentTrigger =
-            this.card.anyEffect(EffectNames.CanBeTriggeredByOpponent) &&
-            this.abilityType !== AbilityTypes.ForcedInterrupt &&
-            this.abilityType !== AbilityTypes.ForcedReaction;
+            this.card.anyEffect(EffectName.CanBeTriggeredByOpponent) &&
+            this.abilityType !== AbilityType.ForcedInterrupt &&
+            this.abilityType !== AbilityType.ForcedReaction;
         const canPlayerTrigger = this.anyPlayer || context.player === this.card.controller || canOpponentTrigger;
 
         if(!ignoredRequirements.includes('player') && !canPlayerTrigger) {
             if(
-                this.card.type !== CardTypes.Event ||
+                this.card.type !== CardType.Event ||
                 !context.player.isCardInPlayableLocation(this.card, context.playType)
             ) {
                 return 'player';
@@ -118,7 +118,7 @@ class TriggeredAbility extends CardAbility {
             source: this.card,
             player: player,
             ability: this,
-            stage: Stages.PreTarget
+            stage: Stage.PreTarget
         });
     }
 

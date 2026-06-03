@@ -1,5 +1,5 @@
 import type BaseCard from '../../BaseCard.js';
-import { AbilityTypes, Locations, CardTypes, EffectNames } from '../../Constants.js';
+import { AbilityType, Location, CardType, EffectName } from '../../Constants.js';
 import type { CardAction } from '../../CardAction.js';
 import type TriggeredAbility from '../../TriggeredAbility.js';
 import { EffectBuilder } from '../EffectBuilder.js';
@@ -20,7 +20,7 @@ class CopyCard extends EffectValue<BaseCard> {
 
     constructor(card: BaseCard) {
         super(card);
-        this.actions = card.abilities.actions.map((action: CardAction) => new GainAbility(AbilityTypes.Action, action));
+        this.actions = card.abilities.actions.map((action: CardAction) => new GainAbility(AbilityType.Action, action));
         this.reactions = card.abilities.reactions.map(
             (ability: TriggeredAbility) => new GainAbility(ability.abilityType, ability)
         );
@@ -40,9 +40,9 @@ class CopyCard extends EffectValue<BaseCard> {
         });
         for(const effect of this.persistentEffects) {
             if(
-                effect.location === Locations.Any ||
-                (target.getType() === CardTypes.Character && effect.location === Locations.PlayArea) ||
-                (target.getType() === CardTypes.Holding && effect.location === Locations.Provinces)
+                effect.location === Location.Any ||
+                (target.getType() === CardType.Character && effect.location === Location.PlayArea) ||
+                (target.getType() === CardType.Holding && effect.location === Location.Provinces)
             ) {
                 effect.ref = target.addEffectToEngine(effect);
             }
@@ -81,5 +81,5 @@ class CopyCard extends EffectValue<BaseCard> {
 }
 
 export function copyCard(character: BaseCard) {
-    return EffectBuilder.card.static(EffectNames.CopyCharacter, new CopyCard(character));
+    return EffectBuilder.card.static(EffectName.CopyCharacter, new CopyCard(character));
 }

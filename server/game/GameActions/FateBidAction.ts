@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import type { GameAction } from './GameAction.js';
 import type Player from '../Player.js';
@@ -15,9 +15,9 @@ export interface FateBidProperties extends PlayerActionProperties {
     messageArgs?: (context: AbilityContext) => unknown[];
 }
 
-export class FateBidAction extends PlayerAction<FateBidProperties, EventNames.Unnamed> {
+export class FateBidAction extends PlayerAction<FateBidProperties, EventName.Unnamed> {
     name = 'fateBid';
-    eventName = EventNames.Unnamed;
+    eventName = EventName.Unnamed;
     defaultProperties: FateBidProperties = {
         postBidAction: undefined
     };
@@ -35,20 +35,20 @@ export class FateBidAction extends PlayerAction<FateBidProperties, EventNames.Un
         return ['have {0} select an amount of fate from their pool', [players]];
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.Unnamed>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+    addPropertiesToEvent(event: GameEvent<EventName.Unnamed>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
         let { postBidAction, message, messageArgs } = this.getProperties(
             context,
             additionalProperties
         ) as FateBidProperties;
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        const bidEvent = event as GameEvent<EventNames.OnHonorBid>;
+        const bidEvent = event as GameEvent<EventName.OnHonorBid>;
         bidEvent.postBidAction = postBidAction;
         bidEvent.message = message;
         bidEvent.messageArgs = messageArgs;
     }
 
-    eventHandler(event: GameEvent<EventNames.Unnamed>): void {
-        const bidEvent = event as GameEvent<EventNames.OnHonorBid>;
+    eventHandler(event: GameEvent<EventName.Unnamed>): void {
+        const bidEvent = event as GameEvent<EventName.OnHonorBid>;
         const context = (event.context as AbilityContext);
         context.game.queueStep(
             new FateBidPrompt(context.game, 'Choose an amount of fate', (result, context) => {

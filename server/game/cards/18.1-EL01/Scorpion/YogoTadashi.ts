@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 
 class YogoTadashi extends DrawCard {
     static id = 'yogo-tadashi';
@@ -14,7 +14,7 @@ class YogoTadashi extends DrawCard {
                 onMoveToConflict: (event, context) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                     target: context.target,

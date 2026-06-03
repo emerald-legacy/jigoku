@@ -1,4 +1,4 @@
-import { CardTypes, Players, Durations, TargetModes } from '../../../Constants.js';
+import { CardType, Players, Duration, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -14,11 +14,11 @@ export default class ForDeathAndGlory extends DrawCard {
             targets: {
                 [CHARACTER]: {
                     controller: Players.Self,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: (card) => card.isParticipating()
                 },
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: CHARACTER,
                     choices: {
                         'Gain +2 skill': AbilityDsl.actions.cardLastingEffect((context) => ({
@@ -32,7 +32,7 @@ export default class ForDeathAndGlory extends DrawCard {
                             })),
                             AbilityDsl.actions.cardLastingEffect((context) => ({
                                 target: context.targets[CHARACTER],
-                                duration: Durations.UntilEndOfPhase,
+                                duration: Duration.UntilEndOfPhase,
                                 effect: [
                                     AbilityDsl.effects.delayedEffect({
                                         when: { onConflictFinished: () => true },

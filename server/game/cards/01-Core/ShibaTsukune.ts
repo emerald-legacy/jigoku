@@ -4,7 +4,7 @@ import type Ring from '../../Ring.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 import type { Event } from '../../Events/Event.js';
 import DrawCard from '../../DrawCard.js';
-import { EventNames, Phases } from '../../Constants.js';
+import { EventName, Phases } from '../../Constants.js';
 
 class ShibaTsukune extends DrawCard {
     static id = 'shiba-tsukune';
@@ -13,7 +13,7 @@ class ShibaTsukune extends DrawCard {
         this.interrupt({
             title: 'Resolve 2 rings',
             when : {
-                onPhaseEnded: (event: EventPayload<typeof EventNames.OnPhaseEnded>) => event.phase === Phases.Conflict
+                onPhaseEnded: (event: EventPayload<typeof EventName.OnPhaseEnded>) => event.phase === Phases.Conflict
             },
             effect: 'resolve up to 2 ring effects',
             handler: (context: TriggeredAbilityContext<any>) => (context ? this.game.promptForRingSelect(context.player, {

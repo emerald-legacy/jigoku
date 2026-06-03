@@ -1,4 +1,4 @@
-import { CardTypes, DuelTypes, Players } from '../../Constants.js';
+import { CardType, DuelType, Players } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -11,17 +11,17 @@ export default class PolicyDebate extends DrawCard {
             title: 'Initiate a political duel',
             targets: {
                 challenger: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: (card) => card.isParticipating()
                 },
                 duelTarget: {
                     dependsOn: 'challenger',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: (card) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.duel((context) => ({
-                        type: DuelTypes.Political,
+                        type: DuelType.Political,
                         challenger: context.targets.challenger,
                         message: '{0} sees {1}\'s hand and chooses a card to discard',
                         messageArgs: (duel) => [duel.loserController?.opponent ?? '', duel.loserController ?? ''],

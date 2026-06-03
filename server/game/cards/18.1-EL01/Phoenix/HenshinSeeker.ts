@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Elements, EventNames } from '../../../Constants.js';
+import { CardType, Element, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -12,13 +12,13 @@ export default class HenshinSeeker extends DrawCard {
         this.reaction({
             title: 'Ready a character',
             when: {
-                onClaimRing: (event: EventPayload<EventNames.OnClaimRing>) => {
-                    const element = this.getCurrentElementSymbol(RING_CLAIM) as Elements;
+                onClaimRing: (event: EventPayload<EventName.OnClaimRing>) => {
+                    const element = this.getCurrentElementSymbol(RING_CLAIM) as Element;
                     return (event.conflict && event.conflict.hasElement(element)) || event.ring.hasElement(element);
                 }
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.hasSomeTrait('scholar', 'monk'),
                 gameAction: AbilityDsl.actions.ready()
             }
@@ -27,7 +27,7 @@ export default class HenshinSeeker extends DrawCard {
 
     getPrintedElementSymbols() {
         let symbols = super.getPrintedElementSymbols();
-        symbols.push({ key: RING_CLAIM, prettyName: 'Ring', element: Elements.Fire });
+        symbols.push({ key: RING_CLAIM, prettyName: 'Ring', element: Element.Fire });
         return symbols;
     }
 }

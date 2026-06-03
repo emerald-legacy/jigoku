@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
 import type Player from '../../../Player.js';
@@ -7,7 +7,7 @@ import type Ring from '../../../Ring.js';
 
 function getNumberOfMonks(context: AbilityContext) {
     return (context.player.cardsInPlay as Array<DrawCard>).reduce(
-        (total, card) => total + (card.getType() === CardTypes.Character && card.hasTrait('monk') ? 1 : 0),
+        (total, card) => total + (card.getType() === CardType.Character && card.hasTrait('monk') ? 1 : 0),
         0
     );
 }

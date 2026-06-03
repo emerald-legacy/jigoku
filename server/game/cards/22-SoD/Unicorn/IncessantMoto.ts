@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -16,7 +16,7 @@ export default class IncessantMoto extends DrawCard {
         this.reaction({
             title: 'Move to conflict',
             when: {
-                onCardPlayed: (event, context) => event.card.type === CardTypes.Event && event.card.controller === context.player
+                onCardPlayed: (event, context) => event.card.type === CardType.Event && event.card.controller === context.player
             },
             gameAction: AbilityDsl.actions.moveToConflict(context => ({
                 target: context.source

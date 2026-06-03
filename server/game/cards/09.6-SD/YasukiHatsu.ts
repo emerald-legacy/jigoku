@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Locations } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class YasukiHatsu extends DrawCard {
@@ -12,9 +12,9 @@ class YasukiHatsu extends DrawCard {
             condition: context => !!(context.source.isParticipating() && context.player.opponent && context.player.isLessHonorable()),
             gameAction: AbilityDsl.actions.deckSearch({
                 amount: 5,
-                cardCondition: card => card.type === CardTypes.Attachment,
+                cardCondition: card => card.type === CardType.Attachment,
                 gameAction: AbilityDsl.actions.moveCard({
-                    destination: Locations.Hand
+                    destination: Location.Hand
                 })
             })
         });

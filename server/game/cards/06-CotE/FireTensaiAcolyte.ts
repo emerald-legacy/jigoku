@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 
 const elementKey = 'fire-tensai-acolyte-fire';
 
@@ -18,7 +18,7 @@ class FireTensaiAcolyte extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Contested Ring',
-            element: Elements.Fire
+            element: Element.Fire
         });
         return symbols;
     }

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, TargetModes, CardTypes } from '../../Constants.js';
+import { Players, TargetMode, CardType } from '../../Constants.js';
 
 class CourtGames extends DrawCard {
     static id = 'court-games';
@@ -11,10 +11,10 @@ class CourtGames extends DrawCard {
             condition: () => this.game.currentConflict?.conflictType === 'political',
             max: AbilityDsl.limit.perConflict(1),
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 choices: {
                     'Honor a friendly character': AbilityDsl.actions.selectCard(context => ({
-                        cardType: CardTypes.Character,
+                        cardType: CardType.Character,
                         controller: Players.Self,
                         targets: true,
                         cardCondition: card => card.isParticipating(),
@@ -24,7 +24,7 @@ class CourtGames extends DrawCard {
                     })),
                     'Dishonor an opposing character': AbilityDsl.actions.selectCard(context => ({
                         player: Players.Opponent,
-                        cardType: CardTypes.Character,
+                        cardType: CardType.Character,
                         controller: Players.Opponent,
                         targets: true,
                         cardCondition: card => card.isParticipating(),

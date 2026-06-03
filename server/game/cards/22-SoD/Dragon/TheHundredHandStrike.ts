@@ -1,5 +1,5 @@
 import { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -21,12 +21,12 @@ export default class TheHundredHandStrike extends DrawCard {
             max: AbilityDsl.limit.perConflict(1),
             targets: {
                 puncher: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
                 },
                 punchee: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: (card) => card.isParticipating()
                 }

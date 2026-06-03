@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Durations } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 
 class MatsuKoso extends DrawCard {
     static id = 'matsu-koso';
@@ -11,7 +11,7 @@ class MatsuKoso extends DrawCard {
             condition: (context) => context.source.isParticipating(),
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getParticipants() ?? [],
-                duration: Durations.UntilEndOfConflict,
+                duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.modifyMilitarySkill((card: any) =>
                     isNaN(card.printedPoliticalSkill) ? 0 : -card.printedPoliticalSkill
                 )

@@ -11,13 +11,13 @@ import DynastyCardAction from './DynastyCardAction.js';
 import { AbilityContext } from './AbilityContext.js';
 import { CardAction } from './CardAction.js';
 import {
-    AbilityTypes,
-    CardTypes,
+    AbilityType,
+    CardType,
     CharacterStatus,
-    Durations,
-    EffectNames,
-    EventNames,
-    Locations,
+    Duration,
+    EffectName,
+    EventName,
+    Location,
     Players
 } from './Constants.js';
 import { ElementSymbol } from './ElementSymbol.js';
@@ -45,17 +45,17 @@ import type { CardData } from './types/CardData.js';
 type Faction = 'neutral' | 'crab' | 'crane' | 'dragon' | 'lion' | 'phoenix' | 'scorpion' | 'unicorn' | 'shadowlands';
 
 export interface StoredPersistentEffect {
-    duration: Durations;
-    location: Locations | Locations[];
+    duration: Duration;
+    location: Location | Location[];
     condition?: (context: AbilityContext) => boolean;
     match?: (card: BaseCard, context?: AbilityContext) => boolean;
     targetController?: Players;
-    targetLocation?: Locations | (string & {});
+    targetLocation?: Location | (string & {});
     effect: ((...args: any[]) => any) | ((...args: any[]) => any)[];
     createCopies?: boolean;
     ref?: Effect[];
-    type?: EffectNames;
-    abilityType?: AbilityTypes;
+    type?: EffectName;
+    abilityType?: AbilityType;
     isKeywordEffect?: boolean;
 }
 
@@ -92,7 +92,7 @@ class BaseCard extends EffectSource {
     abilities: CardAbilities = { actions: [], reactions: [], persistentEffects: [], playActions: [] };
     traits: string[];
     printedFaction: string;
-    location!: Locations;
+    location!: Location;
 
     isProvince: boolean = false;
     isConflict: boolean = false;
@@ -124,7 +124,7 @@ class BaseCard extends EffectSource {
     }
 
     get name(): string {
-        let copyEffect = this.mostRecentEffect(EffectNames.CopyCharacter);
+        let copyEffect = this.mostRecentEffect(EffectName.CopyCharacter);
         return copyEffect ? copyEffect.printedName : this.printedName;
     }
 
@@ -132,8 +132,8 @@ class BaseCard extends EffectSource {
         this.printedName = name;
     }
 
-    get type(): CardTypes {
-        return this.getType() as CardTypes;
+    get type(): CardType {
+        return this.getType() as CardType;
     }
 
     #mostRecentEffect(predicate: (effect: CardEffect) => boolean): CardEffect | undefined {
@@ -143,24 +143,24 @@ class BaseCard extends EffectSource {
 
     _getActions(ignoreDynamicGains = false): CardAction[] {
         let actions = this.abilities.actions;
-        const mostRecentEffect = this.#mostRecentEffect((effect) => effect.type === EffectNames.CopyCharacter);
+        const mostRecentEffect = this.#mostRecentEffect((effect) => effect.type === EffectName.CopyCharacter);
         if(mostRecentEffect) {
             actions = mostRecentEffect.value.getActions(this);
         }
-        const effectActions = this.getEffects<CardAction>(EffectNames.GainAbility).filter(
-            (ability) => ability.abilityType === AbilityTypes.Action
+        const effectActions = this.getEffects<CardAction>(EffectName.GainAbility).filter(
+            (ability) => ability.abilityType === AbilityType.Action
         );
 
         for(const effect of this.getRawEffects()) {
-            if(effect.type === EffectNames.GainAllAbilities) {
+            if(effect.type === EffectName.GainAllAbilities) {
                 actions = actions.concat((effect.value as GainAllAbilities).getActions(this));
             }
         }
         if(!ignoreDynamicGains) {
-            if(this.anyEffect(EffectNames.GainAllAbilitiesDynamic)) {
+            if(this.anyEffect(EffectName.GainAllAbilitiesDynamic)) {
                 const context = (this.game.getFrameworkContext as (player?: Player | null) => AbilityContext)(this.controller);
                 const effects = this.getRawEffects().filter(
-                    (effect: CardEffect) => effect.type === EffectNames.GainAllAbilitiesDynamic
+                    (effect: CardEffect) => effect.type === EffectName.GainAllAbilitiesDynamic
                 );
                 effects.forEach((effect: CardEffect) => {
                     effect.value.calculate(this, context); //fetch new abilities
@@ -169,7 +169,7 @@ class BaseCard extends EffectSource {
             }
         }
 
-        const lostAllNonKeywordsAbilities = this.anyEffect(EffectNames.LoseAllNonKeywordAbilities);
+        const lostAllNonKeywordsAbilities = this.anyEffect(EffectName.LoseAllNonKeywordAbilities);
         let allAbilities = actions.concat(effectActions);
         if(lostAllNonKeywordsAbilities) {
             allAbilities = allAbilities.filter((a) => a.isKeywordAbility());
@@ -182,30 +182,30 @@ class BaseCard extends EffectSource {
     }
 
     _getReactions(ignoreDynamicGains = false): TriggeredAbility[] {
-        const TriggeredAbilityTypes: AbilityTypes[] = [
-            AbilityTypes.ForcedInterrupt,
-            AbilityTypes.ForcedReaction,
-            AbilityTypes.Interrupt,
-            AbilityTypes.Reaction,
-            AbilityTypes.WouldInterrupt
+        const TriggeredAbilityTypes: AbilityType[] = [
+            AbilityType.ForcedInterrupt,
+            AbilityType.ForcedReaction,
+            AbilityType.Interrupt,
+            AbilityType.Reaction,
+            AbilityType.WouldInterrupt
         ];
         let reactions = this.abilities.reactions;
-        const mostRecentEffect = this.#mostRecentEffect((effect) => effect.type === EffectNames.CopyCharacter);
+        const mostRecentEffect = this.#mostRecentEffect((effect) => effect.type === EffectName.CopyCharacter);
         if(mostRecentEffect) {
             reactions = mostRecentEffect.value.getReactions(this);
         }
-        const effectReactions = this.getEffects<TriggeredAbility>(EffectNames.GainAbility).filter((ability) =>
+        const effectReactions = this.getEffects<TriggeredAbility>(EffectName.GainAbility).filter((ability) =>
             TriggeredAbilityTypes.includes(ability.abilityType)
         );
         for(const effect of this.getRawEffects()) {
-            if(effect.type === EffectNames.GainAllAbilities) {
+            if(effect.type === EffectName.GainAllAbilities) {
                 reactions = reactions.concat((effect.value as GainAllAbilities).getReactions(this));
             }
         }
         if(!ignoreDynamicGains) {
-            if(this.anyEffect(EffectNames.GainAllAbilitiesDynamic)) {
+            if(this.anyEffect(EffectName.GainAllAbilitiesDynamic)) {
                 const effects = this.getRawEffects().filter(
-                    (effect: CardEffect) => effect.type === EffectNames.GainAllAbilitiesDynamic
+                    (effect: CardEffect) => effect.type === EffectName.GainAllAbilitiesDynamic
                 );
                 const context = (this.game.getFrameworkContext as (player?: Player | null) => AbilityContext)(this.controller);
                 effects.forEach((effect: CardEffect) => {
@@ -215,7 +215,7 @@ class BaseCard extends EffectSource {
             }
         }
 
-        const lostAllNonKeywordsAbilities = this.anyEffect(EffectNames.LoseAllNonKeywordAbilities);
+        const lostAllNonKeywordsAbilities = this.anyEffect(EffectName.LoseAllNonKeywordAbilities);
         let allAbilities = reactions.concat(effectReactions);
         if(lostAllNonKeywordsAbilities) {
             allAbilities = allAbilities.filter((a) => a.isKeywordAbility());
@@ -228,16 +228,16 @@ class BaseCard extends EffectSource {
     }
 
     _getPersistentEffects(ignoreDynamicGains = false): StoredPersistentEffect[] {
-        let gainedPersistentEffects = this.getEffects<StoredPersistentEffect>(EffectNames.GainAbility).filter(
-            (ability) => ability.abilityType === AbilityTypes.Persistent
+        let gainedPersistentEffects = this.getEffects<StoredPersistentEffect>(EffectName.GainAbility).filter(
+            (ability) => ability.abilityType === AbilityType.Persistent
         );
 
-        const mostRecentEffect = this.#mostRecentEffect((effect) => effect.type === EffectNames.CopyCharacter);
+        const mostRecentEffect = this.#mostRecentEffect((effect) => effect.type === EffectName.CopyCharacter);
         if(mostRecentEffect) {
             return gainedPersistentEffects.concat(mostRecentEffect.value.getPersistentEffects());
         }
         for(const effect of this.getRawEffects()) {
-            if(effect.type === EffectNames.GainAllAbilities) {
+            if(effect.type === EffectName.GainAllAbilities) {
                 gainedPersistentEffects = gainedPersistentEffects.concat(
                     (effect.value as GainAllAbilities).getPersistentEffects()
                 );
@@ -247,9 +247,9 @@ class BaseCard extends EffectSource {
             // This is needed even though there are no dynamic persistent effects
             // Because the effect itself is persistent and to ensure we pick up all reactions/interrupts, we need this check to happen
             // As the game state is applying the effect
-            if(this.anyEffect(EffectNames.GainAllAbilitiesDynamic)) {
+            if(this.anyEffect(EffectName.GainAllAbilitiesDynamic)) {
                 const effects = this.getRawEffects().filter(
-                    (effect: CardEffect) => effect.type === EffectNames.GainAllAbilitiesDynamic
+                    (effect: CardEffect) => effect.type === EffectName.GainAllAbilitiesDynamic
                 );
                 const context = (this.game.getFrameworkContext as (player?: Player | null) => AbilityContext)(this.controller);
                 effects.forEach((effect: CardEffect) => {
@@ -259,10 +259,10 @@ class BaseCard extends EffectSource {
             }
         }
 
-        const lostAllNonKeywordsAbilities = this.anyEffect(EffectNames.LoseAllNonKeywordAbilities);
+        const lostAllNonKeywordsAbilities = this.anyEffect(EffectName.LoseAllNonKeywordAbilities);
         if(lostAllNonKeywordsAbilities) {
             let allAbilities = this.abilities.persistentEffects.concat(gainedPersistentEffects);
-            allAbilities = allAbilities.filter((a) => a.isKeywordEffect || a.type === EffectNames.AddKeyword);
+            allAbilities = allAbilities.filter((a) => a.isKeywordEffect || a.type === EffectName.AddKeyword);
             return allAbilities;
         }
         return this.isBlank()
@@ -290,32 +290,32 @@ class BaseCard extends EffectSource {
         return new CardAction(this, properties);
     }
 
-    triggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityTypes, properties: TriggeredAbilityProps<Target>): void {
+    triggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityType, properties: TriggeredAbilityProps<Target>): void {
         this.abilities.reactions.push(this.createTriggeredAbility(abilityType, properties));
     }
 
-    createTriggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityTypes, properties: TriggeredAbilityProps<Target>): TriggeredAbility {
+    createTriggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityType, properties: TriggeredAbilityProps<Target>): TriggeredAbility {
         return new TriggeredAbility(this, abilityType, properties as unknown as ConstructorParameters<typeof TriggeredAbility>[2]);
     }
 
     reaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<Target>): void {
-        this.triggeredAbility(AbilityTypes.Reaction, properties);
+        this.triggeredAbility(AbilityType.Reaction, properties);
     }
 
     forcedReaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<Target>): void {
-        this.triggeredAbility(AbilityTypes.ForcedReaction, properties);
+        this.triggeredAbility(AbilityType.ForcedReaction, properties);
     }
 
     wouldInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<Target>): void {
-        this.triggeredAbility(AbilityTypes.WouldInterrupt, properties);
+        this.triggeredAbility(AbilityType.WouldInterrupt, properties);
     }
 
     interrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<Target>): void {
-        this.triggeredAbility(AbilityTypes.Interrupt, properties);
+        this.triggeredAbility(AbilityType.Interrupt, properties);
     }
 
     forcedInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<Target>): void {
-        this.triggeredAbility(AbilityTypes.ForcedInterrupt, properties);
+        this.triggeredAbility(AbilityType.ForcedInterrupt, properties);
     }
 
     duelChallenge(
@@ -333,7 +333,7 @@ class BaseCard extends EffectSource {
                     (!properties.duelCondition || properties.duelCondition(duel, context))
             }
         };
-        this.triggeredAbility(AbilityTypes.DuelReaction, newProperties);
+        this.triggeredAbility(AbilityType.DuelReaction, newProperties);
     }
 
     duelFocus(
@@ -349,7 +349,7 @@ class BaseCard extends EffectSource {
                     (!properties.duelCondition || properties.duelCondition(duel, context))
             }
         };
-        this.triggeredAbility(AbilityTypes.DuelReaction, newProperties);
+        this.triggeredAbility(AbilityType.DuelReaction, newProperties);
     }
 
     duelStrike(properties: Omit<TriggeredAbilityProps, 'when'> & { duelCondition?: (duel: Duel, context: AbilityContext) => boolean }): void {
@@ -363,7 +363,7 @@ class BaseCard extends EffectSource {
                     (!properties.duelCondition || properties.duelCondition(duel, context))
             }
         };
-        this.triggeredAbility(AbilityTypes.DuelReaction, newProperties);
+        this.triggeredAbility(AbilityType.DuelReaction, newProperties);
     }
 
     /**
@@ -372,23 +372,23 @@ class BaseCard extends EffectSource {
      */
     persistentEffect(properties: PersistentEffectProps<this>): void {
         const allowedLocations = [
-            Locations.Any,
-            Locations.ConflictDiscardPile,
-            Locations.PlayArea,
-            Locations.Provinces
+            Location.Any,
+            Location.ConflictDiscardPile,
+            Location.PlayArea,
+            Location.Provinces
         ];
-        const defaultLocationForType: Record<string, Locations> = {
-            province: Locations.Provinces,
-            holding: Locations.Provinces,
-            stronghold: Locations.Provinces
+        const defaultLocationForType: Record<string, Location> = {
+            province: Location.Provinces,
+            holding: Location.Provinces,
+            stronghold: Location.Provinces
         };
 
-        const locationProp = properties.location || defaultLocationForType[this.getType()] || Locations.PlayArea;
+        const locationProp = properties.location || defaultLocationForType[this.getType()] || Location.PlayArea;
         const location = Array.isArray(locationProp) ? locationProp[0] : locationProp;
         if(!allowedLocations.includes(location)) {
             throw new Error(`'${location}' is not a supported effect location.`);
         }
-        this.abilities.persistentEffects.push({ duration: Durations.Persistent, location, ...properties });
+        this.abilities.persistentEffects.push({ duration: Duration.Persistent, location, ...properties });
     }
 
     attachmentConditions(properties: AttachmentConditionProps): void {
@@ -425,7 +425,7 @@ class BaseCard extends EffectSource {
         }
         if(effects.length > 0) {
             this.persistentEffect({
-                location: Locations.Any,
+                location: Location.Any,
                 effect: effects
             });
         }
@@ -452,8 +452,8 @@ class BaseCard extends EffectSource {
 
     legendary(fate: number): void {
         this.persistentEffect({
-            location: Locations.Any,
-            targetLocation: Locations.Any,
+            location: Location.Any,
+            targetLocation: Location.Any,
             effect: [
                 AbilityDsl.effects.playerCannot({
                     cannot: 'placeFateWhenPlayingCharacterFromProvince',
@@ -485,10 +485,10 @@ class BaseCard extends EffectSource {
     hasKeyword(keyword: string): boolean {
         const targetKeyword = keyword.toLowerCase();
 
-        const addKeywordEffects = this.getEffects(EffectNames.AddKeyword).filter(
+        const addKeywordEffects = this.getEffects(EffectName.AddKeyword).filter(
             (effectValue: string) => effectValue === targetKeyword
         );
-        const loseKeywordEffects = this.getEffects(EffectNames.LoseKeyword).filter(
+        const loseKeywordEffects = this.getEffects(EffectName.LoseKeyword).filter(
             (effectValue: string) => effectValue === targetKeyword
         );
 
@@ -542,19 +542,19 @@ class BaseCard extends EffectSource {
     }
 
     getTraitSet(): Set<string> {
-        const copyEffect = this.mostRecentEffect(EffectNames.CopyCharacter);
+        const copyEffect = this.mostRecentEffect(EffectName.CopyCharacter);
         const set = new Set(
             copyEffect
                 ? (copyEffect.traits as string[])
-                : this.getEffects(EffectNames.Blank).some((blankTraits: boolean) => blankTraits)
+                : this.getEffects(EffectName.Blank).some((blankTraits: boolean) => blankTraits)
                     ? []
                     : this.traits
         );
 
-        for(const gainedTrait of this.getEffects(EffectNames.AddTrait)) {
+        for(const gainedTrait of this.getEffects(EffectName.AddTrait)) {
             set.add(gainedTrait);
         }
-        for(const lostTrait of this.getEffects(EffectNames.LoseTrait)) {
+        for(const lostTrait of this.getEffects(EffectName.LoseTrait)) {
             set.delete(lostTrait);
         }
 
@@ -570,10 +570,10 @@ class BaseCard extends EffectSource {
     }
 
     getFactions(): Set<Faction> {
-        const copyEffect = this.mostRecentEffect(EffectNames.CopyCharacter);
+        const copyEffect = this.mostRecentEffect(EffectName.CopyCharacter);
         const cardFaction: Faction = copyEffect ? copyEffect.printedFaction : this.printedFaction;
-        const addedFactions: Faction[] = this.getEffects(EffectNames.AddFaction);
-        const lostFactions: Faction[] = this.getEffects(EffectNames.LoseFaction);
+        const addedFactions: Faction[] = this.getEffects(EffectName.AddFaction);
+        const lostFactions: Faction[] = this.getEffects(EffectName.LoseFaction);
         const factionArray = [...addedFactions, cardFaction].filter(faction => !lostFactions.includes(faction));
 
         return new Set(factionArray);
@@ -587,15 +587,15 @@ class BaseCard extends EffectSource {
         if(this.isFacedown()) {
             return false;
         }
-        if([CardTypes.Holding, CardTypes.Province, CardTypes.Stronghold].includes(this.type)) {
+        if([CardType.Holding, CardType.Province, CardType.Stronghold].includes(this.type)) {
             return this.isInProvince();
         }
-        return this.location === Locations.PlayArea;
+        return this.location === Location.PlayArea;
     }
 
     applyAnyLocationPersistentEffects(): void {
         for(const effect of this.persistentEffects) {
-            if(effect.location === Locations.Any) {
+            if(effect.location === Location.Any) {
                 effect.ref = this.addEffectToEngine({ ...effect, location: effect.location });
             }
         }
@@ -617,14 +617,14 @@ class BaseCard extends EffectSource {
         }
     }
 
-    updateAbilityEvents(from: Locations, to: Locations, reset: boolean = true) {
+    updateAbilityEvents(from: Location, to: Location, reset: boolean = true) {
         if(reset) {
             this.#resetLimits();
         }
         for(const reaction of this.reactions) {
-            if(this.type === CardTypes.Event) {
+            if(this.type === CardType.Event) {
                 if(
-                    to === Locations.ConflictDeck ||
+                    to === Location.ConflictDeck ||
                     this.controller.isCardInPlayableLocation(this) ||
                     (this.controller.opponent && this.controller.opponent.isCardInPlayableLocation(this))
                 ) {
@@ -640,24 +640,24 @@ class BaseCard extends EffectSource {
         }
     }
 
-    updateEffects(from: Locations, to: Locations) {
-        const activeLocations: Record<string, Locations[]> = {
-            'conflict discard pile': [Locations.ConflictDiscardPile],
-            'play area': [Locations.PlayArea],
+    updateEffects(from: Location, to: Location) {
+        const activeLocations: Record<string, Location[]> = {
+            'conflict discard pile': [Location.ConflictDiscardPile],
+            'play area': [Location.PlayArea],
             province: this.game.getProvinceArray()
         };
         if(
-            !activeLocations[Locations.Provinces].includes(from) ||
-            !activeLocations[Locations.Provinces].includes(to)
+            !activeLocations[Location.Provinces].includes(from) ||
+            !activeLocations[Location.Provinces].includes(to)
         ) {
             this.removeLastingEffects();
         }
         this.updateStatusTokenEffects();
         for(const effect of this.persistentEffects) {
-            if(effect.location === Locations.Any) {
+            if(effect.location === Location.Any) {
                 continue;
             }
-            const location = effect.location as Locations;
+            const location = effect.location as Location;
             const locationEntry = activeLocations[location];
             if(locationEntry && locationEntry.includes(to) && !locationEntry.includes(from)) {
                 effect.ref = this.addEffectToEngine({ ...effect, location });
@@ -680,14 +680,14 @@ class BaseCard extends EffectSource {
         }
     }
 
-    moveTo(targetLocation: Locations) {
+    moveTo(targetLocation: Location) {
         let originalLocation = this.location;
         let sameLocation = false;
 
         this.location = targetLocation;
 
         if(
-            [Locations.PlayArea, Locations.ConflictDiscardPile, Locations.DynastyDiscardPile, Locations.Hand].includes(
+            [Location.PlayArea, Location.ConflictDiscardPile, Location.DynastyDiscardPile, Location.Hand].includes(
                 targetLocation
             )
         ) {
@@ -704,7 +704,7 @@ class BaseCard extends EffectSource {
         if(originalLocation !== targetLocation) {
             this.updateAbilityEvents(originalLocation, targetLocation, !sameLocation);
             this.updateEffects(originalLocation, targetLocation);
-            this.game.emitEvent(EventNames.OnCardMoved, {
+            this.game.emitEvent(EventName.OnCardMoved, {
                 card: this,
                 originalLocation: originalLocation,
                 newLocation: targetLocation
@@ -725,7 +725,7 @@ class BaseCard extends EffectSource {
     }
 
     getModifiedLimitMax(player: Player, ability: CardAbility, max: number): number {
-        const effects = this.getRawEffects().filter((effect: CardEffect) => effect.type === EffectNames.IncreaseLimitOnAbilities);
+        const effects = this.getRawEffects().filter((effect: CardEffect) => effect.type === EffectName.IncreaseLimitOnAbilities);
         let total = max;
         effects.forEach((effect: CardEffect) => {
             const value = effect.getValue(this) as { applyingPlayer?: Player; targetAbility?: CardAbility };
@@ -737,7 +737,7 @@ class BaseCard extends EffectSource {
         });
 
         const printedEffects = this.getRawEffects().filter(
-            (effect: CardEffect) => effect.type === EffectNames.IncreaseLimitOnPrintedAbilities
+            (effect: CardEffect) => effect.type === EffectName.IncreaseLimitOnPrintedAbilities
         );
         printedEffects.forEach((effect: CardEffect) => {
             const value = effect.getValue(this);
@@ -753,7 +753,7 @@ class BaseCard extends EffectSource {
         if(
             this.menu.length === 0 ||
             !this.game.manualMode ||
-            ![...this.game.getProvinceArray(), Locations.PlayArea].includes(this.location)
+            ![...this.game.getProvinceArray(), Location.PlayArea].includes(this.location)
         ) {
             return undefined;
         }
@@ -766,7 +766,7 @@ class BaseCard extends EffectSource {
         }
 
         const menu = [{ command: 'click', text: 'Select Card' }];
-        if(this.location === Locations.PlayArea || this.isProvince || this.isStronghold) {
+        if(this.location === Location.PlayArea || this.isProvince || this.isStronghold) {
             menu.push(...this.menu);
         }
         return menu;
@@ -801,7 +801,7 @@ class BaseCard extends EffectSource {
     }
 
     isBlank(): boolean {
-        return this.anyEffect(EffectNames.Blank) || this.anyEffect(EffectNames.CopyCharacter);
+        return this.anyEffect(EffectName.Blank) || this.anyEffect(EffectName.CopyCharacter);
     }
 
     getPrintedFaction(): string {
@@ -864,11 +864,11 @@ class BaseCard extends EffectSource {
     }
 
     readiesDuringReadyPhase(): boolean {
-        return !this.anyEffect(EffectNames.DoesNotReady);
+        return !this.anyEffect(EffectName.DoesNotReady);
     }
 
     hideWhenFacedown(): boolean {
-        return !this.anyEffect(EffectNames.CanBeSeenWhenFacedown);
+        return !this.anyEffect(EffectName.CanBeSeenWhenFacedown);
     }
 
     createSnapshot() {
@@ -930,8 +930,8 @@ class BaseCard extends EffectSource {
         }
 
         if(
-            parent.getType() !== CardTypes.Character ||
-            (!properties.ignoreType && this.getType() !== CardTypes.Attachment)
+            parent.getType() !== CardType.Character ||
+            (!properties.ignoreType && this.getType() !== CardType.Attachment)
         ) {
             return false;
         }
@@ -939,39 +939,39 @@ class BaseCard extends EffectSource {
         const attachmentController = properties.controller ?? this.controller;
         for(const effect of this.getRawEffects()) {
             switch(effect.type) {
-                case EffectNames.AttachmentMyControlOnly: {
+                case EffectName.AttachmentMyControlOnly: {
                     if(attachmentController !== parent.controller) {
                         return false;
                     }
                     break;
                 }
-                case EffectNames.AttachmentOpponentControlOnly: {
+                case EffectName.AttachmentOpponentControlOnly: {
                     if(attachmentController === parent.controller) {
                         return false;
                     }
                     break;
                 }
-                case EffectNames.AttachmentUniqueRestriction: {
+                case EffectName.AttachmentUniqueRestriction: {
                     if(!parent.isUnique()) {
                         return false;
                     }
                     break;
                 }
-                case EffectNames.AttachmentFactionRestriction: {
+                case EffectName.AttachmentFactionRestriction: {
                     const factions = effect.getValue(this) as Faction[];
                     if(!factions.some((faction) => parent.isFaction(faction))) {
                         return false;
                     }
                     break;
                 }
-                case EffectNames.AttachmentTraitRestriction: {
+                case EffectName.AttachmentTraitRestriction: {
                     const traits = effect.getValue(this) as string[];
                     if(!traits.some((trait) => parent.hasTrait(trait))) {
                         return false;
                     }
                     break;
                 }
-                case EffectNames.AttachmentCardCondition: {
+                case EffectName.AttachmentCardCondition: {
                     const cardCondition = effect.getValue(this) as (card: BaseCard) => boolean;
                     if(!cardCondition(parent)) {
                         return false;
@@ -984,11 +984,11 @@ class BaseCard extends EffectSource {
     }
 
     getPlayActions(): BaseCardAbility[] {
-        if(this.type === CardTypes.Event) {
+        if(this.type === CardType.Event) {
             return this.getActions();
         }
         let actions = this.abilities.playActions.slice();
-        if(this.type === CardTypes.Character) {
+        if(this.type === CardType.Character) {
             if(this.disguisedKeywordTraits.length > 0) {
                 actions.push(new PlayDisguisedCharacterAction(this));
             }
@@ -997,9 +997,9 @@ class BaseCard extends EffectSource {
             } else {
                 actions.push(new PlayCharacterAction(this));
             }
-        } else if(this.type === CardTypes.Attachment && this.mustAttachToRing()) {
+        } else if(this.type === CardType.Attachment && this.mustAttachToRing()) {
             actions.push(new PlayAttachmentToRingAction(this));
-        } else if(this.type === CardTypes.Attachment) {
+        } else if(this.type === CardType.Attachment) {
             actions.push(new PlayAttachmentAction(this));
         }
         return actions;
@@ -1068,7 +1068,7 @@ class BaseCard extends EffectSource {
         if(!this.isInPlay()) {
             return symbols.map((symbol) => new ElementSymbol(this.game, this, symbol as any));
         }
-        let changeEffects = this.getRawEffects().filter((effect: CardEffect) => effect.type === EffectNames.ReplacePrintedElement);
+        let changeEffects = this.getRawEffects().filter((effect: CardEffect) => effect.type === EffectName.ReplacePrintedElement);
         changeEffects.forEach((effect: CardEffect) => {
             const newElement = effect.value.value;
             let sym = symbols.find((a) => a.key === newElement.key);
@@ -1112,7 +1112,7 @@ class BaseCard extends EffectSource {
         }
         const seen = new Set();
         const limits: Array<{ max: number; current: number; exhausted: boolean }> = [];
-        const gainedAbilities = this.getEffects(EffectNames.GainAbility);
+        const gainedAbilities = this.getEffects(EffectName.GainAbility);
         for(const ability of [...this.abilities.actions, ...this.abilities.reactions, ...gainedAbilities]) {
             const limit = ability.limit;
             if(!limit || seen.has(limit)) {
@@ -1138,7 +1138,7 @@ class BaseCard extends EffectSource {
         if(
             isActivePlayer
                 ? this.isFacedown() && this.hideWhenFacedown()
-                : this.isFacedown() || hideWhenFaceup || this.anyEffect(EffectNames.HideWhenFaceUp)
+                : this.isFacedown() || hideWhenFaceup || this.anyEffect(EffectName.HideWhenFaceUp)
         ) {
             let state = {
                 controller: this.controller.getShortSummary(),

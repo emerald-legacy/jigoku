@@ -1,7 +1,7 @@
 import BaseAction from './BaseAction.js';
 import * as Costs from './Costs.js';
 import * as GameActions from './GameActions/GameActions.js';
-import { EffectNames, Phases, PlayTypes, EventNames } from './Constants.js';
+import { EffectName, Phases, PlayType, EventName } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
@@ -11,7 +11,7 @@ class DynastyCardAction extends BaseAction {
     declare card: DrawCard;
 
     constructor(card: BaseCard) {
-        super(card, [Costs.chooseFate(PlayTypes.PlayFromProvince), Costs.payReduceableFateCost()]);
+        super(card, [Costs.chooseFate(PlayType.PlayFromProvince), Costs.payReduceableFateCost()]);
     }
 
     meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []): string {
@@ -23,12 +23,12 @@ class DynastyCardAction extends BaseAction {
             return 'phase';
         } else if(
             !ignoredRequirements.includes('location') &&
-            !context.player.isCardInPlayableLocation(this.card, PlayTypes.PlayFromProvince)
+            !context.player.isCardInPlayableLocation(this.card, PlayType.PlayFromProvince)
         ) {
             return 'location';
         } else if(
             !ignoredRequirements.includes('cannotTrigger') &&
-            !this.card.canPlay(context, PlayTypes.PlayFromProvince)
+            !this.card.canPlay(context, PlayType.PlayFromProvince)
         ) {
             return 'cannotTrigger';
         } else if(this.card.anotherUniqueInPlay(context.player)) {
@@ -47,7 +47,7 @@ class DynastyCardAction extends BaseAction {
         if(context.source.checkRestrictions('placeFate', context)) {
             context.source
                 .getRawEffects()
-                .filter((effect: any) => effect.type === EffectNames.GainExtraFateWhenPlayed)
+                .filter((effect: any) => effect.type === EffectName.GainExtraFateWhenPlayed)
                 .map((effect: any) =>
                     context.game.addMessage(
                         '{0} enters play with {1} additional fate due to {2}',
@@ -60,23 +60,23 @@ class DynastyCardAction extends BaseAction {
     }
 
     executeHandler(context: AbilityContext): void {
-        let extraFate = context.source.sumEffects(EffectNames.GainExtraFateWhenPlayed);
-        const legendaryFate = context.source.sumEffects(EffectNames.LegendaryFate);
+        let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
+        const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
         if(!context.source.checkRestrictions('placeFate', context)) {
             extraFate = 0;
         }
         extraFate = extraFate + legendaryFate;
-        const status = context.source.getEffects(EffectNames.EntersPlayWithStatus)[0] || '';
+        const status = context.source.getEffects(EffectName.EntersPlayWithStatus)[0] || '';
         const enterPlayEvent = GameActions.putIntoPlay({ fate: (context as any).chooseFate + extraFate, status }).getEvent(
             context.source,
             context
         );
-        const cardPlayedEvent = context.game.getEvent(EventNames.OnCardPlayed, {
+        const cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
             player: context.player,
             card: context.source,
             context: context,
             originalLocation: context.source.location,
-            playType: PlayTypes.PlayFromProvince
+            playType: PlayType.PlayFromProvince
         });
         context.game.openEventWindow([enterPlayEvent, cardPlayedEvent]);
     }

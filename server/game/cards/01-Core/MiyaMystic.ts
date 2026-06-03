@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, CardTypes } from '../../Constants.js';
+import { Phases, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class MiyaMystic extends DrawCard {
@@ -11,7 +11,7 @@ class MiyaMystic extends DrawCard {
             cost: ability.costs.sacrificeSelf(),
             phase: Phases.Conflict,
             target: {
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 gameAction: ability.actions.discardFromPlay()
             }
         });

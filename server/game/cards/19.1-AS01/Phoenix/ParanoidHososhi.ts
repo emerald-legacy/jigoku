@@ -1,7 +1,7 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import BaseCard from '../../../BaseCard.js';
-import { CardTypes, Phases, Players } from '../../../Constants.js';
+import { CardType, Phases, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ParanoidHososhi extends DrawCard {
@@ -16,7 +16,7 @@ export default class ParanoidHososhi extends DrawCard {
             cost: AbilityDsl.costs.bowSelf(),
             target: {
                 controller: Players.Any,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card.getCost() === this.getHighestCostOfCharactersInPlay(context),
                 gameAction: AbilityDsl.actions.removeFate((context) => ({
                     amount: 1,
@@ -29,7 +29,7 @@ export default class ParanoidHososhi extends DrawCard {
 
     private getHighestCostOfCharactersInPlay(context: AbilityContext) {
         return context.game
-            .findAnyCardsInPlay((card: BaseCard) => card.type === CardTypes.Character)
+            .findAnyCardsInPlay((card: BaseCard) => card.type === CardType.Character)
             .reduce((prevHighestCost: number, card: DrawCard) => {
                 const cost = card.getCost();
                 return typeof cost === 'number' && cost > prevHighestCost ? cost : prevHighestCost;

@@ -1,5 +1,5 @@
 import { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
@@ -21,7 +21,7 @@ export default class SpiderwebPassage extends DrawCard {
             condition: (context) => shinobiCount(context) > 0,
             cost: AbilityDsl.costs.sacrificeSelf(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card: DrawCard) =>
                     card.isParticipating() &&

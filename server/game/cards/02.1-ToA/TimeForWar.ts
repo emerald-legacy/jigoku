@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import CardSelector from '../../CardSelector.js';
-import { Locations, Players, CardTypes } from '../../Constants.js';
+import { Location, Players, CardType } from '../../Constants.js';
 
 class TimeForWar extends DrawCard {
     static id = 'time-for-war';
@@ -14,14 +14,14 @@ class TimeForWar extends DrawCard {
                 afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictType === 'political'
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('bushi'),
                 gameAction: AbilityDsl.actions.selectCard(context => ({
                     selector: CardSelector.for({
                         activePromptTitle: 'Choose a weapon attachment',
-                        cardType: CardTypes.Attachment,
-                        location: [Locations.ConflictDiscardPile, Locations.Hand],
+                        cardType: CardType.Attachment,
+                        location: [Location.ConflictDiscardPile, Location.Hand],
                         controller: Players.Self,
                         cardCondition: card => card.costLessThan(4) && card.hasTrait('weapon') && attachAction.canAffect(context.target, context, { attachment: card })
                     }),

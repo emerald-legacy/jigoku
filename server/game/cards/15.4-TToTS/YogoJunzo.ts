@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { AbilityTypes, CardTypes, Players} from '../../Constants.js';
+import { AbilityType, CardType, Players} from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class YogoJunzo extends DrawCard {
@@ -7,10 +7,10 @@ class YogoJunzo extends DrawCard {
 
     setupCardAbilities() {
         this.dire({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Remove all fate from a character',
                 target: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     gameAction: AbilityDsl.actions.removeFate(context => ({
                         amount: context.target.getFate()
                     }))
@@ -22,7 +22,7 @@ class YogoJunzo extends DrawCard {
         this.action({
             title:'Return any amount of fate from a character you control',
             target:{
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.menuPrompt(context => ({
                     activePromptTitle: 'Select fate amount:',

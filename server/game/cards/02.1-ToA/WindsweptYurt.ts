@@ -1,7 +1,7 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { TargetModes } from '../../Constants.js';
+import { TargetMode } from '../../Constants.js';
 
 class WindsweptYurt extends DrawCard {
     static id = 'windswept-yurt';
@@ -10,7 +10,7 @@ class WindsweptYurt extends DrawCard {
         this.action({
             title: 'Gain 2 fate or 2 honor',
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 choices: {
                     'Each player gains 2 fate': ability.actions.gainFate((context: AbilityContext) => ({
                         amount: 2,

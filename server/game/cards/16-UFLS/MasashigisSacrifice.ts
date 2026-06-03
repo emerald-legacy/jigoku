@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class MasashigisSacrifice extends DrawCard {
     static id = 'masashigi-s-sacrifice';
@@ -9,7 +9,7 @@ class MasashigisSacrifice extends DrawCard {
         this.action({
             title: 'Defending characters do not bow as a result of conflict resolution',
             cost: AbilityDsl.costs.sacrifice({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.hasStatusTokens
             }),
             condition: () => this.game.isDuringConflict(),

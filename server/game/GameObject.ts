@@ -1,7 +1,7 @@
 import { v1 as uuidV1 } from 'uuid';
 
 import type { AbilityContext } from './AbilityContext.js';
-import { EffectNames, Stages } from './Constants.js';
+import { EffectName, Stage } from './Constants.js';
 import type { CardEffect } from './Effects/types.js';
 import type Game from './Game.js';
 import type { GameAction } from './GameActions/GameAction.js';
@@ -21,7 +21,7 @@ export class GameObject {
     public printedType = '';
     public facedown = false;
     protected effects = [] as CardEffect[];
-    protected effectsByType = new Map<EffectNames, CardEffect[]>();
+    protected effectsByType = new Map<EffectName, CardEffect[]>();
     private suppressEffectCount = 0;
 
     public constructor(
@@ -53,13 +53,13 @@ export class GameObject {
         } else {
             this.effectsByType.set(effect.type, [effect]);
         }
-        if(effect.type === EffectNames.SuppressEffects) {
+        if(effect.type === EffectName.SuppressEffects) {
             this.suppressEffectCount++;
         }
     }
 
     public removeEffect(effect: CardEffect) {
-        if(effect.type === EffectNames.SuppressEffects) {
+        if(effect.type === EffectName.SuppressEffects) {
             this.suppressEffectCount--;
         }
         this.effects = this.effects.filter((e) => e !== effect);
@@ -75,7 +75,7 @@ export class GameObject {
         }
     }
 
-    public getEffects<V = any>(type: EffectNames): V[] {
+    public getEffects<V = any>(type: EffectName): V[] {
         // Fast path: no suppress effects — use indexed lookup
         if(this.suppressEffectCount === 0) {
             const bucket = this.effectsByType.get(type);
@@ -89,12 +89,12 @@ export class GameObject {
         return filteredEffects.map((effect) => effect.getValue(this));
     }
 
-    public sumEffects(type: EffectNames) {
+    public sumEffects(type: EffectName) {
         let filteredEffects = this.getEffects(type);
         return filteredEffects.reduce((total, effect) => total + effect, 0);
     }
 
-    public anyEffect(type: EffectNames) {
+    public anyEffect(type: EffectName) {
         // Fast path: no suppress effects — check index directly
         if(this.suppressEffectCount === 0) {
             const bucket = this.effectsByType.get(type);
@@ -113,14 +113,14 @@ export class GameObject {
     }
 
     public checkRestrictions(actionType: string, context?: AbilityContext) {
-        return !this.getEffects(EffectNames.AbilityRestrictions).some((restriction) =>
+        return !this.getEffects(EffectName.AbilityRestrictions).some((restriction) =>
             restriction.isMatch(actionType, context, this)
         );
     }
 
     public getType() {
-        if(this.anyEffect(EffectNames.ChangeType)) {
-            return this.mostRecentEffect(EffectNames.ChangeType);
+        if(this.anyEffect(EffectName.ChangeType)) {
+            return this.mostRecentEffect(EffectName.ChangeType);
         }
         return this.printedType;
     }
@@ -148,7 +148,7 @@ export class GameObject {
         targets = targets.concat(this);
         let targetingCost = context.player.getTargetingCost(context.source, targets);
 
-        if(context.stage === Stages.PreTarget || context.stage === Stages.Cost) {
+        if(context.stage === Stage.PreTarget || context.stage === Stage.Cost) {
             //We haven't paid the cost yet, so figure out what it will cost to play this so we can know how much fate we'll have available for targeting
             let fateCost = 0;
             // @ts-expect-error -- getReducedCost exists on play action abilities but is not declared on the base AbilityContext.ability type
@@ -164,7 +164,7 @@ export class GameObject {
                 availableFate >= targetingCost &&
                 (targetingCost === 0 || context.player.checkRestrictions('spendFate', context))
             );
-        } else if(context.stage === Stages.Target || context.stage === Stages.Effect) {
+        } else if(context.stage === Stage.Target || context.stage === Stage.Effect) {
             //We paid costs first, or targeting has to be done after costs have been paid
             return (
                 context.player.fate >= targetingCost &&
@@ -187,7 +187,7 @@ export class GameObject {
         return !this.facedown;
     }
 
-    public mostRecentEffect(type: EffectNames) {
+    public mostRecentEffect(type: EffectName) {
         const effects = this.getEffects(type);
         return effects[effects.length - 1];
     }
@@ -197,7 +197,7 @@ export class GameObject {
         if(this.suppressEffectCount === 0) {
             return this.effects;
         }
-        const suppressEffects = this.effects.filter((effect) => effect.type === EffectNames.SuppressEffects);
+        const suppressEffects = this.effects.filter((effect) => effect.type === EffectName.SuppressEffects);
         const suppressedEffects = suppressEffects.reduce<CardEffect[]>((array, effect) => array.concat(effect.getValue(this)), []);
         return this.effects.filter((effect) => !suppressedEffects.includes(effect));
     }
@@ -207,7 +207,7 @@ export class GameObject {
     // hand-copying in subclasses could not reach it and silently dropped it.
     protected cloneEffectStateInto(target: GameObject): void {
         target.effects = [...this.effects];
-        const clonedIndex = new Map<EffectNames, CardEffect[]>();
+        const clonedIndex = new Map<EffectName, CardEffect[]>();
         for(const [type, bucket] of this.effectsByType) {
             clonedIndex.set(type, [...bucket]);
         }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Players } from '../../Constants.js';
+import { Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ShinomenWayfinders extends DrawCard {
@@ -7,7 +7,7 @@ class ShinomenWayfinders extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            location: Locations.Any,
+            location: Location.Any,
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: (card: any, player: any) => {

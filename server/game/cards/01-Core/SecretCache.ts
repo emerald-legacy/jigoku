@@ -1,4 +1,4 @@
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -16,7 +16,7 @@ export default class SecretCache extends ProvinceCard {
                 amount: 5,
                 reveal: false,
                 gameAction: AbilityDsl.actions.moveCard({
-                    destination: Locations.Hand
+                    destination: Location.Hand
                 })
             })
         });

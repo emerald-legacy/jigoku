@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, TargetModes } from '../../Constants.js';
+import { CardType, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SanguineMastery extends DrawCard {
@@ -10,9 +10,9 @@ class SanguineMastery extends DrawCard {
             title: 'Discard attachments',
             cost: AbilityDsl.costs.dishonor({ cardCondition: card => card.glory > 0 }),
             target: {
-                mode: TargetModes.UpToVariable,
+                mode: TargetMode.UpToVariable,
                 numCardsFunc: (context) => context.costs.dishonor ? (context.costs.dishonor as DrawCard).glory : 1,
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 gameAction: AbilityDsl.actions.discardFromPlay()
             },
             cannotTargetFirst: true

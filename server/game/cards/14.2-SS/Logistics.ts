@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Logistics extends DrawCard {
@@ -11,30 +11,30 @@ class Logistics extends DrawCard {
             title: 'Move a card in a province',
             targets: {
                 cardInProvince: {
-                    location: [Locations.Provinces, Locations.PlayArea],
+                    location: [Location.Provinces, Location.PlayArea],
                     cardCondition: card =>
-                        (card.isInProvince() && card.type !== CardTypes.Province && card.type !== CardTypes.Stronghold) ||
-                        (card.type === CardTypes.Attachment && card.parent && card.parent.type === CardTypes.Province)
+                        (card.isInProvince() && card.type !== CardType.Province && card.type !== CardType.Stronghold) ||
+                        (card.type === CardType.Attachment && card.parent && card.parent.type === CardType.Province)
                 },
                 province: {
                     targets: false,
                     dependsOn: 'cardInProvince',
-                    location: [Locations.Provinces],
-                    cardType: CardTypes.Province,
+                    location: [Location.Provinces],
+                    cardType: CardType.Province,
                     cardCondition: (card, context) =>
-                        card.location !== Locations.StrongholdProvince &&
+                        card.location !== Location.StrongholdProvince &&
                         !card.isBroken &&
                         ( //same controller check
-                            (context.targets.cardInProvince.type === CardTypes.Attachment && card.controller === context.targets.cardInProvince.parent.controller) ||
-                            (context.targets.cardInProvince.type !== CardTypes.Attachment && card.controller === context.targets.cardInProvince.controller)
+                            (context.targets.cardInProvince.type === CardType.Attachment && card.controller === context.targets.cardInProvince.parent.controller) ||
+                            (context.targets.cardInProvince.type !== CardType.Attachment && card.controller === context.targets.cardInProvince.controller)
                         ) &&
                         ( //different location check
-                            (context.targets.cardInProvince.type === CardTypes.Attachment && card.location !== context.targets.cardInProvince.parent.location) ||
-                            (context.targets.cardInProvince.type !== CardTypes.Attachment && card.location !== context.targets.cardInProvince.location)
+                            (context.targets.cardInProvince.type === CardType.Attachment && card.location !== context.targets.cardInProvince.parent.location) ||
+                            (context.targets.cardInProvince.type !== CardType.Attachment && card.location !== context.targets.cardInProvince.location)
                         ),
                     gameAction: AbilityDsl.actions.multiple([
                         AbilityDsl.actions.conditional(context => ({
-                            condition: context.targets.cardInProvince.type === CardTypes.Attachment,
+                            condition: context.targets.cardInProvince.type === CardType.Attachment,
                             trueGameAction: AbilityDsl.actions.attach({
                                 target: context.targets.province,
                                 attachment: context.targets.cardInProvince

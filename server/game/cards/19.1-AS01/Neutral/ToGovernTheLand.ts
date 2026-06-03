@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardTypes, ConflictTypes, TargetModes } from '../../../Constants.js';
+import { CardType, ConflictType, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -11,54 +11,54 @@ export default class ToGovernTheLand extends DrawCard {
     public setupCardAbilities() {
         this.action({
             title: 'Send home and bow based on bushi\'s power',
-            condition: (context) => this.conditionToTrigger(ConflictTypes.Political, context),
+            condition: (context) => this.conditionToTrigger(ConflictType.Political, context),
             target: {
-                cardType: CardTypes.Character,
-                mode: TargetModes.Single,
-                cardCondition: (card, context) => this.conditionToTarget(ConflictTypes.Political, card, context),
+                cardType: CardType.Character,
+                mode: TargetMode.Single,
+                cardCondition: (card, context) => this.conditionToTarget(ConflictType.Political, card, context),
                 gameAction: this.gameAction()
             }
         });
 
         this.action({
             title: 'Send home and bow based on courtier\'s power',
-            condition: (context) => this.conditionToTrigger(ConflictTypes.Military, context),
+            condition: (context) => this.conditionToTrigger(ConflictType.Military, context),
             target: {
-                cardType: CardTypes.Character,
-                mode: TargetModes.Single,
-                cardCondition: (card, context) => this.conditionToTarget(ConflictTypes.Military, card, context),
+                cardType: CardType.Character,
+                mode: TargetMode.Single,
+                cardCondition: (card, context) => this.conditionToTarget(ConflictType.Military, card, context),
                 gameAction: this.gameAction()
             }
         });
     }
 
-    private governSkill(conflictType: ConflictTypes, card: BaseCard): number {
+    private governSkill(conflictType: ConflictType, card: BaseCard): number {
         switch(conflictType) {
-            case ConflictTypes.Political:
+            case ConflictType.Political:
                 return (card as DrawCard).getMilitarySkill();
-            case ConflictTypes.Military:
+            case ConflictType.Military:
                 return (card as DrawCard).getPoliticalSkill();
             default:
                 return NaN;
         }
     }
 
-    private governFulfillTrait(conflictType: ConflictTypes, context: AbilityContext, card: BaseCard): boolean {
+    private governFulfillTrait(conflictType: ConflictType, context: AbilityContext, card: BaseCard): boolean {
         if(card.controller !== context.player) {
             return false;
         }
 
         switch(conflictType) {
-            case ConflictTypes.Political:
+            case ConflictType.Political:
                 return card.hasTrait('bushi');
-            case ConflictTypes.Military:
+            case ConflictType.Military:
                 return card.hasTrait('courtier');
             default:
                 return false;
         }
     }
 
-    private conditionToTrigger(conflictType: ConflictTypes, context: AbilityContext): boolean {
+    private conditionToTrigger(conflictType: ConflictType, context: AbilityContext): boolean {
         return (
             context.game.isDuringConflict(conflictType) &&
             (context.game.currentConflict?.getParticipants() as BaseCard[] ?? []).some((card) =>
@@ -67,7 +67,7 @@ export default class ToGovernTheLand extends DrawCard {
         );
     }
 
-    private conditionToTarget(conflictType: ConflictTypes, card: DrawCard, context: AbilityContext): boolean {
+    private conditionToTarget(conflictType: ConflictType, card: DrawCard, context: AbilityContext): boolean {
         if(!card.isParticipating()) {
             return false;
         }

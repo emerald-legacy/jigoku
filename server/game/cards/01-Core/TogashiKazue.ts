@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -12,12 +12,12 @@ export default class TogashiKazue extends DrawCard {
         this.action({
             title: 'Steal a fate',
             condition: (context) =>
-                !!(context.source.type === CardTypes.Attachment &&
+                !!(context.source.type === CardType.Attachment &&
                 context.source.parent &&
                 context.source.parent.isParticipating()),
             printedAbility: false,
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source.parent,
                 gameAction: AbilityDsl.actions.removeFate((context: AbilityContext) => ({
                     recipient: context.source.parent
@@ -29,7 +29,7 @@ export default class TogashiKazue extends DrawCard {
     }
 
     leavesPlay() {
-        this.printedType = CardTypes.Character;
+        this.printedType = CardType.Character;
         super.leavesPlay();
     }
 }

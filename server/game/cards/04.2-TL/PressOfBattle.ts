@@ -1,6 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class PressOfBattle extends DrawCard {
     static id = 'press-of-battle';
@@ -13,7 +13,7 @@ class PressOfBattle extends DrawCard {
                                  this.game.currentConflict.hasMoreParticipants(context.player, () => true),
             target: {
                 activePromptTitle: 'Choose a character',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: DrawCard) => card.isParticipating() && !card.isUnique(),
                 gameAction: ability.actions.bow()
             }

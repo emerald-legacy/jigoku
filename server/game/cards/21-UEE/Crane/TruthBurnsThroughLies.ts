@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityTypes, CardTypes } from '../../../Constants.js';
+import { AbilityType, CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { ActionProps } from '../../../Interfaces.js';
 
@@ -10,11 +10,11 @@ export default class TruthBurnsThroughLies extends DrawCard {
         this.attachmentConditions({ trait: ['courtier', 'magistrate'] });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Dishonor a character',
                 condition: (context) => context.source.isParticipating(),
                 target: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: (card, context) =>
                         card.isParticipating() &&
                         (context.source.hasTrait('magistrate')

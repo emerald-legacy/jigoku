@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import BaseCard from '../../BaseCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 
 class KeenWarrior extends DrawCard {
     static id = 'keen-warrior';
@@ -14,12 +14,12 @@ class KeenWarrior extends DrawCard {
                 onCardRevealed: (event, context) => {
                     const raw = event.card as BaseCard | BaseCard[];
                     const cards = Array.isArray(raw) ? raw : [raw];
-                    return cards.some((a: BaseCard) => a.location === Locations.Hand && a.controller === context.player.opponent);
+                    return cards.some((a: BaseCard) => a.location === Location.Hand && a.controller === context.player.opponent);
                 },
                 onLookAtCards: (event, context) => {
                     const raw = event.stateBeforeResolution;
                     const cards = Array.isArray(raw) ? raw : raw ? [raw] : [];
-                    return cards.some((a) => a.location === Locations.Hand && a.card.controller === context.player.opponent);
+                    return cards.some((a) => a.location === Location.Hand && a.card.controller === context.player.opponent);
                 }
             },
             gameAction: AbilityDsl.actions.sequential([

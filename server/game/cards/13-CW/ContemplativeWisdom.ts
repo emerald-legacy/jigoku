@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { AbilityTypes, CardTypes } from '../../Constants.js';
+import { AbilityType, CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class ContemplativeWisdom extends DrawCard {
@@ -8,12 +8,12 @@ export default class ContemplativeWisdom extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Give all abilities to another character',
 
                 cost: AbilityDsl.costs.returnRings(1),
                 target: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: (card: any) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => ({
                         effect: AbilityDsl.effects.gainAllAbilities(context.source)

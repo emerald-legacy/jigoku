@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Durations, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Duration, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class InLadyDojisService extends DrawCard {
@@ -9,24 +9,24 @@ export default class InLadyDojisService extends DrawCard {
         this.action({
             title: 'Pacify a character',
             max: AbilityDsl.limit.perRound(1),
-            cost: AbilityDsl.costs.bow({ cardType: CardTypes.Character }),
+            cost: AbilityDsl.costs.bow({ cardType: CardType.Character }),
             targets: {
                 character: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Any
                 },
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: 'character',
                     choices: {
                         'Prevent Attacking': AbilityDsl.actions.cardLastingEffect((context) => ({
                             target: context.targets.character,
-                            duration: Durations.UntilEndOfPhase,
+                            duration: Duration.UntilEndOfPhase,
                             effect: [AbilityDsl.effects.cardCannot('declareAsAttacker')]
                         })),
                         'Prevent Defending': AbilityDsl.actions.cardLastingEffect((context) => ({
                             target: context.targets.character,
-                            duration: Durations.UntilEndOfPhase,
+                            duration: Duration.UntilEndOfPhase,
                             effect: [AbilityDsl.effects.cardCannot('declareAsDefender')]
                         }))
                     }

@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, EventNames, Locations, Players } from '../../../Constants.js';
+import { CardType, EventName, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
@@ -14,11 +14,11 @@ export default class BambooTattoo extends DrawCard {
         this.whileAttached({ effect: AbilityDsl.effects.addTrait('tattooed') });
 
         this.persistentEffect({
-            location: Locations.Any,
+            location: Location.Any,
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: 1,
-                targetCondition: (target: any) => target.type === CardTypes.Character && target.printedCost <= 3,
+                targetCondition: (target: any) => target.type === CardType.Character && target.printedCost <= 3,
                 match: (card: any, source: any) => card === source
             })
         });
@@ -26,7 +26,7 @@ export default class BambooTattoo extends DrawCard {
         this.reaction({
             title: 'Ready attached character',
             when: {
-                onCardBowed: (event: EventPayload<EventNames.OnCardBowed>, context: any) =>
+                onCardBowed: (event: EventPayload<EventName.OnCardBowed>, context: any) =>
                     context.source.parent &&
                     event.card === context.source.parent &&
                     event.context?.source.type !== 'ring' &&

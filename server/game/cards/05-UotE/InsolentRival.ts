@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes, DuelTypes } from '../../Constants.js';
+import { Players, CardType, DuelType } from '../../Constants.js';
 
 class InsolentRival extends DrawCard {
     static id = 'insolent-rival';
@@ -16,11 +16,11 @@ class InsolentRival extends DrawCard {
             title: 'Challenge a participating character to a Military duel: dishonor the loser of the duel',
             condition: () => this.isParticipating(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card: any) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.duel((context: AbilityContext) => ({
-                    type: DuelTypes.Military,
+                    type: DuelType.Military,
                     challenger: context.source,
                     gameAction: (duel: any) => AbilityDsl.actions.dishonor({ target: duel.loser })
                 }))

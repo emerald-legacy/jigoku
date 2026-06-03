@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, Players, CardTypes } from '../../Constants.js';
+import { Phases, Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HigesSermon extends DrawCard {
@@ -13,14 +13,14 @@ class HigesSermon extends DrawCard {
             targets: {
                 firstCharacter: {
                     activePromptTitle: 'Choose a character to bow',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: context => context.player.firstPlayer ? Players.Opponent : Players.Self,
                     player: context => context.player.firstPlayer ? Players.Self : Players.Opponent,
                     gameAction: AbilityDsl.actions.bow()
                 },
                 secondCharacter: {
                     activePromptTitle: 'Choose a character to bow',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: context => context.player.firstPlayer ? Players.Self : Players.Opponent,
                     player: context => context.player.firstPlayer ? Players.Opponent : Players.Self,
                     gameAction: AbilityDsl.actions.bow()

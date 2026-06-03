@@ -1,4 +1,4 @@
-import { Players, TargetModes, Locations, CardTypes } from '../../../Constants.js';
+import { Players, TargetMode, Location, CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
@@ -19,11 +19,11 @@ export default class NightingaleTattoo extends DrawCard {
         this.action({
             title: 'Pick two cards in your discard pile',
             target: {
-                mode: TargetModes.Exactly,
+                mode: TargetMode.Exactly,
                 activePromptTitle: 'Choose two conflict cards',
                 numCards: 2,
-                location: Locations.ConflictDiscardPile,
-                cardType: [CardTypes.Character, CardTypes.Attachment, CardTypes.Event],
+                location: Location.ConflictDiscardPile,
+                cardType: [CardType.Character, CardType.Attachment, CardType.Event],
                 cardCondition: (card) => card.hasTrait('kiho') || card.hasTrait('tattoo'),
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.handler({
@@ -45,12 +45,12 @@ export default class NightingaleTattoo extends DrawCard {
                                 let gameAction = AbilityDsl.actions.multiple([
                                     AbilityDsl.actions.returnToDeck({
                                         target: selectedCard,
-                                        location: Locations.ConflictDiscardPile,
+                                        location: Location.ConflictDiscardPile,
                                         shuffle: true
                                     }),
                                     AbilityDsl.actions.removeFromGame({
                                         target: removedCard,
-                                        location: Locations.ConflictDiscardPile
+                                        location: Location.ConflictDiscardPile
                                     })
                                 ]);
 

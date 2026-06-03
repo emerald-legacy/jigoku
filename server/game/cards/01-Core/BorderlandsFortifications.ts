@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
-import { Locations, Players } from '../../Constants.js';
+import { Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 
@@ -11,7 +11,7 @@ class BorderlandsFortifications extends DrawCard {
         this.action<ProvinceCard>({
             title: 'Switch this card with another',
             target: {
-                location: Locations.Provinces,
+                location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card: BaseCard, context?: AbilityContext) => card.isDynasty && card !== context?.source
             },

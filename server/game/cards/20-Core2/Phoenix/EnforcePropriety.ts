@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -19,7 +19,7 @@ export default class EnforcePropriety extends DrawCard {
             title: 'Cancel an event',
             when: {
                 onInitiateAbilityEffects: (event, context) =>
-                    event.card.type === CardTypes.Event &&
+                    event.card.type === CardType.Event &&
                     context.player.opponent &&
                     countReadyShugenja(context.player) > countReadyShugenja(context.player.opponent)
             },

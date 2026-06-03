@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class TaintedKoku extends DrawCard {
     static id = 'tainted-koku';
@@ -12,7 +12,7 @@ class TaintedKoku extends DrawCard {
                 onCardLeavesPlay: (event, context) => event.card === context.source.parent
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => context.source.parent && card.controller === context.source.parent.controller && card !== context.source.parent,
                 gameAction: AbilityDsl.actions.attach(context => ({ attachment: context.source }))
             }

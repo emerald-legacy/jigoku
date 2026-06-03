@@ -1,4 +1,4 @@
-import { CardTypes, Locations } from '../../../Constants.js';
+import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,18 +10,18 @@ export default class ShinjoScout2 extends DrawCard {
             title: 'Cancel the province effect',
             when: {
                 onCardRevealed: (event, context) =>
-                    event.card.type === CardTypes.Province && context.source.isAttacking()
+                    event.card.type === CardType.Province && context.source.isAttacking()
             },
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 cardCondition: (card) => card.isConflictProvince(),
                 message: '{0} prevents {1} from triggering its abilities during this conflict',
                 messageArgs: (cards) => [context.player, cards],
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    targetLocation: Locations.Provinces,
+                    targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.cardCannot('triggerAbilities')
                 })
             })),

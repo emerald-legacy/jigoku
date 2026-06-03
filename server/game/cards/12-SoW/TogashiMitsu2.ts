@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, TargetModes } from '../../Constants.js';
+import { Players, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { RingEffects } from '../../RingEffects.js';
 
@@ -18,7 +18,7 @@ class TogashiMitsu2 extends DrawCard {
             title: 'Resolve a ring effect',
             condition: context => context.source.isParticipating() && !!this.game.currentConflict && this.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 5,
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 activePromptTitle: 'Choose a ring effect to resolve',
                 player: Players.Self,
                 ringCondition: (ring, context) => !!context && RingEffects.contextFor(context.player, ring.element, false).ability.hasLegalTargets(context),

@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { Elements } from '../../../Constants.js';
+import { Element } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 const ELEMENT_TO_RETURN = 'firebrand-fire-cost';
@@ -28,12 +28,12 @@ export default class Firebrand extends DrawCard {
         symbols.push({
             key: ELEMENT_TO_RETURN,
             prettyName: 'Ring to return',
-            element: Elements.Fire
+            element: Element.Fire
         });
         symbols.push({
             key: ELEMENT_TO_RESOLVE,
             prettyName: 'Ring to resolve',
-            element: Elements.Fire
+            element: Element.Fire
         });
         return symbols;
     }

@@ -4,7 +4,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventNames } from '../../Constants.js';
+import { EventName } from '../../Constants.js';
 class AdornedTemple extends DrawCard {
     static id = 'adorned-temple';
 
@@ -12,7 +12,7 @@ class AdornedTemple extends DrawCard {
         this.reaction({
             title: 'Draw cards',
             when: {
-                onMoveFate: (event: EventPayload<EventNames.OnMoveFate>, context: any) => {
+                onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context: any) => {
                     return (
                         event.fate > 0 &&
                         event.recipient &&

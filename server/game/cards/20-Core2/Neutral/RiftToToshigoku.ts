@@ -1,4 +1,4 @@
-import { Players, CardTypes, EventNames, AbilityTypes } from '../../../Constants.js';
+import { Players, CardType, EventName, AbilityType } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
@@ -13,7 +13,7 @@ export default class RiftToToshigoku extends ProvinceCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([
             {
-                [EventNames.OnResolveRingElement + ':' + AbilityTypes.WouldInterrupt]: 'cancelRingEffect'
+                [EventName.OnResolveRingElement + ':' + AbilityType.WouldInterrupt]: 'cancelRingEffect'
             }
         ]);
 
@@ -27,7 +27,7 @@ export default class RiftToToshigoku extends ProvinceCard {
                 activePromptTitle: 'Choose a character to discard',
                 player: Players.Opponent,
                 controller: Players.Opponent,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking(),
                 gameAction: AbilityDsl.actions.discardFromPlay()
             },

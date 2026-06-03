@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -13,7 +13,7 @@ export default class MantraOfAir extends DrawCard {
                     !!event.ring && event.ring.hasElement('air' as any) && event.conflict.attackingPlayer === context.player.opponent
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) =>
                     card.hasTrait('monk') || card.attachments.some((card: DrawCard) => card.hasTrait('monk')),
                 gameAction: AbilityDsl.actions.honor()

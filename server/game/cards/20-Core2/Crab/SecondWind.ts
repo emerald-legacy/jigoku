@@ -1,4 +1,4 @@
-import { CardTypes, Durations, Locations, Players } from '../../../Constants.js';
+import { CardType, Duration, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -19,16 +19,16 @@ export default class SecondWind extends DrawCard {
                     target: cardsToDiscard(context)
                 })),
                 AbilityDsl.actions.selectCard((context) => ({
-                    location: Locations.DynastyDiscardPile,
-                    cardType: CardTypes.Character,
+                    location: Location.DynastyDiscardPile,
+                    cardType: CardType.Character,
                     cardCondition: (card) => !card.isUnique(),
                     controller: Players.Self,
                     targets: true,
                     gameAction: AbilityDsl.actions.multiple([
                         AbilityDsl.actions.putIntoConflict(),
                         AbilityDsl.actions.cardLastingEffect(() => ({
-                            duration: Durations.UntilEndOfPhase,
-                            location: [Locations.PlayArea],
+                            duration: Duration.UntilEndOfPhase,
+                            location: [Location.PlayArea],
                             effect: AbilityDsl.effects.delayedEffect({
                                 when: {
                                     onConflictFinished: () => true

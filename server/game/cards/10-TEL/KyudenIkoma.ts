@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -17,7 +17,7 @@ export default class KyudenIkoma extends StrongholdCard {
                     event.conflict.getAttackers().length !== 0
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => !card.hasTrait('champion'),
                 activePromptTitle: 'Bow a non-champion',
                 gameAction: AbilityDsl.actions.bow()

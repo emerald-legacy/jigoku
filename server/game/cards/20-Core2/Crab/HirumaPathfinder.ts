@@ -1,4 +1,4 @@
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -14,8 +14,8 @@ export default class HirumaPathfinder extends DrawCard {
             effect: 'look at a province',
             gameAction: AbilityDsl.actions.selectCard({
                 activePromptTitle: 'Choose a province to look at',
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 controller: Players.Opponent,
                 gameAction: AbilityDsl.actions.lookAt((context) => ({
                     message: '{0} sees {1} in {2}',

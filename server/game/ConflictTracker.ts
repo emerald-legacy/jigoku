@@ -1,10 +1,10 @@
 import type Player from './Player.js';
 import type { Conflict } from './Conflict.js';
-import { ConflictTypes, Players } from './Constants.js';
+import { ConflictType, Players } from './Constants.js';
 
 export interface ConflictRecord {
     attackingPlayer: Player;
-    declaredType: ConflictTypes | null;
+    declaredType: ConflictType | null;
     passed: boolean;
     uuid: string;
     completed?: boolean;
@@ -23,11 +23,11 @@ export class ConflictTracker {
             uuid: conflict.uuid
         });
         if(conflict.conflictPassed) {
-            conflict.attackingPlayer.declaredConflictOpportunities[ConflictTypes.Passed]++;
+            conflict.attackingPlayer.declaredConflictOpportunities[ConflictType.Passed]++;
         } else if(conflict.forcedDeclaredType) {
-            conflict.attackingPlayer.declaredConflictOpportunities[ConflictTypes.Forced]++;
+            conflict.attackingPlayer.declaredConflictOpportunities[ConflictType.Forced]++;
         } else {
-            conflict.attackingPlayer.declaredConflictOpportunities[conflict.declaredType as ConflictTypes]++;
+            conflict.attackingPlayer.declaredConflictOpportunities[conflict.declaredType as ConflictType]++;
         }
     }
 

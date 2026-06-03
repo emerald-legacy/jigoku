@@ -1,4 +1,4 @@
-import { EffectNames, EventNames } from '../Constants.js';
+import { EffectName, EventName } from '../Constants.js';
 import type { Duel } from '../Duel.js';
 import type Game from '../Game.js';
 import { BaseStepWithPipeline } from './BaseStepWithPipeline.js';
@@ -47,24 +47,24 @@ export class DuelFlow extends BaseStepWithPipeline {
     }
 
     #startDuel() {
-        this.game.raiseEvent(EventNames.OnDuelStarted, { duel: this.duel });
+        this.game.raiseEvent(EventName.OnDuelStarted, { duel: this.duel });
     }
 
     #challenge() {
-        this.game.raiseEvent(EventNames.OnDuelChallenge, { duel: this.duel });
+        this.game.raiseEvent(EventName.OnDuelChallenge, { duel: this.duel });
     }
 
     #strike() {
-        this.game.raiseEvent(EventNames.OnDuelStrike, { duel: this.duel });
+        this.game.raiseEvent(EventName.OnDuelStrike, { duel: this.duel });
     }
 
     #promptForHonorBid() {
-        if(this.duel.challenger.mostRecentEffect(EffectNames.WinDuel) === this.duel) {
+        if(this.duel.challenger.mostRecentEffect(EffectName.WinDuel) === this.duel) {
             return;
         }
         const prohibitedBids: Record<string, string[]> = {};
         for(const player of this.game.getPlayers()) {
-            prohibitedBids[player.uuid] = Array.from(new Set(player.getEffects(EffectNames.CannotBidInDuels)));
+            prohibitedBids[player.uuid] = Array.from(new Set(player.getEffects(EffectName.CannotBidInDuels)));
         }
         this.game.promptForHonorBid(
             'Choose your bid for the duel\n' + this.duel.getTotalsForDisplay(),
@@ -83,7 +83,7 @@ export class DuelFlow extends BaseStepWithPipeline {
     }
 
     #announceResult() {
-        if(this.duel.challenger.mostRecentEffect(EffectNames.WinDuel) === this.duel) {
+        if(this.duel.challenger.mostRecentEffect(EffectName.WinDuel) === this.duel) {
             this.game.addMessage('{0} wins the duel vs {1}', this.duel.challenger, this.duel.targets);
         } else {
             this.game.addMessage(this.duel.getTotalsForDisplay());
@@ -91,7 +91,7 @@ export class DuelFlow extends BaseStepWithPipeline {
         if(!this.duel.winner) {
             this.game.addMessage('The duel ends in a draw');
         }
-        this.game.raiseEvent(EventNames.AfterDuel, {
+        this.game.raiseEvent(EventName.AfterDuel, {
             duel: this.duel,
             winner: this.duel.winner,
             loser: this.duel.loser,
@@ -101,12 +101,12 @@ export class DuelFlow extends BaseStepWithPipeline {
     }
 
     #applyDuelResults() {
-        this.game.raiseEvent(EventNames.OnDuelResolution, { duel: this.duel }, () => this.resolutionHandler(this.duel));
+        this.game.raiseEvent(EventName.OnDuelResolution, { duel: this.duel }, () => this.resolutionHandler(this.duel));
     }
 
     #cleanUpDuel() {
         this.game.currentDuel = this.duel.previousDuel ?? null;
-        this.game.raiseEvent(EventNames.OnDuelFinished, { duel: this.duel });
+        this.game.raiseEvent(EventName.OnDuelFinished, { duel: this.duel });
         this.duel.cleanup();
     }
 }

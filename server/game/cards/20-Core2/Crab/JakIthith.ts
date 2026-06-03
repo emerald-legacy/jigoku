@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -25,14 +25,14 @@ export default class JakIthith extends DrawCard {
             },
             targets: {
                 [ATTACHMENT]: {
-                    cardType: CardTypes.Attachment,
+                    cardType: CardType.Attachment,
                     controller: Players.Opponent,
                     cardCondition: (card) =>
-                        card.parent && card.parent.type === CardTypes.Character && card.parent.isParticipating()
+                        card.parent && card.parent.type === CardType.Character && card.parent.isParticipating()
                 },
                 [RECEIVER]: {
                     dependsOn: ATTACHMENT,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: (card) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.ifAble((context) => ({

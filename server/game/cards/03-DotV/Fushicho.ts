@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Players, CardTypes } from '../../Constants.js';
+import { Location, Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Fushicho extends DrawCard {
@@ -12,8 +12,8 @@ class Fushicho extends DrawCard {
                 onCardLeavesPlay: (event, context) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Character,
-                location: Locations.DynastyDiscardPile,
+                cardType: CardType.Character,
+                location: Location.DynastyDiscardPile,
                 controller: Players.Self,
                 cardCondition: card => card.isFaction('phoenix'),
                 gameAction: ability.actions.putIntoPlay({ fate: 1 })

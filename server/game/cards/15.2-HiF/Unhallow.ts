@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, CardTypes, Players } from '../../Constants.js';
+import { Location, CardType, Players } from '../../Constants.js';
 
 class Unhallow extends DrawCard {
     static id = 'unhallow';
@@ -11,14 +11,14 @@ class Unhallow extends DrawCard {
         });
 
         this.persistentEffect({
-            targetLocation: Locations.Provinces,
+            targetLocation: Location.Provinces,
             match: (card, context) => card === context?.source.parent,
             effect: AbilityDsl.effects.modifyProvinceStrength(3)
         });
 
         this.persistentEffect({
             condition: (context) => !!(context.source.parent && context.source.parent.isConflictProvince()),
-            targetLocation: Locations.Provinces,
+            targetLocation: Location.Provinces,
             targetController: Players.Self,
             effect: AbilityDsl.effects.costToDeclareAnyParticipants({
                 type: 'defenders',
@@ -32,11 +32,11 @@ class Unhallow extends DrawCard {
     }
 
     canPlayOn(source: any) {
-        return source && source.getType() === 'province' && source.controller === this.controller && !source.isBroken && this.getType() === CardTypes.Attachment;
+        return source && source.getType() === 'province' && source.controller === this.controller && !source.isBroken && this.getType() === CardType.Attachment;
     }
 
     canAttach(parent: any) {
-        if(parent.type === CardTypes.Province && parent.isBroken) {
+        if(parent.type === CardType.Province && parent.isBroken) {
             return false;
         }
 
@@ -44,7 +44,7 @@ class Unhallow extends DrawCard {
             return false;
         }
 
-        return parent && parent.getType() === CardTypes.Province && this.getType() === CardTypes.Attachment;
+        return parent && parent.getType() === CardType.Province && this.getType() === CardType.Attachment;
     }
 
     isTemptationsMaho() {

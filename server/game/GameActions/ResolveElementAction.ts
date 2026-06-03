@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { EffectNames, EventNames } from '../Constants.js';
+import { EffectName, EventName } from '../Constants.js';
 import { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type Player from '../Player.js';
@@ -15,7 +15,7 @@ export interface ResolveElementProperties extends RingActionProperties {
 
 export class ResolveElementAction extends RingAction<ResolveElementProperties> {
     name = 'resolveElement';
-    eventName = EventNames.OnResolveRingElement;
+    eventName = EventName.OnResolveRingElement;
     effect = 'resolve {0} effect';
 
     addEventsToArray(events: Event[], context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
@@ -52,12 +52,12 @@ export class ResolveElementAction extends RingAction<ResolveElementProperties> {
                 handler: () => context.game.openEventWindow(this.getEvent(ring, context, additionalProperties))
             }));
             events.push(
-                new Event(EventNames.Unnamed, {}, () => context.game.openSimultaneousEffectWindow(effectObjects))
+                new Event(EventName.Unnamed, {}, () => context.game.openSimultaneousEffectWindow(effectObjects))
             );
         }
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnResolveRingElement>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnResolveRingElement>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
         let { physicalRing, optional, player } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         event.player = player || context.player;
@@ -66,9 +66,9 @@ export class ResolveElementAction extends RingAction<ResolveElementProperties> {
         event.effectivellyResolvedEffect = false;
     }
 
-    eventHandler(event: GameEvent<EventNames.OnResolveRingElement>): void {
+    eventHandler(event: GameEvent<EventName.OnResolveRingElement>): void {
         const context = event.context as AbilityContext;
-        const cannotResolveRingEffects = context.player.getEffects(EffectNames.CannotResolveRings);
+        const cannotResolveRingEffects = context.player.getEffects(EffectName.CannotResolveRings);
 
         if(cannotResolveRingEffects.length) {
             context.game.addMessage('{0}\'s ring effect is cancelled.', context.player);

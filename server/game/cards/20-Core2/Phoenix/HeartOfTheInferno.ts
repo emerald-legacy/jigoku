@@ -1,4 +1,4 @@
-import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
@@ -14,7 +14,7 @@ export default class HeartOfTheInferno extends DrawCard {
                     (card: DrawCard) => card.isParticipating() && card.hasTrait('shugenja')
                 ),
             target: {
-                mode: TargetModes.Single,
+                mode: TargetMode.Single,
                 controller: Players.Opponent,
                 cardCondition: (card: DrawCard) => card.isParticipating() || !!card.parent?.isParticipating(),
                 gameAction: AbilityDsl.actions.multipleContext((context) => {
@@ -23,10 +23,10 @@ export default class HeartOfTheInferno extends DrawCard {
                     }
 
                     const gameActions: Array<GameAction> = [];
-                    if(context.target.type === CardTypes.Character && context.target.attachments.length === 0) {
+                    if(context.target.type === CardType.Character && context.target.attachments.length === 0) {
                         gameActions.push(AbilityDsl.actions.bow({ target: context.target }));
                     }
-                    if(context.target.type === CardTypes.Attachment && context.player.hasAffinity('fire', context)) {
+                    if(context.target.type === CardType.Attachment && context.player.hasAffinity('fire', context)) {
                         gameActions.push(AbilityDsl.actions.discardFromPlay({ target: context.target }));
                     }
 

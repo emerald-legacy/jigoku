@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SoshiDiviner extends DrawCard {
@@ -12,16 +12,16 @@ class SoshiDiviner extends DrawCard {
             condition: (context) => context.game.isDuringConflict(),
             targets: {
                 cardInProvince: {
-                    location: [Locations.Provinces, Locations.PlayArea],
-                    cardCondition: card => (card.isInProvince() && card.type !== CardTypes.Province && card.type !== CardTypes.Stronghold)
+                    location: [Location.Provinces, Location.PlayArea],
+                    cardCondition: card => (card.isInProvince() && card.type !== CardType.Province && card.type !== CardType.Stronghold)
                 },
                 province: {
                     targets: false,
                     dependsOn: 'cardInProvince',
-                    location: [Locations.Provinces],
-                    cardType: CardTypes.Province,
+                    location: [Location.Provinces],
+                    cardType: CardType.Province,
                     cardCondition: (card, context) =>
-                        card.location !== Locations.StrongholdProvince &&
+                        card.location !== Location.StrongholdProvince &&
                         ( //same controller check
                             (card.controller === context.targets.cardInProvince.controller)
                         ) &&

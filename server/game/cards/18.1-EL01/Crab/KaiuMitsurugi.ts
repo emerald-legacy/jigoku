@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { Locations, Players, CardTypes } from '../../../Constants.js';
+import { Location, Players, CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 class KaiuMitsurugi extends DrawCard {
@@ -8,15 +8,15 @@ class KaiuMitsurugi extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Self,
-            match: card => card.type === CardTypes.Holding,
-            targetLocation: Locations.Any,
+            match: card => card.type === CardType.Holding,
+            targetLocation: Location.Any,
             effect: AbilityDsl.effects.addKeyword('rally')
         });
 
         this.action({
             title: 'Draw a card and gain a fate',
             cost: AbilityDsl.costs.sacrifice({
-                cardType: CardTypes.Holding
+                cardType: CardType.Holding
             }),
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.gainFate(context => ({

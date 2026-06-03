@@ -1,4 +1,4 @@
-import { Durations } from '../../../Constants.js';
+import { Duration } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -14,7 +14,7 @@ export default class AshenFlamePlateau extends ProvinceCard {
             effect: 'prevent {1} from triggering character abilities this conflict',
             effectArgs: (context) => [context.player.opponent as any],
             gameAction: AbilityDsl.actions.conflictLastingEffect((context) => ({
-                duration: Durations.UntilEndOfConflict,
+                duration: Duration.UntilEndOfConflict,
                 effect: [
                     AbilityDsl.effects.charactersCannot({
                         cannot: 'triggerAbilities',

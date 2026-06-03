@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ShosuroActress extends DrawCard {
@@ -10,8 +10,8 @@ export default class ShosuroActress extends DrawCard {
             title: 'Put an opponent\'s character into play',
             cost: AbilityDsl.costs.sacrificeSelf(),
             target: {
-                cardType: CardTypes.Character,
-                location: [Locations.ConflictDiscardPile, Locations.DynastyDiscardPile],
+                cardType: CardType.Character,
+                location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
                 controller: Players.Opponent,
                 cardCondition: (card) => card.costLessThan(4) && !card.hasTrait('shinobi'),
                 gameAction: AbilityDsl.actions.putIntoConflict()

@@ -1,4 +1,4 @@
-import { CardTypes, Locations, TargetModes } from '../../Constants.js';
+import { CardType, Location, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
@@ -13,9 +13,9 @@ export default class IsawaTadaka2 extends DrawCard {
             title: 'Remove discarded characters to discard a card',
             condition: (context) => context.game.isDuringConflict() && context.player.opponent !== undefined,
             cost: AbilityDsl.costs.removeFromGame({
-                cardType: CardTypes.Character,
-                location: Locations.DynastyDiscardPile,
-                mode: TargetModes.Unlimited
+                cardType: CardType.Character,
+                location: Location.DynastyDiscardPile,
+                mode: TargetMode.Unlimited
             }),
             gameAction: AbilityDsl.actions.multipleContext((context) => {
                 let cards =

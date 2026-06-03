@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, CardTypes, Locations } from '../../Constants.js';
+import { Phases, CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class InspiredVisionary extends DrawCard {
@@ -13,11 +13,11 @@ class InspiredVisionary extends DrawCard {
             },
             cost: AbilityDsl.costs.bowSelf(),
             target: {
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.returnToDeck(context => ({
                         target: context.target,
-                        destination: Locations.ConflictDeck,
+                        destination: Location.ConflictDeck,
                         shuffle: true
                     })),
                     AbilityDsl.actions.draw(context => ({

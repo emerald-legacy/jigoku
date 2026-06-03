@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { TargetModes, Durations } from '../../Constants.js';
+import { TargetMode, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SuddenTempest extends DrawCard {
@@ -9,12 +9,12 @@ class SuddenTempest extends DrawCard {
         this.action({
             title: 'Remove a ring from the unclaimd ring pool',
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 ringCondition: ring => ring.isUnclaimed(),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.removeRingFromPlay(),
                     AbilityDsl.actions.ringLastingEffect(context => ({
-                        duration: Durations.Custom,
+                        duration: Duration.Custom,
                         until: {
                             onBeginRound: () => true
                         },

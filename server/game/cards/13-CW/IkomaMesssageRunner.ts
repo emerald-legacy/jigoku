@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { Locations, Players, TargetModes } from '../../Constants.js';
+import { Location, Players, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class IkomaMessageRunner extends DrawCard {
@@ -13,8 +13,8 @@ class IkomaMessageRunner extends DrawCard {
             targets: {
                 myCard: {
                     activePromptTitle: 'Choose a facedown card in your provinces',
-                    location: Locations.Provinces,
-                    mode: TargetModes.UpTo,
+                    location: Location.Provinces,
+                    mode: TargetMode.UpTo,
                     numCards: 1,
                     optional: true,
                     controller: Players.Self,
@@ -23,9 +23,9 @@ class IkomaMessageRunner extends DrawCard {
                 },
                 opponentsCard: {
                     activePromptTitle: 'Choose a facedown card in opponents provinces',
-                    location: Locations.Provinces,
+                    location: Location.Provinces,
                     controller: Players.Opponent,
-                    mode: TargetModes.UpTo,
+                    mode: TargetMode.UpTo,
                     numCards: 1,
                     optional: true,
                     cardCondition: card => card.isDynasty && card.isFacedown(),

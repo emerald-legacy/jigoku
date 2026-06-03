@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { DuelTypes } from '../../Constants.js';
+import { DuelType } from '../../Constants.js';
 
 class MakeYourCase extends DrawCard {
     static id = 'make-your-case';
@@ -9,7 +9,7 @@ class MakeYourCase extends DrawCard {
         this.action({
             title: 'Initiate a political duel',
             initiateDuel: {
-                type: DuelTypes.Political,
+                type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
                 message: '{0}{1}',
                 messageArgs: duel => [

@@ -1,4 +1,4 @@
-import { CardTypes, TargetModes, Players, CharacterStatus } from '../../../Constants.js';
+import { CardType, TargetMode, Players, CharacterStatus } from '../../../Constants.js';
 
 import { StatusToken } from '../../../StatusToken.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -15,14 +15,14 @@ export default class WeKnow extends DrawCard {
         this.action({
             title: 'Choose an honored status token',
             cost: AbilityDsl.costs.bow({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: BaseCard) => card.hasTrait('courtier')
             }),
             cannotTargetFirst: true,
             targets: {
                 token: {
-                    mode: TargetModes.Token,
-                    cardType: CardTypes.Character,
+                    mode: TargetMode.Token,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     tokenCondition: token => {
                         return token.grantedStatus === CharacterStatus.Honored;
@@ -30,7 +30,7 @@ export default class WeKnow extends DrawCard {
                 },
                 select: {
                     dependsOn: 'token',
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     player: Players.Opponent,
                     choices: (context: AbilityContext): ChoicesInterface => {
                         const targetToken = (context.tokens.token as StatusToken[])[0];

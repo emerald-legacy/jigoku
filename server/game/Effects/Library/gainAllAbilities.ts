@@ -1,7 +1,7 @@
 import type BaseCard from '../../BaseCard.js';
 import type { CardAction } from '../../CardAction.js';
 import type TriggeredAbility from '../../TriggeredAbility.js';
-import { AbilityTypes, EffectNames, Locations } from '../../Constants.js';
+import { AbilityType, EffectName, Location } from '../../Constants.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import { EffectValue } from '../EffectValue.js';
 import GainAbility from '../GainAbility.js';
@@ -18,7 +18,7 @@ export class GainAllAbilities extends EffectValue<BaseCard> {
         this.printedOnly = printedOnly;
         this.actions = card.abilities.actions
             .filter((action: CardAction) => !this.printedOnly || action.printedAbility)
-            .map((action: CardAction) => new GainAbility(AbilityTypes.Action, action));
+            .map((action: CardAction) => new GainAbility(AbilityType.Action, action));
         //Need to ignore keyword reactions or we double up on the pride / courtesy / sincerity triggers
         this.reactions = card.abilities.reactions
             .filter((a: TriggeredAbility) => !this.printedOnly || a.printedAbility)
@@ -42,7 +42,7 @@ export class GainAllAbilities extends EffectValue<BaseCard> {
             })
         };
         for(const effect of this.persistentEffects) {
-            if(effect.location === Locations.PlayArea || effect.location === Locations.Any) {
+            if(effect.location === Location.PlayArea || effect.location === Location.Any) {
                 effect.ref = target.addEffectToEngine(effect);
             }
         }
@@ -86,5 +86,5 @@ export class GainAllAbilities extends EffectValue<BaseCard> {
 }
 
 export function gainAllAbilities(character: BaseCard, printedOnly: boolean = false) {
-    return EffectBuilder.card.static(EffectNames.GainAllAbilities, new GainAllAbilities(character, printedOnly));
+    return EffectBuilder.card.static(EffectName.GainAllAbilities, new GainAllAbilities(character, printedOnly));
 }

@@ -1,4 +1,4 @@
-import { CardTypes, Durations, Players } from '../../../Constants.js';
+import { CardType, Duration, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -11,13 +11,13 @@ export default class EbbAndFlow extends DrawCard {
 
             targets: {
                 mine: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: card => card.isParticipating() && card.hasTrait('shugenja'),
                     gameAction: AbilityDsl.actions.noAction()
                 },
                 opponents: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: card => card.isParticipating() && !card.hasDash(),
                     gameAction: AbilityDsl.actions.cardLastingEffect({
@@ -47,7 +47,7 @@ export default class EbbAndFlow extends DrawCard {
                                     AbilityDsl.effects.blank(),
                                     AbilityDsl.effects.gainAllAbilities(ctx.targets.opponents as DrawCard, true)
                                 ],
-                                duration: Durations.UntilEndOfConflict
+                                duration: Duration.UntilEndOfConflict
                             }),
                             AbilityDsl.actions.cardLastingEffect({
                                 target: ctx.targets.opponents,
@@ -55,7 +55,7 @@ export default class EbbAndFlow extends DrawCard {
                                     AbilityDsl.effects.blank(),
                                     AbilityDsl.effects.gainAllAbilities(ctx.targets.mine as DrawCard, true)
                                 ],
-                                duration: Durations.UntilEndOfConflict
+                                duration: Duration.UntilEndOfConflict
                             })
                         ])
                     })

@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -17,7 +17,7 @@ export default class Pressure extends DrawCard {
             },
             gameAction: AbilityDsl.actions.selectCard(context => ({
                 activePromptTitle: 'Choose a character',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 targets: false,
                 hidePromptIfSingleCard: true,

@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { Locations, Players } from '../../../Constants.js';
+import { Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { shuffle } from '../../../utils/shuffle.js';
 
@@ -28,7 +28,7 @@ export default class DrawingTheVoid extends DrawCard {
                             player: Players.Self,
                             message: '{0} removes {1} from the game - the void consumes!',
                             messageArgs: (card, player) => [player, card],
-                            gameAction: AbilityDsl.actions.moveCard({ destination: Locations.RemovedFromGame })
+                            gameAction: AbilityDsl.actions.moveCard({ destination: Location.RemovedFromGame })
                         })),
                         AbilityDsl.actions.conditional((context) => ({
                             condition: context.player.hasAffinity('void'),

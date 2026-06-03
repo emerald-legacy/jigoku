@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, Durations, Phases } from '../../Constants.js';
+import { Location, Duration, Phases } from '../../Constants.js';
 
 class TradingOnTheSandRoad extends DrawCard {
     static id = 'trading-on-the-sand-road';
@@ -26,23 +26,23 @@ class TradingOnTheSandRoad extends DrawCard {
                 })),
                 AbilityDsl.actions.playerLastingEffect(context => ({
                     targetController: context.player,
-                    duration: Durations.UntilEndOfRound,
+                    duration: Duration.UntilEndOfRound,
                     effect: [
-                        AbilityDsl.effects.canPlayFromOwn(Locations.RemovedFromGame, context.player.conflictDeck.slice(0, 4), this),
+                        AbilityDsl.effects.canPlayFromOwn(Location.RemovedFromGame, context.player.conflictDeck.slice(0, 4), this),
                         AbilityDsl.effects.canPlayFromOpponents(
-                            Locations.RemovedFromGame,
+                            Location.RemovedFromGame,
                             context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [], this)
                     ]
 
                 })),
                 AbilityDsl.actions.playerLastingEffect(context => ({
                     targetController: context.player.opponent,
-                    duration: Durations.UntilEndOfRound,
+                    duration: Duration.UntilEndOfRound,
                     effect: [
-                        AbilityDsl.effects.canPlayFromOwn(Locations.RemovedFromGame,
+                        AbilityDsl.effects.canPlayFromOwn(Location.RemovedFromGame,
                             context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [], this),
                         AbilityDsl.effects.canPlayFromOpponents(
-                            Locations.RemovedFromGame,
+                            Location.RemovedFromGame,
                             context.player.opponent ? context.player.conflictDeck.slice(0, 4) : [],
                             this
                         )
@@ -50,11 +50,11 @@ class TradingOnTheSandRoad extends DrawCard {
                 })),
                 AbilityDsl.actions.moveCard(context => ({
                     target: context.player.conflictDeck.slice(0, 4),
-                    destination: Locations.RemovedFromGame
+                    destination: Location.RemovedFromGame
                 })),
                 AbilityDsl.actions.moveCard(context => ({
                     target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [],
-                    destination: Locations.RemovedFromGame
+                    destination: Location.RemovedFromGame
                 }))
             ])
         });

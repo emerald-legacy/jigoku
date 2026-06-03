@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 
 class HidaAmoro extends DrawCard {
     static id = 'hida-amoro';
@@ -17,7 +17,7 @@ class HidaAmoro extends DrawCard {
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 player: context.event.conflict.attackingPlayer === context.player ? Players.Self : Players.Opponent,
                 activePromptTitle: 'Choose a character to sacrifice',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.controller === context.event.conflict.attackingPlayer,
                 message: '{0} sacrifices {1} to {2}',
                 messageArgs: (card) => [context.event.conflict.attackingPlayer, card, context.source],

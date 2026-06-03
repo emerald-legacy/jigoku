@@ -1,4 +1,4 @@
-import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,14 +9,14 @@ export default class KotobukisBlessing extends DrawCard {
         this.action({
             title: 'Place a fate on a character',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.placeFate({ amount: 1 }),
                     AbilityDsl.actions.selectCard((context) => ({
-                        mode: TargetModes.UpTo,
+                        mode: TargetMode.UpTo,
                         numCards: 1,
-                        cardType: CardTypes.Attachment,
+                        cardType: CardType.Attachment,
                         controller: Players.Any,
                         cardCondition: (card) => card.parent === context.target,
                         activePromptTitle: 'Choose up to 1 attachment',

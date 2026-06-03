@@ -1,6 +1,6 @@
 import type { AbilityContext } from './AbilityContext.js';
 import BaseAction from './BaseAction.js';
-import { EventNames, Phases, PlayTypes, TargetModes } from './Constants.js';
+import { EventName, Phases, PlayType, TargetMode } from './Constants.js';
 import { payTargetDependentFateCost } from './Costs.js';
 import { attachToRing } from './GameActions/GameActions.js';
 import { parseGameMode } from './GameMode.js';
@@ -16,7 +16,7 @@ export class PlayAttachmentToRingAction extends BaseAction {
         super(card, [payTargetDependentFateCost('target')], {
             gameAction: attachToRing((context) => ({ attachment: context.source })),
             ringCondition: (ring: Ring, context: TriggeredAbilityContext<DrawCard>) => context.source.canPlayOn(ring),
-            mode: TargetModes.Ring
+            mode: TargetMode.Ring
         });
     }
 
@@ -30,13 +30,13 @@ export class PlayAttachmentToRingAction extends BaseAction {
         }
         if(
             !ignoredRequirements.includes('location') &&
-            !context.player.isCardInPlayableLocation(context.source, PlayTypes.PlayFromHand)
+            !context.player.isCardInPlayableLocation(context.source, PlayType.PlayFromHand)
         ) {
             return 'location';
         }
         if(
             !ignoredRequirements.includes('cannotTrigger') &&
-            !context.source.canPlay(context, PlayTypes.PlayFromHand)
+            !context.source.canPlay(context, PlayType.PlayFromHand)
         ) {
             return 'cannotTrigger';
         }
@@ -56,7 +56,7 @@ export class PlayAttachmentToRingAction extends BaseAction {
     }
 
     executeHandler(context: AbilityContext) {
-        const cardPlayedEvent = context.game.getEvent(EventNames.OnCardPlayed, {
+        const cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
             player: context.player,
             card: context.source,
             context: context,
@@ -64,7 +64,7 @@ export class PlayAttachmentToRingAction extends BaseAction {
             originallyOnTopOfConflictDeck:
                 context.player && context.player.conflictDeck && context.player.conflictDeck[0] === context.source,
             onPlayCardSource: (context as any).onPlayCardSource,
-            playType: PlayTypes.PlayFromHand
+            playType: PlayType.PlayFromHand
         });
         context.game.openEventWindow([
             context.game.actions.attachToRing({ attachment: context.source }).getEvent(context.ring, context),

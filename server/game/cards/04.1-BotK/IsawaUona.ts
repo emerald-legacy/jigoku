@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class IsawaUona extends DrawCard {
@@ -13,7 +13,7 @@ class IsawaUona extends DrawCard {
             },
             target: {
                 activePromptTitle: 'Choose a character',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isParticipating() && !card.isUnique(),
                 gameAction: AbilityDsl.actions.bow()

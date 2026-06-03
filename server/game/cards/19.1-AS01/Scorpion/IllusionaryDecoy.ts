@@ -1,4 +1,4 @@
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
@@ -10,7 +10,7 @@ export default class IllusionaryDecoy extends DrawCard {
     public setupCardAbilities() {
         this.reaction({
             title: 'Put into play',
-            location: Locations.Hand,
+            location: Location.Hand,
             when: {
                 onConflictStarted: (event, context) =>
                     context.player.anyCardsInPlay((card: BaseCard) => card.hasTrait('shugenja'))
@@ -22,7 +22,7 @@ export default class IllusionaryDecoy extends DrawCard {
                         'Move another of your characters home': {
                             action: AbilityDsl.actions.selectCard((context) => ({
                                 controller: Players.Self,
-                                cardType: CardTypes.Character,
+                                cardType: CardType.Character,
                                 cardCondition: (card) => card.isParticipating(),
                                 message: '{0} moves home {1} - they were an {2}!',
                                 messageArgs: (card, player) => [player, card, context.source],
@@ -43,7 +43,7 @@ export default class IllusionaryDecoy extends DrawCard {
                 const claimedRings: Ring[] = context.source.controller.getClaimedRings();
                 const matchShugenjaElementWithClaimedRing = (context.source.controller.cardsInPlay as BaseCard[]).some(
                     (card) =>
-                        card.getType() === CardTypes.Character &&
+                        card.getType() === CardType.Character &&
                         card.hasTrait('shugenja') &&
                         claimedRings.some((ring) =>
                             ring.getElements().some((element: string) => card.hasTrait(element))

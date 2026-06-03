@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SavvyPolitician extends DrawCard {
@@ -12,7 +12,7 @@ class SavvyPolitician extends DrawCard {
                 onCardHonored: (event, context) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: ability.actions.honor()
             }
         });

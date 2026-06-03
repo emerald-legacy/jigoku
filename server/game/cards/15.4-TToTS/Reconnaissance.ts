@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Players, Phases, Locations, TargetModes } from '../../Constants.js';
+import { CardType, Players, Phases, Location, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Reconnaissance extends DrawCard {
@@ -13,11 +13,11 @@ class Reconnaissance extends DrawCard {
             },
             effect: 'look at 3 provinces',
             target: {
-                mode: TargetModes.Exactly,
+                mode: TargetMode.Exactly,
                 numCards: 3,
                 activePromptTitle: 'Choose 3 provinces',
-                location: Locations.Provinces,
-                cardType: CardTypes.Province,
+                location: Location.Provinces,
+                cardType: CardType.Province,
                 controller: Players.Any,
                 gameAction: AbilityDsl.actions.conditional({
                     condition: context => context.player.opponent && context.player.honor >= context.player.opponent.honor + 5,
@@ -31,15 +31,15 @@ class Reconnaissance extends DrawCard {
                             const locations = target.map((a: any) => a.location);
                             return ({
                                 activePromptTitle: 'Choose cards to discard',
-                                mode: TargetModes.Unlimited,
+                                mode: TargetMode.Unlimited,
                                 optional: true,
-                                cardType: [CardTypes.Character, CardTypes.Event, CardTypes.Holding],
-                                location: [Locations.Provinces],
+                                cardType: [CardType.Character, CardType.Event, CardType.Holding],
+                                location: [Location.Provinces],
                                 controller: Players.Any,
                                 cardCondition: (card: any) => locations.includes(card.location),
                                 message: '{0} chooses to discard {1}',
                                 messageArgs: (cards: any) => [context.player, cards],
-                                gameAction: AbilityDsl.actions.moveCard({ destination: Locations.DynastyDiscardPile })
+                                gameAction: AbilityDsl.actions.moveCard({ destination: Location.DynastyDiscardPile })
                             });
                         })
                     ]),

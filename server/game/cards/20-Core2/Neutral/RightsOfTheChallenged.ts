@@ -1,4 +1,4 @@
-import { Players, TargetModes } from '../../../Constants.js';
+import { Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type Ring from '../../../Ring.js';
@@ -13,7 +13,7 @@ export default class RightsOfTheChallenged extends DrawCard {
                 onConflictStarted: (_, context) => context.player.isDefendingPlayer()
             },
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 activePromptTitle: 'Choose a ring to use instead',
                 player: Players.Opponent,
                 ringCondition: (ring: Ring) => ring.isUnclaimed() && !ring.isRemovedFromGame(),

@@ -1,9 +1,9 @@
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 
-function attachedToType(context: AbilityContext<any, DrawCard>): CardTypes | undefined {
+function attachedToType(context: AbilityContext<any, DrawCard>): CardType | undefined {
     return context.target?.parent?.type;
 }
 
@@ -15,13 +15,13 @@ export default class WiseQuartermaster extends DrawCard {
             title: 'Move an attachment',
             condition: (context) => !context.game.isDuringConflict(),
             target: {
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.selectCard<DrawCard>((context) => {
-                    const isOnProvince = attachedToType(context) === CardTypes.Province;
+                    const isOnProvince = attachedToType(context) === CardType.Province;
                     return {
-                        cardType: isOnProvince ? CardTypes.Province : CardTypes.Character,
-                        location: isOnProvince ? Locations.Provinces : Locations.PlayArea,
+                        cardType: isOnProvince ? CardType.Province : CardType.Character,
+                        location: isOnProvince ? Location.Provinces : Location.PlayArea,
                         cardCondition: (card) =>
                             card !== context.target?.parent && card.controller === context.target?.parent?.controller,
                         message: '{0} moves {1} to {2}',
@@ -31,7 +31,7 @@ export default class WiseQuartermaster extends DrawCard {
                 })
             },
             effect: 'move {0} to another {1}',
-            effectArgs: (context) => [attachedToType(context) === CardTypes.Province ? 'province' : 'character']
+            effectArgs: (context) => [attachedToType(context) === CardType.Province ? 'province' : 'character']
         });
     }
 }

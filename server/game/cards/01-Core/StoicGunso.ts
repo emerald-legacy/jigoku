@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class StoicGunso extends DrawCard {
@@ -9,7 +9,7 @@ class StoicGunso extends DrawCard {
         this.action({
             title: 'Sacrifice a character for +3/+0',
             condition: () => this.game.isDuringConflict(),
-            cost: ability.costs.sacrifice({ cardType: CardTypes.Character }),
+            cost: ability.costs.sacrifice({ cardType: CardType.Character }),
             effect: 'give himself +3{1}/+0{2}',
             effectArgs: () => ['military', 'political'],
             gameAction: ability.actions.cardLastingEffect({ effect: ability.effects.modifyMilitarySkill(3) })

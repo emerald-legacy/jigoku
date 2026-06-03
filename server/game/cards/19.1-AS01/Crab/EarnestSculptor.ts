@@ -3,7 +3,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type BaseAction from '../../../BaseAction.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardTypes, Locations } from '../../../Constants.js';
+import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
 
@@ -18,7 +18,7 @@ export default class EarnestSculptor extends DrawCard {
                 amount: 8,
                 cardCondition: (card) => card.hasTrait('spell'),
                 gameAction: AbilityDsl.actions.moveCard({
-                    destination: Locations.Hand
+                    destination: Location.Hand
                 })
             })
         });
@@ -27,14 +27,14 @@ export default class EarnestSculptor extends DrawCard {
             title: 'Reduce cost of next Jade card',
             when: {
                 onCardPlayed: (event, context) =>
-                    event.card.type === CardTypes.Event &&
+                    event.card.type === CardType.Event &&
                     event.player === context.player &&
                     event.card.hasTrait('jade') &&
                     event.context !== undefined &&
                     (event.context.ability as BaseAction).getReducedCost(event.context) > 0,
                 onAbilityResolverInitiated: (event, context) =>
                     event.context !== undefined &&
-                    (event.context.source.type === CardTypes.Attachment ||
+                    (event.context.source.type === CardType.Attachment ||
                         event.context.ability instanceof PlayAttachmentAction) &&
                     event.context.player === context.player &&
                     event.context.source.hasTrait('jade') &&

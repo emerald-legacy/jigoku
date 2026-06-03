@@ -1,4 +1,4 @@
-import { ConflictTypes, Players, Durations } from '../../Constants.js';
+import { ConflictType, Players, Duration } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -13,13 +13,13 @@ export default class KhansOrdu extends ProvinceCard {
             },
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.switchConflictType((context) => ({
-                    targetConflictType: ConflictTypes.Military,
+                    targetConflictType: ConflictType.Military,
                     target: context.game.currentConflict && context.game.currentConflict.ring
                 })),
                 AbilityDsl.actions.playerLastingEffect({
                     targetController: Players.Any,
-                    effect: AbilityDsl.effects.setConflictDeclarationType(ConflictTypes.Military),
-                    duration: Durations.UntilEndOfPhase
+                    effect: AbilityDsl.effects.setConflictDeclarationType(ConflictType.Military),
+                    duration: Duration.UntilEndOfPhase
                 })
             ]),
             effect: 'switch the conflict type to {1} and make all future conflicts {1} for this phase',

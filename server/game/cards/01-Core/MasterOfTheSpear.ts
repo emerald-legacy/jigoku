@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class MasterOfTheSpear extends DrawCard {
@@ -12,7 +12,7 @@ class MasterOfTheSpear extends DrawCard {
             target: {
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to send home',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 gameAction: ability.actions.sendHome()
             }

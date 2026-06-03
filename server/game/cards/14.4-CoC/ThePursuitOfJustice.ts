@@ -1,4 +1,4 @@
-import { CardTypes, Elements } from '../../Constants.js';
+import { CardType, Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,7 +12,7 @@ export default class ThePursuitOfJustice extends ProvinceCard {
             title: 'Ready a character',
             conflictProvinceCondition: (province) => province.isElement(this.getCurrentElementSymbol(elementKey)),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.ready()
             }
@@ -24,7 +24,7 @@ export default class ThePursuitOfJustice extends ProvinceCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Ability - Province Element',
-            element: Elements.Water
+            element: Element.Water
         });
         return symbols;
     }

@@ -1,13 +1,13 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, Players, CardTypes } from '../../Constants.js';
+import { Location, Players, CardType } from '../../Constants.js';
 
 class AsahinaAugur extends DrawCard {
     static id = 'asahina-augur';
 
     setupCardAbilities() {
         this.persistentEffect({
-            targetLocation: Locations.Provinces,
+            targetLocation: Location.Provinces,
             match: card => card.isDynasty && card.isFacedown(),
             effect: AbilityDsl.effects.canBeSeenWhenFacedown()
         });
@@ -15,8 +15,8 @@ class AsahinaAugur extends DrawCard {
         this.action<DrawCard>({
             title: 'Discard a card in a province',
             target: {
-                cardType: [CardTypes.Character, CardTypes.Holding, CardTypes.Event],
-                location: Locations.Provinces,
+                cardType: [CardType.Character, CardType.Holding, CardType.Event],
+                location: Location.Provinces,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.discardCard()
             },

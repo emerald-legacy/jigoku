@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, ConflictTypes } from '../../Constants.js';
+import { CardType, ConflictType } from '../../Constants.js';
 import type Ring from '../../Ring.js';
 
 class HonorInBattle extends DrawCard {
@@ -9,9 +9,9 @@ class HonorInBattle extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Honor a character',
-            condition: (context) => context.player.getClaimedRings().some((ring: Ring) => ring.isConflictType(ConflictTypes.Military)),
+            condition: (context) => context.player.getClaimedRings().some((ring: Ring) => ring.isConflictType(ConflictType.Military)),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.honor()
             }
         });

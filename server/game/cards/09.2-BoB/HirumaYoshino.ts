@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HirumaYoshino extends DrawCard {
@@ -10,12 +10,12 @@ class HirumaYoshino extends DrawCard {
             title: 'Contribute printed military skill',
             condition: context => context.game.isDuringConflict('military') && context.source.isParticipating(),
             target: {
-                cardType: CardTypes.Character,
-                location: Locations.Provinces,
+                cardType: CardType.Character,
+                location: Location.Provinces,
                 cardCondition: card => card.isInConflictProvince() &&
                     card.printedMilitarySkill > 0,
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    targetLocation: Locations.Provinces,
+                    targetLocation: Location.Provinces,
                     effect: [
                         AbilityDsl.effects.contributeToConflict((card: any, context: any) => context.player),
                         AbilityDsl.effects.changeContributionFunction((card: any) => card.printedMilitarySkill)

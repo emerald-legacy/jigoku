@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 
 class FavorableAlliance extends DrawCard {
     static id = 'favorable-alliance';
@@ -26,15 +26,15 @@ class FavorableAlliance extends DrawCard {
                         let cards = context.player.conflictDeck.slice(0, (context.costs.variableFateCost as number));
                         cards.forEach((card) => {
                             card.owner.removeCardFromPile(card);
-                            card.moveTo(Locations.RemovedFromGame);
+                            card.moveTo(Location.RemovedFromGame);
                             context.player.removedFromGame.unshift(card);
                             context.source.lastingEffect(() => ({
                                 until: {
                                     onCardMoved: (event: any) =>
-                                        event.card === card && event.originalLocation === Locations.RemovedFromGame
+                                        event.card === card && event.originalLocation === Location.RemovedFromGame
                                 },
                                 match: card,
-                                effect: [AbilityDsl.effects.canPlayFromOwn(Locations.RemovedFromGame, [card], this)]
+                                effect: [AbilityDsl.effects.canPlayFromOwn(Location.RemovedFromGame, [card], this)]
                             }));
                         });
                     }

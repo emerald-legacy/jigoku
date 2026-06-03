@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Durations, EventNames } from '../../../Constants.js';
+import { CardType, Duration, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 
@@ -11,7 +11,7 @@ export default class TheMaidensIcyGrasp extends DrawCard {
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventNames.OnConflictStarted, EventNames.OnCharacterEntersPlay]);
+        this.eventRegistrar.register([EventName.OnConflictStarted, EventName.OnCharacterEntersPlay]);
 
         this.action({
             title: 'Remove a character from play',
@@ -20,12 +20,12 @@ export default class TheMaidensIcyGrasp extends DrawCard {
                     (card: DrawCard) => card.isParticipating() && card.hasTrait('shugenja')
                 ),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: DrawCard) => this.charactersPlayedThisConflict.has(card),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.cardLastingEffect((context) => ({
                         effect: [AbilityDsl.effects.cannotContribute(() => (card: any) => card === context.target)],
-                        duration: Durations.UntilEndOfConflict
+                        duration: Duration.UntilEndOfConflict
                     })),
                     AbilityDsl.actions.onAffinity({
                         trait: 'water',

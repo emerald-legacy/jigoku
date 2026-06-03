@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import { Locations, Phases, PlayTypes, EventNames, CardTypes } from '../../Constants.js';
+import { Location, Phases, PlayType, EventName, CardType } from '../../Constants.js';
 import { putIntoPlay, sacrifice } from '../../GameActions/GameActions.js';
 import ThenAbility from '../../ThenAbility.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -17,7 +17,7 @@ const backAlleyPersistentEffect = {
         for(const character of card.attachments) {
             character.owner.moveCard(
                 character,
-                character.isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile
+                character.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile
             );
             character.abilities.playActions = character.abilities.playActions.filter(
                 (action: any) => action.title !== 'Play this character from Back-Alley Hideaway'
@@ -51,7 +51,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
             return 'location';
         }
         if(
-            !context.source.canPlay(context, PlayTypes.PlayFromProvince) ||
+            !context.source.canPlay(context, PlayType.PlayFromProvince) ||
             !context.source.parent.canTriggerAbilities(context)
         ) {
             return 'cannotTrigger';
@@ -77,11 +77,11 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
         this.backAlleyCard.removeAttachment(context.source);
         context.source.parent = null;
         let putIntoPlayEvent = putIntoPlay({ fate: (context as any).chooseFate }).getEvent(context.source, context);
-        let cardPlayedEvent = context.game.getEvent(EventNames.OnCardPlayed, {
+        let cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
             player: context.player,
             card: context.source,
             originalLocation: this.backAlleyCard.uuid,
-            playType: PlayTypes.PlayFromProvince
+            playType: PlayType.PlayFromProvince
         });
         let window = context.game.openEventWindow([putIntoPlayEvent, cardPlayedEvent]);
         context.events = [putIntoPlayEvent];
@@ -111,9 +111,9 @@ export default class BackAlleyHideaway extends DrawCard {
             when: {
                 onCardLeavesPlay: (event: any, context: TriggeredAbilityContext) =>
                     event.card.isFaction('scorpion') &&
-                    event.card.type === CardTypes.Character &&
+                    event.card.type === CardType.Character &&
                     event.card.controller === context.player &&
-                    event.card.location === Locations.PlayArea
+                    event.card.location === Location.PlayArea
             },
             effect: 'move {1} into hiding',
             effectArgs: (context: TriggeredAbilityContext) => context?.event.card ?? '',

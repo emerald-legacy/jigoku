@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import CardAbility from '../../../CardAbility.js';
-import { CardTypes, ConflictTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardType, ConflictType, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,11 +10,11 @@ export default class TheVoidOfWar extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Each player bows an opponent character until refused',
-            condition: (context) => context.game.isDuringConflict(ConflictTypes.Military),
+            condition: (context) => context.game.isDuringConflict(ConflictType.Military),
             target: {
                 controller: Players.Opponent,
                 player: Players.Opponent,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.bow()
             },
@@ -24,7 +24,7 @@ export default class TheVoidOfWar extends DrawCard {
                 return {
                     target: {
                         player: ctx.player.opponent ? Players.Opponent : Players.Self,
-                        mode: TargetModes.Select,
+                        mode: TargetMode.Select,
                         activePromptTitle: 'Resolve The Void of War\'s ability again?',
                         choices: {
                             Yes: AbilityDsl.actions.resolveAbility({

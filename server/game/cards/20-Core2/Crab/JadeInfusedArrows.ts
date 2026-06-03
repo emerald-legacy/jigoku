@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, ConflictTypes } from '../../../Constants.js';
+import { CardType, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,7 +9,7 @@ export default class JadeInfusedArrows extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Give attached character a skill bonus',
-            condition: (context) => context.source.parent?.isParticipating(ConflictTypes.Military) ?? false,
+            condition: (context) => context.source.parent?.isParticipating(ConflictType.Military) ?? false,
             cost: AbilityDsl.costs.payFate(1),
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.source.parent,
@@ -29,7 +29,7 @@ export default class JadeInfusedArrows extends DrawCard {
     #isAgainstEvil(context: AbilityContext): boolean {
         return context.player.opponent?.cardsInPlay.some(
             (card: DrawCard) =>
-                card.getType() === CardTypes.Character &&
+                card.getType() === CardType.Character &&
                 card.isParticipating() &&
                 (card.isTainted || card.hasTrait('shadowlands'))
         ) ?? false;

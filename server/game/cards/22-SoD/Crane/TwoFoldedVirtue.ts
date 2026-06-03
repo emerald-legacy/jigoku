@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import { CardTypes, EventNames, Players } from '../../../Constants.js';
+import { CardType, EventName, Players } from '../../../Constants.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class TwoFoldVirtue extends DrawCard {
@@ -11,7 +11,7 @@ export default class TwoFoldVirtue extends DrawCard {
             title: 'Increase a character\'s military skill',
 
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.isParticipating() && (card.hasTrait('bushi') || card.hasTrait('scout')),
                 gameAction: AbilityDsl.actions.multiple([
@@ -23,7 +23,7 @@ export default class TwoFoldVirtue extends DrawCard {
                         targetController: context.player,
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
-                                afterConflict: (event: EventPayload<EventNames.AfterConflict>) =>
+                                afterConflict: (event: EventPayload<EventName.AfterConflict>) =>
                                     context.player === event.conflict.loser
                             },
                             gameAction: AbilityDsl.actions.gainHonor(context => ({ target: context.player })),

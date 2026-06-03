@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { Locations } from '../../../Constants.js';
+import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 function getCharactersWithoutFate(context: AbilityContext) {
@@ -23,7 +23,7 @@ export default class AkodoAsuka extends DrawCard {
                 amount: (context) => getCharactersWithoutFate(context),
                 activePromptTitle: 'Choose a card to put in your hand',
                 gameAction: AbilityDsl.actions.moveCard({
-                    destination: Locations.Hand
+                    destination: Location.Hand
                 }),
                 shuffle: true,
                 reveal: false

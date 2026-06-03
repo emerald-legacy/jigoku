@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import CardSelector from '../CardSelector.js';
 import type BaseCardSelector from '../CardSelectors/BaseCardSelector.js';
-import { CardTypes, EffectNames, Locations, Players, TargetModes } from '../Constants.js';
+import { CardType, EffectName, Location, Players, TargetMode } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
@@ -12,9 +12,9 @@ import type { EffectArg } from '../Interfaces.js';
 export interface SelectCardProperties extends CardActionProperties {
     activePromptTitle?: string;
     player?: Players.Self | Players.Opponent;
-    cardType?: CardTypes | CardTypes[];
+    cardType?: CardType | CardType[];
     controller?: Players;
-    location?: Locations | Locations[];
+    location?: Location | Location[];
     cardCondition?: (card: any, context: AbilityContext) => boolean;
     targets?: boolean;
     message?: string;
@@ -22,7 +22,7 @@ export interface SelectCardProperties extends CardActionProperties {
     messageArgs?: (card: any, player: Player, properties: SelectCardProperties) => unknown[];
     gameAction: GameAction;
     selector?: BaseCardSelector;
-    mode?: TargetModes;
+    mode?: TargetMode;
     numCards?: number;
     hidePromptIfSingleCard?: boolean;
     subActionProperties?: (card: any) => Record<string, unknown>;
@@ -107,7 +107,7 @@ export class SelectCardAction extends CardGameAction {
                 .getAllLegalTargets(context, player)
                 .filter((card: BaseCard) =>
                     card
-                        .getEffects(EffectNames.MustBeChosen)
+                        .getEffects(EffectName.MustBeChosen)
                         .some((restriction: { isMatch: (kind: string, context: AbilityContext) => boolean }) => restriction.isMatch('target', context))
                 );
         }

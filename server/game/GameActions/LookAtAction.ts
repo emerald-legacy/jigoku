@@ -2,7 +2,7 @@ import type { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { EventNames, Locations } from '../Constants.js';
+import { EventName, Location } from '../Constants.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 
 export interface LookAtProperties extends CardActionProperties {
@@ -10,16 +10,16 @@ export interface LookAtProperties extends CardActionProperties {
     messageArgs?: (cards: BaseCard[]) => unknown[];
 }
 
-export class LookAtAction extends CardGameAction<CardActionProperties, EventNames.OnLookAtCards> {
+export class LookAtAction extends CardGameAction<CardActionProperties, EventName.OnLookAtCards> {
     name = 'lookAt';
-    eventName = EventNames.OnLookAtCards;
+    eventName = EventName.OnLookAtCards;
     effect = 'look at a facedown card';
     defaultProperties: LookAtProperties = {
         message: '{0} sees {1}'
     };
 
     canAffect(card: BaseCard, context: AbilityContext) {
-        if(!card.isFacedown() && (card.isInProvince() || card.location === Locations.PlayArea)) {
+        if(!card.isFacedown() && (card.isInProvince() || card.location === Location.PlayArea)) {
             return false;
         }
         return super.canAffect(card, context);
@@ -36,7 +36,7 @@ export class LookAtAction extends CardGameAction<CardActionProperties, EventName
         events.push(event);
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnLookAtCards>, cards: unknown, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnLookAtCards>, cards: unknown, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
         let resolved: BaseCard[];
         if(!cards) {
             const target = this.getProperties(context, additionalProperties).target;
@@ -51,7 +51,7 @@ export class LookAtAction extends CardGameAction<CardActionProperties, EventName
         event.context = context;
     }
 
-    eventHandler(event: GameEvent<EventNames.OnLookAtCards>, additionalProperties = {}): void {
+    eventHandler(event: GameEvent<EventName.OnLookAtCards>, additionalProperties = {}): void {
         let context = event.context as AbilityContext;
         let properties = this.getProperties(context, additionalProperties) as LookAtProperties;
         let cards = event.cards as BaseCard[];
@@ -66,7 +66,7 @@ export class LookAtAction extends CardGameAction<CardActionProperties, EventName
         return message ?? '';
     }
 
-    isEventFullyResolved(event: GameEvent<EventNames.OnLookAtCards>): boolean {
+    isEventFullyResolved(event: GameEvent<EventName.OnLookAtCards>): boolean {
         return !event.cancelled && event.name === this.eventName;
     }
 

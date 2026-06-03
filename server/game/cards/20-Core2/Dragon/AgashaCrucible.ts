@@ -1,4 +1,4 @@
-import { CardTypes, Durations, Players } from '../../../Constants.js';
+import { CardType, Duration, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,12 +9,12 @@ const options = Object.fromEntries(
             message: `{1} gains the ${option} Trait`,
             action: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardLastingEffect({
-                    duration: Durations.UntilEndOfPhase,
+                    duration: Duration.UntilEndOfPhase,
                     effect: AbilityDsl.effects.addTrait(option.toLowerCase())
                 }),
                 AbilityDsl.actions.playerLastingEffect((context) => ({
                     targetController: context.player,
-                    duration: Durations.UntilPassPriority,
+                    duration: Duration.UntilPassPriority,
                     effect: AbilityDsl.effects.additionalAction(1)
                 }))
             ])
@@ -29,7 +29,7 @@ export default class AgashaCrucible extends DrawCard {
         this.action({
             title: 'Give Elemental Trait to a Fire Shugenja',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('shugenja'),
                 gameAction: AbilityDsl.actions.chooseAction({

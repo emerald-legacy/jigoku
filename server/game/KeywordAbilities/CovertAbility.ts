@@ -1,5 +1,5 @@
 import BaseAbility from '../BaseAbility.js';
-import { AbilityTypes } from '../Constants.js';
+import { AbilityType } from '../Constants.js';
 
 class CovertAbility extends BaseAbility {
     title: string;
@@ -7,7 +7,7 @@ class CovertAbility extends BaseAbility {
     constructor() {
         super({});
         this.title = 'covert';
-        this.abilityType = AbilityTypes.KeywordReaction;
+        this.abilityType = AbilityType.KeywordReaction;
     }
 
     isCardAbility() {

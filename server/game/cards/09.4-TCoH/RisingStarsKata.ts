@@ -1,4 +1,4 @@
-import { CardTypes, Durations } from '../../Constants.js';
+import { CardType, Duration } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
 import BaseCard from '../../BaseCard.js';
@@ -18,10 +18,10 @@ export default class RisingStarsKata extends DrawCard {
             title: 'Give a participating unique character +3 military skill',
 
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isUnique() && card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
-                    duration: Durations.UntilEndOfConflict,
+                    duration: Duration.UntilEndOfConflict,
                     effect: context.target && this.duelWinnersThisConflict.has(context.target)
                         ? AbilityDsl.effects.modifyMilitarySkill(5)
                         : AbilityDsl.effects.modifyMilitarySkill(3)

@@ -1,4 +1,4 @@
-import { CardTypes, Durations, EventNames, Players } from '../../Constants.js';
+import { CardType, Duration, EventName, Players } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -11,13 +11,13 @@ export default class InfernoGuardInvoker extends DrawCard {
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventNames.OnBreakProvince, EventNames.OnConflictDeclared]);
+        this.eventRegistrar.register([EventName.OnBreakProvince, EventName.OnConflictDeclared]);
 
         this.action({
             title: 'honor this character',
             condition: (context) => context.game.isDuringConflict('military'),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating()
             },
@@ -25,7 +25,7 @@ export default class InfernoGuardInvoker extends DrawCard {
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.honor((context) => ({ target: context.target })),
                 AbilityDsl.actions.cardLastingEffect((context) => ({
-                    duration: Durations.UntilEndOfPhase,
+                    duration: Duration.UntilEndOfPhase,
                     target: context.target,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {

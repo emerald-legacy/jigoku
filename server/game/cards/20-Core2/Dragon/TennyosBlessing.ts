@@ -1,4 +1,4 @@
-import { CardTypes, EventNames, Players, Locations, TargetModes, Decks } from '../../../Constants.js';
+import { CardType, EventName, Players, Location, TargetMode, Decks } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameEvent } from '../../../Events/EventPayloads.js';
@@ -13,18 +13,18 @@ export default class TennyosBlessing extends DrawCard {
             title: 'Look at your dynasty deck',
             evenDuringDynasty: true,
             target: {
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: (card) => card.location !== Locations.StrongholdProvince,
+                cardCondition: (card) => card.location !== Location.StrongholdProvince,
                 gameAction: AbilityDsl.actions.deckSearch<ProvinceCard>({
-                    targetMode: TargetModes.UpTo,
+                    targetMode: TargetMode.UpTo,
                     numCards: 2,
                     amount: 4,
                     shuffle: true,
                     deck: Decks.DynastyDeck,
                     selectedCardsHandler: (context, event, cards) => {
-                        const searchEvent = event as GameEvent<EventNames.OnDeckSearch> & { player: Player };
+                        const searchEvent = event as GameEvent<EventName.OnDeckSearch> & { player: Player };
                         if(cards.length > 0) {
                             const target = context.target;
                             context.game.addMessage(

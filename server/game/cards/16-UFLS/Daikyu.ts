@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityTypes, CardTypes } from '../../Constants.js';
+import { AbilityType, CardType } from '../../Constants.js';
 
 class Daikyu extends DrawCard {
     static id = 'daikyu';
@@ -13,7 +13,7 @@ class Daikyu extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Bow a character',
                 when: {
                     onConflictDeclared: (_event: any, context: AbilityContext) =>
@@ -24,7 +24,7 @@ class Daikyu extends DrawCard {
                         context.source.isParticipating() && context.game.isDuringConflict('military')
                 },
                 target: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: (card: DrawCard, context: AbilityContext) =>
                         card.getMilitarySkill() < context.source.getMilitarySkill() && card.isParticipating(),
                     gameAction: AbilityDsl.actions.bow()

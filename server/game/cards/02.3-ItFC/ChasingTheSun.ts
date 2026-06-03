@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ChasingTheSun extends DrawCard {
@@ -12,8 +12,8 @@ class ChasingTheSun extends DrawCard {
             cannotBeMirrored: true,
             effect: 'move the conflict to another eligible province',
             gameAction: AbilityDsl.actions.selectCard({
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 message: '{0} moves the conflict to {1}',
                 messageArgs: (card, player) => [player, card],
                 gameAction: AbilityDsl.actions.moveConflict()

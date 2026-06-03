@@ -1,4 +1,4 @@
-import { CardTypes, Durations, Locations, Phases } from '../../../Constants.js';
+import { CardType, Duration, Location, Phases } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,8 +15,8 @@ export default class ObstinateWitchHunter extends DrawCard {
                     context.game.allCards.some(
                         (card: BaseCard) =>
                             card instanceof DrawCard &&
-                            card.type === CardTypes.Character &&
-                            card.location === Locations.PlayArea &&
+                            card.type === CardType.Character &&
+                            card.location === Location.PlayArea &&
                             card.isFaceup() &&
                             card !== context.source &&
                             (card.isTainted || card.hasTrait('shadowlands'))
@@ -24,7 +24,7 @@ export default class ObstinateWitchHunter extends DrawCard {
             },
             effect: 'stop him being discarded or losing fate in this phase',
             gameAction: AbilityDsl.actions.cardLastingEffect({
-                duration: Durations.UntilEndOfPhase,
+                duration: Duration.UntilEndOfPhase,
                 effect: [AbilityDsl.effects.cardCannot('removeFate'), AbilityDsl.effects.cardCannot('discardFromPlay')]
             })
         });

@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class ShiotomeEncampment extends DrawCard {
     static id = 'shiotome-encampment';
@@ -12,11 +12,11 @@ class ShiotomeEncampment extends DrawCard {
                 Object.values(this.game.rings).some(
                     ring =>
                         ring.isConsideredClaimed(context.player) &&
-                        // @ts-expect-error string literal 'military' vs ConflictTypes enum - game engine accepts both at runtime
+                        // @ts-expect-error string literal 'military' vs ConflictType enum - game engine accepts both at runtime
                         ring.isConflictType('military')
                 ),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.hasTrait('cavalry'),
                 gameAction: AbilityDsl.actions.ready()
             }

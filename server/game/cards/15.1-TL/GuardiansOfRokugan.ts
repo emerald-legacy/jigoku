@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Decks } from '../../Constants.js';
+import { CardType, Decks } from '../../Constants.js';
 
 class GuardiansOfRokugan extends DrawCard {
     static id = 'guardians-of-rokugan';
@@ -15,7 +15,7 @@ class GuardiansOfRokugan extends DrawCard {
                 activePromptTitle: 'Select a character to put into play',
                 amount: (ctx) => ctx.game.currentConflict?.skillDifference ?? 0,
                 deck: Decks.DynastyDeck,
-                cardCondition: (card: any, ctx: any) => card.type === CardTypes.Character && AbilityDsl.actions.putIntoPlay().canAffect(card, ctx) && card.costLessThan((ctx.game.currentConflict?.skillDifference ?? 0) + 1),
+                cardCondition: (card: any, ctx: any) => card.type === CardType.Character && AbilityDsl.actions.putIntoPlay().canAffect(card, ctx) && card.costLessThan((ctx.game.currentConflict?.skillDifference ?? 0) + 1),
                 gameAction: AbilityDsl.actions.putIntoPlay(),
                 shuffle: (ctx) => (ctx.game.currentConflict?.skillDifference ?? 0) >= ctx.player.dynastyDeck.length
             })),

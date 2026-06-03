@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { DuelTypes, Players } from '../../../Constants.js';
+import { DuelType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class DojiReiha extends DrawCard {
@@ -9,7 +9,7 @@ export default class DojiReiha extends DrawCard {
         this.action({
             title: 'Initiate a duel that honors participants and move loser home',
             initiateDuel: {
-                type: DuelTypes.Political,
+                type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
                 gameAction: (duel) =>
                     AbilityDsl.actions.sequential([

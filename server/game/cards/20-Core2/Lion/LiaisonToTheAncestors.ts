@@ -1,4 +1,4 @@
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -12,7 +12,7 @@ export default class LiaisonToTheAncestors extends DrawCard {
             title: 'Protect the honor of a character',
             when: {
                 onCardDishonored: (event: { card: DrawCard }, context) =>
-                    event.card.type === CardTypes.Character &&
+                    event.card.type === CardType.Character &&
           event.card.controller === context.player &&
           (context.player.dynastyDiscardPile as Array<DrawCard>).some(
               (card) => (event.card.printedCost ?? 0) < (card.printedCost ?? 0)

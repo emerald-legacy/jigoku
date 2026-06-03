@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AgainstTheWaves extends DrawCard {
@@ -9,7 +9,7 @@ class AgainstTheWaves extends DrawCard {
         this.action({
             title: 'Bow or ready a shugenja',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.hasTrait('shugenja'),
                 controller: Players.Self,
                 gameAction: [AbilityDsl.actions.bow(), AbilityDsl.actions.ready()]

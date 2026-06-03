@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Elements, EventNames } from '../../Constants.js';
+import { CardType, Element, EventName } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -12,13 +12,13 @@ class IsawaUjina extends DrawCard {
         this.forcedReaction({
             title: 'Remove a character from the game',
             when: {
-                onClaimRing: (event: EventPayload<EventNames.OnClaimRing>) => {
-                    const element = this.getCurrentElementSymbol(elementKey) || Elements.Void;
+                onClaimRing: (event: EventPayload<EventName.OnClaimRing>) => {
+                    const element = this.getCurrentElementSymbol(elementKey) || Element.Void;
                     return (event.conflict && event.conflict.ring && event.conflict.ring.hasElement(element)) || event.ring.hasElement(element);
                 }
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: any) => card.getFate() === 0,
                 gameAction: AbilityDsl.actions.removeFromGame()
             },
@@ -31,7 +31,7 @@ class IsawaUjina extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Claimed Ring',
-            element: Elements.Void
+            element: Element.Void
         });
         return symbols;
     }

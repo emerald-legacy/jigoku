@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class PeacemakersBlade extends DrawCard {
     static id = 'peacemaker-s-blade';
@@ -12,7 +12,7 @@ class PeacemakersBlade extends DrawCard {
     }
 
     canPlayOn(card: any) {
-        return (card.getType() === CardTypes.Character && !card.isAttacking()) && super.canPlayOn(card);
+        return (card.getType() === CardType.Character && !card.isAttacking()) && super.canPlayOn(card);
     }
 }
 

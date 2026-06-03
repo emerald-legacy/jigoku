@@ -1,4 +1,4 @@
-import { Locations, Durations, Phases } from '../../../Constants.js';
+import { Location, Duration, Phases } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -20,7 +20,7 @@ export default class MirumotoHitori extends DrawCard {
                     AbilityDsl.actions.cardLastingEffect({
                         target: context.source,
                         canChangeZoneOnce: true,
-                        duration: Durations.Custom,
+                        duration: Duration.Custom,
                         until: {
                             onCharacterEntersPlay: (event: any) => event.card === context.source,
                             onPhaseEnded: (event: any) => event.phase === Phases.Dynasty
@@ -32,7 +32,7 @@ export default class MirumotoHitori extends DrawCard {
                             message: '{0} is put into play due to {0}\'s effect',
                             messageArgs: [context.source],
                             gameAction: AbilityDsl.actions.putIntoPlay((context) => ({
-                                location: Locations.Any,
+                                location: Location.Any,
                                 target: context.source
                             }))
                         })

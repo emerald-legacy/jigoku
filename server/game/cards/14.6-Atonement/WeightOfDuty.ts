@@ -1,5 +1,5 @@
 import { AbilityContext } from '../../AbilityContext.js';
-import { CardTypes, Players, TargetModes, Elements } from '../../Constants.js';
+import { CardType, Players, TargetMode, Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import BaseCard from '../../BaseCard.js';
@@ -17,14 +17,14 @@ export default class WeightOfDuty extends ProvinceCard {
             conflictProvinceCondition: (province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)),
             cannotTargetFirst: true,
             cost: AbilityDsl.costs.sacrifice({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: DrawCard, context: AbilityContext) =>
                     card.isParticipating() && this.#hasValidTarget(card, context)
             }),
             target: {
                 controller: Players.Opponent,
-                cardType: CardTypes.Character,
-                mode: TargetModes.Single,
+                cardType: CardType.Character,
+                mode: TargetMode.Single,
                 cardCondition: (card, context) =>
                     context.costs.sacrifice && !context.costs.sacrifice.isUnique() ? !card.isUnique() : true,
                 gameAction: AbilityDsl.actions.multiple([AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor()])
@@ -37,7 +37,7 @@ export default class WeightOfDuty extends ProvinceCard {
         symbols.push({
             key: ELEMENT_KEY,
             prettyName: 'Ability - Province Element',
-            element: Elements.Void
+            element: Element.Void
         });
         return symbols;
     }

@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -9,7 +9,7 @@ export default class SmugglersCove extends ProvinceCard {
         this.action({
             title: 'Moves a character to or from a conflict at this province',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.conditional({
                     condition: (context) => context.target.isParticipating(),

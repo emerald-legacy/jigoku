@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventNames } from '../../Constants.js';
+import { EventName } from '../../Constants.js';
 class SharpenedTsuruhashi extends DrawCard {
     static id = 'sharpened-tsuruhashi';
 
@@ -10,7 +10,7 @@ class SharpenedTsuruhashi extends DrawCard {
         this.interrupt({
             title: 'Return Sharpened Tsuruhashi to your hand',
             when: {
-                onCardLeavesPlay: (event: EventPayload<EventNames.OnCardLeavesPlay>, context) => event.isSacrifice && event.card === context.source.parent
+                onCardLeavesPlay: (event: EventPayload<EventName.OnCardLeavesPlay>, context) => event.isSacrifice && event.card === context.source.parent
             },
             gameAction: AbilityDsl.actions.returnToHand(context => ({
                 target: context.source

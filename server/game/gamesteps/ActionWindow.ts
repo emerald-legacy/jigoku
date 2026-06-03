@@ -1,5 +1,5 @@
 import { UiPrompt } from './UiPrompt.js';
-import { EventNames, Locations, Players, EffectNames } from '../Constants.js';
+import { EventName, Location, Players, EffectName } from '../Constants.js';
 import type Game from '../Game.js';
 import type Player from '../Player.js';
 import type BaseCard from '../BaseCard.js';
@@ -54,7 +54,7 @@ class ActionWindow extends UiPrompt {
             }
         }
         this.game.promptWithHandlerMenu(player, {
-            activePromptTitle: (card.location === Locations.PlayArea ? 'Choose an ability:' : 'Play ' + card.name + ':'),
+            activePromptTitle: (card.location === Location.PlayArea ? 'Choose an ability:' : 'Play ' + card.name + ':'),
             source: card,
             choices: legalActions.map((action) => action.title).concat('Cancel'),
             handlers: legalActions.map((action) => (() => this.resolveAbility(action.createContext(player)))).concat(() => true)
@@ -132,7 +132,7 @@ class ActionWindow extends UiPrompt {
             this.game.promptForSelect(this.currentPlayer, {
                 source: 'Manual Action',
                 activePrompt: 'Which ability are you using?',
-                location: Locations.Any,
+                location: Location.Any,
                 controller: Players.Self,
                 cardCondition: (card: BaseCard) => card.isFaceup(),
                 onSelect: (player: Player, card: BaseCard) => {
@@ -153,7 +153,7 @@ class ActionWindow extends UiPrompt {
     }
 
     getCurrentPlayerConsecutiveActions(): number {
-        let allowableConsecutiveActions = this.currentPlayer.sumEffects(EffectNames.AdditionalAction);
+        let allowableConsecutiveActions = this.currentPlayer.sumEffects(EffectName.AdditionalAction);
         if(this.bonusActions) {
             const bonusActions = this.bonusActions[this.currentPlayer.uuid];
             if(!bonusActions.actionsTaken && bonusActions.takingActions && bonusActions.actionCount > 0) {
@@ -254,8 +254,8 @@ class ActionWindow extends UiPrompt {
         if(!player1 || !player2) {
             return false;
         }
-        let p1ActionsPostWindow = player1.sumEffects(EffectNames.AdditionalActionAfterWindowCompleted);
-        let p2ActionsPostWindow = player2.sumEffects(EffectNames.AdditionalActionAfterWindowCompleted);
+        let p1ActionsPostWindow = player1.sumEffects(EffectName.AdditionalActionAfterWindowCompleted);
+        let p2ActionsPostWindow = player2.sumEffects(EffectName.AdditionalActionAfterWindowCompleted);
 
         this.bonusActions = {
             [player1.uuid]: {
@@ -287,14 +287,14 @@ class ActionWindow extends UiPrompt {
 
         this.currentPlayer.actionPhasePriority = false;
 
-        if(this.currentPlayer.anyEffect(EffectNames.ResolveConflictEarly) || this.bonusActions) {
+        if(this.currentPlayer.anyEffect(EffectName.ResolveConflictEarly) || this.bonusActions) {
             this.attemptComplete();
             return;
         }
 
         if(otherPlayer) {
             this.game.raiseEvent(
-                EventNames.OnPassActionPhasePriority,
+                EventName.OnPassActionPhasePriority,
                 { player: this.currentPlayer, consecutiveActions: this.currentPlayerConsecutiveActions, actionWindow: this },
                 () => {
                     this.currentPlayer = otherPlayer;

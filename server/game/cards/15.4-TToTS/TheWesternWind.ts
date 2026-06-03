@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, CardTypes, Players, TargetModes, Decks } from '../../Constants.js';
+import { Location, CardType, Players, TargetMode, Decks } from '../../Constants.js';
 
 class TheWesternWind extends DrawCard {
     static id = 'the-western-wind';
@@ -10,17 +10,17 @@ class TheWesternWind extends DrawCard {
         this.action({
             title: 'Look at your dynasty deck',
             condition: context => !!context.player.opponent &&
-                context.player.getNumberOfOpponentsFaceupProvinces((province: any) => province.location !== Locations.StrongholdProvince) > 0 &&
+                context.player.getNumberOfOpponentsFaceupProvinces((province: any) => province.location !== Location.StrongholdProvince) > 0 &&
                 context.player.dynastyDeck.length > 0,
             target: {
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card: any) => card.location !== 'stronghold province',
                 gameAction: AbilityDsl.actions.deckSearch({
-                    cardCondition: (card: any) => card.type === CardTypes.Character,
-                    targetMode: TargetModes.UpToVariable,
-                    numCards: (context: AbilityContext) => context.player.getNumberOfOpponentsFaceupProvinces((province: any) => province.location !== Locations.StrongholdProvince),
+                    cardCondition: (card: any) => card.type === CardType.Character,
+                    targetMode: TargetMode.UpToVariable,
+                    numCards: (context: AbilityContext) => context.player.getNumberOfOpponentsFaceupProvinces((province: any) => province.location !== Location.StrongholdProvince),
                     amount: 8,
                     deck: Decks.DynastyDeck,
                     selectedCardsHandler: (context: any, event: any, cards: any) => {

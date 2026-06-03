@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardTypes, ConflictTypes, Durations, Players } from '../../../Constants.js';
+import { CardType, ConflictType, Duration, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 
@@ -26,7 +26,7 @@ export default class Retribution extends DrawCard {
             effect: 'declare a military conflict, attacking with {1}',
             effectArgs: (context) => [context.target ?? ''],
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     // honored or battlemaiden
@@ -34,31 +34,31 @@ export default class Retribution extends DrawCard {
                     // can attack military
                     Object.values(this.game.rings).some(
                         (ring) =>
-                            ring.canDeclare(context.player) && card.canDeclareAsAttacker(ConflictTypes.Military, ring)
+                            ring.canDeclare(context.player) && card.canDeclareAsAttacker(ConflictType.Military, ring)
                     ),
                 gameAction: AbilityDsl.actions.sequentialContext((context) => ({
                     gameActions: [
                         AbilityDsl.actions.cardLastingEffect({
-                            duration: Durations.UntilEndOfConflict,
+                            duration: Duration.UntilEndOfConflict,
                             effect: AbilityDsl.effects.mustBeDeclaredAsAttacker(),
                             target: context.target
                         }),
                         AbilityDsl.actions.cardLastingEffect({
-                            duration: Durations.UntilEndOfConflict,
+                            duration: Duration.UntilEndOfConflict,
                             effect: AbilityDsl.effects.cardCannot('declareAsAttacker'),
                             target: (context.player.cardsInPlay as BaseCard[]).filter(
-                                (card) => card.getType() === CardTypes.Character && card !== context.target
+                                (card) => card.getType() === CardType.Character && card !== context.target
                             )
                         }),
                         AbilityDsl.actions.playerLastingEffect({
                             targetController: context.player,
-                            duration: Durations.UntilEndOfPhase,
+                            duration: Duration.UntilEndOfPhase,
                             effect: AbilityDsl.effects.additionalConflict('military')
                         }),
                         AbilityDsl.actions.initiateConflict({
                             target: context.player,
                             canPass: false,
-                            forcedDeclaredType: ConflictTypes.Military
+                            forcedDeclaredType: ConflictType.Military
                         })
                     ]
                 }))

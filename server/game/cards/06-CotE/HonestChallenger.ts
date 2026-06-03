@@ -1,4 +1,4 @@
-import { CardTypes, DuelTypes, Players } from '../../Constants.js';
+import { CardType, DuelType, Players } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -14,14 +14,14 @@ export default class HonestChallenger extends DrawCard {
         this.action({
             title: 'Initiate a military duel',
             initiateDuel: (context: AbilityContext) => ({
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 message: '{0} chooses a character to move to the conflict',
                 messageArgs: (duel: any) => duel.winnerController,
                 gameAction: (duel: any) =>
                     duel.winner
                         ? AbilityDsl.actions.selectCard({
                             activePromptTitle: 'Choose a character to move to the conflict',
-                            cardType: CardTypes.Character,
+                            cardType: CardType.Character,
                             player: duel.winnerController === context.player ? Players.Self : Players.Opponent,
                             controller: duel.winnerController === context.player ? Players.Self : Players.Opponent,
                             message: '{0} moves {1} to the conflict',

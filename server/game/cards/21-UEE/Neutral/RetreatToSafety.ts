@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class RetreatToSafety extends DrawCard {
@@ -9,9 +9,9 @@ export default class RetreatToSafety extends DrawCard {
         this.action({
             title: 'Move characters out of the conflict',
             target: {
-                mode: TargetModes.UpTo,
+                mode: TargetMode.UpTo,
                 numCards: 2,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isDefending(),
                 gameAction: AbilityDsl.actions.sendHome()
@@ -23,7 +23,7 @@ export default class RetreatToSafety extends DrawCard {
                     trueGameAction: AbilityDsl.actions.selectCard({
                         activePromptTitle: 'Choose a character to ready',
                         player: Players.Self,
-                        cardType: CardTypes.Character,
+                        cardType: CardType.Character,
                         cardCondition: (card) => (parentContext as any).target.includes(card),
                         gameAction: AbilityDsl.actions.ready(),
                         message: '{0} is readied due to {1}\'s superior leadership',

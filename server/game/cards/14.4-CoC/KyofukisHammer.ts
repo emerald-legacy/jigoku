@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 
 class KyofukisHammer extends DrawCard {
     static id = 'kyofuki-s-hammer';
@@ -14,9 +14,9 @@ class KyofukisHammer extends DrawCard {
             },
             limit: AbilityDsl.limit.unlimitedPerConflict(),
             target: {
-                location: Locations.Provinces,
-                cardType: [CardTypes.Character, CardTypes.Holding, CardTypes.Event],
-                gameAction: AbilityDsl.actions.moveCard({ destination: Locations.DynastyDiscardPile })
+                location: Location.Provinces,
+                cardType: [CardType.Character, CardType.Holding, CardType.Event],
+                gameAction: AbilityDsl.actions.moveCard({ destination: Location.DynastyDiscardPile })
             }
         });
     }

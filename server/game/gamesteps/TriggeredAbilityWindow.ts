@@ -1,6 +1,6 @@
 import ForcedTriggeredAbilityWindow from './ForcedTriggeredAbilityWindow.js';
 import { TriggeredAbilityWindowTitle } from './TriggeredAbilityWindowTitle.js';
-import { CardTypes, EventNames, AbilityTypes } from '../Constants.js';
+import { CardType, EventName, AbilityType } from '../Constants.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 import type { Event } from '../Events/Event.js';
@@ -16,7 +16,7 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
     prevPlayerPassed: boolean;
     resolvedAbilitiesPerPlayer: Record<string, Array<{ ability: TriggeredAbility; event: Event }>>;
 
-    constructor(game: Game, abilityType: AbilityTypes, window: EventWindow, eventsToExclude: Event[] = []) {
+    constructor(game: Game, abilityType: AbilityType, window: EventWindow, eventsToExclude: Event[] = []) {
         super(game, abilityType, window, eventsToExclude);
         this.complete = false;
         this.prevPlayerPassed = false;
@@ -29,9 +29,9 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
             return true;
         }
         // Show a bluff prompt if we're in Step 6, the player has the approriate setting, and there's an event for the other player
-        return this.abilityType === AbilityTypes.WouldInterrupt && player.timerSettings.events && this.events.some(event => (
-            event.name === EventNames.OnInitiateAbilityEffects &&
-            (event as GameEvent<EventNames.OnInitiateAbilityEffects>).card.type === CardTypes.Event && event.context && event.context.player !== player
+        return this.abilityType === AbilityType.WouldInterrupt && player.timerSettings.events && this.events.some(event => (
+            event.name === EventName.OnInitiateAbilityEffects &&
+            (event as GameEvent<EventName.OnInitiateAbilityEffects>).card.type === CardType.Event && event.context && event.context.player !== player
         ));
     }
 
@@ -73,10 +73,10 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
             return true;
         }
         // remove any choices which involve the current player canceling their own abilities
-        if(this.abilityType === AbilityTypes.WouldInterrupt && !this.currentPlayer.optionSettings.cancelOwnAbilities) {
+        if(this.abilityType === AbilityType.WouldInterrupt && !this.currentPlayer.optionSettings.cancelOwnAbilities) {
             this.choices = this.choices.filter(context => !(
                 context.player === this.currentPlayer &&
-                context.event.name === EventNames.OnInitiateAbilityEffects &&
+                context.event.name === EventName.OnInitiateAbilityEffects &&
                 context.event.context?.player === this.currentPlayer
             ));
         }

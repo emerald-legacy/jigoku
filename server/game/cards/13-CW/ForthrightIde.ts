@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ForthrightIde extends DrawCard {
@@ -10,7 +10,7 @@ class ForthrightIde extends DrawCard {
             title: 'Ready a character',
             condition: (context) => context.source.isParticipating(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.costLessThan(4) && card.bowed,
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.ready(),

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { TargetModes } from '../../Constants.js';
+import { TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class WrittenInTheStars extends DrawCard {
@@ -9,7 +9,7 @@ class WrittenInTheStars extends DrawCard {
         this.action({
             title: 'Place or take fate from rings',
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 choices: {
                     'Place one fate on each unclaimed ring with no fate': AbilityDsl.actions.placeFateOnRing(() => ({
                         target: Object.values(this.game.rings).filter(ring => ring.isUnclaimed() && ring.fate === 0)

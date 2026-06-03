@@ -1,5 +1,5 @@
 import { GameModes } from '../../GameModes.js';
-import { Locations } from '../Constants.js';
+import { Location } from '../Constants.js';
 import { randomItem } from '../utils/helpers.js';
 import type BaseCard from '../BaseCard.js';
 import type Game from '../Game.js';
@@ -81,10 +81,10 @@ export class SetupPhase extends Phase {
         }
         for(const player of this.game.getPlayers()) {
             if(player.stronghold) {
-                player.moveCard(player.stronghold, Locations.StrongholdProvince);
+                player.moveCard(player.stronghold, Location.StrongholdProvince);
             }
             if(player.role) {
-                player.role.moveTo(Locations.Role);
+                player.role.moveTo(Location.Role);
             }
         }
     }
@@ -92,9 +92,9 @@ export class SetupPhase extends Phase {
     setupProvinces() {
         if(this.game.gameMode === GameModes.Skirmish) {
             for(const player of this.game.getPlayers()) {
-                player.moveCard(player.provinceDeck[0], Locations.ProvinceOne);
-                player.moveCard(player.provinceDeck[0], Locations.ProvinceTwo);
-                player.moveCard(player.provinceDeck[0], Locations.ProvinceThree);
+                player.moveCard(player.provinceDeck[0], Location.ProvinceOne);
+                player.moveCard(player.provinceDeck[0], Location.ProvinceTwo);
+                player.moveCard(player.provinceDeck[0], Location.ProvinceThree);
                 player.hideProvinceDeck = true;
             }
         } else {
@@ -103,9 +103,9 @@ export class SetupPhase extends Phase {
     }
 
     fillProvinces() {
-        const provinces = [Locations.ProvinceOne, Locations.ProvinceTwo, Locations.ProvinceThree];
+        const provinces = [Location.ProvinceOne, Location.ProvinceTwo, Location.ProvinceThree];
         if(this.game.gameMode !== GameModes.Skirmish) {
-            provinces.push(Locations.ProvinceFour);
+            provinces.push(Location.ProvinceFour);
         }
         for(const player of this.game.getPlayers()) {
             for(const province of provinces) {

@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { PlayCharacterIntoLocation, PlayCharacterAction } from '../../PlayCharacterAction.js';
-import { Elements, Locations, PlayTypes } from '../../Constants.js';
+import { Element, Location, PlayType } from '../../Constants.js';
 import type BaseCard from '../../BaseCard.js';
 import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
@@ -17,7 +17,7 @@ class IsawaSkycallerPlayAction extends PlayCharacterAction {
 
     createContext(player: Player = this.card.controller) {
         const context = super.createContext(player);
-        context.playType = PlayTypes.PlayFromHand;
+        context.playType = PlayType.PlayFromHand;
         return context;
     }
 
@@ -33,7 +33,7 @@ class IsawaSkycaller extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
-            targetLocation: Locations.Provinces,
+            targetLocation: Location.Provinces,
             match: card => card.isDynasty && card.isFaceup(),
             effect: AbilityDsl.effects.gainPlayAction(IsawaSkycallerPlayAction)
         });
@@ -45,7 +45,7 @@ class IsawaSkycaller extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Contested Ring',
-            element: Elements.Air
+            element: Element.Air
         });
         return symbols;
     }

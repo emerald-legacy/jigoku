@@ -1,4 +1,4 @@
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -16,7 +16,7 @@ export default class ExcellenceAttained extends ProvinceCard {
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose an attachment',
                     cards: context.player.conflictDeck.slice(0, 5),
-                    cardCondition: (card) => card.type === CardTypes.Attachment && (card.printedCost ?? 0) <= 1,
+                    cardCondition: (card) => card.type === CardType.Attachment && (card.printedCost ?? 0) <= 1,
                     choices: ['Take nothing'],
                     handlers: [
                         () => {
@@ -27,8 +27,8 @@ export default class ExcellenceAttained extends ProvinceCard {
                     subActionProperties: (card) => ({ attachment: card }),
                     gameAction: AbilityDsl.actions.selectCard({
                         controller: Players.Any,
-                        location: Locations.PlayArea,
-                        cardType: CardTypes.Character,
+                        location: Location.PlayArea,
+                        cardType: CardType.Character,
                         message: '{0} chooses to attach {1} to {2}',
                         messageArgs: (card, action, properties) => [
                             context.player,
@@ -39,7 +39,7 @@ export default class ExcellenceAttained extends ProvinceCard {
                     })
                 })),
                 AbilityDsl.actions.shuffleDeck((context) => ({
-                    deck: Locations.ConflictDeck,
+                    deck: Location.ConflictDeck,
                     target: context.player
                 }))
             ])

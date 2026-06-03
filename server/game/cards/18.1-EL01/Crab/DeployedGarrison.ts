@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -54,7 +54,7 @@ export default class DeployedGarrison extends DrawCard {
 
         for(const province of nearbyProvinces) {
             for(const card of context.player.getDynastyCardsInProvince(province.location) as BaseCard[]) {
-                if(card.isFaceup() && card.type === CardTypes.Holding) {
+                if(card.isFaceup() && card.type === CardType.Holding) {
                     return true;
                 }
             }

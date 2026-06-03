@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 
 class EmbraceDeath extends DrawCard {
     static id = 'embrace-death';
@@ -15,11 +15,11 @@ class EmbraceDeath extends DrawCard {
                     event.conflict.getAttackers().some((card) => card.hasTrait('bushi'))
             },
             cost: AbilityDsl.costs.sacrifice({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('bushi') && card.isAttacking()
             }),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent
             },
             gameAction: AbilityDsl.actions.conditional({

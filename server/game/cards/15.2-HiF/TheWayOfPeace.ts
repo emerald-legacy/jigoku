@@ -1,4 +1,4 @@
-import { TargetModes, CardTypes, Players } from '../../Constants.js';
+import { TargetMode, CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,9 +12,9 @@ export default class TheWayOfPeace extends ProvinceCard {
                 onBreakProvince: (event, context) => event.card === context.source
             },
             target: {
-                mode: TargetModes.UpTo,
+                mode: TargetMode.UpTo,
                 numCards: 3,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 player: Players.Self
             },

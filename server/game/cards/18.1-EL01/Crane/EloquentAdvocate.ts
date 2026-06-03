@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { Locations } from '../../../Constants.js';
+import { Location } from '../../../Constants.js';
 
 class EloquentAdvocate extends DrawCard {
     static id = 'eloquent-advocate';
@@ -16,7 +16,7 @@ class EloquentAdvocate extends DrawCard {
             gameAction: AbilityDsl.actions.deckSearch({
                 amount: 2,
                 gameAction: AbilityDsl.actions.moveCard({
-                    destination: Locations.Hand
+                    destination: Location.Hand
                 }),
                 shuffle: false,
                 reveal: false,

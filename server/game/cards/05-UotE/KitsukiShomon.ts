@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type EventWindow from '../../Events/EventWindow.js';
 import ThenAbility from '../../ThenAbility.js';
@@ -15,7 +15,7 @@ export default class KitsukiShomon extends DrawCard {
             when: {
                 onCardDishonored: ({ card }: { card: BaseCard }, context: TriggeredAbilityContext) =>
                     card.controller === context.player &&
-                    card.type === CardTypes.Character &&
+                    card.type === CardType.Character &&
                     context.source.allowGameAction('dishonor', context) &&
                     card !== context.source
             },

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes } from '../../Constants.js';
+import { TargetMode } from '../../Constants.js';
 
 class JadeMasterpiece extends DrawCard {
     static id = 'jade-masterpiece';
@@ -10,7 +10,7 @@ class JadeMasterpiece extends DrawCard {
             title: 'Move a fate to an unclaimed ring',
             cost: AbilityDsl.costs.bowSelf(),
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 activePromptTitle: 'Choose an unclaimed ring to move fate from',
                 ringCondition: ring => ring.isUnclaimed() && ring.fate > 0,
                 gameAction: AbilityDsl.actions.selectRing(context => ({

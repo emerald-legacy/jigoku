@@ -1,6 +1,6 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, EventNames, Locations, Players, PlayTypes } from '../../../Constants.js';
+import { CardType, EventName, Location, Players, PlayType } from '../../../Constants.js';
 import { ReduceableFateCost } from '../../../costs/ReduceableFateCost.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
@@ -52,7 +52,7 @@ class HifumiCost extends ReduceableFateCost {
 
     #cardsThatCanPayForHifumi(context: AbilityContext<any>): Set<DrawCard> {
         return new Set(
-            context.player.cardsInPlay.filter((c: DrawCard) => c.type === CardTypes.Character && c.getFate() > 0)
+            context.player.cardsInPlay.filter((c: DrawCard) => c.type === CardType.Character && c.getFate() > 0)
         );
     }
 }
@@ -66,7 +66,7 @@ export default class IsawaHifumi extends DrawCard {
     setupCardAbilities() {
         this.hifumiCost = new HifumiCost(false);
         this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventNames.OnRoundEnded, EventNames.OnCardLeavesPlay]);
+        this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
 
         this.action({
             title: 'Play an event from discard',
@@ -74,17 +74,17 @@ export default class IsawaHifumi extends DrawCard {
             cannotTargetFirst: true,
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an event',
-                cardType: CardTypes.Event,
+                cardType: CardType.Event,
                 controller: Players.Self,
-                location: Locations.ConflictDiscardPile,
+                location: Location.ConflictDiscardPile,
                 gameAction: AbilityDsl.actions.playCard({
                     resetOnCancel: true,
                     source: this,
-                    playType: PlayTypes.PlayFromHand,
+                    playType: PlayType.PlayFromHand,
                     postHandler: (eventContext) => {
                         const card = eventContext.source;
                         context.game.addMessage('{0} is removed from the game by {1}\'s ability', card, context.source);
-                        context.player.moveCard(card, Locations.RemovedFromGame);
+                        context.player.moveCard(card, Location.RemovedFromGame);
                     }
                 })
             })),

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Durations, CardTypes, Players } from '../../Constants.js';
+import { Duration, CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Outflank extends DrawCard {
@@ -14,10 +14,10 @@ class Outflank extends DrawCard {
             },
             target: {
                 controller: Players.Any,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => !card.isUnique(),
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    duration: Durations.UntilEndOfConflict,
+                    duration: Duration.UntilEndOfConflict,
                     effect: AbilityDsl.effects.cardCannot('declareAsDefender')
                 })
             },

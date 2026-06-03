@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -18,7 +18,7 @@ export default class MagnificentTriumph extends DrawCard {
             title: 'Give a character +2/+2',
             condition: () => this.game.isDuringConflict(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => this.#duelWinnersThisConflict.has(card),
                 gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({

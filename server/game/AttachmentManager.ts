@@ -1,4 +1,4 @@
-import { EffectNames } from './Constants.js';
+import { EffectName } from './Constants.js';
 import { GameModes } from '../GameModes.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
@@ -35,7 +35,7 @@ export class AttachmentManager {
         const illegalAttachments = new Set<DrawCard>(
             this.attachments.filter((attachment) => !host.allowAttachment(attachment) || !attachment.canAttach(host))
         );
-        for(const effectCard of host.getEffects(EffectNames.CannotHaveOtherRestrictedAttachments)) {
+        for(const effectCard of host.getEffects(EffectName.CannotHaveOtherRestrictedAttachments)) {
             for(const card of this.attachments) {
                 if(card.isRestricted() && card !== effectCard) {
                     illegalAttachments.add(card);
@@ -43,9 +43,9 @@ export class AttachmentManager {
             }
         }
 
-        const attachmentLimits = this.attachments.filter((card) => card.anyEffect(EffectNames.AttachmentLimit));
+        const attachmentLimits = this.attachments.filter((card) => card.anyEffect(EffectName.AttachmentLimit));
         for(const card of attachmentLimits) {
-            const limit = Math.max(...card.getEffects<number>(EffectNames.AttachmentLimit));
+            const limit = Math.max(...card.getEffects<number>(EffectName.AttachmentLimit));
             const matchingAttachments = this.attachments.filter((attachment) => attachment.id === card.id);
             for(const overflow of matchingAttachments.slice(0, -limit)) {
                 illegalAttachments.add(overflow);
@@ -69,7 +69,7 @@ export class AttachmentManager {
         }
 
         for(const object of this.attachments.reduce<Array<Record<string, number>>>(
-            (array, card) => array.concat(card.getEffects<Record<string, number>>(EffectNames.AttachmentRestrictTraitAmount)),
+            (array, card) => array.concat(card.getEffects<Record<string, number>>(EffectName.AttachmentRestrictTraitAmount)),
             []
         )) {
             for(const trait of Object.keys(object)) {
@@ -79,7 +79,7 @@ export class AttachmentManager {
                 }
             }
         }
-        const maximumRestricted = 2 + host.sumEffects(EffectNames.ModifyRestrictedAttachmentAmount);
+        const maximumRestricted = 2 + host.sumEffects(EffectName.ModifyRestrictedAttachmentAmount);
         if(this.attachments.filter((card) => card.isRestricted()).length > maximumRestricted) {
             game.promptForSelect(host.controller, {
                 activePromptTitle: 'Choose an attachment to discard',

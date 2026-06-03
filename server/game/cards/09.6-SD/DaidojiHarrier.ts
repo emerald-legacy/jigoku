@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Players, TargetModes } from '../../Constants.js';
+import { Location, Players, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class DaidojiHarrier extends DrawCard {
@@ -17,8 +17,8 @@ class DaidojiHarrier extends DrawCard {
                 activePromptTitle: 'Choose two cards to reveal',
                 player: Players.Opponent,
                 numCards: 2,
-                mode: TargetModes.Exactly,
-                location: Locations.Hand
+                mode: TargetMode.Exactly,
+                location: Location.Hand
             },
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.lookAt(context => ({

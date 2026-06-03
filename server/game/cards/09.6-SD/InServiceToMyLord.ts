@@ -1,30 +1,30 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, PlayTypes, CardTypes } from '../../Constants.js';
+import { Location, PlayType, CardType } from '../../Constants.js';
 
 class InServiceToMyLord extends DrawCard {
     static id = 'in-service-to-my-lord';
 
     setupCardAbilities() {
         this.persistentEffect({
-            location: Locations.ConflictDiscardPile,
-            effect: AbilityDsl.effects.canPlayFromOwn(Locations.ConflictDiscardPile, [this], this, PlayTypes.Other)
+            location: Location.ConflictDiscardPile,
+            effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
         this.action({
             title: 'Ready a character',
             cost: AbilityDsl.costs.bow({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => !card.isUnique()
             }),
             target: {
                 activePromptTitle: 'Choose a unique character',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isUnique(),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.ready(),
                     AbilityDsl.actions.moveCard((context) => ({
                         target: context.source,
-                        destination: Locations.ConflictDeck,
+                        destination: Location.ConflictDeck,
                         bottom: true
                     }))
                 ])

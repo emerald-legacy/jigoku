@@ -1,4 +1,4 @@
-import { CardTypes, Decks, Durations } from '../../../Constants.js';
+import { CardType, Decks, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { AbilityContext } from '../../../AbilityContext.js';
@@ -19,7 +19,7 @@ export default class KakitaRusumi extends DrawCard {
                 amount: 4,
                 deck: Decks.DynastyDeck,
                 cardCondition: (card) =>
-                    card.type === CardTypes.Character && (card.printedCost ?? 0) <= 2 && card.isFaction('crane'),
+                    card.type === CardType.Character && (card.printedCost ?? 0) <= 2 && card.isFaction('crane'),
                 message: '{0} puts {1} into play {2}',
                 messageArgs: (context, cards) => [context.player, cards, statusOfIntern(context)],
                 shuffle: true,
@@ -35,7 +35,7 @@ export default class KakitaRusumi extends DrawCard {
                     }
                     return {
                         target: target,
-                        duration: Durations.UntilEndOfPhase,
+                        duration: Duration.UntilEndOfPhase,
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
                                 onConflictFinished: () => true

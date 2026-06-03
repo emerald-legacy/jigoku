@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Durations } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class PeerlessDiscipline extends DrawCard {
@@ -14,7 +14,7 @@ class PeerlessDiscipline extends DrawCard {
                     AbilityDsl.effects.modifyMilitarySkill(1),
                     AbilityDsl.effects.addTrait('bushi')
                 ],
-                duration: Durations.UntilEndOfPhase
+                duration: Duration.UntilEndOfPhase
             })),
             effect: 'give all characters they control +1{1} and the Bushi trait',
             effectArgs: ['military']

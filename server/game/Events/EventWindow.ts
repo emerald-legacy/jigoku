@@ -3,7 +3,7 @@ import { BaseStepWithPipeline } from '../gamesteps/BaseStepWithPipeline.js';
 import ForcedTriggeredAbilityWindow from '../gamesteps/ForcedTriggeredAbilityWindow.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import TriggeredAbilityWindow from '../gamesteps/TriggeredAbilityWindow.js';
-import { AbilityTypes } from '../Constants.js';
+import { AbilityType } from '../Constants.js';
 import KeywordAbilityWindow from '../gamesteps/KeywordAbilityWindow.js';
 import type Game from '../Game.js';
 import type { Event } from './Event.js';
@@ -31,20 +31,20 @@ export default class EventWindow extends BaseStepWithPipeline {
         this.pipeline.initialise([
             new SimpleStep(this.game, () => this.setCurrentEventWindow()),
             new SimpleStep(this.game, () => this.checkEventCondition()),
-            new SimpleStep(this.game, () => this.openWindow(AbilityTypes.WouldInterrupt)),
+            new SimpleStep(this.game, () => this.openWindow(AbilityType.WouldInterrupt)),
             new SimpleStep(this.game, () => this.createContingentEvents()),
-            new SimpleStep(this.game, () => this.openWindow(AbilityTypes.ForcedInterrupt)),
-            new SimpleStep(this.game, () => this.openWindow(AbilityTypes.Interrupt)),
-            new SimpleStep(this.game, () => this.checkKeywordAbilities(AbilityTypes.KeywordInterrupt)),
+            new SimpleStep(this.game, () => this.openWindow(AbilityType.ForcedInterrupt)),
+            new SimpleStep(this.game, () => this.openWindow(AbilityType.Interrupt)),
+            new SimpleStep(this.game, () => this.checkKeywordAbilities(AbilityType.KeywordInterrupt)),
             new SimpleStep(this.game, () => this.checkForOtherEffects()),
             new SimpleStep(this.game, () => this.preResolutionEffects()),
             new SimpleStep(this.game, () => this.executeHandler()),
             new SimpleStep(this.game, () => this.checkGameState()),
-            new SimpleStep(this.game, () => this.checkKeywordAbilities(AbilityTypes.KeywordReaction)),
+            new SimpleStep(this.game, () => this.checkKeywordAbilities(AbilityType.KeywordReaction)),
             new SimpleStep(this.game, () => this.checkThenAbilities()),
-            new SimpleStep(this.game, () => this.openWindow(AbilityTypes.ForcedReaction)),
-            new SimpleStep(this.game, () => this.openWindow(AbilityTypes.DuelReaction)), // ONLY USE FOR DUEL CHALLENGE, FOCUS, AND STRIKE
-            new SimpleStep(this.game, () => this.openWindow(AbilityTypes.Reaction)),
+            new SimpleStep(this.game, () => this.openWindow(AbilityType.ForcedReaction)),
+            new SimpleStep(this.game, () => this.openWindow(AbilityType.DuelReaction)), // ONLY USE FOR DUEL CHALLENGE, FOCUS, AND STRIKE
+            new SimpleStep(this.game, () => this.openWindow(AbilityType.Reaction)),
             new SimpleStep(this.game, () => this.resetCurrentEventWindow())
         ]);
     }
@@ -73,12 +73,12 @@ export default class EventWindow extends BaseStepWithPipeline {
         this.events.forEach(event => event.checkCondition());
     }
 
-    openWindow(abilityType: AbilityTypes) {
+    openWindow(abilityType: AbilityType) {
         if(this.events.length === 0) {
             return;
         }
 
-        if([AbilityTypes.ForcedReaction, AbilityTypes.ForcedInterrupt].includes(abilityType)) {
+        if([AbilityType.ForcedReaction, AbilityType.ForcedInterrupt].includes(abilityType)) {
             this.queueStep(new ForcedTriggeredAbilityWindow(this.game, abilityType, this));
         } else {
             this.queueStep(new TriggeredAbilityWindow(this.game, abilityType, this));
@@ -93,14 +93,14 @@ export default class EventWindow extends BaseStepWithPipeline {
         });
         if(contingentEvents.length > 0) {
             // Exclude current events from the new window, we just want to give players opportunities to respond to the contingent events
-            this.queueStep(new TriggeredAbilityWindow(this.game, AbilityTypes.WouldInterrupt, this, this.events.slice(0)));
+            this.queueStep(new TriggeredAbilityWindow(this.game, AbilityType.WouldInterrupt, this, this.events.slice(0)));
             contingentEvents.forEach(event => this.addEvent(event));
         }
     }
 
     // This catches any persistent/delayed effect cancels
     checkForOtherEffects() {
-        this.events.forEach(event => this.game.emit(event.name + ':' + AbilityTypes.OtherEffects, event));
+        this.events.forEach(event => this.game.emit(event.name + ':' + AbilityType.OtherEffects, event));
     }
 
     preResolutionEffects() {
@@ -125,7 +125,7 @@ export default class EventWindow extends BaseStepWithPipeline {
         this.game.checkGameState(this.eventsToExecute.some(event => (event as any).handler), this.eventsToExecute);
     }
 
-    checkKeywordAbilities(abilityType: AbilityTypes) {
+    checkKeywordAbilities(abilityType: AbilityType) {
         if(this.events.length === 0) {
             return;
         }

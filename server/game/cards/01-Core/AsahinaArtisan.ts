@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AsahinaArtisan extends DrawCard {
@@ -11,7 +11,7 @@ class AsahinaArtisan extends DrawCard {
             condition: () => this.game.isDuringConflict(),
             cost: AbilityDsl.costs.bowSelf(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card !== context.source && card.isFaction('crane'),
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
                     effect: AbilityDsl.effects.modifyPoliticalSkill(3)

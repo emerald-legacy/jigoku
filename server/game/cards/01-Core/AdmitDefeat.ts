@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AdmitDefeat extends DrawCard {
@@ -12,7 +12,7 @@ class AdmitDefeat extends DrawCard {
                 this.game.isDuringConflict() &&
                 this.game.currentConflict?.getNumberOfParticipantsFor('defender') === 1,
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isDefending(),
                 gameAction: AbilityDsl.actions.bow()
             }

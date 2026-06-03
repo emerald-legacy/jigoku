@@ -1,4 +1,4 @@
-import { Locations } from '../../../Constants.js';
+import { Location } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -27,7 +27,7 @@ export default class TheEastWind extends StrongholdCard {
                         }
                         return false;
                     },
-                    gameAction: AbilityDsl.actions.moveCard({ destination: Locations.Hand }),
+                    gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand }),
                     takesNothingGameAction: AbilityDsl.actions.gainFate()
                 };
             })

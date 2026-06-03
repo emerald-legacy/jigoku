@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
@@ -12,7 +12,7 @@ export default class CompetingInterests extends DrawCard {
             title: 'Bow a character',
             condition: (context) => this.#hasEnoughUniques(context),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isUnique() && card.isParticipating(),
                 gameAction: AbilityDsl.actions.bow()

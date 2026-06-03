@@ -1,4 +1,4 @@
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
@@ -24,7 +24,7 @@ export default class UtakuStableMaster extends DrawCard {
             title: 'Bow participating character with lower glory than participating cavalry.',
             condition: (context) => context.game.isDuringConflict(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: DrawCard, context) =>
                     card.isParticipating() &&
                     card.glory <= participatingCavGlory(context.game.currentConflict, context.player),

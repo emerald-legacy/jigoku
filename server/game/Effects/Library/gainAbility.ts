@@ -1,4 +1,4 @@
-import { type AbilityTypes, EffectNames } from '../../Constants.js';
+import { type AbilityType, EffectName } from '../../Constants.js';
 import type {
     ActionProps,
     PersistentEffectProps,
@@ -10,25 +10,25 @@ import GainAbility from '../GainAbility.js';
 
 type Res = ReturnType<typeof EffectBuilder.card.static>;
 
-export function gainAbility(abilityType: AbilityTypes.Action, properties: ActionProps): Res;
+export function gainAbility(abilityType: AbilityType.Action, properties: ActionProps): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overloads are not true redeclarations
-export function gainAbility(abilityType: AbilityTypes.DuelReaction, properties: TriggeredAbilityWhenProps): Res;
+export function gainAbility(abilityType: AbilityType.DuelReaction, properties: TriggeredAbilityWhenProps): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overloads are not true redeclarations
-export function gainAbility(abilityType: AbilityTypes.Persistent, properties: PersistentEffectProps): Res;
+export function gainAbility(abilityType: AbilityType.Persistent, properties: PersistentEffectProps): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overloads are not true redeclarations
-export function gainAbility(abilityType: AbilityTypes.Reaction, properties: TriggeredAbilityProps): Res;
+export function gainAbility(abilityType: AbilityType.Reaction, properties: TriggeredAbilityProps): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overloads are not true redeclarations
-export function gainAbility(abilityType: AbilityTypes.WouldInterrupt, properties: TriggeredAbilityProps): Res;
+export function gainAbility(abilityType: AbilityType.WouldInterrupt, properties: TriggeredAbilityProps): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overloads are not true redeclarations
-export function gainAbility(abilityType: AbilityTypes.Interrupt, properties: TriggeredAbilityProps): Res;
+export function gainAbility(abilityType: AbilityType.Interrupt, properties: TriggeredAbilityProps): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overloads are not true redeclarations
-export function gainAbility(abilityType: AbilityTypes.ForcedReaction, properties: TriggeredAbilityProps): Res;
+export function gainAbility(abilityType: AbilityType.ForcedReaction, properties: TriggeredAbilityProps): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overloads are not true redeclarations
-export function gainAbility(abilityType: AbilityTypes.ForcedInterrupt, properties: TriggeredAbilityProps): Res;
+export function gainAbility(abilityType: AbilityType.ForcedInterrupt, properties: TriggeredAbilityProps): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overload implementation
 export function gainAbility(
-    abilityType: AbilityTypes,
+    abilityType: AbilityType,
     properties: ActionProps | TriggeredAbilityWhenProps | TriggeredAbilityProps | PersistentEffectProps
 ) {
-    return EffectBuilder.card.static(EffectNames.GainAbility, new GainAbility(abilityType, properties));
+    return EffectBuilder.card.static(EffectName.GainAbility, new GainAbility(abilityType, properties));
 }

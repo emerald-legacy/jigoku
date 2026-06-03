@@ -1,4 +1,4 @@
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
@@ -18,7 +18,7 @@ export default class ShiroGisu extends StrongholdCard {
                 amount: (context) => this.getCharactersWithoutFate(context),
                 activePromptTitle: 'Choose a card to put in your hand',
                 gameAction: AbilityDsl.actions.moveCard({
-                    destination: Locations.Hand
+                    destination: Location.Hand
                 }),
                 shuffle: false,
                 reveal: false,

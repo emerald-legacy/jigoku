@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class FrontlineEngineer extends DrawCard {
@@ -18,8 +18,8 @@ class FrontlineEngineer extends DrawCard {
             gameAction: AbilityDsl.actions.selectCard<ProvinceCard>(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 cardCondition: card => card.isConflictProvince(),
                 subActionProperties: card => {
                     context.target = card;
@@ -29,7 +29,7 @@ class FrontlineEngineer extends DrawCard {
                     handler: context => this.game.promptWithHandlerMenu(context.player, {
                         activePromptTitle: 'Choose a holding',
                         context: context,
-                        cardCondition: (card: any) => card.getType() === CardTypes.Holding,
+                        cardCondition: (card: any) => card.getType() === CardType.Holding,
                         cards: context.player.dynastyDeck.slice(0, 5),
                         choices: ['Take nothing'],
                         handlers: [() => {
@@ -46,7 +46,7 @@ class FrontlineEngineer extends DrawCard {
                             context.player.moveCard(cardFromDeck, context.target.location);
                             cardFromDeck.facedown = false;
                             cards.forEach(element => {
-                                context.player.moveCard(element, Locations.DynastyDiscardPile);
+                                context.player.moveCard(element, Location.DynastyDiscardPile);
                             });
                             context.player.shuffleDynastyDeck();
                         }
@@ -58,7 +58,7 @@ class FrontlineEngineer extends DrawCard {
 
     getHoldingsInPlay() {
         return this.game.allCards.reduce((sum, card) => {
-            if(card.isFaceup() && (card.isInProvince() && card.type === CardTypes.Holding)) {
+            if(card.isFaceup() && (card.isInProvince() && card.type === CardType.Holding)) {
                 return sum + 1;
             }
             return sum;

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Dispatch extends DrawCard {
@@ -9,7 +9,7 @@ class Dispatch extends DrawCard {
         this.action({
             title: 'Move a character into or out of the conflict',
             gameAction: AbilityDsl.actions.selectCard({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isFaction('unicorn'),
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.conditional({

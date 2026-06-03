@@ -1,4 +1,4 @@
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -17,7 +17,7 @@ export default class EarthsStagnation extends DrawCard {
             when: {
                 onCardPlayed: (event, context) =>
                     context.source.parent &&
-                    (event.card as DrawCard).type === CardTypes.Event &&
+                    (event.card as DrawCard).type === CardType.Event &&
                     context.source.parent.isParticipating()
             },
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
@@ -36,7 +36,7 @@ export default class EarthsStagnation extends DrawCard {
     public canPlay(context: TriggeredAbilityContext, playType: string) {
         return (
             context.player.cardsInPlay.some(
-                (card: DrawCard) => card.getType() === CardTypes.Character && card.hasTrait('shugenja')
+                (card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja')
             ) && super.canPlay(context, playType)
         );
     }

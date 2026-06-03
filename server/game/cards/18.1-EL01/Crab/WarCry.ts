@@ -1,4 +1,4 @@
-import { ConflictTypes, CardTypes, Locations } from '../../../Constants.js';
+import { ConflictType, CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
@@ -17,7 +17,7 @@ export default class WarCry extends DrawCard {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.player &&
                     event.conflict.attackingPlayer === context.player &&
-                    event.conflict.conflictType === ConflictTypes.Military &&
+                    event.conflict.conflictType === ConflictType.Military &&
                     !(context.game.currentConflict as Conflict).isAtStrongholdProvince() &&
                     areAllAttackersBerserker(event.conflict)
             },
@@ -25,9 +25,9 @@ export default class WarCry extends DrawCard {
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
-                cardCondition: (card) => card.isConflictProvince() && card.location !== Locations.StrongholdProvince,
+                cardType: CardType.Province,
+                location: Location.Provinces,
+                cardCondition: (card) => card.isConflictProvince() && card.location !== Location.StrongholdProvince,
                 message: '{0} breaks {1}',
                 messageArgs: (cards) => [context.player, cards],
                 gameAction: AbilityDsl.actions.breakProvince()

@@ -1,15 +1,15 @@
 import { getAbilityDsl, type AbilityDslType } from './AbilityDslProvider.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { GameObject } from './GameObject.js';
-import { Locations, Durations } from './Constants.js';
+import { Location, Duration } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type Effect from './Effects/Effect.js';
 import type { EffectFactory } from './Effects/EffectBuilder.js';
 
 interface EffectProperties {
-    duration?: Durations;
-    location?: Locations;
+    duration?: Duration;
+    location?: Location;
     effect?: EffectFactory | EffectFactory[];
     match?: any;
     condition?: (context: AbilityContext) => boolean;
@@ -70,9 +70,9 @@ class EffectSource extends GameObject {
         return false;
     }
 
-    private applyDurationEffect(duration: Durations, propertyFactory: PropertyFactory): void {
+    private applyDurationEffect(duration: Duration, propertyFactory: PropertyFactory): void {
         const properties = propertyFactory(getAbilityDsl());
-        this.addEffectToEngine(Object.assign({ duration, location: Locations.Any }, properties));
+        this.addEffectToEngine(Object.assign({ duration, location: Location.Any }, properties));
     }
 
     /**
@@ -80,7 +80,7 @@ class EffectSource extends GameObject {
      * duel.
      */
     untilEndOfDuel(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Durations.UntilEndOfDuel, propertyFactory);
+        this.applyDurationEffect(Duration.UntilEndOfDuel, propertyFactory);
     }
 
     /**
@@ -88,37 +88,37 @@ class EffectSource extends GameObject {
      * conflict.
      */
     untilEndOfConflict(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Durations.UntilEndOfConflict, propertyFactory);
+        this.applyDurationEffect(Duration.UntilEndOfConflict, propertyFactory);
     }
 
     /**
      * Applies an immediate effect which lasts until the end of the phase.
      */
     untilEndOfPhase(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Durations.UntilEndOfPhase, propertyFactory);
+        this.applyDurationEffect(Duration.UntilEndOfPhase, propertyFactory);
     }
 
     /**
      * Applies an immediate effect which lasts until the end of the round.
      */
     untilEndOfRound(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Durations.UntilEndOfRound, propertyFactory);
+        this.applyDurationEffect(Duration.UntilEndOfRound, propertyFactory);
     }
 
     untilPassPriority(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Durations.UntilPassPriority, propertyFactory);
+        this.applyDurationEffect(Duration.UntilPassPriority, propertyFactory);
     }
 
     untilOpponentPassPriority(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Durations.UntilOpponentPassPriority, propertyFactory);
+        this.applyDurationEffect(Duration.UntilOpponentPassPriority, propertyFactory);
     }
 
     untilNextPassPriority(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Durations.UntilNextPassPriority, propertyFactory);
+        this.applyDurationEffect(Duration.UntilNextPassPriority, propertyFactory);
     }
 
     untilSelfPassPriority(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Durations.UntilSelfPassPriority, propertyFactory);
+        this.applyDurationEffect(Duration.UntilSelfPassPriority, propertyFactory);
     }
 
     /**
@@ -126,7 +126,7 @@ class EffectSource extends GameObject {
      * `until` property for the effect has occurred.
      */
     lastingEffect(propertyFactory: PropertyFactory): void {
-        this.applyDurationEffect(Durations.Custom, propertyFactory);
+        this.applyDurationEffect(Duration.Custom, propertyFactory);
     }
 
     /*

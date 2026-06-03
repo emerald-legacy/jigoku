@@ -1,4 +1,4 @@
-import { CardTypes, DuelTypes, Players } from '../../Constants.js';
+import { CardType, DuelType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -13,17 +13,17 @@ export default class TaryuJiai extends DrawCard {
                 myShugenja: {
                     activePromptTitle: 'Choose a friendly shugenja',
                     controller: Players.Self,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: (card) => card.hasTrait('shugenja')
                 },
                 oppShugenja: {
                     dependsOn: 'myShugenja',
                     activePromptTitle: 'Choose an opposing shugenja',
                     controller: Players.Opponent,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: (card) => card.hasTrait('shugenja'),
                     gameAction: AbilityDsl.actions.duel((context) => ({
-                        type: DuelTypes.Glory,
+                        type: DuelType.Glory,
                         challenger: context.targets.myShugenja,
                         message: '{0} chooses a ring effect to resolve',
                         messageArgs: (duel) => duel.winnerController,

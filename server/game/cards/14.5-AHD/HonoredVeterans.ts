@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
-import { CardTypes, EventNames, Players } from '../../Constants.js';
+import { CardType, EventName, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 
@@ -13,14 +13,14 @@ export default class HonoredVeterans extends DrawCard {
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventNames.OnPhaseStarted, EventNames.OnCardPlayed]);
+        this.eventRegistrar.register([EventName.OnPhaseStarted, EventName.OnCardPlayed]);
 
         this.action({
             title: 'Honor characters',
             condition: () => this.canBePlayed(),
             targets: {
                 myCharacter: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     optional: true,
                     hideIfNoLegalTargets: true,
@@ -29,7 +29,7 @@ export default class HonoredVeterans extends DrawCard {
                 },
                 oppCharacter: {
                     player: Players.Opponent,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     optional: true,
                     hideIfNoLegalTargets: true,
@@ -43,7 +43,7 @@ export default class HonoredVeterans extends DrawCard {
     }
 
     public onCardPlayed(event: any) {
-        if(event.player && event.card.type === CardTypes.Character) {
+        if(event.player && event.card.type === CardType.Character) {
             this.charactersPlayedThisPhase.add(event.card);
         }
     }

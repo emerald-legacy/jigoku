@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class FireElementalGuard extends DrawCard {
@@ -12,7 +12,7 @@ class FireElementalGuard extends DrawCard {
                 this.game.isDuringConflict() &&
                 (this.game.currentConflict?.getNumberOfCardsPlayed(context.player, (card: any) => card.hasTrait('spell')) ?? 0) > 2,
             target: {
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 gameAction: ability.actions.discardFromPlay()
             }
         });

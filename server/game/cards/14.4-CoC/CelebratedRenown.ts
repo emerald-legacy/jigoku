@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class CelebratedRenown extends DrawCard {
@@ -10,9 +10,9 @@ class CelebratedRenown extends DrawCard {
             title: 'Honor a character',
             target: {
                 controller: Players.Any,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => {
-                    let charactersInPlay = context.game.findAnyCardsInPlay((c: any) => c.type === CardTypes.Character);
+                    let charactersInPlay = context.game.findAnyCardsInPlay((c: any) => c.type === CardType.Character);
                     return card.getFate() === Math.max(...charactersInPlay.map((c: any) => c.getFate()));
                 },
                 gameAction: AbilityDsl.actions.honor()

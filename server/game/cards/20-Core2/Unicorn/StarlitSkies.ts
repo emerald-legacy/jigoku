@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { Locations, TargetModes } from '../../../Constants.js';
+import { Location, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 const possibleChoices = {
@@ -23,7 +23,7 @@ export default class StarlitSkies extends DrawCard {
             title: 'Look at top 3 cards',
             evenDuringDynasty: true,
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 activePromptTitle: 'Choose which deck to look at:',
                 choices: Object.fromEntries(
                     Object.entries(possibleChoices).map(([name, { condition }]) => [name, condition])
@@ -40,7 +40,7 @@ export default class StarlitSkies extends DrawCard {
                 const messages = ['{0} places a card on the bottom of the deck', '{0} chooses to discard {1}'];
                 const destinations: string[] = [
                     topThree[0].isDynasty ? 'dynasty deck bottom' : 'conflict deck bottom',
-                    topThree[0].isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile
+                    topThree[0].isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile
                 ];
                 let choices: string[] = [];
                 const handlers: (() => void)[] = [];
@@ -49,7 +49,7 @@ export default class StarlitSkies extends DrawCard {
                     const dest = destinations.pop();
                     if(msg && dest) {
                         context.game.addMessage(msg, context.player, card);
-                        choice.player(context).moveCard(card, dest as Locations);
+                        choice.player(context).moveCard(card, dest as Location);
                     }
                     if(messages.length > 0) {
                         const index = topThree.findIndex((x) => x === card);

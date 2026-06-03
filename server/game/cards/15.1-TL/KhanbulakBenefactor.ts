@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { PlayTypes } from '../../Constants.js';
+import { PlayType } from '../../Constants.js';
 
 class KhanbulakBenefactor extends DrawCard {
     static id = 'khanbulak-benefactor';
@@ -10,7 +10,7 @@ class KhanbulakBenefactor extends DrawCard {
             condition: context => context.source.isParticipating(),
             effect: AbilityDsl.effects.reduceCost({
                 amount: 1,
-                playingTypes: PlayTypes.PlayFromHand
+                playingTypes: PlayType.PlayFromHand
             })
         });
 

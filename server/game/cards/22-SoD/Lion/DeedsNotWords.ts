@@ -1,4 +1,4 @@
-import { CardTypes, EventNames, Players, TargetModes } from '../../../Constants.js';
+import { CardType, EventName, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -11,7 +11,7 @@ export default class DeedsNotWords extends DrawCard {
             title: 'Give a character +2 mil',
 
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, _context) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.sequential([
@@ -22,7 +22,7 @@ export default class DeedsNotWords extends DrawCard {
                         targetController: context.player,
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
-                                afterConflict: (event: EventPayload<EventNames.AfterConflict>) =>
+                                afterConflict: (event: EventPayload<EventName.AfterConflict>) =>
                                     context.player === event.conflict.winner
                             },
                             gameAction: AbilityDsl.actions.claimImperialFavor(context => ({ target: context.player })),
@@ -35,7 +35,7 @@ export default class DeedsNotWords extends DrawCard {
             then: context => ({
                 thenCondition: () => !!context && context.player.imperialFavor !== '',
                 target: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     choices: {
                         'Discard the Imperial Favor': AbilityDsl.actions.joint([
                             AbilityDsl.actions.loseImperialFavor(() => ({

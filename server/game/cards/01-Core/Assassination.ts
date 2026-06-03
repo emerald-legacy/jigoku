@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class Assassination extends DrawCard {
@@ -11,7 +11,7 @@ class Assassination extends DrawCard {
             condition: () => this.game.isDuringConflict(),
             cost: AbilityDsl.costs.payHonor(3),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.costLessThan(3),
                 gameAction: AbilityDsl.actions.discardFromPlay()
             },

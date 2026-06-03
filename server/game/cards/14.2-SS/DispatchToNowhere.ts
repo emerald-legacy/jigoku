@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class DispatchToNowhere extends DrawCard {
@@ -9,7 +9,7 @@ class DispatchToNowhere extends DrawCard {
         this.action({
             title: 'Discard a character with no fate',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.getFate() === 0,
                 gameAction: AbilityDsl.actions.discardFromPlay()
             }

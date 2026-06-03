@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Elements } from '../../../Constants.js';
+import { CardType, Element } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 const elementKeys = {
     air: 'asako-reina-air',
@@ -34,7 +34,7 @@ class AsakoReina extends DrawCard {
                     trueGameAction: AbilityDsl.actions.selectCard(context => ({
                         activePromptTitle: 'Choose a 2 cost or lower character to ready',
                         cardCondition: card => card.costLessThan(3),
-                        cardType: CardTypes.Character,
+                        cardType: CardType.Character,
                         gameAction: AbilityDsl.actions.ready(),
                         targets: false,
                         message: '{0} chooses to ready {1} with {2}\'s effect',
@@ -46,7 +46,7 @@ class AsakoReina extends DrawCard {
                     condition: context => context.game.rings[this.getCurrentElementSymbol(elementKeys.fire)].isConsideredClaimed(context.player),
                     trueGameAction: AbilityDsl.actions.selectCard(context => ({
                         activePromptTitle: 'Choose a character to honor',
-                        cardType: CardTypes.Character,
+                        cardType: CardType.Character,
                         gameAction: AbilityDsl.actions.honor(),
                         targets: false,
                         message: '{0} chooses to honor {1} with {2}\'s effect',
@@ -92,29 +92,29 @@ class AsakoReina extends DrawCard {
         symbols.push({
             key: elementKeys.air,
             prettyName: '+1 honor',
-            element: Elements.Air
+            element: Element.Air
         });
         symbols.push({
             key: elementKeys.earth,
             prettyName: 'draw a card',
-            element: Elements.Earth
+            element: Element.Earth
         });
         symbols.push({
             key: elementKeys.fire,
             prettyName: 'honor a character',
-            element: Elements.Fire
+            element: Element.Fire
         });
 
         symbols.push({
             key: elementKeys.water,
             prettyName: 'ready a 2 cost or less character',
-            element: Elements.Water
+            element: Element.Water
         });
 
         symbols.push({
             key: elementKeys.void,
             prettyName: '+1 fate',
-            element: Elements.Void
+            element: Element.Void
         });
         return symbols;
     }

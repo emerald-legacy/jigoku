@@ -1,4 +1,4 @@
-import { EventNames, Locations, Phases } from '../../../Constants.js';
+import { EventName, Location, Phases } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -13,11 +13,11 @@ export default class RelentlessGloryseeker extends DrawCard {
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventNames.OnRoundEnded, EventNames.OnCardLeavesPlay]);
+        this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
 
         this.reaction({
             title: 'Put this character into play',
-            location: Locations.DynastyDiscardPile,
+            location: Location.DynastyDiscardPile,
             when: {
                 onCardLeavesPlay: (event, context) =>
                     event.card === context.source &&
@@ -40,14 +40,14 @@ export default class RelentlessGloryseeker extends DrawCard {
     public onCardLeavesPlay(event: any) {
         if(
             event.card === this &&
-            this.location !== Locations.RemovedFromGame &&
+            this.location !== Location.RemovedFromGame &&
             this.ressurrectionsThisRound >= MAXIMUM_RESSURRECTIONS
         ) {
             this.game.addMessage(
                 '{0} is removed from the game due to leaving play - may their tales lead them to Yomi',
                 this
             );
-            this.owner.moveCard(this, Locations.RemovedFromGame);
+            this.owner.moveCard(this, Location.RemovedFromGame);
         }
     }
 }

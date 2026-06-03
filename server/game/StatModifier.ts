@@ -1,18 +1,18 @@
 import type BaseCard from './BaseCard.js';
-import { CardTypes } from './Constants.js';
+import { CardType } from './Constants.js';
 
 interface EffectLike {
-    context?: { source?: { name?: string; type?: CardTypes } };
+    context?: { source?: { name?: string; type?: CardType } };
 }
 
 class StatModifier {
     amount: number;
     name: string;
     countsAsBase: boolean = false;
-    type: CardTypes | undefined;
+    type: CardType | undefined;
     overrides: boolean;
 
-    constructor(amount: number, name: string, overrides: boolean, type?: CardTypes) {
+    constructor(amount: number, name: string, overrides: boolean, type?: CardType) {
         this.amount = amount;
         this.name = name;
         this.overrides = overrides;
@@ -26,14 +26,14 @@ class StatModifier {
         return 'Unknown';
     }
 
-    static getEffectType(effect: EffectLike | null | undefined): CardTypes | undefined {
+    static getEffectType(effect: EffectLike | null | undefined): CardType | undefined {
         if(effect && effect.context && effect.context.source) {
             return effect.context.source.type;
         }
         return undefined;
     }
 
-    static getCardType(card: BaseCard | null | undefined): CardTypes | undefined {
+    static getCardType(card: BaseCard | null | undefined): CardType | undefined {
         if(card) {
             return card.type;
         }

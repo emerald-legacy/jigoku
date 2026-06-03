@@ -83,19 +83,19 @@ describe('Player getSourceList', function() {
         this.player = new Player('1', { username: 'Player 1', settings: {} }, true, this.gameSpy);
     });
 
-    it('returns the hand array for Locations.Hand', function() {
+    it('returns the hand array for Location.Hand', function() {
         expect(this.player.getSourceList('hand')).toBe(this.player.hand);
     });
 
-    it('returns the conflictDeck array for Locations.ConflictDeck', function() {
+    it('returns the conflictDeck array for Location.ConflictDeck', function() {
         expect(this.player.getSourceList('conflict deck')).toBe(this.player.conflictDeck);
     });
 
-    it('returns the dynastyDeck array for Locations.DynastyDeck', function() {
+    it('returns the dynastyDeck array for Location.DynastyDeck', function() {
         expect(this.player.getSourceList('dynasty deck')).toBe(this.player.dynastyDeck);
     });
 
-    it('returns the cardsInPlay array for Locations.PlayArea', function() {
+    it('returns the cardsInPlay array for Location.PlayArea', function() {
         expect(this.player.getSourceList('play area')).toBe(this.player.cardsInPlay);
     });
 
@@ -121,7 +121,7 @@ describe('Player getSourceList', function() {
         expect(result.length).toBe(0);
     });
 
-    it('returns a plain array for Locations.Provinces combining all province zones', function() {
+    it('returns a plain array for Location.Provinces combining all province zones', function() {
         const cardA = { uuid: 'a' };
         const cardB = { uuid: 'b' };
         this.player.provinceOne.push(cardA);

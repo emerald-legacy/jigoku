@@ -1,4 +1,4 @@
-import { EffectNames, EventNames, Phases } from '../Constants.js';
+import { EffectName, EventName, Phases } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Game from '../Game.js';
 import { Phase } from './Phase.js';
@@ -63,7 +63,7 @@ export class DynastyPhase extends Phase {
             }
         }
 
-        this.game.raiseEvent(EventNames.OnRevealFacedownDynastyCards, { allRevealedCards });
+        this.game.raiseEvent(EventName.OnRevealFacedownDynastyCards, { allRevealedCards });
     }
 
     #collectFate() {
@@ -82,10 +82,10 @@ export class DynastyPhase extends Phase {
     #checkForRepeatDynasty() {
         let restarted = false;
         for(const player of this.game.getPlayersInFirstPlayerOrder()) {
-            if(!restarted && player.anyEffect(EffectNames.RestartDynastyPhase)) {
+            if(!restarted && player.anyEffect(EffectName.RestartDynastyPhase)) {
                 restarted = true;
                 player.resetHonorEvents(this.game.roundNumber, this.game.currentPhase);
-                const effectSource = player.mostRecentEffect(EffectNames.RestartDynastyPhase);
+                const effectSource = player.mostRecentEffect(EffectName.RestartDynastyPhase);
                 this.game.addMessage('{0} has started a new dynasty phase!', effectSource);
                 const dynastyPhase = new DynastyPhase(this.game, false);
                 this.game.queueStep(dynastyPhase);

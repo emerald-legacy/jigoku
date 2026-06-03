@@ -1,4 +1,4 @@
-import { CardTypes, Durations, Locations, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Duration, Location, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -11,16 +11,16 @@ export default class BayushiKotaro extends DrawCard {
             condition: (context) => context.source.isParticipating(),
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.reveal((context) => ({
-                    target: context.player.getDynastyCardsInProvince(Locations.Provinces)
+                    target: context.player.getDynastyCardsInProvince(Location.Provinces)
                 })),
                 AbilityDsl.actions.selectCard((context) => ({
                     activePromptTitle: 'Choose a character to put into the conflict',
                     numCards: 1,
                     targets: true,
-                    mode: TargetModes.Exactly,
+                    mode: TargetMode.Exactly,
                     optional: false,
-                    cardType: CardTypes.Character,
-                    location: [Locations.Provinces],
+                    cardType: CardType.Character,
+                    location: [Location.Provinces],
                     controller: Players.Self,
                     cardCondition: (card) =>
                         !card.facedown &&
@@ -32,8 +32,8 @@ export default class BayushiKotaro extends DrawCard {
                     gameAction: AbilityDsl.actions.sequential([
                         AbilityDsl.actions.putIntoConflict(),
                         AbilityDsl.actions.cardLastingEffect(() => ({
-                            duration: Durations.UntilEndOfPhase,
-                            location: [Locations.PlayArea],
+                            duration: Duration.UntilEndOfPhase,
+                            location: [Location.PlayArea],
                             effect: AbilityDsl.effects.delayedEffect({
                                 when: { onConflictFinished: () => true },
                                 gameAction: AbilityDsl.actions.returnToDeck({ bottom: true })

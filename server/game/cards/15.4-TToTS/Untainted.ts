@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, EventNames, Locations, TargetModes } from '../../Constants.js';
+import { CardType, EventName, Location, TargetMode } from '../../Constants.js';
 import type { StatusToken } from '../../StatusToken.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
@@ -15,14 +15,14 @@ class Untainted extends DrawCard {
         this.reaction({
             title: 'discard status token',
             when: {
-                afterConflict: (event: EventPayload<EventNames.AfterConflict>, context) => !!context.source.parent &&
+                afterConflict: (event: EventPayload<EventName.AfterConflict>, context) => !!context.source.parent &&
                     event.conflict.winner === context.player
                     && context.source.parent.isConflictProvince()
             },
             target: {
                 activePromptTitle: 'Choose a status token',
-                mode: TargetModes.Token,
-                location: Locations.Any,
+                mode: TargetMode.Token,
+                location: Location.Any,
                 tokenCondition: (token: StatusToken, context: AbilityContext<this>) => {
                     return !!token.card && (token.card === context.source.parent || (token.card instanceof DrawCard && token.card.isParticipating()));
                 }
@@ -48,7 +48,7 @@ class Untainted extends DrawCard {
     }
 
     canPlayOn(source: BaseCard | Ring) {
-        return source instanceof ProvinceCard && !source.isBroken && this.getType() === CardTypes.Attachment;
+        return source instanceof ProvinceCard && !source.isBroken && this.getType() === CardType.Attachment;
     }
 
     canAttach(parent: BaseCard | Ring) {
@@ -56,7 +56,7 @@ class Untainted extends DrawCard {
             return false;
         }
 
-        return parent instanceof ProvinceCard && this.getType() === CardTypes.Attachment;
+        return parent instanceof ProvinceCard && this.getType() === CardType.Attachment;
     }
 }
 

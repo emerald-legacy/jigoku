@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AkodoMakoto extends DrawCard {
@@ -14,7 +14,7 @@ class AkodoMakoto extends DrawCard {
                 }
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => {
                     return card.hasTrait('courtier') && card.isParticipating();

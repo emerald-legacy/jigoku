@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes, CardTypes } from '../../Constants.js';
+import { TargetMode, CardType } from '../../Constants.js';
 
 class KakitaYoshi2 extends DrawCard {
     static id = 'kakita-yoshi-2';
@@ -15,9 +15,9 @@ class KakitaYoshi2 extends DrawCard {
                     event.conflict.conflictType === 'political'
             },
             target: {
-                mode: TargetModes.UpToVariable,
+                mode: TargetMode.UpToVariable,
                 numCardsFunc: (context) => context.player.getNumberOfFaceupProvinces(),
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.dishonor()
             }
         });

@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { Players, CardTypes } from '../../../Constants.js';
+import { Players, CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 class HiddenLineage extends DrawCard {
@@ -9,11 +9,11 @@ class HiddenLineage extends DrawCard {
         this.action({
             title: 'Move an attachment',
             target: {
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 controller: Players.Any,
-                cardCondition: (card, context) => card.parent && card.parent.type === CardTypes.Character && card.parent.controller === context.player,
+                cardCondition: (card, context) => card.parent && card.parent.type === CardType.Character && card.parent.controller === context.player,
                 gameAction: AbilityDsl.actions.selectCard(context => ({
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: card => card !== context.target.parent && card.controller === context.player,
                     message: '{0} moves {1} to {2}',
                     messageArgs: card => [context.player, context.target, card],

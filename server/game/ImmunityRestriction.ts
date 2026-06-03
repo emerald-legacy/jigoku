@@ -1,4 +1,4 @@
-import { Stages } from './Constants.js';
+import { Stage } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 
 class ImmunityRestriction {
@@ -11,7 +11,7 @@ class ImmunityRestriction {
     isMatch(type: string, abilityContext: AbilityContext | null): boolean {
         return Boolean(
             abilityContext &&
-            abilityContext.stage !== Stages.Cost &&
+            abilityContext.stage !== Stage.Cost &&
             this.condition(abilityContext)
         );
     }

@@ -1,4 +1,4 @@
-import { CardTypes, Elements } from '../../Constants.js';
+import { CardType, Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,7 +12,7 @@ export default class AlongTheRiverOfGold extends ProvinceCard {
             title: 'switch a character\'s base skills',
             conflictProvinceCondition: (province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && !card.hasDash(),
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     effect: AbilityDsl.effects.switchBaseSkills()
@@ -27,7 +27,7 @@ export default class AlongTheRiverOfGold extends ProvinceCard {
         symbols.push({
             key: ELEMENT_KEY,
             prettyName: 'Province Element',
-            element: Elements.Water
+            element: Element.Water
         });
         return symbols;
     }

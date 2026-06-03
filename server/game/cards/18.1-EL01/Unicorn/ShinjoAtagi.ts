@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 
@@ -11,14 +11,14 @@ export default class ShinjoAtagi extends DrawCard {
             title: 'Set a participating character\'s skills',
             condition: (context) => context.source.isParticipating(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.selectCard((context) => ({
                     activePromptTitle: 'Choose an attacked province',
                     hidePromptIfSingleCard: true,
-                    cardType: CardTypes.Province,
-                    location: Locations.Provinces,
+                    cardType: CardType.Province,
+                    location: Location.Provinces,
                     message: '{3} sets the {1} skill of {0} to {2}{1}',
                     messageArgs: (card: ProvinceCard) => [
                         context.target,

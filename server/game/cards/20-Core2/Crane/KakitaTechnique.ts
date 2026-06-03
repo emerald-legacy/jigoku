@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Durations, EventNames, Players } from '../../../Constants.js';
+import { CardType, Duration, EventName, Players } from '../../../Constants.js';
 import { Direction } from '../../../GameActions/ModifyBidAction.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -23,15 +23,15 @@ export default class KakitaTechnique extends DrawCard {
         this.action({
             title: 'Give character +1/+1',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating() && (card.hasTrait('bushi') || card.hasTrait('duelist')),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.cardLastingEffect((context) => ({
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
-                                onCardPlayed: (event: EventPayload<EventNames.OnCardPlayed>, context: AbilityContext) =>
-                                    event.player === context.player && event.card.type === CardTypes.Event
+                                onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context: AbilityContext) =>
+                                    event.player === context.player && event.card.type === CardType.Event
                             },
                             message: '{0} gets +1{1} and +1{2} due to the delayed effect of {3}',
                             messageArgs: () => [context.target, 'military', 'political', context.source],
@@ -44,7 +44,7 @@ export default class KakitaTechnique extends DrawCard {
                     })),
                     AbilityDsl.actions.playerLastingEffect((context) => ({
                         targetController: context.player,
-                        duration: Durations.UntilPassPriority,
+                        duration: Duration.UntilPassPriority,
                         effect: AbilityDsl.effects.additionalAction(this.#getExtraActionCount(context))
                     }))
                 ])

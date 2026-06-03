@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 
 export default class GrizzledStrategist extends DrawCard {
     static id = 'grizzled-strategist';
@@ -12,11 +12,11 @@ export default class GrizzledStrategist extends DrawCard {
 
         this.wouldInterrupt({
             title: 'Cancel an event',
-            cost: AbilityDsl.costs.sacrifice({ cardType: CardTypes.Character }),
+            cost: AbilityDsl.costs.sacrifice({ cardType: CardType.Character }),
             when: {
                 onInitiateAbilityEffects: (event, context) => context.game.isDuringConflict() &&
                     context.source.isParticipating() &&
-                    event.card.type === CardTypes.Event
+                    event.card.type === CardType.Event
             },
             gameAction: AbilityDsl.actions.cancel()
         });

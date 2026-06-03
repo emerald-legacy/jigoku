@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 
 class TheSpearRushesForth extends DrawCard {
     static id = 'the-spear-rushes-forth';
@@ -13,7 +13,7 @@ class TheSpearRushesForth extends DrawCard {
                 cardCondition: card => card.isHonored && card.isParticipating()
             }),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating(),
                 gameAction: AbilityDsl.actions.bow()

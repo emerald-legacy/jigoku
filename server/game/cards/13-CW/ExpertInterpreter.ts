@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { Durations, Players, TargetModes, Phases } from '../../Constants.js';
+import { Duration, Players, TargetMode, Phases } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ExpertInterpreter extends DrawCard {
@@ -16,10 +16,10 @@ class ExpertInterpreter extends DrawCard {
             },
             targets: {
                 myRing: {
-                    mode: TargetModes.Ring,
+                    mode: TargetMode.Ring,
                     ringCondition: () => true,
                     gameAction: AbilityDsl.actions.ringLastingEffect((context: AbilityContext) => ({
-                        duration: Durations.UntilEndOfPhase,
+                        duration: Duration.UntilEndOfPhase,
                         targetController: Players.Any,
                         condition: () => this.game.currentConflict !== null && this.game.currentConflict.ring === context.rings.myRing,
                         effect: AbilityDsl.effects.playerCannot({
@@ -32,10 +32,10 @@ class ExpertInterpreter extends DrawCard {
                     player: Players.Opponent,
                     optional: true,
                     hideIfNoLegalTargets: true,
-                    mode: TargetModes.Ring,
+                    mode: TargetMode.Ring,
                     ringCondition: (ring: any, context: any) => context && context.costs.optionalHonorTransferFromOpponentCostPaid,
                     gameAction: AbilityDsl.actions.ringLastingEffect((context: AbilityContext) => ({
-                        duration: Durations.UntilEndOfPhase,
+                        duration: Duration.UntilEndOfPhase,
                         targetController: Players.Any,
                         condition: () => this.game.currentConflict !== null && this.game.currentConflict.ring === context.rings.oppRing,
                         effect: AbilityDsl.effects.playerCannot({

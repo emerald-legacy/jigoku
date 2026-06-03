@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import { AbilityContext } from '../../AbilityContext.js';
 
 class Censure extends DrawCard {
@@ -10,7 +10,7 @@ class Censure extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel an event',
             when: {
-                onInitiateAbilityEffects: event => event.card.type === CardTypes.Event
+                onInitiateAbilityEffects: event => event.card.type === CardType.Event
             },
             cannotBeMirrored: true,
             gameAction: AbilityDsl.actions.cancel()

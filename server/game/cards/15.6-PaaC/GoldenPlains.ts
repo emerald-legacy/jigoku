@@ -1,4 +1,4 @@
-import { CardTypes, EventNames, Locations, Players } from '../../Constants.js';
+import { CardType, EventName, Location, Players } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -9,7 +9,7 @@ export default class GoldenPlains extends ProvinceCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card: any, context: any) => card.controller === context?.player && card.location === Locations.PlayArea,
+            match: (card: any, context: any) => card.controller === context?.player && card.location === Location.PlayArea,
             targetController: Players.Self,
             effect: AbilityDsl.effects.addTrait('cavalry'),
             condition: (context: AbilityContext) => context.player.stronghold?.name === 'Golden Plains Outpost'
@@ -18,11 +18,11 @@ export default class GoldenPlains extends ProvinceCard {
         this.reaction({
             title: 'Move the conflict',
             when: {
-                onConflictDeclared: (event: EventPayload<EventNames.OnConflictDeclared>, context: any) => event.conflict.declaredProvince === context.source
+                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context: any) => event.conflict.declaredProvince === context.source
             },
             target: {
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 gameAction: AbilityDsl.actions.moveConflict()
             }
         });

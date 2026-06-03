@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import type DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
-import { TargetModes } from '../../Constants.js';
+import { TargetMode } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -13,7 +13,7 @@ export default class ShamefulDisplay extends ProvinceCard {
         this.action({
             title: 'Dishonor/Honor two characters',
             target: {
-                mode: TargetModes.Exactly,
+                mode: TargetMode.Exactly,
                 numCards: 2,
                 activePromptTitle: 'Select two characters',
                 cardCondition: (card: any) => card.isParticipating(),

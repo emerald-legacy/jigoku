@@ -1,4 +1,4 @@
-import { DuelTypes, Players } from '../../Constants.js';
+import { DuelType, Players } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -14,7 +14,7 @@ export default class KakitaToshimoko extends DrawCard {
                     context.source.isParticipating() && event.conflict.loser === context.player
             },
             initiateDuel: {
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
                 message: 'both players count 0 total skill for the conflict',
                 gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({

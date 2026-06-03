@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityTypes, CardTypes, EventNames, Players } from '../../Constants.js';
+import { AbilityType, CardType, EventName, Players } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 class JadeInlaidKatana extends DrawCard {
@@ -8,15 +8,15 @@ class JadeInlaidKatana extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Reaction, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Remove 1 fate from a character',
                 printedAbility: false,
                 when: {
-                    afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) =>
+                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) =>
                         context.source.isParticipating() && event.conflict.winner === context.source.controller
                 },
                 target: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Any,
                     cardCondition: (card: any) => {
                         return card.hasStatusTokens && card.isParticipating();

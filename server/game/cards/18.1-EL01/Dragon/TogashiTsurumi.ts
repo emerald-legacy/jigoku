@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardTypes, Locations, Players, PlayTypes } from '../../../Constants.js';
+import { CardType, Location, Players, PlayType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 
@@ -13,14 +13,14 @@ export default class TogashiTsurumi extends DrawCard {
         });
 
         this.persistentEffect({
-            location: Locations.PlayArea,
+            location: Location.PlayArea,
             targetLocation: this.uuid,
             targetController: Players.Self,
             match: (card) => card.location === this.uuid && card.hasTrait('kiho'),
             effect: [
                 AbilityDsl.effects.canPlayFromOutOfPlay(
                     (player: Player) => player === this.controller,
-                    PlayTypes.PlayFromHand
+                    PlayType.PlayFromHand
                 ),
                 AbilityDsl.effects.registerToPlayFromOutOfPlay()
             ]
@@ -32,9 +32,9 @@ export default class TogashiTsurumi extends DrawCard {
             effectArgs: (context) => [context.source],
             target: {
                 activePromptTitle: 'Choose a card',
-                location: Locations.Hand,
+                location: Location.Hand,
                 controller: Players.Self,
-                cardType: [CardTypes.Event, CardTypes.Attachment, CardTypes.Character],
+                cardType: [CardType.Event, CardType.Attachment, CardType.Character],
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.draw((context) => ({
                         target: context.player,

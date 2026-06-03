@@ -1,15 +1,15 @@
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardTypes, EventNames } from '../Constants.js';
+import { CardType, EventName } from '../Constants.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export type RestoreProvinceProperties = CardActionProperties;
 
-export class RestoreProvinceAction extends CardGameAction<CardActionProperties, EventNames.OnRestoreProvince> {
+export class RestoreProvinceAction extends CardGameAction<CardActionProperties, EventName.OnRestoreProvince> {
     name = 'restoreProvince';
-    eventName = EventNames.OnRestoreProvince;
-    targetType = [CardTypes.Province];
+    eventName = EventName.OnRestoreProvince;
+    targetType = [CardType.Province];
     cost = 'restoring {0}';
     effect = 'restore {0}';
 
@@ -23,11 +23,11 @@ export class RestoreProvinceAction extends CardGameAction<CardActionProperties, 
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnRestoreProvince>, card: ProvinceCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnRestoreProvince>, card: ProvinceCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
     }
 
-    eventHandler(event: GameEvent<EventNames.OnRestoreProvince>): void {
+    eventHandler(event: GameEvent<EventName.OnRestoreProvince>): void {
         (event.card as ProvinceCard).restoreProvince();
     }
 }

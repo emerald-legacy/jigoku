@@ -1,5 +1,5 @@
 import { AbilityContext } from '../AbilityContext.js';
-import { EventNames, Locations, Players } from '../Constants.js';
+import { EventName, Location, Players } from '../Constants.js';
 import type { Cost, Result } from '../Costs.js';
 import { Event } from '../Events/Event.js';
 import { removeFate } from '../GameActions/GameActions.js';
@@ -184,7 +184,7 @@ export class ReduceableFateCost implements Cost {
             activePromptTitle: `Choose a card to help pay the fate cost of ${currentCard.name}`,
             waitingPromptTitle,
             context,
-            location: Locations.PlayArea,
+            location: Location.PlayArea,
             controller: Players.Self,
             buttons,
             cardCondition: (card: BaseCard) => cards.has(card),
@@ -256,7 +256,7 @@ export class ReduceableFateCost implements Cost {
     public payEvent(context: AbilityContext): Event {
         const amount = this.getReducedCost(context);
         context.costs.fate = amount;
-        return new Event(EventNames.OnSpendFate, { amount, context }, (event) => {
+        return new Event(EventName.OnSpendFate, { amount, context }, (event) => {
             context.player.markUsedReducers(context.playType, context.source);
             context.player.fate -= this.getFinalFatecost(context, amount);
             this.afterPayHook(event);

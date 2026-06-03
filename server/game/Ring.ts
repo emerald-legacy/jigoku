@@ -1,5 +1,5 @@
 import EffectSource from './EffectSource.js';
-import { ConflictTypes, EffectNames, Elements } from './Constants.js';
+import { ConflictType, EffectName, Element } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type DrawCard from './DrawCard.js';
@@ -19,14 +19,14 @@ class Ring extends EffectSource {
     printedType = 'ring';
     claimed = false;
     claimedBy = '';
-    conflictType: ConflictTypes;
+    conflictType: ConflictType;
     contested = false;
-    element: Elements;
+    element: Element;
     fate = 0;
     attachments: DrawCard[] = [];
     removedFromGame = false;
 
-    constructor(game: Game, element: Elements, type: ConflictTypes) {
+    constructor(game: Game, element: Element, type: ConflictType) {
         super(game, element.replace(/\b\w/g, (l) => l.toUpperCase()) + ' Ring');
         this.conflictType = type;
         this.element = element;
@@ -34,7 +34,7 @@ class Ring extends EffectSource {
 
     isConsideredClaimed(player: Player | null = null): boolean {
         const check = (p: Player) =>
-            this.getEffects(EffectNames.ConsiderRingAsClaimed).some((match: (player: Player) => boolean) => match(p)) ||
+            this.getEffects(EffectName.ConsiderRingAsClaimed).some((match: (player: Player) => boolean) => match(p)) ||
             this.claimedBy === p.name;
         if(player) {
             return check(player);
@@ -42,13 +42,13 @@ class Ring extends EffectSource {
         return this.game.getPlayers().some((p: Player) => check(p));
     }
 
-    isConflictType(type: ConflictTypes): boolean {
+    isConflictType(type: ConflictType): boolean {
         return !this.isUnclaimed() && type === this.conflictType;
     }
 
     canDeclare(player: Player): boolean {
         return (
-            !this.getEffects(EffectNames.CannotDeclareRing).some((match: (player: Player) => boolean) => match(player)) &&
+            !this.getEffects(EffectName.CannotDeclareRing).some((match: (player: Player) => boolean) => match(player)) &&
             !this.claimed &&
             !this.removedFromGame
         );
@@ -71,15 +71,15 @@ class Ring extends EffectSource {
     }
 
     flipConflictType(): void {
-        if(this.conflictType === ConflictTypes.Military) {
-            this.conflictType = ConflictTypes.Political;
+        if(this.conflictType === ConflictType.Military) {
+            this.conflictType = ConflictType.Political;
         } else {
-            this.conflictType = ConflictTypes.Military;
+            this.conflictType = ConflictType.Military;
         }
     }
 
-    getElements(): Elements[] {
-        let elements: Elements[] = this.getEffects(EffectNames.AddElement).concat([this.element]);
+    getElements(): Element[] {
+        let elements: Element[] = this.getEffects(EffectName.AddElement).concat([this.element]);
         if(this.game.isDuringConflict() && this.game.currentConflict) {
             if(this.isContested()) {
                 elements = elements.concat(
@@ -87,9 +87,9 @@ class Ring extends EffectSource {
                         .getAttackers()
                         .map((card: DrawCard) =>
                             card.attachments.reduce(
-                                (array: Elements[], attachment: DrawCard) =>
-                                    array.concat(attachment.getEffects(EffectNames.AddElementAsAttacker)),
-                                card.getEffects(EffectNames.AddElementAsAttacker)
+                                (array: Element[], attachment: DrawCard) =>
+                                    array.concat(attachment.getEffects(EffectName.AddElementAsAttacker)),
+                                card.getEffects(EffectName.AddElementAsAttacker)
                             )
                         )
                 );
@@ -98,7 +98,7 @@ class Ring extends EffectSource {
         return [...new Set(elements.flat())];
     }
 
-    hasElement(element: Elements | 'none'): boolean {
+    hasElement(element: Element | 'none'): boolean {
         if(element === 'none') {
             return false;
         }

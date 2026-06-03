@@ -1,4 +1,4 @@
-import { TargetModes, Durations } from '../../../Constants.js';
+import { TargetMode, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -16,31 +16,31 @@ export default class BenevolentLesserKami extends DrawCard {
             condition: context => context.source.isParticipating(),
             targets: {
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     choices: {
                         'Air': AbilityDsl.actions.cardLastingEffect(context => ({
                             target: context.source,
-                            duration: Durations.UntilEndOfRound,
+                            duration: Duration.UntilEndOfRound,
                             effect: AbilityDsl.effects.addTrait('air')
                         })),
                         'Earth': AbilityDsl.actions.cardLastingEffect(context => ({
                             target: context.source,
-                            duration: Durations.UntilEndOfRound,
+                            duration: Duration.UntilEndOfRound,
                             effect: AbilityDsl.effects.addTrait('earth')
                         })),
                         'Fire': AbilityDsl.actions.cardLastingEffect(context => ({
                             target: context.source,
-                            duration: Durations.UntilEndOfRound,
+                            duration: Duration.UntilEndOfRound,
                             effect: AbilityDsl.effects.addTrait('fire')
                         })),
                         'Water': AbilityDsl.actions.cardLastingEffect(context => ({
                             target: context.source,
-                            duration: Durations.UntilEndOfRound,
+                            duration: Duration.UntilEndOfRound,
                             effect: AbilityDsl.effects.addTrait('water')
                         })),
                         'Void': AbilityDsl.actions.cardLastingEffect(context => ({
                             target: context.source,
-                            duration: Durations.UntilEndOfRound,
+                            duration: Duration.UntilEndOfRound,
                             effect: AbilityDsl.effects.addTrait('void')
                         }))
 

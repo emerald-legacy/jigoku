@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, Elements } from '../../Constants.js';
+import { Phases, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'ascetic-of-the-north-wall-earth';
@@ -22,7 +22,7 @@ class AsceticOfTheNorthWall extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Claimed Ring',
-            element: Elements.Earth
+            element: Element.Earth
         });
         return symbols;
     }

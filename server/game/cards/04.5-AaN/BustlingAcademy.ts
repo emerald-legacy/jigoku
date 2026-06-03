@@ -1,4 +1,4 @@
-import { CardTypes, EventNames, Locations } from '../../Constants.js';
+import { CardType, EventName, Location } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -14,14 +14,14 @@ export default class BustlingAcademy extends DrawCard {
                 context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('scholar')) &&
                 context.player.opponent !== undefined,
             target: {
-                location: Locations.Provinces,
-                cardType: [CardTypes.Character, CardTypes.Holding, CardTypes.Event],
-                gameAction: AbilityDsl.actions.moveCard({ destination: Locations.DynastyDiscardPile })
+                location: Location.Provinces,
+                cardType: [CardType.Character, CardType.Holding, CardType.Event],
+                gameAction: AbilityDsl.actions.moveCard({ destination: Location.DynastyDiscardPile })
             },
             effect: 'discard {0} and refill it faceup',
             then: (context: AbilityContext) => ({
                 gameAction: AbilityDsl.actions.refillFaceup(() => {
-                    const moveEvent = context.events[0] as GameEvent<EventNames.Unnamed> & { cardStateWhenMoved: DrawCard };
+                    const moveEvent = context.events[0] as GameEvent<EventName.Unnamed> & { cardStateWhenMoved: DrawCard };
                     return {
                         target: moveEvent.cardStateWhenMoved.controller,
                         location: moveEvent.cardStateWhenMoved.location

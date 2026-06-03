@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class UjiakisOffer extends DrawCard {
@@ -10,7 +10,7 @@ class UjiakisOffer extends DrawCard {
             title: 'Place a fate on a participating character, bow it, move it home, and dishonor it',
             condition: context => context.game.isDuringConflict('political'),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && context.player.cardsInPlay.some((myCard: any) => (
                     myCard !== card && myCard.isParticipating() && (myCard.printedCost ?? 0) >= (card.printedCost ?? 0))),
                 gameAction: AbilityDsl.actions.placeFate()

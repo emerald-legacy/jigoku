@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -11,7 +11,7 @@ export default class AsceticVisionary extends DrawCard {
             cost: AbilityDsl.costs.payFateToRing(1),
             condition: (context) => context.source.isAttacking(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) =>
                     card.hasTrait('monk') || card.attachments.some((card: any) => card.hasTrait('monk')),
                 gameAction: AbilityDsl.actions.ready()

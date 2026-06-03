@@ -1,7 +1,7 @@
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players, Locations } from '../../Constants.js';
+import { CardType, Players, Location } from '../../Constants.js';
 
 class MasterOfManyLifetimes extends DrawCard {
     static id = 'master-of-many-lifetimes';
@@ -13,15 +13,15 @@ class MasterOfManyLifetimes extends DrawCard {
                 onCardLeavesPlay: (event, context) => {
                     return (
                         event.card.controller === context.player &&
-                        event.card.type === CardTypes.Character &&
-                        event.card.location === Locations.PlayArea
+                        event.card.type === CardType.Character &&
+                        event.card.location === Location.PlayArea
                     );
                 }
             },
             target: {
-                cardType: CardTypes.Province,
+                cardType: CardType.Province,
                 controller: Players.Self,
-                location: Locations.Provinces,
+                location: Location.Provinces,
                 cardCondition: (card) => card.facedown
             },
             gameAction: AbilityDsl.actions.cancel((context: TriggeredAbilityContext<any, DrawCard>) => ({

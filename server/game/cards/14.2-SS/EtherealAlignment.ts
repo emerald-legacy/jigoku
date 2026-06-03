@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, CardTypes, Locations } from '../../Constants.js';
+import { Phases, CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class EtherealAlignment extends DrawCard {
@@ -12,8 +12,8 @@ class EtherealAlignment extends DrawCard {
                 onPhaseEnded: event => event.phase === Phases.Conflict
             },
             target: {
-                location: Locations.Provinces,
-                cardType: CardTypes.Province,
+                location: Location.Provinces,
+                cardType: CardType.Province,
                 cardCondition: (card, context) => {
                     return card.isBroken && card.element.some((element: any) => {
                         if(element === 'all') {
@@ -26,7 +26,7 @@ class EtherealAlignment extends DrawCard {
                     AbilityDsl.actions.restoreProvince(),
                     AbilityDsl.actions.moveCard(context => ({
                         target: context.source,
-                        destination: Locations.RemovedFromGame
+                        destination: Location.RemovedFromGame
                     }))
                 ])
             },

@@ -1,4 +1,4 @@
-import { CardTypes, Locations } from '../../../Constants.js';
+import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
@@ -12,12 +12,12 @@ export default class FeignedWeakness extends DrawCard {
             title: 'Cancel an event',
             when: {
                 onInitiateAbilityEffects: (event, context) =>
-                    event.card.type === CardTypes.Event &&
+                    event.card.type === CardType.Event &&
                     context.game.isDuringConflict() &&
                     !!this.game.currentConflict && this.#hasEqualOrLessSkill(this.game.currentConflict, context.player)
             },
             cost: AbilityDsl.costs.discardCard({
-                location: Locations.Hand,
+                location: Location.Hand,
                 cardCondition: (card, context) => card !== context.source
             }),
             gameAction: AbilityDsl.actions.cancel()

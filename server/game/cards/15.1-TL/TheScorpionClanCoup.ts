@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -10,7 +10,7 @@ export default class TheScorpionClanCoup extends ProvinceCard {
             condition: (context) =>
                 context.player.isDefendingPlayer() &&
                 context.player.cardsInPlay.some(
-                    (card) => card.getType() === CardTypes.Character && card.hasTrait('imperial')
+                    (card) => card.getType() === CardType.Character && card.hasTrait('imperial')
                 ),
             targetController: Players.Opponent,
             match: (card) => card.isAttacking(),

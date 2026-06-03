@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class SpreadingTheDarkness extends DrawCard {
     static id = 'spreading-the-darkness';
@@ -11,7 +11,7 @@ class SpreadingTheDarkness extends DrawCard {
 
             cost: AbilityDsl.costs.payHonor(2),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect(context => ({

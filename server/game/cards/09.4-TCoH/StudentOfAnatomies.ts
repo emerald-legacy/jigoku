@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Durations } from '../../Constants.js';
+import { CardType, Duration } from '../../Constants.js';
 
 class StudentOfAnatomies extends DrawCard {
     static id = 'student-of-anatomies';
@@ -9,12 +9,12 @@ class StudentOfAnatomies extends DrawCard {
         this.action<DrawCard>({
             title: 'Sacrifice a character to blank an enemy',
             cost: AbilityDsl.costs.sacrifice({
-                cardType: CardTypes.Character
+                cardType: CardType.Character
             }),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    duration: Durations.UntilEndOfPhase,
+                    duration: Duration.UntilEndOfPhase,
                     effect: AbilityDsl.effects.blank()
                 })
             },

@@ -1,15 +1,15 @@
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardTypes, EventNames, Locations } from '../Constants.js';
+import { CardType, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export type DetachActionProperties = CardActionProperties;
 
-export class DetachAction extends CardGameAction<DetachActionProperties, EventNames.OnCardDetached> {
+export class DetachAction extends CardGameAction<DetachActionProperties, EventName.OnCardDetached> {
     name = 'detach';
-    eventName = EventNames.OnCardDetached;
-    targetType = [CardTypes.Attachment];
+    eventName = EventName.OnCardDetached;
+    targetType = [CardType.Attachment];
 
     getEffectMessage(context: AbilityContext): [string, unknown[]] {
         let target = this.getProperties(context).target as DrawCard;
@@ -19,13 +19,13 @@ export class DetachAction extends CardGameAction<DetachActionProperties, EventNa
     canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
         return !!(
             card &&
-            card.location === Locations.PlayArea &&
+            card.location === Location.PlayArea &&
             card.parent &&
             super.canAffect(card, context, additionalProperties)
         );
     }
 
-    eventHandler(event: GameEvent<EventNames.OnCardDetached>): void {
+    eventHandler(event: GameEvent<EventName.OnCardDetached>): void {
         const card = event.card as DrawCard;
         (card.parent as DrawCard).removeAttachment(card);
         card.controller.cardsInPlay.push(card);

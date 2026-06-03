@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Durations, CardTypes } from '../../Constants.js';
+import { Duration, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class CityOfLies extends DrawCard {
@@ -11,8 +11,8 @@ class CityOfLies extends DrawCard {
             effect: 'reduce the cost of their next event by 1',
             gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
                 targetController: context.player,
-                duration: Durations.UntilEndOfPhase,
-                effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, (card: any) => card.type === CardTypes.Event)
+                duration: Duration.UntilEndOfPhase,
+                effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, (card: any) => card.type === CardType.Event)
             }))
         });
     }

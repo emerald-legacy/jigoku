@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Players, CharacterStatus } from '../../../Constants.js';
+import { CardType, Players, CharacterStatus } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { StatusToken } from '../../../StatusToken.js';
 
@@ -17,7 +17,7 @@ export default class ForcedRetirement extends DrawCard {
                 ];
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => (card.isDishonored || card.isTainted) && !card.isParticipating()
             },

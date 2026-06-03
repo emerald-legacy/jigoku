@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import BaseCard from '../../BaseCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Locations } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 
 class KitsukiYaruma extends DrawCard {
     static id = 'kitsuki-yaruma';
@@ -13,8 +13,8 @@ class KitsukiYaruma extends DrawCard {
                 onCharacterEntersPlay: (event, context) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 cardCondition: (card: any) => !card.isBroken,
                 gameAction: AbilityDsl.actions.turnFacedown()
             }

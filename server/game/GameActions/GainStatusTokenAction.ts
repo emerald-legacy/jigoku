@@ -1,7 +1,7 @@
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CharacterStatus, EventNames } from '../Constants.js';
+import { CharacterStatus, EventName } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export interface GainStatusTokenProperties extends CardActionProperties {
@@ -10,7 +10,7 @@ export interface GainStatusTokenProperties extends CardActionProperties {
 
 export class GainStatusTokenAction extends CardGameAction<GainStatusTokenProperties> {
     name = 'gainStatus';
-    eventName = EventNames.OnStatusTokenGained;
+    eventName = EventName.OnStatusTokenGained;
     defaultProperties: GainStatusTokenProperties = {
         token: CharacterStatus.Honored
     };
@@ -38,13 +38,13 @@ export class GainStatusTokenAction extends CardGameAction<GainStatusTokenPropert
         return ['give {0} a {1} status token', [properties.target, properties.token]];
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnStatusTokenGained>, card: BaseCard, context: AbilityContext, additionalProperties = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnStatusTokenGained>, card: BaseCard, context: AbilityContext, additionalProperties = {}): void {
         const { token } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.token = token;
     }
 
-    eventHandler(event: GameEvent<EventNames.OnStatusTokenGained>): void {
+    eventHandler(event: GameEvent<EventName.OnStatusTokenGained>): void {
         (event.card as BaseCard).addStatusToken(event.token as CharacterStatus);
     }
 }

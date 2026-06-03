@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { AbilityTypes } from '../../../Constants.js';
+import { AbilityType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type { Conflict } from '../../../Conflict.js';
@@ -9,7 +9,7 @@ class TwinSisterBlades extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Draw cards',
                 condition: (context: any) => context.source.isParticipating() && context.source.hasTrait('bushi'),
                 effect: 'draw {1} card{2}',

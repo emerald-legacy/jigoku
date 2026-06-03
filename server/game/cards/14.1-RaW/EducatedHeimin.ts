@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 
 class EducatedHeimin extends DrawCard {
     static id = 'educated-heimin';
@@ -12,7 +12,7 @@ class EducatedHeimin extends DrawCard {
 
         this.persistentEffect({
             condition: context => !!context?.source.parent,
-            targetLocation: Locations.Provinces,
+            targetLocation: Location.Provinces,
             match: (card, context) => !!context && card === context.source.parent,
             effect: AbilityDsl.effects.customRefillProvince((player: any, province: any) => {
                 let cards = [];
@@ -31,7 +31,7 @@ class EducatedHeimin extends DrawCard {
                         cardFromDeck.facedown = true;
                         cards.splice(cards.indexOf(cardFromDeck), 1);
                         cards.forEach((card: any) => {
-                            player.moveCard(card, Locations.DynastyDiscardPile);
+                            player.moveCard(card, Location.DynastyDiscardPile);
                         });
                         this.game.addMessage('{0} chooses a card to put into {1} and discards {2} from the constant effect of Educated Heimin', player, province.isFacedown() ? 'a facedown province' : province.name, cards);
                     }
@@ -41,11 +41,11 @@ class EducatedHeimin extends DrawCard {
     }
 
     canPlayOn(source: any) {
-        return source && source.getType() === 'province' && source.controller === this.controller && !source.isBroken && this.getType() === CardTypes.Attachment;
+        return source && source.getType() === 'province' && source.controller === this.controller && !source.isBroken && this.getType() === CardType.Attachment;
     }
 
     canAttach(parent: any) {
-        if(parent.type === CardTypes.Province && parent.isBroken) {
+        if(parent.type === CardType.Province && parent.isBroken) {
             return false;
         }
 
@@ -53,7 +53,7 @@ class EducatedHeimin extends DrawCard {
             return false;
         }
 
-        return parent && parent.getType() === CardTypes.Province && this.getType() === CardTypes.Attachment;
+        return parent && parent.getType() === CardType.Province && this.getType() === CardType.Attachment;
     }
 }
 

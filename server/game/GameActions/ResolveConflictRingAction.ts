@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type { Conflict } from '../Conflict.js';
-import { EffectNames, EventNames } from '../Constants.js';
+import { EffectName, EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type Player from '../Player.js';
@@ -10,7 +10,7 @@ import { RingAction, type RingActionProperties } from './RingAction.js';
 
 export class ResolveConflictRingAction extends RingAction {
     name = 'resolveRing';
-    eventName = EventNames.OnResolveConflictRing;
+    eventName = EventName.OnResolveConflictRing;
     constructor(properties: ((context: AbilityContext) => RingActionProperties) | RingActionProperties) {
         super(properties);
     }
@@ -20,7 +20,7 @@ export class ResolveConflictRingAction extends RingAction {
         return ['resolve {0}', [properties.target]];
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnResolveConflictRing>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnResolveConflictRing>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         let conflict = context.game.currentConflict;
 
@@ -28,13 +28,13 @@ export class ResolveConflictRingAction extends RingAction {
         event.player = context.player;
     }
 
-    eventHandler(event: GameEvent<EventNames.OnResolveConflictRing>): void {
+    eventHandler(event: GameEvent<EventName.OnResolveConflictRing>): void {
         if(event.name !== this.eventName) {
             return;
         }
 
         const eventContext = event.context as AbilityContext;
-        const cannotResolveRingEffects = eventContext.player.getEffects(EffectNames.CannotResolveRings);
+        const cannotResolveRingEffects = eventContext.player.getEffects(EffectName.CannotResolveRings);
 
         if(cannotResolveRingEffects.length) {
             eventContext.game.addMessage('{0}\'s ring effect is cancelled.', eventContext.player);

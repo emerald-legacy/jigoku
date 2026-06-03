@@ -1,4 +1,4 @@
-import { AbilityTypes, EventNames, CardTypes, Locations } from '../../../Constants.js';
+import { AbilityType, EventName, CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import BaseCard from '../../../BaseCard.js';
@@ -14,15 +14,15 @@ export default class CastleOfAir extends DrawCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([
             {
-                [EventNames.OnModifyHonor + ':' + AbilityTypes.WouldInterrupt]: 'onHonorLoss'
+                [EventName.OnModifyHonor + ':' + AbilityType.WouldInterrupt]: 'onHonorLoss'
             }
         ]);
-        this.eventRegistrar.register([EventNames.OnConflictFinished]);
+        this.eventRegistrar.register([EventName.OnConflictFinished]);
 
         this.action({
             title: 'Add Province Strength',
             cost: AbilityDsl.costs.bow({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: BaseCard) => card.hasTrait('shugenja')
             }),
             effect: 'increase the strength of an attacked province by 4{1}',
@@ -32,13 +32,13 @@ export default class CastleOfAir extends DrawCard {
                 AbilityDsl.actions.selectCard((context) => ({
                     activePromptTitle: 'Choose an attacked province',
                     hidePromptIfSingleCard: true,
-                    cardType: CardTypes.Province,
-                    location: Locations.Provinces,
+                    cardType: CardType.Province,
+                    location: Location.Provinces,
                     cardCondition: (card) => card.isConflictProvince(),
                     message: '{0} increases the strength of {1}',
                     messageArgs: (cards) => [context.player, cards],
                     gameAction: AbilityDsl.actions.cardLastingEffect({
-                        targetLocation: Locations.Provinces,
+                        targetLocation: Location.Provinces,
                         effect: AbilityDsl.effects.modifyProvinceStrength(4)
                     })
                 })),

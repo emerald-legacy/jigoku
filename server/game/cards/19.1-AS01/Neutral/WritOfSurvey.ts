@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { AbilityTypes, CardTypes, Players, TargetModes } from '../../../Constants.js';
+import { AbilityType, CardType, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { ActionProps } from '../../../Interfaces.js';
 
@@ -18,13 +18,13 @@ export default class WritOfSurvey extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Bow a participating dishonored character',
                 condition: (context) => context.source.isParticipating(),
                 target: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Any,
-                    mode: TargetModes.Single,
+                    mode: TargetMode.Single,
                     cardCondition: (card) => card.isParticipating() && card.isDishonored,
                     gameAction: AbilityDsl.actions.bow()
                 }

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Locations, Phases, Players, PlayTypes } from '../../Constants.js';
+import { CardType, Location, Phases, Players, PlayType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class WayfarersCamp extends DrawCard {
@@ -13,21 +13,21 @@ class WayfarersCamp extends DrawCard {
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.selectCard({
                     activePromptTitle: 'Choose a character to play',
-                    cardType: CardTypes.Character,
-                    location: Locations.Provinces,
+                    cardType: CardType.Character,
+                    location: Location.Provinces,
                     controller: Players.Self,
-                    gameAction: AbilityDsl.actions.playCard({ resetOnCancel: true, source: this, playType: PlayTypes.PlayFromProvince })
+                    gameAction: AbilityDsl.actions.playCard({ resetOnCancel: true, source: this, playType: PlayType.PlayFromProvince })
                 }),
                 AbilityDsl.actions.selectCard({
                     activePromptTitle: 'Choose a character to play',
-                    cardType: CardTypes.Character,
-                    location: Locations.Provinces,
+                    cardType: CardType.Character,
+                    location: Location.Provinces,
                     controller: Players.Self,
-                    gameAction: AbilityDsl.actions.playCard({ resetOnCancel: true, source: this, playType: PlayTypes.PlayFromProvince })
+                    gameAction: AbilityDsl.actions.playCard({ resetOnCancel: true, source: this, playType: PlayType.PlayFromProvince })
                 }),
                 AbilityDsl.actions.selectCard({
                     activePromptTitle: 'Choose a card to turn faceup',
-                    location: Locations.Provinces,
+                    location: Location.Provinces,
                     controller: Players.Self,
                     gameAction: AbilityDsl.actions.flipDynasty(),
                     message: '{0} turns {1} faceup',

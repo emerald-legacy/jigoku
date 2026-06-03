@@ -1,4 +1,4 @@
-import { CardTypes, Elements, Players } from '../../../Constants.js';
+import { CardType, Element, Players } from '../../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment.js';
 import PlayerEffect from '../../../Effects/PlayerEffect.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -26,7 +26,7 @@ export default class JealousAncestor extends DrawCard {
     }
 
     public leavesPlay() {
-        this.printedType = CardTypes.Character;
+        this.printedType = CardType.Character;
         super.leavesPlay();
     }
 
@@ -35,7 +35,7 @@ export default class JealousAncestor extends DrawCard {
         symbols.push({
             key: ELEMENT_KEY,
             prettyName: 'Claimed Ring',
-            element: Elements.Void
+            element: Element.Void
         });
         return symbols;
     }

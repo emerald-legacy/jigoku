@@ -1,12 +1,12 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Durations, EventNames } from '../../../Constants.js';
+import { CardType, Duration, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 type SendOrReturnHomeEvent =
-    | EventPayload<EventNames.OnSendHome>
-    | EventPayload<EventNames.OnReturnHome>;
+    | EventPayload<EventName.OnSendHome>
+    | EventPayload<EventName.OnReturnHome>;
 
 export default class LongJourneyHome extends DrawCard {
     static id = 'long-journey-home';
@@ -19,12 +19,12 @@ export default class LongJourneyHome extends DrawCard {
                 onReturnHome: (event, context) => this.affectedOpponentsCharacter(event, context)
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card === context.event.card,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.bow(),
                     AbilityDsl.actions.cardLastingEffect({
-                        duration: Durations.UntilEndOfPhase,
+                        duration: Duration.UntilEndOfPhase,
                         effect: AbilityDsl.effects.cardCannot({ cannot: 'ready' })
                     })
                 ])
@@ -35,6 +35,6 @@ export default class LongJourneyHome extends DrawCard {
     }
 
     private affectedOpponentsCharacter(event: SendOrReturnHomeEvent, context: TriggeredAbilityContext<this>) {
-        return !!event.card && event.card.type === CardTypes.Character && event.card.controller === context.source.controller.opponent;
+        return !!event.card && event.card.type === CardType.Character && event.card.controller === context.source.controller.opponent;
     }
 }

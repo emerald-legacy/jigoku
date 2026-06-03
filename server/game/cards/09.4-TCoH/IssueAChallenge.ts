@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Durations } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 
 class IssueAChallenge extends DrawCard {
     static id = 'issue-a-challenge';
@@ -26,7 +26,7 @@ class IssueAChallenge extends DrawCard {
             gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
                 effect: AbilityDsl.effects.restrictNumberOfDefenders(1),
-                duration: Durations.UntilEndOfConflict
+                duration: Duration.UntilEndOfConflict
             }))
         });
     }

@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import type CardAbility from '../../CardAbility.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, EventNames } from '../../Constants.js';
+import { CardType, EventName } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 class HanteiXXXVIII extends DrawCard {
@@ -22,7 +22,7 @@ class HanteiXXXVIII extends DrawCard {
             title: 'Bow a character',
 
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: any) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.bow()
             }
@@ -31,7 +31,7 @@ class HanteiXXXVIII extends DrawCard {
         this.interrupt({
             title: 'Choose targets for opponent\'s ability',
             when: {
-                onCardAbilityInitiated: (event: EventPayload<EventNames.OnCardAbilityInitiated>, context) =>
+                onCardAbilityInitiated: (event: EventPayload<EventName.OnCardAbilityInitiated>, context) =>
                     event.ability.hasTargetsChosenByInitiatingPlayer(event.context) && event.context.player === context.player.opponent
             },
             effect: 'choose targets for {1}\'s {2} ability',

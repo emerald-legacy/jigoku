@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, TargetModes } from '../../Constants.js';
+import { Players, TargetMode } from '../../Constants.js';
 
 class ChancellorsAide extends DrawCard {
     static id = 'chancellor-s-aide';
@@ -14,7 +14,7 @@ class ChancellorsAide extends DrawCard {
             cost: AbilityDsl.costs.optionalHonorTransferFromOpponentCost(),
             targets: {
                 myPlayer: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     targets: true,
                     choices: {
                         [this.owner.name]: AbilityDsl.actions.chosenDiscard(({ target: this.owner })),
@@ -22,7 +22,7 @@ class ChancellorsAide extends DrawCard {
                     }
                 },
                 oppPlayer: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     targets: true,
                     player: Players.Opponent,
                     condition: context => !!context.costs.optionalHonorTransferFromOpponentCostPaid,

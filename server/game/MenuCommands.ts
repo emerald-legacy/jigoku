@@ -1,4 +1,4 @@
-import { Locations } from './Constants.js';
+import { Location } from './Constants.js';
 import { Conflict } from './Conflict.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
@@ -91,7 +91,7 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
             const province = card as ProvinceCard;
             game.addMessage('{0} {1} {2}', player, province.isBroken ? 'unbreaks' : 'breaks', card);
             province.isBroken = province.isBroken ? false : true;
-            if(card.location === Locations.StrongholdProvince && province.isBroken && player.opponent) {
+            if(card.location === Location.StrongholdProvince && province.isBroken && player.opponent) {
                 game.recordWinner(player.opponent, 'conquest');
             }
             return;

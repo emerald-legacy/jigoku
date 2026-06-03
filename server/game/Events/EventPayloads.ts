@@ -4,7 +4,7 @@ import type AttackersMatrix from '../gamesteps/conflict/AttackersMatrix.js';
 import type BaseAbility from '../BaseAbility.js';
 import type BaseCard from '../BaseCard.js';
 import type { Conflict } from '../Conflict.js';
-import type { CharacterStatus, ConflictTypes, Decks, DuelTypes, EventNames, Locations, Phases, Players, TokenTypes } from '../Constants.js';
+import type { CharacterStatus, ConflictType, Decks, DuelType, EventName, Location, Phases, Players, TokenType } from '../Constants.js';
 import type { Direction } from '../GameActions/ModifyBidAction.js';
 import type DrawCard from '../DrawCard.js';
 import type { Duel } from '../Duel.js';
@@ -24,62 +24,62 @@ export interface BaseEventPayload {
 }
 
 export interface EventPayloadMap {
-    [EventNames.OnCardPlayed]: BaseEventPayload & {
+    [EventName.OnCardPlayed]: BaseEventPayload & {
         player: Player;
         card: DrawCard;
-        originalLocation?: Locations;
+        originalLocation?: Location;
         playType?: string;
     };
-    [EventNames.OnConflictDeclared]: BaseEventPayload & {
+    [EventName.OnConflictDeclared]: BaseEventPayload & {
         conflict: Conflict;
-        type?: ConflictTypes;
+        type?: ConflictType;
         ring?: Ring;
         attackers?: DrawCard[];
         defenders?: DrawCard[];
         ringFate?: number;
     };
-    [EventNames.OnConflictDeclaredBeforeProvinceReveal]: BaseEventPayload & {
+    [EventName.OnConflictDeclaredBeforeProvinceReveal]: BaseEventPayload & {
         conflict: Conflict;
-        type?: ConflictTypes;
+        type?: ConflictType;
         ring?: Ring;
         attackers?: DrawCard[];
         ringFate?: number;
     };
-    [EventNames.OnTheCrashingWave]: BaseEventPayload & { conflict: Conflict };
-    [EventNames.OnConflictStarted]: BaseEventPayload & { conflict: Conflict };
-    [EventNames.OnConflictFinished]: BaseEventPayload & { conflict: Conflict };
-    [EventNames.OnConflictPass]: BaseEventPayload & { conflict: Conflict; player?: Player };
-    [EventNames.OnCharacterEntersPlay]: BaseEventPayload & {
+    [EventName.OnTheCrashingWave]: BaseEventPayload & { conflict: Conflict };
+    [EventName.OnConflictStarted]: BaseEventPayload & { conflict: Conflict };
+    [EventName.OnConflictFinished]: BaseEventPayload & { conflict: Conflict };
+    [EventName.OnConflictPass]: BaseEventPayload & { conflict: Conflict; player?: Player };
+    [EventName.OnCharacterEntersPlay]: BaseEventPayload & {
         card: DrawCard;
         player?: Player;
-        originalLocation?: Locations;
+        originalLocation?: Location;
         fate?: number;
         status?: 'honored' | 'ordinary' | 'dishonored';
         controller?: Players;
         intoConflict?: boolean;
         side?: Player;
     };
-    [EventNames.OnCardRevealed]: BaseEventPayload & { card: BaseCard; onDeclaration?: boolean };
-    [EventNames.OnBreakProvince]: BaseEventPayload & {
+    [EventName.OnCardRevealed]: BaseEventPayload & { card: BaseCard; onDeclaration?: boolean };
+    [EventName.OnBreakProvince]: BaseEventPayload & {
         card: ProvinceCard;
         conflict: Conflict | null;
     };
-    [EventNames.OnCardLeavesPlay]: BaseEventPayload & {
+    [EventName.OnCardLeavesPlay]: BaseEventPayload & {
         card: BaseCard;
-        destination?: Locations;
+        destination?: Location;
         cardStateWhenLeftPlay?: BaseCard;
         isSacrifice?: boolean;
         shuffle?: boolean;
         options?: { bottom?: boolean };
     };
-    [EventNames.OnCardHonored]: BaseEventPayload & { card: DrawCard; source?: BaseCard };
-    [EventNames.OnCardDishonored]: BaseEventPayload & { card: DrawCard };
-    [EventNames.OnCardBowed]: BaseEventPayload & { card: DrawCard };
-    [EventNames.OnCardReadied]: BaseEventPayload & { card: DrawCard };
-    [EventNames.OnCardMoved]: BaseEventPayload & {
+    [EventName.OnCardHonored]: BaseEventPayload & { card: DrawCard; source?: BaseCard };
+    [EventName.OnCardDishonored]: BaseEventPayload & { card: DrawCard };
+    [EventName.OnCardBowed]: BaseEventPayload & { card: DrawCard };
+    [EventName.OnCardReadied]: BaseEventPayload & { card: DrawCard };
+    [EventName.OnCardMoved]: BaseEventPayload & {
         card: BaseCard;
-        originalLocation: Locations;
-        newLocation: Locations;
+        originalLocation: Location;
+        newLocation: Location;
         shuffle?: boolean;
         bottom?: boolean;
         options?: { bottom?: boolean };
@@ -88,102 +88,102 @@ export interface EventPayloadMap {
         player?: Player;
         discardedCards?: BaseCard[];
     };
-    [EventNames.OnClaimRing]: BaseEventPayload & {
+    [EventName.OnClaimRing]: BaseEventPayload & {
         player: Player;
         ring: Ring;
         conflict?: Conflict;
     };
-    [EventNames.OnPhaseStarted]: BaseEventPayload & { phase: Phases };
-    [EventNames.OnPhaseEnded]: BaseEventPayload & { phase: Phases };
-    [EventNames.OnInitiateAbilityEffects]: BaseEventPayload & {
+    [EventName.OnPhaseStarted]: BaseEventPayload & { phase: Phases };
+    [EventName.OnPhaseEnded]: BaseEventPayload & { phase: Phases };
+    [EventName.OnInitiateAbilityEffects]: BaseEventPayload & {
         context: AbilityContext;
         card: BaseCard;
         cardTargets?: BaseCard[];
         ringTargets?: Ring[];
     };
-    [EventNames.OnMoveToConflict]: BaseEventPayload & { card: DrawCard; side?: Player };
-    [EventNames.OnDefendersDeclared]: BaseEventPayload & { conflict: Conflict; defenders?: DrawCard[] };
-    [EventNames.OnPassFirstPlayer]: BaseEventPayload & { player?: Player };
-    [EventNames.OnPassActionPhasePriority]: BaseEventPayload & {
+    [EventName.OnMoveToConflict]: BaseEventPayload & { card: DrawCard; side?: Player };
+    [EventName.OnDefendersDeclared]: BaseEventPayload & { conflict: Conflict; defenders?: DrawCard[] };
+    [EventName.OnPassFirstPlayer]: BaseEventPayload & { player?: Player };
+    [EventName.OnPassActionPhasePriority]: BaseEventPayload & {
         player: Player;
         consecutiveActions?: number;
         actionWindow?: ActionWindow;
     };
-    [EventNames.OnDeckShuffled]: BaseEventPayload & { player: Player; deck: Decks };
-    [EventNames.OnCardAttached]: BaseEventPayload & {
+    [EventName.OnDeckShuffled]: BaseEventPayload & { player: Player; deck: Decks };
+    [EventName.OnCardAttached]: BaseEventPayload & {
         card: BaseCard;
         parent: DrawCard | Ring;
-        originalLocation?: Locations;
+        originalLocation?: Location;
     };
-    [EventNames.AfterDuel]: BaseEventPayload & {
+    [EventName.AfterDuel]: BaseEventPayload & {
         duel?: Duel;
         winner?: DrawCard[];
         loser?: DrawCard[];
         winningPlayer?: Player | Player[];
         losingPlayer?: Player | Player[];
     };
-    [EventNames.OnDuelFinished]: BaseEventPayload & { duel?: Duel };
-    [EventNames.OnAddDuelParticipant]: BaseEventPayload & { card: DrawCard; duel: Duel };
-    [EventNames.OnDuelChallenge]: BaseEventPayload & { duel?: Duel };
-    [EventNames.OnDuelFocus]: BaseEventPayload & { duel?: Duel };
-    [EventNames.OnDuelStrike]: BaseEventPayload & { duel?: Duel };
-    [EventNames.AfterConflict]: BaseEventPayload & { conflict: Conflict };
-    [EventNames.OnMoveFate]: BaseEventPayload & {
+    [EventName.OnDuelFinished]: BaseEventPayload & { duel?: Duel };
+    [EventName.OnAddDuelParticipant]: BaseEventPayload & { card: DrawCard; duel: Duel };
+    [EventName.OnDuelChallenge]: BaseEventPayload & { duel?: Duel };
+    [EventName.OnDuelFocus]: BaseEventPayload & { duel?: Duel };
+    [EventName.OnDuelStrike]: BaseEventPayload & { duel?: Duel };
+    [EventName.AfterConflict]: BaseEventPayload & { conflict: Conflict };
+    [EventName.OnMoveFate]: BaseEventPayload & {
         fate: number;
         amount?: number;
         origin?: Ring | BaseCard | Player;
         recipient?: Player | BaseCard | Ring;
         context?: AbilityContext;
     };
-    [EventNames.OnSpendFate]: BaseEventPayload & {
+    [EventName.OnSpendFate]: BaseEventPayload & {
         amount: number;
         context: AbilityContext;
         recipient?: Player;
         fate?: number;
     };
-    [EventNames.OnFateCollected]: BaseEventPayload & { player: Player };
-    [EventNames.OnModifyFate]: BaseEventPayload & {
+    [EventName.OnFateCollected]: BaseEventPayload & { player: Player };
+    [EventName.OnModifyFate]: BaseEventPayload & {
         player?: Player;
         card?: BaseCard;
         amount?: number;
     };
-    [EventNames.OnCardAbilityInitiated]: BaseEventPayload & {
+    [EventName.OnCardAbilityInitiated]: BaseEventPayload & {
         card: BaseCard;
         ability: BaseAbility;
         context: AbilityContext;
         player?: Player;
     };
-    [EventNames.OnCardAbilityTriggered]: BaseEventPayload & {
+    [EventName.OnCardAbilityTriggered]: BaseEventPayload & {
         player: Player;
         card: BaseCard;
         context: AbilityContext;
         ability?: BaseAbility;
     };
-    [EventNames.OnAbilityResolved]: BaseEventPayload & {
+    [EventName.OnAbilityResolved]: BaseEventPayload & {
         card?: BaseCard;
         context?: AbilityContext;
         ability?: BaseAbility;
     };
-    [EventNames.OnReturnHome]: BaseEventPayload & {
+    [EventName.OnReturnHome]: BaseEventPayload & {
         card: DrawCard;
         conflict?: Conflict;
         bowEvent?: Event;
     };
-    [EventNames.OnParticipantsReturnHome]: BaseEventPayload & {
+    [EventName.OnParticipantsReturnHome]: BaseEventPayload & {
         conflict: Conflict;
         returnHomeEvents?: Event[];
     };
-    [EventNames.OnCardsDrawn]: BaseEventPayload & {
+    [EventName.OnCardsDrawn]: BaseEventPayload & {
         player: Player;
         amount: number;
         cards?: DrawCard[];
     };
-    [EventNames.OnCardsDiscarded]: BaseEventPayload & {
+    [EventName.OnCardsDiscarded]: BaseEventPayload & {
         player?: Player;
         cards?: BaseCard[];
-        originalCardStateInfo?: { location: Locations; owner: Player }[];
+        originalCardStateInfo?: { location: Location; owner: Player }[];
     };
-    [EventNames.OnCardsDiscardedFromHand]: BaseEventPayload & {
+    [EventName.OnCardsDiscardedFromHand]: BaseEventPayload & {
         player?: Player;
         cards?: BaseCard[];
         amount?: number;
@@ -192,46 +192,46 @@ export interface EventPayloadMap {
         discardedAtRandom?: boolean;
         discardedCards?: BaseCard[];
     };
-    [EventNames.OnAddTokenToCard]: BaseEventPayload & {
+    [EventName.OnAddTokenToCard]: BaseEventPayload & {
         card: BaseCard;
         token?: StatusToken;
         recipient?: BaseCard;
-        tokenType?: TokenTypes;
+        tokenType?: TokenType;
     };
-    [EventNames.OnStatusTokenGained]: BaseEventPayload & {
+    [EventName.OnStatusTokenGained]: BaseEventPayload & {
         card?: BaseCard;
         token?: StatusToken | CharacterStatus;
         recipient?: BaseCard;
     };
-    [EventNames.OnStatusTokenMoved]: BaseEventPayload & {
+    [EventName.OnStatusTokenMoved]: BaseEventPayload & {
         card?: BaseCard;
         token?: StatusToken;
         donor?: BaseCard;
         recipient?: DrawCard;
     };
-    [EventNames.OnStatusTokenDiscarded]: BaseEventPayload & {
+    [EventName.OnStatusTokenDiscarded]: BaseEventPayload & {
         card?: BaseCard;
         token?: StatusToken;
         cards?: BaseCard[];
     };
-    [EventNames.OnEffectApplied]: BaseEventPayload & {
+    [EventName.OnEffectApplied]: BaseEventPayload & {
         effect?: unknown;
         context?: AbilityContext;
         card?: BaseCard;
         effectTypes?: string[];
         matches?: BaseCard[];
     };
-    [EventNames.OnLookAtCards]: BaseEventPayload & {
+    [EventName.OnLookAtCards]: BaseEventPayload & {
         player?: Player;
         cards?: BaseCard[];
-        stateBeforeResolution?: { card: BaseCard; location: Locations }[];
+        stateBeforeResolution?: { card: BaseCard; location: Location }[];
     };
-    [EventNames.OnDeckSearch]: BaseEventPayload & {
+    [EventName.OnDeckSearch]: BaseEventPayload & {
         player?: Player;
         amount?: number;
         selectedCards?: BaseCard[];
     };
-    [EventNames.OnHonorBid]: BaseEventPayload & {
+    [EventName.OnHonorBid]: BaseEventPayload & {
         player?: Player;
         amount?: number;
         giveHonor?: boolean;
@@ -241,46 +241,46 @@ export interface EventPayloadMap {
         message?: string;
         messageArgs?: (context: AbilityContext) => unknown[];
     };
-    [EventNames.OnModifyBid]: BaseEventPayload & {
+    [EventName.OnModifyBid]: BaseEventPayload & {
         player?: Player;
         amount?: number;
         direction?: Direction;
     };
-    [EventNames.OnModifyHonor]: BaseEventPayload & {
+    [EventName.OnModifyHonor]: BaseEventPayload & {
         player?: Player;
         amount?: number;
         dueToUnopposed?: boolean;
     };
-    [EventNames.OnTransferHonor]: BaseEventPayload & {
+    [EventName.OnTransferHonor]: BaseEventPayload & {
         player?: Player;
         amount?: number;
         afterBid?: boolean;
     };
-    [EventNames.OnResolveFateCost]: BaseEventPayload & {
+    [EventName.OnResolveFateCost]: BaseEventPayload & {
         player?: Player;
         amount?: number;
         context?: AbilityContext;
     };
-    [EventNames.OnDuelInitiated]: BaseEventPayload & {
+    [EventName.OnDuelInitiated]: BaseEventPayload & {
         duel?: Duel;
         cards?: DrawCard[];
-        duelType?: DuelTypes;
+        duelType?: DuelType;
         challenger?: DrawCard;
         duelTarget?: BaseCard | BaseCard[];
     };
-    [EventNames.OnDuelStarted]: BaseEventPayload & { duel?: Duel };
-    [EventNames.OnDuelResolution]: BaseEventPayload & { duel?: Duel };
-    [EventNames.OnCardTainted]: BaseEventPayload & { card?: BaseCard };
-    [EventNames.OnCardTurnedFacedown]: BaseEventPayload & { card?: BaseCard };
-    [EventNames.OnDynastyCardTurnedFaceup]: BaseEventPayload & { card?: BaseCard };
-    [EventNames.OnRevealFacedownDynastyCards]: BaseEventPayload & { player?: Player };
-    [EventNames.OnRestoreProvince]: BaseEventPayload & { card?: ProvinceCard };
-    [EventNames.OnResolveConflictRing]: BaseEventPayload & {
+    [EventName.OnDuelStarted]: BaseEventPayload & { duel?: Duel };
+    [EventName.OnDuelResolution]: BaseEventPayload & { duel?: Duel };
+    [EventName.OnCardTainted]: BaseEventPayload & { card?: BaseCard };
+    [EventName.OnCardTurnedFacedown]: BaseEventPayload & { card?: BaseCard };
+    [EventName.OnDynastyCardTurnedFaceup]: BaseEventPayload & { card?: BaseCard };
+    [EventName.OnRevealFacedownDynastyCards]: BaseEventPayload & { player?: Player };
+    [EventName.OnRestoreProvince]: BaseEventPayload & { card?: ProvinceCard };
+    [EventName.OnResolveConflictRing]: BaseEventPayload & {
         ring?: Ring;
         conflict?: Conflict;
         player?: Player;
     };
-    [EventNames.OnResolveRingElement]: BaseEventPayload & {
+    [EventName.OnResolveRingElement]: BaseEventPayload & {
         element?: string;
         player?: Player;
         ring?: Ring;
@@ -288,52 +288,52 @@ export interface EventPayloadMap {
         physicalRing?: Ring;
         optional?: boolean;
     };
-    [EventNames.OnRemoveRingFromPlay]: BaseEventPayload & { ring: Ring };
-    [EventNames.OnReturnRingToPlay]: BaseEventPayload & { ring: Ring };
-    [EventNames.OnReturnRing]: BaseEventPayload & { ring?: Ring };
-    [EventNames.OnCovertResolved]: BaseEventPayload & {
+    [EventName.OnRemoveRingFromPlay]: BaseEventPayload & { ring: Ring };
+    [EventName.OnReturnRingToPlay]: BaseEventPayload & { ring: Ring };
+    [EventName.OnReturnRing]: BaseEventPayload & { ring?: Ring };
+    [EventName.OnCovertResolved]: BaseEventPayload & {
         card?: DrawCard;
         target?: DrawCard;
     };
-    [EventNames.OnConflictOpportunityAvailable]: BaseEventPayload & {
+    [EventName.OnConflictOpportunityAvailable]: BaseEventPayload & {
         player?: Player;
         attackerMatrix?: AttackersMatrix;
-        type?: ConflictTypes;
+        type?: ConflictType;
     };
-    [EventNames.OnCreateTokenCharacter]: BaseEventPayload & {
+    [EventName.OnCreateTokenCharacter]: BaseEventPayload & {
         tokenCharacter?: DrawCard;
         card?: DrawCard;
     };
-    [EventNames.OnPlaceFateOnUnclaimedRings]: BaseEventPayload & {
+    [EventName.OnPlaceFateOnUnclaimedRings]: BaseEventPayload & {
         player?: Player;
         recipients?: { ring: Ring; amount: number }[];
     };
-    [EventNames.OnBeginRound]: BaseEventPayload & { round?: number };
-    [EventNames.OnRoundEnded]: BaseEventPayload & { round?: number };
-    [EventNames.OnFavorGloryTied]: BaseEventPayload;
-    [EventNames.OnHonorDialsRevealed]: BaseEventPayload & {
+    [EventName.OnBeginRound]: BaseEventPayload & { round?: number };
+    [EventName.OnRoundEnded]: BaseEventPayload & { round?: number };
+    [EventName.OnFavorGloryTied]: BaseEventPayload;
+    [EventName.OnHonorDialsRevealed]: BaseEventPayload & {
         player1?: Player;
         player2?: Player;
         isHonorBid?: boolean;
         duel?: Duel;
     };
-    [EventNames.OnPhaseCreated]: BaseEventPayload & { phase?: Phases };
-    [EventNames.OnPassDuringDynasty]: BaseEventPayload & { player?: Player; firstToPass?: boolean };
-    [EventNames.OnCardDetached]: BaseEventPayload & {
+    [EventName.OnPhaseCreated]: BaseEventPayload & { phase?: Phases };
+    [EventName.OnPassDuringDynasty]: BaseEventPayload & { player?: Player; firstToPass?: boolean };
+    [EventName.OnCardDetached]: BaseEventPayload & {
         card?: BaseCard;
         parent?: BaseCard;
     };
-    [EventNames.OnSendHome]: BaseEventPayload & { card?: DrawCard };
-    [EventNames.OnDiscardFavor]: BaseEventPayload & { player?: Player };
-    [EventNames.OnClaimFavor]: BaseEventPayload & { player?: Player };
-    [EventNames.OnConflictInitiated]: BaseEventPayload & { player: Player };
-    [EventNames.OnConflictMoved]: BaseEventPayload & { card: ProvinceCard };
-    [EventNames.OnFlipFavor]: BaseEventPayload & { player: Player };
-    [EventNames.OnGloryCount]: BaseEventPayload;
-    [EventNames.OnSetHonorDial]: BaseEventPayload & { player: Player; value: number };
-    [EventNames.OnSwitchConflictElement]: BaseEventPayload & { ring: Ring };
-    [EventNames.OnSwitchConflictType]: BaseEventPayload & { ring: Ring };
-    [EventNames.OnTakeRing]: BaseEventPayload & { ring: Ring };
+    [EventName.OnSendHome]: BaseEventPayload & { card?: DrawCard };
+    [EventName.OnDiscardFavor]: BaseEventPayload & { player?: Player };
+    [EventName.OnClaimFavor]: BaseEventPayload & { player?: Player };
+    [EventName.OnConflictInitiated]: BaseEventPayload & { player: Player };
+    [EventName.OnConflictMoved]: BaseEventPayload & { card: ProvinceCard };
+    [EventName.OnFlipFavor]: BaseEventPayload & { player: Player };
+    [EventName.OnGloryCount]: BaseEventPayload;
+    [EventName.OnSetHonorDial]: BaseEventPayload & { player: Player; value: number };
+    [EventName.OnSwitchConflictElement]: BaseEventPayload & { ring: Ring };
+    [EventName.OnSwitchConflictType]: BaseEventPayload & { ring: Ring };
+    [EventName.OnTakeRing]: BaseEventPayload & { ring: Ring };
 }
 
 export type EventPayload<K extends string> =
@@ -341,7 +341,7 @@ export type EventPayload<K extends string> =
 
 // An event of a specific name, carrying its precise payload fields alongside the
 // framework Event surface. Produced by the typed event factory.
-export type GameEvent<N extends string = EventNames> = Event & EventPayload<N>;
+export type GameEvent<N extends string = EventName> = Event & EventPayload<N>;
 
 export type AllPayloadKeys = EventPayloadMap[keyof EventPayloadMap] extends infer P
     ? P extends object ? keyof P : never

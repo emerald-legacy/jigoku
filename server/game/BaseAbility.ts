@@ -4,7 +4,7 @@ import AbilityTargetRing from './AbilityTargets/AbilityTargetRing.js';
 import AbilityTargetSelect from './AbilityTargets/AbilityTargetSelect.js';
 import AbilityTargetToken from './AbilityTargets/AbilityTargetToken.js';
 import AbilityTargetElementSymbol from './AbilityTargets/AbilityTargetElementSymbol.js';
-import { Stages, TargetModes, AbilityTypes } from './Constants.js';
+import { Stage, TargetMode, AbilityType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { GameAction } from './GameActions/GameAction.js';
 
@@ -49,7 +49,7 @@ interface TargetResults {
  * ability is generated from.
  */
 class BaseAbility {
-    abilityType: AbilityTypes = AbilityTypes.Action;
+    abilityType: AbilityType = AbilityType.Action;
     gameAction: GameAction[];
     targets: AbilityTarget[];
     cost: any[];
@@ -110,15 +110,15 @@ class BaseAbility {
         } else {
             properties.gameAction = [];
         }
-        if(properties.mode === TargetModes.Select) {
+        if(properties.mode === TargetMode.Select) {
             return new AbilityTargetSelect(name, properties, this);
-        } else if(properties.mode === TargetModes.Ring) {
+        } else if(properties.mode === TargetMode.Ring) {
             return new AbilityTargetRing(name, properties, this);
-        } else if(properties.mode === TargetModes.Ability) {
+        } else if(properties.mode === TargetMode.Ability) {
             return new AbilityTargetAbility(name, properties, this);
-        } else if(properties.mode === TargetModes.Token) {
+        } else if(properties.mode === TargetMode.Token) {
             return new AbilityTargetToken(name, properties, this);
-        } else if(properties.mode === TargetModes.ElementSymbol) {
+        } else if(properties.mode === TargetMode.ElementSymbol) {
             return new AbilityTargetElementSymbol(name, properties, this);
         }
         return new AbilityTargetCard(name, properties, this);
@@ -148,7 +148,7 @@ class BaseAbility {
      * Return whether all costs are capable of being paid for the ability.
      */
     canPayCosts(context: AbilityContext): boolean {
-        const contextCopy = context.copy({ stage: Stages.Cost });
+        const contextCopy = context.copy({ stage: Stage.Cost });
         return this.getCosts(context).every((cost) => cost.canPay(contextCopy));
     }
 
@@ -207,7 +207,7 @@ class BaseAbility {
     resolveTargets(context: AbilityContext): TargetResults {
         const targetResults: TargetResults = {
             canIgnoreAllCosts:
-                context.stage === Stages.PreTarget ? this.cost.every((cost) => cost.canIgnoreForTargeting) : false,
+                context.stage === Stage.PreTarget ? this.cost.every((cost) => cost.canIgnoreForTargeting) : false,
             cancelled: false,
             payCostsFirst: false,
             delayTargeting: null

@@ -1,4 +1,4 @@
-import { Phases, EffectNames } from '../Constants.js';
+import { Phases, EffectName } from '../Constants.js';
 import { initiateConflict } from '../GameActions/GameActions.js';
 import AbilityDsl from '../abilitydsl.js';
 import { Conflict } from '../Conflict.js';
@@ -52,7 +52,7 @@ export class ConflictPhase extends Phase {
             this.currentPlayer = this.currentPlayer.opponent;
         }
         if(this.currentPlayer.getConflictOpportunities() > 0) {
-            const forced = this.currentPlayer.mostRecentEffect(EffectNames.ForceConflictDeclarationType);
+            const forced = this.currentPlayer.mostRecentEffect(EffectName.ForceConflictDeclarationType);
             const props = { forcedDeclaredType: forced };
             if(
                 initiateConflict(props).canAffect(this.currentPlayer, this.game.getFrameworkContext(this.currentPlayer))

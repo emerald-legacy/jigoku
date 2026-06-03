@@ -4,7 +4,7 @@ import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
-import { EventNames } from '../../../Constants.js';
+import { EventName } from '../../../Constants.js';
 export default class AMatsuProvesTheirWorth extends DrawCard {
     static id = 'a-matsu-proves-their-worth';
 
@@ -35,7 +35,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                     effect: [
                         AbilityDsl.effects.delayedEffect({
                             when: {
-                                afterConflict: (event: EventPayload<EventNames.AfterConflict>) =>
+                                afterConflict: (event: EventPayload<EventName.AfterConflict>) =>
                                     event.conflict.winner !== target.controller && target.isParticipating()
                             },
                             gameAction: AbilityDsl.actions.discardFromPlay(),
@@ -44,7 +44,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                         }),
                         AbilityDsl.effects.delayedEffect({
                             when: {
-                                afterConflict: (event: EventPayload<EventNames.AfterConflict>) =>
+                                afterConflict: (event: EventPayload<EventName.AfterConflict>) =>
                                     event.conflict.winner === target.controller && target.isParticipating()
                             },
                             gameAction: AbilityDsl.actions.multiple([

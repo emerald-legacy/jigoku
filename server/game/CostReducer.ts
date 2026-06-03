@@ -2,15 +2,15 @@ import type { AbilityContext } from './AbilityContext.js';
 import type { AbilityLimit } from './AbilityLimit.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
-import type { CardTypes, PlayTypes } from './Constants.js';
+import type { CardType, PlayType } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 
 export type CostReducerProps = {
-    cardType?: CardTypes;
+    cardType?: CardType;
     costFloor?: number;
     limit?: AbilityLimit;
-    playingTypes?: PlayTypes;
+    playingTypes?: PlayType;
     amount?: number | ((card: BaseCard, player: Player) => number);
     match?: (card: DrawCard, source: BaseCard) => boolean;
     targetCondition?: (target: BaseCard, source: BaseCard, context: AbilityContext) => boolean;
@@ -21,10 +21,10 @@ export class CostReducer {
     private amount: number | ((card: BaseCard, player: Player) => number);
     private costFloor: number;
     private match?: (card: DrawCard, source: BaseCard) => boolean;
-    private cardType?: CardTypes;
+    private cardType?: CardType;
     private targetCondition?: (target: BaseCard, source: BaseCard, context: AbilityContext<any>) => boolean;
     private limit?: AbilityLimit;
-    private playingTypes?: Array<PlayTypes>;
+    private playingTypes?: Array<PlayType>;
 
     constructor(
         private game: Game,
@@ -45,7 +45,7 @@ export class CostReducer {
         }
     }
 
-    public canReduce(playingType: PlayTypes, card: BaseCard, target?: BaseCard, ignoreType = false): boolean {
+    public canReduce(playingType: PlayType, card: BaseCard, target?: BaseCard, ignoreType = false): boolean {
         if(this.limit && this.limit.isAtMax(this.source.controller)) {
             return false;
         } else if(!ignoreType && this.cardType && card.getType() !== this.cardType) {

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players, Durations, TargetModes } from '../../Constants.js';
+import { CardType, Players, Duration, TargetMode } from '../../Constants.js';
 
 class SmugglingDeal extends DrawCard {
     static id = 'smuggling-deal';
@@ -11,12 +11,12 @@ class SmugglingDeal extends DrawCard {
             cost: AbilityDsl.costs.giveHonorToOpponent(),
             target: {
                 activePromptTitle: 'Select an ability to increase limits on',
-                mode: TargetModes.Ability,
-                cardType: CardTypes.Character,
+                mode: TargetMode.Ability,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                     target: context.targetAbility.card,
-                    duration: Durations.UntilEndOfRound,
+                    duration: Duration.UntilEndOfRound,
                     effect: AbilityDsl.effects.increaseLimitOnAbilities({
                         targetAbility: context.targetAbility
                     })

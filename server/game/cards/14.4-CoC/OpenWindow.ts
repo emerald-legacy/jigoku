@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class OpenWindow extends DrawCard {
@@ -9,7 +9,7 @@ class OpenWindow extends DrawCard {
         this.action({
             title: 'Move a Shinobi into the conflict',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('shinobi'),
                 gameAction: AbilityDsl.actions.moveToConflict()

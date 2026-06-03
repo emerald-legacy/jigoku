@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Players, TargetMode } from '../../../Constants.js';
 
 export default class StrikeAsTheElements extends DrawCard {
     static id = 'strike-as-the-elements';
@@ -11,7 +11,7 @@ export default class StrikeAsTheElements extends DrawCard {
 
             targets: {
                 character: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: card => card.isParticipating() && card.hasTrait('monk'),
                     gameAction: AbilityDsl.actions.cardLastingEffect({
@@ -19,7 +19,7 @@ export default class StrikeAsTheElements extends DrawCard {
                     })
                 },
                 ring: {
-                    mode: TargetModes.Ring,
+                    mode: TargetMode.Ring,
                     activePromptTitle: 'Choose an unclaimed ring',
                     ringCondition: ring => ring.isUnclaimed(),
                     gameAction: AbilityDsl.actions.claimRing({ takeFate: true, type: 'military' })

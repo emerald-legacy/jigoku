@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Players, CardTypes, TargetModes } from '../../Constants.js';
+import { Location, Players, CardType, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class JoinTheFray extends DrawCard {
@@ -11,14 +11,14 @@ class JoinTheFray extends DrawCard {
             condition: context => context.game.isDuringConflict('military'),
             targets: {
                 character: {
-                    cardType: CardTypes.Character,
-                    location: Locations.Provinces,
+                    cardType: CardType.Character,
+                    location: Location.Provinces,
                     controller: Players.Self,
                     cardCondition: card => card.hasTrait('cavalry')
                 },
                 select: {
                     dependsOn: 'character',
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     targets: true,
                     activePromptTitle: 'Which side should this character be on?',
                     choices: {

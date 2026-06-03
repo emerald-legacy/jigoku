@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class LightningAscends extends DrawCard {
@@ -11,7 +11,7 @@ export default class LightningAscends extends DrawCard {
 
             targets: {
                 monk: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: (card) => card.isParticipating() && card.hasTrait('monk'),
                     gameAction: AbilityDsl.actions.cardLastingEffect({
@@ -21,7 +21,7 @@ export default class LightningAscends extends DrawCard {
                 enemy: {
                     activePromptTitle: 'Choose a character to lose all traits',
                     dependsOn: 'monk',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: (card) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({

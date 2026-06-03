@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Decks, Phases, Durations } from '../../Constants.js';
+import { Location, Decks, Phases, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ArtisanAcademy extends DrawCard {
@@ -15,15 +15,15 @@ class ArtisanAcademy extends DrawCard {
                 let topCard = context.player.conflictDeck[0];
                 return {
                     targetController: context.player,
-                    duration: Durations.Custom,
+                    duration: Duration.Custom,
                     until: {
-                        onCardMoved: event => event.card === topCard && event.originalLocation === Locations.ConflictDeck,
+                        onCardMoved: event => event.card === topCard && event.originalLocation === Location.ConflictDeck,
                         onPhaseEnded: () => true,
                         onDeckShuffled: event => event.player === context.player && event.deck === Decks.ConflictDeck
                     },
                     effect: [
                         AbilityDsl.effects.showTopConflictCard(),
-                        AbilityDsl.effects.canPlayFromOwn(Locations.ConflictDeck, [topCard], this)
+                        AbilityDsl.effects.canPlayFromOwn(Location.ConflictDeck, [topCard], this)
                     ]
                 };
             })

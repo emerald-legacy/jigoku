@@ -3,7 +3,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
-import { EventNames } from '../../Constants.js';
+import { EventName } from '../../Constants.js';
 class SeppunTruthseeker extends DrawCard {
     static id = 'seppun-truthseeker';
 
@@ -11,7 +11,7 @@ class SeppunTruthseeker extends DrawCard {
         this.forcedInterrupt({
             title: 'Each player draws 2 cards',
             when: {
-                onCardLeavesPlay: (event: EventPayload<EventNames.OnCardLeavesPlay>, context: any) => event.card === context.source
+                onCardLeavesPlay: (event: EventPayload<EventName.OnCardLeavesPlay>, context: any) => event.card === context.source
             },
             effect: 'make both players draw 2 cards',
             gameAction: ability.actions.draw((context: AbilityContext) => ({

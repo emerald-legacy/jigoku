@@ -1,43 +1,43 @@
 import { EffectValue } from './EffectValue.js';
-import { CardTypes, EffectNames, Durations, AbilityTypes } from '../Constants.js';
+import { CardType, EffectName, Duration, AbilityType } from '../Constants.js';
 import GainAbility from './GainAbility.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type DrawCard from '../DrawCard.js';
 import type { GameObject } from '../GameObject.js';
 import type { CardEffect } from './types.js';
 
-const binaryCardEffects: readonly EffectNames[] = [
-    EffectNames.Blank,
-    EffectNames.CanBeSeenWhenFacedown,
-    EffectNames.CannotParticipateAsAttacker,
-    EffectNames.CannotParticipateAsDefender,
-    EffectNames.AbilityRestrictions,
-    EffectNames.DoesNotBow,
-    EffectNames.DoesNotReady,
-    EffectNames.ShowTopConflictCard,
-    EffectNames.ShowTopDynastyCard
+const binaryCardEffects: readonly EffectName[] = [
+    EffectName.Blank,
+    EffectName.CanBeSeenWhenFacedown,
+    EffectName.CannotParticipateAsAttacker,
+    EffectName.CannotParticipateAsDefender,
+    EffectName.AbilityRestrictions,
+    EffectName.DoesNotBow,
+    EffectName.DoesNotReady,
+    EffectName.ShowTopConflictCard,
+    EffectName.ShowTopDynastyCard
 ];
 
 const MilitaryModifiers = [
-    EffectNames.ModifyBaseMilitarySkillMultiplier,
-    EffectNames.ModifyMilitarySkill,
-    EffectNames.ModifyMilitarySkillMultiplier,
-    EffectNames.ModifyBothSkills,
-    EffectNames.AttachmentMilitarySkillModifier
+    EffectName.ModifyBaseMilitarySkillMultiplier,
+    EffectName.ModifyMilitarySkill,
+    EffectName.ModifyMilitarySkillMultiplier,
+    EffectName.ModifyBothSkills,
+    EffectName.AttachmentMilitarySkillModifier
 ];
 
 const PoliticalModifiers = [
-    EffectNames.ModifyBasePoliticalSkillMultiplier,
-    EffectNames.ModifyPoliticalSkill,
-    EffectNames.ModifyPoliticalSkillMultiplier,
-    EffectNames.ModifyBothSkills,
-    EffectNames.AttachmentPoliticalSkillModifier
+    EffectName.ModifyBasePoliticalSkillMultiplier,
+    EffectName.ModifyPoliticalSkill,
+    EffectName.ModifyPoliticalSkillMultiplier,
+    EffectName.ModifyBothSkills,
+    EffectName.AttachmentPoliticalSkillModifier
 ];
 
 const ProvinceStrengthModifiers = [
-    EffectNames.ModifyProvinceStrength,
-    EffectNames.ModifyProvinceStrengthMultiplier,
-    EffectNames.SetBaseProvinceStrength
+    EffectName.ModifyProvinceStrength,
+    EffectName.ModifyProvinceStrengthMultiplier,
+    EffectName.SetBaseProvinceStrength
 ];
 
 type DashSkillType = 'military' | 'political';
@@ -64,43 +64,43 @@ const hasDash: Record<string, (card: DrawCard, value?: EffectValue<unknown>) => 
 
 const conflictingEffects: Record<string, (target: GameObject, value?: unknown) => CardEffect[]> = {
     modifyBaseMilitarySkillMultiplier: (card) =>
-        card.getRawEffects().filter((effect) => effect.type === EffectNames.SetBaseMilitarySkill),
+        card.getRawEffects().filter((effect) => effect.type === EffectName.SetBaseMilitarySkill),
     modifyBasePoliticalSkillMultiplier: (card) =>
-        card.getRawEffects().filter((effect) => effect.type === EffectNames.SetBasePoliticalSkill),
-    modifyGlory: (card) => card.getRawEffects().filter((effect) => effect.type === EffectNames.SetGlory),
-    modifyMilitarySkill: (card) => card.getRawEffects().filter((effect) => effect.type === EffectNames.SetMilitarySkill),
+        card.getRawEffects().filter((effect) => effect.type === EffectName.SetBasePoliticalSkill),
+    modifyGlory: (card) => card.getRawEffects().filter((effect) => effect.type === EffectName.SetGlory),
+    modifyMilitarySkill: (card) => card.getRawEffects().filter((effect) => effect.type === EffectName.SetMilitarySkill),
     modifyMilitarySkillMultiplier: (card) =>
-        card.getRawEffects().filter((effect) => effect.type === EffectNames.SetMilitarySkill),
-    modifyPoliticalSkill: (card) => card.getRawEffects().filter((effect) => effect.type === EffectNames.SetPoliticalSkill),
+        card.getRawEffects().filter((effect) => effect.type === EffectName.SetMilitarySkill),
+    modifyPoliticalSkill: (card) => card.getRawEffects().filter((effect) => effect.type === EffectName.SetPoliticalSkill),
     modifyPoliticalSkillMultiplier: (card) =>
-        card.getRawEffects().filter((effect) => effect.type === EffectNames.SetPoliticalSkill),
-    setBaseMilitarySkill: (card) => card.getRawEffects().filter((effect) => effect.type === EffectNames.SetMilitarySkill),
-    setBasePoliticalSkill: (card) => card.getRawEffects().filter((effect) => effect.type === EffectNames.SetPoliticalSkill),
+        card.getRawEffects().filter((effect) => effect.type === EffectName.SetPoliticalSkill),
+    setBaseMilitarySkill: (card) => card.getRawEffects().filter((effect) => effect.type === EffectName.SetMilitarySkill),
+    setBasePoliticalSkill: (card) => card.getRawEffects().filter((effect) => effect.type === EffectName.SetPoliticalSkill),
     setMaxConflicts: (player, value) => {
-        if(player.mostRecentEffect(EffectNames.SetMaxConflicts) !== value) {
+        if(player.mostRecentEffect(EffectName.SetMaxConflicts) !== value) {
             return [];
         }
-        const last = player.getRawEffects().filter((effect) => effect.type === EffectNames.SetMaxConflicts).at(-1);
+        const last = player.getRawEffects().filter((effect) => effect.type === EffectName.SetMaxConflicts).at(-1);
         return last ? [last] : [];
     },
     takeControl: (card, player) => {
-        if(card.mostRecentEffect(EffectNames.TakeControl) !== player) {
+        if(card.mostRecentEffect(EffectName.TakeControl) !== player) {
             return [];
         }
-        const last = card.getRawEffects().filter((effect) => effect.type === EffectNames.TakeControl).at(-1);
+        const last = card.getRawEffects().filter((effect) => effect.type === EffectName.TakeControl).at(-1);
         return last ? [last] : [];
     }
 };
 
 class StaticEffect implements CardEffect {
-    type: EffectNames;
+    type: EffectName;
     value: EffectValue<any>;
     context!: AbilityContext;
-    duration: Durations | null;
+    duration: Duration | null;
     copies: Map<string, GainAbility>;
     isConditional?: boolean;
 
-    constructor(type: EffectNames, value: any) {
+    constructor(type: EffectName, value: any) {
         this.type = type;
         if(value instanceof EffectValue) {
             this.value = value;
@@ -114,7 +114,7 @@ class StaticEffect implements CardEffect {
 
     apply(target: GameObject) {
         target.addEffect(this);
-        if(this.value instanceof GainAbility && this.value.abilityType === AbilityTypes.Persistent) {
+        if(this.value instanceof GainAbility && this.value.abilityType === AbilityType.Persistent) {
             const copy = this.value.getCopy();
             copy.apply(target as DrawCard);
             this.copies.set(target.uuid, copy);
@@ -148,7 +148,7 @@ class StaticEffect implements CardEffect {
     }
 
     canBeApplied(target: GameObject): boolean {
-        if(target.facedown && target.type !== CardTypes.Province) {
+        if(target.facedown && target.type !== CardType.Province) {
             return false;
         }
         return !hasDash[this.type] || !hasDash[this.type](target as DrawCard, this.value);
@@ -170,7 +170,7 @@ class StaticEffect implements CardEffect {
         return ProvinceStrengthModifiers.includes(this.type);
     }
 
-    checkConflictingEffects(type: EffectNames, target: any): boolean {
+    checkConflictingEffects(type: EffectName, target: any): boolean {
         if(binaryCardEffects.includes(type)) {
             let matchingEffects = target.effects.filter((effect: CardEffect) => effect.type === type);
             return matchingEffects.every((effect: CardEffect) => this.hasLongerDuration(effect) || effect.isConditional);
@@ -179,22 +179,22 @@ class StaticEffect implements CardEffect {
             let matchingEffects = conflictingEffects[type](target, this.getValue());
             return matchingEffects.every((effect: CardEffect) => this.hasLongerDuration(effect) || effect.isConditional);
         }
-        if(type === EffectNames.ModifyBothSkills) {
+        if(type === EffectName.ModifyBothSkills) {
             return (
-                this.checkConflictingEffects(EffectNames.ModifyMilitarySkill, target) ||
-                this.checkConflictingEffects(EffectNames.ModifyPoliticalSkill, target)
+                this.checkConflictingEffects(EffectName.ModifyMilitarySkill, target) ||
+                this.checkConflictingEffects(EffectName.ModifyPoliticalSkill, target)
             );
         }
-        if(type === EffectNames.HonorStatusDoesNotModifySkill) {
+        if(type === EffectName.HonorStatusDoesNotModifySkill) {
             return (
-                this.checkConflictingEffects(EffectNames.ModifyMilitarySkill, target) ||
-                this.checkConflictingEffects(EffectNames.ModifyPoliticalSkill, target)
+                this.checkConflictingEffects(EffectName.ModifyMilitarySkill, target) ||
+                this.checkConflictingEffects(EffectName.ModifyPoliticalSkill, target)
             );
         }
-        if(type === EffectNames.HonorStatusReverseModifySkill) {
+        if(type === EffectName.HonorStatusReverseModifySkill) {
             return (
-                this.checkConflictingEffects(EffectNames.ModifyMilitarySkill, target) ||
-                this.checkConflictingEffects(EffectNames.ModifyPoliticalSkill, target)
+                this.checkConflictingEffects(EffectName.ModifyMilitarySkill, target) ||
+                this.checkConflictingEffects(EffectName.ModifyPoliticalSkill, target)
             );
         }
         return true;
@@ -202,12 +202,12 @@ class StaticEffect implements CardEffect {
 
     hasLongerDuration(effect: CardEffect): boolean {
         let durations = [
-            Durations.UntilEndOfDuel,
-            Durations.UntilEndOfConflict,
-            Durations.UntilEndOfPhase,
-            Durations.UntilEndOfRound
+            Duration.UntilEndOfDuel,
+            Duration.UntilEndOfConflict,
+            Duration.UntilEndOfPhase,
+            Duration.UntilEndOfRound
         ];
-        return durations.indexOf(this.duration as Durations) > durations.indexOf(effect.duration as Durations);
+        return durations.indexOf(this.duration as Duration) > durations.indexOf(effect.duration as Duration);
     }
 
     getDebugInfo() {

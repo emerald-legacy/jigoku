@@ -1,5 +1,5 @@
 import MulliganDynastyPrompt from './MulliganDynastyPrompt.js';
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type BaseCard from '../../BaseCard.js';
 import type DrawCard from '../../DrawCard.js';
@@ -28,7 +28,7 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
     }
 
     cardCondition(card: BaseCard): boolean {
-        return card.location === Locations.Hand;
+        return card.location === Location.Hand;
     }
 
     waitingPrompt() {
@@ -47,7 +47,7 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
             } else {
                 this.game.addMessage('{0} has kept all conflict cards', player);
             }
-            this.game.getProvinceArray(false).forEach((location: Locations) => {
+            this.game.getProvinceArray(false).forEach((location: Location) => {
                 let cards = player.getDynastyCardsInProvince(location);
                 cards.forEach((card: DrawCard) => {
                     if(card) {

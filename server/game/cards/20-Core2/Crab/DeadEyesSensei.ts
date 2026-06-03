@@ -1,4 +1,4 @@
-import { CardTypes, Durations, Players } from '../../../Constants.js';
+import { CardType, Duration, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,13 +9,13 @@ export default class DeadEyesSensei extends DrawCard {
         this.action({
             title: 'Ready a character and give them Berserker',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.ready(),
                     AbilityDsl.actions.removeFate(),
                     AbilityDsl.actions.cardLastingEffect({
-                        duration: Durations.UntilEndOfPhase,
+                        duration: Duration.UntilEndOfPhase,
                         effect: AbilityDsl.effects.addTrait('berserker')
                     })
                 ])

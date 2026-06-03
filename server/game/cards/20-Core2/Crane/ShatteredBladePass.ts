@@ -1,4 +1,4 @@
-import { CardTypes, Players, Durations } from '../../../Constants.js';
+import { CardType, Players, Duration } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -10,14 +10,14 @@ export default class ShatteredBladePass extends ProvinceCard {
             title: 'Ready a character and move it to the conflict',
             condition: (context) => context.game.currentConflict !== null && context.game.currentConflict.defenders.length === 0,
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.ready(),
                     AbilityDsl.actions.moveToConflict(),
                     AbilityDsl.actions.playerLastingEffect(context => ({
                         targetController: context.player,
-                        duration: Durations.UntilPassPriority,
+                        duration: Duration.UntilPassPriority,
                         effect: AbilityDsl.effects.additionalAction()
                     }))
                 ])

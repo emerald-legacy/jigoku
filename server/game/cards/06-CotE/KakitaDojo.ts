@@ -1,4 +1,4 @@
-import { DuelTypes } from '../../Constants.js';
+import { DuelType } from '../../Constants.js';
 import { Duel } from '../../Duel.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -10,7 +10,7 @@ export default class KakitaDojo extends DrawCard {
         this.action({
             title: 'Initiate a military duel',
             initiateDuel: {
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 message: '{0} {1}cannot trigger its abilities until the end of the conflict',
                 messageArgs: (duel) => [duel.loser, this.#wonByDuelist(duel) ? 'is bowed and ' : ''],
                 gameAction: (duel) =>

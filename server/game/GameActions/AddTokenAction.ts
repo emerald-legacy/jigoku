@@ -1,18 +1,18 @@
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardTypes, EventNames, Locations, TokenTypes } from '../Constants.js';
+import { CardType, EventName, Location, TokenType } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export interface AddTokenProperties extends CardActionProperties {
-    tokenType?: TokenTypes;
+    tokenType?: TokenType;
 }
 
 export class AddTokenAction extends CardGameAction<AddTokenProperties> {
     name = 'addToken';
-    eventName = EventNames.OnAddTokenToCard;
+    eventName = EventName.OnAddTokenToCard;
     defaultProperties: AddTokenProperties = {
-        tokenType: TokenTypes.Honor
+        tokenType: TokenType.Honor
     };
 
     getEffectMessage(context: AbilityContext): [string, unknown[]] {
@@ -24,23 +24,23 @@ export class AddTokenAction extends CardGameAction<AddTokenProperties> {
         if(!card.isFaceup()) {
             return false;
         }
-        if([CardTypes.Holding, CardTypes.Province].includes(card.type)) {
+        if([CardType.Holding, CardType.Province].includes(card.type)) {
             if(!card.location.includes('province')) {
                 return false;
             }
-        } else if(card.location !== Locations.PlayArea) {
+        } else if(card.location !== Location.PlayArea) {
             return false;
         }
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnAddTokenToCard>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnAddTokenToCard>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const { tokenType } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.tokenType = tokenType;
     }
 
-    eventHandler(event: GameEvent<EventNames.OnAddTokenToCard>): void {
+    eventHandler(event: GameEvent<EventName.OnAddTokenToCard>): void {
         event.card.addToken(event.tokenType ?? '');
     }
 }

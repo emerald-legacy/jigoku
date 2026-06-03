@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AgelessCrone extends DrawCard {
@@ -11,7 +11,7 @@ class AgelessCrone extends DrawCard {
             targetController: Players.Any,
             effect: ability.effects.increaseCost({
                 amount: 1,
-                match: (card: any) => card.type === CardTypes.Event
+                match: (card: any) => card.type === CardType.Event
             })
         });
     }

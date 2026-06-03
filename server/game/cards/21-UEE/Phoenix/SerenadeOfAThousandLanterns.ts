@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, TargetModes } from '../../../Constants.js';
+import { CardType, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SerenadeOfAThousandLanterns extends DrawCard {
@@ -13,10 +13,10 @@ export default class SerenadeOfAThousandLanterns extends DrawCard {
             target: {
                 activePromptTitle: 'Choose characters adding up to 4 printed cost',
                 numCards: Infinity,
-                mode: TargetModes.MaxStat,
+                mode: TargetMode.MaxStat,
                 cardStat: (card: DrawCard) => card.getCost() ?? 0,
                 maxStat: () => 4,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, _context) => card.isParticipating() && !card.isUnique(),
                 gameAction: AbilityDsl.actions.sendHome()
             },

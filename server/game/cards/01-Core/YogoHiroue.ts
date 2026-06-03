@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, EventNames } from '../../Constants.js';
+import { CardType, EventName } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 class YogoHiroue extends DrawCard {
@@ -11,13 +11,13 @@ class YogoHiroue extends DrawCard {
             title: 'Move a character into the conflict',
             condition: context => context.source.isParticipating(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.moveToConflict(),
                     AbilityDsl.actions.cardLastingEffect(context => ({
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
-                                afterConflict: (event: EventPayload<EventNames.AfterConflict>) => event.conflict.winner === context.player
+                                afterConflict: (event: EventPayload<EventName.AfterConflict>) => event.conflict.winner === context.player
                             },
                             gameAction: AbilityDsl.actions.menuPrompt({
                                 activePromptTitle: 'Dishonor ' + context.target.name + '?',

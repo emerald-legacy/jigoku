@@ -1,5 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Locations, Players, TargetModes } from '../../Constants.js';
+import { CardType, Location, Players, TargetMode } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 
@@ -8,7 +8,7 @@ export default class StokeInsurrection extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            location: Locations.Any,
+            location: Location.Any,
             targetController: Players.Any,
             condition: (context) =>
                 context.player.opponent !== undefined && this.getFaceDownProvinceCards(context.player.opponent) >= 4,
@@ -23,18 +23,18 @@ export default class StokeInsurrection extends DrawCard {
             condition: (context) => context.game.isDuringConflict() && context.player.opponent !== undefined,
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.reveal((context) => ({
-                    target: context.player.opponent ? context.player.opponent.getDynastyCardsInProvince(Locations.Provinces) : []
+                    target: context.player.opponent ? context.player.opponent.getDynastyCardsInProvince(Location.Provinces) : []
                 })),
                 AbilityDsl.actions.selectCard((context) => ({
                     activePromptTitle: 'Choose up to two characters',
                     numCards: 2,
                     targets: true,
-                    mode: TargetModes.MaxStat,
+                    mode: TargetMode.MaxStat,
                     cardStat: (card: DrawCard) => card.getCost(),
                     maxStat: () => 6,
                     optional: true,
-                    cardType: CardTypes.Character,
-                    location: [Locations.Provinces],
+                    cardType: CardType.Character,
+                    location: [Location.Provinces],
                     controller: Players.Opponent,
                     cardCondition: (card) => card.isFaceup() && card.allowGameAction('putIntoConflict', context),
                     message: '{0} puts {1} into play into the conflict',
@@ -49,7 +49,7 @@ export default class StokeInsurrection extends DrawCard {
 
     private getFaceDownProvinceCards(player: Player) {
         return player
-            .getDynastyCardsInProvince(Locations.Provinces)
+            .getDynastyCardsInProvince(Location.Provinces)
             .filter((card: DrawCard) => card.isFacedown() && card.controller === player).length;
     }
 }

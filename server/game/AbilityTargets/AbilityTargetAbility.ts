@@ -1,6 +1,6 @@
 import CardSelector from '../CardSelector.js';
-import { Stages, Players } from '../Constants.js';
-import type { CardTypes } from '../Constants.js';
+import { Stage, Players } from '../Constants.js';
+import type { CardType } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
@@ -15,7 +15,7 @@ interface OwningAbility {
 
 interface AbilityTargetAbilityProperties {
     gameAction: GameAction[];
-    cardType?: CardTypes | CardTypes[];
+    cardType?: CardType | CardType[];
     abilityCondition?: (ability: CardAbility) => boolean;
     cardCondition?: (card: BaseCard, context: AbilityContext) => boolean;
     dependsOn?: string;
@@ -64,7 +64,7 @@ class AbilityTargetAbility {
             return abilities.some((ability) => {
                 let contextCopy = context.copy({});
                 contextCopy.targetAbility = ability;
-                if(context.stage === Stages.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
+                if(context.stage === Stage.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
                     return false;
                 }
                 return (!properties.cardCondition || properties.cardCondition(card, contextCopy)) &&
@@ -96,13 +96,13 @@ class AbilityTargetAbility {
             return;
         }
         let player = context.choosingPlayerOverride || this.getChoosingPlayer(context);
-        if(player === context.player.opponent && context.stage === Stages.PreTarget) {
+        if(player === context.player.opponent && context.stage === Stage.PreTarget) {
             targetResults.delayTargeting = this;
             return;
         }
         let buttons: PromptButton[] = [];
         let waitingPromptTitle = '';
-        if(context.stage === Stages.PreTarget) {
+        if(context.stage === Stage.PreTarget) {
             buttons.push({ text: 'Cancel', arg: 'cancel' });
             if(context.ability.abilityType === 'action') {
                 waitingPromptTitle = 'Waiting for opponent to take an action or pass';

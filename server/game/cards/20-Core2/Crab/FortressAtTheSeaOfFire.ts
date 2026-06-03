@@ -1,4 +1,4 @@
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -11,7 +11,7 @@ export default class FortressAtTheSeaOfFire extends StrongholdCard {
             cost: AbilityDsl.costs.bowSelf(),
             when: { afterConflict: (event, context) => context.player.isDefendingPlayer() && event.conflict.winner === context.player },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => !card.isParticipating(),
                 gameAction: [AbilityDsl.actions.bow(), AbilityDsl.actions.ready()]
             }

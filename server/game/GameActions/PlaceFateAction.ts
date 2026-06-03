@@ -1,6 +1,6 @@
 import { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardTypes, EventNames, Locations } from '../Constants.js';
+import { CardType, EventName, Location } from '../Constants.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
@@ -14,8 +14,8 @@ export interface PlaceFateProperties extends CardActionProperties {
 
 export class PlaceFateAction extends CardGameAction<PlaceFateProperties> {
     name = 'placeFate';
-    eventName = EventNames.OnMoveFate;
-    targetType = [CardTypes.Character];
+    eventName = EventName.OnMoveFate;
+    targetType = [CardType.Character];
     defaultProperties: PlaceFateProperties = { amount: 1 };
     constructor(properties: ((context: AbilityContext) => PlaceFateProperties) | PlaceFateProperties) {
         super(properties);
@@ -28,7 +28,7 @@ export class PlaceFateAction extends CardGameAction<PlaceFateProperties> {
 
     canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
         const { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateProperties;
-        if(amount === 0 || card.location !== Locations.PlayArea) {
+        if(amount === 0 || card.location !== Location.PlayArea) {
             return false;
         }
 
@@ -50,7 +50,7 @@ export class PlaceFateAction extends CardGameAction<PlaceFateProperties> {
         );
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnMoveFate>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnMoveFate>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         const { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateProperties;
         event.fate = amount ?? 0;
         event.origin = origin;
@@ -58,11 +58,11 @@ export class PlaceFateAction extends CardGameAction<PlaceFateProperties> {
         event.recipient = card;
     }
 
-    checkEventCondition(event: GameEvent<EventNames.OnMoveFate>): boolean {
+    checkEventCondition(event: GameEvent<EventName.OnMoveFate>): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: GameEvent<EventNames.OnMoveFate>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: GameEvent<EventName.OnMoveFate>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
         const { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateProperties;
         return (
             !event.cancelled &&
@@ -73,7 +73,7 @@ export class PlaceFateAction extends CardGameAction<PlaceFateProperties> {
         );
     }
 
-    eventHandler(event: GameEvent<EventNames.OnMoveFate>): void {
+    eventHandler(event: GameEvent<EventName.OnMoveFate>): void {
         this.moveFateEventHandler(event);
     }
 }

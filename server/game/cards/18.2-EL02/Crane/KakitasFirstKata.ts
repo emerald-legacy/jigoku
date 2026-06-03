@@ -1,4 +1,4 @@
-import { CardTypes, EventNames, Players } from '../../../Constants.js';
+import { CardType, EventName, Players } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import BaseCard from '../../../BaseCard.js';
@@ -12,13 +12,13 @@ export default class KakitasFirstKata extends DrawCard {
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventNames.OnConflictFinished, EventNames.OnCardBowed]);
+        this.eventRegistrar.register([EventName.OnConflictFinished, EventName.OnCardBowed]);
 
         this.action<DrawCard>({
             title: 'Prevent opponent\'s bow and move effects',
             condition: (context) => context.game.isDuringConflict(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('duelist') || card.isFaction('crane'),
                 gameAction: AbilityDsl.actions.multiple([

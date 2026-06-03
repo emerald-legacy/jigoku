@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes } from '../../Constants.js';
+import { TargetMode } from '../../Constants.js';
 
 class AllAndNothing extends DrawCard {
     static id = 'all-and-nothing';
@@ -15,7 +15,7 @@ class AllAndNothing extends DrawCard {
                     !!event.ring && event.ring.element === 'void' && event.player === context.player
             },
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 ringCondition: (ring: any, context: any) =>
                     context?.event?.physicalRing ? ring !== (context as TriggeredAbilityContext).event.physicalRing : ring.element !== 'void',
                 gameAction: AbilityDsl.actions.cancel((context: AbilityContext) => ({

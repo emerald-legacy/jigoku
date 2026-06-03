@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { TargetModes, CardTypes, Locations } from '../../Constants.js';
+import { TargetMode, CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ExiledGuardian extends DrawCard {
@@ -10,9 +10,9 @@ class ExiledGuardian extends DrawCard {
             title: 'Discard a status token off a character or province',
             cost: AbilityDsl.costs.sacrificeSelf(),
             target: {
-                mode: TargetModes.Token,
-                cardType: [CardTypes.Character, CardTypes.Province],
-                location: Locations.Any,
+                mode: TargetMode.Token,
+                cardType: [CardType.Character, CardType.Province],
+                location: Location.Any,
                 gameAction: AbilityDsl.actions.discardStatusToken()
             },
             effect: 'discard {1}\'s {2}',

@@ -1,5 +1,5 @@
 import TriggeredAbility from '../../../server/game/TriggeredAbility.js';
-import { AbilityTypes } from '../../../server/game/Constants.js';
+import { AbilityType } from '../../../server/game/Constants.js';
 
 interface TriggeredAbilityTestContext {
     gameSpy: any;
@@ -34,7 +34,7 @@ describe('TriggeredAbility', function () {
 
         this.properties.when.onSomething.and.returnValue(true);
 
-        this.reaction = new TriggeredAbility(this.cardSpy, AbilityTypes.Reaction, this.properties);
+        this.reaction = new TriggeredAbility(this.cardSpy, AbilityType.Reaction, this.properties);
         this.cardSpy.reactions = [this.reaction];
     });
 
@@ -89,7 +89,7 @@ describe('TriggeredAbility', function () {
                 },
                 handler: () => true
             };
-            this.reaction = new TriggeredAbility(this.cardSpy, AbilityTypes.Reaction, this.properties);
+            this.reaction = new TriggeredAbility(this.cardSpy, AbilityType.Reaction, this.properties);
             this.reaction.registerEvents();
         });
 
@@ -114,7 +114,7 @@ describe('TriggeredAbility', function () {
                 },
                 handler: () => true
             };
-            this.reaction = new TriggeredAbility(this.cardSpy, AbilityTypes.Reaction, this.properties);
+            this.reaction = new TriggeredAbility(this.cardSpy, AbilityType.Reaction, this.properties);
         });
 
         it('should unregister all previously registered when event handlers', function(this: TriggeredAbilityTestContext) {

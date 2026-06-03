@@ -1,5 +1,5 @@
-export enum FavorTypes {
+export enum DuelType {
     Military = 'military',
     Political = 'political',
-    Both = 'both'
+    Glory = 'glory'
 }

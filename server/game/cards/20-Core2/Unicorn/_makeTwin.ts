@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { Decks, Durations, EventNames } from '../../../Constants.js';
+import { Decks, Duration, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameEvent } from '../../../Events/EventPayloads.js';
 import type Player from '../../../Player.js';
@@ -18,7 +18,7 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                     shuffle: false,
                     activePromptTitle: `Find a copy of ${opt.siblingName}`,
                     selectedCardsHandler: (context, event, cards) => {
-                        const searchEvent = event as GameEvent<EventNames.OnDeckSearch> & { player: Player };
+                        const searchEvent = event as GameEvent<EventName.OnDeckSearch> & { player: Player };
                         if(cards.length === 0) {
                             context.game.addMessage(`{0} finds no copies of ${opt.siblingName}`, searchEvent.player);
                             return;
@@ -54,7 +54,7 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                         AbilityDsl.actions
                             .cardLastingEffect({
                                 effect: AbilityDsl.effects.blank(),
-                                duration: Durations.UntilEndOfRound,
+                                duration: Duration.UntilEndOfRound,
                                 target: newCharacter
                             })
                             .resolve(newCharacter, context);

@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class SawakitensBlessing extends DrawCard {
             title: 'Character doesn\'t bow during resolution',
             condition: () => this.game.isDuringConflict('military'),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: [
                     AbilityDsl.actions.cardLastingEffect({

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'seeker-of-knowledge-air';
@@ -28,7 +28,7 @@ class WanderingMediator extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Province Element',
-            element: Elements.Air
+            element: Element.Air
         });
         return symbols;
     }

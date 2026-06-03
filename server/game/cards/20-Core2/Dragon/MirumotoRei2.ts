@@ -1,4 +1,4 @@
-import { Durations, DuelTypes, ConflictTypes } from '../../../Constants.js';
+import { Duration, DuelType, ConflictType } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -24,7 +24,7 @@ export default class MirumotoRei2 extends DrawCard {
                     amount: this.getWeaponCount(context),
                     player: context.player
                 }),
-                duration: Durations.UntilEndOfDuel
+                duration: Duration.UntilEndOfDuel
             } as LastingEffectProperties)),
             effect: 'add {1} to their duel total',
             effectArgs: (context) => [this.getWeaponCount(context)]
@@ -32,9 +32,9 @@ export default class MirumotoRei2 extends DrawCard {
 
         this.action({
             title: 'Duel an opposing character',
-            condition: (context) => context.game.isDuringConflict(ConflictTypes.Military),
+            condition: (context) => context.game.isDuringConflict(ConflictType.Military),
             initiateDuel: {
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 message: 'injure {0}',
                 messageArgs: (duel) => [duel.loser],
                 gameAction: ((duel: any) =>

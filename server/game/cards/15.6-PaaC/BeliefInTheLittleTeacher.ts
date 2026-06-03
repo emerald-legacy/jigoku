@@ -1,14 +1,14 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityTypes } from '../../Constants.js';
+import { AbilityType } from '../../Constants.js';
 
 class BeliefInTheLittleTeacher extends DrawCard {
     static id = 'belief-in-the-little-teacher';
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Discard character\'s status token',
                 gameAction: AbilityDsl.actions.selectToken((context: AbilityContext) => ({
                     card: context.source,

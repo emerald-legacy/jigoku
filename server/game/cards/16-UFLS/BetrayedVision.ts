@@ -1,5 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
@@ -13,14 +13,14 @@ export default class BetrayedVision extends DrawCard {
             targets: {
                 cardToCopy: {
                     activePromptTitle: 'Choose a character to copy',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Any,
                     cardCondition: (card) => !card.isUnique()
                 },
                 myCharacter: {
                     dependsOn: 'cardToCopy',
                     activePromptTitle: 'Choose a character to turn into the copy',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: (card, context) => card.isParticipating() && card !== context.targets.cardToCopy,
                     gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
@@ -36,7 +36,7 @@ export default class BetrayedVision extends DrawCard {
     canPlay(context: TriggeredAbilityContext, playType: string) {
         return (
             context.player.cardsInPlay.some(
-                (card) => card.getType() === CardTypes.Character && card.hasTrait('shugenja')
+                (card) => card.getType() === CardType.Character && card.hasTrait('shugenja')
             ) && super.canPlay(context, playType)
         );
     }

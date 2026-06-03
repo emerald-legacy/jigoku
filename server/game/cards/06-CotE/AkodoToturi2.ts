@@ -1,7 +1,7 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, PlayTypes } from '../../Constants.js';
+import { Players, PlayType } from '../../Constants.js';
 
 class AkodoToturi2 extends DrawCard {
     static id = 'akodo-toturi-2';
@@ -15,7 +15,7 @@ class AkodoToturi2 extends DrawCard {
                 ability.actions.playerLastingEffect({
                     targetController: Players.Any,
                     effect: ability.effects.playerCannot({
-                        cannot: PlayTypes.PlayFromHand
+                        cannot: PlayType.PlayFromHand
                     })
                 })
             ]

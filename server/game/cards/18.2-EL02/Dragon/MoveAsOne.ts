@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { Locations } from '../../../Constants.js';
+import { Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 class MoveAsOne extends DrawCard {
@@ -20,7 +20,7 @@ class MoveAsOne extends DrawCard {
                 placeOnBottomInRandomOrder: true,
                 cardCondition: card => card.hasTrait('kiho'),
                 gameAction: AbilityDsl.actions.moveCard({
-                    destination: Locations.Hand
+                    destination: Location.Hand
                 })
             })
         });

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { AbilityTypes, CardTypes, Locations, Players, Durations } from '../../Constants.js';
+import { AbilityType, CardType, Location, Players, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class VoiceOfTheAncestors extends DrawCard {
@@ -20,14 +20,14 @@ class VoiceOfTheAncestors extends DrawCard {
         this.action({
             title: 'Attach a character as a Spirit',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     context.game.actions.attach({ attachment: DummySpiritAttachment }).canAffect(card, context)
             },
             gameAction: AbilityDsl.actions.selectCard({
-                cardType: CardTypes.Character,
-                location: Locations.DynastyDiscardPile,
+                cardType: CardType.Character,
+                location: Location.DynastyDiscardPile,
                 cardCondition: card => card.isFaction('lion'),
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.sequential([
@@ -37,13 +37,13 @@ class VoiceOfTheAncestors extends DrawCard {
                     })),
                     AbilityDsl.actions.cardLastingEffect({
                         canChangeZoneOnce: true,
-                        duration: Durations.Custom,
+                        duration: Duration.Custom,
                         effect: [
                             AbilityDsl.effects.blank(true),
-                            AbilityDsl.effects.changeType(CardTypes.Attachment),
+                            AbilityDsl.effects.changeType(CardType.Attachment),
                             AbilityDsl.effects.addTrait('spirit'),
                             AbilityDsl.effects.attachmentRestrictTraitAmount({ spirit: 1 }),
-                            AbilityDsl.effects.gainAbility(AbilityTypes.Persistent, {
+                            AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
                                 match: (card: any, context: any) => card === context.source.parent,
                                 effect: [
                                     AbilityDsl.effects.modifyMilitarySkill((card: any, context: any) => context.source.printedMilitarySkill || 0),

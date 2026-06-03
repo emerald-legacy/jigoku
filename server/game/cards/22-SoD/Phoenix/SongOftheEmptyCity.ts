@@ -2,7 +2,7 @@ import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
 import type { Conflict } from '../../../Conflict.js';
-import { EventNames, AbilityTypes, Locations, CardTypes, Players } from '../../../Constants.js';
+import { EventName, AbilityType, Location, CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -18,18 +18,18 @@ export default class SongOfTheEmptyCity extends DrawCard {
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([{
-            [EventNames.OnConflictDeclared + ':' + AbilityTypes.Reaction]: 'onConflictDeclaredReaction'
+            [EventName.OnConflictDeclared + ':' + AbilityType.Reaction]: 'onConflictDeclaredReaction'
         }]);
-        this.eventRegistrar.register([EventNames.OnRoundEnded]);
+        this.eventRegistrar.register([EventName.OnRoundEnded]);
 
         this.action({
             title: 'Move holding to another province',
             target: {
-                location: Locations.Provinces,
-                cardType: CardTypes.Province,
+                location: Location.Provinces,
+                cardType: CardType.Province,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
-                    card.location !== context.source.location && card.location !== Locations.StrongholdProvince
+                    card.location !== context.source.location && card.location !== Location.StrongholdProvince
             },
             gameAction: AbilityDsl.actions.moveCard((context) => ({
                 target: context.source,
@@ -61,7 +61,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
         this.declaredProvinces = [];
     }
 
-    public onConflictDeclaredReaction(event: EventPayload<typeof EventNames.OnConflictDeclared>) {
+    public onConflictDeclaredReaction(event: EventPayload<typeof EventName.OnConflictDeclared>) {
         if(!this.declaredProvinces) {
             this.declaredProvinces = [];
         }
@@ -113,7 +113,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
             (card) =>
                 card.location === context.source.location &&
                 card.controller === context.source.controller &&
-                card.type === CardTypes.Holding &&
+                card.type === CardType.Holding &&
                 !card.facedown &&
                 card !== context.source
         );

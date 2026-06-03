@@ -1,4 +1,4 @@
-import { TargetModes, CardTypes } from '../../Constants.js';
+import { TargetMode, CardType } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import type BaseCard from '../../BaseCard.js';
@@ -14,7 +14,7 @@ export default class DishonorableAssault extends ProvinceCard {
             effectArgs: (context) => [context.costs.discardCardsUpToVariableX as BaseCard[], context.targets.target as BaseCard[]],
             cost: AbilityDsl.costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTargets(context)),
             target: {
-                mode: TargetModes.ExactlyVariable,
+                mode: TargetMode.ExactlyVariable,
                 numCardsFunc: (context) => {
                     if(context && context.costs && context.costs.discardCardsUpToVariableX) {
                         return (context.costs.discardCardsUpToVariableX as BaseCard[]).length;
@@ -22,7 +22,7 @@ export default class DishonorableAssault extends ProvinceCard {
 
                     return this.getNumberOfLegalTargets(context);
                 },
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking(),
                 gameAction: AbilityDsl.actions.dishonor()
             },

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 
 const elementKeys = {
     air: 'sadane-student-air',
@@ -25,12 +25,12 @@ class SadaneStudent extends DrawCard {
         symbols.push({
             key: elementKeys.air,
             prettyName: 'Claimed Ring',
-            element: Elements.Air
+            element: Element.Air
         });
         symbols.push({
             key: elementKeys.fire,
             prettyName: 'Claimed Ring',
-            element: Elements.Fire
+            element: Element.Fire
         });
         return symbols;
     }

@@ -1,4 +1,4 @@
-import { CardTypes, Durations, Locations } from '../../../Constants.js';
+import { CardType, Duration, Location } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -14,7 +14,7 @@ export default class EaglesRestPeak extends ProvinceCard {
             condition: (context) => (context.player.opponent?.hand.length ?? 0) > 0,
             target: {
                 activePromptTitle: 'Choose a character to lead the investigation',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: DrawCard) => card.isDefending() && (card.getCost() ?? 0) > 0
             },
             effect: 'use the insight of {0}, revealing and setting aside {1} cards from {2}\'s hand',
@@ -33,14 +33,14 @@ export default class EaglesRestPeak extends ProvinceCard {
                                 this.game.addMessage('{0} sets aside {1}', opponent, setAsideCards);
                                 if(opponent) {
                                     for(const card of setAsideCards) {
-                                        opponent.moveCard(card, Locations.RemovedFromGame);
+                                        opponent.moveCard(card, Location.RemovedFromGame);
                                     }
                                 }
                             }
                         }),
 
                         AbilityDsl.actions.playerLastingEffect({
-                            duration: Durations.UntilEndOfRound,
+                            duration: Duration.UntilEndOfRound,
                             targetController: opponent,
                             effect: AbilityDsl.effects.playerDelayedEffect({
                                 when: { onConflictFinished: () => true },
@@ -49,7 +49,7 @@ export default class EaglesRestPeak extends ProvinceCard {
                                         context.game.addMessage('{0} picks back their cards', opponent);
                                         if(opponent) {
                                             for(const card of setAsideCards) {
-                                                opponent.moveCard(card, Locations.Hand);
+                                                opponent.moveCard(card, Location.Hand);
                                             }
                                         }
                                     }

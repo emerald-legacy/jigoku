@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class RecklessAvenger extends DrawCard {
@@ -12,7 +12,7 @@ class RecklessAvenger extends DrawCard {
             targets: {
                 firstCharacter: {
                     activePromptTitle: 'Choose a character',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     optional: true,
                     hideIfNoLegalTargets: true,
                     controller: context => context.player.firstPlayer ? Players.Self : Players.Opponent,
@@ -21,7 +21,7 @@ class RecklessAvenger extends DrawCard {
                 },
                 secondCharacter: {
                     activePromptTitle: 'Choose a character',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     optional: true,
                     dependsOn: 'firstCharacter',
                     controller: context => context.player.firstPlayer ? Players.Opponent : Players.Self,

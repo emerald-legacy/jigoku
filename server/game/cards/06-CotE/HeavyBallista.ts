@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { TargetModes, CardTypes, Locations, Players } from '../../Constants.js';
+import { TargetMode, CardType, Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HeavyBallista extends DrawCard {
@@ -9,14 +9,14 @@ class HeavyBallista extends DrawCard {
         this.action({
             title: 'Bow or remove 1 fate',
             condition: context => this.game.isDuringConflict('military') && context.player.isDefendingPlayer(),
-            cost: AbilityDsl.costs.discardCard({ location: Locations.Hand }),
+            cost: AbilityDsl.costs.discardCard({ location: Location.Hand }),
             targets: {
                 character: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: card => card.isAttacking() && !card.bowed
                 },
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: 'character',
                     player: context => (context.targets.character as DrawCard).controller === context.player ? Players.Self : Players.Opponent,
                     choices: {

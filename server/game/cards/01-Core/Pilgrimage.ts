@@ -1,4 +1,4 @@
-import { AbilityTypes, EventNames } from '../../Constants.js';
+import { AbilityType, EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 
@@ -11,7 +11,7 @@ export default class Pilgrimage extends ProvinceCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([
             {
-                [EventNames.OnResolveRingElement + ':' + AbilityTypes.WouldInterrupt]: 'cancelRingEffect'
+                [EventName.OnResolveRingElement + ':' + AbilityType.WouldInterrupt]: 'cancelRingEffect'
             }
         ]);
     }

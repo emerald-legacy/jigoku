@@ -1,5 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
-import { DuelTypes } from '../../Constants.js';
+import { DuelType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import Player from '../../Player.js';
 
@@ -14,7 +14,7 @@ export default class ChallengeOnTheFields extends DrawCard {
         this.action({
             title: 'Initiate a military duel',
             initiateDuel: (context) => ({
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 statistic: (card, duelRules) =>
                     duelRules === 'printedSkill'
                         ? card.printedMilitarySkill + participatingCharacters(card.controller) - 1

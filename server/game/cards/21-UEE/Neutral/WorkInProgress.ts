@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Locations } from '../../../Constants.js';
+import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
@@ -25,7 +25,7 @@ export default class WorkInProgress extends DrawCard {
             handler: (context: AbilityContext<this>) => {
                 let [matchingCards, cardsToDiscard] = (context.costs.reveal as DrawCard[]).reduce(
                     (acc: DrawCard[][], card: DrawCard) => {
-                        if(card.type === context.costs.testOfSkillCost && card.location === Locations.ConflictDeck) {
+                        if(card.type === context.costs.testOfSkillCost && card.location === Location.ConflictDeck) {
                             acc[0].push(card);
                         } else {
                             acc[1].push(card);
@@ -40,12 +40,12 @@ export default class WorkInProgress extends DrawCard {
                     cardsToDiscard = cardsToDiscard.concat(matchingCards);
                     this.game.addMessage('{0} discards {1}', context.player, cardsToDiscard);
                     for(const card of cardsToDiscard) {
-                        context.player.moveCard(card, Locations.ConflictDiscardPile);
+                        context.player.moveCard(card, Location.ConflictDiscardPile);
                     }
                 };
                 const takeCardHandler = (card: DrawCard) => {
                     this.game.addMessage('{0} adds {1} to their hand', context.player, card);
-                    context.player.moveCard(card, Locations.Hand);
+                    context.player.moveCard(card, Location.Hand);
                     return matchingCards.filter((c: DrawCard) => c.uuid !== card.uuid);
                 };
                 if(matchingCards.length === 0) {
@@ -85,7 +85,7 @@ function testOfSkillCost() {
         action: { name: 'testOfSkillCost', getCostMessage: (): [string, unknown[]] => ['naming {0}', []] },
         canPay: () => true,
         resolve: (context: AbilityContext, result: { resolved: boolean; value?: boolean } = { resolved: false }) => {
-            const choices = [CardTypes.Attachment, CardTypes.Character, CardTypes.Event];
+            const choices = [CardType.Attachment, CardType.Character, CardType.Event];
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Select a card type',
                 context: context,

@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { SequentialContextProperties } from '../../../GameActions/SequentialContextAction.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -25,7 +25,7 @@ export default class AncientStoneGuardian extends DrawCard {
             targets: {
                 firstCharacter: {
                     activePromptTitle: 'Choose a character',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     optional: true,
                     hideIfNoLegalTargets: true,
                     controller: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
@@ -37,7 +37,7 @@ export default class AncientStoneGuardian extends DrawCard {
                 },
                 secondCharacter: {
                     activePromptTitle: 'Choose a character',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     optional: true,
                     hideIfNoLegalTargets: true,
                     controller: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),

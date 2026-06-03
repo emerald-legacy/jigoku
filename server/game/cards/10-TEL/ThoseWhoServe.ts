@@ -1,7 +1,7 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import {CardTypes, Durations, Phases} from '../../Constants.js';
+import {CardType, Duration, Phases} from '../../Constants.js';
 
 class ThoseWhoServe extends DrawCard {
     static id = 'those-who-serve';
@@ -13,9 +13,9 @@ class ThoseWhoServe extends DrawCard {
             effect: 'reduce the cost of their characters by 1 this phase',
             gameAction: ability.actions.playerLastingEffect((context: AbilityContext) => ({
                 targetController: context.player,
-                duration: Durations.UntilEndOfPhase,
+                duration: Duration.UntilEndOfPhase,
                 effect: ability.effects.reduceCost({
-                    match: (card: any) => card.type === CardTypes.Character,
+                    match: (card: any) => card.type === CardType.Character,
                     amount: 1,
                     costFloor: 1
                 })

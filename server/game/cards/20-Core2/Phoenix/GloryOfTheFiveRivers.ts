@@ -1,6 +1,6 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { FateBidPrompt, Result } from '../../../gamesteps/FateBidPrompt.js';
 import { SimpleStep } from '../../../gamesteps/SimpleStep.js';
@@ -12,7 +12,7 @@ function resolveActionOnSelection(context: AbilityContext, player: Player, actio
         .selectCard({
             player: playerEnum,
             controller: Players.Any,
-            cardType: CardTypes.Character,
+            cardType: CardType.Character,
             gameAction: action === 'honor' ? AbilityDsl.actions.honor() : AbilityDsl.actions.dishonor(),
             message: `{0} ${action}s {1}`,
             messageArgs: (card, player) => [player, card]

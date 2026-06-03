@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Locations } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 
 class ShosuroHyobu extends DrawCard {
     static id = 'shosuro-hyobu';
@@ -12,10 +12,10 @@ class ShosuroHyobu extends DrawCard {
                 onCardsDiscardedFromHand: (event, context) =>
                     !!event.cards && event.cards.some((a: any) => a.owner === context.player.opponent) && !!event.context && event.context.ability.isCardAbility(),
                 onCardsDiscarded: (event, context) =>
-                    !!event.cards && !!event.originalCardStateInfo && event.originalCardStateInfo.some((a) => a.location === Locations.Hand && a.owner === context.player.opponent) && !!event.context && event.context.ability.isCardAbility()
+                    !!event.cards && !!event.originalCardStateInfo && event.originalCardStateInfo.some((a) => a.location === Location.Hand && a.owner === context.player.opponent) && !!event.context && event.context.ability.isCardAbility()
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.dishonor()
             }
         });

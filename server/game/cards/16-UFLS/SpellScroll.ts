@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import { Conflict } from '../../Conflict.js';
-import { CardTypes, Locations, Players } from '../../Constants.js';
+import { CardType, Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class SpellScroll extends DrawCard {
@@ -20,15 +20,15 @@ export default class SpellScroll extends DrawCard {
             title: 'Put a card into your hand',
             condition: (context) => !!context.source.parent,
             target: {
-                location: Locations.ConflictDiscardPile,
+                location: Location.ConflictDiscardPile,
                 controller: Players.Self,
                 cardCondition: (card: DrawCard, context) =>
-                    card.type !== CardTypes.Character &&
+                    card.type !== CardType.Character &&
                     (context.source.parent as DrawCard).hasSomeTrait(card.getTraitSet()),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.moveCard<DrawCard>((context) => ({
                         target: context.target,
-                        destination: Locations.Hand
+                        destination: Location.Hand
                     })),
                     AbilityDsl.actions.sacrifice((context) => ({ target: context.source }))
                 ])

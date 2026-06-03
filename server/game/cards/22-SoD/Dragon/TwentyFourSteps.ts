@@ -1,4 +1,4 @@
-import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class TwentyFourSteps extends DrawCard {
             title: 'Ready a character and move it to the conflict',
             condition: (context) => context.game.isDuringConflict('military'),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('bushi') && card.attachments.length >= 2,
                 gameAction: AbilityDsl.actions.multiple([
@@ -25,10 +25,10 @@ export default class TwentyFourSteps extends DrawCard {
             title: 'Move two monks to the conflict',
             condition: (context) => context.game.isDuringConflict('military'),
             target: {
-                mode: TargetModes.UpTo,
+                mode: TargetMode.UpTo,
                 activePromptTitle: 'Choose characters',
                 numCards: 2,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait('monk'),
                 gameAction: AbilityDsl.actions.moveToConflict()

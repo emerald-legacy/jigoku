@@ -1,4 +1,4 @@
-import { CardTypes, Durations } from '../../../Constants.js';
+import { CardType, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,7 +9,7 @@ export default class AFateWorseThanDeath2 extends DrawCard {
         this.action({
             title: 'Bow, move home, dishonor, remove a fate and blank a character',
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: [
                     AbilityDsl.actions.bow(),
@@ -17,7 +17,7 @@ export default class AFateWorseThanDeath2 extends DrawCard {
                     AbilityDsl.actions.removeFate(),
                     AbilityDsl.actions.sendHome(),
                     AbilityDsl.actions.cardLastingEffect({
-                        duration: Durations.UntilEndOfPhase,
+                        duration: Duration.UntilEndOfPhase,
                         effect: AbilityDsl.effects.blank()
                     })
                 ]

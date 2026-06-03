@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Locations, CardTypes, Elements } from '../../Constants.js';
+import { Location, CardType, Element } from '../../Constants.js';
 
 const elementKey = 'isawa-eju-air';
 
@@ -13,11 +13,11 @@ class IsawaEju extends DrawCard {
             title: 'Discard all cards in a province and refill it faceup',
             condition: context => this.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player),
             target: {
-                location: Locations.Provinces,
-                cardType: CardTypes.Province
+                location: Location.Provinces,
+                cardType: CardType.Province
             },
             gameAction: AbilityDsl.actions.moveCard<ProvinceCard>(context => ({
-                destination: Locations.DynastyDiscardPile,
+                destination: Location.DynastyDiscardPile,
                 target: context.target?.controller.getDynastyCardsInProvince(context.target.location) ?? []
             })),
             effect: 'discard {1} and refill the province faceup',
@@ -40,7 +40,7 @@ class IsawaEju extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Claimed Ring',
-            element: Elements.Air
+            element: Element.Air
         });
         return symbols;
     }

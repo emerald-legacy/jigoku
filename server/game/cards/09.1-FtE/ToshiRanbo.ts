@@ -1,4 +1,4 @@
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -13,7 +13,7 @@ export default class ToshiRanbo extends ProvinceCard {
         });
 
         this.persistentEffect({
-            targetLocation: Locations.Provinces,
+            targetLocation: Location.Provinces,
             match: (card, context) => card.isDynasty && card.location === context?.source.location,
             effect: AbilityDsl.effects.gainExtraFateWhenPlayed()
         });

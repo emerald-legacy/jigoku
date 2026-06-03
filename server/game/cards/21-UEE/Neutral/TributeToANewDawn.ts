@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 const FIRST = 'first';
@@ -13,14 +13,14 @@ export default class TributeToANewDawn extends DrawCard {
         this.action({
             title: 'Remove multiple attachments from the game',
             condition: (context) =>
-                context.player.anyCardsInPlay((card: DrawCard) => card.type === CardTypes.Attachment) &&
+                context.player.anyCardsInPlay((card: DrawCard) => card.type === CardType.Attachment) &&
                 (!context.player.opponent ||
-                    context.player.opponent.anyCardsInPlay((card: DrawCard) => card.type === CardTypes.Attachment)),
+                    context.player.opponent.anyCardsInPlay((card: DrawCard) => card.type === CardType.Attachment)),
             targets: {
                 [FIRST]: {
                     activePromptTitle: 'Choose up to 2 attachments to keep',
-                    cardType: CardTypes.Attachment,
-                    mode: TargetModes.UpTo,
+                    cardType: CardType.Attachment,
+                    mode: TargetMode.UpTo,
                     numCards: 2,
                     controller: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
                     player: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
@@ -28,8 +28,8 @@ export default class TributeToANewDawn extends DrawCard {
                 },
                 [SECOND]: {
                     activePromptTitle: 'Choose up to 2 attachments to keep',
-                    cardType: CardTypes.Attachment,
-                    mode: TargetModes.UpTo,
+                    cardType: CardType.Attachment,
+                    mode: TargetMode.UpTo,
                     numCards: 2,
                     controller: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
                     player: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
@@ -54,7 +54,7 @@ export default class TributeToANewDawn extends DrawCard {
         }
 
         return (context.game.allCards as Array<DrawCard>).filter(
-            (card) => card.type === CardTypes.Attachment && card.isInPlay() && !protectedAttachments.has(card)
+            (card) => card.type === CardType.Attachment && card.isInPlay() && !protectedAttachments.has(card)
         );
     }
 }

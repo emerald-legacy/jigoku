@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes, Locations, CharacterStatus, CardTypes } from '../../Constants.js';
+import { TargetMode, Location, CharacterStatus, CardType } from '../../Constants.js';
 
 class FearlessSkirmisher extends DrawCard {
     static id = 'fearless-skirmisher';
@@ -17,8 +17,8 @@ class FearlessSkirmisher extends DrawCard {
             targets: {
                 token: {
                     activePromptTitle: 'Choose a dishonored token',
-                    mode: TargetModes.Token,
-                    location: Locations.Any,
+                    mode: TargetMode.Token,
+                    location: Location.Any,
                     tokenCondition: (token) => {
                         return token.grantedStatus === CharacterStatus.Dishonored;
                     }
@@ -26,7 +26,7 @@ class FearlessSkirmisher extends DrawCard {
                 character: {
                     activePromptTitle: 'Choose a character to receive the token',
                     dependsOn: 'token',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     gameAction: AbilityDsl.actions.moveStatusToken((context) => ({
                         target: context.tokens.token,
                         recipient: context.targets.character

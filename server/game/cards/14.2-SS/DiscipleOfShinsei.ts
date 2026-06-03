@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class DiscipleOfShinsei extends DrawCard {
@@ -12,7 +12,7 @@ class DiscipleOfShinsei extends DrawCard {
                 onCardLeavesPlay: (event, context) => event.card === context.source
             },
             target: {
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 gameAction: AbilityDsl.actions.discardFromPlay()
             }
         });

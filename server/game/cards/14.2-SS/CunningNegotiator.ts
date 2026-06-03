@@ -1,4 +1,4 @@
-import { CardTypes, DuelTypes, Locations, Players } from '../../Constants.js';
+import { CardType, DuelType, Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
@@ -11,7 +11,7 @@ export default class CunningNegotiator extends DrawCard {
             title: 'Political duel to resolve the attacked province\'s action ability',
             condition: (context) => context.game.currentConflict !== null,
             initiateDuel: {
-                type: DuelTypes.Political,
+                type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
                 message: 'resolve the action ability of an attacked province',
                 gameAction: (duel) =>
@@ -41,8 +41,8 @@ export default class CunningNegotiator extends DrawCard {
                         gameAction: AbilityDsl.actions.selectCard((context) => ({
                             activePromptTitle: 'Choose an attacked province',
                             hidePromptIfSingleCard: true,
-                            cardType: CardTypes.Province,
-                            location: Locations.Provinces,
+                            cardType: CardType.Province,
+                            location: Location.Provinces,
                             subActionProperties: (card) => {
                                 context.target = card;
                                 return { target: card };

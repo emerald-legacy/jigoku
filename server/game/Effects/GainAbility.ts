@@ -1,16 +1,16 @@
 import { EffectValue } from './EffectValue.js';
-import { AbilityTypes, Locations } from '../Constants.js';
+import { AbilityType, Location } from '../Constants.js';
 import type { AbilityLimit } from '../AbilityLimit.js';
 import type BaseCard from '../BaseCard.js';
 
 export default class GainAbility extends EffectValue<any> {
-    abilityType: AbilityTypes;
+    abilityType: AbilityType;
     createCopies: boolean;
-    forCopying: { abilityType: AbilityTypes; ability: any } | undefined;
+    forCopying: { abilityType: AbilityType; ability: any } | undefined;
     grantedAbilityLimits: Record<string, AbilityLimit>;
     properties: any;
 
-    constructor(abilityType: AbilityTypes, ability: any) {
+    constructor(abilityType: AbilityType, ability: any) {
         super(true);
         this.abilityType = abilityType;
         this.createCopies = false;
@@ -37,9 +37,9 @@ export default class GainAbility extends EffectValue<any> {
         } else {
             this.properties = Object.assign({ printedAbility: false }, ability);
         }
-        if(abilityType === AbilityTypes.Persistent && !this.properties.location) {
-            this.properties.location = Locations.PlayArea;
-            this.properties.abilityType = AbilityTypes.Persistent;
+        if(abilityType === AbilityType.Persistent && !this.properties.location) {
+            this.properties.location = Location.PlayArea;
+            this.properties.abilityType = AbilityType.Persistent;
         }
     }
 
@@ -58,9 +58,9 @@ export default class GainAbility extends EffectValue<any> {
 
     apply(target: BaseCard) {
         let properties = Object.assign({ origin: this.context.source }, this.properties);
-        if(this.abilityType === AbilityTypes.Persistent) {
+        if(this.abilityType === AbilityType.Persistent) {
             const activeLocations: Record<string, string[]> = {
-                'play area': [Locations.PlayArea],
+                'play area': [Location.PlayArea],
                 province: this.context.game.getProvinceArray()
             };
             this.value = properties;
@@ -68,10 +68,10 @@ export default class GainAbility extends EffectValue<any> {
                 this.value.ref = target.addEffectToEngine(this.value);
             }
             return;
-        } else if(this.abilityType === AbilityTypes.Action) {
+        } else if(this.abilityType === AbilityType.Action) {
             this.value = target.createAction(properties);
         } else {
-            this.value = target.createTriggeredAbility(this.abilityType as AbilityTypes, properties);
+            this.value = target.createTriggeredAbility(this.abilityType as AbilityType, properties);
             this.value.registerEvents();
         }
         if(!this.grantedAbilityLimits[target.uuid]) {
@@ -88,15 +88,15 @@ export default class GainAbility extends EffectValue<any> {
         }
         if(
             [
-                AbilityTypes.ForcedInterrupt,
-                AbilityTypes.ForcedReaction,
-                AbilityTypes.Interrupt,
-                AbilityTypes.Reaction,
-                AbilityTypes.WouldInterrupt
-            ].includes(this.abilityType as AbilityTypes)
+                AbilityType.ForcedInterrupt,
+                AbilityType.ForcedReaction,
+                AbilityType.Interrupt,
+                AbilityType.Reaction,
+                AbilityType.WouldInterrupt
+            ].includes(this.abilityType as AbilityType)
         ) {
             this.value.unregisterEvents();
-        } else if(this.abilityType === AbilityTypes.Persistent && this.value.ref) {
+        } else if(this.abilityType === AbilityType.Persistent && this.value.ref) {
             target.removeEffectFromEngine(this.value.ref);
             delete this.value.ref;
         }

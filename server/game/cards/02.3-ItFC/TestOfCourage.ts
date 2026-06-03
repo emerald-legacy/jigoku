@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class TestOfCourage extends DrawCard {
     static id = 'test-of-courage';
@@ -10,7 +10,7 @@ class TestOfCourage extends DrawCard {
             title: 'Move a character into conflict',
             condition: context => !!(context.player.opponent && context.player.showBid < context.player.opponent.showBid),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.isFaction('lion'),
                 gameAction: AbilityDsl.actions.sequential([

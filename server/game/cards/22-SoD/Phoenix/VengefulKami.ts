@@ -1,7 +1,7 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { Conflict } from '../../../Conflict.js';
-import { EventNames, TargetModes, AbilityTypes } from '../../../Constants.js';
+import { EventName, TargetMode, AbilityType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -17,9 +17,9 @@ export default class VengefulKami extends DrawCard {
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([{
-            [EventNames.OnConflictDeclared + ':' + AbilityTypes.Reaction]: 'onConflictDeclaredReaction'
+            [EventName.OnConflictDeclared + ':' + AbilityType.Reaction]: 'onConflictDeclaredReaction'
         }]);
-        this.eventRegistrar.register([EventNames.OnRoundEnded]);
+        this.eventRegistrar.register([EventName.OnRoundEnded]);
 
         this.action({
             title: 'Resolve Ring Effect',
@@ -29,7 +29,7 @@ export default class VengefulKami extends DrawCard {
                     .getConflictProvinces()
                     .some((province: ProvinceCard) => this.wasProvinceAttacked(context.game.currentConflict, province)),
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 activePromptTitle: 'Choose a ring',
                 ringCondition: (ring: Ring, context?: AbilityContext) =>
                     !!context && (context.game.currentConflict as Conflict)
@@ -53,7 +53,7 @@ export default class VengefulKami extends DrawCard {
         this.declaredProvinces = [];
     }
 
-    public onConflictDeclaredReaction(event: EventPayload<typeof EventNames.OnConflictDeclared>) {
+    public onConflictDeclaredReaction(event: EventPayload<typeof EventName.OnConflictDeclared>) {
         if(!this.declaredProvinces) {
             this.declaredProvinces = [];
         }

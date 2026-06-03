@@ -1,5 +1,5 @@
 import type DrawCard from '../../DrawCard.js';
-import { Locations, CardTypes, EventNames } from '../../Constants.js';
+import { Location, CardType, EventName } from '../../Constants.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -49,7 +49,7 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
                         //Identify who actually entered play
                         let enteredPlay = context.events
                             .filter((a) => a.name === 'onCharacterEntersPlay' && !a.cancelled)
-                            .map((a) => (a as GameEvent<EventNames.OnCharacterEntersPlay>).card)
+                            .map((a) => (a as GameEvent<EventName.OnCharacterEntersPlay>).card)
                             .filter((a): a is DrawCard => !!a);
                         let myEnter = enteredPlay.filter((a) => a.controller === context.player);
                         let oppEnter = enteredPlay.filter((a) => a.controller === context.player.opponent);
@@ -63,11 +63,11 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
                 }),
                 AbilityDsl.actions.multiple([
                     AbilityDsl.actions.shuffleDeck((context) => ({
-                        deck: Locations.DynastyDeck,
+                        deck: Location.DynastyDeck,
                         target: context.player
                     })),
                     AbilityDsl.actions.shuffleDeck((context) => ({
-                        deck: Locations.DynastyDeck,
+                        deck: Location.DynastyDeck,
                         target: context.player.opponent ? context.player.opponent : []
                     }))
                 ])
@@ -92,7 +92,7 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
         let characters = [];
         for(let i = 0; i < deck.length && characters.length < cards.length; i++) {
             revealedCards.push(deck[i]);
-            if(deck[i].type === CardTypes.Character) {
+            if(deck[i].type === CardType.Character) {
                 characters.push(deck[i]);
             }
         }

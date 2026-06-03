@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ShinjoAltansarnai2 extends DrawCard {
@@ -14,7 +14,7 @@ class ShinjoAltansarnai2 extends DrawCard {
                     activePromptTitle: 'Choose a character that costs 3 or less',
                     cards: context.player.dynastyDeck.slice(0, 8),
                     cardCondition: (card) =>
-                        card.type === CardTypes.Character &&
+                        card.type === CardType.Character &&
                         (card.printedCost ?? 0) <= 3 &&
                         !card.isUnique() &&
                         card.allowGameAction('putIntoConflict', context),
@@ -30,7 +30,7 @@ class ShinjoAltansarnai2 extends DrawCard {
                     gameAction: AbilityDsl.actions.putIntoConflict()
                 })),
                 AbilityDsl.actions.shuffleDeck((context) => ({
-                    deck: Locations.DynastyDeck,
+                    deck: Location.DynastyDeck,
                     target: context.player
                 }))
             ]),

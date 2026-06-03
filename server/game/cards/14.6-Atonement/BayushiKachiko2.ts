@@ -1,7 +1,7 @@
 import { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
-import { CardTypes, EventNames, Locations, Players, PlayTypes } from '../../Constants.js';
+import { CardType, EventName, Location, Players, PlayType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type Player from '../../Player.js';
@@ -17,7 +17,7 @@ export default class BayushiKachiko2 extends DrawCard {
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
-        this.eventRegistrar.register([EventNames.OnRoundEnded, EventNames.OnCharacterEntersPlay]);
+        this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCharacterEntersPlay]);
 
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
@@ -28,9 +28,9 @@ export default class BayushiKachiko2 extends DrawCard {
                         }
                         this.mostRecentEvent = event;
                         return (
-                            event.originalLocation === Locations.ConflictDiscardPile &&
+                            event.originalLocation === Location.ConflictDiscardPile &&
                             event.card.owner === context.player.opponent &&
-                            event.card.type === CardTypes.Event &&
+                            event.card.type === CardType.Event &&
                             !event.onPlayCardSource &&
                             !event.card.fromOutOfPlaySource &&
                             event.player === context.player &&
@@ -65,7 +65,7 @@ export default class BayushiKachiko2 extends DrawCard {
                             this.mostRecentEvent.card,
                             context.source
                         );
-                        this.mostRecentEvent.card.owner.moveCard(this.mostRecentEvent.card, Locations.RemovedFromGame);
+                        this.mostRecentEvent.card.owner.moveCard(this.mostRecentEvent.card, Location.RemovedFromGame);
                     }
                 })
             })
@@ -76,17 +76,17 @@ export default class BayushiKachiko2 extends DrawCard {
                 context.game.isDuringConflict('political') &&
                 context.source.isParticipating() &&
                 this.cardsPlayedThisRound < MAXIMUM_CARDS_ALLOWED,
-            location: Locations.PlayArea,
-            targetLocation: Locations.ConflictDiscardPile,
+            location: Location.PlayArea,
+            targetLocation: Location.ConflictDiscardPile,
             targetController: Players.Opponent,
             match: (card, context) =>
-                card.type === CardTypes.Event &&
-                card.location === Locations.ConflictDiscardPile &&
+                card.type === CardType.Event &&
+                card.location === Location.ConflictDiscardPile &&
                 card.owner === context?.player.opponent,
             effect: [
                 AbilityDsl.effects.canPlayFromOutOfPlay(
                     (player: Player, card: BaseCard) => player !== card.owner,
-                    PlayTypes.PlayFromHand
+                    PlayType.PlayFromHand
                 ),
                 AbilityDsl.effects.registerToPlayFromOutOfPlay()
             ]

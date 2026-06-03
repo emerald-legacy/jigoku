@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Durations, Locations, Elements } from '../../Constants.js';
+import { Duration, Location, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
@@ -12,17 +12,17 @@ class FeralNingyo extends DrawCard {
         this.action({
             title: 'Put into play',
             condition: () => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
-            location: [Locations.Hand, Locations.PlayArea],
+            location: [Location.Hand, Location.PlayArea],
             effect: '{1}return {0} to the deck at the end of the conflict',
-            effectArgs: context => [context.source.location !== Locations.PlayArea ? ['put {0} into play into the conflict and ', context.source] : ''],
+            effectArgs: context => [context.source.location !== Location.PlayArea ? ['put {0} into play into the conflict and ', context.source] : ''],
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.putIntoConflict(context => ({
                     target: context.source
                 })),
                 AbilityDsl.actions.cardLastingEffect(context => ({
                     target: context.source,
-                    location: [Locations.Hand, Locations.PlayArea],
-                    duration: Durations.UntilEndOfPhase,
+                    location: [Location.Hand, Location.PlayArea],
+                    duration: Duration.UntilEndOfPhase,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
                             onConflictFinished: () => true
@@ -41,7 +41,7 @@ class FeralNingyo extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Conflict Type',
-            element: Elements.Water
+            element: Element.Water
         });
         return symbols;
     }

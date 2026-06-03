@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardTypes, EventNames } from '../../Constants.js';
+import { Players, CardType, EventName } from '../../Constants.js';
 
 class AgashaProdigys extends DrawCard {
     static id = 'agasha-prodigy';
@@ -14,7 +14,7 @@ class AgashaProdigys extends DrawCard {
             }),
             targets: {
                 myCharacter: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     gameAction: AbilityDsl.actions.sequential([
                         AbilityDsl.actions.discardCard(context => ({
                             target: context.player.conflictDeck[0]
@@ -30,7 +30,7 @@ class AgashaProdigys extends DrawCard {
                 },
                 oppCharacter: {
                     player: Players.Opponent,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     optional: true,
                     hideIfNoLegalTargets: true,
                     cardCondition: (card, context) => context.costs.optionalHonorTransferFromOpponentCostPaid,
@@ -54,7 +54,7 @@ class AgashaProdigys extends DrawCard {
     }
 
     getDiscardedCards(context: AbilityContext) {
-        let events = context.events.filter((event: any) => event.name === EventNames.OnCardsDiscarded);
+        let events = context.events.filter((event: any) => event.name === EventName.OnCardsDiscarded);
         if(events.length > 0) {
             let cards: any[] = [];
             events.forEach((a: any) => cards = cards.concat(a.cards));

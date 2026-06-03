@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class WayOfTheLion extends DrawCard {
@@ -10,7 +10,7 @@ class WayOfTheLion extends DrawCard {
             title: 'Double the base mil of a character',
             condition: () => this.game.isDuringConflict(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isFaction('lion') && card.getBaseMilitarySkill() > 0,
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     effect: AbilityDsl.effects.modifyBaseMilitarySkillMultiplier(2)

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HidaGuardian extends DrawCard {
@@ -10,7 +10,7 @@ class HidaGuardian extends DrawCard {
             title: 'Give a character a bonus for each holding',
             condition: context => context.source.isParticipating(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source,
                 gameAction: ability.actions.cardLastingEffect(context => ({
                     effect: ability.effects.modifyBothSkills(2 * context.player.getNumberOfHoldingsInPlay())

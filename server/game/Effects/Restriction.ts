@@ -1,5 +1,5 @@
 import { EffectValue } from './EffectValue.js';
-import { AbilityTypes, CardTypes, Locations, Phases, Stages } from '../Constants.js';
+import { AbilityType, CardType, Location, Phases, Stage } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { MoveCardAction } from '../GameActions/MoveCardAction.js';
@@ -15,13 +15,13 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
     abilitiesTriggeredByOpponents: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent &&
         context.ability.isTriggeredAbility() &&
-        context.ability.abilityType !== AbilityTypes.ForcedReaction &&
-        context.ability.abilityType !== AbilityTypes.ForcedInterrupt,
+        context.ability.abilityType !== AbilityType.ForcedReaction &&
+        context.ability.abilityType !== AbilityType.ForcedInterrupt,
     adjacentCharacters: (context, effect) =>
-        context.source.type === CardTypes.Character &&
+        context.source.type === CardType.Character &&
         context.player.areLocationsAdjacent(context.source.location, effect.context.source.location),
     attachmentsWithSameClan: (context, effect, card) =>
-        context.source.type === CardTypes.Attachment &&
+        context.source.type === CardType.Attachment &&
         context.source.getPrintedFaction() !== 'neutral' &&
         card.isFaction(context.source.getPrintedFaction()),
     attackedProvince: (context) =>
@@ -30,62 +30,62 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
         context.game.currentConflict &&
         context.game.currentConflict.getConflictProvinces().includes(context.source) &&
         context.ability.isTriggeredAbility() &&
-        context.ability.abilityType !== AbilityTypes.ForcedReaction &&
-        context.ability.abilityType !== AbilityTypes.ForcedInterrupt,
+        context.ability.abilityType !== AbilityType.ForcedReaction &&
+        context.ability.abilityType !== AbilityType.ForcedInterrupt,
     attackingCharacters: (context) =>
-        context.game.currentConflict && context.source.type === CardTypes.Character && context.source.isAttacking(),
+        context.game.currentConflict && context.source.type === CardType.Character && context.source.isAttacking(),
     cardEffects: (context) =>
         (context.ability.isCardAbility() || !context.ability.isCardPlayed()) &&
-        context.stage !== Stages.Cost &&
+        context.stage !== Stage.Cost &&
         [
-            CardTypes.Event,
-            CardTypes.Character,
-            CardTypes.Holding,
-            CardTypes.Attachment,
-            CardTypes.Stronghold,
-            CardTypes.Province,
-            CardTypes.Role
+            CardType.Event,
+            CardType.Character,
+            CardType.Holding,
+            CardType.Attachment,
+            CardType.Stronghold,
+            CardType.Province,
+            CardType.Role
         ].includes(context.source.type),
     ringEffects: (context) => context.source.type === 'ring',
     cardAndRingEffects: (context, effect) => checkRestrictions.cardEffects(context, effect) || checkRestrictions.ringEffects(context, effect),
-    characters: (context) => context.source.type === CardTypes.Character,
-    charactersWithNoFate: (context) => context.source.type === CardTypes.Character && context.source.getFate() === 0,
+    characters: (context) => context.source.type === CardType.Character,
+    charactersWithNoFate: (context) => context.source.type === CardType.Character && context.source.getFate() === 0,
     copiesOfDiscardEvents: (context) =>
-        context.source.type === CardTypes.Event &&
+        context.source.type === CardType.Event &&
         context.player.conflictDiscardPile.some((card: any) => card.name === context.source.name),
     copiesOfX: (context, effect) => context.source.name === effect.params,
-    events: (context) => context.source.type === CardTypes.Event,
+    events: (context) => context.source.type === CardType.Event,
     eventsWithSameClan: (context, effect, card) =>
-        context.source.type === CardTypes.Event &&
+        context.source.type === CardType.Event &&
         context.source.getPrintedFaction() !== 'neutral' &&
         card.isFaction(context.source.getPrintedFaction()),
-    nonMonstrousEvents: (context) => context.source.type === CardTypes.Event && !context.source.hasTrait('monstrous'),
+    nonMonstrousEvents: (context) => context.source.type === CardType.Event && !context.source.hasTrait('monstrous'),
     nonDynastyPhase: (context) => context.game.phase !== Phases.Dynasty,
-    nonSpellEvents: (context) => context.source.type === CardTypes.Event && !context.source.hasTrait('spell'),
+    nonSpellEvents: (context) => context.source.type === CardType.Event && !context.source.hasTrait('spell'),
     opponentsAttachments: (context, effect) =>
         context.player &&
         context.player === getApplyingPlayer(effect).opponent &&
-        context.source.type === CardTypes.Attachment,
+        context.source.type === CardType.Attachment,
     opponentsCardEffects: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent &&
         (context.ability.isCardAbility() || !context.ability.isCardPlayed()) &&
         [
-            CardTypes.Event,
-            CardTypes.Character,
-            CardTypes.Holding,
-            CardTypes.Attachment,
-            CardTypes.Stronghold,
-            CardTypes.Province,
-            CardTypes.Role
+            CardType.Event,
+            CardType.Character,
+            CardType.Holding,
+            CardType.Attachment,
+            CardType.Stronghold,
+            CardType.Province,
+            CardType.Role
         ].includes(context.source.type),
     opponentsProvinceEffects: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent &&
         (context.ability.isCardAbility() || !context.ability.isCardPlayed()) &&
-        [CardTypes.Province].includes(context.source.type),
+        [CardType.Province].includes(context.source.type),
     opponentsEvents: (context, effect) =>
         context.player &&
         context.player === getApplyingPlayer(effect).opponent &&
-        context.source.type === CardTypes.Event,
+        context.source.type === CardType.Event,
     opponentsRingEffects: (context, effect) =>
         context.player && context.player === getApplyingPlayer(effect).opponent && context.source.type === 'ring',
     opponentsCardAndRingEffects: (context, effect) =>
@@ -95,36 +95,36 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
         context.player === getApplyingPlayer(effect).opponent && context.ability.isTriggeredAbility(),
     opponentsTriggeredActionAbilities: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent && context.ability.isTriggeredAbility() &&
-        context.ability.abilityType === AbilityTypes.Action,
+        context.ability.abilityType === AbilityType.Action,
     opponentsCardAbilities: (context, effect) =>
         context.player === getApplyingPlayer(effect).opponent && context.ability.isCardAbility(),
     opponentsCharacters: (context, effect) =>
-        context.source.type === CardTypes.Character && context.source.controller === getApplyingPlayer(effect).opponent,
+        context.source.type === CardType.Character && context.source.controller === getApplyingPlayer(effect).opponent,
     opponentsCharacterAbilitiesWithLowerGlory: (context, effect) =>
-        context.source.type === CardTypes.Character &&
+        context.source.type === CardType.Character &&
         context.source.controller === getApplyingPlayer(effect).opponent &&
         context.source.glory < effect.context.source.parent.glory,
-    provinces: (context) => context.source.type === CardTypes.Province,
-    reactions: (context) => context.ability.abilityType === AbilityTypes.Reaction,
+    provinces: (context) => context.source.type === CardType.Province,
+    reactions: (context) => context.ability.abilityType === AbilityType.Reaction,
     actionEvents: (context) =>
-        context.ability.card.type === CardTypes.Event && context.ability.abilityType === AbilityTypes.Action,
+        context.ability.card.type === CardType.Event && context.ability.abilityType === AbilityType.Action,
     source: (context, effect) => context.source === effect.context.source,
     keywordAbilities: (context) => context.ability.isKeywordAbility(),
     nonKeywordAbilities: (context) => !context.ability.isKeywordAbility(),
     nonForcedAbilities: (context) =>
         context.ability.isTriggeredAbility() &&
-        context.ability.abilityType !== AbilityTypes.ForcedReaction &&
-        context.ability.abilityType !== AbilityTypes.ForcedInterrupt,
+        context.ability.abilityType !== AbilityType.ForcedReaction &&
+        context.ability.abilityType !== AbilityType.ForcedInterrupt,
     equalOrMoreExpensiveCharacterTriggeredAbilities: (context, effect, card) =>
-        context.source.type === CardTypes.Character &&
+        context.source.type === CardType.Character &&
         !context.ability.isKeywordAbility &&
         context.source.printedCost >= card.printedCost,
     equalOrMoreExpensiveCharacterKeywords: (context, effect, card) =>
-        context.source.type === CardTypes.Character &&
+        context.source.type === CardType.Character &&
         context.ability.isKeywordAbility &&
         context.source.printedCost >= card.printedCost,
     eventPlayedByHigherBidPlayer: (context, effect, card) =>
-        context.source.type === CardTypes.Event && context.player.showBid > card.controller.showBid,
+        context.source.type === CardType.Event && context.player.showBid > card.controller.showBid,
     toHand: (context) => {
         let targetActions = context.ability.properties.target ? context.ability.properties.target.gameAction : [];
         let nestedActions = context.ability.gameAction
@@ -133,7 +133,7 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
 
         return targetActions.some(isMoveToHandAction) || nestedActions.some(isMoveToHandAction);
     },
-    loseHonorAsCost: (context) => context.stage === Stages.Cost,
+    loseHonorAsCost: (context) => context.stage === Stage.Cost,
     unopposedHonorLoss: (context) => context.source.name === 'Framework effect',
     unlessMeishodo: (context) => {
         const spell = context.source || context;
@@ -147,7 +147,7 @@ const getApplyingPlayer = (effect: Restriction): Player => {
 
 const isMoveToHandAction = (gameAction: unknown) =>
     // @ts-expect-error -- properties.destination exists on MoveCardAction but not on the base type
-    gameAction instanceof MoveCardAction && gameAction.properties.destination === Locations.Hand;
+    gameAction instanceof MoveCardAction && gameAction.properties.destination === Location.Hand;
 
 const leavePlayTypes = new Set(['discardFromPlay', 'sacrifice', 'returnToHand', 'returnToDeck', 'removeFromGame']);
 

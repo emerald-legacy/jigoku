@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
-import { CardTypes, Locations } from '../../../Constants.js';
+import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 class StoneBreaker extends DrawCard {
@@ -12,29 +12,29 @@ class StoneBreaker extends DrawCard {
             cost: AbilityDsl.costs.sacrificeSelf(),
             targets: {
                 cardInProvince: {
-                    location: [Locations.Provinces, Locations.PlayArea],
+                    location: [Location.Provinces, Location.PlayArea],
                     cardCondition: card =>
-                        (card.isInProvince() && card.type !== CardTypes.Province && card.type !== CardTypes.Stronghold) ||
-                        (card.type === CardTypes.Attachment && card.parent && card.parent.type === CardTypes.Province)
+                        (card.isInProvince() && card.type !== CardType.Province && card.type !== CardType.Stronghold) ||
+                        (card.type === CardType.Attachment && card.parent && card.parent.type === CardType.Province)
                 },
                 province: {
                     targets: false,
                     dependsOn: 'cardInProvince',
-                    location: [Locations.Provinces],
-                    cardType: CardTypes.Province,
+                    location: [Location.Provinces],
+                    cardType: CardType.Province,
                     cardCondition: (card, context) =>
-                        card.location !== Locations.StrongholdProvince &&
+                        card.location !== Location.StrongholdProvince &&
                         !card.isBroken &&
                         ( //same controller check
-                            (context.targets.cardInProvince.type === CardTypes.Attachment && card.controller === context.targets.cardInProvince.parent.controller) ||
-                            (context.targets.cardInProvince.type !== CardTypes.Attachment && card.controller === context.targets.cardInProvince.controller)
+                            (context.targets.cardInProvince.type === CardType.Attachment && card.controller === context.targets.cardInProvince.parent.controller) ||
+                            (context.targets.cardInProvince.type !== CardType.Attachment && card.controller === context.targets.cardInProvince.controller)
                         ) &&
                         ( //different location check
-                            (context.targets.cardInProvince.type === CardTypes.Attachment && card.location !== context.targets.cardInProvince.parent.location) ||
-                            (context.targets.cardInProvince.type !== CardTypes.Attachment && card.location !== context.targets.cardInProvince.location)
+                            (context.targets.cardInProvince.type === CardType.Attachment && card.location !== context.targets.cardInProvince.parent.location) ||
+                            (context.targets.cardInProvince.type !== CardType.Attachment && card.location !== context.targets.cardInProvince.location)
                         ),
                     gameAction: AbilityDsl.actions.conditional(context => ({
-                        condition: context.targets.cardInProvince.type === CardTypes.Attachment,
+                        condition: context.targets.cardInProvince.type === CardType.Attachment,
                         trueGameAction: AbilityDsl.actions.attach({
                             target: context.targets.province,
                             attachment: context.targets.cardInProvince
@@ -61,13 +61,13 @@ class StoneBreaker extends DrawCard {
             gameAction: AbilityDsl.actions.selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
-                cardType: CardTypes.Province,
-                location: Locations.Provinces,
+                cardType: CardType.Province,
+                location: Location.Provinces,
                 cardCondition: card => card.isConflictProvince() && card.getStrength() > 0,
                 message: '{0} reduces the strength of {1} by 2',
                 messageArgs: cards => [context.player, cards],
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
-                    targetLocation: Locations.Provinces,
+                    targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.modifyProvinceStrength(-2)
                 }))
             })),

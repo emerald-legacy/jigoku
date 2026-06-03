@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Elements, CardTypes, Players, TargetModes } from '../../Constants.js';
+import { Element, CardType, Players, TargetMode } from '../../Constants.js';
 
 const elementKey = 'void-wielder-void';
 
@@ -13,12 +13,12 @@ class VoidWielder extends DrawCard {
             condition: () => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
             targets: {
                 character: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Any,
                     cardCondition: (card, context) => card.isParticipating() && AbilityDsl.actions.sendHome().canAffect(card, context)
                 },
                 select: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     dependsOn: 'character',
                     player: context => (context.targets.character as DrawCard).controller === context.player ? Players.Self : Players.Opponent,
                     choices: {
@@ -34,7 +34,7 @@ class VoidWielder extends DrawCard {
                             gameAction: AbilityDsl.actions.discardStatusToken()
                         })),
                         'Discard an attachment from this character': AbilityDsl.actions.selectCard(context => ({
-                            cardType: CardTypes.Attachment,
+                            cardType: CardType.Attachment,
                             player: context.targets.character.controller === context.player ? Players.Self : Players.Opponent,
                             activePromptTitle: 'Which attachment do you wish to discard?',
                             cardCondition: (card, context) => card.parent === context.targets.character,
@@ -55,7 +55,7 @@ class VoidWielder extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Contested Ring',
-            element: Elements.Void
+            element: Element.Void
         });
         return symbols;
     }

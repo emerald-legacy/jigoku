@@ -1,5 +1,5 @@
 import { AbilityContext } from '../../../AbilityContext.js';
-import { AbilityTypes, CardTypes, Durations } from '../../../Constants.js';
+import { AbilityType, CardType, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,11 +12,11 @@ export default class DaiTsuchi extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Return attachment to owners hand',
                 condition: (context: AbilityContext<DrawCard>) => context.source.isParticipating('military'),
                 target: {
-                    cardType: CardTypes.Attachment,
+                    cardType: CardType.Attachment,
                     cardCondition: (card: any, context: any) =>
                         card instanceof DrawCard &&
                         card.parent instanceof DrawCard &&
@@ -24,7 +24,7 @@ export default class DaiTsuchi extends DrawCard {
                     gameAction: AbilityDsl.actions.returnToHand()
                 },
                 gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
-                    duration: Durations.UntilEndOfConflict,
+                    duration: Duration.UntilEndOfConflict,
                     targetController: context.target.owner,
                     effect: AbilityDsl.effects.playerCannot({
                         cannot: 'play',

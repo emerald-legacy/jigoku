@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HighKick extends DrawCard {
@@ -10,11 +10,11 @@ class HighKick extends DrawCard {
             title: 'Bow and Disable a character',
             condition: () => this.game.isDuringConflict('military'),
             cost: ability.costs.bow({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.hasTrait('monk') && card.isParticipating()
             }),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => card.isParticipating(),
                 gameAction: [

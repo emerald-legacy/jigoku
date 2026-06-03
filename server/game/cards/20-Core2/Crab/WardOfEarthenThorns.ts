@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
@@ -12,10 +12,10 @@ export default class WardOfEarthenThorns extends DrawCard {
         this.attachmentConditions({ myControl: true });
 
         this.persistentEffect({
-            targetLocation: Locations.Provinces,
+            targetLocation: Location.Provinces,
             targetController: Players.Self,
             condition: (context) => context.source.controller.hasAffinity('earth', context),
-            match: (card, context) => card.type === CardTypes.Province && card === context?.source.parent,
+            match: (card, context) => card.type === CardType.Province && card === context?.source.parent,
             effect: AbilityDsl.effects.modifyProvinceStrength(1)
         });
 
@@ -26,7 +26,7 @@ export default class WardOfEarthenThorns extends DrawCard {
                     ?.getConflictProvinces()
                     .some((province) => (context.source.parent as BaseCard | null) === province) ?? false,
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking(),
                 gameAction: AbilityDsl.actions.removeFate()
             }
@@ -36,7 +36,7 @@ export default class WardOfEarthenThorns extends DrawCard {
     canPlay(context: AbilityContext, playType: string) {
         return (
             context.player.cardsInPlay.some(
-                (card: DrawCard) => card.getType() === CardTypes.Character && card.hasTrait('shugenja')
+                (card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja')
             ) && super.canPlay(context, playType)
         );
     }
@@ -45,8 +45,8 @@ export default class WardOfEarthenThorns extends DrawCard {
         return (
             source &&
             source.controller === this.controller &&
-            source.getType() === CardTypes.Province &&
-            this.getType() === CardTypes.Attachment
+            source.getType() === CardType.Province &&
+            this.getType() === CardType.Attachment
         );
     }
 
@@ -54,8 +54,8 @@ export default class WardOfEarthenThorns extends DrawCard {
         return (
             parent &&
             parent.controller === this.controller &&
-            parent.getType() === CardTypes.Province &&
-            this.getType() === CardTypes.Attachment
+            parent.getType() === CardType.Province &&
+            this.getType() === CardType.Attachment
         );
     }
 }

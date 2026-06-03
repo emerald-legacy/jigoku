@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
@@ -10,7 +10,7 @@ export interface TakeRingProperties extends RingActionProperties {
 
 export class TakeRingAction extends RingAction {
     name = 'takeFate';
-    eventName = EventNames.OnTakeRing;
+    eventName = EventName.OnTakeRing;
     effect = 'take {0}';
     defaultProperties: TakeRingProperties = { takeFate: true };
     constructor(properties: ((context: AbilityContext) => TakeRingProperties) | TakeRingProperties) {
@@ -21,7 +21,7 @@ export class TakeRingAction extends RingAction {
         return !ring.isRemovedFromGame() && ring.claimedBy !== context.player.name && super.canAffect(ring, context);
     }
 
-    eventHandler(event: GameEvent<EventNames.OnTakeRing>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventName.OnTakeRing>, additionalProperties: Record<string, unknown> = {}): void {
         const context = event.context as AbilityContext;
         const { takeFate } = this.getProperties(context, additionalProperties) as TakeRingProperties;
         const ring = event.ring;

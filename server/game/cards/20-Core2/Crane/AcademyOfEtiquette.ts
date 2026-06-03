@@ -1,4 +1,4 @@
-import { TargetModes, Players, Phases, CardTypes, Durations } from '../../../Constants.js';
+import { TargetMode, Players, Phases, CardType, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,15 +12,15 @@ export default class AcademyOfEtiquette extends DrawCard {
                 onPhaseStarted: (event) => event.phase === Phases.Fate
             },
             target: {
-                mode: TargetModes.UpTo,
+                mode: TargetMode.UpTo,
                 numCards: 2,
                 activePromptTitle: 'Choose up to 2 cards',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isHonored,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
                     effect: AbilityDsl.effects.addKeyword('courtesy'),
-                    duration: Durations.UntilEndOfPhase
+                    duration: Duration.UntilEndOfPhase
                 }))
             },
             effect: 'give {0} courtesy'

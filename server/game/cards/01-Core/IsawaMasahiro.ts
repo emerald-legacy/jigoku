@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Elements } from '../../Constants.js';
+import { CardType, Element } from '../../Constants.js';
 
 const elementKey = 'isawa-masahiro-fire';
 
@@ -13,7 +13,7 @@ class IsawaMasahiro extends DrawCard {
             condition: () => this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
             cost: AbilityDsl.costs.bowSelf(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.costLessThan(3) && card.isParticipating(),
                 gameAction: AbilityDsl.actions.discardFromPlay()
             }
@@ -25,7 +25,7 @@ class IsawaMasahiro extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Conflict Type',
-            element: Elements.Fire
+            element: Element.Fire
         });
         return symbols;
     }

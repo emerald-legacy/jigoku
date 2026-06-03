@@ -1,4 +1,4 @@
-import { CardTypes, Durations, Phases, Players } from '../../../Constants.js';
+import { CardType, Duration, Phases, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -11,11 +11,11 @@ export default class HouseOfLeaves extends StrongholdCard {
             phase: Phases.Conflict,
             cost: AbilityDsl.costs.bowSelf(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => !card.isParticipating(),
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    duration: Durations.UntilEndOfPhase,
+                    duration: Duration.UntilEndOfPhase,
                     effect: AbilityDsl.effects.modifyGlory(2)
                 })
             },

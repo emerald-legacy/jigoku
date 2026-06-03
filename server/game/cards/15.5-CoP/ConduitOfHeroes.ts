@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityContext } from '../../AbilityContext.js';
 
@@ -48,7 +48,7 @@ class ConduitOfHeroes extends DrawCard {
             cost: conduitOfHeroesCost(),
             condition: () => this.game.isDuringConflict(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) => card !== context.source,
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({

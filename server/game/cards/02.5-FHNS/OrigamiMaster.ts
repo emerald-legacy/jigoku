@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Players, CardTypes, CharacterStatus } from '../../Constants.js';
+import { Players, CardType, CharacterStatus } from '../../Constants.js';
 
 class OrigamiMaster extends DrawCard {
     static id = 'origami-master';
@@ -10,7 +10,7 @@ class OrigamiMaster extends DrawCard {
             title: 'Move an honor token',
             condition: context => context.source.isHonored,
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) => card !== context.source,
                 gameAction: AbilityDsl.actions.moveStatusToken(context => ({

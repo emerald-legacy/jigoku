@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class Forgery extends DrawCard {
     static id = 'forgery';
@@ -9,7 +9,7 @@ class Forgery extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel an event',
             when: {
-                onInitiateAbilityEffects: (event, context) => event.card.type === CardTypes.Event && context.player.opponent &&
+                onInitiateAbilityEffects: (event, context) => event.card.type === CardType.Event && context.player.opponent &&
                     context.player.isLessHonorable()
             },
             cannotBeMirrored: true,

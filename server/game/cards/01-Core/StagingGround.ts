@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Players, TargetModes } from '../../Constants.js';
+import { Location, Players, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class StagingGround extends DrawCard {
@@ -9,10 +9,10 @@ class StagingGround extends DrawCard {
         this.action({
             title: 'Flip up to 2 dynasty cards',
             target: {
-                mode: TargetModes.UpTo,
+                mode: TargetMode.UpTo,
                 numCards: 2,
                 activePromptTitle: 'Choose up to 2 cards',
-                location: Locations.Provinces,
+                location: Location.Provinces,
                 controller: Players.Self,
                 gameAction: ability.actions.flipDynasty()
             }

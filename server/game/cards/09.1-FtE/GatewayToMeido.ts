@@ -1,4 +1,4 @@
-import { Locations, CardTypes } from '../../Constants.js';
+import { Location, CardType } from '../../Constants.js';
 import { PlayCharacterAsIfFromHandIntoConflict } from '../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHandIntoConflict } from '../../PlayDisguisedCharacterAsIfFromHand.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
@@ -10,8 +10,8 @@ export default class GatewayToMeido extends ProvinceCard {
     public setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
-            targetLocation: Locations.DynastyDiscardPile,
-            match: (card) => card.type === CardTypes.Character,
+            targetLocation: Location.DynastyDiscardPile,
+            match: (card) => card.type === CardType.Character,
             effect: [
                 AbilityDsl.effects.gainPlayAction(PlayCharacterAsIfFromHandIntoConflict),
                 AbilityDsl.effects.gainPlayAction(PlayDisguisedCharacterAsIfFromHandIntoConflict)

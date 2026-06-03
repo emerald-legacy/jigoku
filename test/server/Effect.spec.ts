@@ -1,5 +1,5 @@
 import Effect from '../../server/game/Effects/Effect.js';
-import { Durations } from '../../server/game/Constants.js';
+import { Duration } from '../../server/game/Constants.js';
 
 describe('Effect', function() {
     let game: jasmine.SpyObj<{ getFrameworkContext: (player: unknown) => unknown }>;
@@ -24,7 +24,7 @@ describe('Effect', function() {
     describe('isEffectActive() for a persistent effect whose source tracks no persistentEffects', function() {
         it('should return false without throwing', function() {
             const source = { name: 'ring', facedown: false };
-            const effect = new Effect(game as never, source as never, { duration: Durations.Persistent }, staticEffect as never);
+            const effect = new Effect(game as never, source as never, { duration: Duration.Persistent }, staticEffect as never);
             expect(effect.isEffectActive()).toBe(false);
         });
     });

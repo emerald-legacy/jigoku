@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import type Ring from '../../Ring.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes } from '../../Constants.js';
+import { TargetMode } from '../../Constants.js';
 
 class TranquilPhilosopher extends DrawCard {
     static id = 'tranquil-philosopher';
@@ -11,7 +11,7 @@ class TranquilPhilosopher extends DrawCard {
         this.action({
             title: 'Move fate on rings',
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 activePromptTitle: 'Choose an unclaimed ring to move fate from',
                 ringCondition: (ring: any) => ring.isUnclaimed(),
                 gameAction: AbilityDsl.actions.sequential([

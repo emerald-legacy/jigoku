@@ -1,4 +1,4 @@
-import { Durations } from '../../../Constants.js';
+import { Duration } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -17,7 +17,7 @@ export default class TheSunWillRiseAgain extends DrawCard {
             },
             gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
-                duration: Durations.UntilEndOfPhase,
+                duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.additionalConflict((context as TriggeredAbilityContext).event.conflict?.conflictType)
             })),
             max: AbilityDsl.limit.perConflict(1),

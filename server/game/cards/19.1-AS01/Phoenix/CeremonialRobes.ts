@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 type HandlerStep = {
@@ -17,7 +17,7 @@ export default class CeremonialRobes extends DrawCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.modifyGlory((_character: any, context: any) =>
                 (context.player.cardsInPlay as BaseCard[]).reduce(
-                    (sum: number, card: BaseCard) => (card.type === CardTypes.Character && card.hasTrait('spirit') ? sum + 1 : sum),
+                    (sum: number, card: BaseCard) => (card.type === CardType.Character && card.hasTrait('spirit') ? sum + 1 : sum),
                     0
                 )
             )
@@ -28,9 +28,9 @@ export default class CeremonialRobes extends DrawCard {
             effect: 'look at the top 3 cards of their dynasty deck',
             evenDuringDynasty: true,
             target: {
-                location: Locations.Provinces,
-                cardType: CardTypes.Province,
-                cardCondition: (card) => card.location !== Locations.StrongholdProvince,
+                location: Location.Provinces,
+                cardType: CardType.Province,
+                cardCondition: (card) => card.location !== Location.StrongholdProvince,
                 controller: Players.Self
             },
             handler: (context) => {
@@ -54,7 +54,7 @@ export default class CeremonialRobes extends DrawCard {
                         activePromptTitle: 'Select a card to discard',
                         message: '{0} discards {1}',
                         callback: (chosenCard) => {
-                            ctx.player.moveCard(chosenCard, Locations.DynastyDiscardPile);
+                            ctx.player.moveCard(chosenCard, Location.DynastyDiscardPile);
                             if(chosenCard.hasTrait('spirit')) {
                                 this.game.addMessage(
                                     '{0} was a Spirit! {1} and {2} lose 1 honor',

@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Locations, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Location, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class PromisingHohei extends DrawCard {
@@ -7,11 +7,11 @@ export default class PromisingHohei extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            location: Locations.Any,
+            location: Location.Any,
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: 1,
-                targetCondition: (target: any) => target.type === CardTypes.Character && target.getGlory() >= 2,
+                targetCondition: (target: any) => target.type === CardType.Character && target.getGlory() >= 2,
                 match: (card: any, source: any) => card === source
             })
         });
@@ -22,7 +22,7 @@ export default class PromisingHohei extends DrawCard {
                 onCardAttached: (event, context) => event.card === context.source
             },
             target: {
-                mode: TargetModes.Single,
+                mode: TargetMode.Single,
                 controller: Players.Self,
                 cardCondition: (card) => card.name !== 'Promising Hohei' && card.hasTrait('follower'),
                 gameAction: AbilityDsl.actions.returnToHand()

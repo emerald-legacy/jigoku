@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes } from '../../Constants.js';
+import { TargetMode } from '../../Constants.js';
 
 class MasterWhisperer extends DrawCard {
     static id = 'master-whisperer';
@@ -9,7 +9,7 @@ class MasterWhisperer extends DrawCard {
         this.action({
             title: 'Select a player to discard 3 cards and draw 3 cards',
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 targets: true,
                 choices:  {
                     [this.owner.name]: AbilityDsl.actions.multiple([

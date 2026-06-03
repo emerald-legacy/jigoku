@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -14,7 +14,7 @@ export default class AsakoDiplomat extends DrawCard {
             },
             target: {
                 activePromptTitle: 'Choose a character to honor or dishonor',
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.chooseAction({
                     options: {
                         'Honor this character': {

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Locations } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 
 class CeaselessDuty extends DrawCard {
     static id = 'ceaseless-duty';
@@ -9,7 +9,7 @@ class CeaselessDuty extends DrawCard {
         this.wouldInterrupt({
             title: 'Prevent a character from leaving play',
             when: {
-                onCardLeavesPlay: (event, context) => event.card.type === CardTypes.Character && (event.card as DrawCard).costLessThan(context.player.getProvinces(a => !a.isBroken).length + 1) && event.card.location === Locations.PlayArea
+                onCardLeavesPlay: (event, context) => event.card.type === CardType.Character && (event.card as DrawCard).costLessThan(context.player.getProvinces(a => !a.isBroken).length + 1) && event.card.location === Location.PlayArea
             },
             effect: 'prevent {1} from leaving play',
             effectArgs: context => context.event.card ?? '',

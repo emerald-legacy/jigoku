@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -10,7 +10,7 @@ export default class MagistrateStation extends ProvinceCard {
             title: 'Ready an honored character',
             canTriggerOutsideConflict: true,
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isHonored,
                 gameAction: AbilityDsl.actions.ready()
             }

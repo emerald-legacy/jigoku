@@ -1,4 +1,4 @@
-import { TargetModes } from '../../Constants.js';
+import { TargetMode } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -9,7 +9,7 @@ export default class KuroiMori extends ProvinceCard {
         this.action({
             title: 'Switch the conflict type or ring',
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 choices: {
                     'Switch the contested ring': AbilityDsl.actions.selectRing({
                         activePromptTitle: 'Choose a ring to switch with the contested ring',

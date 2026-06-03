@@ -1,4 +1,4 @@
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -9,8 +9,8 @@ export default class LostDeedsTemple extends ProvinceCard {
         this.action({
             title: 'Discard an attachment',
             target: {
-                cardType: CardTypes.Attachment,
-                cardCondition: (card) => card.parent?.type === CardTypes.Character && card.parent.isParticipating(),
+                cardType: CardType.Attachment,
+                cardCondition: (card) => card.parent?.type === CardType.Character && card.parent.isParticipating(),
                 gameAction: AbilityDsl.actions.discardFromPlay()
             }
         });

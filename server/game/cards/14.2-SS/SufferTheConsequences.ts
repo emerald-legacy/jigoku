@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, CardTypes, ConflictTypes, Durations } from '../../Constants.js';
+import { Phases, CardType, ConflictType, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 const validSacrificeTraits = ['courtier', 'bushi', 'shugenja'];
@@ -15,13 +15,13 @@ class SufferTheConsequences extends DrawCard {
             max: AbilityDsl.limit.perPhase(1),
             condition: context => context.game.currentPhase === Phases.Conflict,
             cost: AbilityDsl.costs.sacrifice({
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: any) => card.traits.some((trait: any) => validSacrificeTraits.includes(trait)) && card.bowed
             }),
             gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
                 targetController: context.player,
-                duration: Durations.UntilEndOfPhase,
-                effect: AbilityDsl.effects.additionalConflict(ConflictTypes.Political)
+                duration: Duration.UntilEndOfPhase,
+                effect: AbilityDsl.effects.additionalConflict(ConflictType.Political)
             }))
         });
     }

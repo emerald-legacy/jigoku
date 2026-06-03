@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class CorneringManeuver extends DrawCard {
             title: 'Give a character +2 mil',
             condition: context => context.game.isDuringConflict('military'),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipatingFor(context.player),
                 gameAction: AbilityDsl.actions.cardLastingEffect(_context => ({
                     effect: AbilityDsl.effects.modifyMilitarySkill(2)
@@ -24,7 +24,7 @@ export default class CorneringManeuver extends DrawCard {
                     targets: true,
                     optional: true,
                     controller: Players.Self,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     message: '{0} moves {1} {2}',
                     messageArgs: card => Array.isArray(card)
                         ? [context?.player, '', '']

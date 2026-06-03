@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Durations } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HirumaSkirmisher extends DrawCard {
@@ -13,7 +13,7 @@ class HirumaSkirmisher extends DrawCard {
             },
             effect: 'give itself Covert until the end of the phase',
             gameAction: ability.actions.cardLastingEffect({
-                duration: Durations.UntilEndOfPhase,
+                duration: Duration.UntilEndOfPhase,
                 effect: ability.effects.addKeyword('covert')
             })
         });

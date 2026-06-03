@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AdornedBarcha extends DrawCard {
@@ -15,7 +15,7 @@ class AdornedBarcha extends DrawCard {
             title: 'Move character into the conflict',
             condition: context => !!(context.source.parent && !context.source.parent.isParticipating() && this.game.isDuringConflict('military')),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isParticipating(),
                 gameAction: AbilityDsl.actions.bow()
             },

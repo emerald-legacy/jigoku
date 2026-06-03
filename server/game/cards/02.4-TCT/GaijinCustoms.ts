@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class GaijinCustoms extends DrawCard {
@@ -10,7 +10,7 @@ class GaijinCustoms extends DrawCard {
             title: 'Ready a non-unicorn character',
             condition: context => context.player.anyCardsInPlay((card: any) => card.isFaction('unicorn')) || !!context.player.stronghold && context.player.stronghold.isFaction('unicorn'),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: any) => !card.isFaction('unicorn'),
                 gameAction: ability.actions.ready()
             }

@@ -1,4 +1,4 @@
-import { DuelTypes, Durations } from '../../../Constants.js';
+import { DuelType, Duration } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +15,7 @@ export default class DaidojiAkikore extends DrawCard {
             gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
                 target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.modifyDuelSkill({ amount: 1, player: context.player }),
-                duration: Durations.UntilEndOfDuel
+                duration: Duration.UntilEndOfDuel
             } as LastingEffectProperties)),
             effect: 'add 1 to their duel total'
         });
@@ -23,7 +23,7 @@ export default class DaidojiAkikore extends DrawCard {
         this.action({
             title: 'Military duel to add skill',
             initiateDuel: (context) => ({
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
                 message: '{0}{1}{2}',
                 messageArgs: (duel) =>

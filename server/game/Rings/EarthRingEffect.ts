@@ -1,5 +1,5 @@
 import { GameModes } from '../../GameModes.js';
-import { TargetModes } from '../Constants.js';
+import { TargetMode } from '../Constants.js';
 import { AbilityContext } from '../AbilityContext.js';
 import BaseAbility from '../BaseAbility.js';
 
@@ -36,7 +36,7 @@ export class EarthRingEffect extends BaseAbility {
     ) {
         super({
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 activePromptTitle: 'Choose an effect to resolve',
                 source: 'Earth Ring',
                 choices: choices(optional, gameMode)

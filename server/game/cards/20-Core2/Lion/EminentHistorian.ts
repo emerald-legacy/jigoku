@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -14,7 +14,7 @@ export default class EminentHistorian extends DrawCard {
             title: 'Honor a character',
             condition: (context) => !context.player.opponent?.isMoreHonorable(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.honor()

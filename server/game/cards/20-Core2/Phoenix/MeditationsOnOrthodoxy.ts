@@ -1,4 +1,4 @@
-import { CardTypes, Locations, PlayTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Location, PlayType, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -8,8 +8,8 @@ export default class MeditationsOnOrthodoxy extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => Boolean(context.player.opponent) && context.player.isMoreHonorable(),
-            location: Locations.ConflictDiscardPile,
-            effect: AbilityDsl.effects.canPlayFromOwn(Locations.ConflictDiscardPile, [this], this, PlayTypes.Other)
+            location: Location.ConflictDiscardPile,
+            effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
 
         this.reaction({
@@ -18,10 +18,10 @@ export default class MeditationsOnOrthodoxy extends DrawCard {
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player
             },
             target: {
-                mode: TargetModes.UpTo,
+                mode: TargetMode.UpTo,
                 activePromptTitle: 'Choose characters',
                 numCards: 2,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 gameAction: AbilityDsl.actions.ready()
             },
@@ -29,7 +29,7 @@ export default class MeditationsOnOrthodoxy extends DrawCard {
                 gameAction: [
                     AbilityDsl.actions.moveCard({
                         target: context?.source,
-                        destination: Locations.ConflictDeck,
+                        destination: Location.ConflictDeck,
                         bottom: true
                     })
                 ]

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class KaitoTempleProtector extends DrawCard {
@@ -18,7 +18,7 @@ class KaitoTempleProtector extends DrawCard {
             title: 'Change base skills to match another character\'s',
             condition: context => context.source.isDefending(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source,
                 gameAction: ability.actions.cardLastingEffect(context => {
                     let effects = [];

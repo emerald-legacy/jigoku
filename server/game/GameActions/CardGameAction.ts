@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardTypes, EffectNames, EventNames, Locations } from '../Constants.js';
+import { CardType, EffectName, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Ring from '../Ring.js';
 import { GameAction, GameActionProperties } from './GameAction.js';
@@ -17,15 +17,15 @@ interface UnlessActionCost {
     cost: GameAction | ((card: BaseCard) => GameAction);
 }
 
-export class CardGameAction<P extends CardActionProperties = CardActionProperties, N extends EventNames = EventNames> extends GameAction<P, N> {
+export class CardGameAction<P extends CardActionProperties = CardActionProperties, N extends EventName = EventName> extends GameAction<P, N> {
     targetType = [
-        CardTypes.Character,
-        CardTypes.Attachment,
-        CardTypes.Holding,
-        CardTypes.Event,
-        CardTypes.Stronghold,
-        CardTypes.Province,
-        CardTypes.Role,
+        CardType.Character,
+        CardType.Attachment,
+        CardType.Holding,
+        CardType.Event,
+        CardType.Stronghold,
+        CardType.Province,
+        CardType.Role,
         'ring'
     ];
 
@@ -46,7 +46,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         for(const card of target as BaseCard[]) {
             let allCostsPaid = true;
             const additionalCosts = card
-                .getEffects<UnlessActionCost>(EffectNames.UnlessActionCost)
+                .getEffects<UnlessActionCost>(EffectName.UnlessActionCost)
                 .filter((properties) => properties.actionName === this.name);
 
             if(context.player && context.ability && context.ability.targets && context.ability.targets.length > 0) {
@@ -141,17 +141,17 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         return (event as { card?: BaseCard }).card === card && super.isEventFullyResolved(event, card, context, additionalProperties);
     }
 
-    updateLeavesPlayEvent(event: GameEvent<EventNames.OnCardLeavesPlay>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
-        let properties = this.getProperties(context, additionalProperties) as P & { destination?: Locations };
+    updateLeavesPlayEvent(event: GameEvent<EventName.OnCardLeavesPlay>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+        let properties = this.getProperties(context, additionalProperties) as P & { destination?: Location };
         super.updateEvent(event as Event as GameEvent<N>, card, context, additionalProperties);
         event.isSacrifice = this.name === 'sacrifice';
         event.destination =
-            properties.destination || (card.isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile);
+            properties.destination || (card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
         event.preResolutionEffect = () => {
             const evCard = event.card as DrawCard;
             event.cardStateWhenLeftPlay = evCard.createSnapshot();
             if(evCard.isAncestral() && event.isContingent) {
-                event.destination = Locations.Hand;
+                event.destination = Location.Hand;
                 context.game.addMessage(
                     '{0} returns to {1}\'s hand due to its Ancestral keyword',
                     evCard,
@@ -166,7 +166,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
 
             for(const attachment of (evCard.attachments ?? []) as DrawCard[]) {
                 // we only need to add events for attachments that are in play.
-                if(attachment.location === Locations.PlayArea) {
+                if(attachment.location === Location.PlayArea) {
                     let attachmentEvent = context.game.actions
                         .discardFromPlay()
                         .getEvent(attachment, context.game.getFrameworkContext());
@@ -192,22 +192,22 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         };
     }
 
-    leavesPlayEventHandler(event: GameEvent<EventNames.OnCardLeavesPlay>, additionalProperties: Record<string, unknown> = {}): void {
+    leavesPlayEventHandler(event: GameEvent<EventName.OnCardLeavesPlay>, additionalProperties: Record<string, unknown> = {}): void {
         const card = event.card as DrawCard;
         this.checkForRefillProvince(card, event, additionalProperties);
-        if(!card.owner.isLegalLocationForCard(card, event.destination as Locations)) {
+        if(!card.owner.isLegalLocationForCard(card, event.destination as Location)) {
             card.game.addMessage(
                 '{0} is not a legal location for {1} and it is discarded',
                 event.destination,
                 card
             );
-            event.destination = card.isDynasty ? Locations.DynastyDiscardPile : Locations.ConflictDiscardPile;
+            event.destination = card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile;
         }
-        card.owner.moveCard(card, event.destination as Locations, event.options || {});
+        card.owner.moveCard(card, event.destination as Location, event.options || {});
     }
 
     checkForRefillProvince(card: BaseCard, event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        if(!card.isInProvince() || card.location === Locations.StrongholdProvince) {
+        if(!card.isInProvince() || card.location === Location.StrongholdProvince) {
             return;
         }
         const eventContext = event.context as AbilityContext & { event?: Event };

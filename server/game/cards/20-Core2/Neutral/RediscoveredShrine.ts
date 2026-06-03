@@ -1,4 +1,4 @@
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -12,7 +12,7 @@ export default class RediscoveredShrine extends DrawCard {
             when: {
                 onCardPlayed: (event, context) => {
                     const province = context.player.getProvinceCardInProvince(context.source.location);
-                    return event.card.type === CardTypes.Event &&
+                    return event.card.type === CardType.Event &&
                         event.player === context.player &&
                         !!province && !province.isBroken &&
                         (event.context?.ability as any)?.getReducedCost(event.context) > 0;

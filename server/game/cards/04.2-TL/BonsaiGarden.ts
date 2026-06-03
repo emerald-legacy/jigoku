@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 
 const elementKey = 'bonsai-garden-air';
 
@@ -20,7 +20,7 @@ class BonsaiGarden extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Conflict Ring',
-            element: Elements.Air
+            element: Element.Air
         });
         return symbols;
     }

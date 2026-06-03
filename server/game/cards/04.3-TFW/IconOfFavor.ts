@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 
 const elementKey = 'icon-of-favor-fire';
 
@@ -30,7 +30,7 @@ class IconOfFavor extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Conflict Type',
-            element: Elements.Fire
+            element: Element.Fire
         });
         return symbols;
     }

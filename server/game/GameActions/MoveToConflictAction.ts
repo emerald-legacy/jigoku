@@ -3,7 +3,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type { Conflict } from '../Conflict.js';
 import type DrawCard from '../DrawCard.js';
-import { CardTypes, EffectNames, EventNames, Locations } from '../Constants.js';
+import { CardType, EffectName, EventName, Location } from '../Constants.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
@@ -13,10 +13,10 @@ export interface MoveToConflictProperties extends CardActionProperties {
 
 export class MoveToConflictAction extends CardGameAction {
     name = 'moveToConflict';
-    eventName = EventNames.OnMoveToConflict;
+    eventName = EventName.OnMoveToConflict;
     cost = 'moving {0} into the conflict';
     effect = 'move {0} into the conflict';
-    targetType = [CardTypes.Character];
+    targetType = [CardType.Character];
     defaultProperties: MoveToConflictProperties = { side: undefined };
 
     canAffect(card: DrawCard, context: AbilityContext): boolean {
@@ -37,20 +37,20 @@ export class MoveToConflictAction extends CardGameAction {
         } else if(!card.canParticipateAsDefender()) {
             return false;
         }
-        if(card.anyEffect(EffectNames.ParticipatesFromHome)) {
+        if(card.anyEffect(EffectName.ParticipatesFromHome)) {
             return false;
         }
 
-        return card.location === Locations.PlayArea;
+        return card.location === Location.PlayArea;
     }
 
-    addPropertiesToEvent(event: GameEvent<EventNames.OnMoveToConflict>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: GameEvent<EventName.OnMoveToConflict>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties(context) as MoveToConflictProperties;
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.side = properties.side || card.controller;
     }
 
-    eventHandler(event: GameEvent<EventNames.OnMoveToConflict>): void {
+    eventHandler(event: GameEvent<EventName.OnMoveToConflict>): void {
         const context = event.context as AbilityContext;
         const player = event.side as Player;
         const conflict = context.game.currentConflict as Conflict;

@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -14,13 +14,13 @@ export default class LastJudgementPlains extends ProvinceCard {
             targets: {
                 [DONOR]: {
                     activePromptTitle: 'Choose a donor character',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self
                 },
                 [RECIPIENT]: {
                     dependsOn: DONOR,
                     activePromptTitle: 'Choose a recipient character',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     gameAction: AbilityDsl.actions.menuPrompt(({ targets }) => ({
                         activePromptTitle: 'How much fate do you want to move?',

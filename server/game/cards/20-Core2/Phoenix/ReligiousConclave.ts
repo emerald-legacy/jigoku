@@ -1,4 +1,4 @@
-import { TargetModes, Durations } from '../../../Constants.js';
+import { TargetMode, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
@@ -14,13 +14,13 @@ export default class ReligiousConclave extends DrawCard {
             condition: (context) => context.player.opponent !== undefined,
             cost: AbilityDsl.costs.sacrificeSelf(),
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 ringCondition: () => true
             },
             effect: 'prevent {1} from declaring a conflict with {0}',
             effectArgs: (context) => context.player.opponent as any,
             gameAction: AbilityDsl.actions.ringLastingEffect((context) => ({
-                duration: Durations.UntilEndOfPhase,
+                duration: Duration.UntilEndOfPhase,
                 target: (context.ring.getElements() as Element[]).map((element) => context.game.rings[element]),
                 effect: AbilityDsl.effects.cannotDeclareRing((player: Player) => player === context.player.opponent)
             }))

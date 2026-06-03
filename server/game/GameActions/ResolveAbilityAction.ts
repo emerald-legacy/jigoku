@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type CardAbility from '../CardAbility.js';
-import { EventNames } from '../Constants.js';
+import { EventName } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent.js';
@@ -39,11 +39,11 @@ class ResolveAbilityActionResolver extends AbilityResolver {
     openInitiateAbilityEventWindow() {
         const params = { card: this.context.source, ability: this.context.ability, context: this.context };
         const events = [
-            this.game.getEvent(EventNames.OnCardAbilityInitiated, params, () => this.queueInitiateAbilitySteps())
+            this.game.getEvent(EventName.OnCardAbilityInitiated, params, () => this.queueInitiateAbilitySteps())
         ];
         if(this.context.ability.isTriggeredAbility() && !this.context.subResolution) {
             events.push(
-                this.game.getEvent(EventNames.OnCardAbilityTriggered, {
+                this.game.getEvent(EventName.OnCardAbilityTriggered, {
                     player: this.context.player,
                     card: this.context.source,
                     context: this.context

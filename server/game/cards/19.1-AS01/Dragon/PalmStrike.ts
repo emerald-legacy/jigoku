@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import BaseCard from '../../../BaseCard.js';
-import { CardTypes, Durations, Players } from '../../../Constants.js';
+import { CardType, Duration, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 const TARGET_MONK = 'myMonk';
@@ -15,7 +15,7 @@ export default class PalmStrike extends DrawCard {
             targets: {
                 [TARGET_MONK]: {
                     activePromptTitle: 'Choose a bare-handed monk',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: (monkCharacter) =>
                         monkCharacter.isParticipating() &&
@@ -25,7 +25,7 @@ export default class PalmStrike extends DrawCard {
                 [TARGET_TO_BOW]: {
                     dependsOn: TARGET_MONK,
                     activePromptTitle: 'Choose a character to bow',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: (opponentCharacter) =>
                         opponentCharacter.isParticipating() && this.#cardHasNoWeapons(opponentCharacter),
@@ -37,7 +37,7 @@ export default class PalmStrike extends DrawCard {
                             falseGameAction: AbilityDsl.actions.noAction(),
                             trueGameAction: AbilityDsl.actions.cardLastingEffect({
                                 effect: AbilityDsl.effects.cardCannot({ cannot: 'ready' }),
-                                duration: Durations.UntilEndOfConflict
+                                duration: Duration.UntilEndOfConflict
                             })
                         })
                     ])

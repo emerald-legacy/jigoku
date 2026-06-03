@@ -1,5 +1,5 @@
 import { AbilityContext } from './AbilityContext.js';
-import { AbilityTypes } from './Constants.js';
+import { AbilityType } from './Constants.js';
 import BaseCardAbility from './BaseCardAbility.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
@@ -14,7 +14,7 @@ interface TargetProperties {
 }
 
 class BaseAction extends BaseCardAbility {
-    abilityType = AbilityTypes.Action;
+    abilityType = AbilityType.Action;
     cannotBeCancelled = true;
     declare cost: Cost[];
 

@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 
 class WatchtowerOfValor extends DrawCard {
     static id = 'watchtower-of-valor';
@@ -12,7 +12,7 @@ class WatchtowerOfValor extends DrawCard {
                 afterConflict: (event, context) => {
                     if(context.player.isDefendingPlayer() && event.conflict.winner === context.player) {
                         let cards = event.conflict.getConflictProvinces().map(a => context.player.getDynastyCardsInProvince(a.location));
-                        return cards.some(c => c.some(card => card.isFaceup() && card.type === CardTypes.Holding && card.hasTrait('kaiu-wall')));
+                        return cards.some(c => c.some(card => card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall')));
                     }
                     return false;
                 }

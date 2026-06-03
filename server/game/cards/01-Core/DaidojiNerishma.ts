@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations, Players } from '../../Constants.js';
+import { Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class DaidojiNerishma extends DrawCard {
@@ -10,7 +10,7 @@ class DaidojiNerishma extends DrawCard {
             title: 'Flip a card faceup',
             target: {
                 controller: Players.Self,
-                location: Locations.Provinces,
+                location: Location.Provinces,
                 cardCondition: card => card.isDynasty && card.isFacedown(),
                 gameAction: ability.actions.flipDynasty()
             }

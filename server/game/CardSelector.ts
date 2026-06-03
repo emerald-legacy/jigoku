@@ -5,16 +5,16 @@ import SingleCardSelector from './CardSelectors/SingleCardSelector.js';
 import UnlimitedCardSelector from './CardSelectors/UnlimitedCardSelector.js';
 import UpToXCardSelector from './CardSelectors/UpToXCardSelector.js';
 import UpToVariableXCardSelector from './CardSelectors/UpToVariableXCardSelector.js';
-import { TargetModes, CardTypes } from './Constants.js';
+import { TargetMode, CardType } from './Constants.js';
 
 interface CardSelectorProperties {
     numCards?: number;
     cardCondition?: (...args: any[]) => boolean;
     numCardsFunc?: (...args: any[]) => number;
-    cardType?: CardTypes | CardTypes[];
+    cardType?: CardType | CardType[];
     multiSelect?: boolean;
     sameDiscardPile?: boolean;
-    mode?: TargetModes;
+    mode?: TargetMode;
     maxStat?: any;
     [key: string]: any;
 }
@@ -26,7 +26,7 @@ const defaultProperties: CardSelectorProperties = {
     numCards: 1,
     cardCondition: () => true,
     numCardsFunc: () => 1,
-    cardType: [CardTypes.Attachment, CardTypes.Character, CardTypes.Event, CardTypes.Holding, CardTypes.Stronghold, CardTypes.Role, CardTypes.Province],
+    cardType: [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding, CardType.Stronghold, CardType.Role, CardType.Province],
     multiSelect: false,
     sameDiscardPile: false
 };
@@ -65,13 +65,13 @@ class CardSelector {
         }
 
         if(properties.maxStat) {
-            properties.mode = TargetModes.MaxStat;
+            properties.mode = TargetMode.MaxStat;
         } else if(properties.numCards === 1 && !properties.multiSelect) {
-            properties.mode = TargetModes.Single;
+            properties.mode = TargetMode.Single;
         } else if(properties.numCards === 0) {
-            properties.mode = TargetModes.Unlimited;
+            properties.mode = TargetMode.Unlimited;
         } else {
-            properties.mode = TargetModes.UpTo;
+            properties.mode = TargetMode.UpTo;
         }
 
         return properties;

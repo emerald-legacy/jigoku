@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Locations, Players } from '../../Constants.js';
+import { Location, Players } from '../../Constants.js';
 
 class AncestralArmory extends DrawCard {
     static id = 'ancestral-armory';
@@ -12,9 +12,9 @@ class AncestralArmory extends DrawCard {
             target: {
                 activePromptTitle: 'Choose a weapon attachment from your conflict discard pile',
                 cardCondition: card => card.hasTrait('weapon'),
-                location: [Locations.ConflictDiscardPile],
+                location: [Location.ConflictDiscardPile],
                 controller: Players.Self,
-                gameAction: AbilityDsl.actions.moveCard({ destination: Locations.Hand })
+                gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand })
             }
         });
     }

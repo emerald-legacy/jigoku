@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, TargetModes, CardTypes, Elements } from '../../Constants.js';
+import { Players, TargetMode, CardType, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'fu-sui-disciple-air';
@@ -12,7 +12,7 @@ class FuSuiDisciple extends DrawCard {
             title: 'Honor or dishonor a character',
             targets: {
                 player: {
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     activePromptTitle: 'Choose a player',
                     targets: true,
                     choices: {
@@ -24,7 +24,7 @@ class FuSuiDisciple extends DrawCard {
                     dependsOn: 'player',
                     player: context => context.selects.player.choice === context.player.name ? Players.Self : Players.Opponent,
                     activePromptTitle: 'Choose a character to be honored or dishonored',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     cardCondition: (card, context) => {
                         let player = context.selects.player.choice === context.player.name ? context.player : context.player.opponent;
                         return !card.isHonored && !card.isDishonored && card.controller === player;
@@ -32,7 +32,7 @@ class FuSuiDisciple extends DrawCard {
                 },
                 effect: {
                     dependsOn: 'character',
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     choices: {
                         'Honor this character': AbilityDsl.actions.honor(context => ({ target: context.targets.character })),
                         'Dishonor this character': AbilityDsl.actions.dishonor(context => ({ target: context.targets.character }))
@@ -47,7 +47,7 @@ class FuSuiDisciple extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Claimed Ring',
-            element: Elements.Air
+            element: Element.Air
         });
         return symbols;
     }

@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
@@ -19,14 +19,14 @@ export default class InsufferableScallywag extends DrawCard {
             cost: AbilityDsl.costs.removeFateFromSelf(),
             targets: {
                 [CHARACTER]: {
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: (card: DrawCard, context) =>
                         card.glory > context.source.glory && card.isParticipating()
                 },
                 select: {
                     dependsOn: CHARACTER,
-                    mode: TargetModes.Select,
+                    mode: TargetMode.Select,
                     player: Players.Opponent,
                     choices: {
                         'Dishonor this character': AbilityDsl.actions.dishonor(theTarget),

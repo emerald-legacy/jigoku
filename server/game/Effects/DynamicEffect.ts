@@ -1,6 +1,6 @@
 import StaticEffect from './StaticEffect.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { EffectNames } from '../Constants.js';
+import type { EffectName } from '../Constants.js';
 import type { EffectTarget } from './EffectBuilder.js';
 import type { GameObject } from '../GameObject.js';
 
@@ -10,7 +10,7 @@ export default class DynamicEffect extends StaticEffect {
     values: Record<string, unknown>;
     calculate: DynamicCalculate;
 
-    constructor(type: EffectNames, calculate: DynamicCalculate) {
+    constructor(type: EffectName, calculate: DynamicCalculate) {
         super(type, undefined);
         this.values = {};
         this.calculate = calculate;

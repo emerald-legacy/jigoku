@@ -1,4 +1,4 @@
-import { Durations, DuelTypes } from '../../../Constants.js';
+import { Duration, DuelType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -9,7 +9,7 @@ export default class UnbridledRage extends DrawCard {
         this.action({
             title: 'Military duel to stop contribution',
             initiateDuel: {
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 challengerCondition: card => card.hasTrait('berserker'),
                 message: 'prevent {0} from contributing to resolution of this conflict',
                 refuseGameAction: AbilityDsl.actions.multiple([
@@ -19,7 +19,7 @@ export default class UnbridledRage extends DrawCard {
                     })),
                     AbilityDsl.actions.playerLastingEffect(context => ({
                         targetController: context.player,
-                        duration: Durations.UntilPassPriority,
+                        duration: Duration.UntilPassPriority,
                         effect: AbilityDsl.effects.additionalAction()
                     }))
                 ]),
@@ -33,7 +33,7 @@ export default class UnbridledRage extends DrawCard {
                     AbilityDsl.actions.cardLastingEffect((_context) => ({
                         target: duel.loser,
                         effect: [AbilityDsl.effects.cannotContribute(() => (card: any) => (duel.loser ?? []).includes(card))],
-                        duration: Durations.UntilEndOfConflict
+                        duration: Duration.UntilEndOfConflict
                     }))
             }
         });

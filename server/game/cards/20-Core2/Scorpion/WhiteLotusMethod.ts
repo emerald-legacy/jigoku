@@ -1,4 +1,4 @@
-import { CardTypes, CharacterStatus, Players, TargetModes } from '../../../Constants.js';
+import { CardType, CharacterStatus, Players, TargetMode } from '../../../Constants.js';
 import type { StatusToken } from '../../../StatusToken.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -21,14 +21,14 @@ export default class WhiteLotusMethod extends DrawCard {
             targets: {
                 [TOKEN]: {
                     activePromptTitle: 'Choose the status token to move',
-                    mode: TargetModes.Token,
-                    cardType: CardTypes.Character,
+                    mode: TargetMode.Token,
+                    cardType: CardType.Character,
                     tokenCondition: (token: StatusToken) => token.grantedStatus === CharacterStatus.Dishonored
                 },
                 [RECIPIENT]: {
                     activePromptTitle: 'Choose a Character to receive the token',
                     dependsOn: TOKEN,
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Any,
                     cardCondition: (card) => card.isOrdinary(),
                     gameAction: AbilityDsl.actions.sequentialContext((context) => ({

@@ -1,4 +1,4 @@
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import Soldier from '../../Soldier.js';
@@ -15,7 +15,7 @@ export default class Pride extends StrongholdCard {
             cost: AbilityDsl.costs.bowSelf(),
             condition: (context) => context.player.conflictDeck.length > 0,
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     card.attachments.filter((a: any) => a.hasTrait('follower')).length === 0 &&
@@ -25,7 +25,7 @@ export default class Pride extends StrongholdCard {
                         const card = context.player.conflictDeck[0];
                         const token = context.game.createToken(card, Soldier);
                         card.owner.removeCardFromPile(card);
-                        card.moveTo(Locations.RemovedFromGame);
+                        card.moveTo(Location.RemovedFromGame);
                         const moveEvents: Event[] = [];
                         context.game.actions
                             .attach({ target: context.target, attachment: token })

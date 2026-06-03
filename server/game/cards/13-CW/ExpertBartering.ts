@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ExpertBartering extends DrawCard {
@@ -15,7 +15,7 @@ class ExpertBartering extends DrawCard {
                 return !context.ability.hasLegalTargets(contextCopy);
             }),
             target: {
-                cardType: CardTypes.Attachment,
+                cardType: CardType.Attachment,
                 cardCondition: (card, context) => card !== context.source,
                 controller: context => (context.costs.optionalFateCost === undefined || (context.costs.optionalFateCost as number) > 0) ? Players.Any : Players.Self
             },

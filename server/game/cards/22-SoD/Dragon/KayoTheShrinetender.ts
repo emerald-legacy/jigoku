@@ -1,4 +1,4 @@
-import { Players, Durations, Locations } from '../../../Constants.js';
+import { Players, Duration, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -11,12 +11,12 @@ export default class KayoTheShrinetender extends DrawCard {
             target: {
                 cardCondition: card => card.hasTrait('temple') && !card.facedown,
                 controller: Players.Self,
-                location: [Locations.Provinces, Locations.PlayArea],
+                location: [Location.Provinces, Location.PlayArea],
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.ready(),
                     AbilityDsl.actions.cardLastingEffect({
-                        duration: Durations.UntilEndOfRound,
-                        targetLocation: Locations.Provinces,
+                        duration: Duration.UntilEndOfRound,
+                        targetLocation: Location.Provinces,
                         effect: AbilityDsl.effects.increaseLimitOnAbilities()
                     })
                 ])

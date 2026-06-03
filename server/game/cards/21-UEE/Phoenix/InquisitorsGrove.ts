@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -11,7 +11,7 @@ export default class InquisitorsGrove extends StrongholdCard {
             condition: (context) => context.player.honor >= 9 && context.player.isDefendingPlayer(),
             cost: AbilityDsl.costs.bowSelf(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Opponent,
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to send home',

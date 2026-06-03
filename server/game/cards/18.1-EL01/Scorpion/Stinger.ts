@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { Locations, Players, CardTypes, Phases } from '../../../Constants.js';
+import { Location, Players, CardType, Phases } from '../../../Constants.js';
 
 class Stinger extends DrawCard {
     static id = 'stinger';
@@ -18,10 +18,10 @@ class Stinger extends DrawCard {
             title: 'Attach this to an attacking character',
             cost: AbilityDsl.costs.payHonor(1),
             condition: context => context.game.isDuringConflict('military'),
-            location: Locations.Hand,
+            location: Location.Hand,
             target: {
                 player: Players.Self,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: card => card.isAttacking(),
                 gameAction: AbilityDsl.actions.attach(context => ({
                     attachment: context.source,

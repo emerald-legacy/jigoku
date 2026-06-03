@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Locations, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Location, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CounselFromYumeDo extends DrawCard {
@@ -11,16 +11,16 @@ export default class CounselFromYumeDo extends DrawCard {
             title: 'Shuffle cards back into your deck',
             condition: (context) =>
                 (context.player.cardsInPlay as Array<DrawCard>).some(
-                    (card) => card.getType() === CardTypes.Character && card.hasTrait('shugenja')
+                    (card) => card.getType() === CardType.Character && card.hasTrait('shugenja')
                 ),
             target: {
-                mode: TargetModes.UpTo,
+                mode: TargetMode.UpTo,
                 activePromptTitle: 'Choose up to 3 conflict cards',
                 numCards: 3,
-                location: Locations.ConflictDiscardPile,
-                cardType: [CardTypes.Character, CardTypes.Attachment, CardTypes.Event],
+                location: Location.ConflictDiscardPile,
+                cardType: [CardType.Character, CardType.Attachment, CardType.Event],
                 controller: Players.Self,
-                gameAction: AbilityDsl.actions.returnToDeck({ location: Locations.ConflictDiscardPile, shuffle: true })
+                gameAction: AbilityDsl.actions.returnToDeck({ location: Location.ConflictDiscardPile, shuffle: true })
             },
             then: (context: AbilityContext) => ({
                 gameAction: AbilityDsl.actions.onAffinity({

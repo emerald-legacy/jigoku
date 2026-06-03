@@ -1,7 +1,7 @@
 import { randomInt } from 'crypto';
 import * as GameActions from './GameActions/GameActions.js';
 import HonorBidPrompt from './gamesteps/HonorBidPrompt.js';
-import { Locations, CardTypes, Players } from './Constants.js';
+import { Location, CardType, Players } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
@@ -105,7 +105,7 @@ class ChatCommands {
             activePromptTitle: 'Select a card to honor',
             waitingPromptTitle: 'Waiting for opponent to honor',
             cardCondition: (card: BaseCard) =>
-                card.location === Locations.PlayArea && card.controller === player,
+                card.location === Location.PlayArea && card.controller === player,
             onSelect: (p: Player, card: BaseCard) => {
                 (card as any).honor();
 
@@ -120,7 +120,7 @@ class ChatCommands {
             activePromptTitle: 'Select a card to dishonor',
             waitingPromptTitle: 'Waiting for opponent to dishonor',
             cardCondition: (card: BaseCard) =>
-                card.location === Locations.PlayArea && card.controller === player,
+                card.location === Location.PlayArea && card.controller === player,
             onSelect: (p: Player, card: BaseCard) => {
                 (card as any).dishonor();
 
@@ -141,10 +141,10 @@ class ChatCommands {
                 activePromptTitle: 'Select cards to move into the conflict',
                 waitingPromptTitle: 'Waiting for opponent to choose cards to move',
                 cardCondition: (card: BaseCard) =>
-                    card.location === Locations.PlayArea &&
+                    card.location === Location.PlayArea &&
                     card.controller === player &&
                     !(card as any).inConflict,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 numCards: 0,
                 multiSelect: true,
                 onSelect: (p: Player, cards: BaseCard[]) => {
@@ -171,10 +171,10 @@ class ChatCommands {
                 activePromptTitle: 'Select a card to send home',
                 waitingPromptTitle: 'Waiting for opponent to send home',
                 cardCondition: (card: BaseCard) =>
-                    card.location === Locations.PlayArea &&
+                    card.location === Location.PlayArea &&
                     card.controller === player &&
                     (card as any).inConflict,
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 onSelect: (p: Player, card: BaseCard) => {
                     if(!this.game.currentConflict) {
                         return true;
@@ -207,13 +207,13 @@ class ChatCommands {
         this.game.promptForSelect(player, {
             activePromptTitle: 'Select a card to send to the bottom of one of their decks',
             waitingPromptTitle: 'Waiting for opponent to send a card to the bottom of one of their decks',
-            location: Locations.Any,
+            location: Location.Any,
             controller: Players.Self,
             onSelect: (p: Player, card: BaseCard) => {
                 const cardInitialLocation = card.location;
                 const cardNewLocation = (card as any).isConflict
-                    ? Locations.ConflictDeck
-                    : Locations.DynastyDeck;
+                    ? Location.ConflictDeck
+                    : Location.DynastyDeck;
                 GameActions.moveCard({ target: card, bottom: true, destination: cardNewLocation }).resolve(
                     player,
                     this.game.getFrameworkContext()
@@ -241,7 +241,7 @@ class ChatCommands {
             activePromptTitle: 'Select a card',
             waitingPromptTitle: 'Waiting for opponent to set token',
             cardCondition: (card: BaseCard) =>
-                (card.location === Locations.PlayArea || (card.location as string) === 'plot') &&
+                (card.location === Location.PlayArea || (card.location as string) === 'plot') &&
                 card.controller === player,
             onSelect: (p: Player, card: BaseCard) => {
                 const numTokens = (card as any).tokens[token] || 0;
@@ -264,7 +264,7 @@ class ChatCommands {
         this.game.promptForSelect(player, {
             activePromptTitle: 'Select a card to reveal',
             waitingPromptTitle: 'Waiting for opponent to reveal a facedown card',
-            location: Locations.Provinces,
+            location: Location.Provinces,
             controller: Players.Self,
             cardCondition: (card: BaseCard) => card.isFacedown(),
             onSelect: (p: Player, card: BaseCard) => {
@@ -282,7 +282,7 @@ class ChatCommands {
             activePromptTitle: 'Select a card',
             waitingPromptTitle: 'Waiting for opponent to set fate',
             cardCondition: (card: BaseCard) =>
-                card.location === Locations.PlayArea && card.controller === player,
+                card.location === Location.PlayArea && card.controller === player,
             onSelect: (p: Player, card: BaseCard) => {
                 (card as any).modifyFate(num);
                 this.game.addMessage(
@@ -304,7 +304,7 @@ class ChatCommands {
             activePromptTitle: 'Select a card',
             waitingPromptTitle: 'Waiting for opponent to set fate',
             cardCondition: (card: BaseCard) =>
-                card.location === Locations.PlayArea && card.controller === player,
+                card.location === Location.PlayArea && card.controller === player,
             onSelect: (p: Player, card: BaseCard) => {
                 (card as any).modifyFate(-num);
                 this.game.addMessage(

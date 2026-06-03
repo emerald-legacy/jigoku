@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Durations } from '../../Constants.js';
+import { CardType, Duration } from '../../Constants.js';
 
 class AgashaHiyori extends DrawCard {
     static id = 'agasha-hiyori';
@@ -13,11 +13,11 @@ class AgashaHiyori extends DrawCard {
             },
             cost: AbilityDsl.costs.payFateToRing(1),
             target: {
-                cardType: CardTypes.Attachment,
-                cardCondition: (card) => card.parent && card.parent.type === CardTypes.Character,
+                cardType: CardType.Attachment,
+                cardCondition: (card) => card.parent && card.parent.type === CardType.Character,
                 targets: true,
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    duration: Durations.UntilEndOfPhase,
+                    duration: Duration.UntilEndOfPhase,
                     effect: AbilityDsl.effects.blank()
                 })
             },

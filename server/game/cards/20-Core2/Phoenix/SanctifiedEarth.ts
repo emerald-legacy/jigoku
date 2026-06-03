@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, EventNames, Players } from '../../../Constants.js';
+import { CardType, EventName, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -9,15 +9,15 @@ const controlledBy = (player: Player) => (character: DrawCard) => character.cont
 
 const trigger = {
     onConflictDeclared: {
-        when: (event: EventPayload<EventNames.OnConflictDeclared>, context: TriggeredAbilityContext) => (event.attackers ?? []).some(controlledBy(context.player)),
+        when: (event: EventPayload<EventName.OnConflictDeclared>, context: TriggeredAbilityContext) => (event.attackers ?? []).some(controlledBy(context.player)),
         cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => (context.event.attackers ?? []).includes(card)
     },
     onDefendersDeclared: {
-        when: (event: EventPayload<EventNames.OnDefendersDeclared>, context: TriggeredAbilityContext) => (event.defenders ?? []).some(controlledBy(context.player)),
+        when: (event: EventPayload<EventName.OnDefendersDeclared>, context: TriggeredAbilityContext) => (event.defenders ?? []).some(controlledBy(context.player)),
         cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => (context.event.defenders ?? []).includes(card)
     },
     onMoveToConflict: {
-        when: (event: EventPayload<EventNames.OnMoveToConflict>, context: TriggeredAbilityContext) => controlledBy(context.player)(event.card),
+        when: (event: EventPayload<EventName.OnMoveToConflict>, context: TriggeredAbilityContext) => controlledBy(context.player)(event.card),
         cardCondition: (card: DrawCard, context: TriggeredAbilityContext) => context.event.card === card
     }
 };
@@ -36,7 +36,7 @@ export default class SanctifiedEarth extends DrawCard {
                 onMoveToConflict: trigger.onMoveToConflict.when
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 player: Players.Self,
                 cardCondition: (card, context) => trigger[context.event.name as keyof typeof trigger]?.cardCondition(card, context) ?? false,
                 gameAction: AbilityDsl.actions.multiple([

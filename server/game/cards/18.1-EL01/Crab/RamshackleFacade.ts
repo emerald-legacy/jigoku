@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { Players, CardTypes } from '../../../Constants.js';
+import { Players, CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 class RamshackleFacade extends DrawCard {
@@ -9,10 +9,10 @@ class RamshackleFacade extends DrawCard {
         this.action({
             title: 'Bow a character',
             cost: AbilityDsl.costs.sacrifice({
-                cardType: CardTypes.Holding
+                cardType: CardType.Holding
             }),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isAttacking() && card.costLessThan(4),
                 gameAction: AbilityDsl.actions.bow()

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Locations } from '../../Constants.js';
+import { Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class ShosuroHametsu extends DrawCard {
@@ -13,7 +13,7 @@ class ShosuroHametsu extends DrawCard {
             gameAction: AbilityDsl.actions.deckSearch({
                 cardCondition: card => card.hasTrait('poison'),
                 gameAction: AbilityDsl.actions.moveCard({
-                    destination: Locations.Hand
+                    destination: Location.Hand
                 })
             })
         });

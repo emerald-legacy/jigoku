@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityTypes } from '../../Constants.js';
+import { AbilityType } from '../../Constants.js';
 
 class Shukujo extends DrawCard {
     static id = 'shukujo';
@@ -15,7 +15,7 @@ class Shukujo extends DrawCard {
 
         this.whileAttached({
             match: card => card.hasTrait('champion'),
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Switch the conflict type',
                 condition: (context: AbilityContext) => context.source.isParticipating(),
                 printedAbility: false,

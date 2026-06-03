@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
-import { AbilityTypes, CardTypes, EventNames, Locations, PlayTypes } from '../../Constants.js';
+import { AbilityType, CardType, EventName, Location, PlayType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
@@ -16,7 +16,7 @@ export default class DragonTattoo extends DrawCard {
         this.abilityRegistrar = new EventRegistrar(this.game, this);
         this.abilityRegistrar.register([
             {
-                [EventNames.OnInitiateAbilityEffects + ':' + AbilityTypes.WouldInterrupt]: 'onInitiateAbility'
+                [EventName.OnInitiateAbilityEffects + ':' + AbilityType.WouldInterrupt]: 'onInitiateAbility'
             }
         ]);
 
@@ -27,10 +27,10 @@ export default class DragonTattoo extends DrawCard {
         this.reaction({
             when: {
                 onCardPlayed: (event, context) =>
-                    event.card.type === CardTypes.Event &&
+                    event.card.type === CardType.Event &&
                     event.card.controller === context.player &&
-                    (event.card.location === Locations.ConflictDiscardPile ||
-                        event.card.location === Locations.DynastyDiscardPile) &&
+                    (event.card.location === Location.ConflictDiscardPile ||
+                        event.card.location === Location.DynastyDiscardPile) &&
                     this.checkTargets(event, context)
             },
             title: 'Play card again',
@@ -43,8 +43,8 @@ export default class DragonTattoo extends DrawCard {
                             source: this,
                             target: card,
                             resetOnCancel: true,
-                            playType: PlayTypes.Other,
-                            destination: Locations.RemovedFromGame,
+                            playType: PlayType.Other,
+                            destination: Location.RemovedFromGame,
                             payCosts: true,
                             allowReactions: true
                         };
@@ -53,7 +53,7 @@ export default class DragonTattoo extends DrawCard {
                         this.cardPlayed = false;
                         return {
                             target: card,
-                            destination: Locations.RemovedFromGame
+                            destination: Location.RemovedFromGame
                         };
                     })
                 };
@@ -111,10 +111,10 @@ export default class DragonTattoo extends DrawCard {
 
     private isValidTargetForTattoo(card: BaseCard, context: TriggeredAbilityContext) {
         return (
-            card.type === CardTypes.Character &&
+            card.type === CardType.Character &&
             card.controller === context.player &&
             card === context.source.parent &&
-            card.location === Locations.PlayArea
+            card.location === Location.PlayArea
         );
     }
 }

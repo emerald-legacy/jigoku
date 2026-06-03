@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardTypes } from '../../Constants.js';
+import { Players, CardType } from '../../Constants.js';
 
 class Unmask extends DrawCard {
     static id = 'unmask';
@@ -10,7 +10,7 @@ class Unmask extends DrawCard {
             title: 'Discard a character\'s status token and set skills to printed value',
             condition: (context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card: any) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.multiple([

@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Durations, Players, Phases } from '../../Constants.js';
+import { Duration, Players, Phases } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AllOutAssault extends DrawCard {
@@ -13,7 +13,7 @@ class AllOutAssault extends DrawCard {
             },
             effect: 'force each player to attack with as many characters as they can each conflict!',
             gameAction: AbilityDsl.actions.playerLastingEffect({
-                duration: Durations.UntilEndOfPhase,
+                duration: Duration.UntilEndOfPhase,
                 targetController: Players.Any,
                 effect: AbilityDsl.effects.mustDeclareMaximumAttackers()
             })

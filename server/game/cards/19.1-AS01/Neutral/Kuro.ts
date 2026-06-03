@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Locations, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Location, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class Kuro extends DrawCard {
@@ -17,10 +17,10 @@ export default class Kuro extends DrawCard {
             title: 'Play opponent discarded attachment',
             condition: (context) => context.game.isDuringConflict(),
             target: {
-                location: Locations.ConflictDiscardPile,
+                location: Location.ConflictDiscardPile,
                 controller: Players.Opponent,
-                cardType: CardTypes.Attachment,
-                mode: TargetModes.Single,
+                cardType: CardType.Attachment,
+                mode: TargetMode.Single,
                 cardCondition: (card) =>
                     (card.printedCost ?? 0) >= 1 && card.canAttach(this, { ignoreType: false, controller: this.controller }),
                 gameAction: AbilityDsl.actions.sequential([

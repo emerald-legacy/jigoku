@@ -1,4 +1,4 @@
-import { TargetModes, Players } from '../../../Constants.js';
+import { TargetMode, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -9,7 +9,7 @@ export default class JadeColoredRocks extends ProvinceCard {
         this.action({
             title: 'Make your opponent lose a resource',
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 player: Players.Self,
                 activePromptTitle: 'Choose an option',
                 choices: {

@@ -1,4 +1,4 @@
-import { CardTypes } from '../../Constants.js';
+import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -18,7 +18,7 @@ export default class AbandoningHonor extends ProvinceCard {
                     event.card === context.source && context.player.opponent !== undefined
             },
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isDishonored,
                 gameAction: AbilityDsl.actions.discardFromPlay()
             }

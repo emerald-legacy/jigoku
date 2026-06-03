@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes } from '../../Constants.js';
+import { TargetMode } from '../../Constants.js';
 
 class AcclaimedGeishaHouse extends DrawCard {
     static id = 'acclaimed-geisha-house';
@@ -11,7 +11,7 @@ class AcclaimedGeishaHouse extends DrawCard {
 
             cost: AbilityDsl.costs.dishonor({ cardCondition: card => card.isParticipating() }),
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 activePromptTitle: 'Choose an unclaimed ring',
                 ringCondition: ring => ring.isUnclaimed(),
                 gameAction: AbilityDsl.actions.switchConflictElement()

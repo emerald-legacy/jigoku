@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardTypes, Phases } from '../../Constants.js';
+import { CardType, Phases } from '../../Constants.js';
 
 class CommanderOfTheLegions extends DrawCard {
     static id = 'commander-of-the-legions';
@@ -18,7 +18,7 @@ class CommanderOfTheLegions extends DrawCard {
                 !!(context.game.currentPhase === Phases.Fate && context.player.opponent
                 && context.player.honor >= context.player.opponent.honor + 5),
             match: (card, context) =>
-                card.type === CardTypes.Character
+                card.type === CardType.Character
                 && card.isFaction('lion')
                 && card.printedCost <= 3
                 && card !== context?.source

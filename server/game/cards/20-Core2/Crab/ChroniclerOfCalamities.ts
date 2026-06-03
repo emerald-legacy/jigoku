@@ -1,4 +1,4 @@
-import { CardTypes, Players } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { GameAction } from '../../../GameActions/GameAction.js';
@@ -16,7 +16,7 @@ export default class ChroniclerOfCalamities extends DrawCard {
                 context.target?.location ?? ''
             ],
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card: DrawCard, context) =>
                     card !== context.source &&
                     card.isParticipating() &&
@@ -40,7 +40,7 @@ export default class ChroniclerOfCalamities extends DrawCard {
                                 gameActions.push(
                                     AbilityDsl.actions.selectCard({
                                         activePromptTitle: 'Select a character to sacrifice',
-                                        cardType: CardTypes.Character,
+                                        cardType: CardType.Character,
                                         controller: Players.Self,
                                         message: '{0} chooses to sacrifice {1}',
                                         messageArgs: (card) => [context.player, card],

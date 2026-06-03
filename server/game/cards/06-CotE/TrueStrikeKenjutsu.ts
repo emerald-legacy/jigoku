@@ -1,5 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityTypes, DuelTypes } from '../../Constants.js';
+import { AbilityType, DuelType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class TrueStrikeKenjutsu extends DrawCard {
@@ -7,10 +7,10 @@ export default class TrueStrikeKenjutsu extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Initiate a military duel',
                 initiateDuel: {
-                    type: DuelTypes.Military,
+                    type: DuelType.Military,
                     gameAction: (duel: any) => AbilityDsl.actions.bow({ target: duel.loser }),
                     statistic: (card: any) => card.getBaseMilitarySkill()
                 },

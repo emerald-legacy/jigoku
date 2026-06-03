@@ -1,5 +1,5 @@
 import { GameModes } from '../GameModes.js';
-import { EffectNames, Elements, Locations } from './Constants.js';
+import { EffectName, Element, Location } from './Constants.js';
 import AbilityDsl from './abilitydsl.js';
 import BaseCard from './BaseCard.js';
 import { AttachmentManager } from './AttachmentManager.js';
@@ -50,7 +50,7 @@ export class ProvinceCard extends BaseCard {
         super(owner, cardData);
         this.persistentEffect({
             condition: (context) => context.source.hasEminent(),
-            location: Locations.Any,
+            location: Location.Any,
             effect: AbilityDsl.effects.cardCannot('turnFacedown')
         });
     }
@@ -60,15 +60,15 @@ export class ProvinceCard extends BaseCard {
     }
 
     getStrength(): number {
-        if(this.anyEffect(EffectNames.SetProvinceStrength)) {
-            return this.mostRecentEffect(EffectNames.SetProvinceStrength);
+        if(this.anyEffect(EffectName.SetProvinceStrength)) {
+            return this.mostRecentEffect(EffectName.SetProvinceStrength);
         }
 
         const strength =
             this.baseStrength +
-            this.sumEffects(EffectNames.ModifyProvinceStrength) +
+            this.sumEffects(EffectName.ModifyProvinceStrength) +
             this.getDynastyOrStrongholdCardModifier();
-        const multipliedStrength = this.getEffects(EffectNames.ModifyProvinceStrengthMultiplier).reduce(
+        const multipliedStrength = this.getEffects(EffectName.ModifyProvinceStrengthMultiplier).reduce(
             (total: number, value: number) => total * value,
             strength
         );
@@ -85,18 +85,18 @@ export class ProvinceCard extends BaseCard {
     }
 
     getBaseStrength(): number {
-        if(this.anyEffect(EffectNames.SetBaseProvinceStrength)) {
-            return this.mostRecentEffect(EffectNames.SetBaseProvinceStrength);
+        if(this.anyEffect(EffectName.SetBaseProvinceStrength)) {
+            return this.mostRecentEffect(EffectName.SetBaseProvinceStrength);
         }
         return (
-            this.sumEffects(EffectNames.ModifyBaseProvinceStrength) +
+            this.sumEffects(EffectName.ModifyBaseProvinceStrength) +
             (parseInt(String(this.cardData.strength ?? '')) || 0)
         );
     }
 
     getDynastyOrStrongholdCardModifier(): number {
         const province = this.controller.getSourceList(this.location);
-        const canBeIncreased = !this.anyEffect(EffectNames.ProvinceCannotHaveSkillIncreased);
+        const canBeIncreased = !this.anyEffect(EffectName.ProvinceCannotHaveSkillIncreased);
 
         return province.reduce((bonus, card) => {
             let s = card.getProvinceStrengthBonus();
@@ -111,7 +111,7 @@ export class ProvinceCard extends BaseCard {
         const modifiers: StatModifier[] = [];
 
         // Set effects override everything
-        const setEffects = this.getRawEffects().filter((e: any) => e.type === EffectNames.SetProvinceStrength);
+        const setEffects = this.getRawEffects().filter((e: any) => e.type === EffectName.SetProvinceStrength);
         if(setEffects.length > 0) {
             const effect = setEffects[setEffects.length - 1];
             modifiers.push(StatModifier.fromEffect(effect.getValue(this), effect, true, StatModifier.getEffectName(effect)));
@@ -119,19 +119,19 @@ export class ProvinceCard extends BaseCard {
         }
 
         // Base strength
-        const setBaseEffects = this.getRawEffects().filter((e: any) => e.type === EffectNames.SetBaseProvinceStrength);
+        const setBaseEffects = this.getRawEffects().filter((e: any) => e.type === EffectName.SetBaseProvinceStrength);
         if(setBaseEffects.length > 0) {
             const effect = setBaseEffects[setBaseEffects.length - 1];
             modifiers.push(StatModifier.fromEffect(effect.getValue(this), effect, true, StatModifier.getEffectName(effect)));
         } else {
             modifiers.push(new StatModifier(this.printedStrength, 'Printed', false, undefined));
-            for(const effect of this.getRawEffects().filter((e: any) => e.type === EffectNames.ModifyBaseProvinceStrength)) {
+            for(const effect of this.getRawEffects().filter((e: any) => e.type === EffectName.ModifyBaseProvinceStrength)) {
                 modifiers.push(StatModifier.fromEffect(effect.getValue(this), effect, false));
             }
         }
 
         // Province strength modifiers
-        for(const effect of this.getRawEffects().filter((e: any) => e.type === EffectNames.ModifyProvinceStrength)) {
+        for(const effect of this.getRawEffects().filter((e: any) => e.type === EffectName.ModifyProvinceStrength)) {
             modifiers.push(StatModifier.fromEffect(effect.getValue(this), effect, false));
         }
 
@@ -160,9 +160,9 @@ export class ProvinceCard extends BaseCard {
         return this.getElement();
     }
 
-    getElement(): Elements[] {
+    getElement(): Element[] {
         const symbols = this.getCurrentElementSymbols();
-        const elementArray: Elements[] = [];
+        const elementArray: Element[] = [];
         symbols.forEach((symbol) => {
             if(symbol.key.startsWith('province-element')) {
                 elementArray.push(symbol.element);
@@ -214,32 +214,32 @@ export class ProvinceCard extends BaseCard {
         const fateCostToAttack = this.getFateCostToAttack();
         const attackers = this.game.isDuringConflict() && this.game.currentConflict ? this.game.currentConflict.attackers : [];
         const fateToDeclareAttackers = attackers.reduce(
-            (total, card) => total + card.sumEffects(EffectNames.FateCostToAttack),
+            (total, card) => total + card.sumEffects(EffectName.FateCostToAttack),
             0
         );
 
         return (
             !this.isBroken &&
-            !this.anyEffect(EffectNames.CannotBeAttacked) &&
+            !this.anyEffect(EffectName.CannotBeAttacked) &&
             (!this.controller.opponent || this.controller.opponent.fate >= fateCostToAttack + fateToDeclareAttackers) &&
-            (this.location !== Locations.StrongholdProvince ||
+            (this.location !== Location.StrongholdProvince ||
                 this.controller.getProvinces((card) => card.isBroken).length > 2 ||
-                this.controller.anyEffect(EffectNames.StrongholdCanBeAttacked))
+                this.controller.anyEffect(EffectName.StrongholdCanBeAttacked))
         );
     }
 
     canDeclare(type: string, _ring: unknown): boolean {
-        return this.canBeAttacked() && !this.getEffects(EffectNames.CannotHaveConflictsDeclaredOfType).includes(type);
+        return this.canBeAttacked() && !this.getEffects(EffectName.CannotHaveConflictsDeclaredOfType).includes(type);
     }
 
     getFateCostToAttack() {
-        return this.sumEffects(EffectNames.FateCostToRingToDeclareConflictAgainst);
+        return this.sumEffects(EffectName.FateCostToRingToDeclareConflictAgainst);
     }
 
     isBlank(): boolean {
         const ignoreTokens =
             this.game.currentConflict &&
-            this.game.currentConflict.anyEffect(EffectNames.ConflictIgnoreStatusTokens) &&
+            this.game.currentConflict.anyEffect(EffectName.ConflictIgnoreStatusTokens) &&
             this.isConflictProvince();
         const dishonored = this.isDishonored && !ignoreTokens;
         return this.isBroken || dishonored || super.isBlank();
@@ -255,7 +255,7 @@ export class ProvinceCard extends BaseCard {
         this.game.addMessage('{0} has broken {1}!', this.controller.opponent, this);
 
         if(
-            this.location === Locations.StrongholdProvince ||
+            this.location === Location.StrongholdProvince ||
             (this.game.gameMode === GameModes.Skirmish &&
                 this.controller.getProvinces((card: ProvinceCard) => card.isBroken).length > 2)
         ) {

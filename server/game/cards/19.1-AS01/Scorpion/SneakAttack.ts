@@ -1,4 +1,4 @@
-import { Durations, Locations } from '../../../Constants.js';
+import { Duration, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { shuffle } from '../../../utils/shuffle.js';
@@ -35,12 +35,12 @@ export default class SneakAttack extends DrawCard {
 
                         this.game.addMessage('{0} sets aside {1}', opponent, this.setAsideCards);
                         for(const card of this.setAsideCards) {
-                            opponent.moveCard(card, Locations.RemovedFromGame);
+                            opponent.moveCard(card, Location.RemovedFromGame);
                         }
                     }
                 }),
                 AbilityDsl.actions.playerLastingEffect((context) => ({
-                    duration: Durations.UntilEndOfRound,
+                    duration: Duration.UntilEndOfRound,
                     targetController: context.player.opponent,
                     effect: AbilityDsl.effects.playerDelayedEffect({
                         when: { onConflictFinished: () => true },
@@ -52,7 +52,7 @@ export default class SneakAttack extends DrawCard {
                                 const opponent = this.setAsideCards[0].owner;
                                 context.game.addMessage('{0} picks back their cards', opponent);
                                 for(const card of this.setAsideCards) {
-                                    opponent.moveCard(card, Locations.Hand);
+                                    opponent.moveCard(card, Location.Hand);
                                 }
                                 this.setAsideCards = [];
                             }

@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Locations, Players } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment.js';
 
@@ -12,8 +12,8 @@ export default class GoldenEagle extends DrawCard {
         this.persistentEffect({
             condition: (context) => context.source.parent !== null,
             targetController: Players.Opponent,
-            targetLocation: Locations.PlayArea,
-            match: (card) => card.type === CardTypes.Character,
+            targetLocation: Location.PlayArea,
+            match: (card) => card.type === CardType.Character,
             effect: AbilityDsl.effects.loseKeyword('covert')
         });
     }

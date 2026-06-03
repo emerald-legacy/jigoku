@@ -1,4 +1,4 @@
-import { Durations, EffectNames, EventNames } from './Constants.js';
+import { Duration, EffectName, EventName } from './Constants.js';
 import type Effect from './Effects/Effect.js';
 import type EffectSource from './EffectSource.js';
 import type { Event } from './Events/Event.js';
@@ -21,17 +21,17 @@ export class EffectEngine {
     constructor(private game: Game) {
         this.events = new EventRegistrar(game, this);
         this.events.register([
-            EventNames.OnConflictFinished,
-            EventNames.OnPhaseEnded,
-            EventNames.OnRoundEnded,
-            EventNames.OnDuelFinished,
-            EventNames.OnPassActionPhasePriority
+            EventName.OnConflictFinished,
+            EventName.OnPhaseEnded,
+            EventName.OnRoundEnded,
+            EventName.OnDuelFinished,
+            EventName.OnPassActionPhasePriority
         ]);
     }
 
     add(effect: Effect) {
         this.effects.push(effect);
-        if(effect.duration === Durations.Custom) {
+        if(effect.duration === Duration.Custom) {
             this.registerCustomDurationEvents(effect);
         }
         this.newEffect = true;
@@ -42,7 +42,7 @@ export class EffectEngine {
         let effectsToTrigger: Effect[] = [];
         const effectsToRemove: Effect[] = [];
         for(const effect of this.effects.filter(
-            (effect) => effect.isEffectActive() && effect.effect.type === EffectNames.DelayedEffect
+            (effect) => effect.isEffectActive() && effect.effect.type === EffectName.DelayedEffect
         )) {
             const properties = effect.effect.getValue();
             if(properties.condition) {
@@ -57,7 +57,7 @@ export class EffectEngine {
                         effectsToTrigger.push(effect);
                         effectTriggered = true;
                     }
-                    if(!properties.multipleTrigger && effect.duration !== Durations.Persistent && (!properties.onlyRemoveOnSuccess || effectTriggered)) {
+                    if(!properties.multipleTrigger && effect.duration !== Duration.Persistent && (!properties.onlyRemoveOnSuccess || effectTriggered)) {
                         effectsToRemove.push(effect);
                     }
                 }
@@ -97,7 +97,7 @@ export class EffectEngine {
         this.unapplyAndRemove(
             (effect) =>
                 effect.match === card &&
-                effect.duration !== Durations.Persistent &&
+                effect.duration !== Duration.Persistent &&
                 !effect.canChangeZoneOnce &&
                 (!effect.canChangeZoneNTimes || effect.canChangeZoneNTimes === 0)
         );
@@ -128,40 +128,40 @@ export class EffectEngine {
     }
 
     onConflictFinished() {
-        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Durations.UntilEndOfConflict);
+        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfConflict);
     }
 
     onDuelFinished() {
-        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Durations.UntilEndOfDuel);
+        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfDuel);
     }
 
     onPhaseEnded() {
-        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Durations.UntilEndOfPhase);
+        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfPhase);
     }
 
     onRoundEnded() {
-        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Durations.UntilEndOfRound);
+        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilEndOfRound);
     }
 
-    onPassActionPhasePriority(event: GameEvent<EventNames.OnPassActionPhasePriority>) {
+    onPassActionPhasePriority(event: GameEvent<EventName.OnPassActionPhasePriority>) {
         for(const effect of this.effects) {
             if(
-                effect.duration === Durations.UntilSelfPassPriority &&
+                effect.duration === Duration.UntilSelfPassPriority &&
                 event.player === effect.context.player
             ) {
-                effect.duration = Durations.UntilPassPriority;
+                effect.duration = Duration.UntilPassPriority;
             }
         }
 
-        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Durations.UntilPassPriority);
+        this.newEffect = this.unapplyAndRemove((effect) => effect.duration === Duration.UntilPassPriority);
         for(const effect of this.effects) {
             if(
-                effect.duration === Durations.UntilOpponentPassPriority ||
-                effect.duration === Durations.UntilSelfPassPriority
+                effect.duration === Duration.UntilOpponentPassPriority ||
+                effect.duration === Duration.UntilSelfPassPriority
             ) {
-                effect.duration = Durations.UntilPassPriority;
-            } else if(effect.duration === Durations.UntilNextPassPriority) {
-                effect.duration = Durations.UntilOpponentPassPriority;
+                effect.duration = Duration.UntilPassPriority;
+            } else if(effect.duration === Duration.UntilNextPassPriority) {
+                effect.duration = Duration.UntilOpponentPassPriority;
             }
         }
     }
@@ -216,7 +216,7 @@ export class EffectEngine {
             if(match(effect)) {
                 toRemove.push(effect);
                 effect.cancel();
-                if(effect.duration === Durations.Custom) {
+                if(effect.duration === Duration.Custom) {
                     this.unregisterCustomDurationEvents(effect);
                 }
             }

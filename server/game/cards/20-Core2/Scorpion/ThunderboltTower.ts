@@ -1,4 +1,4 @@
-import { CardTypes, Durations } from '../../../Constants.js';
+import { CardType, Duration } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -10,10 +10,10 @@ export default class ThunderboltTower extends StrongholdCard {
             title: 'Give a character -2/-2',
             cost: AbilityDsl.costs.bowSelf(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => !card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    duration: Durations.UntilEndOfPhase,
+                    duration: Duration.UntilEndOfPhase,
                     effect: AbilityDsl.effects.modifyBothSkills(-2)
                 })
             },

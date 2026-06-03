@@ -1,4 +1,4 @@
-import { CardTypes, Durations, EventNames, PlayTypes, Players, TargetModes } from '../../../Constants.js';
+import { CardType, Duration, EventName, PlayType, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -16,22 +16,22 @@ export default class UtakuSumire extends DrawCard {
                 AbilityDsl.actions.playerLastingEffect({
                     targetController: Players.Self,
                     effect: AbilityDsl.effects.playerCannot({
-                        cannot: PlayTypes.PlayFromHand,
+                        cannot: PlayType.PlayFromHand,
                         restricts: 'actionEvents'
                     })
                 }),
                 AbilityDsl.actions.playerLastingEffect({
-                    duration: Durations.UntilEndOfConflict,
+                    duration: Duration.UntilEndOfConflict,
                     targetController: Players.Self,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
-                            afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: any) => event.conflict.winner === context.player
+                            afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) => event.conflict.winner === context.player
                         },
                         gameAction: AbilityDsl.actions.selectCard({
-                            cardType: CardTypes.Character,
+                            cardType: CardType.Character,
                             controller: Players.Self,
                             player: Players.Self,
-                            mode: TargetModes.UpTo,
+                            mode: TargetMode.UpTo,
                             numCards: 2,
                             gameAction: AbilityDsl.actions.placeFate(),
                             message: '{0} encourages her troops and places {1} on {2}',

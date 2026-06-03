@@ -1,4 +1,4 @@
-import { CardTypes, CharacterStatus, EffectNames } from './Constants.js';
+import { CardType, CharacterStatus, EffectName } from './Constants.js';
 import EffectSource from './EffectSource.js';
 import AbilityDsl from './abilitydsl.js';
 import type BaseCard from './BaseCard.js';
@@ -88,7 +88,7 @@ export class StatusToken extends EffectSource {
     }
 
     applyDishonoredEffect() {
-        if(!this.card || this.card.type !== CardTypes.Character) {
+        if(!this.card || this.card.type !== CardType.Character) {
             return;
         }
         const effect: StatusTokenEffect = {
@@ -101,7 +101,7 @@ export class StatusToken extends EffectSource {
     }
 
     applyHonoredEffect() {
-        if(!this.card || this.card.type !== CardTypes.Character) {
+        if(!this.card || this.card.type !== CardType.Character) {
             return;
         }
         const effect: StatusTokenEffect = {
@@ -118,9 +118,9 @@ export class StatusToken extends EffectSource {
             return;
         }
         const effects =
-            this.card.type === CardTypes.Character
+            this.card.type === CardType.Character
                 ? this.#taintEffectsOnCharacters()
-                : this.card.type === CardTypes.Province
+                : this.card.type === CardType.Province
                     ? this.#taintEffectsOnProvinces()
                     : [];
 
@@ -143,7 +143,7 @@ export class StatusToken extends EffectSource {
             },
             {
                 match: card,
-                condition: () => !card.anyEffect(EffectNames.TaintedStatusDoesNotCostHonor),
+                condition: () => !card.anyEffect(EffectName.TaintedStatusDoesNotCostHonor),
                 effect: AbilityDsl.effects.honorCostToDeclare(1),
                 ref: []
             }
@@ -161,7 +161,7 @@ export class StatusToken extends EffectSource {
                 condition: () =>
                     !(
                         card.game.currentConflict &&
-                        card.game.currentConflict.anyEffect(EffectNames.ConflictIgnoreStatusTokens) &&
+                        card.game.currentConflict.anyEffect(EffectName.ConflictIgnoreStatusTokens) &&
                         card.isConflictProvince()
                     ),
                 effect: AbilityDsl.effects.modifyProvinceStrength(2),

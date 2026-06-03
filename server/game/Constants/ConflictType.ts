@@ -1,4 +1,4 @@
-export enum ConflictTypes {
+export enum ConflictType {
     Military = 'military',
     Political = 'political',
     Passed = 'passed',

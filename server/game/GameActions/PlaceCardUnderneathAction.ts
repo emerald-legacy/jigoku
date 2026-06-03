@@ -1,7 +1,7 @@
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardTypes, EventNames } from '../Constants.js';
+import { CardType, EventName } from '../Constants.js';
 import Effects from '../effects.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
@@ -12,7 +12,7 @@ export interface PlaceCardUnderneathProperties extends CardActionProperties {
 
 export class PlaceCardUnderneathAction extends CardGameAction {
     name = 'placeCardUnderneath';
-    targetType = [CardTypes.Character, CardTypes.Attachment, CardTypes.Event, CardTypes.Holding];
+    targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
     defaultProperties: PlaceCardUnderneathProperties = {
         destination: undefined,
         hideWhenFaceup: true
@@ -38,7 +38,7 @@ export class PlaceCardUnderneathAction extends CardGameAction {
         return !!(destination && destination.uuid) && super.canAffect(card, context);
     }
 
-    eventHandler(event: GameEvent<EventNames.Unnamed>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: GameEvent<EventName.Unnamed>, additionalProperties: Record<string, unknown> = {}): void {
         let context = event.context as AbilityContext;
         let card = event.card as BaseCard;
         event.cardStateWhenMoved = card.createSnapshot();
@@ -54,7 +54,7 @@ export class PlaceCardUnderneathAction extends CardGameAction {
         if(properties.hideWhenFaceup) {
             card.lastingEffect(() => ({
                 until: {
-                    onCardMoved: (event: GameEvent<EventNames.OnCardMoved>) => event.card === card && event.originalLocation === destination
+                    onCardMoved: (event: GameEvent<EventName.OnCardMoved>) => event.card === card && event.originalLocation === destination
                 },
                 match: card,
                 effect: Effects.hideWhenFaceUp()

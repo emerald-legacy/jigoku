@@ -1,4 +1,4 @@
-import { DuelTypes } from '../../../Constants.js';
+import { DuelType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Duel } from '../../../Duel.js';
@@ -15,7 +15,7 @@ export default class TruthIsInTheKilling extends DrawCard {
             title: 'Initiate a military duel, discarding the loser',
             condition: (context) => context.game.isDuringConflict('military'),
             initiateDuel: {
-                type: DuelTypes.Military,
+                type: DuelType.Military,
                 challengerCondition: (card) => card.hasTrait('bushi') && card.isParticipating(),
                 gameAction: ((duel: Duel) =>
                     (duel.loser ?

@@ -1,4 +1,4 @@
-import { CardTypes } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
@@ -74,7 +74,7 @@ export default class EyesOfTheSerpent extends DrawCard {
 
             cost: eyesOfTheSerpentCost(),
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && card.isDishonored,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.taint(),
@@ -96,7 +96,7 @@ export default class EyesOfTheSerpent extends DrawCard {
     canPlay(context: TriggeredAbilityContext, playType: string) {
         return (
             context.player.cardsInPlay.some(
-                (card) => card.getType() === CardTypes.Character && card.hasTrait('shugenja')
+                (card) => card.getType() === CardType.Character && card.hasTrait('shugenja')
             ) && super.canPlay(context, playType)
         );
     }

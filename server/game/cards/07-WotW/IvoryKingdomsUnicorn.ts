@@ -1,4 +1,4 @@
-import { ConflictTypes, EventNames } from '../../Constants.js';
+import { ConflictType, EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -13,9 +13,9 @@ export default class IvoryKingdomsUnicorn extends DrawCard {
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([
-            EventNames.AfterConflict,
-            EventNames.OnBreakProvince,
-            EventNames.OnConflictDeclared
+            EventName.AfterConflict,
+            EventName.OnBreakProvince,
+            EventName.OnConflictDeclared
         ]);
 
         this.reaction({
@@ -25,7 +25,7 @@ export default class IvoryKingdomsUnicorn extends DrawCard {
             },
             gameAction: AbilityDsl.actions.initiateConflict({
                 canPass: false,
-                forcedDeclaredType: ConflictTypes.Military
+                forcedDeclaredType: ConflictType.Military
             })
         });
     }

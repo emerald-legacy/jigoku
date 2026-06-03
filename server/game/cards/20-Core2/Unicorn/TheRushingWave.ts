@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardTypes, Durations, Locations } from '../../../Constants.js';
+import { CardType, Duration, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 
@@ -23,11 +23,11 @@ export default class TheRushingWave extends DrawCard {
             title: 'Set a province to zero strength',
             condition: (context) =>
                 context.player.cardsInPlay.some(
-                    (card: DrawCard) => card.getType() === CardTypes.Character && card.hasTrait('shugenja')
+                    (card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja')
                 ),
             target: {
-                location: Locations.Provinces,
-                cardType: CardTypes.Province,
+                location: Location.Provinces,
+                cardType: CardType.Province,
                 gameAction: AbilityDsl.actions.onAffinity<ProvinceCard>({
                     trait: 'water',
                     gameAction: AbilityDsl.actions.cardLastingEffect(({ target }: { target: ProvinceCard }) => ({
@@ -36,13 +36,13 @@ export default class TheRushingWave extends DrawCard {
                                 target.location === province.location ||
                                 target.controller.areLocationsAdjacent(target.location, province.location)
                         ),
-                        targetLocation: Locations.Provinces,
-                        duration: Durations.UntilEndOfPhase,
+                        targetLocation: Location.Provinces,
+                        duration: Duration.UntilEndOfPhase,
                         effect: AbilityDsl.effects.setProvinceStrength(0)
                     })),
                     noAffinityGameAction: AbilityDsl.actions.cardLastingEffect({
-                        targetLocation: Locations.Provinces,
-                        duration: Durations.UntilEndOfPhase,
+                        targetLocation: Location.Provinces,
+                        duration: Duration.UntilEndOfPhase,
                         effect: AbilityDsl.effects.setProvinceStrength(0)
                     }),
                     effect: 'also set the strength of {0} to 0',

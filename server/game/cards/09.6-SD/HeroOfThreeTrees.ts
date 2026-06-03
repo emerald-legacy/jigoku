@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { TargetModes, CardTypes, Locations } from '../../Constants.js';
+import { TargetMode, CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class HeroOfThreeTrees extends DrawCard {
@@ -12,14 +12,14 @@ class HeroOfThreeTrees extends DrawCard {
                 && context.player.opponent
                 && context.player.hand.length < context.player.opponent.hand.length),
             target: {
-                mode: TargetModes.Select,
+                mode: TargetMode.Select,
                 choices: {
                     'Gain 1 honor': AbilityDsl.actions.gainHonor(),
                     'Lower attacked province\'s strength by 1': AbilityDsl.actions.selectCard(context => ({
                         activePromptTitle: 'Choose an attacked province',
                         hidePromptIfSingleCard: true,
-                        cardType: CardTypes.Province,
-                        location: Locations.Provinces,
+                        cardType: CardType.Province,
+                        location: Location.Provinces,
                         cardCondition: card => card.isConflictProvince(),
                         subActionProperties: card => {
                             context.target = card;

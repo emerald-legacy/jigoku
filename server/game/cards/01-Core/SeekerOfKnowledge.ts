@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 
 const elementKey = 'seeker-of-knowledge-air';
 
@@ -18,7 +18,7 @@ class SeekerOfKnowledge extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Add Element',
-            element: Elements.Air
+            element: Element.Air
         });
         return symbols;
     }

@@ -3,7 +3,7 @@ import type { Conflict } from '../../Conflict.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetModes, CardTypes, Elements } from '../../Constants.js';
+import { TargetMode, CardType, Element } from '../../Constants.js';
 
 const elementKey = 'isawa-tsuke-2-fire';
 
@@ -20,7 +20,7 @@ class IsawaTsuke2 extends DrawCard {
                 context.game.rings[this.getCurrentElementSymbol(elementKey)].isUnclaimed(),
             cost: AbilityDsl.costs.variableHonorCost((context) => this.getNumberOfLegalTargets(context)),
             target: {
-                mode: TargetModes.ExactlyVariable,
+                mode: TargetMode.ExactlyVariable,
                 numCardsFunc: (context) => {
                     if(context && context.costs && context.costs.variableHonorCost) {
                         return context.costs.variableHonorCost as number;
@@ -28,7 +28,7 @@ class IsawaTsuke2 extends DrawCard {
 
                     return this.getNumberOfLegalTargets(context);
                 },
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating(),
                 // @ts-expect-error context.targets/selects values are dynamically typed, flat() returns unknown[] but game engine handles it
                 gameAction: AbilityDsl.actions.removeFate((context) => {
@@ -59,7 +59,7 @@ class IsawaTsuke2 extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Unclaimed Ring',
-            element: Elements.Fire
+            element: Element.Fire
         });
         return symbols;
     }

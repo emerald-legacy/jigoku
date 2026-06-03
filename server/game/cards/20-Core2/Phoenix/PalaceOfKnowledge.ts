@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { EventNames, TargetModes } from '../../../Constants.js';
+import { EventName, TargetMode } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type Ring from '../../../Ring.js';
@@ -12,12 +12,12 @@ export default class PalaceOfKnowledge extends StrongholdCard {
         this.reaction({
             title: 'Resolve another ring effect',
             when: {
-                onResolveRingElement: (event: EventPayload<EventNames.OnResolveRingElement>, context) =>
+                onResolveRingElement: (event: EventPayload<EventName.OnResolveRingElement>, context) =>
                     event.player === context.player && event.effectivellyResolvedEffect
             },
             cost: [AbilityDsl.costs.bowSelf(), AbilityDsl.costs.discardCard()],
             target: {
-                mode: TargetModes.Ring,
+                mode: TargetMode.Ring,
                 activePromptTitle: 'Choose a ring',
                 ringCondition: (ring: Ring, context?: AbilityContext) =>
                     ring !== (context as any)?.event.ring && ring.isUnclaimed(),

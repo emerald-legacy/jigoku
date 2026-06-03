@@ -1,6 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Locations, Players, CardTypes } from '../../Constants.js';
+import { Location, Players, CardType } from '../../Constants.js';
 
 class MyAncestorsStrength extends DrawCard {
     static id = 'my-ancestor-s-strength';
@@ -12,15 +12,15 @@ class MyAncestorsStrength extends DrawCard {
             targets: {
                 shugenja: {
                     activePromptTitle: 'Choose a shugenja character',
-                    cardType: CardTypes.Character,
+                    cardType: CardType.Character,
                     controller: Players.Self,
                     cardCondition: card => card.hasTrait('shugenja') && card.isParticipating()
                 },
                 ancestor: {
                     dependsOn: 'shugenja',
                     activePromptTitle: 'Choose a character to copy from',
-                    cardType: CardTypes.Character,
-                    location: Locations.DynastyDiscardPile,
+                    cardType: CardType.Character,
+                    location: Location.DynastyDiscardPile,
                     controller: Players.Self,
                     gameAction: AbilityDsl.actions.cardLastingEffect(context => {
                         let effects = [];

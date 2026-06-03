@@ -1,4 +1,4 @@
-import { Locations, Phases } from '../../../Constants.js';
+import { Location, Phases } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class AnkokusBlessing extends DrawCard {
             title: 'Gain 2 fate and draw 2 cards',
             phase: Phases.Fate,
             cost: AbilityDsl.costs.discardCard({
-                location: Locations.Hand,
+                location: Location.Hand,
                 cardCondition: (card) => !card.hasTrait('blessing')
             }),
             gameAction: AbilityDsl.actions.multipleContext((context) => ({

@@ -1,4 +1,4 @@
-import { Locations, PlayTypes } from '../../../Constants.js';
+import { Location, PlayType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -21,7 +21,7 @@ export default class ASwallowsReturn extends DrawCard {
                     activePromptTitle: 'Choose a card to play',
                     cards: context.costs.reveal,
                     cardCondition: (card) =>
-                        card.location === Locations.ConflictDeck &&
+                        card.location === Location.ConflictDeck &&
             //Handle situations where card is played from deck, such as with pillow book
             card.uuid !== context.source.uuid,
                     choices: ['Play nothing'],
@@ -32,14 +32,14 @@ export default class ASwallowsReturn extends DrawCard {
                         }
                     ],
                     gameAction: AbilityDsl.actions.playCard({
-                        playType: PlayTypes.PlayFromHand,
+                        playType: PlayType.PlayFromHand,
                         source: context.source
                     }),
                     message: '{0} chooses to play {1} and discard {2}',
                     messageArgs: (card: any, player: any) => [player, card.name, context.costs.reveal.filter((c: any) => c !== card)]
                 })),
                 AbilityDsl.actions.discardCard((context) => ({
-                    target: (context.costs.reveal ?? []).filter((card: any) => card.location === Locations.ConflictDeck)
+                    target: (context.costs.reveal ?? []).filter((card: any) => card.location === Location.ConflictDeck)
                 }))
             ]),
             effect: 'choose one of those to play'

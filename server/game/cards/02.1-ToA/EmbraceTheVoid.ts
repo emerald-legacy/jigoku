@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardTypes, EventNames } from '../../Constants.js';
+import { CardType, EventName } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
@@ -11,7 +11,7 @@ class EmbraceTheVoid extends DrawCard {
         this.wouldInterrupt({
             title: 'Take Fate',
             when: {
-                onMoveFate: (event: EventPayload<EventNames.OnMoveFate>, context: TriggeredAbilityContext) =>
+                onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context: TriggeredAbilityContext) =>
                     event.origin === (context.source as any).parent && event.fate > 0 && event.recipient !== context.player
             },
             effect: 'take the {1} fate being removed from {2}',
@@ -23,7 +23,7 @@ class EmbraceTheVoid extends DrawCard {
     }
 
     canPlay(context: AbilityContext, playType: string) {
-        if(!context.player.cardsInPlay.some((card: any) => card.getType() === CardTypes.Character && card.hasTrait('shugenja'))) {
+        if(!context.player.cardsInPlay.some((card: any) => card.getType() === CardType.Character && card.hasTrait('shugenja'))) {
             return false;
         }
 

@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardTypes, Locations } from '../../../Constants.js';
+import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 
@@ -25,8 +25,8 @@ export default class ChildOfSaltlessWater extends DrawCard {
                 onCardPlayed: (event, context) => event.card === context.source
             },
             target: {
-                location: Locations.Provinces,
-                cardType: CardTypes.Province,
+                location: Location.Provinces,
+                cardType: CardType.Province,
                 cardCondition: (card) => card.isConflictProvince()
             },
             gameAction: AbilityDsl.actions.cardLastingEffect<ProvinceCard>((context) => ({

@@ -1,4 +1,4 @@
-import { ConflictTypes } from '../../../Constants.js';
+import { ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -22,7 +22,7 @@ export default class DiplomatOfTheSteppes extends DrawCard {
             },
             effect: 'switch the conflict type to {1}',
             effectArgs: () => 'military',
-            gameAction: AbilityDsl.actions.switchConflictType({ targetConflictType: ConflictTypes.Military })
+            gameAction: AbilityDsl.actions.switchConflictType({ targetConflictType: ConflictType.Military })
         });
     }
 }

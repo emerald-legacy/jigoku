@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { Elements } from '../../Constants.js';
+import { Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'reclusive-zokujin-earth';
@@ -24,7 +24,7 @@ class ReclusiveZokujin extends DrawCard {
         symbols.push({
             key: elementKey,
             prettyName: 'Conflict Type',
-            element: Elements.Earth
+            element: Element.Earth
         });
         return symbols;
     }
