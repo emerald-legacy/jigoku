@@ -3,7 +3,6 @@ import { GameChat } from './GameChat.js';
 import { EffectEngine } from './EffectEngine.js';
 import Player from './Player.js';
 import { Spectator } from './Spectator.js';
-import { AnonymousSpectator } from './AnonymousSpectator.js';
 import { GamePipeline } from './GamePipeline.js';
 import { SetupPhase } from './gamesteps/SetupPhase.js';
 import { DynastyPhase } from './gamesteps/DynastyPhase.js';
@@ -16,10 +15,8 @@ import GameWonPrompt from './gamesteps/GameWonPrompt.js';
 import * as GameActions from './GameActions/GameActions.js';
 import { Event } from './Events/Event.js';
 import type { EventPayload, GameEvent } from './Events/EventPayloads.js';
-import InitiateCardAbilityEvent from './Events/InitiateCardAbilityEvent.js';
 import EventWindow from './Events/EventWindow.js';
 import ThenEventWindow from './Events/ThenEventWindow.js';
-import InitiateAbilityEventWindow from './Events/InitiateAbilityEventWindow.js';
 import AbilityResolver from './gamesteps/AbilityResolver.js';
 import SimultaneousEffectWindow from './gamesteps/SimultaneousEffectWindow.js';
 import { AbilityContext } from './AbilityContext.js';
@@ -27,15 +24,17 @@ import Ring from './Ring.js';
 import { Conflict } from './Conflict.js';
 import { Duel } from './Duel.js';
 import ConflictFlow from './gamesteps/conflict/ConflictFlow.js';
-import * as MenuCommands from './MenuCommands.js';
+import { GameInputHandler } from './GameInputHandler.js';
+import { GameStateSerializer } from './GameStateSerializer.js';
+import { GameEventManager } from './GameEventManager.js';
+import { GameConnectionManager } from './GameConnectionManager.js';
 import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
 
-import { EffectName, Phases, EventName, Location, ConflictType, Element, Players } from './Constants.js';
+import { EffectName, EventName, Location, ConflictType, Element, Players } from './Constants.js';
 import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
-import { GameEventBus, type EventHandler } from './GameEventBus.js';
+import { type EventHandler } from './GameEventBus.js';
 import { GamePromptHelper } from './GamePromptHelper.js';
 import { GameModes } from '../GameModes.js';
-import { resolvePackId } from './CardPackUtil.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { AnimationEvent } from './AnimationEvent.js';
@@ -76,7 +75,7 @@ interface GameOptions {
 }
 
 class Game {
-    private bus = new GameEventBus();
+    private readonly events = new GameEventManager(this);
 
     effectEngine: EffectEngine;
     playersAndSpectators: Record<string, Player | Spectator>;
@@ -106,6 +105,9 @@ class Game {
     initialFirstPlayer: string | null;
     private conflictTracker: ConflictTracker;
     readonly prompts: GamePromptHelper;
+    private readonly input: GameInputHandler;
+    private readonly serializer: GameStateSerializer;
+    private readonly connections: GameConnectionManager;
     rings: Record<string, Ring>;
     shortCardData: any[];
     cardLibrary: Map<string, unknown>;
@@ -117,7 +119,6 @@ class Game {
     finishedAt?: Date;
     winReason?: string;
     hiddenInfoLog: any[];
-    private lastHiddenInfoFingerprint = '';
     startedAt?: Date;
     private _playersCache: Player[] | null = null;
     private _spectatorsCache: Spectator[] | null = null;
@@ -153,6 +154,9 @@ class Game {
 
         this.conflictTracker = new ConflictTracker();
         this.prompts = new GamePromptHelper(this);
+        this.input = new GameInputHandler(this);
+        this.serializer = new GameStateSerializer(this);
+        this.connections = new GameConnectionManager(this);
         this.rings = {
             air: new Ring(this, Element.Air, ConflictType.Military),
             earth: new Ring(this, Element.Earth, ConflictType.Political),
@@ -231,7 +235,7 @@ class Game {
         return player.constructor === Spectator;
     }
 
-    private invalidatePlayerCaches(): void {
+    invalidatePlayerCaches(): void {
         this._playersCache = null;
         this._spectatorsCache = null;
     }
@@ -427,20 +431,7 @@ class Game {
      * This function is called from the client whenever a card is clicked
      */
     cardClicked(sourcePlayer: string, cardId: string): void {
-        const player = this.getPlayerByName(sourcePlayer);
-
-        if(!player) {
-            return;
-        }
-
-        const card = this.findAnyCardInAnyList(cardId);
-
-        if(!card) {
-            return;
-        }
-
-        // Check to see if the current step in the pipeline is waiting for input
-        this.pipeline.handleCardClicked(player, card);
+        this.input.cardClicked(sourcePlayer, cardId);
     }
 
     facedownCardClicked(
@@ -449,141 +440,31 @@ class Game {
         controllerName: string,
         isProvince: boolean = false
     ): void {
-        const player = this.getPlayerByName(playerName);
-        const controller = this.getPlayerByName(controllerName);
-        if(!player || !controller) {
-            return;
-        }
-        const list = controller.getSourceList(location);
-        if(!list) {
-            return;
-        }
-        const card = list.find((card: BaseCard) => !isProvince === !(card as any).isProvince);
-        if(card) {
-            this.pipeline.handleCardClicked(player, card);
-            return;
-        }
+        this.input.facedownCardClicked(playerName, location, controllerName, isProvince);
     }
 
-    /**
-     * This function is called from the client whenever a ring is clicked
-     */
     ringClicked(sourcePlayer: string, ringindex: string): void {
-        const ring = this.rings[ringindex];
-        const player = this.getPlayerByName(sourcePlayer);
-
-        if(!player || !ring) {
-            return;
-        }
-
-        // Check to see if the current step in the pipeline is waiting for input
-        if(this.pipeline.handleRingClicked(player, ring)) {
-            return;
-        }
-
-        // If it's not the conflict phase and the ring hasn't been claimed, flip it
-        if(this.currentPhase !== Phases.Conflict && !ring.claimed) {
-            ring.flipConflictType();
-        }
+        this.input.ringClicked(sourcePlayer, ringindex);
     }
 
-    /**
-     * This function is called by the client when a card menu item is clicked
-     */
     menuItemClick(sourcePlayer: string, cardId: string, menuItem: any): void {
-        const player = this.getPlayerByName(sourcePlayer);
-        const card = this.findAnyCardInAnyList(cardId);
-        if(!player || !card) {
-            return;
-        }
-
-        if(menuItem.command === 'click') {
-            this.cardClicked(sourcePlayer, cardId);
-            return;
-        }
-
-        if(!this.manualMode) {
-            return;
-        }
-
-        MenuCommands.cardMenuClick(menuItem, this, player, card);
-        this.checkGameState(true);
+        this.input.menuItemClick(sourcePlayer, cardId, menuItem);
     }
 
-    /**
-     * This function is called by the client when a ring menu item is clicked
-     */
     ringMenuItemClick(sourcePlayer: string, sourceRing: { element: string }, menuItem: any): void {
-        const player = this.getPlayerByName(sourcePlayer);
-        const ring = this.rings[sourceRing.element];
-        if(!player || !ring) {
-            return;
-        }
-
-        if(menuItem.command === 'click') {
-            this.ringClicked(sourcePlayer, ring.element);
-            return;
-        }
-        MenuCommands.ringMenuClick(menuItem, this, player, ring);
-        this.checkGameState(true);
+        this.input.ringMenuItemClick(sourcePlayer, sourceRing, menuItem);
     }
 
-    /**
-     * Sets a Player flag and displays a chat message to show that a popup with a
-     * player's conflict deck is open
-     */
     showConflictDeck(playerName: string): void {
-        const player = this.getPlayerByName(playerName);
-
-        if(!player) {
-            return;
-        }
-
-        if(!player.showConflict) {
-            player.showConflictDeck();
-
-            this.addMessage('{0} is looking at their conflict deck', player);
-        } else {
-            player.showConflict = false;
-
-            this.addMessage('{0} stops looking at their conflict deck', player);
-        }
+        this.input.showConflictDeck(playerName);
     }
 
-    /**
-     * Sets a Player flag and displays a chat message to show that a popup with a
-     * player's dynasty deck is open
-     */
     showDynastyDeck(playerName: string): void {
-        const player = this.getPlayerByName(playerName);
-
-        if(!player) {
-            return;
-        }
-
-        if(!player.showDynasty) {
-            player.showDynastyDeck();
-
-            this.addMessage('{0} is looking at their dynasty deck', player);
-        } else {
-            player.showDynasty = false;
-
-            this.addMessage('{0} stops looking at their dynasty deck', player);
-        }
+        this.input.showDynastyDeck(playerName);
     }
 
-    /**
-     * This function is called from the client whenever a card is dragged from
-     * one place to another
-     */
     drop(playerName: string, cardId: string, source: string, target: string): void {
-        const player = this.getPlayerByName(playerName);
-
-        if(!player) {
-            return;
-        }
-
-        player.drop(cardId, source, target);
+        this.input.drop(playerName, cardId, source, target);
     }
 
     /**
@@ -637,125 +518,37 @@ class Game {
         }
     }
 
-    private static readonly CHANGEABLE_STATS = new Set([
-        'fate',
-        'honor',
-        'imperialFavor',
-        'conflictsRemaining',
-        'militaryRemaining',
-        'politicalRemaining'
-    ]);
-
     /**
      * Changes a Player variable and displays a message in chat
      */
     changeStat(playerName: string, stat: string, value: number): void {
-        const player = this.getPlayerByName(playerName);
-        if(!player) {
-            return;
-        }
-        if(typeof stat !== 'string' || !Game.CHANGEABLE_STATS.has(stat)) {
-            return;
-        }
-        if(!Number.isInteger(value) || Math.abs(value) > 1) {
-            return;
-        }
-
-        const target: any = player;
-
-        target[stat] += value;
-
-        if(target[stat] < 0) {
-            target[stat] = 0;
-        } else {
-            this.addMessage('{0} sets {1} to {2} ({3})', player, stat, target[stat], (value > 0 ? '+' : '') + value);
-        }
+        this.input.changeStat(playerName, stat, value);
     }
 
     /**
      * This function is called by the client every time a player enters a chat message
      */
     chat(playerName: string, message: string): void {
-        const player = this.playersAndSpectators[playerName];
-        const args = message.split(' ');
-
-        if(!player) {
-            return;
-        }
-
-        if(!this.isSpectator(player)) {
-            if(this.chatCommands.executeCommand(player as Player, args[0], args)) {
-                this.checkGameState(true);
-                return;
-            }
-
-            const card = Object.values(this.shortCardData).find((c: any) => {
-                return c.name.toLowerCase() === message.toLowerCase() || c.id.toLowerCase() === message.toLowerCase();
-            }) as any;
-
-            if(card) {
-                const packId = resolvePackId(undefined, card, this.gameMode);
-                const cardFragment = { id: card.id, name: card.name, type: card.type, packId };
-                this.gameChat.addChatMessage(player as Player, { message: this.gameChat.formatMessage('{0}', [cardFragment]) });
-
-                return;
-            }
-        }
-
-        if(!this.isSpectator(player) || !this.spectatorSquelch) {
-            this.gameChat.addChatMessage(player as Player, message);
-        }
+        this.input.chat(playerName, message);
     }
 
     /**
      * This is called by the client when a player clicks 'Concede'
      */
     concede(playerName: string): void {
-        const player = this.getPlayerByName(playerName);
-
-        if(!player) {
-            return;
-        }
-
-        this.addMessage('{0} concedes', player);
-
-        const otherPlayer = this.getOtherPlayer(player);
-
-        if(otherPlayer) {
-            this.recordWinner(otherPlayer, 'concede');
-        }
+        this.input.concede(playerName);
     }
 
     selectDeck(playerName: string, deck: any): void {
-        if(this.playStarted) {
-            return;
-        }
-        const player = this.getPlayerByName(playerName);
-        if(player) {
-            player.selectDeck(deck);
-        }
+        this.input.selectDeck(playerName, deck);
     }
 
-    /**
-     * Called when a player clicks Shuffle Deck on the conflict deck menu in
-     * the client
-     */
     shuffleConflictDeck(playerName: string): void {
-        const player = this.getPlayerByName(playerName);
-        if(player) {
-            player.shuffleConflictDeck();
-        }
+        this.input.shuffleConflictDeck(playerName);
     }
 
-    /**
-     * Called when a player clicks Shuffle Deck on the dynasty deck menu in
-     * the client
-     */
     shuffleDynastyDeck(playerName: string): void {
-        const player = this.getPlayerByName(playerName);
-        if(player) {
-            player.shuffleDynastyDeck();
-        }
+        this.input.shuffleDynastyDeck(playerName);
     }
 
     promptWithMenu(player: Player, contextObj: any, properties: any): void {
@@ -783,77 +576,23 @@ class Game {
      * in a prompt
      */
     menuButton(playerName: string, arg: string, uuid: string, method: string): boolean {
-        const player = this.getPlayerByName(playerName);
-        if(!player) {
-            return false;
-        }
-
-        // check to see if the current step in the pipeline is waiting for input
-        return this.pipeline.handleMenuCommand(player, arg, uuid, method);
+        return this.input.menuButton(playerName, arg, uuid, method);
     }
 
-    private static readonly TOGGLE_WINDOWS = new Set([
-        'dynasty', 'draw', 'preConflict', 'conflict', 'fate', 'regroup'
-    ]);
-    private static readonly TOGGLE_TIMER_SETTINGS = new Set([
-        'events', 'eventsInDeck'
-    ]);
-    private static readonly TOGGLE_OPTION_SETTINGS = new Set([
-        'markCardsUnselectable', 'cancelOwnAbilities', 'orderForcedAbilities',
-        'confirmOneClick', 'disableCardStats', 'showStatusInSidebar',
-        'sortHandByName', 'showRingEffects', 'hideEffectMarkers'
-    ]);
-
-    /**
-     * This function is called by the client when a player clicks an action window
-     * toggle in the settings menu
-     */
     togglePromptedActionWindow(playerName: string, windowName: string, toggle: boolean): void {
-        const player = this.getPlayerByName(playerName);
-        if(!player) {
-            return;
-        }
-        if(!Game.TOGGLE_WINDOWS.has(windowName)) {
-            return;
-        }
-
-        player.promptedActionWindows[windowName] = !!toggle;
+        this.input.togglePromptedActionWindow(playerName, windowName, toggle);
     }
 
-    /**
-     * This function is called by the client when a player clicks an timer setting
-     * toggle in the settings menu
-     */
     toggleTimerSetting(playerName: string, settingName: string, toggle: boolean): void {
-        const player = this.getPlayerByName(playerName);
-        if(!player) {
-            return;
-        }
-        if(!Game.TOGGLE_TIMER_SETTINGS.has(settingName)) {
-            return;
-        }
-
-        player.timerSettings[settingName] = !!toggle;
+        this.input.toggleTimerSetting(playerName, settingName, toggle);
     }
 
-    /*
-     * This function is called by the client when a player clicks an option setting
-     * toggle in the settings menu
-     */
     toggleOptionSetting(playerName: string, settingName: string, toggle: boolean): void {
-        const player = this.getPlayerByName(playerName);
-        if(!player) {
-            return;
-        }
-        if(!Game.TOGGLE_OPTION_SETTINGS.has(settingName)) {
-            return;
-        }
-
-        player.optionSettings[settingName] = !!toggle;
+        this.input.toggleOptionSetting(playerName, settingName, toggle);
     }
 
     toggleManualMode(playerName: string): void {
-        this.chatCommands.manual(this.getPlayerByName(playerName) as Player);
+        this.input.toggleManualMode(playerName);
     }
 
     /*
@@ -993,7 +732,7 @@ class Game {
     getEvent<N extends EventName>(eventName: N, params?: EventPayload<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N>;
     getEvent(eventName: string, params?: Record<string, unknown>, handler?: (event: Event) => void): Event;
     getEvent(eventName: string, params: Record<string, unknown> = {}, handler?: (event: Event) => void): Event {
-        return new Event(eventName, params, handler);
+        return this.events.getEvent(eventName, params, handler);
     }
 
     /**
@@ -1002,30 +741,27 @@ class Game {
     raiseEvent<N extends EventName>(eventName: N, params?: EventPayload<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N>;
     raiseEvent(eventName: string, params?: Record<string, unknown>, handler?: (event: Event) => void): Event;
     raiseEvent(eventName: string, params: Record<string, unknown> = {}, handler: (event: Event) => void = () => true): Event {
-        const event = this.getEvent(eventName, params, handler);
-        this.openEventWindow([event]);
-        return event;
+        return this.events.raiseEvent(eventName, params, handler);
     }
 
     emitEvent(eventName: string, params: Record<string, unknown> = {}): void {
-        const event = this.getEvent(eventName, params);
-        this.emit(event.name, event);
+        this.events.emitEvent(eventName, params);
     }
 
     emit(eventName: string, ...args: unknown[]): void {
-        this.bus.emit(eventName, ...args);
+        this.events.emit(eventName, ...args);
     }
 
     on(eventName: string, handler: EventHandler): void {
-        this.bus.on(eventName, handler);
+        this.events.on(eventName, handler);
     }
 
     once(eventName: string, handler: EventHandler): void {
-        this.bus.once(eventName, handler);
+        this.events.once(eventName, handler);
     }
 
     removeListener(eventName: string, handler: EventHandler): void {
-        this.bus.off(eventName, handler);
+        this.events.removeListener(eventName, handler);
     }
 
     /**
@@ -1033,20 +769,11 @@ class Game {
      * ability which can respond any passed events, and execute their handlers.
      */
     openEventWindow(events: Event | Event[]): EventWindow {
-        if(!Array.isArray(events)) {
-            events = [events];
-        }
-        return this.queueStep(new EventWindow(this, events));
+        return this.events.openEventWindow(events);
     }
 
     openThenEventWindow(events: Event | Event[]): EventWindow | ThenEventWindow {
-        if(this.currentEventWindow) {
-            if(!Array.isArray(events)) {
-                events = [events];
-            }
-            return this.queueStep(new ThenEventWindow(this, events));
-        }
-        return this.openEventWindow(events);
+        return this.events.openThenEventWindow(events);
     }
 
     /**
@@ -1054,7 +781,7 @@ class Game {
      * ability
      */
     raiseInitiateAbilityEvent(params: any, handler: () => any): void {
-        this.raiseMultipleInitiateAbilityEvents([{ params: params, handler: handler }]);
+        this.events.raiseInitiateAbilityEvent(params, handler);
     }
 
     /**
@@ -1062,8 +789,7 @@ class Game {
      * abilities which initiate simultaneously
      */
     raiseMultipleInitiateAbilityEvents(eventProps: Array<{ params: any; handler: () => any }>): void {
-        const events = eventProps.map((event) => new InitiateCardAbilityEvent(event.params, event.handler));
-        this.queueStep(new InitiateAbilityEventWindow(this, events));
+        this.events.raiseMultipleInitiateAbilityEvents(eventProps);
     }
 
     /**
@@ -1157,112 +883,35 @@ class Game {
     }
 
     watch(socketId: string, user: any): boolean {
-        if(!this.allowSpectators) {
-            return false;
-        }
-
-        this.playersAndSpectators[user.username] = new Spectator(socketId, user);
-        this.invalidatePlayerCaches();
-        this.addMessage('{0} has joined the game as a spectator', user.username);
-
-        return true;
+        return this.connections.watch(socketId, user);
     }
 
     join(socketId: string, user: any): boolean {
-        if(this.started || this.getPlayers().length === 2) {
-            return false;
-        }
-
-        this.playersAndSpectators[user.username] = new Player(socketId, user, this.owner === user.username, this);
-        this.invalidatePlayerCaches();
-
-        return true;
+        return this.connections.join(socketId, user);
     }
 
     isEmpty(): boolean {
-        return Object.values(this.playersAndSpectators).every(
-            (player) => player.disconnected || player.left || player.id === 'TBA'
-        );
+        return this.connections.isEmpty();
     }
 
     allPlayersGone(): boolean {
-        return this.started && this.getPlayers().every(
-            (player) => player.disconnected || player.left
-        );
+        return this.connections.allPlayersGone();
     }
 
     leave(playerName: string): void {
-        const player = this.playersAndSpectators[playerName];
-
-        if(!player) {
-            return;
-        }
-
-        this.addMessage('{0} has left the game', playerName);
-
-        if(this.isSpectator(player) || !this.started) {
-            delete this.playersAndSpectators[playerName];
-            this.invalidatePlayerCaches();
-        } else {
-            player.left = true;
-
-            if(!this.finishedAt) {
-                this.finishedAt = new Date();
-            }
-        }
+        this.connections.leave(playerName);
     }
 
     disconnect(playerName: string): void {
-        const player = this.playersAndSpectators[playerName];
-
-        if(!player) {
-            return;
-        }
-
-        this.addMessage('{0} has disconnected', player);
-
-        if(this.isSpectator(player)) {
-            delete this.playersAndSpectators[playerName];
-            this.invalidatePlayerCaches();
-        } else {
-            player.disconnected = true;
-        }
-
-        player.socket = undefined;
+        this.connections.disconnect(playerName);
     }
 
     failedConnect(playerName: string): void {
-        const player = this.playersAndSpectators[playerName];
-
-        if(!player) {
-            return;
-        }
-
-        if(this.isSpectator(player) || !this.started) {
-            delete this.playersAndSpectators[playerName];
-            this.invalidatePlayerCaches();
-        } else {
-            this.addMessage('{0} has failed to connect to the game', player);
-
-            player.disconnected = true;
-
-            if(!this.finishedAt) {
-                this.finishedAt = new Date();
-            }
-        }
+        this.connections.failedConnect(playerName);
     }
 
     reconnect(socket: any, playerName: string): void {
-        const player = this.getPlayerByName(playerName);
-        if(!player) {
-            return;
-        }
-
-        player.id = socket.id;
-        player.socket = socket;
-        player.disconnected = false;
-
-        this.addMessage('{0} has reconnected', player);
+        this.connections.reconnect(socket, playerName);
     }
 
     checkGameState(hasChanged: boolean = false, events: Event[] = []): void {
@@ -1310,153 +959,26 @@ class Game {
     }
 
     formatDeckForSaving(deck: any): any {
-        const result: any = {
-            faction: {},
-            conflictCards: [],
-            dynastyCards: [],
-            provinceCards: [],
-            stronghold: undefined,
-            role: undefined
-        };
-
-        //faction
-        result.faction = deck.faction;
-
-        //conflict
-        deck.conflictCards.forEach((cardData: any) => {
-            if(cardData && cardData.card) {
-                result.conflictCards.push(`${cardData.count}x ${cardData.card.id}`);
-            }
-        });
-
-        //dynasty
-        deck.dynastyCards.forEach((cardData: any) => {
-            if(cardData && cardData.card) {
-                result.dynastyCards.push(`${cardData.count}x ${cardData.card.id}`);
-            }
-        });
-
-        //provinces
-        if(deck.provinceCards) {
-            deck.provinceCards.forEach((cardData: any) => {
-                if(cardData && cardData.card) {
-                    result.provinceCards.push(cardData.card.id);
-                }
-            });
-        }
-
-        //stronghold & role
-        if(deck.stronghold) {
-            deck.stronghold.forEach((cardData: any) => {
-                if(cardData && cardData.card) {
-                    result.stronghold = cardData.card.id;
-                }
-            });
-        }
-        if(deck.role) {
-            deck.role.forEach((cardData: any) => {
-                if(cardData && cardData.card) {
-                    result.role = cardData.card.id;
-                }
-            });
-        }
-
-        return result;
+        return this.serializer.formatDeckForSaving(deck);
     }
 
     /*
      * This information is all logged when a game is won
      */
     getSaveState(): GameSaveState {
-        const players = this.getPlayers().map((player) => ({
-            name: player.name,
-            faction: player.faction.name || player.faction.value,
-            honor: player.getTotalHonor(),
-            lostProvinces: player
-                .getProvinceCards()
-                .reduce((count: number, card: any) => (card && card.isBroken ? count + 1 : count), 0),
-            deck: this.formatDeckForSaving(player.deck),
-            deckId: player.deck?._id?.toString()
-        }));
-
-        return {
-            id: this.savedGameId,
-            gameId: this.id,
-            startedAt: this.startedAt,
-            players: players,
-            winner: this.winner ? this.winner.name : undefined,
-            winReason: this.winReason,
-            gameMode: this.gameMode,
-            finishedAt: this.finishedAt,
-            roundNumber: this.roundNumber,
-            initialFirstPlayer: this.initialFirstPlayer
-        };
+        return this.serializer.getSaveState();
     }
 
-    /*
-     * This information is sent to the client
-     */
     /**
      * Pre-compute state shared across all viewers (conflict, messages, spectators, metadata).
      * Pass the result to getState() to avoid redundant work when sending to multiple clients.
      */
     getSharedState(): SharedGameState | null {
-        if(!this.started) {
-            return null;
-        }
-
-        let conflictState: Record<string, unknown> = {};
-        if(this.currentPhase === 'conflict' && this.currentConflict) {
-            conflictState = this.currentConflict.getSummary();
-        }
-
-        const { blocklist: _blocklist, email: _email, emailHash: _emailHash, promptedActionWindows: _promptedActionWindows, settings: _settings, ...ownerSummary } = this.owner;
-        return {
-            id: this.id,
-            manualMode: this.manualMode,
-            name: this.name,
-            owner: ownerSummary,
-            conflict: conflictState,
-            phase: this.currentPhase,
-            roundNumber: this.roundNumber,
-            spectators: this.getSpectators().map((spectator) => {
-                return {
-                    id: spectator.id,
-                    name: spectator.name
-                };
-            }),
-            started: this.started,
-            gameMode: this.gameMode,
-            winner: this.winner ? this.winner.name : undefined,
-            animations: this.pendingAnimations.slice()
-        };
+        return this.serializer.getSharedState();
     }
 
     getState(activePlayerName?: string, sharedState?: SharedGameState | null): GameState | GameSummary | undefined {
-        const activePlayer = (activePlayerName && this.playersAndSpectators[activePlayerName]) || new AnonymousSpectator();
-
-        if(!this.started) {
-            return this.getSummary(activePlayerName);
-        }
-
-        const shared = sharedState || this.getSharedState();
-
-        const playerState: Record<string, PlayerState> = {};
-        const ringState: Record<string, unknown> = {};
-
-        for(const player of this.getPlayers()) {
-            playerState[player.name] = player.getState(activePlayer as Player);
-        }
-
-        Object.values(this.rings).forEach((ring) => {
-            ringState[ring.element] = ring.getState(activePlayer as Player);
-        });
-
-        return Object.assign({}, shared, {
-            players: playerState,
-            rings: ringState,
-            messages: this.gameChat.messages
-        });
+        return this.serializer.getState(activePlayerName, sharedState);
     }
 
     /**
@@ -1464,109 +986,19 @@ class Game {
      * Called each time game state is sent so the log can be merged into the client replay at game end.
      */
     getHiddenInfoFingerprint(): string {
-        const parts: string[] = [];
-        for(const player of this.getPlayers()) {
-            parts.push(player.name);
-            parts.push(player.hand.map((c: any) => c.uuid).join(','));
-            parts.push(player.strongholdProvince.map((c: any) => c.uuid).join(','));
-            parts.push(player.provinceOne.map((c: any) => c.uuid).join(','));
-            parts.push(player.provinceTwo.map((c: any) => c.uuid).join(','));
-            parts.push(player.provinceThree.map((c: any) => c.uuid).join(','));
-            parts.push(player.provinceFour.map((c: any) => c.uuid).join(','));
-            parts.push(player.stronghold ? player.stronghold.childCards.map((c: any) => c.uuid).join(',') : '');
-        }
-        return parts.join('|');
+        return this.serializer.getHiddenInfoFingerprint();
     }
 
     recordHiddenInfoIfChanged(): void {
-        const fingerprint = this.getHiddenInfoFingerprint();
-        if(fingerprint === this.lastHiddenInfoFingerprint && this.hiddenInfoLog.length > 0) {
-            this.hiddenInfoLog.push(this.hiddenInfoLog[this.hiddenInfoLog.length - 1]);
-            return;
-        }
-        this.lastHiddenInfoFingerprint = fingerprint;
-        this.hiddenInfoLog.push(this.getHiddenInfo());
+        this.serializer.recordHiddenInfoIfChanged();
     }
 
     getHiddenInfo(): Record<string, unknown> {
-        const info: Record<string, unknown> = {};
-        for(const player of this.getPlayers()) {
-            const cardSummary = (card: BaseCard) => ({
-                id: card.cardData.id,
-                name: card.cardData.name,
-                packId: card.packId,
-                type: card.getType(),
-                uuid: card.uuid
-            });
-            info[player.name] = {
-                hand: player.hand.map(cardSummary),
-                provinces: {
-                    stronghold: player.strongholdProvince.map(cardSummary),
-                    one: player.provinceOne.map(cardSummary),
-                    two: player.provinceTwo.map(cardSummary),
-                    three: player.provinceThree.map(cardSummary),
-                    four: player.provinceFour.map(cardSummary)
-                },
-                strongholdChildren: player.stronghold ? player.stronghold.childCards.map(cardSummary) : []
-            };
-        }
-        return info;
+        return this.serializer.getHiddenInfo();
     }
 
-    /*
-     * This is used for debugging?
-     */
     getSummary(activePlayerName?: string): GameSummary | undefined {
-        const playerSummaries: Record<string, any> = {};
-
-        for(const player of this.getPlayers()) {
-            let deck: any = undefined;
-            if(player.left) {
-                return;
-            }
-
-            if(activePlayerName === player.name && player.deck) {
-                deck = { name: player.deck.name, selected: player.deck.selected };
-            } else if(player.deck) {
-                deck = { selected: player.deck.selected };
-            } else {
-                deck = {};
-            }
-
-            playerSummaries[player.name] = {
-                deck: deck,
-                emailHash: player.emailHash,
-                faction: player.faction.value,
-                id: player.id,
-                lobbyId: player.lobbyId,
-                left: player.left,
-                name: player.name,
-                owner: player.owner
-            };
-        }
-
-        const { blocklist: _blocklist2, email: _email2, emailHash: _emailHash2, promptedActionWindows: _promptedActionWindows2, settings: _settings2, ...ownerSummary } = this.owner;
-        return {
-            allowSpectators: this.allowSpectators,
-            createdAt: this.createdAt,
-            gameType: this.gameType,
-            id: this.id,
-            manualMode: this.manualMode,
-            messages: this.gameChat.messages,
-            name: this.name,
-            owner: ownerSummary,
-            players: playerSummaries,
-            started: this.started,
-            startedAt: this.startedAt,
-            gameMode: this.gameMode,
-            spectators: this.getSpectators().map((spectator) => {
-                return {
-                    id: spectator.id,
-                    lobbyId: spectator.lobbyId,
-                    name: spectator.name
-                };
-            })
-        };
+        return this.serializer.getSummary(activePlayerName);
     }
 }
 
