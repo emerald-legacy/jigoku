@@ -45,7 +45,7 @@ export class AttachmentManager {
 
         const attachmentLimits = this.attachments.filter((card) => card.anyEffect(EffectName.AttachmentLimit));
         for(const card of attachmentLimits) {
-            const limit = Math.max(...card.getEffects<number>(EffectName.AttachmentLimit));
+            const limit = Math.max(...card.getEffects(EffectName.AttachmentLimit));
             const matchingAttachments = this.attachments.filter((attachment) => attachment.id === card.id);
             for(const overflow of matchingAttachments.slice(0, -limit)) {
                 illegalAttachments.add(overflow);
@@ -69,7 +69,7 @@ export class AttachmentManager {
         }
 
         for(const object of this.attachments.reduce<Array<Record<string, number>>>(
-            (array, card) => array.concat(card.getEffects<Record<string, number>>(EffectName.AttachmentRestrictTraitAmount)),
+            (array, card) => array.concat(card.getEffects(EffectName.AttachmentRestrictTraitAmount)),
             []
         )) {
             for(const trait of Object.keys(object)) {

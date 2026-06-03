@@ -1,8 +1,9 @@
 import { v1 as uuidV1 } from 'uuid';
 
 import type { AbilityContext } from './AbilityContext.js';
-import { EffectName, Stage } from './Constants.js';
+import { type CardType, EffectName, Stage } from './Constants.js';
 import type { CardEffect } from './Effects/types.js';
+import type { EffectValueMap } from './Effects/EffectValueMap.js';
 import type Game from './Game.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import { getGameAction } from './GameActions/GameActionRegistry.js';
@@ -75,22 +76,22 @@ export class GameObject {
         }
     }
 
-    public getEffects<V = any>(type: EffectName): V[] {
+    public getEffects<N extends EffectName>(type: N): EffectValueMap[N][] {
         // Fast path: no suppress effects — use indexed lookup
         if(this.suppressEffectCount === 0) {
             const bucket = this.effectsByType.get(type);
             if(!bucket || bucket.length === 0) {
                 return [];
             }
-            return bucket.map((effect) => effect.getValue(this));
+            return bucket.map((effect) => effect.getValue<EffectValueMap[N]>(this));
         }
         // Slow path: suppress effects present — filter from raw effects
         let filteredEffects = this.getRawEffects().filter((effect) => effect.type === type);
-        return filteredEffects.map((effect) => effect.getValue(this));
+        return filteredEffects.map((effect) => effect.getValue<EffectValueMap[N]>(this));
     }
 
-    public sumEffects(type: EffectName) {
-        let filteredEffects = this.getEffects(type);
+    public sumEffects(type: EffectName): number {
+        const filteredEffects = this.getEffects(type) as number[];
         return filteredEffects.reduce((total, effect) => total + effect, 0);
     }
 
@@ -114,11 +115,11 @@ export class GameObject {
 
     public checkRestrictions(actionType: string, context?: AbilityContext) {
         return !this.getEffects(EffectName.AbilityRestrictions).some((restriction) =>
-            restriction.isMatch(actionType, context, this)
+            restriction.isMatch(actionType, context as AbilityContext, this)
         );
     }
 
-    public getType() {
+    public getType(): CardType | string {
         if(this.anyEffect(EffectName.ChangeType)) {
             return this.mostRecentEffect(EffectName.ChangeType);
         }
@@ -187,9 +188,9 @@ export class GameObject {
         return !this.facedown;
     }
 
-    public mostRecentEffect(type: EffectName) {
+    public mostRecentEffect<N extends EffectName>(type: N): EffectValueMap[N] {
         const effects = this.getEffects(type);
-        return effects[effects.length - 1];
+        return effects[effects.length - 1] as EffectValueMap[N];
     }
 
     public getRawEffects() {

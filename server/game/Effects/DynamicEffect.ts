@@ -44,7 +44,7 @@ export default class DynamicEffect extends StaticEffect {
         return oldValue !== newValue;
     }
 
-    getValue<T = any>(target?: GameObject): T {
+    getValue<T = unknown>(target?: GameObject): T {
         return (target ? this.values[target.uuid] : undefined) as T;
     }
 

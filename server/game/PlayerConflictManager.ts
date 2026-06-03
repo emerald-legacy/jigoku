@@ -128,8 +128,8 @@ export class PlayerConflictManager {
     }
 
     getMaxConflictOpportunitiesForPlayerByType(type: string): number {
-        let setConflictType = this.player.mostRecentEffect(EffectName.SetConflictDeclarationType);
-        let forceConflictType = this.player.mostRecentEffect(EffectName.ForceConflictDeclarationType);
+        let setConflictType: ConflictType | undefined = this.player.mostRecentEffect(EffectName.SetConflictDeclarationType);
+        let forceConflictType: ConflictType | undefined = this.player.mostRecentEffect(EffectName.ForceConflictDeclarationType);
         const provideConflictDeclarationType = this.player.mostRecentEffect(EffectName.ProvideConflictDeclarationType);
         const additionalConflictEffects = this.player.getEffects(EffectName.AdditionalConflict);
         const additionalConflictsForType = additionalConflictEffects.filter((x: string) => x === type).length;

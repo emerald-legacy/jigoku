@@ -64,7 +64,7 @@ export class DuelFlow extends BaseStepWithPipeline {
         }
         const prohibitedBids: Record<string, string[]> = {};
         for(const player of this.game.getPlayers()) {
-            prohibitedBids[player.uuid] = Array.from(new Set(player.getEffects(EffectName.CannotBidInDuels)));
+            prohibitedBids[player.uuid] = Array.from(new Set(player.getEffects(EffectName.CannotBidInDuels)), (bid) => String(bid));
         }
         this.game.promptForHonorBid(
             'Choose your bid for the duel\n' + this.duel.getTotalsForDisplay(),

@@ -147,7 +147,7 @@ class BaseCard extends EffectSource {
         if(mostRecentEffect) {
             actions = mostRecentEffect.value.getActions(this);
         }
-        const effectActions = this.getEffects<CardAction>(EffectName.GainAbility).filter(
+        const effectActions = (this.getEffects(EffectName.GainAbility) as CardAction[]).filter(
             (ability) => ability.abilityType === AbilityType.Action
         );
 
@@ -194,7 +194,7 @@ class BaseCard extends EffectSource {
         if(mostRecentEffect) {
             reactions = mostRecentEffect.value.getReactions(this);
         }
-        const effectReactions = this.getEffects<TriggeredAbility>(EffectName.GainAbility).filter((ability) =>
+        const effectReactions = (this.getEffects(EffectName.GainAbility) as TriggeredAbility[]).filter((ability) =>
             TriggeredAbilityTypes.includes(ability.abilityType)
         );
         for(const effect of this.getRawEffects()) {
@@ -228,7 +228,7 @@ class BaseCard extends EffectSource {
     }
 
     _getPersistentEffects(ignoreDynamicGains = false): StoredPersistentEffect[] {
-        let gainedPersistentEffects = this.getEffects<StoredPersistentEffect>(EffectName.GainAbility).filter(
+        let gainedPersistentEffects = (this.getEffects(EffectName.GainAbility) as StoredPersistentEffect[]).filter(
             (ability) => ability.abilityType === AbilityType.Persistent
         );
 
@@ -571,9 +571,9 @@ class BaseCard extends EffectSource {
 
     getFactions(): Set<Faction> {
         const copyEffect = this.mostRecentEffect(EffectName.CopyCharacter);
-        const cardFaction: Faction = copyEffect ? copyEffect.printedFaction : this.printedFaction;
-        const addedFactions: Faction[] = this.getEffects(EffectName.AddFaction);
-        const lostFactions: Faction[] = this.getEffects(EffectName.LoseFaction);
+        const cardFaction = (copyEffect ? copyEffect.printedFaction : this.printedFaction) as Faction;
+        const addedFactions = this.getEffects(EffectName.AddFaction) as Faction[];
+        const lostFactions = this.getEffects(EffectName.LoseFaction) as Faction[];
         const factionArray = [...addedFactions, cardFaction].filter(faction => !lostFactions.includes(faction));
 
         return new Set(factionArray);
@@ -1112,7 +1112,7 @@ class BaseCard extends EffectSource {
         }
         const seen = new Set();
         const limits: Array<{ max: number; current: number; exhausted: boolean }> = [];
-        const gainedAbilities = this.getEffects(EffectName.GainAbility);
+        const gainedAbilities = this.getEffects(EffectName.GainAbility) as CardAction[];
         for(const ability of [...this.abilities.actions, ...this.abilities.reactions, ...gainedAbilities]) {
             const limit = ability.limit;
             if(!limit || seen.has(limit)) {

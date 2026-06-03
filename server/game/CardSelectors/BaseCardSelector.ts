@@ -157,7 +157,7 @@ class BaseCardSelector {
         if(card.location === Location.Hand && card.controller !== choosingPlayer) {
             return false;
         }
-        return this.cardType.includes(card.getType()) && this.cardCondition(card, context);
+        return this.cardType.includes(card.getType() as CardType) && this.cardCondition(card, context);
     }
 
     getAllLegalTargets(context: AbilityContext, choosingPlayer?: Player): BaseCard[] {

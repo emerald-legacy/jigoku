@@ -134,7 +134,7 @@ class StaticEffect implements CardEffect {
         }
     }
 
-    getValue<T = any>(_target?: GameObject): T {
+    getValue<T = unknown>(_target?: GameObject): T {
         return this.value.getValue();
     }
 

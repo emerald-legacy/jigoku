@@ -82,7 +82,7 @@ export class Conflict extends GameObject {
             return [];
         }
 
-        const additionalProvinces = this.getEffects<ProvinceCard>(EffectName.AdditionalAttackedProvince);
+        const additionalProvinces = this.getEffects(EffectName.AdditionalAttackedProvince);
         additionalProvinces.unshift(this.conflictProvince);
         return additionalProvinces;
     }
@@ -102,7 +102,7 @@ export class Conflict extends GameObject {
     }
 
     get maxAllowedDefenders() {
-        const defenderCountRestrictions = this.getEffects<number>(EffectName.RestrictNumberOfDefenders);
+        const defenderCountRestrictions = this.getEffects(EffectName.RestrictNumberOfDefenders);
         return defenderCountRestrictions.length === 0 ? -1 : Math.min(...defenderCountRestrictions);
     }
 
@@ -345,7 +345,7 @@ export class Conflict extends GameObject {
             _player = this.defendingPlayer;
         }
         if(!_player) {
-            return [];
+            return 0;
         }
 
         let characters = this.getCharacters(_player);
