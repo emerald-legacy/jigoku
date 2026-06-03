@@ -1,7 +1,8 @@
 import { AbilityContext } from '../../AbilityContext.js';
 import type DrawCard from '../../DrawCard.js';
 import { BaseStepWithPipeline } from '../BaseStepWithPipeline.js';
-import { discardCard, payFate, payFateToRing, payHonor } from '../../Costs.js';
+import { discardCard } from '../../costs/boardCosts.js';
+import { payFate, payFateToRing, payHonor } from '../../costs/fateAndHonorCosts.js';
 import CovertAbility from '../../KeywordAbilities/CovertAbility.js';
 import { bow, loseHonor, resolveConflictRing } from '../../GameActions/GameActions.js';
 import { SimpleStep } from '../SimpleStep.js';

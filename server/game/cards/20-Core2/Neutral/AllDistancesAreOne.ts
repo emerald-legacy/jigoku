@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location } from '../../../Constants.js';
-import type { Cost } from '../../../Costs.js';
+import type { Cost } from '../../../costs/Cost.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type { Conflict } from '../../../Conflict.js';

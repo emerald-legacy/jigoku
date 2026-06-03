@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { Location, Players } from '../Constants.js';
-import type { Cost, Result } from '../Costs.js';
+import type { Cost, Result } from './Cost.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type { SelectCardProperties } from '../GameActions/SelectCardAction.js';
 import { randomItem } from '../utils/helpers.js';

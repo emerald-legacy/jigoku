@@ -1,4 +1,4 @@
-import * as Costs from '../../../build/server/game/Costs.js';
+import * as Costs from '../../../build/server/game/costs/fateAndHonorCosts.js';
 
 describe('Costs.payReduceableFateCost', function () {
     beforeEach(function () {

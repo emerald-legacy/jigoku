@@ -1,5 +1,5 @@
 import { CardType, Duration, Element, EventName, Location, Players, TargetMode } from '../../../Constants.js';
-import type { Cost } from '../../../Costs.js';
+import type { Cost } from '../../../costs/Cost.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';

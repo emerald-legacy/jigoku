@@ -1,6 +1,6 @@
 import { AbilityContext } from '../AbilityContext.js';
 import { EventName, Location, Players } from '../Constants.js';
-import type { Cost, Result } from '../Costs.js';
+import type { Cost, Result } from './Cost.js';
 import { Event } from '../Events/Event.js';
 import { removeFate } from '../GameActions/GameActions.js';
 import BaseCard from '../BaseCard.js';

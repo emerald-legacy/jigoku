@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, EventName } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Cost } from '../../../Costs.js';
+import type { Cost } from '../../../costs/Cost.js';
 import type Player from '../../../Player.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type Game from '../../../Game.js';

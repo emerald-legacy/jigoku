@@ -6,7 +6,7 @@ import BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import { AbilityContext } from './AbilityContext.js';
 import Player from './Player.js';
-import { Cost } from './Costs.js';
+import type { Cost } from './costs/Cost.js';
 import type { Event } from './Events/Event.js';
 
 function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIntoLocation) {

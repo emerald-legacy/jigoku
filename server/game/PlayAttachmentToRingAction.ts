@@ -1,7 +1,7 @@
 import type { AbilityContext } from './AbilityContext.js';
 import BaseAction from './BaseAction.js';
 import { EventName, Phases, PlayType, TargetMode } from './Constants.js';
-import { payTargetDependentFateCost } from './Costs.js';
+import { payTargetDependentFateCost } from './costs/fateAndHonorCosts.js';
 import { attachToRing } from './GameActions/GameActions.js';
 import { parseGameMode } from './GameMode.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
