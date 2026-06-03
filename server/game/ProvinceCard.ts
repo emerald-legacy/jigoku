@@ -1,5 +1,6 @@
 import { GameModes } from '../GameModes.js';
 import { EffectName, Element, Location } from './Constants.js';
+import type { ElementSymbolInfo } from './ElementSymbol.js';
 import AbilityDsl from './abilitydsl.js';
 import BaseCard from './BaseCard.js';
 import { AttachmentManager } from './AttachmentManager.js';
@@ -180,8 +181,8 @@ export class ProvinceCard extends BaseCard {
         return !!this.cardData.elements && this.cardData.elements.length > 0;
     }
 
-    getPrintedElementSymbols(): Array<{ key: string; prettyName: string; element: string }> {
-        const symbols: Array<{ key: string; prettyName: string; element: string }> = [];
+    getPrintedElementSymbols(): ElementSymbolInfo[] {
+        const symbols: ElementSymbolInfo[] = [];
         if(this.hasElementSymbols()) {
             const elements =
                 this.cardData.elements === 'all' ? ['air', 'earth', 'fire', 'void', 'water'] : this.cardData.elements;
@@ -189,7 +190,7 @@ export class ProvinceCard extends BaseCard {
                 symbols.push({
                     key: `province-element-${index}`,
                     prettyName: 'The Province\'s Element',
-                    element: element
+                    element: element as Element
                 });
             });
         }

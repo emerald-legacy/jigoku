@@ -20,7 +20,7 @@ import {
     Location,
     Players
 } from './Constants.js';
-import { ElementSymbol } from './ElementSymbol.js';
+import { ElementSymbol, type ElementSymbolInfo } from './ElementSymbol.js';
 import {
     ActionProps,
     AttachmentConditionProps,
@@ -1059,14 +1059,14 @@ class BaseCard extends EffectSource {
         return false;
     }
 
-    getPrintedElementSymbols(): Array<{ element: string; key: string; prettyName: string }> {
+    getPrintedElementSymbols(): ElementSymbolInfo[] {
         return [];
     }
 
     getCurrentElementSymbols(): ElementSymbol[] {
         const symbols = this.getPrintedElementSymbols();
         if(!this.isInPlay()) {
-            return symbols.map((symbol) => new ElementSymbol(this.game, this, symbol as any));
+            return symbols.map((symbol) => new ElementSymbol(this.game, this, symbol));
         }
         let changeEffects = this.getRawEffects().filter((effect: CardEffect) => effect.type === EffectName.ReplacePrintedElement);
         changeEffects.forEach((effect: CardEffect) => {
@@ -1078,7 +1078,7 @@ class BaseCard extends EffectSource {
         });
         const mapped: ElementSymbol[] = [];
         symbols.forEach((symbol) => {
-            mapped.push(new ElementSymbol(this.game, this, symbol as any));
+            mapped.push(new ElementSymbol(this.game, this, symbol));
         });
         return mapped;
     }
