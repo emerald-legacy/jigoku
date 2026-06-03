@@ -27,6 +27,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
     name = '';
     cost = '';
     effect = '';
+    isNoAction?: boolean;
     defaultProperties: P = { cannotBeCancelled: false, optional: false } as P;
     getDefaultTargets: (context: AbilityContext) => TargetValue = (context) => this.defaultTargets(context);
 

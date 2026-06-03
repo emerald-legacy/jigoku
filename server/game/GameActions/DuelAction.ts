@@ -91,7 +91,7 @@ export class DuelAction extends CardGameAction {
         const properties = this.getProperties(context, additionalProperties);
         const gameAction =
             typeof properties.gameAction === 'function' ? properties.gameAction(duel, context) : properties.gameAction;
-        const isNoAction = !!(gameAction as unknown as { isNoAction?: boolean })?.isNoAction;
+        const isNoAction = !!gameAction?.isNoAction;
         if(gameAction && !isNoAction && gameAction.hasLegalTarget(context)) {
             const [message, messageArgs] = properties.message
                 ? [properties.message, properties.messageArgs ? ([] as unknown[]).concat(properties.messageArgs(duel, context) as unknown[]) : []]
