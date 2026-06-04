@@ -137,7 +137,7 @@ export interface EffectValueMap {
     [EffectName.MustBeDeclaredAsAttacker]: string;
     [EffectName.MustBeDeclaredAsDefender]: string;
     [EffectName.MustDeclareMaximumAttackers]: string;
-    [EffectName.EntersPlayWithStatus]: string;
+    [EffectName.EntersPlayWithStatus]: 'honored' | 'ordinary' | 'dishonored';
     [EffectName.CannotDeclareConflictsOfType]: string;
     [EffectName.SetConflictDeclarationType]: ConflictType;
     [EffectName.ProvideConflictDeclarationType]: ConflictType;
