@@ -7,6 +7,7 @@ import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { AbilityContext } from './AbilityContext.js';
+import type { Cost } from './costs/Cost.js';
 
 interface CardAbilityProperties {
     title?: string;
@@ -38,7 +39,7 @@ const DefaultLocationForType: Record<string, Location> = {
 class CardAbility extends ThenAbility {
     title?: string;
     limit: any;
-    abilityCost: any;
+    abilityCost: Cost[];
     location: Location[];
     printedAbility: boolean;
     cannotBeCancelled?: boolean;
@@ -138,7 +139,7 @@ class CardAbility extends ThenAbility {
         return super.meetsRequirements(context, ignoredRequirements);
     }
 
-    getCosts(context: AbilityContext, playCosts = true, triggerCosts = true): any[] {
+    getCosts(context: AbilityContext, playCosts = true, triggerCosts = true): Cost[] {
         let costs = super.getCosts(context, playCosts);
         if(!context.subResolution && triggerCosts && context.player.anyEffect(EffectName.AdditionalTriggerCost)) {
             const additionalTriggerCosts = context.player
@@ -162,7 +163,10 @@ class CardAbility extends ThenAbility {
     }
 
     getReducedCost(context: AbilityContext): number {
-        const fateCost = this.cost.find((cost: any) => cost.getReducedCost);
+        const fateCost = this.cost.find(
+            (cost): cost is Cost & { getReducedCost(context: AbilityContext): number } =>
+                !!(cost as { getReducedCost?: unknown }).getReducedCost
+        );
         return fateCost ? fateCost.getReducedCost(context) : 0;
     }
 
@@ -223,15 +227,14 @@ class CardAbility extends ThenAbility {
         const gainedAbility = origin ? '\'s gained ability from ' : '';
         const messageArgs: unknown[] = [context.player, ' ' + messageVerb + ' ', context.source, gainedAbility, origin];
         const costMessages = this.cost
-            .map((cost: any) => {
+            .map((cost) => {
                 const costMsg = cost.getCostMessage && cost.getCostMessage(context);
                 if(costMsg && costMsg.length > 0) {
-                    let card: any = context.costs[cost.getActionName(context)];
+                    let card: any = context.costs[(cost.getActionName as (c: AbilityContext) => string)(context)];
                     if(card && card.isFacedown && card.isFacedown()) {
                         card = 'a facedown card';
                     }
-                    let [format, args]: [string, any[]] = ['ERROR - MISSING COST MESSAGE', [' ', ' ']];
-                    [format, args] = cost.getCostMessage(context);
+                    const [format, args] = costMsg as [string, any[]];
                     return { message: this.game.gameChat.formatMessage(format, [card].concat(args)) };
                 }
                 return undefined;
