@@ -11,7 +11,7 @@ export default class Desolation extends DrawCard {
             cost: AbilityDsl.costs.payHonor(2),
             condition: (context) => context.player.opponent !== undefined,
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: this.game.provinceCards.filter((a: any) => a.controller === context.player.opponent),
+                target: this.game.provinceCards.filter(a => a.controller === context.player.opponent),
                 duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.blank()
             })),

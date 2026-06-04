@@ -3,6 +3,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
 import { AbilityType, CardType, Duration, Players } from '../../Constants.js';
 import type DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 import type { PersistentEffectProps } from '../../Interfaces.js';
 import { BaseOni } from './_BaseOni.js';
 
@@ -24,7 +25,7 @@ export default class UndeadHorror extends BaseOni {
                     ).length > 0
             },
             effect: 'attach a random character from {1}\'s dynasty discard pile to {2}',
-            effectArgs: (context) => [context.player.opponent as any, context.source],
+            effectArgs: (context) => [context.player.opponent as Player, context.source],
             gameAction: AbilityDsl.actions.sequentialContext((context) => {
                 const potentialTargets = ((context.player.opponent?.dynastyDiscardPile ?? []) as BaseCard[]).filter(
                     (card): card is DrawCard => card.type === CardType.Character

@@ -8,7 +8,7 @@ class ResourcefulMahoTsukai extends DrawCard {
         this.persistentEffect({
             condition: context => context.source.isDishonored,
             effect: AbilityDsl.effects.reduceCost({
-                match: (card: any) => card.hasTrait('maho')
+                match: (card) => card.hasTrait('maho')
             })
         });
     }

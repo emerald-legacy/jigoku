@@ -4,6 +4,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { Duration, EventName } from '../../../Constants.js';
 import type { GameEvent } from '../../../Events/EventPayloads.js';
 import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 
 export default class UnderTheNewMoon extends DrawCard {
     static id = 'under-the-new-moon';
@@ -16,7 +17,7 @@ export default class UnderTheNewMoon extends DrawCard {
             },
             cost: AbilityDsl.costs.payHonor(1),
             effect: 'force {1} to declare defenders before attackers are chosen this conflict',
-            effectArgs: (context) => [context.player.opponent as any],
+            effectArgs: (context) => [context.player.opponent as Player],
             gameAction: AbilityDsl.actions.menuPrompt((context) => ({
                 activePromptTitle: 'Choose how many characters will be attacking',
                 choices: this.#getChoices(context),

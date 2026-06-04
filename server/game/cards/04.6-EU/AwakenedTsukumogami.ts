@@ -7,7 +7,7 @@ class AwakenedTsukumogami extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: Object.values(this.game.rings).map(ring =>
-                AbilityDsl.effects.alternateFatePool((card: any) => card.isConflict && ring.getElements().some((element: string) => card.hasTrait(element)) && ring)
+                AbilityDsl.effects.alternateFatePool((card: DrawCard) => card.isConflict && ring.getElements().some((element: string) => card.hasTrait(element)) && ring)
             )
         });
     }

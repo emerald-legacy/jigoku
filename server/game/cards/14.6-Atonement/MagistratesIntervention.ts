@@ -17,7 +17,7 @@ class MagistratesIntervention extends DrawCard {
                     AbilityDsl.actions.conditional({
                         condition: (context: AbilityContext) => !!(
                             context.player.opponent && (context.target as DrawCard).controller === context.player.opponent &&
-                            context.game.getConflicts(context.player.opponent).filter((conflict: any) => !conflict.passed).length > 1),
+                            context.game.getConflicts(context.player.opponent).filter(conflict => !conflict.passed).length > 1),
                         trueGameAction: AbilityDsl.actions.dishonor(),
                         falseGameAction: AbilityDsl.actions.draw({ amount: 0 }) //do nothing
                     })
@@ -25,12 +25,12 @@ class MagistratesIntervention extends DrawCard {
                 ])
             },
             effect: 'dishonor {0}{1}',
-            effectArgs: (context: AbilityContext) => [context.player.opponent && context.game.getConflicts(context.player.opponent).filter((conflict: any) => !conflict.passed).length > 1 ? ', then dishonor it again' : '']
+            effectArgs: (context: AbilityContext) => [context.player.opponent && context.game.getConflicts(context.player.opponent).filter(conflict => !conflict.passed).length > 1 ? ', then dishonor it again' : '']
         });
     }
 
-    canPlay(context: any, playType: any) {
-        if(!context.player.cardsInPlay.some((card: any) => card.getType() === CardType.Character && (card.hasTrait('courtier') || card.hasTrait('magistrate')))) {
+    canPlay(context: AbilityContext, playType: string) {
+        if(!context.player.cardsInPlay.some(card => card.getType() === CardType.Character && (card.hasTrait('courtier') || card.hasTrait('magistrate')))) {
             return false;
         }
 

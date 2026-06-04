@@ -25,7 +25,7 @@ class AkodoToshiro extends DrawCard {
                     duration: Duration.UntilEndOfRound,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
-                            onConflictFinished: () => !context.player.cardsInPlay.some((card: any) => card.hasTrait('commander'))
+                            onConflictFinished: () => !context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('commander'))
                         },
                         message: '{0} is discarded due to his delayed effect',
                         messageArgs: [context.source],

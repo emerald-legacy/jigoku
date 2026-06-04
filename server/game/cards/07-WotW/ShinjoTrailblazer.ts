@@ -10,7 +10,7 @@ class ShinjoTrailblazer extends DrawCard {
         this.reaction({
             title: 'Gain +2/+2',
             when: {
-                onCardRevealed: (event: EventPayload<EventName.OnCardRevealed>, context: any) => event.card.isProvince && event.card.controller === context.player.opponent && this.game.isDuringConflict()
+                onCardRevealed: (event: EventPayload<EventName.OnCardRevealed>, context) => event.card.isProvince && event.card.controller === context.player.opponent && this.game.isDuringConflict()
             },
             gameAction: ability.actions.cardLastingEffect({ effect: ability.effects.modifyBothSkills(2) }),
             effect: 'give {0} +2{1}, +2{2}',

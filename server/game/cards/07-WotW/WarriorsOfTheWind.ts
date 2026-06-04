@@ -11,7 +11,7 @@ class WarriorsOfTheWind extends DrawCard {
             title: 'Re-arrange participating cavalry characters',
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.sendHome((context: AbilityContext) => ({
-                    target: context.player.filterCardsInPlay((card: any) => card.hasTrait('cavalry') && card.isParticipating())
+                    target: context.player.filterCardsInPlay((card) => card.hasTrait('cavalry') && card.isParticipating())
                 })),
                 AbilityDsl.actions.selectCard({
                     activePromptTitle: 'Choose characters',
@@ -20,10 +20,10 @@ class WarriorsOfTheWind extends DrawCard {
                     cardType: CardType.Character,
                     controller: Players.Self,
                     targets: true,
-                    cardCondition: (card: any) => card.hasTrait('cavalry'),
+                    cardCondition: (card) => card.hasTrait('cavalry'),
                     gameAction: AbilityDsl.actions.moveToConflict(),
                     message: '{0} chooses to move {1} to the conflict',
-                    messageArgs: (cards: any, player: any) => [player, cards]
+                    messageArgs: (cards, player) => [player, cards]
                 })
             ])
         });

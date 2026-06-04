@@ -7,13 +7,14 @@ import AbilityTargetElementSymbol from './AbilityTargets/AbilityTargetElementSym
 import { Stage, TargetMode, AbilityType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { GameAction } from './GameActions/GameAction.js';
+import type { Event } from './Events/Event.js';
 
 interface AbilityTarget {
     name: string;
     properties: any;
     dependentCost?: any;
     canResolve(context: AbilityContext): boolean;
-    resolve(context: AbilityContext, targetResults: any): void;
+    resolve(context: AbilityContext, targetResults: TargetResults): void;
     checkTarget(context: AbilityContext): boolean;
     hasLegalTarget(context: AbilityContext): boolean;
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean;
@@ -35,7 +36,7 @@ interface TargetResults {
     delayTargeting?: any;
     playCosts?: boolean;
     triggerCosts?: boolean;
-    events?: any[];
+    events?: Event[];
 }
 
 /**
@@ -154,7 +155,7 @@ class BaseAbility {
 
     getCosts(context: AbilityContext, playCosts = true, _triggerCosts = true): any[] {
         let costs = this.cost.map((a) => a);
-        if((context as any).ignoreFateCost) {
+        if(context.ignoreFateCost) {
             costs = costs.filter((cost) => !cost.isPrintedFateCost);
         }
 

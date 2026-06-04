@@ -2,6 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { Location, Players } from '../Constants.js';
 import type { Cost, Result } from './Cost.js';
+import type { Event } from '../Events/Event.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type { SelectCardProperties } from '../GameActions/SelectCardAction.js';
 import { randomItem } from '../utils/helpers.js';
@@ -29,7 +30,7 @@ export class MetaActionCost extends GameActionCost implements Cost {
         return this.action.hasLegalTarget(context, additionalProps);
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, result: Result): void {
+    addEventsToArray(events: Event[], context: AbilityContext, result: Result): void {
         const properties = this.action.getProperties(context) as SelectCardProperties;
         if(properties.targets && context.choosingPlayerOverride && properties.selector) {
             context.costs[properties.gameAction.name] = randomItem(
@@ -47,7 +48,7 @@ export class MetaActionCost extends GameActionCost implements Cost {
             location: properties.location || Location.Any,
             controller: Players.Self,
             cancelHandler: !result.canCancel ? null : () => (result.cancelled = true),
-            subActionProperties: (target: any) => {
+            subActionProperties: (target: BaseCard) => {
                 context.costs[properties.gameAction.name] = target;
                 if(target.createSnapshot) {
                     context.costs[properties.gameAction.name + 'StateWhenChosen'] = target.createSnapshot();

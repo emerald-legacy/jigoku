@@ -16,7 +16,7 @@ class AsakoTsuki extends DrawCard {
             },
             target: {
                 cardType: CardType.Character,
-                cardCondition: (card: any) => card.hasTrait('scholar'),
+                cardCondition: (card) => card.hasTrait('scholar'),
                 gameAction: AbilityDsl.actions.honor()
             }
         });

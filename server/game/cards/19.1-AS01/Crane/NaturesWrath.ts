@@ -4,6 +4,7 @@ import type BaseCard from '../../../BaseCard.js';
 import CardAbility from '../../../CardAbility.js';
 import { CardType, ConflictType, EventName, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import type { Event } from '../../../Events/Event.js';
 
 const TARGET_CHARACTER = 'character';
 
@@ -60,7 +61,7 @@ export default class NaturesWrath extends DrawCard {
                             }
                         },
                         then: {
-                            thenCondition: (event: any) =>
+                            thenCondition: (event: Event & { origin?: BaseCard }) =>
                                 !!context &&
                                 event.origin === context.target &&
                                 !event.cancelled &&

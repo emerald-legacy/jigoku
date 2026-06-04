@@ -12,7 +12,7 @@ class KireiKo extends DrawCard {
         this.reaction({
             title: 'Bow a character who triggered an ability',
             when: {
-                onCardAbilityInitiated: (event: EventPayload<EventName.OnCardAbilityInitiated>, context: any) =>
+                onCardAbilityInitiated: (event: EventPayload<EventName.OnCardAbilityInitiated>, context: TriggeredAbilityContext) =>
                     event.card.type === CardType.Character && event.card.controller === context.player.opponent &&
                     event.ability.isTriggeredAbility()
             },

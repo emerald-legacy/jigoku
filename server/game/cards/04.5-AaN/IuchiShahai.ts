@@ -7,8 +7,8 @@ class IuchiShahai extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: AbilityDsl.effects.reduceCost({
-                match: (card: any) => card.hasTrait('meishodo'),
-                targetCondition: (target: any, source: any) => target === source || target.isFaction('neutral')
+                match: (card) => card.hasTrait('meishodo'),
+                targetCondition: (target, source) => target === source || target.isFaction('neutral')
             })
         });
     }

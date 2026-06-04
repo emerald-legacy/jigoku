@@ -4,6 +4,7 @@ import { EventRegistrar } from '../../../EventRegistrar.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 export default class TheEmptyCity extends ProvinceCard {
     static id = 'the-empty-city';
@@ -67,7 +68,7 @@ export default class TheEmptyCity extends ProvinceCard {
         this.invokedSpirit = undefined;
     }
 
-    public onCardLeavesPlay(event: any) {
+    public onCardLeavesPlay(event: EventPayload<EventName.OnCardLeavesPlay>) {
         if(this.invokedSpirit && this.invokedSpirit === event.card && this.location !== Location.RemovedFromGame) {
             this.game.addMessage(
                 '{1} is removed from the game, as it was invoked by the {0} this round',

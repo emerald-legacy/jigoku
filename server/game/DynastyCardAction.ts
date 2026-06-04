@@ -48,8 +48,8 @@ class DynastyCardAction extends BaseAction {
         if(context.source.checkRestrictions('placeFate', context)) {
             context.source
                 .getRawEffects()
-                .filter((effect: any) => effect.type === EffectName.GainExtraFateWhenPlayed)
-                .map((effect: any) =>
+                .filter((effect) => effect.type === EffectName.GainExtraFateWhenPlayed)
+                .map((effect) =>
                     context.game.addMessage(
                         '{0} enters play with {1} additional fate due to {2}',
                         context.source,

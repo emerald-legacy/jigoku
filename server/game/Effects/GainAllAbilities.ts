@@ -4,6 +4,7 @@ import { AbilityType, Location } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import type { CardAction } from '../CardAction.js';
 import type TriggeredAbility from '../TriggeredAbility.js';
+import type { StoredPersistentEffect } from '../BaseCard.js';
 
 interface GainedAbilities {
     actions: unknown[];
@@ -13,7 +14,7 @@ interface GainedAbilities {
 export default class GainAllAbilities extends EffectValue<BaseCard> {
     actions: GainAbility[];
     reactions: GainAbility[];
-    persistentEffects: any[];
+    persistentEffects: StoredPersistentEffect[];
     abilitiesForTargets: Record<string, GainedAbilities>;
 
     constructor(card: BaseCard) {
@@ -40,7 +41,7 @@ export default class GainAllAbilities extends EffectValue<BaseCard> {
         };
         for(const effect of this.persistentEffects) {
             if(effect.location === Location.PlayArea || effect.location === Location.Any) {
-                effect.ref = target.addEffectToEngine(effect);
+                effect.ref = target.addEffectToEngine({ ...effect, location: effect.location });
             }
         }
     }
@@ -75,7 +76,7 @@ export default class GainAllAbilities extends EffectValue<BaseCard> {
         return [];
     }
 
-    getPersistentEffects(): any[] {
+    getPersistentEffects(): StoredPersistentEffect[] {
         return this.persistentEffects;
     }
 }

@@ -8,7 +8,7 @@ class UnveiledDestiny extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context: AbilityContext) => !!context.player.role,
-            effect: AbilityDsl.effects.addElementAsAttacker((card: any) => card.controller.role.getElement())
+            effect: AbilityDsl.effects.addElementAsAttacker((card) => card.controller.role.getElement())
         });
     }
 }

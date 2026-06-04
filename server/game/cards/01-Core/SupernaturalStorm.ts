@@ -9,12 +9,12 @@ class SupernaturalStorm extends DrawCard {
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Increase the skill of one character',
-            condition: () => this.controller.cardsInPlay.some((card: any) => card.hasTrait('shugenja')),
+            condition: () => this.controller.cardsInPlay.some(card => card.hasTrait('shugenja')),
             target: {
                 cardType: CardType.Character,
-                cardCondition: (card: any) => card.isParticipating(),
+                cardCondition: card => card.isParticipating(),
                 gameAction: ability.actions.cardLastingEffect((context: AbilityContext) => ({
-                    effect: ability.effects.modifyBothSkills(context.player.cardsInPlay.reduce((total: number, card: any) => total + (card.hasTrait('shugenja') ? 1 : 0), 0))
+                    effect: ability.effects.modifyBothSkills(context.player.cardsInPlay.reduce((total: number, card) => total + (card.hasTrait('shugenja') ? 1 : 0), 0))
                 }))
             },
             effect: 'imbue {0} with the supernatural power of the storm!'

@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,10 +14,10 @@ class CommandRespect extends DrawCard {
                 context.player.hand.length < context.player.opponent.hand.length),
             max: AbilityDsl.limit.perConflict(1),
             effect: 'force {1} to give them an honor as an additional cost to play an event until the end of the conflict',
-            effectArgs: context => [context.player.opponent as any],
+            effectArgs: context => [context.player.opponent as Player],
             gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
                 targetController: context.player.opponent,
-                effect: AbilityDsl.effects.additionalPlayCost((sourceContext: any) =>
+                effect: AbilityDsl.effects.additionalPlayCost((sourceContext: AbilityContext) =>
                     sourceContext.source.type === CardType.Event ? [AbilityDsl.costs.giveHonorToOpponent(1)] : []
                 )
             }))

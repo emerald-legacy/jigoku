@@ -16,14 +16,14 @@ class TogashiMendicant extends DrawCard {
         });
     }
 
-    togashiMendicantPrompt(context: any, promptCards: any, orderedCards: any, promptTitle: any) {
+    togashiMendicantPrompt(context: AbilityContext, promptCards: DrawCard[], orderedCards: DrawCard[], promptTitle: string) {
         this.game.promptWithHandlerMenu(context.player, {
             activePromptTitle: promptTitle,
             context: context,
             cards: promptCards,
-            cardHandler: (card: any) => {
+            cardHandler: (card: DrawCard) => {
                 orderedCards.push(card);
-                promptCards = promptCards.filter((c: any) => c !== card);
+                promptCards = promptCards.filter((c: DrawCard) => c !== card);
                 if(promptCards.length > 1) {
                     this.togashiMendicantPrompt(context, promptCards, orderedCards, 'Which card do you want to be the second card?');
                     return;

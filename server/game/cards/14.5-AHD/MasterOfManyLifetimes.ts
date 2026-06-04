@@ -24,7 +24,7 @@ class MasterOfManyLifetimes extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: (card) => card.facedown
             },
-            gameAction: AbilityDsl.actions.cancel((context: TriggeredAbilityContext<any, DrawCard>) => ({
+            gameAction: AbilityDsl.actions.cancel((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
                 replacementGameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.returnToHand((context) => ({
                         target: context.event.card.attachments

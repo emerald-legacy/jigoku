@@ -15,7 +15,7 @@ export default class CeremonialRobes extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyGlory((_character: any, context: any) =>
+            effect: AbilityDsl.effects.modifyGlory((_character: BaseCard, context: AbilityContext) =>
                 (context.player.cardsInPlay as BaseCard[]).reduce(
                     (sum: number, card: BaseCard) => (card.type === CardType.Character && card.hasTrait('spirit') ? sum + 1 : sum),
                     0
@@ -63,7 +63,7 @@ export default class CeremonialRobes extends DrawCard {
                                     ctx.player.opponent
                                 );
                                 AbilityDsl.actions
-                                    .loseHonor((innerContext: any) => ({ target: innerContext.game.getPlayers() }))
+                                    .loseHonor((innerContext) => ({ target: innerContext.game.getPlayers() }))
                                     .resolve(chosenCard, ctx);
                             }
                         }

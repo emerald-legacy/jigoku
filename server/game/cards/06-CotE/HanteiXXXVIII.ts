@@ -23,7 +23,7 @@ class HanteiXXXVIII extends DrawCard {
 
             target: {
                 cardType: CardType.Character,
-                cardCondition: (card: any) => card.isParticipating(),
+                cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.bow()
             }
         });

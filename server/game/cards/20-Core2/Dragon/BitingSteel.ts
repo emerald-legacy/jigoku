@@ -38,7 +38,7 @@ export default class BitingSteel extends DrawCard {
                     target: context.target?.parent ?? undefined,
                     effect: AbilityDsl.effects.modifyDuelistSkill(
                         context.target ? getAttachmentSkill(context.target) : 0,
-                        (context as TriggeredAbilityContext<any, DrawCard>).event.duel
+                        (context as TriggeredAbilityContext<BaseCard, DrawCard>).event.duel
                     ),
                     duration: Duration.UntilEndOfDuel
                 }))

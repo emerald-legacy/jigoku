@@ -43,7 +43,7 @@ class IsawaTsuke extends DrawCard {
         let targetedCharacterController = ((context as TriggeredAbilityContext).event.card as DrawCard).controller;
 
         return targetedCharacterController.cardsInPlay.filter(
-            (card: any) => card.printedCost === targetedCharacter.printedCost
+            card => card.printedCost === targetedCharacter.printedCost
         );
     }
 

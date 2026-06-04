@@ -1,6 +1,7 @@
 import { CardType, ConflictType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 
 export default class OurDuty extends DrawCard {
     static id = 'our-duty-';
@@ -14,7 +15,7 @@ export default class OurDuty extends DrawCard {
                 cardCondition: (card: DrawCard) => card.isFaction('crab')
             }),
             effect: 'force {1} to sacrifice a character',
-            effectArgs: (context) => context.player.opponent as any,
+            effectArgs: (context) => context.player.opponent as Player,
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to sacrifice',

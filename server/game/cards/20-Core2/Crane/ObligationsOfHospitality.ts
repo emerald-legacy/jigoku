@@ -11,7 +11,7 @@ export default class ObligationsOfHospitality extends DrawCard {
             location: Location.Any,
             targetController: Players.Any,
             match: (player) => player.imperialFavor !== '',
-            effect: AbilityDsl.effects.reduceCost({ match: (card: any, source: any) => card === source })
+            effect: AbilityDsl.effects.reduceCost({ match: (card, source) => card === source })
         });
 
         this.action({

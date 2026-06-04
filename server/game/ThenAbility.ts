@@ -1,6 +1,8 @@
 import { AbilityContext } from './AbilityContext.js';
 import BaseCardAbility from './BaseCardAbility.js';
 import type BaseCard from './BaseCard.js';
+import type { GameAction } from './GameActions/GameAction.js';
+import type { Event } from './Events/Event.js';
 
 interface ThenAbilityProperties {
     cost?: any;
@@ -29,7 +31,7 @@ class ThenAbility extends BaseCardAbility {
     checkGameActionsForPotential(context: AbilityContext): boolean {
         if(super.checkGameActionsForPotential(context)) {
             return true;
-        } else if(this.gameAction.every((gameAction: any) => gameAction.isOptional(context)) && this.properties.then) {
+        } else if(this.gameAction.every((gameAction) => gameAction.isOptional(context)) && this.properties.then) {
             const then =
                 typeof this.properties.then === 'function' ? this.properties.then(context) : this.properties.then;
             const thenAbility = new ThenAbility(this.card, then);
@@ -44,7 +46,7 @@ class ThenAbility extends BaseCardAbility {
             message = message(context);
         }
         if(message) {
-            let messageArgs: any[] = [context.player, context.source, context.target];
+            let messageArgs: unknown[] = [context.player, context.source, context.target];
             if(this.properties.messageArgs) {
                 let args = this.properties.messageArgs;
                 if(typeof args === 'function') {
@@ -58,7 +60,7 @@ class ThenAbility extends BaseCardAbility {
 
     getGameActions(context: AbilityContext): any[] {
         // if there are any targets, look for gameActions attached to them
-        const actions = this.targets.reduce((array: any[], target: any) => array.concat(target.getGameAction(context)), []);
+        const actions = this.targets.reduce((array: GameAction[], target) => array.concat(target.getGameAction(context)), [] as GameAction[]);
         // look for a gameAction on the ability itself, on an attachment execute that action on its parent, otherwise on the card itself
         return actions.concat(this.gameAction);
     }
@@ -81,7 +83,7 @@ class ThenAbility extends BaseCardAbility {
             });
         }
         this.game.queueSimpleStep(() => {
-            const eventsToResolve = context.events.filter((event: any) => !event.cancelled && !event.resolved);
+            const eventsToResolve = context.events.filter((event) => !event.cancelled && !event.resolved);
             if(eventsToResolve.length > 0) {
                 const window = this.openEventWindow(eventsToResolve);
                 if(then) {
@@ -94,7 +96,7 @@ class ThenAbility extends BaseCardAbility {
         });
     }
 
-    openEventWindow(events: any[]): any {
+    openEventWindow(events: Event[]): any {
         return this.game.openThenEventWindow(events);
     }
 

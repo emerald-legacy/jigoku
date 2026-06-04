@@ -3,6 +3,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import { AbilityType, EventName } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 class Studious extends DrawCard {
     static id = 'studious';
 
@@ -19,8 +20,8 @@ class Studious extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Draw a card',
                 when: {
-                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) =>
-                        event.conflict.winner === context.source.controller && context.source.isParticipating()
+                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext) =>
+                        event.conflict.winner === context.source.controller && (context.source as DrawCard).isParticipating()
                 },
                 gameAction: AbilityDsl.actions.draw()
             })

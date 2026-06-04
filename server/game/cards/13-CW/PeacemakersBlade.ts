@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import type BaseCard from '../../BaseCard.js';
+import type Ring from '../../Ring.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType } from '../../Constants.js';
 
@@ -11,8 +13,8 @@ class PeacemakersBlade extends DrawCard {
         });
     }
 
-    canPlayOn(card: any) {
-        return (card.getType() === CardType.Character && !card.isAttacking()) && super.canPlayOn(card);
+    canPlayOn(card: BaseCard | Ring) {
+        return ((card as DrawCard).getType() === CardType.Character && !(card as DrawCard).isAttacking()) && super.canPlayOn(card);
     }
 }
 

@@ -1,10 +1,12 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, EventName, Location, Players, PlayType } from '../../../Constants.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 import { ReduceableFateCost } from '../../../costs/ReduceableFateCost.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import Player from '../../../Player.js';
+import type { Event } from '../../../Events/Event.js';
 
 class HifumiCost extends ReduceableFateCost {
     isPlayCost = false;
@@ -20,7 +22,7 @@ class HifumiCost extends ReduceableFateCost {
         return this.#timesTriggered.get(player) ?? 0;
     }
 
-    canPay(context: AbilityContext<any>): boolean {
+    canPay(context: AbilityContext): boolean {
         const cost = this.currentCost(context.player);
         if(cost === 0) {
             return true;
@@ -45,12 +47,12 @@ class HifumiCost extends ReduceableFateCost {
         return this.#cardsThatCanPayForHifumi(context);
     }
 
-    protected afterPayHook(event: any): void {
-        const player = event.context.player;
+    protected afterPayHook(event: Event): void {
+        const player = (event.context as AbilityContext).player;
         this.#timesTriggered.set(player, this.currentCost(player) + 1);
     }
 
-    #cardsThatCanPayForHifumi(context: AbilityContext<any>): Set<DrawCard> {
+    #cardsThatCanPayForHifumi(context: AbilityContext): Set<DrawCard> {
         return new Set(
             context.player.cardsInPlay.filter((c: DrawCard) => c.type === CardType.Character && c.getFate() > 0)
         );
@@ -98,7 +100,7 @@ export default class IsawaHifumi extends DrawCard {
         this.hifumiCost.refreshHifumiCount();
     }
 
-    public onCardLeavesPlay(event: any) {
+    public onCardLeavesPlay(event: EventPayload<EventName.OnCardLeavesPlay>) {
         if(event.card === this) {
             this.hifumiCost.refreshHifumiCount();
         }

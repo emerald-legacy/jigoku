@@ -1,9 +1,10 @@
-import { CardType, Players } from '../../Constants.js';
+import { CardType, EventName, Players } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
 
 export default class MagnificentTriumph extends DrawCard {
     static id = 'magnificent-triumph';
@@ -41,7 +42,7 @@ export default class MagnificentTriumph extends DrawCard {
         this.#duelWinnersThisConflict.clear();
     }
 
-    public afterDuel(event: any) {
+    public afterDuel(event: EventPayload<EventName.AfterDuel>) {
         for(const winner of (event.duel as Duel).winner ?? []) {
             this.#duelWinnersThisConflict.add(winner);
         }

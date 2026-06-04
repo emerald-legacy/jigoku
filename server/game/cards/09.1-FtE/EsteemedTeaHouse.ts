@@ -8,7 +8,7 @@ class EsteemedTeaHouse extends DrawCard {
     setupCardAbilities() {
         this.action<DrawCard>({
             title: 'Return attachment to owners hand',
-            condition: context => context.player.anyCardsInPlay((card: any) => card.isParticipating() && card.hasTrait('courtier')),
+            condition: context => context.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('courtier')),
             target: {
                 cardType: CardType.Attachment,
                 cardCondition: card => card.parent && card.parent.type === CardType.Character && card.parent.isParticipating(),

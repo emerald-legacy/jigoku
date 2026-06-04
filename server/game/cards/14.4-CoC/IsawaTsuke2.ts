@@ -43,9 +43,9 @@ class IsawaTsuke2 extends DrawCard {
     }
 
     getNumberOfLegalTargets(context: AbilityContext) {
-        const cards = (context.game.currentConflict as Conflict).getParticipants((card: any) => card.allowGameAction('removeFate'));
-        const selectedCards: any[] = [];
-        cards.forEach((card: any) => {
+        const cards = (context.game.currentConflict as Conflict).getParticipants((card) => card.allowGameAction('removeFate'));
+        const selectedCards: DrawCard[] = [];
+        cards.forEach((card) => {
             if(card.canBeTargeted(context, selectedCards)) {
                 selectedCards.push(card);
             }

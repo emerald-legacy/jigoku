@@ -11,7 +11,7 @@ class Outwit extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card: any, context: any) => context.player.cardsInPlay.some((myCard: any) => (
+                cardCondition: (card, context) => context.player.cardsInPlay.some((myCard: DrawCard) => (
                     myCard.hasTrait('courtier') && myCard.isParticipating() &&
                     myCard.politicalSkill > card.politicalSkill
                 )),

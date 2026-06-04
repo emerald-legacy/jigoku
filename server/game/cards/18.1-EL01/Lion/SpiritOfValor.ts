@@ -28,13 +28,13 @@ export default class SpiritOfValor extends DrawCard {
             location: Location.Any,
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
-                amount: (_: any, player: any) =>
+                amount: (_, player) =>
                     player.cardsInPlay.some(
-                        (card: any) => card.getType() === CardType.Character && card.hasTrait('shugenja')
+                        (card) => card.getType() === CardType.Character && card.hasTrait('shugenja')
                     )
                         ? 1
                         : 0,
-                match: (card: any, source: any) => card === source
+                match: (card, source) => card === source
             })
         });
 

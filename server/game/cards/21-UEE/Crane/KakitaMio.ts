@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import type BaseCard from '../../../BaseCard.js';
 import { Conflict } from '../../../Conflict.js';
 import { CardType, Decks, Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -49,7 +50,7 @@ export default class KakitaMio extends DrawCard {
             match: (card, context) =>
                 card.type === CardType.Character &&
                 card.isParticipatingFor(context?.player) &&
-                (card.hasTrait('imperial') || card.attachments.some((attachment: any) => attachment.hasTrait('imperial'))),
+                (card.hasTrait('imperial') || card.attachments.some((attachment: BaseCard) => attachment.hasTrait('imperial'))),
             effect: AbilityDsl.effects.modifyBothSkills(1)
         });
     }

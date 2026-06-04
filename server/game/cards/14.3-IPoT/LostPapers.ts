@@ -15,8 +15,8 @@ class LostPapers extends DrawCard {
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: (card, context) => {
-                    let charactersInPlay = context.game.findAnyCardsInPlay((c: any) => c.type === CardType.Character);
-                    return card.getFate() === Math.max(...charactersInPlay.map((c: any) => c.getFate()));
+                    let charactersInPlay = context.game.findAnyCardsInPlay((c: DrawCard) => c.type === CardType.Character);
+                    return (card as DrawCard).getFate() === Math.max(...charactersInPlay.map((c: DrawCard) => c.getFate()));
                 },
                 gameAction: AbilityDsl.actions.bow()
             }

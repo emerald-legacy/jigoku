@@ -1,8 +1,9 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityContext } from '../../AbilityContext.js';
+import type Player from '../../Player.js';
 
-const compromisedSecretsCost = function (secretsController: any) {
+const compromisedSecretsCost = function (secretsController: Player) {
     return {
         canPay: function (context: AbilityContext) {
             const canLoseHonor = context.game.actions.loseHonor().canAffect(context.player, context);

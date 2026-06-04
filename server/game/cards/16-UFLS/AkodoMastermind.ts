@@ -30,7 +30,7 @@ class AkodoMastermind extends DrawCard {
         if(context.costs.removeFromGame) {
             return (context.costs.removeFromGame as BaseCard[]).length;
         }
-        return context.player.conflictDiscardPile.filter((card: any) => card.hasTrait('tactic')).length;
+        return context.player.conflictDiscardPile.filter((card) => card.hasTrait('tactic')).length;
     }
 }
 

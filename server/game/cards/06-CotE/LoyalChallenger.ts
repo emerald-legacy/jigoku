@@ -4,6 +4,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import { DuelType, EventName } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 class LoyalChallenger extends DrawCard {
     static id = 'loyal-challenger';
 
@@ -12,7 +13,7 @@ class LoyalChallenger extends DrawCard {
             effect: [
                 AbilityDsl.effects.delayedEffect({
                     when: {
-                        afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) => event.conflict.winner === context.source.controller &&
+                        afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => event.conflict.winner === context.source.controller &&
                             context.source.isParticipating()
                     },
                     message: '{0} gains 1 honor due to {1} winning a conflict',
@@ -22,7 +23,7 @@ class LoyalChallenger extends DrawCard {
                 ,
                 AbilityDsl.effects.delayedEffect({
                     when: {
-                        afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) => event.conflict.loser === context.source.controller &&
+                        afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => event.conflict.loser === context.source.controller &&
                             context.source.isParticipating()
                     },
                     message: '{0} loses 1 honor due to {1} losing a conflict',

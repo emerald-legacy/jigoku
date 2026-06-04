@@ -10,13 +10,13 @@ const oniTyrantCost = function () {
         },
         resolve: function (context: AbilityContext, result: { cancelled?: boolean }) {
             let creatures = context.player.outsideTheGameCards;
-            creatures = creatures.filter((card: any) => card.printedCost <= 2 && context.game.actions.putIntoConflict().canAffect(card, context));
+            creatures = creatures.filter((card: DrawCard) => (card.printedCost ?? 0) <= 2 && context.game.actions.putIntoConflict().canAffect(card, context));
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Select a creature to summon',
                 source: context.source,
                 cards: creatures,
                 choices: ['Cancel'],
-                cardHandler: (card: any) => {
+                cardHandler: (card: DrawCard) => {
                     context.costs.oniTyrantCostCreature = card;
                 },
                 handlers: [

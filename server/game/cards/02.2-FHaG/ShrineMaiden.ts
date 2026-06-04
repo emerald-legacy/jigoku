@@ -18,14 +18,14 @@ class ShrineMaiden extends DrawCard {
             effect: 'take any revealed spells into their hand',
             handler: (context: TriggeredAbilityContext) => {
                 const cards = context.player.conflictDeck.slice(0, 3);
-                const toHand = cards.filter((card: any) => card.hasTrait('kiho') || card.hasTrait('spell'));
-                const toDiscard = cards.filter((card: any) => !card.hasTrait('kiho') && !card.hasTrait('spell'));
+                const toHand = cards.filter((card) => card.hasTrait('kiho') || card.hasTrait('spell'));
+                const toDiscard = cards.filter((card) => !card.hasTrait('kiho') && !card.hasTrait('spell'));
 
-                toHand.forEach((card: any) => {
+                toHand.forEach((card) => {
                     context.player.moveCard(card, Location.Hand);
                 });
 
-                toDiscard.forEach((card: any) => {
+                toDiscard.forEach((card) => {
                     context.player.moveCard(card, Location.ConflictDiscardPile);
                 });
 

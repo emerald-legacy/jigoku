@@ -16,7 +16,7 @@ class PreeminentDecree extends DrawCard {
                     return card.hasTrait('courtier') && card.isParticipating() && card.glory > 0;
                 },
                 gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>(context => ({
-                    target: context.game.currentConflict?.getParticipants().filter((a: any) => a !== context.target) ?? [],
+                    target: context.game.currentConflict?.getParticipants().filter((a: DrawCard) => a !== context.target) ?? [],
                     effect: AbilityDsl.effects.modifyPoliticalSkill(-1 * ((context.target && context.target.glory) || 0))
                 }))
             },

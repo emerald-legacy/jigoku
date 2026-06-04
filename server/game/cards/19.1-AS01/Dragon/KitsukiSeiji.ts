@@ -3,8 +3,9 @@ import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.j
 import AbilityDsl from '../../../abilitydsl.js';
 import { Element, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import type BaseCard from '../../../BaseCard.js';
 import type Player from '../../../Player.js';
-import type Ring from '../../../Ring.js';
+import Ring from '../../../Ring.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 const ELEMENT_KEY = 'kitsuki-seiji-water';
@@ -27,7 +28,7 @@ export default class KitsukiSeiji extends DrawCard {
             when: {
                 onMoveFate: (event: EventPayload<EventName.OnMoveFate>) => this.fateRecipientIsSeijisRing(event.recipient),
                 onPlaceFateOnUnclaimedRings: (event: EventPayload<EventName.OnPlaceFateOnUnclaimedRings>) =>
-                    (event.recipients ?? []).some((recipient: any) => this.fateRecipientIsSeijisRing(recipient.ring))
+                    (event.recipients ?? []).some((recipient) => this.fateRecipientIsSeijisRing(recipient.ring))
             },
             effect: 'put the fate that would go on the {1} ring on {0} instead',
             effectArgs: () => [this.getCurrentElementSymbol(ELEMENT_KEY)],
@@ -54,9 +55,9 @@ export default class KitsukiSeiji extends DrawCard {
         return symbols;
     }
 
-    private fateRecipientIsSeijisRing(recipient: any) {
+    private fateRecipientIsSeijisRing(recipient?: Player | BaseCard | Ring) {
         return (
-            recipient && recipient.type === 'ring' && recipient.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY))
+            recipient instanceof Ring && recipient.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY))
         );
     }
 
@@ -71,7 +72,7 @@ export default class KitsukiSeiji extends DrawCard {
 
     private replacementForPlaceFateOnUnclaimedRings(context: AbilityContext) {
         return AbilityDsl.actions.joint(
-            ((context as TriggeredAbilityContext).event.recipients ?? []).map((recipient: any) => {
+            ((context as TriggeredAbilityContext).event.recipients ?? []).map((recipient) => {
                 const isSeijisRing = recipient.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY));
                 if(isSeijisRing) {
                     return AbilityDsl.actions.placeFate({

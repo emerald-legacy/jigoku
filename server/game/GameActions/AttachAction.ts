@@ -93,7 +93,7 @@ export class AttachAction extends CardGameAction<AttachActionProperties> {
             return context.player.opponent as Player;
         }
 
-        return (properties.attachment as DrawCard).controller;
+        return (properties.attachment as DrawCard)?.controller ?? context.player;
     }
 
     checkEventCondition(event: GameEvent<EventName.OnCardAttached>, additionalProperties: Record<string, unknown>): boolean {

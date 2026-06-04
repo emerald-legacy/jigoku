@@ -14,7 +14,7 @@ class OpiumWastrel extends DrawCard {
             },
             target: {
                 cardType: CardType.Character,
-                cardCondition: (card: any) => card.isParticipating(),
+                cardCondition: (card) => card.isParticipating(),
                 gameAction: ability.actions.cardLastingEffect({
                     effect: ability.effects.setGlory(0)
                 })

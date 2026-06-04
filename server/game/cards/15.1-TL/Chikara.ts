@@ -15,12 +15,12 @@ class Chikara extends DrawCard {
         });
 
         this.whileAttached({
-            match: (card: any) => card.hasTrait('champion'),
+            match: (card) => card.hasTrait('champion'),
             effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Return all fate from, then sacrifice a character',
                 when: {
-                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) => {
-                        return event.conflict.winner === context.source.controller && context.source.isParticipating();
+                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: AbilityContext) => {
+                        return event.conflict.winner === context.source.controller && (context.source as DrawCard).isParticipating();
                     }
                 },
                 printedAbility: false,
@@ -28,7 +28,7 @@ class Chikara extends DrawCard {
                 effectArgs: (context: AbilityContext) => [(context.target as DrawCard).controller],
                 target: {
                     cardType: CardType.Character,
-                    cardCondition: (card: any) => card.isParticipating(),
+                    cardCondition: (card) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.sequential([
                         AbilityDsl.actions.removeFate((context: AbilityContext) => ({
                             amount: (context.target as DrawCard).getFate(),

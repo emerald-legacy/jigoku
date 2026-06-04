@@ -1,13 +1,15 @@
+import DrawCard from '../../../../../server/game/DrawCard.js';
+
 describe('Retreat to Safety', () => {
     integration(() => {
         let player1: any;
         let player2: any;
-        let borderRider: any;
-        let matsuBerserker: any;
-        let kitsuMotso: any;
-        let ikomaProdigy: any;
-        let retreatToSafety: any;
-        let initiateConflict: (_config: any) => void;
+        let borderRider: DrawCard;
+        let matsuBerserker: DrawCard;
+        let kitsuMotso: DrawCard;
+        let ikomaProdigy: DrawCard;
+        let retreatToSafety: DrawCard;
+        let initiateConflict: (_config: Record<string, unknown>) => void;
         let noMoreActions: () => void;
         let getChatLogs: (_n: number) => string[];
 

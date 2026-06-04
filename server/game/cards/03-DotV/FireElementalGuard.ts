@@ -10,7 +10,7 @@ class FireElementalGuard extends DrawCard {
             title: 'Discard an attachment',
             condition: context =>
                 this.game.isDuringConflict() &&
-                (this.game.currentConflict?.getNumberOfCardsPlayed(context.player, (card: any) => card.hasTrait('spell')) ?? 0) > 2,
+                (this.game.currentConflict?.getNumberOfCardsPlayed(context.player, (card) => card.hasTrait('spell')) ?? 0) > 2,
             target: {
                 cardType: CardType.Attachment,
                 gameAction: ability.actions.discardFromPlay()

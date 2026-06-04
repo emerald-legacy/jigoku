@@ -3,6 +3,7 @@ import { EventRegistrar } from '../../../EventRegistrar.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 export default class ChainOfCommand extends DrawCard {
     static id = 'chain-of-command';
@@ -32,7 +33,7 @@ export default class ChainOfCommand extends DrawCard {
         });
     }
 
-    public onCardPlayed(event: any) {
+    public onCardPlayed(event: EventPayload<EventName.OnCardPlayed>) {
         if(event.card === this) {
             if(this.location !== Location.RemovedFromGame) {
                 this.game.addMessage('{0} is removed from the game due the effects of {0}', this);

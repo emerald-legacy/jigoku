@@ -15,7 +15,7 @@ class SharpenTheMind extends DrawCard {
                 effect: AbilityDsl.effects.modifyBothSkills(3)
             })),
             effect: 'give +3{1}/+3{2} to {3}',
-            effectArgs: context => ['military', 'political', context.source.parent as any]
+            effectArgs: context => ['military', 'political', (context.source as DrawCard).parent as DrawCard]
         });
     }
 }

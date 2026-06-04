@@ -16,7 +16,7 @@ class IssueAChallenge extends DrawCard {
                     }
                     return conflict.getNumberOfParticipantsFor(context.player) === 1 &&
                         conflict.getParticipants(
-                            (participant: any) => participant.hasTrait('bushi') && participant.controller === context.player
+                            (participant) => participant.hasTrait('bushi') && participant.controller === context.player
                         ).length === 1 &&
                         context.player === conflict.attackingPlayer;
                 }

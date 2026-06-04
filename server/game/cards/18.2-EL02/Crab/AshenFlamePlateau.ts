@@ -1,5 +1,6 @@
 import { Duration } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
+import type Player from '../../../Player.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 export default class AshenFlamePlateau extends ProvinceCard {
@@ -12,7 +13,7 @@ export default class AshenFlamePlateau extends ProvinceCard {
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
             },
             effect: 'prevent {1} from triggering character abilities this conflict',
-            effectArgs: (context) => [context.player.opponent as any],
+            effectArgs: (context) => [context.player.opponent as Player],
             gameAction: AbilityDsl.actions.conflictLastingEffect((context) => ({
                 duration: Duration.UntilEndOfConflict,
                 effect: [

@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Location } from '../../Constants.js';
+import { EventName, Location } from '../../Constants.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
 
 class FavorableAlliance extends DrawCard {
     static id = 'favorable-alliance';
@@ -30,7 +31,7 @@ class FavorableAlliance extends DrawCard {
                             context.player.removedFromGame.unshift(card);
                             context.source.lastingEffect(() => ({
                                 until: {
-                                    onCardMoved: (event: any) =>
+                                    onCardMoved: (event: EventPayload<EventName.OnCardMoved>) =>
                                         event.card === card && event.originalLocation === Location.RemovedFromGame
                                 },
                                 match: card,

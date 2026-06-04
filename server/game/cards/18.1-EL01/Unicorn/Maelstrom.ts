@@ -1,7 +1,10 @@
 import { CardType, Duration, Element, EventName, Location, Players, TargetMode } from '../../../Constants.js';
 import type { Cost } from '../../../costs/Cost.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
+import type BaseCard from '../../../BaseCard.js';
 import type DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -41,7 +44,7 @@ const maelstromCost = function (): Cost {
                                 numCards: 1,
                                 location: Location.Hand,
                                 controller: Players.Self,
-                                onSelect: (player: any, card: any) => {
+                                onSelect: (player: Player, card: BaseCard) => {
                                     context.costs.maelstromCost = card;
                                     return true;
                                 },
@@ -100,7 +103,7 @@ export default class Maelstrom extends ProvinceCard {
                                 duration: Duration.UntilEndOfPhase,
                                 effect: AbilityDsl.effects.delayedEffect({
                                     when: {
-                                        afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) =>
+                                        afterConflict: (event: EventPayload<EventName.AfterConflict>, context: AbilityContext) =>
                                             event.conflict.winner === target.controller &&
                                             target.isParticipating() &&
                                             target.controller === context.player

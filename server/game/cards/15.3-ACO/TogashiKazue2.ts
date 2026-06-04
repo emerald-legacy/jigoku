@@ -8,7 +8,7 @@ class TogashiKazue2 extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card: any, context: any) => card.controller === context.player && card.type === CardType.Character,
+            match: (card: DrawCard, context?: AbilityContext) => !!context && card.controller === context.player && card.type === CardType.Character,
             effect: AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
                 createCopies: true,
                 condition: (context: AbilityContext) => context.source.isDire(),

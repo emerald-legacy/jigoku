@@ -40,7 +40,7 @@ class Socket extends EventEmitter {
         this.socket.leave(channelName);
     }
 
-    send(message: string, ...args: any[]): void {
+    send(message: string, ...args: unknown[]): void {
         this.socket.emit(message, ...args);
     }
 
@@ -49,7 +49,7 @@ class Socket extends EventEmitter {
     }
 
     // Events
-    onSocketEvent(callback: (socket: Socket, ...args: any[]) => void, ...args: any[]): void {
+    onSocketEvent(callback: (socket: Socket, ...args: any[]) => void, ...args: unknown[]): void {
         if(!this.user) {
             return;
         }

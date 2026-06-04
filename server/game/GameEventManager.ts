@@ -65,11 +65,11 @@ export class GameEventManager {
         return this.openEventWindow(events);
     }
 
-    raiseInitiateAbilityEvent(params: any, handler: () => any): void {
+    raiseInitiateAbilityEvent(params: Record<string, unknown>, handler: () => void): void {
         this.raiseMultipleInitiateAbilityEvents([{ params: params, handler: handler }]);
     }
 
-    raiseMultipleInitiateAbilityEvents(eventProps: Array<{ params: any; handler: () => any }>): void {
+    raiseMultipleInitiateAbilityEvents(eventProps: Array<{ params: Record<string, unknown>; handler: () => void }>): void {
         const events = eventProps.map((event) => new InitiateCardAbilityEvent(event.params, event.handler));
         this.game.queueStep(new InitiateAbilityEventWindow(this.game, events));
     }

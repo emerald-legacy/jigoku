@@ -94,13 +94,13 @@ const conflictingEffects: Record<string, (target: GameObject, value?: unknown) =
 
 class StaticEffect implements CardEffect {
     type: EffectName;
-    value: EffectValue<any>;
+    value: EffectValue<unknown>;
     context!: AbilityContext;
     duration: Duration | null;
     copies: Map<string, GainAbility>;
     isConditional?: boolean;
 
-    constructor(type: EffectName, value: any) {
+    constructor(type: EffectName, value: unknown) {
         this.type = type;
         if(value instanceof EffectValue) {
             this.value = value;
@@ -135,7 +135,7 @@ class StaticEffect implements CardEffect {
     }
 
     getValue<T = unknown>(_target?: GameObject): T {
-        return this.value.getValue();
+        return this.value.getValue() as T;
     }
 
     recalculate(_target?: unknown) {

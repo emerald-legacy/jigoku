@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -29,8 +30,8 @@ class JadeStrike extends DrawCard {
         });
     }
 
-    canPlay(context: any, playType: any) {
-        if(!context.player.cardsInPlay.some((card: any) => card.getType() === CardType.Character && card.hasTrait('shugenja'))) {
+    canPlay(context: AbilityContext, playType: string) {
+        if(!context.player.cardsInPlay.some((card) => card.getType() === CardType.Character && card.hasTrait('shugenja'))) {
             return false;
         }
 

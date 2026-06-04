@@ -3,6 +3,7 @@ import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import DrawCard from '../../../DrawCard.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class MiokosSong extends StrongholdCard {
     static id = 'mioko-s-song';
@@ -27,7 +28,7 @@ export default class MiokosSong extends StrongholdCard {
             },
             cost: [
                 AbilityDsl.costs.bowSelf(),
-                AbilityDsl.costs.dishonor({ cardCondition: (card, context: any) => card === context.event.card })
+                AbilityDsl.costs.dishonor({ cardCondition: (card, context) => card === (context as TriggeredAbilityContext).event.card })
             ],
             target: {
                 location: Location.Provinces,

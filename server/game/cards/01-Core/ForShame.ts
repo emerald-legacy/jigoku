@@ -9,12 +9,12 @@ class ForShame extends DrawCard {
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Dishonor or bow a character',
-            condition: context => context.player.anyCardsInPlay((card: any) => card.isParticipating() && card.hasTrait('courtier')),
+            condition: context => context.player.anyCardsInPlay(card => card.isParticipating() && card.hasTrait('courtier')),
             targets: {
                 character: {
                     cardType: CardType.Character,
                     controller: Players.Opponent,
-                    cardCondition: (card: any) => card.isParticipating()
+                    cardCondition: card => card.isParticipating()
                 },
                 select: {
                     mode: TargetMode.Select,

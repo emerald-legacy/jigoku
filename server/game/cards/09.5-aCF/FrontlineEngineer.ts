@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type BaseCard from '../../BaseCard.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -29,7 +30,7 @@ class FrontlineEngineer extends DrawCard {
                     handler: context => this.game.promptWithHandlerMenu(context.player, {
                         activePromptTitle: 'Choose a holding',
                         context: context,
-                        cardCondition: (card: any) => card.getType() === CardType.Holding,
+                        cardCondition: (card: BaseCard) => card.getType() === CardType.Holding,
                         cards: context.player.dynastyDeck.slice(0, 5),
                         choices: ['Take nothing'],
                         handlers: [() => {
@@ -37,7 +38,7 @@ class FrontlineEngineer extends DrawCard {
                             context.player.shuffleDynastyDeck();
                             return true;
                         }],
-                        cardHandler: (cardFromDeck: any) => {
+                        cardHandler: (cardFromDeck: BaseCard) => {
                             if(!context.target) {
                                 return;
                             }

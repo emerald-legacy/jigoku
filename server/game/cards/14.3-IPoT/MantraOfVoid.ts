@@ -1,6 +1,7 @@
 import { CardType, Duration, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
+import type BaseCard from '../../BaseCard.js';
 
 export default class MantraOfVoid extends DrawCard {
     static id = 'mantra-of-void';
@@ -15,14 +16,14 @@ export default class MantraOfVoid extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 cardCondition: (card) =>
-                    card.hasTrait('monk') || card.attachments.some((card: any) => card.hasTrait('monk')),
+                    card.hasTrait('monk') || card.attachments.some((card: BaseCard) => card.hasTrait('monk')),
                 gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
                     targetController: context.player,
                     duration: Duration.UntilEndOfConflict,
                     effect: AbilityDsl.effects.reduceCost({
                         amount: 1,
                         cardType: CardType.Attachment,
-                        targetCondition: (target: any) => target === context.target
+                        targetCondition: (target: BaseCard) => target === context.target
                     })
                 }))
             },

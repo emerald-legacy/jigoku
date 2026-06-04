@@ -1,6 +1,9 @@
-import { CardType, Decks, Location } from '../../../Constants.js';
+import { CardType, Decks, Location, EventName } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
+import type DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import type { Event } from '../../../Events/Event.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 export default class VisitTheKhubiSquare extends ProvinceCard {
     static id = 'visit-the-khubi-square';
@@ -20,19 +23,19 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
                             activePromptTitle: 'Choose a character to put into play',
                             amount: 5,
                             deck: Decks.DynastyDeck,
-                            cardCondition: (card: any) => card.type === CardType.Character && card.printedCost !== null && card.printedCost <= 2,
+                            cardCondition: (card) => card.type === CardType.Character && card.printedCost !== null && card.printedCost <= 2,
                             message: '{0} puts {1} into play{2}{3}',
                             shuffle: false,
                             messageArgs: (context, cards) => {
-                                const discards = topFive.filter((a: any) => !cards.includes(a));
+                                const discards = topFive.filter((a: DrawCard) => !cards.includes(a));
                                 const card = cards.length > 0 ? cards : 'nothing';
                                 return [context.player, card, discards.length > 0 ? ' and discards ' : '', discards];
                             },
                             gameAction: AbilityDsl.actions.putIntoPlay()
                         })),
                         AbilityDsl.actions.moveCard((context2) => ({
-                            target: topFive.filter((a: any) => {
-                                const events = context2.events.filter((a: any) => a.name === 'onDeckSearch' && !a.cancelled);
+                            target: topFive.filter((a: DrawCard) => {
+                                const events = context2.events.filter((a: Event) => a.name === 'onDeckSearch' && !a.cancelled) as EventPayload<EventName.OnDeckSearch>[];
                                 if(events.length > 0 && events[0].selectedCards) {
                                     return !events[0].selectedCards.includes(a);
                                 }

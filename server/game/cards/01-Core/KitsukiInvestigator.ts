@@ -22,7 +22,7 @@ class KitsukiInvestigator extends DrawCard {
                     cards: (context.player.opponent as Player).hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)),
                     targets: true,
                     message: '{0} chooses {1} to be discarded',
-                    messageArgs: (card: any) => [context.player, card],
+                    messageArgs: card => [context.player, card],
                     gameAction: AbilityDsl.actions.discardCard()
                 }))
             ],

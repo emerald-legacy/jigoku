@@ -23,7 +23,7 @@ class GameOfSadane extends DrawCard {
                     gameAction: ability.actions.duel((context: AbilityContext) => ({
                         type: DuelType.Political,
                         challenger: context.targets.challenger as DrawCard,
-                        gameAction: (duel: any) => ability.actions.multiple([
+                        gameAction: (duel) => ability.actions.multiple([
                             ability.actions.honor({ target: duel.winner }),
                             ability.actions.dishonor({ target: duel.loser })
                         ])

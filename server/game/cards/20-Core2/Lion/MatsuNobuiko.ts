@@ -1,5 +1,7 @@
 import { DuelType } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
+import type { InitiateDuel } from '../../../Interfaces.js';
+import type { Duel } from '../../../Duel.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -18,9 +20,9 @@ export default class MatsuNobuiko extends DrawCard {
             initiateDuel: ((context: AbilityContext) => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
-                gameAction: (duel: any) =>
+                gameAction: (duel: Duel) =>
                     duel.winner && duel.winningPlayer === context.player ? AbilityDsl.actions.cancel() : AbilityDsl.actions.noAction()
-            })) as any
+            })) as (context: AbilityContext) => InitiateDuel
         });
     }
 }

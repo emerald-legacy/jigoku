@@ -3,6 +3,7 @@ import TriggeredAbilityWindow from '../gamesteps/TriggeredAbilityWindow.js';
 import { EventName, AbilityType } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from './Event.js';
+import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 
 class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
     playEvent: any;
@@ -40,7 +41,7 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
         return 0;
     }
 
-    resolveAbility(context: any) {
+    resolveAbility(context: TriggeredAbilityContext) {
         if(this.playEvent) {
             this.playEvent.resolver.canCancel = false;
         }

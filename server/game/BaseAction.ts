@@ -10,7 +10,7 @@ interface Cost {
 }
 
 interface TargetProperties {
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 class BaseAction extends BaseCardAbility {

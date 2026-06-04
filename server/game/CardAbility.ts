@@ -5,6 +5,7 @@ import { Location, CardType, EffectName } from './Constants.js';
 import { initiateDuel } from './DuelHelper.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
+import type { GameAction } from './GameActions/GameAction.js';
 import type { AbilityContext } from './AbilityContext.js';
 
 interface CardAbilityProperties {
@@ -220,7 +221,7 @@ class CardAbility extends ThenAbility {
         }
         // Player1 plays Assassination
         const gainedAbility = origin ? '\'s gained ability from ' : '';
-        const messageArgs: any[] = [context.player, ' ' + messageVerb + ' ', context.source, gainedAbility, origin];
+        const messageArgs: unknown[] = [context.player, ' ' + messageVerb + ' ', context.source, gainedAbility, origin];
         const costMessages = this.cost
             .map((cost: any) => {
                 const costMsg = cost.getCostMessage && cost.getCostMessage(context);
@@ -235,7 +236,7 @@ class CardAbility extends ThenAbility {
                 }
                 return undefined;
             })
-            .filter((obj: any) => obj);
+            .filter((obj) => obj);
         if(costMessages.length > 0) {
             // ,
             messageArgs.push(', ');
@@ -248,7 +249,7 @@ class CardAbility extends ThenAbility {
         let effectArgs: any[] = [];
         let extraArgs: any = null;
         if(!effectMessage) {
-            const gameActions = this.getGameActions(context).filter((gameAction: any) => gameAction.hasLegalTarget(context));
+            const gameActions = this.getGameActions(context).filter((gameAction: GameAction) => gameAction.hasLegalTarget(context));
             if(gameActions.length > 0) {
                 // effects with multiple game actions really need their own effect message
                 [effectMessage, extraArgs] = gameActions[0].getEffectMessage(context);

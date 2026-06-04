@@ -35,8 +35,8 @@ export default class DaidojiAhma extends DrawCard {
         });
     }
 
-    private isRingEffect(event: any): boolean {
-        return event.context.source.type === 'ring';
+    private isRingEffect(event: { context?: AbilityContext }): boolean {
+        return (event.context?.source.type as string) === 'ring';
     }
 
     private targetIsDishonoredCrane(card: BaseCard, context: TriggeredAbilityContext<this>): boolean {

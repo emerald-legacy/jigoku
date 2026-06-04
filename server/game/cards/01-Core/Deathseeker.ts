@@ -19,7 +19,7 @@ class Deathseeker extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card: any, innerContext: AbilityContext) => (card.getFate() > 0 ? card.allowGameAction('removeFate', innerContext) : card.allowGameAction('discardFromPlay', innerContext))
+                cardCondition: (card, innerContext: AbilityContext) => (card.getFate() > 0 ? card.allowGameAction('removeFate', innerContext) : card.allowGameAction('discardFromPlay', innerContext))
             },
             effect: '{1} {0}',
             effectArgs: (context) => (context.target?.getFate() ?? 0) > 0 ? 'remove 1 fate from' : 'discard',

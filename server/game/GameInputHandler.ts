@@ -63,7 +63,7 @@ export class GameInputHandler {
         if(!list) {
             return;
         }
-        const card = list.find((card: BaseCard) => !isProvince === !(card as any).isProvince);
+        const card = list.find((card: BaseCard) => !isProvince === !card.isProvince);
         if(card) {
             this.game.pipeline.handleCardClicked(player, card);
             return;
@@ -89,7 +89,7 @@ export class GameInputHandler {
         }
     }
 
-    menuItemClick(sourcePlayer: string, cardId: string, menuItem: any): void {
+    menuItemClick(sourcePlayer: string, cardId: string, menuItem: { command: string; text: string; arg: string; method: string }): void {
         const player = this.game.getPlayerByName(sourcePlayer);
         const card = this.game.findAnyCardInAnyList(cardId);
         if(!player || !card) {
@@ -109,7 +109,7 @@ export class GameInputHandler {
         this.game.checkGameState(true);
     }
 
-    ringMenuItemClick(sourcePlayer: string, sourceRing: { element: string }, menuItem: any): void {
+    ringMenuItemClick(sourcePlayer: string, sourceRing: { element: string }, menuItem: { command: string; text: string; arg: string; method: string }): void {
         const player = this.game.getPlayerByName(sourcePlayer);
         const ring = this.game.rings[sourceRing.element];
         if(!player || !ring) {
@@ -207,9 +207,9 @@ export class GameInputHandler {
                 return;
             }
 
-            const card = Object.values(this.game.shortCardData).find((c: any) => {
+            const card = Object.values(this.game.shortCardData).find((c: { name: string; id: string }) => {
                 return c.name.toLowerCase() === message.toLowerCase() || c.id.toLowerCase() === message.toLowerCase();
-            }) as any;
+            }) as { id: string; name: string; type: string } | undefined;
 
             if(card) {
                 const packId = resolvePackId(undefined, card, this.game.gameMode);
@@ -241,7 +241,7 @@ export class GameInputHandler {
         }
     }
 
-    selectDeck(playerName: string, deck: any): void {
+    selectDeck(playerName: string, deck: unknown): void {
         if(this.game.playStarted) {
             return;
         }

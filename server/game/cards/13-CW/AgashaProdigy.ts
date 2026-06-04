@@ -1,5 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
+import type { Event } from '../../Events/Event.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, CardType, EventName } from '../../Constants.js';
 
@@ -22,7 +24,7 @@ class AgashaProdigys extends DrawCard {
                         AbilityDsl.actions.ifAble(context => ({
                             ifAbleAction: AbilityDsl.actions.attach({
                                 target: context.targets.myCharacter,
-                                attachment: this.getDiscardedCards(context).length > 0 ? this.getDiscardedCards(context)[0] : false
+                                attachment: this.getDiscardedCards(context).length > 0 ? this.getDiscardedCards(context)[0] : undefined
                             }),
                             otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: [] })
                         }))
@@ -41,7 +43,7 @@ class AgashaProdigys extends DrawCard {
                         AbilityDsl.actions.ifAble(context => ({
                             ifAbleAction: AbilityDsl.actions.attach({
                                 target: context.targets.oppCharacter,
-                                attachment: this.getDiscardedCards(context).length > 1 ? this.getDiscardedCards(context)[1] : false
+                                attachment: this.getDiscardedCards(context).length > 1 ? this.getDiscardedCards(context)[1] : undefined
                             }),
                             otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: [] })
                         }))
@@ -54,10 +56,10 @@ class AgashaProdigys extends DrawCard {
     }
 
     getDiscardedCards(context: AbilityContext) {
-        let events = context.events.filter((event: any) => event.name === EventName.OnCardsDiscarded);
+        let events = context.events.filter((event: Event) => event.name === EventName.OnCardsDiscarded);
         if(events.length > 0) {
-            let cards: any[] = [];
-            events.forEach((a: any) => cards = cards.concat(a.cards));
+            let cards: DrawCard[] = [];
+            events.forEach((a: Event) => cards = cards.concat(((a as Event & EventPayload<EventName.OnCardsDiscarded>).cards ?? []) as DrawCard[]));
             return cards;
         }
 

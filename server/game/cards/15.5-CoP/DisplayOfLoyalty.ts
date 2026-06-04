@@ -12,8 +12,8 @@ class DisplayOfLoyalty extends DrawCard {
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: (card, context) => {
-                    const charactersInPlay = context.game.findAnyCardsInPlay((c: any) => c.type === CardType.Character);
-                    return card.getFate() === Math.max(...charactersInPlay.map((c: any) => c.getFate()));
+                    const charactersInPlay = context.game.findAnyCardsInPlay((c: DrawCard) => c.type === CardType.Character);
+                    return card.getFate() === Math.max(...charactersInPlay.map((c: DrawCard) => c.getFate()));
                 },
                 gameAction: AbilityDsl.actions.dishonor()
             }

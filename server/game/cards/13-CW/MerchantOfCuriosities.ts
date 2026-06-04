@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import type BaseCard from '../../BaseCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
+import type { Result } from '../../costs/Cost.js';
 import { Location, TargetMode, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { Event } from '../../Events/Event.js';
@@ -11,7 +12,7 @@ const merchantOfCuriositiesCost = function () {
         canPay: function () {
             return true;
         },
-        resolve: function (context: any, result: any) {
+        resolve: function (context: AbilityContext, result: Result) {
             let honorAvailable = true;
             let cardAvailable = true;
             if(!context.player.opponent || !context.game.actions.loseHonor().canAffect(context.player.opponent, context) || !context.game.actions.gainHonor().canAffect(context.player, context)) {
@@ -24,21 +25,21 @@ const merchantOfCuriositiesCost = function () {
 
             context.costs.merchantOfCuriositiesCostPaid = false;
             if(honorAvailable && cardAvailable) {
-                context.game.promptWithHandlerMenu(context.player.opponent, {
+                context.game.promptWithHandlerMenu(context.player.opponent as Player, {
                     activePromptTitle: 'Give an honor and discard a card?',
                     source: context.source,
                     choices: ['Yes', 'No'],
                     handlers: [
                         () => {
                             context.costs.merchantOfCuriositiesCostPaid = true;
-                            context.game.promptForSelect(context.player.opponent, {
+                            context.game.promptForSelect(context.player.opponent as Player, {
                                 activePromptTitle: 'Choose a card to discard',
                                 context: context,
                                 mode: TargetMode.Single,
                                 numCards: 1,
                                 location: Location.Hand,
                                 controller: Players.Opponent,
-                                onSelect: (player: any, card: any) => {
+                                onSelect: (_player: Player, card: BaseCard) => {
                                     context.costs.merchantOfCuriositiesCostDiscardedCard = card;
                                     return true;
                                 },

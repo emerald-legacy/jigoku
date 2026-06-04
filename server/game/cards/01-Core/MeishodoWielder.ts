@@ -11,7 +11,7 @@ class MeishodoWielder extends DrawCard {
             location: Location.Any,
             condition: (context: AbilityContext) => this.game.getFirstPlayer() === context.player,
             effect: ability.effects.reduceCost({
-                match: (card: any, source: any) => card === source
+                match: (card, source) => card === source
             })
         });
     }

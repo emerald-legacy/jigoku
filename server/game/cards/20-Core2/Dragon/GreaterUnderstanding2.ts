@@ -40,7 +40,7 @@ export default class GreaterUnderstanding extends DrawCard {
         return ring?.type === 'ring';
     }
 
-    canPlayOn(source: any) {
+    canPlayOn(source: BaseCard | Ring) {
         return source && source.getType() === 'ring' && this.getType() === CardType.Attachment;
     }
 

@@ -12,11 +12,11 @@ class AdornedTemple extends DrawCard {
         this.reaction({
             title: 'Draw cards',
             when: {
-                onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context: any) => {
+                onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context) => {
                     return (
                         event.fate > 0 &&
                         event.recipient &&
-                        (event.recipient as any).controller === context.player &&
+                        (event.recipient as DrawCard).controller === context.player &&
                         event.context?.ability.isCardAbility()
                     );
                 }

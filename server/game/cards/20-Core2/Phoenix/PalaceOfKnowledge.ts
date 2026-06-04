@@ -1,4 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { EventName, TargetMode } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -20,7 +21,7 @@ export default class PalaceOfKnowledge extends StrongholdCard {
                 mode: TargetMode.Ring,
                 activePromptTitle: 'Choose a ring',
                 ringCondition: (ring: Ring, context?: AbilityContext) =>
-                    ring !== (context as any)?.event.ring && ring.isUnclaimed(),
+                    ring !== (context as TriggeredAbilityContext | undefined)?.event.ring && ring.isUnclaimed(),
                 gameAction: AbilityDsl.actions.resolveRingEffect()
             }
         });

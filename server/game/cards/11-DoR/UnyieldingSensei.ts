@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 import { CardType, Players, Location, Decks } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -13,7 +14,7 @@ class UnyieldingSensei extends DrawCard {
                 cardType: CardType.Province,
                 controller: Players.Self,
                 location: Location.Provinces,
-                cardCondition: (card, context) => !card.isBroken && context.player.getDynastyCardsInProvince(card.location).some((c: any) => c.getType() === CardType.Holding && c.isFaceup())
+                cardCondition: (card: ProvinceCard, context: AbilityContext) => !card.isBroken && context.player.getDynastyCardsInProvince(card.location).some(c => c.getType() === CardType.Holding && c.isFaceup())
             },
             effect: 'look at the top two cards of their dynasty deck',
             gameAction: AbilityDsl.actions.deckSearch({

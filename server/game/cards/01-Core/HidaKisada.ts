@@ -1,12 +1,15 @@
 import { AbilityType, CardType, EventName, Location } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
+import type { Event } from '../../Events/Event.js';
+import type { GameEvent } from '../../Events/EventPayloads.js';
+import type CardAbility from '../../CardAbility.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class HidaKisada extends DrawCard {
     static id = 'hida-kisada';
 
     private abilityRegistrar?: EventRegistrar;
-    private firstActionEvent = new Map<string, any>();
+    private firstActionEvent = new Map<string, Event>();
 
     public setupCardAbilities() {
         this.abilityRegistrar = new EventRegistrar(this.game, this);
@@ -25,19 +28,19 @@ export default class HidaKisada extends DrawCard {
         this.abilityRegistrar.register([EventName.OnConflictDeclared]);
     }
 
-    public onInitiateAbilityEffectsWouldInterrupt(event: any) {
+    public onInitiateAbilityEffectsWouldInterrupt(event: GameEvent<EventName.OnInitiateAbilityEffects>) {
         if(
             !this.firstActionEvent.has(event.context.player.uuid) &&
             this.game.isDuringConflict() &&
             event.context.ability.abilityType === 'action' &&
             !event.context.ability.isKeywordAbility() &&
-            !event.context.ability.cannotBeCancelled
+            !(event.context.ability as CardAbility).cannotBeCancelled
         ) {
             this.firstActionEvent.set(event.context.player.uuid, event);
         }
     }
 
-    public onInitiateAbilityEffectsOtherEffects(event: any) {
+    public onInitiateAbilityEffectsOtherEffects(event: GameEvent<EventName.OnInitiateAbilityEffects>) {
         if(
             this.firstActionEvent.get(event.context.player.uuid) === event &&
             event.context.player === this.controller.opponent &&

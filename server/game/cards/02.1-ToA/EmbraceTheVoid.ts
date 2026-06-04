@@ -12,10 +12,10 @@ class EmbraceTheVoid extends DrawCard {
             title: 'Take Fate',
             when: {
                 onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context: TriggeredAbilityContext) =>
-                    event.origin === (context.source as any).parent && event.fate > 0 && event.recipient !== context.player
+                    event.origin === (context.source as DrawCard).parent && event.fate > 0 && event.recipient !== context.player
             },
             effect: 'take the {1} fate being removed from {2}',
-            effectArgs: (context: TriggeredAbilityContext) => context ? [context.event.fate, (context.source as any).parent] : [],
+            effectArgs: (context: TriggeredAbilityContext) => context ? [(context.event as EventPayload<EventName.OnMoveFate>).fate, (context.source as DrawCard).parent as DrawCard] : [],
             handler: (context: TriggeredAbilityContext) => {
                 context.event.recipient = context.player;
             }
@@ -23,7 +23,7 @@ class EmbraceTheVoid extends DrawCard {
     }
 
     canPlay(context: AbilityContext, playType: string) {
-        if(!context.player.cardsInPlay.some((card: any) => card.getType() === CardType.Character && card.hasTrait('shugenja'))) {
+        if(!context.player.cardsInPlay.some(card => card.getType() === CardType.Character && card.hasTrait('shugenja'))) {
             return false;
         }
 

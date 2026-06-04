@@ -1,5 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type CardAbility from '../../../CardAbility.js';
+import type BaseCard from '../../../BaseCard.js';
+import type { Event } from '../../../Events/Event.js';
 import { CardType, Players, TargetMode, EventName } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -53,7 +55,7 @@ export default class ALegionOfOne extends DrawCard {
                     message: '{0} chooses {3}to remove a fate to resolve {1} again',
                     messageArgs: (innerContext: AbilityContext) => (innerContext.select === 'Done' ? 'not ' : ''),
                     then: {
-                        thenCondition: (event: any) =>
+                        thenCondition: (event: Event & { origin?: BaseCard }) =>
                             event.origin === ctx.target && !event.cancelled && event.name === EventName.OnMoveFate,
                         gameAction: AbilityDsl.actions.resolveAbility({
                             ability: ctx.ability as CardAbility,

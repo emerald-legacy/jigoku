@@ -21,7 +21,7 @@ type MsgArg =
 export class GameChat {
     messages: Array<{
         date: Date;
-        message: MessageText | { alert: { type: string; message: string | Array<string> } };
+        message: any;
     }> = [];
 
     addChatMessage(player: Player, message: MsgArg): void {
@@ -44,34 +44,34 @@ export class GameChat {
         this.messages.push({ date: new Date(), message: { alert: { type: type, message: formattedMessage } } });
     }
 
-    formatMessage(format: string, args: Array<MsgArg>): string | Array<string> {
+    formatMessage(format: string, args: Array<MsgArg>): MessageText {
         if(!format) {
             return '';
         }
 
         let fragments = format.split(/(\{\d+\})/);
-        return fragments.reduce<any>((output, fragment) => {
+        return fragments.reduce<Array<string | number>>((output, fragment) => {
             let argMatch = fragment.match(/\{(\d+)\}/);
             if(argMatch && args) {
-                let arg: any = args[Number(argMatch[1])];
+                let arg: MsgArg = args[Number(argMatch[1])];
                 if(arg || arg === 0) {
-                    if(arg.message) {
-                        return output.concat(arg.message);
+                    if((arg as { message?: MessageText }).message) {
+                        return output.concat((arg as { message: MessageText }).message);
                     } else if(Array.isArray(arg)) {
                         if(typeof arg[0] === 'string' && arg[0].includes('{')) {
                             return output.concat(this.formatMessage(arg[0], arg.slice(1)));
                         }
                         return output.concat(this.formatArray(arg));
-                    } else if(arg.getShortSummary) {
-                        return output.concat(arg.getShortSummary());
+                    } else if((arg as { getShortSummary?: () => string }).getShortSummary) {
+                        return output.concat((arg as { getShortSummary: () => string }).getShortSummary());
                     }
-                    return output.concat(arg);
+                    return output.concat(arg as string | number);
                 }
             } else if(!argMatch && fragment) {
                 let splitFragment = fragment.split(' ');
                 let lastWord = splitFragment.pop();
                 return splitFragment
-                    .reduce<any>((output, word) => {
+                    .reduce<Array<string | number>>((output, word) => {
                         return output.concat(word || [], ' ');
                     }, output)
                     .concat(lastWord || []);
@@ -80,7 +80,7 @@ export class GameChat {
         }, []);
     }
 
-    formatArray(array: Array<MsgArg>): string | Array<string> {
+    formatArray(array: Array<MsgArg>): MessageText {
         if(array.length === 0) {
             return [];
         }

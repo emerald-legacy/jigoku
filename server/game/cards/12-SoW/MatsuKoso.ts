@@ -12,7 +12,7 @@ class MatsuKoso extends DrawCard {
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getParticipants() ?? [],
                 duration: Duration.UntilEndOfConflict,
-                effect: AbilityDsl.effects.modifyMilitarySkill((card: any) =>
+                effect: AbilityDsl.effects.modifyMilitarySkill((card: DrawCard) =>
                     isNaN(card.printedPoliticalSkill) ? 0 : -card.printedPoliticalSkill
                 )
             })),

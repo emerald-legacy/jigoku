@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type BaseCard from '../../BaseCard.js';
 import { CardType, Players, Phases, Location, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -24,11 +25,11 @@ class Reconnaissance extends DrawCard {
                     trueGameAction: AbilityDsl.actions.sequential([
                         this.getLookAtAction(),
                         AbilityDsl.actions.selectCard(context => {
-                            let target = context.target;
+                            let target: BaseCard | BaseCard[] | undefined = context.target;
                             if(!Array.isArray(target)) {
-                                target = [target];
+                                target = [target as BaseCard];
                             }
-                            const locations = target.map((a: any) => a.location);
+                            const locations = target.map((a: BaseCard) => a.location);
                             return ({
                                 activePromptTitle: 'Choose cards to discard',
                                 mode: TargetMode.Unlimited,
@@ -36,9 +37,9 @@ class Reconnaissance extends DrawCard {
                                 cardType: [CardType.Character, CardType.Event, CardType.Holding],
                                 location: [Location.Provinces],
                                 controller: Players.Any,
-                                cardCondition: (card: any) => locations.includes(card.location),
+                                cardCondition: (card) => locations.includes(card.location),
                                 message: '{0} chooses to discard {1}',
-                                messageArgs: (cards: any) => [context.player, cards],
+                                messageArgs: (cards) => [context.player, cards],
                                 gameAction: AbilityDsl.actions.moveCard({ destination: Location.DynastyDiscardPile })
                             });
                         })
@@ -52,9 +53,9 @@ class Reconnaissance extends DrawCard {
     getLookAtAction() {
         return AbilityDsl.actions.lookAt(context => ({
             message: context => {
-                let target: any = context.target;
+                let target: BaseCard | BaseCard[] | undefined = context.target;
                 if(!Array.isArray(target)) {
-                    target = [target];
+                    target = [target as BaseCard];
                 }
 
                 if(target.length === 1) {
@@ -66,9 +67,9 @@ class Reconnaissance extends DrawCard {
 
             },
             messageArgs: () => {
-                let target: any = context.target;
+                let target: BaseCard | BaseCard[] | undefined = context.target;
                 if(!Array.isArray(target)) {
-                    target = [target];
+                    target = [target as BaseCard];
                 }
 
                 if(target.length === 1) {

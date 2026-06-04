@@ -13,14 +13,14 @@ class IuchiDaiyu extends DrawCard {
             target: {
                 gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => ({
                     effect: AbilityDsl.effects.modifyMilitarySkill(
-                        context.player.getNumberOfOpponentsFaceupProvinces((province: any) => province.location !== Location.StrongholdProvince)
+                        context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince)
                     )
                 }))
             },
             effect: 'give {0} +1{1} for each faceup non-stronghold province their opponent controls (+{2}{1})',
             effectArgs: (context: AbilityContext) => [
                 'military',
-                context.player.getNumberOfOpponentsFaceupProvinces((province: any) => province.location !== Location.StrongholdProvince)
+                context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince)
             ]
         });
     }

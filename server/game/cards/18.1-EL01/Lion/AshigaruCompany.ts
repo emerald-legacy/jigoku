@@ -15,7 +15,7 @@ class AshigaruCompany extends DrawCard {
             effect: 'look at the top five cards of their deck',
             gameAction: AbilityDsl.actions.deckSearch({
                 amount: 5,
-                cardCondition: (card: any) => card.hasTrait('follower') && card.type === CardType.Attachment,
+                cardCondition: (card) => card.hasTrait('follower') && card.type === CardType.Attachment,
                 gameAction: AbilityDsl.actions.moveCard({
                     destination: Location.Hand
                 }),

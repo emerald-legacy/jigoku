@@ -3,6 +3,8 @@ import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import BaseCard from '../../../BaseCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
+import type { Event } from '../../../Events/Event.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 
 export default class CastleOfAir extends DrawCard {
@@ -55,7 +57,7 @@ export default class CastleOfAir extends DrawCard {
         });
     }
 
-    onHonorLoss(event: any) {
+    onHonorLoss(event: Event & EventPayload<EventName.OnModifyHonor>) {
         if(
             event.context.game.currentConflict &&
             event.dueToUnopposed &&

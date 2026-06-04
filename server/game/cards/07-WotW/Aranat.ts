@@ -11,7 +11,7 @@ class Aranat extends DrawCard {
         this.reaction({
             title: 'Place additional fate',
             when: {
-                onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context: any) => context.player.opponent && event.card === context.source
+                onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context) => context.player.opponent && event.card === context.source
             },
             effect: 'give {1} the opportunity to reveal provinces',
             effectArgs: (context: AbilityContext) => context.player.opponent ?? '',
@@ -22,9 +22,9 @@ class Aranat extends DrawCard {
                 player: Players.Opponent,
                 optional: true,
                 mode: TargetMode.Unlimited,
-                cardCondition: (card: any) => card.isFacedown(),
+                cardCondition: (card) => card.isFacedown(),
                 message: '{0} chooses to reveal {1}',
-                messageArgs: (card: any, player: any) => [player, card],
+                messageArgs: (card, player) => [player, card],
                 gameAction: AbilityDsl.actions.reveal()
             }),
             then: {

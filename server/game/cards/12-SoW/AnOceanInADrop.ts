@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { Location, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { shuffle } from '../../utils/shuffle.js';
+import type Player from '../../Player.js';
 
 class AnOceanInADrop extends DrawCard {
     static id = 'an-ocean-in-a-drop';
@@ -26,7 +27,7 @@ class AnOceanInADrop extends DrawCard {
         });
     }
 
-    getGameActions(player: any) {
+    getGameActions(player: Player | undefined) {
         if(!player) {
             return [];
         }

@@ -9,7 +9,7 @@ export default class GoldenPlains extends ProvinceCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card: any, context: any) => card.controller === context?.player && card.location === Location.PlayArea,
+            match: (card, context) => card.controller === context?.player && card.location === Location.PlayArea,
             targetController: Players.Self,
             effect: AbilityDsl.effects.addTrait('cavalry'),
             condition: (context: AbilityContext) => context.player.stronghold?.name === 'Golden Plains Outpost'
@@ -18,7 +18,7 @@ export default class GoldenPlains extends ProvinceCard {
         this.reaction({
             title: 'Move the conflict',
             when: {
-                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context: any) => event.conflict.declaredProvince === context.source
+                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) => event.conflict.declaredProvince === context.source
             },
             target: {
                 cardType: CardType.Province,

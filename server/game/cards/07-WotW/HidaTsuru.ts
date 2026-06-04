@@ -11,7 +11,7 @@ class HidaTsuru extends DrawCard {
             title: 'Give this character +1/+1',
             limit: AbilityDsl.limit.unlimitedPerConflict(),
             when: {
-                onMoveToConflict: (_event: any, context: any) => context.source.isParticipating()
+                onMoveToConflict: (_event, context) => context.source.isParticipating()
             },
             effect: 'give him +1{1}/+1{2}',
             effectArgs: () => ['military', 'political'],
@@ -22,7 +22,7 @@ class HidaTsuru extends DrawCard {
             title: 'Give this character +1/+1',
             limit: AbilityDsl.limit.unlimitedPerConflict(),
             when: {
-                onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context: any) => event.card.isParticipating() && context.source.isParticipating()
+                onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context) => event.card.isParticipating() && context.source.isParticipating()
             },
             effect: 'give him +1{1}/+1{2}',
             effectArgs: () => ['military', 'political'],

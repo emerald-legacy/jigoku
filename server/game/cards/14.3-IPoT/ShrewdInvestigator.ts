@@ -1,5 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 import { shuffle } from '../../utils/shuffle.js';
 
 export default class ShrewdInvestigator extends DrawCard {
@@ -17,7 +18,7 @@ export default class ShrewdInvestigator extends DrawCard {
             effect: 'look at {1} random card{3} in {2}\'s hand',
             effectArgs: (context) => [
                 context.player.getNumberOfFacedownProvinces(),
-                context.player.opponent as any,
+                context.player.opponent as Player,
                 context.player.getNumberOfFacedownProvinces() === 1 ? '' : 's'
             ]
         });

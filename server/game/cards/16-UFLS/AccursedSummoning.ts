@@ -8,22 +8,22 @@ import type { Event } from '../../Events/Event.js';
 const accursedSummoningCost = function () {
     return {
         action: { name: 'accursedSummoningCost' },
-        getActionName(_context: any) {
+        getActionName(_context: AbilityContext) {
             return 'accursedSummoningCost';
         },
-        getCostMessage: function (_context: any) {
+        getCostMessage: function (_context: AbilityContext) {
             return ['losing {0} honor'];
         },
-        canPay: function (context: any) {
+        canPay: function (context: AbilityContext) {
             return context.game.actions.loseHonor().canAffect(context.player, context);
         },
-        resolve: function (context: any, result: any) {
+        resolve: function (context: AbilityContext, result: { cancelled?: boolean }) {
             let creatures = context.player.outsideTheGameCards;
-            creatures = creatures.filter((card: any) => context.game.actions.putIntoConflict().canAffect(card, context));
+            creatures = creatures.filter((card: DrawCard) => context.game.actions.putIntoConflict().canAffect(card, context));
 
-            const creaturesByCost: any[][] = [[], [], [], [], []];
-            creatures.forEach((creature: any) => {
-                creaturesByCost[creature.printedCost].push(creature);
+            const creaturesByCost: DrawCard[][] = [[], [], [], [], []];
+            creatures.forEach((creature: DrawCard) => {
+                creaturesByCost[creature.printedCost ?? 0].push(creature);
             });
             context.costs.accursedSummoningCostCreature = undefined;
             result.cancelled = false;
@@ -55,12 +55,12 @@ const accursedSummoningCost = function () {
                 ]
             });
 
-            const promptForCards = (creatures: any) => context.game.promptWithHandlerMenu(context.player, {
+            const promptForCards = (creatures: DrawCard[]) => context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Select a creature to summon',
                 source: context.source,
                 cards: creatures,
                 choices: ['Back', 'Cancel'],
-                cardHandler: (card: any) => {
+                cardHandler: (card: DrawCard) => {
                     context.costs.accursedSummoningCostCreature = card;
                     context.costs.accursedSummoningCost = card.printedCost;
                 },

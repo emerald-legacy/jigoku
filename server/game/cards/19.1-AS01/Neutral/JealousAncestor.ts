@@ -1,6 +1,6 @@
 import { CardType, Element, Players } from '../../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../../PlayCharacterAsAttachment.js';
-import PlayerEffect from '../../../Effects/PlayerEffect.js';
+import type { EffectFactory } from '../../../Effects/EffectBuilder.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -40,7 +40,7 @@ export default class JealousAncestor extends DrawCard {
         return symbols;
     }
 
-    private addAttachedEffectOnOpponent(effect: (game: any, source: any, props: any) => PlayerEffect) {
+    private addAttachedEffectOnOpponent(effect: EffectFactory) {
         this.persistentEffect({
             condition: (context) =>
                 !!(context.source.parent &&

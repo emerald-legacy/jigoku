@@ -14,7 +14,7 @@ class BeliefInTheLittleTeacher extends DrawCard {
                     card: context.source,
                     activePromptTitle: 'Which token do you wish to discard?',
                     message: '{0} discards {1}',
-                    messageArgs: (token: any, player: any) => [player, token],
+                    messageArgs: (token, player) => [player, token],
                     gameAction: AbilityDsl.actions.discardStatusToken()
                 })),
                 effect: 'discard a status token from {1}',

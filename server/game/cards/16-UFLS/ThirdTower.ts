@@ -18,7 +18,7 @@ class ThirdTower extends DrawCard {
                         return false;
                     }
                     let cards = context.player.getDynastyCardsInProvince(event.conflict.declaredProvince.location);
-                    return !cards.some((card: any) => card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall'));
+                    return !cards.some((card) => card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall'));
                 }
             },
             gameAction: AbilityDsl.actions.takeHonor(),

@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { TargetMode, CardType } from '../../Constants.js';
 import CardAbility from '../../CardAbility.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -13,7 +14,7 @@ class Banzai extends DrawCard {
             max: AbilityDsl.limit.perConflict(1),
             target: {
                 cardType: CardType.Character,
-                cardCondition: (card: any) => card.isParticipating(),
+                cardCondition: card => card.isParticipating(),
                 gameAction: ability.actions.cardLastingEffect(() => ({
                     effect: AbilityDsl.effects.modifyMilitarySkill(2)
                 }))
@@ -31,7 +32,7 @@ class Banzai extends DrawCard {
                             }
                         },
                         message: '{0} chooses {3}to lose an honor for no effect',
-                        messageArgs: (innerContext: any) => innerContext.select === 'Done' ? 'not ' : ''
+                        messageArgs: (innerContext: AbilityContext) => innerContext.select === 'Done' ? 'not ' : ''
                     };
                 }
                 const cardAbility = ctx.ability instanceof CardAbility ? ctx.ability : undefined;
@@ -44,7 +45,7 @@ class Banzai extends DrawCard {
                         }
                     },
                     message: '{0} chooses {3}to lose an honor to resolve {1} again',
-                    messageArgs: (innerContext: any) => innerContext.select === 'Done' ? 'not ' : '',
+                    messageArgs: (innerContext: AbilityContext) => innerContext.select === 'Done' ? 'not ' : '',
                     then: cardAbility ? {
                         gameAction: AbilityDsl.actions.resolveAbility({
                             ability: cardAbility,

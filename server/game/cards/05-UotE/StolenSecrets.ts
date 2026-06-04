@@ -14,7 +14,7 @@ class StolenSecrets extends DrawCard {
             condition: (context: AbilityContext<this>) => this.game.isDuringConflict('political') && !!context.player.opponent && context.player.opponent.conflictDeck.length > 0,
             cost: ability.costs.removeFate({
                 cardType: CardType.Character,
-                cardCondition: (card: any) => card.isParticipating()
+                cardCondition: (card) => card.isParticipating()
             }),
             effect: 'look at the top 4 cards of {1}\'s conflict deck and remove one from the game',
             effectArgs: (context: AbilityContext<this>) => context.player.opponent as Player,
@@ -24,7 +24,7 @@ class StolenSecrets extends DrawCard {
                     activePromptTitle: 'Choose a card to remove from the game',
                     context: context,
                     cards: opponent.conflictDeck.slice(0, 4),
-                    cardHandler: (card: any) => this.stealCard(card, opponent.conflictDeck.slice(0, 4).filter((c: DrawCard) => c !== card), context)
+                    cardHandler: (card: DrawCard) => this.stealCard(card, opponent.conflictDeck.slice(0, 4).filter((c: DrawCard) => c !== card), context)
                 });
             }
         });

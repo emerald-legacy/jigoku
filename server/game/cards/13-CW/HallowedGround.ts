@@ -3,6 +3,7 @@ import { Element, EventName, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 const elementKeys = {
     air: 'hallowed-ground-air',
     earth: 'hallowed-ground-earth',
@@ -26,10 +27,10 @@ class HallowedGround extends DrawCard {
             condition: context => context.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player.opponent),
             effect: AbilityDsl.effects.playerDelayedEffect({
                 when: {
-                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) => event.conflict.loser === context.player.opponent && event.conflict.conflictUnopposed
+                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: AbilityContext) => event.conflict.loser === context.player.opponent && event.conflict.conflictUnopposed
                 },
                 message: '{0} loses 1 honor due to the constant effect of {1}',
-                messageArgs: (effectContext: any) => [effectContext.player.opponent, effectContext.source],
+                messageArgs: (effectContext: AbilityContext) => [effectContext.player.opponent, effectContext.source],
                 multipleTrigger: true,
                 gameAction: AbilityDsl.actions.loseHonor()
             })

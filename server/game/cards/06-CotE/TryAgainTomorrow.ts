@@ -10,12 +10,12 @@ class TryAgainTomorrow extends DrawCard {
         this.action({
             title: 'Send a Character home',
             condition: (context: AbilityContext) =>
-                context.player.anyCardsInPlay((card: any) => card.isParticipating() &&
+                context.player.anyCardsInPlay((card) => card.isParticipating() &&
                 card.hasTrait('courtier') && card.isHonored),
             cannotBeMirrored: true,
             target: {
                 cardType: CardType.Character,
-                cardCondition: (card: any) => card.isAttacking(),
+                cardCondition: (card) => card.isAttacking(),
                 gameAction: ability.actions.sendHome()
             }
         });

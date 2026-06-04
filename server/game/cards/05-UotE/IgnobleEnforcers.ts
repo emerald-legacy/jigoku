@@ -11,7 +11,7 @@ class IgnobleEnforcers extends DrawCard {
         this.reaction({
             title: 'Place additional fate on this character',
             when: {
-                onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context: any) => event.card === context.source
+                onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context) => event.card === context.source
             },
             cost: ability.costs.variableHonorCost(() => 3),
             effect: 'place {1} fate on {0}',

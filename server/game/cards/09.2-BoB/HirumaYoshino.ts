@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 class HirumaYoshino extends DrawCard {
     static id = 'hiruma-yoshino';
@@ -17,8 +18,8 @@ class HirumaYoshino extends DrawCard {
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     targetLocation: Location.Provinces,
                     effect: [
-                        AbilityDsl.effects.contributeToConflict((card: any, context: any) => context.player),
-                        AbilityDsl.effects.changeContributionFunction((card: any) => card.printedMilitarySkill)
+                        AbilityDsl.effects.contributeToConflict((card: DrawCard, context: AbilityContext) => context.player),
+                        AbilityDsl.effects.changeContributionFunction((card: DrawCard) => card.printedMilitarySkill)
                     ]
                 })
             },

@@ -18,7 +18,7 @@ class Dispatch extends DrawCard {
                         if(!target || !Array.isArray(target)) {
                             return false;
                         }
-                        const first = target[0] as any;
+                        const first = target[0] as DrawCard;
                         return !!first && first.inConflict;
                     },
                     trueGameAction: AbilityDsl.actions.sendHome(),

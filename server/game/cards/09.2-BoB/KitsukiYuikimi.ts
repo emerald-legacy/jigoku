@@ -1,5 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 
 export default class KitsukiYuikimi extends DrawCard {
     static id = 'kitsuki-yuikimi';
@@ -23,7 +24,7 @@ export default class KitsukiYuikimi extends DrawCard {
                 })
             })),
             effect: 'prevent {0} from being chosen as the target of {1}\'s triggered abilities until the end of the conflict',
-            effectArgs: (context) => [context.player.opponent as any]
+            effectArgs: (context) => [context.player.opponent as Player]
         });
     }
 }

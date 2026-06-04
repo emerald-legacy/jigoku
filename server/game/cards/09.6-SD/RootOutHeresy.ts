@@ -35,7 +35,7 @@ class RootOutHeresy extends DrawCard {
     getStrengthModifier(context: AbilityContext) {
         //Find the event
         if(context.events) {
-            let event = context.events.find((a: any) => a.name === 'onCardsDiscardedFromHand') as GameEvent<EventName.OnCardsDiscardedFromHand> | undefined;
+            let event = context.events.find(a => a.name === 'onCardsDiscardedFromHand') as GameEvent<EventName.OnCardsDiscardedFromHand> | undefined;
             if(event) {
                 if(event.discardedCards && event.discardedCards.length > 0) {
                     //Grab the first one (this card should only discard one card)

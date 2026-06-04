@@ -2,6 +2,7 @@ import { EventName, Location, Phases } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 const MAXIMUM_RESSURRECTIONS = 1;
 
@@ -37,7 +38,7 @@ export default class RelentlessGloryseeker extends DrawCard {
         this.ressurrectionsThisRound = 0;
     }
 
-    public onCardLeavesPlay(event: any) {
+    public onCardLeavesPlay(event: EventPayload<EventName.OnCardLeavesPlay>) {
         if(
             event.card === this &&
             this.location !== Location.RemovedFromGame &&

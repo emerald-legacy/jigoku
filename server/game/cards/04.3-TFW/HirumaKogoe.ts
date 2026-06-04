@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 class HirumaKogoe extends DrawCard {
     static id = 'hiruma-kogoe';
@@ -16,14 +17,14 @@ class HirumaKogoe extends DrawCard {
         });
     }
 
-    hirumaKogoePrompt(context: any, promptCards: any, orderedCards: any, promptTitle: any) {
+    hirumaKogoePrompt(context: AbilityContext, promptCards: DrawCard[], orderedCards: DrawCard[], promptTitle: string) {
         this.game.promptWithHandlerMenu(context.player, {
             activePromptTitle: promptTitle,
             context: context,
             cards: promptCards,
-            cardHandler: (card: any) => {
+            cardHandler: (card: DrawCard) => {
                 orderedCards.push(card);
-                promptCards = promptCards.filter((c: any) => c !== card);
+                promptCards = promptCards.filter((c) => c !== card);
                 if(promptCards.length > 1) {
                     this.hirumaKogoePrompt(context, promptCards, orderedCards, 'Which card do you want to be the second card?');
                     return;

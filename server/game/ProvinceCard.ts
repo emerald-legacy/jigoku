@@ -112,7 +112,7 @@ export class ProvinceCard extends BaseCard {
         const modifiers: StatModifier[] = [];
 
         // Set effects override everything
-        const setEffects = this.getRawEffects().filter((e: any) => e.type === EffectName.SetProvinceStrength);
+        const setEffects = this.getRawEffects().filter((e) => e.type === EffectName.SetProvinceStrength);
         if(setEffects.length > 0) {
             const effect = setEffects[setEffects.length - 1];
             modifiers.push(StatModifier.fromEffect(effect.getValue(this), effect, true, StatModifier.getEffectName(effect)));
@@ -120,19 +120,19 @@ export class ProvinceCard extends BaseCard {
         }
 
         // Base strength
-        const setBaseEffects = this.getRawEffects().filter((e: any) => e.type === EffectName.SetBaseProvinceStrength);
+        const setBaseEffects = this.getRawEffects().filter((e) => e.type === EffectName.SetBaseProvinceStrength);
         if(setBaseEffects.length > 0) {
             const effect = setBaseEffects[setBaseEffects.length - 1];
             modifiers.push(StatModifier.fromEffect(effect.getValue(this), effect, true, StatModifier.getEffectName(effect)));
         } else {
             modifiers.push(new StatModifier(this.printedStrength, 'Printed', false, undefined));
-            for(const effect of this.getRawEffects().filter((e: any) => e.type === EffectName.ModifyBaseProvinceStrength)) {
+            for(const effect of this.getRawEffects().filter((e) => e.type === EffectName.ModifyBaseProvinceStrength)) {
                 modifiers.push(StatModifier.fromEffect(effect.getValue(this), effect, false));
             }
         }
 
         // Province strength modifiers
-        for(const effect of this.getRawEffects().filter((e: any) => e.type === EffectName.ModifyProvinceStrength)) {
+        for(const effect of this.getRawEffects().filter((e) => e.type === EffectName.ModifyProvinceStrength)) {
             modifiers.push(StatModifier.fromEffect(effect.getValue(this), effect, false));
         }
 
@@ -145,11 +145,11 @@ export class ProvinceCard extends BaseCard {
         return modifiers;
     }
 
-    get strengthSummary(): { stat?: string; modifiers?: any[] } {
+    get strengthSummary(): { stat?: string; modifiers?: StatModifier[] } {
         if(this.facedown) {
             return {};
         }
-        const modifiers = this.getStrengthModifiers().map((modifier: any) => Object.assign({}, modifier));
+        const modifiers = this.getStrengthModifiers().map((modifier) => Object.assign({}, modifier));
         const strength = this.getStrength();
         return {
             stat: strength.toString(),

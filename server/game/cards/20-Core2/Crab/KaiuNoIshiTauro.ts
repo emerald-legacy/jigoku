@@ -1,7 +1,9 @@
-import { CardType, Players, Decks } from '../../../Constants.js';
+import { CardType, Players, Decks, EventName } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type Ring from '../../../Ring.js';
+import type { GameEvent } from '../../../Events/EventPayloads.js';
+import type { Event } from '../../../Events/Event.js';
 
 export default class KaiuNoIshiTauro extends DrawCard {
     static id = 'kaiu-no-ishi-tauro';
@@ -16,13 +18,13 @@ export default class KaiuNoIshiTauro extends DrawCard {
                 gameAction: AbilityDsl.actions.deckSearch(context => ({
                     activePromptTitle: 'Select an attachment',
                     deck: Decks.ConflictDeck,
-                    cardCondition: (card: any) => card.type === CardType.Attachment &&
+                    cardCondition: (card) => card.type === CardType.Attachment &&
                         (card.hasTrait('weapon') || card.hasTrait('armor') || card.hasTrait('item')) &&
                         (context.game.actions.attach({ attachment: card }).canAffect(context.target, context)) &&
                         card.costLessThan(context.costs.returnRing ? context.costs.returnRing.length + 1 : 1),
                     shuffle: true,
                     reveal: true,
-                    selectedCardsHandler: (context: any, event: any, cards: any) => {
+                    selectedCardsHandler: (context, event: Event, cards) => {
                         const card = cards[0];
                         if(!card) {
                             context.game.addMessage('{0} takes nothing', context.player);
@@ -31,7 +33,7 @@ export default class KaiuNoIshiTauro extends DrawCard {
 
                         context.game.addMessage(
                             '{0} takes {1} and attaches it to {2}',
-                            event.player,
+                            (event as GameEvent<EventName.OnDeckSearch>).player,
                             card,
                             context.target
                         );

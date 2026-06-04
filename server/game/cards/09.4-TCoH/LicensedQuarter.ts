@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -13,7 +14,7 @@ class LicensedQuarter extends DrawCard {
                 afterConflict: (event: EventPayload<EventName.AfterConflict>, context) => event.conflict.winner === context.player
             },
             effect: 'discard the top card of {1}\'s conflict deck',
-            effectArgs: context => [context.player.opponent as any],
+            effectArgs: context => [context.player.opponent as Player],
             gameAction: AbilityDsl.actions.discardCard(context => ({
                 target: context.player.opponent && context.player.opponent.conflictDeck[0]
             })),

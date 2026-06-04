@@ -1,5 +1,6 @@
 import { CardType, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
+import type DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 export default class EmperorsSummons extends ProvinceCard {
@@ -12,7 +13,7 @@ export default class EmperorsSummons extends ProvinceCard {
                 onCardRevealed: (event, context) => event.card === context.source
             },
             gameAction: AbilityDsl.actions.cardMenu((context) => ({
-                cards: context.player.dynastyDeck.filter((card: any) => card.type === CardType.Character),
+                cards: context.player.dynastyDeck.filter((card: DrawCard) => card.type === CardType.Character),
                 choices: ['Select nothing'],
                 handlers: [() => this.game.addMessage('{0} selects nothing from their deck', context.player)],
                 gameAction: AbilityDsl.actions.selectCard({

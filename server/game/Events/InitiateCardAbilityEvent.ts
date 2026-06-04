@@ -2,13 +2,13 @@ import { Event } from './Event.js';
 import { EventName } from '../Constants.js';
 
 class InitiateCardAbilityEvent extends Event {
-    cardTargets: any[];
-    ringTargets: any[];
-    selectTargets: any[];
-    tokenTargets: any[];
-    allTargets: any[];
+    cardTargets: unknown[];
+    ringTargets: unknown[];
+    selectTargets: unknown[];
+    tokenTargets: unknown[];
+    allTargets: unknown[];
 
-    constructor(params: any, handler?: (event: any) => void) {
+    constructor(params: Record<string, unknown>, handler?: (event: Event) => void) {
         super(EventName.OnInitiateAbilityEffects, params, handler);
         const ctx = this.context;
         if(ctx && !(ctx.ability as { doesNotTarget?: boolean })?.doesNotTarget) {

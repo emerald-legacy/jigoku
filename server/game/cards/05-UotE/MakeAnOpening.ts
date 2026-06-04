@@ -24,7 +24,7 @@ class MakeAnOpening extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card: any) =>
+                cardCondition: (card) =>
                     card.isParticipating(),
                 gameAction: ability.actions.cardLastingEffect((context: AbilityContext) => ({
                     effect: ability.effects.modifyBothSkills(-(this.getHonorDialDifference(context)))

@@ -4,6 +4,7 @@ import { AbilityType, CardType, EventName, Location, Players } from '../../Const
 import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import type { GameEvent } from '../../Events/EventPayloads.js';
 
 export default class WithstandTheDarkness extends DrawCard {
     static id = 'withstand-the-darkness';
@@ -43,10 +44,10 @@ export default class WithstandTheDarkness extends DrawCard {
         });
     }
 
-    public onInitiateAbility(event: any) {
+    public onInitiateAbility(event: GameEvent<EventName.OnInitiateAbilityEffects>) {
         if(event.card.id === 'banzai') {
             if(event.context) {
-                this.extraBanzaiTarget = event.context.targets.target;
+                this.extraBanzaiTarget = event.context.targets.target as BaseCard;
             }
         }
     }

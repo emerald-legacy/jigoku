@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityType, EventName } from '../../Constants.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 class Kikyo extends DrawCard {
@@ -17,8 +18,8 @@ class Kikyo extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Make opponent discard a card at random',
                 when: {
-                    onCardsDrawn: (event: EventPayload<EventName.OnCardsDrawn>, context: any) => {
-                        return context.player.opponent && event.player === context.player && context.source.isParticipating();
+                    onCardsDrawn: (event: EventPayload<EventName.OnCardsDrawn>, context: TriggeredAbilityContext) => {
+                        return context.player.opponent && event.player === context.player && (context.source as DrawCard).isParticipating();
                     }
                 },
                 printedAbility: false,

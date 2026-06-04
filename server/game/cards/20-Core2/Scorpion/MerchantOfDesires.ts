@@ -1,5 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 
 export default class MerchantOfDesires extends DrawCard {
     static id = 'merchant-of-desires';
@@ -19,7 +20,7 @@ export default class MerchantOfDesires extends DrawCard {
             })),
             effect: 'draw a card. {1} {2}',
             effectArgs: (context) => [
-                context.player.opponent as any,
+                context.player.opponent as Player,
                 context.costs.optionalOpponentLoseHonorPaid
                     ? 'does not resist and lose 1 honor to also draw a card'
                     : 'resists the temptation'

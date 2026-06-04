@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TokenType } from '../../Constants.js';
+import type { Event } from '../../Events/Event.js';
 
 class EndlessArchives extends DrawCard {
     static id = 'endless-archives';
@@ -25,7 +26,7 @@ class EndlessArchives extends DrawCard {
                     })),
                     AbilityDsl.actions.draw(context => ({
                         target: context.player,
-                        amount: context.events.find((a: any) => a.name === 'onCardMoved') ? context.events.find((a: any) => a.name === 'onCardMoved').cards.length : 0
+                        amount: context.events.find((a: Event) => a.name === 'onCardMoved') ? (context.events.find((a: Event) => a.name === 'onCardMoved') as Event & { cards: DrawCard[] }).cards.length : 0
                     }))
                 ])
             }),

@@ -1,6 +1,7 @@
 import { CardType, Location, Players, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 
 export default class RenownedSinger extends DrawCard {
     static id = 'renowned-singer';
@@ -21,7 +22,7 @@ export default class RenownedSinger extends DrawCard {
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) => {
                         const targets = context.targets.target as DrawCard[];
-                        return this.game.promptWithHandlerMenu(context.player.opponent as any, {
+                        return this.game.promptWithHandlerMenu(context.player.opponent as Player, {
                             activePromptTitle: 'Choose a card to add to your opponent\'s hand',
                             context: context,
                             cards: targets,
@@ -55,7 +56,7 @@ export default class RenownedSinger extends DrawCard {
                 })
             },
             effect: 'have {1} return one of {2} to {3}\'s hand',
-            effectArgs: (context) => [context.player.opponent as any, context.targets.target as DrawCard[], context.player]
+            effectArgs: (context) => [context.player.opponent as Player, context.targets.target as DrawCard[], context.player]
         });
     }
 }

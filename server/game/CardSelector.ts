@@ -6,16 +6,17 @@ import UnlimitedCardSelector from './CardSelectors/UnlimitedCardSelector.js';
 import UpToXCardSelector from './CardSelectors/UpToXCardSelector.js';
 import UpToVariableXCardSelector from './CardSelectors/UpToVariableXCardSelector.js';
 import { TargetMode, CardType } from './Constants.js';
+import type { AbilityContext } from './AbilityContext.js';
 
 interface CardSelectorProperties {
     numCards?: number;
     cardCondition?: (...args: any[]) => boolean;
-    numCardsFunc?: (...args: any[]) => number;
+    numCardsFunc?: (context: AbilityContext) => number;
     cardType?: CardType | CardType[];
     multiSelect?: boolean;
     sameDiscardPile?: boolean;
     mode?: TargetMode;
-    maxStat?: any;
+    maxStat?: () => number;
     [key: string]: any;
 }
 

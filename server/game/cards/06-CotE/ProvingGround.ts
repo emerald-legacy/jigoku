@@ -2,6 +2,7 @@ import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import { EventName } from '../../Constants.js';
 class ProvingGround extends DrawCard {
     static id = 'proving-ground';
@@ -10,7 +11,7 @@ class ProvingGround extends DrawCard {
         this.reaction({
             title: 'Draw a card after winning a duel',
             when: {
-                afterDuel: (event: EventPayload<EventName.AfterDuel>, context: any) => {
+                afterDuel: (event: EventPayload<EventName.AfterDuel>, context: TriggeredAbilityContext) => {
                     if(!event.winner) {
                         return false;
                     }

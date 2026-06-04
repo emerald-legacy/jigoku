@@ -26,7 +26,7 @@ export default class ShowMeYourStance extends DrawCard {
                     card.isAttacking() &&
                     (context.game.currentConflict
                         ?.getCharacters(context.player)
-                        .some((myCard: any) => myCard.hasTrait('duelist') && myCard.glory >= card.glory) ?? false),
+                        .some((myCard: DrawCard) => myCard.hasTrait('duelist') && myCard.glory >= card.glory) ?? false),
                 gameAction: AbilityDsl.actions.sendHome()
             }
         });

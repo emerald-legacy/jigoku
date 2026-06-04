@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { shuffle } from '../../utils/shuffle.js';
 
@@ -36,12 +37,12 @@ class KitsukiChiari extends DrawCard {
         });
     }
 
-    selectCardName(player: any, cardName: any, context: any) {
+    selectCardName(player: Player, cardName: string, context: AbilityContext) {
         context.costs.kitsukiChiariCost = cardName;
         return true;
     }
 
-    allowAttachment(attachment: any) {
+    allowAttachment(attachment: DrawCard) {
         if(attachment.hasTrait('poison') && !this.isBlank()) {
             return false;
         }

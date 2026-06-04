@@ -71,7 +71,7 @@ class GovernorsSpy extends DrawCard {
                 context: context,
                 location: Location.Provinces,
                 controller: targetPlayer === context.player ? Players.Self : Players.Opponent,
-                cardCondition: (card: any) =>
+                cardCondition: (card: BaseCard) =>
                     card.type === CardType.Province &&
                     this.isProvinceValidTarget(targetPlayer, this.dynastyCards, card),
                 onSelect: (player: Player, card: BaseCard) => {

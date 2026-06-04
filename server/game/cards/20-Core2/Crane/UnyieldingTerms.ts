@@ -2,6 +2,7 @@ import { DuelType } from '../../../Constants.js';
 import { Duel } from '../../../Duel.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 
 export default class UnyieldingTerms extends DrawCard {
     static id = 'unyielding-terms';
@@ -19,7 +20,7 @@ export default class UnyieldingTerms extends DrawCard {
                 })),
                 refusalMessage: '{0} chooses to refuse the duel and discard {1} cards from their hand',
                 refusalMessageArgs: (context) => [
-                    context.player.opponent as any,
+                    context.player.opponent as Player,
                     Math.floor((context.player.opponent?.hand.length ?? 0) / 2)
                 ],
                 gameAction: (duel) =>

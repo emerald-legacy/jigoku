@@ -79,7 +79,7 @@ describe('CardData field extraction', function() {
 
             it('reads printedFaction from cardData.clan for legacy data', function() {
                 const data: CardData = { ...minimalCardData, clan: 'dragon' };
-                delete (data as any).faction;
+                delete data.faction;
                 const card = new BaseCard(owner, data);
                 expect(card.printedFaction).toBe('dragon');
             });
@@ -98,7 +98,7 @@ describe('CardData field extraction', function() {
 
             it('defaults traits to empty array when absent', function() {
                 const data: CardData = { ...minimalCardData };
-                delete (data as any).traits;
+                delete data.traits;
                 const card = new BaseCard(owner, data);
                 expect(card.traits).toEqual([]);
             });
@@ -112,7 +112,7 @@ describe('CardData field extraction', function() {
 
             it('handles absent text without throwing', function() {
                 const data: CardData = { ...minimalCardData };
-                delete (data as any).text;
+                delete data.text;
                 expect(() => new BaseCard(owner, data)).not.toThrow();
             });
         });
@@ -146,7 +146,7 @@ describe('CardData field extraction', function() {
 
             it('returns NaN when cardData.military is undefined', function() {
                 const data: CardData = { ...minimalDrawCardData };
-                delete (data as any).military;
+                delete data.military;
                 const card = new DrawCard(owner, data);
                 expect(card.printedMilitarySkill).toBeNaN();
             });

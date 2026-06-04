@@ -3,6 +3,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 export default class UtakuSumire extends DrawCard {
     static id = 'utaku-sumire';
 
@@ -25,7 +26,7 @@ export default class UtakuSumire extends DrawCard {
                     targetController: Players.Self,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
-                            afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) => event.conflict.winner === context.player
+                            afterConflict: (event: EventPayload<EventName.AfterConflict>, context: AbilityContext) => event.conflict.winner === context.player
                         },
                         gameAction: AbilityDsl.actions.selectCard({
                             cardType: CardType.Character,

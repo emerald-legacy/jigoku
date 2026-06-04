@@ -17,7 +17,7 @@ export default class DaiTsuchi extends DrawCard {
                 condition: (context: AbilityContext<DrawCard>) => context.source.isParticipating('military'),
                 target: {
                     cardType: CardType.Attachment,
-                    cardCondition: (card: any, context: any) =>
+                    cardCondition: (card, context) =>
                         card instanceof DrawCard &&
                         card.parent instanceof DrawCard &&
                         card.parent.isParticipatingFor(context.player.opponent),

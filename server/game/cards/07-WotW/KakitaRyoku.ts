@@ -10,7 +10,7 @@ class KakitaRyoku extends DrawCard {
         this.reaction({
             title: 'Honor a character if you have the Imperial Favor',
             when: {
-                onPhaseStarted: (event: EventPayload<EventName.OnPhaseStarted>, context: any) => event.phase !== 'setup' && context.player.imperialFavor !== ''
+                onPhaseStarted: (event: EventPayload<EventName.OnPhaseStarted>, context) => event.phase !== 'setup' && context.player.imperialFavor !== ''
             },
             target: {
                 cardType: CardType.Character,
