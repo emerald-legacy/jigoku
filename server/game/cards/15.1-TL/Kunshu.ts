@@ -16,7 +16,7 @@ class Kunshu extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Play a card',
                 cost: AbilityDsl.costs.discardImperialFavor(),
-                condition: (context: AbilityContext) => context.source.isParticipating(),
+                condition: (context: AbilityContext) => (context.source as DrawCard).isParticipating(),
                 printedAbility: false,
                 target: {
                     cardType: [CardType.Event, CardType.Attachment],

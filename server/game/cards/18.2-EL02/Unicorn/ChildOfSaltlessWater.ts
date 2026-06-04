@@ -10,7 +10,7 @@ export default class ChildOfSaltlessWater extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
-                condition: (context: AbilityContext) => !context.source.isParticipating(),
+                condition: (context: AbilityContext) => !(context.source as DrawCard).isParticipating(),
                 message: '{0} is discarded from play as it is at home',
                 messageArgs: (context: AbilityContext) => [context.source],
                 gameAction: AbilityDsl.actions.discardFromPlay((context) => ({

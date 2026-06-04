@@ -9,7 +9,7 @@ const ayubunePilotCaptureParentCost = function() {
             return true;
         },
         resolve: function(context: AbilityContext) {
-            context.costs.ayubunePilotCaptureParentCost = context.source.parent;
+            context.costs.ayubunePilotCaptureParentCost = (context.source as DrawCard).parent;
         },
         pay: function() {
         }

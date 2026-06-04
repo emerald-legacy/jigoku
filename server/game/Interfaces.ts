@@ -185,30 +185,30 @@ interface TriggeredAbilityTargets {
     [propName: string]: TriggeredAbilityTarget & SubTarget & TriggeredAbilityTarget;
 }
 
-export type WhenType = {
-    [Evt in EventName]?: (event: EventPayload<Evt>, context: TriggeredAbilityContext) => unknown;
+export type WhenType<Source = BaseCard> = {
+    [Evt in EventName]?: (event: EventPayload<Evt>, context: TriggeredAbilityContext<Source>) => unknown;
 };
 
-export interface TriggeredAbilityWhenProps<Target extends BaseCard = BaseCard> extends AbilityProps<TriggeredAbilityContext<any, Target>> {
-    when: WhenType;
+export interface TriggeredAbilityWhenProps<Source = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<TriggeredAbilityContext<Source, Target>> {
+    when: WhenType<Source>;
     collectiveTrigger?: boolean;
     anyPlayer?: boolean;
     target?: TriggeredAbilityTarget & TriggeredAbilityTarget;
     targets?: TriggeredAbilityTargets;
-    handler?: (context: TriggeredAbilityContext<any, Target>) => void;
-    then?: ((context: TriggeredAbilityContext<any, Target>) => object) | object;
+    handler?: (context: TriggeredAbilityContext<Source, Target>) => void;
+    then?: ((context: TriggeredAbilityContext<Source, Target>) => object) | object;
 }
 
-export interface TriggeredAbilityAggregateWhenProps<Target extends BaseCard = BaseCard> extends AbilityProps<TriggeredAbilityContext<any, Target>> {
-    aggregateWhen: (events: any[], context: TriggeredAbilityContext<any, Target>) => boolean;
+export interface TriggeredAbilityAggregateWhenProps<Source = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<TriggeredAbilityContext<Source, Target>> {
+    aggregateWhen: (events: any[], context: TriggeredAbilityContext<Source, Target>) => boolean;
     collectiveTrigger?: boolean;
     target?: TriggeredAbilityTarget & TriggeredAbilityTarget;
     targets?: TriggeredAbilityTargets;
-    handler?: (context: TriggeredAbilityContext<any, Target>) => void;
-    then?: ((context: TriggeredAbilityContext<any, Target>) => object) | object;
+    handler?: (context: TriggeredAbilityContext<Source, Target>) => void;
+    then?: ((context: TriggeredAbilityContext<Source, Target>) => object) | object;
 }
 
-export type TriggeredAbilityProps<Target extends BaseCard = BaseCard> = TriggeredAbilityWhenProps<Target> | TriggeredAbilityAggregateWhenProps<Target>;
+export type TriggeredAbilityProps<Source = BaseCard, Target extends BaseCard = BaseCard> = TriggeredAbilityWhenProps<Source, Target> | TriggeredAbilityAggregateWhenProps<Source, Target>;
 
 export interface PersistentEffectProps<Source = any> {
     location?: Location | Location[];

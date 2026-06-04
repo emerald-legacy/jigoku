@@ -11,7 +11,7 @@ export default class DaidojiAkikore extends DrawCard {
         this.duelFocus({
             title: 'Add +1 to your duel total',
             duelCondition: (duel, context) =>
-                context.game.isDuringConflict('political') && duel.participants.includes(context.source),
+                context.game.isDuringConflict('political') && duel.participants.includes(context.source as DrawCard),
             gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
                 target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.modifyDuelSkill({ amount: 1, player: context.player }),

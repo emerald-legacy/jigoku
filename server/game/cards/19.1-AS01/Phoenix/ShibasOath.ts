@@ -24,7 +24,7 @@ export default class ShibasOath extends DrawCard {
                 target: context.source.parent
             })),
             effect: 'honor {1}',
-            effectArgs: (context) => context.source.parent
+            effectArgs: (context) => context.source.parent as DrawCard
         });
 
         this.whileAttached({

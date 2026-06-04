@@ -16,12 +16,12 @@ class SententiousPoet extends DrawCard {
                     event.amount > 0 &&
                     event.context?.stage === Stage.Cost &&
                     event.context?.ability.isCardPlayed() &&
-                    context.source.isParticipating(),
+                    (context.source as DrawCard).isParticipating(),
                 onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context: AbilityContext) =>
                     event.context?.ability.isCardPlayed() &&
                     event.context?.player === context.player.opponent &&
                     event.fate > 0 &&
-                    context.source.isParticipating() &&
+                    (context.source as DrawCard).isParticipating() &&
                     event.context?.stage === Stage.Cost &&
                     event.recipient?.type === 'ring'
             },

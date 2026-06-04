@@ -113,7 +113,7 @@ export default class DragonTattoo extends DrawCard {
         return (
             card.type === CardType.Character &&
             card.controller === context.player &&
-            card === context.source.parent &&
+            card === (context.source as DrawCard).parent &&
             card.location === Location.PlayArea
         );
     }

@@ -18,12 +18,12 @@ export default class CompositeYumi extends DrawCard {
                 effect: AbilityDsl.effects.modifyMilitarySkill(1)
             })),
             effect: 'give +1{1} to {2}',
-            effectArgs: (context) => ['military', context.source.parent],
+            effectArgs: (context) => ['military', context.source.parent as DrawCard],
             limit: AbilityDsl.limit.unlimitedPerConflict()
         });
     }
 
     #matchCondition(context: TriggeredAbilityContext) {
-        return context.source.parent && context.source.parent.isParticipating() && context.game.isDuringConflict('military');
+        return (context.source as DrawCard).parent && ((context.source as DrawCard).parent as DrawCard).isParticipating() && context.game.isDuringConflict('military');
     }
 }

@@ -17,7 +17,7 @@ class PhoenixTattoo extends DrawCard {
 
         this.persistentEffect({
             targetController: Players.Any,
-            condition: (context: AbilityContext) => Boolean(context.source.parent && context.source.parent.isParticipating() && context.game.isDuringConflict()),
+            condition: (context: AbilityContext) => Boolean((context.source as DrawCard).parent && ((context.source as DrawCard).parent as DrawCard).isParticipating() && context.game.isDuringConflict()),
             match: (card: any, context: any) => card !== context?.source.parent && card.isParticipating(),
             effect: AbilityDsl.effects.addKeyword('pride')
         });

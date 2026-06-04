@@ -36,7 +36,7 @@ export default class BayushiKachiko2 extends DrawCard {
                             event.player === context.player &&
                             !event.sourceOfCardPlayedFromConflictDiscard &&
                             context.game.isDuringConflict('political') &&
-                            context.source.isParticipating()
+                            (context.source as DrawCard).isParticipating()
                         );
                     }
                 },

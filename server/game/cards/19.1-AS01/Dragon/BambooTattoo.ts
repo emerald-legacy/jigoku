@@ -29,7 +29,7 @@ export default class BambooTattoo extends DrawCard {
                 onCardBowed: (event: EventPayload<EventName.OnCardBowed>, context: any) =>
                     context.source.parent &&
                     event.card === context.source.parent &&
-                    event.context?.source.type !== 'ring' &&
+                    (event.context?.source.type as string) !== 'ring' &&
                     event.context?.source.name !== 'Framework effect'
             },
             gameAction: AbilityDsl.actions.multiple([
@@ -41,7 +41,7 @@ export default class BambooTattoo extends DrawCard {
                 })
             ]),
             effect: 'ready{1} {2}',
-            effectArgs: (context) => [this.isSelfTrigger(context) ? ' and dishonor' : '', context.source.parent]
+            effectArgs: (context) => [this.isSelfTrigger(context) ? ' and dishonor' : '', context.source.parent as DrawCard]
         });
     }
 

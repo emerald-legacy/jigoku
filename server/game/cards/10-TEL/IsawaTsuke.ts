@@ -16,13 +16,13 @@ class IsawaTsuke extends DrawCard {
             when: {
                 onCardDishonored: (event: EventPayload<EventName.OnCardDishonored>, context) => {
                     const dishonoredByYourEffect = context.player === event.context?.player;
-                    const dishonoredByRingEffect = event.context?.source.type === 'ring';
+                    const dishonoredByRingEffect = (event.context?.source.type as string) === 'ring';
                     const currentlyFire = this.getCurrentElementSymbol(elementKey) === Element.Fire;
                     return dishonoredByYourEffect && dishonoredByRingEffect && currentlyFire;
                 },
                 onCardHonored: (event: EventPayload<EventName.OnCardHonored>, context) => {
                     const honoredByYourEffect = context.player === event.context?.player;
-                    const honoredByRingEffect = event.context?.source.type === 'ring';
+                    const honoredByRingEffect = (event.context?.source.type as string) === 'ring';
                     const currentlyFire = this.getCurrentElementSymbol(elementKey) === Element.Fire;
                     return honoredByYourEffect && honoredByRingEffect && currentlyFire;
                 }

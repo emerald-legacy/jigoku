@@ -11,7 +11,7 @@ function captureParentCost(): Cost {
             return true;
         },
         resolve(context: AbilityContext) {
-            context.costs.captureParentCost = context.source.parent;
+            context.costs.captureParentCost = (context.source as DrawCard).parent;
         },
         pay() {}
     };
@@ -67,7 +67,7 @@ export default class DevelopingMasterpiece extends DrawCard {
     private getHonorGain(context: AbilityContext): number {
         return context.costs.captureParentCost
             ? (context.costs.captureParentCost as DrawCard).getGlory()
-            : context.source.parent.getGlory();
+            : ((context.source as DrawCard).parent as DrawCard).getGlory();
     }
 }
 

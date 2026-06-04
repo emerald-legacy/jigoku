@@ -3,6 +3,7 @@ import { EventName } from '../Constants.js';
 import type { Cost } from './Cost.js';
 import { Event } from '../Events/Event.js';
 import { ReduceableFateCost } from './ReduceableFateCost.js';
+import type DrawCard from '../DrawCard.js';
 
 export class TargetDependentFateCost extends ReduceableFateCost implements Cost {
     constructor(ignoreType: boolean, public dependsOn: string) {
@@ -10,7 +11,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
     }
 
     public canPay(context: AbilityContext): boolean {
-        if(context.source.printedCost === null) {
+        if((context.source as DrawCard).printedCost === null) {
             return false;
         }
         if(!context.targets[this.dependsOn]) {
@@ -34,7 +35,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
         return new Event(EventName.OnSpendFate, { amount, context }, () => {
             context.player.markUsedReducers(
                 context.playType,
-                context.source,
+                context.source as DrawCard,
                 context.targets[this.dependsOn]
             );
             context.player.fate -= this.getFinalFatecost(context, amount);
@@ -44,7 +45,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
     protected getReducedCost(context: AbilityContext): number {
         return context.player.getReducedCost(
             context.playType,
-            context.source,
+            context.source as DrawCard,
             context.targets[this.dependsOn],
             this.ignoreType
         );

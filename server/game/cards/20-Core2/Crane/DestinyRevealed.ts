@@ -30,7 +30,7 @@ export default class DestinyRevealed extends DrawCard {
             title: 'Cancel a ring effect',
             when: {
                 onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context) =>
-                    event.context?.source.type === 'ring' &&
+                    (event.context?.source.type as string) === 'ring' &&
                     !!event.origin && 'controller' in event.origin &&
                     event.origin.controller === context.player &&
                     event.fate > 0,
@@ -41,7 +41,7 @@ export default class DestinyRevealed extends DrawCard {
             },
             gameAction: AbilityDsl.actions.cancel(),
             effect: 'cancel the effects of the {1}',
-            effectArgs: (context) => [context.event.context?.source]
+            effectArgs: (context) => [context.event.context?.source as DrawCard]
         });
     }
 }
@@ -53,5 +53,5 @@ type CardStatusEvent =
     | EventPayload<EventName.OnCardReadied>;
 
 function targetedByOpponentRingEffect(event: CardStatusEvent, context: TriggeredAbilityContext<any>) {
-    return event.card?.controller === context.player && event.context?.source.type === 'ring';
+    return event.card?.controller === context.player && (event.context?.source.type as string) === 'ring';
 }

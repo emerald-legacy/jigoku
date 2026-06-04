@@ -17,7 +17,7 @@ export default class CollectorOfFavors extends DrawCard {
                         event.conflict.winner === context.source.controller && context.source.isParticipating()
                 },
                 gameAction: AbilityDsl.actions.gainFate()
-            } as TriggeredAbilityProps)
+            } as TriggeredAbilityProps<DrawCard>)
         });
     }
 }

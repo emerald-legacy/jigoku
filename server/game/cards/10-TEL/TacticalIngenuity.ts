@@ -13,7 +13,7 @@ class TacticalIngenuity extends DrawCard {
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Reveal and draw an event',
-                condition: (context: AbilityContext) => context.source.isParticipating(),
+                condition: (context: AbilityContext) => (context.source as DrawCard).isParticipating(),
                 effect: 'look at the top four cards of their deck',
                 gameAction: AbilityDsl.actions.deckSearch({
                     amount: 4,

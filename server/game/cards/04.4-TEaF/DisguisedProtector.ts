@@ -8,7 +8,7 @@ class DisguisedProtector extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Add each players honor bid to their skill total',
-            condition: (context: AbilityContext) => context.source.isParticipating(),
+            condition: (context: AbilityContext) => (context.source as DrawCard).isParticipating(),
             effect: 'add the bid on each players dial to their skill total',
             gameAction: [
                 AbilityDsl.actions.playerLastingEffect((context: AbilityContext) => ({

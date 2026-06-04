@@ -8,6 +8,7 @@ import type { Event } from '../Events/Event.js';
 import type BaseAbility from '../BaseAbility.js';
 import type CardAbility from '../CardAbility.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import type DrawCard from '../DrawCard.js';
 
 type AbilityResolverTarget = Parameters<BaseAbility['resolveRemainingTargets']>[1];
 
@@ -66,8 +67,8 @@ class AbilityResolver extends BaseStepWithPipeline {
     }
 
     createSnapshot() {
-        if([CardType.Character, CardType.Holding, CardType.Attachment].includes(this.context.source.getType())) {
-            this.context.cardStateWhenInitiated = this.context.source.createSnapshot();
+        if([CardType.Character, CardType.Holding, CardType.Attachment].includes(this.context.source.getType() as CardType)) {
+            this.context.cardStateWhenInitiated = (this.context.source as DrawCard).createSnapshot();
         }
     }
 
@@ -206,11 +207,11 @@ class AbilityResolver extends BaseStepWithPipeline {
         }
 
         if(this.context.ability.isCardPlayed()) {
-            if(this.context.source.isLimited()) {
+            if((this.context.source as DrawCard).isLimited()) {
                 this.context.player.limitedPlayed += 1;
             }
             if(this.game.currentConflict) {
-                this.game.currentConflict.addCardPlayed(this.context.player, this.context.source);
+                this.game.currentConflict.addCardPlayed(this.context.player, this.context.source as DrawCard);
             }
         }
 

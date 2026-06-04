@@ -16,9 +16,9 @@ export default class IkomaAnakazu extends DrawCard {
 
         this.persistentEffect({
             condition: (context: AbilityContext) =>
-                context.source.isParticipating() &&
+                !!((context.source as DrawCard).isParticipating() &&
                 context.player.opponent &&
-                (this.brokenProvincesThisPhase.get(context.player.opponent.name) ?? 0) > 0,
+                (this.brokenProvincesThisPhase.get(context.player.opponent.name) ?? 0) > 0),
             effect: AbilityDsl.effects.modifyBothSkills(3)
         });
     }

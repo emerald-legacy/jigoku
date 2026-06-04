@@ -8,7 +8,7 @@ class WarriorPoet extends DrawCard {
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Reduce skill of opponent\'s characters',
-            condition: (context: AbilityContext) => context.source.isParticipating(),
+            condition: (context: AbilityContext) => (context.source as DrawCard).isParticipating(),
             effect: 'reduce the skill of all opposing characters',
             gameAction: ability.actions.cardLastingEffect((context: AbilityContext) => ({
                 target: this.game.currentConflict?.getCharacters(context.player.opponent) ?? [],

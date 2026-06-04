@@ -3,6 +3,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAbility from '../BaseAbility.js';
 import type EffectSource from '../EffectSource.js';
 import type { SourceWithState } from '../EffectSource.js';
+import type BaseCard from '../BaseCard.js';
 import type Game from '../Game.js';
 import type { GameObject } from '../GameObject.js';
 import type { WhenType } from '../Interfaces.js';
@@ -90,7 +91,7 @@ class Effect {
 
     refreshContext() {
         this.context = this.game.getFrameworkContext((this.source as SourceWithState).controller ?? null);
-        this.context.source = this.source;
+        this.context.source = this.source as BaseCard;
         if(this.ability) {
             this.context.ability = this.ability;
         }

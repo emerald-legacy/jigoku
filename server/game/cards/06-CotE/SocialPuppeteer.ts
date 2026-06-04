@@ -14,7 +14,7 @@ class SocialPuppeteer extends DrawCard {
         this.action({
             title: 'Switch honor dials with opponent',
             condition: (context: AbilityContext) =>
-                context.source.isParticipating() && !!context.player.opponent &&
+                (context.source as DrawCard).isParticipating() && !!context.player.opponent &&
                 context.player.showBid !== context.player.opponent.showBid,
             effect: 'switch honor dials with {1}',
             effectArgs: (context: AbilityContext) => context.player.opponent as Player,

@@ -51,8 +51,8 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
             return 'location';
         }
         if(
-            !context.source.canPlay(context, PlayType.PlayFromProvince) ||
-            !context.source.parent.canTriggerAbilities(context)
+            !(context.source as DrawCard).canPlay(context, PlayType.PlayFromProvince) ||
+            !((context.source as DrawCard).parent as DrawCard).canTriggerAbilities(context)
         ) {
             return 'cannotTrigger';
         }
@@ -67,15 +67,15 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
             '{0} plays {1} from {2} with {3} additional fate',
             context.player,
             context.source,
-            context.source.parent,
+            (context.source as DrawCard).parent,
             (context as any).chooseFate
         );
         context.source.abilities.playActions = context.source.abilities.playActions.filter(
             (action: any) => action.title !== 'Play this character from Back-Alley Hideaway'
         );
         // remove associations between this card and Back-Alley Hideaway
-        this.backAlleyCard.removeAttachment(context.source);
-        context.source.parent = null;
+        this.backAlleyCard.removeAttachment(context.source as DrawCard);
+        (context.source as DrawCard).parent = null;
         let putIntoPlayEvent = putIntoPlay({ fate: (context as any).chooseFate }).getEvent(context.source, context);
         let cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
             player: context.player,

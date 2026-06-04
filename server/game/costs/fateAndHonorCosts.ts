@@ -5,6 +5,7 @@ import { HandlerAction } from '../GameActions/HandlerAction.js';
 import { Derivable, derive } from '../utils/helpers.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
+import type DrawCard from '../DrawCard.js';
 import Ring from '../Ring.js';
 import type { Cost } from './Cost.js';
 import { GameActionCost } from './GameActionCost.js';
@@ -19,14 +20,14 @@ export function payPrintedFateCost(): Cost {
     return {
         canIgnoreForTargeting: true,
         canPay(context: TriggeredAbilityContext) {
-            const amount = context.source.getCost();
+            const amount = (context.source as DrawCard).getCost() ?? 0;
             return (
                 context.player.fate >= amount &&
                 (amount === 0 || context.player.checkRestrictions('spendFate', context))
             );
         },
         payEvent(context: TriggeredAbilityContext) {
-            const amount = context.source.getCost();
+            const amount = (context.source as DrawCard).getCost() ?? 0;
             return new Event(
                 EventName.OnSpendFate,
                 { amount, context },
@@ -142,7 +143,7 @@ export function variableFateCost(properties: {
             if((context as any).ignoreFateCost) {
                 return true;
             }
-            const costModifiers = context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source);
+            const costModifiers = context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source as DrawCard);
             return (
                 costModifiers < 0 ||
                 (context.player.fate >= deriveMinAmount(context) + costModifiers &&
@@ -152,7 +153,7 @@ export function variableFateCost(properties: {
         resolve(context: TriggeredAbilityContext, result) {
             const costModifiers = (context as any).ignoreFateCost
                 ? -1000
-                : context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source);
+                : context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source as DrawCard);
 
             const maxAmount = deriveMaxAmount(context);
             const min = deriveMinAmount(context);
@@ -189,7 +190,7 @@ export function variableFateCost(properties: {
                 return payZeroFate.getEvent(context.player, context);
             }
 
-            const costModifiers = context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source);
+            const costModifiers = context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source as DrawCard);
             const cost = (context.costs.variableFateCost as number) + Math.min(0, costModifiers); //+ve cost modifiers are applied by the engine
             if(cost > 0) {
                 const action = context.game.actions.loseFate({ amount: cost });

@@ -29,7 +29,7 @@ export default class BitingSteel extends DrawCard {
             title: 'Add a Weapon to your duel stats',
             duelCondition: (duel, context) =>
                 (duel.duelType === DuelType.Military || duel.duelType === DuelType.Political) &&
-                duel.isInvolved(context.source.parent),
+                duel.isInvolved((context.source as DrawCard).parent as DrawCard),
             target: {
                 cardType: CardType.Attachment,
                 cardCondition: (card: DrawCard, context) =>

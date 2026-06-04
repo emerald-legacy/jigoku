@@ -30,8 +30,8 @@ export default class IchigoKun extends DrawCard {
                     mode: TargetMode.Select,
                     dependsOn: 'otherCharacter',
                     choices: (context) => ({
-                        [MORE_MIL_LESS_GLORY]: this.actionSequence(context, { military: +2, glory: -2 }),
-                        [LESS_MIL_MORE_GLORY]: this.actionSequence(context, { military: -2, glory: +2 })
+                        [MORE_MIL_LESS_GLORY]: this.actionSequence(context as AbilityContext<this>, { military: +2, glory: -2 }),
+                        [LESS_MIL_MORE_GLORY]: this.actionSequence(context as AbilityContext<this>, { military: -2, glory: +2 })
                     })
                 }
             },

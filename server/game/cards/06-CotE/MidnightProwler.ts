@@ -12,7 +12,7 @@ export default class MidnightProwler extends DrawCard {
             when: {
                 afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext) =>
                     this.game.isDuringConflict('military') &&
-                    context.source.isParticipating() &&
+                    (context.source as DrawCard).isParticipating() &&
                     event.conflict.winner === context.source.controller &&
                     context.player.opponent !== undefined
             },

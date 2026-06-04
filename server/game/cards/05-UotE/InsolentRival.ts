@@ -21,7 +21,7 @@ class InsolentRival extends DrawCard {
                 cardCondition: (card: any) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.duel((context: AbilityContext) => ({
                     type: DuelType.Military,
-                    challenger: context.source,
+                    challenger: context.source as DrawCard,
                     gameAction: (duel: any) => AbilityDsl.actions.dishonor({ target: duel.loser })
                 }))
             }

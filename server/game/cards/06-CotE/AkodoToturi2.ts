@@ -9,7 +9,7 @@ class AkodoToturi2 extends DrawCard {
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Prevent each player playing cards from hand',
-            condition: (context: AbilityContext) => context.source.isParticipating() && context.player.imperialFavor !== '',
+            condition: (context: AbilityContext) => (context.source as DrawCard).isParticipating() && context.player.imperialFavor !== '',
             effect: 'prevent each player playing cards from hand',
             gameAction: [
                 ability.actions.playerLastingEffect({

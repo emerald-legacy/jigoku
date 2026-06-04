@@ -21,7 +21,7 @@ class DaughterOfWar extends DrawCard {
                 gameAction: AbilityDsl.actions.putIntoPlay()
             })),
             effect: 'search their deck for a character with cost less than {1} to put into play',
-            effectArgs: context => [context.source.parent.getCost()]
+            effectArgs: context => [(context.source.parent as DrawCard).getCost() ?? 0]
         });
     }
 }

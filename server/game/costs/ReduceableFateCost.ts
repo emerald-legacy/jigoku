@@ -4,6 +4,7 @@ import type { Cost, Result } from './Cost.js';
 import { Event } from '../Events/Event.js';
 import { removeFate } from '../GameActions/GameActions.js';
 import BaseCard from '../BaseCard.js';
+import type DrawCard from '../DrawCard.js';
 import Ring from '../Ring.js';
 
 const CANCELLED = 'CANCELLED';
@@ -25,7 +26,7 @@ export class ReduceableFateCost implements Cost {
     constructor(public ignoreType: boolean) {}
 
     public canPay(context: AbilityContext): boolean {
-        if(context.source.printedCost === null) {
+        if((context.source as DrawCard).printedCost === null) {
             return false;
         }
 
@@ -42,7 +43,7 @@ export class ReduceableFateCost implements Cost {
     }
 
     protected getAlternateFatePools(context: AbilityContext): Set<BaseCard | Ring> {
-        return new Set(context.player.getAlternateFatePools(context.playType, context.source, context));
+        return new Set(context.player.getAlternateFatePools(context.playType, context.source as DrawCard, context));
     }
 
     public resolve(context: AbilityContext, result: Result): void {
@@ -139,7 +140,7 @@ export class ReduceableFateCost implements Cost {
     }
 
     protected getReducedCost(context: AbilityContext): number {
-        return context.player.getReducedCost(context.playType, context.source, null, this.ignoreType);
+        return context.player.getReducedCost(context.playType, context.source as DrawCard, null, this.ignoreType);
     }
 
     protected getFinalFatecost(context: AbilityContext, reducedCost: number) {
@@ -257,7 +258,7 @@ export class ReduceableFateCost implements Cost {
         const amount = this.getReducedCost(context);
         context.costs.fate = amount;
         return new Event(EventName.OnSpendFate, { amount, context }, (event) => {
-            context.player.markUsedReducers(context.playType, context.source);
+            context.player.markUsedReducers(context.playType, context.source as DrawCard);
             context.player.fate -= this.getFinalFatecost(context, amount);
             this.afterPayHook(event);
         });

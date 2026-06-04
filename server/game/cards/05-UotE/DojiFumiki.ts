@@ -9,7 +9,7 @@ class DojiFumiki extends DrawCard {
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Bow a dishonored character',
-            condition: (context: AbilityContext) => context.source.isParticipating(),
+            condition: (context: AbilityContext) => (context.source as DrawCard).isParticipating(),
             target: {
                 cardType: CardType.Character,
                 cardCondition: (card: any) => card.isDishonored && card.isParticipating(),

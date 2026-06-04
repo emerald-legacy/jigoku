@@ -290,31 +290,31 @@ class BaseCard extends EffectSource {
         return new CardAction(this, properties);
     }
 
-    triggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityType, properties: TriggeredAbilityProps<Target>): void {
+    triggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityType, properties: TriggeredAbilityProps<this, Target>): void {
         this.abilities.reactions.push(this.createTriggeredAbility(abilityType, properties));
     }
 
-    createTriggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityType, properties: TriggeredAbilityProps<Target>): TriggeredAbility {
+    createTriggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityType, properties: TriggeredAbilityProps<this, Target>): TriggeredAbility {
         return new TriggeredAbility(this, abilityType, properties as unknown as ConstructorParameters<typeof TriggeredAbility>[2]);
     }
 
-    reaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<Target>): void {
+    reaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void {
         this.triggeredAbility(AbilityType.Reaction, properties);
     }
 
-    forcedReaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<Target>): void {
+    forcedReaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void {
         this.triggeredAbility(AbilityType.ForcedReaction, properties);
     }
 
-    wouldInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<Target>): void {
+    wouldInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void {
         this.triggeredAbility(AbilityType.WouldInterrupt, properties);
     }
 
-    interrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<Target>): void {
+    interrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void {
         this.triggeredAbility(AbilityType.Interrupt, properties);
     }
 
-    forcedInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<Target>): void {
+    forcedInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void {
         this.triggeredAbility(AbilityType.ForcedInterrupt, properties);
     }
 
@@ -388,7 +388,7 @@ class BaseCard extends EffectSource {
         if(!allowedLocations.includes(location)) {
             throw new Error(`'${location}' is not a supported effect location.`);
         }
-        this.abilities.persistentEffects.push({ duration: Duration.Persistent, location, ...properties });
+        this.abilities.persistentEffects.push({ duration: Duration.Persistent, location, ...properties } as StoredPersistentEffect);
     }
 
     attachmentConditions(properties: AttachmentConditionProps): void {
@@ -433,7 +433,7 @@ class BaseCard extends EffectSource {
 
     composure(properties: Omit<PersistentEffectProps<this>, 'condition'>): void {
         this.persistentEffect({
-            condition: (context: AbilityContext) => context.player.hasComposure(),
+            condition: (context: AbilityContext<this>) => context.player.hasComposure(),
             ...properties
         } as PersistentEffectProps<this> & { isKeywordEffect: boolean });
     }
@@ -441,9 +441,9 @@ class BaseCard extends EffectSource {
     dire(properties: PersistentEffectProps<this>): void {
         if(properties && properties.condition) {
             let currentCondition = properties.condition;
-            properties.condition = (context: AbilityContext) => context.source.isDire() && currentCondition(context);
+            properties.condition = (context: AbilityContext<this>) => context.source.isDire() && currentCondition(context);
         } else {
-            properties = Object.assign({ condition: (context: AbilityContext) => context.source.isDire() }, properties);
+            properties = Object.assign({ condition: (context: AbilityContext<this>) => context.source.isDire() }, properties);
         }
         properties = Object.assign({ isKeywordEffect: true }, properties);
 

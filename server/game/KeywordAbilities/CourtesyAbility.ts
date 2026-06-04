@@ -10,7 +10,7 @@ export default class CourtesyAbility extends TriggeredAbility {
         super(card, AbilityType.KeywordInterrupt, {
             when: {
                 onCardLeavesPlay: (event: Event, context: TriggeredAbilityContext) => (event as GameEvent<EventName.OnCardLeavesPlay>).card === context.source &&
-                                                      context.source.hasCourtesy()
+                                                      (context.source as DrawCard).hasCourtesy()
             },
             title: card.name + '\'s Courtesy',
             printedAbility: false,

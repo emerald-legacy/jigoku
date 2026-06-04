@@ -12,7 +12,7 @@ export default class KitsukiSano extends DrawCard {
         this.duelChallenge({
             title: 'Punish the injust',
             duelCondition: (duel, context) =>
-                duel.participants.includes(context.source) &&
+                duel.participants.includes(context.source as DrawCard) &&
                 duel.participants.some(
                     (participant) => participant.controller === context.player.opponent && participant.isDishonored
                 ),

@@ -16,7 +16,7 @@ export default class ZealousInspector extends DrawCard {
                     event.card.controller === context.player.opponent &&
                     // dishonored by your card effect
                     context.player === event.context?.player &&
-                    event.context?.source.type !== 'ring'
+                    (event.context?.source.type as string) !== 'ring'
             },
             gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,

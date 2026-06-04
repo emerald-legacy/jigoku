@@ -9,9 +9,9 @@ export class ThrivingAbility extends TriggeredAbility {
     constructor(card: DrawCard) {
         super(card, AbilityType.KeywordInterrupt, {
             when: {
-                onPhaseEnded: (event: Event, context: TriggeredAbilityContext<DrawCard>) =>
+                onPhaseEnded: (event: Event, context: TriggeredAbilityContext) =>
                     (event as GameEvent<EventName.OnPhaseEnded>).phase === Phases.Fate &&
-                    context.source.hasThriving() &&
+                    (context.source as DrawCard).hasThriving() &&
                     context.player.getDynastyCardsInProvince(context.source.location).length === 1
             },
             location: [

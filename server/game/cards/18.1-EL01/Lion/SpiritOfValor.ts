@@ -10,14 +10,14 @@ function captureParentCost(): Cost {
             return true;
         },
         resolve(context: AbilityContext) {
-            context.costs.captureParentCost = context.source.parent;
+            context.costs.captureParentCost = (context.source as DrawCard).parent;
         },
         pay() {}
     };
 }
 
 function receiver(context: AbilityContext): DrawCard {
-    return context.costs.captureParentCost ?? context.source.parent;
+    return (context.costs.captureParentCost ?? (context.source as DrawCard).parent) as DrawCard;
 }
 
 export default class SpiritOfValor extends DrawCard {

@@ -14,7 +14,7 @@ class AkodoMotivator extends DrawCard {
                     }
                     const discardedFromOwnHand = event.player === context.player;
                     const discardedByOpponentsEffect = event.player.opponent === event.context.player;
-                    const discardedByRingEffect = event.context.source.type === 'ring';
+                    const discardedByRingEffect = (event.context.source.type as string) === 'ring';
                     const discardedByCardEffect = event.context.ability.isCardAbility();
                     return (
                         discardedFromOwnHand &&

@@ -16,7 +16,7 @@ export default class Spyglass2 extends DrawCard {
                     onMoveToConflict: (event, context) => event.card === context.source
                 },
                 gameAction: AbilityDsl.actions.draw()
-            } as TriggeredAbilityProps)
+            } as TriggeredAbilityProps<DrawCard>)
         });
     }
 }
