@@ -70,7 +70,7 @@ class EffectSource extends GameObject {
         return false;
     }
 
-    private applyDurationEffect(duration: Duration, propertyFactory: PropertyFactory): void {
+    public applyDurationEffect(duration: Duration, propertyFactory: PropertyFactory): void {
         const properties = propertyFactory(getAbilityDsl());
         this.addEffectToEngine(Object.assign({ duration, location: Location.Any }, properties));
     }

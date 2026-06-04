@@ -60,6 +60,6 @@ export class LastingEffectAction<P extends LastingEffectProperties = LastingEffe
         if(!properties.ability) {
             properties.ability = (event.context as AbilityContext).ability;
         }
-        (event.context as AbilityContext).source[properties.duration ?? Duration.UntilEndOfConflict](() => properties);
+        (event.context as AbilityContext).source.applyDurationEffect(properties.duration ?? Duration.UntilEndOfConflict, () => properties);
     }
 }
