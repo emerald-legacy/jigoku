@@ -295,10 +295,9 @@ class BaseCard extends EffectSource {
     }
 
     createTriggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityType, properties: TriggeredAbilityProps<this, Target>): TriggeredAbility {
-        // Seam between the precisely-typed author DSL props and the runtime property bag
-        // (TriggeredAbilityProperties carries an index signature for ad-hoc props; the author
-        // type does not, so the two are not directly assignable).
-        return new TriggeredAbility(this, abilityType, properties as unknown as TriggeredAbilityProperties<this>);
+        // The author DSL props carry the target generic; the runtime ability erases it (Target is
+        // covariant in the handler context), so downcast once to drop it.
+        return new TriggeredAbility(this, abilityType, properties as TriggeredAbilityProperties<this>);
     }
 
     reaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void {

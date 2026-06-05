@@ -1,4 +1,5 @@
 import CardAbility from './CardAbility.js';
+import type { CardAbilityProperties } from './CardAbility.js';
 import { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import { Stage, CardType, EffectName, AbilityType } from './Constants.js';
 import type BaseCard from './BaseCard.js';
@@ -16,14 +17,13 @@ interface AbilityChoiceWindow {
 
 // Author-facing shape: `WhenType<S>` narrows each handler's event payload by event name and types
 // `context.source` as `S`. The runtime fields below erase that back to base `Event`/`BaseCard`.
-export interface TriggeredAbilityProperties<S extends BaseCard = BaseCard> {
+export interface TriggeredAbilityProperties<S extends BaseCard = BaseCard> extends CardAbilityProperties<TriggeredAbilityContext<S>> {
     when?: WhenType<S>;
     // The target type does not affect aggregate triggers, so it is left open here; this lets the
     // author-facing `TriggeredAbilityProps<S, Target>` assign in with a single cast (any Target).
     aggregateWhen?: (events: Event[], context: TriggeredAbilityContext<S, any>) => boolean;
     anyPlayer?: boolean;
     collectiveTrigger?: boolean;
-    [key: string]: unknown;
 }
 
 interface RegisteredEvent {
@@ -68,7 +68,10 @@ class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
     events: RegisteredEvent[] | null = null;
 
     constructor(card: S, abilityType: AbilityType, properties: TriggeredAbilityProperties<S>) {
-        super(card, properties);
+        // The base ability chain operates at the base `AbilityContext`; the triggered handlers are
+        // typed against the narrower `TriggeredAbilityContext<S>`, so widen the context here (single
+        // downcast — at runtime the context the handlers receive is always a TriggeredAbilityContext).
+        super(card, properties as CardAbilityProperties);
         // `S` types the author-facing `when`/`aggregateWhen` callbacks (context.source = the card subtype).
         // The runtime fields are erased to BaseCard so `TriggeredAbility<DrawCard>` stays assignable into
         // the `TriggeredAbility[]` collections (reactions etc.) — at runtime the context's source is the card.

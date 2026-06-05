@@ -1,19 +1,16 @@
 import { AbilityContext } from './AbilityContext.js';
 import BaseCardAbility from './BaseCardAbility.js';
+import type { BaseAbilityProperties } from './BaseAbility.js';
 import type BaseCard from './BaseCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
 
-interface ThenAbilityProperties {
-    cost?: any;
-    target?: any;
-    gameAction?: any;
-    handler?: (context: AbilityContext) => void;
-    then?: ThenAbilityProperties | ((context: AbilityContext) => ThenAbilityProperties);
-    thenCondition?: (context: AbilityContext) => boolean;
-    message?: string | ((context: AbilityContext) => string);
-    messageArgs?: any[] | ((context: AbilityContext) => any[]);
-    [key: string]: any;
+export interface ThenAbilityProperties<C extends AbilityContext = AbilityContext> extends BaseAbilityProperties {
+    handler?: (context: C) => void;
+    then?: ThenAbilityProperties | ((context: C) => ThenAbilityProperties);
+    thenCondition?: (context: C) => boolean;
+    message?: string | ((context: C) => string);
+    messageArgs?: any[] | ((context: C) => any[]);
 }
 
 class ThenAbility extends BaseCardAbility {

@@ -23,12 +23,11 @@ interface AbilityTarget {
     getGameAction(context: AbilityContext): any[];
 }
 
-interface BaseAbilityProperties {
+export interface BaseAbilityProperties {
     cost?: any;
     target?: any;
     targets?: Record<string, any>;
     gameAction?: GameAction | GameAction[];
-    [key: string]: any;
 }
 
 interface TargetResults {

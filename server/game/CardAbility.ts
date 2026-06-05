@@ -1,5 +1,6 @@
 import * as AbilityLimit from './AbilityLimit.js';
 import ThenAbility from './ThenAbility.js';
+import type { ThenAbilityProperties } from './ThenAbility.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { Location, CardType, EffectName } from './Constants.js';
 import { initiateDuel } from './DuelHelper.js';
@@ -7,9 +8,10 @@ import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { AbilityContext } from './AbilityContext.js';
+import type { EffectArg } from './Interfaces.js';
 import type { Cost } from './costs/Cost.js';
 
-interface CardAbilityProperties {
+export interface CardAbilityProperties<C extends AbilityContext = AbilityContext> extends ThenAbilityProperties<C> {
     title?: string;
     limit?: any;
     location?: Location | Location[];
@@ -21,11 +23,8 @@ interface CardAbilityProperties {
     abilityIdentifier?: string;
     origin?: BaseCard;
     initiateDuel?: any;
-    message?: string;
-    messageArgs?: any;
     effect?: string;
-    effectArgs?: any;
-    [key: string]: any;
+    effectArgs?: EffectArg | ((context: C) => EffectArg);
 }
 
 const DefaultLocationForType: Record<string, Location> = {
@@ -37,6 +36,7 @@ const DefaultLocationForType: Record<string, Location> = {
 };
 
 class CardAbility extends ThenAbility {
+    declare properties: CardAbilityProperties;
     title?: string;
     limit: any;
     abilityCost: Cost[];
