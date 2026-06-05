@@ -10,7 +10,7 @@ import CourtesyAbility from './KeywordAbilities/CourtesyAbility.js';
 import PrideAbility from './KeywordAbilities/PrideAbility.js';
 import SincerityAbility from './KeywordAbilities/SincerityAbility.js';
 import { RallyAbility } from './KeywordAbilities/RallyAbility.js';
-import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players } from './Constants.js';
+import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType } from './Constants.js';
 import { GameModes } from '../GameModes.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility.js';
@@ -19,7 +19,8 @@ import type { ProvinceCard } from './ProvinceCard.js';
 import type Ring from './Ring.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { GameEvent } from './Events/EventPayloads.js';
-import type { PersistentEffectProps } from './Interfaces.js';
+import type { PersistentEffectProps, TriggeredAbilityProps, TriggeredAbilityWhenProps } from './Interfaces.js';
+import type { Duel } from './Duel.js';
 import type { CardData } from './types/CardData.js';
 
 interface MenuItem {
@@ -933,6 +934,39 @@ class DrawCard extends BaseCard {
             glorySummary: this.glorySummary,
             controller: this.controller.getShortSummary(),
             effectMarkers: this.getEffectMarkers()
+        });
+    }
+
+    duelChallenge(properties: Omit<TriggeredAbilityProps, 'when'> & { duelCondition?: (duel: Duel, context: AbilityContext<DrawCard>) => boolean }): void {
+        this.triggeredAbility(AbilityType.DuelReaction, {
+            ...properties,
+            when: {
+                onDuelChallenge: ({ duel }: { duel?: Duel }, context) =>
+                    !!context && !!duel && duel.playerCanTriggerChallenge(context.player) &&
+                    (!properties.duelCondition || properties.duelCondition(duel, context))
+            }
+        });
+    }
+
+    duelFocus(properties: Omit<TriggeredAbilityWhenProps, 'when'> & { duelCondition?: (duel: Duel, context: AbilityContext<DrawCard>) => boolean }): void {
+        this.triggeredAbility(AbilityType.DuelReaction, {
+            ...properties,
+            when: {
+                onDuelFocus: ({ duel }: { duel?: Duel }, context) =>
+                    !!context && !!duel && duel.playerCanTriggerFocus(context.player) &&
+                    (!properties.duelCondition || properties.duelCondition(duel, context))
+            }
+        });
+    }
+
+    duelStrike(properties: Omit<TriggeredAbilityProps, 'when'> & { duelCondition?: (duel: Duel, context: AbilityContext<DrawCard>) => boolean }): void {
+        this.triggeredAbility(AbilityType.DuelReaction, {
+            ...properties,
+            when: {
+                onDuelStrike: ({ duel }: { duel?: Duel }, context) =>
+                    !!context && !!duel && duel.playerCanTriggerStrike(context.player) &&
+                    (!properties.duelCondition || properties.duelCondition(duel, context))
+            }
         });
     }
 }

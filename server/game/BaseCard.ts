@@ -4,6 +4,7 @@ import EffectSource from './EffectSource.js';
 import { CardStatusManager } from './CardStatusManager.js';
 import CardAbility from './CardAbility.js';
 import TriggeredAbility from './TriggeredAbility.js';
+import type { TriggeredAbilityProperties } from './TriggeredAbility.js';
 import type BaseCardAbility from './BaseCardAbility.js';
 import Game from './Game.js';
 import DynastyCardAction from './DynastyCardAction.js';
@@ -25,8 +26,7 @@ import {
     ActionProps,
     AttachmentConditionProps,
     PersistentEffectProps,
-    TriggeredAbilityProps,
-    TriggeredAbilityWhenProps
+    TriggeredAbilityProps
 } from './Interfaces.js';
 import { PlayAttachmentAction } from './PlayAttachmentAction.js';
 import { PlayAttachmentToRingAction } from './PlayAttachmentToRingAction.js';
@@ -40,7 +40,6 @@ import type { CardEffect } from './Effects/types.js';
 import type Effect from './Effects/Effect.js';
 import type { EffectFactory } from './Effects/EffectBuilder.js';
 import type { GainAllAbilities } from './Effects/Library/gainAllAbilities.js';
-import type { Duel } from './Duel.js';
 import type { CardData } from './types/CardData.js';
 
 type Faction = 'neutral' | 'crab' | 'crane' | 'dragon' | 'lion' | 'phoenix' | 'scorpion' | 'unicorn' | 'shadowlands';
@@ -296,7 +295,10 @@ class BaseCard extends EffectSource {
     }
 
     createTriggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityType, properties: TriggeredAbilityProps<this, Target>): TriggeredAbility {
-        return new TriggeredAbility(this, abilityType, properties as unknown as ConstructorParameters<typeof TriggeredAbility>[2]);
+        // Seam between the precisely-typed author DSL props and the runtime property bag
+        // (TriggeredAbilityProperties carries an index signature for ad-hoc props; the author
+        // type does not, so the two are not directly assignable).
+        return new TriggeredAbility(this, abilityType, properties as unknown as TriggeredAbilityProperties<this>);
     }
 
     reaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void {
@@ -317,54 +319,6 @@ class BaseCard extends EffectSource {
 
     forcedInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void {
         this.triggeredAbility(AbilityType.ForcedInterrupt, properties);
-    }
-
-    duelChallenge(
-        properties: Omit<TriggeredAbilityProps, 'when'> & {
-            duelCondition?: (duel: Duel, context: AbilityContext) => boolean;
-        }
-    ): void {
-        const newProperties: TriggeredAbilityProps = {
-            ...properties,
-            when: {
-                onDuelChallenge: ({ duel }: { duel?: Duel }, context) =>
-                    !!context &&
-                    !!duel &&
-                    duel.playerCanTriggerChallenge(context.player) &&
-                    (!properties.duelCondition || properties.duelCondition(duel, context))
-            }
-        };
-        this.triggeredAbility(AbilityType.DuelReaction, newProperties);
-    }
-
-    duelFocus(
-        properties: Omit<TriggeredAbilityWhenProps, 'when'> & { duelCondition?: (duel: Duel, context: AbilityContext) => boolean }
-    ): void {
-        const newProperties: TriggeredAbilityWhenProps = {
-            ...properties,
-            when: {
-                onDuelFocus: ({ duel }: { duel?: Duel }, context) =>
-                    !!context &&
-                    !!duel &&
-                    duel.playerCanTriggerFocus(context.player) &&
-                    (!properties.duelCondition || properties.duelCondition(duel, context))
-            }
-        };
-        this.triggeredAbility(AbilityType.DuelReaction, newProperties);
-    }
-
-    duelStrike(properties: Omit<TriggeredAbilityProps, 'when'> & { duelCondition?: (duel: Duel, context: AbilityContext) => boolean }): void {
-        const newProperties: TriggeredAbilityProps = {
-            ...properties,
-            when: {
-                onDuelStrike: ({ duel }: { duel?: Duel }, context) =>
-                    !!context &&
-                    !!duel &&
-                    duel.playerCanTriggerStrike(context.player) &&
-                    (!properties.duelCondition || properties.duelCondition(duel, context))
-            }
-        };
-        this.triggeredAbility(AbilityType.DuelReaction, newProperties);
     }
 
     /**
