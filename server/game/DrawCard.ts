@@ -5,6 +5,11 @@ import AbilityDsl from './abilitydsl.js';
 import { SkillCalculator, type Exclusions } from './SkillCalculator.js';
 import type StatModifier from './StatModifier.js';
 import DuplicateUniqueAction from './DuplicateUniqueAction.js';
+import DynastyCardAction from './DynastyCardAction.js';
+import { PlayAttachmentAction } from './PlayAttachmentAction.js';
+import { PlayAttachmentToRingAction } from './PlayAttachmentToRingAction.js';
+import { PlayCharacterAction } from './PlayCharacterAction.js';
+import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js';
 import type BaseCardAbility from './BaseCardAbility.js';
 import CourtesyAbility from './KeywordAbilities/CourtesyAbility.js';
 import PrideAbility from './KeywordAbilities/PrideAbility.js';
@@ -607,6 +612,28 @@ class DrawCard extends BaseCard {
         }
         const actions: BaseCardAbility[] = this.type === CardType.Character ? [new DuplicateUniqueAction(this)] : [];
         return actions.concat(this.getPlayActions(), super.getActions());
+    }
+
+    getPlayActions(): BaseCardAbility[] {
+        if(this.type === CardType.Event) {
+            return this.getActions();
+        }
+        let actions = this.abilities.playActions.slice();
+        if(this.type === CardType.Character) {
+            if(this.disguisedKeywordTraits.length > 0) {
+                actions.push(new PlayDisguisedCharacterAction(this));
+            }
+            if(this.isDynasty) {
+                actions.push(new DynastyCardAction(this));
+            } else {
+                actions.push(new PlayCharacterAction(this));
+            }
+        } else if(this.type === CardType.Attachment && this.mustAttachToRing()) {
+            actions.push(new PlayAttachmentToRingAction(this));
+        } else if(this.type === CardType.Attachment) {
+            actions.push(new PlayAttachmentAction(this));
+        }
+        return actions;
     }
 
     /**

@@ -7,7 +7,6 @@ import TriggeredAbility from './TriggeredAbility.js';
 import type { TriggeredAbilityProperties } from './TriggeredAbility.js';
 import type BaseCardAbility from './BaseCardAbility.js';
 import Game from './Game.js';
-import DynastyCardAction from './DynastyCardAction.js';
 
 import { AbilityContext } from './AbilityContext.js';
 import { CardAction } from './CardAction.js';
@@ -28,10 +27,6 @@ import {
     PersistentEffectProps,
     TriggeredAbilityProps
 } from './Interfaces.js';
-import { PlayAttachmentAction } from './PlayAttachmentAction.js';
-import { PlayAttachmentToRingAction } from './PlayAttachmentToRingAction.js';
-import { PlayCharacterAction } from './PlayCharacterAction.js';
-import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js';
 import { StatusToken } from './StatusToken.js';
 import Player from './Player.js';
 import type BaseAction from './BaseAction.js';
@@ -937,27 +932,6 @@ class BaseCard extends EffectSource {
         return true;
     }
 
-    getPlayActions(): BaseCardAbility[] {
-        if(this.type === CardType.Event) {
-            return this.getActions();
-        }
-        let actions = this.abilities.playActions.slice();
-        if(this.type === CardType.Character) {
-            if(this.disguisedKeywordTraits.length > 0) {
-                actions.push(new PlayDisguisedCharacterAction(this));
-            }
-            if(this.isDynasty) {
-                actions.push(new DynastyCardAction(this));
-            } else {
-                actions.push(new PlayCharacterAction(this));
-            }
-        } else if(this.type === CardType.Attachment && this.mustAttachToRing()) {
-            actions.push(new PlayAttachmentToRingAction(this));
-        } else if(this.type === CardType.Attachment) {
-            actions.push(new PlayAttachmentAction(this));
-        }
-        return actions;
-    }
 
     get statusTokens(): StatusToken[] {
         return this.statusManager.statusTokens;
