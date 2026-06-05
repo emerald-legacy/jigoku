@@ -3,17 +3,16 @@ import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
 import TriggeredAbility from '../TriggeredAbility.js';
 
-import type { Event } from '../Events/Event.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
-export class RallyAbility extends TriggeredAbility {
+import type { EventPayload } from '../Events/EventPayloads.js';
+export class RallyAbility extends TriggeredAbility<DrawCard> {
     constructor(card: DrawCard) {
         super(card, AbilityType.KeywordReaction, {
             when: {
-                onCardRevealed: (event: Event, context: TriggeredAbilityContext) => {
-                    const revealed = event as GameEvent<EventName.OnCardRevealed>;
+                onCardRevealed: (event: EventPayload<EventName.OnCardRevealed>, context: TriggeredAbilityContext<DrawCard>) => {
+                    const revealed = event;
                     return revealed.card === context.source &&
                         !!revealed.card && context.game.getProvinceArray().includes(revealed.card.location) &&
-                        (context.source as DrawCard).hasRally();
+                        context.source.hasRally();
                 }
             },
             location: [

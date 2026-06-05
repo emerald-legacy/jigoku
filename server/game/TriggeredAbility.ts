@@ -4,17 +4,23 @@ import { Stage, CardType, EffectName, AbilityType } from './Constants.js';
 import type BaseCard from './BaseCard.js';
 import type Player from './Player.js';
 import type { Event } from './Events/Event.js';
+import type { WhenType } from './Interfaces.js';
 
-type EventListener = (event: Event, context: TriggeredAbilityContext) => boolean;
+// Runtime storage shape: events arrive un-narrowed, so the listener takes the base `Event`.
+type EventListener = (event: Event, context: TriggeredAbilityContext) => unknown;
 type AggregateWhen = (events: Event[], context: TriggeredAbilityContext) => boolean;
 
 interface AbilityChoiceWindow {
     addChoice(context: TriggeredAbilityContext): void;
 }
 
-interface TriggeredAbilityProperties {
-    when?: Record<string, EventListener>;
-    aggregateWhen?: AggregateWhen;
+// Author-facing shape: `WhenType<S>` narrows each handler's event payload by event name and types
+// `context.source` as `S`. The runtime fields below erase that back to base `Event`/`BaseCard`.
+export interface TriggeredAbilityProperties<S extends BaseCard = BaseCard> {
+    when?: WhenType<S>;
+    // The target type does not affect aggregate triggers, so it is left open here; this lets the
+    // author-facing `TriggeredAbilityProps<S, Target>` assign in with a single cast (any Target).
+    aggregateWhen?: (events: Event[], context: TriggeredAbilityContext<S, any>) => boolean;
     anyPlayer?: boolean;
     collectiveTrigger?: boolean;
     [key: string]: unknown;
@@ -54,17 +60,20 @@ interface RegisteredEvent {
  *            be in in order to activate the reaction. Defaults to 'play area'.
  */
 
-class TriggeredAbility extends CardAbility {
+class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
     when?: Record<string, EventListener>;
     aggregateWhen?: AggregateWhen;
     anyPlayer: boolean;
     collectiveTrigger: boolean;
     events: RegisteredEvent[] | null = null;
 
-    constructor(card: BaseCard, abilityType: AbilityType, properties: TriggeredAbilityProperties) {
+    constructor(card: S, abilityType: AbilityType, properties: TriggeredAbilityProperties<S>) {
         super(card, properties);
-        this.when = properties.when;
-        this.aggregateWhen = properties.aggregateWhen;
+        // `S` types the author-facing `when`/`aggregateWhen` callbacks (context.source = the card subtype).
+        // The runtime fields are erased to BaseCard so `TriggeredAbility<DrawCard>` stays assignable into
+        // the `TriggeredAbility[]` collections (reactions etc.) — at runtime the context's source is the card.
+        this.when = properties.when as Record<string, EventListener> | undefined;
+        this.aggregateWhen = properties.aggregateWhen as AggregateWhen | undefined;
         this.anyPlayer = !!properties.anyPlayer;
         this.abilityType = abilityType;
         this.collectiveTrigger = !!properties.collectiveTrigger;

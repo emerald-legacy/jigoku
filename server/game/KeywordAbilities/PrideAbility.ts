@@ -5,15 +5,14 @@ import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
 import TriggeredAbility from '../TriggeredAbility.js';
 
-import type { Event } from '../Events/Event.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
-export default class PrideAbility extends TriggeredAbility {
+import type { EventPayload } from '../Events/EventPayloads.js';
+export default class PrideAbility extends TriggeredAbility<DrawCard> {
     constructor(card: DrawCard) {
         super(card, AbilityType.KeywordReaction, {
             when: {
-                afterConflict: (event: Event, context: TriggeredAbilityContext) => {
-                    const conflict = (event as GameEvent<EventName.AfterConflict>).conflict;
-                    return (context.source as DrawCard).isParticipating() && (context.source as DrawCard).hasPride() &&
+                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => {
+                    const conflict = event.conflict;
+                    return context.source.isParticipating() && context.source.hasPride() &&
                         ((conflict.winner === context.player && context.source.allowGameAction('honor', context)) ||
                          (conflict.loser === context.player && context.source.allowGameAction('dishonor', context)));
                 }

@@ -3,13 +3,12 @@ import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
 import TriggeredAbility from '../TriggeredAbility.js';
 
-import type { Event } from '../Events/Event.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
+import type { EventPayload } from '../Events/EventPayloads.js';
 export default class PersonalHonorAbility extends TriggeredAbility {
     constructor(card: DrawCard) {
         super(card, AbilityType.KeywordInterrupt, {
             when: {
-                onCardLeavesPlay: (event: Event, context: TriggeredAbilityContext) => (event as GameEvent<EventName.OnCardLeavesPlay>).card === context.source &&
+                onCardLeavesPlay: (event: EventPayload<EventName.OnCardLeavesPlay>, context: TriggeredAbilityContext) => event.card === context.source &&
                                                       context.source.allowGameAction('affectedByHonor') &&
                                                       (context.source.isHonored || context.source.isDishonored)
             },
