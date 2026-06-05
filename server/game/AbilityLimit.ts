@@ -11,6 +11,8 @@ export interface EventBusLike {
 export interface AbilityLimit {
     ability?: CardAbility;
     currentUser: null | string;
+    max?: number;
+    currentForPlayer(player: Player): number;
     clone(): AbilityLimit;
     isRepeatable(): boolean;
     isAtMax(player: Player): boolean;
