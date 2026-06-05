@@ -17,7 +17,7 @@ class Ofushukai extends DrawCard {
             match: (card: DrawCard) => card.hasTrait('champion'),
             effect: ability.effects.gainAbility(AbilityType.Action, {
                 title: 'Send a character home',
-                condition: (context: AbilityContext) => context.source.isParticipating(),
+                condition: (context: AbilityContext) => (context.source as DrawCard).isParticipating(),
                 effect: 'send {0} home and prevent it from attacking this phase',
                 printedAbility: false,
                 target: {

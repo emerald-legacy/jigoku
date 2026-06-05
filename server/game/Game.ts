@@ -322,7 +322,10 @@ class Game {
     }
 
     /**
-     * Returns the card with matching uuid from anywhere in the game
+     * Identity lookup only: returns the card object with this uuid for the game's
+     * lifetime. uuids are never reused, but entries are never pruned either, so a
+     * created token that has since left the game is still returned here. Callers must
+     * re-check `location`/ownership rather than treating a hit as "still in play".
      */
     findAnyCardInAnyList(cardId: string): BaseCard | undefined {
         return this.cardsByUuid.get(cardId);

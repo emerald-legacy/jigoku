@@ -12,7 +12,7 @@ interface TriggeredAbilityContextProperties extends AbilityContextProperties {
     event: AnyEvent;
 }
 
-export class TriggeredAbilityContext<S = any, T extends BaseCard = BaseCard> extends AbilityContext<S, T> {
+export class TriggeredAbilityContext<S = BaseCard, T extends BaseCard = BaseCard> extends AbilityContext<S, T> {
     event: AnyEvent;
 
     constructor(properties: TriggeredAbilityContextProperties) {
@@ -20,8 +20,8 @@ export class TriggeredAbilityContext<S = any, T extends BaseCard = BaseCard> ext
         this.event = properties.event;
     }
 
-    createCopy(newProps: Partial<TriggeredAbilityContextProperties>): TriggeredAbilityContext<this, T> {
-        return new TriggeredAbilityContext<this, T>(Object.assign(this.getProps(), newProps));
+    createCopy(newProps: Partial<TriggeredAbilityContextProperties>): this {
+        return new TriggeredAbilityContext<S, T>(Object.assign(this.getProps(), newProps)) as this;
     }
 
     getProps(): TriggeredAbilityContextProperties {

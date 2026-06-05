@@ -39,7 +39,7 @@ class DuplicateUniqueAction extends BaseAction {
     }
 
     executeHandler(context: AbilityContext): void {
-        const duplicate = context.player.getDuplicateInPlay(context.source);
+        const duplicate = context.player.getDuplicateInPlay(context.source as DrawCard);
         context.game.applyGameAction(context, { placeFate: duplicate, discardCard: context.source });
     }
 }

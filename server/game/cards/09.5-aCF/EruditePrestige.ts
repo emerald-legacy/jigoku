@@ -20,7 +20,7 @@ class EruditePrestige extends DrawCard {
                 effect: AbilityDsl.effects.modifyPoliticalSkill(1)
             })),
             effect: 'give +1{1} to {2}',
-            effectArgs: context => ['political', context.source.parent]
+            effectArgs: context => ['political', context.source.parent as DrawCard]
         });
     }
 }

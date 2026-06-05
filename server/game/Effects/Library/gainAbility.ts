@@ -5,26 +5,27 @@ import type {
     TriggeredAbilityProps,
     TriggeredAbilityWhenProps
 } from '../../Interfaces.js';
+import type BaseCard from '../../BaseCard.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import GainAbility from '../GainAbility.js';
 
 type Res = ReturnType<typeof EffectBuilder.card.static>;
 
-export function gainAbility(abilityType: AbilityType.Action, properties: ActionProps): Res;
+export function gainAbility<Source extends BaseCard = BaseCard>(abilityType: AbilityType.Action, properties: ActionProps<Source>): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overloads are not true redeclarations
-export function gainAbility(abilityType: AbilityType.DuelReaction, properties: TriggeredAbilityWhenProps): Res;
+export function gainAbility<Source extends BaseCard = BaseCard>(abilityType: AbilityType.DuelReaction, properties: TriggeredAbilityWhenProps<Source>): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overloads are not true redeclarations
-export function gainAbility(abilityType: AbilityType.Persistent, properties: PersistentEffectProps): Res;
+export function gainAbility<Source extends BaseCard = BaseCard>(abilityType: AbilityType.Persistent, properties: PersistentEffectProps<Source>): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overloads are not true redeclarations
-export function gainAbility(abilityType: AbilityType.Reaction, properties: TriggeredAbilityProps): Res;
+export function gainAbility<Source extends BaseCard = BaseCard>(abilityType: AbilityType.Reaction, properties: TriggeredAbilityProps<Source>): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overloads are not true redeclarations
-export function gainAbility(abilityType: AbilityType.WouldInterrupt, properties: TriggeredAbilityProps): Res;
+export function gainAbility<Source extends BaseCard = BaseCard>(abilityType: AbilityType.WouldInterrupt, properties: TriggeredAbilityProps<Source>): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overloads are not true redeclarations
-export function gainAbility(abilityType: AbilityType.Interrupt, properties: TriggeredAbilityProps): Res;
+export function gainAbility<Source extends BaseCard = BaseCard>(abilityType: AbilityType.Interrupt, properties: TriggeredAbilityProps<Source>): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overloads are not true redeclarations
-export function gainAbility(abilityType: AbilityType.ForcedReaction, properties: TriggeredAbilityProps): Res;
+export function gainAbility<Source extends BaseCard = BaseCard>(abilityType: AbilityType.ForcedReaction, properties: TriggeredAbilityProps<Source>): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overloads are not true redeclarations
-export function gainAbility(abilityType: AbilityType.ForcedInterrupt, properties: TriggeredAbilityProps): Res;
+export function gainAbility<Source extends BaseCard = BaseCard>(abilityType: AbilityType.ForcedInterrupt, properties: TriggeredAbilityProps<Source>): Res;
 // eslint-disable-next-line no-redeclare -- TypeScript function overload implementation
 export function gainAbility(
     abilityType: AbilityType,

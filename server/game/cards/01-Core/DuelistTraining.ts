@@ -12,7 +12,7 @@ class DuelistTraining extends DrawCard {
         this.whileAttached({
             effect: ability.effects.gainAbility(AbilityType.Action, {
                 title: 'Initiate a duel to bow',
-                condition: (context: AbilityContext) => context.source.isParticipating(),
+                condition: (context: AbilityContext) => (context.source as DrawCard).isParticipating(),
                 printedAbility: false,
                 target: {
                     cardType: CardType.Character,
@@ -20,7 +20,7 @@ class DuelistTraining extends DrawCard {
                     cardCondition: (card: DrawCard) => card.isParticipating(),
                     gameAction: ability.actions.duel((context: AbilityContext) => ({
                         type: DuelType.Military,
-                        challenger: context.source,
+                        challenger: context.source as DrawCard,
                         gameAction: (duel: Duel) => ability.actions.bow({ target: duel.loser }),
                         costHandler: (context: AbilityContext, prompt: any) => this.costHandler(context, prompt)
                     }))

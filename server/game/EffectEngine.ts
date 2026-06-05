@@ -1,10 +1,22 @@
 import { Duration, EffectName, EventName } from './Constants.js';
+import type { AbilityContext } from './AbilityContext.js';
+import type { GameAction } from './GameActions/GameAction.js';
 import type Effect from './Effects/Effect.js';
 import type EffectSource from './EffectSource.js';
 import type { Event } from './Events/Event.js';
 import type { GameEvent } from './Events/EventPayloads.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import type Game from './Game.js';
+
+type DelayedEffectValue = {
+    condition?: (context: AbilityContext) => boolean;
+    when?: Record<string, (event: Event, context: AbilityContext) => boolean>;
+    multipleTrigger?: boolean;
+    onlyRemoveOnSuccess?: boolean;
+    gameAction: GameAction;
+    message?: string;
+    messageArgs?: unknown[] | ((context: AbilityContext, targets: unknown[]) => unknown[]);
+};
 
 interface CustomDurationEvent {
     name: string;
@@ -44,16 +56,16 @@ export class EffectEngine {
         for(const effect of this.effects.filter(
             (effect) => effect.isEffectActive() && effect.effect.type === EffectName.DelayedEffect
         )) {
-            const properties = effect.effect.getValue();
+            const properties = effect.effect.getValue<DelayedEffectValue>();
             if(properties.condition) {
                 if(properties.condition(effect.context)) {
                     effectsToTrigger.push(effect);
                 }
             } else {
-                const triggeringEvents = events.filter((event) => properties.when[event.name]);
+                const triggeringEvents = events.filter((event) => properties.when?.[event.name]);
                 if(triggeringEvents.length > 0) {
                     let effectTriggered = false;
-                    if(triggeringEvents.some((event) => properties.when[event.name](event, effect.context))) {
+                    if(triggeringEvents.some((event) => properties.when?.[event.name](event, effect.context))) {
                         effectsToTrigger.push(effect);
                         effectTriggered = true;
                     }
@@ -64,7 +76,7 @@ export class EffectEngine {
             }
         }
         const triggers = effectsToTrigger.map((effect) => {
-            const properties = effect.effect.getValue();
+            const properties = effect.effect.getValue<DelayedEffectValue>();
             const context = effect.context;
             const targets = effect.targets;
             return {

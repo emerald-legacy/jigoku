@@ -12,9 +12,9 @@ export default class AncientMaster extends DrawCard {
             title: 'Search top 5 card for kiho or tattoo',
             when: {
                 onConflictDeclared: (event, context) =>
-                    context.source.type === CardType.Attachment && (event.attackers ?? []).includes(context.source.parent),
+                    context.source.type === CardType.Attachment && (event.attackers ?? []).includes(context.source.parent as DrawCard),
                 onDefendersDeclared: (event, context) =>
-                    context.source.type === CardType.Attachment && (event.defenders ?? []).includes(context.source.parent)
+                    context.source.type === CardType.Attachment && (event.defenders ?? []).includes(context.source.parent as DrawCard)
             },
             printedAbility: false,
             effect: 'look at the top five cards of their deck',

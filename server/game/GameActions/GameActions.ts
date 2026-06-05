@@ -445,7 +445,7 @@ export function handler<Target = unknown>(propertyFactory: PropsFactory<HandlerP
 }
 export function noAction(): GameAction {
     const action = new HandlerAction({});
-    (action as unknown as { isNoAction: boolean }).isNoAction = true;
+    action.isNoAction = true;
     return action;
 }
 

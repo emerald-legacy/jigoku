@@ -48,11 +48,11 @@ export default class UndeadHorror extends BaseOni {
                                     effect: [
                                         AbilityDsl.effects.modifyMilitarySkill(
                                             (card: BaseCard, context: AbilityContext) =>
-                                                context.source.printedMilitarySkill || 0
+                                                (context.source as DrawCard).printedMilitarySkill || 0
                                         ),
                                         AbilityDsl.effects.modifyPoliticalSkill(
                                             (card: BaseCard, context: AbilityContext) =>
-                                                context.source.printedPoliticalSkill || 0
+                                                (context.source as DrawCard).printedPoliticalSkill || 0
                                         )
                                     ]
                                 } as PersistentEffectProps)

@@ -15,7 +15,7 @@ class RighteousSamurai extends DrawCard {
                     }
                     const honorLoss = event.amount < 0;
                     const viaOpponentsEffect = (context.player.opponent === event.context.player);
-                    const viaRingEffect = (event.context.source.type === 'ring');
+                    const viaRingEffect = (event.context.source.type as string) === 'ring';
                     const viaCardEffect = event.context.ability.isCardAbility();
                     const honorLossBelongsToController = event.player === context.player;
                     return honorLoss && viaOpponentsEffect && honorLossBelongsToController && (viaRingEffect || viaCardEffect);
@@ -26,7 +26,7 @@ class RighteousSamurai extends DrawCard {
                     }
                     const honorLoss = event.amount > 0;
                     const viaOpponentsEffect = (context.player.opponent === event.context.player);
-                    const viaRingEffect = (event.context.source.type === 'ring');
+                    const viaRingEffect = (event.context.source.type as string) === 'ring';
                     const viaCardEffect = event.context.ability.isCardAbility();
                     const honorLossBelongsToController = event.player === context.player;
                     return honorLoss && viaOpponentsEffect && honorLossBelongsToController && (viaRingEffect || viaCardEffect);

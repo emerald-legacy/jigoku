@@ -10,7 +10,7 @@ export default class SincerityAbility extends TriggeredAbility {
         super(card, AbilityType.KeywordInterrupt, {
             when: {
                 onCardLeavesPlay: (event: Event, context: TriggeredAbilityContext) => (event as GameEvent<EventName.OnCardLeavesPlay>).card === context.source &&
-                                                      context.source.hasSincerity()
+                                                      (context.source as DrawCard).hasSincerity()
             },
             title: card.name + '\'s Sincerity',
             printedAbility: false,

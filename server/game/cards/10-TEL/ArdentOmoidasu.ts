@@ -16,7 +16,7 @@ class ArdentOmoidasu extends DrawCard {
                     }
                     const isCharacter = event.card.type === CardType.Character;
                     const dishonoredByOpponentsEffect = (context.player.opponent === event.context.player);
-                    const dishonoredByRingEffect = (event.context.source.type === 'ring');
+                    const dishonoredByRingEffect = ((event.context.source.type as string) === 'ring');
                     const dishonoredByCardEffect = event.context.ability.isCardAbility();
                     const dishonoredCharacterBelongsToOmoidasuController = event.card.controller === context.player;
                     return isCharacter && dishonoredCharacterBelongsToOmoidasuController &&

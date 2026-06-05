@@ -283,7 +283,7 @@ export function switchLocation(): Cost {
             return 'switchLocation';
         },
         getCostMessage(context: TriggeredAbilityContext) {
-            if(!context.source.isParticipating()) {
+            if(!(context.source as DrawCard).isParticipating()) {
                 return ['moving {1} home', [context.source]];
             }
             return ['moving {1} to the conflict', [context.source]];
@@ -292,7 +292,7 @@ export function switchLocation(): Cost {
             context.costs.switchLocation = context.source;
         },
         payEvent(context: TriggeredAbilityContext) {
-            const action = context.source.isParticipating()
+            const action = (context.source as DrawCard).isParticipating()
                 ? context.game.actions.sendHome({ target: context.costs.switchLocation as BaseCard })
                 : context.game.actions.moveToConflict({ target: context.costs.switchLocation as BaseCard });
             return action.getEvent(context.costs.switchLocation, context);

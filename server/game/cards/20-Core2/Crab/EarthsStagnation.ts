@@ -27,7 +27,7 @@ export default class EarthsStagnation extends DrawCard {
             effect: 'give {1}{2} and {3}{4} to {5}',
             effectArgs: (context) => {
                 const penalty = penaltyAmount(context);
-                return [penalty, 'military', penalty, 'political', context.source.parent];
+                return [penalty, 'military', penalty, 'political', context.source.parent as DrawCard];
             },
             limit: AbilityDsl.limit.unlimitedPerConflict()
         });

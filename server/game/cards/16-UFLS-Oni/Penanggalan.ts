@@ -1,4 +1,5 @@
 import { CardType, Players } from '../../Constants.js';
+import type BaseCard from '../../BaseCard.js';
 import { BaseOni } from './_BaseOni.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -23,7 +24,7 @@ export default class Penanggalan extends BaseOni {
                 }))
             },
             effect: 'take a fate from {1} and place it on {2}',
-            effectArgs: (context) => [context.target, context.source]
+            effectArgs: (context) => [context.target as BaseCard, context.source]
         });
     }
 }

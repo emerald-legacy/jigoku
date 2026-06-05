@@ -13,7 +13,7 @@ export default class PrideAbility extends TriggeredAbility {
             when: {
                 afterConflict: (event: Event, context: TriggeredAbilityContext) => {
                     const conflict = (event as GameEvent<EventName.AfterConflict>).conflict;
-                    return context.source.isParticipating() && context.source.hasPride() &&
+                    return (context.source as DrawCard).isParticipating() && (context.source as DrawCard).hasPride() &&
                         ((conflict.winner === context.player && context.source.allowGameAction('honor', context)) ||
                          (conflict.loser === context.player && context.source.allowGameAction('dishonor', context)));
                 }

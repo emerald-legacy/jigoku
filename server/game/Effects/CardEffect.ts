@@ -17,7 +17,7 @@ export default class CardEffect extends Effect {
             properties.match = (card: GameObject, context?: AbilityContext) => card === context?.source;
             if(properties.location === Location.Any) {
                 properties.targetLocation = Location.Any;
-            } else if([CardType.Province, CardType.Stronghold, CardType.Holding].includes(source.type)) {
+            } else if([CardType.Province, CardType.Stronghold, CardType.Holding].includes(source.type as CardType)) {
                 properties.targetLocation = Location.Provinces;
             }
         }

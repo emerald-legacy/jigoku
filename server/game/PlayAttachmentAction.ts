@@ -5,6 +5,7 @@ import { payTargetDependentFateCost } from './costs/fateAndHonorCosts.js';
 import { attach } from './GameActions/GameActions.js';
 import { parseGameMode } from './GameMode.js';
 import type BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
 
 export class PlayAttachmentAction extends BaseAction {
     title = 'Play this attachment';
@@ -35,11 +36,11 @@ export class PlayAttachmentAction extends BaseAction {
         ) {
             return 'location';
         }
-        if(!ignoredRequirements.includes('cannotTrigger') && !context.source.canPlay(context, context.playType)) {
+        if(!ignoredRequirements.includes('cannotTrigger') && !(context.source as DrawCard).canPlay(context, context.playType)) {
             return 'cannotTrigger';
         }
 
-        if(context.source.anotherUniqueInPlay(context.player)) {
+        if((context.source as DrawCard).anotherUniqueInPlay(context.player)) {
             return 'unique';
         }
         return super.meetsRequirements(context);
@@ -64,7 +65,7 @@ export class PlayAttachmentAction extends BaseAction {
         });
         context.game.openEventWindow([
             context.game.actions
-                .attach({ attachment: context.source, takeControl: context.source.controller !== context.player })
+                .attach({ attachment: context.source as DrawCard, takeControl: context.source.controller !== context.player })
                 .getEvent(context.target, context),
             cardPlayedEvent
         ]);

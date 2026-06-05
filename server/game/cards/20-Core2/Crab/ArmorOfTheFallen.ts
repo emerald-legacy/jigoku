@@ -13,7 +13,7 @@ export default class ArmorOfTheFallen extends DrawCard {
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Remove characters from your discard pile to bow a character',
-                condition: (context: AbilityContext) => context.source.isParticipating(),
+                condition: (context: AbilityContext) => (context.source as DrawCard).isParticipating(),
                 cost: AbilityDsl.costs.removeFromGame({
                     cardType: CardType.Character,
                     location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],

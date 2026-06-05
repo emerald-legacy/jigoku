@@ -9,7 +9,7 @@ class AsakoMaezawa extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Double a character\'s base political skill',
-            condition: (context: AbilityContext) => context.source.isParticipating() && !!context.player.opponent && (
+            condition: (context: AbilityContext) => (context.source as DrawCard).isParticipating() && !!context.player.opponent && (
                 context.player.cardsInPlay.reduce((myTotal: number, card: any) => myTotal + (card.isParticipating() && !card.bowed ? card.getGlory() : 0), 0) >
                 context.player.opponent.cardsInPlay.reduce((oppTotal: number, card: any) => oppTotal + (card.isParticipating() && !card.bowed ? card.getGlory() : 0), 0)
             ),

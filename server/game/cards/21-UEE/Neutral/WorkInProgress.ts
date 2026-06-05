@@ -13,7 +13,7 @@ export default class WorkInProgress extends DrawCard {
                 context.player.conflictDeck.length >=
         (context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('artisan')) ? 4 : 3),
             cost: [
-                AbilityDsl.costs.reveal((context: AbilityContext<this>) =>
+                AbilityDsl.costs.reveal((context: AbilityContext) =>
                     context.player.conflictDeck.slice(
                         0, context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('artisan')) ? 4 : 3
                     )

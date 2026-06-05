@@ -23,7 +23,7 @@ export default class TogashiAcolyte extends DrawCard {
                 effect: AbilityDsl.effects.modifyBothSkills(1)
             })),
             effect: 'give +1{1} and +1{2} to {3}',
-            effectArgs: (context) => ['political', 'military', context.source.parent]
+            effectArgs: (context) => ['political', 'military', context.source.parent as DrawCard]
         });
     }
 

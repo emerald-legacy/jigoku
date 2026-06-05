@@ -34,7 +34,7 @@ export default class MasterTactician extends DrawCard {
                             event.originallyOnTopOfConflictDeck &&
                             event.player === context.player &&
                             !event.sourceOfCardPlayedFromConflictDeck &&
-                            context.source.isParticipating() &&
+                            (context.source as DrawCard).isParticipating() &&
                             context.game.isTraitInPlay('battlefield')
                         );
                     }

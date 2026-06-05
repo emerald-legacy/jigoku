@@ -13,7 +13,7 @@ export default class CourtlyChallenger extends DrawCard {
                 AbilityDsl.effects.delayedEffect({
                     when: {
                         afterDuel: (event: Duel, context: AbilityContext) =>
-                            event.winner?.includes(context.source) ?? false
+                            event.winner?.includes(context.source as DrawCard) ?? false
                     },
                     message: '{0} is honored due to winning a duel',
                     messageArgs: (context: AbilityContext) => [context.source],
@@ -22,7 +22,7 @@ export default class CourtlyChallenger extends DrawCard {
                 AbilityDsl.effects.delayedEffect({
                     when: {
                         afterDuel: (event: Duel, context: AbilityContext) =>
-                            event.loser?.includes(context.source) ?? false
+                            event.loser?.includes(context.source as DrawCard) ?? false
                     },
                     message: '{0} is dishonored due to losing a duel',
                     messageArgs: (context: AbilityContext) => [context.source],

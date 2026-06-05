@@ -2,6 +2,7 @@ import { EffectValue } from './EffectValue.js';
 import { AbilityType, CardType, Location, Phases, Stage } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
+import type DrawCard from '../DrawCard.js';
 import { MoveCardAction } from '../GameActions/MoveCardAction.js';
 import type Player from '../Player.js';
 
@@ -100,10 +101,12 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
         context.player === getApplyingPlayer(effect).opponent && context.ability.isCardAbility(),
     opponentsCharacters: (context, effect) =>
         context.source.type === CardType.Character && context.source.controller === getApplyingPlayer(effect).opponent,
-    opponentsCharacterAbilitiesWithLowerGlory: (context, effect) =>
-        context.source.type === CardType.Character &&
-        context.source.controller === getApplyingPlayer(effect).opponent &&
-        context.source.glory < effect.context.source.parent.glory,
+    opponentsCharacterAbilitiesWithLowerGlory: (context, effect) => {
+        const parent = (effect.context.source as DrawCard).parent;
+        return context.source.type === CardType.Character &&
+            context.source.controller === getApplyingPlayer(effect).opponent &&
+            !!parent && context.source.glory < parent.glory;
+    },
     provinces: (context) => context.source.type === CardType.Province,
     reactions: (context) => context.ability.abilityType === AbilityType.Reaction,
     actionEvents: (context) =>

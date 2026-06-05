@@ -28,7 +28,7 @@ class CraftyTsukumogami extends DrawCard {
                                 title: 'Discard a card',
                                 limit: AbilityDsl.limit.unlimitedPerConflict(),
                                 when: {
-                                    onConflictDeclared: (event: EventPayload<typeof EventName.OnConflictDeclared>, context: AbilityContext) => !!context.source.parent && context.source.parent === event.ring
+                                    onConflictDeclared: (event: EventPayload<typeof EventName.OnConflictDeclared>, context: AbilityContext) => !!(context.source as DrawCard).parent && ((context.source as DrawCard).parent as unknown) === event.ring
                                 },
                                 printedAbility: false,
                                 gameAction: AbilityDsl.actions.chosenDiscard((context: AbilityContext) => ({
@@ -44,9 +44,9 @@ class CraftyTsukumogami extends DrawCard {
                     AbilityDsl.actions.handler({
                         handler: context => {
                             const card = context.source;
-                            card.controller.cardsInPlay.splice(card.controller.cardsInPlay.indexOf(card), 1);
+                            card.controller.cardsInPlay.splice(card.controller.cardsInPlay.indexOf(card as DrawCard), 1);
                             if(context.game.isDuringConflict() && context.game.currentConflict) {
-                                context.game.currentConflict.removeFromConflict(card);
+                                context.game.currentConflict.removeFromConflict(card as DrawCard);
                             }
                         }
                     })

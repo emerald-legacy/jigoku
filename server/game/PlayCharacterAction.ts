@@ -6,6 +6,7 @@ import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
 import { parseGameMode } from './GameMode.js';
 import type BaseCard from './BaseCard.js';
+import type DrawCard from './DrawCard.js';
 
 export enum PlayCharacterIntoLocation {
     Any,
@@ -38,11 +39,11 @@ export class PlayCharacterAction extends BaseAction {
         }
         if(
             !ignoredRequirements.includes('cannotTrigger') &&
-            !context.source.canPlay(context, PlayType.PlayFromHand)
+            !(context.source as DrawCard).canPlay(context, PlayType.PlayFromHand)
         ) {
             return 'cannotTrigger';
         }
-        if(context.source.anotherUniqueInPlay(context.player)) {
+        if((context.source as DrawCard).anotherUniqueInPlay(context.player)) {
             return 'unique';
         }
         if(

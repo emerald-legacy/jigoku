@@ -8,5 +8,5 @@ export interface CardEffect {
     context: AbilityContext;
     duration?: Duration | null;
     isConditional?: boolean;
-    getValue<T = any>(obj?: GameObject): T;
+    getValue<T = unknown>(obj?: GameObject): T;
 }

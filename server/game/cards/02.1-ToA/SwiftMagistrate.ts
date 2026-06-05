@@ -7,7 +7,7 @@ class SwiftMagistrate extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context: AbilityContext) => context.source.isAttacking(),
+            condition: (context: AbilityContext) => (context.source as DrawCard).isAttacking(),
             effect: AbilityDsl.effects.cannotContribute((conflict: any, context: any) => {
                 return (card: any) => card.getFate() > 0 && card !== context.source;
             })

@@ -16,7 +16,7 @@ class KaitoKosori extends DrawCard {
                     !!this.game.currentConflict &&
                     symbol !== 'none' &&
                     this.game.currentConflict.hasElement(symbol) &&
-                    !context.source.isParticipating() && !context.source.bowed;
+                    !(context.source as DrawCard).isParticipating() && !context.source.bowed;
             },
             effect: AbilityDsl.effects.contributeToConflict((_card: any, context: AbilityContext) => context.player)
         });

@@ -10,7 +10,7 @@ const nitenCaptureParentCost = function() {
             return true;
         },
         resolve: function(context: AbilityContext) {
-            context.costs.nitenCaptureParentCost = context.source.parent;
+            context.costs.nitenCaptureParentCost = (context.source as DrawCard).parent;
         },
         pay: function() {
         }

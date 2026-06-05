@@ -67,7 +67,7 @@ class DynastyCardAction extends BaseAction {
             extraFate = 0;
         }
         extraFate = extraFate + legendaryFate;
-        const status = context.source.getEffects(EffectName.EntersPlayWithStatus)[0] || '';
+        const status = context.source.getEffects(EffectName.EntersPlayWithStatus)[0];
         const enterPlayEvent = GameActions.putIntoPlay({ fate: (context as any).chooseFate + extraFate, status }).getEvent(
             context.source,
             context

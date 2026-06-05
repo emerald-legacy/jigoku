@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type Ring from '../../Ring.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Location, Players, CardType, Element } from '../../Constants.js';
 
@@ -14,7 +15,7 @@ class RestoredHeirloom extends DrawCard {
                 onResolveRingElement: (event, context) => !!event.ring && event.ring.element === this.getCurrentElementSymbol(elementKey) && event.player === context.player
             },
             effect: 'attach {1} to {0} instead of resolving the {2}',
-            effectArgs: context => [context.source, context.event.ring],
+            effectArgs: context => [context.source, context.event.ring as Ring],
             location: [Location.Hand,Location.ConflictDiscardPile],
             target: {
                 cardType: CardType.Character,

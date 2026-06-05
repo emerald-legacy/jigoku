@@ -27,7 +27,7 @@ class MercenaryCompany extends DrawCard {
                         handlers: [
                             () => {
                                 opponent.modifyFate(-1);
-                                context.source.modifyFate(1);
+                                (context.source as DrawCard).modifyFate(1);
                                 context.source.lastingEffect(() => ({
                                     duration: Duration.Custom,
                                     effect: AbilityDsl.effects.takeControl(opponent)

@@ -21,6 +21,6 @@ export class LastingEffectRingAction extends RingAction {
         if(!properties.ability) {
             properties.ability = (event.context as AbilityContext).ability;
         }
-        (event.context as AbilityContext).source[properties.duration ?? Duration.UntilEndOfConflict](() => Object.assign({ match: (event as GameEvent<EventName.OnClaimRing>).ring }, properties));
+        (event.context as AbilityContext).source.applyDurationEffect(properties.duration ?? Duration.UntilEndOfConflict, () => Object.assign({ match: (event as GameEvent<EventName.OnClaimRing>).ring }, properties));
     }
 }

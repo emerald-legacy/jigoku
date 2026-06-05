@@ -25,7 +25,7 @@ export default class GraspOfEarth2 extends DrawCard {
                 title: 'Block a character\'s movement to the conflict',
                 when: {
                     onMoveToConflict: (event: EventPayload<EventName.OnMoveToConflict>, context: TriggeredAbilityContext) =>
-                        event.card.type === CardType.Character && context.source.isParticipating()
+                        event.card.type === CardType.Character && (context.source as DrawCard).isParticipating()
                 },
                 effect: 'deny {1}\'s movement',
                 effectArgs: (context: TriggeredAbilityContext) => [context.event.card as DrawCard],

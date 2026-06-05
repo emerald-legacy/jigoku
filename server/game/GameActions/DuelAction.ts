@@ -34,10 +34,7 @@ export class DuelAction extends CardGameAction {
     eventName = EventName.OnDuelInitiated;
     targetType = [CardType.Character];
 
-    defaultProperties: DuelProperties = {
-        type: undefined as unknown as DuelType,
-        gameAction: null as unknown as GameAction
-    };
+    defaultProperties: DuelProperties = { cannotBeCancelled: false, optional: false } as DuelProperties;
 
     getProperties(context: AbilityContext, additionalProperties = {}): ResolvedDuelProperties {
         const properties = super.getProperties(context, additionalProperties) as DuelProperties;
@@ -91,7 +88,7 @@ export class DuelAction extends CardGameAction {
         const properties = this.getProperties(context, additionalProperties);
         const gameAction =
             typeof properties.gameAction === 'function' ? properties.gameAction(duel, context) : properties.gameAction;
-        const isNoAction = !!(gameAction as unknown as { isNoAction?: boolean })?.isNoAction;
+        const isNoAction = !!gameAction?.isNoAction;
         if(gameAction && !isNoAction && gameAction.hasLegalTarget(context)) {
             const [message, messageArgs] = properties.message
                 ? [properties.message, properties.messageArgs ? ([] as unknown[]).concat(properties.messageArgs(duel, context) as unknown[]) : []]

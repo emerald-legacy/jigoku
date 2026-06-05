@@ -9,7 +9,7 @@ class PillowBook extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Make top card of your conflict deck playable',
-            condition: (context: AbilityContext) => !!context.source.parent && context.source.parent.isParticipating() && context.player.conflictDeck.length > 0,
+            condition: (context: AbilityContext) => !!(context.source as DrawCard).parent && ((context.source as DrawCard).parent as DrawCard).isParticipating() && context.player.conflictDeck.length > 0,
             effect: 'make the top card of their deck playable until the end of the conflict',
             gameAction: AbilityDsl.actions.playerLastingEffect((context: AbilityContext) => {
                 let topCard = context.player.conflictDeck[0];

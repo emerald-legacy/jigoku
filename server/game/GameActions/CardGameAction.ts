@@ -45,8 +45,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         const { target } = this.getProperties(context, additionalProperties);
         for(const card of target as BaseCard[]) {
             let allCostsPaid = true;
-            const additionalCosts = card
-                .getEffects<UnlessActionCost>(EffectName.UnlessActionCost)
+            const additionalCosts = (card.getEffects(EffectName.UnlessActionCost) as UnlessActionCost[])
                 .filter((properties) => properties.actionName === this.name);
 
             if(context.player && context.ability && context.ability.targets && context.ability.targets.length > 0) {

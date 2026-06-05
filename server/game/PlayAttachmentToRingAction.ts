@@ -36,12 +36,12 @@ export class PlayAttachmentToRingAction extends BaseAction {
         }
         if(
             !ignoredRequirements.includes('cannotTrigger') &&
-            !context.source.canPlay(context, PlayType.PlayFromHand)
+            !(context.source as DrawCard).canPlay(context, PlayType.PlayFromHand)
         ) {
             return 'cannotTrigger';
         }
 
-        if(context.source.anotherUniqueInPlay(context.player)) {
+        if((context.source as DrawCard).anotherUniqueInPlay(context.player)) {
             return 'unique';
         }
         return super.meetsRequirements(context);
@@ -67,7 +67,7 @@ export class PlayAttachmentToRingAction extends BaseAction {
             playType: PlayType.PlayFromHand
         });
         context.game.openEventWindow([
-            context.game.actions.attachToRing({ attachment: context.source }).getEvent(context.ring, context),
+            context.game.actions.attachToRing({ attachment: context.source as DrawCard }).getEvent(context.ring, context),
             cardPlayedEvent
         ]);
     }
