@@ -120,14 +120,14 @@ export default class BackAlleyHideaway extends DrawCard {
             },
             effect: 'move {1} into hiding',
             effectArgs: (context: TriggeredAbilityContext) => context?.event.card ?? '',
-            handler: (context: TriggeredAbilityContext) => {
+            handler: (context: TriggeredAbilityContext<this>) => {
                 context.event.replaceHandler((event: Event) => {
                     const card = (event as Event & { card: DrawCard }).card;
                     context.player.removeCardFromPile(card);
                     card.leavesPlay();
                     card.moveTo(context.source.uuid as Location);
                     (context.source as BackAlleyHideaway).attachments.push(card);
-                    card.parent = context.source as DrawCard;
+                    card.parent = context.source;
                     card.abilities.playActions.push(new BackAlleyPlayCharacterAction(context.source as BackAlleyHideaway, card));
                 });
             }

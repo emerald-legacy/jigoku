@@ -8,12 +8,12 @@ export default class ShosuroHiroyuki extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Force opponent to discard card or dishonor a character',
-            condition: (context) => (context.source as DrawCard).isParticipating('political'),
+            condition: (context) => context.source.isParticipating('political'),
             target: {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card: DrawCard, context) =>
-                    card.isParticipating() && card.politicalSkill < (context.source as DrawCard).politicalSkill,
+                    card.isParticipating() && card.politicalSkill < context.source.politicalSkill,
                 gameAction: AbilityDsl.actions.conditional(({ target }: { target: DrawCard }) => ({
                     condition: () => (target as DrawCard).isDishonored,
                     trueGameAction: AbilityDsl.actions.discardAtRandom({

@@ -8,7 +8,7 @@ class UtakuTetsuko extends DrawCard {
 
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
-            condition: (context: AbilityContext) => (context.source as DrawCard).isAttacking(),
+            condition: (context: AbilityContext<this>) => context.source.isAttacking(),
             targetController: Players.Opponent,
             effect: ability.effects.increaseCost({
                 amount: 1,

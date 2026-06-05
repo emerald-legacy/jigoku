@@ -8,7 +8,7 @@ class ShinjoShono extends DrawCard {
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Increase skill of friendly cavalry',
-            condition: (context: AbilityContext) => (context.source as DrawCard).isParticipating() &&
+            condition: (context: AbilityContext<this>) => context.source.isParticipating() &&
                                   (context.game.currentConflict?.hasMoreParticipants(context.player, () => true) ?? false),
             effect: 'give friendly, participating cavalry +1/+1',
             gameAction: ability.actions.cardLastingEffect((context: AbilityContext) => ({

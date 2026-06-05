@@ -12,7 +12,7 @@ class AdoptedKin extends DrawCard {
         });
 
         this.persistentEffect({
-            condition: (context: AbilityContext) => !!(context.source as DrawCard).parent,
+            condition: (context: AbilityContext<this>) => !!context.source.parent,
             match: (card, context) => card !== context?.source && card.getType() === CardType.Attachment && (context?.source as DrawCard).parent === (card as DrawCard).parent,
             effect: ability.effects.addKeyword('ancestral'),
             targetController: Players.Any

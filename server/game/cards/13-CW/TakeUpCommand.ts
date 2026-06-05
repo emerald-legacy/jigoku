@@ -12,7 +12,7 @@ class TakeUpCommand extends DrawCard {
                 AbilityDsl.effects.addTrait('commander'),
                 AbilityDsl.effects.gainAbility(AbilityType.Action, {
                     title: 'Ready character and move to conflict',
-                    condition: (context: AbilityContext) => (context.source as DrawCard).isParticipating(),
+                    condition: (context: AbilityContext<this>) => context.source.isParticipating(),
                     target: {
                         cardType: CardType.Character,
                         controller: Players.Self,

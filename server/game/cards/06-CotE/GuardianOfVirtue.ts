@@ -7,7 +7,7 @@ class GuardianOfVirtue extends DrawCard {
 
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
-            condition: (context: AbilityContext) => (context.source as DrawCard).isDefending() && context.player.hasComposure(),
+            condition: (context: AbilityContext<this>) => context.source.isDefending() && context.player.hasComposure(),
             effect: ability.effects.doesNotBow()
         });
     }

@@ -14,9 +14,9 @@ export default class ScarletSabre extends DrawCard {
                 title: 'Make opponent lose 1 fate',
                 printedAbility: false,
                 when: {
-                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext) =>
+                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<this>) =>
                         context.player.opponent &&
-                        (context.source as DrawCard).isParticipating() &&
+                        context.source.isParticipating() &&
                         event.conflict.winner === context.source.controller
                 },
                 gameAction: AbilityDsl.actions.loseFate((context) => ({ target: context.player.opponent }))

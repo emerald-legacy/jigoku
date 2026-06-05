@@ -7,7 +7,7 @@ class HumbleMagistrate extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context: AbilityContext) => (context.source as DrawCard).isAttacking(),
+            condition: (context: AbilityContext<this>) => context.source.isAttacking(),
             effect: AbilityDsl.effects.cannotContribute(() => {
                 return (card: DrawCard) => (card.printedCost ?? 0) >= 4;
             })

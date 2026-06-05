@@ -15,7 +15,7 @@ export default class MatsuNobuiko extends DrawCard {
                 onInitiateAbilityEffects: (event, context) =>
                     context.player.opponent &&
                     event.context.ability.abilityType === 'action' &&
-                    (context.source as DrawCard).isParticipating()
+                    context.source.isParticipating()
             },
             initiateDuel: ((context: AbilityContext) => ({
                 type: DuelType.Military,

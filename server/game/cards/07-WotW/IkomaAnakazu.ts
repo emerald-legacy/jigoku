@@ -16,8 +16,8 @@ export default class IkomaAnakazu extends DrawCard {
         this.eventRegistrar.register([EventName.OnBreakProvince, EventName.OnPhaseEnded]);
 
         this.persistentEffect({
-            condition: (context: AbilityContext) =>
-                !!((context.source as DrawCard).isParticipating() &&
+            condition: (context: AbilityContext<this>) =>
+                !!(context.source.isParticipating() &&
                 context.player.opponent &&
                 (this.brokenProvincesThisPhase.get(context.player.opponent.name) ?? 0) > 0),
             effect: AbilityDsl.effects.modifyBothSkills(3)

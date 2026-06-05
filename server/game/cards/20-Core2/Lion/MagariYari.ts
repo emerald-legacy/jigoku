@@ -14,7 +14,7 @@ export default class MagariYari extends DrawCard {
                 title: 'Bow a character',
                 when: {
                     onMoveToConflict: (event, context) =>
-                        (context.source as DrawCard).isParticipating('military') &&
+                        context.source.isParticipating('military') &&
                         event.card.type === CardType.Character &&
                         event.card.isParticipating() &&
                         event.card.getMilitarySkill() < context.source.getMilitarySkill()

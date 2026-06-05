@@ -10,7 +10,7 @@ export default class StrangeMirror extends DrawCard {
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Put a copy of a character into play',
-                condition: (context: AbilityContext) => (context.source as DrawCard).isParticipating(),
+                condition: (context: AbilityContext<DrawCard>) => context.source.isParticipating(),
                 targets: {
                     inPlay: {
                         cardType: CardType.Character,

@@ -10,9 +10,9 @@ export default class MidnightProwler extends DrawCard {
         this.reaction({
             title: 'Look at the top two card of your opponents conflict deck.',
             when: {
-                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext) =>
+                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<this>) =>
                     this.game.isDuringConflict('military') &&
-                    (context.source as DrawCard).isParticipating() &&
+                    context.source.isParticipating() &&
                     event.conflict.winner === context.source.controller &&
                     context.player.opponent !== undefined
             },

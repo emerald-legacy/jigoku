@@ -35,9 +35,9 @@ export default class TessenOfTheTsunamiLegion extends DrawCard {
                         ])
                     },
                     effect: 'give {0} +2{1}{2}',
-                    effectArgs: (context: AbilityContext) => ['military',
-                        (context.source as DrawCard).isParticipating() === (context.target as DrawCard).isParticipating() ? '' :
-                            (context.source as DrawCard).isParticipating() ? ' and move it to the conflict' : ' and move it home']
+                    effectArgs: (context: AbilityContext<DrawCard>) => ['military',
+                        context.source.isParticipating() === (context.target as DrawCard).isParticipating() ? '' :
+                            context.source.isParticipating() ? ' and move it to the conflict' : ' and move it home']
                 })
             ]
         });

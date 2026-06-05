@@ -19,14 +19,14 @@ class BeingAndBecoming extends DrawCard {
                 mode: TargetMode.Ring,
                 activePromptTitle: 'Choose an unclaimed ring to move fate from',
                 ringCondition: (ring) => ring.isUnclaimed() && ring.fate > 0,
-                gameAction: ability.actions.placeFate((context: AbilityContext) => ({
+                gameAction: ability.actions.placeFate((context: AbilityContext<this>) => ({
                     origin: context.ring,
                     amount: (context.ring as Ring).fate,
-                    target: (context.source as DrawCard).parent as DrawCard
+                    target: context.source.parent as DrawCard
                 }))
             },
             effect: 'move {1} fate from {2} to {3}',
-            effectArgs: context => [context.ring ? context.ring.fate : 0, context.ring as Ring, (context.source as DrawCard).parent as DrawCard]
+            effectArgs: context => [context.ring ? context.ring.fate : 0, context.ring as Ring, context.source.parent as DrawCard]
         });
     }
 }

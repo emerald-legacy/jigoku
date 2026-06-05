@@ -10,10 +10,10 @@ export default class BayushiTruthseeker extends DrawCard {
         this.reaction({
             title: 'Look at the top two card of your opponents conflict deck',
             when: {
-                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext) =>
+                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<this>) =>
                     context.player.opponent !== undefined &&
                     event.conflict.winner === context.source.controller &&
-                    (context.source as DrawCard).isAttacking()
+                    context.source.isAttacking()
             },
             handler: (context: TriggeredAbilityContext) => {
                 if(!context || !context.player.opponent) {

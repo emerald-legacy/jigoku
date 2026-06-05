@@ -17,7 +17,7 @@ class Shukujo extends DrawCard {
             match: card => card.hasTrait('champion'),
             effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Switch the conflict type',
-                condition: (context: AbilityContext) => (context.source as DrawCard).isParticipating(),
+                condition: (context: AbilityContext<DrawCard>) => context.source.isParticipating(),
                 printedAbility: false,
                 effect: 'switch the conflict type',
                 gameAction: AbilityDsl.actions.switchConflictType()

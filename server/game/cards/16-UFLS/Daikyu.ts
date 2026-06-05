@@ -17,16 +17,16 @@ class Daikyu extends DrawCard {
                 title: 'Bow a character',
                 when: {
                     onConflictDeclared: (_event, context) =>
-                        (context.source as DrawCard).isParticipating() && context.game.isDuringConflict('military'),
+                        context.source.isParticipating() && context.game.isDuringConflict('military'),
                     onDefendersDeclared: (_event, context) =>
-                        (context.source as DrawCard).isParticipating() && context.game.isDuringConflict('military'),
+                        context.source.isParticipating() && context.game.isDuringConflict('military'),
                     onMoveToConflict: (_event, context) =>
-                        (context.source as DrawCard).isParticipating() && context.game.isDuringConflict('military')
+                        context.source.isParticipating() && context.game.isDuringConflict('military')
                 },
                 target: {
                     cardType: CardType.Character,
-                    cardCondition: (card: DrawCard, context: AbilityContext) =>
-                        card.getMilitarySkill() < (context.source as DrawCard).getMilitarySkill() && card.isParticipating(),
+                    cardCondition: (card: DrawCard, context: AbilityContext<DrawCard>) =>
+                        card.getMilitarySkill() < context.source.getMilitarySkill() && card.isParticipating(),
                     gameAction: AbilityDsl.actions.bow()
                 }
             })

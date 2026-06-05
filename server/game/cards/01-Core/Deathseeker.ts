@@ -13,7 +13,7 @@ class Deathseeker extends DrawCard {
         this.reaction<DrawCard>({
             title: 'Remove fate/discard character',
             when: {
-                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext) => event.conflict.loser === context.player && (context.source as DrawCard).isAttacking()
+                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<this>) => event.conflict.loser === context.player && context.source.isAttacking()
             },
             cost: ability.costs.sacrificeSelf(),
             target: {

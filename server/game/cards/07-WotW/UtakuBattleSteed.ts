@@ -23,8 +23,8 @@ class UtakuBattleSteed extends DrawCard {
                                                    event.conflict.winner === context.source.parent.controller &&
                                                    event.conflict.conflictType === 'military'
             },
-            gameAction: ability.actions.honor((context: AbilityContext) => ({
-                target: (context.source as DrawCard).parent as DrawCard
+            gameAction: ability.actions.honor((context: AbilityContext<this>) => ({
+                target: context.source.parent as DrawCard
             }))
         });
     }
