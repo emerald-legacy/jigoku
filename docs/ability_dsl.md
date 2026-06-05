@@ -23,8 +23,8 @@ Every card extends `DrawCard` (characters, attachments, events) or `ProvinceCard
 
 ```typescript
 import AbilityDsl from '../../abilitydsl';
-import DrawCard from '../../drawcard';
-import { CardTypes, Players } from '../../Constants';
+import DrawCard from '../../DrawCard';
+import { CardType, Players } from '../../Constants';
 
 export default class MyCard extends DrawCard {
     static id = 'my-card';
@@ -53,7 +53,7 @@ this.action({
     condition: (context) => context.source.isParticipating(),
     cost: AbilityDsl.costs.bowSelf(),
     target: {
-        cardType: CardTypes.Character,
+        cardType: CardType.Character,
         cardCondition: (card) => card.isParticipating(),
         gameAction: AbilityDsl.actions.bow()
     },
@@ -83,7 +83,7 @@ Key fields:
 | `effectArgs` | `EffectArg \| (context) => EffectArg` | Arguments interpolated into `effect` |
 | `handler` | `(context) => void` | Low-level handler called after costs are paid (use `gameAction` when possible) |
 | `then` | `object \| (context) => object` | Chains a second ability after this one resolves |
-| `cannotTargetFirst` | `boolean` | Skip PreTarget early-target resolution — targets are resolved only after costs (`Stages.Target`) |
+| `cannotTargetFirst` | `boolean` | Skip PreTarget early-target resolution — targets are resolved only after costs (`Stage.Target`) |
 | `initiateDuel` | `InitiateDuel \| (context) => InitiateDuel` | Sugar that wires a duel as the action's effect (see [Duels](#duels)) |
 
 ### `this.reaction(props: TriggeredAbilityProps)`
@@ -127,7 +127,7 @@ this.interrupt({
 
 Fires "before" the triggering event is queued at all. Used for "would" effects — prevention or modification before the event happens. Rare.
 
-The constant `AbilityTypes.WouldInterrupt` has the string value `'cancelinterrupt'` for historical reasons.
+The constant `AbilityType.WouldInterrupt` has the string value `'cancelinterrupt'` for historical reasons.
 
 ### Duel-window helpers
 
@@ -137,7 +137,7 @@ The constant `AbilityTypes.WouldInterrupt` has the string value `'cancelinterrup
 
 Triggered abilities accept either `when:` (checks individual events) or `aggregateWhen:` (checks all events in a window at once).
 
-`when:` is a map from `EventNames` to a predicate:
+`when:` is a map from `EventName` to a predicate:
 
 ```typescript
 when: {
@@ -146,13 +146,13 @@ when: {
 }
 ```
 
-Multiple keys in `when:` are OR'd — the ability triggers if any key matches. The `event` parameter can be typed with `EventPayload<EventNames.X>` — see [Typed Targets & Events](#typed-targets--events-typescript).
+Multiple keys in `when:` are OR'd — the ability triggers if any key matches. The `event` parameter can be typed with `EventPayload<EventName.X>` — see [Typed Targets & Events](#typed-targets--events-typescript).
 
 `aggregateWhen` receives all events:
 
 ```typescript
 aggregateWhen: (events, context) =>
-    events.some(e => e.name === EventNames.OnCardBowed && e.card.isParticipating())
+    events.some(e => e.name === EventName.OnCardBowed && e.card.isParticipating())
 ```
 
 ### `this.persistentEffect(props: PersistentEffectProps)`
@@ -169,7 +169,7 @@ this.persistentEffect({
 
 | Field | Description |
 |-------|-------------|
-| `location` | Where the source must be for the effect to be active. Default: `Locations.PlayArea` |
+| `location` | Where the source must be for the effect to be active. Default: `Location.PlayArea` |
 | `condition` | Dynamic gate — re-evaluated each action/event window |
 | `match` | Which cards are affected. Omit to target the source card itself |
 | `targetController` | `Players.Self`, `Players.Opponent`, `Players.Any` |
@@ -182,7 +182,7 @@ Sugar for `persistentEffect` with `condition: context.player.hasComposure()`. Ac
 
 ```typescript
 this.composure({
-    effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, { ... })
+    effect: AbilityDsl.effects.gainAbility(AbilityType.Action, { ... })
 });
 ```
 
@@ -213,25 +213,25 @@ this.attachmentConditions({
 
 Targets are declared under `target:` (single target) or `targets:` (named multi-target). Multi-target keys can use `dependsOn: 'prevTargetName'` to make one target depend on another.
 
-### Single card target (default `mode: TargetModes.Single`)
+### Single card target (default `mode: TargetMode.Single`)
 
 ```typescript
 target: {
-    cardType: CardTypes.Character,      // filter by type
+    cardType: CardType.Character,      // filter by type
     controller: Players.Opponent,       // whose cards
-    location: Locations.PlayArea,       // where the card must be
+    location: Location.PlayArea,       // where the card must be
     cardCondition: (card, context) => card.isParticipating(),  // card: BaseCard — narrow if needed
     gameAction: AbilityDsl.actions.bow()
 }
 ```
 
-### Multiple cards (`TargetModes.UpTo` / `TargetModes.Exactly`)
+### Multiple cards (`TargetMode.UpTo` / `TargetMode.Exactly`)
 
 ```typescript
 target: {
-    mode: TargetModes.UpTo,
+    mode: TargetMode.UpTo,
     numCards: 3,
-    cardType: CardTypes.Character,
+    cardType: CardType.Character,
     gameAction: AbilityDsl.actions.bow()
 }
 ```
@@ -250,7 +250,7 @@ target: {
 
 ```typescript
 target: {
-    mode: TargetModes.Ring,
+    mode: TargetMode.Ring,
     ringCondition: (ring, context) => ring.isUnclaimed(),
     gameAction: AbilityDsl.actions.claimRing()
 }
@@ -260,7 +260,7 @@ target: {
 
 ```typescript
 target: {
-    mode: TargetModes.Select,
+    mode: TargetMode.Select,
     choices: {
         'Bow': AbilityDsl.actions.bow((context) => ({ target: context.targets.someCard })),
         'Honor': AbilityDsl.actions.honor((context) => ({ target: context.targets.someCard }))
@@ -275,12 +275,12 @@ The choices object maps button labels to `GameAction`s (or a `(context) => boole
 ```typescript
 targets: {
     attacker: {
-        cardType: CardTypes.Character,
+        cardType: CardType.Character,
         cardCondition: (card) => card.isAttacking()
     },
     attachment: {
         dependsOn: 'attacker',
-        cardType: CardTypes.Attachment,
+        cardType: CardType.Attachment,
         cardCondition: (card, context) => card.parent === context.targets.attacker,
         gameAction: AbilityDsl.actions.detach()
     }
@@ -293,6 +293,22 @@ targets: {
 
 The ability methods are generic over the target card type, so card code can read `context.target` with a concrete type instead of casting.
 
+### `context.source` is already typed
+
+Inside any ability callback (`condition`, `handler`, `effectArgs`, `when:`, `cardCondition`, a `then:` factory, etc.) `context.source` is typed to **the card's own class** — for a card that `extends DrawCard`, `context.source` is a `DrawCard`, so its members are accessible with no cast:
+
+```typescript
+this.action({
+    title: 'Move to the conflict',
+    condition: (context) => context.source.isParticipating(),   // DrawCard member, no cast
+    gameAction: AbilityDsl.actions.moveToConflict()
+});
+```
+
+This holds because the ability props are `…Props<this, Target>` and the context is `AbilityContext<this, Target>` — `this` flows through as the source type. The same applies to `AbilityDsl.effects.gainAbility(...)`: the granted ability's `context.source` defaults to `DrawCard`. Do **not** write `(context.source as DrawCard)` in card code — it's redundant.
+
+(`context.source` is only a bare `BaseCard | Ring | EffectSource` in generic engine/cost code, not in a card's `setupCardAbilities`.)
+
 ### Typing the target
 
 `this.action`, `this.reaction`, `this.interrupt`, `this.forcedReaction`, `this.forcedInterrupt`, and `this.wouldInterrupt` all take a `<Target extends BaseCard>` parameter (default `BaseCard`). Pass the type your `target:` selects and `context.target` is typed to it:
@@ -300,7 +316,7 @@ The ability methods are generic over the target card type, so card code can read
 ```typescript
 this.action<DrawCard>({
     target: {
-        cardType: CardTypes.Character,
+        cardType: CardType.Character,
         gameAction: AbilityDsl.actions.bow()
     },
     effect: 'bow {0}',
@@ -325,7 +341,7 @@ Notes:
 
 ### Typed `when:` events
 
-Inside a `when:` predicate (or `aggregateWhen`), the event is typed. Annotate the parameter with `EventPayload<EventNames.X>` to read its payload fields with full typing:
+Inside a `when:` predicate (or `aggregateWhen`), the event is typed. Annotate the parameter with `EventPayload<EventName.X>` to read its payload fields with full typing:
 
 ```typescript
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -333,7 +349,7 @@ import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 this.reaction<DrawCard>({
     when: {
-        afterConflict: (event: EventPayload<EventNames.AfterConflict>, context: TriggeredAbilityContext) =>
+        afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext) =>
             event.conflict.loser === context.player && context.source.isAttacking()
     },
     // ...
@@ -441,7 +457,7 @@ Limits track how many times an ability can be used per time period.
 | `limit.perDuel(n)` | Each duel ends |
 | `limit.unlimitedPerConflict()` | Each conflict ends (unlimited uses within) |
 | `limit.unlimited()` | Never at max — truly unlimited |
-| `limit.repeatable(n, eventName)` | On a specific `EventNames` |
+| `limit.repeatable(n, eventName)` | On a specific `EventName` |
 
 Both `limit:` and `max:` on an ability accept a limit object. They are equivalent.
 
@@ -571,10 +587,10 @@ The tables below cover the most-used factories; the authoritative list lives in 
 AbilityDsl.actions.deckSearch({
     amount: -1,                    // -1 = entire deck (default), or a number to look at top N
     numCards: 1,                   // how many cards to select
-    targetMode: TargetModes.UpTo,  // Single, UpTo, Exactly, Unlimited
+    targetMode: TargetMode.UpTo,  // Single, UpTo, Exactly, Unlimited
     deck: Decks.ConflictDeck,      // ConflictDeck or DynastyDeck
     cardCondition: (card) => card.hasTrait('spell'),
-    gameAction: AbilityDsl.actions.moveCard({ destination: Locations.Hand }),
+    gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand }),
     takesNothingGameAction: AbilityDsl.actions.draw(),
     message: '{0} takes {1}',
     messageArgs: (context, cards) => [context.player, cards],
@@ -595,23 +611,23 @@ Lasting effects are applied via `actions.cardLastingEffect`, `actions.playerLast
 ```typescript
 gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
     target: context.targets.target,
-    duration: Durations.UntilEndOfConflict,
+    duration: Duration.UntilEndOfConflict,
     effect: AbilityDsl.effects.modifyMilitarySkill(2)
 }))
 ```
 
-### Durations
+### Duration
 
 | Constant | Resets |
 |----------|--------|
-| `Durations.UntilEndOfConflict` | Default — end of current conflict |
-| `Durations.UntilEndOfPhase` | End of current phase |
-| `Durations.UntilEndOfRound` | End of round |
-| `Durations.UntilEndOfDuel` | End of current duel |
-| `Durations.UntilPassPriority` | Next time anyone passes priority |
-| `Durations.UntilOpponentPassPriority` | Opponent passes priority |
-| `Durations.UntilSelfPassPriority` | Controller passes priority |
-| `Durations.Persistent` | Never expires (use `persistentEffect`, not a lasting effect) |
+| `Duration.UntilEndOfConflict` | Default — end of current conflict |
+| `Duration.UntilEndOfPhase` | End of current phase |
+| `Duration.UntilEndOfRound` | End of round |
+| `Duration.UntilEndOfDuel` | End of current duel |
+| `Duration.UntilPassPriority` | Next time anyone passes priority |
+| `Duration.UntilOpponentPassPriority` | Opponent passes priority |
+| `Duration.UntilSelfPassPriority` | Controller passes priority |
+| `Duration.Persistent` | Never expires (use `persistentEffect`, not a lasting effect) |
 
 Multiple effects can be combined as an array:
 
@@ -764,7 +780,7 @@ Duels are initiated via `initiateDuel:` on an action/reaction, or via `actions.d
 this.action({
     title: 'Duel target character',
     initiateDuel: {
-        type: DuelTypes.Military,
+        type: DuelType.Military,
         requiresConflict: true,   // default true — source and target must be participating
         challengerCondition: (card, context) => card === context.source,
         targetCondition: (card, context) => card.isParticipating(),
@@ -779,7 +795,7 @@ this.action({
 
 | Field | Description |
 |-------|-------------|
-| `type` | `DuelTypes.Military`, `DuelTypes.Political`, or `DuelTypes.Glory` |
+| `type` | `DuelType.Military`, `DuelType.Political`, or `DuelType.Glory` |
 | `requiresConflict` | Default `true`. Challenger and target must be participating |
 | `challengerCondition` | Filter for who can be the challenger (overrides default participation check on the challenger) |
 | `targetCondition` | Filter for legal duel targets (overrides default participation check on the target) |
@@ -804,34 +820,34 @@ Import from `'../Constants'` (adjust path for nesting).
 ### `Phases`
 `Setup`, `Dynasty`, `Draw`, `Conflict`, `Fate`, `Regroup`
 
-### `CardTypes`
+### `CardType`
 `Stronghold`, `Role`, `Province`, `Character`, `Holding`, `Event`, `Attachment`
 
-### `Locations`
+### `Location`
 `Any`, `Hand`, `ConflictDeck`, `DynastyDeck`, `ConflictDiscardPile`, `DynastyDiscardPile`, `PlayArea`, `Provinces` (string value `'province'`, grouping all four slots), `ProvinceOne`–`ProvinceFour`, `StrongholdProvince`, `ProvinceDeck`, `RemovedFromGame`, `UnderneathStronghold`, `OutsideTheGame`, `BeingPlayed`, `Role`
 
 ### `Players`
 `Self`, `Opponent`, `Any`
 
-### `Durations`
+### `Duration`
 `UntilEndOfConflict` (default for `cardLastingEffect`), `UntilEndOfPhase`, `UntilEndOfRound`, `UntilEndOfDuel`, `UntilPassPriority`, `UntilOpponentPassPriority`, `UntilSelfPassPriority`, `UntilNextPassPriority`, `Persistent`, `Custom`
 
-### `AbilityTypes`
+### `AbilityType`
 `Action`, `Reaction`, `ForcedReaction`, `Interrupt`, `ForcedInterrupt`, `WouldInterrupt` (string value `'cancelinterrupt'`), `KeywordInterrupt`, `KeywordReaction`, `DuelReaction`, `Persistent`, `OtherEffects`
 
-### `ConflictTypes`
+### `ConflictType`
 `Military`, `Political`, `Passed`, `Forced`
 
-### `Stages`
+### `Stage`
 `Cost`, `Effect`, `PreTarget`, `Target`
 
-### `TargetModes`
+### `TargetMode`
 `Single` (default), `UpTo`, `UpToVariable`, `Exactly`, `ExactlyVariable`, `Unlimited`, `MaxStat`, `Ring`, `Select`, `Ability`, `Token`, `ElementSymbol`, `AutoSingle`
 
-### `DuelTypes`
+### `DuelType`
 `Military`, `Political`, `Glory`
 
-### `Elements`
+### `Element`
 `Fire`, `Earth`, `Air`, `Water`, `Void`
 
 ### `Decks`
@@ -840,13 +856,13 @@ Import from `'../Constants'` (adjust path for nesting).
 ### `CharacterStatus`
 `Honored`, `Dishonored`, `Tainted`
 
-### `FavorTypes`
+### `FavorType`
 `Military`, `Political`, `Both`
 
-### `PlayTypes`
+### `PlayType`
 `PlayFromHand`, `PlayFromProvince`, `Other`
 
-### `EventNames`
+### `EventName`
 Key events used in `when:` clauses:
 
 | EventName | Fires when |
@@ -898,7 +914,7 @@ gameAction: AbilityDsl.actions.multiple([
 ```typescript
 gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
     target: context.targets.target,
-    duration: Durations.UntilEndOfConflict,
+    duration: Duration.UntilEndOfConflict,
     effect: [
         AbilityDsl.effects.modifyMilitarySkill(3),
         AbilityDsl.effects.doesNotBow()
@@ -912,7 +928,7 @@ gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
 gameAction: AbilityDsl.actions.deckSearch({
     deck: Decks.ConflictDeck,
     cardCondition: (card) => card.hasTrait('spell'),
-    gameAction: AbilityDsl.actions.moveCard({ destination: Locations.Hand })
+    gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand })
 })
 ```
 
@@ -930,7 +946,7 @@ gameAction: AbilityDsl.actions.conditional({
 
 ```typescript
 this.composure({
-    effect: AbilityDsl.effects.gainAbility(AbilityTypes.Action, {
+    effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
         title: 'Draw a card',
         condition: (context) => context.source.isParticipating(),
         gameAction: AbilityDsl.actions.draw((context) => ({ target: context.player }))
@@ -952,12 +968,12 @@ gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
 ```typescript
 this.reaction({
     title: 'Shuffle back into deck',
-    location: Locations.DynastyDiscardPile,   // fire from discard, not play
+    location: Location.DynastyDiscardPile,   // fire from discard, not play
     when: {
         onCardLeavesPlay: (event, context) => event.card === context.source
     },
     gameAction: AbilityDsl.actions.moveCard({
-        destination: Locations.DynastyDeck,
+        destination: Location.DynastyDeck,
         shuffle: true
     })
 });
@@ -969,12 +985,12 @@ this.reaction({
 this.action({
     title: 'Bow, then choose an effect',
     target: {
-        cardType: CardTypes.Character,
+        cardType: CardType.Character,
         gameAction: AbilityDsl.actions.bow()
     },
     then: {
         target: {
-            mode: TargetModes.Select,
+            mode: TargetMode.Select,
             choices: {
                 'Gain 1 honor': AbilityDsl.actions.gainHonor(),
                 'Draw 1 card': AbilityDsl.actions.draw()

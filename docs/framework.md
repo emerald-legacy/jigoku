@@ -39,6 +39,8 @@ Available in all callbacks (`condition`, `cardCondition`, `gameAction`, etc.):
 | `context.costs.name` | Paid costs |
 | `context.event` | The triggering event (reactions/interrupts) |
 
+In a card's callbacks `context.source` is typed to the card's own class (a card that `extends DrawCard` gets a `DrawCard`), so its members are callable directly — **no `as DrawCard` cast**. Likewise `context.target` is typed via `this.action<Target>()`. See [ability_dsl.md → Typed Targets & Events](ability_dsl.md#typed-targets--events-typescript) for the full generic surface.
+
 ### `this` vs `context.source`
 
 **Rule: In DSL callbacks, use `context.source` for card properties, not `this`.**
@@ -71,7 +73,7 @@ condition: () => this.game.isDuringConflict(),              // avoid
 
 ```typescript
 when: {
-    onInitiateAbilityEffects: (event) => event.card.type === CardTypes.Event
+    onInitiateAbilityEffects: (event) => event.card.type === CardType.Event
 }
 ```
 
@@ -271,10 +273,10 @@ this.action({
 
     // Single target
     target: {
-        cardType: CardTypes.Character,
+        cardType: CardType.Character,
         controller: Players.Self,               // whose cards are selectable
         player: Players.Self,                   // who makes the selection
-        location: Locations.PlayArea,           // filter by location
+        location: Location.PlayArea,           // filter by location
         cardCondition: (card, context) => card.isParticipating(),
         gameAction: AbilityDsl.actions.bow()
     },
@@ -297,25 +299,25 @@ this.action({
 this.action({
     targets: {
         first: {
-            cardType: CardTypes.Character,
+            cardType: CardType.Character,
             cardCondition: (card) => card.isParticipating()
         },
         second: {
             dependsOn: 'first',
-            cardType: CardTypes.Character,
+            cardType: CardType.Character,
             cardCondition: (card, context) => card !== context.targets.first
         }
     }
 });
 ```
 
-### Select Menu (TargetModes.Select)
+### Select Menu (TargetMode.Select)
 
 Use when the card text says "Select one —":
 
 ```typescript
 target: {
-    mode: TargetModes.Select,
+    mode: TargetMode.Select,
     choices: {
         'Move into conflict': AbilityDsl.actions.moveToConflict(context => ({ target: context.source })),
         'Move home': AbilityDsl.actions.sendHome(context => ({ target: context.source }))
@@ -329,10 +331,10 @@ Do **not** use `conditional` gameAction as a substitute — that silently auto-e
 
 `AbilityTargetSelect` resolves in two stages:
 
-- **`Stages.PreTarget`** (early target resolution, before costs): "Pay costs first" and "Cancel" are **always** appended. Even with only one legal choice, a prompt is shown (minimum two handlers). Auto-fire never occurs at this stage.
-- **`Stages.Target`** (after costs paid): no extra buttons added. If exactly **one** legal choice remains, it auto-fires without a prompt.
+- **`Stage.PreTarget`** (early target resolution, before costs): "Pay costs first" and "Cancel" are **always** appended. Even with only one legal choice, a prompt is shown (minimum two handlers). Auto-fire never occurs at this stage.
+- **`Stage.Target`** (after costs paid): no extra buttons added. If exactly **one** legal choice remains, it auto-fires without a prompt.
 
-Consequence for tests: actions with `TargetModes.Select` always show a prompt when triggered. Tests must call `this.playerN.clickPrompt('Choice text')` to handle it before asserting subsequent state.
+Consequence for tests: actions with `TargetMode.Select` always show a prompt when triggered. Tests must call `this.playerN.clickPrompt('Choice text')` to handle it before asserting subsequent state.
 
 ```javascript
 // WRONG — juro's SELECT always prompts; juro never actually moves
@@ -392,7 +394,7 @@ For cards that initiate a duel, use the `initiateDuel` property directly on the 
 this.action({
     title: 'Initiate a military duel',
     initiateDuel: {
-        type: DuelTypes.Military,
+        type: DuelType.Military,
         gameAction: (duel) => AbilityDsl.actions.discardFromPlay({ target: duel.loser })
     }
 });
@@ -402,7 +404,7 @@ this.action({
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `type` | required | `DuelTypes.Military` or `DuelTypes.Political` |
+| `type` | required | `DuelType.Military` or `DuelType.Political` |
 | `gameAction` | none | `(duel) => GameAction` — effect on resolution |
 | `message` | default | Chat message template |
 | `messageArgs` | none | `(duel) => [...]` — args for message |
@@ -431,19 +433,19 @@ this.action({
 this.action({
     title: 'Initiate a duel',
     condition: (context) => context.game.isDuringConflict(),   // redundant
-    initiateDuel: { type: DuelTypes.Military, ... }
+    initiateDuel: { type: DuelType.Military, ... }
 });
 
 this.action({
     title: 'Initiate a duel',
     condition: (context) => context.source.isParticipating(),  // redundant
-    initiateDuel: { type: DuelTypes.Military, ... }
+    initiateDuel: { type: DuelType.Military, ... }
 });
 
 // CORRECT
 this.action({
     title: 'Initiate a duel',
-    initiateDuel: { type: DuelTypes.Military, ... }
+    initiateDuel: { type: DuelType.Military, ... }
 });
 ```
 
@@ -451,8 +453,8 @@ this.action({
 
 ```typescript
 // OK — 'military' type restriction is not enforced by requiresConflict
-condition: (context) => context.game.isDuringConflict(ConflictTypes.Military),
-initiateDuel: { type: DuelTypes.Military, ... }
+condition: (context) => context.game.isDuringConflict(ConflictType.Military),
+initiateDuel: { type: DuelType.Military, ... }
 ```
 
 **Custom `challengerCondition` bypasses the default participation check for the challenger.** If the custom condition does not check `isParticipating()`, the challenger is not required to be in the conflict. However, the target still defaults to `isParticipating()`, so a conflict is still required for any legal target combination. `isDuringConflict()` on the action remains redundant.
@@ -496,7 +498,7 @@ AbilityDsl.actions.draw()
 AbilityDsl.actions.discardFromPlay()
 AbilityDsl.actions.reveal()
 AbilityDsl.actions.cancel()
-AbilityDsl.actions.moveCard((context) => ({ target: context.target, destination: Locations.ConflictDeck }))
+AbilityDsl.actions.moveCard((context) => ({ target: context.target, destination: Location.ConflictDeck }))
 AbilityDsl.actions.resolveRingEffect()
 AbilityDsl.actions.switchConflictType()
 AbilityDsl.actions.switchConflictElement()
@@ -518,13 +520,13 @@ AbilityDsl.actions.conditional({
 // Lasting effects
 AbilityDsl.actions.cardLastingEffect((context) => ({
     target: context.target,
-    duration: Durations.UntilEndOfConflict,
+    duration: Duration.UntilEndOfConflict,
     effect: AbilityDsl.effects.doesNotBow()
 }))
 
 AbilityDsl.actions.playerLastingEffect((context) => ({
     targetController: context.player,
-    effect: AbilityDsl.effects.increaseCost({ amount: 1, match: (card) => card.type === CardTypes.Event })
+    effect: AbilityDsl.effects.increaseCost({ amount: 1, match: (card) => card.type === CardType.Event })
 }))
 
 // Resolve another card's ability (used by Keeper of Secret Names)
@@ -562,8 +564,8 @@ AbilityDsl.effects.cardCannot({ cannot: 'applyCovert', restricts: 'opponentsCard
 AbilityDsl.effects.modifyMilitarySkill(2)
 AbilityDsl.effects.modifyPoliticalSkill(2)
 AbilityDsl.effects.modifyBothSkills(1)
-AbilityDsl.effects.increaseCost({ amount: 1, match: (card) => card.type === CardTypes.Event })
-AbilityDsl.effects.gainAbility(AbilityTypes.Action, { ... })
+AbilityDsl.effects.increaseCost({ amount: 1, match: (card) => card.type === CardType.Event })
+AbilityDsl.effects.gainAbility(AbilityType.Action, { ... })
 AbilityDsl.effects.switchBaseSkills()
 AbilityDsl.effects.cannotContribute(() => (card) => condition)
 AbilityDsl.effects.changeConflictSkillFunction((card) => card.getGlory())
@@ -607,7 +609,7 @@ card.bowed                      // boolean
 card.isHonored                  // boolean
 card.isDishonored               // boolean
 card.hasTrait('bushi')          // boolean
-card.type                       // CardTypes.Character / Event / Attachment / Province
+card.type                       // CardType.Character / Event / Attachment / Province
 card.isDynasty                  // boolean (cardData.side === 'dynasty')
 card.isConflict                 // boolean (cardData.side === 'conflict')
 card.attachments                // array of attached cards
@@ -617,7 +619,7 @@ card.controller                 // owner player
 card.getMilitarySkill()
 card.getPoliticalSkill()
 card.getGlory()
-card.location                   // Locations string
+card.location                   // Location string
 card.allowGameAction('bow', context)   // checks if action is permitted
 ```
 
@@ -629,18 +631,18 @@ For cards that need to track events across turns (e.g., VengefulKami tracking wh
 
 ```typescript
 import { EventRegistrar } from '../../EventRegistrar';
-import { EventNames, AbilityTypes } from '../../Constants';
+import { EventName, AbilityType } from '../../Constants';
 
 setupCardAbilities() {
     this.eventRegistrar = new EventRegistrar(this.game, this);
 
     // Reaction to event
     this.eventRegistrar.register([{
-        [EventNames.OnConflictDeclared + ':' + AbilityTypes.Reaction]: 'onConflictDeclaredReaction'
+        [EventName.OnConflictDeclared + ':' + AbilityType.Reaction]: 'onConflictDeclaredReaction'
     }]);
 
     // Simple event listener
-    this.eventRegistrar.register([EventNames.OnRoundEnded]);
+    this.eventRegistrar.register([EventName.OnRoundEnded]);
 }
 
 onRoundEnded() {
@@ -667,7 +669,7 @@ Example: opponent selects from their own discard pile:
 ```typescript
 target: {
     player: Players.Opponent,        // opponent makes the selection
-    location: Locations.ConflictDiscardPile,
+    location: Location.ConflictDiscardPile,
     controller: Players.Opponent,    // only opponent's cards are selectable
     cardCondition: (card, context) => card.controller === context.player.opponent
 }
@@ -688,7 +690,7 @@ this.reaction({
 this.wouldInterrupt({
     title: 'Cancel an event',
     when: {
-        onInitiateAbilityEffects: (event) => event.card.type === CardTypes.Event
+        onInitiateAbilityEffects: (event) => event.card.type === CardType.Event
     },
     cannotBeMirrored: true,
     gameAction: AbilityDsl.actions.multiple([
@@ -697,11 +699,11 @@ this.wouldInterrupt({
             condition: (context) => context.event.card.isConflict,
             trueGameAction: AbilityDsl.actions.moveCard((context) => ({
                 target: context.event.card,
-                destination: Locations.ConflictDeck
+                destination: Location.ConflictDeck
             })),
             falseGameAction: AbilityDsl.actions.moveCard((context) => ({
                 target: context.event.card,
-                destination: Locations.DynastyDiscardPile
+                destination: Location.DynastyDiscardPile
             }))
         })
     ]),
@@ -746,15 +748,15 @@ Default `conflictProvinceCondition`: `province === this.card` (must be the exact
 When a card ability is triggered, `AbilityResolver` runs these steps in order:
 
 1. `createSnapshot()` — snapshot source card state
-2. `resolveEarlyTargets()` — resolve targets at `Stages.PreTarget` (before costs)
+2. `resolveEarlyTargets()` — resolve targets at `Stage.PreTarget` (before costs)
 3. `checkForCancel()` — abort if player cancelled
 4. `openInitiateAbilityEventWindow()` — fire `onCardAbilityInitiated` event
-5. Inside: `resolveCosts()` → `payCosts()` → `checkCostsWerePaid()` → `resolveTargets()` (at `Stages.Target`) → `checkForCancel()` → `initiateAbilityEffects()` → `executeHandler()` → `moveEventCardToDiscard()`
+5. Inside: `resolveCosts()` → `payCosts()` → `checkCostsWerePaid()` → `resolveTargets()` (at `Stage.Target`) → `checkForCancel()` → `initiateAbilityEffects()` → `executeHandler()` → `moveEventCardToDiscard()`
 6. `refillProvinces()`
 
-The event window opened at step 4 fires `EventNames.OnCardAbilityInitiated` for card abilities (or `OnAbilityResolverInitiated` for non-card abilities). For event cards, it also queues an `OnCardPlayed` event. For any triggered ability, it queues an `OnCardAbilityTriggered` event.
+The event window opened at step 4 fires `EventName.OnCardAbilityInitiated` for card abilities (or `OnAbilityResolverInitiated` for non-card abilities). For event cards, it also queues an `OnCardPlayed` event. For any triggered ability, it queues an `OnCardAbilityTriggered` event.
 
-**Implication for reactions:** A reaction that triggers on `onCardAbilityInitiated` (step 4) fires **after** the initiating card's PreTarget prompt has been handled. If a card with a `TargetModes.Select` action fires, the SELECT prompt must be resolved by the player before the reaction's trigger window opens.
+**Implication for reactions:** A reaction that triggers on `onCardAbilityInitiated` (step 4) fires **after** the initiating card's PreTarget prompt has been handled. If a card with a `TargetMode.Select` action fires, the SELECT prompt must be resolved by the player before the reaction's trigger window opens.
 
 **`isTriggeredAbility()` returns `true` for all `CardAction` and `CardAbility` subclasses** (actions, reactions, interrupts). It returns `false` only on bare `BaseAbility`. This means reactions that filter on `event.ability.isTriggeredAbility()` will fire on opponent action abilities, not just on reaction/interrupt abilities.
 
@@ -763,35 +765,35 @@ The event window opened at step 4 fires `EventNames.OnCardAbilityInitiated` for 
 ## Key Constants
 
 ```typescript
-import { CardTypes, Players, Locations, DuelTypes, TargetModes, AbilityTypes, Durations, EventNames, ConflictTypes, Elements } from '../../Constants';
+import { CardType, Players, Location, DuelType, TargetMode, AbilityType, Duration, EventName, ConflictType, Element } from '../../Constants';
 
-CardTypes.Character / Event / Attachment / Province / Stronghold / Role / Holding
+CardType.Character / Event / Attachment / Province / Stronghold / Role / Holding
 
 Players.Self / Opponent / Any
 
-Locations.PlayArea / ConflictDiscardPile / DynastyDiscardPile / ConflictDeck / DynastyDeck / Provinces /
+Location.PlayArea / ConflictDiscardPile / DynastyDiscardPile / ConflictDeck / DynastyDeck / Provinces /
          ProvinceOne / ProvinceTwo / ProvinceThree / ProvinceFour / StrongholdProvince / Hand /
          ProvinceDeck / RemovedFromGame / UnderneathStronghold / OutsideTheGame / BeingPlayed / Role / Any
 
-// Note: Locations.Provinces is the string 'province' (singular). It groups all four province slots.
+// Note: Location.Provinces is the string 'province' (singular). It groups all four province slots.
 
-DuelTypes.Military / Political / Glory
+DuelType.Military / Political / Glory
 
-TargetModes.Single / UpTo / UpToVariable / Exactly / ExactlyVariable / MaxStat / Unlimited /
+TargetMode.Single / UpTo / UpToVariable / Exactly / ExactlyVariable / MaxStat / Unlimited /
             Ring / Select / Ability / Token / ElementSymbol / AutoSingle
 
-AbilityTypes.Action / Reaction / ForcedReaction / Interrupt / ForcedInterrupt / WouldInterrupt /
+AbilityType.Action / Reaction / ForcedReaction / Interrupt / ForcedInterrupt / WouldInterrupt /
              KeywordInterrupt / KeywordReaction / DuelReaction / Persistent / OtherEffects
 
-// AbilityTypes.WouldInterrupt has the string value 'cancelinterrupt' (historical name).
+// AbilityType.WouldInterrupt has the string value 'cancelinterrupt' (historical name).
 
-Durations.UntilEndOfConflict / UntilEndOfPhase / UntilEndOfRound / UntilEndOfDuel /
+Duration.UntilEndOfConflict / UntilEndOfPhase / UntilEndOfRound / UntilEndOfDuel /
           UntilPassPriority / UntilOpponentPassPriority / UntilSelfPassPriority / UntilNextPassPriority /
           Persistent / Custom
 
-ConflictTypes.Military / Political / Passed / Forced
+ConflictType.Military / Political / Passed / Forced
 
-Stages.Cost / Effect / PreTarget / Target
+Stage.Cost / Effect / PreTarget / Target
 ```
 
 ---
@@ -811,7 +813,7 @@ export default class Example extends ProvinceCard {
             title: 'Do something',
             // No condition needed — engine enforces "must be conflict province"
             target: {
-                cardType: CardTypes.Character,
+                cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.bow()
             }
@@ -834,7 +836,7 @@ this.action({
     title: 'Bow a participating character',
     condition: (context) => context.game.isDuringConflict(),
     target: {
-        cardType: CardTypes.Character,
+        cardType: CardType.Character,
         cardCondition: (card) => card.isParticipating(),
         gameAction: AbilityDsl.actions.bow()
     }
@@ -846,7 +848,7 @@ this.action({
 this.action({
     title: 'Initiate a military duel',
     initiateDuel: {
-        type: DuelTypes.Military,
+        type: DuelType.Military,
         targetCondition: (card) => card.isParticipating() && !card.bowed,
         gameAction: (duel) => AbilityDsl.actions.discardFromPlay({ target: duel.loser }),
         message: 'discard {0}',
@@ -860,7 +862,7 @@ this.action({
 this.action({
     title: 'Initiate a duel',
     initiateDuel: {
-        type: DuelTypes.Political,
+        type: DuelType.Political,
         // source card is automatically the challenger
         opponentChoosesDuelTarget: true,
         gameAction: (duel) => AbilityDsl.actions.bow({ target: duel.loser })
