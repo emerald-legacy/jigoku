@@ -25,8 +25,10 @@ import {
     ActionProps,
     AttachmentConditionProps,
     PersistentEffectProps,
-    TriggeredAbilityProps
+    TriggeredAbilityProps,
+    type DefaultMatchTarget
 } from './Interfaces.js';
+import type { GameObject } from './GameObject.js';
 import { StatusToken } from './StatusToken.js';
 import Player from './Player.js';
 import type BaseAction from './BaseAction.js';
@@ -43,7 +45,7 @@ export interface StoredPersistentEffect {
     duration: Duration;
     location: Location | Location[];
     condition?: (context: AbilityContext) => boolean;
-    match?: (card: BaseCard, context?: AbilityContext) => boolean;
+    match?: (card: GameObject, context?: AbilityContext) => boolean;
     targetController?: Players;
     targetLocation?: Location | (string & {});
     effect: EffectFactory | EffectFactory[];
@@ -319,7 +321,7 @@ class BaseCard extends EffectSource {
      * Applies an effect that continues as long as the card providing the effect
      * is both in play and not blank.
      */
-    persistentEffect(properties: PersistentEffectProps<this>): void {
+    persistentEffect<T extends GameObject = DefaultMatchTarget>(properties: PersistentEffectProps<this, T>): void {
         const allowedLocations = [
             Location.Any,
             Location.ConflictDiscardPile,

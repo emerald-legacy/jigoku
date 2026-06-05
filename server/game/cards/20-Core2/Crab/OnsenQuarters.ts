@@ -1,5 +1,6 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
+import type BaseCard from '../../../BaseCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type Ring from '../../../Ring.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -13,7 +14,7 @@ export default class OnsenQuarters extends ProvinceCard {
             targetController: Players.Self,
             condition: () => true,
             match: (card, context) =>
-                !!context && card.type === CardType.Province && card !== context?.source && card.controller === context?.player,
+                !!context && card.type === CardType.Province && card !== (context?.source as BaseCard) && card.controller === context?.player,
             effect: AbilityDsl.effects.modifyProvinceStrength(1)
         });
 

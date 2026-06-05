@@ -1,6 +1,7 @@
 import { CardType, Players, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class ObligationsOfHospitality extends DrawCard {
@@ -10,7 +11,7 @@ export default class ObligationsOfHospitality extends DrawCard {
         this.persistentEffect({
             location: Location.Any,
             targetController: Players.Any,
-            match: (player) => player.imperialFavor !== '',
+            match: (player: Player) => player.imperialFavor !== '',
             effect: AbilityDsl.effects.reduceCost({ match: (card, source) => card === source })
         });
 

@@ -4,6 +4,7 @@ import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
 import type { Cost } from './costs/Cost.js';
+import type { GameObject } from './GameObject.js';
 import type Ring from './Ring.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
@@ -212,10 +213,14 @@ export interface TriggeredAbilityAggregateWhenProps<Source = BaseCard, Target ex
 
 export type TriggeredAbilityProps<Source = BaseCard, Target extends BaseCard = BaseCard> = TriggeredAbilityWhenProps<Source, Target> | TriggeredAbilityAggregateWhenProps<Source, Target>;
 
-export interface PersistentEffectProps<Source = any> {
+// The default card type a persistent-effect `match` filters on. Aliased here (not referenced
+// directly from BaseCard) so BaseCard never imports its DrawCard subclass.
+export type DefaultMatchTarget = DrawCard;
+
+export interface PersistentEffectProps<Source = any, MatchTarget extends GameObject = DefaultMatchTarget> {
     location?: Location | Location[];
     condition?: (context: AbilityContext<Source>) => boolean;
-    match?: (card: any, context?: AbilityContext<Source>) => boolean;
+    match?: (card: MatchTarget, context?: AbilityContext<Source>) => boolean;
     targetController?: Players;
     targetLocation?: Location | (string & {});
     effect: ((...args: any[]) => any) | ((...args: any[]) => any)[];
