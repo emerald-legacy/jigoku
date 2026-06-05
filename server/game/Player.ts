@@ -45,8 +45,23 @@ export interface PlayerState {
     [key: string]: unknown;
 }
 
+export interface GamePlayerUserSettings {
+    disableGravatar?: boolean;
+    windowTimer?: number;
+    background?: string;
+    optionSettings?: Record<string, unknown>;
+    timerSettings?: Record<string, unknown>;
+}
+
+export interface GamePlayerUser {
+    username: string;
+    emailHash?: string;
+    promptedActionWindows?: Record<string, boolean>;
+    settings?: GamePlayerUserSettings;
+}
+
 class Player extends GameObject {
-    user: any;
+    user: GamePlayerUser;
     emailHash: string;
     declare id: string;
     owner: boolean;
@@ -97,10 +112,10 @@ class Player extends GameObject {
     showDynasty: boolean = false;
     noTimer: boolean = false;
 
-    constructor(id: string, user: any, owner: boolean, game: Game, clockdetails?: any) {
+    constructor(id: string, user: GamePlayerUser, owner: boolean, game: Game, clockdetails?: any) {
         super(game, user.username);
         this.user = user;
-        this.emailHash = this.user.emailHash;
+        this.emailHash = this.user.emailHash ?? '';
         this.id = id;
         this.owner = owner;
         this.printedType = 'player';
@@ -138,9 +153,10 @@ class Player extends GameObject {
             fate: true,
             regroup: true
         };
-        this.timerSettings = user.settings.timerSettings || {};
-        this.timerSettings.windowTimer = user.settings.windowTimer;
-        this.optionSettings = user.settings.optionSettings;
+        const settings = user.settings ?? {};
+        this.timerSettings = settings.timerSettings ?? {};
+        this.timerSettings.windowTimer = settings.windowTimer;
+        this.optionSettings = settings.optionSettings ?? {};
         this.resetTimerAtEndOfRound = false;
         this.promptState = new PlayerPromptState(this);
     }

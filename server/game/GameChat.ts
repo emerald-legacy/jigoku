@@ -1,10 +1,8 @@
 type Player = {
     user: {
         username: string;
-        emailHash: string;
-        settings: {
-            disableGravatar: boolean;
-        };
+        emailHash?: string;
+        settings?: { disableGravatar?: boolean };
     };
 };
 
@@ -28,7 +26,7 @@ export class GameChat {
         const playerArg = {
             name: player.user.username,
             emailHash: player.user.emailHash,
-            noAvatar: player.user.settings.disableGravatar
+            noAvatar: player.user.settings?.disableGravatar
         };
 
         this.addMessage('{0} {1}', playerArg, message);

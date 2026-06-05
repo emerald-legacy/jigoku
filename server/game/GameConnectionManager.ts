@@ -2,6 +2,7 @@ import Player from './Player.js';
 import { Spectator } from './Spectator.js';
 import type Game from './Game.js';
 import type Socket from '../Socket.js';
+import type { GamePlayerUser } from './Player.js';
 import type { LobbyUser, UserIdentity } from '../gamenode/LobbyProtocol.js';
 
 export class GameConnectionManager {
@@ -26,7 +27,7 @@ export class GameConnectionManager {
             return false;
         }
 
-        game.playersAndSpectators[user.username] = new Player(socketId, user, game.owner === user.username, game);
+        game.playersAndSpectators[user.username] = new Player(socketId, user as GamePlayerUser, game.owner === user.username, game);
         game.invalidatePlayerCaches();
 
         return true;

@@ -1,4 +1,4 @@
-import type { LobbyUser, ShortCardData } from '../gamenode/LobbyProtocol.js';
+import type { LobbyUser, UserIdentity, ShortCardData } from '../gamenode/LobbyProtocol.js';
 import ChatCommands from './ChatCommands.js';
 import { GameChat } from './GameChat.js';
 import { EffectEngine } from './EffectEngine.js';
@@ -46,7 +46,7 @@ import type Socket from '../Socket.js';
 import type { AnimationEvent } from './AnimationEvent.js';
 import type { GameRouter } from './GameRouter.js';
 import type { GameSaveState, GameSummary } from '../gamenode/LobbyProtocol.js';
-import type { PlayerState } from './Player.js';
+import type { PlayerState, GamePlayerUser } from './Player.js';
 
 export interface SharedGameState {
     [key: string]: unknown;
@@ -64,7 +64,7 @@ interface GameDetails {
     name: string;
     allowSpectators: boolean;
     spectatorSquelch: boolean;
-    owner: LobbyUser | string;
+    owner: string;
     savedGameId?: string;
     gameType: string;
     gameMode: string;
@@ -76,7 +76,7 @@ interface GameDetails {
 
 interface GamePlayerEntry {
     id: string;
-    user: { username: string; emailHash: string };
+    user: GamePlayerUser;
 }
 
 interface GameOptions {
@@ -145,7 +145,7 @@ class Game {
         this.name = details.name;
         this.allowSpectators = details.allowSpectators;
         this.spectatorSquelch = details.spectatorSquelch;
-        this.owner = typeof details.owner === 'string' ? details.owner : details.owner.username;
+        this.owner = details.owner;
         this.started = false;
         this.playStarted = false;
         this.createdAt = new Date();
@@ -181,7 +181,7 @@ class Game {
         this.provinceCards = [];
         this.hiddenInfoLog = [];
 
-        Object.values(details.players).forEach((player: { id: string; user: { username: string; emailHash: string } }) => {
+        Object.values(details.players).forEach((player: { id: string; user: GamePlayerUser }) => {
             this.playersAndSpectators[player.user.username] = new Player(
                 player.id,
                 player.user,
@@ -191,7 +191,7 @@ class Game {
             );
         });
 
-        Object.values(details.spectators).forEach((spectator: { id: string; user: { username: string; emailHash: string } }) => {
+        Object.values(details.spectators).forEach((spectator: { id: string; user: GamePlayerUser }) => {
             this.playersAndSpectators[spectator.user.username] = new Spectator(spectator.id, spectator.user);
         });
 
@@ -886,7 +886,7 @@ class Game {
         return undefined;
     }
 
-    watch(socketId: string, user: LobbyUser): boolean {
+    watch(socketId: string, user: UserIdentity): boolean {
         return this.connections.watch(socketId, user);
     }
 
