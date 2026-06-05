@@ -13,6 +13,12 @@ export interface LobbyUser {
     [key: string]: unknown;
 }
 
+// Minimal user identity carried on the wire — name + gravatar hash, nothing sensitive.
+export interface UserIdentity {
+    username: string;
+    emailHash?: string;
+}
+
 export interface ShortCardData {
     id: string;
     name: string;
@@ -36,7 +42,7 @@ export interface DeckDTO {
 export interface PendingPlayerDTO {
     id: string;
     name: string;
-    user?: LobbyUser;
+    user?: UserIdentity & { settings?: unknown };
     emailHash?: string;
     owner?: boolean;
     left?: boolean;
@@ -49,7 +55,7 @@ export interface PendingPlayerDTO {
 export interface PendingSpectatorDTO {
     id: string;
     name: string;
-    user?: LobbyUser;
+    user?: UserIdentity;
     emailHash?: string;
     settings?: unknown;
 }
@@ -57,7 +63,7 @@ export interface PendingSpectatorDTO {
 export interface PendingGameDTO {
     id: string;
     name: string;
-    owner: LobbyUser | string;
+    owner: string;
     players: Record<string, PendingPlayerDTO>;
     spectators: Record<string, PendingSpectatorDTO>;
     allowSpectators: boolean;
@@ -115,7 +121,7 @@ export interface GameSummary {
     manualMode: boolean;
     messages: unknown[];
     name: string;
-    owner: Record<string, unknown>;
+    owner: string;
     players: Record<string, PlayerSummary>;
     started: boolean;
     startedAt?: Date | string;
@@ -132,7 +138,7 @@ export const InboundMessageSchema = z.discriminatedUnion('command', [
     z.object({ command: z.literal('STARTGAME'), arg: z.custom<PendingGameDTO>() }),
     z.object({
         command: z.literal('SPECTATOR'),
-        arg: z.object({ game: z.custom<PendingGameDTO>(), user: z.custom<LobbyUser>() })
+        arg: z.object({ game: z.custom<PendingGameDTO>(), user: z.custom<UserIdentity>() })
     }),
     z.object({
         command: z.literal('CONNECTFAILED'),

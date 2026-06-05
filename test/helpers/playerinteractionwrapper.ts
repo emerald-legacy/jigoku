@@ -34,6 +34,7 @@ class PlayerInteractionWrapper {
 
         player.noTimer = true;
         player.user = {
+            username: '',
             settings: {}
         };
     }

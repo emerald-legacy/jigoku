@@ -81,10 +81,11 @@ export class PlayerStateBuilder {
             stats: this.getStats(),
             timerSettings: player.timerSettings,
             strongholdProvince: this.getSummaryForCardList(player.strongholdProvince, activePlayer),
-            user: (() => {
-                const { password: _password, email: _email, ...userSummary } = player.user;
-                return userSummary;
-            })()
+            user: {
+                username: player.user.username,
+                emailHash: player.user.emailHash,
+                settings: player.user.settings
+            }
         };
 
         if(player.additionalPiles && Object.keys(player.additionalPiles)) {
