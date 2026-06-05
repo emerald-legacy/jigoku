@@ -1,4 +1,7 @@
 import DrawCard from '../../DrawCard.js';
+import type BaseCard from '../../BaseCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import type { EffectTarget } from '../../Effects/EffectBuilder.js';
 import { AbilityType, CardType, Location, Players, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -44,10 +47,10 @@ class VoiceOfTheAncestors extends DrawCard {
                             AbilityDsl.effects.addTrait('spirit'),
                             AbilityDsl.effects.attachmentRestrictTraitAmount({ spirit: 1 }),
                             AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
-                                match: (card: any, context: any) => card === context.source.parent,
+                                match: (card: BaseCard, context?: AbilityContext) => card === (context?.source as DrawCard)?.parent,
                                 effect: [
-                                    AbilityDsl.effects.modifyMilitarySkill((card: any, context: any) => context.source.printedMilitarySkill || 0),
-                                    AbilityDsl.effects.modifyPoliticalSkill((card: any, context: any) => context.source.printedPoliticalSkill || 0)
+                                    AbilityDsl.effects.modifyMilitarySkill((card: EffectTarget, context: AbilityContext) => (context.source as DrawCard).printedMilitarySkill || 0),
+                                    AbilityDsl.effects.modifyPoliticalSkill((card: EffectTarget, context: AbilityContext) => (context.source as DrawCard).printedPoliticalSkill || 0)
                                 ]
                             })
                         ]

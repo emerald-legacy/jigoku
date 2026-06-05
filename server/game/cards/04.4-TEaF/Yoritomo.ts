@@ -6,7 +6,7 @@ class Yoritomo extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyBothSkills((card: any) => card.controller.fate)
+            effect: AbilityDsl.effects.modifyBothSkills((card) => card.controller.fate)
         });
     }
 }

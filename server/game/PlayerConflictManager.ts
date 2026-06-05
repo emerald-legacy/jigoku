@@ -4,6 +4,15 @@ import type Game from './Game.js';
 import type Player from './Player.js';
 import type DrawCard from './DrawCard.js';
 import type Ring from './Ring.js';
+import type { ProvinceCard } from './ProvinceCard.js';
+
+export interface ConflictDeclarationProperties {
+    type?: ConflictType | ConflictType[];
+    ring?: Ring | Ring[];
+    attacker?: DrawCard;
+    province?: ProvinceCard | ProvinceCard[];
+    forcedDeclaredType?: ConflictType;
+}
 
 export class PlayerConflictManager {
     declaredConflictOpportunities: Record<string, number> = {
@@ -20,7 +29,7 @@ export class PlayerConflictManager {
 
     constructor(private readonly player: Player, private readonly game: Game) {}
 
-    hasLegalConflictDeclaration(properties: any): boolean {
+    hasLegalConflictDeclaration(properties: ConflictDeclarationProperties): boolean {
         const conflictType = this.getLegalConflictTypes(properties);
         if(conflictType.length === 0) {
             return false;
@@ -42,7 +51,7 @@ export class PlayerConflictManager {
         return conflictType.some((type: string) =>
             conflictRing.some((ring: Ring) =>
                 conflictProvince.some(
-                    (province: any) =>
+                    (province: ProvinceCard) =>
                         province.canDeclare(type, ring) &&
                         cards.some((card: DrawCard) => card.canDeclareAsAttacker(type, ring, province))
                 )
@@ -97,7 +106,7 @@ export class PlayerConflictManager {
         return Math.max(0, this.getMaxConflictOpportunitiesForPlayerByType(type) - this.declaredConflictOpportunities[type]);
     }
 
-    getLegalConflictTypes(properties: any): string[] {
+    getLegalConflictTypes(properties: ConflictDeclarationProperties): string[] {
         let types = properties.type || [ConflictType.Military, ConflictType.Political];
         types = Array.isArray(types) ? types : [types];
         const forcedDeclaredType =
@@ -105,7 +114,7 @@ export class PlayerConflictManager {
             (this.game.currentConflict && this.game.currentConflict.forcedDeclaredType);
         if(forcedDeclaredType) {
             return [forcedDeclaredType].filter(
-                (type: string) =>
+                (type) =>
                     types.includes(type) &&
                     this.getConflictOpportunities() > 0 &&
                     !this.player.getEffects(EffectName.CannotDeclareConflictsOfType).includes(type)
@@ -117,7 +126,7 @@ export class PlayerConflictManager {
         }
 
         return types.filter(
-            (type: string) =>
+            (type) =>
                 this.getRemainingConflictOpportunitiesForType(type) > 0 &&
                 !this.player.getEffects(EffectName.CannotDeclareConflictsOfType).includes(type)
         );

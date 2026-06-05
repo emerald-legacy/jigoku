@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { TargetMode, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { StatusToken } from '../../StatusToken.js';
 
 class ProveYourSkill extends DrawCard {
     static id = 'prove-your-skill';
@@ -15,7 +17,7 @@ class ProveYourSkill extends DrawCard {
             },
             effect: 'discard {1}\'s {2}',
             effectArgs: context => {
-                const token: any = context && (context as any).token;
+                const token: StatusToken | StatusToken[] | undefined = context?.token;
                 if(!token) {
                     return [];
                 }
@@ -24,7 +26,7 @@ class ProveYourSkill extends DrawCard {
         });
     }
 
-    canPlay(context: any, playType: any) {
+    canPlay(context: AbilityContext, playType: string) {
         if(context.player.opponent && context.player.isMoreHonorable()) {
             return super.canPlay(context, playType);
         }

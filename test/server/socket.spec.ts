@@ -10,8 +10,8 @@ function makeIoSocket() {
     return sock;
 }
 
-function fireRegisteredEvent(ioSocket: ReturnType<typeof makeIoSocket>, eventName: string, ...args: any[]) {
-    const call = (ioSocket.on as jasmine.Spy).calls.allArgs().find((a: any[]) => a[0] === eventName);
+function fireRegisteredEvent(ioSocket: ReturnType<typeof makeIoSocket>, eventName: string, ...args: unknown[]) {
+    const call = (ioSocket.on as jasmine.Spy).calls.allArgs().find((a: unknown[]) => a[0] === eventName);
     if(!call) { throw new Error(`No handler registered for '${eventName}'`); }
     call[1](...args);
 }
@@ -44,14 +44,14 @@ describe('Socket', () => {
             done();
         });
 
-        (socket as any).onAuthenticate(jwt.sign({ username: 'alice' }, TEST_SECRET));
+        socket.onAuthenticate(jwt.sign({ username: 'alice' }, TEST_SECRET));
     });
 
     it('does not grant access on invalid credentials', (done) => {
         const handler = jasmine.createSpy('handler');
         socket.registerEvent('gameAction', handler);
 
-        (socket as any).onAuthenticate('not.a.valid.token');
+        socket.onAuthenticate('not.a.valid.token');
 
         setTimeout(() => {
             fireRegisteredEvent(ioSocket, 'gameAction', 'payload');
@@ -65,7 +65,7 @@ describe('Socket', () => {
         const working = jasmine.createSpy('working');
         socket.registerEvent('action1', throwing);
         socket.registerEvent('action2', working);
-        (socket as any).user = { username: 'alice' };
+        socket.user = { username: 'alice' };
 
         expect(() => fireRegisteredEvent(ioSocket, 'action1', 'x')).not.toThrow();
 

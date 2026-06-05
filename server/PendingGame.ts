@@ -2,34 +2,44 @@ import * as uuid from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { logger } from './logger.js';
 import { GameChat } from './game/GameChat.js';
+import type { LobbyUser, DeckDTO } from './gamenode/LobbyProtocol.js';
+
+interface PendingFaction {
+    name?: string;
+    value?: string;
+}
+
+interface PendingDeck extends DeckDTO {
+    selected?: boolean;
+}
 
 interface PendingGameDetails {
     name: string;
     spectators: boolean;
     spectatorSquelch: boolean;
     gameType: string;
-    clocks: any;
+    clocks: unknown;
 }
 
 interface PendingPlayer {
     id: string;
     name: string;
-    user: any;
-    emailHash: string;
+    user: LobbyUser;
+    emailHash: string | undefined;
     owner: boolean;
     left?: boolean;
     disconnected?: boolean;
-    deck?: any;
-    faction?: any;
-    agenda?: any;
+    deck?: PendingDeck;
+    faction?: PendingFaction;
+    agenda?: { cardData: { code: string } };
 }
 
 interface PendingSpectator {
     id: string;
     name: string;
-    user: any;
-    emailHash: string;
-    settings?: any;
+    user: LobbyUser;
+    emailHash: string | undefined;
+    settings?: unknown;
 }
 
 interface PendingGameSaveState {
@@ -39,8 +49,43 @@ interface PendingGameSaveState {
     startedAt: Date;
 }
 
+interface DeckSummary {
+    name?: string;
+    selected?: boolean;
+    status?: unknown;
+}
+
+interface PlayerSummaryEntry {
+    agenda: string | undefined;
+    deck: DeckSummary;
+    emailHash: string | undefined;
+    faction: string | undefined;
+    id: string;
+    left: boolean | undefined;
+    name: string;
+    owner: boolean;
+    settings: unknown;
+}
+
+interface PendingGameSummary {
+    allowSpectators: boolean;
+    clocks: unknown;
+    createdAt: Date;
+    gameType: string;
+    id: string;
+    messages: unknown[] | undefined;
+    name: string;
+    needsPassword: boolean;
+    node: string | undefined;
+    owner: string | undefined;
+    players: { [name: string]: PlayerSummaryEntry };
+    spectatorSquelch: boolean;
+    started: boolean;
+    spectators: Array<{ id: string; name: string; emailHash: string | undefined; settings: unknown }>;
+}
+
 class PendingGame {
-    owner: any;
+    owner: LobbyUser;
     players: { [username: string]: PendingPlayer };
     spectators: { [username: string]: PendingSpectator };
     id: string;
@@ -48,14 +93,14 @@ class PendingGame {
     allowSpectators: boolean;
     spectatorSquelch: boolean;
     gameType: string;
-    clocks: any;
+    clocks: unknown;
     createdAt: Date;
     gameChat: GameChat;
-    node: any;
+    node: { identity?: string } | null;
     started: boolean;
     password?: string;
 
-    constructor(owner: any, details: PendingGameDetails) {
+    constructor(owner: LobbyUser, details: PendingGameDetails) {
         this.owner = owner;
         this.players = {};
         this.spectators = {};
@@ -105,7 +150,7 @@ class PendingGame {
     }
 
     // Helpers
-    setupFaction(player: PendingPlayer, faction: any): void {
+    setupFaction(player: PendingPlayer, faction: PendingFaction | undefined): void {
         player.faction = {};
         player.faction = faction;
     }
@@ -115,7 +160,7 @@ class PendingGame {
         this.gameChat.addMessage(message, ...args);
     }
 
-    addPlayer(id: string, user: any): void {
+    addPlayer(id: string, user: LobbyUser): void {
         this.players[user.username] = {
             id: id,
             name: user.username,
@@ -125,7 +170,7 @@ class PendingGame {
         };
     }
 
-    addSpectator(id: string, user: any): void {
+    addSpectator(id: string, user: LobbyUser): void {
         this.spectators[user.username] = {
             id: id,
             name: user.username,
@@ -134,7 +179,7 @@ class PendingGame {
         };
     }
 
-    newGame(id: string, user: any, password: string | undefined, callback: (err?: Error) => void): void {
+    newGame(id: string, user: LobbyUser, password: string | undefined, callback: (err?: Error) => void): void {
         if(password) {
             bcrypt.hash(password, 10, (err: Error | undefined, hash: string) => {
                 if(err) {
@@ -154,11 +199,11 @@ class PendingGame {
         }
     }
 
-    isUserBlocked(user: any): boolean {
+    isUserBlocked(user: LobbyUser): boolean {
         return (this.owner.blockList || []).includes(user.username.toLowerCase());
     }
 
-    join(id: string, user: any, password: string | undefined, callback: (err?: Error, msg?: string) => void): void {
+    join(id: string, user: LobbyUser, password: string | undefined, callback: (err?: Error, msg?: string) => void): void {
         if(Object.keys(this.players).length === 2 || this.started) {
             callback(new Error('Game is full or has already started'));
             return;
@@ -191,7 +236,7 @@ class PendingGame {
         }
     }
 
-    watch(id: string, user: any, password: string | undefined, callback: (err?: Error, msg?: string) => void): void {
+    watch(id: string, user: LobbyUser, password: string | undefined, callback: (err?: Error, msg?: string) => void): void {
         if(!this.allowSpectators) {
             callback(new Error('Join not permitted'));
             return;
@@ -277,7 +322,7 @@ class PendingGame {
         this.addMessage('{0} {1}', player, message);
     }
 
-    selectDeck(playerName: string, deck: any): void {
+    selectDeck(playerName: string, deck: PendingDeck): void {
         const player = this.getPlayerByName(playerName);
         if(!player) {
             return;
@@ -295,7 +340,7 @@ class PendingGame {
 
     // Interrogators
     isEmpty(): boolean {
-        return !Object.values(this.getPlayersAndSpectators()).some((player) => this.hasActivePlayer((player as any).name));
+        return !Object.values(this.getPlayersAndSpectators()).some((player) => this.hasActivePlayer(player.name));
     }
 
     isOwner(playerName: string): boolean {
@@ -316,12 +361,12 @@ class PendingGame {
     }
 
     // Summary
-    getSummary(activePlayer: string | undefined): any {
-        const playerSummaries: { [name: string]: any } = {};
+    getSummary(activePlayer: string | undefined): PendingGameSummary {
+        const playerSummaries: { [name: string]: PlayerSummaryEntry } = {};
         const playersInGame = Object.values(this.players).filter((player) => !player.left);
 
         playersInGame.forEach((player) => {
-            let deck: any;
+            let deck: DeckSummary;
 
             if(activePlayer === player.name && player.deck) {
                 deck = { name: player.deck.name, selected: player.deck.selected, status: player.deck.status };

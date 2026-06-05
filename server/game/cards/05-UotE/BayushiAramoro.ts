@@ -14,7 +14,7 @@ class BayushiAramoro extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card: any) => card.isParticipating(),
+                cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => ({
                     effect: [
                         AbilityDsl.effects.modifyMilitarySkill(-2),

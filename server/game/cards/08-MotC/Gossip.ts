@@ -25,7 +25,7 @@ class Gossip extends DrawCard {
 
     selectCardName(player: Player, cardName: string, context: AbilityContext) {
         this.game.addMessage('{0} names {1} - {2} cannot play copies of this card this phase', player, cardName, player.opponent);
-        context.source.untilEndOfPhase((ability: any) => ({
+        context.source.untilEndOfPhase((ability) => ({
             targetController: context.player.opponent,
             effect: ability.effects.playerCannot({
                 cannot: PlayType.PlayFromHand,

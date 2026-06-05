@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
+import type Player from '../../Player.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 class EmissaryOfLies extends DrawCard {
     static id = 'emissary-of-lies';
@@ -29,15 +31,15 @@ class EmissaryOfLies extends DrawCard {
         });
     }
 
-    selectCardName(player: any, cardName: any, context: any) {
+    selectCardName(player: Player, cardName: string, context: AbilityContext) {
         this.game.addMessage('{0} names {1} - {2} must choose if they want to reveal their hand', player, cardName, player.opponent);
-        let opponent = player.opponent;
+        let opponent = player.opponent as Player;
         this.game.promptWithHandlerMenu(context.player, {
             context: context,
             choices: ['Yes', 'No'],
             handlers: [() => {
-                let handCardNames = opponent.hand.map((card: any) => card.name);
-                this.game.actions.lookAt().resolve(opponent.hand.slice().sort((a: any, b: any) => a.name.localeCompare(b.name)), context);
+                let handCardNames = opponent.hand.map((card: DrawCard) => card.name);
+                this.game.actions.lookAt().resolve(opponent.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)), context);
                 if(!handCardNames.includes(cardName)) {
                     this.game.actions.sendHome().resolve(context.target, context);
                     return true;

@@ -1,7 +1,9 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Duration, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import type BaseCard from '../../../BaseCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 export default class TheMaidensIcyGrasp extends DrawCard {
     static id = 'the-maiden-s-icy-grasp';
@@ -24,7 +26,7 @@ export default class TheMaidensIcyGrasp extends DrawCard {
                 cardCondition: (card: DrawCard) => this.charactersPlayedThisConflict.has(card),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.cardLastingEffect((context) => ({
-                        effect: [AbilityDsl.effects.cannotContribute(() => (card: any) => card === context.target)],
+                        effect: [AbilityDsl.effects.cannotContribute(() => (card: BaseCard) => card === context.target)],
                         duration: Duration.UntilEndOfConflict
                     })),
                     AbilityDsl.actions.onAffinity({
@@ -41,7 +43,7 @@ export default class TheMaidensIcyGrasp extends DrawCard {
         this.charactersPlayedThisConflict = new WeakSet();
     }
 
-    public onCharacterEntersPlay(event: any) {
+    public onCharacterEntersPlay(event: EventPayload<EventName.OnCharacterEntersPlay>) {
         this.charactersPlayedThisConflict.add(event.card);
     }
 }

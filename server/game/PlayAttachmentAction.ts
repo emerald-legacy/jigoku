@@ -60,7 +60,7 @@ export class PlayAttachmentAction extends BaseAction {
             originalLocation: context.source.location,
             originallyOnTopOfConflictDeck:
                 context.player && context.player.conflictDeck && context.player.conflictDeck[0] === context.source,
-            onPlayCardSource: (context as any).onPlayCardSource,
+            onPlayCardSource: context.onPlayCardSource,
             playType: context.playType
         });
         context.game.openEventWindow([

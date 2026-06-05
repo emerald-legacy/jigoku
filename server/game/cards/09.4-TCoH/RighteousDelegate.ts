@@ -20,11 +20,11 @@ class RighteousDelegate extends DrawCard {
                     return {
                         target: conflict
                             .getCharacters(context.player)
-                            .filter((card: any) => !card.hasTrait('bushi'))
+                            .filter((card) => !card.hasTrait('bushi'))
                             .concat(
                                 conflict
                                     .getCharacters(context.player.opponent)
-                                    .filter((card: any) => !card.hasTrait('bushi'))
+                                    .filter((card) => !card.hasTrait('bushi'))
                             ),
                         effect: AbilityDsl.effects.modifyBothSkills(1),
                         duration: Duration.UntilEndOfConflict
@@ -38,11 +38,11 @@ class RighteousDelegate extends DrawCard {
                     return {
                         target: conflict
                             .getCharacters(context.player)
-                            .filter((card: any) => card.hasTrait('bushi'))
+                            .filter((card) => card.hasTrait('bushi'))
                             .concat(
                                 conflict
                                     .getCharacters(context.player.opponent)
-                                    .filter((card: any) => card.hasTrait('bushi'))
+                                    .filter((card) => card.hasTrait('bushi'))
                             ),
                         effect: AbilityDsl.effects.modifyBothSkills(-1),
                         duration: Duration.UntilEndOfConflict

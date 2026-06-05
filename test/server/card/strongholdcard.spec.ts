@@ -139,7 +139,7 @@ describe('StrongholdCard', () => {
     });
 
     describe('getSummary()', () => {
-        let summary: any;
+        let summary: ReturnType<StrongholdCard['getSummary']>;
 
         beforeEach(() => {
             summary = card.getSummary(owner);
@@ -164,7 +164,7 @@ describe('StrongholdCard', () => {
         });
 
         it('reflects base card summary fields', () => {
-            expect(summary.uuid).toBeDefined();
+            expect((summary as Record<string, unknown>).uuid).toBeDefined();
         });
     });
 });

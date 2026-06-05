@@ -1,7 +1,8 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Location, Players, Duration } from '../../Constants.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
+import { CardType, EventName, Location, Players, Duration } from '../../Constants.js';
 
 const exposedCourtyardCost = () => ({
     action: { name: 'exposedCourtyardCost' },
@@ -19,7 +20,7 @@ const exposedCourtyardCost = () => ({
     },
     pay: function(context: AbilityContext) {
         const discardedCards = context.costs.exposedCourtyardCost as DrawCard[];
-        discardedCards.slice(0, 2).forEach((card: any) => {
+        discardedCards.slice(0, 2).forEach(card => {
             card.controller.moveCard(card, Location.ConflictDiscardPile);
         });
     }
@@ -45,7 +46,7 @@ class ExposedCourtyard extends DrawCard {
                     activePromptTitle: 'Choose an event',
                     controller: Players.Self,
                     targets: true,
-                    subActionProperties: (card: any) => {
+                    subActionProperties: card => {
                         context.target = card;
                         return ({ target: card });
                     },
@@ -55,7 +56,7 @@ class ExposedCourtyard extends DrawCard {
                                 targetController: context.player,
                                 duration: Duration.Custom,
                                 until: {
-                                    onCardMoved: (event: any) => {
+                                    onCardMoved: event => {
                                         return event.card === context.target && event.originalLocation === Location.ConflictDiscardPile;
                                     },
                                     onConflictFinished: () => true
@@ -69,7 +70,7 @@ class ExposedCourtyard extends DrawCard {
                             canChangeZoneNTimes: 2,
                             effect: AbilityDsl.effects.delayedEffect({
                                 when: {
-                                    onCardPlayed: (event: any) => {
+                                    onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>) => {
                                         return event.card === context.target && event.player === context.target?.controller;
                                     }
                                 },
@@ -84,7 +85,7 @@ class ExposedCourtyard extends DrawCard {
                         }))
                     ]),
                     message: '{0} can play {1} this conflict. It will be put on the bottom of the deck if it\'s played this conflict',
-                    messageArgs: (card: any) => [context.player, card, context.source]
+                    messageArgs: card => [context.player, card, context.source]
                 }))
             ])
         });

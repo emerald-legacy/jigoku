@@ -8,7 +8,7 @@ class DisdainfulRemark extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Add Province Strength',
-            condition: context => context.player.anyCardsInPlay((card: any) => card.isParticipating() && card.hasTrait('courtier')) &&
+            condition: context => context.player.anyCardsInPlay(card => card.isParticipating() && card.hasTrait('courtier')) &&
                                   !!context.player.opponent && context.player.opponent.hand.length > 0,
             effect: 'increase the strength of an attacked province',
             gameAction: AbilityDsl.actions.selectCard(context => ({
@@ -16,9 +16,9 @@ class DisdainfulRemark extends DrawCard {
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card: any) => card.isConflictProvince(),
+                cardCondition: card => card.isConflictProvince(),
                 message: '{0} increases the strength of {1} by {2}',
-                messageArgs: (cards: any) => [context.player, cards, context.player.opponent?.hand.length ?? 0],
+                messageArgs: cards => [context.player, cards, context.player.opponent?.hand.length ?? 0],
                 gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                     targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.modifyProvinceStrength(context.player.opponent?.hand.length ?? 0)

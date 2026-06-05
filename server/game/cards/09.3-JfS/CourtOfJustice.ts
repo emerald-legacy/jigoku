@@ -1,5 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 import { shuffle } from '../../utils/shuffle.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -22,7 +23,7 @@ export default class CourtOfJustice extends DrawCard {
                 messageArgs: (cards) => [cards, context.player.opponent]
             })),
             effect: 'look at 3 random cards from {1}\'s hand.',
-            effectArgs: (context) => [context.player.opponent as any]
+            effectArgs: (context) => [context.player.opponent as Player]
         });
     }
 }

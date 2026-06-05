@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, ConflictType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type StaticEffect from '../../Effects/StaticEffect.js';
 
 class GiveNoGround extends DrawCard {
     static id = 'give-no-ground';
@@ -16,8 +17,8 @@ class GiveNoGround extends DrawCard {
                 gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                     effect: [
                         AbilityDsl.effects.modifyMilitarySkill(2),
-                        AbilityDsl.effects.suppressEffects((effect: any) => effect && effect.isSkillModifier() && (effect.getValue() < 0 || effect.getValue(context.target) < 0)),
-                        AbilityDsl.effects.cannotApplyLastingEffects((effect: any) => effect && effect.isSkillModifier() && (effect.getValue() < 0 || effect.getValue(context.target) < 0))
+                        AbilityDsl.effects.suppressEffects((effect: unknown) => !!effect && (effect as StaticEffect).isSkillModifier() && ((effect as StaticEffect).getValue<number>() < 0 || (effect as StaticEffect).getValue<number>(context.target) < 0)),
+                        AbilityDsl.effects.cannotApplyLastingEffects((effect: StaticEffect) => effect && effect.isSkillModifier() && (effect.getValue<number>() < 0 || effect.getValue<number>(context.target) < 0))
                     ]
                 }))
             },

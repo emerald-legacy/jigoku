@@ -3,6 +3,7 @@ import TriggeredAbilityWindow from '../gamesteps/TriggeredAbilityWindow.js';
 import { EventName, AbilityType } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from './Event.js';
+import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 
 class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
     playEvent: any;
@@ -33,14 +34,14 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
         if(this.playEvent) {
             const context = this.playEvent.context;
             const alternatePools = context.player.getAlternateFatePools(this.playEvent.playType, context.source, context);
-            const alternatePoolTotal = alternatePools.reduce((total: number, pool: any) => total + pool.fate, 0);
+            const alternatePoolTotal = alternatePools.reduce((total: number, pool: { fate: number }) => total + pool.fate, 0);
             const maxPlayerFate = context.player.checkRestrictions('spendFate', context) ? context.player.fate : 0;
             return Math.max(context.ability.getReducedCost(context) - maxPlayerFate - alternatePoolTotal, 0);
         }
         return 0;
     }
 
-    resolveAbility(context: any) {
+    resolveAbility(context: TriggeredAbilityContext) {
         if(this.playEvent) {
             this.playEvent.resolver.canCancel = false;
         }

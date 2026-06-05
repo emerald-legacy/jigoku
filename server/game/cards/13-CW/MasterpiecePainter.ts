@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TargetMode, Duration, Location, Decks } from '../../Constants.js';
 
@@ -26,13 +27,13 @@ class MasterpiecePainter extends DrawCard {
         });
     }
 
-    revealAndMayPlayAbility(player: any) {
+    revealAndMayPlayAbility(player: Player | undefined) {
         return AbilityDsl.actions.playerLastingEffect(() => {
-            let chosenPlayer = player;
+            let chosenPlayer = player as Player;
             let topCard = chosenPlayer.conflictDeck[0];
 
             return {
-                targetController: player,
+                targetController: player as Player,
                 duration: Duration.Custom,
                 until: {
                     onCardMoved: event => event.card === topCard && event.originalLocation === Location.ConflictDeck,

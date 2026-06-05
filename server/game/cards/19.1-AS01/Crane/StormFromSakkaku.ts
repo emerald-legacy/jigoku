@@ -3,6 +3,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
 import { EventName, AbilityType, Location, CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import type { Event } from '../../../Events/Event.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
@@ -55,8 +56,8 @@ export default class StormFromSakkaku extends DrawCard {
         );
     }
 
-    public cancelRingEffect(event: any) {
-        if(event.context.game.currentConflict && this.isInConflictProvince() && this.isFaceup() && !event.cancelled) {
+    public cancelRingEffect(event: Event) {
+        if(event.context?.game.currentConflict && this.isInConflictProvince() && this.isFaceup() && !event.cancelled) {
             event.cancel();
             this.game.addMessage('{0} cancels the ring effect', this);
         }

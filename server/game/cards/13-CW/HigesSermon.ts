@@ -9,7 +9,7 @@ class HigesSermon extends DrawCard {
         this.action({
             title: 'Bow characters',
             phase: Phases.Draw,
-            condition: context => context.player.cardsInPlay.some((a: any) => !a.bowed) && context.player.opponent !== undefined && context.player.opponent.cardsInPlay.some((a: any) => !a.bowed),
+            condition: context => context.player.cardsInPlay.some(a => !a.bowed) && context.player.opponent !== undefined && context.player.opponent.cardsInPlay.some(a => !a.bowed),
             targets: {
                 firstCharacter: {
                     activePromptTitle: 'Choose a character to bow',

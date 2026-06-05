@@ -3,17 +3,20 @@ import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
 import { CardType, EventName, Location, Players, PlayType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type Player from '../../Player.js';
 
 const MAXIMUM_CARDS_ALLOWED = 3;
+
+type CardPlayedEvent = EventPayload<EventName.OnCardPlayed> & { sourceOfCardPlayedFromConflictDiscard?: BaseCard; onPlayCardSource?: BaseCard };
 
 export default class BayushiKachiko2 extends DrawCard {
     static id = 'bayushi-kachiko-2';
 
     private cardsPlayedThisRound = 0;
     private eventRegistrar?: EventRegistrar;
-    private mostRecentEvent?: any;
+    private mostRecentEvent?: CardPlayedEvent;
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
@@ -22,7 +25,7 @@ export default class BayushiKachiko2 extends DrawCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
                 when: {
-                    onCardPlayed: (event: any, context: AbilityContext) => {
+                    onCardPlayed: (event: CardPlayedEvent, context: AbilityContext) => {
                         if(this.cardsPlayedThisRound >= MAXIMUM_CARDS_ALLOWED) {
                             return false;
                         }
@@ -42,16 +45,20 @@ export default class BayushiKachiko2 extends DrawCard {
                 },
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) => {
+                        const mostRecentEvent = this.mostRecentEvent;
+                        if(!mostRecentEvent) {
+                            return;
+                        }
                         if(
-                            this.mostRecentEvent.sourceOfCardPlayedFromConflictDiscard &&
-                            this.mostRecentEvent.sourceOfCardPlayedFromConflictDiscard !== this
+                            mostRecentEvent.sourceOfCardPlayedFromConflictDiscard &&
+                            mostRecentEvent.sourceOfCardPlayedFromConflictDiscard !== this
                         ) {
                             return;
                         }
                         if(!this.cardsPlayedThisRound || this.cardsPlayedThisRound < 0) {
                             this.cardsPlayedThisRound = 0;
                         }
-                        this.mostRecentEvent.sourceOfCardPlayedFromConflictDiscard = this;
+                        mostRecentEvent.sourceOfCardPlayedFromConflictDiscard = this;
                         this.cardsPlayedThisRound++;
                         this.game.addMessage(
                             '{0} plays a card from their opponent\'s conflict discard pile due to the ability of {1} ({2} use{3} remaining)',
@@ -62,10 +69,10 @@ export default class BayushiKachiko2 extends DrawCard {
                         );
                         this.game.addMessage(
                             '{0} is removed from the game due to the ability of {1}',
-                            this.mostRecentEvent.card,
+                            mostRecentEvent.card,
                             context.source
                         );
-                        this.mostRecentEvent.card.owner.moveCard(this.mostRecentEvent.card, Location.RemovedFromGame);
+                        mostRecentEvent.card.owner.moveCard(mostRecentEvent.card, Location.RemovedFromGame);
                     }
                 })
             })
@@ -97,7 +104,7 @@ export default class BayushiKachiko2 extends DrawCard {
         this.cardsPlayedThisRound = 0;
     }
 
-    public onCharacterEntersPlay(event: any) {
+    public onCharacterEntersPlay(event: EventPayload<EventName.OnCharacterEntersPlay>) {
         if(event.card === this) {
             this.cardsPlayedThisRound = 0;
         }

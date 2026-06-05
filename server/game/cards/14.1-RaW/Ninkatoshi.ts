@@ -10,7 +10,7 @@ export default class Ninkatoshi extends ProvinceCard {
             targetLocation: Location.Provinces,
             targetController: Players.Self,
             condition: () => true,
-            match: (card: any, context: any) =>
+            match: (card, context) =>
                 !!context && card.type === CardType.Province && card !== context.source && card.controller === context.player,
             effect: AbilityDsl.effects.modifyProvinceStrength(1)
         });
@@ -18,7 +18,7 @@ export default class Ninkatoshi extends ProvinceCard {
             targetLocation: Location.Provinces,
             targetController: Players.Opponent,
             condition: () => true,
-            match: (card: any, context: any) => !!context && card.type === CardType.Province && card.controller === context.player.opponent,
+            match: (card, context) => !!context && card.type === CardType.Province && card.controller === context.player.opponent,
             effect: AbilityDsl.effects.modifyProvinceStrength(-1)
         });
     }

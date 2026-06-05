@@ -15,8 +15,10 @@ import { GameModes } from '../GameModes.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility.js';
 import type Player from './Player.js';
+import type { ProvinceCard } from './ProvinceCard.js';
 import type Ring from './Ring.js';
 import type { AbilityContext } from './AbilityContext.js';
+import type { GameEvent } from './Events/EventPayloads.js';
 import type { PersistentEffectProps } from './Interfaces.js';
 import type { CardData } from './types/CardData.js';
 
@@ -145,7 +147,7 @@ class DrawCard extends BaseCard {
         this.applyAttachmentBonus();
     }
 
-    handleEphemeral(event: any): void {
+    handleEphemeral(event: GameEvent<EventName.OnCardPlayed | EventName.OnCardLeavesPlay>): void {
         if(event.card === this) {
             if(this.location !== Location.RemovedFromGame) {
                 this.owner.moveCard(this, Location.RemovedFromGame);
@@ -275,7 +277,7 @@ class DrawCard extends BaseCard {
     }
 
     getFate(): number {
-        const rawEffects = this.getRawEffects().filter((effect: any) => effect.type === EffectName.SetApparentFate);
+        const rawEffects = this.getRawEffects().filter((effect) => effect.type === EffectName.SetApparentFate);
         const apparentFate = this.mostRecentEffect(EffectName.SetApparentFate);
         return rawEffects.length > 0 ? apparentFate : this.fate;
     }
@@ -318,7 +320,7 @@ class DrawCard extends BaseCard {
         return (
             this.isUnique() &&
             this.game.allCards.some(
-                (card: any) =>
+                (card) =>
                     card.isInPlay() &&
                     card.printedName === this.printedName &&
                     card !== this &&
@@ -331,7 +333,7 @@ class DrawCard extends BaseCard {
         return (
             this.isUnique() &&
             this.game.allCards.some(
-                (card: any) =>
+                (card) =>
                     card.isInPlay() &&
                     card.printedName === this.printedName &&
                     card !== this &&
@@ -429,7 +431,7 @@ class DrawCard extends BaseCard {
         return this.location === Location.PlayArea && this.type === CardType.Character;
     }
 
-    get militarySkillSummary(): { stat?: string; modifiers?: any[] } {
+    get militarySkillSummary(): { stat?: string; modifiers?: StatModifier[] } {
         if(!this.showStats) {
             return {};
         }
@@ -441,7 +443,7 @@ class DrawCard extends BaseCard {
         };
     }
 
-    get politicalSkillSummary(): { stat?: string; modifiers?: any[] } {
+    get politicalSkillSummary(): { stat?: string; modifiers?: StatModifier[] } {
         if(!this.showStats) {
             return {};
         }
@@ -454,7 +456,7 @@ class DrawCard extends BaseCard {
         };
     }
 
-    get glorySummary(): { stat?: string; modifiers?: any[] } {
+    get glorySummary(): { stat?: string; modifiers?: StatModifier[] } {
         if(!this.showStats) {
             return {};
         }
@@ -514,7 +516,7 @@ class DrawCard extends BaseCard {
         return floor ? Math.max(0, skill) : skill;
     }
 
-    getMilitarySkillExcludingModifiers(exclusions: any, floor: boolean = true): number {
+    getMilitarySkillExcludingModifiers(exclusions: Exclusions | EffectName, floor: boolean = true): number {
         if(!Array.isArray(exclusions) && typeof exclusions !== 'function') {
             exclusions = [exclusions];
         }
@@ -539,7 +541,7 @@ class DrawCard extends BaseCard {
         return floor ? Math.max(0, skill) : skill;
     }
 
-    getPoliticalSkillExcludingModifiers(exclusions: any, floor: boolean = true): number {
+    getPoliticalSkillExcludingModifiers(exclusions: Exclusions | EffectName, floor: boolean = true): number {
         if(!Array.isArray(exclusions) && typeof exclusions !== 'function') {
             exclusions = [exclusions];
         }
@@ -619,9 +621,9 @@ class DrawCard extends BaseCard {
         }
 
         // Remove any cards underneath from the game
-        const cardsUnderneath = this.controller.getSourceList(this.uuid).map((a: any) => a);
+        const cardsUnderneath = this.controller.getSourceList(this.uuid).map((a) => a);
         if(cardsUnderneath.length > 0) {
-            cardsUnderneath.forEach((card: any) => {
+            cardsUnderneath.forEach((card) => {
                 this.controller.moveCard(card, Location.RemovedFromGame);
             });
             this.game.addMessage(
@@ -685,7 +687,7 @@ class DrawCard extends BaseCard {
     canDeclareAsAttacker(
         conflictType: string,
         ring: Ring,
-        province?: any,
+        province?: ProvinceCard,
         incomingAttackers?: DrawCard[]
     ): boolean {
         if(!province) {
@@ -695,7 +697,7 @@ class DrawCard extends BaseCard {
                     : null;
             if(provinces) {
                 return provinces.some(
-                    (a: any) =>
+                    (a) =>
                         a.canDeclare(conflictType, ring) &&
                         this.canDeclareAsAttacker(conflictType, ring, a, incomingAttackers)
                 );
@@ -712,7 +714,7 @@ class DrawCard extends BaseCard {
 
         // Check if I add an element that I can't attack with
         const elementsAdded = this.attachments.reduce(
-            (array: any[], attachment: DrawCard) =>
+            (array, attachment: DrawCard) =>
                 array.concat(attachment.getEffects(EffectName.AddElementAsAttacker)),
             this.getEffects(EffectName.AddElementAsAttacker)
         );
@@ -721,7 +723,7 @@ class DrawCard extends BaseCard {
             elementsAdded.some((element: string) =>
                 this.game.rings[element]
                     .getEffects(EffectName.CannotDeclareRing)
-                    .some((match: any) => match(this.controller))
+                    .some((match) => match(this.controller))
             )
         ) {
             return false;
@@ -759,7 +761,7 @@ class DrawCard extends BaseCard {
         if(this.controller.anyEffect(EffectName.LimitLegalAttackers)) {
             const checks = this.controller.getEffects(EffectName.LimitLegalAttackers);
             let valid = true;
-            checks.forEach((check: any) => {
+            checks.forEach((check) => {
                 if(typeof check === 'function') {
                     valid = valid && check(this);
                 }
@@ -789,14 +791,14 @@ class DrawCard extends BaseCard {
 
     canParticipateAsAttacker(conflictType: string = this.game.currentConflict?.conflictType ?? ''): boolean {
         const effects = this.getEffects(EffectName.CannotParticipateAsAttacker);
-        return !effects.some((value: any) => value === 'both' || value === conflictType) && !this.hasDash(conflictType);
+        return !effects.some((value) => value === 'both' || value === conflictType) && !this.hasDash(conflictType);
     }
 
     canParticipateAsDefender(conflictType: string = this.game.currentConflict?.conflictType ?? ''): boolean {
         const effects = this.getEffects(EffectName.CannotParticipateAsDefender);
         const hasDash = conflictType ? this.hasDash(conflictType) : false;
 
-        return !effects.some((value: any) => value === 'both' || value === conflictType) && !hasDash;
+        return !effects.some((value) => value === 'both' || value === conflictType) && !hasDash;
     }
 
     bowsOnReturnHome(): boolean {
@@ -849,7 +851,7 @@ class DrawCard extends BaseCard {
     }
 
     getEffectMarkers(): Array<{ source: string; kind: 'delayed' | 'modifier' }> {
-        const engine: any = this.game && (this.game as any).effectEngine;
+        const engine = this.game && this.game.effectEngine;
         if(!engine || !Array.isArray(engine.effects)) {
             return [];
         }
@@ -881,7 +883,7 @@ class DrawCard extends BaseCard {
             if(!targetsByList && !targetsByMatch) {
                 continue;
             }
-            const sourceObj: any = e.context && e.context.source;
+            const sourceObj = e.context && e.context.source;
             if(sourceObj && sourceObj.printedType === 'token') {
                 continue;
             }

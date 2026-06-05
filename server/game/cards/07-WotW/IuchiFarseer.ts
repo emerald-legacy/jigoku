@@ -10,7 +10,7 @@ class IuchiFarseer extends DrawCard {
         this.reaction({
             title: 'Reveal an opponent\'s province',
             when: {
-                onCharacterEntersPlay: (event: EventPayload<EventName.OnCharacterEntersPlay>, context: any) => event.card === context.source
+                onCharacterEntersPlay: (event: EventPayload<EventName.OnCharacterEntersPlay>, context) => event.card === context.source
             },
             target: {
                 cardType: CardType.Province,

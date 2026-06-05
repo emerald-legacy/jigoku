@@ -15,7 +15,7 @@ class YasukiProcurer extends DrawCard {
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.reduceCost({
-                    match: (card: any) => card.type === CardType.Attachment || card.type === CardType.Character,
+                    match: (card) => card.type === CardType.Attachment || card.type === CardType.Character,
                     limit: AbilityDsl.limit.fixed(1)
                 })
             }))

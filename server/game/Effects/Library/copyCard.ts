@@ -1,4 +1,5 @@
 import type BaseCard from '../../BaseCard.js';
+import type { StoredPersistentEffect } from '../../BaseCard.js';
 import { AbilityType, Location, CardType, EffectName } from '../../Constants.js';
 import type { CardAction } from '../../CardAction.js';
 import type TriggeredAbility from '../../TriggeredAbility.js';
@@ -9,7 +10,7 @@ import GainAbility from '../GainAbility.js';
 class CopyCard extends EffectValue<BaseCard> {
     actions: Array<GainAbility>;
     reactions: Array<GainAbility>;
-    persistentEffects: Array<any>;
+    persistentEffects: StoredPersistentEffect[];
     abilitiesForTargets = new WeakMap<
         BaseCard,
         {
@@ -44,7 +45,7 @@ class CopyCard extends EffectValue<BaseCard> {
                 (target.getType() === CardType.Character && effect.location === Location.PlayArea) ||
                 (target.getType() === CardType.Holding && effect.location === Location.Provinces)
             ) {
-                effect.ref = target.addEffectToEngine(effect);
+                effect.ref = target.addEffectToEngine({ ...effect, location: effect.location });
             }
         }
     }

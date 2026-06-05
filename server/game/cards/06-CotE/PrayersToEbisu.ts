@@ -10,11 +10,11 @@ class PrayersToEbisu extends DrawCard {
             title: 'Re-balance honor and draw a card',
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.loseHonor((context: AbilityContext) => ({
-                    target: context.game.getPlayers().filter((player: any) => player.honor >= 19),
+                    target: context.game.getPlayers().filter((player) => player.honor >= 19),
                     amount: 4
                 })),
                 AbilityDsl.actions.gainHonor((context: AbilityContext) => ({
-                    target: context.game.getPlayers().filter((player: any) => player.honor <= 6),
+                    target: context.game.getPlayers().filter((player) => player.honor <= 6),
                     amount: 4
                 })),
                 AbilityDsl.actions.draw((context: AbilityContext) => ({

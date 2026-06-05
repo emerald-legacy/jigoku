@@ -16,7 +16,7 @@ class TakeUpCommand extends DrawCard {
                     target: {
                         cardType: CardType.Character,
                         controller: Players.Self,
-                        cardCondition: (card: any) => card.hasTrait('bushi') && card.costLessThan(3),
+                        cardCondition: card => card.hasTrait('bushi') && card.costLessThan(3),
                         gameAction: [AbilityDsl.actions.ready(), AbilityDsl.actions.moveToConflict()]
                     },
                     effect: 'ready {0} and move it into the conflict'

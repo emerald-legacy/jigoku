@@ -14,7 +14,7 @@ import Socket from '../Socket.js';
 import { detectBinary } from '../util.js';
 import { SendGameStateProfiler } from './SendGameStateProfiler.js';
 import { WsSocket } from './WsSocket.js';
-import type { GameSummary, LobbyUser, PendingGameDTO } from './LobbyProtocol.js';
+import type { GameSummary, LobbyUser, PendingGameDTO, ShortCardData } from './LobbyProtocol.js';
 import * as env from '../env.js';
 
 export class GameServer implements GameRouter {
@@ -25,7 +25,7 @@ export class GameServer implements GameRouter {
     private host = env.domain;
     private wsSocket: WsSocket;
     private io: socketio.Server;
-    private shortCardData: any;
+    private shortCardData: ShortCardData[] = [];
     private lastSentMessageCount = new Map<string, number>();
     private profiler = new SendGameStateProfiler();
 
@@ -93,7 +93,7 @@ export class GameServer implements GameRouter {
         const games = [];
         for(const game of this.games.values()) {
             const players = [];
-            for(const player of Object.values<any>(game.playersAndSpectators)) {
+            for(const player of Object.values(game.playersAndSpectators)) {
                 players.push({
                     name: player.name,
                     left: player.left,
@@ -121,16 +121,16 @@ export class GameServer implements GameRouter {
         logger.error(`Game error: ${e.message}\n${e.stack}`);
 
         let gameState = game.getState();
-        let debugData: any = {};
+        let debugData: Record<string, unknown> = {};
 
         if(e.message.includes('Maximum call stack')) {
             debugData.badSerializaton = detectBinary(gameState);
         } else {
             debugData.game = gameState;
-            debugData.game.players = undefined;
+            (debugData.game as Record<string, unknown>).players = undefined;
 
             debugData.messages = game.messages;
-            debugData.game.messages = undefined;
+            (debugData.game as Record<string, unknown>).messages = undefined;
 
             debugData.pipeline = game.pipeline.getDebugInfo();
             debugData.effectEngine = game.effectEngine.getDebugInfo();
@@ -197,7 +197,7 @@ export class GameServer implements GameRouter {
 
         const allMessages = game.gameChat.messages;
         const totalMessages = allMessages.length;
-        let spectatorState: any = null;
+        let spectatorState: ReturnType<Game['getState']> | null = null;
 
         // Record hidden info (hands + facedown provinces) for replay enrichment — only when changed
         if(game.started) {
@@ -213,7 +213,7 @@ export class GameServer implements GameRouter {
 
         for(const player of Object.values(game.getPlayersAndSpectators())) {
             if(player.socket && !player.left && !player.disconnected) {
-                let state: any;
+                let state: ReturnType<Game['getState']> | null;
                 if(game.isSpectator(player)) {
                     spectatorCount++;
                     // All spectators see the same game view — compute once
@@ -321,7 +321,7 @@ export class GameServer implements GameRouter {
     }
 
     handshake(socket: socketio.Socket, next: (err?: Error) => void) {
-        const token = (socket.handshake.auth as any)?.token;
+        const token = (socket.handshake.auth as Record<string, unknown>)?.token;
         if(token && token !== 'undefined') {
             jwt.verify(token as string, env.secret, { algorithms: ['HS256'] }, function (err, user) {
                 if(err) {
@@ -329,7 +329,7 @@ export class GameServer implements GameRouter {
                     return next(new Error('Invalid authentication token'));
                 }
 
-                (socket.request as any).user = user;
+                (socket.request as { user?: unknown }).user = user;
                 next();
             });
         } else {
@@ -433,7 +433,7 @@ export class GameServer implements GameRouter {
     }
 
     onCardData(cardData: { titleCardData: unknown; shortCardData: unknown }) {
-        this.shortCardData = cardData.shortCardData;
+        this.shortCardData = cardData.shortCardData as ShortCardData[];
     }
 
     onConnection(ioSocket: socketio.Socket) {
@@ -575,10 +575,10 @@ export class GameServer implements GameRouter {
         menuButton: (g: Game, p: string, arg: string, uuid: string, method: string) => {
             g.menuButton(p, arg, uuid, method);
         },
-        menuItemClick: (g: Game, p: string, cardId: string, menuItem: any) => g.menuItemClick(p, cardId, menuItem),
+        menuItemClick: (g: Game, p: string, cardId: string, menuItem: unknown) => g.menuItemClick(p, cardId, menuItem),
         ringClicked: (g: Game, p: string, ringindex: string) => g.ringClicked(p, ringindex),
-        ringMenuItemClick: (g: Game, p: string, sourceRing: { element: string }, menuItem: any) => g.ringMenuItemClick(p, sourceRing, menuItem),
-        selectDeck: (g: Game, p: string, deck: any) => g.selectDeck(p, deck),
+        ringMenuItemClick: (g: Game, p: string, sourceRing: { element: string }, menuItem: unknown) => g.ringMenuItemClick(p, sourceRing, menuItem),
+        selectDeck: (g: Game, p: string, deck: unknown) => g.selectDeck(p, deck),
         showConflictDeck: (g: Game, p: string) => g.showConflictDeck(p),
         showDynastyDeck: (g: Game, p: string) => g.showDynastyDeck(p),
         shuffleConflictDeck: (g: Game, p: string) => g.shuffleConflictDeck(p),

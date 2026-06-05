@@ -1,18 +1,20 @@
+import DrawCard from '../../../../../server/game/DrawCard.js';
+
 describe('Devotion in Action', () => {
     integration(() => {
-        let devotionInAction: any;
-        let ikomaProdigy: any;
-        let masterOfTheSpear: any;
-        let matsuBerserker: any;
-        let ikomaMessageRunner: any;
-        let matsuSakura: any;
-        let akodoYoshitsune: any;
-        let bayushiManipulator: any;
-        let courtNovice: any;
+        let devotionInAction: DrawCard;
+        let ikomaProdigy: DrawCard;
+        let masterOfTheSpear: DrawCard;
+        let matsuBerserker: DrawCard;
+        let ikomaMessageRunner: DrawCard;
+        let matsuSakura: DrawCard;
+        let akodoYoshitsune: DrawCard;
+        let bayushiManipulator: DrawCard;
+        let courtNovice: DrawCard;
         let player1: any;
         let player2: any;
         let noMoreActions: () => void;
-        let initiateConflict: (_config: any) => void;
+        let initiateConflict: (_config: Record<string, unknown>) => void;
         let getChatLogs: (_n: number) => string[];
 
         beforeEach(function(this: any) {

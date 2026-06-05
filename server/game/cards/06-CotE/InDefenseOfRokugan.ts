@@ -10,11 +10,11 @@ class InDefenseOfRokugan extends DrawCard {
             title: 'Set an attacking character to 0 military skill',
             cost: ability.costs.sacrifice({
                 cardType: CardType.Character,
-                cardCondition: (card: any) => card.isDefending()
+                cardCondition: (card) => card.isDefending()
             }),
             target: {
                 cardType: CardType.Character,
-                cardCondition: (card: any) => card.isAttacking(),
+                cardCondition: (card) => card.isAttacking(),
                 gameAction: ability.actions.cardLastingEffect({
                     effect: ability.effects.setMilitarySkill(0)
                 })

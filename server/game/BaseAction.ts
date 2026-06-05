@@ -3,14 +3,10 @@ import { AbilityType } from './Constants.js';
 import BaseCardAbility from './BaseCardAbility.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
-
-interface Cost {
-    getReducedCost?(context: AbilityContext): number;
-    [key: string]: any;
-}
+import type { Cost } from './costs/Cost.js';
 
 interface TargetProperties {
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 class BaseAction extends BaseCardAbility {
@@ -35,8 +31,11 @@ class BaseAction extends BaseCardAbility {
     }
 
     getReducedCost(context: AbilityContext): number {
-        const fateCost = this.cost.find((cost) => cost.getReducedCost);
-        return fateCost?.getReducedCost?.(context) ?? 0;
+        const fateCost = this.cost.find(
+            (cost): cost is Cost & { getReducedCost(context: AbilityContext): number } =>
+                !!(cost as { getReducedCost?: unknown }).getReducedCost
+        );
+        return fateCost ? fateCost.getReducedCost(context) : 0;
     }
 
     isAction(): boolean {

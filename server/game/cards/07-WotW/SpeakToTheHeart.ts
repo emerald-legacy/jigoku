@@ -12,13 +12,13 @@ class SpeakToTheHeart extends DrawCard {
             condition: () => this.game.isDuringConflict(),
             max: AbilityDsl.limit.perConflict(1),
             target: {
-                cardCondition: (card: any) => card.isFaction('unicorn'),
+                cardCondition: (card) => card.isFaction('unicorn'),
                 gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => ({
-                    effect: AbilityDsl.effects.modifyPoliticalSkill(context.player.getNumberOfOpponentsFaceupProvinces((province: any) => province.location !== Location.StrongholdProvince))
+                    effect: AbilityDsl.effects.modifyPoliticalSkill(context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince))
                 }))
             },
             effect: 'give {0} +1{1} for each faceup non-stronghold province their opponent controls (+{2}{1})',
-            effectArgs: (context: AbilityContext) => ['political', context.player.getNumberOfOpponentsFaceupProvinces((province: any) => province.location !== Location.StrongholdProvince)]
+            effectArgs: (context: AbilityContext) => ['political', context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince)]
         });
     }
 }

@@ -43,7 +43,7 @@ export default class DaidojiAmbusher extends DrawCard {
         });
     }
 
-    private triggerKickerEffect(context: AbilityContext<any, DrawCard>, timing: Timing): boolean {
+    private triggerKickerEffect(context: AbilityContext<DrawCard, DrawCard>, timing: Timing): boolean {
         const isDishonored = context.source.isDishonored;
         const target = context.target;
         if(!target) {
@@ -57,7 +57,7 @@ export default class DaidojiAmbusher extends DrawCard {
         return isDishonored && targetZero;
     }
 
-    private shouldDiscardTarget(context: AbilityContext<any, DrawCard>): boolean {
+    private shouldDiscardTarget(context: AbilityContext<DrawCard, DrawCard>): boolean {
         return context.target?.getFate() === 0;
     }
 }

@@ -8,7 +8,7 @@ function penalty(context: AbilityContext): number {
     if(!conflict) {
         return 0;
     }
-    const scholars = conflict.getNumberOfParticipantsFor(context.player, (card: any) => card.hasTrait('scholar'));
+    const scholars = conflict.getNumberOfParticipantsFor(context.player, card => card.hasTrait('scholar'));
     return -2 * scholars;
 }
 

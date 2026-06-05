@@ -3,6 +3,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import { AbilityType, CardType, EventName, Players } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 class JadeInlaidKatana extends DrawCard {
     static id = 'jade-inlaid-katana';
 
@@ -12,13 +13,13 @@ class JadeInlaidKatana extends DrawCard {
                 title: 'Remove 1 fate from a character',
                 printedAbility: false,
                 when: {
-                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: any) =>
-                        context.source.isParticipating() && event.conflict.winner === context.source.controller
+                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext) =>
+                        (context.source as DrawCard).isParticipating() && event.conflict.winner === context.source.controller
                 },
                 target: {
                     cardType: CardType.Character,
                     controller: Players.Any,
-                    cardCondition: (card: any) => {
+                    cardCondition: (card) => {
                         return card.hasStatusTokens && card.isParticipating();
                     },
                     gameAction: AbilityDsl.actions.removeFate()

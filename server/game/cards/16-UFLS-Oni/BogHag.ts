@@ -1,5 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import { BaseOni } from './_BaseOni.js';
+import type Player from '../../Player.js';
 
 export default class BogHag extends BaseOni {
     static id = 'bog-hag';
@@ -19,7 +20,7 @@ export default class BogHag extends BaseOni {
                 target: context.player.opponent?.conflictDeck.slice(0, 8) ?? []
             })),
             effect: 'discard the top 8 cards of {1}\'s conflict deck',
-            effectArgs: (context) => [context.player.opponent as any]
+            effectArgs: (context) => [context.player.opponent as Player]
         });
     }
 }

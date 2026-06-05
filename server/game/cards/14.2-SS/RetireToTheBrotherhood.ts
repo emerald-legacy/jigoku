@@ -1,6 +1,10 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import type DrawCard from '../../DrawCard.js';
+import type BaseCard from '../../BaseCard.js';
+import type { Event } from '../../Events/Event.js';
 import { Location, CardType, EventName } from '../../Constants.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
+import type Player from '../../Player.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -16,10 +20,10 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.discardFromPlay((context) => ({
                     target: context.player.cardsInPlay
-                        .filter((a: any) => a.getFate() === 0)
+                        .filter((a: DrawCard) => a.getFate() === 0)
                         .concat(
                             context.player.opponent
-                                ? context.player.opponent.cardsInPlay.filter((a: any) => a.getFate() === 0)
+                                ? context.player.opponent.cardsInPlay.filter((a: DrawCard) => a.getFate() === 0)
                                 : []
                         )
                 })),
@@ -75,16 +79,16 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
         });
     }
 
-    getBrotherhoodCards(context: any, player: any) {
+    getBrotherhoodCards(context: AbilityContext, player: Player | undefined) {
         if(!player) {
             let def = [];
             def.push([]);
             def.push([]);
             return def;
         }
-        let events = context.events.filter((a: any) => a.name === 'onCardLeavesPlay' && !a.cancelled);
-        let allCards = events.map((a: any) => a.cardStateWhenLeftPlay);
-        let cards = allCards.filter((a: any) => a.controller === player);
+        let events = context.events.filter((a: Event) => a.name === 'onCardLeavesPlay' && !a.cancelled);
+        let allCards = events.map((a: Event) => (a as GameEvent<EventName.OnCardLeavesPlay>).cardStateWhenLeftPlay as BaseCard);
+        let cards = allCards.filter((a: BaseCard) => a.controller === player);
 
         //Figure out how many cards to reveal and which characters to put into play
         let deck = player.dynastyDeck.slice();
@@ -103,11 +107,11 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
         return results;
     }
 
-    getRevealedCards(context: any, player: any) {
+    getRevealedCards(context: AbilityContext, player: Player | undefined) {
         return this.getBrotherhoodCards(context, player)[0];
     }
 
-    getCharacters(context: any, player: any) {
+    getCharacters(context: AbilityContext, player: Player | undefined) {
         return this.getBrotherhoodCards(context, player)[1];
     }
 }

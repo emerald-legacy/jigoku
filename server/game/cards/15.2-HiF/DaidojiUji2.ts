@@ -1,7 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { EventName, Location, Players, PlayType, TargetMode, Decks } from '../../Constants.js';
-import type { GameEvent } from '../../Events/EventPayloads.js';
+import type { GameEvent, EventPayload } from '../../Events/EventPayloads.js';
 import type Player from '../../Player.js';
 
 class DaidojiUji2 extends DrawCard {
@@ -26,7 +26,7 @@ class DaidojiUji2 extends DrawCard {
                             card.facedown = false;
                             card.lastingEffect(() => ({
                                 until: {
-                                    onCardMoved: (event: any) => event.card === card && event.originalLocation === this.uuid
+                                    onCardMoved: (event: EventPayload<EventName.OnCardMoved>) => event.card === card && event.originalLocation === this.uuid
                                 },
                                 match: card,
                                 effect: [
@@ -50,7 +50,7 @@ class DaidojiUji2 extends DrawCard {
                 return card.location === this.uuid;
             },
             effect: [
-                AbilityDsl.effects.canPlayFromOutOfPlay((player: any) => {
+                AbilityDsl.effects.canPlayFromOutOfPlay((player: Player) => {
                     return player === this.controller;
                 }, PlayType.PlayFromHand),
                 AbilityDsl.effects.registerToPlayFromOutOfPlay()

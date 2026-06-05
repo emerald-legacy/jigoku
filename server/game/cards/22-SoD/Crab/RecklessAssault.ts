@@ -11,11 +11,11 @@ export default class RecklessAssault extends DrawCard {
         this.reaction({
             title: 'Force defenders',
             when: {
-                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context: any) =>
+                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) =>
                     !!context.game.currentConflict &&
                     context.game.currentConflict.getNumberOfParticipantsFor(context.player) === 1 &&
                     context.game.currentConflict.getParticipants(
-                        (participant: any) => participant.hasTrait('berserker') && participant.controller === context.player
+                        participant => participant.hasTrait('berserker') && participant.controller === context.player
                     ).length === 1 &&
                     context.player === context.game.currentConflict.attackingPlayer
             },
@@ -30,7 +30,7 @@ export default class RecklessAssault extends DrawCard {
     }
 
     getCharacters(context: AbilityContext) {
-        const cards = context.player.opponent && context.player.opponent.cardsInPlay.filter((card: any) => card.getMilitarySkill() < 3);
+        const cards = context.player.opponent && context.player.opponent.cardsInPlay.filter(card => card.getMilitarySkill() < 3);
         return cards || [];
     }
 }

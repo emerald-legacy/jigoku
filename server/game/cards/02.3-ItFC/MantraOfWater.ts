@@ -1,4 +1,4 @@
-import { CardType } from '../../Constants.js';
+import { CardType, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -10,7 +10,7 @@ export default class MantraOfWater extends DrawCard {
             title: 'Ready a monk and draw a card',
             when: {
                 onConflictDeclared: (event, context) =>
-                    !!event.ring && event.ring.hasElement('water' as any) && event.conflict.attackingPlayer === context.player.opponent
+                    !!event.ring && event.ring.hasElement(Element.Water) && event.conflict.attackingPlayer === context.player.opponent
             },
             target: {
                 cardType: CardType.Character,

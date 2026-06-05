@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Duration } from '../../Constants.js';
 
@@ -11,8 +12,8 @@ class MomentOfPerfectBeauty extends DrawCard {
             condition: context => {
                 const conflict = this.game.currentConflict;
                 return !!conflict && this.game.isDuringConflict() &&
-                    conflict.getNumberOfParticipantsFor(context.player, (card: any) => card.isHonored) >
-                    conflict.getNumberOfParticipantsFor(context.player.opponent, (card: any) => card.isHonored);
+                    conflict.getNumberOfParticipantsFor(context.player, (card) => card.isHonored) >
+                    conflict.getNumberOfParticipantsFor(context.player.opponent, (card) => card.isHonored);
             },
             gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
                 duration: Duration.UntilEndOfConflict,
@@ -20,7 +21,7 @@ class MomentOfPerfectBeauty extends DrawCard {
                 effect: AbilityDsl.effects.resolveConflictEarly()
             })),
             effect: 'resolve the conflict after {1}\'s next action',
-            effectArgs: context => [context.player.opponent as any]
+            effectArgs: context => [context.player.opponent as Player]
         });
     }
 }

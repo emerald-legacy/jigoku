@@ -8,10 +8,10 @@ class GaijinCustoms extends DrawCard {
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Ready a non-unicorn character',
-            condition: context => context.player.anyCardsInPlay((card: any) => card.isFaction('unicorn')) || !!context.player.stronghold && context.player.stronghold.isFaction('unicorn'),
+            condition: context => context.player.anyCardsInPlay((card) => card.isFaction('unicorn')) || !!context.player.stronghold && context.player.stronghold.isFaction('unicorn'),
             target: {
                 cardType: CardType.Character,
-                cardCondition: (card: any) => !card.isFaction('unicorn'),
+                cardCondition: (card) => !card.isFaction('unicorn'),
                 gameAction: ability.actions.ready()
             }
         });

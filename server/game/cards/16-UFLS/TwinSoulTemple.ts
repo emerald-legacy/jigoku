@@ -1,6 +1,7 @@
 import { TargetMode, Location, Duration, Element } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { ElementSymbol } from '../../ElementSymbol.js';
 
 export default class TwinSoulTemple extends StrongholdCard {
     static id = 'twin-soul-temple';
@@ -45,7 +46,7 @@ export default class TwinSoulTemple extends StrongholdCard {
         });
     }
 
-    getChoices(context: any) {
+    getChoices(context: { element: ElementSymbol }) {
         let els = [Element.Air, Element.Earth, Element.Fire, Element.Void, Element.Water];
         let currentEl = context.element.element;
 

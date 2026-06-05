@@ -1,6 +1,7 @@
 import { CardType, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 
 export default class DaidojiOta extends DrawCard {
     static id = 'daidoji-ota';
@@ -13,15 +14,15 @@ export default class DaidojiOta extends DrawCard {
                     (card) => card.getType() === CardType.Character && card.isParticipating()
                 ),
             effect: AbilityDsl.effects.reduceCost({
-                amount: (card: any, player: any) => {
-                    const dynastyMatchesByName = player.dynastyDiscardPile.filter((a: any) => a.name === card.name);
-                    const conflictMatchesByName = player.conflictDiscardPile.filter((a: any) => a.name === card.name);
+                amount: (card, player) => {
+                    const dynastyMatchesByName = player.dynastyDiscardPile.filter((a) => a.name === card.name);
+                    const conflictMatchesByName = player.conflictDiscardPile.filter((a) => a.name === card.name);
                     if(dynastyMatchesByName.length + conflictMatchesByName.length > 0) {
                         return -1;
                     }
                     return 0;
                 },
-                match: (card: any) => card.type === CardType.Event
+                match: (card) => card.type === CardType.Event
             })
         });
 
@@ -36,18 +37,18 @@ export default class DaidojiOta extends DrawCard {
                         cardCondition: (card) => card.type === CardType.Event
                     }),
                     'Reveal your hand': AbilityDsl.actions.lookAt((context) => ({
-                        target: context.player.opponent.hand.slice().sort((a: any, b: any) => a.name.localeCompare(b.name)),
+                        target: context.player.opponent.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)),
                         chatMessage: true,
                         message: '{0} reveals their hand: {1}',
-                        messageArgs: (cards: any) => [context.player.opponent, cards]
+                        messageArgs: (cards) => [context.player.opponent, cards]
                     }))
                 }
             },
             effect: 'make {1}{2}',
-            effectArgs: (context): [any, string] =>
+            effectArgs: (context): [Player, string] =>
                 context.select === 'Discard an event'
-                    ? [context.player.opponent, ' discard an event']
-                    : [context.player.opponent, ' reveal their hand']
+                    ? [context.player.opponent as Player, ' discard an event']
+                    : [context.player.opponent as Player, ' reveal their hand']
         });
     }
 }

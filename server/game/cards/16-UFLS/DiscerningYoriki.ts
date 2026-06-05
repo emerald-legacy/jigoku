@@ -13,12 +13,12 @@ class DiscerningYoriki extends DrawCard {
             when: {
                 onCardRevealed: (event: EventPayload<EventName.OnCardRevealed>, context) => {
                     const cards = Array.isArray(event.card) ? event.card : [event.card];
-                    return cards.some((a: any) => a.location === Location.Hand && a.controller === context.player.opponent);
+                    return cards.some((a) => a.location === Location.Hand && a.controller === context.player.opponent);
                 },
                 onLookAtCards: (event: EventPayload<EventName.OnLookAtCards>, context) => {
                     const raw = event.stateBeforeResolution;
                     const cards = Array.isArray(raw) ? raw : [raw];
-                    return cards.some((a: any) => a?.location === Location.Hand && a?.card?.controller === context.player.opponent);
+                    return cards.some((a) => a?.location === Location.Hand && a?.card?.controller === context.player.opponent);
                 }
             },
             target: {

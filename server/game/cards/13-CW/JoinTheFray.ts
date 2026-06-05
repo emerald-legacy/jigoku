@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import type Player from '../../Player.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { Location, Players, CardType, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -32,11 +34,11 @@ class JoinTheFray extends DrawCard {
         });
     }
 
-    getEffectArg(context: any, selection: any) {
+    getEffectArg(context: AbilityContext, selection: string): Player {
         if(selection === context.player.name) {
             return context.player;
         }
-        return context.player.opponent;
+        return context.player.opponent as Player;
     }
 }
 

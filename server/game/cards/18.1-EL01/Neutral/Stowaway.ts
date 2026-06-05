@@ -10,9 +10,9 @@ class Stowaway extends DrawCard {
         this.reaction({
             title: 'Place cards underneath self',
             when: {
-                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context: any) => !!event.attackers?.includes(context.source),
-                onDefendersDeclared: (event: EventPayload<EventName.OnDefendersDeclared>, context: any) => !!event.defenders?.includes(context.source),
-                onCharacterEntersPlay: (event: EventPayload<EventName.OnCharacterEntersPlay>, context: any) => event.card === context.source && context.game.isDuringConflict() && context.source.isParticipating()
+                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) => !!event.attackers?.includes(context.source),
+                onDefendersDeclared: (event: EventPayload<EventName.OnDefendersDeclared>, context) => !!event.defenders?.includes(context.source),
+                onCharacterEntersPlay: (event: EventPayload<EventName.OnCharacterEntersPlay>, context) => event.card === context.source && context.game.isDuringConflict() && context.source.isParticipating()
             },
             effect: 'place {0} beneath {1}',
             effectArgs: context => [context.source],
@@ -27,12 +27,12 @@ class Stowaway extends DrawCard {
         });
 
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyMilitarySkill((card: any) => this.getSkillBonus(card))
+            effect: AbilityDsl.effects.modifyMilitarySkill((card: DrawCard) => this.getSkillBonus(card))
         });
     }
 
-    getSkillBonus(card: any) {
-        const cardsUnder = card.game.allCards.filter((card: any) => card.controller === this.controller && card.location === this.uuid).length;
+    getSkillBonus(card: DrawCard) {
+        const cardsUnder = card.game.allCards.filter((card) => card.controller === this.controller && card.location === this.uuid).length;
         return Math.floor(cardsUnder / 2);
     }
 }

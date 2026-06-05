@@ -4,15 +4,38 @@ import type { GameState, SharedGameState } from './Game.js';
 import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
 import type { PlayerState } from './Player.js';
-import type { GameSaveState, GameSummary } from '../gamenode/LobbyProtocol.js';
+import type { GameSaveState, GameSummary, PlayerSummary } from '../gamenode/LobbyProtocol.js';
+
+interface DeckCardEntry {
+    count: number;
+    card?: { id: string };
+}
+
+interface DeckForSaving {
+    faction: unknown;
+    conflictCards: DeckCardEntry[];
+    dynastyCards: DeckCardEntry[];
+    provinceCards?: DeckCardEntry[];
+    stronghold?: DeckCardEntry[];
+    role?: DeckCardEntry[];
+}
+
+interface FormattedDeck {
+    faction: unknown;
+    conflictCards: string[];
+    dynastyCards: string[];
+    provinceCards: string[];
+    stronghold: string | undefined;
+    role: string | undefined;
+}
 
 export class GameStateSerializer {
     private lastHiddenInfoFingerprint = '';
 
     constructor(private readonly game: Game) {}
 
-    formatDeckForSaving(deck: any): any {
-        const result: any = {
+    formatDeckForSaving(deck: DeckForSaving): FormattedDeck {
+        const result: FormattedDeck = {
             faction: {},
             conflictCards: [],
             dynastyCards: [],
@@ -25,14 +48,14 @@ export class GameStateSerializer {
         result.faction = deck.faction;
 
         //conflict
-        deck.conflictCards.forEach((cardData: any) => {
+        deck.conflictCards.forEach((cardData: { count: number; card?: { id: string } }) => {
             if(cardData && cardData.card) {
                 result.conflictCards.push(`${cardData.count}x ${cardData.card.id}`);
             }
         });
 
         //dynasty
-        deck.dynastyCards.forEach((cardData: any) => {
+        deck.dynastyCards.forEach((cardData: { count: number; card?: { id: string } }) => {
             if(cardData && cardData.card) {
                 result.dynastyCards.push(`${cardData.count}x ${cardData.card.id}`);
             }
@@ -40,7 +63,7 @@ export class GameStateSerializer {
 
         //provinces
         if(deck.provinceCards) {
-            deck.provinceCards.forEach((cardData: any) => {
+            deck.provinceCards.forEach((cardData: { card?: { id: string } }) => {
                 if(cardData && cardData.card) {
                     result.provinceCards.push(cardData.card.id);
                 }
@@ -49,14 +72,14 @@ export class GameStateSerializer {
 
         //stronghold & role
         if(deck.stronghold) {
-            deck.stronghold.forEach((cardData: any) => {
+            deck.stronghold.forEach((cardData: { card?: { id: string } }) => {
                 if(cardData && cardData.card) {
                     result.stronghold = cardData.card.id;
                 }
             });
         }
         if(deck.role) {
-            deck.role.forEach((cardData: any) => {
+            deck.role.forEach((cardData: { card?: { id: string } }) => {
                 if(cardData && cardData.card) {
                     result.role = cardData.card.id;
                 }
@@ -74,7 +97,7 @@ export class GameStateSerializer {
             honor: player.getTotalHonor(),
             lostProvinces: player
                 .getProvinceCards()
-                .reduce((count: number, card: any) => (card && card.isBroken ? count + 1 : count), 0),
+                .reduce((count: number, card) => (card && card.isBroken ? count + 1 : count), 0),
             deck: this.formatDeckForSaving(player.deck),
             deckId: player.deck?._id?.toString()
         }));
@@ -158,13 +181,13 @@ export class GameStateSerializer {
         const parts: string[] = [];
         for(const player of this.game.getPlayers()) {
             parts.push(player.name);
-            parts.push(player.hand.map((c: any) => c.uuid).join(','));
-            parts.push(player.strongholdProvince.map((c: any) => c.uuid).join(','));
-            parts.push(player.provinceOne.map((c: any) => c.uuid).join(','));
-            parts.push(player.provinceTwo.map((c: any) => c.uuid).join(','));
-            parts.push(player.provinceThree.map((c: any) => c.uuid).join(','));
-            parts.push(player.provinceFour.map((c: any) => c.uuid).join(','));
-            parts.push(player.stronghold ? player.stronghold.childCards.map((c: any) => c.uuid).join(',') : '');
+            parts.push(player.hand.map((c) => c.uuid).join(','));
+            parts.push(player.strongholdProvince.map((c) => c.uuid).join(','));
+            parts.push(player.provinceOne.map((c) => c.uuid).join(','));
+            parts.push(player.provinceTwo.map((c) => c.uuid).join(','));
+            parts.push(player.provinceThree.map((c) => c.uuid).join(','));
+            parts.push(player.provinceFour.map((c) => c.uuid).join(','));
+            parts.push(player.stronghold ? player.stronghold.childCards.map((c) => c.uuid).join(',') : '');
         }
         return parts.join('|');
     }
@@ -207,10 +230,10 @@ export class GameStateSerializer {
 
     getSummary(activePlayerName?: string): GameSummary | undefined {
         const game = this.game;
-        const playerSummaries: Record<string, any> = {};
+        const playerSummaries: Record<string, PlayerSummary> = {};
 
         for(const player of game.getPlayers()) {
-            let deck: any = undefined;
+            let deck: { name?: string; selected?: boolean } | undefined = undefined;
             if(player.left) {
                 return;
             }
@@ -228,7 +251,7 @@ export class GameStateSerializer {
                 emailHash: player.emailHash,
                 faction: player.faction.value,
                 id: player.id,
-                lobbyId: player.lobbyId,
+                lobbyId: player.lobbyId as string | undefined,
                 left: player.left,
                 name: player.name,
                 owner: player.owner

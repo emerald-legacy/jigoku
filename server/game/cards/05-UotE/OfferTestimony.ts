@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Location, Players, CardType, EventName } from '../../Constants.js';
+import type BaseCard from '../../BaseCard.js';
+import type { Event } from '../../Events/Event.js';
 
 class OfferTestimony extends DrawCard {
     static id = 'offer-testimony';
@@ -38,13 +40,13 @@ class OfferTestimony extends DrawCard {
                     controller: Players.Opponent,
                     gameAction: AbilityDsl.actions.reveal(context => ({ chatMessage: true, player: context.player.opponent }))
                 }),
-                // @ts-expect-error context.targets values are dynamically typed, filter returns unknown[] but game engine handles it
                 AbilityDsl.actions.bow(context => {
-                    let events = context.events.filter((event: any) => event.name === EventName.OnCardRevealed);
-                    let revealedCards = events.map((event: any) => event.card);
-                    let lowestCost = Math.min(...revealedCards.map((card: any) => card.getCost()).filter((number: any) => Number.isInteger(number)));
-                    let lowestCostPlayers = revealedCards.filter((card: any) => card.getCost() === lowestCost).map((card: any) => card.controller);
-                    return { target: Object.values(context.targets).filter((card: any) => lowestCostPlayers.includes(card.controller)) };
+                    let events = context.events.filter((event: Event) => event.name === EventName.OnCardRevealed);
+                    let revealedCards = events.map((event: Event) => (event as Event & { card: DrawCard }).card);
+                    let lowestCost = Math.min(...revealedCards.map((card: DrawCard) => card.getCost()).filter((number: number | null) => Number.isInteger(number)));
+                    let lowestCostPlayers = revealedCards.filter((card: DrawCard) => card.getCost() === lowestCost).map((card: DrawCard) => card.controller);
+                    // @ts-expect-error context.targets values are dynamically typed (BaseCard | BaseCard[]); game engine handles the array case
+                    return { target: Object.values(context.targets).filter((card: BaseCard) => lowestCostPlayers.includes(card.controller)) };
                 })
             ]
         });

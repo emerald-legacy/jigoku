@@ -13,7 +13,7 @@ export default class AkodoCho extends DrawCard {
             title: 'Bow a character',
             condition: (context) =>
                 context.source.isParticipating() &&
-                context.source.attachments.some((attachment: any) => attachment.hasTrait('follower')),
+                context.source.attachments.some((attachment) => attachment.hasTrait('follower')),
             targets: {
                 [CHARACTER]: {
                     cardType: CardType.Character,

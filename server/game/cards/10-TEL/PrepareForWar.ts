@@ -1,5 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
+import type { GameAction } from '../../GameActions/GameAction.js';
+import type { StatusToken } from '../../StatusToken.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, Players, TargetMode } from '../../Constants.js';
 
@@ -75,8 +77,8 @@ class PrepareForWar extends DrawCard {
 
     getStatusTokenPrompts(context: AbilityContext) {
         const tokens = (context.target as DrawCard).statusTokens;
-        let prompts: any[] = [];
-        tokens.forEach((token: any) => {
+        let prompts: GameAction[] = [];
+        tokens.forEach((token: StatusToken) => {
             prompts.push(
                 AbilityDsl.actions.menuPrompt((context) => ({
                     activePromptTitle: `Do you wish to discard ${token.name}?`,

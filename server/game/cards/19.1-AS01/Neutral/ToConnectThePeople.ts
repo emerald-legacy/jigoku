@@ -2,6 +2,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Location, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 
@@ -17,7 +18,7 @@ export default class ToConnectThePeople extends DrawCard {
                     (card) => card.getType() === CardType.Character && card.hasTrait('merchant')
                 ),
             effect: 'discard the top 3 cards of {1}\'s dynasty deck',
-            effectArgs: (context) => [context.player.opponent as any],
+            effectArgs: (context) => [context.player.opponent as Player],
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.handler({
                     handler: (context) => {

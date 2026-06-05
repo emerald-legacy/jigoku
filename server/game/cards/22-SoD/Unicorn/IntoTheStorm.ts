@@ -18,7 +18,7 @@ export default class IntoTheStorm extends DrawCard {
                     targetController: Players.Any,
                     effect: AbilityDsl.effects.increaseCost({
                         amount: 1,
-                        match: (card: any) => card.type === CardType.Event
+                        match: (card: DrawCard) => card.type === CardType.Event
                     }),
                     duration: Duration.Custom,
                     until: {

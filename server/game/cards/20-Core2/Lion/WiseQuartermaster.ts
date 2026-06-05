@@ -3,7 +3,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 
-function attachedToType(context: AbilityContext<any, DrawCard>): CardType | undefined {
+function attachedToType(context: AbilityContext<DrawCard, DrawCard>): CardType | undefined {
     return context.target?.parent?.type;
 }
 

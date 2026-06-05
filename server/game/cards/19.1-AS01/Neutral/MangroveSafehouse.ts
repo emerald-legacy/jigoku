@@ -29,7 +29,7 @@ export default class MangroveSafehouse extends DrawCard {
         });
     }
 
-    private targetIsMantis(context: AbilityContext<any, DrawCard>): boolean {
+    private targetIsMantis(context: AbilityContext<DrawCard, DrawCard>): boolean {
         return context.target?.traits.some((trait: string) => trait === 'mantis-clan') ?? false;
     }
 

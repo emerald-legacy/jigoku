@@ -1,8 +1,9 @@
 import { AbilityContext } from '../../../AbilityContext.js';
-import { Location } from '../../../Constants.js';
+import { Location, EventName } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type DrawCard from '../../../DrawCard.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 class Process {
     private topCards: Set<DrawCard>;
@@ -59,7 +60,7 @@ class Process {
                 card.controller = this.context.player;
                 this.context.source.lastingEffect(() => ({
                     until: {
-                        onCardMoved: (event: any) =>
+                        onCardMoved: (event: EventPayload<EventName.OnCardMoved>) =>
                             event.card === card && event.originalLocation === Location.RemovedFromGame
                     },
                     match: card,

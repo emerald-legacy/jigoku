@@ -1,5 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
+import type BaseCard from '../../BaseCard.js';
+import type { Event } from '../../Events/Event.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -31,9 +33,9 @@ class IdeRyoma extends DrawCard {
                 }
             },
             then: (context: AbilityContext) => ({
-                gameAction: AbilityDsl.actions.ready((() => ({
-                    target: Object.values(context.targets).filter((card: any) => context.events.every((event: any) => event.card !== card))
-                })) as any)
+                gameAction: AbilityDsl.actions.ready(() => ({
+                    target: (Object.values(context.targets) as BaseCard[]).filter((card: BaseCard) => context.events.every((event: Event) => (event as Event & { card?: BaseCard }).card !== card))
+                }))
             })
         });
     }

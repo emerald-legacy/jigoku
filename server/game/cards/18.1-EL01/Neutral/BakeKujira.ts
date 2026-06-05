@@ -28,7 +28,7 @@ export default class BakeKujira extends DrawCard {
         });
     }
 
-    #shouldDiscardTarget(context: AbilityContext<any, DrawCard>): boolean {
+    #shouldDiscardTarget(context: AbilityContext<DrawCard, DrawCard>): boolean {
         return context.target?.getFate() === 0;
     }
 }

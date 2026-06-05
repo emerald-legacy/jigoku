@@ -38,6 +38,7 @@ import type BaseAction from './BaseAction.js';
 import Ring from './Ring.js';
 import type { CardEffect } from './Effects/types.js';
 import type Effect from './Effects/Effect.js';
+import type { EffectFactory } from './Effects/EffectBuilder.js';
 import type { GainAllAbilities } from './Effects/Library/gainAllAbilities.js';
 import type { Duel } from './Duel.js';
 import type { CardData } from './types/CardData.js';
@@ -51,7 +52,7 @@ export interface StoredPersistentEffect {
     match?: (card: BaseCard, context?: AbilityContext) => boolean;
     targetController?: Players;
     targetLocation?: Location | (string & {});
-    effect: ((...args: any[]) => any) | ((...args: any[]) => any)[];
+    effect: EffectFactory | EffectFactory[];
     createCopies?: boolean;
     ref?: Effect[];
     type?: EffectName;

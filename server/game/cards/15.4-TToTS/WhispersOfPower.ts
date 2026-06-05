@@ -29,7 +29,7 @@ class WhispersOfPower extends DrawCard {
     }
 
     getPoliticalPowerChange(context: AbilityContext) {
-        return (context.player.opponent as Player).filterCardsInPlay((card: any) => card.type === CardType.Character && card.getFate() === 0).length * 3;
+        return (context.player.opponent as Player).filterCardsInPlay((card) => card.type === CardType.Character && card.getFate() === 0).length * 3;
     }
 
     isTemptationsMaho() {

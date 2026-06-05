@@ -1,8 +1,9 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
-import { CardType, Location } from '../../Constants.js';
+import { CardType, EventName, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import * as GameActions from '../../GameActions/GameActions.js';
+import type { GameEvent } from '../../Events/EventPayloads.js';
 import type Player from '../../Player.js';
 
 class ConsumedByFiveFires extends DrawCard {
@@ -73,8 +74,11 @@ class ConsumedByFiveFires extends DrawCard {
             onCancel: () => {
                 this.game.addMessage('{0} chooses to: {1}', context.player, messages);
                 const keys = Object.keys(targets);
-                const events = this.game.applyGameAction(context, { removeFate: opponent.cardsInPlay.filter((card: BaseCard) => keys.includes(card.uuid)) }) as any;
-                events.forEach((event: any) => event.fate = targets[event.card.uuid]);
+                const events = this.game.applyGameAction(context, { removeFate: opponent.cardsInPlay.filter((card: BaseCard) => keys.includes(card.uuid)) });
+                events.forEach((event) => {
+                    const fateEvent = event as GameEvent<EventName.OnMoveFate> & { card: BaseCard };
+                    fateEvent.fate = targets[fateEvent.card.uuid];
+                });
                 return true;
             }
         });

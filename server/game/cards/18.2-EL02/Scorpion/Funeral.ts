@@ -2,7 +2,9 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { EventName, FavorType, Location, Phases, Stage } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 export default class Funeral extends DrawCard {
     static id = 'funeral';
@@ -16,14 +18,14 @@ export default class Funeral extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel honor loss',
             when: {
-                onModifyHonor: (event: any, context) =>
+                onModifyHonor: (event: EventPayload<EventName.OnModifyHonor>, context: AbilityContext) =>
                     event.player === context.player &&
-                    -event.amount >= context.player.honor &&
-                    event.context.stage === Stage.Effect,
-                onTransferHonor: (event: any, context) =>
+                    -(event.amount ?? 0) >= context.player.honor &&
+                    event.context?.stage === Stage.Effect,
+                onTransferHonor: (event: EventPayload<EventName.OnTransferHonor>, context: AbilityContext) =>
                     event.player === context.player &&
-                    event.amount >= context.player.honor &&
-                    event.context.stage === Stage.Effect
+                    (event.amount ?? 0) >= context.player.honor &&
+                    event.context?.stage === Stage.Effect
             },
             cannotBeMirrored: true,
             effect: 'cancel their honor loss, then gain 1 honor',
@@ -42,7 +44,7 @@ export default class Funeral extends DrawCard {
         );
     }
 
-    public onCardPlayed(event: any) {
+    public onCardPlayed(event: EventPayload<EventName.OnCardPlayed>) {
         if(event.card === this) {
             if(this.location !== Location.RemovedFromGame) {
                 this.game.addMessage('{0} is removed from the game due the effects of {0}', this);

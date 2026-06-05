@@ -1,4 +1,3 @@
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type Player from '../../Player.js';
 import type Ring from '../../Ring.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -16,7 +15,7 @@ class ShibaTsukune extends DrawCard {
                 onPhaseEnded: (event: EventPayload<typeof EventName.OnPhaseEnded>) => event.phase === Phases.Conflict
             },
             effect: 'resolve up to 2 ring effects',
-            handler: (context: TriggeredAbilityContext<any>) => (context ? this.game.promptForRingSelect(context.player, {
+            handler: context => (context ? this.game.promptForRingSelect(context.player, {
                 activePromptTitle: 'Choose a ring to resolve',
                 context: context,
                 ringCondition: (ring: Ring) => ring.isUnclaimed(),

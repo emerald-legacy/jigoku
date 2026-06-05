@@ -1,5 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type CardAbility from '../../CardAbility.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players, TargetMode } from '../../Constants.js';
 
@@ -12,7 +13,7 @@ class HandToHand extends DrawCard {
             condition: () => this.game.isDuringConflict('military'),
             target: {
                 cardType: CardType.Attachment,
-                cardCondition: (card: any) => card.parent && card.parent.type === CardType.Character && card.parent.isParticipating(),
+                cardCondition: (card) => card.parent && card.parent.type === CardType.Character && card.parent.isParticipating(),
                 gameAction: ability.actions.discardFromPlay()
             },
             effect: 'discard {0} from play',
@@ -34,7 +35,7 @@ class HandToHand extends DrawCard {
                         }
                     },
                     message: '{3} chooses {4}to resolve {1}\'s ability again',
-                    messageArgs: (thenContext: any) => [ctx.player.opponent ?? ctx.player, thenContext.select === 'No' ? 'not ' : '']
+                    messageArgs: (thenContext: AbilityContext) => [ctx.player.opponent ?? ctx.player, thenContext.select === 'No' ? 'not ' : '']
                 };
             }
         });

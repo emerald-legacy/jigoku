@@ -16,7 +16,7 @@ class MantisBootlegger extends DrawCard {
 
     numCharactersWithAttachments(context: AbilityContext) {
         return context.player.cardsInPlay.filter(
-            (card: any) => card.getType() === CardType.Character && card.attachments.length > 0
+            card => card.getType() === CardType.Character && card.attachments.length > 0
         ).length;
     }
 }

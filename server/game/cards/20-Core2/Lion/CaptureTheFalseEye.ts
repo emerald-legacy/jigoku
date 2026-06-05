@@ -24,7 +24,7 @@ export default class CaptureTheFalseEye extends DrawCard {
                         targetController: context.player,
                         effect: AbilityDsl.effects.increaseCost({
                             amount: 1,
-                            match: (card: any) => card.type === CardType.Event
+                            match: (card: DrawCard) => card.type === CardType.Event
                         })
                     }))
                 ]

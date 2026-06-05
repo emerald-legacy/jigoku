@@ -1,5 +1,6 @@
-import { CardType } from '../../Constants.js';
+import { CardType, EventName } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -41,7 +42,7 @@ export default class KakitasFinalStance extends DrawCard {
         this.duelParticipantsInThisConflict.clear();
     }
 
-    public afterDuel(event: any) {
+    public afterDuel(event: EventPayload<EventName.AfterDuel>) {
         const duel = event.duel as Duel;
         this.duelParticipantsInThisConflict.add(duel.challenger);
         for(const target of duel.targets) {

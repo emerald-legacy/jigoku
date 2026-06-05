@@ -1,17 +1,18 @@
 import { shuffle } from './utils/shuffle.js';
 import { HonorTracker } from './HonorTracker.js';
-import { PlayerZones } from './PlayerZones.js';
+import { PlayerZones, type AdditionalPile } from './PlayerZones.js';
 
 import { GameObject } from './GameObject.js';
 import { Deck } from './Deck.js';
 import AttachmentPrompt from './gamesteps/AttachmentPrompt.js';
 import { clockFor } from './Clocks/ClockSelector.js';
-import { CostReducer } from './CostReducer.js';
+import { CostReducer, type CostReducerProps } from './CostReducer.js';
+import type { AbilityLimit } from './AbilityLimit.js';
 import * as GameActions from './GameActions/GameActions.js';
 import { RingEffects } from './RingEffects.js';
 import { PlayableLocation } from './PlayableLocation.js';
 import { PlayerCostManager } from './PlayerCostManager.js';
-import { PlayerConflictManager } from './PlayerConflictManager.js';
+import { PlayerConflictManager, type ConflictDeclarationProperties } from './PlayerConflictManager.js';
 import { PlayerStateBuilder } from './PlayerStateBuilder.js';
 import { PlayerPromptState } from './PlayerPromptState.js';
 import { RoleCard } from './RoleCard.js';
@@ -243,10 +244,10 @@ class Player extends GameObject {
         this.zones.removedFromGame = v;
     }
 
-    get additionalPiles(): Record<string, any> {
+    get additionalPiles(): Record<string, AdditionalPile> {
         return this.zones.additionalPiles;
     }
-    set additionalPiles(v: Record<string, any>) {
+    set additionalPiles(v: Record<string, AdditionalPile>) {
         this.zones.additionalPiles = v;
     }
 
@@ -265,7 +266,7 @@ class Player extends GameObject {
         this.zones.updateSourceList(source, targetList);
     }
 
-    createAdditionalPile(name: string, properties?: any): void {
+    createAdditionalPile(name: string, properties?: Record<string, unknown>): void {
         this.zones.createAdditionalPile(name, properties);
     }
 
@@ -450,7 +451,7 @@ class Player extends GameObject {
         return this.conflictManager.getRemainingConflictOpportunitiesForType(type);
     }
 
-    getLegalConflictTypes(properties: any): string[] {
+    getLegalConflictTypes(properties: ConflictDeclarationProperties): string[] {
         return this.conflictManager.getLegalConflictTypes(properties);
     }
 
@@ -701,7 +702,7 @@ class Player extends GameObject {
         this.firstPlayer = false;
     }
 
-    addCostReducer(source: any, properties: any): CostReducer {
+    addCostReducer(source: BaseCard, properties: CostReducerProps): CostReducer {
         return this.costManager.addCostReducer(source, properties);
     }
 
@@ -737,7 +738,7 @@ class Player extends GameObject {
         return this.costManager.getAvailableAlternateFate(playingType, context);
     }
 
-    getTargetingCost(abilitySource: any, targets: any): number {
+    getTargetingCost(abilitySource: BaseCard, targets: any): number {
         return this.costManager.getTargetingCost(abilitySource, targets);
     }
 
@@ -753,7 +754,7 @@ class Player extends GameObject {
         return this.costManager.playableLocations;
     }
 
-    registerAbilityMax(maxIdentifier: string, limit: any): void {
+    registerAbilityMax(maxIdentifier: string, limit: AbilityLimit): void {
         if(this.abilityMaxByIdentifier[maxIdentifier]) {
             return;
         }
@@ -833,7 +834,7 @@ class Player extends GameObject {
             return;
         }
 
-        let display: any = 'a card';
+        let display: string | BaseCard = 'a card';
         if(
             (card.isFaceup() && source !== Location.Hand) ||
             [
@@ -1252,13 +1253,13 @@ class Player extends GameObject {
         }
         optional = optional && elements.length === 1;
         let effects = elements.map((element) => RingEffects.contextFor(this, element, optional));
-        effects = [...effects].sort((a: any, b: any) => {
+        effects = [...effects].sort((a, b) => {
             const aVal = this.firstPlayer ? a.ability.defaultPriority : -a.ability.defaultPriority;
             const bVal = this.firstPlayer ? b.ability.defaultPriority : -b.ability.defaultPriority;
             return aVal - bVal;
         });
         this.game.openSimultaneousEffectWindow(
-            effects.map((context: any) => ({
+            effects.map((context) => ({
                 title: context.ability.title,
                 handler: () => this.game.resolveAbility(context)
             }))
@@ -1272,7 +1273,7 @@ class Player extends GameObject {
         return (
             context.game.currentConflict.getNumberOfCardsPlayed(
                 this,
-                (card: any) => card.hasTrait('kiho') && card.uuid !== cardBeingPlayed.uuid
+                (card) => card.hasTrait('kiho') && card.uuid !== cardBeingPlayed.uuid
             ) > 0
         );
     }

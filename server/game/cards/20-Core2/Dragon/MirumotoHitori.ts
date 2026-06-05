@@ -1,6 +1,7 @@
-import { Location, Duration, Phases } from '../../../Constants.js';
+import { Location, Duration, Phases, EventName } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 export default class MirumotoHitori extends DrawCard {
     static id = 'mirumoto-hitori';
@@ -22,12 +23,12 @@ export default class MirumotoHitori extends DrawCard {
                         canChangeZoneOnce: true,
                         duration: Duration.Custom,
                         until: {
-                            onCharacterEntersPlay: (event: any) => event.card === context.source,
-                            onPhaseEnded: (event: any) => event.phase === Phases.Dynasty
+                            onCharacterEntersPlay: (event) => event.card === context.source,
+                            onPhaseEnded: (event) => event.phase === Phases.Dynasty
                         },
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
-                                onPhaseStarted: (event: any) => event.phase === Phases.Dynasty
+                                onPhaseStarted: (event: EventPayload<EventName.OnPhaseStarted>) => event.phase === Phases.Dynasty
                             },
                             message: '{0} is put into play due to {0}\'s effect',
                             messageArgs: [context.source],

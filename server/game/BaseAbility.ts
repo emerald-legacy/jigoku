@@ -6,14 +6,17 @@ import AbilityTargetToken from './AbilityTargets/AbilityTargetToken.js';
 import AbilityTargetElementSymbol from './AbilityTargets/AbilityTargetElementSymbol.js';
 import { Stage, TargetMode, AbilityType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
+import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import type { GameAction } from './GameActions/GameAction.js';
+import type { Event } from './Events/Event.js';
+import type { Cost } from './costs/Cost.js';
 
 interface AbilityTarget {
     name: string;
     properties: any;
     dependentCost?: any;
     canResolve(context: AbilityContext): boolean;
-    resolve(context: AbilityContext, targetResults: any): void;
+    resolve(context: AbilityContext, targetResults: TargetResults): void;
     checkTarget(context: AbilityContext): boolean;
     hasLegalTarget(context: AbilityContext): boolean;
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean;
@@ -35,7 +38,7 @@ interface TargetResults {
     delayTargeting?: any;
     playCosts?: boolean;
     triggerCosts?: boolean;
-    events?: any[];
+    events?: Event[];
 }
 
 /**
@@ -52,7 +55,7 @@ class BaseAbility {
     abilityType: AbilityType = AbilityType.Action;
     gameAction: GameAction[];
     targets: AbilityTarget[];
-    cost: any[];
+    cost: Cost[];
     nonDependentTargets: AbilityTarget[];
 
     /**
@@ -79,7 +82,7 @@ class BaseAbility {
         this.nonDependentTargets = this.targets.filter((target) => !target.properties.dependsOn);
     }
 
-    buildCost(cost?: any): any[] {
+    buildCost(cost?: Cost | Cost[]): Cost[] {
         if(!cost) {
             return [];
         }
@@ -152,9 +155,9 @@ class BaseAbility {
         return this.getCosts(context).every((cost) => cost.canPay(contextCopy));
     }
 
-    getCosts(context: AbilityContext, playCosts = true, _triggerCosts = true): any[] {
+    getCosts(context: AbilityContext, playCosts = true, _triggerCosts = true): Cost[] {
         let costs = this.cost.map((a) => a);
-        if((context as any).ignoreFateCost) {
+        if(context.ignoreFateCost) {
             costs = costs.filter((cost) => !cost.isPrintedFateCost);
         }
 
@@ -177,8 +180,8 @@ class BaseAbility {
                         context.game.queueSimpleStep(() => {
                             if(!results.cancelled) {
                                 const newEvents = cost.payEvent
-                                    ? cost.payEvent(context)
-                                    : context.game.getEvent('payCost', {}, () => cost.pay?.(context));
+                                    ? cost.payEvent(context as TriggeredAbilityContext)
+                                    : context.game.getEvent('payCost', {}, () => cost.pay?.(context as TriggeredAbilityContext));
                                 if(Array.isArray(newEvents)) {
                                     for(const event of newEvents) {
                                         results.events?.push(event);

@@ -12,7 +12,7 @@ class SubdueTheSpirits extends DrawCard {
             condition: (context: AbilityContext) => !!(this.game.isDuringConflict() && context.player && context.player.opponent && context.player.isMoreHonorable()),
             gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => ({
                 target: (context.game.currentConflict as Conflict).getCharacters(context.player),
-                effect: AbilityDsl.effects.modifyBothSkills((card: any) => card.glory)
+                effect: AbilityDsl.effects.modifyBothSkills((card) => card.glory)
             })),
             effect: 'add glory to {1} and {2} skills on participating characters they control',
             effectArgs: () => ['military', 'political']

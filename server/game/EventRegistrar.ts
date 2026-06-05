@@ -2,7 +2,7 @@ import type Game from './Game.js';
 
 interface EventHandler {
     name: string;
-    handler: (event: any) => void;
+    handler: (event: unknown) => void;
 }
 
 /**
@@ -58,7 +58,7 @@ export class EventRegistrar {
             throw new Error(`Cannot bind event handler for ${eventName}`);
         }
 
-        const boundHandler = (method as (event: any) => void).bind(this.context);
+        const boundHandler = (method as (event: unknown) => void).bind(this.context);
         this.game.on(eventName, boundHandler);
         this.events.push({ name: eventName, handler: boundHandler });
     }

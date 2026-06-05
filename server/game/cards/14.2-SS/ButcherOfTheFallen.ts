@@ -8,7 +8,7 @@ class ButcherOfTheFallen extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isAttacking(),
-            match: (card: any, context: any) => card.getMilitarySkill() < (context?.player.getProvinces((a: any) => !a.isBroken).length ?? 0),
+            match: (card, context) => card.getMilitarySkill() < (context?.player.getProvinces((a) => !a.isBroken).length ?? 0),
             targetController: Players.Opponent,
             effect: AbilityDsl.effects.cardCannot('declareAsDefender')});
     }

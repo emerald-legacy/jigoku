@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Location, CharacterStatus, CardType } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 class GuardianDojo extends DrawCard {
     static id = 'guardian-dojo';
@@ -8,9 +9,9 @@ class GuardianDojo extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Any,
-            match: (card: any, context: any) => card.type === CardType.Character
+            match: (card: DrawCard, context?: AbilityContext) => card.type === CardType.Character
                 && card.isFaceup()
-                && context.player.areLocationsAdjacent(context.source.location, card.location),
+                && !!context && context.player.areLocationsAdjacent(context.source.location, card.location),
             effect: [
                 AbilityDsl.effects.entersPlayWithStatus(CharacterStatus.Honored)
             ]

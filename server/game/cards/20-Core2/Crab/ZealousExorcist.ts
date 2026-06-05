@@ -1,5 +1,6 @@
 import { CardType, EventName } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
+import type { EventPayload } from '../../../Events/EventPayloads.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -28,7 +29,7 @@ export default class ZealousExorcist extends DrawCard {
         this.charactersPlayedThisConflict = new WeakSet();
     }
 
-    public onCharacterEntersPlay(event: any) {
+    public onCharacterEntersPlay(event: EventPayload<EventName.OnCharacterEntersPlay>) {
         this.charactersPlayedThisConflict.add(event.card);
     }
 }

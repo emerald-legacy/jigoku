@@ -11,7 +11,7 @@ class UjiakisOffer extends DrawCard {
             condition: context => context.game.isDuringConflict('political'),
             target: {
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isParticipating() && context.player.cardsInPlay.some((myCard: any) => (
+                cardCondition: (card, context) => card.isParticipating() && context.player.cardsInPlay.some((myCard: DrawCard) => (
                     myCard !== card && myCard.isParticipating() && (myCard.printedCost ?? 0) >= (card.printedCost ?? 0))),
                 gameAction: AbilityDsl.actions.placeFate()
             },

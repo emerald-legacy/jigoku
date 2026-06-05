@@ -19,6 +19,7 @@ import EventWindow from './Events/EventWindow.js';
 import ThenEventWindow from './Events/ThenEventWindow.js';
 import AbilityResolver from './gamesteps/AbilityResolver.js';
 import SimultaneousEffectWindow from './gamesteps/SimultaneousEffectWindow.js';
+import type ForcedTriggeredAbilityWindow from './gamesteps/ForcedTriggeredAbilityWindow.js';
 import { AbilityContext } from './AbilityContext.js';
 import Ring from './Ring.js';
 import { Conflict } from './Conflict.js';
@@ -37,6 +38,8 @@ import { GamePromptHelper } from './GamePromptHelper.js';
 import { GameModes } from '../GameModes.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
+import type { ProvinceCard } from './ProvinceCard.js';
+import type Socket from '../Socket.js';
 import type { AnimationEvent } from './AnimationEvent.js';
 import type { GameRouter } from './GameRouter.js';
 import type { GameSaveState, GameSummary } from '../gamenode/LobbyProtocol.js';
@@ -92,7 +95,7 @@ class Game {
     createdAt: Date;
     savedGameId?: string;
     gameType: string;
-    currentAbilityWindow: any;
+    currentAbilityWindow: ForcedTriggeredAbilityWindow | null;
     currentActionWindow: any;
     currentEventWindow: EventWindow | null;
     currentConflict: Conflict | null;
@@ -118,7 +121,7 @@ class Game {
     winner?: Player;
     finishedAt?: Date;
     winReason?: string;
-    hiddenInfoLog: any[];
+    hiddenInfoLog: Record<string, unknown>[];
     startedAt?: Date;
     private _playersCache: Player[] | null = null;
     private _spectatorsCache: Spectator[] | null = null;
@@ -170,7 +173,7 @@ class Game {
         this.provinceCards = [];
         this.hiddenInfoLog = [];
 
-        Object.values(details.players).forEach((player: any) => {
+        Object.values(details.players).forEach((player: { id: string; user: { username: string; emailHash: string } }) => {
             this.playersAndSpectators[player.user.username] = new Player(
                 player.id,
                 player.user,
@@ -180,7 +183,7 @@ class Game {
             );
         });
 
-        Object.values(details.spectators).forEach((spectator: any) => {
+        Object.values(details.spectators).forEach((spectator: { id: string; user: { username: string; emailHash: string } }) => {
             this.playersAndSpectators[spectator.user.username] = new Spectator(spectator.id, spectator.user);
         });
 
@@ -224,14 +227,14 @@ class Game {
         this.gameChat.addAlert(type, message, ...args);
     }
 
-    get messages(): any[] {
+    get messages(): GameChat['messages'] {
         return this.gameChat.messages;
     }
 
     /**
      * Checks if a player is a spectator
      */
-    isSpectator(player: any): boolean {
+    isSpectator(player: Player | Spectator): boolean {
         return player.constructor === Spectator;
     }
 
@@ -406,7 +409,7 @@ class Game {
         return types.every((type) => elementsAndType.includes(type));
     }
 
-    recordConflict(conflict: any): void {
+    recordConflict(conflict: Conflict): void {
         this.conflictTracker.record(conflict);
     }
 
@@ -414,7 +417,7 @@ class Game {
         return this.conflictTracker.getForPlayer(player);
     }
 
-    recordConflictWinner(conflict: any): void {
+    recordConflictWinner(conflict: Conflict): void {
         this.conflictTracker.recordWinner(conflict);
     }
 
@@ -629,7 +632,7 @@ class Game {
         for(const card of this.allCards) {
             this.cardsByUuid.set(card.uuid, card);
         }
-        this.provinceCards = this.allCards.filter((card) => (card as any).isProvince);
+        this.provinceCards = this.allCards.filter((card) => card.isProvince);
 
         if(this.gameMode !== GameModes.Skirmish) {
             if(playerWithNoStronghold) {
@@ -645,7 +648,7 @@ class Game {
             }
 
             for(const player of this.getPlayers()) {
-                const numProvinces = this.provinceCards.filter((a: any) => a.controller === player);
+                const numProvinces = this.provinceCards.filter((a) => a.controller === player);
                 if(numProvinces.length !== 5) {
                     this.queueSimpleStep(() => {
                         this.addMessage('Invalid Deck Detected: {0} has {1} provinces', player, numProvinces.length);
@@ -783,7 +786,7 @@ class Game {
      * Raises a custom event window for checking for any cancels to a card
      * ability
      */
-    raiseInitiateAbilityEvent(params: any, handler: () => any): void {
+    raiseInitiateAbilityEvent(params: Record<string, unknown>, handler: () => void): void {
         this.events.raiseInitiateAbilityEvent(params, handler);
     }
 
@@ -791,7 +794,7 @@ class Game {
      * Raises a custom event window for checking for any cancels to several card
      * abilities which initiate simultaneously
      */
-    raiseMultipleInitiateAbilityEvents(eventProps: Array<{ params: any; handler: () => any }>): void {
+    raiseMultipleInitiateAbilityEvents(eventProps: Array<{ params: Record<string, unknown>; handler: () => void }>): void {
         this.events.raiseMultipleInitiateAbilityEvents(eventProps);
     }
 
@@ -799,7 +802,7 @@ class Game {
      * Checks whether a game action can be performed on a card or an array of
      * cards, and performs it on all legal targets.
      */
-    applyGameAction(context: AbilityContext | null, actions: Record<string, any>): Event[] {
+    applyGameAction(context: AbilityContext | null, actions: Record<string, unknown>): Event[] {
         if(!context) {
             context = this.getFrameworkContext();
         }
@@ -829,7 +832,7 @@ class Game {
         player: Player,
         canPass: boolean,
         forcedDeclaredType?: ConflictType,
-        forceProvinceTarget?: any
+        forceProvinceTarget?: ProvinceCard
     ): void {
         const conflict = new Conflict(
             this,
@@ -842,7 +845,7 @@ class Game {
         this.queueStep(new ConflictFlow(this, conflict, canPass));
     }
 
-    updateCurrentConflict(conflict: any): void {
+    updateCurrentConflict(conflict: Conflict | null): void {
         this.currentConflict = conflict;
         this.checkGameState(true);
     }
@@ -913,7 +916,7 @@ class Game {
         this.connections.failedConnect(playerName);
     }
 
-    reconnect(socket: any, playerName: string): void {
+    reconnect(socket: Socket, playerName: string): void {
         this.connections.reconnect(socket, playerName);
     }
 
@@ -935,7 +938,7 @@ class Game {
                     // any attachments which are illegally attached
                     card.checkForIllegalAttachments();
                 });
-                player.getProvinces().forEach((card: any) => {
+                player.getProvinces().forEach((card) => {
                     if(card) {
                         card.checkForIllegalAttachments();
                     }

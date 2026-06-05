@@ -1,7 +1,8 @@
 import PendingGame from '../../server/PendingGame.js';
+import type { LobbyUser } from '../../server/gamenode/LobbyProtocol.js';
 
 
-function makeOwner(overrides?: any) {
+function makeOwner(overrides?: Partial<LobbyUser>) {
     return {
         username: 'owner',
         emailHash: 'abc',
@@ -11,7 +12,7 @@ function makeOwner(overrides?: any) {
     };
 }
 
-function makeDetails(overrides?: any) {
+function makeDetails(overrides?: Record<string, unknown>) {
     return {
         name: 'Test Game',
         spectators: true,
@@ -22,7 +23,7 @@ function makeDetails(overrides?: any) {
     };
 }
 
-function makeUser(username: string, overrides?: any) {
+function makeUser(username: string, overrides?: Partial<LobbyUser>) {
     return {
         username,
         emailHash: `hash-${username}`,
@@ -33,8 +34,8 @@ function makeUser(username: string, overrides?: any) {
 }
 
 describe('PendingGame', () => {
-    let game: any;
-    let owner: any;
+    let game: PendingGame;
+    let owner: ReturnType<typeof makeOwner>;
 
     beforeEach(() => {
         owner = makeOwner();

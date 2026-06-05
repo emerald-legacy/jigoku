@@ -1,5 +1,6 @@
 import { CardType, Location } from '../../Constants.js';
 import { BaseOni } from './_BaseOni.js';
+import type DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 export default class ScavengingGoblin extends BaseOni {
@@ -21,7 +22,7 @@ export default class ScavengingGoblin extends BaseOni {
             effectArgs: (context) => [context.player.opponent ?? ''],
             gameAction: AbilityDsl.actions.multipleContext((context) => {
                 const cardsToRemove = context.player.opponent.conflictDeck.slice(0, 3);
-                const cardNames = cardsToRemove.map((card: any) => card.name);
+                const cardNames = cardsToRemove.map((card: DrawCard) => card.name);
                 const attachmentsToRemove = this.game.allCards.filter((card) => {
                     if(card.location !== 'play area') {
                         return false;

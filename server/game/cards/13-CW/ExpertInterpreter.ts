@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
+import type Ring from '../../Ring.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { Duration, Players, TargetMode, Phases } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -33,7 +34,7 @@ class ExpertInterpreter extends DrawCard {
                     optional: true,
                     hideIfNoLegalTargets: true,
                     mode: TargetMode.Ring,
-                    ringCondition: (ring: any, context: any) => context && context.costs.optionalHonorTransferFromOpponentCostPaid,
+                    ringCondition: (_ring: Ring, context?: AbilityContext) => !!(context && context.costs.optionalHonorTransferFromOpponentCostPaid),
                     gameAction: AbilityDsl.actions.ringLastingEffect((context: AbilityContext) => ({
                         duration: Duration.UntilEndOfPhase,
                         targetController: Players.Any,

@@ -19,7 +19,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                         context.player === conflict.attackingPlayer &&
                         conflict.getNumberOfParticipantsFor(context.player) === 1 &&
                         conflict.getParticipants(
-                            (participant: any) =>
+                            (participant) =>
                                 participant.hasTrait('bushi') && participant.controller === context.player
                         ).length === 1
                     );
@@ -27,7 +27,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
             },
             gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => {
                 const target = (context.game.currentConflict as Conflict).getParticipants(
-                    (participant: any) => participant.controller === context.player
+                    (participant) => participant.controller === context.player
                 )[0];
 
                 return {

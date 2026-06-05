@@ -19,7 +19,7 @@ function targetsFromEvent(context: AbilityContext): WeakSet<BaseCard> {
     }
 }
 
-function isFriendlyCharacter(context: TriggeredAbilityContext<any>, card: BaseCard) {
+function isFriendlyCharacter(context: TriggeredAbilityContext, card: BaseCard) {
     return card.controller === context.player && card.type === CardType.Character;
 }
 
@@ -50,7 +50,7 @@ export default class DiligentChaperone extends DrawCard {
             gameAction: AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose a character',
                 hidePromptIfSingleCard: true,
-                cardCondition: (card, context: any) => targetsFromEvent(context).has(card),
+                cardCondition: (card, context) => targetsFromEvent(context).has(card),
                 subActionProperties: (card) => {
                     context.target = card;
                     return { target: card };

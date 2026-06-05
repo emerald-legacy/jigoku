@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
+import type Ring from '../../Ring.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -15,7 +16,7 @@ class TogashiYoshi extends DrawCard {
                     context.source.isParticipating()
             },
             effect: 'gain 1 fate from the {1}',
-            effectArgs: ((context: AbilityContext) => [context.ring]) as any,
+            effectArgs: (context: AbilityContext) => [context.ring as Ring],
             gameAction: AbilityDsl.actions.selectRing(context => ({
                 ringCondition:  ring => ring.fate >= 1 && ring.isUnclaimed(),
                 target: context.ring,

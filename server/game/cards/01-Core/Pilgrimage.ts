@@ -1,5 +1,6 @@
 import { AbilityType, EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
+import type { GameEvent } from '../../Events/EventPayloads.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 
 export default class Pilgrimage extends ProvinceCard {
@@ -16,7 +17,7 @@ export default class Pilgrimage extends ProvinceCard {
         ]);
     }
 
-    public cancelRingEffect(event: any) {
+    public cancelRingEffect(event: GameEvent<EventName.OnResolveRingElement>) {
         if(
             !this.isBroken &&
             !this.isBlank() &&

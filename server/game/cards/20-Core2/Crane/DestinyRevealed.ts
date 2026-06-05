@@ -52,6 +52,6 @@ type CardStatusEvent =
     | EventPayload<EventName.OnCardBowed>
     | EventPayload<EventName.OnCardReadied>;
 
-function targetedByOpponentRingEffect(event: CardStatusEvent, context: TriggeredAbilityContext<any>) {
+function targetedByOpponentRingEffect(event: CardStatusEvent, context: TriggeredAbilityContext) {
     return event.card?.controller === context.player && (event.context?.source.type as string) === 'ring';
 }

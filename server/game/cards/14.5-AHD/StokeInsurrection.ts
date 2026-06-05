@@ -14,7 +14,7 @@ export default class StokeInsurrection extends DrawCard {
                 context.player.opponent !== undefined && this.getFaceDownProvinceCards(context.player.opponent) >= 4,
             effect: AbilityDsl.effects.reduceCost({
                 amount: 2,
-                match: (card: any, source: any) => card === source
+                match: (card, source) => card === source
             })
         });
 

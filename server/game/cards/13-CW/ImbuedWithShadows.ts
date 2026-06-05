@@ -2,6 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { GameAction } from '../../GameActions/GameAction.js';
 import { TargetMode, CardType } from '../../Constants.js';
 
 class ImbuedWithShadows extends DrawCard {
@@ -36,14 +37,14 @@ class ImbuedWithShadows extends DrawCard {
     }
 
     getStatusTokenPrompts(targets: BaseCard[]) {
-        let actions: any[] = [];
+        let actions: GameAction[] = [];
         targets.forEach((target: BaseCard) => {
             actions.push(
                 AbilityDsl.actions.selectToken(() => ({
                     card: target,
                     activePromptTitle: `Which token do you wish to discard from ${target.name}?`,
                     message: '{0} discards {1} from {2}',
-                    messageArgs: (token: any, player: any) => [player, token, target],
+                    messageArgs: (token, player) => [player, token, target],
                     gameAction: AbilityDsl.actions.discardStatusToken()
                 }))
             );

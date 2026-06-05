@@ -2,6 +2,7 @@ import { Duration, EventName } from '../../Constants.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type { AbilityContext } from '../../AbilityContext.js';
+import type Player from '../../Player.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -16,7 +17,7 @@ export default class SevenStingsKeep extends StrongholdCard {
             },
             cost: [AbilityDsl.costs.bowSelf()],
             effect: 'force {1} to declare defenders before attackers are chosen this conflict',
-            effectArgs: (context) => [context.player.opponent as any],
+            effectArgs: (context) => [context.player.opponent as Player],
             gameAction: AbilityDsl.actions.menuPrompt((context) => ({
                 activePromptTitle: 'Choose how many characters will be attacking',
                 choices: this.getChoices(context),

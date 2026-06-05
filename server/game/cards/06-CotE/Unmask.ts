@@ -12,7 +12,7 @@ class Unmask extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card: any) => card.isParticipating(),
+                cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.discardStatusToken<DrawCard>((context) => ({ target: context.target?.statusTokens })),
                     AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({

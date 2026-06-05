@@ -1,5 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
+import type Player from '../../Player.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration, TargetMode, Phases } from '../../Constants.js';
 
@@ -17,7 +18,7 @@ class SecludedShrine extends DrawCard {
                 ringCondition: () => true,
                 gameAction: ability.actions.ringLastingEffect((context: AbilityContext) => ({
                     duration: Duration.UntilEndOfPhase,
-                    effect: ability.effects.considerRingAsClaimed((player: any) => player === context.player)
+                    effect: ability.effects.considerRingAsClaimed((player: Player) => player === context.player)
                 }))
             },
             effect: 'make it so that they are considered to have claimed {0} until the end of the phase'

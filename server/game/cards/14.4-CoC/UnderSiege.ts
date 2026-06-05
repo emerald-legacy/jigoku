@@ -1,7 +1,8 @@
 import DrawCard from '../../DrawCard.js';
-import { Location, Duration } from '../../Constants.js';
+import { Location, Duration, EventName } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type Player from '../../Player.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
 
 class UnderSiege extends DrawCard {
     static id = 'under-siege';
@@ -39,7 +40,7 @@ class UnderSiege extends DrawCard {
                                         const targetPlayer = this.targetPlayer;
                                         context.game.addMessage('{0} picks up their original hand', targetPlayer);
 
-                                        this.setAsideCards.forEach((card: any) => {
+                                        this.setAsideCards.forEach((card) => {
                                             targetPlayer.moveCard(card, Location.Hand);
                                         });
                                     }
@@ -66,11 +67,11 @@ class UnderSiege extends DrawCard {
                                 this.setAsideCards = setAsideCards;
                                 this.game.addMessage('{0} sets their hand aside and draws 5 cards', player);
                                 if(setAsideCards.length > 0) {
-                                    setAsideCards.forEach((card: any) => {
+                                    setAsideCards.forEach((card) => {
                                         player.moveCard(card, Location.RemovedFromGame);
                                         card.lastingEffect(() => ({
                                             until: {
-                                                onCardMoved: (event: any) => event.card === card && event.originalLocation === Location.RemovedFromGame
+                                                onCardMoved: (event: EventPayload<EventName.OnCardMoved>) => event.card === card && event.originalLocation === Location.RemovedFromGame
                                             },
                                             match: card,
                                             effect: AbilityDsl.effects.hideWhenFaceUp()

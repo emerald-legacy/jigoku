@@ -11,15 +11,15 @@ class WatchtowerOfSunsShadow extends DrawCard {
                 if(!context.player.isDefendingPlayer()) {
                     return false;
                 }
-                let cardsInProvinces: any[] = [];
+                let cardsInProvinces: DrawCard[] = [];
                 context.game.currentConflict?.getConflictProvinces().forEach(p => {
                     cardsInProvinces = cardsInProvinces.concat(context.player.getDynastyCardsInProvince(p.location));
                 });
-                return cardsInProvinces.some((card: any) => card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall'));
+                return cardsInProvinces.some((card) => card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall'));
             },
             targetController: Players.Opponent,
             match: (card) => card.isAttacking(),
-            effect: AbilityDsl.effects.modifyBothSkills((card: any) => -card.getFate())
+            effect: AbilityDsl.effects.modifyBothSkills((card: DrawCard) => -card.getFate())
         });
 
         this.forcedInterrupt({

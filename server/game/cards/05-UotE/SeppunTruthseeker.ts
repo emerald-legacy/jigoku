@@ -11,7 +11,7 @@ class SeppunTruthseeker extends DrawCard {
         this.forcedInterrupt({
             title: 'Each player draws 2 cards',
             when: {
-                onCardLeavesPlay: (event: EventPayload<EventName.OnCardLeavesPlay>, context: any) => event.card === context.source
+                onCardLeavesPlay: (event: EventPayload<EventName.OnCardLeavesPlay>, context) => event.card === context.source
             },
             effect: 'make both players draw 2 cards',
             gameAction: ability.actions.draw((context: AbilityContext) => ({

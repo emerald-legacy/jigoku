@@ -1,11 +1,12 @@
 import Player from './Player.js';
 import { Spectator } from './Spectator.js';
 import type Game from './Game.js';
+import type Socket from '../Socket.js';
 
 export class GameConnectionManager {
     constructor(private readonly game: Game) {}
 
-    watch(socketId: string, user: any): boolean {
+    watch(socketId: string, user: { username: string; emailHash: string }): boolean {
         const game = this.game;
         if(!game.allowSpectators) {
             return false;
@@ -18,7 +19,7 @@ export class GameConnectionManager {
         return true;
     }
 
-    join(socketId: string, user: any): boolean {
+    join(socketId: string, user: { username: string; emailHash: string }): boolean {
         const game = this.game;
         if(game.started || game.getPlayers().length === 2) {
             return false;
@@ -106,7 +107,7 @@ export class GameConnectionManager {
         }
     }
 
-    reconnect(socket: any, playerName: string): void {
+    reconnect(socket: Socket, playerName: string): void {
         const player = this.game.getPlayerByName(playerName);
         if(!player) {
             return;

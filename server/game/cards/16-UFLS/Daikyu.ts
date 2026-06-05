@@ -16,11 +16,11 @@ class Daikyu extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Bow a character',
                 when: {
-                    onConflictDeclared: (_event: any, context: AbilityContext) =>
+                    onConflictDeclared: (_event, context) =>
                         (context.source as DrawCard).isParticipating() && context.game.isDuringConflict('military'),
-                    onDefendersDeclared: (_event: any, context: AbilityContext) =>
+                    onDefendersDeclared: (_event, context) =>
                         (context.source as DrawCard).isParticipating() && context.game.isDuringConflict('military'),
-                    onMoveToConflict: (_event: any, context: AbilityContext) =>
+                    onMoveToConflict: (_event, context) =>
                         (context.source as DrawCard).isParticipating() && context.game.isDuringConflict('military')
                 },
                 target: {

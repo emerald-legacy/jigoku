@@ -19,7 +19,7 @@ class IsawaUjina extends DrawCard {
             },
             target: {
                 cardType: CardType.Character,
-                cardCondition: (card: any) => card.getFate() === 0,
+                cardCondition: (card) => card.getFate() === 0,
                 gameAction: AbilityDsl.actions.removeFromGame()
             },
             limit: AbilityDsl.limit.unlimitedPerConflict()

@@ -107,7 +107,7 @@ class ChatCommands {
             cardCondition: (card: BaseCard) =>
                 card.location === Location.PlayArea && card.controller === player,
             onSelect: (p: Player, card: BaseCard) => {
-                (card as any).honor();
+                card.honor();
 
                 this.game.addMessage('{0} uses the /honor command to honor {1}', p, card);
                 return true;
@@ -122,7 +122,7 @@ class ChatCommands {
             cardCondition: (card: BaseCard) =>
                 card.location === Location.PlayArea && card.controller === player,
             onSelect: (p: Player, card: BaseCard) => {
-                (card as any).dishonor();
+                card.dishonor();
 
                 this.game.addMessage('{0} uses the /dishonor command to dishonor {1}', p, card);
                 return true;
@@ -143,7 +143,7 @@ class ChatCommands {
                 cardCondition: (card: BaseCard) =>
                     card.location === Location.PlayArea &&
                     card.controller === player &&
-                    !(card as any).inConflict,
+                    !(card as DrawCard).inConflict,
                 cardType: CardType.Character,
                 numCards: 0,
                 multiSelect: true,
@@ -173,7 +173,7 @@ class ChatCommands {
                 cardCondition: (card: BaseCard) =>
                     card.location === Location.PlayArea &&
                     card.controller === player &&
-                    (card as any).inConflict,
+                    (card as DrawCard).inConflict,
                 cardType: CardType.Character,
                 onSelect: (p: Player, card: BaseCard) => {
                     if(!this.game.currentConflict) {
@@ -211,7 +211,7 @@ class ChatCommands {
             controller: Players.Self,
             onSelect: (p: Player, card: BaseCard) => {
                 const cardInitialLocation = card.location;
-                const cardNewLocation = (card as any).isConflict
+                const cardNewLocation = (card as DrawCard).isConflict
                     ? Location.ConflictDeck
                     : Location.DynastyDeck;
                 GameActions.moveCard({ target: card, bottom: true, destination: cardNewLocation }).resolve(
@@ -244,9 +244,9 @@ class ChatCommands {
                 (card.location === Location.PlayArea || (card.location as string) === 'plot') &&
                 card.controller === player,
             onSelect: (p: Player, card: BaseCard) => {
-                const numTokens = (card as any).tokens[token] || 0;
+                const numTokens = card.tokens[token] || 0;
 
-                (card as any).addToken(token, num - numTokens);
+                card.addToken(token, num - numTokens);
                 this.game.addMessage(
                     '{0} uses the /token command to set the {1} token count of {2} to {3}',
                     p,
@@ -284,12 +284,12 @@ class ChatCommands {
             cardCondition: (card: BaseCard) =>
                 card.location === Location.PlayArea && card.controller === player,
             onSelect: (p: Player, card: BaseCard) => {
-                (card as any).modifyFate(num);
+                (card as DrawCard).modifyFate(num);
                 this.game.addMessage(
                     '{0} uses the /add-fate command to set the fate count of {1} to {2}',
                     p,
                     card,
-                    (card as any).getFate()
+                    (card as DrawCard).getFate()
                 );
 
                 return true;
@@ -306,12 +306,12 @@ class ChatCommands {
             cardCondition: (card: BaseCard) =>
                 card.location === Location.PlayArea && card.controller === player,
             onSelect: (p: Player, card: BaseCard) => {
-                (card as any).modifyFate(-num);
+                (card as DrawCard).modifyFate(-num);
                 this.game.addMessage(
                     '{0} uses the /rem-fate command to set the fate count of {1} to {2}',
                     p,
                     card,
-                    (card as any).getFate()
+                    (card as DrawCard).getFate()
                 );
 
                 return true;

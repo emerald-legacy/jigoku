@@ -10,7 +10,7 @@ class ShibaYojimbo extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel ability',
             when: {
-                onInitiateAbilityEffects: (event: EventPayload<EventName.OnInitiateAbilityEffects>, context) => event.context.ability.isTriggeredAbility() && (event.cardTargets ?? []).some((card: any) => (
+                onInitiateAbilityEffects: (event: EventPayload<EventName.OnInitiateAbilityEffects>, context) => event.context.ability.isTriggeredAbility() && (event.cardTargets ?? []).some(card => (
                     card.hasTrait('shugenja') && card.controller === context.player && card.location === Location.PlayArea)
                 )
             },

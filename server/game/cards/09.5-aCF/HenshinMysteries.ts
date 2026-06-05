@@ -1,5 +1,7 @@
 import { EventRegistrar } from '../../EventRegistrar.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
+import type { EventName } from '../../Constants.js';
+import type { GameEvent } from '../../Events/EventPayloads.js';
 
 export default class HenshinMysteries extends ProvinceCard {
     static id = 'henshin-mysteries';
@@ -11,7 +13,7 @@ export default class HenshinMysteries extends ProvinceCard {
         this.eventRegistrar.register([{ 'onClaimRing:OtherEffects': 'cancelRingClaim' }]);
     }
 
-    public cancelRingClaim(event: any) {
+    public cancelRingClaim(event: GameEvent<EventName.OnClaimRing>) {
         if(
             !this.isBroken &&
             !this.isBlank() &&

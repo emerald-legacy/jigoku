@@ -2,6 +2,7 @@ import ActionWindow from '../ActionWindow.js';
 import type Game from '../../Game.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 import type AbilityResolver from '../AbilityResolver.js';
+import type { Conflict } from '../../Conflict.js';
 
 const capitalize: Record<string, string> = {
     military: 'Military',
@@ -14,10 +15,10 @@ const capitalize: Record<string, string> = {
 };
 
 class ConflictActionWindow extends ActionWindow {
-    conflict: any;
+    conflict: Conflict;
     displayTotals: boolean;
 
-    constructor(game: Game, title: string, conflict: any) {
+    constructor(game: Game, title: string, conflict: Conflict) {
         super(game, title, 'conflict');
         this.conflict = conflict;
         this.displayTotals = true;
@@ -27,7 +28,7 @@ class ConflictActionWindow extends ActionWindow {
         let completed = super.continue();
         if(!completed && this.displayTotals) {
             //this.conflict.calculateSkill();
-            let conflictText = capitalize[this.conflict.conflictType] + ' ' + capitalize[this.conflict.element] + ' conflict';
+            let conflictText = capitalize[this.conflict.conflictType ?? ''] + ' ' + capitalize[this.conflict.element ?? ''] + ' conflict';
             this.game.addMessage('{0} - Attacker: {1} Defender: {2}', conflictText, this.conflict.attackerSkill, this.conflict.defenderSkill);
             let winnerText = 'Attacker is winning the conflict';
             let breakingProvinces: ProvinceCard[] = [];
@@ -58,7 +59,7 @@ class ConflictActionWindow extends ActionWindow {
         let props = super.activePrompt();
 
         //this.conflict.calculateSkill();
-        let conflictText = capitalize[this.conflict.conflictType] + ' ' + capitalize[this.conflict.element] + ' conflict';
+        let conflictText = capitalize[this.conflict.conflictType ?? ''] + ' ' + capitalize[this.conflict.element ?? ''] + ' conflict';
         let skillText = 'Attacker: ' + this.conflict.attackerSkill + ' Defender: ' + this.conflict.defenderSkill;
         return {
             menuTitle: [conflictText, skillText].join('\n'),

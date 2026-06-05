@@ -2,6 +2,8 @@ import { CardType, Duration, EventName, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class SupportingCast extends DrawCard {
@@ -22,15 +24,15 @@ export default class SupportingCast extends DrawCard {
                 activePromptTitle: 'Choose a character to give +3 military skill',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card: DrawCard, context: any) =>
+                cardCondition: (card: DrawCard, context?: TriggeredAbilityContext) =>
                     card.isParticipating() &&
-                    !context.event.cardTargets.some((eventCard: BaseCard) => eventCard === card),
+                    !((context as TriggeredAbilityContext).event.cardTargets as BaseCard[]).some((eventCard: BaseCard) => eventCard === card),
                 gameAction: [
                     AbilityDsl.actions.selectCard((context) => ({
                         activePromptTitle: 'Choose a character to bow',
                         hidePromptIfSingleCard: true,
-                        cardCondition: (card, context: any) =>
-                            context.event.cardTargets.some((eventCard: BaseCard) => eventCard === card),
+                        cardCondition: (card, context: AbilityContext) =>
+                            ((context as TriggeredAbilityContext).event.cardTargets as BaseCard[]).some((eventCard: BaseCard) => eventCard === card),
                         subActionProperties: (card) => {
                             context.target = card;
                             return { target: card };

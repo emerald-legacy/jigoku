@@ -13,9 +13,9 @@ export default class MeekInformant extends DrawCard {
                 onCardPlayed: (event, context) => event.card === context.source && context.player.opponent !== undefined
             },
             effect: 'look at {1}\'s hand',
-            effectArgs: (context: AbilityContext) => context.player.opponent as any,
+            effectArgs: (context: AbilityContext) => context.player.opponent as Player,
             gameAction: AbilityDsl.actions.lookAt((context: AbilityContext) => ({
-                target: (context.player.opponent as Player).hand.slice().sort((a: any, b: any) => a.name.localeCompare(b.name)),
+                target: (context.player.opponent as Player).hand.slice().sort((a, b) => a.name.localeCompare(b.name)),
                 chatMessage: true
             }))
         });

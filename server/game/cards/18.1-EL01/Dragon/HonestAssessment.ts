@@ -1,6 +1,7 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { EventName, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 import { shuffle } from '../../../utils/shuffle.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -35,7 +36,7 @@ export default class HonestAssessment extends DrawCard {
                 };
             }),
             effect: 'reveal 4 random cards from {1}\'s hand and discard all copies of {2}',
-            effectArgs: (context) => [context.player.opponent as any, context.costs.nameCardCost]
+            effectArgs: (context) => [context.player.opponent as Player, context.costs.nameCardCost as string]
         });
     }
 }

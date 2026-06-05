@@ -16,13 +16,13 @@ class HidaBackbreaker extends DrawCard {
                 activePromptTitle: 'Choose a character to dishonor',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card: any) => card.isParticipating(),
+                cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.dishonor()
             }
         });
     }
 
-    allowAttachment(attachment: any) {
+    allowAttachment(attachment: DrawCard) {
         if(attachment.controller === this.controller.opponent) {
             return false;
         }

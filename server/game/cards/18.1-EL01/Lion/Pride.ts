@@ -2,6 +2,7 @@ import { CardType, Location, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import Soldier from '../../Soldier.js';
+import type DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
 
 export default class Pride extends StrongholdCard {
@@ -18,7 +19,7 @@ export default class Pride extends StrongholdCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
-                    card.attachments.filter((a: any) => a.hasTrait('follower')).length === 0 &&
+                    card.attachments.filter((a: DrawCard) => a.hasTrait('follower')).length === 0 &&
                     context.game.actions.attach({ attachment: DummyAttachment }).canAffect(card, context),
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) => {

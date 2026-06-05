@@ -1,6 +1,10 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Location, CardType, Players } from '../../Constants.js';
+import type BaseCard from '../../BaseCard.js';
+import type Ring from '../../Ring.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
+import type Player from '../../Player.js';
 
 class Unhallow extends DrawCard {
     static id = 'unhallow';
@@ -23,7 +27,7 @@ class Unhallow extends DrawCard {
             effect: AbilityDsl.effects.costToDeclareAnyParticipants({
                 type: 'defenders',
                 message: 'loses 1 honor',
-                cost: (player: any) => AbilityDsl.actions.loseHonor({
+                cost: (player: Player) => AbilityDsl.actions.loseHonor({
                     target: player,
                     amount: 1
                 })
@@ -31,12 +35,12 @@ class Unhallow extends DrawCard {
         });
     }
 
-    canPlayOn(source: any) {
-        return source && source.getType() === 'province' && source.controller === this.controller && !source.isBroken && this.getType() === CardType.Attachment;
+    canPlayOn(source: BaseCard | Ring) {
+        return source && source.getType() === 'province' && (source as ProvinceCard).controller === this.controller && !(source as ProvinceCard).isBroken && this.getType() === CardType.Attachment;
     }
 
-    canAttach(parent: any) {
-        if(parent.type === CardType.Province && parent.isBroken) {
+    canAttach(parent: BaseCard) {
+        if(parent.type === CardType.Province && (parent as ProvinceCard).isBroken) {
             return false;
         }
 

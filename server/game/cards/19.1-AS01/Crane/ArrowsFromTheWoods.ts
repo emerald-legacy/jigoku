@@ -1,6 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 
 export default class ArrowsFromTheWoods extends DrawCard {
     static id = 'arrows-from-the-woods';
@@ -16,7 +17,7 @@ export default class ArrowsFromTheWoods extends DrawCard {
                 effect: AbilityDsl.effects.modifyMilitarySkill(this.penaltyValue(context))
             })),
             effect: 'give {1}\'s participating characters {2}{3}',
-            effectArgs: (context) => [context.player.opponent as any, this.penaltyValue(context), 'military'],
+            effectArgs: (context) => [context.player.opponent as Player, this.penaltyValue(context), 'military'],
             max: AbilityDsl.limit.perConflict(1)
         });
     }

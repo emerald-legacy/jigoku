@@ -9,7 +9,7 @@ export default class ShinseisLastHope extends ProvinceCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.reduceCost({
                 amount: 2,
-                match: (card: any, source: any) => card.location === source.location,
+                match: (card, source) => card.location === source.location,
                 playingTypes: PlayType.PlayFromProvince
             })
         });

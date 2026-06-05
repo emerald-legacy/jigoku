@@ -53,7 +53,7 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
     charactersWithNoFate: (context) => context.source.type === CardType.Character && context.source.getFate() === 0,
     copiesOfDiscardEvents: (context) =>
         context.source.type === CardType.Event &&
-        context.player.conflictDiscardPile.some((card: any) => card.name === context.source.name),
+        context.player.conflictDiscardPile.some((card: DrawCard) => card.name === context.source.name),
     copiesOfX: (context, effect) => context.source.name === effect.params,
     events: (context) => context.source.type === CardType.Event,
     eventsWithSameClan: (context, effect, card) =>

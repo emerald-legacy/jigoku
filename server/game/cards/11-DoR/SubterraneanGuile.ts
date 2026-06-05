@@ -18,7 +18,7 @@ class SubterraneanGuile extends DrawCard {
             const province = context.player.getProvinceCardInProvince(location);
             if(province && !province.isBroken) {
                 let cards = context.player.getDynastyCardsInProvince(location);
-                if(cards.some((card: any) => card.isFaceup() && card.type === CardType.Holding)) {
+                if(cards.some(card => card.isFaceup() && card.type === CardType.Holding)) {
                     return true;
                 }
             }

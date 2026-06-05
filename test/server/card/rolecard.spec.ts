@@ -1,5 +1,6 @@
 import { RoleCard } from '../../../server/game/RoleCard.js';
 import type { CardData } from '../../../server/game/types/CardData.js';
+import { Location } from '../../../server/game/Constants.js';
 
 function makeGame() {
     const game = jasmine.createSpyObj('game', ['raiseEvent', 'getCurrentAbilityContext', 'getFrameworkContext']);
@@ -113,10 +114,10 @@ describe('RoleCard', () => {
     });
 
     describe('getSummary()', () => {
-        let summary: any;
+        let summary: ReturnType<RoleCard['getSummary']>;
 
         beforeEach(() => {
-            card.location = 'role' as any;
+            card.location = Location.Role;
             summary = card.getSummary(owner);
         });
 
@@ -129,12 +130,12 @@ describe('RoleCard', () => {
         });
 
         it('reflects location changes', () => {
-            card.location = 'removed from game' as any;
+            card.location = Location.RemovedFromGame;
             expect(card.getSummary(owner).location).toBe('removed from game');
         });
 
         it('reflects base card summary fields', () => {
-            expect(summary.uuid).toBeDefined();
+            expect((summary as Record<string, unknown>).uuid).toBeDefined();
         });
     });
 });

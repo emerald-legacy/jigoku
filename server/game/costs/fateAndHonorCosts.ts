@@ -1,5 +1,6 @@
 import { EventName, PlayType } from '../Constants.js';
 import { Event } from '../Events/Event.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
 import * as GameActions from '../GameActions/GameActions.js';
 import { HandlerAction } from '../GameActions/HandlerAction.js';
 import { Derivable, derive } from '../utils/helpers.js';
@@ -31,7 +32,7 @@ export function payPrintedFateCost(): Cost {
             return new Event(
                 EventName.OnSpendFate,
                 { amount, context },
-                (event: any) => (event.context.player.fate -= event.amount)
+                (event: Event) => ((event as GameEvent<EventName.OnSpendFate>).context.player.fate -= (event as GameEvent<EventName.OnSpendFate>).amount)
             );
         }
     };
@@ -140,7 +141,7 @@ export function variableFateCost(properties: {
     return {
         promptsPlayer: true,
         canPay(context: TriggeredAbilityContext) {
-            if((context as any).ignoreFateCost) {
+            if(context.ignoreFateCost) {
                 return true;
             }
             const costModifiers = context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source as DrawCard);
@@ -151,7 +152,7 @@ export function variableFateCost(properties: {
             );
         },
         resolve(context: TriggeredAbilityContext, result) {
-            const costModifiers = (context as any).ignoreFateCost
+            const costModifiers = context.ignoreFateCost
                 ? -1000
                 : context.player.getTotalCostModifiers(PlayType.PlayFromHand, context.source as DrawCard);
 
@@ -186,7 +187,7 @@ export function variableFateCost(properties: {
         },
         payEvent(context: TriggeredAbilityContext) {
             const payZeroFate = new HandlerAction({});
-            if((context as any).ignoreFateCost) {
+            if(context.ignoreFateCost) {
                 return payZeroFate.getEvent(context.player, context);
             }
 

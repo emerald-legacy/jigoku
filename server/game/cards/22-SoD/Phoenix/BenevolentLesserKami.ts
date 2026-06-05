@@ -7,7 +7,7 @@ export default class BenevolentLesserKami extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => context.source.isParticipating() && (context.game.currentConflict?.elements.some((element: any) => context.source.hasTrait(element)) ?? false),
+            condition: (context) => context.source.isParticipating() && (context.game.currentConflict?.elements.some(element => context.source.hasTrait(element)) ?? false),
             effect: AbilityDsl.effects.modifyBothSkills(1)
         });
 

@@ -2,6 +2,9 @@ import { CardType, DuelType, Players, TargetMode } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
+import type { Duel } from '../../Duel.js';
+import type { GameAction } from '../../GameActions/GameAction.js';
+import type { DuelProperties } from '../../GameActions/DuelAction.js';
 
 export default class MirumotoHitomi extends DrawCard {
     static id = 'mirumoto-hitomi';
@@ -18,18 +21,18 @@ export default class MirumotoHitomi extends DrawCard {
                 numCards: 2,
                 gameAction: AbilityDsl.actions.duel(((context: AbilityContext) => ({
                     type: DuelType.Military,
-                    challenger: context.source,
+                    challenger: context.source as DrawCard,
                     message: '{0} chooses whether to dishonor or bow {1}',
-                    messageArgs: (duel: any) => [
-                        context.source === duel.winner ? context.player.opponent : context.player,
+                    messageArgs: (duel: Duel) => [
+                        (context.source as unknown) === duel.winner ? context.player.opponent : context.player,
                         duel.loser
                     ],
-                    gameAction: (duel: any) => {
+                    gameAction: (duel: Duel): GameAction | undefined => {
                         if(!duel.loser) {
                             return undefined;
                         }
                         return AbilityDsl.actions.multiple(
-                            ([] as any[]).concat(duel.loser).map((card: any) =>
+                            ([] as DrawCard[]).concat(duel.loser).map((card) =>
                                 AbilityDsl.actions.chooseAction({
                                     target: card,
                                     player: context.player !== card.controller ? Players.Opponent : Players.Self,
@@ -47,7 +50,7 @@ export default class MirumotoHitomi extends DrawCard {
                             )
                         );
                     }
-                })) as any)
+                })) as (context: AbilityContext) => DuelProperties)
             }
         });
     }

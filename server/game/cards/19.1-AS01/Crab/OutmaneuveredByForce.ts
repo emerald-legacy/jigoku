@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import type { ConflictRecord } from '../../../ConflictTracker.js';
 import { CardType, Phases, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -11,7 +12,7 @@ export default class OutmaneuveredByForce extends DrawCard {
             title: 'Declare a conflict right now',
             phase: Phases.Conflict,
             condition: (context) =>
-                context.game.getConflicts(Players.All).filter((conflict: any) => conflict.declared).length === 0,
+                context.game.getConflicts(Players.All).filter((conflict: ConflictRecord & { declared?: boolean }) => conflict.declared).length === 0,
 
             gameAction: AbilityDsl.actions.initiateConflict({ canPass: false })
         });

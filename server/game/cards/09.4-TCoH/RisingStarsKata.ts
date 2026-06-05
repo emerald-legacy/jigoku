@@ -1,8 +1,9 @@
-import { CardType, Duration } from '../../Constants.js';
+import { CardType, Duration, EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
 import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
 
 export default class RisingStarsKata extends DrawCard {
     static id = 'rising-stars-kata';
@@ -37,7 +38,7 @@ export default class RisingStarsKata extends DrawCard {
         this.duelWinnersThisConflict.clear();
     }
 
-    public afterDuel(event: any) {
+    public afterDuel(event: EventPayload<EventName.AfterDuel>) {
         if(event.duel?.winner) {
             const winners: BaseCard[] = Array.isArray(event.duel.winner) ? event.duel.winner : [event.duel.winner];
             winners.forEach((duelWinner) => this.duelWinnersThisConflict.add(duelWinner));

@@ -38,7 +38,7 @@ export default class TruthIsInTheKilling extends DrawCard {
                                         })
                                     ]
                             )
-                        ) : AbilityDsl.actions.noAction())) as any,
+                        ) : AbilityDsl.actions.noAction())),
                 message: 'return all fate on {0} to {1}\'s fate pool{2}',
                 messageArgs: (duel) => [duel.loser, duel.losingPlayer, applyFullEffect(duel) ? ' and discard them' : '']
             }

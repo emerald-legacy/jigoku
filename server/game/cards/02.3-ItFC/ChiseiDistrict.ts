@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Location, ConflictType } from '../../Constants.js';
 
@@ -8,7 +9,7 @@ class ChiseiDistrict extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
-            match: (card: any, context: any) => card.isProvince && card.location === context.source.location,
+            match: (card, context) => card.isProvince && card.location === (context as AbilityContext).source.location,
             effect: AbilityDsl.effects.cannotHaveConflictsDeclaredOfType(ConflictType.Military)
         });
     }

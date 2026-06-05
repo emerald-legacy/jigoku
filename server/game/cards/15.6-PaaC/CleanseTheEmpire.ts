@@ -13,17 +13,17 @@ class CleanseTheEmpire extends DrawCard {
             },
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.removeFate(context => ({
-                    target: context.player.opponent?.filterCardsInPlay((card: any) => card.getType() === CardType.Character) ?? []
+                    target: context.player.opponent?.filterCardsInPlay((card: DrawCard) => card.getType() === CardType.Character) ?? []
                 })),
                 AbilityDsl.actions.selectCard({
                     activePromptTitle: 'Choose a character to bow',
                     cardType: CardType.Character,
                     controller: Players.Opponent,
                     targets: true,
-                    cardCondition: (card: any) => card.getFate() === 0,
+                    cardCondition: (card) => card.getFate() === 0,
                     gameAction: AbilityDsl.actions.bow(),
                     message: '{0} chooses to bow {1}',
-                    messageArgs: (card: any, player: any) => [player, card]
+                    messageArgs: (card, player) => [player, card]
                 })
             ])
         });

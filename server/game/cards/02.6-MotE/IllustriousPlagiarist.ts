@@ -10,12 +10,12 @@ class IllustriousPlagiarist extends DrawCard {
         this.action({
             title: 'Copy action abilty of opponent\'s top event',
             condition: (context: AbilityContext) => !!context.player.opponent &&
-                context.player.opponent.conflictDiscardPile.some((card: any) => card.type === CardType.Event && card.abilities.actions.length > 0),
+                context.player.opponent.conflictDiscardPile.some((card) => card.type === CardType.Event && card.abilities.actions.length > 0),
             target: {
                 player: Players.Opponent,
                 location: Location.ConflictDiscardPile,
                 controller: Players.Opponent,
-                cardCondition: (card: any, context: AbilityContext) => card.location === Location.ConflictDiscardPile &&
+                cardCondition: (card, context: AbilityContext) => card.location === Location.ConflictDiscardPile &&
                     card.type === CardType.Event &&
                     card.controller === context.player.opponent &&
                     card.abilities.actions.length > 0,

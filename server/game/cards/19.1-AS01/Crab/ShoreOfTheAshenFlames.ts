@@ -3,6 +3,7 @@ import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
+import type { CardEffect } from '../../../Effects/types.js';
 
 export default class ShoreOfTheAshenFlames extends ProvinceCard {
     static id = 'shore-of-the-ashen-flames';
@@ -12,13 +13,13 @@ export default class ShoreOfTheAshenFlames extends ProvinceCard {
             condition: (context) => context.source.isConflictProvince(),
             targetController: Players.Opponent,
             effect: AbilityDsl.effects.changeConflictSkillFunctionPlayer((card: DrawCard, conflict: Conflict) => {
-                const exclusionFunction = (effect: any) => {
+                const exclusionFunction = (effect: CardEffect) => {
                     if(effect.type === EffectName.AttachmentMilitarySkillModifier) {
-                        const value = effect.getValue(card);
+                        const value = effect.getValue<number>(card);
                         return value > 0;
                     }
                     if(effect.type === EffectName.AttachmentPoliticalSkillModifier) {
-                        const value = effect.getValue(card);
+                        const value = effect.getValue<number>(card);
                         return value > 0;
                     }
                     if(

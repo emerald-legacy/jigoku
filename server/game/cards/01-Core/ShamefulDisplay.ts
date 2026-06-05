@@ -16,7 +16,7 @@ export default class ShamefulDisplay extends ProvinceCard {
                 mode: TargetMode.Exactly,
                 numCards: 2,
                 activePromptTitle: 'Select two characters',
-                cardCondition: (card: any) => card.isParticipating(),
+                cardCondition: card => card.isParticipating(),
                 gameAction: [AbilityDsl.actions.honor(), AbilityDsl.actions.dishonor()]
             },
             effect: 'change the personal honor of {0}',
@@ -30,7 +30,7 @@ export default class ShamefulDisplay extends ProvinceCard {
                         activePromptTitle: 'Choose a character to dishonor',
                         context: context,
                         gameAction: AbilityDsl.actions.dishonor(),
-                        cardCondition: (card: any) => targets.includes(card),
+                        cardCondition: (card: DrawCard) => targets.includes(card),
                         onSelect: (_player: Player, card: DrawCard) => {
                             this.resolveShamefulDisplay(
                                 context,
@@ -45,7 +45,7 @@ export default class ShamefulDisplay extends ProvinceCard {
                         activePromptTitle: 'Choose a character to honor',
                         context: context,
                         gameAction: AbilityDsl.actions.honor(),
-                        cardCondition: (card: any) => targets.includes(card),
+                        cardCondition: (card: DrawCard) => targets.includes(card),
                         onSelect: (_player: Player, card: DrawCard) => {
                             this.resolveShamefulDisplay(
                                 context,

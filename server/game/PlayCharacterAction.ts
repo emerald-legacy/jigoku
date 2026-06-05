@@ -14,7 +14,7 @@ export enum PlayCharacterIntoLocation {
     Home
 }
 
-type ExecutionContext = AbilityContext & { chooseFate: number; onPlayCardSource: any };
+type ExecutionContext = AbilityContext & { chooseFate: number };
 
 export class PlayCharacterAction extends BaseAction {
     public title = 'Play this character';

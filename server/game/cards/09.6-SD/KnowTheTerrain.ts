@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import type Player from '../../Player.js';
 import { CardType, EventName, Players, Location } from '../../Constants.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -26,8 +28,8 @@ class KnowTheTerrain extends DrawCard {
                     context: context,
                     location: Location.Provinces,
                     controller: Players.Self,
-                    cardCondition: (card: any, innerContext: any) => card.location !== Location.StrongholdProvince && !card.isBroken && card.isFacedown() && card !== innerContext.event.conflict.conflictProvince,
-                    onSelect: (player: any, card: any) => {
+                    cardCondition: (card: ProvinceCard) => card.location !== Location.StrongholdProvince && !card.isBroken && card.isFacedown() && card !== conflict.conflictProvince,
+                    onSelect: (_player: Player, card: ProvinceCard) => {
                         let attackedprovince = conflict.conflictProvince;
                         if(!attackedprovince) {
                             return true;

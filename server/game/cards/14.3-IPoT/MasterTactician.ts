@@ -2,18 +2,25 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
 import { EventName, Location, Players, PlayType } from '../../Constants.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
 import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type Player from '../../Player.js';
 
 const MAXIMUM_CARDS_ALLOWED = 3;
 
+type CardPlayedEvent = EventPayload<EventName.OnCardPlayed> & {
+    onPlayCardSource?: unknown;
+    originallyOnTopOfConflictDeck?: boolean;
+    sourceOfCardPlayedFromConflictDeck?: BaseCard;
+};
+
 export default class MasterTactician extends DrawCard {
     static id = 'master-tactician';
     private eventRegistrar?: EventRegistrar;
 
     private cardsPlayedThisRound = 0;
-    private mostRecentEvent?: any;
+    private mostRecentEvent?: CardPlayedEvent;
 
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
@@ -22,7 +29,7 @@ export default class MasterTactician extends DrawCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
                 when: {
-                    onCardPlayed: (event: any, context: AbilityContext) => {
+                    onCardPlayed: (event: CardPlayedEvent, context: AbilityContext) => {
                         if(this.cardsPlayedThisRound >= MAXIMUM_CARDS_ALLOWED) {
                             return false;
                         }
@@ -41,6 +48,9 @@ export default class MasterTactician extends DrawCard {
                 },
                 gameAction: AbilityDsl.actions.handler({
                     handler: (context) => {
+                        if(!this.mostRecentEvent) {
+                            return;
+                        }
                         if(
                             this.mostRecentEvent.sourceOfCardPlayedFromConflictDeck &&
                             this.mostRecentEvent.sourceOfCardPlayedFromConflictDeck !== this
@@ -94,7 +104,7 @@ export default class MasterTactician extends DrawCard {
         this.cardsPlayedThisRound = 0;
     }
 
-    public onCharacterEntersPlay(event: any) {
+    public onCharacterEntersPlay(event: EventPayload<EventName.OnCharacterEntersPlay>) {
         if(event.card === this) {
             this.cardsPlayedThisRound = 0;
         }

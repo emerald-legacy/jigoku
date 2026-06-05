@@ -11,7 +11,7 @@ class IAmReady extends DrawCard {
             title: 'Ready a character',
             cost: ability.costs.removeFate({
                 cardType: CardType.Character,
-                cardCondition: (card: any) => card.isFaction('unicorn') && card.bowed
+                cardCondition: card => card.isFaction('unicorn') && card.bowed
             }),
             cannotBeMirrored: true,
             effect: 'ready {1}',

@@ -1,6 +1,9 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Location, CardType } from '../../Constants.js';
+import type BaseCard from '../../BaseCard.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
+import type Ring from '../../Ring.js';
 
 class InventiveButtressing extends DrawCard {
     static id = 'inventive-buttressing';
@@ -18,12 +21,12 @@ class InventiveButtressing extends DrawCard {
         });
     }
 
-    canPlayOn(source: any) {
-        return source && source.getType() === 'province' && source.controller === this.controller && !source.isBroken && this.getType() === CardType.Attachment;
+    canPlayOn(source: BaseCard | Ring) {
+        return source && source.getType() === 'province' && (source as BaseCard).controller === this.controller && !(source instanceof ProvinceCard && source.isBroken) && this.getType() === CardType.Attachment;
     }
 
-    canAttach(parent: any) {
-        if(parent.type === CardType.Province && parent.isBroken) {
+    canAttach(parent: BaseCard) {
+        if(parent.type === CardType.Province && parent instanceof ProvinceCard && parent.isBroken) {
             return false;
         }
 

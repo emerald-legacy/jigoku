@@ -4,6 +4,7 @@ import { CardType, Location, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
+import type Player from '../../../Player.js';
 
 export default class Landfall extends ProvinceCard {
     static id = 'landfall';
@@ -37,14 +38,14 @@ export default class Landfall extends ProvinceCard {
             return;
         }
 
-        let cardHandler = (currentCard: any) => {
+        let cardHandler = (currentCard: DrawCard) => {
             this.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a province for ' + currentCard.name,
                 context: context,
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: (card: any, _context?: any) => card.type === CardType.Province && this.isProvinceValidTarget(card),
-                onSelect: (player: any, card: any) => {
+                cardCondition: (card: BaseCard, _context?: AbilityContext) => card.type === CardType.Province && this.isProvinceValidTarget(card),
+                onSelect: (_player: Player, card: BaseCard) => {
                     this.game.addMessage(
                         '{0} puts {1} into {2}',
                         context.player,
@@ -54,7 +55,7 @@ export default class Landfall extends ProvinceCard {
                     this.chosenProvinces.push(card);
                     context.player.moveCard(currentCard, card.location);
                     currentCard.facedown = false;
-                    this.cards = this.cards.filter((a: any) => a !== currentCard);
+                    this.cards = this.cards.filter((a) => a !== currentCard);
 
                     if(this.cards && this.cards.length > 0 && this.hasRemainingTarget()) {
                         this.game.promptWithHandlerMenu(context.player, {
@@ -84,8 +85,8 @@ export default class Landfall extends ProvinceCard {
         });
     }
 
-    isProvinceValidTarget(province: any) {
-        return province.location !== Location.StrongholdProvince && !this.chosenProvinces.some((a: any) => a === province);
+    isProvinceValidTarget(province: BaseCard) {
+        return province.location !== Location.StrongholdProvince && !this.chosenProvinces.some((a) => a === province);
     }
 
     hasRemainingTarget() {

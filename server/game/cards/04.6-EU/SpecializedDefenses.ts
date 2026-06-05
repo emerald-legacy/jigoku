@@ -1,6 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { Location, CardType } from '../../Constants.js';
+import { Location, CardType, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class SpecializedDefenses extends DrawCard {
@@ -16,15 +16,15 @@ class SpecializedDefenses extends DrawCard {
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card: any) => card.isConflictProvince() && card.element.some((element: string) => {
+                cardCondition: (card) => card.isConflictProvince() && card.element.some((element: string) => {
                     if(element === 'all') {
                         return true;
                     }
                     return this.game.rings[element].isConsideredClaimed(context.player) ||
-                           (this.game.currentConflict?.ring?.getElements().includes(element as any) ?? false);
+                           (this.game.currentConflict?.ring?.getElements().includes(element as Element) ?? false);
                 }),
                 message: '{0} doubles the province strength of {1}',
-                messageArgs: (cards: any) => [context.player, cards],
+                messageArgs: (cards) => [context.player, cards],
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
                     targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.modifyProvinceStrengthMultiplier(2)

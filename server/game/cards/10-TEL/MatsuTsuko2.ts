@@ -14,7 +14,7 @@ export default class MatsuTsuko2 extends DrawCard {
                     context.source.isAttacking() &&
                     context.player.opponent &&
                     context.player.isMoreHonorable() &&
-                    event.conflict.getConflictProvinces().some((p: any) => p.location !== Location.StrongholdProvince)
+                    event.conflict.getConflictProvinces().some(p => p.location !== Location.StrongholdProvince)
             },
             effect: 'break an attacked province',
             gameAction: AbilityDsl.actions.selectCard((context) => ({

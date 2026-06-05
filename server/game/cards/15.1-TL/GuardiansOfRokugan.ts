@@ -15,7 +15,7 @@ class GuardiansOfRokugan extends DrawCard {
                 activePromptTitle: 'Select a character to put into play',
                 amount: (ctx) => ctx.game.currentConflict?.skillDifference ?? 0,
                 deck: Decks.DynastyDeck,
-                cardCondition: (card: any, ctx: any) => card.type === CardType.Character && AbilityDsl.actions.putIntoPlay().canAffect(card, ctx) && card.costLessThan((ctx.game.currentConflict?.skillDifference ?? 0) + 1),
+                cardCondition: (card, ctx) => card.type === CardType.Character && AbilityDsl.actions.putIntoPlay().canAffect(card, ctx) && card.costLessThan((ctx.game.currentConflict?.skillDifference ?? 0) + 1),
                 gameAction: AbilityDsl.actions.putIntoPlay(),
                 shuffle: (ctx) => (ctx.game.currentConflict?.skillDifference ?? 0) >= ctx.player.dynastyDeck.length
             })),

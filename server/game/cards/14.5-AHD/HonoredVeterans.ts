@@ -4,6 +4,7 @@ import type BaseCard from '../../BaseCard.js';
 import { CardType, EventName, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
 
 export default class HonoredVeterans extends DrawCard {
     static id = 'honored-veterans';
@@ -42,7 +43,7 @@ export default class HonoredVeterans extends DrawCard {
         });
     }
 
-    public onCardPlayed(event: any) {
+    public onCardPlayed(event: EventPayload<EventName.OnCardPlayed>) {
         if(event.player && event.card.type === CardType.Character) {
             this.charactersPlayedThisPhase.add(event.card);
         }

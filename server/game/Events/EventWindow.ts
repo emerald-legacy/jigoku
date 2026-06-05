@@ -6,12 +6,17 @@ import TriggeredAbilityWindow from '../gamesteps/TriggeredAbilityWindow.js';
 import { AbilityType } from '../Constants.js';
 import KeywordAbilityWindow from '../gamesteps/KeywordAbilityWindow.js';
 import type Game from '../Game.js';
+import type Player from '../Player.js';
 import type { Event } from './Event.js';
+
+interface ThenAbilityLike {
+    createContext(player?: Player): AbilityContext;
+}
 
 export default class EventWindow extends BaseStepWithPipeline {
     events: Event[] = [];
-    thenAbilities: Array<{ ability: any; context: any; condition: (event: Event) => boolean }> = [];
-    provincesToRefill: any[] = [];
+    thenAbilities: Array<{ ability: ThenAbilityLike; context: AbilityContext; condition: (event: Event) => boolean }> = [];
+    provincesToRefill: unknown[] = [];
     previousEventWindow: EventWindow | null = null;
     eventsToExecute: Event[] = [];
 
@@ -60,7 +65,7 @@ export default class EventWindow extends BaseStepWithPipeline {
         return event;
     }
 
-    addThenAbility(ability: any, context: AbilityContext, condition: (event: Event) => boolean = event => event.isFullyResolved()) {
+    addThenAbility(ability: ThenAbilityLike, context: AbilityContext, condition: (event: Event) => boolean = event => event.isFullyResolved()) {
         this.thenAbilities.push({ ability, context, condition });
     }
 
@@ -135,7 +140,7 @@ export default class EventWindow extends BaseStepWithPipeline {
 
     checkThenAbilities() {
         for(const thenAbility of this.thenAbilities) {
-            if(thenAbility.context.events.every((event: any) => thenAbility.condition(event))) {
+            if(thenAbility.context.events.every((event) => thenAbility.condition(event))) {
                 this.game.resolveAbility(thenAbility.ability.createContext(thenAbility.context.player));
             }
         }

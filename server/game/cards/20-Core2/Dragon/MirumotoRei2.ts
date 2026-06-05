@@ -5,12 +5,13 @@ import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { LastingEffectProperties } from '../../../GameActions/LastingEffectAction.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
+import type { Duel } from '../../../Duel.js';
 
 export default class MirumotoRei2 extends DrawCard {
     static id = 'mirumoto-rei-2';
 
     getWeaponCount(context: AbilityContext) {
-        return (context.source as DrawCard).attachments.filter((card: any) => card.hasTrait('weapon')).length;
+        return (context.source as DrawCard).attachments.filter((card) => card.hasTrait('weapon')).length;
     }
 
     setupCardAbilities() {
@@ -37,11 +38,11 @@ export default class MirumotoRei2 extends DrawCard {
                 type: DuelType.Military,
                 message: 'injure {0}',
                 messageArgs: (duel) => [duel.loser],
-                gameAction: ((duel: any) =>
+                gameAction: ((duel: Duel) =>
                     duel.loser &&
                     AbilityDsl.actions.multipleContext(() => {
                         const gameActions: GameAction[] = [];
-                        duel.loser.forEach((loser: any) => {
+                        duel.loser?.forEach((loser: DrawCard) => {
                             if(loser.getFate() > 0) {
                                 gameActions.push(
                                     AbilityDsl.actions.removeFate({
@@ -58,7 +59,7 @@ export default class MirumotoRei2 extends DrawCard {
                             }
                         });
                         return { gameActions };
-                    })) as any
+                    })) as (duel: Duel, context: AbilityContext) => GameAction
             }
         });
     }

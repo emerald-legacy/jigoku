@@ -10,9 +10,9 @@ class RadiantOrator extends DrawCard {
             title: 'Send a character home',
             condition: context => !!context.player.opponent && context.source.isParticipating() && (
                 // My total glory
-                context.player.cardsInPlay.reduce((myTotal: number, card: any) => myTotal + (card.isParticipating() && !card.bowed ? card.getGlory() : 0), 0) >
+                context.player.cardsInPlay.reduce((myTotal: number, card) => myTotal + (card.isParticipating() && !card.bowed ? card.getGlory() : 0), 0) >
                 // is greater than Opponents total glory
-                context.player.opponent.cardsInPlay.reduce((oppTotal: number, card: any) => oppTotal + (card.isParticipating() && !card.bowed ? card.getGlory() : 0), 0)
+                context.player.opponent.cardsInPlay.reduce((oppTotal: number, card) => oppTotal + (card.isParticipating() && !card.bowed ? card.getGlory() : 0), 0)
             ),
             target: {
                 cardType: CardType.Character,

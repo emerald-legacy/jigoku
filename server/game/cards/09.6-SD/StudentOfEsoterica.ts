@@ -6,7 +6,7 @@ class StudentOfEsoterica extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.alternateFatePool((card: any) => {
+            effect: AbilityDsl.effects.alternateFatePool((card: DrawCard) => {
                 if(card.hasTrait('spell')) {
                     return this;
                 }

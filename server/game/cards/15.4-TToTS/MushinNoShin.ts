@@ -13,8 +13,8 @@ class MushinNoShin extends DrawCard {
                 onInitiateAbilityEffects: (event: EventPayload<EventName.OnInitiateAbilityEffects>, context) =>
                     event.context.ability.isTriggeredAbility() &&
                     (event.cardTargets?.some(
-                        (card: any) =>
-                            card.attachments.length >= 2 &&
+                        (card) =>
+                            (card as DrawCard).attachments.length >= 2 &&
                             card.controller === context.player &&
                             card.location === Location.PlayArea
                     ) ?? false)

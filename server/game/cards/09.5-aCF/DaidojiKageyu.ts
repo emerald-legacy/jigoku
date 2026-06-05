@@ -1,11 +1,12 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type Player from '../../Player.js';
 
 class DaidojiKageyu extends DrawCard {
     static id = 'daidoji-kageyu';
 
     setupCardAbilities() {
-        const cardsPlayed = (opponent: any): number => {
+        const cardsPlayed = (opponent: Player | undefined): number => {
             const conflict = this.game.currentConflict;
             if(!conflict || !opponent) {
                 return 0;

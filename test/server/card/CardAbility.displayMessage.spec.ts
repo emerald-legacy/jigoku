@@ -1,6 +1,8 @@
 import CardAbility from '../../../server/game/CardAbility.js';
 import { GameChat } from '../../../server/game/GameChat.js';
 import AbilityDsl from '../../../server/game/abilitydsl.js';
+import type DrawCard from '../../../server/game/DrawCard.js';
+import type { TriggeredAbilityContext } from '../../../server/game/TriggeredAbilityContext.js';
 
 interface DisplayMessageTestContext {
     gameSpy: any;
@@ -39,7 +41,7 @@ describe('CardAbility displayMessage', function () {
                 cost: AbilityDsl.costs.payHonor(3),
                 target: {
                     cardType: 'character',
-                    cardCondition: (card: any) => card.getCost() <= 2,
+                    cardCondition: (card: DrawCard) => (card.getCost() ?? 0) <= 2,
                     gameAction: AbilityDsl.actions.discardFromPlay()
                 }
             } as any);
@@ -113,10 +115,10 @@ describe('CardAbility displayMessage', function () {
                 isFacedown: () => false
             };
             this.ability = new CardAbility(this.cardSpy, {
-                cost: AbilityDsl.costs.dishonor({ cardCondition: (card: any) => card.hasTrait('courtier') }),
+                cost: AbilityDsl.costs.dishonor({ cardCondition: (card: DrawCard) => card.hasTrait('courtier') }),
                 effect: 'cancel {1}',
-                effectArgs: (context: any) => context.event.card,
-                handler: (context: any) => context.cancel()
+                effectArgs: (context: TriggeredAbilityContext) => context.event.card,
+                handler: (context: TriggeredAbilityContext) => context.cancel()
             } as any);
             this.ability.displayMessage({
                 game: this.gameSpy,

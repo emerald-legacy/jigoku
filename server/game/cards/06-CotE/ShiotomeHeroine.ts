@@ -3,6 +3,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import { EventName, Stage } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 class ShiotomeHeroine extends DrawCard {
     static id = 'shiotome-heroine';
 
@@ -10,7 +11,7 @@ class ShiotomeHeroine extends DrawCard {
         this.reaction({
             title: 'Ready this character',
             when: {
-                onModifyHonor: (event: EventPayload<EventName.OnModifyHonor>, context: any) =>
+                onModifyHonor: (event: EventPayload<EventName.OnModifyHonor>, context: TriggeredAbilityContext) =>
                     (event.amount ?? 0) > 0 && context.player.opponent &&
                     event.player === context.player.opponent && event.context?.stage === Stage.Effect
             },

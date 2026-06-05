@@ -3,6 +3,7 @@ import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
 import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
 
 export default class SoshiShadowshaper extends DrawCard {
     static id = 'soshi-shadowshaper';
@@ -30,7 +31,7 @@ export default class SoshiShadowshaper extends DrawCard {
         this.charactersPlayedThisPhase.clear();
     }
 
-    public onCharacterEntersPlay(event: any) {
+    public onCharacterEntersPlay(event: EventPayload<EventName.OnCharacterEntersPlay>) {
         if(event.originalLocation === Location.Hand) {
             this.charactersPlayedThisPhase.add(event.card);
         }

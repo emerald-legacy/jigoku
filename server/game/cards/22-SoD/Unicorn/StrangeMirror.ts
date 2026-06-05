@@ -15,11 +15,11 @@ export default class StrangeMirror extends DrawCard {
                     inPlay: {
                         cardType: CardType.Character,
                         controller: Players.Opponent,
-                        cardCondition: (card: any) => card.isParticipating()
+                        cardCondition: card => card.isParticipating()
                     },
                     inDiscard: {
                         dependsOn: 'inPlay',
-                        cardCondition: (card: any, context: any) => card.name === context.targets.inPlay.name,
+                        cardCondition: (card, context) => card.name === context.targets.inPlay.name,
                         activePromptTitle: 'Choose a character from a discard pile',
                         location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                         controller: Players.Any,

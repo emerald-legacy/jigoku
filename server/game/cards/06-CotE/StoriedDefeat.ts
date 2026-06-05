@@ -4,6 +4,8 @@ import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
 import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
+import type { Event } from '../../Events/Event.js';
 
 export default class StoriedDefeat extends DrawCard {
     static id = 'storied-defeat';
@@ -26,7 +28,7 @@ export default class StoriedDefeat extends DrawCard {
                     AbilityDsl.actions.menuPrompt((context) => ({
                         activePromptTitle: 'Spend 1 fate to dishonor ' + context.target.name + '?',
                         choices: ['Yes'].concat(
-                            context.events.some((event: any) => event.name === EventName.OnCardBowed) ? ['No'] : []
+                            context.events.some((event: Event) => event.name === EventName.OnCardBowed) ? ['No'] : []
                         ),
                         choiceHandler: (choice, displayMessage) => {
                             if(displayMessage) {
@@ -60,11 +62,11 @@ export default class StoriedDefeat extends DrawCard {
         this.duelLosersThisConflict.clear();
     }
 
-    public onCharacterEntersPlay(event: any) {
+    public onCharacterEntersPlay(event: EventPayload<EventName.OnCharacterEntersPlay>) {
         this.duelLosersThisConflict.delete(event.card);
     }
 
-    public afterDuel(event: any) {
+    public afterDuel(event: EventPayload<EventName.AfterDuel>) {
         if(!event.duel) {
             return;
         }

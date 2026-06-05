@@ -10,7 +10,7 @@ export default class SpellScroll extends DrawCard {
         this.whileAttached({
             condition: (context) =>
                 !!(context.source.parent?.isParticipating() &&
-                (context.game.currentConflict as Conflict).elements.some((element: any) =>
+                (context.game.currentConflict as Conflict).elements.some((element) =>
                     (context.source.parent as DrawCard).hasTrait(element)
                 )),
             effect: AbilityDsl.effects.modifyPoliticalSkill(3)

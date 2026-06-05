@@ -2,6 +2,7 @@ import { CardType } from '../Constants.js';
 import BaseCard from '../BaseCard.js';
 import DrawCard from '../DrawCard.js';
 import { ProvinceCard } from '../ProvinceCard.js';
+import Ring from '../Ring.js';
 
 export class BattlefieldAttachment extends DrawCard {
     public setupCardAbilities() {
@@ -10,11 +11,11 @@ export class BattlefieldAttachment extends DrawCard {
         });
     }
 
-    public canPlayOn(source: any) {
+    public canPlayOn(source: BaseCard | Ring) {
         return (
             source &&
             source.getType() === 'province' &&
-            (!this.unbrokenOnly() || !source.isBroken) &&
+            (!this.unbrokenOnly() || !(source instanceof ProvinceCard && source.isBroken)) &&
             this.getType() === CardType.Attachment
         );
     }

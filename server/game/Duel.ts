@@ -233,8 +233,8 @@ export class Duel extends GameObject {
             .filter((effect: CardEffect) => effect.type === EffectName.ModifyDuelistSkill);
         let effectModifier = 0;
 
-        rawEffects.forEach((effect: any) => {
-            const props = effect.getValue();
+        rawEffects.forEach((effect: CardEffect) => {
+            const props = effect.getValue<{ duel: Duel; value: number }>();
             if(props.duel === this) {
                 effectModifier += props.value;
             }

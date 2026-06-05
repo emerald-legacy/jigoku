@@ -1,4 +1,4 @@
-import { CostReducer } from './CostReducer.js';
+import { CostReducer, type CostReducerProps } from './CostReducer.js';
 import { PlayableLocation } from './PlayableLocation.js';
 import {
     AbilityType,
@@ -37,7 +37,7 @@ export class PlayerCostManager {
         }
     }
 
-    addCostReducer(source: any, properties: any): CostReducer {
+    addCostReducer(source: BaseCard, properties: CostReducerProps): CostReducer {
         const reducer = new CostReducer(this.game, source, properties);
         this.costReducers.push(reducer);
         return reducer;
@@ -64,7 +64,7 @@ export class PlayerCostManager {
     }
 
     isCardInPlayableLocation(card: BaseCard, playingType: PlayType | null = null): boolean {
-        if(card.getEffects(EffectName.CanPlayFromOutOfPlay).filter((a: any) => a.player(this.player, card)).length > 0) {
+        if(card.getEffects(EffectName.CanPlayFromOutOfPlay).filter((a) => a.player(this.player, card)).length > 0) {
             return true;
         }
 
@@ -74,8 +74,8 @@ export class PlayerCostManager {
     }
 
     findPlayType(card: BaseCard): PlayType | undefined {
-        if(card.getEffects(EffectName.CanPlayFromOutOfPlay).filter((a: any) => a.player(this.player, card)).length > 0) {
-            const effects = card.getEffects(EffectName.CanPlayFromOutOfPlay).filter((a: any) => a.player(this.player, card));
+        if(card.getEffects(EffectName.CanPlayFromOutOfPlay).filter((a) => a.player(this.player, card)).length > 0) {
+            const effects = card.getEffects(EffectName.CanPlayFromOutOfPlay).filter((a) => a.player(this.player, card));
             return effects[effects.length - 1].playType || PlayType.PlayFromHand;
         }
 
@@ -90,11 +90,11 @@ export class PlayerCostManager {
     getAlternateFatePools(playingType: PlayType | undefined, card: DrawCard, context?: AbilityContext): any[] {
         const effects = this.player.getEffects(EffectName.AlternateFatePool);
         let alternateFatePools = effects
-            .filter((match: any) => match(card) && match(card).getFate() > 0)
-            .map((match: any) => match(card));
+            .filter((match) => match(card) && match(card).getFate() > 0)
+            .map((match) => match(card));
 
         if(context && context.source && context.source.isTemptationsMaho()) {
-            alternateFatePools.push(...this.player.cardsInPlay.filter((a: any) => a.type === 'character'));
+            alternateFatePools.push(...this.player.cardsInPlay.filter((a: DrawCard) => a.type === 'character'));
         }
         if(context && context.source && context.source.isTemptationsMaho()) {
             alternateFatePools = alternateFatePools.filter(
@@ -178,7 +178,7 @@ export class PlayerCostManager {
         return Math.max(alternateFate, 0);
     }
 
-    getTargetingCost(abilitySource: any, targets: any): number {
+    getTargetingCost(abilitySource: BaseCard, targets: any): number {
         targets = Array.isArray(targets) ? targets : [targets];
         targets = targets.filter(Boolean);
         if(targets.length === 0) {

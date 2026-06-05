@@ -1,5 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 
 export default class MantisRaider extends DrawCard {
     static id = 'mantis-raider';
@@ -12,7 +13,7 @@ export default class MantisRaider extends DrawCard {
                     context.source.isAttacking() && event.conflict.defenders.length === 0
             },
             effect: 'take a fate from {1} and place it on {0}.',
-            effectArgs: (context) => context.player.opponent as any,
+            effectArgs: (context) => context.player.opponent as Player,
             gameAction: AbilityDsl.actions.placeFate((context) => ({
                 origin: context.player.opponent
             }))

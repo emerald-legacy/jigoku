@@ -3,6 +3,7 @@ import { Duration, EventName } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
+import type Player from '../../Player.js';
 class MercenaryCompany extends DrawCard {
     static id = 'mercenary-company';
 
@@ -42,7 +43,7 @@ class MercenaryCompany extends DrawCard {
                 }
             }),
             effect: 'let {1} hire their services',
-            effectArgs: context => [context.player.opponent] as any,
+            effectArgs: context => [context.player.opponent as Player],
             limit: AbilityDsl.limit.unlimitedPerConflict()
         });
     }

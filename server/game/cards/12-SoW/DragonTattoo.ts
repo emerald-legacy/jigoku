@@ -4,6 +4,7 @@ import { AbilityType, CardType, EventName, Location, PlayType } from '../../Cons
 import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
 
 export default class DragonTattoo extends DrawCard {
     static id = 'dragon-tattoo';
@@ -67,13 +68,13 @@ export default class DragonTattoo extends DrawCard {
         });
     }
 
-    public onInitiateAbility(event: any) {
+    public onInitiateAbility(event: EventPayload<EventName.OnInitiateAbilityEffects>) {
         if(event.card.id === 'banzai' && event.context) {
-            this.extraBanzaiTarget = event.context.targets.target;
+            this.extraBanzaiTarget = event.context.targets.target as BaseCard;
         }
     }
 
-    private checkTargets(event: any, context: TriggeredAbilityContext): boolean {
+    private checkTargets(event: EventPayload<EventName.OnCardPlayed>, context: TriggeredAbilityContext): boolean {
         if(!event.context) {
             return false;
         }
@@ -88,7 +89,8 @@ export default class DragonTattoo extends DrawCard {
             }
         }
 
-        for(const selectedTargets of Object.values<BaseCard | BaseCard[]>(event.context.selects)) {
+        const selects: Record<string, BaseCard | BaseCard[]> = event.context.selects as any;
+        for(const selectedTargets of Object.values<BaseCard | BaseCard[]>(selects)) {
             if(
                 Array.isArray(selectedTargets)
                     ? selectedTargets.some((card) => this.isValidTargetForTattoo(card, context))
