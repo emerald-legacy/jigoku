@@ -24,9 +24,9 @@ export default class SupportingCast extends DrawCard {
                 activePromptTitle: 'Choose a character to give +3 military skill',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card: DrawCard, context?: TriggeredAbilityContext) =>
+                cardCondition: (card: DrawCard, context) =>
                     card.isParticipating() &&
-                    !((context as TriggeredAbilityContext).event.cardTargets as BaseCard[]).some((eventCard: BaseCard) => eventCard === card),
+                    !((context as TriggeredAbilityContext<DrawCard>).event.cardTargets as BaseCard[]).some((eventCard: BaseCard) => eventCard === card),
                 gameAction: [
                     AbilityDsl.actions.selectCard((context) => ({
                         activePromptTitle: 'Choose a character to bow',

@@ -23,7 +23,7 @@ class YasukiFuzake extends DrawCard {
                     dependsOn: 'first',
                     cardType: CardType.Character,
                     optional: true,
-                    cardCondition: (card, context) => card.controller !== context.targets.first.controller,
+                    cardCondition: (card, context) => card.controller !== (context.targets.first as DrawCard).controller,
                     gameAction: AbilityDsl.actions.discardStatusToken(context => ({
                         target: !Array.isArray(context.targets.second) && context.targets.second.statusTokens
                     }))

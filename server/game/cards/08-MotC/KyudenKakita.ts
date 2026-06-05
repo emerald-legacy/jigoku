@@ -1,6 +1,8 @@
 import { CardType, Players } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import type DrawCard from '../../DrawCard.js';
 
 export default class KyudenKakita extends StrongholdCard {
     static id = 'kyuden-kakita';
@@ -13,7 +15,7 @@ export default class KyudenKakita extends StrongholdCard {
             target: {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card, context) => context.event.duel?.isInvolved(card) ?? false,
+                cardCondition: (card, context) => (context as TriggeredAbilityContext<DrawCard>).event.duel?.isInvolved(card) ?? false,
                 gameAction: AbilityDsl.actions.honor()
             }
         });

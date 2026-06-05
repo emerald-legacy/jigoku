@@ -20,7 +20,7 @@ export default class LongJourneyHome extends DrawCard {
             },
             target: {
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card === context.event.card,
+                cardCondition: (card, context) => card === (context as TriggeredAbilityContext<DrawCard>).event.card,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.bow(),
                     AbilityDsl.actions.cardLastingEffect({

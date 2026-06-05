@@ -26,12 +26,12 @@ class Logistics extends DrawCard {
                         card.location !== Location.StrongholdProvince &&
                         !(card as ProvinceCard).isBroken &&
                         ( //same controller check
-                            (context.targets.cardInProvince.type === CardType.Attachment && card.controller === context.targets.cardInProvince.parent.controller) ||
-                            (context.targets.cardInProvince.type !== CardType.Attachment && card.controller === context.targets.cardInProvince.controller)
+                            ((context.targets.cardInProvince as DrawCard).type === CardType.Attachment && card.controller === (context.targets.cardInProvince as DrawCard).parent?.controller) ||
+                            ((context.targets.cardInProvince as DrawCard).type !== CardType.Attachment && card.controller === (context.targets.cardInProvince as DrawCard).controller)
                         ) &&
                         ( //different location check
-                            (context.targets.cardInProvince.type === CardType.Attachment && card.location !== context.targets.cardInProvince.parent.location) ||
-                            (context.targets.cardInProvince.type !== CardType.Attachment && card.location !== context.targets.cardInProvince.location)
+                            ((context.targets.cardInProvince as DrawCard).type === CardType.Attachment && card.location !== (context.targets.cardInProvince as DrawCard).parent?.location) ||
+                            ((context.targets.cardInProvince as DrawCard).type !== CardType.Attachment && card.location !== (context.targets.cardInProvince as DrawCard).location)
                         ),
                     gameAction: AbilityDsl.actions.multiple([
                         AbilityDsl.actions.conditional(context => ({

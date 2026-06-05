@@ -20,7 +20,7 @@ export default class DaiTsuchi extends DrawCard {
                     cardCondition: (card, context) =>
                         card instanceof DrawCard &&
                         card.parent instanceof DrawCard &&
-                        card.parent.isParticipatingFor(context.player.opponent),
+                        !!context.player.opponent && card.parent.isParticipatingFor(context.player.opponent),
                     gameAction: AbilityDsl.actions.returnToHand()
                 },
                 gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({

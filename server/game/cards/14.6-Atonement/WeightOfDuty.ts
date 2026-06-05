@@ -26,7 +26,7 @@ export default class WeightOfDuty extends ProvinceCard {
                 cardType: CardType.Character,
                 mode: TargetMode.Single,
                 cardCondition: (card, context) =>
-                    context.costs.sacrifice && !context.costs.sacrifice.isUnique() ? !card.isUnique() : true,
+                    context.costs.sacrifice && !(context.costs.sacrifice as DrawCard).isUnique() ? !card.isUnique() : true,
                 gameAction: AbilityDsl.actions.multiple([AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor()])
             }
         });

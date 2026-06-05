@@ -22,7 +22,7 @@ class CalledToWar extends DrawCard {
                     cardType: CardType.Character,
                     optional: true,
                     hideIfNoLegalTargets: true,
-                    cardCondition: (card, context) => card.hasTrait('bushi') && context.costs.optionalHonorTransferFromOpponentCostPaid,
+                    cardCondition: (card, context) => Boolean(card.hasTrait('bushi') && context.costs.optionalHonorTransferFromOpponentCostPaid),
                     gameAction: AbilityDsl.actions.placeFate()
                 }
             },

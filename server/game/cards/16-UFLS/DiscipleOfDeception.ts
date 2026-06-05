@@ -36,8 +36,8 @@ export default class DiscipleOfDeception extends DrawCard {
                     mode: TargetMode.Token,
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>
-                        card !== context.tokens.first[0].card &&
-                        !card.hasStatusToken(context.tokens.first[0].grantedStatus),
+                        card !== (context.tokens.first as StatusToken[])[0].card &&
+                        !card.hasStatusToken((context.tokens.first as StatusToken[])[0].grantedStatus),
                     tokenCondition: (token, context) => token.grantedStatus !== context.tokens.first[0].grantedStatus,
                     gameAction: AbilityDsl.actions.handler({
                         handler: (context) => {

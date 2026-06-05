@@ -35,7 +35,7 @@ export default class KakitaMio extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() &&
-                    context.game.currentConflict.getNumberOfParticipantsFor(card.controller) === 1,
+                    context.game.currentConflict?.getNumberOfParticipantsFor(card.controller) === 1,
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     duration: Duration.UntilEndOfConflict,
                     effect: AbilityDsl.effects.addTrait('shadowlands')

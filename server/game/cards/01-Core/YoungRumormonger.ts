@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, EventName } from '../../Constants.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 class YoungRumormonger extends DrawCard {
     static id = 'young-rumormonger';
@@ -15,7 +16,7 @@ class YoungRumormonger extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    card !== context.event.card && card.controller === context.event.card.controller,
+                    card !== (context as TriggeredAbilityContext<DrawCard>).event.card && card.controller === (context as TriggeredAbilityContext<DrawCard>).event.card?.controller,
                 gameAction: AbilityDsl.actions.cancel((context) => ({
                     replacementGameAction:
                         context.event.name === EventName.OnCardHonored

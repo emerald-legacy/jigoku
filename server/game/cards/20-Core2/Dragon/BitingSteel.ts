@@ -55,7 +55,7 @@ export default class BitingSteel extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card: DrawCard, context) => card.militarySkill < context.source.parent.militarySkill,
+                cardCondition: (card: DrawCard, context) => card.militarySkill < (context.source.parent?.militarySkill ?? 0),
                 gameAction: AbilityDsl.actions.sendHome()
             }
         });

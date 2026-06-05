@@ -43,7 +43,7 @@ interface TargetRing extends BaseTarget {
 interface TargetAbility extends BaseTarget {
     mode: TargetMode.Ability;
     cardType?: CardType | CardType[];
-    cardCondition?: (card: DrawCard, context?: any) => boolean;
+    cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
     abilityCondition?: (ability: CardAbility) => boolean;
 }
 
@@ -53,7 +53,7 @@ interface TargetToken extends BaseTarget {
     location?: Location | Location[];
     cardType?: CardType | CardType[];
     singleToken?: boolean;
-    cardCondition?: (card: DrawCard, context?: any) => boolean;
+    cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
     tokenCondition?: (token: StatusToken, context?: any) => boolean;
 }
 
@@ -105,7 +105,7 @@ interface SubTarget {
 }
 
 interface ActionCardTarget {
-    cardCondition?: (card: DrawCard, context?: any) => boolean;
+    cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
 }
 
 interface ActionRingTarget {
@@ -171,7 +171,7 @@ export interface ActionProps<Source = any, Target extends BaseCard = BaseCard> e
 }
 
 interface TriggeredAbilityCardTarget {
-    cardCondition?: (card: DrawCard, context?: any) => boolean;
+    cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
 }
 
 interface TriggeredAbilityRingTarget {

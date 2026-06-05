@@ -10,7 +10,7 @@ class MotoNergui extends DrawCard {
             condition: context => this.game.isDuringConflict('military') && context.source.isParticipating(),
             target: {
                 cardCondition: (card, context) => {
-                    let participants = context.game.currentConflict.getParticipants();
+                    let participants = (context.game.currentConflict?.getParticipants() ?? []);
                     return participants.includes(card) && card.getGlory() === Math.max(...participants.map((c: DrawCard) => c.getGlory()));
                 },
                 gameAction: AbilityDsl.actions.sendHome()
