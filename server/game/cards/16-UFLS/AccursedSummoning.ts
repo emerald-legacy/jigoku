@@ -4,10 +4,10 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
 import type { CardData } from '../../types/CardData.js';
 import type { Event } from '../../Events/Event.js';
+import type { Cost } from '../../costs/Cost.js';
 
-const accursedSummoningCost = function () {
+const accursedSummoningCost = function (): Cost {
     return {
-        action: { name: 'accursedSummoningCost' },
         getActionName(_context: AbilityContext) {
             return 'accursedSummoningCost';
         },

@@ -1,4 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import BaseCard from '../../BaseCard.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Location, CardType } from '../../Constants.js';
 
@@ -14,7 +16,7 @@ class SaadiyahAlMozedu extends DrawCard {
             target: {
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: card => !card.isBroken && !card.isConflictProvince(),
+                cardCondition: (card: BaseCard) => !(card as ProvinceCard).isBroken && !(card as ProvinceCard).isConflictProvince(),
                 gameAction: AbilityDsl.actions.turnFacedown()
             }
         });

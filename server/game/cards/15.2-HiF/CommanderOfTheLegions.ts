@@ -20,7 +20,7 @@ class CommanderOfTheLegions extends DrawCard {
             match: (card, context) =>
                 card.type === CardType.Character
                 && card.isFaction('lion')
-                && card.printedCost <= 3
+                && (card.printedCost ?? 0) <= 3
                 && card !== context?.source
                 && card.controller === context?.player,
             effect: AbilityDsl.effects.cardCannot('removeFate')

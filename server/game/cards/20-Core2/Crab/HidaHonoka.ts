@@ -1,5 +1,7 @@
 import { CardType, Duration, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import BaseCard from '../../../BaseCard.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class HidaHonoka extends DrawCard {
@@ -11,7 +13,7 @@ export default class HidaHonoka extends DrawCard {
             target: {
                 location: Location.Provinces,
                 cardType: CardType.Province,
-                cardCondition: (card) => card.isBroken,
+                cardCondition: (card: BaseCard) => (card as ProvinceCard).isBroken,
                 gameAction: AbilityDsl.actions.restoreProvince()
             },
             then: {

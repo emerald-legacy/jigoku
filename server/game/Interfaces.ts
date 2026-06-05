@@ -3,6 +3,7 @@ import type { EventPayload } from './Events/EventPayloads.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
+import type { Cost } from './costs/Cost.js';
 import type Ring from './Ring.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
@@ -42,7 +43,7 @@ interface TargetRing extends BaseTarget {
 interface TargetAbility extends BaseTarget {
     mode: TargetMode.Ability;
     cardType?: CardType | CardType[];
-    cardCondition?: (card: any, context?: any) => boolean;
+    cardCondition?: (card: DrawCard, context?: any) => boolean;
     abilityCondition?: (ability: CardAbility) => boolean;
 }
 
@@ -52,7 +53,7 @@ interface TargetToken extends BaseTarget {
     location?: Location | Location[];
     cardType?: CardType | CardType[];
     singleToken?: boolean;
-    cardCondition?: (card: any, context?: any) => boolean;
+    cardCondition?: (card: DrawCard, context?: any) => boolean;
     tokenCondition?: (token: StatusToken, context?: any) => boolean;
 }
 
@@ -104,7 +105,7 @@ interface SubTarget {
 }
 
 interface ActionCardTarget {
-    cardCondition?: (card: any, context?: any) => boolean;
+    cardCondition?: (card: DrawCard, context?: any) => boolean;
 }
 
 interface ActionRingTarget {
@@ -140,7 +141,7 @@ export type EffectArg =
 interface AbilityProps<Context> {
     title: string;
     location?: Location | Location[];
-    cost?: any;
+    cost?: Cost | Cost[];
     limit?: any;
     max?: any;
     target?: ActionTarget;
@@ -170,7 +171,7 @@ export interface ActionProps<Source = any, Target extends BaseCard = BaseCard> e
 }
 
 interface TriggeredAbilityCardTarget {
-    cardCondition?: (card: any, context?: any) => boolean;
+    cardCondition?: (card: DrawCard, context?: any) => boolean;
 }
 
 interface TriggeredAbilityRingTarget {
@@ -233,7 +234,7 @@ export interface AttachmentConditionProps {
     faction?: string | string[];
     trait?: string | string[];
     limitTrait?: traitLimit | traitLimit[];
-    cardCondition?: (card: any) => boolean;
+    cardCondition?: (card: DrawCard) => boolean;
 }
 
 interface HonoredToken {

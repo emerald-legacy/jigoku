@@ -2,10 +2,10 @@ import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { Players, CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { Cost } from '../../costs/Cost.js';
 
-const nitenCaptureParentCost = function() {
+const nitenCaptureParentCost = function(): Cost {
     return {
-        action: { name: 'nitenCaptureParentCost', getCostMessage: () => '' },
         canPay: function() {
             return true;
         },

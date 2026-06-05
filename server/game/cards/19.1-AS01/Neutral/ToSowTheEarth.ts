@@ -3,6 +3,7 @@ import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js
 import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import BaseCard from '../../../BaseCard.js';
+import { ProvinceCard } from '../../../ProvinceCard.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ToSowTheEarth extends DrawCard {
@@ -42,7 +43,7 @@ export default class ToSowTheEarth extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Any,
-                cardCondition: (card) => card.isBroken === false,
+                cardCondition: (card: BaseCard) => (card as ProvinceCard).isBroken === false,
                 gameAction: AbilityDsl.actions.turnFacedown()
             },
             max: AbilityDsl.limit.perRound(1)

@@ -1,4 +1,5 @@
 import { CardType, Location } from '../../../Constants.js';
+import BaseCard from '../../../BaseCard.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -14,7 +15,7 @@ export default class ShrineOfVengeance extends ProvinceCard {
             target: {
                 location: Location.Provinces,
                 cardType: CardType.Province,
-                cardCondition: (card: ProvinceCard) => card.facedown,
+                cardCondition: (card: BaseCard) => (card as ProvinceCard).facedown,
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.dishonorProvince(),
                     AbilityDsl.actions.reveal({ chatMessage: true })

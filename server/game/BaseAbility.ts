@@ -24,7 +24,7 @@ interface AbilityTarget {
 }
 
 export interface BaseAbilityProperties {
-    cost?: any;
+    cost?: Cost | Cost[];
     target?: any;
     targets?: Record<string, any>;
     gameAction?: GameAction | GameAction[];

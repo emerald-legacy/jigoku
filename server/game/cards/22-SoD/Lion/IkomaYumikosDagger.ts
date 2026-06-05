@@ -26,7 +26,7 @@ export default class IkomaYumikosDagger extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card, context) => card.isParticipating() && card.printedCost <= context.source.printedCost,
+                cardCondition: (card, context) => card.isParticipating() && (card.printedCost ?? 0) <= context.source.printedCost,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.conditional(context => ({
                         condition: () => context.target.getFate() === 0,

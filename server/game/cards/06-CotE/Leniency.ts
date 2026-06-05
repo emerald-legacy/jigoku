@@ -15,7 +15,7 @@ class Leniency extends DrawCard {
                 cardType: CardType.Character,
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: card => card.printedCost < 3,
+                cardCondition: card => (card.printedCost ?? 0) < 3,
                 gameAction: AbilityDsl.actions.cancel({
                     replacementGameAction: AbilityDsl.actions.putIntoPlay()
                 })

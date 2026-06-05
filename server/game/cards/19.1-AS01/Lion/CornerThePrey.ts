@@ -21,7 +21,7 @@ export default class CornerThePrey extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    card.isParticipating() && card.printedCost <= this.getFollowerCount(context),
+                    card.isParticipating() && (card.printedCost ?? 0) <= this.getFollowerCount(context),
                 gameAction: AbilityDsl.actions.discardFromPlay()
             },
             cannotTargetFirst: true

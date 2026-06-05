@@ -16,7 +16,7 @@ export default class KagiNawa extends DrawCard {
                     cardType: CardType.Character,
                     controller: Players.Any,
                     activePromptTitle: 'Choose a character with printed cost 2 or lower to move in',
-                    cardCondition: (card) => card.printedCost <= 2,
+                    cardCondition: (card) => (card.printedCost ?? 0) <= 2,
                     gameAction: AbilityDsl.actions.moveToConflict()
                 },
                 effect: 'hook {0} and drag them into the conflict'

@@ -4,14 +4,14 @@ import { CardType, Players, AbilityType, TargetMode, Location } from '../../Cons
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
+import type { Cost } from '../../costs/Cost.js';
 
 const isCopyInPlay = function(card: BaseCard, context: AbilityContext) {
     return context.game.findAnyCardsInPlay((c: BaseCard) => c.name === card.name).length > 0;
 };
 
-const ancestralSightCost = function () {
+const ancestralSightCost = function (): Cost {
     return {
-        action: { name: 'ancestralSightCost' },
         getActionName(_context: AbilityContext) {
             return 'ancestralSightCost';
         },

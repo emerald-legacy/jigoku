@@ -2,16 +2,16 @@ import DrawCard from '../../DrawCard.js';
 import { CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityContext } from '../../AbilityContext.js';
+import type { Cost } from '../../costs/Cost.js';
 
-const conduitOfHeroesCost = function () {
+const conduitOfHeroesCost = function (): Cost {
     return {
-        action: { name: 'conduitOfHeroesCost' },
         getActionName(_context: AbilityContext) {
             return 'conduitOfHeroesCost';
         },
         getCostMessage: function (context: AbilityContext) {
             if(context.player.opponent && context.player.honor >= context.player.opponent.honor + 5) {
-                return undefined;
+                return [];
             }
             return ['bowing {0}'];
         },

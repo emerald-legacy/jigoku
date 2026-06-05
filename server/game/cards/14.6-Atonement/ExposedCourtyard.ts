@@ -3,9 +3,9 @@ import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 import { CardType, EventName, Location, Players, Duration } from '../../Constants.js';
+import type { Cost } from '../../costs/Cost.js';
 
-const exposedCourtyardCost = () => ({
-    action: { name: 'exposedCourtyardCost' },
+const exposedCourtyardCost = (): Cost => ({
     getActionName(_context: AbilityContext) {
         return 'exposedCourtyardCost';
     },

@@ -1,10 +1,10 @@
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import type { Cost } from '../../../costs/Cost.js';
 
-const ayubunePilotCaptureParentCost = function() {
+const ayubunePilotCaptureParentCost = function(): Cost {
     return {
-        action: { name: 'ayubunePilotCaptureParentCost', getCostMessage: () => '' },
         canPay: function() {
             return true;
         },

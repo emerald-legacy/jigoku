@@ -1,12 +1,11 @@
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type { Result } from '../../costs/Cost.js';
+import type { Cost, Result } from '../../costs/Cost.js';
 import type Player from '../../Player.js';
 import { CardType, Players, Duration, TargetMode, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
-const agreeableCost = () => ({
-    action: { name: 'agreeableArrangementCost' },
+const agreeableCost = (): Cost => ({
     getActionName(_context: AbilityContext) {
         return 'agreeableArrangementCost';
     },
@@ -14,7 +13,7 @@ const agreeableCost = () => ({
         return ['giving {1} control of {0}', context.player.opponent];
     },
     canPay: function(context: AbilityContext) {
-        return context.player.opponent && context.player.cardsInPlay.some((card: DrawCard) => (card.printedCost ?? 0) >= 2 && !card.bowed && !card.anotherUniqueInPlay(context.player.opponent as Player));
+        return !!context.player.opponent && context.player.cardsInPlay.some((card: DrawCard) => (card.printedCost ?? 0) >= 2 && !card.bowed && !card.anotherUniqueInPlay(context.player.opponent as Player));
     },
     resolve: function (context: AbilityContext, result: Result) {
         context.game.promptForSelect(context.player, {
