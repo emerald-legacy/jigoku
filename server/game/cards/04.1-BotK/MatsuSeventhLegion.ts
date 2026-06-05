@@ -8,7 +8,7 @@ class MatsuSeventhLegion extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.source.isAttacking(),
-            match: card => card.hasTrait('courtier'),
+            match: (card: DrawCard) => card.hasTrait('courtier'),
             targetController: Players.Opponent,
             effect: AbilityDsl.effects.cardCannot('declareAsDefender')});
     }

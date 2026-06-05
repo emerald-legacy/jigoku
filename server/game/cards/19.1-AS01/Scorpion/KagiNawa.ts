@@ -8,7 +8,7 @@ export default class KagiNawa extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            match: (card) => card.hasTrait('shinobi'),
+            match: (card: DrawCard) => card.hasTrait('shinobi'),
             effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Move a character to the conflict',
                 condition: (context) => context.source.isParticipating(),

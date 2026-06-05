@@ -8,13 +8,13 @@ class SakeHouseInformant extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: context => context.game.getFavorSide() === FavorType.Military,
-            match: card => card.hasTrait('shinobi'),
+            match: (card: DrawCard) => card.hasTrait('shinobi'),
             effect: AbilityDsl.effects.modifyMilitarySkill(1)
         });
 
         this.persistentEffect({
             condition: context => context.game.getFavorSide() === FavorType.Political,
-            match: card => card.hasTrait('shinobi'),
+            match: (card: DrawCard) => card.hasTrait('shinobi'),
             effect: AbilityDsl.effects.modifyPoliticalSkill(1)
         });
     }

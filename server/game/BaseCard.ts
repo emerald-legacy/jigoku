@@ -25,8 +25,7 @@ import {
     ActionProps,
     AttachmentConditionProps,
     PersistentEffectProps,
-    TriggeredAbilityProps,
-    type DefaultMatchTarget
+    TriggeredAbilityProps
 } from './Interfaces.js';
 import type { GameObject } from './GameObject.js';
 import { StatusToken } from './StatusToken.js';
@@ -321,7 +320,7 @@ class BaseCard extends EffectSource {
      * Applies an effect that continues as long as the card providing the effect
      * is both in play and not blank.
      */
-    persistentEffect<T extends GameObject = DefaultMatchTarget>(properties: PersistentEffectProps<this, T>): void {
+    persistentEffect<T extends GameObject = GameObject>(properties: PersistentEffectProps<this, T>): void {
         const allowedLocations = [
             Location.Any,
             Location.ConflictDiscardPile,
@@ -389,7 +388,7 @@ class BaseCard extends EffectSource {
         } as PersistentEffectProps<this> & { isKeywordEffect: boolean });
     }
 
-    dire(properties: PersistentEffectProps<this>): void {
+    dire<T extends GameObject = GameObject>(properties: PersistentEffectProps<this, T>): void {
         if(properties && properties.condition) {
             let currentCondition = properties.condition;
             properties.condition = (context: AbilityContext<this>) => context.source.isDire() && currentCondition(context);

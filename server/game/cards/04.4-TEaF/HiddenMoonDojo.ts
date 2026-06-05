@@ -9,7 +9,7 @@ export default class HiddenMoonDojo extends DrawCard {
     public setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
-            match: (card, context) =>
+            match: (card: DrawCard, context) =>
                 !!context &&
                 card.isDynasty &&
                 card.isFaceup() &&

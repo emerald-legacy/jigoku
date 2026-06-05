@@ -10,7 +10,7 @@ export default class DaidojiUji extends DrawCard {
         this.persistentEffect({
             condition: (context) => context.source.isHonored,
             targetLocation: Location.Provinces,
-            match: (card) => card.isDynasty && card.isFaceup(),
+            match: (card: DrawCard) => card.isDynasty && card.isFaceup(),
             effect: AbilityDsl.effects.gainPlayAction(PlayCharacterAsIfFromHand)
         });
     }

@@ -7,7 +7,7 @@ class YogoPreserver extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: card => card.getType() === CardType.Character && card.isDishonored,
+            match: (card: DrawCard) => card.getType() === CardType.Character && card.isDishonored,
             effect: AbilityDsl.effects.addKeyword('sincerity')
         });
     }

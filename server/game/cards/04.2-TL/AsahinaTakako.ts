@@ -8,7 +8,7 @@ export default class AsahinaTakako extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetLocation: Location.Provinces,
-            match: (card) => card.isDynasty && card.isFacedown(),
+            match: (card: DrawCard) => card.isDynasty && card.isFacedown(),
             effect: AbilityDsl.effects.canBeSeenWhenFacedown()
         });
 

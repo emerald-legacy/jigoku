@@ -33,7 +33,7 @@ class IsawaSkycaller extends DrawCard {
         this.persistentEffect({
             condition: context => context.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
             targetLocation: Location.Provinces,
-            match: card => card.isDynasty && card.isFaceup(),
+            match: (card: DrawCard) => card.isDynasty && card.isFaceup(),
             effect: AbilityDsl.effects.gainPlayAction(IsawaSkycallerPlayAction)
         });
     }

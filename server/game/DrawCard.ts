@@ -1,4 +1,5 @@
 import BaseCard, { type CardSummary } from './BaseCard.js';
+import type { GameObject } from './GameObject.js';
 import { AttachmentManager } from './AttachmentManager.js';
 import { ChildCardManager } from './ChildCardManager.js';
 import AbilityDsl from './abilitydsl.js';
@@ -198,10 +199,10 @@ class DrawCard extends BaseCard {
      * effect is applied (for cases where the effect only applies to specific
      * characters).
      */
-    whileAttached(properties: Pick<PersistentEffectProps<this>, 'condition' | 'match' | 'effect'>) {
+    whileAttached<T extends GameObject = GameObject>(properties: Pick<PersistentEffectProps<this, T>, 'condition' | 'match' | 'effect'>) {
         this.persistentEffect({
             condition: properties.condition || (() => true),
-            match: (card, context) => card === this.parent && (!properties.match || properties.match(card, context)),
+            match: (card, context) => card === this.parent && (!properties.match || properties.match(card as T, context)),
             targetController: Players.Any,
             effect: properties.effect
         });

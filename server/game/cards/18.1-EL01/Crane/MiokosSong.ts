@@ -10,7 +10,7 @@ export default class MiokosSong extends StrongholdCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card, context) =>
+            match: (card: DrawCard, context) =>
                 !!context && card.controller === context.player &&
                 card.type === CardType.Character &&
                 card.isDishonored &&

@@ -9,7 +9,7 @@ export default class ScarletSabre extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            match: (card) => card.controller.firstPlayer,
+            match: (card: DrawCard) => card.controller.firstPlayer,
             effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Make opponent lose 1 fate',
                 printedAbility: false,

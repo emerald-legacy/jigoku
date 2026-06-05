@@ -15,7 +15,7 @@ class Chikara extends DrawCard {
         });
 
         this.whileAttached({
-            match: (card) => card.hasTrait('champion'),
+            match: (card: DrawCard) => card.hasTrait('champion'),
             effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Return all fate from, then sacrifice a character',
                 when: {

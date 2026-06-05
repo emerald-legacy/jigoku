@@ -7,13 +7,13 @@ class UtakuRumaru extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card) => card.isHonored && card.type === CardType.Character,
+            match: (card: DrawCard) => card.isHonored && card.type === CardType.Character,
             targetController: Players.Self,
             effect: AbilityDsl.effects.modifyGlory(1)
         });
 
         this.persistentEffect({
-            match: (card) => card.isDishonored && card.type === CardType.Character,
+            match: (card: DrawCard) => card.isDishonored && card.type === CardType.Character,
             targetController: Players.Self,
             effect: AbilityDsl.effects.modifyGlory(-1)
         });

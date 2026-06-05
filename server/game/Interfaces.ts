@@ -213,11 +213,7 @@ export interface TriggeredAbilityAggregateWhenProps<Source = BaseCard, Target ex
 
 export type TriggeredAbilityProps<Source = BaseCard, Target extends BaseCard = BaseCard> = TriggeredAbilityWhenProps<Source, Target> | TriggeredAbilityAggregateWhenProps<Source, Target>;
 
-// The default card type a persistent-effect `match` filters on. Aliased here (not referenced
-// directly from BaseCard) so BaseCard never imports its DrawCard subclass.
-export type DefaultMatchTarget = DrawCard;
-
-export interface PersistentEffectProps<Source = any, MatchTarget extends GameObject = DefaultMatchTarget> {
+export interface PersistentEffectProps<Source = any, MatchTarget extends GameObject = GameObject> {
     location?: Location | Location[];
     condition?: (context: AbilityContext<Source>) => boolean;
     match?: (card: MatchTarget, context?: AbilityContext<Source>) => boolean;

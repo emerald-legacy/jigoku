@@ -8,7 +8,7 @@ class ShosuroDenmaru extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
-            match: (card) => card.isHonored,
+            match: (card: DrawCard) => card.isHonored,
             effect: AbilityDsl.effects.setBaseGlory(0)
         });
     }

@@ -9,7 +9,7 @@ class NimbleNoyan extends DrawCard {
         this.dire({
             condition: context => context.source.isParticipating(),
             targetController: Players.Any,
-            match: card => card.type === CardType.Character && card.isParticipating(),
+            match: (card: DrawCard) => card.type === CardType.Character && card.isParticipating(),
             effect: AbilityDsl.effects.canContributeWhileBowed()
         });
     }

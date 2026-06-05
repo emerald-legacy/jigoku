@@ -7,6 +7,7 @@ import type {
 } from '../../Interfaces.js';
 import type BaseCard from '../../BaseCard.js';
 import type DrawCard from '../../DrawCard.js';
+import type { GameObject } from '../../GameObject.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import GainAbility from '../GainAbility.js';
 
@@ -16,7 +17,7 @@ export function gainAbility<Source extends BaseCard = DrawCard>(abilityType: Abi
 
 export function gainAbility<Source extends BaseCard = DrawCard>(abilityType: AbilityType.DuelReaction, properties: TriggeredAbilityWhenProps<Source>): Res;
 
-export function gainAbility<Source extends BaseCard = DrawCard>(abilityType: AbilityType.Persistent, properties: PersistentEffectProps<Source>): Res;
+export function gainAbility<Source extends BaseCard = DrawCard, MatchT extends GameObject = GameObject>(abilityType: AbilityType.Persistent, properties: PersistentEffectProps<Source, MatchT>): Res;
 
 export function gainAbility<Source extends BaseCard = DrawCard>(abilityType: AbilityType.Reaction, properties: TriggeredAbilityProps<Source>): Res;
 

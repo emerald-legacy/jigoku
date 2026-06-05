@@ -7,7 +7,7 @@ class HidaEtsuji extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card, context) => card.type === CardType.Province && card.controller === context?.player,
+            match: (card: DrawCard, context) => card.type === CardType.Province && card.controller === context?.player,
             targetLocation: Location.Provinces,
             targetController: Players.Self,
             effect: AbilityDsl.effects.increaseLimitOnAbilities()

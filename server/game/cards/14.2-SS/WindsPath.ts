@@ -1,6 +1,7 @@
 import { CardType, Location } from '../../Constants.js';
 import { PlayCharacterAsIfFromHandIntoConflict } from '../../PlayCharacterAsIfFromHand.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
+import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 export default class WindsPath extends ProvinceCard {
@@ -10,7 +11,7 @@ export default class WindsPath extends ProvinceCard {
         this.persistentEffect({
             condition: (context) => context.game.isDuringConflict(),
             targetLocation: Location.Provinces,
-            match: (card, context) =>
+            match: (card: DrawCard, context) =>
                 card.type === CardType.Character && card.location === context?.source.location && card.isFaceup(),
             effect: [AbilityDsl.effects.gainPlayAction(PlayCharacterAsIfFromHandIntoConflict)]
         });

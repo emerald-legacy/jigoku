@@ -14,7 +14,7 @@ class Shukujo extends DrawCard {
         });
 
         this.whileAttached({
-            match: card => card.hasTrait('champion'),
+            match: (card: DrawCard) => card.hasTrait('champion'),
             effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Switch the conflict type',
                 condition: (context: AbilityContext<DrawCard>) => context.source.isParticipating(),

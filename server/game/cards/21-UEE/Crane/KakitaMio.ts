@@ -48,7 +48,7 @@ export default class KakitaMio extends DrawCard {
             condition: (context) =>
                 context.game.currentConflict instanceof Conflict &&
                 context.game.currentConflict.getNumberOfParticipantsFor(context.player.opponent, (card) => (card.hasTrait('shadowlands') || card.isTainted)) > 0,
-            match: (card, context) =>
+            match: (card: DrawCard, context) =>
                 card.type === CardType.Character &&
                 card.isParticipatingFor(context?.player as Player) &&
                 (card.hasTrait('imperial') || card.attachments.some((attachment: BaseCard) => attachment.hasTrait('imperial'))),

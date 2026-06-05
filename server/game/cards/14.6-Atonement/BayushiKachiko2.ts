@@ -86,7 +86,7 @@ export default class BayushiKachiko2 extends DrawCard {
             location: Location.PlayArea,
             targetLocation: Location.ConflictDiscardPile,
             targetController: Players.Opponent,
-            match: (card, context) =>
+            match: (card: DrawCard, context) =>
                 card.type === CardType.Event &&
                 card.location === Location.ConflictDiscardPile &&
                 card.owner === context?.player.opponent,
