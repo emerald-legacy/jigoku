@@ -4,6 +4,7 @@ import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
 import type { Cost } from './costs/Cost.js';
+import type { AbilityLimit } from './AbilityLimit.js';
 import type { GameObject } from './GameObject.js';
 import type Ring from './Ring.js';
 import type BaseCard from './BaseCard.js';
@@ -143,8 +144,8 @@ interface AbilityProps<Context> {
     title: string;
     location?: Location | Location[];
     cost?: Cost | Cost[];
-    limit?: any;
-    max?: any;
+    limit?: AbilityLimit;
+    max?: AbilityLimit;
     target?: ActionTarget;
     targets?: ActionTargets;
     initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);

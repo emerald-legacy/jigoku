@@ -4,6 +4,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import { MoveCardAction } from '../GameActions/MoveCardAction.js';
+import type { GameAction } from '../GameActions/GameAction.js';
 import type Player from '../Player.js';
 
 // Restriction predicates read ability/card/game internals (ability.card, ability.properties,
@@ -129,7 +130,7 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
     eventPlayedByHigherBidPlayer: (context, effect, card) =>
         context.source.type === CardType.Event && context.player.showBid > card.controller.showBid,
     toHand: (context) => {
-        let targetActions = context.ability.properties.target ? context.ability.properties.target.gameAction : [];
+        let targetActions: GameAction[] = context.ability.properties.target ? context.ability.properties.target.gameAction : [];
         let nestedActions = context.ability.gameAction
             ? context.ability.gameAction.map((topAction: any) => topAction.properties.gameAction)
             : [];

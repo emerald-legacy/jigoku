@@ -1,4 +1,5 @@
 import * as AbilityLimit from './AbilityLimit.js';
+import type { AbilityLimit as IAbilityLimit } from './AbilityLimit.js';
 import ThenAbility from './ThenAbility.js';
 import type { ThenAbilityProperties } from './ThenAbility.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
@@ -13,13 +14,13 @@ import type { Cost } from './costs/Cost.js';
 
 export interface CardAbilityProperties<C extends AbilityContext = AbilityContext> extends ThenAbilityProperties<C> {
     title?: string;
-    limit?: any;
+    limit?: IAbilityLimit;
     location?: Location | Location[];
     printedAbility?: boolean;
     cannotBeCancelled?: boolean;
     cannotTargetFirst?: boolean;
     cannotBeMirrored?: boolean;
-    max?: any;
+    max?: IAbilityLimit;
     abilityIdentifier?: string;
     origin?: BaseCard;
     initiateDuel?: any;
@@ -38,14 +39,14 @@ const DefaultLocationForType: Record<string, Location> = {
 class CardAbility extends ThenAbility {
     declare properties: CardAbilityProperties;
     title?: string;
-    limit: any;
+    limit: IAbilityLimit;
     abilityCost: Cost[];
     location: Location[];
     printedAbility: boolean;
     cannotBeCancelled?: boolean;
     declare cannotTargetFirst: boolean;
     cannotBeMirrored: boolean;
-    max?: any;
+    max?: IAbilityLimit;
     abilityIdentifier: string;
     maxIdentifier: string;
     origin?: BaseCard;
