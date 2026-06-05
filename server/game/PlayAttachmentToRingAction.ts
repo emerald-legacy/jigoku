@@ -63,7 +63,7 @@ export class PlayAttachmentToRingAction extends BaseAction {
             originalLocation: context.source.location,
             originallyOnTopOfConflictDeck:
                 context.player && context.player.conflictDeck && context.player.conflictDeck[0] === context.source,
-            onPlayCardSource: (context as any).onPlayCardSource,
+            onPlayCardSource: context.onPlayCardSource,
             playType: PlayType.PlayFromHand
         });
         context.game.openEventWindow([

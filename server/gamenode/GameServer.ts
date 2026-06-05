@@ -14,7 +14,7 @@ import Socket from '../Socket.js';
 import { detectBinary } from '../util.js';
 import { SendGameStateProfiler } from './SendGameStateProfiler.js';
 import { WsSocket } from './WsSocket.js';
-import type { GameSummary, LobbyUser, PendingGameDTO } from './LobbyProtocol.js';
+import type { GameSummary, LobbyUser, PendingGameDTO, ShortCardData } from './LobbyProtocol.js';
 import * as env from '../env.js';
 
 export class GameServer implements GameRouter {
@@ -25,7 +25,7 @@ export class GameServer implements GameRouter {
     private host = env.domain;
     private wsSocket: WsSocket;
     private io: socketio.Server;
-    private shortCardData: unknown[] = [];
+    private shortCardData: ShortCardData[] = [];
     private lastSentMessageCount = new Map<string, number>();
     private profiler = new SendGameStateProfiler();
 
@@ -433,7 +433,7 @@ export class GameServer implements GameRouter {
     }
 
     onCardData(cardData: { titleCardData: unknown; shortCardData: unknown }) {
-        this.shortCardData = cardData.shortCardData as unknown[];
+        this.shortCardData = cardData.shortCardData as ShortCardData[];
     }
 
     onConnection(ioSocket: socketio.Socket) {

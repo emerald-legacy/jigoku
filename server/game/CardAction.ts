@@ -52,7 +52,7 @@ export class CardAction extends CardAbility {
         this.evenDuringDynasty = properties.evenDuringDynasty ?? false;
         this.anyPlayer = properties.anyPlayer ?? false;
         this.condition = properties.condition;
-        this.doesNotTarget = (properties as any).doesNotTarget;
+        this.doesNotTarget = (properties as ActionProps & { doesNotTarget: boolean }).doesNotTarget;
         this.conflictProvinceCondition = properties.conflictProvinceCondition ?? ((province) => province === this.card);
         this.canTriggerOutsideConflict = !!properties.canTriggerOutsideConflict;
     }

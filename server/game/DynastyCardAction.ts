@@ -43,7 +43,7 @@ class DynastyCardAction extends BaseAction {
             '{0} plays {1} with {2} additional fate',
             context.player,
             context.source,
-            (context as any).chooseFate
+            (context as AbilityContext & { chooseFate: number }).chooseFate
         );
         if(context.source.checkRestrictions('placeFate', context)) {
             context.source
@@ -68,7 +68,7 @@ class DynastyCardAction extends BaseAction {
         }
         extraFate = extraFate + legendaryFate;
         const status = context.source.getEffects(EffectName.EntersPlayWithStatus)[0];
-        const enterPlayEvent = GameActions.putIntoPlay({ fate: (context as any).chooseFate + extraFate, status }).getEvent(
+        const enterPlayEvent = GameActions.putIntoPlay({ fate: (context as AbilityContext & { chooseFate: number }).chooseFate + extraFate, status }).getEvent(
             context.source,
             context
         );

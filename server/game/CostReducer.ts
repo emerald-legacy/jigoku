@@ -22,7 +22,7 @@ export class CostReducer {
     private costFloor: number;
     private match?: (card: DrawCard, source: BaseCard) => boolean;
     private cardType?: CardType;
-    private targetCondition?: (target: BaseCard, source: BaseCard, context: AbilityContext<any>) => boolean;
+    private targetCondition?: (target: BaseCard, source: BaseCard, context: AbilityContext) => boolean;
     private limit?: AbilityLimit;
     private playingTypes?: Array<PlayType>;
 

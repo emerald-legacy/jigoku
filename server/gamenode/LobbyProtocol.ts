@@ -13,6 +13,12 @@ export interface LobbyUser {
     [key: string]: unknown;
 }
 
+export interface ShortCardData {
+    id: string;
+    name: string;
+    [key: string]: unknown;
+}
+
 export interface DeckDTO {
     _id?: unknown;
     name?: string;

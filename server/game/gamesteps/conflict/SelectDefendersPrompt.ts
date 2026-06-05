@@ -3,6 +3,7 @@ import { CardType, EffectName, EventName } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type Game from '../../Game.js';
 import type DrawCard from '../../DrawCard.js';
+import type { Conflict } from '../../Conflict.js';
 
 const capitalize: Record<string, string> = {
     military: 'Military',
@@ -16,9 +17,9 @@ const capitalize: Record<string, string> = {
 
 class SelectDefendersPrompt extends UiPrompt {
     player: Player;
-    conflict: any;
+    conflict: Conflict;
 
-    constructor(game: Game, player: Player, conflict: any) {
+    constructor(game: Game, player: Player, conflict: Conflict) {
         super(game);
 
         this.player = player;
@@ -37,7 +38,7 @@ class SelectDefendersPrompt extends UiPrompt {
     }
 
     activePrompt() {
-        let promptTitle = (capitalize[this.conflict.conflictType] + ' ' + capitalize[this.conflict.element] + ' Conflict: '
+        let promptTitle = (capitalize[this.conflict.conflictType ?? ''] + ' ' + capitalize[this.conflict.element ?? ''] + ' Conflict: '
             + this.conflict.attackerSkill + ' vs ' + this.conflict.defenderSkill);
 
         if(!this.conflict.conflictType || !this.conflict.element) {

@@ -82,7 +82,7 @@ export class Deck {
                         const CardConstructor = player.game.cardLibrary.get(card.id) ?? StrongholdCard;
                         // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
                         const strongholdCard: StrongholdCard = new CardConstructor(player, card);
-                        strongholdCard.location = '' as any;
+                        strongholdCard.location = '' as Location;
                         strongholdCard.packId = resolvePackId(packId, card, player.game.gameMode);
                         result.stronghold = strongholdCard;
                     }

@@ -458,7 +458,7 @@ export class Conflict extends GameObject {
     calculateSkillFor(cards: BaseCard[]) {
         let skillFunction =
             this.mostRecentEffect(EffectName.ChangeConflictSkillFunction) ||
-            ((card: any) => card.getContributionToConflict(this.conflictType));
+            ((card: BaseCard) => (card as DrawCard).getContributionToConflict(this.conflictType as ConflictType));
         let cannotContributeFunctions = this.getEffects(EffectName.CannotContribute);
 
         return cards.reduce((sum, card) => {
