@@ -1,4 +1,5 @@
 import { AbilityContext } from '../AbilityContext.js';
+import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { EventName, Location, Players } from '../Constants.js';
 import type { Cost, Result } from './Cost.js';
 import { Event } from '../Events/Event.js';
@@ -25,8 +26,8 @@ export class ReduceableFateCost implements Cost {
     public isPrintedFateCost = true;
     constructor(public ignoreType: boolean) {}
 
-    public canPay(context: AbilityContext): boolean {
-        if((context.source as DrawCard).printedCost === null) {
+    public canPay(context: AbilityContext<DrawCard>): boolean {
+        if(context.source.printedCost === null) {
             return false;
         }
 
@@ -42,11 +43,11 @@ export class ReduceableFateCost implements Cost {
         return context.player.fate >= minCost && context.player.checkRestrictions('spendFate', context);
     }
 
-    protected getAlternateFatePools(context: AbilityContext): Set<BaseCard | Ring> {
-        return new Set(context.player.getAlternateFatePools(context.playType, context.source as DrawCard, context));
+    protected getAlternateFatePools(context: AbilityContext<DrawCard>): Set<BaseCard | Ring> {
+        return new Set(context.player.getAlternateFatePools(context.playType, context.source, context));
     }
 
-    public resolve(context: AbilityContext, result: Result): void {
+    public resolve(context: AbilityContext<DrawCard>, result: Result): void {
         const alternatePools = this.getAlternateFatePools(context);
 
         const ringPool = new Set<Ring>();
@@ -139,11 +140,11 @@ export class ReduceableFateCost implements Cost {
         }
     }
 
-    protected getReducedCost(context: AbilityContext): number {
-        return context.player.getReducedCost(context.playType, context.source as DrawCard, null, this.ignoreType);
+    protected getReducedCost(context: AbilityContext<DrawCard>): number {
+        return context.player.getReducedCost(context.playType, context.source, null, this.ignoreType);
     }
 
-    protected getFinalFatecost(context: AbilityContext, reducedCost: number) {
+    protected getFinalFatecost(context: AbilityContext<DrawCard>, reducedCost: number) {
         if(!context.costs.alternateFate) {
             return reducedCost;
         }
@@ -166,7 +167,7 @@ export class ReduceableFateCost implements Cost {
     }
 
     private promptForAlternateFateCardSelect(
-        context: AbilityContext,
+        context: AbilityContext<DrawCard>,
         minFate: number,
         cards: Set<BaseCard | Ring>,
         handler: (alternatePool: PoolOption) => void
@@ -205,7 +206,7 @@ export class ReduceableFateCost implements Cost {
     }
 
     private promptForAlternateFate(
-        context: AbilityContext,
+        context: AbilityContext<DrawCard>,
         result: Result,
         properties: Props,
         handler?: (choice: string) => void
@@ -254,17 +255,17 @@ export class ReduceableFateCost implements Cost {
      */
     protected afterPayHook(_event: any): void {}
 
-    public payEvent(context: AbilityContext): Event {
+    public payEvent(context: TriggeredAbilityContext<DrawCard>): Event {
         const amount = this.getReducedCost(context);
         context.costs.fate = amount;
         return new Event(EventName.OnSpendFate, { amount, context }, (event) => {
-            context.player.markUsedReducers(context.playType, context.source as DrawCard);
+            context.player.markUsedReducers(context.playType, context.source);
             context.player.fate -= this.getFinalFatecost(context, amount);
             this.afterPayHook(event);
         });
     }
 
-    #getMaxPlayerFate(context: AbilityContext): number {
+    #getMaxPlayerFate(context: AbilityContext<DrawCard>): number {
         if(context.source.isTemptationsMaho()) {
             return 0;
         }

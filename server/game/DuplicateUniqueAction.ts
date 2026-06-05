@@ -1,11 +1,10 @@
-import BaseAction from './BaseAction.js';
+import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import { Phases, PlayType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type DrawCard from './DrawCard.js';
 
-class DuplicateUniqueAction extends BaseAction {
+class DuplicateUniqueAction extends PlayCardSourceAction {
     title = 'Add fate to a duplicate';
-    declare card: DrawCard;
 
     constructor(card: DrawCard) {
         super(card);
@@ -38,8 +37,8 @@ class DuplicateUniqueAction extends BaseAction {
         context.game.addMessage('{0} discards a duplicate to add 1 fate to {1}', context.player, context.source);
     }
 
-    executeHandler(context: AbilityContext): void {
-        const duplicate = context.player.getDuplicateInPlay(context.source as DrawCard);
+    executeHandler(context: AbilityContext<DrawCard>): void {
+        const duplicate = context.player.getDuplicateInPlay(context.source);
         context.game.applyGameAction(context, { placeFate: duplicate, discardCard: context.source });
     }
 }

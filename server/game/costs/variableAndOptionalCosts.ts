@@ -87,10 +87,10 @@ export function chooseFate(type: PlayType): Cost {
         canPay() {
             return true;
         },
-        resolve(context: TriggeredAbilityContext & { chooseFate: number }, result: Result) {
+        resolve(context: TriggeredAbilityContext<DrawCard> & { chooseFate: number }, result: Result) {
             context.chooseFate = 0;
 
-            let extrafate = context.player.fate - context.player.getReducedCost(type, context.source as DrawCard);
+            let extrafate = context.player.fate - context.player.getReducedCost(type, context.source);
             if(!context.player.checkRestrictions('placeFateWhenPlayingCharacter', context)) {
                 extrafate = 0;
             }

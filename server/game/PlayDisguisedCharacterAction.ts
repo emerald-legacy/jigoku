@@ -11,16 +11,17 @@ import type { Event } from './Events/Event.js';
 
 function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIntoLocation) {
     return {
-        canPay: (context: AbilityContext) =>
-            (context.player.cardsInPlay as BaseCard[]).some((card) =>
-                (context.source as DrawCard).canDisguise(card as DrawCard, context, !!intoConflictOnly)
-            ),
-        resolve: (context: AbilityContext, results: any) =>
-            context.game.promptForSelect(context.player, {
+        canPay(context: AbilityContext<DrawCard>) {
+            return (context.player.cardsInPlay as BaseCard[]).some((card) =>
+                context.source.canDisguise(card as DrawCard, context, !!intoConflictOnly)
+            );
+        },
+        resolve(context: AbilityContext<DrawCard>, results: any) {
+            return context.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a character to replace',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card: BaseCard) => (context.source as DrawCard).canDisguise(card as DrawCard, context, !!intoConflictOnly),
+                cardCondition: (card: BaseCard) => context.source.canDisguise(card as DrawCard, context, !!intoConflictOnly),
                 context: context,
                 onSelect: (player: Player, card: BaseCard) => {
                     context.costs.chooseDisguisedCharacter = card;
@@ -30,16 +31,19 @@ function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIn
                     results.cancelled = true;
                     return true;
                 }
-            }),
-        pay: () => true
+            });
+        },
+        pay() {
+            return true;
+        }
     };
 }
 
 class DisguisedReduceableFateCost extends ReduceableFateCost implements Cost {
-    canPay(context: AbilityContext) {
+    canPay(context: AbilityContext<DrawCard>) {
         const maxCharacterCost = Math.max(
             ...context.player.cardsInPlay.map((card) =>
-                (context.source as DrawCard).canDisguise(card, context, false) ? (card.getCost() ?? 0) : 0
+                context.source.canDisguise(card, context, false) ? (card.getCost() ?? 0) : 0
             )
         );
         const minCost = Math.max(context.player.getMinimumCost(context.playType, context) - maxCharacterCost, 0);
@@ -48,7 +52,7 @@ class DisguisedReduceableFateCost extends ReduceableFateCost implements Cost {
         );
     }
 
-    getReducedCost(context: AbilityContext) {
+    getReducedCost(context: AbilityContext<DrawCard>) {
         if(context.costs.chooseDisguisedCharacter) {
             return Math.max(super.getReducedCost(context) - ((context.costs.chooseDisguisedCharacter as DrawCard).getCost() ?? 0), 0);
         }

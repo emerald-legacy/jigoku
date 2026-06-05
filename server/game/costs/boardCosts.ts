@@ -282,17 +282,17 @@ export function switchLocation(): Cost {
         getActionName(_context: TriggeredAbilityContext) {
             return 'switchLocation';
         },
-        getCostMessage(context: TriggeredAbilityContext) {
-            if(!(context.source as DrawCard).isParticipating()) {
+        getCostMessage(context: TriggeredAbilityContext<DrawCard>) {
+            if(!context.source.isParticipating()) {
                 return ['moving {1} home', [context.source]];
             }
             return ['moving {1} to the conflict', [context.source]];
         },
-        resolve(context: TriggeredAbilityContext, _result) {
+        resolve(context: TriggeredAbilityContext<DrawCard>, _result) {
             context.costs.switchLocation = context.source;
         },
-        payEvent(context: TriggeredAbilityContext) {
-            const action = (context.source as DrawCard).isParticipating()
+        payEvent(context: TriggeredAbilityContext<DrawCard>) {
+            const action = context.source.isParticipating()
                 ? context.game.actions.sendHome({ target: context.costs.switchLocation as BaseCard })
                 : context.game.actions.moveToConflict({ target: context.costs.switchLocation as BaseCard });
             return action.getEvent(context.costs.switchLocation, context);
