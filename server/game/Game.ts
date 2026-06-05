@@ -1,3 +1,4 @@
+import type { LobbyUser, ShortCardData } from '../gamenode/LobbyProtocol.js';
 import ChatCommands from './ChatCommands.js';
 import { GameChat } from './GameChat.js';
 import { EffectEngine } from './EffectEngine.js';
@@ -20,6 +21,8 @@ import ThenEventWindow from './Events/ThenEventWindow.js';
 import AbilityResolver from './gamesteps/AbilityResolver.js';
 import SimultaneousEffectWindow from './gamesteps/SimultaneousEffectWindow.js';
 import type ForcedTriggeredAbilityWindow from './gamesteps/ForcedTriggeredAbilityWindow.js';
+import type HonorBidPrompt from './gamesteps/HonorBidPrompt.js';
+import type ActionWindow from './gamesteps/ActionWindow.js';
 import { AbilityContext } from './AbilityContext.js';
 import Ring from './Ring.js';
 import { Conflict } from './Conflict.js';
@@ -61,18 +64,23 @@ interface GameDetails {
     name: string;
     allowSpectators: boolean;
     spectatorSquelch: boolean;
-    owner: any;
+    owner: LobbyUser | string;
     savedGameId?: string;
     gameType: string;
     gameMode: string;
     password?: string;
-    players: Record<string, any>;
-    spectators: Record<string, any>;
-    clocks: any;
+    players: Record<string, GamePlayerEntry>;
+    spectators: Record<string, GamePlayerEntry>;
+    clocks: unknown;
+}
+
+interface GamePlayerEntry {
+    id: string;
+    user: { username: string; emailHash: string };
 }
 
 interface GameOptions {
-    shortCardData?: any[];
+    shortCardData?: ShortCardData[];
     cardLibrary?: Map<string, unknown>;
     router?: GameRouter;
 }
@@ -89,14 +97,14 @@ class Game {
     name: string;
     allowSpectators: boolean;
     spectatorSquelch: boolean;
-    owner: any;
+    owner: string;
     started: boolean;
     playStarted: boolean;
     createdAt: Date;
     savedGameId?: string;
     gameType: string;
     currentAbilityWindow: ForcedTriggeredAbilityWindow | null;
-    currentActionWindow: any;
+    currentActionWindow: ActionWindow | null;
     currentEventWindow: EventWindow | null;
     currentConflict: Conflict | null;
     currentDuel: Duel | null;
@@ -112,7 +120,7 @@ class Game {
     private readonly serializer: GameStateSerializer;
     private readonly connections: GameConnectionManager;
     rings: Record<string, Ring>;
-    shortCardData: any[];
+    shortCardData: ShortCardData[];
     cardLibrary: Map<string, unknown>;
     router?: GameRouter;
     allCards: BaseCard[];
@@ -137,7 +145,7 @@ class Game {
         this.name = details.name;
         this.allowSpectators = details.allowSpectators;
         this.spectatorSquelch = details.spectatorSquelch;
-        this.owner = details.owner;
+        this.owner = typeof details.owner === 'string' ? details.owner : details.owner.username;
         this.started = false;
         this.playStarted = false;
         this.createdAt = new Date();
@@ -378,7 +386,7 @@ class Game {
         return array;
     }
 
-    createToken(card: DrawCard, token?: any): DrawCard {
+    createToken(card: DrawCard, token?: new (card: DrawCard) => DrawCard): DrawCard {
         let tokenCard: DrawCard;
         if(!token) {
             tokenCard = new SpiritOfTheRiver(card);
@@ -545,7 +553,7 @@ class Game {
         this.input.concede(playerName);
     }
 
-    selectDeck(playerName: string, deck: any): void {
+    selectDeck(playerName: string, deck: unknown): void {
         this.input.selectDeck(playerName, deck);
     }
 
@@ -573,7 +581,7 @@ class Game {
         this.prompts.promptForRingSelect(player, properties);
     }
 
-    promptForHonorBid(activePromptTitle: string, costHandler?: any, prohibitedBids?: any, duel: any = null): void {
+    promptForHonorBid(activePromptTitle: string, costHandler?: ConstructorParameters<typeof HonorBidPrompt>[2], prohibitedBids?: ConstructorParameters<typeof HonorBidPrompt>[3], duel: ConstructorParameters<typeof HonorBidPrompt>[4] = null): void {
         this.prompts.promptForHonorBid(activePromptTitle, costHandler, prohibitedBids, duel);
     }
 
@@ -708,16 +716,6 @@ class Game {
      */
     queueSimpleStep(handler: () => any): void {
         this.pipeline.queueStep(new SimpleStep(this, handler));
-    }
-
-    /*
-     * Tells the current action window that the player with priority has taken
-     * an action (and so priority should pass to the other player)
-     */
-    markActionAsTaken(): void {
-        if(this.currentActionWindow) {
-            this.currentActionWindow.markActionAsTaken();
-        }
     }
 
     /*
@@ -888,11 +886,11 @@ class Game {
         return undefined;
     }
 
-    watch(socketId: string, user: any): boolean {
+    watch(socketId: string, user: LobbyUser): boolean {
         return this.connections.watch(socketId, user);
     }
 
-    join(socketId: string, user: any): boolean {
+    join(socketId: string, user: LobbyUser): boolean {
         return this.connections.join(socketId, user);
     }
 

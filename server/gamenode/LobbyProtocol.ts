@@ -115,7 +115,7 @@ export interface GameSummary {
     manualMode: boolean;
     messages: unknown[];
     name: string;
-    owner: Record<string, unknown>;
+    owner: string;
     players: Record<string, PlayerSummary>;
     started: boolean;
     startedAt?: Date | string;

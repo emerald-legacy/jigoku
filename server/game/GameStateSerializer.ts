@@ -127,12 +127,11 @@ export class GameStateSerializer {
             conflictState = game.currentConflict.getSummary();
         }
 
-        const { blocklist: _blocklist, email: _email, emailHash: _emailHash, promptedActionWindows: _promptedActionWindows, settings: _settings, ...ownerSummary } = game.owner;
         return {
             id: game.id,
             manualMode: game.manualMode,
             name: game.name,
-            owner: ownerSummary,
+            owner: game.owner,
             conflict: conflictState,
             phase: game.currentPhase,
             roundNumber: game.roundNumber,
@@ -258,7 +257,6 @@ export class GameStateSerializer {
             };
         }
 
-        const { blocklist: _blocklist2, email: _email2, emailHash: _emailHash2, promptedActionWindows: _promptedActionWindows2, settings: _settings2, ...ownerSummary } = game.owner;
         return {
             allowSpectators: game.allowSpectators,
             createdAt: game.createdAt,
@@ -267,7 +265,7 @@ export class GameStateSerializer {
             manualMode: game.manualMode,
             messages: game.gameChat.messages,
             name: game.name,
-            owner: ownerSummary,
+            owner: game.owner,
             players: playerSummaries,
             started: game.started,
             startedAt: game.startedAt,
