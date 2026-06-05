@@ -1,7 +1,7 @@
 import { GameModes } from '../GameModes.js';
 import { CardType, EffectName, EventName, Phases, Players } from './Constants.js';
 import { ReduceableFateCost } from './costs/ReduceableFateCost.js';
-import BaseAction from './BaseAction.js';
+import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import { AbilityContext } from './AbilityContext.js';
@@ -62,17 +62,17 @@ export enum PlayDisguisedCharacterIntoLocation {
     Home
 }
 
-export class PlayDisguisedCharacterAction extends BaseAction {
+export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
     public title = 'Play this character with Disguise';
 
     constructor(
-        card: BaseCard,
+        card: DrawCard,
         private intoLocation = PlayDisguisedCharacterIntoLocation.Any
     ) {
         super(card, [ChooseDisguisedCharacterCost(intoLocation), new DisguisedReduceableFateCost(false)]);
     }
 
-    public meetsRequirements(context = this.createContext(), ignoredRequirements: string[] = []): string {
+    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []): string {
         if(!ignoredRequirements.includes('phase') && context.game.currentPhase !== Phases.Conflict) {
             return 'phase';
         } else if(
@@ -82,10 +82,10 @@ export class PlayDisguisedCharacterAction extends BaseAction {
             return 'location';
         } else if(
             !ignoredRequirements.includes('cannotTrigger') &&
-            !(context.source as DrawCard).canPlay(context, context.playType)
+            !context.source.canPlay(context, context.playType)
         ) {
             return 'cannotTrigger';
-        } else if((context.source as DrawCard).anotherUniqueInPlay(context.player)) {
+        } else if(context.source.anotherUniqueInPlay(context.player)) {
             return 'unique';
         } else if(!context.player.checkRestrictions('enterPlay', context)) {
             return 'restriction';
@@ -93,7 +93,7 @@ export class PlayDisguisedCharacterAction extends BaseAction {
         return super.meetsRequirements(context);
     }
 
-    public executeHandler(context: AbilityContext) {
+    public executeHandler(context: AbilityContext<DrawCard>) {
         const legendaryFate = context.source.sumEffects(EffectName.LegendaryFate);
         let extraFate = context.source.sumEffects(EffectName.GainExtraFateWhenPlayed);
         if(!context.source.checkRestrictions('placeFate', context)) {
@@ -163,7 +163,7 @@ export class PlayDisguisedCharacterAction extends BaseAction {
                     }
                     for(const token of replacedCharacter.statusTokens) {
                         context.game.actions
-                            .moveStatusToken({ target: token, recipient: context.source as DrawCard })
+                            .moveStatusToken({ target: token, recipient: context.source })
                             .addEventsToArray(moveEvents, context);
                     }
                     moveEvents.push(

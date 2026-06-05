@@ -1,11 +1,10 @@
 import type { AbilityContext } from './AbilityContext.js';
-import BaseAction from './BaseAction.js';
+import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import { EffectName, EventName, Location, Phases, PlayType, Players } from './Constants.js';
 import { chooseFate } from './costs/variableAndOptionalCosts.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { putIntoConflict, putIntoPlay } from './GameActions/GameActions.js';
 import { parseGameMode } from './GameMode.js';
-import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 
 export enum PlayCharacterIntoLocation {
@@ -14,16 +13,16 @@ export enum PlayCharacterIntoLocation {
     Home
 }
 
-type ExecutionContext = AbilityContext & { chooseFate: number };
+type ExecutionContext = AbilityContext<DrawCard> & { chooseFate: number };
 
-export class PlayCharacterAction extends BaseAction {
+export class PlayCharacterAction extends PlayCardSourceAction {
     public title = 'Play this character';
 
-    public constructor(card: BaseCard, private intoLocation = PlayCharacterIntoLocation.Any) {
+    public constructor(card: DrawCard, private intoLocation = PlayCharacterIntoLocation.Any) {
         super(card, [chooseFate(PlayType.PlayFromHand), payReduceableFateCost()]);
     }
 
-    public meetsRequirements(context = this.createContext(), ignoredRequirements: string[] = []): string {
+    public meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []): string {
         if(
             !ignoredRequirements.includes('phase') &&
             context.game.currentPhase === Phases.Dynasty &&
@@ -39,11 +38,11 @@ export class PlayCharacterAction extends BaseAction {
         }
         if(
             !ignoredRequirements.includes('cannotTrigger') &&
-            !(context.source as DrawCard).canPlay(context, PlayType.PlayFromHand)
+            !context.source.canPlay(context, PlayType.PlayFromHand)
         ) {
             return 'cannotTrigger';
         }
-        if((context.source as DrawCard).anotherUniqueInPlay(context.player)) {
+        if(context.source.anotherUniqueInPlay(context.player)) {
             return 'unique';
         }
         if(
