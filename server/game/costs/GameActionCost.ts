@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type { Cost, Result } from './Cost.js';
+import type { Event } from '../Events/Event.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 
 export class GameActionCost implements Cost {
@@ -13,7 +14,7 @@ export class GameActionCost implements Cost {
         return this.action.hasLegalTarget(context);
     }
 
-    addEventsToArray(events: any[], context: AbilityContext, _result: Result): void {
+    addEventsToArray(events: Event[], context: AbilityContext, _result: Result): void {
         context.costs[this.action.name] = this.action.getProperties(context).target;
         this.action.addEventsToArray(events, context);
     }

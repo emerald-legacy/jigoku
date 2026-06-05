@@ -6,7 +6,7 @@ import BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import { AbilityContext } from './AbilityContext.js';
 import Player from './Player.js';
-import type { Cost } from './costs/Cost.js';
+import type { Cost, Result } from './costs/Cost.js';
 import type { Event } from './Events/Event.js';
 
 function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIntoLocation) {
@@ -16,7 +16,7 @@ function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIn
                 context.source.canDisguise(card as DrawCard, context, !!intoConflictOnly)
             );
         },
-        resolve(context: AbilityContext<DrawCard>, results: any) {
+        resolve(context: AbilityContext<DrawCard>, results: Result) {
             return context.game.promptForSelect(context.player, {
                 activePromptTitle: 'Choose a character to replace',
                 cardType: CardType.Character,

@@ -2,6 +2,7 @@ import type { AbilityContext } from './AbilityContext.js';
 import type { EventPayload } from './Events/EventPayloads.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import type { GameAction } from './GameActions/GameAction.js';
+import type { Event } from './Events/Event.js';
 import type Ring from './Ring.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
@@ -200,7 +201,7 @@ export interface TriggeredAbilityWhenProps<Source = BaseCard, Target extends Bas
 }
 
 export interface TriggeredAbilityAggregateWhenProps<Source = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<TriggeredAbilityContext<Source, Target>> {
-    aggregateWhen: (events: any[], context: TriggeredAbilityContext<Source, Target>) => boolean;
+    aggregateWhen: (events: Event[], context: TriggeredAbilityContext<Source, Target>) => boolean;
     collectiveTrigger?: boolean;
     target?: TriggeredAbilityTarget & TriggeredAbilityTarget;
     targets?: TriggeredAbilityTargets;

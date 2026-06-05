@@ -14,13 +14,13 @@ import type { Cost } from './costs/Cost.js';
 interface AbilityTarget {
     name: string;
     properties: any;
-    dependentCost?: any;
+    dependentCost?: Cost | null;
     canResolve(context: AbilityContext): boolean;
     resolve(context: AbilityContext, targetResults: TargetResults): void;
     checkTarget(context: AbilityContext): boolean;
     hasLegalTarget(context: AbilityContext): boolean;
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean;
-    getGameAction(context: AbilityContext): any[];
+    getGameAction(context: AbilityContext): GameAction[];
 }
 
 export interface BaseAbilityProperties {
