@@ -14,7 +14,7 @@ import Socket from '../Socket.js';
 import { detectBinary } from '../util.js';
 import { SendGameStateProfiler } from './SendGameStateProfiler.js';
 import { WsSocket } from './WsSocket.js';
-import type { GameSummary, LobbyUser, PendingGameDTO, ShortCardData } from './LobbyProtocol.js';
+import type { GameSummary, PendingGameDTO, ShortCardData, UserIdentity } from './LobbyProtocol.js';
 import * as env from '../env.js';
 
 export class GameServer implements GameRouter {
@@ -372,7 +372,7 @@ export class GameServer implements GameRouter {
         game.initialise();
     }
 
-    onSpectator(pendingGame: PendingGameDTO, user: LobbyUser) {
+    onSpectator(pendingGame: PendingGameDTO, user: UserIdentity) {
         const game = this.games.get(pendingGame.id);
         if(!game) {
             return;

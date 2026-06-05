@@ -2,18 +2,18 @@ import Player from './Player.js';
 import { Spectator } from './Spectator.js';
 import type Game from './Game.js';
 import type Socket from '../Socket.js';
-import type { LobbyUser } from '../gamenode/LobbyProtocol.js';
+import type { LobbyUser, UserIdentity } from '../gamenode/LobbyProtocol.js';
 
 export class GameConnectionManager {
     constructor(private readonly game: Game) {}
 
-    watch(socketId: string, user: LobbyUser): boolean {
+    watch(socketId: string, user: UserIdentity): boolean {
         const game = this.game;
         if(!game.allowSpectators) {
             return false;
         }
 
-        game.playersAndSpectators[user.username] = new Spectator(socketId, user as { username: string; emailHash: string });
+        game.playersAndSpectators[user.username] = new Spectator(socketId, user);
         game.invalidatePlayerCaches();
         game.addMessage('{0} has joined the game as a spectator', user.username);
 
