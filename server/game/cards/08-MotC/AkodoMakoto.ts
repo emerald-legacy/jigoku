@@ -20,7 +20,7 @@ class AkodoMakoto extends DrawCard {
                     return card.hasTrait('courtier') && card.isParticipating();
                 },
                 gameAction: AbilityDsl.actions.conditional({
-                    condition: context => context.target.getFate() > 0,
+                    condition: context => (context.target as DrawCard).getFate() > 0,
                     trueGameAction: AbilityDsl.actions.removeFate(),
                     falseGameAction: AbilityDsl.actions.discardFromPlay()
                 })

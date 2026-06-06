@@ -33,6 +33,9 @@ import { Duel } from './Duel.js';
 import ConflictFlow from './gamesteps/conflict/ConflictFlow.js';
 import { GameInputHandler } from './GameInputHandler.js';
 import { GameStateSerializer } from './GameStateSerializer.js';
+import type { DeckForSaving, FormattedDeck } from './GameStateSerializer.js';
+import type { MenuItem } from './MenuCommands.js';
+import type { Step } from './gamesteps/Step.js';
 import { GameEventManager } from './GameEventManager.js';
 import { GameConnectionManager } from './GameConnectionManager.js';
 import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
@@ -464,11 +467,11 @@ class Game {
         this.input.ringClicked(sourcePlayer, ringindex);
     }
 
-    menuItemClick(sourcePlayer: string, cardId: string, menuItem: any): void {
+    menuItemClick(sourcePlayer: string, cardId: string, menuItem: MenuItem): void {
         this.input.menuItemClick(sourcePlayer, cardId, menuItem);
     }
 
-    ringMenuItemClick(sourcePlayer: string, sourceRing: { element: string }, menuItem: any): void {
+    ringMenuItemClick(sourcePlayer: string, sourceRing: { element: string }, menuItem: MenuItem): void {
         this.input.ringMenuItemClick(sourcePlayer, sourceRing, menuItem);
     }
 
@@ -709,7 +712,7 @@ class Game {
     /*
      * Adds a step to the pipeline queue
      */
-    queueStep(step: any): any {
+    queueStep<T extends Step>(step: T): T {
         this.pipeline.queueStep(step);
         return step;
     }
@@ -965,7 +968,7 @@ class Game {
         this.pipeline.continue();
     }
 
-    formatDeckForSaving(deck: any): any {
+    formatDeckForSaving(deck: DeckForSaving): FormattedDeck {
         return this.serializer.formatDeckForSaving(deck);
     }
 

@@ -69,7 +69,7 @@ class ReveredBonsho extends DrawCard {
         const moveEvents: Event[] = [];
         ringFate.forEach((obj: RingFate) => {
             if(obj.fate > 0) {
-                context.game.actions.placeFate({ target: obj.ring as any, amount: obj.fate }).addEventsToArray(moveEvents, context);
+                context.game.actions.placeFateOnRing({ target: obj.ring, amount: obj.fate }).addEventsToArray(moveEvents, context);
                 context.game.addMessage('{0} places {1} fate on the {2} due to the effects of {3}', targetPlayer, obj.fate, obj.ring, this);
             }
         });

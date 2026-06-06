@@ -21,7 +21,7 @@ export default class KinutanukiYoite extends DrawCard {
                 cardCondition: (card: DrawCard, context) =>
                     card.isParticipating() && card.militarySkill <= context.source.militarySkill,
                 gameAction: AbilityDsl.actions.conditional({
-                    condition: (context) => context.target.getFate() === 0,
+                    condition: (context) => (context.target as DrawCard).getFate() === 0,
                     trueGameAction: AbilityDsl.actions.discardFromPlay(),
                     falseGameAction: AbilityDsl.actions.removeFate()
                 })

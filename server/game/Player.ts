@@ -486,7 +486,7 @@ class Player extends GameObject {
         return this.opponent !== undefined && this.opponent.showBid > this.showBid;
     }
 
-    hasLegalConflictDeclaration(properties: any): boolean {
+    hasLegalConflictDeclaration(properties: ConflictDeclarationProperties): boolean {
         return this.conflictManager.hasLegalConflictDeclaration(properties);
     }
 

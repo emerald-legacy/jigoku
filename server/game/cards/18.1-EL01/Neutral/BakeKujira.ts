@@ -20,7 +20,7 @@ export default class BakeKujira extends DrawCard {
                 controller: Players.Any,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source,
                 gameAction: AbilityDsl.actions.conditional({
-                    condition: (context) => this.#shouldDiscardTarget(context),
+                    condition: (context) => this.#shouldDiscardTarget(context as AbilityContext<DrawCard, DrawCard>),
                     trueGameAction: AbilityDsl.actions.discardFromPlay(),
                     falseGameAction: AbilityDsl.actions.removeFate()
                 })

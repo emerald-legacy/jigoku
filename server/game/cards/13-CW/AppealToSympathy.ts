@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, Location } from '../../Constants.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 class AppealToSympathy extends DrawCard {
     static id = 'appeal-to-sympathy';
@@ -15,7 +16,7 @@ class AppealToSympathy extends DrawCard {
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cancel(),
                 AbilityDsl.actions.conditional({
-                    condition: (context) => !!context.event.card?.isConflict,
+                    condition: (context) => !!(context as TriggeredAbilityContext).event.card?.isConflict,
                     trueGameAction: AbilityDsl.actions.moveCard((context) => ({
                         target: context.event.card,
                         destination: Location.ConflictDeck

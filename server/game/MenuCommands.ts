@@ -8,11 +8,11 @@ import type Player from './Player.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type Ring from './Ring.js';
 
-type MenuItem = {
+export type MenuItem = {
     command: string;
-    text: string;
-    arg: string;
-    method: string;
+    text?: string;
+    arg?: string;
+    method?: string;
 };
 
 export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, card: BaseCard) {

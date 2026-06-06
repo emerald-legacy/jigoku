@@ -64,7 +64,7 @@ class StoneBreaker extends DrawCard {
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: card => card.isConflictProvince() && card.getStrength() > 0,
+                cardCondition: (card: BaseCard) => card.isConflictProvince() && (card as ProvinceCard).getStrength() > 0,
                 message: '{0} reduces the strength of {1} by 2',
                 messageArgs: cards => [context.player, cards],
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({

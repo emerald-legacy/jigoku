@@ -23,9 +23,9 @@ export default class DaidojiAmbusher extends DrawCard {
                         effect: AbilityDsl.effects.modifyMilitarySkill(-2)
                     }),
                     AbilityDsl.actions.conditional({
-                        condition: (context) => this.triggerKickerEffect(context, Timing.AFTER_PENALTY),
+                        condition: (context) => this.triggerKickerEffect(context as AbilityContext<DrawCard, DrawCard>, Timing.AFTER_PENALTY),
                         trueGameAction: AbilityDsl.actions.conditional({
-                            condition: (context) => this.shouldDiscardTarget(context),
+                            condition: (context) => this.shouldDiscardTarget(context as AbilityContext<DrawCard, DrawCard>),
                             trueGameAction: AbilityDsl.actions.discardFromPlay(),
                             falseGameAction: AbilityDsl.actions.removeFate()
                         }),

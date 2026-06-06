@@ -21,7 +21,7 @@ class Reconnaissance extends DrawCard {
                 cardType: CardType.Province,
                 controller: Players.Any,
                 gameAction: AbilityDsl.actions.conditional({
-                    condition: context => context.player.opponent && context.player.honor >= context.player.opponent.honor + 5,
+                    condition: context => !!(context.player.opponent && context.player.honor >= context.player.opponent.honor + 5),
                     trueGameAction: AbilityDsl.actions.sequential([
                         this.getLookAtAction(),
                         AbilityDsl.actions.selectCard(context => {

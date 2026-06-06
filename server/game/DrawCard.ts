@@ -716,7 +716,7 @@ class DrawCard extends BaseCard {
     canDeclareAsAttacker(
         conflictType: string,
         ring: Ring,
-        province?: ProvinceCard,
+        province?: ProvinceCard | null,
         incomingAttackers?: DrawCard[]
     ): boolean {
         if(!province) {

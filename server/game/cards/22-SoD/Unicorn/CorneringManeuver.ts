@@ -26,7 +26,7 @@ export default class CorneringManeuver extends DrawCard {
                     controller: Players.Self,
                     cardType: CardType.Character,
                     message: '{0} moves {1} {2}',
-                    messageArgs: card => Array.isArray(card)
+                    messageArgs: (card: DrawCard | DrawCard[]) => Array.isArray(card)
                         ? [context?.player, '', '']
                         : [context?.player, card, card.isParticipating() ? 'home' : 'to the conflict'],
                     gameAction: AbilityDsl.actions.multiple([

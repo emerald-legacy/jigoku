@@ -11,7 +11,7 @@ interface DeckCardEntry {
     card?: { id: string };
 }
 
-interface DeckForSaving {
+export interface DeckForSaving {
     faction: unknown;
     conflictCards: DeckCardEntry[];
     dynastyCards: DeckCardEntry[];
@@ -20,7 +20,7 @@ interface DeckForSaving {
     role?: DeckCardEntry[];
 }
 
-interface FormattedDeck {
+export interface FormattedDeck {
     faction: unknown;
     conflictCards: string[];
     dynastyCards: string[];

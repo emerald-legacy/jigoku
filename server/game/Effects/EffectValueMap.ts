@@ -18,6 +18,18 @@ import type { AttachmentPoliticalSkillModifierValue } from './Library/attachment
 
 export type FatePool = DrawCard | Ring;
 
+export interface ParticipantCost {
+    hasLegalTarget(context: AbilityContext): boolean;
+    resolve(player: Player, context: AbilityContext): void;
+    getEffectMessage(context: AbilityContext): string;
+}
+
+export interface ParticipantCostEffect {
+    type: string;
+    cost: ParticipantCost | ((player: Player) => ParticipantCost);
+    message?: string;
+}
+
 /**
  * FOUNDATION (in progress — multi-turn effort): maps each EffectName to the *resolved* value type
  * that `getEffects(name)` should yield (i.e. the type after a Flexible/dynamic effect has been
@@ -43,6 +55,8 @@ export type FatePool = DrawCard | Ring;
  */
 export interface EffectValueMap {
     [name: string]: unknown;
+
+    [EffectName.CostToDeclareAnyParticipants]: ParticipantCostEffect;
 
     // --- numeric (resolved value is a number) ---
     [EffectName.AttachmentLimit]: number;

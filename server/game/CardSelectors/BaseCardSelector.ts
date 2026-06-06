@@ -10,7 +10,7 @@ type ControllerProp = Players | ((context: AbilityContext) => Players);
 export type NumCardsFunc = (context: AbilityContext) => number;
 
 export interface BaseCardSelectorProperties {
-    cardCondition?: (card: any, context: AbilityContext) => boolean;
+    cardCondition?(card: BaseCard, context: AbilityContext): boolean;
     cardType?: CardType | CardType[];
     optional?: boolean;
     location?: Location | Location[];

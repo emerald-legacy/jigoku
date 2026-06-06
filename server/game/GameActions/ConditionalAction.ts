@@ -5,7 +5,7 @@ import type { GameObject } from '../GameObject.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface ConditionalActionProperties extends GameActionProperties {
-    condition: ((context: any, properties: ConditionalActionProperties) => boolean) | boolean;
+    condition: ((context: AbilityContext, properties: ConditionalActionProperties) => boolean) | boolean;
     trueGameAction: GameAction;
     falseGameAction: GameAction;
 }

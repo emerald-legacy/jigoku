@@ -1,4 +1,5 @@
 import * as MenuCommands from './MenuCommands.js';
+import type { MenuItem } from './MenuCommands.js';
 import { Phases } from './Constants.js';
 import { resolvePackId } from './CardPackUtil.js';
 import type Game from './Game.js';
@@ -88,7 +89,7 @@ export class GameInputHandler {
         }
     }
 
-    menuItemClick(sourcePlayer: string, cardId: string, menuItem: { command: string; text: string; arg: string; method: string }): void {
+    menuItemClick(sourcePlayer: string, cardId: string, menuItem: MenuItem): void {
         const player = this.game.getPlayerByName(sourcePlayer);
         const card = this.game.findAnyCardInAnyList(cardId);
         if(!player || !card) {
@@ -108,7 +109,7 @@ export class GameInputHandler {
         this.game.checkGameState(true);
     }
 
-    ringMenuItemClick(sourcePlayer: string, sourceRing: { element: string }, menuItem: { command: string; text: string; arg: string; method: string }): void {
+    ringMenuItemClick(sourcePlayer: string, sourceRing: { element: string }, menuItem: MenuItem): void {
         const player = this.game.getPlayerByName(sourcePlayer);
         const ring = this.game.rings[sourceRing.element];
         if(!player || !ring) {

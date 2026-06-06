@@ -46,7 +46,7 @@ class ExposedCourtyard extends DrawCard {
                     activePromptTitle: 'Choose an event',
                     controller: Players.Self,
                     targets: true,
-                    subActionProperties: card => {
+                    subActionProperties: (card: DrawCard) => {
                         context.target = card;
                         return ({ target: card });
                     },

@@ -23,7 +23,7 @@ export default class KotobukisBlessing extends DrawCard {
                         optional: true,
                         gameAction: AbilityDsl.actions.discardFromPlay(),
                         message: '{0} chooses to discard {1} from {2}',
-                        messageArgs: (cards) => [
+                        messageArgs: (cards: DrawCard[]) => [
                             context.player,
                             cards.length === 0 ? 'no attachments' : cards,
                             context.target

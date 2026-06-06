@@ -16,7 +16,7 @@ export default class CornerThePrey extends DrawCard {
                 mode: TargetMode.Unlimited,
                 cardCondition: (card) =>
                     card.hasTrait('follower') &&
-                    (card.isParticipating() || (card.parent && card.parent.isParticipating()))
+                    (card.isParticipating() || (!!card.parent && card.parent.isParticipating()))
             }),
             target: {
                 cardType: CardType.Character,

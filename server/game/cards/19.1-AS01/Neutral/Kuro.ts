@@ -39,7 +39,7 @@ export default class Kuro extends DrawCard {
                         }
                     })),
                     AbilityDsl.actions.conditional((conditionalContext) => ({
-                        condition: (context) => context.source.isParticipating(),
+                        condition: (context) => (context.source as DrawCard).isParticipating(),
                         trueGameAction: AbilityDsl.actions.sendHome({ target: conditionalContext.source }),
                         falseGameAction: AbilityDsl.actions.moveToConflict({ target: conditionalContext.source })
                     }))

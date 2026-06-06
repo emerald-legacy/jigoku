@@ -16,6 +16,7 @@ import { SendGameStateProfiler } from './SendGameStateProfiler.js';
 import { WsSocket } from './WsSocket.js';
 import type { GameSummary, PendingGameDTO, ShortCardData, UserIdentity } from './LobbyProtocol.js';
 import type { GameDetails } from '../game/Game.js';
+import type { MenuItem } from '../game/MenuCommands.js';
 import * as env from '../env.js';
 
 export class GameServer implements GameRouter {
@@ -576,9 +577,9 @@ export class GameServer implements GameRouter {
         menuButton: (g: Game, p: string, arg: string, uuid: string, method: string) => {
             g.menuButton(p, arg, uuid, method);
         },
-        menuItemClick: (g: Game, p: string, cardId: string, menuItem: unknown) => g.menuItemClick(p, cardId, menuItem),
+        menuItemClick: (g: Game, p: string, cardId: string, menuItem: unknown) => g.menuItemClick(p, cardId, menuItem as MenuItem),
         ringClicked: (g: Game, p: string, ringindex: string) => g.ringClicked(p, ringindex),
-        ringMenuItemClick: (g: Game, p: string, sourceRing: { element: string }, menuItem: unknown) => g.ringMenuItemClick(p, sourceRing, menuItem),
+        ringMenuItemClick: (g: Game, p: string, sourceRing: { element: string }, menuItem: unknown) => g.ringMenuItemClick(p, sourceRing, menuItem as MenuItem),
         selectDeck: (g: Game, p: string, deck: unknown) => g.selectDeck(p, deck),
         showConflictDeck: (g: Game, p: string) => g.showConflictDeck(p),
         showDynastyDeck: (g: Game, p: string) => g.showDynastyDeck(p),

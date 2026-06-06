@@ -30,7 +30,7 @@ export default class KaitoYoshiaki extends DrawCard {
                         ]
                     }),
                     AbilityDsl.actions.conditional({
-                        condition: ({ target }: { target: DrawCard }) => isEvil(target),
+                        condition: (context) => isEvil(context.target as DrawCard),
                         trueGameAction: AbilityDsl.actions.removeFate(),
                         falseGameAction: AbilityDsl.actions.noAction()
                     })

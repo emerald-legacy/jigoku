@@ -18,7 +18,7 @@ class ShadowStep extends DrawCard {
                     })),
                     AbilityDsl.actions.conditional({
                         condition: context => {
-                            return context.target.hasTrait('shadow');
+                            return (context.target as DrawCard).hasTrait('shadow');
                         },
                         trueGameAction: AbilityDsl.actions.putIntoPlay(context => ({
                             target: context.target
