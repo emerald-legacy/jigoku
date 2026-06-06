@@ -1,3 +1,4 @@
+import type { MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
@@ -56,7 +57,7 @@ export class LookAtAction extends CardGameAction<CardActionProperties, EventName
         let properties = this.getProperties(context, additionalProperties) as LookAtProperties;
         let cards = event.cards as BaseCard[];
         let messageArgs = properties.messageArgs ? properties.messageArgs(cards) : [context.source, cards];
-        context.game.addMessage(this.getMessage(properties.message, context), ...messageArgs);
+        context.game.addMessage(this.getMessage(properties.message, context), ...(messageArgs as MsgArg[]));
     }
 
     getMessage(message: string | ((context: AbilityContext) => string) | undefined, context: AbilityContext): string {

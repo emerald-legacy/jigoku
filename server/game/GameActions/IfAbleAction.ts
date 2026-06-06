@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
@@ -18,7 +19,7 @@ export class IfAbleAction extends GameAction {
         return properties;
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let { ifAbleAction, otherwiseAction } = this.getProperties(context);
         return ifAbleAction.hasLegalTarget(context)
             ? ifAbleAction.getEffectMessage(context)

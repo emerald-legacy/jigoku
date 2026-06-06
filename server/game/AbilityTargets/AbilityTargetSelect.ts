@@ -5,7 +5,7 @@ import type Player from '../Player.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type { ChoicesInterface } from '../Interfaces.js';
 
-type ChoiceValue = ((context: AbilityContext) => boolean) | GameAction | GameAction[];
+type ChoiceValue = ((context: AbilityContext) => unknown) | GameAction | GameAction[];
 
 interface OwningAbility {
     targets: { name: string }[];
@@ -78,7 +78,7 @@ class AbilityTargetSelect {
         }
         let choice: ChoiceValue = this.getChoices(context)[key];
         if(typeof choice === 'function') {
-            return choice(contextCopy);
+            return !!choice(contextCopy);
         }
         return (choice as GameAction).hasLegalTarget(contextCopy);
     }
@@ -87,9 +87,9 @@ class AbilityTargetSelect {
         if(!context.selects[this.name]) {
             return [];
         }
-        let choice: any = this.getChoices(context)[context.selects[this.name].choice];
+        let choice: ChoiceValue = this.getChoices(context)[context.selects[this.name].choice];
         if(typeof choice !== 'function') {
-            return choice;
+            return Array.isArray(choice) ? choice : [choice];
         }
         return [];
     }

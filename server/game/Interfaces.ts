@@ -10,6 +10,7 @@ import type Ring from './Ring.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
+import type EffectSource from './EffectSource.js';
 import type CardAbility from './CardAbility.js';
 import type { DuelProperties } from './GameActions/DuelAction.js';
 import type { EffectFactory } from './Effects/EffectBuilder.js';
@@ -24,10 +25,12 @@ interface BaseTarget {
     player?: ((context: AbilityContext) => Players.Self | Players.Opponent) | Players.Self | Players.Opponent;
     hideIfNoLegalTargets?: boolean;
     gameAction?: GameAction | GameAction[];
+    source?: EffectSource | string;
+    buttons?: { text: string; arg: string }[];
 }
 
 export interface ChoicesInterface {
-    [propName: string]: ((context: AbilityContext) => boolean) | GameAction | GameAction[];
+    [propName: string]: ((context: AbilityContext) => unknown) | GameAction | GameAction[];
 }
 
 interface TargetSelect extends BaseTarget {
@@ -138,6 +141,8 @@ export type EffectArg =
     | ProvinceCard
     | Ring
     | StatusToken
+    | undefined
+    | null
     | { id: string; label: string; name: string; facedown: boolean; type: CardType }
     | EffectArg[];
 
@@ -189,6 +194,8 @@ type TriggeredAbilityTarget =
 interface TriggeredAbilityTargets {
     [propName: string]: TriggeredAbilityTarget & SubTarget & TriggeredAbilityTarget;
 }
+
+export type TargetPropertiesInput = (ActionTarget | TriggeredAbilityTarget) & SubTarget;
 
 export type WhenType<Source = BaseCard> = {
     [Evt in EventName]?: (event: EventPayload<Evt>, context: TriggeredAbilityContext<Source>) => unknown;

@@ -272,7 +272,7 @@ class ConflictFlow extends BaseStepWithPipeline {
             if(additionalCosts.length > 0) {
                 for(const properties of additionalCosts) {
                     this.game.queueSimpleStep(() => {
-                        const player = this.conflict.attackingPlaying;
+                        const player = this.conflict.attackingPlayer;
                         const context = this.game.getFrameworkContext(player);
                         let cost = properties.cost;
                         if(typeof cost === 'function') {

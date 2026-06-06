@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
@@ -14,7 +15,7 @@ export class MultipleGameAction extends GameAction {
         super({ gameActions: gameActions } as GameActionProperties);
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let { gameActions } = this.getProperties(context);
         let legalGameActions = gameActions.filter((action) => action.hasLegalTarget(context));
         let message = '{0}';

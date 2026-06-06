@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName, Location, Players } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -42,7 +43,7 @@ export class PutIntoPlayAction extends CardGameAction {
         return context.player;
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let { target } = this.getProperties(context);
         return ['put {0} into play' + (this.intoConflict ? ' in the conflict' : ''), [target]];
     }

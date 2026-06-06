@@ -133,7 +133,9 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
         context.source.type === CardType.Event && !!card && context.player.showBid > card.controller.showBid,
     toHand: (context) => {
         const properties = (context.ability as CardAbility).properties;
-        let targetActions: GameAction[] = properties.target ? properties.target.gameAction : [];
+        let targetActions: GameAction[] = properties.target?.gameAction
+            ? (Array.isArray(properties.target.gameAction) ? properties.target.gameAction : [properties.target.gameAction])
+            : [];
         let nestedActions = context.ability.gameAction
             ? context.ability.gameAction.map((topAction: GameAction) => (topAction.properties as { gameAction?: unknown }).gameAction)
             : [];

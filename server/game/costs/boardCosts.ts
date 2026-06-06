@@ -3,6 +3,7 @@ import * as GameActions from '../GameActions/GameActions.js';
 import { ReturnToDeckProperties } from '../GameActions/ReturnToDeckAction.js';
 import { SelectCardProperties } from '../GameActions/SelectCardAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
@@ -315,8 +316,8 @@ export function dishonorAndSacrifice(properties: SelectCostProperties): Cost {
     );
 
     actionCost.getActionName = () => 'dishonorAndSacrifice';
-    actionCost.getCostMessage = (context: AbilityContext): [string, unknown[]] => {
-        return ['dishonoring and sacrificing {1}', [context.costs.dishonorAndSacrifice]];
+    actionCost.getCostMessage = (context: AbilityContext): MessageArgs => {
+        return ['dishonoring and sacrificing {1}', [context.costs.dishonorAndSacrifice as MsgArg]];
     };
 
     return actionCost;

@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
@@ -19,12 +20,12 @@ export class PlaceFateRingAction extends RingAction {
         super(properties);
     }
 
-    getCostMessage(context: AbilityContext): [string, unknown[]] {
+    getCostMessage(context: AbilityContext): MessageArgs {
         let properties: PlaceFateRingProperties = this.getProperties(context);
         return ['placing {1} fate on the {0}', [properties.amount, properties.target]];
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties: PlaceFateRingProperties = this.getProperties(context);
         if(properties.origin) {
             return ['move {1} fate from {2} to {0}', [properties.target, properties.amount, properties.origin]];

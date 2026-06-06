@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type EventWindow from '../Events/EventWindow.js';
 import { CardType, EventName } from '../Constants.js';
@@ -11,7 +12,7 @@ export interface CancelActionProperties extends GameActionProperties {
 }
 
 export class CancelAction extends GameAction {
-    getEffectMessage(context: TriggeredAbilityContext): [string, unknown[]] {
+    getEffectMessage(context: TriggeredAbilityContext): MessageArgs {
         let { replacementGameAction, effect } = this.getProperties(context);
         if(effect) {
             return [effect, []];

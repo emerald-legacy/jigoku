@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EffectName, EventName, Location } from '../Constants.js';
@@ -32,12 +33,12 @@ export class PutInProvinceAction extends CardGameAction<PutInProvinceProperties,
         super(properties);
     }
 
-    getCostMessage(context: AbilityContext): [string, unknown[]] {
+    getCostMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context) as PutInProvinceProperties;
         return ['putting {0} into {1}}', [properties.target, properties.destination]];
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context) as PutInProvinceProperties;
         const target = properties.target as BaseCard | BaseCard[];
         let destinationController = Array.isArray(target)

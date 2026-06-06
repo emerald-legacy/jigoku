@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { Conflict } from '../Conflict.js';
 import { EffectName, EventName } from '../Constants.js';
@@ -15,7 +16,7 @@ export class ResolveConflictRingAction extends RingAction {
         super(properties);
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties: RingActionProperties = this.getProperties(context);
         return ['resolve {0}', [properties.target]];
     }

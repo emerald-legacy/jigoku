@@ -4,16 +4,22 @@ import AbilityTargetRing from './AbilityTargets/AbilityTargetRing.js';
 import AbilityTargetSelect from './AbilityTargets/AbilityTargetSelect.js';
 import AbilityTargetToken from './AbilityTargets/AbilityTargetToken.js';
 import AbilityTargetElementSymbol from './AbilityTargets/AbilityTargetElementSymbol.js';
-import { Stage, TargetMode, AbilityType } from './Constants.js';
+import { Stage, TargetMode, AbilityType, Players } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
 import type { Cost } from './costs/Cost.js';
+import type { TargetPropertiesInput } from './Interfaces.js';
+
+interface AbilityTargetProperties {
+    dependsOn?: string;
+    player?: ((context: AbilityContext) => Players) | Players;
+}
 
 interface AbilityTarget {
     name: string;
-    properties: any;
+    properties: AbilityTargetProperties;
     dependentCost?: Cost | null;
     canResolve(context: AbilityContext): boolean;
     resolve(context: AbilityContext, targetResults: TargetResults): void;
@@ -25,8 +31,8 @@ interface AbilityTarget {
 
 export interface BaseAbilityProperties {
     cost?: Cost | Cost[];
-    target?: any;
-    targets?: Record<string, any>;
+    target?: TargetPropertiesInput;
+    targets?: Record<string, TargetPropertiesInput>;
     gameAction?: GameAction | GameAction[];
 }
 
@@ -34,7 +40,7 @@ interface TargetResults {
     canIgnoreAllCosts?: boolean;
     cancelled?: boolean;
     payCostsFirst?: boolean;
-    delayTargeting?: any;
+    delayTargeting?: AbilityTarget | null;
     playCosts?: boolean;
     triggerCosts?: boolean;
     events?: Event[];
@@ -104,26 +110,23 @@ class BaseAbility {
         }
     }
 
-    getAbilityTarget(name: string, properties: any): AbilityTarget {
-        if(properties.gameAction) {
-            if(!Array.isArray(properties.gameAction)) {
-                properties.gameAction = [properties.gameAction];
-            }
-        } else {
-            properties.gameAction = [];
+    getAbilityTarget(name: string, properties: TargetPropertiesInput): AbilityTarget {
+        const gameAction = properties.gameAction
+            ? (Array.isArray(properties.gameAction) ? properties.gameAction : [properties.gameAction])
+            : [];
+        const normalized = { ...properties, gameAction };
+        if(normalized.mode === TargetMode.Select) {
+            return new AbilityTargetSelect(name, normalized, this);
+        } else if(normalized.mode === TargetMode.Ring) {
+            return new AbilityTargetRing(name, normalized, this);
+        } else if(normalized.mode === TargetMode.Ability) {
+            return new AbilityTargetAbility(name, normalized, this);
+        } else if(normalized.mode === TargetMode.Token) {
+            return new AbilityTargetToken(name, normalized, this);
+        } else if(normalized.mode === TargetMode.ElementSymbol) {
+            return new AbilityTargetElementSymbol(name, normalized, this);
         }
-        if(properties.mode === TargetMode.Select) {
-            return new AbilityTargetSelect(name, properties, this);
-        } else if(properties.mode === TargetMode.Ring) {
-            return new AbilityTargetRing(name, properties, this);
-        } else if(properties.mode === TargetMode.Ability) {
-            return new AbilityTargetAbility(name, properties, this);
-        } else if(properties.mode === TargetMode.Token) {
-            return new AbilityTargetToken(name, properties, this);
-        } else if(properties.mode === TargetMode.ElementSymbol) {
-            return new AbilityTargetElementSymbol(name, properties, this);
-        }
-        return new AbilityTargetCard(name, properties, this);
+        return new AbilityTargetCard(name, normalized, this);
     }
 
     meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {

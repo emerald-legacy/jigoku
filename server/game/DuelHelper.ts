@@ -5,12 +5,13 @@ import { CardType, Players } from './Constants.js';
 import type DrawCard from './DrawCard.js';
 import type Game from './Game.js';
 import { InitiateDuel } from './Interfaces.js';
+import type { TargetPropertiesInput } from './Interfaces.js';
 
 interface InitiateDuelHelperProps {
     initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);
     condition?: (context: AbilityContext) => boolean;
-    target?: Record<string, unknown>;
-    targets?: Record<string, Record<string, unknown>>;
+    target?: TargetPropertiesInput;
+    targets?: Record<string, TargetPropertiesInput>;
 }
 
 export const initiateDuel = (game: Game, card: BaseCard, properties: InitiateDuelHelperProps): void => {

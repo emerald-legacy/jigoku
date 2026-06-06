@@ -1,3 +1,4 @@
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { Decks, EventName, Location, TargetMode } from '../Constants.js';
 import { shuffle } from '../utils/shuffle.js';
@@ -69,7 +70,7 @@ export class DeckSearchAction extends PlayerAction<DeckSearchProperties, EventNa
         return properties;
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         const properties = this.getProperties(context);
         const amount = this.#getAmount(properties.amount ?? -1, context);
         const message =
@@ -282,7 +283,7 @@ export class DeckSearchAction extends PlayerAction<DeckSearchProperties, EventNa
         const choosingPlayer = (properties.choosingPlayer || event.player) as Player;
         if(selectedCards.size > 0 && properties.message) {
             const args = properties.messageArgs ? properties.messageArgs(context, Array.from(selectedCards)) : [];
-            return context.game.addMessage(properties.message, ...args);
+            return context.game.addMessage(properties.message, ...(args as MsgArg[]));
         }
 
         if(selectedCards.size === 0) {

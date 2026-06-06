@@ -1,6 +1,7 @@
 import type { LobbyUser, UserIdentity, ShortCardData } from '../gamenode/LobbyProtocol.js';
 import ChatCommands from './ChatCommands.js';
 import { GameChat } from './GameChat.js';
+import type { MsgArg } from './GameChat.js';
 import { EffectEngine } from './EffectEngine.js';
 import Player from './Player.js';
 import type { ClockConfig } from './Clocks/ClockSelector.js';
@@ -21,6 +22,7 @@ import EventWindow from './Events/EventWindow.js';
 import ThenEventWindow from './Events/ThenEventWindow.js';
 import AbilityResolver from './gamesteps/AbilityResolver.js';
 import SimultaneousEffectWindow from './gamesteps/SimultaneousEffectWindow.js';
+import type { SimultaneousEffectChoiceInput } from './gamesteps/SimultaneousEffectWindow.js';
 import type ForcedTriggeredAbilityWindow from './gamesteps/ForcedTriggeredAbilityWindow.js';
 import type HonorBidPrompt from './gamesteps/HonorBidPrompt.js';
 import type ActionWindow from './gamesteps/ActionWindow.js';
@@ -60,7 +62,7 @@ export interface GameState {
     [key: string]: unknown;
 }
 
-interface GameDetails {
+export interface GameDetails {
     id: string;
     name: string;
     allowSpectators: boolean;
@@ -104,7 +106,7 @@ class Game {
     createdAt: Date;
     savedGameId?: string;
     gameType: string;
-    currentAbilityWindow: ForcedTriggeredAbilityWindow | null;
+    currentAbilityWindow: ForcedTriggeredAbilityWindow | SimultaneousEffectWindow | null;
     currentActionWindow: ActionWindow | null;
     currentEventWindow: EventWindow | null;
     currentConflict: Conflict | null;
@@ -225,14 +227,14 @@ class Game {
     /**
      * Adds a message to the in-game chat e.g 'Jadiel draws 1 card'
      */
-    addMessage(message: string, ...args: any[]): void {
+    addMessage(message: string, ...args: MsgArg[]): void {
         this.gameChat.addMessage(message, ...args);
     }
 
     /**
      * Adds a message to in-game chat with a graphical icon
      */
-    addAlert(type: string, message: string, ...args: any[]): void {
+    addAlert(type: string, message: string, ...args: MsgArg[]): void {
         this.gameChat.addAlert(type, message, ...args);
     }
 
@@ -728,7 +730,7 @@ class Game {
         return resolver;
     }
 
-    openSimultaneousEffectWindow(choices: any[]): void {
+    openSimultaneousEffectWindow(choices: SimultaneousEffectChoiceInput[]): void {
         const window = new SimultaneousEffectWindow(this);
         choices.forEach((choice) => window.addChoice(choice));
         this.queueStep(window);

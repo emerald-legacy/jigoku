@@ -4,11 +4,12 @@ import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
 import type { Cost } from '../../costs/Cost.js';
+import type { MessageArgs } from '../../GameChat.js';
 
 const testOfSkillCost = function(): Cost {
     return {
         getActionName: () => 'testOfSkillCost',
-        getCostMessage: (): [string, unknown[]] => ['naming {0}', []],
+        getCostMessage: (): MessageArgs => ['naming {0}', []],
         canPay: function() {
             return true;
         },

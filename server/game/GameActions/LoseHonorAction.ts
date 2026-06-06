@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
@@ -15,12 +16,12 @@ export class LoseHonorAction extends PlayerAction<LoseHonorProperties> {
     name = 'loseHonor';
     eventName = EventName.OnModifyHonor;
 
-    getCostMessage(context: AbilityContext): [string, unknown[]] {
+    getCostMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context);
         return ['losing {1} honor', [properties.amount]];
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context);
         return ['make {0} lose ' + properties.amount + ' honor', [properties.target]];
     }

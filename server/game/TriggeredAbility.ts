@@ -6,6 +6,7 @@ import type BaseCard from './BaseCard.js';
 import type Player from './Player.js';
 import type { Event } from './Events/Event.js';
 import type { WhenType } from './Interfaces.js';
+import type { EventHandler } from './GameEventBus.js';
 
 // Runtime storage shape: events arrive un-narrowed, so the listener takes the base `Event`.
 type EventListener = (event: Event, context: TriggeredAbilityContext) => unknown;
@@ -21,14 +22,14 @@ export interface TriggeredAbilityProperties<S extends BaseCard = BaseCard> exten
     when?: WhenType<S>;
     // The target type does not affect aggregate triggers, so it is left open here; this lets the
     // author-facing `TriggeredAbilityProps<S, Target>` assign in with a single cast (any Target).
-    aggregateWhen?: (events: Event[], context: TriggeredAbilityContext<S, any>) => boolean;
+    aggregateWhen?: (events: Event[], context: TriggeredAbilityContext<S>) => boolean;
     anyPlayer?: boolean;
     collectiveTrigger?: boolean;
 }
 
 interface RegisteredEvent {
     name: string;
-    handler: (...args: any[]) => void;
+    handler: EventHandler;
 }
 
 /**
@@ -149,7 +150,7 @@ class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
         } else if(this.aggregateWhen) {
             const event: RegisteredEvent = {
                 name: 'aggregateEvent:' + this.abilityType,
-                handler: (events: Event[], window: AbilityChoiceWindow) => this.checkAggregateWhen(events, window)
+                handler: ((events: Event[], window: AbilityChoiceWindow) => this.checkAggregateWhen(events, window)) as EventHandler
             };
             this.events = [event];
             this.game.on(event.name, event.handler);
@@ -162,7 +163,7 @@ class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
         eventNames.forEach((eventName) => {
             const event: RegisteredEvent = {
                 name: eventName + ':' + this.abilityType,
-                handler: (evt: Event, window: AbilityChoiceWindow) => this.eventHandler(evt, window)
+                handler: ((evt: Event, window: AbilityChoiceWindow) => this.eventHandler(evt, window)) as EventHandler
             };
             this.game.on(event.name, event.handler);
             this.events?.push(event);

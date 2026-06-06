@@ -127,7 +127,7 @@ export default class EventWindow extends BaseStepWithPipeline {
 
     checkGameState() {
         this.eventsToExecute = this.eventsToExecute.filter(event => !event.cancelled);
-        this.game.checkGameState(this.eventsToExecute.some(event => (event as any).handler), this.eventsToExecute);
+        this.game.checkGameState(this.eventsToExecute.some(event => event.hasHandler()), this.eventsToExecute);
     }
 
     checkKeywordAbilities(abilityType: AbilityType) {

@@ -1,3 +1,4 @@
+import type { MsgArg } from '../../GameChat.js';
 import { EffectName, EventName } from '../../Constants.js';
 import { parseGameMode } from '../../GameMode.js';
 import type Game from '../../Game.js';
@@ -68,7 +69,7 @@ export class DynastyActionWindow extends ActionWindow {
             this.currentPlayer.opponent?.anyEffect?.(EffectName.RestartDynastyPhase)
         ) {
             const effectSource = this.currentPlayer.mostRecentEffect(EffectName.RestartDynastyPhase);
-            this.game.addMessage('The dynasty phase is ended due to the effects of {0}', effectSource);
+            this.game.addMessage('The dynasty phase is ended due to the effects of {0}', effectSource as MsgArg);
             this.complete();
         }
     }

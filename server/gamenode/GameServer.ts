@@ -15,6 +15,7 @@ import { detectBinary } from '../util.js';
 import { SendGameStateProfiler } from './SendGameStateProfiler.js';
 import { WsSocket } from './WsSocket.js';
 import type { GameSummary, PendingGameDTO, ShortCardData, UserIdentity } from './LobbyProtocol.js';
+import type { GameDetails } from '../game/Game.js';
 import * as env from '../env.js';
 
 export class GameServer implements GameRouter {
@@ -360,7 +361,7 @@ export class GameServer implements GameRouter {
     onStartGame(pendingGame: PendingGameDTO): void {
         const playerNames = Object.values(pendingGame.players).map((p) => p.name).join(' vs ');
         logger.info(`Starting game ${pendingGame.id} (${playerNames}), total games: ${this.games.size + 1}`);
-        const game = new Game(pendingGame as any, { router: this, shortCardData: this.shortCardData, cardLibrary });
+        const game = new Game(pendingGame as GameDetails, { router: this, shortCardData: this.shortCardData, cardLibrary });
         this.games.set(pendingGame.id, game);
         this.registerUsersForGame(game);
 
@@ -587,7 +588,7 @@ export class GameServer implements GameRouter {
         toggleOptionSetting: (g: Game, p: string, settingName: string, toggle: boolean) => g.toggleOptionSetting(p, settingName, toggle),
         togglePromptedActionWindow: (g: Game, p: string, windowName: string, toggle: boolean) => g.togglePromptedActionWindow(p, windowName, toggle),
         toggleTimerSetting: (g: Game, p: string, settingName: string, toggle: boolean) => g.toggleTimerSetting(p, settingName, toggle)
-    } as const satisfies Record<string, (game: Game, player: string, ...args: any[]) => void>;
+    } as const satisfies Record<string, (game: Game, player: string, ...args: never[]) => void>;
 
     onGameMessage(socket: Socket, command: string, ...args: unknown[]) {
         if(!socket.user) {
@@ -603,7 +604,7 @@ export class GameServer implements GameRouter {
             return this.onLeaveGame(socket);
         }
 
-        const handler = (GameServer.GAME_COMMANDS as Record<string, (game: Game, player: string, ...args: any[]) => void>)[command];
+        const handler = (GameServer.GAME_COMMANDS as Record<string, (game: Game, player: string, ...args: never[]) => void>)[command];
         if(!handler) {
             logger.info(`Rejected unknown game command '${command}' from ${socket.user.username}`);
             return;
@@ -612,7 +613,7 @@ export class GameServer implements GameRouter {
         const username = socket.user.username;
         this.runAndCatchErrors(game, () => {
             game.stopNonChessClocks();
-            handler(game, username, ...args);
+            handler(game, username, ...(args as never[]));
 
             game.continue();
 

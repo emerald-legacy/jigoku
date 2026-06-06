@@ -5,12 +5,13 @@ import Effects from '../effects.js';
 import type { WhenType } from '../Interfaces.js';
 import type { GameActionProperties } from './GameAction.js';
 import { LastingEffectCardAction, type LastingEffectCardProperties } from './LastingEffectCardAction.js';
+import type { EffectFactory } from '../Effects/EffectBuilder.js';
 
 import type { GameEvent } from '../Events/EventPayloads.js';
 export interface TakeControlProperties extends GameActionProperties {
     duration?: Duration;
     until?: WhenType;
-    effect?: any;
+    effect?: EffectFactory | EffectFactory[] | null;
     targetLocation?: Location | Location[];
 }
 

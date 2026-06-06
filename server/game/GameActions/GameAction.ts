@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
@@ -56,11 +57,11 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         return properties;
     }
 
-    getCostMessage(_context: AbilityContext): undefined | [string, unknown[]] {
+    getCostMessage(_context: AbilityContext): undefined | MessageArgs {
         return [this.cost, []];
     }
 
-    getEffectMessage(context: AbilityContext, additionalProperties = {}): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext, additionalProperties = {}): MessageArgs {
         let { target } = this.getProperties(context, additionalProperties);
         return [this.effect, [target]];
     }

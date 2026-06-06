@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { Conflict } from '../Conflict.js';
@@ -13,14 +14,14 @@ export class SwitchConflictTypeAction extends RingAction<SwitchConflictTypePrope
     name = 'switchConflictType';
     eventName = EventName.OnSwitchConflictType;
 
-    getCostMessage(context: AbilityContext): [string, unknown[]] {
+    getCostMessage(context: AbilityContext): MessageArgs {
         let currentConflictType = context.game.currentConflict && context.game.currentConflict.conflictType;
         let newConflictType =
             currentConflictType === ConflictType.Military ? ConflictType.Political : ConflictType.Military;
         return ['switching the conflict type from {0} to {1}', [currentConflictType, newConflictType]];
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let currentConflictType = context.game.currentConflict && context.game.currentConflict.conflictType;
         let newConflictType =
             currentConflictType === ConflictType.Military ? ConflictType.Political : ConflictType.Military;

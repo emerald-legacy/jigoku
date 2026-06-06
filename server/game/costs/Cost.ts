@@ -1,4 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
+import type { MsgArg } from '../GameChat.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type { Event } from '../Events/Event.js';
@@ -23,7 +24,7 @@ export interface Cost {
     canIgnoreForTargeting?: boolean;
 
     getActionName?(context: AbilityContext): string;
-    getCostMessage?(context: AbilityContext): unknown[];
+    getCostMessage?(context: AbilityContext): MsgArg[];
     hasTargetsChosenByInitiatingPlayer?(context: AbilityContext): boolean;
     addEventsToArray?(events: Event[], context: AbilityContext, result?: Result): void;
     resolve?(context: AbilityContext, result: Result): void;

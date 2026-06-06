@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -33,7 +34,7 @@ export class GainStatusTokenAction extends CardGameAction<GainStatusTokenPropert
         return super.canAffect(card, context);
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context);
         return ['give {0} a {1} status token', [properties.target, properties.token]];
     }

@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type CardAbility from '../CardAbility.js';
 import { EventName } from '../Constants.js';
@@ -113,7 +114,7 @@ export class ResolveAbilityAction extends CardGameAction {
         super(properties as CardActionProperties | ((context: AbilityContext) => CardActionProperties));
     }
 
-    getEffectMessage(context: TriggeredAbilityContext): [string, unknown[]] {
+    getEffectMessage(context: TriggeredAbilityContext): MessageArgs {
         let properties = this.getProperties(context) as ResolveAbilityProperties;
         return ['resolve {0}\'s {1} ability', [properties.target, properties.ability.title]];
     }

@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { EventName, Location } from '../Constants.js';
@@ -15,7 +16,7 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
     eventName = EventName.OnCardAttached;
     targetType = ['ring'];
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context);
         return ['attach {1} to {0}', [properties.target, properties.attachment]];
     }

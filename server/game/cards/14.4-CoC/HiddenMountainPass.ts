@@ -16,7 +16,6 @@ class HiddenMountainPass extends DrawCard {
                 target: context.player.getProvinceCardInProvince(context.source.location)
             })),
             effect: 'Turn {1} facedown',
-            // @ts-expect-error effectArgs returns BaseCard but EffectArg union doesn't include BaseCard - game engine handles it
             effectArgs: context => context.player.getProvinceCardInProvince(context.source.location)
         });
     }

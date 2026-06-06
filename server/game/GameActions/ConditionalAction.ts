@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
@@ -26,7 +27,7 @@ export class ConditionalAction extends GameAction<ConditionalActionProperties> {
         return condition ? properties.trueGameAction : properties.falseGameAction;
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         return this.getGameAction(context).getEffectMessage(context);
     }
 

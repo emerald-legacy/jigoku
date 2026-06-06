@@ -6,14 +6,12 @@ import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
 import type { DeckDTO } from '../gamenode/LobbyProtocol.js';
 
-const CHANGEABLE_STATS = new Set([
-    'fate',
-    'honor',
-    'imperialFavor',
-    'conflictsRemaining',
-    'militaryRemaining',
-    'politicalRemaining'
-]);
+const CHANGEABLE_STATS = ['fate', 'honor'] as const;
+type ChangeableStat = (typeof CHANGEABLE_STATS)[number];
+
+function isChangeableStat(stat: string): stat is ChangeableStat {
+    return (CHANGEABLE_STATS as readonly string[]).includes(stat);
+}
 
 const TOGGLE_WINDOWS = new Set([
     'dynasty', 'draw', 'preConflict', 'conflict', 'fate', 'regroup'
@@ -176,21 +174,19 @@ export class GameInputHandler {
         if(!player) {
             return;
         }
-        if(typeof stat !== 'string' || !CHANGEABLE_STATS.has(stat)) {
+        if(typeof stat !== 'string' || !isChangeableStat(stat)) {
             return;
         }
         if(!Number.isInteger(value) || Math.abs(value) > 1) {
             return;
         }
 
-        const target: any = player;
+        player[stat] += value;
 
-        target[stat] += value;
-
-        if(target[stat] < 0) {
-            target[stat] = 0;
+        if(player[stat] < 0) {
+            player[stat] = 0;
         } else {
-            this.game.addMessage('{0} sets {1} to {2} ({3})', player, stat, target[stat], (value > 0 ? '+' : '') + value);
+            this.game.addMessage('{0} sets {1} to {2} ({3})', player, stat, player[stat], (value > 0 ? '+' : '') + value);
         }
     }
 

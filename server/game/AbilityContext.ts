@@ -5,6 +5,7 @@ import type CardAbility from './CardAbility.js';
 import type DrawCard from './DrawCard.js';
 import { Location, PlayType, Stage } from './Constants.js';
 import EffectSource from './EffectSource.js';
+import type { ElementSymbol } from './ElementSymbol.js';
 import type { Event } from './Events/Event.js';
 import type Game from './Game.js';
 import type { GameAction } from './GameActions/GameAction.js';
@@ -22,7 +23,7 @@ export interface AbilityContextProperties {
     rings?: Record<string, Ring | Ring[]>;
     selects?: Record<string, SelectChoice>;
     tokens?: Record<string, StatusToken | StatusToken[]>;
-    elements?: Record<string, string>;
+    elements?: Record<string, ElementSymbol>;
     events?: Event[];
     stage?: Stage;
     targetAbility?: CardAbility | null;
@@ -41,7 +42,7 @@ export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
     rings: Record<string, Ring | Ring[]>;
     selects: Record<string, SelectChoice>;
     tokens: Record<string, StatusToken | StatusToken[]>;
-    elements: Record<string, string>;
+    elements: Record<string, ElementSymbol>;
     deckSearchSelected: DrawCard[] = [];
     events: Event[] = [];
     stage: Stage;
@@ -55,8 +56,8 @@ export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
     target: T | undefined;
     select: string = '';
     ring: Ring | undefined;
-    token: StatusToken | undefined;
-    element: string | null = null;
+    token: StatusToken | StatusToken[] | undefined;
+    element: ElementSymbol | null = null;
     elementCard: BaseCard | undefined;
     provincesToRefill: { player: Player; location: Location }[] = [];
     subResolution = false;

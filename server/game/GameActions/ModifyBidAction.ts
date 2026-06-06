@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
@@ -32,7 +33,7 @@ export class ModifyBidAction extends PlayerAction<ModifyBidProperties, EventName
         return [context.player];
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties: ModifyBidProperties = this.getProperties(context);
         if(properties.direction === Direction.Prompt) {
             return ['modify their honor bid by {0}', [properties.amount]];

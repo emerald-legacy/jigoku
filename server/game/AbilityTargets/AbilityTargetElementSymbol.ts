@@ -124,12 +124,12 @@ class AbilityTargetElementSymbol {
             buttons: buttons,
             context: context,
             selector: this.selector,
-            onSelect: (player: Player, card: any) => {
+            onSelect: (player: Player, card: BaseCard) => {
                 let validElements = card.getCurrentElementSymbols();
                 context.elementCard = card;
                 if(validElements.length > 1) {
-                    const choices = validElements.map((element: any) => `${element.prettyName} (${element.element})`);
-                    const handlers = validElements.map((element: any) => {
+                    const choices = validElements.map((element) => `${element.prettyName} (${element.element})`);
+                    const handlers = validElements.map((element) => {
                         return () => {
                             context.elements[this.name] = element;
                             if(this.name === 'target') {

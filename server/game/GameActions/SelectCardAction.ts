@@ -1,3 +1,4 @@
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import CardSelector from '../CardSelector.js';
@@ -51,7 +52,7 @@ export class SelectCardAction extends CardGameAction {
         super(properties);
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let { target, effect, effectArgs } = this.getProperties(context) as SelectCardProperties;
         if(effect) {
             return [effect, (effectArgs && effectArgs(context)) || []];
@@ -123,7 +124,7 @@ export class SelectCardAction extends CardGameAction {
             onCancel: properties.cancelHandler,
             onSelect: (player: Player, cards: BaseCard | BaseCard[]) => {
                 if(properties.message && messageArgs) {
-                    context.game.addMessage(properties.message, ...messageArgs(cards, player, properties));
+                    context.game.addMessage(properties.message, ...(messageArgs(cards, player, properties) as MsgArg[]));
                 }
                 properties.gameAction.addEventsToArray(
                     events,

@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EventName, Location } from '../Constants.js';
@@ -19,7 +20,7 @@ export class DiscardFromPlayAction extends CardGameAction<DiscardFromPlayPropert
         }
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context);
         return [this.name === 'sacrifice' ? 'sacrifice {0}' : 'discard {0}', [properties.target]];
     }

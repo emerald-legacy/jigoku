@@ -47,11 +47,14 @@ export class RingEffects {
         onResolution: ResolutionCb = () => {}
     ): Omit<AbilityContext, 'ability'> & { ability: RingAbility } {
         const ring = ringForElement(element);
-        const context: any = player.game.getFrameworkContext(player);
-        context.source = player.game.rings[element];
-        const gameModeWithDefault = context.game.gameMode || GameModes.Stronghold;
+        const context = new AbilityContext({
+            game: player.game,
+            player,
+            source: player.game.rings[element]
+        });
+        const gameModeWithDefault = (context.game.gameMode as GameModes) || GameModes.Stronghold;
         context.ability = ring(optional, gameModeWithDefault, onResolution);
-        return context;
+        return context as Omit<AbilityContext, 'ability'> & { ability: RingAbility };
     }
 
     static getRingName(element: string) {

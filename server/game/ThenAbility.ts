@@ -1,3 +1,4 @@
+import type { MsgArg } from './GameChat.js';
 import { AbilityContext } from './AbilityContext.js';
 import BaseCardAbility from './BaseCardAbility.js';
 import type { BaseAbilityProperties } from './BaseAbility.js';
@@ -52,7 +53,7 @@ class ThenAbility extends BaseCardAbility {
                 }
                 messageArgs = messageArgs.concat(args);
             }
-            this.game.addMessage(message, ...messageArgs);
+            this.game.addMessage(message, ...(messageArgs as MsgArg[]));
         }
     }
 

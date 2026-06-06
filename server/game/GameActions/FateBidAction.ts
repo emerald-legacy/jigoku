@@ -1,3 +1,4 @@
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
@@ -30,7 +31,7 @@ export class FateBidAction extends PlayerAction<FateBidProperties, EventName.Unn
         return [context.player];
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         const players = [context.player, context.player.opponent];
         return ['have {0} select an amount of fate from their pool', [players]];
     }
@@ -70,7 +71,7 @@ export class FateBidAction extends PlayerAction<FateBidProperties, EventName.Unn
                 const [message, messageArgs] = bidEvent.message
                     ? [bidEvent.message, bidEvent.messageArgs ? Array.from(bidEvent.messageArgs(context)) : []]
                     : (bidEvent.postBidAction ? bidEvent.postBidAction.getEffectMessage(context) : ['', []]);
-                context.game.addMessage(message, ...messageArgs);
+                context.game.addMessage(message, ...(messageArgs as MsgArg[]));
             })
         );
     }

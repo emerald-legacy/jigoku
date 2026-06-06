@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName } from '../Constants.js';
@@ -14,7 +15,7 @@ export class DishonorProvinceAction extends CardGameAction {
     cost = 'dishonoring {0}';
     effect = 'dishonor {0}';
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         const properties = this.getProperties(context) as DishonorProvinceProperties;
         const targetArray = [];
         if(properties.target) {

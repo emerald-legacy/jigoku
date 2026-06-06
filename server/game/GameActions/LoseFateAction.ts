@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
@@ -17,12 +18,12 @@ export class LoseFateAction extends PlayerAction {
         super(propertyFactory);
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties: LoseFateProperties = this.getProperties(context);
         return ['make {0} lose {1} fate', [properties.target, properties.amount]];
     }
 
-    getCostMessage(context: AbilityContext): [string, unknown[]] {
+    getCostMessage(context: AbilityContext): MessageArgs {
         let properties: LoseFateProperties = this.getProperties(context);
         return ['spending {1} fate', [properties.amount]];
     }

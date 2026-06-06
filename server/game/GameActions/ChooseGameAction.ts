@@ -1,3 +1,4 @@
+import type { MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
@@ -54,7 +55,7 @@ export class ChooseGameAction extends GameAction {
                 return;
             }
             if(choice.message) {
-                context.game.addMessage(choice.message, player, properties.target, ...(properties.messageArgs ?? []));
+                context.game.addMessage(choice.message, player, properties.target, ...((properties.messageArgs ?? []) as MsgArg[]));
             }
             context.game.queueSimpleStep(() => choice.action.addEventsToArray(events, context));
         };

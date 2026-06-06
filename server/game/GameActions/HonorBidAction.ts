@@ -1,3 +1,4 @@
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, Players } from '../Constants.js';
@@ -34,7 +35,7 @@ export class HonorBidAction extends PlayerAction<HonorBidProperties, EventName.O
         return [context.player];
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties: HonorBidProperties = this.getProperties(context);
         if(properties.giveHonor) {
             return ['bid honor', []];
@@ -90,7 +91,7 @@ export class HonorBidAction extends PlayerAction<HonorBidProperties, EventName.O
                     const [message, messageArgs] = event.message
                         ? [event.message, event.messageArgs ? Array.from(event.messageArgs(context)) : []]
                         : (event.postBidAction ? event.postBidAction.getEffectMessage(context) : ['', []]);
-                    context.game.addMessage(message, ...messageArgs);
+                    context.game.addMessage(message, ...(messageArgs as MsgArg[]));
                 })
             );
         } else {

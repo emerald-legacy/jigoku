@@ -3,6 +3,7 @@ import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type { Cost } from '../../../costs/Cost.js';
+import type { MessageArgs } from '../../../GameChat.js';
 
 export default class WorkInProgress extends DrawCard {
     static id = 'work-in-progress';
@@ -84,7 +85,7 @@ export default class WorkInProgress extends DrawCard {
 function workInProgressCost(): Cost {
     return {
         getActionName: () => 'workInProgress',
-        getCostMessage: (): [string, unknown[]] => ['naming {0}', []],
+        getCostMessage: (): MessageArgs => ['naming {0}', []],
         canPay: () => true,
         resolve: (context: AbilityContext) => {
             const choices = [CardType.Attachment, CardType.Character, CardType.Event];

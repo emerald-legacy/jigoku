@@ -3,6 +3,7 @@ import { Event } from '../Events/Event.js';
 import { HandlerAction } from '../GameActions/HandlerAction.js';
 import { Derivable, derive } from '../utils/helpers.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import type { MsgArg } from '../GameChat.js';
 import { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
@@ -25,7 +26,7 @@ export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context:
             return 'returnRing';
         },
         getCostMessage(context: TriggeredAbilityContext) {
-            return ['returning the {1}', [context.costs.returnRing]];
+            return ['returning the {1}', [context.costs.returnRing as MsgArg]];
         },
         resolve(context: TriggeredAbilityContext, result) {
             const chosenRings: Ring[] = [];
@@ -279,7 +280,7 @@ export function optional(cost: Cost): Cost {
     return {
         promptsPlayer: true,
         canPay: () => true,
-        getCostMessage: (context: TriggeredAbilityContext): unknown[] =>
+        getCostMessage: (context: TriggeredAbilityContext): MsgArg[] =>
             context.costs[getActionName(context)] ? (cost.getCostMessage?.(context) ?? []) : [],
         getActionName: getActionName,
         resolve: (context: TriggeredAbilityContext, result) => {
@@ -344,7 +345,7 @@ export function optionalFateCost(amount: number, forcePayment: (context: Trigger
         getActionName(_context: TriggeredAbilityContext) {
             return 'optionalFateCost';
         },
-        getCostMessage: (context: TriggeredAbilityContext): unknown[] => {
+        getCostMessage: (context: TriggeredAbilityContext): MsgArg[] => {
             if(context.costs.optionalFateCost === 0) {
                 return [];
             }
@@ -554,7 +555,7 @@ export function nameCard(): Cost {
             return 'nameCard';
         },
         getCostMessage(context: TriggeredAbilityContext) {
-            return ['naming {1}', [context.costs.nameCardCost]];
+            return ['naming {1}', [context.costs.nameCardCost as MsgArg]];
         },
         canPay() {
             return true;

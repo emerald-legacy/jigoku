@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -15,7 +16,7 @@ export class AddTokenAction extends CardGameAction<AddTokenProperties> {
         tokenType: TokenType.Honor
     };
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties: AddTokenProperties = this.getProperties(context);
         return ['add a {1} token to {0}', [properties.target, properties.tokenType]];
     }

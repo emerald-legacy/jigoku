@@ -10,6 +10,7 @@ import type DrawCard from './DrawCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { EffectArg, InitiateDuel } from './Interfaces.js';
+import type { MsgArg } from './GameChat.js';
 import type { Cost } from './costs/Cost.js';
 
 export interface CardAbilityProperties<C extends AbilityContext = AbilityContext> extends ThenAbilityProperties<C> {
@@ -226,16 +227,16 @@ class CardAbility extends ThenAbility {
         }
         // Player1 plays Assassination
         const gainedAbility = origin ? '\'s gained ability from ' : '';
-        const messageArgs: unknown[] = [context.player, ' ' + messageVerb + ' ', context.source, gainedAbility, origin];
+        const messageArgs: MsgArg[] = [context.player, ' ' + messageVerb + ' ', context.source, gainedAbility, origin];
         const costMessages = this.cost
             .map((cost) => {
                 const costMsg = cost.getCostMessage && cost.getCostMessage(context);
                 if(costMsg && costMsg.length > 0) {
-                    let card: any = context.costs[(cost.getActionName as (c: AbilityContext) => string)(context)];
-                    if(card && card.isFacedown && card.isFacedown()) {
+                    let card = context.costs[(cost.getActionName as (c: AbilityContext) => string)(context)] as MsgArg | undefined;
+                    if(card && (card as { isFacedown?(): boolean }).isFacedown?.()) {
                         card = 'a facedown card';
                     }
-                    const [format, args] = costMsg as [string, any[]];
+                    const [format, args] = costMsg as [string, MsgArg[]];
                     return { message: this.game.gameChat.formatMessage(format, [card].concat(args)) };
                 }
                 return undefined;
@@ -250,13 +251,13 @@ class CardAbility extends ThenAbility {
             messageArgs.push('', '');
         }
         let effectMessage = this.properties.effect;
-        let effectArgs: any[] = [];
-        let extraArgs: any = null;
+        let effectArgs: MsgArg[] = [];
+        let extraArgs: MsgArg[] | EffectArg | ((context: AbilityContext) => EffectArg) | null | undefined = null;
         if(!effectMessage) {
             const gameActions = this.getGameActions(context).filter((gameAction: GameAction) => gameAction.hasLegalTarget(context));
             if(gameActions.length > 0) {
                 // effects with multiple game actions really need their own effect message
-                [effectMessage, extraArgs] = gameActions[0].getEffectMessage(context);
+                [effectMessage, extraArgs] = gameActions[0].getEffectMessage(context) as [string, MsgArg[]];
             }
         } else {
             effectArgs.push(context.target || context.ring || context.source);
