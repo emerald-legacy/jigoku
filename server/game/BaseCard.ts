@@ -36,9 +36,10 @@ import type { CardEffect } from './Effects/types.js';
 import type Effect from './Effects/Effect.js';
 import type { EffectFactory } from './Effects/EffectBuilder.js';
 import type { GainAllAbilities } from './Effects/Library/gainAllAbilities.js';
+import type { EffectValue } from './Effects/EffectValue.js';
 import type { CardData } from './types/CardData.js';
 
-type Faction = 'neutral' | 'crab' | 'crane' | 'dragon' | 'lion' | 'phoenix' | 'scorpion' | 'unicorn' | 'shadowlands';
+export type Faction = 'neutral' | 'crab' | 'crane' | 'dragon' | 'lion' | 'phoenix' | 'scorpion' | 'unicorn' | 'shadowlands';
 
 export interface StoredPersistentEffect {
     duration: Duration;
@@ -53,6 +54,13 @@ export interface StoredPersistentEffect {
     type?: EffectName;
     abilityType?: AbilityType;
     isKeywordEffect?: boolean;
+}
+
+interface AbilityProvidingEffectValue {
+    calculate(target: GameObject, context: AbilityContext): unknown;
+    getActions(target: GameObject): CardAction[];
+    getReactions(target: GameObject): TriggeredAbility[];
+    getPersistentEffects(): StoredPersistentEffect[];
 }
 
 interface CardAbilities {
@@ -141,7 +149,7 @@ class BaseCard extends EffectSource {
         let actions = this.abilities.actions;
         const mostRecentEffect = this.#mostRecentEffect((effect) => effect.type === EffectName.CopyCharacter);
         if(mostRecentEffect) {
-            actions = mostRecentEffect.value.getActions(this);
+            actions = (mostRecentEffect.value as AbilityProvidingEffectValue).getActions(this);
         }
         const effectActions = (this.getEffects(EffectName.GainAbility) as CardAction[]).filter(
             (ability) => ability.abilityType === AbilityType.Action
@@ -159,8 +167,9 @@ class BaseCard extends EffectSource {
                     (effect: CardEffect) => effect.type === EffectName.GainAllAbilitiesDynamic
                 );
                 effects.forEach((effect: CardEffect) => {
-                    effect.value.calculate(this, context); //fetch new abilities
-                    actions = actions.concat(effect.value.getActions(this));
+                    const value = effect.value as AbilityProvidingEffectValue;
+                    value.calculate(this, context); //fetch new abilities
+                    actions = actions.concat(value.getActions(this));
                 });
             }
         }
@@ -188,7 +197,7 @@ class BaseCard extends EffectSource {
         let reactions = this.abilities.reactions;
         const mostRecentEffect = this.#mostRecentEffect((effect) => effect.type === EffectName.CopyCharacter);
         if(mostRecentEffect) {
-            reactions = mostRecentEffect.value.getReactions(this);
+            reactions = (mostRecentEffect.value as AbilityProvidingEffectValue).getReactions(this);
         }
         const effectReactions = (this.getEffects(EffectName.GainAbility) as TriggeredAbility[]).filter((ability) =>
             TriggeredAbilityTypes.includes(ability.abilityType)
@@ -205,8 +214,9 @@ class BaseCard extends EffectSource {
                 );
                 const context = (this.game.getFrameworkContext as (player?: Player | null) => AbilityContext)(this.controller);
                 effects.forEach((effect: CardEffect) => {
-                    effect.value.calculate(this, context); //fetch new abilities
-                    reactions = reactions.concat(effect.value.getReactions(this));
+                    const value = effect.value as AbilityProvidingEffectValue;
+                    value.calculate(this, context); //fetch new abilities
+                    reactions = reactions.concat(value.getReactions(this));
                 });
             }
         }
@@ -230,7 +240,7 @@ class BaseCard extends EffectSource {
 
         const mostRecentEffect = this.#mostRecentEffect((effect) => effect.type === EffectName.CopyCharacter);
         if(mostRecentEffect) {
-            return gainedPersistentEffects.concat(mostRecentEffect.value.getPersistentEffects());
+            return gainedPersistentEffects.concat((mostRecentEffect.value as AbilityProvidingEffectValue).getPersistentEffects());
         }
         for(const effect of this.getRawEffects()) {
             if(effect.type === EffectName.GainAllAbilities) {
@@ -249,8 +259,9 @@ class BaseCard extends EffectSource {
                 );
                 const context = (this.game.getFrameworkContext as (player?: Player | null) => AbilityContext)(this.controller);
                 effects.forEach((effect: CardEffect) => {
-                    effect.value.calculate(this, context); //fetch new abilities
-                    gainedPersistentEffects = gainedPersistentEffects.concat(effect.value.getPersistentEffects());
+                    const value = effect.value as AbilityProvidingEffectValue;
+                    value.calculate(this, context); //fetch new abilities
+                    gainedPersistentEffects = gainedPersistentEffects.concat(value.getPersistentEffects());
                 });
             }
         }
@@ -999,7 +1010,7 @@ class BaseCard extends EffectSource {
         }
         let changeEffects = this.getRawEffects().filter((effect: CardEffect) => effect.type === EffectName.ReplacePrintedElement);
         changeEffects.forEach((effect: CardEffect) => {
-            const newElement = effect.value.value;
+            const newElement = (effect.value as EffectValue<ElementSymbolInfo>).value;
             let sym = symbols.find((a) => a.key === newElement.key);
             if(sym) {
                 sym.element = newElement.element;

@@ -3,9 +3,11 @@ import { EffectName } from '../Constants.js';
 import type Player from '../Player.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
+import type Ring from '../Ring.js';
 import type { GameObject } from '../GameObject.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
+import type { Cost } from '../costs/Cost.js';
 
 // Structural view of Restriction (consumers only call `.isMatch`); `card?: GameObject` so the
 // base GameObject.checkRestrictions can pass `this` without a downcast (isMatch's method params
@@ -14,7 +16,7 @@ type RestrictionLike = { isMatch(type: string, context: AbilityContext, card?: G
 import type { AttachmentMilitarySkillModifierValue } from './Library/attachmentMilitarySkillModifier.js';
 import type { AttachmentPoliticalSkillModifierValue } from './Library/attachmentPoliticalSkillModifier.js';
 
-type FatePool = { fate: number; getFate(): number };
+export type FatePool = DrawCard | Ring;
 
 /**
  * FOUNDATION (in progress — multi-turn effort): maps each EffectName to the *resolved* value type
@@ -122,7 +124,7 @@ export interface EffectValueMap {
     [EffectName.DuelIgnorePrintedSkill]: boolean;
 
     // --- string (faction/keyword/trait/conflict-type names) ---
-    [EffectName.AddElementAsAttacker]: Element;
+    [EffectName.AddElementAsAttacker]: Element | Element[];
     [EffectName.AddFaction]: string;
     [EffectName.LoseFaction]: string;
     [EffectName.AddKeyword]: string;
@@ -179,4 +181,6 @@ export interface EffectValueMap {
     [EffectName.FateCostToTarget]: { cardType?: string; targetPlayer?: Players; amount: number };
     [EffectName.AttachmentRestrictTraitAmount]: Record<string, number>;
     [EffectName.AdditionalAttackedProvince]: ProvinceCard;
+    [EffectName.AdditionalTriggerCost]: (context: AbilityContext) => Cost | Cost[];
+    [EffectName.AdditionalPlayCost]: (context: AbilityContext) => Cost | Cost[];
 }

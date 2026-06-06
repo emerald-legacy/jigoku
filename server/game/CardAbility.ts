@@ -9,7 +9,7 @@ import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { AbilityContext } from './AbilityContext.js';
-import type { EffectArg } from './Interfaces.js';
+import type { EffectArg, InitiateDuel } from './Interfaces.js';
 import type { Cost } from './costs/Cost.js';
 
 export interface CardAbilityProperties<C extends AbilityContext = AbilityContext> extends ThenAbilityProperties<C> {
@@ -23,7 +23,7 @@ export interface CardAbilityProperties<C extends AbilityContext = AbilityContext
     max?: IAbilityLimit;
     abilityIdentifier?: string;
     origin?: BaseCard;
-    initiateDuel?: any;
+    initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);
     effect?: string;
     effectArgs?: EffectArg | ((context: C) => EffectArg);
 }
@@ -145,19 +145,19 @@ class CardAbility extends ThenAbility {
         if(!context.subResolution && triggerCosts && context.player.anyEffect(EffectName.AdditionalTriggerCost)) {
             const additionalTriggerCosts = context.player
                 .getEffects(EffectName.AdditionalTriggerCost)
-                .map((effect: any) => effect(context));
+                .map((effect) => effect(context));
             costs = costs.concat(...additionalTriggerCosts);
         }
         if(!context.subResolution && triggerCosts && context.source.anyEffect(EffectName.AdditionalTriggerCost)) {
             const additionalTriggerCosts = context.source
                 .getEffects(EffectName.AdditionalTriggerCost)
-                .map((effect: any) => effect(context));
+                .map((effect) => effect(context));
             costs = costs.concat(...additionalTriggerCosts);
         }
         if(!context.subResolution && playCosts && context.player.anyEffect(EffectName.AdditionalPlayCost)) {
             const additionalPlayCosts = context.player
                 .getEffects(EffectName.AdditionalPlayCost)
-                .map((effect: any) => effect(context));
+                .map((effect) => effect(context));
             return costs.concat(...additionalPlayCosts);
         }
         return costs;

@@ -87,10 +87,10 @@ class Ring extends EffectSource {
                         .getAttackers()
                         .map((card: DrawCard) =>
                             card.attachments.reduce(
-                                (array: Element[], attachment: DrawCard) =>
+                                (array: (Element | Element[])[], attachment: DrawCard) =>
                                     array.concat(attachment.getEffects(EffectName.AddElementAsAttacker)),
                                 card.getEffects(EffectName.AddElementAsAttacker)
-                            )
+                            ).flat()
                         )
                 );
             }
@@ -147,7 +147,7 @@ class Ring extends EffectSource {
         this.removedFromGame = false;
     }
 
-    getState(activePlayer?: Player): Record<string, any> {
+    getState(activePlayer?: Player): Record<string, unknown> {
         let selectionState = {};
 
         if(activePlayer) {

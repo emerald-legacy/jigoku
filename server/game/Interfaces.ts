@@ -12,6 +12,7 @@ import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type CardAbility from './CardAbility.js';
 import type { DuelProperties } from './GameActions/DuelAction.js';
+import type { EffectFactory } from './Effects/EffectBuilder.js';
 import type { Players, TargetMode, CardType, Location, EventName, Phases } from './Constants.js';
 import type { StatusToken } from './StatusToken.js';
 import type Player from './Player.js';
@@ -56,7 +57,7 @@ interface TargetToken extends BaseTarget {
     cardType?: CardType | CardType[];
     singleToken?: boolean;
     cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
-    tokenCondition?: (token: StatusToken, context?: any) => boolean;
+    tokenCondition?: (token: StatusToken, context?: AbilityContext) => boolean;
 }
 
 interface TargetElementSymbol extends BaseTarget {
@@ -160,7 +161,7 @@ interface AbilityProps<Context> {
     then?: ((context: AbilityContext) => object) | object;
 }
 
-export interface ActionProps<Source = any, Target extends BaseCard = BaseCard> extends AbilityProps<AbilityContext<Source, Target>> {
+export interface ActionProps<Source = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<AbilityContext<Source, Target>> {
     condition?: (context: AbilityContext<Source, Target>) => boolean;
     phase?: Phases | 'any';
     emeraldWorksInDynsty?: boolean;
@@ -214,13 +215,13 @@ export interface TriggeredAbilityAggregateWhenProps<Source = BaseCard, Target ex
 
 export type TriggeredAbilityProps<Source = BaseCard, Target extends BaseCard = BaseCard> = TriggeredAbilityWhenProps<Source, Target> | TriggeredAbilityAggregateWhenProps<Source, Target>;
 
-export interface PersistentEffectProps<Source = any, MatchTarget extends GameObject = GameObject> {
+export interface PersistentEffectProps<Source = BaseCard, MatchTarget extends GameObject = GameObject> {
     location?: Location | Location[];
     condition?: (context: AbilityContext<Source>) => boolean;
     match?: (card: MatchTarget, context?: AbilityContext<Source>) => boolean;
     targetController?: Players;
     targetLocation?: Location | (string & {});
-    effect: ((...args: any[]) => any) | ((...args: any[]) => any)[];
+    effect: EffectFactory | EffectFactory[];
     createCopies?: boolean;
 }
 

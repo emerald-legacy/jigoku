@@ -4,13 +4,14 @@ import type { BaseAbilityProperties } from './BaseAbility.js';
 import type BaseCard from './BaseCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
+import type { EffectArg } from './Interfaces.js';
 
 export interface ThenAbilityProperties<C extends AbilityContext = AbilityContext> extends BaseAbilityProperties {
     handler?: (context: C) => void;
     then?: ThenAbilityProperties | ((context: C) => ThenAbilityProperties);
     thenCondition?: (context: C) => boolean;
     message?: string | ((context: C) => string);
-    messageArgs?: any[] | ((context: C) => any[]);
+    messageArgs?: (EffectArg | undefined)[] | ((context: C) => (EffectArg | undefined)[]);
 }
 
 class ThenAbility extends BaseCardAbility {

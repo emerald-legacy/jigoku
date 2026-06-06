@@ -49,8 +49,8 @@ class VoiceOfTheAncestors extends DrawCard {
                             AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
                                 match: (card: BaseCard, context?: AbilityContext<this>) => card === context?.source?.parent,
                                 effect: [
-                                    AbilityDsl.effects.modifyMilitarySkill((card: EffectTarget, context: AbilityContext<this>) => context.source.printedMilitarySkill || 0),
-                                    AbilityDsl.effects.modifyPoliticalSkill((card: EffectTarget, context: AbilityContext<this>) => context.source.printedPoliticalSkill || 0)
+                                    AbilityDsl.effects.modifyMilitarySkill((card: EffectTarget, context) => (context.source as DrawCard).printedMilitarySkill || 0),
+                                    AbilityDsl.effects.modifyPoliticalSkill((card: EffectTarget, context) => (context.source as DrawCard).printedPoliticalSkill || 0)
                                 ]
                             })
                         ]

@@ -2,15 +2,18 @@ import { EffectValue } from './EffectValue.js';
 import { AbilityType, CardType, Location, Phases, Stage } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
+import type { Faction } from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
+import type CardAbility from '../CardAbility.js';
+import type { ProvinceCard } from '../ProvinceCard.js';
 import { MoveCardAction } from '../GameActions/MoveCardAction.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type Player from '../Player.js';
 
-// Restriction predicates read ability/card/game internals (ability.card, ability.properties,
-// game.phase, card.printedCost) that live on subtypes, not the declared base types — so the
-// context/effect/card params are genuinely open here.
-type RestrictionCheck = (context: any, effect: Restriction, card?: any) => boolean;
+// Restriction predicates read ability/card internals (ability.card, ability.properties,
+// card.printedCost) that live on subtypes — narrowed at the call sites via `as DrawCard` /
+// `as CardAbility`.
+type RestrictionCheck = (context: AbilityContext, effect: Restriction, card?: BaseCard) => boolean;
 type RestrictionType = string | RestrictionCheck | (string | RestrictionCheck)[];
 
 const checkRestrictions: Record<string, RestrictionCheck> = {
@@ -25,17 +28,16 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
     attachmentsWithSameClan: (context, effect, card) =>
         context.source.type === CardType.Attachment &&
         context.source.getPrintedFaction() !== 'neutral' &&
-        card.isFaction(context.source.getPrintedFaction()),
+        !!card && card.isFaction(context.source.getPrintedFaction() as Faction),
     attackedProvince: (context) =>
-        context.game.currentConflict && context.game.currentConflict.getConflictProvinces().includes(context.source),
+        !!context.game.currentConflict?.getConflictProvinces().includes(context.source as ProvinceCard),
     attackedProvinceNonForced: (context) =>
-        context.game.currentConflict &&
-        context.game.currentConflict.getConflictProvinces().includes(context.source) &&
+        !!context.game.currentConflict?.getConflictProvinces().includes(context.source as ProvinceCard) &&
         context.ability.isTriggeredAbility() &&
         context.ability.abilityType !== AbilityType.ForcedReaction &&
         context.ability.abilityType !== AbilityType.ForcedInterrupt,
     attackingCharacters: (context) =>
-        context.game.currentConflict && context.source.type === CardType.Character && context.source.isAttacking(),
+        !!context.game.currentConflict && context.source.type === CardType.Character && (context.source as DrawCard).isAttacking(),
     cardEffects: (context) =>
         (context.ability.isCardAbility() || !context.ability.isCardPlayed()) &&
         context.stage !== Stage.Cost &&
@@ -48,7 +50,7 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
             CardType.Province,
             CardType.Role
         ].includes(context.source.type),
-    ringEffects: (context) => context.source.type === 'ring',
+    ringEffects: (context) => (context.source.type as string) === 'ring',
     cardAndRingEffects: (context, effect) => checkRestrictions.cardEffects(context, effect) || checkRestrictions.ringEffects(context, effect),
     characters: (context) => context.source.type === CardType.Character,
     charactersWithNoFate: (context) => context.source.type === CardType.Character && context.source.getFate() === 0,
@@ -60,9 +62,9 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
     eventsWithSameClan: (context, effect, card) =>
         context.source.type === CardType.Event &&
         context.source.getPrintedFaction() !== 'neutral' &&
-        card.isFaction(context.source.getPrintedFaction()),
+        !!card && card.isFaction(context.source.getPrintedFaction() as Faction),
     nonMonstrousEvents: (context) => context.source.type === CardType.Event && !context.source.hasTrait('monstrous'),
-    nonDynastyPhase: (context) => context.game.phase !== Phases.Dynasty,
+    nonDynastyPhase: (context) => context.game.currentPhase !== Phases.Dynasty,
     nonSpellEvents: (context) => context.source.type === CardType.Event && !context.source.hasTrait('spell'),
     opponentsAttachments: (context, effect) =>
         context.player &&
@@ -89,7 +91,7 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
         context.player === getApplyingPlayer(effect).opponent &&
         context.source.type === CardType.Event,
     opponentsRingEffects: (context, effect) =>
-        context.player && context.player === getApplyingPlayer(effect).opponent && context.source.type === 'ring',
+        context.player && context.player === getApplyingPlayer(effect).opponent && (context.source.type as string) === 'ring',
     opponentsCardAndRingEffects: (context, effect) =>
         checkRestrictions.opponentsCardEffects(context, effect) ||
         checkRestrictions.opponentsRingEffects(context, effect),
@@ -106,12 +108,12 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
         const parent = (effect.context.source as DrawCard).parent;
         return context.source.type === CardType.Character &&
             context.source.controller === getApplyingPlayer(effect).opponent &&
-            !!parent && context.source.glory < parent.glory;
+            !!parent && (context.source as DrawCard).glory < parent.glory;
     },
     provinces: (context) => context.source.type === CardType.Province,
     reactions: (context) => context.ability.abilityType === AbilityType.Reaction,
     actionEvents: (context) =>
-        context.ability.card.type === CardType.Event && context.ability.abilityType === AbilityType.Action,
+        (context.ability as CardAbility).card.type === CardType.Event && context.ability.abilityType === AbilityType.Action,
     source: (context, effect) => context.source === effect.context.source,
     keywordAbilities: (context) => context.ability.isKeywordAbility(),
     nonKeywordAbilities: (context) => !context.ability.isKeywordAbility(),
@@ -121,18 +123,19 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
         context.ability.abilityType !== AbilityType.ForcedInterrupt,
     equalOrMoreExpensiveCharacterTriggeredAbilities: (context, effect, card) =>
         context.source.type === CardType.Character &&
-        !context.ability.isKeywordAbility &&
-        context.source.printedCost >= card.printedCost,
+        !context.ability.isKeywordAbility() &&
+        !!card && ((context.source as DrawCard).printedCost ?? 0) >= ((card as DrawCard).printedCost ?? 0),
     equalOrMoreExpensiveCharacterKeywords: (context, effect, card) =>
         context.source.type === CardType.Character &&
-        context.ability.isKeywordAbility &&
-        context.source.printedCost >= card.printedCost,
+        context.ability.isKeywordAbility() &&
+        !!card && ((context.source as DrawCard).printedCost ?? 0) >= ((card as DrawCard).printedCost ?? 0),
     eventPlayedByHigherBidPlayer: (context, effect, card) =>
-        context.source.type === CardType.Event && context.player.showBid > card.controller.showBid,
+        context.source.type === CardType.Event && !!card && context.player.showBid > card.controller.showBid,
     toHand: (context) => {
-        let targetActions: GameAction[] = context.ability.properties.target ? context.ability.properties.target.gameAction : [];
+        const properties = (context.ability as CardAbility).properties;
+        let targetActions: GameAction[] = properties.target ? properties.target.gameAction : [];
         let nestedActions = context.ability.gameAction
-            ? context.ability.gameAction.map((topAction: any) => topAction.properties.gameAction)
+            ? context.ability.gameAction.map((topAction: GameAction) => (topAction.properties as { gameAction?: unknown }).gameAction)
             : [];
 
         return targetActions.some(isMoveToHandAction) || nestedActions.some(isMoveToHandAction);
@@ -155,15 +158,16 @@ const isMoveToHandAction = (gameAction: unknown) =>
 
 const leavePlayTypes = new Set(['discardFromPlay', 'sacrifice', 'returnToHand', 'returnToDeck', 'removeFromGame']);
 
-interface RestrictionProperties {
-    type: string;
+export interface RestrictionProperties {
+    type?: string;
     restricts?: RestrictionType;
     applyingPlayer?: Player;
     params?: unknown;
+    cannot?: RestrictionType;
 }
 
 class Restriction extends EffectValue<Restriction | undefined> {
-    type: string;
+    type?: string;
     restriction!: RestrictionType;
     applyingPlayer!: Player;
     params: unknown;

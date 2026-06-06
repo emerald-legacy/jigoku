@@ -9,14 +9,17 @@ import type BaseCard from '../../BaseCard.js';
 import type { Event } from '../../Events/Event.js';
 import type { AbilityLimit } from '../../AbilityLimit.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import type { EffectTarget } from '../../Effects/EffectBuilder.js';
 
 const backAlleyPersistentEffect = {
-    apply: (card: BackAlleyHideaway) => {
+    apply: (target: EffectTarget) => {
+        const card = target as BackAlleyHideaway;
         card.showPopup = true;
         card.popupMenuText = 'Use Interrupt ability';
         card.backAlleyActionLimit.registerEvents(card.game);
     },
-    unapply: (card: BackAlleyHideaway) => {
+    unapply: (target: EffectTarget) => {
+        const card = target as BackAlleyHideaway;
         for(const character of card.attachments as DrawCard[]) {
             character.owner.moveCard(
                 character,

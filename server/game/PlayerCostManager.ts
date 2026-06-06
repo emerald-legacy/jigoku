@@ -14,6 +14,8 @@ import type Game from './Game.js';
 import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
+import type { GameObject } from './GameObject.js';
+import type { FatePool } from './Effects/EffectValueMap.js';
 import type { AbilityContext } from './AbilityContext.js';
 
 export class PlayerCostManager {
@@ -87,9 +89,9 @@ export class PlayerCostManager {
         return undefined;
     }
 
-    getAlternateFatePools(playingType: PlayType | undefined, card: DrawCard, context?: AbilityContext): any[] {
+    getAlternateFatePools(playingType: PlayType | undefined, card: DrawCard, context?: AbilityContext): FatePool[] {
         const effects = this.player.getEffects(EffectName.AlternateFatePool);
-        let alternateFatePools = effects
+        let alternateFatePools: FatePool[] = effects
             .filter((match) => match(card) && match(card).getFate() > 0)
             .map((match) => match(card));
 
@@ -98,35 +100,35 @@ export class PlayerCostManager {
         }
         if(context && context.source && context.source.isTemptationsMaho()) {
             alternateFatePools = alternateFatePools.filter(
-                (a: any) => a.printedType !== 'ring' && a.type === CardType.Character
+                (a) => a.printedType !== 'ring' && (a as DrawCard).type === CardType.Character
             );
         }
 
-        const rings = alternateFatePools.filter((a: any) => a.printedType === 'ring');
-        const cards = alternateFatePools.filter((a: any) => a.printedType !== 'ring');
+        const rings = alternateFatePools.filter((a) => a.printedType === 'ring');
+        const cards = alternateFatePools.filter((a) => a.printedType !== 'ring');
         if(
             !this.player.checkRestrictions('takeFateFromRings', context) ||
             (context && context.source && context.source.isTemptationsMaho())
         ) {
-            rings.forEach((ring: any) => {
-                alternateFatePools = alternateFatePools.filter((a: any) => a !== ring);
+            rings.forEach((ring) => {
+                alternateFatePools = alternateFatePools.filter((a) => a !== ring);
             });
         }
 
-        cards.forEach((card: any) => {
-            if(!card.allowGameAction('removeFate') && card.type !== CardType.Attachment) {
-                alternateFatePools = alternateFatePools.filter((a: any) => a !== card);
+        cards.forEach((card) => {
+            if(!card.allowGameAction('removeFate') && (card as DrawCard).type !== CardType.Attachment) {
+                alternateFatePools = alternateFatePools.filter((a) => a !== card);
             }
         });
 
         return [...new Set(alternateFatePools)];
     }
 
-    getMinimumCost(playingType: PlayType | undefined, context: AbilityContext, target?: any, ignoreType: boolean = false): number {
+    getMinimumCost(playingType: PlayType | undefined, context: AbilityContext, target?: BaseCard, ignoreType: boolean = false): number {
         const card = context.source;
         const reducedCost = this.getReducedCost(playingType, card as DrawCard, target, ignoreType);
         const alternateFatePools = this.getAlternateFatePools(playingType, card as DrawCard, context);
-        const alternateFate = alternateFatePools.reduce((total: number, pool: any) => total + pool.fate, 0);
+        const alternateFate = alternateFatePools.reduce((total: number, pool: FatePool) => total + pool.fate, 0);
         let triggeredCostReducers = 0;
         const fakeWindow = { addChoice: () => triggeredCostReducers++ };
         const fakeEvent = this.game.getEvent(EventName.OnCardPlayed, { card: card, player: this.player, context: context });
@@ -144,7 +146,7 @@ export class PlayerCostManager {
         return Math.max(reducedCost - triggeredCostReducers - alternateFate, 0);
     }
 
-    getReducedCost(playingType: PlayType | undefined, card: DrawCard, target?: any, ignoreType: boolean = false): number {
+    getReducedCost(playingType: PlayType | undefined, card: DrawCard, target?: BaseCard, ignoreType: boolean = false): number {
         const matchingReducers = this.costReducers.filter((reducer) =>
             reducer.canReduce(playingType as PlayType, card, target, ignoreType)
         );
@@ -162,7 +164,7 @@ export class PlayerCostManager {
         return Math.max(reducedCost, costFloor);
     }
 
-    getTotalCostModifiers(playingType: PlayType | undefined, card: DrawCard, target?: any, ignoreType: boolean = false): number {
+    getTotalCostModifiers(playingType: PlayType | undefined, card: DrawCard, target?: BaseCard, ignoreType: boolean = false): number {
         const baseCost = 0;
         const matchingReducers = this.costReducers.filter((reducer) =>
             reducer.canReduce(playingType as PlayType, card, target, ignoreType)
@@ -174,14 +176,13 @@ export class PlayerCostManager {
     getAvailableAlternateFate(playingType: PlayType | undefined, context: AbilityContext): number {
         const card = context.source as DrawCard;
         const alternateFatePools = this.getAlternateFatePools(playingType, card);
-        const alternateFate = alternateFatePools.reduce((total: number, pool: any) => total + pool.fate, 0);
+        const alternateFate = alternateFatePools.reduce((total: number, pool: FatePool) => total + pool.fate, 0);
         return Math.max(alternateFate, 0);
     }
 
-    getTargetingCost(abilitySource: BaseCard, targets: any): number {
-        targets = Array.isArray(targets) ? targets : [targets];
-        targets = targets.filter(Boolean);
-        if(targets.length === 0) {
+    getTargetingCost(abilitySource: BaseCard, targets: GameObject | GameObject[]): number {
+        const targetList = (Array.isArray(targets) ? targets : [targets]).filter(Boolean);
+        if(targetList.length === 0) {
             return 0;
         }
 
@@ -190,22 +191,23 @@ export class PlayerCostManager {
             : [];
 
         let targetCost = 0;
-        for(const target of targets) {
+        for(const target of targetList) {
+            const targetCard = target as BaseCard;
             for(const cardCostToTarget of target.getEffects(EffectName.FateCostToTarget)) {
                 if(
                     (!cardCostToTarget.cardType || abilitySource.type === cardCostToTarget.cardType) &&
                     (!cardCostToTarget.targetPlayer ||
                         abilitySource.controller ===
                             (cardCostToTarget.targetPlayer === Players.Self
-                                ? target.controller
-                                : target.controller.opponent))
+                                ? targetCard.controller
+                                : targetCard.controller.opponent))
                 ) {
                     targetCost += cardCostToTarget.amount;
                 }
             }
 
             for(const playerCostToTarget of playerCostToTargetEffects) {
-                if(playerCostToTarget.match(target)) {
+                if(playerCostToTarget.match(targetCard)) {
                     targetCost += playerCostToTarget.amount;
                 }
             }
@@ -214,8 +216,8 @@ export class PlayerCostManager {
         return targetCost;
     }
 
-    markUsedReducers(playingType: PlayType | undefined, card: DrawCard, target: any = null): void {
-        const matchingReducers = this.costReducers.filter((reducer) => reducer.canReduce(playingType as PlayType, card, target));
+    markUsedReducers(playingType: PlayType | undefined, card: DrawCard, target: BaseCard | null = null): void {
+        const matchingReducers = this.costReducers.filter((reducer) => reducer.canReduce(playingType as PlayType, card, target ?? undefined));
         matchingReducers.forEach((reducer) => {
             reducer.markUsed();
             if(reducer.isExpired()) {

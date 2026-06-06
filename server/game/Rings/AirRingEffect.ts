@@ -79,7 +79,7 @@ export class AirRingEffect extends BaseAbility {
             context.game.addMessage(
                 '{0} chooses not to resolve the {1} ring',
                 context.player,
-                context.game.currentConflict ? 'air' : (context.game.currentConflict as any)?.element
+                context.game.currentConflict ? 'air' : undefined
             );
             this.onResolution(false);
         }

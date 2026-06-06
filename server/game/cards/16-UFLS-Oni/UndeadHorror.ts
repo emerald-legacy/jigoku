@@ -44,7 +44,10 @@ export default class UndeadHorror extends BaseOni {
                                 AbilityDsl.effects.blank(true),
                                 AbilityDsl.effects.changeType(CardType.Attachment),
                                 AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
-                                    match: (card, context) => card === context?.source.parent,
+                                    match: (card, context) => {
+                                        const parent = context && (context.source as DrawCard).parent;
+                                        return card === parent;
+                                    },
                                     targetController: Players.Opponent,
                                     effect: [
                                         AbilityDsl.effects.modifyMilitarySkill(

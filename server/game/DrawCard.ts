@@ -746,7 +746,7 @@ class DrawCard extends BaseCard {
             (array, attachment: DrawCard) =>
                 array.concat(attachment.getEffects(EffectName.AddElementAsAttacker)),
             this.getEffects(EffectName.AddElementAsAttacker)
-        );
+        ).flat();
 
         if(
             elementsAdded.some((element: string) =>

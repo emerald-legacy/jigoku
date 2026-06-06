@@ -170,9 +170,9 @@ class StaticEffect implements CardEffect {
         return ProvinceStrengthModifiers.includes(this.type);
     }
 
-    checkConflictingEffects(type: EffectName, target: any): boolean {
+    checkConflictingEffects(type: EffectName, target: GameObject): boolean {
         if(binaryCardEffects.includes(type)) {
-            let matchingEffects = target.effects.filter((effect: CardEffect) => effect.type === type);
+            let matchingEffects = target.getRawEffects().filter((effect: CardEffect) => effect.type === type);
             return matchingEffects.every((effect: CardEffect) => this.hasLongerDuration(effect) || effect.isConditional);
         }
         if(conflictingEffects[type]) {

@@ -19,7 +19,7 @@ class CivilDiscourse extends DrawCard {
                         targetController: Players.Self,
                         effect: AbilityDsl.effects.increaseCost({
                             amount: 1,
-                            playingType: PlayType.PlayFromHand
+                            playingTypes: PlayType.PlayFromHand
                         })
                     })
                 })

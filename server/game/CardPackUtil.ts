@@ -8,7 +8,7 @@ const communityFormats = new Set([GameModes.Emerald, GameModes.Sanctuary, GameMo
  * Imperial formats prefer the first version (FFG printing).
  * If an explicit packId is provided, it takes priority.
  */
-export function resolvePackId(packId: string | undefined, card: { versions?: { pack_id: string }[]; [key: string]: unknown } | null | undefined, gameMode: string): string | undefined {
+export function resolvePackId(packId: string | undefined, card: { id?: string; versions?: { pack_id: string }[] } | null | undefined, gameMode: string): string | undefined {
     if(packId) {
         return packId;
     }

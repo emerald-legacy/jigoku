@@ -315,7 +315,7 @@ export function dishonorAndSacrifice(properties: SelectCostProperties): Cost {
     );
 
     actionCost.getActionName = () => 'dishonorAndSacrifice';
-    actionCost.getCostMessage = (context: AbilityContext): [string, any[]] => {
+    actionCost.getCostMessage = (context: AbilityContext): [string, unknown[]] => {
         return ['dishonoring and sacrificing {1}', [context.costs.dishonorAndSacrifice]];
     };
 

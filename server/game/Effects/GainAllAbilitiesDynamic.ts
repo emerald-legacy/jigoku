@@ -7,7 +7,7 @@ import type CardAbility from '../CardAbility.js';
 import type { CardAction } from '../CardAction.js';
 import type TriggeredAbility from '../TriggeredAbility.js';
 
-type DynamicMatch = ((target: BaseCard, context: AbilityContext) => BaseCard | BaseCard[]) | BaseCard | BaseCard[];
+export type DynamicMatch = ((target: BaseCard, context: AbilityContext) => BaseCard | BaseCard[]) | BaseCard | BaseCard[];
 
 interface GainedAbilities {
     actions: unknown[];

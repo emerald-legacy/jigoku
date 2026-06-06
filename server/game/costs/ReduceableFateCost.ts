@@ -31,7 +31,7 @@ export class ReduceableFateCost implements Cost {
             return false;
         }
 
-        const minCost = context.player.getMinimumCost(context.playType, context, null, this.ignoreType);
+        const minCost = context.player.getMinimumCost(context.playType, context, undefined, this.ignoreType);
         if(minCost === 0) {
             return true;
         }
@@ -141,7 +141,7 @@ export class ReduceableFateCost implements Cost {
     }
 
     protected getReducedCost(context: AbilityContext<DrawCard>): number {
-        return context.player.getReducedCost(context.playType, context.source, null, this.ignoreType);
+        return context.player.getReducedCost(context.playType, context.source, undefined, this.ignoreType);
     }
 
     protected getFinalFatecost(context: AbilityContext<DrawCard>, reducedCost: number) {

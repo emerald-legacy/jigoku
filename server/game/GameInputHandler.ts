@@ -4,6 +4,7 @@ import { resolvePackId } from './CardPackUtil.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
+import type { DeckDTO } from '../gamenode/LobbyProtocol.js';
 
 const CHANGEABLE_STATS = new Set([
     'fate',
@@ -247,7 +248,7 @@ export class GameInputHandler {
         }
         const player = this.game.getPlayerByName(playerName);
         if(player) {
-            player.selectDeck(deck);
+            player.selectDeck(deck as DeckDTO);
         }
     }
 

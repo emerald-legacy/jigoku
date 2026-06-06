@@ -6,6 +6,7 @@ import { EffectName, Phases, PlayType, EventName } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
+import type { EffectValue } from './Effects/EffectValue.js';
 
 class DynastyCardAction extends BaseAction {
     title = 'Play this character';
@@ -53,7 +54,7 @@ class DynastyCardAction extends BaseAction {
                     context.game.addMessage(
                         '{0} enters play with {1} additional fate due to {2}',
                         context.source,
-                        effect.value.value,
+                        (effect.value as EffectValue<number>).value,
                         effect.context.source
                     )
                 );

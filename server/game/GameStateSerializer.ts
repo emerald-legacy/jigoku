@@ -93,12 +93,12 @@ export class GameStateSerializer {
         const game = this.game;
         const players = game.getPlayers().map((player) => ({
             name: player.name,
-            faction: player.faction.name || player.faction.value,
+            faction: player.faction.name || player.faction.value || '',
             honor: player.getTotalHonor(),
             lostProvinces: player
                 .getProvinceCards()
                 .reduce((count: number, card) => (card && card.isBroken ? count + 1 : count), 0),
-            deck: this.formatDeckForSaving(player.deck),
+            deck: this.formatDeckForSaving(player.deck as DeckForSaving),
             deckId: player.deck?._id?.toString()
         }));
 

@@ -3,6 +3,7 @@ import ChatCommands from './ChatCommands.js';
 import { GameChat } from './GameChat.js';
 import { EffectEngine } from './EffectEngine.js';
 import Player from './Player.js';
+import type { ClockConfig } from './Clocks/ClockSelector.js';
 import { Spectator } from './Spectator.js';
 import { GamePipeline } from './GamePipeline.js';
 import { SetupPhase } from './gamesteps/SetupPhase.js';
@@ -187,7 +188,7 @@ class Game {
                 player.user,
                 this.owner === player.user.username,
                 this,
-                details.clocks
+                details.clocks as ClockConfig | undefined
             );
         });
 

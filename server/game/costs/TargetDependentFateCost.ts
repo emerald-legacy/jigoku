@@ -22,7 +22,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
         const reducedCost = context.player.getMinimumCost(
             context.playType,
             context,
-            context.targets[this.dependsOn],
+            context.targets[this.dependsOn] as DrawCard,
             this.ignoreType
         );
         return (
@@ -37,7 +37,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
             context.player.markUsedReducers(
                 context.playType,
                 context.source,
-                context.targets[this.dependsOn]
+                context.targets[this.dependsOn] as DrawCard
             );
             context.player.fate -= this.getFinalFatecost(context, amount);
         });
@@ -47,7 +47,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
         return context.player.getReducedCost(
             context.playType,
             context.source,
-            context.targets[this.dependsOn],
+            context.targets[this.dependsOn] as DrawCard,
             this.ignoreType
         );
     }

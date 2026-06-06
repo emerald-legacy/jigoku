@@ -30,7 +30,6 @@ class Gossip extends DrawCard {
             effect: ability.effects.playerCannot({
                 cannot: PlayType.PlayFromHand,
                 restricts: 'copiesOfX',
-                source: context.source,
                 params: cardName
             })
         }));

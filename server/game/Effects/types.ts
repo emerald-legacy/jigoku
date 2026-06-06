@@ -4,7 +4,7 @@ import type { GameObject } from '../GameObject.js';
 
 export interface CardEffect {
     type: EffectName;
-    value: any;
+    value: unknown;
     context: AbilityContext;
     duration?: Duration | null;
     isConditional?: boolean;

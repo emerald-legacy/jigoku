@@ -24,7 +24,7 @@ export default class WritOfSanctification extends DrawCard {
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Bow corrupt character',
-                condition: (context) => context.source.isParticipating(),
+                condition: (context) => (context.source as DrawCard).isParticipating(),
                 target: {
                     cardType: CardType.Character,
                     controller: Players.Any,
