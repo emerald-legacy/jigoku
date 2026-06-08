@@ -42,10 +42,40 @@ import type { DeckDTO } from '../gamenode/LobbyProtocol.js';
 import type { FatePool } from './Effects/EffectValueMap.js';
 import type { CardData } from './types/CardData.js';
 
-export interface PlayerState {
+export interface PlayerState extends Partial<ReturnType<PlayerPromptState['getState']>> {
     cardPiles: { [pile: string]: CardSummary[] };
+    cardsPlayedThisConflict: number;
+    disconnected: boolean;
+    faction: DeckFaction;
+    firstPlayer: boolean;
+    hideProvinceDeck: boolean;
+    id: string;
+    imperialFavor: string;
+    left: boolean;
+    name: string;
+    numConflictCards: number;
+    numDynastyCards: number;
+    numProvinceCards: number;
+    optionSettings: OptionSettings;
+    phase: string;
+    promptedActionWindows: Record<string, boolean>;
     provinces: { one: CardSummary[]; two: CardSummary[]; three: CardSummary[]; four: CardSummary[] };
-    [key: string]: unknown;
+    showBid: number;
+    stats: ReturnType<PlayerStateBuilder['getStats']>;
+    timerSettings: TimerSettings;
+    strongholdProvince: CardSummary[];
+    user: {
+        username: string;
+        emailHash?: string;
+        settings?: GamePlayerUserSettings;
+    };
+    showConflictDeck?: boolean;
+    showDynastyDeck?: boolean;
+    role?: CardSummary;
+    stronghold?: CardSummary;
+    conflictDeckTopCard?: CardSummary | ({ facedown: true } & ReturnType<PlayerPromptState['getCardSelectionState']>);
+    dynastyDeckTopCard?: CardSummary | ({ facedown: true } & ReturnType<PlayerPromptState['getCardSelectionState']>);
+    clock?: ReturnType<ClockInterface['getState']>;
 }
 
 export interface OptionSettings {
@@ -76,12 +106,21 @@ export interface MoveCardOptions {
     bottom?: boolean;
 }
 
+export interface PatronSettings {
+    dial?: string;
+    tokens?: string;
+    rings?: boolean;
+}
+
 export interface GamePlayerUserSettings {
+    cardSize?: string;
     disableGravatar?: boolean;
     windowTimer?: number;
     background?: string;
     optionSettings?: OptionSettings;
+    promptedActionWindows?: Record<string, boolean>;
     timerSettings?: TimerSettings;
+    patron?: PatronSettings;
 }
 
 export interface GamePlayerUser {
