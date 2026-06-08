@@ -19,20 +19,20 @@ interface SelectCardPromptProperties {
     source?: EffectSource | string;
     context?: AbilityContext;
     selector?: BaseCardSelector;
-    buttons: PromptButton[];
+    buttons?: PromptButton[];
     controls?: Array<{ type: string; source: unknown; targets: unknown[] }>;
     selectCard?: boolean;
     ordered?: boolean;
-    hideIfNoLegalTargets: boolean;
+    hideIfNoLegalTargets?: boolean;
     activePromptTitle?: string;
     waitingPromptTitle?: string;
     mustSelect?: BaseCard[];
     gameAction?: GameAction | GameAction[];
-    cardCondition: (card: BaseCard, context: AbilityContext) => boolean;
-    onSelect: (player: Player, cards: BaseCard | BaseCard[]) => boolean;
-    onMenuCommand: (player: Player, arg: string) => boolean;
-    onCancel: (player: Player) => boolean;
-    onCardToggle?: (player: Player, card: BaseCard) => void;
+    cardCondition?(card: BaseCard, context: AbilityContext): boolean;
+    onSelect?(player: Player, cards: BaseCard | BaseCard[]): boolean | void;
+    onMenuCommand?(player: Player, arg: string): boolean | void;
+    onCancel?(player: Player): boolean | void;
+    onCardToggle?(player: Player, card: BaseCard): void;
     [key: string]: unknown;
 }
 
@@ -119,11 +119,11 @@ class SelectCardPrompt extends UiPrompt {
             if(!Array.isArray(properties.gameAction)) {
                 this.properties.gameAction = [properties.gameAction];
             }
-            let cardCondition = this.properties.cardCondition;
+            let cardCondition = this.properties.cardCondition ?? (() => true);
             this.properties.cardCondition = (card: BaseCard, context: AbilityContext) =>
                 cardCondition(card, context) && (this.properties.gameAction as GameAction[]).some((gameAction: GameAction) => gameAction.canAffect(card, context));
         }
-        this.hideIfNoLegalTargets = properties.hideIfNoLegalTargets;
+        this.hideIfNoLegalTargets = properties.hideIfNoLegalTargets ?? false;
         this.selector = properties.selector || CardSelector.for(this.properties);
         this.selectedCards = [];
         this.onlyMustSelectMayBeChosen = false;
@@ -170,7 +170,7 @@ class SelectCardPrompt extends UiPrompt {
     }
 
     savePreviouslySelectedCards(): void {
-        this.previouslySelectedCards = (this.choosingPlayer as any).selectedCards;
+        this.previouslySelectedCards = this.choosingPlayer.selectedCards;
         this.choosingPlayer.clearSelectedCards();
         this.choosingPlayer.setSelectedCards(this.selectedCards);
     }
@@ -196,7 +196,7 @@ class SelectCardPrompt extends UiPrompt {
     }
 
     activePrompt() {
-        let buttons = this.properties.buttons;
+        let buttons = this.properties.buttons ?? [];
         if(!this.selector.automaticFireOnSelect(this.context) && this.selector.hasEnoughSelected(this.selectedCards, this.context) || this.selector.optional) {
             if(buttons.every((button: PromptButton) => button.arg !== 'done')) {
                 buttons = [{ text: 'Done', arg: 'done' }].concat(buttons);
@@ -276,7 +276,7 @@ class SelectCardPrompt extends UiPrompt {
 
     fireOnSelect(): boolean {
         let cardParam = this.selector.formatSelectParam(this.selectedCards);
-        if(this.properties.onSelect(this.choosingPlayer, cardParam)) {
+        if((this.properties.onSelect ?? (() => true))(this.choosingPlayer, cardParam)) {
             this.complete();
             return true;
         }
@@ -286,12 +286,12 @@ class SelectCardPrompt extends UiPrompt {
 
     menuCommand(player: Player, arg: string): boolean {
         if(arg === 'cancel') {
-            this.properties.onCancel(player);
+            (this.properties.onCancel ?? (() => true))(player);
             this.complete();
             return true;
         } else if(arg === 'done' && this.selector.hasEnoughSelected(this.selectedCards, this.context)) {
             return this.fireOnSelect();
-        } else if(this.properties.onMenuCommand(player, arg)) {
+        } else if((this.properties.onMenuCommand ?? (() => true))(player, arg)) {
             this.complete();
             return true;
         }

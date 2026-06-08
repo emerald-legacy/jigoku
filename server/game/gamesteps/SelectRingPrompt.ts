@@ -19,13 +19,13 @@ interface SelectRingPromptProperties {
     waitingPromptTitle?: string;
     activePromptTitle?: string;
     ordered?: boolean;
-    buttons: SelectRingPromptButton[];
-    optional: boolean;
-    hideIfNoLegalTargets: boolean;
-    ringCondition: (ring: Ring, context: AbilityContext) => boolean;
-    onSelect: (player: Player, ring: Ring) => boolean;
-    onMenuCommand: (player: Player, arg: string) => boolean;
-    onCancel: (player: Player) => boolean;
+    buttons?: SelectRingPromptButton[];
+    optional?: boolean;
+    hideIfNoLegalTargets?: boolean;
+    ringCondition?(ring: Ring, context: AbilityContext): boolean;
+    onSelect?(player: Player, ring: Ring): boolean | void;
+    onMenuCommand?(player: Player, arg: string): boolean | void;
+    onCancel?(player: Player): boolean | void;
     [key: string]: unknown;
 }
 
@@ -136,14 +136,14 @@ class SelectRingPrompt extends UiPrompt {
 
     getSelectableRings(): Ring[] {
         let selectableRings = Object.values(this.game.rings).filter((ring: Ring) => {
-            return this.properties.ringCondition(ring, this.context);
+            return (this.properties.ringCondition ?? (() => true))(ring, this.context);
         });
 
         return selectableRings;
     }
 
     activePrompt() {
-        let buttons = this.properties.buttons;
+        let buttons = this.properties.buttons ?? [];
         if(this.properties.optional) {
             buttons.push({ text: 'Done', arg: 'done' });
         }
@@ -156,7 +156,7 @@ class SelectRingPrompt extends UiPrompt {
             selectRing: true,
             selectOrder: this.properties.ordered,
             menuTitle: this.properties.activePromptTitle || this.defaultActivePromptTitle(),
-            buttons: this.properties.buttons,
+            buttons: buttons,
             promptTitle: this.properties.source ? (this.properties.source as EffectSource).name : undefined
         };
     }
@@ -174,11 +174,11 @@ class SelectRingPrompt extends UiPrompt {
             return false;
         }
 
-        if(!this.properties.ringCondition(ring, this.context)) {
+        if(!(this.properties.ringCondition ?? (() => true))(ring, this.context)) {
             return true;
         }
 
-        if(this.properties.onSelect(player, ring)) {
+        if((this.properties.onSelect ?? (() => true))(player, ring)) {
             this.complete();
         }
 
@@ -187,10 +187,10 @@ class SelectRingPrompt extends UiPrompt {
 
     menuCommand(player: Player, arg: string): boolean {
         if(arg === 'cancel') {
-            this.properties.onCancel(player);
+            (this.properties.onCancel ?? (() => true))(player);
             this.complete();
             return true;
-        } else if(this.properties.onMenuCommand(player, arg)) {
+        } else if((this.properties.onMenuCommand ?? (() => true))(player, arg)) {
             this.complete();
             return true;
         }

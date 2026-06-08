@@ -25,6 +25,10 @@ import SimultaneousEffectWindow from './gamesteps/SimultaneousEffectWindow.js';
 import type { SimultaneousEffectChoiceInput } from './gamesteps/SimultaneousEffectWindow.js';
 import type ForcedTriggeredAbilityWindow from './gamesteps/ForcedTriggeredAbilityWindow.js';
 import type HonorBidPrompt from './gamesteps/HonorBidPrompt.js';
+import type MenuPrompt from './gamesteps/MenuPrompt.js';
+import type HandlerMenuPrompt from './gamesteps/HandlerMenuPrompt.js';
+import type SelectCardPrompt from './gamesteps/SelectCardPrompt.js';
+import type SelectRingPrompt from './gamesteps/SelectRingPrompt.js';
 import type ActionWindow from './gamesteps/ActionWindow.js';
 import { AbilityContext } from './AbilityContext.js';
 import Ring from './Ring.js';
@@ -571,19 +575,19 @@ class Game {
         this.input.shuffleDynastyDeck(playerName);
     }
 
-    promptWithMenu(player: Player, contextObj: any, properties: any): void {
+    promptWithMenu(player: Player, contextObj: ConstructorParameters<typeof MenuPrompt>[2], properties: ConstructorParameters<typeof MenuPrompt>[3]): void {
         this.prompts.promptWithMenu(player, contextObj, properties);
     }
 
-    promptWithHandlerMenu(player: Player, properties: any): void {
+    promptWithHandlerMenu(player: Player, properties: ConstructorParameters<typeof HandlerMenuPrompt>[2]): void {
         this.prompts.promptWithHandlerMenu(player, properties);
     }
 
-    promptForSelect(player: Player, properties: any): void {
+    promptForSelect(player: Player, properties: ConstructorParameters<typeof SelectCardPrompt>[2]): void {
         this.prompts.promptForSelect(player, properties);
     }
 
-    promptForRingSelect(player: Player, properties: any): void {
+    promptForRingSelect(player: Player, properties: ConstructorParameters<typeof SelectRingPrompt>[2]): void {
         this.prompts.promptForRingSelect(player, properties);
     }
 

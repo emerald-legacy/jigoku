@@ -105,7 +105,7 @@ export class CardMenuAction extends CardGameAction<CardMenuProperties> {
                 }
             }
         };
-        context.game.promptWithHandlerMenu(player, Object.assign(defaultProperties, properties, { cardCondition }));
+        context.game.promptWithHandlerMenu(player, { ...defaultProperties, ...properties, cardCondition });
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties = {}): boolean {

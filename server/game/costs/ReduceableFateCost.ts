@@ -198,8 +198,8 @@ export class ReduceableFateCost implements Cost {
                 handler(CANCELLED);
                 return true;
             },
-            onMenuCommand: (_player: unknown, arg: PoolOption) => {
-                handler(arg);
+            onMenuCommand: (_player: unknown, arg: string) => {
+                handler(arg as PoolOption);
                 return true;
             }
         });

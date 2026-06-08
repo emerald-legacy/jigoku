@@ -27,6 +27,7 @@ interface RingTargetResults {
 interface PromptButton {
     text: string;
     arg: string;
+    [key: string]: unknown;
 }
 
 class AbilityTargetRing {

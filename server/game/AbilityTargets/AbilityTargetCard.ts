@@ -16,7 +16,7 @@ interface AbilityTargetCardProperties {
     gameAction: GameAction[];
     dependsOn?: string;
     mode?: TargetMode;
-    cardCondition?: (card: any, context: AbilityContext<DrawCard>) => boolean;
+    cardCondition?(card: DrawCard, context: AbilityContext<DrawCard>): boolean;
     player?: ((context: AbilityContext) => Players) | Players;
     [key: string]: unknown;
 }
@@ -31,6 +31,7 @@ interface CardTargetResults {
 interface PromptButton {
     text: string;
     arg: string;
+    [key: string]: unknown;
 }
 
 class AbilityTargetCard {
@@ -63,7 +64,7 @@ class AbilityTargetCard {
             if(context.stage === Stage.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
                 return false;
             }
-            return (!properties.cardCondition || properties.cardCondition(card, contextCopy as AbilityContext<DrawCard>)) &&
+            return (!properties.cardCondition || properties.cardCondition(card as DrawCard, contextCopy as AbilityContext<DrawCard>)) &&
                    (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
                    (properties.gameAction.length === 0 || properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy)));
         };

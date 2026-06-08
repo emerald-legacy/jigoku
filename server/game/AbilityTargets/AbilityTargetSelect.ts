@@ -4,6 +4,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type Player from '../Player.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type { ChoicesInterface } from '../Interfaces.js';
+import type EffectSource from '../EffectSource.js';
 
 type ChoiceValue = ((context: AbilityContext) => unknown) | GameAction | GameAction[];
 
@@ -144,7 +145,7 @@ class AbilityTargetSelect {
                 waitingPromptTitle: waitingPromptTitle,
                 activePromptTitle: promptTitle,
                 context: context,
-                source: this.properties.source || context.source,
+                source: (this.properties.source as EffectSource | string | undefined) || context.source,
                 choices: choices,
                 handlers: handlers
             });

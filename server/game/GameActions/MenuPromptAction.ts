@@ -65,7 +65,7 @@ export class MenuPromptAction extends GameAction {
             choiceHandler(choices[0]);
             return;
         }
-        context.game.promptWithHandlerMenu(player, Object.assign({}, properties, { context, choiceHandler }));
+        context.game.promptWithHandlerMenu(player, { ...properties, context, choiceHandler, choices });
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext) {

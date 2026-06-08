@@ -138,7 +138,7 @@ export class SelectCardAction extends CardGameAction {
                 return true;
             }
         };
-        const finalProperties = Object.assign(defaultProperties, properties);
+        const finalProperties = { ...defaultProperties, ...properties };
         if(properties.hidePromptIfSingleCard) {
             const cards = properties.selector.getAllLegalTargets(context);
             if(cards.length === 1) {

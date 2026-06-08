@@ -200,6 +200,10 @@ class Player extends GameObject {
         this.honorTracker.honor = value;
     }
 
+    get selectedCards(): BaseCard[] {
+        return this.promptState.selectedCards ?? [];
+    }
+
     get dynastyDeck(): DrawCard[] {
         return this.zones.dynastyDeck;
     }
@@ -1246,7 +1250,7 @@ class Player extends GameObject {
         return this.promptState.getState();
     }
 
-    setPrompt(prompt: any): void {
+    setPrompt(prompt: Parameters<PlayerPromptState['setPrompt']>[0]): void {
         this.promptState.setPrompt(prompt);
     }
 

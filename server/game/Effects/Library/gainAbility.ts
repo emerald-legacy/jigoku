@@ -6,12 +6,15 @@ import type {
     TriggeredAbilityWhenProps
 } from '../../Interfaces.js';
 import type BaseCard from '../../BaseCard.js';
+import type CardAbility from '../../CardAbility.js';
 import type DrawCard from '../../DrawCard.js';
 import type { GameObject } from '../../GameObject.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 import GainAbility from '../GainAbility.js';
 
 type Res = ReturnType<typeof EffectBuilder.card.static>;
+
+export function gainAbility(abilityType: AbilityType, ability: CardAbility): Res;
 
 export function gainAbility<Source extends BaseCard = DrawCard>(abilityType: AbilityType.Action, properties: ActionProps<Source>): Res;
 
@@ -31,7 +34,7 @@ export function gainAbility<Source extends BaseCard = DrawCard>(abilityType: Abi
 
 export function gainAbility(
     abilityType: AbilityType,
-    properties: ActionProps | TriggeredAbilityWhenProps | TriggeredAbilityProps | PersistentEffectProps
+    properties: CardAbility | ActionProps | TriggeredAbilityWhenProps | TriggeredAbilityProps | PersistentEffectProps
 ) {
     return EffectBuilder.card.static(EffectName.GainAbility, new GainAbility(abilityType, properties));
 }

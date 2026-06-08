@@ -35,6 +35,7 @@ interface TokenTargetResults {
 interface PromptButton {
     text: string;
     arg: string;
+    [key: string]: unknown;
 }
 
 class AbilityTargetToken {

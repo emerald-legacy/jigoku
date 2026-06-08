@@ -102,14 +102,16 @@ export class SelectRingAction extends RingAction {
         };
         context.game.promptForRingSelect(
             player,
-            Object.assign(defaultProperties, properties, {
+            {
+                ...defaultProperties,
+                ...properties,
                 ringCondition: (ring: Ring, ringContext: AbilityContext) =>
                     properties.ringCondition(ring, ringContext) &&
                     properties.gameAction.hasLegalTarget(
                         ringContext,
                         Object.assign({}, additionalProperties, properties.subActionProperties(ring))
                     )
-            })
+            }
         );
     }
 

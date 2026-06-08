@@ -4,23 +4,24 @@ import { UiPrompt } from './UiPrompt.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 import type BaseCard from '../BaseCard.js';
+import type { GameObject } from '../GameObject.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 
-type HandlerMenuButton = { text: string; arg: string | number; card?: BaseCard; disabled?: boolean };
+type HandlerMenuButton = { text: string | number | undefined; arg: string | number; card?: BaseCard; disabled?: boolean };
 
 interface HandlerMenuPromptProperties {
     source?: EffectSource | string;
     context?: AbilityContext;
     waitingPromptTitle?: string;
     activePromptTitle?: string;
-    choices: string[];
+    choices?: Array<string | number | undefined>;
     handlers?: Array<() => void>;
-    choiceHandler?: (choice: string) => void;
+    choiceHandler?(choice: string | number | undefined): void;
     cards?: BaseCard[];
-    cardCondition?: (card: BaseCard, context: AbilityContext) => boolean;
-    cardHandler?: (card: BaseCard) => void;
-    controls?: { type: string; targets: BaseCard[] };
-    target?: BaseCard | BaseCard[];
+    cardCondition?(card: BaseCard, context: AbilityContext): boolean;
+    cardHandler?(card: BaseCard): void;
+    controls?: { type: string; targets: BaseCard[] } | Array<{ type: string; source: unknown; targets: unknown[] }>;
+    target?: GameObject | GameObject[];
     [key: string]: unknown;
 }
 
@@ -99,10 +100,10 @@ class HandlerMenuPrompt extends UiPrompt {
                 return { text: text, arg: card.id, card: card, disabled: !this.cardCondition(card, this.context) };
             });
         }
-        buttons = buttons.concat(this.properties.choices.map((choice: string, index: number) => {
+        buttons = buttons.concat((this.properties.choices ?? []).map((choice: string | number | undefined, index: number) => {
             return { text: choice, arg: index };
         }));
-        if(this.game.manualMode && (!this.properties.choices || this.properties.choices.every((choice: string) => choice !== 'Cancel'))) {
+        if(this.game.manualMode && (!this.properties.choices || this.properties.choices.every((choice: string | number | undefined) => choice !== 'Cancel'))) {
             buttons = buttons.concat({ text: 'Cancel Prompt', arg: 'cancel' });
         }
         return {
@@ -114,18 +115,19 @@ class HandlerMenuPrompt extends UiPrompt {
     }
 
     getAdditionalPromptControls(): Array<{ type: string; source: unknown; targets: unknown[] }> {
-        if(this.properties.controls && this.properties.controls.type === 'targeting') {
+        const controls = this.properties.controls;
+        if(controls && !Array.isArray(controls) && controls.type === 'targeting') {
             return [{
                 type: 'targeting',
                 source: (this.properties.source as EffectSource).getShortSummary(),
-                targets: this.properties.controls.targets.map((target: BaseCard) => target.getShortSummaryForControls(this.player))
+                targets: controls.targets.map((target: BaseCard) => target.getShortSummaryForControls(this.player))
             }];
         }
         if((this.context.source.type as string) === '') {
             return [];
         }
         const rawTargets: Array<BaseCard | BaseCard[]> = this.context.targets ? Object.values(this.context.targets) : [];
-        let targets: BaseCard[] = rawTargets.reduce((array: BaseCard[], target: BaseCard | BaseCard[]) => array.concat(target), [] as BaseCard[]);
+        let targets: GameObject[] = rawTargets.reduce((array: GameObject[], target: BaseCard | BaseCard[]) => array.concat(target), [] as GameObject[]);
         if(this.properties.target) {
             targets = Array.isArray(this.properties.target) ? this.properties.target : [this.properties.target];
         }
@@ -136,7 +138,7 @@ class HandlerMenuPrompt extends UiPrompt {
         return [{
             type: 'targeting',
             source: this.context.source.getShortSummary(),
-            targets: targets.map((target: BaseCard) => target.getShortSummaryForControls(this.player))
+            targets: targets.map((target: GameObject) => target.getShortSummaryForControls(this.player))
         }];
     }
 
@@ -163,7 +165,7 @@ class HandlerMenuPrompt extends UiPrompt {
         }
 
         if(this.properties.choiceHandler) {
-            this.properties.choiceHandler(this.properties.choices[arg]);
+            this.properties.choiceHandler((this.properties.choices ?? [])[arg]);
             this.complete();
             return true;
         }
