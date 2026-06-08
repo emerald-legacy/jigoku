@@ -2,17 +2,17 @@ import { v1 as uuid } from 'uuid';
 import type Player from '../Player.js';
 import { BaseStep } from './BaseStep.js';
 
-type PromptButton = { text?: string; arg?: string | number; command?: string; uuid?: string; [key: string]: unknown };
+type PromptButton = { text?: string | number; arg?: string | number; command?: string; uuid?: string; [key: string]: unknown };
 type PromptControl = { type: string; source: unknown; targets: unknown; uuid?: string; [key: string]: unknown };
 
 type ActivePrompt = {
-    buttons: Array<PromptButton>;
+    buttons?: Array<PromptButton>;
     menuTitle?: string;
     promptTitle?: string;
 
     controls?: Array<PromptControl>;
     selectCard?: boolean;
-    selectOrder?: unknown;
+    selectOrder?: boolean;
     selectRing?: boolean;
     [key: string]: unknown;
 };
@@ -32,7 +32,10 @@ export class UiPrompt extends BaseStep {
     setPrompt(): void {
         for(const player of this.game.getPlayers()) {
             if(this.activeCondition(player)) {
-                player.setPrompt(this.addDefaultCommandToButtons(this.activePrompt(player)));
+                const activePrompt = this.addDefaultCommandToButtons(this.activePrompt(player));
+                if(activePrompt) {
+                    player.setPrompt(activePrompt);
+                }
                 player.startClock();
             } else {
                 player.setPrompt(this.waitingPrompt());

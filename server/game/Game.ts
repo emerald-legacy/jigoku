@@ -1,8 +1,10 @@
 import type { LobbyUser, UserIdentity, ShortCardData } from '../gamenode/LobbyProtocol.js';
 import ChatCommands from './ChatCommands.js';
 import { GameChat } from './GameChat.js';
+import type { MsgArg } from './GameChat.js';
 import { EffectEngine } from './EffectEngine.js';
 import Player from './Player.js';
+import type { ClockConfig } from './Clocks/ClockSelector.js';
 import { Spectator } from './Spectator.js';
 import { GamePipeline } from './GamePipeline.js';
 import { SetupPhase } from './gamesteps/SetupPhase.js';
@@ -20,8 +22,13 @@ import EventWindow from './Events/EventWindow.js';
 import ThenEventWindow from './Events/ThenEventWindow.js';
 import AbilityResolver from './gamesteps/AbilityResolver.js';
 import SimultaneousEffectWindow from './gamesteps/SimultaneousEffectWindow.js';
+import type { SimultaneousEffectChoiceInput } from './gamesteps/SimultaneousEffectWindow.js';
 import type ForcedTriggeredAbilityWindow from './gamesteps/ForcedTriggeredAbilityWindow.js';
 import type HonorBidPrompt from './gamesteps/HonorBidPrompt.js';
+import type MenuPrompt from './gamesteps/MenuPrompt.js';
+import type HandlerMenuPrompt from './gamesteps/HandlerMenuPrompt.js';
+import type SelectCardPrompt from './gamesteps/SelectCardPrompt.js';
+import type SelectRingPrompt from './gamesteps/SelectRingPrompt.js';
 import type ActionWindow from './gamesteps/ActionWindow.js';
 import { AbilityContext } from './AbilityContext.js';
 import Ring from './Ring.js';
@@ -30,6 +37,9 @@ import { Duel } from './Duel.js';
 import ConflictFlow from './gamesteps/conflict/ConflictFlow.js';
 import { GameInputHandler } from './GameInputHandler.js';
 import { GameStateSerializer } from './GameStateSerializer.js';
+import type { DeckForSaving, FormattedDeck } from './GameStateSerializer.js';
+import type { MenuItem } from './MenuCommands.js';
+import type { Step } from './gamesteps/Step.js';
 import { GameEventManager } from './GameEventManager.js';
 import { GameConnectionManager } from './GameConnectionManager.js';
 import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
@@ -59,7 +69,7 @@ export interface GameState {
     [key: string]: unknown;
 }
 
-interface GameDetails {
+export interface GameDetails {
     id: string;
     name: string;
     allowSpectators: boolean;
@@ -103,7 +113,7 @@ class Game {
     createdAt: Date;
     savedGameId?: string;
     gameType: string;
-    currentAbilityWindow: ForcedTriggeredAbilityWindow | null;
+    currentAbilityWindow: ForcedTriggeredAbilityWindow | SimultaneousEffectWindow | null;
     currentActionWindow: ActionWindow | null;
     currentEventWindow: EventWindow | null;
     currentConflict: Conflict | null;
@@ -187,7 +197,7 @@ class Game {
                 player.user,
                 this.owner === player.user.username,
                 this,
-                details.clocks
+                details.clocks as ClockConfig | undefined
             );
         });
 
@@ -224,14 +234,14 @@ class Game {
     /**
      * Adds a message to the in-game chat e.g 'Jadiel draws 1 card'
      */
-    addMessage(message: string, ...args: any[]): void {
+    addMessage(message: string, ...args: MsgArg[]): void {
         this.gameChat.addMessage(message, ...args);
     }
 
     /**
      * Adds a message to in-game chat with a graphical icon
      */
-    addAlert(type: string, message: string, ...args: any[]): void {
+    addAlert(type: string, message: string, ...args: MsgArg[]): void {
         this.gameChat.addAlert(type, message, ...args);
     }
 
@@ -461,11 +471,11 @@ class Game {
         this.input.ringClicked(sourcePlayer, ringindex);
     }
 
-    menuItemClick(sourcePlayer: string, cardId: string, menuItem: any): void {
+    menuItemClick(sourcePlayer: string, cardId: string, menuItem: MenuItem): void {
         this.input.menuItemClick(sourcePlayer, cardId, menuItem);
     }
 
-    ringMenuItemClick(sourcePlayer: string, sourceRing: { element: string }, menuItem: any): void {
+    ringMenuItemClick(sourcePlayer: string, sourceRing: { element: string }, menuItem: MenuItem): void {
         this.input.ringMenuItemClick(sourcePlayer, sourceRing, menuItem);
     }
 
@@ -565,19 +575,19 @@ class Game {
         this.input.shuffleDynastyDeck(playerName);
     }
 
-    promptWithMenu(player: Player, contextObj: any, properties: any): void {
+    promptWithMenu(player: Player, contextObj: ConstructorParameters<typeof MenuPrompt>[2], properties: ConstructorParameters<typeof MenuPrompt>[3]): void {
         this.prompts.promptWithMenu(player, contextObj, properties);
     }
 
-    promptWithHandlerMenu(player: Player, properties: any): void {
+    promptWithHandlerMenu(player: Player, properties: ConstructorParameters<typeof HandlerMenuPrompt>[2]): void {
         this.prompts.promptWithHandlerMenu(player, properties);
     }
 
-    promptForSelect(player: Player, properties: any): void {
+    promptForSelect(player: Player, properties: ConstructorParameters<typeof SelectCardPrompt>[2]): void {
         this.prompts.promptForSelect(player, properties);
     }
 
-    promptForRingSelect(player: Player, properties: any): void {
+    promptForRingSelect(player: Player, properties: ConstructorParameters<typeof SelectRingPrompt>[2]): void {
         this.prompts.promptForRingSelect(player, properties);
     }
 
@@ -706,7 +716,7 @@ class Game {
     /*
      * Adds a step to the pipeline queue
      */
-    queueStep(step: any): any {
+    queueStep<T extends Step>(step: T): T {
         this.pipeline.queueStep(step);
         return step;
     }
@@ -727,7 +737,7 @@ class Game {
         return resolver;
     }
 
-    openSimultaneousEffectWindow(choices: any[]): void {
+    openSimultaneousEffectWindow(choices: SimultaneousEffectChoiceInput[]): void {
         const window = new SimultaneousEffectWindow(this);
         choices.forEach((choice) => window.addChoice(choice));
         this.queueStep(window);
@@ -962,7 +972,7 @@ class Game {
         this.pipeline.continue();
     }
 
-    formatDeckForSaving(deck: any): any {
+    formatDeckForSaving(deck: DeckForSaving): FormattedDeck {
         return this.serializer.formatDeckForSaving(deck);
     }
 

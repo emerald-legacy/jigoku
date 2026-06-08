@@ -1,18 +1,17 @@
 import type { AbilityContext } from './AbilityContext.js';
-import BaseAction from './BaseAction.js';
+import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import { EventName, Phases, PlayType, TargetMode } from './Constants.js';
 import { payTargetDependentFateCost } from './costs/fateAndHonorCosts.js';
 import { attachToRing } from './GameActions/GameActions.js';
 import { parseGameMode } from './GameMode.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
-import type BaseCard from './BaseCard.js';
 import type Ring from './Ring.js';
 import type DrawCard from './DrawCard.js';
 
-export class PlayAttachmentToRingAction extends BaseAction {
+export class PlayAttachmentToRingAction extends PlayCardSourceAction {
     title = 'Play this attachment';
 
-    constructor(card: BaseCard) {
+    constructor(card: DrawCard) {
         super(card, [payTargetDependentFateCost('target')], {
             gameAction: attachToRing((context) => ({ attachment: context.source })),
             ringCondition: (ring: Ring, context: TriggeredAbilityContext<DrawCard>) => context.source.canPlayOn(ring),
@@ -20,7 +19,7 @@ export class PlayAttachmentToRingAction extends BaseAction {
         });
     }
 
-    meetsRequirements(context = this.createContext(), ignoredRequirements: string[] = []) {
+    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
         if(
             !ignoredRequirements.includes('phase') &&
             context.game.currentPhase === Phases.Dynasty &&
@@ -36,12 +35,12 @@ export class PlayAttachmentToRingAction extends BaseAction {
         }
         if(
             !ignoredRequirements.includes('cannotTrigger') &&
-            !(context.source as DrawCard).canPlay(context, PlayType.PlayFromHand)
+            !context.source.canPlay(context, PlayType.PlayFromHand)
         ) {
             return 'cannotTrigger';
         }
 
-        if((context.source as DrawCard).anotherUniqueInPlay(context.player)) {
+        if(context.source.anotherUniqueInPlay(context.player)) {
             return 'unique';
         }
         return super.meetsRequirements(context);
@@ -55,7 +54,7 @@ export class PlayAttachmentToRingAction extends BaseAction {
         context.game.addMessage('{0} plays {1}, attaching it to {2}', context.player, context.source, context.ring);
     }
 
-    executeHandler(context: AbilityContext) {
+    executeHandler(context: AbilityContext<DrawCard>) {
         const cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
             player: context.player,
             card: context.source,
@@ -67,7 +66,7 @@ export class PlayAttachmentToRingAction extends BaseAction {
             playType: PlayType.PlayFromHand
         });
         context.game.openEventWindow([
-            context.game.actions.attachToRing({ attachment: context.source as DrawCard }).getEvent(context.ring, context),
+            context.game.actions.attachToRing({ attachment: context.source }).getEvent(context.ring, context),
             cardPlayedEvent
         ]);
     }

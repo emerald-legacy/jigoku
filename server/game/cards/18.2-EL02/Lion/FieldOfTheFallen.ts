@@ -23,7 +23,7 @@ class FieldOfTheFallen extends DrawCard {
                         location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                         activePromptTitle: 'Select a card to place on the bottom of a deck',
                         message: '{0} places {1} on the bottom of {2}\'s {3} deck',
-                        messageArgs: card => [context.player, card, card.owner, card.isDynasty ? 'dynasty' : 'conflict'],
+                        messageArgs: (card: DrawCard) => [context.player, card, card.owner, card.isDynasty ? 'dynasty' : 'conflict'],
                         gameAction: AbilityDsl.actions.returnToDeck({
                             location: Location.Any,
                             bottom: true

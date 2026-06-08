@@ -29,7 +29,7 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
             return true;
         }
         // Show a bluff prompt if we're in Step 6, the player has the approriate setting, and there's an event for the other player
-        return this.abilityType === AbilityType.WouldInterrupt && player.timerSettings.events && this.events.some(event => (
+        return this.abilityType === AbilityType.WouldInterrupt && !!player.timerSettings.events && this.events.some(event => (
             event.name === EventName.OnInitiateAbilityEffects &&
             (event as GameEvent<EventName.OnInitiateAbilityEffects>).card.type === CardType.Event && event.context && event.context.player !== player
         ));

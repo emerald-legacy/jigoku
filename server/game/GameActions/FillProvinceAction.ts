@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, Location } from '../Constants.js';
 import type Player from '../Player.js';
@@ -19,7 +20,7 @@ export class FillProvinceAction extends PlayerAction<FillProvinceProperties> {
         return [context.player];
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context) as FillProvinceProperties;
         return ['fills {0} to {1} cards!', [properties.location, properties.fillTo]];
     }

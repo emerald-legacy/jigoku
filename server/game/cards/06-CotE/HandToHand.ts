@@ -13,7 +13,7 @@ class HandToHand extends DrawCard {
             condition: () => this.game.isDuringConflict('military'),
             target: {
                 cardType: CardType.Attachment,
-                cardCondition: (card) => card.parent && card.parent.type === CardType.Character && card.parent.isParticipating(),
+                cardCondition: (card) => Boolean(card.parent && card.parent.type === CardType.Character && card.parent.isParticipating()),
                 gameAction: ability.actions.discardFromPlay()
             },
             effect: 'discard {0} from play',

@@ -1,3 +1,4 @@
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { Players } from '../Constants.js';
@@ -43,7 +44,7 @@ export class SelectTokenAction extends TokenAction {
         super(properties);
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let { target, effect, effectArgs } = this.getProperties(context) as SelectTokenProperties;
         if(effect) {
             return [effect, (effectArgs && effectArgs(context)) || []];
@@ -114,7 +115,7 @@ export class SelectTokenAction extends TokenAction {
             const handlers = validTokens.map((token: StatusToken) => {
                 return () => {
                     if(properties.message && messageArgs) {
-                        context.game.addMessage(properties.message, ...messageArgs(token, player));
+                        context.game.addMessage(properties.message, ...(messageArgs(token, player) as MsgArg[]));
                     }
                     context.tokens[this.name] = token;
                     properties.gameAction.addEventsToArray(
@@ -133,7 +134,7 @@ export class SelectTokenAction extends TokenAction {
         } else {
             context.tokens[this.name] = validTokens;
             if(properties.message && messageArgs) {
-                context.game.addMessage(properties.message, ...messageArgs(validTokens, player));
+                context.game.addMessage(properties.message, ...(messageArgs(validTokens, player) as MsgArg[]));
             }
             properties.gameAction.addEventsToArray(
                 events,

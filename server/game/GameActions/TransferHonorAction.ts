@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EffectName, EventName } from '../Constants.js';
@@ -38,7 +39,7 @@ export class TransferHonorAction extends PlayerAction {
         super(propertyFactory);
     }
 
-    getCostMessage(context: AbilityContext): [string, unknown[]] {
+    getCostMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context) as TransferHonorProperties;
         const opponent = context.player.opponent;
         if(!opponent) {
@@ -53,7 +54,7 @@ export class TransferHonorAction extends PlayerAction {
         return ['giving {1} honor to {2}', [amountToTransfer, opponent]];
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context) as TransferHonorProperties;
         const opponent = context.player.opponent;
         if(!opponent) {

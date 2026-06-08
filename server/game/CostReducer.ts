@@ -10,7 +10,7 @@ export type CostReducerProps = {
     cardType?: CardType;
     costFloor?: number;
     limit?: AbilityLimit;
-    playingTypes?: PlayType;
+    playingTypes?: PlayType | PlayType[];
     amount?: number | ((card: BaseCard, player: Player) => number);
     match?: (card: DrawCard, source: BaseCard) => boolean;
     targetCondition?: (target: BaseCard, source: BaseCard, context: AbilityContext) => boolean;

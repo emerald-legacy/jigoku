@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EventName, Location } from '../Constants.js';
@@ -21,7 +22,7 @@ export class PlaceFateAction extends CardGameAction<PlaceFateProperties> {
         super(properties);
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         const { amount, target } = this.getProperties(context) as PlaceFateProperties;
         return ['place {1} fate on {0}', [target, amount]];
     }

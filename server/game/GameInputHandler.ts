@@ -1,18 +1,18 @@
 import * as MenuCommands from './MenuCommands.js';
+import type { MenuItem } from './MenuCommands.js';
 import { Phases } from './Constants.js';
 import { resolvePackId } from './CardPackUtil.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
+import type { DeckDTO } from '../gamenode/LobbyProtocol.js';
 
-const CHANGEABLE_STATS = new Set([
-    'fate',
-    'honor',
-    'imperialFavor',
-    'conflictsRemaining',
-    'militaryRemaining',
-    'politicalRemaining'
-]);
+const CHANGEABLE_STATS = ['fate', 'honor'] as const;
+type ChangeableStat = (typeof CHANGEABLE_STATS)[number];
+
+function isChangeableStat(stat: string): stat is ChangeableStat {
+    return (CHANGEABLE_STATS as readonly string[]).includes(stat);
+}
 
 const TOGGLE_WINDOWS = new Set([
     'dynasty', 'draw', 'preConflict', 'conflict', 'fate', 'regroup'
@@ -89,7 +89,7 @@ export class GameInputHandler {
         }
     }
 
-    menuItemClick(sourcePlayer: string, cardId: string, menuItem: { command: string; text: string; arg: string; method: string }): void {
+    menuItemClick(sourcePlayer: string, cardId: string, menuItem: MenuItem): void {
         const player = this.game.getPlayerByName(sourcePlayer);
         const card = this.game.findAnyCardInAnyList(cardId);
         if(!player || !card) {
@@ -109,7 +109,7 @@ export class GameInputHandler {
         this.game.checkGameState(true);
     }
 
-    ringMenuItemClick(sourcePlayer: string, sourceRing: { element: string }, menuItem: { command: string; text: string; arg: string; method: string }): void {
+    ringMenuItemClick(sourcePlayer: string, sourceRing: { element: string }, menuItem: MenuItem): void {
         const player = this.game.getPlayerByName(sourcePlayer);
         const ring = this.game.rings[sourceRing.element];
         if(!player || !ring) {
@@ -175,21 +175,19 @@ export class GameInputHandler {
         if(!player) {
             return;
         }
-        if(typeof stat !== 'string' || !CHANGEABLE_STATS.has(stat)) {
+        if(typeof stat !== 'string' || !isChangeableStat(stat)) {
             return;
         }
         if(!Number.isInteger(value) || Math.abs(value) > 1) {
             return;
         }
 
-        const target: any = player;
+        player[stat] += value;
 
-        target[stat] += value;
-
-        if(target[stat] < 0) {
-            target[stat] = 0;
+        if(player[stat] < 0) {
+            player[stat] = 0;
         } else {
-            this.game.addMessage('{0} sets {1} to {2} ({3})', player, stat, target[stat], (value > 0 ? '+' : '') + value);
+            this.game.addMessage('{0} sets {1} to {2} ({3})', player, stat, player[stat], (value > 0 ? '+' : '') + value);
         }
     }
 
@@ -247,7 +245,7 @@ export class GameInputHandler {
         }
         const player = this.game.getPlayerByName(playerName);
         if(player) {
-            player.selectDeck(deck);
+            player.selectDeck(deck as DeckDTO);
         }
     }
 

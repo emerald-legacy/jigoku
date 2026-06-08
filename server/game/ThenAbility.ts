@@ -1,19 +1,18 @@
+import type { MsgArg } from './GameChat.js';
 import { AbilityContext } from './AbilityContext.js';
 import BaseCardAbility from './BaseCardAbility.js';
+import type { BaseAbilityProperties } from './BaseAbility.js';
 import type BaseCard from './BaseCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
+import type { EffectArg } from './Interfaces.js';
 
-interface ThenAbilityProperties {
-    cost?: any;
-    target?: any;
-    gameAction?: any;
-    handler?: (context: AbilityContext) => void;
-    then?: ThenAbilityProperties | ((context: AbilityContext) => ThenAbilityProperties);
-    thenCondition?: (context: AbilityContext) => boolean;
-    message?: string | ((context: AbilityContext) => string);
-    messageArgs?: any[] | ((context: AbilityContext) => any[]);
-    [key: string]: any;
+export interface ThenAbilityProperties<C extends AbilityContext = AbilityContext> extends BaseAbilityProperties {
+    handler?: (context: C) => void;
+    then?: ThenAbilityProperties | ((context: C) => ThenAbilityProperties);
+    thenCondition?: (context: C) => boolean;
+    message?: string | ((context: C) => string);
+    messageArgs?: (EffectArg | undefined)[] | ((context: C) => (EffectArg | undefined)[]);
 }
 
 class ThenAbility extends BaseCardAbility {
@@ -54,11 +53,11 @@ class ThenAbility extends BaseCardAbility {
                 }
                 messageArgs = messageArgs.concat(args);
             }
-            this.game.addMessage(message, ...messageArgs);
+            this.game.addMessage(message, ...(messageArgs as MsgArg[]));
         }
     }
 
-    getGameActions(context: AbilityContext): any[] {
+    getGameActions(context: AbilityContext): GameAction[] {
         // if there are any targets, look for gameActions attached to them
         const actions = this.targets.reduce((array: GameAction[], target) => array.concat(target.getGameAction(context)), [] as GameAction[]);
         // look for a gameAction on the ability itself, on an attachment execute that action on its parent, otherwise on the card itself

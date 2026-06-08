@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -23,12 +24,12 @@ export class PlaceCardUnderneathAction extends CardGameAction {
         super(properties);
     }
 
-    getCostMessage(context: AbilityContext): [string, unknown[]] {
+    getCostMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context) as PlaceCardUnderneathProperties;
         return ['placing {0} underneath {1}', [properties.target, properties.destination]];
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context) as PlaceCardUnderneathProperties;
         return ['place {0} underneath {1}', [properties.target, properties.destination]];
     }

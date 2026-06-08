@@ -11,10 +11,10 @@ export default class UnderAmaterasusGaze extends BattlefieldAttachment {
         super.setupCardAbilities();
 
         this.persistentEffect({
-            condition: (context: AbilityContext): boolean =>
-                !!(context.source as DrawCard).parent &&
+            condition: (context: AbilityContext<this>): boolean =>
+                !!context.source.parent &&
                 context.game.isDuringConflict() &&
-                ((context.source as DrawCard).parent as DrawCard).isConflictProvince() &&
+                (context.source.parent as DrawCard).isConflictProvince() &&
                 !!context.player.opponent &&
                 context.player.opponent.honor < context.player.honor + 5,
             targetController: Players.Opponent,
@@ -25,10 +25,10 @@ export default class UnderAmaterasusGaze extends BattlefieldAttachment {
         });
 
         this.persistentEffect({
-            condition: (context: AbilityContext): boolean =>
-                !!(context.source as DrawCard).parent &&
+            condition: (context: AbilityContext<this>): boolean =>
+                !!context.source.parent &&
                 context.game.isDuringConflict() &&
-                ((context.source as DrawCard).parent as DrawCard).isConflictProvince() &&
+                (context.source.parent as DrawCard).isConflictProvince() &&
                 !!context.player.opponent &&
                 context.player.honor < context.player.opponent.honor + 5,
             targetController: Players.Self,

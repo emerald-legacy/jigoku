@@ -1,16 +1,28 @@
 import EventWindow from './EventWindow.js';
 import TriggeredAbilityWindow from '../gamesteps/TriggeredAbilityWindow.js';
-import { EventName, AbilityType } from '../Constants.js';
+import { EventName, AbilityType, PlayType } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from './Event.js';
+import type { GameEvent } from './EventPayloads.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import type CardAbility from '../CardAbility.js';
+import type DrawCard from '../DrawCard.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 
+// An OnCardPlayed event always plays a DrawCard via a fate-cost ability, and carries the play
+// resolver attached at resolution time — so its context/playType are narrowed accordingly.
+type PlayCardEvent = GameEvent<EventName.OnCardPlayed> & {
+    context: AbilityContext<DrawCard> & { ability: CardAbility };
+    playType: PlayType;
+    resolver: { canCancel: boolean; cancelled: boolean };
+};
+
 class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
-    playEvent: any;
+    playEvent: PlayCardEvent | undefined;
 
     constructor(game: Game, abilityType: AbilityType, eventWindow: EventWindow) {
         super(game, abilityType, eventWindow);
-        this.playEvent = eventWindow.events.find(event => event.name === EventName.OnCardPlayed);
+        this.playEvent = eventWindow.events.find(event => event.name === EventName.OnCardPlayed) as PlayCardEvent | undefined;
     }
 
     getPromptForSelectProperties() {
@@ -24,7 +36,9 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
         return Object.assign(super.getPromptForSelectProperties(), {
             buttons: buttons,
             onCancel: () => {
-                this.playEvent.resolver.cancelled = true;
+                if(this.playEvent) {
+                    this.playEvent.resolver.cancelled = true;
+                }
                 this.complete = true;
             }
         });

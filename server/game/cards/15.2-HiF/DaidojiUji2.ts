@@ -46,7 +46,7 @@ class DaidojiUji2 extends DrawCard {
             location: Location.PlayArea,
             targetLocation: this.uuid,
             targetController: Players.Self,
-            match: card => {
+            match: (card: DrawCard) => {
                 return card.location === this.uuid;
             },
             effect: [

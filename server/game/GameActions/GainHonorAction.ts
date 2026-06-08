@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
@@ -15,7 +16,7 @@ export class GainHonorAction extends PlayerAction<GainHonorProperties> {
     name: string = 'gainHonor';
     eventName = EventName.OnModifyHonor;
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context);
         var [_, amountToTransfer] = CalculateHonorLimit(
             context.player,

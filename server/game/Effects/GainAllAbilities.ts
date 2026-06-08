@@ -36,7 +36,7 @@ export default class GainAllAbilities extends EffectValue<BaseCard> {
             }),
             reactions: this.reactions.map((value) => {
                 value.apply(target);
-                return value.getValue();
+                return value.getValue() as TriggeredAbility;
             })
         };
         for(const effect of this.persistentEffects) {

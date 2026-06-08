@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
@@ -17,7 +18,7 @@ export class SetDialAction extends PlayerAction<SetDialProperties, EventName.OnS
         super(propertyFactory);
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context) as SetDialProperties;
         return ['set {0}\'s dial to {1}', [properties.target, properties.value]];
     }

@@ -1,5 +1,7 @@
 import * as AbilityLimit from './AbilityLimit.js';
+import type { AbilityLimit as IAbilityLimit } from './AbilityLimit.js';
 import ThenAbility from './ThenAbility.js';
+import type { ThenAbilityProperties } from './ThenAbility.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { Location, CardType, EffectName } from './Constants.js';
 import { initiateDuel } from './DuelHelper.js';
@@ -7,25 +9,24 @@ import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { AbilityContext } from './AbilityContext.js';
+import type { EffectArg, InitiateDuel } from './Interfaces.js';
+import type { MsgArg } from './GameChat.js';
 import type { Cost } from './costs/Cost.js';
 
-interface CardAbilityProperties {
+export interface CardAbilityProperties<C extends AbilityContext = AbilityContext> extends ThenAbilityProperties<C> {
     title?: string;
-    limit?: any;
+    limit?: IAbilityLimit;
     location?: Location | Location[];
     printedAbility?: boolean;
     cannotBeCancelled?: boolean;
     cannotTargetFirst?: boolean;
     cannotBeMirrored?: boolean;
-    max?: any;
+    max?: IAbilityLimit;
     abilityIdentifier?: string;
     origin?: BaseCard;
-    initiateDuel?: any;
-    message?: string;
-    messageArgs?: any;
+    initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);
     effect?: string;
-    effectArgs?: any;
-    [key: string]: any;
+    effectArgs?: EffectArg | ((context: C) => EffectArg);
 }
 
 const DefaultLocationForType: Record<string, Location> = {
@@ -37,15 +38,16 @@ const DefaultLocationForType: Record<string, Location> = {
 };
 
 class CardAbility extends ThenAbility {
+    declare properties: CardAbilityProperties;
     title?: string;
-    limit: any;
+    limit: IAbilityLimit;
     abilityCost: Cost[];
     location: Location[];
     printedAbility: boolean;
     cannotBeCancelled?: boolean;
     declare cannotTargetFirst: boolean;
     cannotBeMirrored: boolean;
-    max?: any;
+    max?: IAbilityLimit;
     abilityIdentifier: string;
     maxIdentifier: string;
     origin?: BaseCard;
@@ -144,19 +146,19 @@ class CardAbility extends ThenAbility {
         if(!context.subResolution && triggerCosts && context.player.anyEffect(EffectName.AdditionalTriggerCost)) {
             const additionalTriggerCosts = context.player
                 .getEffects(EffectName.AdditionalTriggerCost)
-                .map((effect: any) => effect(context));
+                .map((effect) => effect(context));
             costs = costs.concat(...additionalTriggerCosts);
         }
         if(!context.subResolution && triggerCosts && context.source.anyEffect(EffectName.AdditionalTriggerCost)) {
             const additionalTriggerCosts = context.source
                 .getEffects(EffectName.AdditionalTriggerCost)
-                .map((effect: any) => effect(context));
+                .map((effect) => effect(context));
             costs = costs.concat(...additionalTriggerCosts);
         }
         if(!context.subResolution && playCosts && context.player.anyEffect(EffectName.AdditionalPlayCost)) {
             const additionalPlayCosts = context.player
                 .getEffects(EffectName.AdditionalPlayCost)
-                .map((effect: any) => effect(context));
+                .map((effect) => effect(context));
             return costs.concat(...additionalPlayCosts);
         }
         return costs;
@@ -225,16 +227,16 @@ class CardAbility extends ThenAbility {
         }
         // Player1 plays Assassination
         const gainedAbility = origin ? '\'s gained ability from ' : '';
-        const messageArgs: unknown[] = [context.player, ' ' + messageVerb + ' ', context.source, gainedAbility, origin];
+        const messageArgs: MsgArg[] = [context.player, ' ' + messageVerb + ' ', context.source, gainedAbility, origin];
         const costMessages = this.cost
             .map((cost) => {
                 const costMsg = cost.getCostMessage && cost.getCostMessage(context);
                 if(costMsg && costMsg.length > 0) {
-                    let card: any = context.costs[(cost.getActionName as (c: AbilityContext) => string)(context)];
-                    if(card && card.isFacedown && card.isFacedown()) {
+                    let card = context.costs[(cost.getActionName as (c: AbilityContext) => string)(context)] as MsgArg | undefined;
+                    if(card && (card as { isFacedown?(): boolean }).isFacedown?.()) {
                         card = 'a facedown card';
                     }
-                    const [format, args] = costMsg as [string, any[]];
+                    const [format, args] = costMsg as [string, MsgArg[]];
                     return { message: this.game.gameChat.formatMessage(format, [card].concat(args)) };
                 }
                 return undefined;
@@ -249,13 +251,13 @@ class CardAbility extends ThenAbility {
             messageArgs.push('', '');
         }
         let effectMessage = this.properties.effect;
-        let effectArgs: any[] = [];
-        let extraArgs: any = null;
+        let effectArgs: MsgArg[] = [];
+        let extraArgs: MsgArg[] | EffectArg | ((context: AbilityContext) => EffectArg) | null | undefined = null;
         if(!effectMessage) {
             const gameActions = this.getGameActions(context).filter((gameAction: GameAction) => gameAction.hasLegalTarget(context));
             if(gameActions.length > 0) {
                 // effects with multiple game actions really need their own effect message
-                [effectMessage, extraArgs] = gameActions[0].getEffectMessage(context);
+                [effectMessage, extraArgs] = gameActions[0].getEffectMessage(context) as [string, MsgArg[]];
             }
         } else {
             effectArgs.push(context.target || context.ring || context.source);

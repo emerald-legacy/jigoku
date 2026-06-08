@@ -12,23 +12,23 @@ export default class Kakudaira extends ProvinceCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.playerDelayedEffect({
                 when: {
-                    onPhaseStarted: (event: EventPayload<EventName.OnPhaseStarted>, context: AbilityContext) =>
-                        (context.source as ProvinceCard).isFaceup() &&
-                        !(context.source as ProvinceCard).isBroken &&
-                        context.player.getDynastyCardsInProvince((context.source as ProvinceCard).location).some((a: DrawCard) => a.isFacedown())
+                    onPhaseStarted: (event: EventPayload<EventName.OnPhaseStarted>, context: AbilityContext<this>) =>
+                        context.source.isFaceup() &&
+                        !context.source.isBroken &&
+                        context.player.getDynastyCardsInProvince(context.source.location).some((a: DrawCard) => a.isFacedown())
                 },
                 duration: Duration.Persistent,
                 message: '{0} reveals {1} due to the constant effect of {2}',
-                messageArgs: (effectContext: AbilityContext) => [
+                messageArgs: (effectContext: AbilityContext<this>) => [
                     effectContext.player,
                     effectContext.player
-                        .getDynastyCardsInProvince((effectContext.source as ProvinceCard).location)
+                        .getDynastyCardsInProvince(effectContext.source.location)
                         .filter((a: DrawCard) => a.isFacedown()),
                     effectContext.source
                 ],
                 gameAction: AbilityDsl.actions.flipDynasty((context) => ({
                     target: context.player
-                        .getDynastyCardsInProvince((context.source as ProvinceCard).location)
+                        .getDynastyCardsInProvince(context.source.location)
                         .filter((a: DrawCard) => a.isFacedown())
                 }))
             })

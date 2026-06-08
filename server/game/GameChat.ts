@@ -6,20 +6,26 @@ type Player = {
     };
 };
 
-type MessageText = string | Array<string | number>;
+export type MessageText = string | Array<string | number>;
 
-type MsgArg =
+export type MsgArg =
     | string
     | number
+    | undefined
+    | null
     | { name: string }
     | { getShortSummary: () => string }
     | { message: MessageText }
     | Array<MsgArg>;
 
+export type MessageArgs = [string, MsgArg[]];
+
+type StoredMessage = MessageText | { alert: { type: string; message: MessageText } };
+
 export class GameChat {
     messages: Array<{
         date: Date;
-        message: any;
+        message: StoredMessage;
     }> = [];
 
     addChatMessage(player: Player, message: MsgArg): void {

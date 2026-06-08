@@ -2,6 +2,7 @@ import CardSelector from '../CardSelector.js';
 import { CardType, Stage, Players, Location } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
+import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import type { StatusToken } from '../StatusToken.js';
 import type { GameAction } from '../GameActions/GameAction.js';
@@ -18,7 +19,7 @@ interface AbilityTargetTokenProperties {
     cardType?: CardType | CardType[];
     singleToken?: boolean;
     tokenCondition?: (token: StatusToken, context: AbilityContext) => boolean;
-    cardCondition?: (card: BaseCard, context: AbilityContext) => boolean;
+    cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
     [key: string]: unknown;
@@ -34,6 +35,7 @@ interface TokenTargetResults {
 interface PromptButton {
     text: string;
     arg: string;
+    [key: string]: unknown;
 }
 
 class AbilityTargetToken {
@@ -64,7 +66,7 @@ class AbilityTargetToken {
 
     getSelector(properties: AbilityTargetTokenProperties): CardSelectorInstance {
         let cardCondition = (card: BaseCard, context: AbilityContext) => {
-            let tokens: any = [...card.statusTokens];
+            let tokens: StatusToken[] = [...card.statusTokens];
             if(!tokens || tokens.length === 0) {
                 return false;
             }
@@ -84,7 +86,7 @@ class AbilityTargetToken {
             }
             let cardValid = true;
             if(properties.cardCondition) {
-                cardValid = cardValid && properties.cardCondition(card, context);
+                cardValid = cardValid && properties.cardCondition(card as DrawCard, context as AbilityContext<DrawCard>);
             }
 
             return (tokensValid && cardValid) && (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
@@ -134,17 +136,18 @@ class AbilityTargetToken {
             buttons: buttons,
             context: context,
             selector: this.selector,
-            onSelect: (player: Player, card: any) => {
-                if(!card || card.length === 0) {
+            onSelect: (player: Player, card: BaseCard | BaseCard[]) => {
+                if(!card || (Array.isArray(card) && card.length === 0)) {
                     return true;
                 }
 
-                let validTokens: any = card.statusTokens.filter((token: StatusToken) => (!this.properties.tokenCondition || this.properties.tokenCondition(token, context)) && (this.properties.gameAction.length === 0 || this.properties.gameAction.some((action) => action.canAffect(token, context))));
+                const selectedCard = Array.isArray(card) ? card[0] : card;
+                let validTokens: StatusToken[] = selectedCard.statusTokens.filter((token: StatusToken) => (!this.properties.tokenCondition || this.properties.tokenCondition(token, context)) && (this.properties.gameAction.length === 0 || this.properties.gameAction.some((action) => action.canAffect(token, context))));
                 if(this.properties.singleToken && validTokens.length > 1) {
                     const choices = validTokens.map((token: StatusToken) => token.name);
                     const handlers = validTokens.map((token: StatusToken) => {
                         return () => {
-                            let selected: any = [token];
+                            let selected: StatusToken[] = [token];
                             context.tokens[this.name] = selected;
                             if(this.name === 'target') {
                                 context.token = selected;

@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -26,7 +27,7 @@ export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties, E
     name = 'discard';
     eventName = EventName.OnCardsDiscardedFromHand;
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context);
         return ['make {0} discard {1} cards', [properties.target, properties.amount]];
     }

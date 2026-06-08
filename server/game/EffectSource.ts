@@ -6,12 +6,13 @@ import type Game from './Game.js';
 import type Player from './Player.js';
 import type Effect from './Effects/Effect.js';
 import type { EffectFactory } from './Effects/EffectBuilder.js';
+import type { EffectMatch } from './Effects/Effect.js';
 
 interface EffectProperties {
     duration?: Duration;
     location?: Location;
     effect?: EffectFactory | EffectFactory[];
-    match?: any;
+    match?: EffectMatch;
     condition?: (context: AbilityContext) => boolean;
     [key: string]: any;
 }

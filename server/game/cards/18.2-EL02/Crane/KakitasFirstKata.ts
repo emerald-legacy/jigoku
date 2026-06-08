@@ -45,7 +45,7 @@ export default class KakitasFirstKata extends DrawCard {
                         })
                     })),
                     AbilityDsl.actions.conditional({
-                        condition: (context) => this.bowedCharactersThisConflict.has(context.target),
+                        condition: (context) => context.target !== undefined && this.bowedCharactersThisConflict.has(context.target),
                         trueGameAction: AbilityDsl.actions.ready((context) => ({ target: context.target })),
                         falseGameAction: AbilityDsl.actions.draw({ amount: 0 })
                     })

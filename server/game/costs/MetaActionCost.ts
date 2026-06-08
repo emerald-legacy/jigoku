@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
+import type { MsgArg } from '../GameChat.js';
 import { Location, Players } from '../Constants.js';
 import type { Cost, Result } from './Cost.js';
 import type { Event } from '../Events/Event.js';
@@ -63,7 +64,7 @@ export class MetaActionCost extends GameActionCost implements Cost {
         return this.action.hasTargetsChosenByInitiatingPlayer(context);
     }
 
-    getCostMessage(context: AbilityContext): unknown[] {
+    getCostMessage(context: AbilityContext): MsgArg[] {
         const properties = this.action.getProperties(context) as SelectCardProperties;
         return properties.gameAction.getCostMessage(context) ?? [];
     }

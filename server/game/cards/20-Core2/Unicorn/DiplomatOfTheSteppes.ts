@@ -10,7 +10,7 @@ export default class DiplomatOfTheSteppes extends DrawCard {
             title: 'Change the conflict to military',
             cost: AbilityDsl.costs.payHonor(1),
             condition: (context) => {
-                if(!(context.source as DrawCard).isParticipating('political')) {
+                if(!context.source.isParticipating('political')) {
                     return false;
                 }
                 const conflict = this.game.currentConflict;

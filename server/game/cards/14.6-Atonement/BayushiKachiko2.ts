@@ -25,7 +25,7 @@ export default class BayushiKachiko2 extends DrawCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
                 when: {
-                    onCardPlayed: (event: CardPlayedEvent, context: AbilityContext) => {
+                    onCardPlayed: (event: CardPlayedEvent, context: AbilityContext<this>) => {
                         if(this.cardsPlayedThisRound >= MAXIMUM_CARDS_ALLOWED) {
                             return false;
                         }
@@ -39,7 +39,7 @@ export default class BayushiKachiko2 extends DrawCard {
                             event.player === context.player &&
                             !event.sourceOfCardPlayedFromConflictDiscard &&
                             context.game.isDuringConflict('political') &&
-                            (context.source as DrawCard).isParticipating()
+                            context.source.isParticipating()
                         );
                     }
                 },
@@ -86,7 +86,7 @@ export default class BayushiKachiko2 extends DrawCard {
             location: Location.PlayArea,
             targetLocation: Location.ConflictDiscardPile,
             targetController: Players.Opponent,
-            match: (card, context) =>
+            match: (card: DrawCard, context) =>
                 card.type === CardType.Event &&
                 card.location === Location.ConflictDiscardPile &&
                 card.owner === context?.player.opponent,

@@ -21,7 +21,7 @@ export default class SoshiShadowshaper extends DrawCard {
             cost: AbilityDsl.costs.payHonor(1),
             target: {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.getCost() < 3 && this.charactersPlayedThisPhase.has(card),
+                cardCondition: (card) => (card.getCost() ?? 0) < 3 && this.charactersPlayedThisPhase.has(card),
                 gameAction: AbilityDsl.actions.returnToHand()
             }
         });

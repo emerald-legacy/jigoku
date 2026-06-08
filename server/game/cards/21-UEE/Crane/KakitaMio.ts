@@ -3,6 +3,7 @@ import type BaseCard from '../../../BaseCard.js';
 import { Conflict } from '../../../Conflict.js';
 import { CardType, Decks, Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import type Player from '../../../Player.js';
 
 export default class KakitaMio extends DrawCard {
     static id = 'kakita-mio';
@@ -35,7 +36,7 @@ export default class KakitaMio extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() &&
-                    context.game.currentConflict.getNumberOfParticipantsFor(card.controller) === 1,
+                    context.game.currentConflict?.getNumberOfParticipantsFor(card.controller) === 1,
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     duration: Duration.UntilEndOfConflict,
                     effect: AbilityDsl.effects.addTrait('shadowlands')
@@ -47,9 +48,9 @@ export default class KakitaMio extends DrawCard {
             condition: (context) =>
                 context.game.currentConflict instanceof Conflict &&
                 context.game.currentConflict.getNumberOfParticipantsFor(context.player.opponent, (card) => (card.hasTrait('shadowlands') || card.isTainted)) > 0,
-            match: (card, context) =>
+            match: (card: DrawCard, context) =>
                 card.type === CardType.Character &&
-                card.isParticipatingFor(context?.player) &&
+                card.isParticipatingFor(context?.player as Player) &&
                 (card.hasTrait('imperial') || card.attachments.some((attachment: BaseCard) => attachment.hasTrait('imperial'))),
             effect: AbilityDsl.effects.modifyBothSkills(1)
         });

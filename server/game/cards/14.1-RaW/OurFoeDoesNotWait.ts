@@ -1,4 +1,6 @@
+import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 import { Location, Players, CardType, Decks } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -18,7 +20,7 @@ class OurFoeDoesNotWait extends DrawCard {
                 cardType: CardType.Province,
                 controller: Players.Self,
                 location: Location.Provinces,
-                cardCondition: card => card.location !== Location.StrongholdProvince && !card.isBroken
+                cardCondition: (card: BaseCard) => card.location !== Location.StrongholdProvince && !(card as ProvinceCard).isBroken
             },
             gameAction: AbilityDsl.actions.deckSearch(context => ({
                 amount: 8,

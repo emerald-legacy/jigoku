@@ -2,9 +2,10 @@ import { GameModes } from '../../../GameModes.js';
 import { CardType, EventName, TargetMode, Decks, Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
+import BaseCard from '../../BaseCard.js';
 import type { EventPayload, GameEvent } from '../../Events/EventPayloads.js';
 import type Player from '../../Player.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
 
 export default class KaiuShihobu extends DrawCard {
     static id = 'kaiu-shihobu';
@@ -61,7 +62,7 @@ export default class KaiuShihobu extends DrawCard {
                     cardType: CardType.Province,
                     location: Location.Provinces,
                     controller: Players.Self,
-                    cardCondition: (card) => card.location !== Location.StrongholdProvince && !card.isBroken
+                    cardCondition: (card: BaseCard) => card.location !== Location.StrongholdProvince && !(card as ProvinceCard).isBroken
                 }
             },
             handler: (context) => {

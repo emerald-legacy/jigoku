@@ -38,7 +38,7 @@ export default class SanctifiedEarth extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 player: Players.Self,
-                cardCondition: (card, context) => trigger[context.event.name as keyof typeof trigger]?.cardCondition(card, context) ?? false,
+                cardCondition: (card, context) => trigger[(context as TriggeredAbilityContext<DrawCard>).event.name as keyof typeof trigger]?.cardCondition(card, context as TriggeredAbilityContext<DrawCard>) ?? false,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.cardLastingEffect({
                         effect: AbilityDsl.effects.modifyBothSkills(2)

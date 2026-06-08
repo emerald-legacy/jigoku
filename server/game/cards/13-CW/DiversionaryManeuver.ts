@@ -1,3 +1,4 @@
+import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 import { Location, CardType, Players, TargetMode } from '../../Constants.js';
@@ -13,7 +14,7 @@ class DiversionaryManeuver extends DrawCard {
             target: {
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card, context) => !card.isConflictProvince() && card.canBeAttacked() && (context.game.currentConflict?.getConflictProvinces() ?? []).some((a: ProvinceCard) => a.controller === card.controller)
+                cardCondition: (card: BaseCard, context) => !(card as ProvinceCard).isConflictProvince() && (card as ProvinceCard).canBeAttacked() && (context.game.currentConflict?.getConflictProvinces() ?? []).some((a: ProvinceCard) => a.controller === card.controller)
             },
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.multiple([
@@ -34,7 +35,7 @@ class DiversionaryManeuver extends DrawCard {
                         mode: TargetMode.Unlimited,
                         cardCondition: card => !card.bowed,
                         message: '{0} moves {1} to the conflict',
-                        messageArgs: (card, player) => [player, card.length > 0 ? card : 'no one'],
+                        messageArgs: (card: DrawCard[], player) => [player, card.length > 0 ? card : 'no one'],
                         gameAction: AbilityDsl.actions.moveToConflict()
                     })
                 ]),
@@ -47,7 +48,7 @@ class DiversionaryManeuver extends DrawCard {
                     mode: TargetMode.Unlimited,
                     cardCondition: card => !card.bowed,
                     message: '{0} moves {1} to the conflict',
-                    messageArgs: (card, player) => [player, card.length > 0 ? card : 'no one'],
+                    messageArgs: (card: DrawCard[], player) => [player, card.length > 0 ? card : 'no one'],
                     gameAction: AbilityDsl.actions.moveToConflict()
                 })
             ]),

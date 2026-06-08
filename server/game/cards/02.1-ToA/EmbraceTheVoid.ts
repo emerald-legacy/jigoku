@@ -11,11 +11,11 @@ class EmbraceTheVoid extends DrawCard {
         this.wouldInterrupt({
             title: 'Take Fate',
             when: {
-                onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context: TriggeredAbilityContext) =>
-                    event.origin === (context.source as DrawCard).parent && event.fate > 0 && event.recipient !== context.player
+                onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context: TriggeredAbilityContext<this>) =>
+                    event.origin === context.source.parent && event.fate > 0 && event.recipient !== context.player
             },
             effect: 'take the {1} fate being removed from {2}',
-            effectArgs: (context: TriggeredAbilityContext) => context ? [(context.event as EventPayload<EventName.OnMoveFate>).fate, (context.source as DrawCard).parent as DrawCard] : [],
+            effectArgs: (context: TriggeredAbilityContext<this>) => context ? [(context.event as EventPayload<EventName.OnMoveFate>).fate, context.source.parent as DrawCard] : [],
             handler: (context: TriggeredAbilityContext) => {
                 context.event.recipient = context.player;
             }

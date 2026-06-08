@@ -1,16 +1,22 @@
 import BaseCard, { type CardSummary } from './BaseCard.js';
+import type { GameObject } from './GameObject.js';
 import { AttachmentManager } from './AttachmentManager.js';
 import { ChildCardManager } from './ChildCardManager.js';
 import AbilityDsl from './abilitydsl.js';
 import { SkillCalculator, type Exclusions } from './SkillCalculator.js';
 import type StatModifier from './StatModifier.js';
 import DuplicateUniqueAction from './DuplicateUniqueAction.js';
+import DynastyCardAction from './DynastyCardAction.js';
+import { PlayAttachmentAction } from './PlayAttachmentAction.js';
+import { PlayAttachmentToRingAction } from './PlayAttachmentToRingAction.js';
+import { PlayCharacterAction } from './PlayCharacterAction.js';
+import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js';
 import type BaseCardAbility from './BaseCardAbility.js';
 import CourtesyAbility from './KeywordAbilities/CourtesyAbility.js';
 import PrideAbility from './KeywordAbilities/PrideAbility.js';
 import SincerityAbility from './KeywordAbilities/SincerityAbility.js';
 import { RallyAbility } from './KeywordAbilities/RallyAbility.js';
-import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players } from './Constants.js';
+import { Location, EffectName, CardType, PlayType, ConflictType, EventName, Duration, Players, AbilityType } from './Constants.js';
 import { GameModes } from '../GameModes.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import { ThrivingAbility } from './KeywordAbilities/ThrivingAbility.js';
@@ -19,7 +25,8 @@ import type { ProvinceCard } from './ProvinceCard.js';
 import type Ring from './Ring.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { GameEvent } from './Events/EventPayloads.js';
-import type { PersistentEffectProps } from './Interfaces.js';
+import type { PersistentEffectProps, TriggeredAbilityProps, TriggeredAbilityWhenProps } from './Interfaces.js';
+import type { Duel } from './Duel.js';
 import type { CardData } from './types/CardData.js';
 
 interface MenuItem {
@@ -192,10 +199,10 @@ class DrawCard extends BaseCard {
      * effect is applied (for cases where the effect only applies to specific
      * characters).
      */
-    whileAttached(properties: Pick<PersistentEffectProps<this>, 'condition' | 'match' | 'effect'>) {
+    whileAttached<T extends GameObject = GameObject>(properties: Pick<PersistentEffectProps<this, T>, 'condition' | 'match' | 'effect'>) {
         this.persistentEffect({
             condition: properties.condition || (() => true),
-            match: (card, context) => card === this.parent && (!properties.match || properties.match(card, context)),
+            match: (card, context) => card === this.parent && (!properties.match || properties.match(card as T, context)),
             targetController: Players.Any,
             effect: properties.effect
         });
@@ -608,6 +615,28 @@ class DrawCard extends BaseCard {
         return actions.concat(this.getPlayActions(), super.getActions());
     }
 
+    getPlayActions(): BaseCardAbility[] {
+        if(this.type === CardType.Event) {
+            return this.getActions();
+        }
+        let actions = this.abilities.playActions.slice();
+        if(this.type === CardType.Character) {
+            if(this.disguisedKeywordTraits.length > 0) {
+                actions.push(new PlayDisguisedCharacterAction(this));
+            }
+            if(this.isDynasty) {
+                actions.push(new DynastyCardAction(this));
+            } else {
+                actions.push(new PlayCharacterAction(this));
+            }
+        } else if(this.type === CardType.Attachment && this.mustAttachToRing()) {
+            actions.push(new PlayAttachmentToRingAction(this));
+        } else if(this.type === CardType.Attachment) {
+            actions.push(new PlayAttachmentAction(this));
+        }
+        return actions;
+    }
+
     /**
      * Deals with the engine effects of leaving play, making sure all statuses are removed. Anything which changes
      * the state of the card should be here. This is also called in some strange corner cases e.g. for attachments
@@ -687,7 +716,7 @@ class DrawCard extends BaseCard {
     canDeclareAsAttacker(
         conflictType: string,
         ring: Ring,
-        province?: ProvinceCard,
+        province?: ProvinceCard | null,
         incomingAttackers?: DrawCard[]
     ): boolean {
         if(!province) {
@@ -717,7 +746,7 @@ class DrawCard extends BaseCard {
             (array, attachment: DrawCard) =>
                 array.concat(attachment.getEffects(EffectName.AddElementAsAttacker)),
             this.getEffects(EffectName.AddElementAsAttacker)
-        );
+        ).flat();
 
         if(
             elementsAdded.some((element: string) =>
@@ -933,6 +962,39 @@ class DrawCard extends BaseCard {
             glorySummary: this.glorySummary,
             controller: this.controller.getShortSummary(),
             effectMarkers: this.getEffectMarkers()
+        });
+    }
+
+    duelChallenge(properties: Omit<TriggeredAbilityProps, 'when'> & { duelCondition?: (duel: Duel, context: AbilityContext<DrawCard>) => boolean }): void {
+        this.triggeredAbility(AbilityType.DuelReaction, {
+            ...properties,
+            when: {
+                onDuelChallenge: ({ duel }: { duel?: Duel }, context) =>
+                    !!context && !!duel && duel.playerCanTriggerChallenge(context.player) &&
+                    (!properties.duelCondition || properties.duelCondition(duel, context))
+            }
+        });
+    }
+
+    duelFocus(properties: Omit<TriggeredAbilityWhenProps, 'when'> & { duelCondition?: (duel: Duel, context: AbilityContext<DrawCard>) => boolean }): void {
+        this.triggeredAbility(AbilityType.DuelReaction, {
+            ...properties,
+            when: {
+                onDuelFocus: ({ duel }: { duel?: Duel }, context) =>
+                    !!context && !!duel && duel.playerCanTriggerFocus(context.player) &&
+                    (!properties.duelCondition || properties.duelCondition(duel, context))
+            }
+        });
+    }
+
+    duelStrike(properties: Omit<TriggeredAbilityProps, 'when'> & { duelCondition?: (duel: Duel, context: AbilityContext<DrawCard>) => boolean }): void {
+        this.triggeredAbility(AbilityType.DuelReaction, {
+            ...properties,
+            when: {
+                onDuelStrike: ({ duel }: { duel?: Duel }, context) =>
+                    !!context && !!duel && duel.playerCanTriggerStrike(context.player) &&
+                    (!properties.duelCondition || properties.duelCondition(duel, context))
+            }
         });
     }
 }

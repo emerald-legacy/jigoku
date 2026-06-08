@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAbility from '../BaseAbility.js';
 import type BaseCard from '../BaseCard.js';
@@ -30,7 +31,7 @@ export class LastingEffectCardAction<
         ability: null as unknown as BaseAbility
     };
 
-    getEffectMessage(context: AbilityContext, additionalProperties = {}): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext, additionalProperties = {}): MessageArgs {
         let properties = this.getProperties(context, additionalProperties);
         const message = properties.message || this.effect;
 

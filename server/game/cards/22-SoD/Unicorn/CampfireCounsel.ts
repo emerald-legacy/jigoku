@@ -12,7 +12,7 @@ export default class CampfireCounsel extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.printedCost <= 3,
+                cardCondition: card => (card.printedCost ?? 0) <= 3,
                 gameAction: AbilityDsl.actions.ready()
             },
             then: context => ({

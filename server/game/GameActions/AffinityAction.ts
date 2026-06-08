@@ -1,3 +1,4 @@
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
@@ -21,7 +22,7 @@ export class AffinityAction extends GameAction<AffinityActionProperties> {
         return properties;
     }
 
-    getEffectMessage(context: AbilityContext, additionalProperties = {}): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext, additionalProperties = {}): MessageArgs {
         let properties = this.getProperties(context, additionalProperties);
         if(context.player.hasAffinity(properties.trait, context)) {
             return properties.gameAction.getEffectMessage(context);
@@ -86,6 +87,6 @@ export class AffinityAction extends GameAction<AffinityActionProperties> {
         const args = properties.effectArgs ? derive(properties.effectArgs, context) : [];
         const nextArg = args.length;
         const affinityMsg = `{${nextArg}} channels their ${properties.trait} affinity to ${properties.effect ?? ''}`;
-        context.game.addMessage(affinityMsg, ...args, context.player);
+        context.game.addMessage(affinityMsg, ...(args as MsgArg[]), context.player);
     }
 }

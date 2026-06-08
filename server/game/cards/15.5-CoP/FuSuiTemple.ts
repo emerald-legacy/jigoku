@@ -9,7 +9,7 @@ class FuSuiTemple extends DrawCard {
         this.persistentEffect({
             targetController: Players.Any,
             condition: context => context.game.isDuringConflict('political'),
-            match: card => card.isParticipating(),
+            match: (card: DrawCard) => card.isParticipating(),
             effect: AbilityDsl.effects.addKeyword('pride')
         });
     }

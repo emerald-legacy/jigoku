@@ -33,7 +33,7 @@ export default class PalmStrike extends DrawCard {
                         AbilityDsl.actions.bow(),
                         AbilityDsl.actions.conditional({
                             condition: (context) =>
-                                context.targets[TARGET_MONK] && context.targets[TARGET_MONK].hasTrait('tattooed'),
+                                !!(context.targets[TARGET_MONK] as DrawCard)?.hasTrait('tattooed'),
                             falseGameAction: AbilityDsl.actions.noAction(),
                             trueGameAction: AbilityDsl.actions.cardLastingEffect({
                                 effect: AbilityDsl.effects.cardCannot({ cannot: 'ready' }),

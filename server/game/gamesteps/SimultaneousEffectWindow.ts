@@ -1,20 +1,47 @@
-import ForcedTriggeredAbilityWindow from './ForcedTriggeredAbilityWindow.js';
+import { BaseStep } from './BaseStep.js';
 import type Game from '../Game.js';
+import type Player from '../Player.js';
 
-class SimultaneousEffectWindow extends ForcedTriggeredAbilityWindow {
+export interface SimultaneousEffectChoiceInput {
+    condition?: () => boolean;
+    title: string;
+    handler: () => void;
+}
+
+interface SimultaneousEffectChoice {
+    condition: () => boolean;
+    title: string;
+    handler: () => void;
+}
+
+class SimultaneousEffectWindow extends BaseStep {
+    choices: SimultaneousEffectChoice[] = [];
+    currentPlayer: Player;
+
     constructor(game: Game) {
-        super(game, 'delayedeffects' as any, undefined as any);
+        super(game);
+        this.currentPlayer = this.game.getFirstPlayer() as Player;
     }
 
-    addChoice(choice: any): void {
-        if(!choice.condition) {
-            choice.condition = () => true;
+    continue(): boolean {
+        this.game.currentAbilityWindow = this;
+        if(this.filterChoices()) {
+            this.game.currentAbilityWindow = null;
+            return true;
         }
-        this.choices.push(choice);
+        return false;
+    }
+
+    addChoice(choice: SimultaneousEffectChoiceInput): void {
+        this.choices.push({
+            condition: choice.condition ?? (() => true),
+            title: choice.title,
+            handler: choice.handler
+        });
     }
 
     filterChoices(): boolean {
-        let choices = this.choices.filter((choice: any) => choice.condition());
+        let choices = this.choices.filter((choice) => choice.condition());
         if(choices.length === 0) {
             return true;
         }
@@ -26,7 +53,7 @@ class SimultaneousEffectWindow extends ForcedTriggeredAbilityWindow {
         return false;
     }
 
-    promptBetweenChoices(choices: any[]): void {
+    promptBetweenChoices(choices: SimultaneousEffectChoice[]): void {
         this.game.promptWithHandlerMenu(this.currentPlayer, {
             source: 'Order Simultaneous effects',
             activePromptTitle: 'Choose an effect to be resolved',
@@ -36,7 +63,7 @@ class SimultaneousEffectWindow extends ForcedTriggeredAbilityWindow {
         });
     }
 
-    resolveEffect(choice: any): void {
+    resolveEffect(choice: SimultaneousEffectChoice): void {
         this.choices = this.choices.filter(c => c !== choice);
         choice.handler();
     }

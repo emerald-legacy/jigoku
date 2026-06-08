@@ -66,6 +66,10 @@ export class Event {
         return this.checkFullyResolved(this.getResolutionEvent());
     }
 
+    hasHandler(): boolean {
+        return Boolean(this.handler);
+    }
+
     executeHandler() {
         this.resolved = true;
         if(this.handler) {

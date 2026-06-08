@@ -2,10 +2,10 @@ import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { Players, CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { Cost } from '../../costs/Cost.js';
 
-const nitenCaptureParentCost = function() {
+const nitenCaptureParentCost = function(): Cost {
     return {
-        action: { name: 'nitenCaptureParentCost', getCostMessage: () => '' },
         canPay: function() {
             return true;
         },
@@ -37,7 +37,7 @@ class Niten extends DrawCard {
                 cardType: CardType.Attachment,
                 controller: Players.Self,
                 location: Location.Hand,
-                cardCondition: (card, context) => card.canAttach(context.source.parent) || card.canAttach(context.costs.nitenCaptureParentCost)
+                cardCondition: (card, context) => card.canAttach(context.source.parent ?? undefined) || card.canAttach(context.costs.nitenCaptureParentCost as DrawCard)
             },
             gameAction: AbilityDsl.actions.attach(context => ({
                 target: context.costs.nitenCaptureParentCost,

@@ -36,7 +36,6 @@ class BayushisWhisperers extends DrawCard {
             effect: ability.effects.playerCannot({
                 cannot: 'play',
                 restricts: 'copiesOfX',
-                source: context.source,
                 params: cardName
             })
         }));

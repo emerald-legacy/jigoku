@@ -1,5 +1,7 @@
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
+import type DrawCard from '../DrawCard.js';
 import CardSelector from '../CardSelector.js';
 import type BaseCardSelector from '../CardSelectors/BaseCardSelector.js';
 import { CardType, EffectName, Location, Players, TargetMode } from '../Constants.js';
@@ -15,17 +17,17 @@ export interface SelectCardProperties extends CardActionProperties {
     cardType?: CardType | CardType[];
     controller?: Players;
     location?: Location | Location[];
-    cardCondition?: (card: any, context: AbilityContext) => boolean;
+    cardCondition?(card: DrawCard, context: AbilityContext): boolean;
     targets?: boolean;
     message?: string;
     manuallyRaiseEvent?: boolean;
-    messageArgs?: (card: any, player: Player, properties: SelectCardProperties) => unknown[];
+    messageArgs?(card: BaseCard | BaseCard[], player: Player, properties: SelectCardProperties): unknown[];
     gameAction: GameAction;
     selector?: BaseCardSelector;
     mode?: TargetMode;
     numCards?: number;
     hidePromptIfSingleCard?: boolean;
-    subActionProperties?: (card: any) => Record<string, unknown>;
+    subActionProperties?(card: BaseCard | BaseCard[]): Record<string, unknown>;
     cancelHandler?: () => void;
     effect?: string;
     effectArgs?: (context: AbilityContext) => EffectArg[];
@@ -51,7 +53,7 @@ export class SelectCardAction extends CardGameAction {
         super(properties);
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let { target, effect, effectArgs } = this.getProperties(context) as SelectCardProperties;
         if(effect) {
             return [effect, (effectArgs && effectArgs(context)) || []];
@@ -63,14 +65,14 @@ export class SelectCardAction extends CardGameAction {
         let properties = super.getProperties(context, additionalProperties) as SelectCardProperties;
         properties.gameAction.setDefaultTarget(() => properties.target);
         const cardCondition = properties.cardCondition ?? (() => true);
-        const subActionProperties = properties.subActionProperties ?? ((card: BaseCard) => ({ target: card }));
+        const subActionProperties = properties.subActionProperties ?? ((card: BaseCard | BaseCard[]) => ({ target: card }));
         let selector = properties.selector;
         if(!selector) {
             const selectorCardCondition = (card: BaseCard, context: AbilityContext) =>
                 properties.gameAction.allTargetsLegal(
                     context,
                     Object.assign({}, additionalProperties, subActionProperties(card))
-                ) && cardCondition(card, context);
+                ) && cardCondition(card as DrawCard, context);
             selector = CardSelector.for(Object.assign({}, properties, { cardCondition: selectorCardCondition }));
         }
         return Object.assign(properties, { cardCondition, subActionProperties, selector });
@@ -123,7 +125,7 @@ export class SelectCardAction extends CardGameAction {
             onCancel: properties.cancelHandler,
             onSelect: (player: Player, cards: BaseCard | BaseCard[]) => {
                 if(properties.message && messageArgs) {
-                    context.game.addMessage(properties.message, ...messageArgs(cards, player, properties));
+                    context.game.addMessage(properties.message, ...(messageArgs(cards, player, properties) as MsgArg[]));
                 }
                 properties.gameAction.addEventsToArray(
                     events,
@@ -136,7 +138,7 @@ export class SelectCardAction extends CardGameAction {
                 return true;
             }
         };
-        const finalProperties = Object.assign(defaultProperties, properties);
+        const finalProperties = { ...defaultProperties, ...properties };
         if(properties.hidePromptIfSingleCard) {
             const cards = properties.selector.getAllLegalTargets(context);
             if(cards.length === 1) {

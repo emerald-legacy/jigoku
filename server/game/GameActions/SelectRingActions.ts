@@ -1,3 +1,4 @@
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { Event } from '../Events/Event.js';
 import { Players } from '../Constants.js';
@@ -34,7 +35,7 @@ export class SelectRingAction extends RingAction {
         super(properties);
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let { target } = this.getProperties(context);
         return ['choose a ring for {0}', [target]];
     }
@@ -89,7 +90,7 @@ export class SelectRingAction extends RingAction {
             onCancel: properties.cancelHandler,
             onSelect: (selectingPlayer: Player, ring: Ring) => {
                 if(properties.message && messageArgs) {
-                    context.game.addMessage(properties.message, ...messageArgs(ring, selectingPlayer));
+                    context.game.addMessage(properties.message, ...(messageArgs(ring, selectingPlayer) as MsgArg[]));
                 }
                 properties.gameAction.addEventsToArray(
                     events,
@@ -101,14 +102,16 @@ export class SelectRingAction extends RingAction {
         };
         context.game.promptForRingSelect(
             player,
-            Object.assign(defaultProperties, properties, {
+            {
+                ...defaultProperties,
+                ...properties,
                 ringCondition: (ring: Ring, ringContext: AbilityContext) =>
                     properties.ringCondition(ring, ringContext) &&
                     properties.gameAction.hasLegalTarget(
                         ringContext,
                         Object.assign({}, additionalProperties, properties.subActionProperties(ring))
                     )
-            })
+            }
         );
     }
 

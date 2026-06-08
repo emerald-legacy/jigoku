@@ -4,8 +4,9 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type Player from '../Player.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type { ChoicesInterface } from '../Interfaces.js';
+import type EffectSource from '../EffectSource.js';
 
-type ChoiceValue = ((context: AbilityContext) => boolean) | GameAction | GameAction[];
+type ChoiceValue = ((context: AbilityContext) => unknown) | GameAction | GameAction[];
 
 interface OwningAbility {
     targets: { name: string }[];
@@ -78,7 +79,7 @@ class AbilityTargetSelect {
         }
         let choice: ChoiceValue = this.getChoices(context)[key];
         if(typeof choice === 'function') {
-            return choice(contextCopy);
+            return !!choice(contextCopy);
         }
         return (choice as GameAction).hasLegalTarget(contextCopy);
     }
@@ -87,9 +88,9 @@ class AbilityTargetSelect {
         if(!context.selects[this.name]) {
             return [];
         }
-        let choice: any = this.getChoices(context)[context.selects[this.name].choice];
+        let choice: ChoiceValue = this.getChoices(context)[context.selects[this.name].choice];
         if(typeof choice !== 'function') {
-            return choice;
+            return Array.isArray(choice) ? choice : [choice];
         }
         return [];
     }
@@ -144,7 +145,7 @@ class AbilityTargetSelect {
                 waitingPromptTitle: waitingPromptTitle,
                 activePromptTitle: promptTitle,
                 context: context,
-                source: this.properties.source || context.source,
+                source: (this.properties.source as EffectSource | string | undefined) || context.source,
                 choices: choices,
                 handlers: handlers
             });

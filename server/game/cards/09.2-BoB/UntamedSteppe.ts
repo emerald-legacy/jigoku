@@ -1,4 +1,5 @@
 import { CardType, Players, Location } from '../../Constants.js';
+import BaseCard from '../../BaseCard.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,7 +13,7 @@ export default class UntamedSteppe extends ProvinceCard {
                 cardType: CardType.Province,
                 controller: Players.Any,
                 location: Location.Provinces,
-                cardCondition: (card, context) => !card.isBroken && card !== context.source,
+                cardCondition: (card: BaseCard, context) => !(card as ProvinceCard).isBroken && card !== context.source,
                 gameAction: AbilityDsl.actions.turnFacedown()
             }
         });

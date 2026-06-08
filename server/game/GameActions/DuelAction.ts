@@ -1,3 +1,4 @@
+import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, Duration, EventName, Location, type DuelType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -41,7 +42,7 @@ export class DuelAction extends CardGameAction {
         return Object.assign(properties, { challenger: properties.challenger ?? context.source });
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         const properties = this.getProperties(context);
         if(!Array.isArray(properties.target)) {
             return [
@@ -93,7 +94,7 @@ export class DuelAction extends CardGameAction {
             const [message, messageArgs] = properties.message
                 ? [properties.message, properties.messageArgs ? ([] as unknown[]).concat(properties.messageArgs(duel, context) as unknown[]) : []]
                 : gameAction.getEffectMessage(context);
-            context.game.addMessage('Duel Effect: ' + message, ...messageArgs);
+            context.game.addMessage('Duel Effect: ' + message, ...(messageArgs as MsgArg[]));
             gameAction.resolve(undefined, context);
         } else {
             context.game.addMessage('The duel has no effect');
@@ -130,7 +131,7 @@ export class DuelAction extends CardGameAction {
                     () => {
                         if(refusalMessage) {
                             const refusalArgs = refusalMessageArgs ? ([] as unknown[]).concat(refusalMessageArgs(context) as unknown[]) : [];
-                            context.game.addMessage(refusalMessage, ...refusalArgs);
+                            context.game.addMessage(refusalMessage, ...(refusalArgs as MsgArg[]));
                         } else {
                             context.game.addMessage(
                                 '{0} chooses to refuse the duel and {1}',

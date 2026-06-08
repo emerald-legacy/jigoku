@@ -2,12 +2,18 @@ import type { AbilityContext } from './AbilityContext.js';
 import type { EventPayload } from './Events/EventPayloads.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import type { GameAction } from './GameActions/GameAction.js';
+import type { Event } from './Events/Event.js';
+import type { Cost } from './costs/Cost.js';
+import type { AbilityLimit } from './AbilityLimit.js';
+import type { GameObject } from './GameObject.js';
 import type Ring from './Ring.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
+import type EffectSource from './EffectSource.js';
 import type CardAbility from './CardAbility.js';
 import type { DuelProperties } from './GameActions/DuelAction.js';
+import type { EffectFactory } from './Effects/EffectBuilder.js';
 import type { Players, TargetMode, CardType, Location, EventName, Phases } from './Constants.js';
 import type { StatusToken } from './StatusToken.js';
 import type Player from './Player.js';
@@ -19,10 +25,12 @@ interface BaseTarget {
     player?: ((context: AbilityContext) => Players.Self | Players.Opponent) | Players.Self | Players.Opponent;
     hideIfNoLegalTargets?: boolean;
     gameAction?: GameAction | GameAction[];
+    source?: EffectSource | string;
+    buttons?: { text: string; arg: string }[];
 }
 
 export interface ChoicesInterface {
-    [propName: string]: ((context: AbilityContext) => boolean) | GameAction | GameAction[];
+    [propName: string]: ((context: AbilityContext) => unknown) | GameAction | GameAction[];
 }
 
 interface TargetSelect extends BaseTarget {
@@ -41,7 +49,7 @@ interface TargetRing extends BaseTarget {
 interface TargetAbility extends BaseTarget {
     mode: TargetMode.Ability;
     cardType?: CardType | CardType[];
-    cardCondition?: (card: any, context?: any) => boolean;
+    cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
     abilityCondition?: (ability: CardAbility) => boolean;
 }
 
@@ -51,8 +59,8 @@ interface TargetToken extends BaseTarget {
     location?: Location | Location[];
     cardType?: CardType | CardType[];
     singleToken?: boolean;
-    cardCondition?: (card: any, context?: any) => boolean;
-    tokenCondition?: (token: StatusToken, context?: any) => boolean;
+    cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
+    tokenCondition?: (token: StatusToken, context?: AbilityContext) => boolean;
 }
 
 interface TargetElementSymbol extends BaseTarget {
@@ -103,7 +111,7 @@ interface SubTarget {
 }
 
 interface ActionCardTarget {
-    cardCondition?: (card: any, context?: any) => boolean;
+    cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
 }
 
 interface ActionRingTarget {
@@ -133,15 +141,17 @@ export type EffectArg =
     | ProvinceCard
     | Ring
     | StatusToken
+    | undefined
+    | null
     | { id: string; label: string; name: string; facedown: boolean; type: CardType }
     | EffectArg[];
 
 interface AbilityProps<Context> {
     title: string;
     location?: Location | Location[];
-    cost?: any;
-    limit?: any;
-    max?: any;
+    cost?: Cost | Cost[];
+    limit?: AbilityLimit;
+    max?: AbilityLimit;
     target?: ActionTarget;
     targets?: ActionTargets;
     initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);
@@ -156,7 +166,7 @@ interface AbilityProps<Context> {
     then?: ((context: AbilityContext) => object) | object;
 }
 
-export interface ActionProps<Source = any, Target extends BaseCard = BaseCard> extends AbilityProps<AbilityContext<Source, Target>> {
+export interface ActionProps<Source = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<AbilityContext<Source, Target>> {
     condition?: (context: AbilityContext<Source, Target>) => boolean;
     phase?: Phases | 'any';
     emeraldWorksInDynsty?: boolean;
@@ -169,7 +179,7 @@ export interface ActionProps<Source = any, Target extends BaseCard = BaseCard> e
 }
 
 interface TriggeredAbilityCardTarget {
-    cardCondition?: (card: any, context?: any) => boolean;
+    cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
 }
 
 interface TriggeredAbilityRingTarget {
@@ -184,6 +194,8 @@ type TriggeredAbilityTarget =
 interface TriggeredAbilityTargets {
     [propName: string]: TriggeredAbilityTarget & SubTarget & TriggeredAbilityTarget;
 }
+
+export type TargetPropertiesInput = (ActionTarget | TriggeredAbilityTarget) & SubTarget;
 
 export type WhenType<Source = BaseCard> = {
     [Evt in EventName]?: (event: EventPayload<Evt>, context: TriggeredAbilityContext<Source>) => unknown;
@@ -200,7 +212,7 @@ export interface TriggeredAbilityWhenProps<Source = BaseCard, Target extends Bas
 }
 
 export interface TriggeredAbilityAggregateWhenProps<Source = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<TriggeredAbilityContext<Source, Target>> {
-    aggregateWhen: (events: any[], context: TriggeredAbilityContext<Source, Target>) => boolean;
+    aggregateWhen: (events: Event[], context: TriggeredAbilityContext<Source, Target>) => boolean;
     collectiveTrigger?: boolean;
     target?: TriggeredAbilityTarget & TriggeredAbilityTarget;
     targets?: TriggeredAbilityTargets;
@@ -210,13 +222,13 @@ export interface TriggeredAbilityAggregateWhenProps<Source = BaseCard, Target ex
 
 export type TriggeredAbilityProps<Source = BaseCard, Target extends BaseCard = BaseCard> = TriggeredAbilityWhenProps<Source, Target> | TriggeredAbilityAggregateWhenProps<Source, Target>;
 
-export interface PersistentEffectProps<Source = any> {
+export interface PersistentEffectProps<Source = BaseCard, MatchTarget extends GameObject = GameObject> {
     location?: Location | Location[];
     condition?: (context: AbilityContext<Source>) => boolean;
-    match?: (card: any, context?: AbilityContext<Source>) => boolean;
+    match?: (card: MatchTarget, context?: AbilityContext<Source>) => boolean;
     targetController?: Players;
     targetLocation?: Location | (string & {});
-    effect: ((...args: any[]) => any) | ((...args: any[]) => any)[];
+    effect: EffectFactory | EffectFactory[];
     createCopies?: boolean;
 }
 
@@ -232,7 +244,7 @@ export interface AttachmentConditionProps {
     faction?: string | string[];
     trait?: string | string[];
     limitTrait?: traitLimit | traitLimit[];
-    cardCondition?: (card: any) => boolean;
+    cardCondition?: (card: DrawCard) => boolean;
 }
 
 interface HonoredToken {

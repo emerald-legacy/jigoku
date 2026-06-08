@@ -3,8 +3,8 @@ import type Player from './Player.js';
 import type Ring from './Ring.js';
 
 export interface PromptButton {
-    text?: string;
-    arg?: string;
+    text?: string | number;
+    arg?: string | number;
     method?: string;
     timer?: boolean;
     timerCancel?: boolean;
@@ -13,8 +13,8 @@ export interface PromptButton {
 }
 
 export interface RenderedPromptButton {
-    text?: string;
-    arg?: string;
+    text?: string | number;
+    arg?: string | number;
     method?: string;
     timer?: boolean;
     timerCancel?: boolean;
@@ -32,7 +32,7 @@ export class PlayerPromptState {
     selectOrder = false;
     selectRing = false;
     menuTitle = '';
-    promptTitle = '';
+    promptTitle: string | undefined = '';
     buttons: RenderedPromptButton[] = [];
     controls: PromptControl[] = [];
 
@@ -71,7 +71,7 @@ export class PlayerPromptState {
         selectOrder?: boolean;
         selectRing?: boolean;
         menuTitle?: string;
-        promptTitle: string;
+        promptTitle?: string;
         buttons?: PromptButton[];
         controls?: PromptControl[];
     }) {

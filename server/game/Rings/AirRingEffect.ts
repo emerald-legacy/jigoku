@@ -3,12 +3,13 @@ import { TargetMode } from '../Constants.js';
 import { CalculateHonorLimit } from '../GameActions/Shared/HonorLogic.js';
 import { AbilityContext } from '../AbilityContext.js';
 import BaseAbility from '../BaseAbility.js';
+import type { ChoicesInterface } from '../Interfaces.js';
 
 const GAIN_2 = 'Gain 2 Honor';
 const TAKE_1 = 'Take 1 Honor from opponent';
 const SKIP = 'Don\'t resolve';
 
-function choices(optional: boolean, gameMode: GameModes) {
+function choices(optional: boolean, gameMode: GameModes): ChoicesInterface {
     switch(gameMode) {
         case GameModes.Skirmish:
             return {
@@ -79,7 +80,7 @@ export class AirRingEffect extends BaseAbility {
             context.game.addMessage(
                 '{0} chooses not to resolve the {1} ring',
                 context.player,
-                context.game.currentConflict ? 'air' : (context.game.currentConflict as any)?.element
+                context.game.currentConflict ? 'air' : undefined
             );
             this.onResolution(false);
         }

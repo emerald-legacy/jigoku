@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
-function modifier(_: unknown, context: AbilityContext<EmpressRetainer>) {
+function modifier(_: unknown, context: AbilityContext) {
     if(context.player.imperialFavor !== '') {
         return 1;
     }

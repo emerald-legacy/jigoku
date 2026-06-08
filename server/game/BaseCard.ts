@@ -4,9 +4,9 @@ import EffectSource from './EffectSource.js';
 import { CardStatusManager } from './CardStatusManager.js';
 import CardAbility from './CardAbility.js';
 import TriggeredAbility from './TriggeredAbility.js';
+import type { TriggeredAbilityProperties } from './TriggeredAbility.js';
 import type BaseCardAbility from './BaseCardAbility.js';
 import Game from './Game.js';
-import DynastyCardAction from './DynastyCardAction.js';
 
 import { AbilityContext } from './AbilityContext.js';
 import { CardAction } from './CardAction.js';
@@ -25,13 +25,9 @@ import {
     ActionProps,
     AttachmentConditionProps,
     PersistentEffectProps,
-    TriggeredAbilityProps,
-    TriggeredAbilityWhenProps
+    TriggeredAbilityProps
 } from './Interfaces.js';
-import { PlayAttachmentAction } from './PlayAttachmentAction.js';
-import { PlayAttachmentToRingAction } from './PlayAttachmentToRingAction.js';
-import { PlayCharacterAction } from './PlayCharacterAction.js';
-import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js';
+import type { GameObject } from './GameObject.js';
 import { StatusToken } from './StatusToken.js';
 import Player from './Player.js';
 import type BaseAction from './BaseAction.js';
@@ -40,16 +36,16 @@ import type { CardEffect } from './Effects/types.js';
 import type Effect from './Effects/Effect.js';
 import type { EffectFactory } from './Effects/EffectBuilder.js';
 import type { GainAllAbilities } from './Effects/Library/gainAllAbilities.js';
-import type { Duel } from './Duel.js';
+import type { EffectValue } from './Effects/EffectValue.js';
 import type { CardData } from './types/CardData.js';
 
-type Faction = 'neutral' | 'crab' | 'crane' | 'dragon' | 'lion' | 'phoenix' | 'scorpion' | 'unicorn' | 'shadowlands';
+export type Faction = 'neutral' | 'crab' | 'crane' | 'dragon' | 'lion' | 'phoenix' | 'scorpion' | 'unicorn' | 'shadowlands';
 
 export interface StoredPersistentEffect {
     duration: Duration;
     location: Location | Location[];
     condition?: (context: AbilityContext) => boolean;
-    match?: (card: BaseCard, context?: AbilityContext) => boolean;
+    match?: (card: GameObject, context?: AbilityContext) => boolean;
     targetController?: Players;
     targetLocation?: Location | (string & {});
     effect: EffectFactory | EffectFactory[];
@@ -58,6 +54,13 @@ export interface StoredPersistentEffect {
     type?: EffectName;
     abilityType?: AbilityType;
     isKeywordEffect?: boolean;
+}
+
+interface AbilityProvidingEffectValue {
+    calculate(target: GameObject, context: AbilityContext): unknown;
+    getActions(target: GameObject): CardAction[];
+    getReactions(target: GameObject): TriggeredAbility[];
+    getPersistentEffects(): StoredPersistentEffect[];
 }
 
 interface CardAbilities {
@@ -146,7 +149,7 @@ class BaseCard extends EffectSource {
         let actions = this.abilities.actions;
         const mostRecentEffect = this.#mostRecentEffect((effect) => effect.type === EffectName.CopyCharacter);
         if(mostRecentEffect) {
-            actions = mostRecentEffect.value.getActions(this);
+            actions = (mostRecentEffect.value as AbilityProvidingEffectValue).getActions(this);
         }
         const effectActions = (this.getEffects(EffectName.GainAbility) as CardAction[]).filter(
             (ability) => ability.abilityType === AbilityType.Action
@@ -164,8 +167,9 @@ class BaseCard extends EffectSource {
                     (effect: CardEffect) => effect.type === EffectName.GainAllAbilitiesDynamic
                 );
                 effects.forEach((effect: CardEffect) => {
-                    effect.value.calculate(this, context); //fetch new abilities
-                    actions = actions.concat(effect.value.getActions(this));
+                    const value = effect.value as AbilityProvidingEffectValue;
+                    value.calculate(this, context); //fetch new abilities
+                    actions = actions.concat(value.getActions(this));
                 });
             }
         }
@@ -193,7 +197,7 @@ class BaseCard extends EffectSource {
         let reactions = this.abilities.reactions;
         const mostRecentEffect = this.#mostRecentEffect((effect) => effect.type === EffectName.CopyCharacter);
         if(mostRecentEffect) {
-            reactions = mostRecentEffect.value.getReactions(this);
+            reactions = (mostRecentEffect.value as AbilityProvidingEffectValue).getReactions(this);
         }
         const effectReactions = (this.getEffects(EffectName.GainAbility) as TriggeredAbility[]).filter((ability) =>
             TriggeredAbilityTypes.includes(ability.abilityType)
@@ -210,8 +214,9 @@ class BaseCard extends EffectSource {
                 );
                 const context = (this.game.getFrameworkContext as (player?: Player | null) => AbilityContext)(this.controller);
                 effects.forEach((effect: CardEffect) => {
-                    effect.value.calculate(this, context); //fetch new abilities
-                    reactions = reactions.concat(effect.value.getReactions(this));
+                    const value = effect.value as AbilityProvidingEffectValue;
+                    value.calculate(this, context); //fetch new abilities
+                    reactions = reactions.concat(value.getReactions(this));
                 });
             }
         }
@@ -235,7 +240,7 @@ class BaseCard extends EffectSource {
 
         const mostRecentEffect = this.#mostRecentEffect((effect) => effect.type === EffectName.CopyCharacter);
         if(mostRecentEffect) {
-            return gainedPersistentEffects.concat(mostRecentEffect.value.getPersistentEffects());
+            return gainedPersistentEffects.concat((mostRecentEffect.value as AbilityProvidingEffectValue).getPersistentEffects());
         }
         for(const effect of this.getRawEffects()) {
             if(effect.type === EffectName.GainAllAbilities) {
@@ -254,8 +259,9 @@ class BaseCard extends EffectSource {
                 );
                 const context = (this.game.getFrameworkContext as (player?: Player | null) => AbilityContext)(this.controller);
                 effects.forEach((effect: CardEffect) => {
-                    effect.value.calculate(this, context); //fetch new abilities
-                    gainedPersistentEffects = gainedPersistentEffects.concat(effect.value.getPersistentEffects());
+                    const value = effect.value as AbilityProvidingEffectValue;
+                    value.calculate(this, context); //fetch new abilities
+                    gainedPersistentEffects = gainedPersistentEffects.concat(value.getPersistentEffects());
                 });
             }
         }
@@ -296,7 +302,9 @@ class BaseCard extends EffectSource {
     }
 
     createTriggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityType, properties: TriggeredAbilityProps<this, Target>): TriggeredAbility {
-        return new TriggeredAbility(this, abilityType, properties as unknown as ConstructorParameters<typeof TriggeredAbility>[2]);
+        // The author DSL props carry the target generic; the runtime ability erases it (Target is
+        // covariant in the handler context), so downcast once to drop it.
+        return new TriggeredAbility(this, abilityType, properties as TriggeredAbilityProperties<this>);
     }
 
     reaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void {
@@ -319,59 +327,11 @@ class BaseCard extends EffectSource {
         this.triggeredAbility(AbilityType.ForcedInterrupt, properties);
     }
 
-    duelChallenge(
-        properties: Omit<TriggeredAbilityProps, 'when'> & {
-            duelCondition?: (duel: Duel, context: AbilityContext) => boolean;
-        }
-    ): void {
-        const newProperties: TriggeredAbilityProps = {
-            ...properties,
-            when: {
-                onDuelChallenge: ({ duel }: { duel?: Duel }, context) =>
-                    !!context &&
-                    !!duel &&
-                    duel.playerCanTriggerChallenge(context.player) &&
-                    (!properties.duelCondition || properties.duelCondition(duel, context))
-            }
-        };
-        this.triggeredAbility(AbilityType.DuelReaction, newProperties);
-    }
-
-    duelFocus(
-        properties: Omit<TriggeredAbilityWhenProps, 'when'> & { duelCondition?: (duel: Duel, context: AbilityContext) => boolean }
-    ): void {
-        const newProperties: TriggeredAbilityWhenProps = {
-            ...properties,
-            when: {
-                onDuelFocus: ({ duel }: { duel?: Duel }, context) =>
-                    !!context &&
-                    !!duel &&
-                    duel.playerCanTriggerFocus(context.player) &&
-                    (!properties.duelCondition || properties.duelCondition(duel, context))
-            }
-        };
-        this.triggeredAbility(AbilityType.DuelReaction, newProperties);
-    }
-
-    duelStrike(properties: Omit<TriggeredAbilityProps, 'when'> & { duelCondition?: (duel: Duel, context: AbilityContext) => boolean }): void {
-        const newProperties: TriggeredAbilityProps = {
-            ...properties,
-            when: {
-                onDuelStrike: ({ duel }: { duel?: Duel }, context) =>
-                    !!context &&
-                    !!duel &&
-                    duel.playerCanTriggerStrike(context.player) &&
-                    (!properties.duelCondition || properties.duelCondition(duel, context))
-            }
-        };
-        this.triggeredAbility(AbilityType.DuelReaction, newProperties);
-    }
-
     /**
      * Applies an effect that continues as long as the card providing the effect
      * is both in play and not blank.
      */
-    persistentEffect(properties: PersistentEffectProps<this>): void {
+    persistentEffect<T extends GameObject = GameObject>(properties: PersistentEffectProps<this, T>): void {
         const allowedLocations = [
             Location.Any,
             Location.ConflictDiscardPile,
@@ -439,7 +399,7 @@ class BaseCard extends EffectSource {
         } as PersistentEffectProps<this> & { isKeywordEffect: boolean });
     }
 
-    dire(properties: PersistentEffectProps<this>): void {
+    dire<T extends GameObject = GameObject>(properties: PersistentEffectProps<this, T>): void {
         if(properties && properties.condition) {
             let currentCondition = properties.condition;
             properties.condition = (context: AbilityContext<this>) => context.source.isDire() && currentCondition(context);
@@ -984,27 +944,6 @@ class BaseCard extends EffectSource {
         return true;
     }
 
-    getPlayActions(): BaseCardAbility[] {
-        if(this.type === CardType.Event) {
-            return this.getActions();
-        }
-        let actions = this.abilities.playActions.slice();
-        if(this.type === CardType.Character) {
-            if(this.disguisedKeywordTraits.length > 0) {
-                actions.push(new PlayDisguisedCharacterAction(this));
-            }
-            if(this.isDynasty) {
-                actions.push(new DynastyCardAction(this));
-            } else {
-                actions.push(new PlayCharacterAction(this));
-            }
-        } else if(this.type === CardType.Attachment && this.mustAttachToRing()) {
-            actions.push(new PlayAttachmentToRingAction(this));
-        } else if(this.type === CardType.Attachment) {
-            actions.push(new PlayAttachmentAction(this));
-        }
-        return actions;
-    }
 
     get statusTokens(): StatusToken[] {
         return this.statusManager.statusTokens;
@@ -1071,7 +1010,7 @@ class BaseCard extends EffectSource {
         }
         let changeEffects = this.getRawEffects().filter((effect: CardEffect) => effect.type === EffectName.ReplacePrintedElement);
         changeEffects.forEach((effect: CardEffect) => {
-            const newElement = effect.value.value;
+            const newElement = (effect.value as EffectValue<ElementSymbolInfo>).value;
             let sym = symbols.find((a) => a.key === newElement.key);
             if(sym) {
                 sym.element = newElement.element;

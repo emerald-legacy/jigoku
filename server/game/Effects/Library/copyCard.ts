@@ -14,8 +14,8 @@ class CopyCard extends EffectValue<BaseCard> {
     abilitiesForTargets = new WeakMap<
         BaseCard,
         {
-            actions: Array<GainAbility>;
-            reactions: Array<GainAbility>;
+            actions: CardAction[];
+            reactions: TriggeredAbility[];
         }
     >();
 
@@ -32,11 +32,11 @@ class CopyCard extends EffectValue<BaseCard> {
         this.abilitiesForTargets.set(target, {
             actions: this.actions.map((value) => {
                 value.apply(target);
-                return value.getValue();
+                return value.getValue() as CardAction;
             }),
             reactions: this.reactions.map((value) => {
                 value.apply(target);
-                return value.getValue();
+                return value.getValue() as TriggeredAbility;
             })
         });
         for(const effect of this.persistentEffects) {
@@ -52,7 +52,6 @@ class CopyCard extends EffectValue<BaseCard> {
 
     unapply(target: BaseCard) {
         for(const value of this.abilitiesForTargets.get(target)?.reactions ?? []) {
-            // @ts-expect-error -- GainAbility values have unregisterEvents at runtime but the type is not declared
             value.unregisterEvents();
         }
         for(const effect of this.persistentEffects) {

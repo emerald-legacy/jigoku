@@ -2,6 +2,7 @@ import * as uuid from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { logger } from './logger.js';
 import { GameChat } from './game/GameChat.js';
+import type { MsgArg } from './game/GameChat.js';
 import type { LobbyUser, DeckDTO } from './gamenode/LobbyProtocol.js';
 
 interface PendingFaction {
@@ -156,7 +157,7 @@ class PendingGame {
     }
 
     // Actions
-    addMessage(message: string, ...args: any[]): void {
+    addMessage(message: string, ...args: MsgArg[]): void {
         this.gameChat.addMessage(message, ...args);
     }
 

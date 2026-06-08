@@ -21,10 +21,10 @@ export default class EmperorsSummons extends ProvinceCard {
                     location: Location.Provinces,
                     controller: Players.Self,
                     cardCondition: (card) => card.location !== Location.StrongholdProvince,
-                    subActionProperties: (card) => ({ destination: card.location }),
+                    subActionProperties: (card: ProvinceCard) => ({ destination: card.location }),
                     gameAction: AbilityDsl.actions.moveCard({ discardDestinationCards: true, faceup: true }),
                     message: '{1} chooses to place {2} in {0} discarding {3}',
-                    messageArgs: (card, player, properties) => [
+                    messageArgs: (card: ProvinceCard, player, properties) => [
                         card.isFacedown() ? card.location : card,
                         player,
                         properties.target,

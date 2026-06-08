@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -26,7 +27,7 @@ export class MatchingDiscardAction extends PlayerAction<MatchingDiscardPropertie
         super(propertyFactory);
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties: MatchingDiscardProperties = this.getProperties(context) as MatchingDiscardProperties;
         return ['make {0} discard all cards that match a condition', [properties.target]];
     }

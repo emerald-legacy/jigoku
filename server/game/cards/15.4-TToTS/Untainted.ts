@@ -23,8 +23,9 @@ class Untainted extends DrawCard {
                 activePromptTitle: 'Choose a status token',
                 mode: TargetMode.Token,
                 location: Location.Any,
-                tokenCondition: (token: StatusToken, context: AbilityContext<this>) => {
-                    return !!token.card && (token.card === context.source.parent || (token.card instanceof DrawCard && token.card.isParticipating()));
+                tokenCondition: (token: StatusToken, context?: AbilityContext) => {
+                    const parent = context && (context.source as DrawCard).parent;
+                    return !!token.card && (token.card === parent || (token.card instanceof DrawCard && token.card.isParticipating()));
                 }
             },
             gameAction: AbilityDsl.actions.multiple([

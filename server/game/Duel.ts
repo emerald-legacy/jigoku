@@ -8,6 +8,7 @@ import type Player from './Player.js';
 import { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
 import type { CardEffect } from './Effects/types.js';
+import type { EffectValue } from './Effects/EffectValue.js';
 
 /**
  * Used to track whether a player has played a specific type of duel effect yet
@@ -209,7 +210,7 @@ export class Duel extends GameObject {
         const duelLevelModifier = this.getRawEffects().filter((effect) => effect.type === EffectName.ModifyDuelSkill);
 
         for(const effect of duelLevelModifier) {
-            const effectProps = effect.value.value;
+            const effectProps = (effect.value as EffectValue<{ player?: Player; amount: number }>).value;
             if(effectProps.player === player) {
                 result += effectProps.amount;
             }

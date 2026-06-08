@@ -8,7 +8,7 @@ export default class AncestralKabuto extends DrawCard {
         this.attachmentConditions({ trait: 'bushi' });
 
         this.whileAttached({
-            match: card => card.isDishonored,
+            match: (card: DrawCard) => card.isDishonored,
             effect: AbilityDsl.effects.setGlory(0)
         });
 

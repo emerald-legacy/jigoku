@@ -28,7 +28,7 @@ class Socket extends EventEmitter {
     }
 
     // Commands
-    registerEvent(event: string, callback: (socket: Socket, ...args: any[]) => void): void {
+    registerEvent(event: string, callback: (socket: Socket, ...args: never[]) => void): void {
         this.socket.on(event, this.onSocketEvent.bind(this, callback));
     }
 
@@ -49,13 +49,13 @@ class Socket extends EventEmitter {
     }
 
     // Events
-    onSocketEvent(callback: (socket: Socket, ...args: any[]) => void, ...args: unknown[]): void {
+    onSocketEvent(callback: (socket: Socket, ...args: never[]) => void, ...args: unknown[]): void {
         if(!this.user) {
             return;
         }
 
         try {
-            callback(this, ...args);
+            callback(this, ...(args as never[]));
         } catch(err) {
             logger.error('Socket event handler error', { error: err, args });
         }

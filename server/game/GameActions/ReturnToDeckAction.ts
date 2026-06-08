@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
@@ -23,7 +24,7 @@ export class ReturnToDeckAction extends CardGameAction {
         super(properties);
     }
 
-    getCostMessage(context: AbilityContext): [string, unknown[]] {
+    getCostMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context) as ReturnToDeckProperties;
         return [
             properties.shuffle
@@ -33,7 +34,7 @@ export class ReturnToDeckAction extends CardGameAction {
         ];
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context) as ReturnToDeckProperties;
         if(properties.shuffle) {
             return ['shuffle {0} into its owner\'s deck', [properties.target]];

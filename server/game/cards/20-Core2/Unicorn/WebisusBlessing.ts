@@ -20,7 +20,7 @@ export default class WebisusBlessing extends DrawCard {
                     dependsOn: 'first',
                     mode: TargetMode.Token,
                     optional: true,
-                    tokenCondition: (token, context) => token !== context.tokens.first[0],
+                    tokenCondition: (token, context) => token !== (context?.tokens.first as StatusToken[])?.[0],
                     gameAction: AbilityDsl.actions.discardStatusToken()
                 }
             },

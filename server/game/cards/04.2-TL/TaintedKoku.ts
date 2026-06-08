@@ -13,7 +13,7 @@ class TaintedKoku extends DrawCard {
             },
             target: {
                 cardType: CardType.Character,
-                cardCondition: (card, context) => context.source.parent && card.controller === context.source.parent.controller && card !== context.source.parent,
+                cardCondition: (card, context) => Boolean(context.source.parent && card.controller === context.source.parent.controller && card !== context.source.parent),
                 gameAction: AbilityDsl.actions.attach(context => ({ attachment: context.source }))
             }
         });

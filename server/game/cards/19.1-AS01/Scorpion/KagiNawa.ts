@@ -8,7 +8,7 @@ export default class KagiNawa extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            match: (card) => card.hasTrait('shinobi'),
+            match: (card: DrawCard) => card.hasTrait('shinobi'),
             effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Move a character to the conflict',
                 condition: (context) => context.source.isParticipating(),
@@ -16,7 +16,7 @@ export default class KagiNawa extends DrawCard {
                     cardType: CardType.Character,
                     controller: Players.Any,
                     activePromptTitle: 'Choose a character with printed cost 2 or lower to move in',
-                    cardCondition: (card) => card.printedCost <= 2,
+                    cardCondition: (card) => (card.printedCost ?? 0) <= 2,
                     gameAction: AbilityDsl.actions.moveToConflict()
                 },
                 effect: 'hook {0} and drag them into the conflict'

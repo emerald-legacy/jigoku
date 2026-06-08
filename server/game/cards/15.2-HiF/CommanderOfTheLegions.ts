@@ -7,7 +7,7 @@ class CommanderOfTheLegions extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card, context) => card.isFaction('lion')
+            match: (card: DrawCard, context) => card.isFaction('lion')
             && card !== context?.source
             && card.controller === context?.player,
             effect: AbilityDsl.effects.modifyMilitarySkill(1)
@@ -17,10 +17,10 @@ class CommanderOfTheLegions extends DrawCard {
             condition: context =>
                 !!(context.game.currentPhase === Phases.Fate && context.player.opponent
                 && context.player.honor >= context.player.opponent.honor + 5),
-            match: (card, context) =>
+            match: (card: DrawCard, context) =>
                 card.type === CardType.Character
                 && card.isFaction('lion')
-                && card.printedCost <= 3
+                && (card.printedCost ?? 0) <= 3
                 && card !== context?.source
                 && card.controller === context?.player,
             effect: AbilityDsl.effects.cardCannot('removeFate')

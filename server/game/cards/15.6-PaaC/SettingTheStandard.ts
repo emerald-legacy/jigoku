@@ -12,8 +12,8 @@ class SettingTheStandard extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Draw 2 cards and discard one',
                 when: {
-                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext) =>
-                        event.conflict.winner === context.source.controller && (context.source as DrawCard).isParticipating()
+                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<this>) =>
+                        event.conflict.winner === context.source.controller && context.source.isParticipating()
                 },
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.draw((context) => ({ target: context.player, amount: 2 })),

@@ -2,18 +2,19 @@ import { GameModes } from '../../GameModes.js';
 import { TargetMode } from '../Constants.js';
 import { AbilityContext } from '../AbilityContext.js';
 import BaseAbility from '../BaseAbility.js';
+import type { ChoicesInterface } from '../Interfaces.js';
 
 const DRAW = 'Draw a card';
 const FORCE_DISCARD = 'Opponent discards a card';
 const DRAW_AND_FORCE_DISCARD = 'Draw a card and opponent discards';
 const SKIP = 'Don\'t resolve';
 
-function choices(optional: boolean, gameMode: GameModes) {
+function choices(optional: boolean, gameMode: GameModes): ChoicesInterface {
     switch(gameMode) {
         case GameModes.Skirmish:
             return {
                 [DRAW]: () => true,
-                [FORCE_DISCARD]: (context: any) => context.player.opponent,
+                [FORCE_DISCARD]: (context: AbilityContext) => context.player.opponent,
                 [SKIP]: () => optional
             };
         default:

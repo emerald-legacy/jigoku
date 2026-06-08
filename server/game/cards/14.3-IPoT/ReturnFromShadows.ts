@@ -15,7 +15,7 @@ class ReturnFromShadows extends DrawCard {
             target: {
                 location: Location.Provinces,
                 cardType: CardType.Province,
-                cardCondition: (card, context) => context.game.currentConflict && context.game.currentConflict.loser && card.controller === context.game.currentConflict.loser,
+                cardCondition: (card, context) => Boolean(context.game.currentConflict && context.game.currentConflict.loser && card.controller === context.game.currentConflict.loser),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.dishonorProvince(),
                     AbilityDsl.actions.reveal({ chatMessage: true })

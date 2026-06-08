@@ -10,7 +10,7 @@ import type { WhenType } from '../Interfaces.js';
 import type StaticEffect from './StaticEffect.js';
 
 export type EffectMatchFn = (target: GameObject, context?: AbilityContext) => boolean;
-type EffectMatch = EffectMatchFn | GameObject;
+export type EffectMatch = EffectMatchFn | GameObject;
 
 export interface EffectProperties {
     match?: EffectMatch;

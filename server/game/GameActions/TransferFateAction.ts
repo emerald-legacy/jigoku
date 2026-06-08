@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
@@ -17,12 +18,12 @@ export class TransferFateAction extends PlayerAction<TransferFateProperties, Eve
         super(propertyFactory);
     }
 
-    getCostMessage(context: AbilityContext): [string, unknown[]] {
+    getCostMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context) as TransferFateProperties;
         return ['giving {1} fate to {2}', [properties.amount, context.player.opponent]];
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context) as TransferFateProperties;
         return ['take {1} fate from {0}', [properties.target, properties.amount]];
     }

@@ -1,3 +1,4 @@
+import type { MsgArg } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { Players } from '../Constants.js';
@@ -100,11 +101,11 @@ export class CardMenuAction extends CardGameAction<CardMenuProperties> {
                 );
                 if(properties.message && properties.messageArgs) {
                     let cards = properties.cards.filter((card) => cardCondition(card, context));
-                    context.game.addMessage(properties.message, ...properties.messageArgs(card, player, cards));
+                    context.game.addMessage(properties.message, ...(properties.messageArgs(card, player, cards) as MsgArg[]));
                 }
             }
         };
-        context.game.promptWithHandlerMenu(player, Object.assign(defaultProperties, properties, { cardCondition }));
+        context.game.promptWithHandlerMenu(player, { ...defaultProperties, ...properties, cardCondition });
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties = {}): boolean {

@@ -22,7 +22,7 @@ class CriminalContacts extends DrawCard {
                     cardType: CardType.Character,
                     optional: true,
                     hideIfNoLegalTargets: true,
-                    cardCondition: (card, context) => context.costs.optionalHonorTransferFromOpponentCostPaid,
+                    cardCondition: (card, context) => Boolean(context.costs.optionalHonorTransferFromOpponentCostPaid),
                     gameAction: AbilityDsl.actions.removeFate()
                 }
             },

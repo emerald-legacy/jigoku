@@ -11,13 +11,13 @@ class KaitoKosori extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            condition: (context: AbilityContext) => {
+            condition: (context: AbilityContext<this>) => {
                 const symbol = this.getCurrentElementSymbol(elementKey);
                 return context.player.cardsInPlay.some((card) => card.isParticipating()) &&
                     !!this.game.currentConflict &&
                     symbol !== 'none' &&
                     this.game.currentConflict.hasElement(symbol) &&
-                    !(context.source as DrawCard).isParticipating() && !context.source.bowed;
+                    !context.source.isParticipating() && !context.source.bowed;
             },
             effect: AbilityDsl.effects.contributeToConflict((_card: EffectTarget, context: AbilityContext) => context.player)
         });

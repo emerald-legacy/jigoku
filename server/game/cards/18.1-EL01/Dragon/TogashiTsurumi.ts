@@ -17,7 +17,7 @@ export default class TogashiTsurumi extends DrawCard {
             location: Location.PlayArea,
             targetLocation: this.uuid,
             targetController: Players.Self,
-            match: (card) => card.location === this.uuid && card.hasTrait('kiho'),
+            match: (card: DrawCard) => card.location === this.uuid && card.hasTrait('kiho'),
             effect: [
                 AbilityDsl.effects.canPlayFromOutOfPlay(
                     (player: Player) => player === this.controller,

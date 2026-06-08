@@ -2,6 +2,7 @@ import CardSelector from '../CardSelector.js';
 import { Stage, Players, EffectName, TargetMode } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
+import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 
@@ -15,7 +16,7 @@ interface AbilityTargetCardProperties {
     gameAction: GameAction[];
     dependsOn?: string;
     mode?: TargetMode;
-    cardCondition?: (card: any, context: AbilityContext) => boolean;
+    cardCondition?(card: DrawCard, context: AbilityContext<DrawCard>): boolean;
     player?: ((context: AbilityContext) => Players) | Players;
     [key: string]: unknown;
 }
@@ -30,6 +31,7 @@ interface CardTargetResults {
 interface PromptButton {
     text: string;
     arg: string;
+    [key: string]: unknown;
 }
 
 class AbilityTargetCard {
@@ -62,7 +64,7 @@ class AbilityTargetCard {
             if(context.stage === Stage.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
                 return false;
             }
-            return (!properties.cardCondition || properties.cardCondition(card, contextCopy)) &&
+            return (!properties.cardCondition || properties.cardCondition(card as DrawCard, contextCopy as AbilityContext<DrawCard>)) &&
                    (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
                    (properties.gameAction.length === 0 || properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy)));
         };

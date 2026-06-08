@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
@@ -14,7 +15,7 @@ export class SequentialAction extends GameAction {
         super({ gameActions: gameActions } as GameActionProperties);
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = super.getProperties(context) as SequentialProperties;
         return properties.gameActions[0].getEffectMessage(context);
     }

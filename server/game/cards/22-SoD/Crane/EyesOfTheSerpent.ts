@@ -1,6 +1,7 @@
 import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import type { MsgArg } from '../../../GameChat.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 const resourcesAvailable = (context: TriggeredAbilityContext) => {
@@ -20,7 +21,7 @@ const resourcesAvailable = (context: TriggeredAbilityContext) => {
 const eyesOfTheSerpentCost = function () {
     return {
         getCostMessage(context: TriggeredAbilityContext) {
-            return ['paying 1 {1}', context.costs.serpentCostPaid];
+            return ['paying 1 {1}', context.costs.serpentCostPaid as MsgArg];
         },
         getActionName(_context: TriggeredAbilityContext) {
             return 'eyesOfTheSerpentCost';

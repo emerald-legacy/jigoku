@@ -1,6 +1,8 @@
 import AbilityDsl from '../../abilitydsl.js';
 
+import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 import { CardType, Location, Players } from '../../Constants.js';
 
 class TravelingPhilospher extends DrawCard {
@@ -16,7 +18,7 @@ class TravelingPhilospher extends DrawCard {
                 controller: Players.Self,
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: card => !card.isBroken,
+                cardCondition: (card: BaseCard) => !(card as ProvinceCard).isBroken,
                 gameAction: AbilityDsl.actions.turnFacedown()
             }
         });

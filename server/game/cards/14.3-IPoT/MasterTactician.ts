@@ -29,7 +29,7 @@ export default class MasterTactician extends DrawCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
                 when: {
-                    onCardPlayed: (event: CardPlayedEvent, context: AbilityContext) => {
+                    onCardPlayed: (event: CardPlayedEvent, context: AbilityContext<this>) => {
                         if(this.cardsPlayedThisRound >= MAXIMUM_CARDS_ALLOWED) {
                             return false;
                         }
@@ -41,7 +41,7 @@ export default class MasterTactician extends DrawCard {
                             event.originallyOnTopOfConflictDeck &&
                             event.player === context.player &&
                             !event.sourceOfCardPlayedFromConflictDeck &&
-                            (context.source as DrawCard).isParticipating() &&
+                            context.source.isParticipating() &&
                             context.game.isTraitInPlay('battlefield')
                         );
                     }

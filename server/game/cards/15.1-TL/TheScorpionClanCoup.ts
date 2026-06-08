@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
+import type DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 export default class TheScorpionClanCoup extends ProvinceCard {
@@ -13,7 +14,7 @@ export default class TheScorpionClanCoup extends ProvinceCard {
                     (card) => card.getType() === CardType.Character && card.hasTrait('imperial')
                 ),
             targetController: Players.Opponent,
-            match: (card) => card.isAttacking(),
+            match: (card: DrawCard) => card.isAttacking(),
             effect: AbilityDsl.effects.modifyBothSkills(-1)
         });
     }

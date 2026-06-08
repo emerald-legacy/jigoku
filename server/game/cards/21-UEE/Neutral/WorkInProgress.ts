@@ -2,6 +2,8 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
+import type { Cost } from '../../../costs/Cost.js';
+import type { MessageArgs } from '../../../GameChat.js';
 
 export default class WorkInProgress extends DrawCard {
     static id = 'work-in-progress';
@@ -18,14 +20,14 @@ export default class WorkInProgress extends DrawCard {
                         0, context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('artisan')) ? 4 : 3
                     )
                 ),
-                testOfSkillCost()
+                workInProgressCost()
             ],
             cannotBeMirrored: true,
             effect: 'take cards into their hand',
             handler: (context: AbilityContext<this>) => {
                 let [matchingCards, cardsToDiscard] = (context.costs.reveal as DrawCard[]).reduce(
                     (acc: DrawCard[][], card: DrawCard) => {
-                        if(card.type === context.costs.testOfSkillCost && card.location === Location.ConflictDeck) {
+                        if(card.type === context.costs.workInProgress && card.location === Location.ConflictDeck) {
                             acc[0].push(card);
                         } else {
                             acc[1].push(card);
@@ -80,11 +82,12 @@ export default class WorkInProgress extends DrawCard {
     }
 }
 
-function testOfSkillCost() {
+function workInProgressCost(): Cost {
     return {
-        action: { name: 'testOfSkillCost', getCostMessage: (): [string, unknown[]] => ['naming {0}', []] },
+        getActionName: () => 'workInProgress',
+        getCostMessage: (): MessageArgs => ['naming {0}', []],
         canPay: () => true,
-        resolve: (context: AbilityContext, result: { resolved: boolean; value?: boolean } = { resolved: false }) => {
+        resolve: (context: AbilityContext) => {
             const choices = [CardType.Attachment, CardType.Character, CardType.Event];
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Select a card type',
@@ -92,13 +95,10 @@ function testOfSkillCost() {
                 choices: choices,
                 handlers: choices.map((choice) => {
                     return () => {
-                        context.costs.testOfSkillCost = choice;
-                        result.value = true;
-                        result.resolved = true;
+                        context.costs.workInProgress = choice;
                     };
                 })
             });
-            return result;
         },
         pay: () => {}
     };

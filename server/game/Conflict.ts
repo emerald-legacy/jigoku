@@ -18,8 +18,10 @@ export class Conflict extends GameObject {
     #defenderCardsPlayed = new Set<DrawCard>();
     #defenders = new Set<DrawCard>();
     #defendersCache: DrawCard[] | null = null;
+    attackerDeclarationFailed = false;
     attackerSkill = 0;
     conflictFailedToInitiate = false;
+    defenderDeclarationFailed = false;
     conflictPassed = false;
     conflictTypeSwitched = false;
     conflictUnopposed = false;
@@ -37,18 +39,20 @@ export class Conflict extends GameObject {
     winner?: Player;
     winnerDetermined = false;
     winnerSkill?: number;
+    conflictProvince?: ProvinceCard | null;
 
     constructor(
         game: Game,
         public attackingPlayer: Player,
         defendingPlayer: Player,
         public ring?: Ring,
-        public conflictProvince?: ProvinceCard,
+        conflictProvince?: ProvinceCard,
         public forcedDeclaredType?: ConflictType
     ) {
         super(game, 'Conflict');
         this.isSinglePlayer = !defendingPlayer;
         this.defendingPlayer = defendingPlayer || this.singlePlayerDefender();
+        this.conflictProvince = conflictProvince;
         this.declaredRing = ring;
         this.declaredProvince = conflictProvince ?? null;
     }

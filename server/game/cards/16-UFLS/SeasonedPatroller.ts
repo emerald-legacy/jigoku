@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, Location } from '../../Constants.js';
 import type StaticEffect from '../../Effects/StaticEffect.js';
@@ -8,7 +9,7 @@ class SeasonedPatroller extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: card => card.isConflictProvince(),
+            match: (card: ProvinceCard) => card.isConflictProvince(),
             targetLocation: Location.Provinces,
             targetController: Players.Any,
             condition: context => context.source.isAttacking(),

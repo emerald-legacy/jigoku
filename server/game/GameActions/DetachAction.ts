@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName, Location } from '../Constants.js';
@@ -11,7 +12,7 @@ export class DetachAction extends CardGameAction<DetachActionProperties, EventNa
     eventName = EventName.OnCardDetached;
     targetType = [CardType.Attachment];
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let target = this.getProperties(context).target as DrawCard;
         return ['detach {1} from {0}', [target, target.parent]];
     }

@@ -7,7 +7,7 @@ class AsahinaStoryteller extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: card => card.getType() === CardType.Character && card.isHonored && card.isFaction('crane'),
+            match: (card: DrawCard) => card.getType() === CardType.Character && card.isHonored && card.isFaction('crane'),
             effect: AbilityDsl.effects.addKeyword('sincerity')
         });
     }

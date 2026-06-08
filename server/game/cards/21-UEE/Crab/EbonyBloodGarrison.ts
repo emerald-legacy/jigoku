@@ -1,5 +1,6 @@
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { CardType, EventName, Location, Phases, Players } from '../../../Constants.js';
+import type BaseCard from '../../../BaseCard.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import type Player from '../../../Player.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
@@ -26,16 +27,16 @@ export default class EbonyBloodGarrison extends StrongholdCard {
                     controller: Players.Self,
                     cardType: CardType.Province,
                     location: Location.Provinces,
-                    cardCondition: (card: ProvinceCard) =>
-                        card.facedown && card.location !== Location.StrongholdProvince
+                    cardCondition: (card: BaseCard) =>
+                        (card as ProvinceCard).facedown && card.location !== Location.StrongholdProvince
                 },
                 [OPP_PROVINCE]: {
                     dependsOn: MY_PROVINCE,
                     controller: Players.Opponent,
                     cardType: CardType.Province,
                     location: Location.Provinces,
-                    cardCondition: (card: ProvinceCard) =>
-                        card.facedown && card.location !== Location.StrongholdProvince
+                    cardCondition: (card: BaseCard) =>
+                        (card as ProvinceCard).facedown && card.location !== Location.StrongholdProvince
                 }
             },
             handler: (context: TriggeredAbilityContext) => {

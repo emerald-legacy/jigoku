@@ -3,14 +3,13 @@ import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
 import TriggeredAbility from '../TriggeredAbility.js';
 
-import type { Event } from '../Events/Event.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
-export default class SincerityAbility extends TriggeredAbility {
+import type { EventPayload } from '../Events/EventPayloads.js';
+export default class SincerityAbility extends TriggeredAbility<DrawCard> {
     constructor(card: DrawCard) {
         super(card, AbilityType.KeywordInterrupt, {
             when: {
-                onCardLeavesPlay: (event: Event, context: TriggeredAbilityContext) => (event as GameEvent<EventName.OnCardLeavesPlay>).card === context.source &&
-                                                      (context.source as DrawCard).hasSincerity()
+                onCardLeavesPlay: (event: EventPayload<EventName.OnCardLeavesPlay>, context: TriggeredAbilityContext<DrawCard>) => event.card === context.source &&
+                                                      context.source.hasSincerity()
             },
             title: card.name + '\'s Sincerity',
             printedAbility: false,

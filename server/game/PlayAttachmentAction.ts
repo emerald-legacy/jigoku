@@ -1,5 +1,5 @@
 import type { AbilityContext } from './AbilityContext.js';
-import BaseAction from './BaseAction.js';
+import { PlayCardSourceAction } from './PlayCardSourceAction.js';
 import { CardType, EventName, Location, Phases } from './Constants.js';
 import { payTargetDependentFateCost } from './costs/fateAndHonorCosts.js';
 import { attach } from './GameActions/GameActions.js';
@@ -7,10 +7,10 @@ import { parseGameMode } from './GameMode.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 
-export class PlayAttachmentAction extends BaseAction {
+export class PlayAttachmentAction extends PlayCardSourceAction {
     title = 'Play this attachment';
 
-    constructor(card: BaseCard, ignoreType = false) {
+    constructor(card: DrawCard, ignoreType = false) {
         super(card, [payTargetDependentFateCost('target', ignoreType)], {
             location: [Location.PlayArea, Location.Provinces],
             gameAction: attach((context) => ({
@@ -22,7 +22,7 @@ export class PlayAttachmentAction extends BaseAction {
         });
     }
 
-    meetsRequirements(context = this.createContext(), ignoredRequirements: string[] = []) {
+    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
         if(
             !ignoredRequirements.includes('phase') &&
             context.game.currentPhase === Phases.Dynasty &&
@@ -36,11 +36,11 @@ export class PlayAttachmentAction extends BaseAction {
         ) {
             return 'location';
         }
-        if(!ignoredRequirements.includes('cannotTrigger') && !(context.source as DrawCard).canPlay(context, context.playType)) {
+        if(!ignoredRequirements.includes('cannotTrigger') && !context.source.canPlay(context, context.playType)) {
             return 'cannotTrigger';
         }
 
-        if((context.source as DrawCard).anotherUniqueInPlay(context.player)) {
+        if(context.source.anotherUniqueInPlay(context.player)) {
             return 'unique';
         }
         return super.meetsRequirements(context);
@@ -52,7 +52,7 @@ export class PlayAttachmentAction extends BaseAction {
         context.game.addMessage('{0} plays {1}, attaching it to {2}', context.player, context.source, target);
     }
 
-    executeHandler(context: AbilityContext) {
+    executeHandler(context: AbilityContext<DrawCard>) {
         const cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
             player: context.player,
             card: context.source,
@@ -65,7 +65,7 @@ export class PlayAttachmentAction extends BaseAction {
         });
         context.game.openEventWindow([
             context.game.actions
-                .attach({ attachment: context.source as DrawCard, takeControl: context.source.controller !== context.player })
+                .attach({ attachment: context.source, takeControl: context.source.controller !== context.player })
                 .getEvent(context.target, context),
             cardPlayedEvent
         ]);

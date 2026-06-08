@@ -4,15 +4,15 @@ import type Game from '../Game.js';
 
 type MenuCommandHandler = (player: Player, arg: string, context?: unknown) => boolean;
 
-type MenuContext = Record<string, MenuCommandHandler>;
+type MenuContext = object;
 
 type MenuPromptButton = { text?: string; arg?: string; method?: string; [key: string]: unknown };
 
 interface MenuPromptProperties {
-    source?: { name: string };
+    source?: { name: string } | string;
     waitingPromptTitle?: string;
     promptTitle?: string;
-    activePrompt: { buttons: MenuPromptButton[]; [key: string]: unknown };
+    activePrompt: { buttons?: MenuPromptButton[]; [key: string]: unknown };
     context?: unknown;
 }
 
@@ -38,7 +38,7 @@ class MenuPrompt extends UiPrompt {
         this.player = player;
         this.context = context;
         if(properties.source && !properties.waitingPromptTitle) {
-            properties.waitingPromptTitle = 'Waiting for opponent to use ' + properties.source.name;
+            properties.waitingPromptTitle = 'Waiting for opponent to use ' + (typeof properties.source === 'string' ? properties.source : properties.source.name);
         }
         this.properties = properties;
     }
@@ -48,7 +48,7 @@ class MenuPrompt extends UiPrompt {
     }
 
     activePrompt() {
-        let promptTitle = this.properties.promptTitle || (this.properties.source ? this.properties.source.name : undefined);
+        let promptTitle = this.properties.promptTitle || (this.properties.source && typeof this.properties.source !== 'string' ? this.properties.source.name : undefined);
         return Object.assign({ promptTitle: promptTitle }, this.properties.activePrompt);
     }
 
@@ -57,11 +57,12 @@ class MenuPrompt extends UiPrompt {
     }
 
     menuCommand(player: Player, arg: string, method: string): boolean {
-        if(!this.context[method]) {
+        const context = this.context as Record<string, MenuCommandHandler>;
+        if(!context[method]) {
             return false;
         }
 
-        if(this.context[method](player, arg, this.properties.context)) {
+        if(context[method](player, arg, this.properties.context)) {
             this.complete();
         }
 
@@ -69,7 +70,7 @@ class MenuPrompt extends UiPrompt {
     }
 
     hasMethodButton(method: string): boolean {
-        return this.properties.activePrompt.buttons.some((button: MenuPromptButton) => button.method === method);
+        return (this.properties.activePrompt.buttons ?? []).some((button: MenuPromptButton) => button.method === method);
     }
 }
 

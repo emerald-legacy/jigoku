@@ -5,7 +5,7 @@ import { PlayerZones, type AdditionalPile } from './PlayerZones.js';
 import { GameObject } from './GameObject.js';
 import { Deck } from './Deck.js';
 import AttachmentPrompt from './gamesteps/AttachmentPrompt.js';
-import { clockFor } from './Clocks/ClockSelector.js';
+import { clockFor, type ClockConfig } from './Clocks/ClockSelector.js';
 import { CostReducer, type CostReducerProps } from './CostReducer.js';
 import type { AbilityLimit } from './AbilityLimit.js';
 import * as GameActions from './GameActions/GameActions.js';
@@ -38,19 +38,89 @@ import type { ProvinceCard } from './ProvinceCard.js';
 import type Ring from './Ring.js';
 import type { ClockInterface } from './Clocks/types.js';
 import type { AbilityContext } from './AbilityContext.js';
+import type { DeckDTO } from '../gamenode/LobbyProtocol.js';
+import type { FatePool } from './Effects/EffectValueMap.js';
+import type { CardData } from './types/CardData.js';
 
-export interface PlayerState {
+export interface PlayerState extends Partial<ReturnType<PlayerPromptState['getState']>> {
     cardPiles: { [pile: string]: CardSummary[] };
+    cardsPlayedThisConflict: number;
+    disconnected: boolean;
+    faction: DeckFaction;
+    firstPlayer: boolean;
+    hideProvinceDeck: boolean;
+    id: string;
+    imperialFavor: string;
+    left: boolean;
+    name: string;
+    numConflictCards: number;
+    numDynastyCards: number;
+    numProvinceCards: number;
+    optionSettings: OptionSettings;
+    phase: string;
+    promptedActionWindows: Record<string, boolean>;
     provinces: { one: CardSummary[]; two: CardSummary[]; three: CardSummary[]; four: CardSummary[] };
-    [key: string]: unknown;
+    showBid: number;
+    stats: ReturnType<PlayerStateBuilder['getStats']>;
+    timerSettings: TimerSettings;
+    strongholdProvince: CardSummary[];
+    user: {
+        username: string;
+        emailHash?: string;
+        settings?: GamePlayerUserSettings;
+    };
+    showConflictDeck?: boolean;
+    showDynastyDeck?: boolean;
+    role?: CardSummary;
+    stronghold?: CardSummary;
+    conflictDeckTopCard?: CardSummary | ({ facedown: true } & ReturnType<PlayerPromptState['getCardSelectionState']>);
+    dynastyDeckTopCard?: CardSummary | ({ facedown: true } & ReturnType<PlayerPromptState['getCardSelectionState']>);
+    clock?: ReturnType<ClockInterface['getState']>;
+}
+
+export interface OptionSettings {
+    markCardsUnselectable?: boolean;
+    cancelOwnAbilities?: boolean;
+    orderForcedAbilities?: boolean;
+    confirmOneClick?: boolean;
+    disableCardStats?: boolean;
+    showStatusInSidebar?: boolean;
+    sortHandByName?: boolean;
+    showRingEffects?: boolean;
+    [key: string]: boolean | undefined;
+}
+
+export interface TimerSettings {
+    events?: boolean;
+    eventsInDeck?: boolean;
+    windowTimer?: number;
+    [key: string]: boolean | number | undefined;
+}
+
+export interface DeckFaction {
+    name?: string;
+    value?: string;
+}
+
+export interface MoveCardOptions {
+    bottom?: boolean;
+}
+
+export interface PatronSettings {
+    dial?: string;
+    tokens?: string;
+    rings?: boolean;
 }
 
 export interface GamePlayerUserSettings {
+    cardSize?: string;
     disableGravatar?: boolean;
     windowTimer?: number;
     background?: string;
-    optionSettings?: Record<string, unknown>;
-    timerSettings?: Record<string, unknown>;
+    optionSettings?: OptionSettings;
+    promptedActionWindows?: Record<string, boolean>;
+    timerSettings?: TimerSettings;
+    patron?: PatronSettings;
 }
 
 export interface GamePlayerUser {
@@ -73,7 +143,7 @@ class Player extends GameObject {
 
     readonly zones: PlayerZones = new PlayerZones();
 
-    faction: any;
+    faction: DeckFaction;
     stronghold: StrongholdCard | null;
     role: RoleCard | null;
 
@@ -91,19 +161,19 @@ class Player extends GameObject {
     clock: ClockInterface;
 
     limitedPlayed: number;
-    deck: any;
+    deck: DeckDTO;
     costManager: PlayerCostManager;
-    abilityMaxByIdentifier: Record<string, any>;
+    abilityMaxByIdentifier: Record<string, AbilityLimit>;
     promptedActionWindows: Record<string, boolean>;
-    timerSettings: Record<string, any>;
-    optionSettings: Record<string, any>;
+    timerSettings: TimerSettings;
+    optionSettings: OptionSettings;
     resetTimerAtEndOfRound: boolean;
     private honorTracker: HonorTracker = new HonorTracker();
 
     promptState: PlayerPromptState;
     opponent?: Player;
-    preparedDeck: any;
-    outsideTheGameCards: any;
+    preparedDeck!: ReturnType<Deck['prepare']>;
+    outsideTheGameCards!: DrawCard[];
     fate: number = 0;
     readyToStart: boolean = false;
     maxLimited: number = 1;
@@ -112,7 +182,7 @@ class Player extends GameObject {
     showDynasty: boolean = false;
     noTimer: boolean = false;
 
-    constructor(id: string, user: GamePlayerUser, owner: boolean, game: Game, clockdetails?: any) {
+    constructor(id: string, user: GamePlayerUser, owner: boolean, game: Game, clockdetails?: ClockConfig) {
         super(game, user.username);
         this.user = user;
         this.emailHash = this.user.emailHash ?? '';
@@ -167,6 +237,10 @@ class Player extends GameObject {
 
     set honor(value: number) {
         this.honorTracker.honor = value;
+    }
+
+    get selectedCards(): BaseCard[] {
+        return this.promptState.selectedCards ?? [];
     }
 
     get dynastyDeck(): DrawCard[] {
@@ -380,28 +454,28 @@ class Player extends GameObject {
     }
 
     isTraitInPlay(trait: string): boolean {
-        return this.game.allCards.some((card: any) => {
+        return this.game.allCards.some((card: BaseCard) => {
             return (
                 card.controller === this &&
                 card.hasTrait(trait) &&
                 card.isFaceup() &&
                 (card.location === Location.PlayArea ||
-                    (card.isProvince && !card.isBroken) ||
+                    (card.isProvince && !(card as ProvinceCard).isBroken) ||
                     (card.isInProvince() && card.type === CardType.Holding))
             );
         });
     }
 
     isCharacterTraitInPlay(trait: string): boolean {
-        return this.game.allCards.some((card: any) => {
+        return this.game.allCards.some((card: BaseCard) => {
             return (
                 card.type === CardType.Character &&
                 card.controller === this &&
                 card.hasTrait(trait) &&
                 card.isFaceup() &&
                 (card.location === Location.PlayArea ||
-                    (card.isProvince && !card.isBroken) ||
-                    (card.isInProvince() && card.type === CardType.Holding))
+                    (card.isProvince && !(card as ProvinceCard).isBroken) ||
+                    (card.isInProvince() && (card.type as CardType) === CardType.Holding))
             );
         });
     }
@@ -455,7 +529,7 @@ class Player extends GameObject {
         return this.opponent !== undefined && this.opponent.showBid > this.showBid;
     }
 
-    hasLegalConflictDeclaration(properties: any): boolean {
+    hasLegalConflictDeclaration(properties: ConflictDeclarationProperties): boolean {
         return this.conflictManager.hasLegalConflictDeclaration(properties);
     }
 
@@ -683,7 +757,7 @@ class Player extends GameObject {
     prepareDecks(): void {
         const deck = new Deck(this.deck);
         const preparedDeck = deck.prepare(this);
-        this.faction = preparedDeck.faction;
+        this.faction = preparedDeck.faction ?? {};
         this.provinceDeck = preparedDeck.provinceCards;
         if(preparedDeck.stronghold instanceof StrongholdCard) {
             this.stronghold = preparedDeck.stronghold;
@@ -734,19 +808,19 @@ class Player extends GameObject {
         this.costManager.removePlayableLocation(location);
     }
 
-    getAlternateFatePools(playingType: PlayType | undefined, card: DrawCard, context?: AbilityContext): any[] {
+    getAlternateFatePools(playingType: PlayType | undefined, card: DrawCard, context?: AbilityContext): FatePool[] {
         return this.costManager.getAlternateFatePools(playingType, card, context);
     }
 
-    getMinimumCost(playingType: PlayType | undefined, context: AbilityContext, target?: any, ignoreType: boolean = false): number {
+    getMinimumCost(playingType: PlayType | undefined, context: AbilityContext, target?: BaseCard, ignoreType: boolean = false): number {
         return this.costManager.getMinimumCost(playingType, context, target, ignoreType);
     }
 
-    getReducedCost(playingType: PlayType | undefined, card: DrawCard, target?: any, ignoreType: boolean = false): number {
+    getReducedCost(playingType: PlayType | undefined, card: DrawCard, target?: BaseCard, ignoreType: boolean = false): number {
         return this.costManager.getReducedCost(playingType, card, target, ignoreType);
     }
 
-    getTotalCostModifiers(playingType: PlayType | undefined, card: DrawCard, target?: any, ignoreType: boolean = false): number {
+    getTotalCostModifiers(playingType: PlayType | undefined, card: DrawCard, target?: BaseCard, ignoreType: boolean = false): number {
         return this.costManager.getTotalCostModifiers(playingType, card, target, ignoreType);
     }
 
@@ -754,11 +828,11 @@ class Player extends GameObject {
         return this.costManager.getAvailableAlternateFate(playingType, context);
     }
 
-    getTargetingCost(abilitySource: BaseCard, targets: any): number {
+    getTargetingCost(abilitySource: BaseCard, targets: GameObject | GameObject[]): number {
         return this.costManager.getTargetingCost(abilitySource, targets);
     }
 
-    markUsedReducers(playingType: PlayType | undefined, card: DrawCard, target: any = null): void {
+    markUsedReducers(playingType: PlayType | undefined, card: DrawCard, target: BaseCard | null = null): void {
         this.costManager.markUsedReducers(playingType, card, target);
     }
 
@@ -1054,17 +1128,17 @@ class Player extends GameObject {
         this.imperialFavor = '';
     }
 
-    selectDeck(deck: any): void {
+    selectDeck(deck: DeckDTO): void {
         this.deck.selected = false;
         this.deck = deck;
         this.deck.selected = true;
-        if(deck.stronghold.length > 0) {
-            this.stronghold = new StrongholdCard(this, deck.stronghold[0]);
+        if(deck.stronghold && deck.stronghold.length > 0) {
+            this.stronghold = new StrongholdCard(this, deck.stronghold[0] as CardData);
         }
-        this.faction = deck.faction;
+        this.faction = deck.faction ?? {};
     }
 
-    moveCard(card: BaseCard, targetLocation: string, options: any = {}): void {
+    moveCard(card: BaseCard, targetLocation: string, options: MoveCardOptions = {}): void {
         this.removeCardFromPile(card);
 
         if(targetLocation.endsWith(' bottom')) {
@@ -1215,7 +1289,7 @@ class Player extends GameObject {
         return this.promptState.getState();
     }
 
-    setPrompt(prompt: any): void {
+    setPrompt(prompt: Parameters<PlayerPromptState['setPrompt']>[0]): void {
         this.promptState.setPrompt(prompt);
     }
 

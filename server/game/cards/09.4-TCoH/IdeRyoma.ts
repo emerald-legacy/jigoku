@@ -24,7 +24,7 @@ class IdeRyoma extends DrawCard {
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>
                         !card.isFaction('unicorn') &&
-                        card.controller === context.targets.unicorn.controller,
+                        card.controller === (context.targets.unicorn as DrawCard).controller,
                     gameAction: AbilityDsl.actions.selectCard(context => ({
                         activePromptTitle: 'Choose a character to bow',
                         cardCondition: card => Object.values(context.targets).includes(card),

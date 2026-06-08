@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EventName, Location } from '../Constants.js';
@@ -21,12 +22,12 @@ export class RemoveFateAction extends CardGameAction<RemoveFateProperties> {
         super(properties);
     }
 
-    getCostMessage(context: AbilityContext): [string, unknown[]] {
+    getCostMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context) as RemoveFateProperties;
         return ['removing {1} fate from {0}', [properties.amount]];
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context) as RemoveFateProperties;
         return ['remove {1} fate from {0}', [properties.target, properties.amount]];
     }

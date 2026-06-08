@@ -7,7 +7,7 @@ import type CardAbility from '../CardAbility.js';
 import type { CardAction } from '../CardAction.js';
 import type TriggeredAbility from '../TriggeredAbility.js';
 
-type DynamicMatch = ((target: BaseCard, context: AbilityContext) => BaseCard | BaseCard[]) | BaseCard | BaseCard[];
+export type DynamicMatch = ((target: BaseCard, context: AbilityContext) => BaseCard | BaseCard[]) | BaseCard | BaseCard[];
 
 interface GainedAbilities {
     actions: unknown[];
@@ -77,10 +77,10 @@ export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch> {
         this._setAbilities(cards, target);
         this.abilitiesForTargets[target.uuid] = {
             actions: this.actions.map((value) => {
-                return value.getValue();
+                return value.getValue() as CardAction;
             }),
             reactions: this.reactions.map((value) => {
-                return value.getValue();
+                return value.getValue() as TriggeredAbility;
             })
         };
         this._applyAbilities(target);

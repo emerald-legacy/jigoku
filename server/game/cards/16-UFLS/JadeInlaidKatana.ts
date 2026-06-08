@@ -13,8 +13,8 @@ class JadeInlaidKatana extends DrawCard {
                 title: 'Remove 1 fate from a character',
                 printedAbility: false,
                 when: {
-                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext) =>
-                        (context.source as DrawCard).isParticipating() && event.conflict.winner === context.source.controller
+                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<this>) =>
+                        context.source.isParticipating() && event.conflict.winner === context.source.controller
                 },
                 target: {
                     cardType: CardType.Character,

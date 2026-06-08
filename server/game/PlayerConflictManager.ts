@@ -10,7 +10,7 @@ export interface ConflictDeclarationProperties {
     type?: ConflictType | ConflictType[];
     ring?: Ring | Ring[];
     attacker?: DrawCard;
-    province?: ProvinceCard | ProvinceCard[];
+    province?: ProvinceCard | ProvinceCard[] | null;
     forcedDeclaredType?: ConflictType;
 }
 

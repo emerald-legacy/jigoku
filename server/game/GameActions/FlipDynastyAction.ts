@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -11,7 +12,7 @@ export class FlipDynastyAction extends CardGameAction<FlipDynastyProperties> {
     eventName = EventName.OnCardRevealed;
     targetType = [CardType.Character, CardType.Holding, CardType.Event];
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context);
         const target = Array.isArray(properties.target) ? properties.target[0] : properties.target;
         return ['reveal the facedown card in {0}', [target ? target.location : '']];

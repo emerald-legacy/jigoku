@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName, Location } from '../Constants.js';
@@ -13,7 +14,7 @@ export class DuelAddParticipantAction extends CardGameAction<DuelAddParticipantP
     name = 'onAddDuelParticipant';
     eventName = EventName.OnAddDuelParticipant;
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context);
         return ['extend the duel challenge to {0}', [properties.target]];
     }

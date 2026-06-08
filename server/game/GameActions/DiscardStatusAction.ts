@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
@@ -12,7 +13,7 @@ export class DiscardStatusAction extends TokenAction<DiscardStatusProperties> {
     eventName = EventName.OnStatusTokenDiscarded;
     cost = 'discarding a status token';
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         const cardsLosingStatus = this.#cardsLosingStatus(context);
         return cardsLosingStatus.length === 0
             ? ['discard a status token', []]

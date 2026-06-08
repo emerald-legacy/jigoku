@@ -2,7 +2,6 @@ import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { PlayCharacterIntoLocation, PlayCharacterAction } from '../../PlayCharacterAction.js';
 import { Element, Location, PlayType } from '../../Constants.js';
-import type BaseCard from '../../BaseCard.js';
 import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
@@ -11,7 +10,7 @@ const elementKey = 'isawa-skycaller-air';
 class IsawaSkycallerPlayAction extends PlayCharacterAction {
     static id = 'isawa-skycaller';
 
-    constructor(card: BaseCard) {
+    constructor(card: DrawCard) {
         super(card, PlayCharacterIntoLocation.Conflict);
     }
 
@@ -21,7 +20,7 @@ class IsawaSkycallerPlayAction extends PlayCharacterAction {
         return context;
     }
 
-    meetsRequirements(context: AbilityContext = this.createContext(), ignoredRequirements: string[] = []): string {
+    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []): string {
         const newIgnoredRequirements = ignoredRequirements.includes('location') ? ignoredRequirements : ignoredRequirements.concat('location');
         return super.meetsRequirements(context, newIgnoredRequirements);
     }
@@ -34,7 +33,7 @@ class IsawaSkycaller extends DrawCard {
         this.persistentEffect({
             condition: context => context.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
             targetLocation: Location.Provinces,
-            match: card => card.isDynasty && card.isFaceup(),
+            match: (card: DrawCard) => card.isDynasty && card.isFaceup(),
             effect: AbilityDsl.effects.gainPlayAction(IsawaSkycallerPlayAction)
         });
     }

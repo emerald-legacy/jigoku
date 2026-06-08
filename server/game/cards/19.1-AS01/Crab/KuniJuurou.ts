@@ -10,7 +10,7 @@ export default class KuniJuurou extends DrawCard {
 
         this.persistentEffect({
             targetController: Players.Any,
-            match: (card) => card.type === CardType.Character && (card.isTainted || card.hasTrait('shadowlands')),
+            match: (card: DrawCard) => card.type === CardType.Character && (card.isTainted || card.hasTrait('shadowlands')),
             effect: AbilityDsl.effects.modifyBothSkills(-2)
         });
 
@@ -38,11 +38,11 @@ export default class KuniJuurou extends DrawCard {
          * Without this Tainted character get stopped from commiting into the conflict, but the declaration goes through
          */
         this.persistentEffect({
-            match: (card) => card.controller === this.controller && card.isTainted,
+            match: (card: DrawCard) => card.controller === this.controller && card.isTainted,
             effect: AbilityDsl.effects.cardCannot('declareAsAttacker')
         });
         this.persistentEffect({
-            match: (card) => card.controller === this.controller && card.isTainted,
+            match: (card: DrawCard) => card.controller === this.controller && card.isTainted,
             effect: AbilityDsl.effects.cardCannot('declareAsDefender')
         });
     }

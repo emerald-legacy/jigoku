@@ -1,4 +1,4 @@
-import type { AbilityContext } from '../../AbilityContext.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { EventName, Stage } from '../../Constants.js';
@@ -11,17 +11,17 @@ class SententiousPoet extends DrawCard {
         this.reaction({
             title: 'Gain 1 fate',
             when: {
-                onSpendFate: (event: EventPayload<EventName.OnSpendFate>, context: AbilityContext) =>
+                onSpendFate: (event: EventPayload<EventName.OnSpendFate>, context: TriggeredAbilityContext<this>) =>
                     event.context?.player === context.player.opponent &&
                     event.amount > 0 &&
                     event.context?.stage === Stage.Cost &&
                     event.context?.ability.isCardPlayed() &&
-                    (context.source as DrawCard).isParticipating(),
-                onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context: AbilityContext) =>
+                    context.source.isParticipating(),
+                onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context: TriggeredAbilityContext<this>) =>
                     event.context?.ability.isCardPlayed() &&
                     event.context?.player === context.player.opponent &&
                     event.fate > 0 &&
-                    (context.source as DrawCard).isParticipating() &&
+                    context.source.isParticipating() &&
                     event.context?.stage === Stage.Cost &&
                     event.recipient?.type === 'ring'
             },

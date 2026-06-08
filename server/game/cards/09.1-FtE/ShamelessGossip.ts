@@ -21,7 +21,7 @@ class ShamelessGossip extends DrawCard {
                     dependsOn: 'first',
                     cardType: CardType.Character,
                     cardCondition: (card, context) =>
-                        card.controller === context.targets.first.controller &&
+                        card.controller === (context.targets.first as DrawCard).controller &&
                         card !== context.targets.first,
                     gameAction: AbilityDsl.actions.selectToken(context => ({
                         card: context.targets.first,

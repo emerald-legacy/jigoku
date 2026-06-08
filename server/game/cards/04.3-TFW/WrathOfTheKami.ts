@@ -12,7 +12,6 @@ class WrathOfTheKami extends DrawCard {
             cost: AbilityDsl.costs.payHonor(1),
             limit: AbilityDsl.limit.unlimitedPerConflict(),
             effect: 'add 1 to the province strength of {1}',
-            // @ts-expect-error effectArgs returns BaseCard[] but EffectArg union doesn't include BaseCard - game engine handles it
             effectArgs: context => [context.source.controller.getProvinceCardInProvince(context.source.location)],
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                 target: context.source.controller.getProvinceCardInProvince(context.source.location),

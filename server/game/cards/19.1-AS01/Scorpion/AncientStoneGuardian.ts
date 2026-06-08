@@ -30,7 +30,7 @@ export default class AncientStoneGuardian extends DrawCard {
                     hideIfNoLegalTargets: true,
                     controller: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
                     player: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
-                    cardCondition: (card, context) => this.cardCanBeChosenForDishonor(card, context),
+                    cardCondition: (card, context) => this.cardCanBeChosenForDishonor(card, context as TriggeredAbilityContext<DrawCard>),
                     gameAction: AbilityDsl.actions.sequentialContext((context) =>
                         this.dishonorAndDraw(context.targets.firstCharacter)
                     )
@@ -42,7 +42,7 @@ export default class AncientStoneGuardian extends DrawCard {
                     hideIfNoLegalTargets: true,
                     controller: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
                     player: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
-                    cardCondition: (card, context) => this.cardCanBeChosenForDishonor(card, context),
+                    cardCondition: (card, context) => this.cardCanBeChosenForDishonor(card, context as TriggeredAbilityContext<DrawCard>),
                     gameAction: AbilityDsl.actions.sequentialContext((context) =>
                         this.dishonorAndDraw(context.targets.secondCharacter)
                     )

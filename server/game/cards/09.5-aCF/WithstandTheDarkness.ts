@@ -37,7 +37,7 @@ export default class WithstandTheDarkness extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
-                    this.currentTargets.has(card) && this.isValidTargetForWithstand(card, context),
+                    this.currentTargets.has(card) && this.isValidTargetForWithstand(card, context as TriggeredAbilityContext<DrawCard>),
                 gameAction: AbilityDsl.actions.placeFate()
             },
             max: AbilityDsl.limit.perPhase(1)

@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CharacterStatus, EventName, Location } from '../Constants.js';
@@ -13,7 +14,7 @@ export class MoveTokenAction extends TokenAction<MoveTokenProperties, EventName.
     name = 'moveStatusToken';
     eventName = EventName.OnStatusTokenMoved;
 
-    getEffectMessage(context: AbilityContext, additionalProperties = {}): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext, additionalProperties = {}): MessageArgs {
         const { target, recipient } = this.getProperties(context, additionalProperties) as MoveTokenProperties;
         let card = undefined;
         if(Array.isArray(target)) {

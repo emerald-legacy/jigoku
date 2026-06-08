@@ -3,15 +3,18 @@ import type BaseCard from '../../BaseCard.js';
 import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType } from '../../Constants.js';
+import type { Cost } from '../../costs/Cost.js';
+import type { MessageArgs } from '../../GameChat.js';
 
-const testOfSkillCost = function() {
+const testOfSkillCost = function(): Cost {
     return {
-        action: { name: 'testOfSkillCost', getCostMessage: () => ['naming {0}', []] as [string, unknown[]] },
+        getActionName: () => 'testOfSkillCost',
+        getCostMessage: (): MessageArgs => ['naming {0}', []],
         canPay: function() {
             return true;
         },
-        resolve: function(context: AbilityContext, result: { resolved: boolean; value?: boolean } = { resolved: false }) {
-            let choices = [CardType.Attachment, CardType.Character, CardType.Event];
+        resolve: function(context: AbilityContext) {
+            const choices = [CardType.Attachment, CardType.Character, CardType.Event];
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Select a card type',
                 context: context,
@@ -19,12 +22,9 @@ const testOfSkillCost = function() {
                 handlers: choices.map((choice) => {
                     return () => {
                         context.costs.testOfSkillCost = choice;
-                        result.value = true;
-                        result.resolved = true;
                     };
                 })
             });
-            return result;
         },
         pay: function() {
         }

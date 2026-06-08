@@ -1,6 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { TargetMode, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import type { StatusToken } from '../../../StatusToken.js';
 
 class HeraldOfJade extends DrawCard {
     static id = 'herald-of-jade';
@@ -24,7 +25,7 @@ class HeraldOfJade extends DrawCard {
             },
             effect: 'discard {1}\'s {2} and gain 1 honor',
             effectArgs: context => [
-                (context.token as any)?.[0]?.card,
+                (context.token as StatusToken[])?.[0]?.card,
                 context.token
             ]
         });

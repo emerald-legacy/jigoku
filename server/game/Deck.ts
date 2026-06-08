@@ -7,9 +7,17 @@ import { StrongholdCard } from './StrongholdCard.js';
 import BaseCard from './BaseCard.js';
 import DrawCard from './DrawCard.js';
 import Player from './Player.js';
+import type { CardData } from './types/CardData.js';
+import type { DeckDTO } from '../gamenode/LobbyProtocol.js';
+
+interface DeckCardEntry {
+    count: number;
+    card?: CardData;
+    pack_id?: string;
+}
 
 export class Deck {
-    constructor(public data: any) {}
+    constructor(public data: DeckDTO) {}
 
     prepare(player: Player) {
         const result = {
@@ -25,7 +33,7 @@ export class Deck {
         };
 
         //conflict
-        for(const { count, card, pack_id: packId } of this.data.conflictCards ?? []) {
+        for(const { count, card, pack_id: packId } of (this.data.conflictCards ?? []) as DeckCardEntry[]) {
             for(let i = 0; i < count; i++) {
                 if(card?.side === 'conflict') {
                     const CardConstructor = player.game.cardLibrary.get(card.id) ?? DrawCard;
@@ -39,7 +47,7 @@ export class Deck {
         }
 
         //dynasty
-        for(const { count, card, pack_id: packId } of this.data.dynastyCards ?? []) {
+        for(const { count, card, pack_id: packId } of (this.data.dynastyCards ?? []) as DeckCardEntry[]) {
             for(let i = 0; i < count; i++) {
                 if(card?.side === 'dynasty') {
                     const CardConstructor = player.game.cardLibrary.get(card.id) ?? DrawCard;
@@ -54,7 +62,7 @@ export class Deck {
 
         //provinces
         if(player.game.gameMode !== GameModes.Skirmish) {
-            for(const { count, card, pack_id: packId } of this.data.provinceCards ?? []) {
+            for(const { count, card, pack_id: packId } of (this.data.provinceCards ?? []) as DeckCardEntry[]) {
                 for(let i = 0; i < count; i++) {
                     if(card?.type === CardType.Province) {
                         const CardConstructor = player.game.cardLibrary.get(card.id) ?? ProvinceCard;
@@ -76,7 +84,7 @@ export class Deck {
 
         //stronghold & role
         if(player.game.gameMode !== GameModes.Skirmish) {
-            for(const { count, card, pack_id: packId } of this.data.stronghold ?? []) {
+            for(const { count, card, pack_id: packId } of (this.data.stronghold ?? []) as DeckCardEntry[]) {
                 for(let i = 0; i < count; i++) {
                     if(card?.type === CardType.Stronghold) {
                         const CardConstructor = player.game.cardLibrary.get(card.id) ?? StrongholdCard;
@@ -88,7 +96,7 @@ export class Deck {
                     }
                 }
             }
-            for(const { count, card, pack_id: packId } of this.data.role ?? []) {
+            for(const { count, card, pack_id: packId } of (this.data.role ?? []) as DeckCardEntry[]) {
                 for(let i = 0; i < count; i++) {
                     if(card?.type === CardType.Role) {
                         const CardConstructor = player.game.cardLibrary.get(card.id) ?? RoleCard;
@@ -101,7 +109,7 @@ export class Deck {
             }
         }
 
-        for(const cardData of this.data.outsideTheGameCards ?? []) {
+        for(const cardData of (this.data.outsideTheGameCards ?? []) as CardData[]) {
             const CardConstructor = player.game.cardLibrary.get(cardData.id) ?? DrawCard;
             // @ts-expect-error -- CardConstructor is dynamically resolved from card registry, constructor signature not statically known
             const card: DrawCard = new CardConstructor(player, cardData);

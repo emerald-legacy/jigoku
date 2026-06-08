@@ -3,6 +3,7 @@ import { Stage, Players } from '../Constants.js';
 import type { CardType } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
+import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import type CardAbility from '../CardAbility.js';
 import type { GameAction } from '../GameActions/GameAction.js';
@@ -17,7 +18,7 @@ interface AbilityTargetAbilityProperties {
     gameAction: GameAction[];
     cardType?: CardType | CardType[];
     abilityCondition?: (ability: CardAbility) => boolean;
-    cardCondition?: (card: BaseCard, context: AbilityContext) => boolean;
+    cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
     [key: string]: unknown;
@@ -33,6 +34,7 @@ interface AbilityTargetResults {
 interface PromptButton {
     text: string;
     arg: string;
+    [key: string]: unknown;
 }
 
 class AbilityTargetAbility {
@@ -67,7 +69,7 @@ class AbilityTargetAbility {
                 if(context.stage === Stage.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
                     return false;
                 }
-                return (!properties.cardCondition || properties.cardCondition(card, contextCopy)) &&
+                return (!properties.cardCondition || properties.cardCondition(card as DrawCard, contextCopy as AbilityContext<DrawCard>)) &&
                        (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
                        properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy));
             });
@@ -155,7 +157,7 @@ class AbilityTargetAbility {
             return false;
         }
         return this.properties.cardType === context.targetAbility.card.type &&
-               (!this.properties.cardCondition || this.properties.cardCondition(context.targetAbility.card, context)) &&
+               (!this.properties.cardCondition || this.properties.cardCondition(context.targetAbility.card as DrawCard, context as AbilityContext<DrawCard>)) &&
                this.abilityCondition(context.targetAbility);
     }
 

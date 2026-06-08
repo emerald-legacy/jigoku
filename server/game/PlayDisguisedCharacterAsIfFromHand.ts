@@ -15,7 +15,7 @@ export class PlayDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAc
         return context;
     }
 
-    meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []) {
+    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
         let newIgnoredRequirements = ignoredRequirements.includes('location')
             ? ignoredRequirements
             : ignoredRequirements.concat('location');
@@ -34,7 +34,7 @@ export class PlayDisguisedCharacterAsIfFromHandIntoConflict extends PlayDisguise
         return context;
     }
 
-    meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []) {
+    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
         let newIgnoredRequirements = ignoredRequirements.includes('location')
             ? ignoredRequirements
             : ignoredRequirements.concat('location');
@@ -53,7 +53,7 @@ export class PlayDisguisedCharacterAsIfFromHandAtHome extends PlayDisguisedChara
         return context;
     }
 
-    meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []) {
+    meetsRequirements(context: AbilityContext<DrawCard>, ignoredRequirements: string[] = []) {
         let newIgnoredRequirements = ignoredRequirements.includes('location')
             ? ignoredRequirements
             : ignoredRequirements.concat('location');

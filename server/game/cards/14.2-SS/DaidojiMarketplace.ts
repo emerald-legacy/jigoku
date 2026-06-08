@@ -15,7 +15,6 @@ class DaidojiMarketplace extends DrawCard {
                 target: context.player.getProvinceCardInProvince(context.source.location)
             })),
             effect: 'reveal {1}',
-            // @ts-expect-error effectArgs returns BaseCard but EffectArg union doesn't include BaseCard - game engine handles it
             effectArgs: context => context.player.getProvinceCardInProvince(context.source.location)
         });
     }

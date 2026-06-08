@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { CardAction } from '../../CardAction.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Duration, Players, AbilityType, CardType } from '../../Constants.js';
 
@@ -22,7 +23,7 @@ class IllustriousPlagiarist extends DrawCard {
                 gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
                     duration: Duration.UntilEndOfPhase,
                     target: context.source,
-                    effect: context.target?.abilities.actions.map((action: any) => AbilityDsl.effects.gainAbility(AbilityType.Action, action)) ?? []
+                    effect: context.target?.abilities.actions.map((action: CardAction) => AbilityDsl.effects.gainAbility(AbilityType.Action, action)) ?? []
                 }))
             },
             effect: 'copy {0}\'s action abilities'

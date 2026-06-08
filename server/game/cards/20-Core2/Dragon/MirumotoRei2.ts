@@ -18,7 +18,7 @@ export default class MirumotoRei2 extends DrawCard {
         this.duelChallenge({
             title: 'Help a character with a duel',
             duelCondition: (duel, context) =>
-                duel.participants.includes(context.source as DrawCard) && this.getWeaponCount(context) > 0,
+                duel.participants.includes(context.source) && this.getWeaponCount(context) > 0,
             gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
                 target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.modifyDuelSkill({

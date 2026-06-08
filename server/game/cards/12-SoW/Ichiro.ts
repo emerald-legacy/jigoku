@@ -8,7 +8,7 @@ export default class Ichiro extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Any,
-            match: (card) => card.getType() === CardType.Character && card.attachments.length > 0,
+            match: (card: DrawCard) => card.getType() === CardType.Character && card.attachments.length > 0,
             effect: [AbilityDsl.effects.cardCannot('honor'), AbilityDsl.effects.cardCannot('dishonor')]
         });
     }

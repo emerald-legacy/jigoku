@@ -3,6 +3,7 @@ import { Event } from '../Events/Event.js';
 import { HandlerAction } from '../GameActions/HandlerAction.js';
 import { Derivable, derive } from '../utils/helpers.js';
 import type { AbilityContext } from '../AbilityContext.js';
+import type { MsgArg } from '../GameChat.js';
 import { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
@@ -25,7 +26,7 @@ export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context:
             return 'returnRing';
         },
         getCostMessage(context: TriggeredAbilityContext) {
-            return ['returning the {1}', [context.costs.returnRing]];
+            return ['returning the {1}', [context.costs.returnRing as MsgArg]];
         },
         resolve(context: TriggeredAbilityContext, result) {
             const chosenRings: Ring[] = [];
@@ -87,10 +88,10 @@ export function chooseFate(type: PlayType): Cost {
         canPay() {
             return true;
         },
-        resolve(context: TriggeredAbilityContext & { chooseFate: number }, result: Result) {
+        resolve(context: TriggeredAbilityContext<DrawCard> & { chooseFate: number }, result: Result) {
             context.chooseFate = 0;
 
-            let extrafate = context.player.fate - context.player.getReducedCost(type, context.source as DrawCard);
+            let extrafate = context.player.fate - context.player.getReducedCost(type, context.source);
             if(!context.player.checkRestrictions('placeFateWhenPlayingCharacter', context)) {
                 extrafate = 0;
             }
@@ -279,7 +280,7 @@ export function optional(cost: Cost): Cost {
     return {
         promptsPlayer: true,
         canPay: () => true,
-        getCostMessage: (context: TriggeredAbilityContext): unknown[] =>
+        getCostMessage: (context: TriggeredAbilityContext): MsgArg[] =>
             context.costs[getActionName(context)] ? (cost.getCostMessage?.(context) ?? []) : [],
         getActionName: getActionName,
         resolve: (context: TriggeredAbilityContext, result) => {
@@ -344,7 +345,7 @@ export function optionalFateCost(amount: number, forcePayment: (context: Trigger
         getActionName(_context: TriggeredAbilityContext) {
             return 'optionalFateCost';
         },
-        getCostMessage: (context: TriggeredAbilityContext): unknown[] => {
+        getCostMessage: (context: TriggeredAbilityContext): MsgArg[] => {
             if(context.costs.optionalFateCost === 0) {
                 return [];
             }
@@ -554,7 +555,7 @@ export function nameCard(): Cost {
             return 'nameCard';
         },
         getCostMessage(context: TriggeredAbilityContext) {
-            return ['naming {1}', [context.costs.nameCardCost]];
+            return ['naming {1}', [context.costs.nameCardCost as MsgArg]];
         },
         canPay() {
             return true;

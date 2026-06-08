@@ -3,15 +3,14 @@ import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
 import TriggeredAbility from '../TriggeredAbility.js';
 
-import type { Event } from '../Events/Event.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
-export class ThrivingAbility extends TriggeredAbility {
+import type { EventPayload } from '../Events/EventPayloads.js';
+export class ThrivingAbility extends TriggeredAbility<DrawCard> {
     constructor(card: DrawCard) {
         super(card, AbilityType.KeywordInterrupt, {
             when: {
-                onPhaseEnded: (event: Event, context: TriggeredAbilityContext) =>
-                    (event as GameEvent<EventName.OnPhaseEnded>).phase === Phases.Fate &&
-                    (context.source as DrawCard).hasThriving() &&
+                onPhaseEnded: (event: EventPayload<EventName.OnPhaseEnded>, context: TriggeredAbilityContext<DrawCard>) =>
+                    event.phase === Phases.Fate &&
+                    context.source.hasThriving() &&
                     context.player.getDynastyCardsInProvince(context.source.location).length === 1
             },
             location: [

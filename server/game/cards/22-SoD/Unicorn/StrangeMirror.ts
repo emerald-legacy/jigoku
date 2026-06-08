@@ -10,7 +10,7 @@ export default class StrangeMirror extends DrawCard {
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
                 title: 'Put a copy of a character into play',
-                condition: (context: AbilityContext) => (context.source as DrawCard).isParticipating(),
+                condition: (context: AbilityContext<DrawCard>) => context.source.isParticipating(),
                 targets: {
                     inPlay: {
                         cardType: CardType.Character,
@@ -19,7 +19,7 @@ export default class StrangeMirror extends DrawCard {
                     },
                     inDiscard: {
                         dependsOn: 'inPlay',
-                        cardCondition: (card, context) => card.name === context.targets.inPlay.name,
+                        cardCondition: (card, context) => card.name === (context.targets.inPlay as DrawCard).name,
                         activePromptTitle: 'Choose a character from a discard pile',
                         location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                         controller: Players.Any,

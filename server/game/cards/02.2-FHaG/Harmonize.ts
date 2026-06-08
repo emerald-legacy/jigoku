@@ -15,7 +15,7 @@ class Harmonize extends DrawCard {
                 },
                 oppCharacter: {
                     dependsOn: 'myCharacter',
-                    cardCondition: (card, context) => card.isAttacking() && card.costLessThan(context.targets.myCharacter.getCost() + 1),
+                    cardCondition: (card, context) => card.isAttacking() && card.costLessThan(((context.targets.myCharacter as DrawCard).getCost() ?? 0) + 1),
                     gameAction: ability.actions.sendHome()
                 }
             },

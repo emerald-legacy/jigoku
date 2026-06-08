@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Duration, Players } from '../../Constants.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 class AsahinaTakamori extends DrawCard {
@@ -14,7 +15,7 @@ class AsahinaTakamori extends DrawCard {
             target: {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.costLessThan(context.event.card.getCost() + 1),
+                cardCondition: (card, context) => card.costLessThan((((context as TriggeredAbilityContext<DrawCard>).event.card as DrawCard).getCost() ?? 0) + 1),
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     duration: Duration.UntilEndOfRound,
                     effect: [

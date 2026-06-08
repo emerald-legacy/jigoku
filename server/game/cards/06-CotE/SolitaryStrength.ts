@@ -11,10 +11,10 @@ class SolitaryStrength extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
-                condition: (context: AbilityContext) => {
-                    if((context.source as DrawCard).parent && ((context.source as DrawCard).parent as DrawCard).isParticipating()) {
+                condition: (context: AbilityContext<this>) => {
+                    if(context.source.parent && (context.source.parent as DrawCard).isParticipating()) {
                         let participantsForController = (this.game.currentConflict && this.game.currentConflict.getNumberOfParticipantsFor(context.player)) ?? 0;
-                        let parentOwnedByController = ((context.source as DrawCard).parent as DrawCard).controller === context.player;
+                        let parentOwnedByController = (context.source.parent as DrawCard).controller === context.player;
                         if(parentOwnedByController) {
                             participantsForController = Math.max(0, participantsForController - 1);
                         }
@@ -23,7 +23,7 @@ class SolitaryStrength extends DrawCard {
                     return false;
                 },
                 message: '{0} is discarded from play as {1} is not participating alone in the conflict',
-                messageArgs: (context: AbilityContext) => [context.source, (context.source as DrawCard).parent],
+                messageArgs: (context: AbilityContext<this>) => [context.source, context.source.parent],
                 gameAction: AbilityDsl.actions.discardFromPlay()
             })
         });

@@ -16,8 +16,8 @@ export default class MotoChagatai extends DrawCard {
         this.eventRegistrar.register([EventName.OnBreakProvince, EventName.OnConflictFinished]);
 
         this.persistentEffect({
-            condition: (context: AbilityContext) =>
-                Boolean((context.source as DrawCard).isAttacking() && context.player.opponent && this.provinceBroken.get(context.player.opponent.uuid)),
+            condition: (context: AbilityContext<this>) =>
+                Boolean(context.source.isAttacking() && context.player.opponent && this.provinceBroken.get(context.player.opponent.uuid)),
             effect: AbilityDsl.effects.doesNotBow()
         });
     }

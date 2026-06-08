@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
@@ -16,7 +17,7 @@ export class DrawAction extends PlayerAction<DrawProperties> {
         amount: 1
     };
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context);
         return ['draw ' + properties.amount + ((properties.amount ?? 0) > 1 ? ' cards' : ' card'), []];
     }

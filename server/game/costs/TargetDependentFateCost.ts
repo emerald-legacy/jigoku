@@ -1,4 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
+import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { EventName } from '../Constants.js';
 import type { Cost } from './Cost.js';
 import { Event } from '../Events/Event.js';
@@ -10,8 +11,8 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
         super(ignoreType);
     }
 
-    public canPay(context: AbilityContext): boolean {
-        if((context.source as DrawCard).printedCost === null) {
+    public canPay(context: AbilityContext<DrawCard>): boolean {
+        if(context.source.printedCost === null) {
             return false;
         }
         if(!context.targets[this.dependsOn]) {
@@ -21,7 +22,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
         const reducedCost = context.player.getMinimumCost(
             context.playType,
             context,
-            context.targets[this.dependsOn],
+            context.targets[this.dependsOn] as DrawCard,
             this.ignoreType
         );
         return (
@@ -30,23 +31,23 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
         );
     }
 
-    public payEvent(context: AbilityContext): Event {
+    public payEvent(context: TriggeredAbilityContext<DrawCard>): Event {
         const amount = (context.costs.targetDependentFate = this.getReducedCost(context));
         return new Event(EventName.OnSpendFate, { amount, context }, () => {
             context.player.markUsedReducers(
                 context.playType,
-                context.source as DrawCard,
-                context.targets[this.dependsOn]
+                context.source,
+                context.targets[this.dependsOn] as DrawCard
             );
             context.player.fate -= this.getFinalFatecost(context, amount);
         });
     }
 
-    protected getReducedCost(context: AbilityContext): number {
+    protected getReducedCost(context: AbilityContext<DrawCard>): number {
         return context.player.getReducedCost(
             context.playType,
-            context.source as DrawCard,
-            context.targets[this.dependsOn],
+            context.source,
+            context.targets[this.dependsOn] as DrawCard,
             this.ignoreType
         );
     }

@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
@@ -17,7 +18,7 @@ export class TakeFateRingAction extends RingAction {
         super(properties);
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context) as TakeFateRingProperties;
         return [
             '{2} {1} fate from {0}',

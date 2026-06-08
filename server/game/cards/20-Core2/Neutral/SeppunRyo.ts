@@ -11,7 +11,7 @@ export default class SeppunRyo extends DrawCard {
         this.duelFocus({
             title: 'Help a character with a duel',
             duelCondition: (duel, context) =>
-                context.player.imperialFavor !== '' && duel.participants.includes(context.source as DrawCard),
+                context.player.imperialFavor !== '' && duel.participants.includes(context.source),
             gameAction: AbilityDsl.actions.duelLastingEffect((context) => ({
                 target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.modifyDuelSkill({ amount: 1, player: context.player }),

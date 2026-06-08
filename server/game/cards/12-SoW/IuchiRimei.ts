@@ -11,7 +11,7 @@ class IuchiRimei extends DrawCard {
             target: {
                 cardType: CardType.Attachment,
                 controller: Players.Opponent,
-                cardCondition: card => card.costLessThan(2) && card.parent && card.parent.type === CardType.Character,
+                cardCondition: card => Boolean(card.costLessThan(2) && card.parent && card.parent.type === CardType.Character),
                 gameAction: AbilityDsl.actions.selectCard(context => ({
                     cardCondition: card => card !== context.target.parent && card.controller === context.target.parent.controller && card.type === CardType.Character,
                     message: '{0} moves {1} to {2}',

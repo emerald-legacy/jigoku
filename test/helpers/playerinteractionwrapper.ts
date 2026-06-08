@@ -547,7 +547,7 @@ class PlayerInteractionWrapper {
         if(!this.currentButtons.includes(honoramt.toString())) {
             throw new Error(`${honoramt} is not a valid selection for ${this.name}`);
         }
-        if(honoramt > this.player.deck.conflictCards.length) {
+        if(honoramt > (this.player.deck.conflictCards?.length ?? 0)) {
             throw new Error(`${this.name} cannot bid ${honoramt}, because they don't have enough cards in the deck`);
         }
         this.clickPrompt(honoramt);
@@ -560,7 +560,7 @@ class PlayerInteractionWrapper {
         if(fate > 4) {
             throw new Error(`Can't place ${fate} tokens. Currently, up to 4 may be placed`);
         }
-        if(this.player.deck.dynastyCards.length <= 0) {
+        if((this.player.deck.dynastyCards?.length ?? 0) <= 0) {
             throw new Error(
                 `${this.name} can't play cards from dynasty, because player has no cards to refill the province with`
             );

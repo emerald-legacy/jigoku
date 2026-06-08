@@ -1,3 +1,4 @@
+import type { MessageArgs } from '../GameChat.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, Location } from '../Constants.js';
@@ -18,7 +19,7 @@ export class RandomDiscardAction extends PlayerAction {
         super(propertyFactory);
     }
 
-    getEffectMessage(context: AbilityContext): [string, unknown[]] {
+    getEffectMessage(context: AbilityContext): MessageArgs {
         let properties: RandomDiscardProperties = this.getProperties(context);
         return [
             'make {0} discard {1} {2} at random',
