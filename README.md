@@ -1,5 +1,7 @@
 # Jigoku
 
+[![DeepWiki Architecture Documentation](https://deepwiki.com/badge.svg)](https://deepwiki.com/emerald-legacy/jigoku)
+
 Web based implementation of The Legend of the Five Rings LCG
 
 ## FAQ
