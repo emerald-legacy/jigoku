@@ -110,6 +110,7 @@ export interface PatronSettings {
     dial?: string;
     tokens?: string;
     rings?: boolean;
+    usePromos?: boolean;
 }
 
 export interface GamePlayerUserSettings {
