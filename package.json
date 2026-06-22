@@ -33,15 +33,15 @@
         "node": ">=24.0.0"
     },
     "dependencies": {
-        "axios": "1.16.1",
+        "axios": "1.18.0",
         "bcrypt": "6.0.0",
         "cross-env": "10.1.0",
         "jsonwebtoken": "9.0.3",
         "socket.io": "4.8.3",
-        "uuid": "14.0.0",
+        "uuid": "14.0.1",
         "winston": "3.19.0",
         "winston-daily-rotate-file": "5.0.0",
-        "ws": "8.20.1",
+        "ws": "8.21.0",
         "zod": "4.4.3"
     },
     "devDependencies": {
@@ -49,16 +49,16 @@
         "@types/bcrypt": "6.0.0",
         "@types/jasmine": "6.0.0",
         "@types/jsonwebtoken": "9.0.10",
-        "@types/node": "25.8.0",
+        "@types/node": "26.0.0",
         "@types/ws": "8.18.1",
-        "@typescript-eslint/eslint-plugin": "8.59.3",
-        "@typescript-eslint/parser": "8.59.3",
-        "eslint": "10.4.0",
+        "@typescript-eslint/eslint-plugin": "8.61.1",
+        "@typescript-eslint/parser": "8.61.1",
+        "eslint": "10.5.0",
         "eslint-plugin-jasmine": "4.2.2",
-        "globals": "17.6.0",
-        "jasmine": "6.2.0",
-        "prettier": "3.8.3",
-        "typescript": "5.9.3"
+        "globals": "17.7.0",
+        "jasmine": "6.3.0",
+        "prettier": "3.8.4",
+        "typescript": "6.0.3"
     },
     "volta": {
         "node": "24.14.0"
