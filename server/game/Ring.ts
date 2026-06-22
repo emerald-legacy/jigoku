@@ -131,6 +131,7 @@ class Ring extends EffectSource {
     claimRing(player: Player): void {
         this.claimed = true;
         this.claimedBy = player.name;
+        this.game.addAnimation({ type: 'claim', playerName: player.name, element: this.element });
     }
 
     resetRing(): void {
