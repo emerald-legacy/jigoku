@@ -109,7 +109,7 @@ export interface MoveCardOptions {
 export interface PatronSettings {
     dial?: string;
     tokens?: string;
-    rings?: boolean;
+    rings?: string;
     usePromos?: boolean;
 }
 
