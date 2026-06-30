@@ -77,6 +77,8 @@ const Effects = {
     cannotApplyLastingEffects: (condition: unknown) =>
         EffectBuilder.card.static(EffectName.CannotApplyLastingEffects, condition),
     cannotBeAttacked: () => EffectBuilder.card.static(EffectName.CannotBeAttacked, true),
+    cannotBeDeclaredAsAttacker: () => cardCannot('declareAsAttacker'),
+    cannotBeDeclaredAsDefender: () => cardCannot('declareAsDefender'),
     cannotHaveConflictsDeclaredOfType: (type: Flexible<string>) =>
         EffectBuilder.card.flexible(EffectName.CannotHaveConflictsDeclaredOfType, type),
     cannotHaveOtherRestrictedAttachments: (card: unknown) =>
