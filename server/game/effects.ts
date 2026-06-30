@@ -87,6 +87,10 @@ const Effects = {
         EffectBuilder.card.static(EffectName.CannotParticipateAsAttacker, type),
     cannotParticipateAsDefender: (type: string = 'both') =>
         EffectBuilder.card.static(EffectName.CannotParticipateAsDefender, type),
+    cannotReceiveDishonorToken: () => cardCannot('receiveDishonorToken'),
+    cannotReceiveHonorToken: () => cardCannot('receiveHonorToken'),
+    cannotReceiveTaintedToken: () => cardCannot('receiveTaintedToken'),
+    cannotTriggerAbilities: () => cardCannot('triggerAbilities'),
     cardCannot,
     changeContributionFunction: (func: unknown) => EffectBuilder.card.static(EffectName.ChangeContributionFunction, func),
     changeType: (type: CardType) => EffectBuilder.card.static(EffectName.ChangeType, type),
