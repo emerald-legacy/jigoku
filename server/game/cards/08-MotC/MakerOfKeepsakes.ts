@@ -6,7 +6,7 @@ class MakerOfKeepsakes extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.cardCannot('receiveDishonorToken')
+            effect: AbilityDsl.effects.cannotReceiveDishonorToken()
         });
     }
 }

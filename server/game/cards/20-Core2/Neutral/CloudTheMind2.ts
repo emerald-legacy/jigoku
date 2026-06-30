@@ -13,7 +13,7 @@ export default class CloudTheMind2 extends DrawCard {
 
         this.whileAttached({
             condition: (context) => context.source.controller.hasAffinity('air', context),
-            effect: AbilityDsl.effects.cardCannot('triggerAbilities')
+            effect: AbilityDsl.effects.cannotTriggerAbilities()
         });
     }
 

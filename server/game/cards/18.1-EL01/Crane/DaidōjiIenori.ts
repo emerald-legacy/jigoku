@@ -19,9 +19,9 @@ class DaidojiIenori extends DrawCard {
                         AbilityDsl.effects.setPoliticalSkill(3)
                     ];
                     if(context.source.isHonored) {
-                        effect.push(AbilityDsl.effects.cardCannot('receiveDishonorToken'));
-                        effect.push(AbilityDsl.effects.cardCannot('receiveHonorToken'));
-                        effect.push(AbilityDsl.effects.cardCannot('receiveTaintedToken'));
+                        effect.push(AbilityDsl.effects.cannotReceiveDishonorToken());
+                        effect.push(AbilityDsl.effects.cannotReceiveHonorToken());
+                        effect.push(AbilityDsl.effects.cannotReceiveTaintedToken());
                     }
                     return {
                         effect: effect

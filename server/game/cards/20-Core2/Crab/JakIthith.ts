@@ -13,7 +13,7 @@ export default class JakIthith extends DrawCard {
             effect: [
                 AbilityDsl.effects.immunity({ restricts: 'maho' }),
                 AbilityDsl.effects.immunity({ restricts: 'shadowlands' }),
-                AbilityDsl.effects.cardCannot('receiveTaintedToken')
+                AbilityDsl.effects.cannotReceiveTaintedToken()
             ]
         });
 

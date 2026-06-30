@@ -10,7 +10,7 @@ class StewardOfLaw extends DrawCard {
             condition: context => context.source.isParticipating(),
             targetController: Players.Any,
             match: card => card.getType() === CardType.Character,
-            effect: ability.effects.cardCannot('receiveDishonorToken')
+            effect: ability.effects.cannotReceiveDishonorToken()
         });
     }
 }

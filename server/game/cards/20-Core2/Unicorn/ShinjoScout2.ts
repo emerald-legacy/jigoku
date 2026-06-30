@@ -22,7 +22,7 @@ export default class ShinjoScout2 extends DrawCard {
                 messageArgs: (cards) => [context.player, cards],
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.cardCannot('triggerAbilities')
+                    effect: AbilityDsl.effects.cannotTriggerAbilities()
                 })
             })),
             effect: 'avoid the dangers of their exploration'

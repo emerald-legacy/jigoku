@@ -22,7 +22,7 @@ class ShinjoAmbusher extends DrawCard {
                 messageArgs: cards => [context.player, cards],
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
                     targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.cardCannot('triggerAbilities')
+                    effect: AbilityDsl.effects.cannotTriggerAbilities()
                 }))
             }))
         });

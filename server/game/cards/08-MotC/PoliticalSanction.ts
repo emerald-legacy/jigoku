@@ -9,7 +9,7 @@ class PoliticalSanction extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.cardCannot('triggerAbilities')
+            effect: AbilityDsl.effects.cannotTriggerAbilities()
         });
     }
 

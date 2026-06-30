@@ -12,7 +12,7 @@ export default class Tranquility extends DrawCard {
             effectArgs: (context) => context.player.opponent ?? '',
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: (context.player.opponent?.cardsInPlay ?? []).filter((card: DrawCard) => !card.isParticipating()),
-                effect: AbilityDsl.effects.cardCannot('triggerAbilities')
+                effect: AbilityDsl.effects.cannotTriggerAbilities()
             }))
         });
     }

@@ -14,7 +14,7 @@ export default class DaidojiSaboteur extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.cardCannot('triggerAbilities'),
+                    effect: AbilityDsl.effects.cannotTriggerAbilities(),
                     duration: Duration.UntilEndOfPhase
                 })
             },

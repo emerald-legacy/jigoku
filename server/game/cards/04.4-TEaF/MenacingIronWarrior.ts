@@ -11,7 +11,7 @@ class MenacingIronWarrior extends DrawCard {
             condition: context => this.game.isDuringConflict('military') && context.source.isParticipating(),
             gameAction: ability.actions.cardLastingEffect((context: AbilityContext<this>) => ({
                 target: context.game.currentConflict ? context.game.currentConflict.getCharacters(context.player.opponent).filter((card) => card.getMilitarySkill() <= context.source.getMilitarySkill() && card !== context.source) : [],
-                effect: ability.effects.cardCannot('triggerAbilities')
+                effect: ability.effects.cannotTriggerAbilities()
             })),
             effect: 'prevent {1}\'s participating characters from using any abilities if their military skill is equal to or lower than {2}. This affects: {3}',
             effectArgs: context => {
