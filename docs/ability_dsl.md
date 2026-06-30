@@ -694,14 +694,18 @@ The authoritative list lives in `server/game/effects.ts`. Tables below cover the
 |--------|-------------|
 | `effects.doesNotBow()` | Character doesn't bow at end of conflict |
 | `effects.doesNotReady()` | Character doesn't ready during regroup |
-| `effects.cannotParticipateAsAttacker(type)` | Block as attacker (default 'both') |
-| `effects.cannotParticipateAsDefender(type)` | Block as defender (default 'both') |
+| `effects.cannotParticipateAsAttacker(type)` | Block from conflict as attacker entirely — declaration *and* being moved in (default 'both') |
+| `effects.cannotParticipateAsDefender(type)` | Block from conflict as defender entirely (default 'both') |
+| `effects.cannotBeDeclaredAsAttacker()` | Block *declaration* only — character can still be moved into the conflict |
+| `effects.cannotBeDeclaredAsDefender()` | Block *declaration* only |
 | `effects.mustBeDeclaredAsAttacker()` | Must participate as attacker |
 | `effects.mustBeDeclaredAsDefender(type)` | Must participate as defender |
 | `effects.contributeToConflict(player)` | Allows contributing to specified player's side |
 | `effects.cannotBeAttacked()` | Province cannot have conflicts declared against it |
 | `effects.participatesFromHome(props)` | Character can trigger abilities even from home |
 | `effects.triggersAbilitiesFromHome(props)` | Same — triggers abilities from home |
+
+Match the effect to the card text: *"cannot participate … as an attacker"* → `cannotParticipateAsAttacker()`; *"cannot be **declared** as an attacker"* → `cannotBeDeclaredAsAttacker()`. They differ — `cannotBeDeclaredAs*` only blocks conflict declaration, so effects that *move* a character into a conflict (`moveToConflict`, `putIntoConflict`) bypass it; `cannotParticipateAs*` covers both paths.
 
 ### Attachment restrictions (card)
 
@@ -729,6 +733,39 @@ The authoritative list lives in `server/game/effects.ts`. Tables below cover the
 | `effects.cannotApplyLastingEffects(condition)` | Block lasting effects on this card |
 | `effects.honorStatusDoesNotModifySkill()` | Honored/dishonored status doesn't affect skill |
 | `effects.honorStatusDoesNotAffectLeavePlay()` | Status tokens don't trigger on leave-play |
+
+### Restrictions: `cardCannot` / `playerCannot`
+
+```ts
+effects.cardCannot('dishonor')                                  // shorthand
+effects.cardCannot({ cannot: 'applyCovert', restricts: 'opponentsCardEffects' })
+effects.playerCannot({ cannot: 'initiateConflict' })
+```
+
+A restriction names an **action token**. It only fires where the engine calls `checkRestrictions('<token>', …)` with that **exact** string (`server/game/Effects/Restriction.ts`). There is **no validation** that the token is meaningful — `cardCannot('declareAsAttakcer')` (typo) or a token the engine never checks compiles and silently does nothing. Two things follow:
+
+1. **Spell the token correctly** — there is no compile-time or runtime safety net.
+2. **A token only blocks the code paths that check it.** If the prohibition you want spans several game-state paths, a token that's only checked on one of them is an incomplete guard. Prefer a dedicated effect when one exists (e.g. `cannotParticipateAsAttacker()`, which covers every path, over the declaration-only `cannotBeDeclaredAsAttacker()` — see [Participation / conflict](#participation--conflict-card)). Where a token is wrapped by a named helper, call the helper rather than retyping the string.
+
+Valid tokens come from two sources:
+
+**Game-action names** — every `GameAction` calls `target.checkRestrictions(this.name, …)` in `canAffect`, so a card can be made immune to that action anywhere it would resolve. These are *complete* (they cover every path that runs the action):
+
+`bow` · `break` · `dishonor` · `honor` · `discard` · `discardFromPlay` · `removeFate` · `placeFate` · `gainFate` · `takeFate` · `takeHonor` · `draw` · `move` · `moveToConflict` · `sendHome` · `ready` · `taint` · `sacrifice` · `attach` · `detach` · `returnToHand` · `returnToDeck` · `putIntoPlay` · `putInProvince` · `turnFacedown` · `takeControl` · `receiveHonorToken` · `receiveDishonorToken` · `receiveTaintedToken` · `removeFromGame` … (full set = the `name` fields in `server/game/GameActions/*.ts`)
+
+**Engine checkpoint tokens** — checked at one or a few specific code sites only. These are *narrow* by nature; know what each guards:
+
+| Token | Guarded at | Does **not** cover |
+|-------|-----------|--------------------|
+| `declareAsAttacker` (helper: `cannotBeDeclaredAsAttacker()`) | `canDeclareAsAttacker` (conflict declaration) | being **moved** into the conflict — use `cannotParticipateAsAttacker()` |
+| `declareAsDefender` (helper: `cannotBeDeclaredAsDefender()`) | `canDeclareAsDefender` | being **moved** in — use `cannotParticipateAsDefender()` |
+| `applyCovert` | `canBeBypassedByCovert` | — (correct for "cannot be evaded by covert") |
+| `target` | ability targeting | non-targeting effects |
+| `play` / `playCharacter` / `enterPlay` / `putIntoPlay` / `putIntoConflict` | the matching play/enter step | — |
+| `triggerAbilities` / `initiateKeywords` | ability & keyword initiation | — |
+| `claimRings` · `loseDuels` · `duel` · `spendFate` · `takeFateFromRings` · `haveImperialFavor` · `haveAffinity` · `preventedFromLeavingPlay` | their named checkpoint | — |
+
+`restricts:` narrows *whose* effects the restriction applies to (e.g. `opponentsCardEffects`, `cardEffects`, `abilities`); the full set of source-filters is the keys of `checkRestrictions` in `Restriction.ts`. When the engine *only* blocks one path and you need full coverage, the inverse mistake also exists — see `KuniJuurou.ts`, which deliberately adds `cannotBeDeclaredAsAttacker()` on top of taint because taint blocks participation but "the declaration goes through."
 
 ### Player effects
 
