@@ -762,8 +762,12 @@ Valid tokens come from two sources:
 | `applyCovert` | `canBeBypassedByCovert` | — (correct for "cannot be evaded by covert") |
 | `target` | ability targeting | non-targeting effects |
 | `play` / `playCharacter` / `enterPlay` / `putIntoPlay` / `putIntoConflict` | the matching play/enter step | — |
-| `triggerAbilities` / `initiateKeywords` | ability & keyword initiation | — |
+| `triggerAbilities` (helper: `cannotTriggerAbilities()`) | triggered abilities — `isTriggeredAbility()` (Action / Reaction / Interrupt / Forced) | **keyword** abilities (covert, pride, sincerity…) — those go through `initiateKeywords` |
+| `initiateKeywords` | keyword abilities — `isKeywordAbility()` | triggered abilities |
+| `receiveDishonorToken` · `receiveHonorToken` · `receiveTaintedToken` (helpers: `cannotReceive*Token()`) | applying that status token, any source | — |
 | `claimRings` · `loseDuels` · `duel` · `spendFate` · `takeFateFromRings` · `haveImperialFavor` · `haveAffinity` · `preventedFromLeavingPlay` | their named checkpoint | — |
+
+`triggerAbilities` and `initiateKeywords` are **disjoint categories, not two paths to one outcome** — unlike the declare/participate pair above. *"Cannot trigger abilities"* (the wording on every card using this token) means triggered abilities only; keywords stay live by design. To also suppress keywords, add `cardCannot('initiateKeywords')`; to remove abilities entirely, use `blank()` / `loseAllNonKeywordAbilities()`.
 
 `restricts:` narrows *whose* effects the restriction applies to (e.g. `opponentsCardEffects`, `cardEffects`, `abilities`); the full set of source-filters is the keys of `checkRestrictions` in `Restriction.ts`. When the engine *only* blocks one path and you need full coverage, the inverse mistake also exists — see `KuniJuurou.ts`, which deliberately adds `cannotBeDeclaredAsAttacker()` on top of taint because taint blocks participation but "the declaration goes through."
 
