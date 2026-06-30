@@ -23,7 +23,7 @@ class TenguSensei extends DrawCard {
                 return ({
                     target: (context.event.context as AbilityContext).target,
                     duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.cardCannot('declareAsAttacker')
+                    effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker()
                 });
             })
         });

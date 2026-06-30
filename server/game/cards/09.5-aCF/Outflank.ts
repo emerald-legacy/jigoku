@@ -18,7 +18,7 @@ class Outflank extends DrawCard {
                 cardCondition: card => !card.isUnique(),
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     duration: Duration.UntilEndOfConflict,
-                    effect: AbilityDsl.effects.cardCannot('declareAsDefender')
+                    effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()
                 })
             },
             effect: 'prevent {0} from declaring as a defender this conflict'

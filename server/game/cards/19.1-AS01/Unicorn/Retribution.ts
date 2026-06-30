@@ -45,7 +45,7 @@ export default class Retribution extends DrawCard {
                         }),
                         AbilityDsl.actions.cardLastingEffect({
                             duration: Duration.UntilEndOfConflict,
-                            effect: AbilityDsl.effects.cardCannot('declareAsAttacker'),
+                            effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker(),
                             target: (context.player.cardsInPlay as BaseCard[]).filter(
                                 (card) => card.getType() === CardType.Character && card !== context.target
                             )

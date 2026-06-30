@@ -22,12 +22,12 @@ export default class InLadyDojisService extends DrawCard {
                         'Prevent Attacking': AbilityDsl.actions.cardLastingEffect((context) => ({
                             target: context.targets.character,
                             duration: Duration.UntilEndOfPhase,
-                            effect: [AbilityDsl.effects.cardCannot('declareAsAttacker')]
+                            effect: [AbilityDsl.effects.cannotBeDeclaredAsAttacker()]
                         })),
                         'Prevent Defending': AbilityDsl.actions.cardLastingEffect((context) => ({
                             target: context.targets.character,
                             duration: Duration.UntilEndOfPhase,
-                            effect: [AbilityDsl.effects.cardCannot('declareAsDefender')]
+                            effect: [AbilityDsl.effects.cannotBeDeclaredAsDefender()]
                         }))
                     }
                 }

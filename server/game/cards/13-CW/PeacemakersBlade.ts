@@ -9,7 +9,7 @@ class PeacemakersBlade extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.cardCannot('declareAsAttacker')
+            effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker()
         });
     }
 

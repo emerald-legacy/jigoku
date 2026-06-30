@@ -6,7 +6,7 @@ class HirumaYojimbo extends DrawCard {
 
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.persistentEffect({
-            effect: ability.effects.cardCannot('declareAsAttacker')
+            effect: ability.effects.cannotBeDeclaredAsAttacker()
         });
     }
 }

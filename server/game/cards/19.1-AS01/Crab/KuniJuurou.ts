@@ -39,11 +39,11 @@ export default class KuniJuurou extends DrawCard {
          */
         this.persistentEffect({
             match: (card: DrawCard) => card.controller === this.controller && card.isTainted,
-            effect: AbilityDsl.effects.cardCannot('declareAsAttacker')
+            effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker()
         });
         this.persistentEffect({
             match: (card: DrawCard) => card.controller === this.controller && card.isTainted,
-            effect: AbilityDsl.effects.cardCannot('declareAsDefender')
+            effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()
         });
     }
 }

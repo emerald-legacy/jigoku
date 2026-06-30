@@ -10,7 +10,7 @@ class TreasuredGift extends DrawCard {
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.cardCannot('declareAsAttacker')
+            effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker()
         });
     }
 }
