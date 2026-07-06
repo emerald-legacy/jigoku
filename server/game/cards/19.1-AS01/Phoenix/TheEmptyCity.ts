@@ -50,7 +50,7 @@ export default class TheEmptyCity extends ProvinceCard {
                     AbilityDsl.actions.putIntoPlay(),
                     AbilityDsl.actions.cardLastingEffect((context) => ({
                         target: context.source,
-                        effect: AbilityDsl.effects.cardCannot('triggerAbilities'),
+                        effect: AbilityDsl.effects.cannotTriggerAbilities(),
                         duration: Duration.UntilEndOfRound
                     }))
                 ])

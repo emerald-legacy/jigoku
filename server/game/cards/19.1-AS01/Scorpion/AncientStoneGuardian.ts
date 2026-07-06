@@ -10,7 +10,7 @@ export default class AncientStoneGuardian extends DrawCard {
 
     public setupCardAbilities() {
         this.persistentEffect({
-            effect: [AbilityDsl.effects.cardCannot('declareAsAttacker')]
+            effect: AbilityDsl.effects.cannotParticipateAsAttacker()
         });
 
         this.persistentEffect({

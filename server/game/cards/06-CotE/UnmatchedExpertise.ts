@@ -9,7 +9,7 @@ class UnmatchedExpertise extends DrawCard {
 
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.whileAttached({
-            effect: ability.effects.cardCannot('receiveDishonorToken')
+            effect: ability.effects.cannotReceiveDishonorToken()
         });
         this.forcedReaction({
             title: 'Removed after attached character loses a conflict',

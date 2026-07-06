@@ -22,7 +22,7 @@ class ShinjoYasamura extends DrawCard {
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: (context.event.context as AbilityContext).target,
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.cardCannot('declareAsDefender')
+                effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()
             }))
         });
     }

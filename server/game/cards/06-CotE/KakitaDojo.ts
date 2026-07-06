@@ -17,7 +17,7 @@ export default class KakitaDojo extends DrawCard {
                     AbilityDsl.actions.multiple([
                         AbilityDsl.actions.cardLastingEffect({
                             target: duel.loser,
-                            effect: AbilityDsl.effects.cardCannot('triggerAbilities')
+                            effect: AbilityDsl.effects.cannotTriggerAbilities()
                         }),
                         AbilityDsl.actions.bow({ target: this.#wonByDuelist(duel) ? duel.loser : undefined })
                     ])

@@ -14,7 +14,7 @@ class HirumaAmbusher extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 gameAction: ability.actions.cardLastingEffect({
-                    effect: ability.effects.cardCannot('triggerAbilities')
+                    effect: ability.effects.cannotTriggerAbilities()
                 })
             },
             effect: 'prevent {0} from using any abilities'

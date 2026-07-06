@@ -80,6 +80,44 @@ describe('Ancient Stone Guardian', function () {
             });
         });
 
+        describe('Cannot be moved into a conflict as an attacker', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['matsu-mitsuko', 'matsu-berserker', 'ancient-stone-guardian'],
+                        honor: 11
+                    },
+                    player2: {
+                        inPlay: ['eager-scout'],
+                        honor: 10
+                    }
+                });
+
+                this.mitsuko = this.player1.findCardByName('matsu-mitsuko');
+                this.berserker = this.player1.findCardByName('matsu-berserker');
+                this.stoneGuardian = this.player1.findCardByName('ancient-stone-guardian');
+            });
+
+            it('should not be selectable to be moved into the conflict as an attacker', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.berserker],
+                    defenders: []
+                });
+                this.player2.pass();
+
+                this.player1.clickCard(this.mitsuko);
+                expect(this.player1).toHavePrompt('Choose a character');
+                expect(this.player1).not.toBeAbleToSelect(this.stoneGuardian);
+
+                this.player1.clickCard(this.stoneGuardian);
+                expect(this.stoneGuardian.isParticipating()).toBe(false);
+                expect(this.game.currentConflict.attackers).not.toContain(this.stoneGuardian);
+            });
+        });
+
         describe('forced interrupt', function () {
             beforeEach(function () {
                 this.setupTest({

@@ -24,7 +24,7 @@ export default class RecklessAssault extends DrawCard {
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: this.getCharacters(context),
                 duration: Duration.UntilEndOfConflict,
-                effect: AbilityDsl.effects.cardCannot('declareAsDefender')
+                effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()
             }))
         });
     }

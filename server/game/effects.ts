@@ -77,6 +77,8 @@ const Effects = {
     cannotApplyLastingEffects: (condition: unknown) =>
         EffectBuilder.card.static(EffectName.CannotApplyLastingEffects, condition),
     cannotBeAttacked: () => EffectBuilder.card.static(EffectName.CannotBeAttacked, true),
+    cannotBeDeclaredAsAttacker: () => cardCannot('declareAsAttacker'),
+    cannotBeDeclaredAsDefender: () => cardCannot('declareAsDefender'),
     cannotHaveConflictsDeclaredOfType: (type: Flexible<string>) =>
         EffectBuilder.card.flexible(EffectName.CannotHaveConflictsDeclaredOfType, type),
     cannotHaveOtherRestrictedAttachments: (card: unknown) =>
@@ -85,6 +87,10 @@ const Effects = {
         EffectBuilder.card.static(EffectName.CannotParticipateAsAttacker, type),
     cannotParticipateAsDefender: (type: string = 'both') =>
         EffectBuilder.card.static(EffectName.CannotParticipateAsDefender, type),
+    cannotReceiveDishonorToken: () => cardCannot('receiveDishonorToken'),
+    cannotReceiveHonorToken: () => cardCannot('receiveHonorToken'),
+    cannotReceiveTaintedToken: () => cardCannot('receiveTaintedToken'),
+    cannotTriggerAbilities: () => cardCannot('triggerAbilities'),
     cardCannot,
     changeContributionFunction: (func: unknown) => EffectBuilder.card.static(EffectName.ChangeContributionFunction, func),
     changeType: (type: CardType) => EffectBuilder.card.static(EffectName.ChangeType, type),

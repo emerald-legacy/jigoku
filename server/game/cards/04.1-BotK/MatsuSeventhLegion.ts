@@ -10,7 +10,7 @@ class MatsuSeventhLegion extends DrawCard {
             condition: context => context.source.isAttacking(),
             match: (card: DrawCard) => card.hasTrait('courtier'),
             targetController: Players.Opponent,
-            effect: AbilityDsl.effects.cardCannot('declareAsDefender')});
+            effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()});
     }
 }
 

@@ -10,7 +10,7 @@ class ButcherOfTheFallen extends DrawCard {
             condition: context => context.source.isAttacking(),
             match: (card: DrawCard, context) => card.getMilitarySkill() < (context?.player.getProvinces((a) => !a.isBroken).length ?? 0),
             targetController: Players.Opponent,
-            effect: AbilityDsl.effects.cardCannot('declareAsDefender')});
+            effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()});
     }
 }
 

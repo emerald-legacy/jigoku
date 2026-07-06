@@ -6,7 +6,7 @@ class BlessedByFukurokujin extends DrawCard {
 
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.whileAttached({
-            effect: ability.effects.cardCannot('receiveDishonorToken')
+            effect: ability.effects.cannotReceiveDishonorToken()
         });
     }
 }
