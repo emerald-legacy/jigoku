@@ -42,17 +42,17 @@
         "winston": "3.19.0",
         "winston-daily-rotate-file": "5.0.0",
         "ws": "8.21.3",
-        "zod": "4.5.4"
+        "zod": "4.6.2"
     },
     "devDependencies": {
         "@eslint/js": "10.0.1",
         "@types/bcrypt": "6.0.0",
         "@types/jasmine": "6.0.0",
         "@types/jsonwebtoken": "9.0.10",
-        "@types/node": "26.4.1",
+        "@types/node": "26.5.1",
         "@types/ws": "8.18.1",
-        "@typescript-eslint/eslint-plugin": "8.69.0",
-        "@typescript-eslint/parser": "8.69.0",
+        "@typescript-eslint/eslint-plugin": "8.70.0",
+        "@typescript-eslint/parser": "8.70.0",
         "eslint": "10.10.0",
         "eslint-plugin-jasmine": "4.2.2",
         "globals": "17.12.0",
