@@ -164,3 +164,117 @@ describe('Loyal Warhound', function () {
         });
     });
 });
+
+describe('Loyal Warhound - attaching during a conflict', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                gameMode: GameModes.Emerald,
+
+                player1: {
+                    inPlay: ['loyal-warhound', 'doji-challenger']
+                },
+                player2: {
+                    inPlay: ['togashi-mitsu'],
+                    provinces: ['honor-s-reward']
+                }
+            });
+            this.hound = this.player1.findCardByName('loyal-warhound');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.mitsu = this.player2.findCardByName('togashi-mitsu');
+            this.reward = this.player2.findCardByName('honor-s-reward');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.hound, this.challenger],
+                defenders: [],
+                province: this.reward
+            });
+        });
+
+        it('stops contributing to the conflict once it becomes an attachment', function () {
+            expect(this.game.currentConflict.attackerSkill).toBe(4);
+
+            this.player2.pass();
+            this.player1.clickCard(this.hound);
+            this.player1.clickCard(this.challenger);
+
+            expect(this.challenger.attachments).toContain(this.hound);
+            expect(this.hound.type).toBe('attachment');
+            expect(this.hound.isParticipating()).toBe(false);
+            expect(this.game.currentConflict.attackerSkill).toBe(3);
+        });
+    });
+});
+
+describe('Loyal Warhound - host replaced by its twin', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                gameMode: GameModes.Emerald,
+
+                player1: {
+                    inPlay: ['loyal-warhound', 'ide-nobutada'],
+                    dynastyDiscard: ['shinjo-takame']
+                },
+                player2: {
+                    inPlay: ['togashi-mitsu'],
+                    provinces: ['honor-s-reward']
+                }
+            });
+            this.hound = this.player1.findCardByName('loyal-warhound');
+            this.nobutada = this.player1.findCardByName('ide-nobutada');
+            this.takame = this.player1.moveCard('shinjo-takame', 'dynasty deck');
+            this.mitsu = this.player2.findCardByName('togashi-mitsu');
+            this.reward = this.player2.findCardByName('honor-s-reward');
+        });
+
+        it('stays attached to the replacement character', function () {
+            this.player1.clickCard(this.hound);
+            this.player1.clickCard(this.nobutada);
+            expect(this.nobutada.attachments).toContain(this.hound);
+
+            this.player2.pass();
+
+            this.player1.clickCard(this.nobutada);
+            this.player1.clickPrompt('Shinjo Takame');
+
+            expect(this.nobutada.location).toBe('dynasty deck');
+            expect(this.takame.location).toBe('play area');
+            expect(this.takame.attachments).toContain(this.hound);
+            expect(this.hound.type).toBe('attachment');
+            expect(this.hound.location).toBe('play area');
+        });
+
+        it('protects the replacement character if it is a Scout', function () {
+            this.player1.clickCard(this.hound);
+            this.player1.clickCard(this.nobutada);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.nobutada],
+                defenders: [],
+                province: this.reward
+            });
+
+            // Ide Nobutada is not a Scout, so the hound protects nobody
+            this.player2.clickCard(this.reward);
+            expect(this.player2).toBeAbleToSelect(this.nobutada);
+            this.player2.clickPrompt('Cancel');
+            this.player2.pass();
+
+            this.player1.clickCard(this.nobutada);
+            this.player1.clickPrompt('Shinjo Takame');
+
+            expect(this.takame.attachments).toContain(this.hound);
+            expect(this.takame.isParticipating()).toBe(true);
+
+            this.player2.clickCard(this.reward);
+            expect(this.player2).not.toBeAbleToSelect(this.takame);
+        });
+    });
+});
