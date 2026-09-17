@@ -1,4 +1,5 @@
 import { AbilityType, CardType, Duration, EffectName, Players } from '../../../Constants.js';
+import BaseCard from '../../../BaseCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { GameAction } from '../../../GameActions/GameAction.js';
@@ -50,22 +51,16 @@ export default class LoyalWarhound extends DrawCard {
                             printedAbility: false,
                             effect: 'detatch itself',
                             gameAction: AbilityDsl.actions.detach((context) => ({ target: context.source }))
-                        })
-                    ]
-                }));
-
-                gameActions.push(AbilityDsl.actions.cardLastingEffect({
-                    target: context.target,
-                    duration: Duration.Custom,
-                    condition: () => !!context.target?.hasTrait('scout') && (context.source as DrawCard).parent === context.target,
-                    until: {
-                        onCardDetached: event => event.card === context.source
-                    },
-                    effect: [
-                        AbilityDsl.effects.cardCannot({
-                            cannot: 'target',
-                            restricts: 'opponentsProvinceEffects',
-                            source: context.source
+                        }),
+                        // Matched dynamically so the protection follows this card if it changes host
+                        AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
+                            targetController: Players.Any,
+                            match: (card: BaseCard, context?: AbilityContext<DrawCard>) =>
+                                card === context?.source.parent && card.hasTrait('scout'),
+                            effect: AbilityDsl.effects.cardCannot({
+                                cannot: 'target',
+                                restricts: 'opponentsProvinceEffects'
+                            })
                         })
                     ]
                 }));
