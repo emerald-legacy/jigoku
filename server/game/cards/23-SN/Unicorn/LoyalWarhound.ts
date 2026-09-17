@@ -37,7 +37,7 @@ export default class LoyalWarhound extends DrawCard {
                     duration: Duration.Custom,
                     until: {
                         onCardDetached: event => event.card === context.source,
-                        onCardLeavesPlay: event => event.card === context.target
+                        onCardLeavesPlay: event => event.card === context.source
                     },
                     effect: [
                         AbilityDsl.effects.blank(true),
