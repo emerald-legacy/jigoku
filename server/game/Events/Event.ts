@@ -45,6 +45,14 @@ export class Event {
         return this.tokenCharacter ?? this.card;
     }
 
+    /**
+     * `getPromptCard` for a context's event, which is an array of events for an
+     * `aggregateWhen` ability - those name no single card.
+     */
+    static promptCardOf(event: unknown): BaseCard | undefined {
+        return event instanceof Event ? event.getPromptCard() : undefined;
+    }
+
     cancel() {
         this.cancelled = true;
         if(this.window) {
