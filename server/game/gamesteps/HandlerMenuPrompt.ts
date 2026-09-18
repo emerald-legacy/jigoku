@@ -1,4 +1,5 @@
 import { AbilityContext } from '../AbilityContext.js';
+import { Event } from '../Events/Event.js';
 import EffectSource from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
 import type Player from '../Player.js';
@@ -132,8 +133,9 @@ class HandlerMenuPrompt extends UiPrompt {
             targets = Array.isArray(this.properties.target) ? this.properties.target : [this.properties.target];
         }
         const triggeredContext = this.context as TriggeredAbilityContext;
-        if(targets.length === 0 && triggeredContext.event && triggeredContext.event.card) {
-            targets = [triggeredContext.event.card];
+        const eventCard = Event.promptCardOf(triggeredContext.event);
+        if(targets.length === 0 && eventCard) {
+            targets = [eventCard];
         }
         return [{
             type: 'targeting',

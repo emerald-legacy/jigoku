@@ -1,4 +1,5 @@
 import { AbilityContext } from '../AbilityContext.js';
+import { Event } from '../Events/Event.js';
 import EffectSource from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
 import type Player from '../Player.js';
@@ -104,8 +105,9 @@ class SelectRingPrompt extends UiPrompt {
         }
         let targets: unknown[] = this.properties.context.targets ? Object.values(this.properties.context.targets as Record<string, BaseCard>).map((target: BaseCard) => target.getShortSummaryForControls(this.choosingPlayer)) : [];
         const triggeredContext = this.properties.context as TriggeredAbilityContext;
-        if(targets.length === 0 && triggeredContext.event && triggeredContext.event.card) {
-            this.targets = [triggeredContext.event.card.getShortSummaryForControls(this.choosingPlayer)];
+        const eventCard = Event.promptCardOf(triggeredContext.event);
+        if(targets.length === 0 && eventCard) {
+            this.targets = [eventCard.getShortSummaryForControls(this.choosingPlayer)];
         }
         return [{
             type: 'targeting',

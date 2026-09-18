@@ -1,4 +1,5 @@
 import { AbilityContext } from '../AbilityContext.js';
+import { Event } from '../Events/Event.js';
 import CardSelector from '../CardSelector.js';
 import EffectSource from '../EffectSource.js';
 import { UiPrompt } from './UiPrompt.js';
@@ -158,8 +159,9 @@ class SelectCardPrompt extends UiPrompt {
         const rawTargets: Array<BaseCard | BaseCard[]> = this.context.targets ? Object.values(this.context.targets) : [];
         const targets = rawTargets.reduce((array: BaseCard[], target: BaseCard | BaseCard[]) => array.concat(target), []);
         const triggeredContext = this.context as TriggeredAbilityContext;
-        if(targets.length === 0 && triggeredContext.event && triggeredContext.event.card) {
-            this.targets = [triggeredContext.event.card];
+        const eventCard = Event.promptCardOf(triggeredContext.event);
+        if(targets.length === 0 && eventCard) {
+            this.targets = [eventCard];
         }
         return [{
             type: 'targeting',
