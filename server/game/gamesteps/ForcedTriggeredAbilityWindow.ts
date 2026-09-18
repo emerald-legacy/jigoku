@@ -2,7 +2,7 @@ import { BaseStep } from './BaseStep.js';
 import { TriggeredAbilityWindowTitle } from './TriggeredAbilityWindowTitle.js';
 import { Location, AbilityType } from '../Constants.js';
 import type Game from '../Game.js';
-import type { Event } from '../Events/Event.js';
+import { Event } from '../Events/Event.js';
 import type EventWindow from '../Events/EventWindow.js';
 import type Player from '../Player.js';
 import type BaseCard from '../BaseCard.js';
@@ -12,6 +12,15 @@ import type CardAbility from '../CardAbility.js';
 import type Ring from '../Ring.js';
 import type EffectSource from '../EffectSource.js';
 import type AbilityResolver from './AbilityResolver.js';
+
+/**
+ * The card an ability's event should be presented as affecting. `context.event` is an
+ * array of events for an `aggregateWhen` ability, which names no single card - those
+ * abilities respond to the window as a whole and never reach the per-card prompt.
+ */
+function promptCardFor(context: TriggeredAbilityContext): BaseCard | undefined {
+    return context.event instanceof Event ? context.event.getPromptCard() : undefined;
+}
 
 class ForcedTriggeredAbilityWindow extends BaseStep {
     choices: TriggeredAbilityContext[];
@@ -150,7 +159,7 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
             return;
         }
         // Check if events only affect a single card
-        const uniqueEventCards = new Set(choices.map(context => context.event.card));
+        const uniqueEventCards = new Set(choices.map(context => promptCardFor(context)));
         if(uniqueEventCards.size === 1) {
             // The events which this ability can respond to only affect a single card
             this.promptBetweenEvents(choices, addBackButton);
@@ -159,10 +168,10 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
         // Several cards could be affected by this ability - prompt the player to choose which they want to affect
         this.game.promptForSelect(this.currentPlayer, Object.assign({}, this.getPromptForSelectProperties(), {
             activePromptTitle: 'Select a card to affect',
-            cardCondition: (card: BaseCard) => choices.some(context => context.event.card === card),
+            cardCondition: (card: BaseCard) => choices.some(context => promptCardFor(context) === card),
             buttons: addBackButton ? [{ text: 'Back', arg: 'back' }] : [],
             onSelect: (_player: Player, card: BaseCard) => {
-                this.promptBetweenEvents(choices.filter(context => context.event.card === card));
+                this.promptBetweenEvents(choices.filter(context => promptCardFor(context) === card));
                 return true;
             },
             onMenuCommand: (_player: Player, arg: string) => {
