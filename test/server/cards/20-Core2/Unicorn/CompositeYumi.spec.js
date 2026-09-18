@@ -4,9 +4,9 @@ describe('Composite Yumi', function () {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['wandering-ronin', 'eager-scout', 'master-of-the-swift-waves'],
+                    inPlay: ['wandering-ronin', 'eager-scout', 'shinjo-sora'],
                     dynastyDeck: ['favorable-ground', 'hida-kisada', 'imperial-storehouse'],
-                    hand: ['composite-yumi', 'steward-of-law', 'force-of-the-river'],
+                    hand: ['composite-yumi', 'steward-of-law'],
                     provinces: ['manicured-garden']
                 },
                 player2: {
@@ -17,10 +17,9 @@ describe('Composite Yumi', function () {
             this.fg = this.player1.placeCardInProvince('favorable-ground', 'province 1');
             this.wanderingRonin = this.player1.findCardByName('wandering-ronin');
             this.scout = this.player1.findCardByName('eager-scout');
-            this.masterOfTheSwiftWaves = this.player1.findCardByName('master-of-the-swift-waves');
+            this.sora = this.player1.findCardByName('shinjo-sora');
             this.stewardOfLaw = this.player1.findCardByName('steward-of-law');
             this.compositeYumi = this.player1.findCardByName('composite-yumi');
-            this.forceOfTheRiver = this.player1.findCardByName('force-of-the-river');
 
             this.shinjoOutrider = this.player2.findCardByName('shinjo-outrider');
             this.stoicGunso = this.player2.findCardByName('stoic-gunso');
@@ -165,32 +164,38 @@ describe('Composite Yumi', function () {
             expect(this.wanderingRonin.getMilitarySkill()).toBe(2 + 1 + 4);
         });
 
-        it('comboes with Force of the River', function () {
-            this.initiateConflict({
-                attackers: [this.wanderingRonin],
-                defenders: []
-            });
-            this.player2.pass();
-            this.player1.clickCard(this.forceOfTheRiver);
-            this.player1.clickCard(this.masterOfTheSwiftWaves);
+        it('comboes with Shinjo Sora', function () {
+            // Sora has Covert, so the defenders are assigned after that prompt is answered
+            this.initiateConflict({ attackers: [this.wanderingRonin, this.sora] });
+            this.player1.clickPrompt('No Target');
+            this.player2.assignDefenders([]);
             this.player2.pass();
 
+            // Leave exactly two facedown cards for Sora to turn into hounds
             this.game
                 .getProvinceArray()
                 .flatMap((location) => this.player1.player.getDynastyCardsInProvince(location))
                 .filter((card) => card.isFacedown() && card !== this.kisada && card !== this.storehouse)
                 .forEach((card) => this.player1.moveCard(card, 'dynasty deck'));
 
-            this.player1.clickCard(this.forceOfTheRiver);
+            this.player1.clickCard(this.sora);
+
+            // The facedown cards are removed from the game as the hounds are created, so
+            // the window offers the hounds themselves - the cards a player can still see
+            const hounds = this.game.currentConflict.attackers.filter(
+                (card) => card.name === 'Unleashed Hound'
+            );
+            expect(hounds.length).toBe(2);
 
             expect(this.player1).toHavePrompt('Triggered Abilities');
             this.player1.clickCard(this.compositeYumi);
-            this.player1.clickCard(this.kisada);
+            expect(this.player1).toBeAbleToSelect(hounds[0]);
+            expect(this.player1).not.toBeAbleToSelect(this.kisada);
+            this.player1.clickCard(hounds[0]);
             expect(this.getChatLogs(3)).toContain('player1 uses Composite Yumi to give +1military to Wandering Ronin');
 
             expect(this.player1).toBeAbleToSelect(this.compositeYumi);
             this.player1.clickCard(this.compositeYumi);
-            this.player1.clickCard(this.storehouse);
 
             expect(this.wanderingRonin.getMilitarySkill()).toBe(3 + 2);
             expect(this.player1).not.toBeAbleToSelect(this.compositeYumi);
