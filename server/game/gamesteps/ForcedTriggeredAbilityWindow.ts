@@ -13,13 +13,8 @@ import type Ring from '../Ring.js';
 import type EffectSource from '../EffectSource.js';
 import type AbilityResolver from './AbilityResolver.js';
 
-/**
- * The card an ability's event should be presented as affecting. `context.event` is an
- * array of events for an `aggregateWhen` ability, which names no single card - those
- * abilities respond to the window as a whole and never reach the per-card prompt.
- */
 function promptCardFor(context: TriggeredAbilityContext): BaseCard | undefined {
-    return context.event instanceof Event ? context.event.getPromptCard() : undefined;
+    return Event.promptCardOf(context.event);
 }
 
 class ForcedTriggeredAbilityWindow extends BaseStep {
