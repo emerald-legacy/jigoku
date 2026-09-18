@@ -103,19 +103,19 @@ class ForcedTriggeredAbilityWindow extends BaseStep {
 
     getPromptControls() {
         let map = new Map<BaseCard | Ring | EffectSource, BaseCard[]>();
-        for(const e of this.events) {
-            const event = e as Event & { card?: BaseCard };
+        for(const event of this.events) {
             if(event.context && event.context.source) {
                 let targets = map.get(event.context.source) || [];
-                const innerEvent = (event.context as TriggeredAbilityContext).event as Event & { card?: BaseCard };
+                const eventCard = Event.promptCardOf(event);
+                const innerCard = Event.promptCardOf((event.context as TriggeredAbilityContext).event);
                 if(event.context.target) {
                     targets = targets.concat(event.context.target);
-                } else if(event.card && event.card !== event.context.source) {
-                    targets = targets.concat(event.card);
-                } else if(innerEvent && innerEvent.card) {
-                    targets = targets.concat(innerEvent.card);
-                } else if(event.card) {
-                    targets = targets.concat(event.card);
+                } else if(eventCard && eventCard !== event.context.source) {
+                    targets = targets.concat(eventCard);
+                } else if(innerCard) {
+                    targets = targets.concat(innerCard);
+                } else if(eventCard) {
+                    targets = targets.concat(eventCard);
                 }
                 map.set(event.context.source, [...new Set(targets)]);
             }
