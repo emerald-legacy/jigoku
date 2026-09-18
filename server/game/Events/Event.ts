@@ -1,5 +1,6 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
+import type DrawCard from '../DrawCard.js';
 import { EventName } from '../Constants.js';
 import type EventWindow from './EventWindow.js';
 
@@ -16,6 +17,8 @@ export class Event {
     createContingentEvents = (): Event[] => [];
     preResolutionEffect: () => void = () => true;
     onPlayCardSource?: BaseCard;
+    card?: BaseCard;
+    tokenCharacter?: DrawCard;
 
     private static readonly RESERVED_PARAM_KEYS = new Set(['cancelled', 'resolved', 'handler', 'window']);
 
@@ -29,6 +32,17 @@ export class Event {
                 (this as Record<string, unknown>)[key] = params[key];
             }
         }
+    }
+
+    /**
+     * The card this event should be presented as affecting when a player is asked
+     * which of several simultaneous events to respond to. A createToken event's
+     * `card` is the facedown province card, which is removed from the game before
+     * the reaction window opens - the token that entered play is the one the player
+     * can actually see and click.
+     */
+    getPromptCard(): BaseCard | undefined {
+        return this.tokenCharacter ?? this.card;
     }
 
     cancel() {
