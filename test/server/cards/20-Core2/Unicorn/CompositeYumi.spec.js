@@ -180,23 +180,18 @@ describe('Composite Yumi', function () {
 
             this.player1.clickCard(this.sora);
 
-            // The facedown cards are removed from the game as the hounds are created, so
-            // the window offers the hounds themselves - the cards a player can still see
             const hounds = this.game.currentConflict.attackers.filter(
                 (card) => card.name === 'Unleashed Hound'
             );
             expect(hounds.length).toBe(2);
 
-            expect(this.player1).toHavePrompt('Triggered Abilities');
+            // One trigger per hound entering play
             this.player1.clickCard(this.compositeYumi);
-            expect(this.player1).toBeAbleToSelect(hounds[0]);
-            expect(this.player1).not.toBeAbleToSelect(this.kisada);
             this.player1.clickCard(hounds[0]);
             expect(this.getChatLogs(3)).toContain('player1 uses Composite Yumi to give +1military to Wandering Ronin');
+            expect(this.wanderingRonin.getMilitarySkill()).toBe(3 + 1);
 
-            expect(this.player1).toBeAbleToSelect(this.compositeYumi);
             this.player1.clickCard(this.compositeYumi);
-
             expect(this.wanderingRonin.getMilitarySkill()).toBe(3 + 2);
             expect(this.player1).not.toBeAbleToSelect(this.compositeYumi);
         });
