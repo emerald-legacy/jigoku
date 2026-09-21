@@ -94,7 +94,7 @@ interface TargetCardMaxStat extends BaseTargetCard {
 }
 
 interface TargetCardSingleUnlimited extends BaseTargetCard {
-    mode?: TargetMode.Single | TargetMode.Unlimited;
+    mode?: TargetMode.Single | TargetMode.Unlimited | TargetMode.AutoSingle;
 }
 
 type TargetCard =
