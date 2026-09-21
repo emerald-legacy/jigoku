@@ -7,18 +7,14 @@ import UpToXCardSelector from './CardSelectors/UpToXCardSelector.js';
 import UpToVariableXCardSelector from './CardSelectors/UpToVariableXCardSelector.js';
 import { TargetMode, CardType } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
-import type BaseCard from './BaseCard.js';
+import type { BaseCardSelectorProperties } from './CardSelectors/BaseCardSelector.js';
 
-interface CardSelectorProperties {
+interface CardSelectorProperties extends BaseCardSelectorProperties {
     numCards?: number;
-    cardCondition?(card: BaseCard, context: AbilityContext): boolean;
     numCardsFunc?: (context: AbilityContext) => number;
-    cardType?: CardType | CardType[];
     multiSelect?: boolean;
-    sameDiscardPile?: boolean;
     mode?: TargetMode;
     maxStat?: () => number;
-    [key: string]: any;
 }
 
 type BaseSelector = SingleCardSelector | ExactlyXCardSelector | ExactlyVariableXCardSelector |
