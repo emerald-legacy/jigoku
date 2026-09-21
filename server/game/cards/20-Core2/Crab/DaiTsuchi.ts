@@ -1,4 +1,4 @@
-import { AbilityContext } from '../../../AbilityContext.js';
+import { AbilityContext, type ResolvedAbilityContext } from '../../../AbilityContext.js';
 import { AbilityType, CardType, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -23,7 +23,7 @@ export default class DaiTsuchi extends DrawCard {
                         !!context.player.opponent && card.parent.isParticipatingFor(context.player.opponent),
                     gameAction: AbilityDsl.actions.returnToHand()
                 },
-                gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
+                gameAction: AbilityDsl.actions.playerLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                     duration: Duration.UntilEndOfConflict,
                     targetController: context.target.owner,
                     effect: AbilityDsl.effects.playerCannot({

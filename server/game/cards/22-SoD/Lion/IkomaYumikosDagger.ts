@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -28,7 +29,7 @@ export default class IkomaYumikosDagger extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card, context) => card.isParticipating() && (card.printedCost ?? 0) <= (context.source.printedCost ?? 0),
                 gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.conditional(context => ({
+                    AbilityDsl.actions.conditional((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         condition: () => context.target.getFate() === 0,
                         trueGameAction: AbilityDsl.actions.discardFromPlay({ target: context.target }),
                         falseGameAction: AbilityDsl.actions.removeFate({ target: context.target })

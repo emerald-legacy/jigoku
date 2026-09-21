@@ -28,7 +28,7 @@ export default class SpiderwebPassage extends DrawCard {
                     ((!card.hasDash('political') && card.getPoliticalSkill() === 0) ||
                         (!card.hasDash('military') && card.getMilitarySkill() === 0))
             },
-            gameAction: AbilityDsl.actions.conditional((context) => {
+            gameAction: AbilityDsl.actions.conditional(context => {
                 const discardCount = shinobiCount(context);
                 const discardFromHandAction = AbilityDsl.actions.discardAtRandom({
                     amount: discardCount,
@@ -41,7 +41,7 @@ export default class SpiderwebPassage extends DrawCard {
                         context.player.opponent.hand.length >= discardCount &&
                         discardFromHandAction.canAffect(context.player.opponent, context),
                     falseGameAction: killAction,
-                    trueGameAction: AbilityDsl.actions.chooseAction((context) => ({
+                    trueGameAction: AbilityDsl.actions.chooseAction(context => ({
                         player: Players.Opponent,
                         activePromptTitle: 'Select one',
                         options: {

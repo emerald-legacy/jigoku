@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, EventName } from '../../Constants.js';
@@ -14,7 +15,7 @@ class YogoHiroue extends DrawCard {
                 cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.moveToConflict(),
-                    AbilityDsl.actions.cardLastingEffect(context => ({
+                    AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         effect: AbilityDsl.effects.delayedEffect({
                             when: {
                                 afterConflict: (event: EventPayload<EventName.AfterConflict>) => event.conflict.winner === context.player

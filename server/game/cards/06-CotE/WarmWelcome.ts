@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType, PlayType} from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -13,12 +14,12 @@ class WarmWelcome extends DrawCard {
                 location: Location.ConflictDiscardPile,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.playCard(context => ({
+                    AbilityDsl.actions.playCard((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         source: this,
                         target: context.target,
                         playType: PlayType.PlayFromHand
                     })),
-                    AbilityDsl.actions.moveCard(context => ({
+                    AbilityDsl.actions.moveCard((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         target: context.target.type === CardType.Event ? context.target : [],
                         destination: Location.ConflictDeck, bottom: true
                     }))

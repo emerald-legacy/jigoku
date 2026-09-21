@@ -11,7 +11,7 @@ export default class GiverOfGifts2 extends DrawCard {
             target: {
                 cardType: CardType.Attachment,
                 controller: Players.Self,
-                gameAction: AbilityDsl.actions.selectCard((context) => ({
+                gameAction: AbilityDsl.actions.selectCard(context => ({
                     cardCondition: (card) =>
                         card !== context.target.parent && card.controller === context.target.parent.controller,
                     message: '{0} moves {1} to {2}',

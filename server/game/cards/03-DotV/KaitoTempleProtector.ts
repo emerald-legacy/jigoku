@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -20,7 +21,7 @@ class KaitoTempleProtector extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source,
-                gameAction: ability.actions.cardLastingEffect(context => {
+                gameAction: ability.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => {
                     let effects = [];
                     if(context.target.hasDash('military')) {
                         effects.push(ability.effects.setBaseDash('military'));

@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -14,7 +15,7 @@ class ForthrightIde extends DrawCard {
                 cardCondition: card => card.costLessThan(4) && card.bowed,
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.ready(),
-                    AbilityDsl.actions.chosenDiscard(context => ({
+                    AbilityDsl.actions.chosenDiscard((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         amount: context.target.controller === context.player ? 1 : 0,
                         target: context.player
                     }))

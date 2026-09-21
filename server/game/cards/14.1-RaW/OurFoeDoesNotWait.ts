@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
@@ -22,7 +23,7 @@ class OurFoeDoesNotWait extends DrawCard {
                 location: Location.Provinces,
                 cardCondition: (card: BaseCard) => card.location !== Location.StrongholdProvince && !(card as ProvinceCard).isBroken
             },
-            gameAction: AbilityDsl.actions.deckSearch(context => ({
+            gameAction: AbilityDsl.actions.deckSearch((context: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
                 amount: 8,
                 deck: Decks.DynastyDeck,
                 gameAction: AbilityDsl.actions.moveCard({

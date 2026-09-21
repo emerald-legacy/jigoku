@@ -1,4 +1,5 @@
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { ProvinceCard } from '../../../ProvinceCard.js';
+import { AbilityContext, type ResolvedAbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
 import { EventName, AbilityType, Location, CardType, Players } from '../../../Constants.js';
@@ -27,7 +28,7 @@ export default class StormFromSakkaku extends DrawCard {
                 cardCondition: (card, context) =>
                     card.location !== context.source.location && card.location !== Location.StrongholdProvince
             },
-            gameAction: AbilityDsl.actions.moveCard((context) => ({
+            gameAction: AbilityDsl.actions.moveCard((context: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
                 target: context.source,
                 destination: context.target.location
             })),

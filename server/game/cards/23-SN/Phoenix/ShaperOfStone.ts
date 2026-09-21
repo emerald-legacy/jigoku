@@ -1,3 +1,5 @@
+import type { ProvinceCard } from '../../../ProvinceCard.js';
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Location, Players, Phases, EventName, Duration } from '../../../Constants.js';
@@ -32,7 +34,7 @@ export default class ShaperOfStone extends DrawCard {
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: card => card.location !== 'stronghold province',
-                gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
+                gameAction: AbilityDsl.actions.playerLastingEffect((context: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
                             onPhaseEnded: (event: EventPayload<EventName.OnPhaseEnded>) => event.phase === Phases.Conflict

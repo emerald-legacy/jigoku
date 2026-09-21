@@ -1,3 +1,5 @@
+import type DrawCard from '../../DrawCard.js';
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import { CardType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -12,7 +14,7 @@ export default class LordsAscendancy extends ProvinceCard {
             target: {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.placeFate((context) => ({
+                gameAction: AbilityDsl.actions.placeFate((context: ResolvedAbilityContext<ProvinceCard, DrawCard>) => ({
                     origin: context.target.controller
                 }))
             },

@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import { CardType, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -12,11 +13,11 @@ export default class DisputedLineage extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.cardLastingEffect(context => ({
+                    AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         effect: AbilityDsl.effects.loseFaction(context.target.printedFaction),
                         duration: Duration.UntilEndOfRound
                     })),
-                    AbilityDsl.actions.playerLastingEffect(context => ({
+                    AbilityDsl.actions.playerLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         duration: Duration.UntilEndOfRound,
                         targetController: context.target.controller,
                         condition: () => context.target.isParticipating(),

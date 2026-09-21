@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, ConflictType, EventName, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -14,7 +15,7 @@ class APerfectCut extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: card => card.isParticipating() && card.hasTrait('bushi'),
-                gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
+                gameAction: AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                     effect: [
                         AbilityDsl.effects.modifyMilitarySkill(2),
                         AbilityDsl.effects.delayedEffect({
