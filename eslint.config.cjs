@@ -100,7 +100,10 @@ module.exports = [
             // TypeScript rules (disabled for gradual migration — re-enable as codebase improves)
             ...tseslint.configs.recommended.rules,
             'no-unused-vars': 'off',
-            '@typescript-eslint/no-explicit-any': 'warn',
+            // server/ is at zero `any` apart from one documented exception in
+            // GameActions.ts; test/**/*.ts stays 'warn' below (spies and partial
+            // fakes legitimately use `any`)
+            '@typescript-eslint/no-explicit-any': 'error',
             '@typescript-eslint/no-unused-vars': ['error', {
                 argsIgnorePattern: '^_',
                 varsIgnorePattern: '^_'
