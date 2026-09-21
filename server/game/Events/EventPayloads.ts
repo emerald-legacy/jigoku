@@ -8,6 +8,7 @@ import type { CharacterStatus, ConflictType, Decks, DuelType, EventName, Locatio
 import type { Direction } from '../GameActions/ModifyBidAction.js';
 import type DrawCard from '../DrawCard.js';
 import type { Duel } from '../Duel.js';
+import type { EffectMatch } from '../Effects/Effect.js';
 import type { Event } from './Event.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type Player from '../Player.js';
@@ -219,7 +220,7 @@ export interface EventPayloadMap {
         context?: AbilityContext;
         card?: BaseCard;
         effectTypes?: string[];
-        matches?: BaseCard[];
+        matches?: EffectMatch[];
     };
     [EventName.OnLookAtCards]: BaseEventPayload & {
         player?: Player;

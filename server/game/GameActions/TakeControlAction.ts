@@ -21,7 +21,7 @@ export class TakeControlAction extends LastingEffectCardAction {
     defaultProperties: LastingEffectCardProperties = {
         duration: Duration.Custom,
         targetLocation: Location.PlayArea,
-        effect: null
+        effect: []
     };
 
     constructor(properties: ((context: AbilityContext) => TakeControlProperties) | TakeControlProperties) {
