@@ -5,12 +5,15 @@ import type { BaseAbilityProperties } from './BaseAbility.js';
 import type BaseCard from './BaseCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
+import type EventWindow from './Events/EventWindow.js';
+import type ThenEventWindow from './Events/ThenEventWindow.js';
 import type { EffectArg } from './Interfaces.js';
 
 export interface ThenAbilityProperties<C extends AbilityContext = AbilityContext> extends BaseAbilityProperties {
     handler?: (context: C) => void;
     then?: ThenAbilityProperties | ((context: C) => ThenAbilityProperties);
-    thenCondition?: (context: C) => boolean;
+    // called with the context on the immediate path, with an Event via EventWindow.addThenAbility
+    thenCondition?(contextOrEvent: C | Event): boolean;
     message?: string | ((context: C) => string);
     messageArgs?: (EffectArg | undefined)[] | ((context: C) => (EffectArg | undefined)[]);
 }
@@ -98,7 +101,7 @@ class ThenAbility extends BaseCardAbility {
         });
     }
 
-    openEventWindow(events: Event[]): any {
+    openEventWindow(events: Event[]): EventWindow | ThenEventWindow {
         return this.game.openThenEventWindow(events);
     }
 
