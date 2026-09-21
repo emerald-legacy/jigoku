@@ -18,8 +18,8 @@ class TimeForWar extends DrawCard {
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('bushi'),
                 gameAction: AbilityDsl.actions.selectCard(context => ({
+                    activePromptTitle: 'Choose a weapon attachment',
                     selector: CardSelector.for({
-                        activePromptTitle: 'Choose a weapon attachment',
                         cardType: CardType.Attachment,
                         location: [Location.ConflictDiscardPile, Location.Hand],
                         controller: Players.Self,

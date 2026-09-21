@@ -18,8 +18,8 @@ export default class TimeForWar2 extends DrawCard {
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('bushi'),
                 gameAction: AbilityDsl.actions.selectCard(context => ({
+                    activePromptTitle: 'Choose an attachment',
                     selector: CardSelector.for({
-                        activePromptTitle: 'Choose an attachment',
                         cardType: CardType.Attachment,
                         location: [Location.ConflictDiscardPile, Location.Hand],
                         controller: Players.Self,
