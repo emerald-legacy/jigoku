@@ -29,6 +29,24 @@ export interface AbilityContextProperties {
     targetAbility?: CardAbility | null;
 }
 
+/**
+ * An `AbilityContext` for an ability that declares a target named `target`.
+ * `AbilityTargetCard` assigns `context.target` only for that name, so `target`
+ * is guaranteed set here and non-optional — unlike on `AbilityContext`, where
+ * an ability with no card target legitimately leaves it undefined.
+ *
+ * Two preconditions, neither machine-checked: the target must not be `optional`
+ * (it would go unset), and must not be a multi-card mode (`target` then holds a
+ * `BaseCard[]` — see the note on `AbilityContext.target`). Today no card combines
+ * either with a `context.target` read from a property factory.
+ *
+ * Annotate a property factory with this ONLY from inside such an ability:
+ *   target: { cardType: ..., gameAction: AbilityDsl.actions.x(
+ *       (context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({ ... })) }
+ */
+export type ResolvedAbilityContext<S = BaseCard, T extends BaseCard = BaseCard> =
+    AbilityContext<S, T> & { target: T };
+
 export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
     game: Game;
     source: S;
