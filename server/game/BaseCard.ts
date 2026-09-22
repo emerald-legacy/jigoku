@@ -1,3 +1,5 @@
+import { AttachmentManager } from './AttachmentManager.js';
+import type DrawCard from './DrawCard.js';
 import AbilityDsl from './abilitydsl.js';
 import Effects from './effects.js';
 import EffectSource from './EffectSource.js';
@@ -113,6 +115,20 @@ class BaseCard extends EffectSource {
 
     protected statusManager!: CardStatusManager;
     allowedAttachmentTraits = [] as string[];
+    protected attachmentHost = new AttachmentManager(this);
+
+    get attachments(): DrawCard[] {
+        return this.attachmentHost.attachments;
+    }
+
+    set attachments(value: DrawCard[]) {
+        this.attachmentHost.attachments = value;
+    }
+
+    removeAttachment(attachment: DrawCard): void {
+        this.attachmentHost.remove(attachment);
+    }
+
     printedKeywords: Array<PrintedKeyword> = [];
     disguisedKeywordTraits = [] as string[];
 

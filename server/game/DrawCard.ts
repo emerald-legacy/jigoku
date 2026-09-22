@@ -65,20 +65,7 @@ class DrawCard extends BaseCard {
     inConflict: boolean = false;
     new: boolean = false;
     private skillCalculator: SkillCalculator;
-    private attachmentHost = new AttachmentManager(this);
     private childCardHost = new ChildCardManager(this);
-
-    get attachments(): DrawCard[] {
-        return this.attachmentHost.attachments;
-    }
-
-    set attachments(value: DrawCard[]) {
-        this.attachmentHost.attachments = value;
-    }
-
-    removeAttachment(attachment: DrawCard): void {
-        this.attachmentHost.remove(attachment);
-    }
 
     override checkForIllegalAttachments(): boolean {
         return this.attachmentHost.checkForIllegalAttachments();
