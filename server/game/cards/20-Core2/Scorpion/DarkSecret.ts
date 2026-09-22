@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -11,7 +12,7 @@ export default class DarkSecret extends DrawCard {
                 onMoveFate: (event, context) =>
                     context.source.parent && context.source.parent === event.origin && event.fate > 0
             },
-            gameAction: AbilityDsl.actions.loseHonor((context) => ({
+            gameAction: AbilityDsl.actions.loseHonor((context: AbilityContext<DrawCard, DrawCard>) => ({
                 amount: 1,
                 target: this.#targetPlayer(context.source.parent as DrawCard)
             })),

@@ -1,7 +1,7 @@
 import DrawCard from '../../../DrawCard.js';
 import { AbilityType, Players, CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityContext } from '../../../AbilityContext.js';
+import { AbilityContext, type ResolvedAbilityContext } from '../../../AbilityContext.js';
 
 export default class RavingLunatic extends DrawCard {
     static id = 'raving-lunatic';
@@ -16,7 +16,7 @@ export default class RavingLunatic extends DrawCard {
                     cardType: CardType.Character,
                     controller: Players.Opponent,
                     cardCondition: card => card.isParticipating(),
-                    gameAction: AbilityDsl.actions.injure(context => ({
+                    gameAction: AbilityDsl.actions.injure((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         target: [context.target, context.source]
                     }))
                 }

@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -13,7 +14,7 @@ class KaradaDistrict extends DrawCard {
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) => Boolean(card.parent && card.parent.controller === context.player.opponent)
             },
-            gameAction: AbilityDsl.actions.ifAble(context => ({
+            gameAction: AbilityDsl.actions.ifAble((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                 ifAbleAction: AbilityDsl.actions.selectCard({
                     target: context.target,
                     cardType: CardType.Character,

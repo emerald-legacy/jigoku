@@ -36,7 +36,7 @@ export default class TributeToANewDawn extends DrawCard {
                     gameAction: AbilityDsl.actions.bow()
                 }
             },
-            gameAction: AbilityDsl.actions.removeFromGame((context) => ({
+            gameAction: AbilityDsl.actions.removeFromGame((context: AbilityContext<DrawCard, DrawCard>) => ({
                 target: this.#getAffectedAttachments(context)
             })),
             effect: 'remove {1} from the game',

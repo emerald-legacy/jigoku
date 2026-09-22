@@ -100,9 +100,9 @@ export default class DisruptedSupplyLines extends DrawCard {
                 mode: TargetMode.Select,
                 choices: {
                     'Give your opponent 1 fate': AbilityDsl.actions.takeFate(),
-                    'Remove attachment from the game': AbilityDsl.actions.cancel(context => ({
+                    'Remove attachment from the game': AbilityDsl.actions.cancel((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
                         target: context.source,
-                        replacementGameAction: AbilityDsl.actions.removeFromGame(context => ({ target: context.event.card, location: Location.Any }))
+                        replacementGameAction: AbilityDsl.actions.removeFromGame((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({ target: context.event.card, location: Location.Any }))
                     }))
                 }
             },

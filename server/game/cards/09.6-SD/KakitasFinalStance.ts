@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import { CardType, EventName } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -21,7 +22,7 @@ export default class KakitasFinalStance extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: [
-                    AbilityDsl.actions.cardLastingEffect((context) => ({
+                    AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         condition: () => this.duelParticipantsInThisConflict.has(context.target),
                         effect: AbilityDsl.effects.doesNotBow()
                     })),

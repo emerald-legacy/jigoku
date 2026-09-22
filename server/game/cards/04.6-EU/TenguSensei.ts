@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
@@ -19,7 +20,7 @@ class TenguSensei extends DrawCard {
             effectArgs: context => {
                 return (context.event.context as AbilityContext).target as BaseCard;
             },
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => {
+            gameAction: AbilityDsl.actions.cardLastingEffect((context: TriggeredAbilityContext<DrawCard, DrawCard>) => {
                 return ({
                     target: (context.event.context as AbilityContext).target,
                     duration: Duration.UntilEndOfPhase,

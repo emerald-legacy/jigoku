@@ -14,7 +14,7 @@ class DaimyosGunbai extends DrawCard {
             initiateDuel: {
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
-                gameAction: duel => AbilityDsl.actions.attach(context => ({
+                gameAction: duel => AbilityDsl.actions.attach((context: AbilityContext<DrawCard, DrawCard>) => ({
                     target: duel.winner,
                     attachment: context.source
                 }))

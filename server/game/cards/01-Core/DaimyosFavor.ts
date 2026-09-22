@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration, CardType } from '../../Constants.js';
@@ -15,7 +16,7 @@ class DaimyosFavor extends DrawCard {
             cost: ability.costs.bowSelf(),
             effect: 'reduce the cost of the next attachment they play on {1} by 1',
             effectArgs: context => context.source.parent as DrawCard,
-            gameAction: ability.actions.playerLastingEffect(context => ({
+            gameAction: ability.actions.playerLastingEffect((context: AbilityContext<DrawCard, DrawCard>) => ({
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,
                 effect: ability.effects.reduceCost({

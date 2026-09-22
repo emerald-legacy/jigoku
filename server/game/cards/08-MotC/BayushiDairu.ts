@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { TargetMode, CardType } from '../../Constants.js';
@@ -13,7 +14,7 @@ class BayushiDairu extends DrawCard {
                 mode: TargetMode.Token,
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card !== context.source,
-                gameAction: AbilityDsl.actions.moveStatusToken(context => ({ recipient: context.source }))
+                gameAction: AbilityDsl.actions.moveStatusToken((context: AbilityContext<DrawCard, DrawCard>) => ({ recipient: context.source }))
             }
         });
     }

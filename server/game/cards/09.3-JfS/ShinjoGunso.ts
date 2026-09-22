@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import { PlayType, Decks, CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -17,7 +18,7 @@ export default class ShinjoGunso extends DrawCard {
                     context.game.getProvinceArray().includes(event.originalLocation)
             },
             effect: 'search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play',
-            gameAction: AbilityDsl.actions.sequentialContext((context) => {
+            gameAction: AbilityDsl.actions.sequentialContext((context: AbilityContext<DrawCard, DrawCard>) => {
                 const topFive = context.player.dynastyDeck.slice(0, 5);
                 return {
                     gameActions: [

@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -11,7 +12,7 @@ class KabukiHero extends DrawCard {
             condition: () => this.game.isDuringConflict(),
             effect: 'give itself +{1}{2}/+0{3} until the end of the conflict',
             effectArgs: context => [context.source.politicalSkill, 'military', 'political'],
-            gameAction: ability.actions.cardLastingEffect(context => ({
+            gameAction: ability.actions.cardLastingEffect((context: AbilityContext<DrawCard, DrawCard>) => ({
                 effect: ability.effects.modifyMilitarySkill(context.source.politicalSkill)
             }))
         });

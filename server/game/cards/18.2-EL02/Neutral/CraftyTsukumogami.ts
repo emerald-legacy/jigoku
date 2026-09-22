@@ -38,7 +38,7 @@ class CraftyTsukumogami extends DrawCard {
                             })
                         ]
                     })),
-                    AbilityDsl.actions.attachToRing(context => ({
+                    AbilityDsl.actions.attachToRing((context: AbilityContext<DrawCard, DrawCard>) => ({
                         attachment: context.source
                     })),
                     AbilityDsl.actions.handler({

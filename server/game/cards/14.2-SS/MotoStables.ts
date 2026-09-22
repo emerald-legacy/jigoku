@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -17,7 +18,7 @@ class MotoStables extends DrawCard {
             },
             effect: 'give {1} +2{2}',
             effectArgs: (context) => [context.event.card ?? '', 'military'],
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+            gameAction: AbilityDsl.actions.cardLastingEffect((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
                 duration: Duration.UntilEndOfConflict,
                 target: context.event.card,
                 effect: AbilityDsl.effects.modifyMilitarySkill(2)

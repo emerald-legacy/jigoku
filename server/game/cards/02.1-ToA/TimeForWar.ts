@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import CardSelector from '../../CardSelector.js';
@@ -17,7 +18,7 @@ class TimeForWar extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: card => card.hasTrait('bushi'),
-                gameAction: AbilityDsl.actions.selectCard(context => ({
+                gameAction: AbilityDsl.actions.selectCard((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                     activePromptTitle: 'Choose a weapon attachment',
                     selector: CardSelector.for({
                         cardType: CardType.Attachment,

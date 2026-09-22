@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { Location, Players, CardType, Phases } from '../../../Constants.js';
@@ -23,7 +24,7 @@ class Stinger extends DrawCard {
                 player: Players.Self,
                 cardType: CardType.Character,
                 cardCondition: card => card.isAttacking(),
-                gameAction: AbilityDsl.actions.attach(context => ({
+                gameAction: AbilityDsl.actions.attach((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                     attachment: context.source,
                     target: context.target
                 }))

@@ -18,7 +18,7 @@ export default class MangroveSafehouse extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card) => card.isAttacking(),
-                gameAction: AbilityDsl.actions.multipleContext((context) => {
+                gameAction: AbilityDsl.actions.multipleContext((context: AbilityContext<DrawCard, DrawCard>) => {
                     const gameActions: GameAction[] = [AbilityDsl.actions.sendHome()];
                     if(this.targetIsMantis(context)) {
                         gameActions.push(AbilityDsl.actions.takeFate({ target: context.player.opponent }));

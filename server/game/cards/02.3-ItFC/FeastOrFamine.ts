@@ -1,3 +1,5 @@
+import type DrawCard from '../../DrawCard.js';
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -14,7 +16,7 @@ export default class FeastOrFamine extends ProvinceCard {
             target: {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                gameAction: AbilityDsl.actions.selectCard((context) => ({
+                gameAction: AbilityDsl.actions.selectCard((context: ResolvedAbilityContext<ProvinceCard, DrawCard>) => ({
                     cardType: CardType.Character,
                     controller: Players.Self,
                     message: '{0} moves 1 fate from {1} to {2}',

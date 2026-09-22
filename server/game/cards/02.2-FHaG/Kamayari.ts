@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -15,7 +16,7 @@ class Kamayari extends DrawCard {
             when: {
                 onCardAbilityInitiated: (event, context) => event.card.type === CardType.Character && context.source.parent && context.source.parent.isParticipating()
             },
-            gameAction: ability.actions.bow(context => ({ target: context.event.card }))
+            gameAction: ability.actions.bow((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({ target: context.event.card }))
         });
     }
 }

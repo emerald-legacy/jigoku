@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
@@ -14,7 +15,7 @@ class TaintedKoku extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => Boolean(context.source.parent && card.controller === context.source.parent.controller && card !== context.source.parent),
-                gameAction: AbilityDsl.actions.attach(context => ({ attachment: context.source }))
+                gameAction: AbilityDsl.actions.attach((context: AbilityContext<DrawCard, DrawCard>) => ({ attachment: context.source }))
             }
         });
     }

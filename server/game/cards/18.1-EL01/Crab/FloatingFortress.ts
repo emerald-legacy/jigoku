@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -16,7 +17,7 @@ export default class FloatingFortress extends DrawCard {
                 controller: Players.Self,
                 location: Location.DynastyDiscardPile,
                 gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.cardLastingEffect((context) => ({
+                    AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
                         target: context.source,
                         effect: AbilityDsl.effects.copyCard(context.target)
                     })),

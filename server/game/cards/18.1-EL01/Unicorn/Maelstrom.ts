@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import { CardType, Duration, Element, EventName, Location, Players, TargetMode } from '../../../Constants.js';
 import type { Cost } from '../../../costs/Cost.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
@@ -92,7 +93,7 @@ export default class Maelstrom extends ProvinceCard {
                 controller: Players.Any,
                 cardCondition: (card, context) =>
                     context.costs.maelstromCostPaid ? true : card.controller === context.player,
-                gameAction: AbilityDsl.actions.multipleContext((context) => {
+                gameAction: AbilityDsl.actions.multipleContext((context: ResolvedAbilityContext<ProvinceCard, DrawCard>) => {
                     const target = context.target;
                     // "you" is whoever triggered this, which is not always the province's
                     // controller (Contested Countryside). A delayed effect's own context is

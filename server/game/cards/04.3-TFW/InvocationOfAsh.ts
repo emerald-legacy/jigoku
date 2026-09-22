@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, CardType } from '../../Constants.js';
@@ -13,7 +14,7 @@ class InvocationOfAsh extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.attach(context => ({ attachment: context.source })),
+                    AbilityDsl.actions.attach((context: AbilityContext<DrawCard, DrawCard>) => ({ attachment: context.source })),
                     AbilityDsl.actions.removeFate()
                 ])
             },

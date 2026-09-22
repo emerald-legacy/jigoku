@@ -17,11 +17,11 @@ class AppealToSympathy extends DrawCard {
                 AbilityDsl.actions.cancel(),
                 AbilityDsl.actions.conditional({
                     condition: (context) => !!(context as TriggeredAbilityContext).event.card?.isConflict,
-                    trueGameAction: AbilityDsl.actions.moveCard((context) => ({
+                    trueGameAction: AbilityDsl.actions.moveCard((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
                         target: context.event.card,
                         destination: Location.ConflictDeck
                     })),
-                    falseGameAction: AbilityDsl.actions.moveCard((context) => ({
+                    falseGameAction: AbilityDsl.actions.moveCard((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
                         target: context.event.card,
                         destination: Location.DynastyDiscardPile
                     }))
