@@ -5,7 +5,9 @@ import type { GameEvent } from '../Events/EventPayloads.js';
 import type { EventName } from '../Constants.js';
 
 import type { Event } from '../Events/Event.js';
-export type TokenActionProperties = GameActionProperties;
+export interface TokenActionProperties extends GameActionProperties {
+    target?: StatusToken | StatusToken[];
+}
 
 export class TokenAction<P extends TokenActionProperties = TokenActionProperties, N extends EventName = EventName> extends GameAction<P, N> {
     targetType = ['token'];
