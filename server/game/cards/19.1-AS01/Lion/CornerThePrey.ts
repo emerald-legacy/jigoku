@@ -17,7 +17,7 @@ export default class CornerThePrey extends DrawCard {
                 // A follower can be attached to a province, which does not participate.
                 cardCondition: (card) =>
                     card.hasTrait('follower') &&
-                    (card.isParticipating() || (card.parent instanceof DrawCard && card.parent.isParticipating()))
+                    (card.isParticipating() || !!card.attachedCharacter?.isParticipating())
             }),
             target: {
                 cardType: CardType.Character,
@@ -38,7 +38,7 @@ export default class CornerThePrey extends DrawCard {
         );
         const myParticipatingFollowers = myFollowers.filter(
             (card) => card instanceof DrawCard &&
-                (card.isParticipating() || (card.parent instanceof DrawCard && card.parent.isParticipating()))
+                (card.isParticipating() || !!card.attachedCharacter?.isParticipating())
         );
         const amount = myParticipatingFollowers.length;
         return amount;

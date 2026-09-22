@@ -10,15 +10,15 @@ export default class DarkSecret extends DrawCard {
             title: 'Make the controller of attached character lose 1 honor',
             when: {
                 onMoveFate: (event, context) =>
-                    context.source.parent && context.source.parent === event.origin && event.fate > 0
+                    context.source.attachedCharacter && context.source.attachedCharacter === event.origin && event.fate > 0
             },
             gameAction: AbilityDsl.actions.loseHonor((context: AbilityContext<DrawCard, DrawCard>) => ({
                 amount: 1,
-                target: this.#targetPlayer(context.source.parent as DrawCard)
+                target: this.#targetPlayer(context.source.attachedCharacter as DrawCard)
             })),
             limit: AbilityDsl.limit.unlimitedPerConflict(),
             effect: 'make {1} lose 1 honor - {2}',
-            effectArgs: (context) => [this.#targetPlayer(context.source.parent as DrawCard), this.#quote(context.source.parent as DrawCard)]
+            effectArgs: (context) => [this.#targetPlayer(context.source.attachedCharacter as DrawCard), this.#quote(context.source.attachedCharacter as DrawCard)]
         });
     }
 

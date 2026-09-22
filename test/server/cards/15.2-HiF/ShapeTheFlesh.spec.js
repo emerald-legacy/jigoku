@@ -29,7 +29,7 @@ describe('Shape the Flesh', function() {
             this.player1.clickPrompt('1');
 
             expect(this.whisperer.fate).toBe(whispererFate - 1);
-            expect(this.shapeFlesh.parent).toBe(this.whisperer);
+            expect(this.shapeFlesh.attachedTo).toBe(this.whisperer);
         });
 
         it('should not be able to honor the character', function () {

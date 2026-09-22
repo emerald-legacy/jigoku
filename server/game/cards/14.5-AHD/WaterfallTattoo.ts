@@ -16,9 +16,9 @@ class WaterfallTattoo extends DrawCard {
         this.reaction({
             title: 'Ready attached character',
             when: {
-                onCardRevealed: (event, context) => context.source.parent && event.card.isProvince && event.card.controller === context.source.parent.controller
+                onCardRevealed: (event, context) => context.source.attachedCharacter && event.card.isProvince && event.card.controller === context.source.attachedCharacter.controller
             },
-            gameAction: AbilityDsl.actions.ready(context => ({ target: context.source.parent }))
+            gameAction: AbilityDsl.actions.ready(context => ({ target: context.source.attachedCharacter }))
         });
     }
 }

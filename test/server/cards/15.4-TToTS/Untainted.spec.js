@@ -30,7 +30,7 @@ describe('Untainted', function() {
         });
 
         it('should react to winning a conflict', function() {
-            expect(this.untainted.parent).toBe(this.sd1);
+            expect(this.untainted.attachedTo).toBe(this.sd1);
 
             this.noMoreActions();
             this.initiateConflict({

@@ -14,8 +14,8 @@ class UnmatchedExpertise extends DrawCard {
         this.forcedReaction({
             title: 'Removed after attached character loses a conflict',
             when: {
-                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => context.source.parent && context.source.parent.isParticipating() &&
-                                                   event.conflict.loser === context.source.parent.controller
+                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => context.source.attachedCharacter && context.source.attachedCharacter.isParticipating() &&
+                                                   event.conflict.loser === context.source.attachedCharacter.controller
             },
             gameAction: ability.actions.discardFromPlay()
         });

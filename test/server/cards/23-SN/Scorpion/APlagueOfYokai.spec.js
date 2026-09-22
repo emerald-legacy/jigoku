@@ -69,7 +69,7 @@ describe('A Plague of Yokai', function () {
             this.player1.clickCard(this.shadows);
             expect(this.shadows.isDishonored).toBe(true);
 
-            expect(this.plague2.parent).toBe(this.yoshi);
+            expect(this.plague2.attachedTo).toBe(this.yoshi);
             expect(this.challenger.getMilitarySkill()).toBe(1);
             expect(this.challenger.getPoliticalSkill()).toBe(1);
             expect(this.yoshi.getMilitarySkill()).toBe(0);
@@ -93,7 +93,7 @@ describe('A Plague of Yokai', function () {
 
             this.player1.clickCard(this.plague1);
             this.player1.clickCard(this.challenger);
-            expect(this.plague1.parent).toBe(this.challenger);
+            expect(this.plague1.attachedTo).toBe(this.challenger);
 
             this.player2.pass();
 
@@ -113,7 +113,7 @@ describe('A Plague of Yokai', function () {
 
             this.player1.clickCard(this.plague1);
             this.player1.clickCard(this.challenger);
-            expect(this.plague1.parent).toBe(this.challenger);
+            expect(this.plague1.attachedTo).toBe(this.challenger);
 
             this.player2.pass();
 

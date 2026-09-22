@@ -297,9 +297,9 @@
                 this.player2.pass();
                 this.player1.clickCard(this.akodoZentaro);
                 this.player1.clickCard(this.matsuBerserker);
-                expect(this.fineKatana.parent).toBe(this.akodoZentaro);
-                expect(this.ornateFan.parent).toBe(this.akodoZentaro);
-                expect(this.aboveQuestion.parent).toBe(this.akodoZentaro);
+                expect(this.fineKatana.attachedTo).toBe(this.akodoZentaro);
+                expect(this.ornateFan.attachedTo).toBe(this.akodoZentaro);
+                expect(this.aboveQuestion.attachedTo).toBe(this.akodoZentaro);
                 expect(this.aboveQuestion.controller).toBe(this.player2.player);
             });
 

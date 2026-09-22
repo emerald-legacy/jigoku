@@ -13,7 +13,7 @@ export default class JurojinsCurse extends DrawCard {
             title: 'Resolve a second fate phase',
             when: {
                 onPhaseEnded: (event, context) =>
-                    context.source.parent && event.phase === Phases.Fate && !context.source.parent.bowed
+                    context.source.attachedCharacter && event.phase === Phases.Fate && !context.source.attachedCharacter.bowed
             },
             effect: 'resolve a second fate phase after this',
             gameAction: AbilityDsl.actions.playerLastingEffect({

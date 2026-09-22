@@ -14,7 +14,7 @@ export default class PromisingYouth extends DrawCard {
         this.wouldInterrupt({
             title: 'when attached char leaves play, turn into character',
             when: {
-                onCardLeavesPlay: (event, context) => event.card === context.source.parent
+                onCardLeavesPlay: (event, context) => event.card === context.source.attachedCharacter
             },
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cardLastingEffect((context) => ({

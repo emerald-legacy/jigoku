@@ -22,7 +22,7 @@ class ExpertBartering extends DrawCard {
             gameAction: AbilityDsl.actions.joint([
                 AbilityDsl.actions.ifAble<DrawCard>(context => ({
                     ifAbleAction: AbilityDsl.actions.attach({
-                        target: context.source.parent,
+                        target: context.source.attachedCharacter,
                         attachment: context.target,
                         takeControl: context.target?.controller !== context.player
                     }),
@@ -30,7 +30,7 @@ class ExpertBartering extends DrawCard {
                 })),
                 AbilityDsl.actions.ifAble<DrawCard>(context => ({
                     ifAbleAction: AbilityDsl.actions.attach({
-                        target: context.target?.parent ?? undefined,
+                        target: context.target?.attachedCharacter ?? undefined,
                         attachment: context.source,
                         giveControl: context.target?.controller !== context.player
                     }),

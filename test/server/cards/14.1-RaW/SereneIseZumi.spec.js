@@ -92,7 +92,7 @@ describe('Serene Ise Zumi', function() {
 
                 expect(this.sereneIseZumi.location).toBe('play area');
                 expect(this.sereneIseZumi.type).toBe('attachment');
-                expect(this.sereneIseZumi.parent).toBe(this.challenger);
+                expect(this.sereneIseZumi.attachedTo).toBe(this.challenger);
                 expect(this.player1.fate).toBe(playerfate - 1);
             });
 

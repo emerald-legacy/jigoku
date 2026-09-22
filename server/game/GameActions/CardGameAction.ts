@@ -172,7 +172,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
                     attachmentEvent.order = event.order - 1;
                     let previousCondition = attachmentEvent.condition;
                     attachmentEvent.condition = (attachmentEvent) =>
-                        previousCondition(attachmentEvent) && attachment.parent === evCard;
+                        previousCondition(attachmentEvent) && attachment.attachedTo === evCard;
                     attachmentEvent.isContingent = true;
                     contingentEvents.push(attachmentEvent);
                 }

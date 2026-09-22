@@ -9,11 +9,11 @@ export default class PrayersOnTheEveOfBattle extends DrawCard {
         this.forcedReaction({
             title: 'Reap your rewards',
             when: {
-                afterConflict: (event, context) => !!context.source.parent
+                afterConflict: (event, context) => !!context.source.attachedCharacter
             },
             gameAction: AbilityDsl.actions.conditional(context => ({
-                condition: context.source.parent.isParticipating() &&
-                    context.event.conflict.winner === context.source.parent.controller,
+                condition: context.source.attachedCharacter.isParticipating() &&
+                    context.event.conflict.winner === context.source.attachedCharacter.controller,
                 trueGameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.gainFate({
                         amount: 1,

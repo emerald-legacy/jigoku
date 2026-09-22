@@ -12,9 +12,9 @@ export default class UnderAmaterasusGaze extends BattlefieldAttachment {
 
         this.persistentEffect({
             condition: (context: AbilityContext<this>): boolean =>
-                !!context.source.parent &&
+                !!context.source.attachedTo &&
                 context.game.isDuringConflict() &&
-                (context.source.parent as DrawCard).isConflictProvince() &&
+                (context.source.attachedTo as DrawCard).isConflictProvince() &&
                 !!context.player.opponent &&
                 context.player.opponent.honor < context.player.honor + 5,
             targetController: Players.Opponent,
@@ -26,9 +26,9 @@ export default class UnderAmaterasusGaze extends BattlefieldAttachment {
 
         this.persistentEffect({
             condition: (context: AbilityContext<this>): boolean =>
-                !!context.source.parent &&
+                !!context.source.attachedTo &&
                 context.game.isDuringConflict() &&
-                (context.source.parent as DrawCard).isConflictProvince() &&
+                (context.source.attachedTo as DrawCard).isConflictProvince() &&
                 !!context.player.opponent &&
                 context.player.honor < context.player.opponent.honor + 5,
             targetController: Players.Self,

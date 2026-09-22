@@ -16,7 +16,7 @@ export default class SenseisHeirloom extends DrawCard {
             },
             gameAction: AbilityDsl.actions.deckSearch((context: AbilityContext<DrawCard, DrawCard>) => ({
                 reveal: false,
-                amount: 2 * (context.source.parent as DrawCard).printedGlory,
+                amount: 2 * (context.source.attachedCharacter as DrawCard).printedGlory,
                 gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand })
             }))
         });

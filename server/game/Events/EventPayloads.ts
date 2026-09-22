@@ -113,7 +113,7 @@ export interface EventPayloadMap {
     [EventName.OnDeckShuffled]: BaseEventPayload & { player: Player; deck: Decks };
     [EventName.OnCardAttached]: BaseEventPayload & {
         card: BaseCard;
-        parent: DrawCard | Ring;
+        parent: BaseCard | Ring;
         originalLocation?: Location;
     };
     [EventName.AfterDuel]: BaseEventPayload & {

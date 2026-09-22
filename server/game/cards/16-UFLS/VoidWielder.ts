@@ -37,7 +37,7 @@ class VoidWielder extends DrawCard {
                             cardType: CardType.Attachment,
                             player: context.targets.character.controller === context.player ? Players.Self : Players.Opponent,
                             activePromptTitle: 'Which attachment do you wish to discard?',
-                            cardCondition: (card, context) => card.parent === context.targets.character,
+                            cardCondition: (card, context) => card.attachedCharacter === context.targets.character,
                             gameAction: AbilityDsl.actions.discardFromPlay(),
                             effect: 'discard an attachment from {0}',
                             effectArgs: () => context.targets.character,

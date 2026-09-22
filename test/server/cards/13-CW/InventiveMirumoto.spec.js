@@ -59,7 +59,7 @@ describe('Inventive Mirumoto', function() {
                 this.player1.clickCard(this.inventiveMirumoto);
                 this.player1.clickCard(this.jade);
                 expect(this.player1.fate).toBe(playerFateBefore - 1);
-                expect(this.jade.parent).toBe(this.inventiveMirumoto);
+                expect(this.jade.attachedTo).toBe(this.inventiveMirumoto);
             });
 
             it('should make you pay costs for the attachments - 2nd test', function() {
@@ -70,7 +70,7 @@ describe('Inventive Mirumoto', function() {
                 this.player1.clickCard(this.inventiveMirumoto);
                 this.player1.clickCard(this.daisho);
                 expect(this.player1.fate).toBe(playerFateBefore - 2);
-                expect(this.daisho.parent).toBe(this.inventiveMirumoto);
+                expect(this.daisho.attachedTo).toBe(this.inventiveMirumoto);
             });
         });
     });

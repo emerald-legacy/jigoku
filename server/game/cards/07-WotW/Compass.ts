@@ -12,7 +12,7 @@ class Compass extends DrawCard {
             when: {
                 onCardRevealed: (event: EventPayload<EventName.OnCardRevealed>, context: TriggeredAbilityContext<this>) =>
                     event.card && event.card.type === CardType.Province && event.card.controller === context.player.opponent &&
-                    context.source && context.source.parent && (context.source.parent as DrawCard).isParticipating() &&
+                    context.source && context.source.attachedCharacter && (context.source.attachedCharacter as DrawCard).isParticipating() &&
                     (context.player.dynastyDeck.length > 0 || context.player.conflictDeck.length > 0)
             },
             effect: 'look at the top 3 cards of one of their decks',

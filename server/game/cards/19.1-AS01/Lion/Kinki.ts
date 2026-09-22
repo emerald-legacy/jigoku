@@ -15,8 +15,8 @@ export default class Kinki extends DrawCard {
             cost: AbilityDsl.costs.sacrificeSelf(),
             condition: (context) =>
                 !!(context.game.isDuringConflict('military') &&
-                context.source.parent &&
-                context.source.parent.isParticipating()),
+                context.source.attachedCharacter &&
+                context.source.attachedCharacter.isParticipating()),
             targets: {
                 character: {
                     cardType: CardType.Character,

@@ -40,7 +40,7 @@
             this.player2.clickPrompt('1');
 
             expect(this.player1).not.toBeAbleToSelect(this.gichin);
-            expect(this.madness.parent).toBeFalsy();
+            expect(this.madness.attachedTo).toBeFalsy();
         });
 
         it('duel win', function () {
@@ -72,7 +72,7 @@
             expect(this.player1).toBeAbleToSelect(this.breath);
 
             this.player1.clickCard(this.madness);
-            expect(this.madness.parent).toBe(this.challenger);
+            expect(this.madness.attachedTo).toBe(this.challenger);
 
             expect(this.getChatLogs(5)).toContain('player1 poisons Doji Challenger');
             expect(this.getChatLogs(5)).toContain('player1 attaches Fiery Madness');
@@ -130,7 +130,7 @@
             this.player1.clickCard(this.gichin);
             this.player1.clickCard(this.toturi);
             this.player1.clickCard(this.madness);
-            expect(this.madness.parent).toBe(this.toturi);
+            expect(this.madness.attachedTo).toBe(this.toturi);
 
             expect(this.player1.honor).toBe(honor);
             expect(this.player2.honor).toBe(honor2);

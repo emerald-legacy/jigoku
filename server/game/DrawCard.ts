@@ -51,7 +51,6 @@ class DrawCard extends BaseCard {
     ];
 
     defaultController: Player;
-    parent: DrawCard | null;
     printedMilitarySkill: number;
     printedPoliticalSkill: number;
     printedCost: number | null;
@@ -119,7 +118,6 @@ class DrawCard extends BaseCard {
         this.skillCalculator = new SkillCalculator(this);
 
         this.defaultController = owner;
-        this.parent = null;
 
         this.printedMilitarySkill = this.getPrintedSkill('military');
         this.printedPoliticalSkill = this.getPrintedSkill('political');
@@ -189,7 +187,7 @@ class DrawCard extends BaseCard {
         const politicalBonus = parseInt(this.cardData.political_bonus ?? '');
         if(!isNaN(militaryBonus)) {
             this.persistentEffect({
-                match: (card) => card === this.parent,
+                match: (card) => card === this.attachedTo,
                 targetController: Players.Any,
                 effect: AbilityDsl.effects.attachmentMilitarySkillModifier(() =>
                     this.isAttachmentBonusModifierSwitchActive() ? politicalBonus : militaryBonus
@@ -198,7 +196,7 @@ class DrawCard extends BaseCard {
         }
         if(!isNaN(politicalBonus)) {
             this.persistentEffect({
-                match: (card) => card === this.parent,
+                match: (card) => card === this.attachedTo,
                 targetController: Players.Any,
                 effect: AbilityDsl.effects.attachmentPoliticalSkillModifier(() =>
                     this.isAttachmentBonusModifierSwitchActive() ? militaryBonus : politicalBonus
@@ -217,7 +215,7 @@ class DrawCard extends BaseCard {
     whileAttached<T extends GameObject = GameObject>(properties: Pick<PersistentEffectProps<this, T>, 'condition' | 'match' | 'effect'>) {
         this.persistentEffect({
             condition: properties.condition || (() => true),
-            match: (card, context) => card === this.parent && (!properties.match || properties.match(card as T, context)),
+            match: (card, context) => card === this.attachedTo && (!properties.match || properties.match(card as T, context)),
             targetController: Players.Any,
             effect: properties.effect
         });
@@ -386,7 +384,7 @@ class DrawCard extends BaseCard {
         clone.bowed = this.bowed;
         clone.fate = this.fate;
         clone.inConflict = this.inConflict;
-        clone.parent = this.parent;
+        clone.attachedTo = this.attachedTo;
         clone.facedown = this.facedown;
 
         // Copy printed stats
@@ -661,9 +659,9 @@ class DrawCard extends BaseCard {
      */
     leavesPlay(_destination?: string): void {
         // If this is an attachment and is attached to another card, we need to remove all links between them
-        if(this.parent && this.parent.attachments) {
-            this.parent.removeAttachment(this);
-            this.parent = null;
+        if(this.attachedTo && this.attachedTo.attachments) {
+            this.attachedTo.removeAttachment(this);
+            this.attachedTo = null;
         }
 
         // Remove any cards underneath from the game
@@ -976,7 +974,7 @@ class DrawCard extends BaseCard {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup ?? false);
 
         return Object.assign(baseSummary, {
-            attached: !!this.parent,
+            attached: !!this.attachedTo,
             attachments: this.attachments.map((attachment: DrawCard) => {
                 return attachment.getSummary(activePlayer, hideWhenFaceup);
             }),

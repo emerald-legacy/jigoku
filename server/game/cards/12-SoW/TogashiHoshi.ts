@@ -11,7 +11,7 @@ class TogashiHoshi extends DrawCard {
             title: 'Turn attachment into character',
             gameAction: AbilityDsl.actions.selectCard({
                 cardType: CardType.Attachment,
-                cardCondition: (card, context) => card.parent?.controller === context.player,
+                cardCondition: (card, context) => card.attachedCharacter?.controller === context.player,
                 subActionProperties: (card: DrawCard) => ({
                     target: card,
                     effect: [AbilityDsl.effects.changeType(CardType.Character)].concat(

@@ -58,7 +58,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
         }
         if(
             !(context.source as DrawCard).canPlay(context, PlayType.PlayFromProvince) ||
-            !((context.source as DrawCard).parent as DrawCard).canTriggerAbilities(context)
+            !(context.source.attachedTo instanceof DrawCard && context.source.attachedTo.canTriggerAbilities(context))
         ) {
             return 'cannotTrigger';
         }
@@ -73,7 +73,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
             '{0} plays {1} from {2} with {3} additional fate',
             context.player,
             context.source,
-            (context.source as DrawCard).parent,
+            context.source.attachedTo,
             context.chooseFate
         );
         context.source.abilities.playActions = context.source.abilities.playActions.filter(
@@ -81,7 +81,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
         );
         // remove associations between this card and Back-Alley Hideaway
         this.backAlleyCard.removeAttachment(context.source as DrawCard);
-        (context.source as DrawCard).parent = null;
+        context.source.attachedTo = null;
         let putIntoPlayEvent = putIntoPlay({ fate: context.chooseFate }).getEvent(context.source, context);
         let cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
             player: context.player,
@@ -130,7 +130,7 @@ export default class BackAlleyHideaway extends DrawCard {
                     card.leavesPlay();
                     card.moveTo(context.source.uuid as Location);
                     (context.source as BackAlleyHideaway).attachments.push(card);
-                    card.parent = context.source;
+                    card.attachedTo = context.source;
                     card.abilities.playActions.push(new BackAlleyPlayCharacterAction(context.source as BackAlleyHideaway, card));
                 });
             }

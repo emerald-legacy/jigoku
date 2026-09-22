@@ -12,9 +12,9 @@ class SolitaryStrength extends DrawCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.delayedEffect({
                 condition: (context: AbilityContext<this>) => {
-                    if(context.source.parent && (context.source.parent as DrawCard).isParticipating()) {
+                    if(context.source.attachedCharacter && (context.source.attachedCharacter as DrawCard).isParticipating()) {
                         let participantsForController = (this.game.currentConflict && this.game.currentConflict.getNumberOfParticipantsFor(context.player)) ?? 0;
-                        let parentOwnedByController = (context.source.parent as DrawCard).controller === context.player;
+                        let parentOwnedByController = (context.source.attachedCharacter as DrawCard).controller === context.player;
                         if(parentOwnedByController) {
                             participantsForController = Math.max(0, participantsForController - 1);
                         }
@@ -23,7 +23,7 @@ class SolitaryStrength extends DrawCard {
                     return false;
                 },
                 message: '{0} is discarded from play as {1} is not participating alone in the conflict',
-                messageArgs: (context: AbilityContext<this>) => [context.source, context.source.parent],
+                messageArgs: (context: AbilityContext<this>) => [context.source, context.source.attachedCharacter],
                 gameAction: AbilityDsl.actions.discardFromPlay()
             })
         });
@@ -31,8 +31,8 @@ class SolitaryStrength extends DrawCard {
         this.reaction({
             title: 'Gain 1 honor',
             when: {
-                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => context.source.parent && context.source.parent.isParticipating() &&
-                                                   event.conflict.winner === context.source.parent.controller
+                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => context.source.attachedCharacter && context.source.attachedCharacter.isParticipating() &&
+                                                   event.conflict.winner === context.source.attachedCharacter.controller
             },
             gameAction: AbilityDsl.actions.gainHonor()
         });

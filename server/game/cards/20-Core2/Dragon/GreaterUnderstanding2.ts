@@ -17,16 +17,16 @@ export default class GreaterUnderstanding extends DrawCard {
 
         this.reaction({
             when: {
-                onMoveFate: (event, context) => event.recipient === context.source.parent,
-                onPlaceFateOnUnclaimedRings: (event, context) => context.source.parent instanceof Ring && context.source.parent.isUnclaimed()
+                onMoveFate: (event, context) => event.recipient === context.source.attachedTo,
+                onPlaceFateOnUnclaimedRings: (event, context) => context.source.attachedTo instanceof Ring && context.source.attachedTo.isUnclaimed()
             },
             title: 'Resolve the attached ring\'s effect',
-            gameAction: AbilityDsl.actions.resolveRingEffect((context) => ({ target: context.source.parent })),
+            gameAction: AbilityDsl.actions.resolveRingEffect((context) => ({ target: context.source.attachedTo })),
             then: (context) => ({
                 gameAction: AbilityDsl.actions.selectRing({
                     activePromptTitle: 'Choose a ring to attach Greater Understanding',
                     player: Players.Opponent,
-                    ringCondition: (ring) => ring !== (context?.source.parent as unknown) && ring.getFate() === 0,
+                    ringCondition: (ring) => ring !== (context?.source.attachedTo as unknown) && ring.getFate() === 0,
                     subActionProperties: (ring) => ({ attachment: context?.source, target: ring }),
                     gameAction: AbilityDsl.actions.attachToRing(),
                     message: '{0} moves {1} to {2} - enlightenment is elusive',

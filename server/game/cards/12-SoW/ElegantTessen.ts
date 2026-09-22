@@ -11,11 +11,11 @@ class ElegantTessen extends DrawCard {
             title: 'Ready attached character',
             when: {
                 onCardAttached: (event: EventPayload<EventName.OnCardAttached>, context) => (
-                    context.source.parent && event.card === context.source && ((context.source.parent as DrawCard).getCost() ?? 0) <= 2 &&
+                    context.source.attachedCharacter && event.card === context.source && ((context.source.attachedCharacter as DrawCard).getCost() ?? 0) <= 2 &&
                     event.originalLocation !== Location.PlayArea
                 )
             },
-            gameAction: AbilityDsl.actions.ready(context => ({ target: context.source.parent }))
+            gameAction: AbilityDsl.actions.ready(context => ({ target: context.source.attachedCharacter }))
         });
     }
 }

@@ -36,7 +36,7 @@ describe('Fawning Diplomat', function() {
                 this.player1.clickCard(this.cloud);
                 this.player1.clickCard(this.fawningDiplomat);
 
-                expect(this.cloud.parent).toBe(this.fawningDiplomat);
+                expect(this.cloud.attachedTo).toBe(this.fawningDiplomat);
 
                 this.player2.pass();
 

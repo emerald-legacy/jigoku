@@ -105,7 +105,7 @@ const checkRestrictions: Record<string, RestrictionCheck> = {
     opponentsCharacters: (context, effect) =>
         context.source.type === CardType.Character && context.source.controller === getApplyingPlayer(effect).opponent,
     opponentsCharacterAbilitiesWithLowerGlory: (context, effect) => {
-        const parent = (effect.context.source as DrawCard).parent;
+        const parent = effect.context.source.attachedCharacter;
         return context.source.type === CardType.Character &&
             context.source.controller === getApplyingPlayer(effect).opponent &&
             !!parent && (context.source as DrawCard).glory < parent.glory;

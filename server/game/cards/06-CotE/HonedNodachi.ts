@@ -15,8 +15,8 @@ class HonedNodachi extends DrawCard {
         this.reaction({
             title: 'Remove a fate from attached character and force opponent to discard a participating character',
             when: {
-                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => context.source.parent && context.source.parent.isParticipating() &&
-                                                   event.conflict.winner === context.source.parent.controller &&
+                afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => context.source.attachedCharacter && context.source.attachedCharacter.isParticipating() &&
+                                                   event.conflict.winner === context.source.attachedCharacter.controller &&
                                                    event.conflict.conflictType === 'military'
             },
             cost: ability.costs.removeFateFromParent(),

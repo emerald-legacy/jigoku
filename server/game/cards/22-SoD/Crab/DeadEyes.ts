@@ -16,9 +16,9 @@ export default class DeadEyes extends DrawCard {
 
         this.action({
             title: 'Increase a character\'s military skill',
-            condition: context => !!(context.game.isDuringConflict(ConflictType.Military) && context.source.parent),
+            condition: context => !!(context.game.isDuringConflict(ConflictType.Military) && context.source.attachedCharacter),
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: context.source.parent,
+                target: context.source.attachedCharacter,
                 effect: [
                     AbilityDsl.effects.modifyMilitarySkill(2),
                     AbilityDsl.effects.cardCannot({
@@ -29,7 +29,7 @@ export default class DeadEyes extends DrawCard {
                     AbilityDsl.effects.delayedEffect({
                         when: {
                             afterConflict: (event: EventPayload<EventName.AfterConflict>) => {
-                                if(!context.source.parent) {
+                                if(!context.source.attachedCharacter) {
                                     return false;
                                 }
                                 if(context.source.controller !== event.conflict.winner) {
@@ -43,12 +43,12 @@ export default class DeadEyes extends DrawCard {
                         },
                         gameAction: AbilityDsl.actions.sacrifice(),
                         message: '{0} is sacrificed due to the delayed effect of {1}',
-                        messageArgs: [context.source.parent, context.source]
+                        messageArgs: [context.source.attachedCharacter, context.source]
                     })
                 ]
             })),
             effect: 'grant +2{2} to {1}, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill',
-            effectArgs: context => [context.source.parent ?? '', 'military']
+            effectArgs: context => [context.source.attachedCharacter ?? '', 'military']
         });
     }
 }

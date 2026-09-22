@@ -12,7 +12,7 @@ class KaradaDistrict extends DrawCard {
             cost: AbilityDsl.costs.giveFateToOpponent(1),
             target: {
                 cardType: CardType.Attachment,
-                cardCondition: (card, context) => Boolean(card.parent && card.parent.controller === context.player.opponent)
+                cardCondition: (card, context) => Boolean(card.attachedCharacter && card.attachedCharacter.controller === context.player.opponent)
             },
             gameAction: AbilityDsl.actions.ifAble((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                 ifAbleAction: AbilityDsl.actions.selectCard({

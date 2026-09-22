@@ -8,7 +8,7 @@ class PathfindersBlade extends DrawCard {
         this.wouldInterrupt({
             title: 'Cancel conflict province ability',
             when: {
-                onInitiateAbilityEffects: (event, context) => context.source.parent && context.source.parent.isAttacking() && event.card.isConflictProvince()
+                onInitiateAbilityEffects: (event, context) => context.source.attachedCharacter && context.source.attachedCharacter.isAttacking() && event.card.isConflictProvince()
             },
             cost: AbilityDsl.costs.sacrificeSelf(),
             effect: 'cancel the effects of {1}\'s ability',

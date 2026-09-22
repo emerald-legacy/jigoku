@@ -8,14 +8,14 @@ export default class KakitaBlade extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            condition: () => !!this.parent && (this.game.currentDuel?.isInvolvedInAnyDuel(this.parent) ?? false),
+            condition: () => !!this.attachedCharacter && (this.game.currentDuel?.isInvolvedInAnyDuel(this.attachedCharacter) ?? false),
             effect: AbilityDsl.effects.modifyPoliticalSkill(2)
         });
 
         this.reaction({
             title: 'Gain honor on duel win',
             when: {
-                afterDuel: (event: EventPayload<EventName.AfterDuel>, context) => event.winner?.includes(context.source.parent as DrawCard) ?? false
+                afterDuel: (event: EventPayload<EventName.AfterDuel>, context) => event.winner?.includes(context.source.attachedCharacter as DrawCard) ?? false
             },
             gameAction: AbilityDsl.actions.gainHonor()
         });

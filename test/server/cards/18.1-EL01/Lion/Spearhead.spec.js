@@ -67,7 +67,7 @@ describe('Spearhead', function() {
             const province = this.player1.findCardByName('shameful-display', 'province 1');
             province.facedown = false;
             this.player1.playAttachment(this.buttressing, province);
-            expect(this.buttressing.parent).toBe(province);
+            expect(this.buttressing.attachedTo).toBe(province);
 
             this.noMoreActions();
             this.initiateConflict({

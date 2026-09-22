@@ -35,7 +35,7 @@ describe('Honest Assessment', function() {
             expect(this.player2).toBeAbleToSelect(this.diplomat);
             expect(this.player2).not.toBeAbleToSelect(this.challenger);
             this.player2.clickCard(this.diplomat);
-            expect(this.assessment.parent).toBe(this.diplomat);
+            expect(this.assessment.attachedTo).toBe(this.diplomat);
         });
 
         it('should react on entering play and prompt you to name a card', function() {

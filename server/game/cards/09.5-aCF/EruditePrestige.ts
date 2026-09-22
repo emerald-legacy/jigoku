@@ -13,14 +13,14 @@ class EruditePrestige extends DrawCard {
             title: 'Give attached character +1 political',
             limit: AbilityDsl.limit.unlimitedPerConflict(),
             when: {
-                onCardPlayed: (event, context) => context.source.parent && event.player === context.player && context.source.parent.isParticipating()
+                onCardPlayed: (event, context) => context.source.attachedCharacter && event.player === context.player && context.source.attachedCharacter.isParticipating()
             },
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: context.source.parent,
+                target: context.source.attachedCharacter,
                 effect: AbilityDsl.effects.modifyPoliticalSkill(1)
             })),
             effect: 'give +1{1} to {2}',
-            effectArgs: context => ['political', context.source.parent as DrawCard]
+            effectArgs: context => ['political', context.source.attachedCharacter as DrawCard]
         });
     }
 }

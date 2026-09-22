@@ -10,7 +10,7 @@ export default class IntoTheForbiddenCity extends ProvinceCard {
             title: 'Discard an attachment',
             target: {
                 cardType: CardType.Attachment,
-                cardCondition: (card) => card.parent?.type === CardType.Character && card.parent.isAttacking(),
+                cardCondition: (card) => card.attachedCharacter?.isAttacking() === true,
                 gameAction: AbilityDsl.actions.discardFromPlay()
             }
         });

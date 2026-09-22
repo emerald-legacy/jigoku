@@ -87,7 +87,7 @@ describe('Back-Alley Hideaway', function() {
 
                 expect(this.manipulator.location).not.toBe('dynasty discard pile');
                 expect(this.manipulator.location).not.toBe('play area');
-                expect(this.manipulator.parent).toBe(this.backAlley);
+                expect(this.manipulator.attachedTo).toBe(this.backAlley);
                 expect(this.backAlley.attachments).toContain(this.manipulator);
                 expect(this.manipulator.abilities.playActions.some(
                     (action) => action.title === 'Play this character from Back-Alley Hideaway'
@@ -100,7 +100,7 @@ describe('Back-Alley Hideaway', function() {
                 this.player2.clickPrompt('Pass');
 
                 expect(this.manipulator.location).toBe('dynasty discard pile');
-                expect(this.manipulator.parent).toBeFalsy();
+                expect(this.manipulator.attachedTo).toBeFalsy();
                 expect(this.backAlley.attachments).not.toContain(this.manipulator);
             });
 
@@ -108,7 +108,7 @@ describe('Back-Alley Hideaway', function() {
                 assassinate(this.player1, this.mystic);
 
                 expect(this.mystic.location).toBe('dynasty discard pile');
-                expect(this.mystic.parent).toBeFalsy();
+                expect(this.mystic.attachedTo).toBeFalsy();
                 expect(this.backAlley.attachments).not.toContain(this.mystic);
             });
         });
@@ -150,7 +150,7 @@ describe('Back-Alley Hideaway', function() {
                 expect(this.game.currentPhase).toBe('conflict');
                 this.player2.clickCard(this.manipulator);
                 expect(this.manipulator.location).toBe(this.backAlley.uuid);
-                expect(this.manipulator.parent).toBe(this.backAlley);
+                expect(this.manipulator.attachedTo).toBe(this.backAlley);
             });
 
             it('plays the stored character into play and sacrifices the holding', function() {
@@ -162,7 +162,7 @@ describe('Back-Alley Hideaway', function() {
 
                 expect(this.manipulator.location).toBe('play area');
                 expect(this.backAlley.location).toBe('dynasty discard pile');
-                expect(this.manipulator.parent).toBeFalsy();
+                expect(this.manipulator.attachedTo).toBeFalsy();
                 expect(this.manipulator.abilities.playActions.some(
                     (action) => action.title === 'Play this character from Back-Alley Hideaway'
                 )).toBe(false);

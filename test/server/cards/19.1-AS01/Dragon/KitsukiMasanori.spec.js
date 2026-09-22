@@ -117,7 +117,7 @@ describe('Kitsuki Masanori', function () {
 
                 this.player1.clickPrompt(this.duelistTraining.name);
 
-                expect(this.duelistTraining.parent).toBe(this.masanori);
+                expect(this.duelistTraining.attachedTo).toBe(this.masanori);
                 expect(this.duelistTraining.location).toBe('play area');
 
                 expect(this.getChatLogs(8)).toContain(
@@ -149,7 +149,7 @@ describe('Kitsuki Masanori', function () {
                 expect(this.player1).toHavePromptButton(this.justicarsApproach.name);
 
                 this.player1.clickPrompt(this.justicarsApproach.name);
-                expect(this.justicarsApproach.parent).toBe(this.masanori);
+                expect(this.justicarsApproach.attachedTo).toBe(this.masanori);
                 expect(this.justicarsApproach.location).toBe('play area');
 
                 expect(this.getChatLogs(8)).toContain(

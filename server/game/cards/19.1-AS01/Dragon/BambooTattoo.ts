@@ -28,21 +28,21 @@ export default class BambooTattoo extends DrawCard {
             title: 'Ready attached character',
             when: {
                 onCardBowed: (event: EventPayload<EventName.OnCardBowed>, context) =>
-                    context.source.parent &&
-                    event.card === context.source.parent &&
+                    context.source.attachedCharacter &&
+                    event.card === context.source.attachedCharacter &&
                     (event.context?.source.type as string) !== 'ring' &&
                     event.context?.source.name !== 'Framework effect'
             },
             gameAction: AbilityDsl.actions.multiple([
-                AbilityDsl.actions.ready((context) => ({ target: context.source.parent })),
+                AbilityDsl.actions.ready((context) => ({ target: context.source.attachedCharacter })),
                 AbilityDsl.actions.conditional({
                     condition: (context: AbilityContext) => this.isSelfTrigger(context as TriggeredAbilityContext<this>),
-                    trueGameAction: AbilityDsl.actions.dishonor((context) => ({ target: context.source.parent })),
+                    trueGameAction: AbilityDsl.actions.dishonor((context) => ({ target: context.source.attachedCharacter })),
                     falseGameAction: AbilityDsl.actions.noAction()
                 })
             ]),
             effect: 'ready{1} {2}',
-            effectArgs: (context) => [this.isSelfTrigger(context) ? ' and dishonor' : '', context.source.parent as DrawCard]
+            effectArgs: (context) => [this.isSelfTrigger(context) ? ' and dishonor' : '', context.source.attachedCharacter as DrawCard]
         });
     }
 

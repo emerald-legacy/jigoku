@@ -45,7 +45,7 @@ describe('Educated Heimin', function() {
             expect(this.player1).toBeAbleToSelect(this.frog);
             expect(this.player1).not.toBeAbleToSelect(this.fields);
             this.player1.clickCard(this.garden);
-            expect(this.heimin.parent).toBe(this.garden);
+            expect(this.heimin.attachedTo).toBe(this.garden);
         });
 
         it('should let you pick cards to refill (province is facedown) and work with refill faceup effects', function() {

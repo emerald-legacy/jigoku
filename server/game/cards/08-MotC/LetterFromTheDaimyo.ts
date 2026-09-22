@@ -13,8 +13,8 @@ class LetterFromTheDaimyo extends DrawCard {
             title: 'Make opponent discard 2 cards',
             cost: AbilityDsl.costs.sacrificeSelf(),
             when: {
-                afterConflict: (event, context) => context.source.parent && context.source.parent.isParticipating() &&
-                                                   event.conflict.winner === context.source.parent.controller &&
+                afterConflict: (event, context) => context.source.attachedCharacter && context.source.attachedCharacter.isParticipating() &&
+                                                   event.conflict.winner === context.source.attachedCharacter.controller &&
                                                    event.conflict.conflictType === 'political'
             },
             gameAction: AbilityDsl.actions.chosenDiscard({ amount: 2 })

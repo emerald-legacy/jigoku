@@ -15,7 +15,7 @@ export default class HirumaHajime extends DrawCard {
                     location: [Location.Provinces, Location.PlayArea],
                     cardCondition: card =>
                         Boolean((card.isInProvince() && card.type !== CardType.Province && card.type !== CardType.Stronghold) ||
-                            (card.type === CardType.Attachment && card.parent && card.parent.type === CardType.Province))
+                            (card.type === CardType.Attachment && card.attachedTo && card.attachedTo.type === CardType.Province))
                 },
                 province: {
                     targets: false,
@@ -26,11 +26,11 @@ export default class HirumaHajime extends DrawCard {
                         card.location !== Location.StrongholdProvince &&
                         !(card as ProvinceCard).isBroken &&
                         ( //same controller check
-                            ((context.targets.cardInProvince as DrawCard).type === CardType.Attachment && card.controller === (context.targets.cardInProvince as DrawCard).parent?.controller) ||
+                            ((context.targets.cardInProvince as DrawCard).type === CardType.Attachment && card.controller === (context.targets.cardInProvince as DrawCard).attachedProvince?.controller) ||
                             ((context.targets.cardInProvince as DrawCard).type !== CardType.Attachment && card.controller === (context.targets.cardInProvince as DrawCard).controller)
                         ) &&
                         ( //different location check
-                            ((context.targets.cardInProvince as DrawCard).type === CardType.Attachment && card.location !== (context.targets.cardInProvince as DrawCard).parent?.location) ||
+                            ((context.targets.cardInProvince as DrawCard).type === CardType.Attachment && card.location !== (context.targets.cardInProvince as DrawCard).attachedProvince?.location) ||
                             ((context.targets.cardInProvince as DrawCard).type !== CardType.Attachment && card.location !== (context.targets.cardInProvince as DrawCard).location)
                         ),
                     gameAction: AbilityDsl.actions.conditional(context => ({

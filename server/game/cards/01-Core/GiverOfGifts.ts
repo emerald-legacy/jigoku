@@ -14,7 +14,7 @@ class GiverOfGifts extends DrawCard {
                 controller: Players.Self,
                 gameAction: ability.actions.selectCard((context: AbilityContext) => ({
                     controller: Players.Self,
-                    cardCondition: (card: DrawCard) => card !== (context.target as DrawCard).parent,
+                    cardCondition: (card: DrawCard) => card !== (context.target as DrawCard).attachedCharacter,
                     message: '{0} moves {1} to {2}',
                     messageArgs: (card: DrawCard) => [context.player, context.target, card],
                     gameAction: ability.actions.attach({ attachment: context.target as DrawCard })

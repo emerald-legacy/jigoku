@@ -1,21 +1,19 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
+import { ProvinceAttachment } from '../../ProvinceAttachment.js';
 import { Conflict } from '../../../Conflict.js';
 
-export default class WardOfEarthenThorns extends DrawCard {
+export default class WardOfEarthenThorns extends ProvinceAttachment {
     static id = 'ward-of-earthen-thorns';
 
     public setupCardAbilities() {
-        this.attachmentConditions({ myControl: true });
-
         this.persistentEffect({
             targetLocation: Location.Provinces,
-            targetController: Players.Self,
+            targetController: Players.Any,
             condition: (context) => context.source.controller.hasAffinity('earth', context),
-            match: (card, context) => card.type === CardType.Province && card === context?.source.parent,
+            match: (card, context) => card.type === CardType.Province && card === context?.source.attachedTo,
             effect: AbilityDsl.effects.modifyProvinceStrength(1)
         });
 
@@ -24,7 +22,7 @@ export default class WardOfEarthenThorns extends DrawCard {
             condition: (context) =>
                 (context.game.currentConflict as Conflict | undefined)
                     ?.getConflictProvinces()
-                    .some((province) => (context.source.parent as BaseCard | null) === province) ?? false,
+                    .some((province) => context.source.attachedTo === province) ?? false,
             target: {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking(),
@@ -38,24 +36,6 @@ export default class WardOfEarthenThorns extends DrawCard {
             context.player.cardsInPlay.some(
                 (card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja')
             ) && super.canPlay(context, playType)
-        );
-    }
-
-    canPlayOn(source: BaseCard) {
-        return (
-            source &&
-            source.controller === this.controller &&
-            source.getType() === CardType.Province &&
-            this.getType() === CardType.Attachment
-        );
-    }
-
-    canAttach(parent: BaseCard) {
-        return (
-            parent &&
-            parent.controller === this.controller &&
-            parent.getType() === CardType.Province &&
-            this.getType() === CardType.Attachment
         );
     }
 }

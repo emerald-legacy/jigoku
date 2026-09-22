@@ -28,12 +28,12 @@ describe('Makeshift War Camp', function() {
 
         it('should be able to played on a province', function() {
             this.player1.playAttachment(this.warCamp, this.ancestralLands);
-            expect(this.warCamp.parent).toBe(this.ancestralLands);
+            expect(this.warCamp.attachedTo).toBe(this.ancestralLands);
         });
 
         it('should be discarded if another battlefield is played', function() {
             this.player1.playAttachment(this.warCamp, this.ancestralLands);
-            expect(this.warCamp.parent).toBe(this.ancestralLands);
+            expect(this.warCamp.attachedTo).toBe(this.ancestralLands);
             this.player2.pass();
             this.player1.playAttachment(this.totalWarfare, this.ancestralLands);
             expect(this.warCamp.location).toBe('conflict discard pile');

@@ -10,7 +10,7 @@ class SharpenedTsuruhashi extends DrawCard {
         this.interrupt({
             title: 'Return Sharpened Tsuruhashi to your hand',
             when: {
-                onCardLeavesPlay: (event: EventPayload<EventName.OnCardLeavesPlay>, context) => event.isSacrifice && event.card === context.source.parent
+                onCardLeavesPlay: (event: EventPayload<EventName.OnCardLeavesPlay>, context) => event.isSacrifice && event.card === context.source.attachedCharacter
             },
             gameAction: AbilityDsl.actions.returnToHand(context => ({
                 target: context.source

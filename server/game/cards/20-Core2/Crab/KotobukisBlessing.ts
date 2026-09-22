@@ -18,7 +18,7 @@ export default class KotobukisBlessing extends DrawCard {
                         numCards: 1,
                         cardType: CardType.Attachment,
                         controller: Players.Any,
-                        cardCondition: (card) => card.parent === context.target,
+                        cardCondition: (card) => card.attachedCharacter === context.target,
                         activePromptTitle: 'Choose up to 1 attachment',
                         optional: true,
                         gameAction: AbilityDsl.actions.discardFromPlay(),

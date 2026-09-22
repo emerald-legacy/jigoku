@@ -16,8 +16,8 @@ export default class CherishedFamilyServant extends DrawCard {
             match: (card: DrawCard, context) =>
                 !!(card.getType() === CardType.Attachment &&
                 card.hasTrait('poison') &&
-                card.parent &&
-                context?.source.controller === card.parent.controller),
+                card.attachedCharacter &&
+                context?.source.controller === card.attachedCharacter.controller),
             effect: AbilityDsl.effects.addKeyword('ancestral'),
             targetController: Players.Any
         });

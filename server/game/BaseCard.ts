@@ -34,6 +34,7 @@ import { StatusToken } from './StatusToken.js';
 import Player from './Player.js';
 import type BaseAction from './BaseAction.js';
 import Ring from './Ring.js';
+import type { ProvinceCard } from './ProvinceCard.js';
 import type { CardEffect } from './Effects/types.js';
 import type Effect from './Effects/Effect.js';
 import type { EffectFactory } from './Effects/EffectBuilder.js';
@@ -116,6 +117,19 @@ class BaseCard extends EffectSource {
     protected statusManager!: CardStatusManager;
     allowedAttachmentTraits = [] as string[];
     protected attachmentHost = new AttachmentManager(this);
+
+    /** What this card is attached to, or null — the inverse of `attachments`. */
+    attachedTo: BaseCard | Ring | null = null;
+
+    /** The attached character, in the cards' sense; null when attached to anything else. */
+    get attachedCharacter(): DrawCard | null {
+        return this.attachedTo instanceof BaseCard && this.attachedTo.isCharacter() ? this.attachedTo : null;
+    }
+
+    /** The attached province, in the cards' sense; null when attached to anything else. */
+    get attachedProvince(): ProvinceCard | null {
+        return this.attachedTo instanceof BaseCard && this.attachedTo.isProvinceCard() ? this.attachedTo : null;
+    }
 
     get attachments(): DrawCard[] {
         return this.attachmentHost.attachments;
@@ -582,6 +596,16 @@ class BaseCard extends EffectSource {
         const factionArray = [...addedFactions, cardFaction].filter(faction => !lostFactions.includes(faction));
 
         return new Set(factionArray);
+    }
+
+    /** Narrows to `DrawCard`: an attachment may be attached to a province or a ring instead. */
+    isCharacter(): this is DrawCard {
+        return this.type === CardType.Character;
+    }
+
+    /** Narrows to `ProvinceCard`, the counterpart of `isCharacter`. */
+    isProvinceCard(): this is ProvinceCard {
+        return this.isProvince;
     }
 
     isInProvince(): boolean {

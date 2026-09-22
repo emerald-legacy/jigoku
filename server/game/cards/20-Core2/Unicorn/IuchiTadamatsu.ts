@@ -17,7 +17,7 @@ export default class IuchiTadamatsu extends DrawCard {
             title: 'Ready this character',
             cost: AbilityDsl.costs.sacrifice({
                 cardType: CardType.Attachment,
-                cardCondition: (card, context) => card.parent === context.source
+                cardCondition: (card, context) => card.attachedCharacter === context.source
             }),
             gameAction: AbilityDsl.actions.ready()
         });
