@@ -16,7 +16,7 @@ export default class OnikageRider extends BaseOni {
                     context.player.opponent !== undefined
             },
             gameAction: AbilityDsl.actions.discardCard((context) => ({
-                target: context.player.opponent.getDynastyCardsInProvince(Location.Provinces)
+                target: context.player.opponent?.getDynastyCardsInProvince(Location.Provinces)
             }))
         });
     }

@@ -12,8 +12,8 @@ export default class PrayersOnTheEveOfBattle extends DrawCard {
                 afterConflict: (event, context) => !!context.source.attachedCharacter
             },
             gameAction: AbilityDsl.actions.conditional(context => ({
-                condition: context.source.attachedCharacter.isParticipating() &&
-                    context.event.conflict.winner === context.source.attachedCharacter.controller,
+                condition: context.source.attachedCharacter?.isParticipating() &&
+                    context.event.conflict?.winner === context.source.attachedCharacter?.controller,
                 trueGameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.gainFate({
                         amount: 1,

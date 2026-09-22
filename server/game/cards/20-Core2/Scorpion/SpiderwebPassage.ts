@@ -38,7 +38,7 @@ export default class SpiderwebPassage extends DrawCard {
 
                 return {
                     condition: () =>
-                        context.player.opponent.hand.length >= discardCount &&
+                        (context.player.opponent?.hand.length ?? 0) >= discardCount &&
                         discardFromHandAction.canAffect(context.player.opponent, context),
                     falseGameAction: killAction,
                     trueGameAction: AbilityDsl.actions.chooseAction(context => ({
@@ -49,7 +49,7 @@ export default class SpiderwebPassage extends DrawCard {
                                 action: discardFromHandAction,
                                 message: '{0} distracts the Shinobi'
                             },
-                            [`Discard ${context.target.name}`]: {
+                            [`Discard ${context.target?.name}`]: {
                                 action: killAction,
                                 message: `{0} refuses to discard ${discardCount} cards. {2} is discarded`
                             }

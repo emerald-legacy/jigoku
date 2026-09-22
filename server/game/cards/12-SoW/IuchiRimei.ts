@@ -13,7 +13,7 @@ class IuchiRimei extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: card => Boolean(card.costLessThan(2) && card.attachedCharacter),
                 gameAction: AbilityDsl.actions.selectCard(context => ({
-                    cardCondition: card => card !== context.target.attachedCharacter && card.controller === context.target.attachedCharacter.controller && card.type === CardType.Character,
+                    cardCondition: card => card !== context.target?.attachedCharacter && card.controller === context.target?.attachedCharacter?.controller && card.type === CardType.Character,
                     message: '{0} moves {1} to {2}',
                     messageArgs: card => [context.player, context.target, card],
                     gameAction: AbilityDsl.actions.ifAble(context => ({

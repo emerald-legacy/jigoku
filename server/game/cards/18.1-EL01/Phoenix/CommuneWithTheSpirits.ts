@@ -15,7 +15,7 @@ class CommuneWithTheSpirits extends DrawCard {
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.takeFateFromRing(context => ({
                         target: context.ring,
-                        amount: context.ring.fate,
+                        amount: context.ring?.fate,
                         removeOnly: true
                     })),
                     AbilityDsl.actions.claimRing({ takeFate: false, type: 'political'})

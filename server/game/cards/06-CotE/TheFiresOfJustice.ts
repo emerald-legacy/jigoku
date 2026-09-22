@@ -25,7 +25,7 @@ class TheFiresOfJustice extends DrawCard {
                         'Remove all fate': AbilityDsl.actions.removeFate(context => ({ target: context.targets.character, amount: context.targets.character.getFate() })),
                         'Move fate to character': AbilityDsl.actions.menuPrompt(context => ({
                             activePromptTitle: 'Select fate amount:',
-                            choices: Array.from(Array(context.player.opponent.fate), (x, i) => (i + 1).toString()),
+                            choices: Array.from(Array(context.player.opponent?.fate), (x, i) => (i + 1).toString()),
                             choiceHandler: (choice, displayMessage) => {
                                 if(displayMessage) {
                                     this.game.addMessage('{0} chooses to move {1} fate from {2}\'s pool to {3}', context.player, choice, context.player.opponent, context.targets.character);

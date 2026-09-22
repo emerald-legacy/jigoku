@@ -17,7 +17,7 @@ export default class BreezeOfDawnLodge extends StrongholdCard {
                 controller: Players.Self,
                 cardCondition: (card: DrawCard) => !card.bowed,
                 gameAction: AbilityDsl.actions.conditional(({ target }) => ({
-                    condition: () => target.isParticipating(),
+                    condition: () => !!target?.isParticipating(),
                     trueGameAction: AbilityDsl.actions.sendHome({ target }),
                     falseGameAction: AbilityDsl.actions.moveToConflict({ target })
                 }))

@@ -43,7 +43,7 @@ export default class SandRoadMerchant extends DrawCard {
                         reveal: true
                     })),
                     AbilityDsl.actions.chooseAction(() => {
-                        let topCard = context.player.opponent.conflictDeck[0];
+                        let topCard = context.player.opponent?.conflictDeck[0];
                         return {
                             activePromptTitle: topCard && 'Choose an action for ' + topCard.name,
                             player: Players.Opponent,
@@ -55,7 +55,7 @@ export default class SandRoadMerchant extends DrawCard {
                                 'Put on the bottom of your deck': {
                                     action: AbilityDsl.actions.handler({
                                         handler: () => {
-                                            context.player.opponent.moveCard(
+                                            context.player.opponent?.moveCard(
                                                 topCard,
                                                 Location.ConflictDeck + ' bottom'
                                             );

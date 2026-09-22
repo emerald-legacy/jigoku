@@ -19,10 +19,10 @@ class DiversionaryManeuver extends DrawCard {
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.multiple([
                     AbilityDsl.actions.bow(context => ({
-                        target: context.game.currentConflict.getParticipants()
+                        target: context.game.currentConflict?.getParticipants()
                     })),
                     AbilityDsl.actions.sendHome(context => ({
-                        target: context.game.currentConflict.getParticipants()
+                        target: context.game.currentConflict?.getParticipants()
                     })),
                     AbilityDsl.actions.moveConflict<ProvinceCard>(context => ({
                         target: context.target })),

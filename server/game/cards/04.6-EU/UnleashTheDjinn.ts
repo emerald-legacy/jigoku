@@ -10,7 +10,7 @@ class UnleashTheDjinn extends DrawCard {
             condition: () => this.game.isDuringConflict(),
             cost: AbilityDsl.costs.payHonor(3),
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: context.game.currentConflict.getParticipants(),
+                target: context.game.currentConflict?.getParticipants(),
                 effect: [
                     AbilityDsl.effects.setMilitarySkill(3),
                     AbilityDsl.effects.setPoliticalSkill(3)

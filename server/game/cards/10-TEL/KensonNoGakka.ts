@@ -12,7 +12,7 @@ export default class KensonNoGakka extends ProvinceCard {
                     context.source.isConflictProvince() && event.conflict.loser === context.player
             },
             gameAction: AbilityDsl.actions.honor((context) => ({
-                target: context.game.currentConflict.getDefenders()
+                target: context.game.currentConflict?.getDefenders()
             }))
         });
     }
