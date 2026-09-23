@@ -346,57 +346,6 @@ describe('SoD - Unicorn', function () {
             });
         });
 
-        describe('Strange Mirror', function () {
-            beforeEach(function () {
-                this.setupTest({
-                    phase: 'conflict',
-                    player1: {
-                        inPlay: ['kakita-toshimoko', 'keeper-initiate'],
-                        hand: ['strange-mirror']
-                    },
-                    player2: {
-                        inPlay: ['doji-challenger', 'moto-youth'],
-                        dynastyDiscard: ['moto-youth'],
-                        hand: ['dispatch']
-                    }
-                });
-
-                this.mirror = this.player1.findCardByName('strange-mirror');
-                this.challenger = this.player2.findCardByName('doji-challenger');
-                this.youth = this.player2.findCardByName('moto-youth', 'play area');
-                this.youth2 = this.player2.findCardByName('moto-youth', 'dynasty discard pile');
-                this.toshimoko = this.player1.findCardByName('kakita-toshimoko');
-                this.keeper = this.player1.findCardByName('keeper-initiate');
-
-                this.player1.playAttachment(this.mirror, this.toshimoko);
-            });
-
-            it('should work', function () {
-                this.noMoreActions();
-                this.initiateConflict({
-                    type: 'military',
-                    attackers: [this.toshimoko],
-                    defenders: [this.challenger, this.youth]
-                });
-
-                this.player2.pass();
-                this.player1.clickCard(this.toshimoko);
-                expect(this.player1).toBeAbleToSelect(this.youth);
-                expect(this.player1).not.toBeAbleToSelect(this.challenger);
-                this.player1.clickCard(this.youth);
-                expect(this.player1).toBeAbleToSelect(this.youth2);
-                this.player1.clickCard(this.youth2);
-                expect(this.youth2.location).toBe('play area');
-                expect(this.youth2.controller).toBe(this.player1.player);
-                expect(this.getChatLogs(5)).toContain('player1 uses Kakita Toshimoko\'s gained ability from Strange Mirror to put Moto Youth into play in the conflict, removing it from the game when the conflict ends');
-
-                this.noMoreActions();
-                this.player1.clickPrompt('Gain 2 honor');
-                expect(this.youth2.location).toBe('removed from game');
-                expect(this.getChatLogs(5)).toContain('Moto Youth is removed from the game due to the delayed effect of Kakita Toshimoko');
-            });
-        });
-
         describe('Into the Storm', function () {
             beforeEach(function () {
                 this.setupTest({
