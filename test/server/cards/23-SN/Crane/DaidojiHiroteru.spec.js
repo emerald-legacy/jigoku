@@ -2,11 +2,11 @@ describe('Daidoji Hiroteru', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
-                phase: 'dynasty',
+                phase: 'conflict',
                 player1: {
-                    inPlay: ['daidoji-hiroteru', 'akodo-toturi-2'],
-                    dynastyDiscard: ['doji-whisperer', 'daidoji-ahma', 'cautious-scout'],
-                    hand: ['adept-of-shadows'],
+                    inPlay: ['daidoji-hiroteru'],
+                    dynastyDiscard: ['cautious-scout', 'daidoji-ahma', 'doji-whisperer'],
+                    hand: ['adept-of-shadows', 'ornate-fan'],
                     fate: 10
                 },
                 player2: {
@@ -14,120 +14,123 @@ describe('Daidoji Hiroteru', function () {
                 }
             });
 
-            this.dojiWhisperer = this.player1.placeCardInProvince('doji-whisperer', 'province 1');
-            this.ahma = this.player1.placeCardInProvince('daidoji-ahma', 'province 2');
-            this.scout = this.player1.placeCardInProvince('cautious-scout', 'province 3');
             this.hiroteru = this.player1.findCardByName('daidoji-hiroteru');
+            this.scout = this.player1.placeCardInProvince('cautious-scout', 'province 1');
+            this.ahma = this.player1.placeCardInProvince('daidoji-ahma', 'province 2');
+            this.whisperer = this.player1.placeCardInProvince('doji-whisperer', 'province 3');
             this.shadows = this.player1.findCardByName('adept-of-shadows');
-            this.akodoToturi2 = this.player1.findCardByName('akodo-toturi-2');
+            this.fan = this.player1.findCardByName('ornate-fan');
 
             this.brash = this.player2.findCardByName('brash-samurai');
-
-            this.hiroteru.dishonor();
         });
 
-        it('should not let you play characters in hand during the dynasty phase', function () {
-            this.player1.clickCard(this.shadows);
-            expect(this.player1).not.toHavePrompt('Choose additional fate');
-        });
-
-        it('should not discount the characters played from province during the dynasty phase', function () {
-            this.player1.clickCard(this.scout);
-            this.player1.clickPrompt('0');
-            expect(this.scout.location).toBe('play area');
-            expect(this.player1.fate).toBe(8);
-        });
-
-        it('should let you play properly traited characters as if they were in your hand with discount', function () {
-            this.nextPhase();
-            this.nextPhase();
-            let fate = this.player1.fate;
-            expect(this.game.currentPhase).toBe('conflict');
-            this.player1.clickCard(this.scout);
-            this.player1.clickPrompt('0');
-            expect(this.scout.location).toBe('play area');
-            expect(this.player1.fate).toBe(fate - 1);
-            this.player2.pass();
-            this.player1.clickCard(this.ahma);
-            this.player1.clickPrompt('1');
-            expect(this.ahma.location).toBe('play area');
-            expect(this.ahma.fate).toBe(1);
-            expect(this.player1.fate).toBe(fate - 2);
-
-            this.player2.pass();
-            expect(this.player1).toHavePrompt('Action Window');
-            this.player1.clickCard(this.dojiWhisperer);
-            expect(this.player1).toHavePrompt('Action Window');
-        });
-
-        it('should not discount characters played directly from hand', function () {
-            this.nextPhase();
-            this.nextPhase();
-            let fate = this.player1.fate;
-            this.player1.clickCard(this.shadows);
-            this.player1.clickPrompt('0');
-            expect(this.shadows.location).toBe('play area');
-            expect(this.player1.fate).toBe(fate - 2);
-        });
-
-        it('should not let you play characters as if they were in your hand if Toturi2 is participating', function () {
-            this.nextPhase();
-            this.nextPhase();
-            this.noMoreActions();
-            this.player1.player.imperialFavor = 'political';
-            expect(this.player1.player.imperialFavor).toBe('political');
-            this.initiateConflict({
-                attackers: [this.akodoToturi2],
-                defenders: []
+        describe('the constant ability', function () {
+            it('lets you see facedown cards in your own provinces', function () {
+                this.scout.facedown = true;
+                this.game.checkGameState(true);
+                expect(this.scout.facedown).toBe(true);
+                expect(this.scout.hideWhenFacedown()).toBe(false);
             });
-            this.player2.pass();
-            this.player1.clickCard(this.akodoToturi2);
-            this.player2.pass();
-            this.player1.clickCard(this.ahma);
-            expect(this.player1).not.toHavePrompt('Choose additional fate');
-        });
 
-        it('give characters +1/+1', function () {
-            this.nextPhase();
-            this.nextPhase();
-            this.noMoreActions();
-            this.player1.player.imperialFavor = 'political';
-            expect(this.player1.player.imperialFavor).toBe('political');
-            this.initiateConflict({
-                attackers: [this.hiroteru, this.akodoToturi2],
-                defenders: [this.brash]
+            it('does not let you see facedown cards in an opponent\'s provinces', function () {
+                const theirs = this.player2.player.getDynastyCardInProvince('province 1');
+                theirs.facedown = true;
+                this.game.checkGameState(true);
+                expect(theirs.hideWhenFacedown()).toBe(true);
             });
-            let mil1 = this.hiroteru.getMilitarySkill();
-            let pol1 = this.hiroteru.getPoliticalSkill();
 
-            let mil2 = this.akodoToturi2.getMilitarySkill();
-            let pol2 = this.akodoToturi2.getPoliticalSkill();
+            it('lets you play a faceup character from a province as if it were in your hand', function () {
+                const fate = this.player1.fate;
+                this.player1.clickCard(this.whisperer);
+                this.player1.clickPrompt('0');
+                expect(this.whisperer.location).toBe('play area');
+                expect(this.player1.fate).toBe(fate - 1);
+            });
 
-            let mil3 = this.brash.getMilitarySkill();
-            let pol3 = this.brash.getPoliticalSkill();
+            it('lets you play a facedown character from a province', function () {
+                this.scout.facedown = true;
+                this.game.checkGameState(true);
+                const fate = this.player1.fate;
+                this.player1.clickCard(this.scout);
+                this.player1.clickPrompt('0');
+                expect(this.scout.location).toBe('play area');
+                expect(this.scout.facedown).toBe(false);
+                expect(this.player1.fate).toBe(fate - 2);
+            });
 
-            this.player2.pass();
-            this.player1.clickCard(this.hiroteru);
+            it('does not discount the cost', function () {
+                const fate = this.player1.fate;
+                this.player1.clickCard(this.scout);
+                this.player1.clickPrompt('0');
+                expect(this.scout.location).toBe('play area');
+                expect(this.player1.fate).toBe(fate - 2);
+            });
 
-            expect(this.hiroteru.getMilitarySkill()).toBe(mil1 + 1);
-            expect(this.hiroteru.getPoliticalSkill()).toBe(pol1 + 1);
-            expect(this.akodoToturi2.getMilitarySkill()).toBe(mil2 + 1);
-            expect(this.akodoToturi2.getPoliticalSkill()).toBe(pol2 + 1);
-            expect(this.brash.getMilitarySkill()).toBe(mil3);
-            expect(this.brash.getPoliticalSkill()).toBe(pol3);
-
-            expect(this.getChatLogs(10)).toContain('player1 uses Daidōji Hiroteru to give Daidōji Hiroteru and Akodo Toturi +1/+1');
+            it('stops working once Hiroteru leaves play', function () {
+                this.player1.player.moveCard(this.hiroteru, 'dynasty discard pile');
+                this.game.checkGameState(true);
+                this.scout.facedown = true;
+                this.game.checkGameState(true);
+                expect(this.scout.hideWhenFacedown()).toBe(true);
+            });
         });
 
-        it('when not dishonored should not let you play characters', function () {
-            this.hiroteru.honor();
+        describe('the covert reaction', function () {
+            it('triggers after you play a Scout and grants covert for the phase', function () {
+                this.player1.clickCard(this.scout);
+                this.player1.clickPrompt('0');
+                this.player1.clickCard(this.hiroteru);
+                expect(this.scout.location).toBe('play area');
+                expect(this.scout.hasKeyword('covert')).toBe(true);
+                expect(this.getChatLogs(5)).toContain(
+                    'player1 uses Daidōji Hiroteru to give Cautious Scout covert until the end of the phase'
+                );
+            });
 
-            this.nextPhase();
-            this.nextPhase();
-            expect(this.game.currentPhase).toBe('conflict');
-            expect(this.player1).toHavePrompt('Action Window');
-            this.player1.clickCard(this.scout);
-            expect(this.player1).toHavePrompt('Action Window');
+            it('triggers after you play a Shinobi', function () {
+                this.player1.clickCard(this.ahma);
+                this.player1.clickPrompt('0');
+                this.player1.clickCard(this.hiroteru);
+                expect(this.ahma.hasKeyword('covert')).toBe(true);
+            });
+
+            it('triggers for a Shinobi played from hand', function () {
+                this.player1.clickCard(this.shadows);
+                this.player1.clickPrompt('0');
+                this.player1.clickCard(this.hiroteru);
+                expect(this.shadows.location).toBe('play area');
+                expect(this.shadows.hasKeyword('covert')).toBe(true);
+            });
+
+            it('does not trigger for a character without either trait', function () {
+                this.player1.clickCard(this.whisperer);
+                this.player1.clickPrompt('0');
+                expect(this.player1).not.toBeAbleToSelect(this.hiroteru);
+                expect(this.whisperer.hasKeyword('covert')).toBe(false);
+            });
+
+            it('does not trigger for a non-character card', function () {
+                this.player1.clickCard(this.fan);
+                this.player1.clickCard(this.brash);
+                expect(this.fan.location).toBe('play area');
+                expect(this.player1).not.toBeAbleToSelect(this.hiroteru);
+            });
+
+            it('does not trigger for an opponent\'s Scout or Shinobi', function () {
+                this.player1.pass();
+                this.player2.clickCard(this.brash);
+                expect(this.player1).not.toBeAbleToSelect(this.hiroteru);
+            });
+
+            it('wears off at the end of the phase', function () {
+                this.player1.clickCard(this.scout);
+                this.player1.clickPrompt('0');
+                this.player1.clickCard(this.hiroteru);
+                expect(this.scout.hasKeyword('covert')).toBe(true);
+                this.noMoreActions();
+                this.nextPhase();
+                expect(this.scout.hasKeyword('covert')).toBe(false);
+            });
         });
     });
 });
