@@ -1,3 +1,4 @@
+import type DrawCard from '../../../DrawCard.js';
 import { CardType, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -25,7 +26,7 @@ export default class LastJudgementPlains extends ProvinceCard {
                     gameAction: AbilityDsl.actions.menuPrompt(({ targets }) => ({
                         activePromptTitle: 'How much fate do you want to move?',
                         optional: false,
-                        choices: this.#createChoiceArray(targets[DONOR].getFate()),
+                        choices: this.#createChoiceArray((targets[DONOR] as DrawCard).getFate()),
                         choiceHandler: (choice) => ({
                             amount: parseInt(choice, 10),
                             origin: targets[DONOR],

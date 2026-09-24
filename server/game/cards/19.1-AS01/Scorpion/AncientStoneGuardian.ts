@@ -32,7 +32,7 @@ export default class AncientStoneGuardian extends DrawCard {
                     player: (context) => (context.player.firstPlayer ? Players.Self : Players.Opponent),
                     cardCondition: (card, context) => this.cardCanBeChosenForDishonor(card, context as TriggeredAbilityContext<DrawCard>),
                     gameAction: AbilityDsl.actions.sequentialContext((context) =>
-                        this.dishonorAndDraw(context.targets.firstCharacter)
+                        this.dishonorAndDraw(context.targets.firstCharacter as DrawCard)
                     )
                 },
                 secondCharacter: {
@@ -44,7 +44,7 @@ export default class AncientStoneGuardian extends DrawCard {
                     player: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self),
                     cardCondition: (card, context) => this.cardCanBeChosenForDishonor(card, context as TriggeredAbilityContext<DrawCard>),
                     gameAction: AbilityDsl.actions.sequentialContext((context) =>
-                        this.dishonorAndDraw(context.targets.secondCharacter)
+                        this.dishonorAndDraw(context.targets.secondCharacter as DrawCard)
                     )
                 }
             },

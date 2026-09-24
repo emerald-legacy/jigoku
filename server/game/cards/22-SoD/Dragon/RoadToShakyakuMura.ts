@@ -42,7 +42,7 @@ export default class RoadToShakyakuMura extends DrawCard {
                     AbilityDsl.actions.putIntoProvince({
                         target: context.event.card,
                         canBeStronghold: true,
-                        destination: context.costs.captureLocationCost
+                        destination: context.costs.captureLocationCost as Location
                     })
                 ])
             })),

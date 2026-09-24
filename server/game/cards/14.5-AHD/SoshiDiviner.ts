@@ -30,7 +30,7 @@ class SoshiDiviner extends DrawCard {
                         ),
                     gameAction: AbilityDsl.actions.moveCard(context => ({
                         target: context.targets.cardInProvince,
-                        destination: context.targets.province.location
+                        destination: (context.targets.province as ProvinceCard).location
                     }))
                 }
             },

@@ -1,3 +1,4 @@
+import type Ring from '../../../Ring.js';
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +16,7 @@ export default class ContemplateTheEternal extends DrawCard {
                 cardCondition: (card: DrawCard) =>
                     !card.bowed && !card.attachments.some((attachment) => !attachment.hasTrait('tattoo')),
                 gameAction: AbilityDsl.actions.placeFate((context) => ({
-                    amount: context.costs.returnRing ? context.costs.returnRing.length : 1
+                    amount: context.costs.returnRing ? (context.costs.returnRing as Ring[]).length : 1
                 }))
             }
         });

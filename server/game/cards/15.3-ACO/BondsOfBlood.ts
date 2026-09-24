@@ -16,7 +16,7 @@ class BondsOfBlood extends DrawCard {
             cannotTargetFirst: true,
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.sendHome(context => ({target: context.target })),
-                AbilityDsl.actions.sendHome(context => ({target: context.costs.dishonor }))
+                AbilityDsl.actions.sendHome(context => ({target: context.costs.dishonor as DrawCard }))
             ])
         });
     }

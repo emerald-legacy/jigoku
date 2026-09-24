@@ -1,3 +1,4 @@
+import type Ring from '../../Ring.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -9,7 +10,7 @@ class AncestralShrine extends DrawCard {
             title: 'Return rings to gain honor',
             cost: AbilityDsl.costs.returnRings(),
             gameAction: AbilityDsl.actions.gainHonor(context => ({
-                amount: context.costs.returnRing ? context.costs.returnRing.length : 1
+                amount: context.costs.returnRing ? (context.costs.returnRing as Ring[]).length : 1
             }))
         });
     }

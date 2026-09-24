@@ -35,14 +35,14 @@ class Logistics extends DrawCard {
                         ),
                     gameAction: AbilityDsl.actions.multiple([
                         AbilityDsl.actions.conditional(context => ({
-                            condition: context.targets.cardInProvince.type === CardType.Attachment,
+                            condition: (context.targets.cardInProvince as DrawCard).type === CardType.Attachment,
                             trueGameAction: AbilityDsl.actions.attach({
                                 target: context.targets.province,
-                                attachment: context.targets.cardInProvince
+                                attachment: context.targets.cardInProvince as DrawCard
                             }),
                             falseGameAction: AbilityDsl.actions.moveCard({
                                 target: context.targets.cardInProvince,
-                                destination: context.targets.province.location
+                                destination: (context.targets.province as ProvinceCard).location
                             })
                         })),
                         AbilityDsl.actions.draw(context => ({ target: context.game.isTraitInPlay('battlefield') ? context.player : [] }))

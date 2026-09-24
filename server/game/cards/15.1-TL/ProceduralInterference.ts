@@ -23,7 +23,7 @@ class ProceduralInterference extends DrawCard {
                     choices: {
                         'Discard each card in the province': AbilityDsl.actions.moveCard(context => ({
                             destination: Location.DynastyDiscardPile,
-                            target: context.targets.province.controller.getDynastyCardsInProvince(context.targets.province.location)
+                            target: (context.targets.province as ProvinceCard).controller.getDynastyCardsInProvince((context.targets.province as ProvinceCard).location)
                         })),
                         'Let opponent gain 2 honor': AbilityDsl.actions.gainHonor({
                             amount: 2

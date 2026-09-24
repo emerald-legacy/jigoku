@@ -24,7 +24,7 @@ class ByAnyMeans extends DrawCard {
                     cardCondition: (card) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.cardLastingEffect(context => {
                         let effects = [];
-                        let oppCharacter = context.targets.oppCharacter;
+                        let oppCharacter = context.targets.oppCharacter as DrawCard;
                         if(oppCharacter.hasDash('military')) {
                             effects.push(AbilityDsl.effects.setBaseDash('military'));
                         } else {

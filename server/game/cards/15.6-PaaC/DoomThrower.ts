@@ -22,7 +22,7 @@ class DoomThrower extends DrawCard {
                 messageArgs: cards => [context.player, cards],
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.modifyProvinceStrength((context.costs.sacrificeStateWhenChosen && context.costs.sacrificeStateWhenChosen.getFate() > 0) ? -5 : -2)
+                    effect: AbilityDsl.effects.modifyProvinceStrength((context.costs.sacrificeStateWhenChosen && (context.costs.sacrificeStateWhenChosen as DrawCard).getFate() > 0) ? -5 : -2)
                 })
             }))
         });

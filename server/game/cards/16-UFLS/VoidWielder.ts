@@ -22,10 +22,10 @@ class VoidWielder extends DrawCard {
                     dependsOn: 'character',
                     player: context => (context.targets.character as DrawCard).controller === context.player ? Players.Self : Players.Opponent,
                     choices: {
-                        'Move this character home': AbilityDsl.actions.sendHome(context => ({ target: context.targets.character })),
+                        'Move this character home': AbilityDsl.actions.sendHome(context => ({ target: context.targets.character as DrawCard })),
                         'Discard a status token from this character': AbilityDsl.actions.selectToken(context => ({
-                            card: context.targets.character,
-                            player: context.targets.character.controller === context.player ? Players.Self : Players.Opponent,
+                            card: context.targets.character as DrawCard,
+                            player: (context.targets.character as DrawCard).controller === context.player ? Players.Self : Players.Opponent,
                             activePromptTitle: 'Which token do you wish to discard?',
                             message: '{0} discards {1}',
                             effect: 'discard a status token from {0}',
@@ -35,7 +35,7 @@ class VoidWielder extends DrawCard {
                         })),
                         'Discard an attachment from this character': AbilityDsl.actions.selectCard(context => ({
                             cardType: CardType.Attachment,
-                            player: context.targets.character.controller === context.player ? Players.Self : Players.Opponent,
+                            player: (context.targets.character as DrawCard).controller === context.player ? Players.Self : Players.Opponent,
                             activePromptTitle: 'Which attachment do you wish to discard?',
                             cardCondition: (card, context) => card.parentCharacter === context.targets.character,
                             gameAction: AbilityDsl.actions.discardFromPlay(),

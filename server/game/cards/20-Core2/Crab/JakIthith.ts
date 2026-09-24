@@ -37,7 +37,7 @@ export default class JakIthith extends DrawCard {
                     cardCondition: (card) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.ifAble((context) => ({
                         ifAbleAction: AbilityDsl.actions.attach({
-                            attachment: context.targets[ATTACHMENT],
+                            attachment: context.targets[ATTACHMENT] as DrawCard,
                             target: context.targets[RECEIVER],
                             takeControl: true
                         }),

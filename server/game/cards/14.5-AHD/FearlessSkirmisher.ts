@@ -29,7 +29,7 @@ class FearlessSkirmisher extends DrawCard {
                     cardType: CardType.Character,
                     gameAction: AbilityDsl.actions.moveStatusToken((context) => ({
                         target: context.tokens.token,
-                        recipient: context.targets.character
+                        recipient: context.targets.character as DrawCard
                     }))
                 }
             }
