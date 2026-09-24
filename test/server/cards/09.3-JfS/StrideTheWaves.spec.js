@@ -42,7 +42,7 @@ describe('Stride the waves', function () {
                 this.player2.pass();
 
                 expect(this.player1).toHavePrompt('Conflict Action Window');
-                expect(this.strideTheWaves.attachedTo).toBe(this.solemnScholar);
+                expect(this.strideTheWaves.parent).toBe(this.solemnScholar);
 
                 this.player1.clickCard(this.strideTheWaves);
                 expect(this.solemnScholar.inConflict).toBe(false);

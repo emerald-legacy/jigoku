@@ -12,7 +12,7 @@ export default class StrangeMirror extends DrawCard {
             title: 'Put the event underneath attached character',
             when: {
                 onCardPlayed: (event, context) =>
-                    !!context.source.attachedCharacter &&
+                    !!context.source.parentCharacter &&
                     event.card.type === CardType.Event &&
                     event.player === context.player.opponent &&
                     // the event is only movable once it has finished resolving
@@ -20,10 +20,10 @@ export default class StrangeMirror extends DrawCard {
             },
             gameAction: AbilityDsl.actions.placeCardUnderneath((context) => ({
                 target: context.event.card,
-                destination: context.source.attachedCharacter ?? undefined
+                destination: context.source.parentCharacter ?? undefined
             })),
             effect: 'put {1} facedown underneath {2}',
-            effectArgs: (context) => [context.event.card, context.source.attachedCharacter]
+            effectArgs: (context) => [context.event.card, context.source.parentCharacter]
         });
 
         this.action({
@@ -37,7 +37,7 @@ export default class StrangeMirror extends DrawCard {
                     controller: Players.Any,
                     cardCondition: (card) => this.eventsUnderneath(context).includes(card),
                     message: '{0} plays {1} from underneath {2}',
-                    messageArgs: (card: BaseCard) => [context.player, card, context.source.attachedCharacter],
+                    messageArgs: (card: BaseCard) => [context.player, card, context.source.parentCharacter],
                     // the selected card becomes this action's target
                     gameAction: AbilityDsl.actions.playCard({
                         source: this,
@@ -62,18 +62,18 @@ export default class StrangeMirror extends DrawCard {
                             message: '{0} sacrifices {1}'
                         },
                         'Injure attached character': {
-                            action: AbilityDsl.actions.injure({ target: context.source.attachedCharacter ?? [] }),
+                            action: AbilityDsl.actions.injure({ target: context.source.parentCharacter ?? [] }),
                             message: '{0} injures {2}'
                         }
                     },
-                    messageArgs: [context.source, context.source.attachedCharacter]
+                    messageArgs: [context.source, context.source.parentCharacter]
                 }))
             ])
         });
     }
 
     private eventsUnderneath(context: AbilityContext<this>): DrawCard[] {
-        const character = context.source.attachedCharacter;
+        const character = context.source.parentCharacter;
         if(!character) {
             return [];
         }

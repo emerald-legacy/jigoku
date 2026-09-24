@@ -45,7 +45,7 @@ describe('Developing Masterpiece', function () {
             this.player1.clickCard(this.yoshi);
 
             expect(this.masterpiece.location).toBe('play area');
-            expect(this.masterpiece.attachedTo).toBe(this.yoshi);
+            expect(this.masterpiece.parent).toBe(this.yoshi);
         });
 
         it('should prevent participating', function () {
@@ -90,7 +90,7 @@ describe('Developing Masterpiece', function () {
             this.player1.clickCard(this.yoshi);
 
             expect(this.masterpiece.location).toBe('play area');
-            expect(this.masterpiece.attachedTo).toBe(this.yoshi);
+            expect(this.masterpiece.parent).toBe(this.yoshi);
 
             this.player2.clickCard(this.letGo);
             this.player2.clickCard(this.masterpiece);
@@ -99,7 +99,7 @@ describe('Developing Masterpiece', function () {
             this.player1.clickCard(this.arms);
 
             expect(this.masterpiece.location).toBe('play area');
-            expect(this.masterpiece.attachedTo).toBe(this.arms);
+            expect(this.masterpiece.parent).toBe(this.arms);
         });
 
         it('not playable in conflict', function () {

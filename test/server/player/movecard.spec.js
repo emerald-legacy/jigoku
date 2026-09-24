@@ -102,7 +102,7 @@ describe('Player - moveCard', function () {
             describe('when the card has attachments', function () {
                 beforeEach(function () {
                     this.attachment = new DrawCard(this.player, {});
-                    this.attachment.attachedTo = this.card;
+                    this.attachment.parent = this.card;
                     this.attachment.location = 'play area';
                     this.card.attachments.push(this.attachment);
                     spyOn(this.attachment, 'leavesPlay');
@@ -119,7 +119,7 @@ describe('Player - moveCard', function () {
                 beforeEach(function () {
                     this.attachment = new DrawCard(this.player, { type: 'attachment' });
                     this.attachment.isConflict = true;
-                    this.attachment.attachedTo = this.card;
+                    this.attachment.parent = this.card;
                     this.attachment.location = 'play area';
                     this.card.attachments.push(this.attachment);
 

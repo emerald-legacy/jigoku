@@ -11,9 +11,9 @@ class Castigated extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             effect: AbilityDsl.effects.delayedEffect({
-                condition: (context: AbilityContext<this>) => !!context.source.attachedCharacter && !context.source.attachedCharacter.hasDash('political') && context.source.attachedCharacter.getPoliticalSkill() < 1,
+                condition: (context: AbilityContext<this>) => !!context.source.parentCharacter && !context.source.parentCharacter.hasDash('political') && context.source.parentCharacter.getPoliticalSkill() < 1,
                 message: '{0} is discarded by {1}',
-                messageArgs: (context: AbilityContext<this>) => [context.source.attachedCharacter, context.source],
+                messageArgs: (context: AbilityContext<this>) => [context.source.parentCharacter, context.source],
                 gameAction: AbilityDsl.actions.discardFromPlay()
             })
         });

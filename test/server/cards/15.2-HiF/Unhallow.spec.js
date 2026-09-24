@@ -45,7 +45,7 @@ describe('Unhallow', function () {
             this.player2.clickCard(this.sd1);
             this.player2.clickCard(this.adept);
             this.player2.clickPrompt('1');
-            expect(this.unhallow.attachedTo).toBe(this.sd1);
+            expect(this.unhallow.parent).toBe(this.sd1);
         });
 
         it('should discard if the province is broken', function () {

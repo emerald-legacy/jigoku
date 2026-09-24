@@ -11,7 +11,7 @@ function captureParentCost(): Cost {
             return true;
         },
         resolve(context: AbilityContext) {
-            context.costs.captureParentCost = (context.source as DrawCard).attachedCharacter;
+            context.costs.captureParentCost = (context.source as DrawCard).parentCharacter;
         },
         pay() {}
     };
@@ -33,7 +33,7 @@ export default class DevelopingMasterpiece extends DrawCard {
         this.action({
             title: 'Gain honor',
             phase: Phases.Fate,
-            condition: (context) => !!context.source.attachedCharacter,
+            condition: (context) => !!context.source.parentCharacter,
             cost: [captureParentCost(), AbilityDsl.costs.removeSelfFromGame()],
             gameAction: AbilityDsl.actions.gainHonor((context) => ({
                 amount: this.getHonorGain(context),
@@ -67,7 +67,7 @@ export default class DevelopingMasterpiece extends DrawCard {
     private getHonorGain(context: AbilityContext): number {
         return context.costs.captureParentCost
             ? (context.costs.captureParentCost as DrawCard).getGlory()
-            : ((context.source as DrawCard).attachedCharacter as DrawCard).getGlory();
+            : ((context.source as DrawCard).parentCharacter as DrawCard).getGlory();
     }
 }
 

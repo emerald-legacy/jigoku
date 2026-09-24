@@ -10,7 +10,7 @@ class FormalInvitation extends DrawCard {
         this.action({
             title: 'Move attached character into the conflict',
             condition: () => this.game.isDuringConflict('political'),
-            gameAction: ability.actions.moveToConflict((context: AbilityContext<this>) => ({ target: context.source.attachedCharacter as DrawCard }))
+            gameAction: ability.actions.moveToConflict((context: AbilityContext<this>) => ({ target: context.source.parentCharacter as DrawCard }))
         });
     }
 

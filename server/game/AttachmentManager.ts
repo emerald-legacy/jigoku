@@ -84,13 +84,13 @@ export class AttachmentManager {
             game.promptForSelect(host.controller, {
                 activePromptTitle: 'Choose an attachment to discard',
                 waitingPromptTitle: 'Waiting for opponent to choose an attachment to discard',
-                cardCondition: (card: DrawCard) => card.attachedTo?.uuid === host.uuid && card.isRestricted(),
+                cardCondition: (card: DrawCard) => card.parent?.uuid === host.uuid && card.isRestricted(),
                 onSelect: (player: Player, card: DrawCard) => {
                     game.addMessage(
                         '{0} discards {1} from {2} due to too many Restricted attachments',
                         player,
                         card,
-                        card.attachedTo
+                        card.parent
                     );
 
                     if(illegalAttachments.size > 0) {

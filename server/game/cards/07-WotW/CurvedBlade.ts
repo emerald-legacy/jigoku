@@ -11,7 +11,7 @@ class CurvedBlade extends DrawCard {
         });
 
         this.whileAttached({
-            condition: (context: AbilityContext<this>) => Boolean(context.source.attachedCharacter && (context.source.attachedCharacter as DrawCard).isAttacking()),
+            condition: (context: AbilityContext<this>) => Boolean(context.source.parentCharacter && (context.source.parentCharacter as DrawCard).isAttacking()),
             effect: ability.effects.modifyMilitarySkill(2)
         });
     }

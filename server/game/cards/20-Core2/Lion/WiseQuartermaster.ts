@@ -5,8 +5,8 @@ import type BaseCard from '../../../BaseCard.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 
 /** The card the chosen attachment sits on. Null while it is on a ring, which this card cannot move. */
-function attachedCard(context: AbilityContext<DrawCard, DrawCard>): BaseCard | null {
-    return context.target?.attachedCharacter ?? context.target?.attachedProvince ?? null;
+function parentCard(context: AbilityContext<DrawCard, DrawCard>): BaseCard | null {
+    return context.target?.parentCharacter ?? context.target?.parentProvince ?? null;
 }
 
 export default class WiseQuartermaster extends DrawCard {
@@ -20,12 +20,12 @@ export default class WiseQuartermaster extends DrawCard {
                 cardType: CardType.Attachment,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.selectCard<DrawCard>((context) => {
-                    const attachedTo = attachedCard(context);
-                    const isOnProvince = !!attachedTo?.isProvinceCard();
+                    const parent = parentCard(context);
+                    const isOnProvince = !!parent?.isProvinceCard();
                     return {
                         cardType: isOnProvince ? CardType.Province : CardType.Character,
                         location: isOnProvince ? Location.Provinces : Location.PlayArea,
-                        cardCondition: (card) => card !== attachedTo && card.controller === attachedTo?.controller,
+                        cardCondition: (card) => card !== parent && card.controller === parent?.controller,
                         message: '{0} moves {1} to {2}',
                         messageArgs: (card) => [context.player, context.target ?? '', card],
                         gameAction: AbilityDsl.actions.attach({ attachment: context.target })
@@ -33,7 +33,7 @@ export default class WiseQuartermaster extends DrawCard {
                 })
             },
             effect: 'move {0} to another {1}',
-            effectArgs: (context) => [attachedCard(context)?.isProvinceCard() ? 'province' : 'character']
+            effectArgs: (context) => [parentCard(context)?.isProvinceCard() ? 'province' : 'character']
         });
     }
 }

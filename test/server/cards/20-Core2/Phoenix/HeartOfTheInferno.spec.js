@@ -51,7 +51,7 @@ describe('Heart of the Inferno', function () {
 
         it('cannot discard an opponent\'s attachment on your own character', function () {
             this.player2.playAttachment(this.madness, this.solemn);
-            expect(this.madness.attachedTo).toBe(this.solemn);
+            expect(this.madness.parent).toBe(this.solemn);
             expect(this.solemn.isParticipating()).toBe(true);
 
             this.player1.clickCard(this.heartOfTheInferno);

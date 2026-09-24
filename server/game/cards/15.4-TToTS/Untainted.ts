@@ -16,14 +16,14 @@ class Untainted extends DrawCard {
             title: 'discard status token',
             when: {
                 afterConflict: (event: EventPayload<EventName.AfterConflict>, context) => event.conflict.winner === context.player &&
-                    !!context.source.attachedProvince?.isConflictProvince()
+                    !!context.source.parentProvince?.isConflictProvince()
             },
             target: {
                 activePromptTitle: 'Choose a status token',
                 mode: TargetMode.Token,
                 location: Location.Any,
                 tokenCondition: (token: StatusToken, context?: AbilityContext) => {
-                    const parent = context && context.source.attachedTo;
+                    const parent = context && context.source.parent;
                     return !!token.card && (token.card === parent || (token.card instanceof DrawCard && token.card.isParticipating()));
                 }
             },

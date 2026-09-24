@@ -9,16 +9,16 @@ class ObsidianTalisman extends DrawCard {
             title: 'Discard attached character\'s token',
             limit: AbilityDsl.limit.perRound(Infinity),
             cost: AbilityDsl.costs.payHonor(1),
-            condition: context => !!context.source.attachedCharacter,
+            condition: context => !!context.source.parentCharacter,
             gameAction: AbilityDsl.actions.selectToken(context => ({
-                card: context.source.attachedCharacter,
+                card: context.source.parentCharacter,
                 activePromptTitle: 'Which token do you wish to discard?',
                 message: '{0} discards {1}',
                 messageArgs: (token, player) => [player, token],
                 gameAction: AbilityDsl.actions.discardStatusToken()
             })),
             effect: 'discard a status token from {1}',
-            effectArgs: context => [context.source.attachedCharacter as DrawCard]
+            effectArgs: context => [context.source.parentCharacter as DrawCard]
         });
     }
 }

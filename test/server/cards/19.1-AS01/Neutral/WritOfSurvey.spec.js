@@ -46,7 +46,7 @@ describe('Writ of Survey', function () {
                 this.player1.clickCard(this.doomedShugenja);
                 expect(this.getChatLogs(5)).toContain('player1 plays Resourcefulness, dishonoring Doomed Shugenja to honor Matsu Berserker');
                 expect(this.doomedShugenja.isHonored).toBe(false);
-                expect(this.writOfSurvey.attachedTo).toBe(this.doomedShugenja);
+                expect(this.writOfSurvey.parent).toBe(this.doomedShugenja);
             });
         });
 

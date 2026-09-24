@@ -23,7 +23,7 @@ class PrepareForWar extends DrawCard {
                                     mode: TargetMode.Unlimited,
                                     cardType: CardType.Attachment,
                                     controller: Players.Any,
-                                    cardCondition: (card) => card.attachedCharacter === context.target,
+                                    cardCondition: (card) => card.parentCharacter === context.target,
                                     activePromptTitle: 'Choose any amount of attachments',
                                     optional: true,
                                     gameAction: AbilityDsl.actions.discardFromPlay(),

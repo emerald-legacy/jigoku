@@ -19,12 +19,12 @@ class UtakuBattleSteed extends DrawCard {
         this.reaction({
             title: 'Honor attached character',
             when: {
-                afterConflict: (event: EventPayload<EventName.AfterConflict>, context) => context.source.attachedCharacter && context.source.attachedCharacter.isParticipating() &&
-                                                   event.conflict.winner === context.source.attachedCharacter.controller &&
+                afterConflict: (event: EventPayload<EventName.AfterConflict>, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
+                                                   event.conflict.winner === context.source.parentCharacter.controller &&
                                                    event.conflict.conflictType === 'military'
             },
             gameAction: ability.actions.honor((context: AbilityContext<this>) => ({
-                target: context.source.attachedCharacter as DrawCard
+                target: context.source.parentCharacter as DrawCard
             }))
         });
     }

@@ -54,8 +54,8 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
 
     eventHandler(event: GameEvent<EventName.OnCardAttached>): void {
         const card = event.card as DrawCard;
-        if(card.location === Location.PlayArea && card.attachedTo) {
-            card.attachedTo.removeAttachment(card);
+        if(card.location === Location.PlayArea && card.parent) {
+            card.parent.removeAttachment(card);
         } else {
             card.controller.removeCardFromPile(card);
             card.new = true;
@@ -69,7 +69,7 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
 
         const context = event.context as AbilityContext;
         event.parent.attachments.push(card);
-        card.attachedTo = event.parent;
+        card.parent = event.parent;
         if(card.controller !== context.player) {
             card.controller = context.player;
             card.updateEffectContexts();

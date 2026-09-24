@@ -14,7 +14,7 @@ class AgashaHiyori extends DrawCard {
             cost: AbilityDsl.costs.payFateToRing(1),
             target: {
                 cardType: CardType.Attachment,
-                cardCondition: (card) => Boolean(card.attachedCharacter),
+                cardCondition: (card) => Boolean(card.parentCharacter),
                 targets: true,
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     duration: Duration.UntilEndOfPhase,

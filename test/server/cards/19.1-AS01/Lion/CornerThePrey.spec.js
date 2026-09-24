@@ -56,7 +56,7 @@ describe('Corner the Prey', function () {
                 province.facedown = false;
                 this.player2.pass();
                 this.player1.playAttachment(this.heimin, province);
-                expect(this.heimin.attachedTo).toBe(province);
+                expect(this.heimin.parent).toBe(province);
 
                 this.noMoreActions();
                 this.initiateConflict({

@@ -26,7 +26,7 @@ describe('Kuro', function () {
                 expect(this.player1).toHavePrompt('Choose a card');
                 expect(this.player1).toBeAbleToSelect(this.kuro);
                 this.player1.clickCard(this.kuro);
-                expect(this.aq.attachedTo).toBe(this.kuro);
+                expect(this.aq.parent).toBe(this.kuro);
             });
 
             it('should allow for printed cost 1 or higher to be attached', function () {
@@ -34,7 +34,7 @@ describe('Kuro', function () {
                 expect(this.player1).toHavePrompt('Choose a card');
                 expect(this.player1).toBeAbleToSelect(this.kuro);
                 this.player1.clickCard(this.kuro);
-                expect(this.barcha.attachedTo).toBe(this.kuro);
+                expect(this.barcha.parent).toBe(this.kuro);
             });
         });
 
@@ -95,7 +95,7 @@ describe('Kuro', function () {
                 const initialFate = this.player1.fate;
                 this.player1.clickCard(this.kuro);
                 this.player1.clickCard(this.aq);
-                expect(this.aq.attachedTo).toBe(this.kuro);
+                expect(this.aq.parent).toBe(this.kuro);
                 expect(this.player1.fate).toBe(initialFate - 0); // 1 cost attachment reduced by 1
             });
 
@@ -112,7 +112,7 @@ describe('Kuro', function () {
                 const initialFate = this.player1.fate;
                 this.player1.clickCard(this.kuro);
                 this.player1.clickCard(this.barcha);
-                expect(this.barcha.attachedTo).toBe(this.kuro);
+                expect(this.barcha.parent).toBe(this.kuro);
                 expect(this.player1.fate).toBe(initialFate - 1); // 2 cost attachment reduced by 1
             });
 

@@ -12,7 +12,7 @@ export default class LessonsFromEarth extends ProvinceAttachment {
             title: 'Winner draws, loser discards',
             when: {
                 afterConflict: (event, context) => {
-                    return event.conflict.winner && event.conflict.loser && context.source.attachedProvince?.isConflictProvince();
+                    return event.conflict.winner && event.conflict.loser && context.source.parentProvince?.isConflictProvince();
                 }
             },
             limit: AbilityDsl.limit.unlimitedPerConflict(),

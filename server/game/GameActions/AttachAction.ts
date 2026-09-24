@@ -37,12 +37,12 @@ export class AttachAction extends CardGameAction<AttachActionProperties> {
         if(properties.takeControl) {
             return [
                 'take control of and attach {2}\'s {1} to {0}',
-                [properties.target, properties.attachment, properties.attachment?.attachedTo]
+                [properties.target, properties.attachment, properties.attachment?.parent]
             ];
         } else if(properties.giveControl) {
             return [
                 'give control of and attach {2}\'s {1} to {0}',
-                [properties.target, properties.attachment, properties.attachment?.attachedTo]
+                [properties.target, properties.attachment, properties.attachment?.parent]
             ];
         }
         return ['attach {1} to {0}', [properties.target, properties.attachment]];
@@ -124,14 +124,14 @@ export class AttachAction extends CardGameAction<AttachActionProperties> {
         event.originalLocation = card.location;
 
         if(card.location === Location.PlayArea && !properties.wasACharacter) {
-            card.attachedTo?.removeAttachment(card);
+            card.parent?.removeAttachment(card);
         } else {
             card.controller.removeCardFromPile(card);
             card.new = true;
             card.moveTo(Location.PlayArea);
         }
         parent.attachments.push(card);
-        card.attachedTo = parent;
+        card.parent = parent;
         if(properties.takeControl) {
             card.controller = context.player;
             card.updateEffectContexts();

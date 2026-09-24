@@ -29,7 +29,7 @@ describe('Total Warfare', function() {
         it('should be able to played on a province', function() {
             this.player1.playAttachment(this.totalWarfare, this.ancestralLands);
 
-            expect(this.totalWarfare.attachedTo).toBe(this.ancestralLands);
+            expect(this.totalWarfare.parent).toBe(this.ancestralLands);
         });
 
         it('should prompt the loser to sacrifice a character', function() {
@@ -77,14 +77,14 @@ describe('Total Warfare', function() {
         it('shouldn\'t be able to have two battlefields at the same time', function() {
             this.player1.playAttachment(this.totalWarfare, this.ancestralLands);
 
-            expect(this.totalWarfare.attachedTo).toBe(this.ancestralLands);
+            expect(this.totalWarfare.parent).toBe(this.ancestralLands);
             this.player2.pass();
             expect(this.totalWarfare2.location).toBe('hand');
             this.player1.playAttachment(this.totalWarfare2, this.ancestralLands);
 
-            expect(this.totalWarfare.attachedTo).toBe(null);
+            expect(this.totalWarfare.parent).toBe(null);
             expect(this.totalWarfare.location).toBe('conflict discard pile');
-            expect(this.totalWarfare2.attachedTo).toBe(this.ancestralLands);
+            expect(this.totalWarfare2.parent).toBe(this.ancestralLands);
             expect(this.totalWarfare2.location).toBe('play area');
         });
 
@@ -99,20 +99,20 @@ describe('Total Warfare', function() {
 
             this.player2.pass();
             this.player1.playAttachment(this.totalWarfare, this.ancestralLands);
-            expect(this.totalWarfare.attachedTo).toBe(this.ancestralLands);
+            expect(this.totalWarfare.parent).toBe(this.ancestralLands);
             expect(this.getChatLogs(5)).toContain('player1 plays Total Warfare, attaching it to Ancestral Lands');
         });
 
         it('shouldn\'t tell you the facedown province', function() {
             this.player1.playAttachment(this.totalWarfare, this.ancestralLands);
 
-            expect(this.totalWarfare.attachedTo).toBe(this.ancestralLands);
+            expect(this.totalWarfare.parent).toBe(this.ancestralLands);
             expect(this.getChatLogs(2)).toContain('player1 plays Total Warfare, attaching it to ' + this.ancestralLands.location);
         });
 
         it('should be able to be discarded by let go', function() {
             this.player1.playAttachment(this.totalWarfare, this.ancestralLands);
-            expect(this.totalWarfare.attachedTo).toBe(this.ancestralLands);
+            expect(this.totalWarfare.parent).toBe(this.ancestralLands);
             this.player2.clickCard(this.letGo);
             expect(this.player2).toBeAbleToSelect(this.totalWarfare);
             this.player2.clickCard(this.totalWarfare);
@@ -121,7 +121,7 @@ describe('Total Warfare', function() {
 
         it('should be able to be discarded by calling in favors', function() {
             this.player1.playAttachment(this.totalWarfare, this.ancestralLands);
-            expect(this.totalWarfare.attachedTo).toBe(this.ancestralLands);
+            expect(this.totalWarfare.parent).toBe(this.ancestralLands);
             this.player2.clickCard(this.cif);
             expect(this.player2).toBeAbleToSelect(this.totalWarfare);
             this.player2.clickCard(this.totalWarfare);

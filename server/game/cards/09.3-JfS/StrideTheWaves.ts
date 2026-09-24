@@ -18,17 +18,17 @@ class StrideTheWaves extends DrawCard {
             condition: context => context.game.isDuringConflict() &&
                 context.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player),
             gameAction: AbilityDsl.actions.conditional({
-                condition: context => !!(context.source as DrawCard).attachedCharacter?.inConflict,
+                condition: context => !!(context.source as DrawCard).parentCharacter?.inConflict,
                 trueGameAction: AbilityDsl.actions.sendHome(context => ({
-                    target: context.source.attachedCharacter
+                    target: context.source.parentCharacter
                 })),
                 falseGameAction: AbilityDsl.actions.moveToConflict(context => ({
-                    target: context.source.attachedCharacter
+                    target: context.source.parentCharacter
                 }))
             }),
             effect: '{3} {1} {2}',
             effectArgs: context => {
-                const parent = context.source.attachedCharacter;
+                const parent = context.source.parentCharacter;
                 return [
                     parent ?? '',
                     parent && parent.inConflict ? 'home' : 'into the conflict',

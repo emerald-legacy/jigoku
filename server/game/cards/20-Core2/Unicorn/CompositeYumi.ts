@@ -14,16 +14,16 @@ export default class CompositeYumi extends DrawCard {
                 onCreateTokenCharacter: (_, context) => this.#matchCondition(context)
             },
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.source.attachedCharacter,
+                target: context.source.parentCharacter,
                 effect: AbilityDsl.effects.modifyMilitarySkill(1)
             })),
             effect: 'give +1{1} to {2}',
-            effectArgs: (context) => ['military', context.source.attachedCharacter as DrawCard],
+            effectArgs: (context) => ['military', context.source.parentCharacter as DrawCard],
             limit: AbilityDsl.limit.unlimitedPerConflict()
         });
     }
 
     #matchCondition(context: TriggeredAbilityContext<this>) {
-        return context.source.attachedCharacter && (context.source.attachedCharacter as DrawCard).isParticipating() && context.game.isDuringConflict('military');
+        return context.source.parentCharacter && (context.source.parentCharacter as DrawCard).isParticipating() && context.game.isDuringConflict('military');
     }
 }

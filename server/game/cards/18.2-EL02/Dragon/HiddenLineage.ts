@@ -12,10 +12,10 @@ class HiddenLineage extends DrawCard {
             target: {
                 cardType: CardType.Attachment,
                 controller: Players.Any,
-                cardCondition: (card, context) => Boolean(card.attachedCharacter?.controller === context.player),
+                cardCondition: (card, context) => Boolean(card.parentCharacter?.controller === context.player),
                 gameAction: AbilityDsl.actions.selectCard((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                     cardType: CardType.Character,
-                    cardCondition: card => card !== context.target.attachedCharacter && card.controller === context.player,
+                    cardCondition: card => card !== context.target.parentCharacter && card.controller === context.player,
                     message: '{0} moves {1} to {2}',
                     messageArgs: card => [context.player, context.target, card],
                     gameAction: AbilityDsl.actions.ifAble((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({

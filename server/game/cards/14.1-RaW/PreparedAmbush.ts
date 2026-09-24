@@ -12,7 +12,7 @@ export default class PreparedAmbush extends BattlefieldAttachment {
 
         this.persistentEffect({
             condition: (context) =>
-                !!(context.game.isDuringConflict() && context.source.attachedProvince?.isConflictProvince()),
+                !!(context.game.isDuringConflict() && context.source.parentProvince?.isConflictProvince()),
             targetLocation: Location.Provinces,
             match: (card: DrawCard) => card.isDynasty && card.isFaceup(),
             effect: AbilityDsl.effects.gainPlayAction(PlayCharacterAsIfFromHandIntoConflict)

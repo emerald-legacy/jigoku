@@ -11,11 +11,11 @@ class MarkOfShame extends DrawCard {
                 onCardPlayed: (event, context) => event.card === context.source
             },
             gameAction: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.dishonor(context => ({ target: context.source.attachedCharacter })),
-                AbilityDsl.actions.dishonor(context => ({ target: context.source.attachedCharacter }))
+                AbilityDsl.actions.dishonor(context => ({ target: context.source.parentCharacter })),
+                AbilityDsl.actions.dishonor(context => ({ target: context.source.parentCharacter }))
             ]),
             effect: 'dishonor {1}, then dishonor it again',
-            effectArgs: context => context.source.attachedCharacter as DrawCard
+            effectArgs: context => context.source.parentCharacter as DrawCard
         });
     }
 }

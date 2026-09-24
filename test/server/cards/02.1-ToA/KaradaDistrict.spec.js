@@ -215,7 +215,7 @@ describe('Karada District', function () {
                 expect(this.player1).toBeAbleToSelect(this.borderlandsDefender);
                 this.player1.clickCard(this.borderlandsDefender);
                 expect(this.talismanOfTheSun.location).toBe('play area');
-                expect(this.talismanOfTheSun.attachedTo).toBe(this.borderlandsDefender);
+                expect(this.talismanOfTheSun.parent).toBe(this.borderlandsDefender);
                 expect(this.borderlandsDefender.attachments).toContain(this.talismanOfTheSun);
             });
         });

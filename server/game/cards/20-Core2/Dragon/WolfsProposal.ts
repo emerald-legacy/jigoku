@@ -12,14 +12,14 @@ export default class WolfsProposal extends DrawCard {
                 options: {
                     'Increase glory': {
                         action: AbilityDsl.actions.cardLastingEffect((context) => ({
-                            target: context.source.attachedCharacter,
+                            target: context.source.parentCharacter,
                             duration: Duration.UntilEndOfPhase,
                             effect: AbilityDsl.effects.modifyGlory(2)
                         }))
                     },
                     'Decrease glory': {
                         action: AbilityDsl.actions.cardLastingEffect((context) => ({
-                            target: context.source.attachedCharacter,
+                            target: context.source.parentCharacter,
                             duration: Duration.UntilEndOfPhase,
                             effect: AbilityDsl.effects.modifyGlory(-2)
                         }))

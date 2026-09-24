@@ -8,7 +8,7 @@ class CurseOfMisfortune extends DrawCard {
 
     setupCardAbilities() {
         this.persistentEffect({
-            match: (card: DrawCard, context?: AbilityContext<this>) => !!card.attachedCharacter && card.attachedCharacter === context?.source?.attachedCharacter && card !== context?.source,
+            match: (card: DrawCard, context?: AbilityContext<this>) => !!card.parentCharacter && card.parentCharacter === context?.source?.parentCharacter && card !== context?.source,
             targetController: Players.Any,
             effect: AbilityDsl.effects.addKeyword('restricted')
         });

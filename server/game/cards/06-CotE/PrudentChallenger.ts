@@ -16,7 +16,7 @@ export default class PrudentChallenger extends DrawCard {
                     AbilityDsl.actions.selectCard({
                         activePromptTitle: 'Choose an attachment to discard',
                         cardType: CardType.Attachment,
-                        cardCondition: (card) => !!card.attachedCharacter && (duel.loser?.includes(card.attachedCharacter) ?? false),
+                        cardCondition: (card) => !!card.parentCharacter && (duel.loser?.includes(card.parentCharacter) ?? false),
                         targets: true,
                         message: '{0} chooses to discard {1}',
                         messageArgs: (card, player) => [player, card],
