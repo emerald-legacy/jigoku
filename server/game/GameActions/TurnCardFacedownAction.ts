@@ -18,7 +18,7 @@ export class TurnCardFacedownAction extends CardGameAction {
     }
 
     eventHandler(event: GameEvent<EventName.OnCardTurnedFacedown>): void {
-        const context = event.context as AbilityContext;
+        const context = event.context;
         const card = event.card as BaseCard;
         if(card.controller !== card.owner) {
             card.owner.moveCard(card, card.location);

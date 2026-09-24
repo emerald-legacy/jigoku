@@ -190,7 +190,7 @@ export class GameObject {
 
     public mostRecentEffect<N extends EffectName>(type: N): EffectValueMap[N] {
         const effects = this.getEffects(type);
-        return effects[effects.length - 1] as EffectValueMap[N];
+        return effects[effects.length - 1];
     }
 
     public getRawEffects() {

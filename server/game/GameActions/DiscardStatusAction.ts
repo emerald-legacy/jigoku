@@ -47,7 +47,7 @@ export class DiscardStatusAction extends TokenAction<DiscardStatusProperties> {
 
         const targets = Array.isArray(properties.target) ? properties.target : [properties.target];
         return targets.map((a) => {
-            let token = a as StatusToken;
+            let token = a;
             if(token) {
                 return token.card;
             }

@@ -37,7 +37,7 @@ class Untainted extends DrawCard {
             ]),
             effect: 'gain 1 honor and discard {1} from {2}',
             effectArgs: (context) => {
-                const token = context?.token as StatusToken | StatusToken[] | undefined;
+                const token = context?.token;
                 if(!token) {
                     return [];
                 }

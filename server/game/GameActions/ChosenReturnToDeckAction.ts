@@ -87,7 +87,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
 
     eventHandler(event: GameEvent<EventName.OnCardMoved>): void {
         const cards = event.cards as BaseCard[];
-        const context = event.context as AbilityContext;
+        const context = event.context;
         context.game.addMessage(
             '{0} returns {1} card{2} to{3} their deck',
             event.player,

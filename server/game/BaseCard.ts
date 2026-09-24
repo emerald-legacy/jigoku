@@ -220,7 +220,7 @@ class BaseCard extends EffectSource {
         }
         if(!ignoreDynamicGains) {
             if(this.anyEffect(EffectName.GainAllAbilitiesDynamic)) {
-                const context = (this.game.getFrameworkContext as (player?: Player | null) => AbilityContext)(this.controller);
+                const context = (this.game.getFrameworkContext)(this.controller);
                 const effects = this.getRawEffects().filter(
                     (effect: CardEffect) => effect.type === EffectName.GainAllAbilitiesDynamic
                 );
@@ -270,7 +270,7 @@ class BaseCard extends EffectSource {
                 const effects = this.getRawEffects().filter(
                     (effect: CardEffect) => effect.type === EffectName.GainAllAbilitiesDynamic
                 );
-                const context = (this.game.getFrameworkContext as (player?: Player | null) => AbilityContext)(this.controller);
+                const context = (this.game.getFrameworkContext)(this.controller);
                 effects.forEach((effect: CardEffect) => {
                     const value = effect.value as AbilityProvidingEffectValue;
                     value.calculate(this, context); //fetch new abilities
@@ -315,7 +315,7 @@ class BaseCard extends EffectSource {
                 const effects = this.getRawEffects().filter(
                     (effect: CardEffect) => effect.type === EffectName.GainAllAbilitiesDynamic
                 );
-                const context = (this.game.getFrameworkContext as (player?: Player | null) => AbilityContext)(this.controller);
+                const context = (this.game.getFrameworkContext)(this.controller);
                 effects.forEach((effect: CardEffect) => {
                     const value = effect.value as AbilityProvidingEffectValue;
                     value.calculate(this, context); //fetch new abilities
@@ -454,7 +454,7 @@ class BaseCard extends EffectSource {
         this.persistentEffect({
             condition: (context: AbilityContext<this>) => context.player.hasComposure(),
             ...properties
-        } as PersistentEffectProps<this> & { isKeywordEffect: boolean });
+        });
     }
 
     dire<T extends GameObject = GameObject>(properties: PersistentEffectProps<this, T>): void {
@@ -564,7 +564,7 @@ class BaseCard extends EffectSource {
         const copiedCard = this.copiedCard;
         const set = new Set(
             copiedCard
-                ? (copiedCard.traits as string[])
+                ? (copiedCard.traits)
                 : this.getEffects(EffectName.Blank).some((blankTraits: boolean) => blankTraits)
                     ? []
                     : this.traits
@@ -757,7 +757,7 @@ class BaseCard extends EffectSource {
         const effects = this.getRawEffects().filter((effect: CardEffect) => effect.type === EffectName.IncreaseLimitOnAbilities);
         let total = max;
         effects.forEach((effect: CardEffect) => {
-            const value = effect.getValue(this) as { applyingPlayer?: Player; targetAbility?: CardAbility };
+            const value = effect.getValue<{ applyingPlayer?: Player; targetAbility?: CardAbility }>(this);
             const applyingPlayer = value.applyingPlayer || effect.context.player;
             const targetAbility = value.targetAbility;
             if((!targetAbility || targetAbility === ability) && applyingPlayer === player) {
@@ -991,21 +991,21 @@ class BaseCard extends EffectSource {
                     break;
                 }
                 case EffectName.AttachmentFactionRestriction: {
-                    const factions = effect.getValue(this) as Faction[];
+                    const factions = effect.getValue<Faction[]>(this);
                     if(!factions.some((faction) => parent.isFaction(faction))) {
                         return false;
                     }
                     break;
                 }
                 case EffectName.AttachmentTraitRestriction: {
-                    const traits = effect.getValue(this) as string[];
+                    const traits = effect.getValue<string[]>(this);
                     if(!traits.some((trait) => parent.hasTrait(trait))) {
                         return false;
                     }
                     break;
                 }
                 case EffectName.AttachmentCardCondition: {
-                    const cardCondition = effect.getValue(this) as (card: BaseCard) => boolean;
+                    const cardCondition = effect.getValue<(card: BaseCard) => boolean>(this);
                     if(!cardCondition(parent)) {
                         return false;
                     }

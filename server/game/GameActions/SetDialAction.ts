@@ -19,17 +19,17 @@ export class SetDialAction extends PlayerAction<SetDialProperties, EventName.OnS
     }
 
     getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as SetDialProperties;
+        let properties = this.getProperties(context);
         return ['set {0}\'s dial to {1}', [properties.target, properties.value]];
     }
 
     canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties) as SetDialProperties;
+        let properties = this.getProperties(context, additionalProperties);
         return properties.value > 0 && properties.value < 6 && super.canAffect(player, context);
     }
 
     addPropertiesToEvent(event: GameEvent<EventName.OnSetHonorDial>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { value } = this.getProperties(context, additionalProperties) as SetDialProperties;
+        let { value } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.value = value;
     }

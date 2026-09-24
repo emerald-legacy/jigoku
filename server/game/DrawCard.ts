@@ -71,7 +71,7 @@ class DrawCard extends BaseCard {
     }
 
     override checkForIllegalTokens(): boolean {
-        const context = (this.game.getFrameworkContext as (player?: Player | null) => AbilityContext)(this.controller);
+        const context = (this.game.getFrameworkContext)(this.controller);
         let result = false;
 
         if(this.getType() === CardType.Attachment) {
@@ -311,21 +311,21 @@ class DrawCard extends BaseCard {
     isAttacking(conflictType?: 'military' | 'political'): boolean {
         return (
             !!this.game.currentConflict?.isAttacking(this) &&
-            (!conflictType || (this.game.isDuringConflict as (type: string | null) => boolean)(conflictType))
+            (!conflictType || (this.game.isDuringConflict)(conflictType))
         );
     }
 
     isDefending(conflictType?: 'military' | 'political'): boolean {
         return (
             !!this.game.currentConflict?.isDefending(this) &&
-            (!conflictType || (this.game.isDuringConflict as (type: string | null) => boolean)(conflictType))
+            (!conflictType || (this.game.isDuringConflict)(conflictType))
         );
     }
 
     isParticipating(conflictType?: 'military' | 'political'): boolean {
         return (
             !!this.game.currentConflict?.isParticipating(this) &&
-            (!conflictType || (this.game.isDuringConflict as (type: string | null) => boolean)(conflictType))
+            (!conflictType || (this.game.isDuringConflict)(conflictType))
         );
     }
 

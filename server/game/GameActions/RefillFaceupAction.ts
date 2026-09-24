@@ -23,7 +23,7 @@ export class RefillFaceupAction extends PlayerAction {
     }
 
     eventHandler(event: GameEvent<EventName.Unnamed>, additionalProperties: Record<string, unknown> = {}): void {
-        const context = event.context as AbilityContext;
+        const context = event.context;
         let { location } = this.getProperties(context, additionalProperties) as RefillFaceupProperties;
         if(!Array.isArray(location)) {
             location = [location];

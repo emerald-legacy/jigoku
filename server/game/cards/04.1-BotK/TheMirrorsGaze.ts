@@ -22,7 +22,7 @@ class TheMirrorsGaze extends DrawCard {
                     event.context.player === context.player.opponent && !event.cancelled
             },
             gameAction: ability.actions.resolveAbility((context: AbilityContext) => ({
-                target: (context as TriggeredAbilityContext).event.card as DrawCard,
+                target: (context as TriggeredAbilityContext).event.card,
                 ability: ((context as TriggeredAbilityContext).event.context as AbilityContext).ability as CardAbility,
                 ignoredRequirements: ['cost', 'condition', 'limit'],
                 event: ((context as TriggeredAbilityContext).event.context as TriggeredAbilityContext).event

@@ -22,7 +22,7 @@ export class TakeRingAction extends RingAction {
     }
 
     eventHandler(event: GameEvent<EventName.OnTakeRing>, additionalProperties: Record<string, unknown> = {}): void {
-        const context = event.context as AbilityContext;
+        const context = event.context;
         const { takeFate } = this.getProperties(context, additionalProperties) as TakeRingProperties;
         const ring = event.ring;
         ring.claimRing(context.player);

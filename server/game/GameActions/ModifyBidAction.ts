@@ -81,7 +81,7 @@ export class ModifyBidAction extends PlayerAction<ModifyBidProperties, EventName
     }
 
     addPropertiesToEvent(event: GameEvent<EventName.OnModifyBid>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount, direction } = this.getProperties(context, additionalProperties) as ModifyBidProperties;
+        let { amount, direction } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.direction = direction;

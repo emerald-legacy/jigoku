@@ -45,7 +45,7 @@ export class RandomDiscardAction extends PlayerAction {
         if(amount === 0) {
             return;
         }
-        let cardsToDiscard = shuffle(player.hand).slice(0, amount) as typeof player.hand;
+        let cardsToDiscard = shuffle(player.hand).slice(0, amount);
         event.cards = cardsToDiscard;
         event.discardedCards = cardsToDiscard;
         player.game.addMessage('{0} discards {1} at random', player, cardsToDiscard);

@@ -2,7 +2,6 @@ import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { Players } from '../../Constants.js';
-import type Player from '../../Player.js';
 
 class WildfireKick extends DrawCard {
     static id = 'wildfire-kick';
@@ -26,7 +25,7 @@ class WildfireKick extends DrawCard {
             effectArgs: context => {
                 const target = context.target;
                 const targetMs = target?.getMilitarySkill() ?? 0;
-                return [context.player.opponent as Player, 'military', 'political', targetMs, this.game.currentConflict?.getCharacters(context.player.opponent).filter((card: DrawCard) => card.getMilitarySkill() <= targetMs && card !== context.source) ?? []];
+                return [context.player.opponent, 'military', 'political', targetMs, this.game.currentConflict?.getCharacters(context.player.opponent).filter((card: DrawCard) => card.getMilitarySkill() <= targetMs && card !== context.source) ?? []];
             }
         });
     }

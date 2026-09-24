@@ -56,7 +56,7 @@ export class PlayerCostManager {
         if(!player) {
             return undefined;
         }
-        const playableLocation = new PlayableLocation(type as PlayType, player, location, new Set(cards as DrawCard[]));
+        const playableLocation = new PlayableLocation(type, player, location, new Set(cards as DrawCard[]));
         this.playableLocations.push(playableLocation);
         return playableLocation;
     }

@@ -14,7 +14,7 @@ export class PlayerAction<P extends PlayerActionProperties = PlayerActionPropert
     }
 
     checkEventCondition(event: GameEvent<N>, additionalProperties: Record<string, unknown> = {}): boolean {
-        return this.canAffect((event as { player: Player }).player, (event.context as AbilityContext), additionalProperties);
+        return this.canAffect((event as { player: Player }).player, (event.context), additionalProperties);
     }
 
     addPropertiesToEvent(event: GameEvent<N>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {

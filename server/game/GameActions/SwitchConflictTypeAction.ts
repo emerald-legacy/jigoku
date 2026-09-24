@@ -37,7 +37,7 @@ export class SwitchConflictTypeAction extends RingAction<SwitchConflictTypePrope
     }
 
     eventHandler(event: GameEvent<EventName.OnSwitchConflictType>): void {
-        const context = event.context as AbilityContext;
+        const context = event.context;
         (context.game.currentConflict as Conflict).switchType();
     }
 }

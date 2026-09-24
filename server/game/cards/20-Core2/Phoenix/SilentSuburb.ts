@@ -10,7 +10,7 @@ export default class SilentSuburb extends ProvinceCard {
             when: {
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.player &&
-                    (event.conflict.getConflictProvinces() as ProvinceCard[]).some((p) => p === context.source)
+                    (event.conflict.getConflictProvinces()).some((p) => p === context.source)
             },
             gameAction: AbilityDsl.actions.resolveConflictRing()
         });

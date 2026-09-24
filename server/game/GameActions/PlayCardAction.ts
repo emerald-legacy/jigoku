@@ -132,7 +132,7 @@ export class PlayCardAction extends CardGameAction {
     }
 
     getProperties(context: AbilityContext, additionalProperties = {}): PlayCardProperties {
-        return super.getProperties(context, additionalProperties) as PlayCardProperties;
+        return super.getProperties(context, additionalProperties);
     }
 
     canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {

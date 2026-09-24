@@ -89,7 +89,7 @@ export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties, E
     }
 
     eventHandler(event: GameEvent<EventName.OnCardsDiscardedFromHand>): void {
-        const context = event.context as AbilityContext;
+        const context = event.context;
         context.game.addMessage('{0} discards {1}', event.player, event.cards);
         event.discardedCards = event.cards;
         for(let card of event.cards as BaseCard[]) {

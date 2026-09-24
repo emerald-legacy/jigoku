@@ -175,7 +175,7 @@ class CardAbility extends ThenAbility {
     isInValidLocation(context: AbilityContext): boolean {
         return this.card.type === CardType.Event
             ? context.player.isCardInPlayableLocation(context.source, context.playType)
-            : this.location.includes(this.card.location as Location);
+            : this.location.includes(this.card.location);
     }
 
     getLocationMessage(location: string, context: AbilityContext): string {
@@ -257,7 +257,7 @@ class CardAbility extends ThenAbility {
             const gameActions = this.getGameActions(context).filter((gameAction: GameAction) => gameAction.hasLegalTarget(context));
             if(gameActions.length > 0) {
                 // effects with multiple game actions really need their own effect message
-                [effectMessage, extraArgs] = gameActions[0].getEffectMessage(context) as [string, MsgArg[]];
+                [effectMessage, extraArgs] = gameActions[0].getEffectMessage(context);
             }
         } else {
             effectArgs.push(context.target || context.ring || context.source);

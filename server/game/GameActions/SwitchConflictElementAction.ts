@@ -22,7 +22,7 @@ export class SwitchConflictElementAction extends RingAction {
     }
 
     eventHandler(event: GameEvent<EventName.OnSwitchConflictElement>): void {
-        const context = event.context as AbilityContext;
+        const context = event.context;
         (context.game.currentConflict as Conflict).switchElement(event.ring.element);
     }
 }

@@ -105,7 +105,7 @@ export class SelectTokenAction extends TokenAction {
         }
         let player: Player = (properties.player === Players.Opponent ? context.player.opponent : context.player) as Player;
         if(properties.targets && context.choosingPlayerOverride) {
-            player = context.choosingPlayerOverride as Player;
+            player = context.choosingPlayerOverride;
         }
         const validTokens = properties.card.statusTokens.filter((token: StatusToken) =>
             properties.gameAction.canAffect(token, context)

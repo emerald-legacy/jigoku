@@ -18,7 +18,7 @@ export default class CourtOfJustice extends DrawCard {
                     context.player.opponent !== undefined
             },
             gameAction: AbilityDsl.actions.lookAt((context) => ({
-                target: shuffle((context.player.opponent?.hand ?? []) as DrawCard[]).slice(0, 3),
+                target: shuffle((context.player.opponent?.hand ?? [])).slice(0, 3),
                 message: 'reveals {0} from {1}\'s hand.',
                 messageArgs: (cards) => [cards, context.player.opponent]
             })),

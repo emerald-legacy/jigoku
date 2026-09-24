@@ -1,7 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import Game from '../../../Game.js';
 import type Player from '../../../Player.js';
 
 export default class BackhandedCompliment2 extends DrawCard {
@@ -14,7 +13,7 @@ export default class BackhandedCompliment2 extends DrawCard {
                 mode: TargetMode.Select,
                 targets: true,
                 choices: Object.fromEntries(
-                    (this.game as Game)
+                    (this.game)
                         .getPlayers()
                         .map((target) => [
                             target.name,

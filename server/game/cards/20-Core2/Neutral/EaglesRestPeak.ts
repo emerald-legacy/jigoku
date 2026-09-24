@@ -3,7 +3,6 @@ import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 import { shuffle } from '../../../utils/shuffle.js';
 
 export default class EaglesRestPeak extends ProvinceCard {
@@ -19,11 +18,11 @@ export default class EaglesRestPeak extends ProvinceCard {
                 cardCondition: (card: DrawCard) => card.isDefending() && (card.getCost() ?? 0) > 0
             },
             effect: 'use the insight of {0}, revealing and setting aside {1} cards from {2}\'s hand',
-            effectArgs: context => [context.target?.getCost() ?? 0, context.player.opponent as Player],
+            effectArgs: context => [context.target?.getCost() ?? 0, context.player.opponent],
             gameAction: AbilityDsl.actions.sequentialContext((context: AbilityContext<ProvinceCard, DrawCard>) => {
                 const opponent = context.player.opponent;
                 const setAsideCards: DrawCard[] = shuffle(opponent?.hand ?? [] as DrawCard[])
-                    .slice(0, context.target?.getCost() ?? 0) as DrawCard[];
+                    .slice(0, context.target?.getCost() ?? 0);
 
                 return {
                     gameActions: [

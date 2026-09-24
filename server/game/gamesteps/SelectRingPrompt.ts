@@ -68,13 +68,13 @@ class SelectRingPrompt extends UiPrompt {
             properties.source = properties.context.source;
         }
         if(properties.source && !properties.waitingPromptTitle) {
-            properties.waitingPromptTitle = 'Waiting for opponent to use ' + (properties.source as EffectSource).name;
+            properties.waitingPromptTitle = 'Waiting for opponent to use ' + (properties.source).name;
         } else if(!properties.source) {
             properties.source = new EffectSource(game);
         }
 
         this.properties = properties;
-        this.context = properties.context || new AbilityContext({ game: game, player: choosingPlayer, source: properties.source as EffectSource });
+        this.context = properties.context || new AbilityContext({ game: game, player: choosingPlayer, source: properties.source });
         // Apply defaults for missing properties
         const defaults = this.defaultProperties();
         for(const key in defaults) {

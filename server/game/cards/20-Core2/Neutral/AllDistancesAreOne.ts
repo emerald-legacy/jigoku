@@ -45,14 +45,14 @@ export default class AllDistancesAreOne extends DrawCard {
             })),
             effect: 'move the conflict to another eligible province',
             then: (context: WithCapturedOriginalProvince<AbilityContext>) => ({
-                thenCondition: () => !(context[CAPTURED_ORIGINAL_PROVINCE] as ProvinceCard).isBroken,
+                thenCondition: () => !(context[CAPTURED_ORIGINAL_PROVINCE]).isBroken,
                 gameAction: AbilityDsl.actions.onAffinity({
                     trait: 'water',
                     promptTitleForConfirmingAffinity: 'Flip the original province facedown?',
                     effect: 'flip {0} facedown',
                     effectArgs: () => [context[CAPTURED_ORIGINAL_PROVINCE]],
                     gameAction: AbilityDsl.actions.turnFacedown({
-                        target: context[CAPTURED_ORIGINAL_PROVINCE] as ProvinceCard
+                        target: context[CAPTURED_ORIGINAL_PROVINCE]
                     })
                 })
             })

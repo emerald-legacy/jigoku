@@ -118,11 +118,11 @@ export default class GainAbility extends EffectValue<GainedAbilityValue> {
         if(this.abilityType === AbilityType.Action) {
             this.value = target.createAction(properties as ActionProps);
         } else {
-            const triggered = target.createTriggeredAbility(this.abilityType as AbilityType, properties as TriggeredAbilityWhenProps);
+            const triggered = target.createTriggeredAbility(this.abilityType, properties as TriggeredAbilityWhenProps);
             this.value = triggered;
             triggered.registerEvents();
         }
-        const granted = this.value as CardAction | TriggeredAbility;
+        const granted = this.value;
         if(!this.grantedAbilityLimits[target.uuid]) {
             this.grantedAbilityLimits[target.uuid] = granted.limit;
         } else {
@@ -142,7 +142,7 @@ export default class GainAbility extends EffectValue<GainedAbilityValue> {
                 AbilityType.Interrupt,
                 AbilityType.Reaction,
                 AbilityType.WouldInterrupt
-            ].includes(this.abilityType as AbilityType)
+            ].includes(this.abilityType)
         ) {
             (this.value as TriggeredAbility).unregisterEvents();
         } else if(this.abilityType === AbilityType.Persistent) {

@@ -2,11 +2,10 @@ import { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Conflict } from '../../../Conflict.js';
 
 function shinobiCount(context: AbilityContext): number {
     return (
-        (context.game.currentConflict as Conflict | null)?.getParticipants(
+        (context.game.currentConflict)?.getParticipants(
             (card: DrawCard) => card.controller === context.player && card.hasTrait('shinobi')
         )?.length ?? 0
     );

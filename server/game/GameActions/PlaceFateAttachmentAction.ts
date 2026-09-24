@@ -25,12 +25,12 @@ export class PlaceFateAttachmentAction extends CardGameAction<PlaceFateAttachmen
     }
 
     getEffectMessage(context: AbilityContext): MessageArgs {
-        let { amount, target } = this.getProperties(context) as PlaceFateAttachmentProperties;
+        let { amount, target } = this.getProperties(context);
         return ['place {1} fate on {0}', [target, amount]];
     }
 
     canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
-        let { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateAttachmentProperties;
+        let { amount, origin } = this.getProperties(context, additionalProperties);
         if(amount === 0 || card.location !== Location.PlayArea) {
             return false;
         }
@@ -59,7 +59,7 @@ export class PlaceFateAttachmentAction extends CardGameAction<PlaceFateAttachmen
     }
 
     addPropertiesToEvent(event: GameEvent<EventName.OnMoveFate>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateAttachmentProperties;
+        let { amount, origin } = this.getProperties(context, additionalProperties);
         event.fate = amount ?? 0;
         event.origin = origin;
         event.context = context;
@@ -71,7 +71,7 @@ export class PlaceFateAttachmentAction extends CardGameAction<PlaceFateAttachmen
     }
 
     isEventFullyResolved(event: GameEvent<EventName.OnMoveFate>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
-        let { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateAttachmentProperties;
+        let { amount, origin } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&
             event.name === this.eventName &&

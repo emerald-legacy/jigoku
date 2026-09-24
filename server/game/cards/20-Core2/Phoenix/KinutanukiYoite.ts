@@ -12,7 +12,7 @@ export default class KinutanukiYoite extends DrawCard {
                 onCardPlayed: (event, context) =>
                     event.player === context.player &&
                     context.source.isParticipating() &&
-                    (event.card as DrawCard).hasEveryTrait('fire', 'spell')
+                    (event.card).hasEveryTrait('fire', 'spell')
             },
             target: {
                 activePromptTitle: 'Choose a character',

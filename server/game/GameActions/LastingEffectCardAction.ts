@@ -67,7 +67,7 @@ export class LastingEffectCardAction<
     addPropertiesToEvent(event: GameEvent<EventName.OnEffectApplied>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         const { effect: _effect, ...otherProperties } = this.getProperties(context, additionalProperties);
-        const eventContext = event.context as AbilityContext;
+        const eventContext = event.context;
         const effectProperties = Object.assign({ match: event.card, location: Location.Any }, otherProperties);
         let effects = _effect.map((factory) =>
             factory(eventContext.game, eventContext.source, effectProperties)
@@ -79,7 +79,7 @@ export class LastingEffectCardAction<
     }
 
     eventHandler(event: GameEvent<EventName.OnEffectApplied>, additionalProperties: Record<string, unknown> = {}): void {
-        const eventContext = event.context as AbilityContext;
+        const eventContext = event.context;
         let properties = this.getProperties(eventContext, additionalProperties);
         if(!properties.ability) {
             properties.ability = eventContext.ability;

@@ -103,9 +103,9 @@ export class PutIntoPlayAction extends CardGameAction {
     }
 
     eventHandler(event: GameEvent<EventName.OnCharacterEntersPlay>, additionalProperties: Record<string, unknown> = {}): void {
-        const context = event.context as AbilityContext;
+        const context = event.context;
         let player = this.getPutIntoPlayPlayer(context);
-        const card = event.card as DrawCard;
+        const card = event.card;
         this.checkForRefillProvince(card, event, additionalProperties);
         card.new = true;
         if(event.fate) {

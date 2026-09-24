@@ -14,7 +14,7 @@ export default class LiaisonToTheAncestors extends DrawCard {
                 onCardDishonored: (event: { card: DrawCard }, context) =>
                     event.card.type === CardType.Character &&
           event.card.controller === context.player &&
-          (context.player.dynastyDiscardPile as Array<DrawCard>).some(
+          (context.player.dynastyDiscardPile).some(
               (card) => (event.card.printedCost ?? 0) < (card.printedCost ?? 0)
           )
             },

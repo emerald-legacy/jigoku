@@ -62,7 +62,7 @@ export class GainHonorAction extends PlayerAction<GainHonorProperties> {
     }
 
     eventHandler(event: GameEvent<EventName.OnModifyHonor>): void {
-        const context = event.context as AbilityContext;
+        const context = event.context;
         const player = event.player as Player;
         var [_, amountToTransfer] = CalculateHonorLimit(
             player,

@@ -107,7 +107,7 @@ export class TransferHonorAction extends PlayerAction {
         var amountToTransfer = this.getAmountToTransfer(
             event.player as Player,
             (event.player as Player).opponent as Player,
-            event.context as AbilityContext,
+            event.context,
             event.amount ?? 0
         );
 

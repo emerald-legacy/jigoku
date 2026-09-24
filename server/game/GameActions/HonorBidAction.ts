@@ -61,7 +61,7 @@ export class HonorBidAction extends PlayerAction<HonorBidProperties, EventName.O
         let { giveHonor, prohibitedBids, players, postBidAction, message, messageArgs } = this.getProperties(
             context,
             additionalProperties
-        ) as HonorBidProperties;
+        );
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.giveHonor = giveHonor;
         event.prohibitedBids = prohibitedBids;
@@ -72,7 +72,7 @@ export class HonorBidAction extends PlayerAction<HonorBidProperties, EventName.O
     }
 
     eventHandler(event: GameEvent<EventName.OnHonorBid>): void {
-        const context = event.context as AbilityContext;
+        const context = event.context;
 
         if(event.players === Players.Any) {
             const prohibitedBids: Record<string, string[]> = {};

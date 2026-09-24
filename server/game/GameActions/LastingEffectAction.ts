@@ -32,7 +32,7 @@ export class LastingEffectAction<P extends LastingEffectProperties = LastingEffe
         duration: Duration.UntilEndOfConflict,
         effect: [],
         ability: undefined
-    } as LastingEffectProperties;
+    };
 
     // @ts-expect-error -- overriding return type to be more specific than base class signature
     getProperties(

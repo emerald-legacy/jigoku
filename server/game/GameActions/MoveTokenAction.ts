@@ -15,10 +15,10 @@ export class MoveTokenAction extends TokenAction<MoveTokenProperties, EventName.
     eventName = EventName.OnStatusTokenMoved;
 
     getEffectMessage(context: AbilityContext, additionalProperties = {}): MessageArgs {
-        const { target, recipient } = this.getProperties(context, additionalProperties) as MoveTokenProperties;
+        const { target, recipient } = this.getProperties(context, additionalProperties);
         let card = undefined;
         if(Array.isArray(target)) {
-            card = (target[0] as StatusToken).card;
+            card = (target[0]).card;
         } else {
             card = (target as StatusToken).card;
         }
@@ -26,7 +26,7 @@ export class MoveTokenAction extends TokenAction<MoveTokenProperties, EventName.
     }
 
     canAffect(token: StatusToken, context: AbilityContext, additionalProperties = {}): boolean {
-        const { recipient } = this.getProperties(context) as MoveTokenProperties;
+        const { recipient } = this.getProperties(context);
         if(!recipient || recipient.location !== Location.PlayArea) {
             return false;
         } else if(
@@ -49,7 +49,7 @@ export class MoveTokenAction extends TokenAction<MoveTokenProperties, EventName.
     }
 
     addPropertiesToEvent(event: GameEvent<EventName.OnStatusTokenMoved>, token: StatusToken, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        const { recipient } = this.getProperties(context) as MoveTokenProperties;
+        const { recipient } = this.getProperties(context);
         super.addPropertiesToEvent(event, token, context, additionalProperties);
         event.recipient = recipient;
         event.donor = token.card ?? undefined;

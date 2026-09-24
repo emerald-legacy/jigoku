@@ -3,7 +3,6 @@ import { GameModes } from '../GameModes.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
-import type { AbilityContext } from './AbilityContext.js';
 
 export interface CanHostAttachments {
     attachments: DrawCard[];
@@ -31,7 +30,7 @@ export class AttachmentManager {
     checkForIllegalAttachments(): boolean {
         const host = this.host;
         const game = host.game;
-        const context = (game.getFrameworkContext as (player?: Player | null) => AbilityContext)(host.controller);
+        const context = (game.getFrameworkContext)(host.controller);
         const illegalAttachments = new Set<DrawCard>(
             this.attachments.filter((attachment) => !host.allowAttachment(attachment) || !attachment.canAttach(host))
         );

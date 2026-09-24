@@ -1,7 +1,6 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import Player from '../../../Player.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 export default class APlagueOfYokai extends DrawCard {
@@ -47,7 +46,7 @@ export default class APlagueOfYokai extends DrawCard {
     }
 
     getCopiesInDeck(context: AbilityContext) {
-        const player = context.player as Player;
+        const player = context.player;
         return player.conflictDeck.filter(card => card.name === context.source.name);
     }
 

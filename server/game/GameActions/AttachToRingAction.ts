@@ -36,7 +36,7 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
     }
 
     checkEventCondition(event: GameEvent<EventName.OnCardAttached>, additionalProperties: Record<string, unknown> = {}): boolean {
-        return this.canAffect(event.parent as Ring, event.context as AbilityContext, additionalProperties);
+        return this.canAffect(event.parent as Ring, event.context, additionalProperties);
     }
 
     isEventFullyResolved(event: GameEvent<EventName.OnCardAttached>, card: BaseCard | Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
@@ -47,7 +47,7 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
     addPropertiesToEvent(event: GameEvent<EventName.OnCardAttached>, card: BaseCard | Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
         let { attachment } = this.getProperties(context, additionalProperties);
         event.name = this.eventName;
-        event.parent = card as Ring;
+        event.parent = card;
         event.card = attachment as DrawCard;
         event.context = context;
     }
@@ -67,7 +67,7 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
         card.covert = false;
         card.fate = 0;
 
-        const context = event.context as AbilityContext;
+        const context = event.context;
         event.parent.attachments.push(card);
         card.parent = event.parent;
         if(card.controller !== context.player) {

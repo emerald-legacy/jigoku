@@ -21,13 +21,13 @@ export class FillProvinceAction extends PlayerAction<FillProvinceProperties> {
     }
 
     getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as FillProvinceProperties;
+        let properties = this.getProperties(context);
         return ['fills {0} to {1} cards!', [properties.location, properties.fillTo]];
     }
 
     eventHandler(event: GameEvent<EventName.Unnamed>, additionalProperties: Record<string, unknown> = {}): void {
-        const context = event.context as AbilityContext;
-        let properties = this.getProperties(context, additionalProperties) as FillProvinceProperties;
+        const context = event.context;
+        let properties = this.getProperties(context, additionalProperties);
         const player = event.player as Player;
         let currentCards = player.getDynastyCardsInProvince(properties.location).length;
         player.refillProvince(properties.location, (properties.fillTo ?? 0) - currentCards);

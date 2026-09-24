@@ -28,7 +28,7 @@ export class MatchingDiscardAction extends PlayerAction<MatchingDiscardPropertie
     }
 
     getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties: MatchingDiscardProperties = this.getProperties(context) as MatchingDiscardProperties;
+        let properties: MatchingDiscardProperties = this.getProperties(context);
         return ['make {0} discard all cards that match a condition', [properties.target]];
     }
 
@@ -40,7 +40,7 @@ export class MatchingDiscardAction extends PlayerAction<MatchingDiscardPropertie
         let properties: MatchingDiscardProperties = this.getProperties(
             context,
             additionalProperties
-        ) as MatchingDiscardProperties;
+        );
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = properties.amount;
         event.reveal = properties.reveal;
@@ -49,7 +49,7 @@ export class MatchingDiscardAction extends PlayerAction<MatchingDiscardPropertie
     }
 
     eventHandler(event: GameEvent<EventName.OnCardsDiscardedFromHand>): void {
-        let context = event.context as AbilityContext;
+        let context = event.context;
         let player = event.player as Player;
         let amount = Math.min(event.amount ?? -1, player.hand.length);
         if(amount < 0) {

@@ -59,14 +59,14 @@ class HandlerMenuPrompt extends UiPrompt {
             properties.source = properties.context.source;
         }
         if(properties.source && !properties.waitingPromptTitle) {
-            properties.waitingPromptTitle = 'Waiting for opponent to use ' + (properties.source as EffectSource).name;
+            properties.waitingPromptTitle = 'Waiting for opponent to use ' + (properties.source).name;
         } else if(!properties.source) {
             properties.source = new EffectSource(game);
         }
         this.properties = properties;
         this.properties.choices = properties.choices || [];
         this.cardCondition = properties.cardCondition || (() => true);
-        this.context = properties.context || new AbilityContext({ game: game, player: player, source: properties.source as EffectSource });
+        this.context = properties.context || new AbilityContext({ game: game, player: player, source: properties.source });
     }
 
     activeCondition(player: Player): boolean {

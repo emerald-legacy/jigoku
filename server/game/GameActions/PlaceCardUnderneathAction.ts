@@ -40,7 +40,7 @@ export class PlaceCardUnderneathAction extends CardGameAction {
     }
 
     eventHandler(event: GameEvent<EventName.Unnamed>, additionalProperties: Record<string, unknown> = {}): void {
-        let context = event.context as AbilityContext;
+        let context = event.context;
         let card = event.card as BaseCard;
         event.cardStateWhenMoved = card.createSnapshot();
         let properties = this.getProperties(context, additionalProperties) as PlaceCardUnderneathProperties;

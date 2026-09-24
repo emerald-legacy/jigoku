@@ -49,7 +49,7 @@ export default class StarlitSkies extends DrawCard {
                     const dest = destinations.pop();
                     if(msg && dest) {
                         context.game.addMessage(msg, context.player, card);
-                        choice.player(context).moveCard(card, dest as Location);
+                        choice.player(context).moveCard(card, dest);
                     }
                     if(messages.length > 0) {
                         const index = topThree.findIndex((x) => x === card);

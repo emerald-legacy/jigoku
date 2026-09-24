@@ -53,7 +53,7 @@ export class LookAtAction extends CardGameAction<CardActionProperties, EventName
     }
 
     eventHandler(event: GameEvent<EventName.OnLookAtCards>, additionalProperties = {}): void {
-        let context = event.context as AbilityContext;
+        let context = event.context;
         let properties = this.getProperties(context, additionalProperties) as LookAtProperties;
         let cards = event.cards as BaseCard[];
         let messageArgs = properties.messageArgs ? properties.messageArgs(cards) : [context.source, cards];

@@ -172,7 +172,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
                 return false;
             } else if(
                 event.origin.type === CardType.Character &&
-                !event.origin.allowGameAction('removeFate', (event.context as AbilityContext))
+                !event.origin.allowGameAction('removeFate', (event.context))
             ) {
                 return false;
             }
@@ -180,7 +180,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         if(event.recipient) {
             if(
                 event.recipient.type === CardType.Character &&
-                !event.recipient.allowGameAction('placeFate', (event.context as AbilityContext))
+                !event.recipient.allowGameAction('placeFate', (event.context))
             ) {
                 return false;
             }

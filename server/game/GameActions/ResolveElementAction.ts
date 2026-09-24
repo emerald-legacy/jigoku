@@ -67,7 +67,7 @@ export class ResolveElementAction extends RingAction<ResolveElementProperties> {
     }
 
     eventHandler(event: GameEvent<EventName.OnResolveRingElement>): void {
-        const context = event.context as AbilityContext;
+        const context = event.context;
         const cannotResolveRingEffects = context.player.getEffects(EffectName.CannotResolveRings);
 
         if(cannotResolveRingEffects.length) {

@@ -89,10 +89,10 @@ class ThenAbility extends BaseCardAbility {
             if(eventsToResolve.length > 0) {
                 const window = this.openEventWindow(eventsToResolve);
                 if(then) {
-                    window.addThenAbility(new ThenAbility(this.card, then), context, (then as ThenAbilityProperties).thenCondition);
+                    window.addThenAbility(new ThenAbility(this.card, then), context, (then).thenCondition);
                 }
-            } else if(then && (then as ThenAbilityProperties).thenCondition && (then as ThenAbilityProperties).thenCondition?.(context)) {
-                const thenAbility = new ThenAbility(this.card, then as ThenAbilityProperties);
+            } else if(then && (then).thenCondition && (then).thenCondition?.(context)) {
+                const thenAbility = new ThenAbility(this.card, then);
                 const thenContext = thenAbility.createContext(context.player);
                 // a `then` continues the same triggering, so keep the link for chosenCardTargets
                 thenContext.originatingContext = context.triggeringContext;

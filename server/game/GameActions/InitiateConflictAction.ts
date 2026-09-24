@@ -29,7 +29,7 @@ export class InitiateConflictAction extends PlayerAction<InitiateConflictPropert
     }
 
     eventHandler(event: GameEvent<EventName.OnConflictInitiated>, additionalProperties: Record<string, unknown>): void {
-        const context = event.context as AbilityContext;
+        const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
         context.game.initiateConflict(
             event.player,

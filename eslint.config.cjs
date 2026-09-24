@@ -100,9 +100,8 @@ module.exports = [
             // TypeScript rules (disabled for gradual migration — re-enable as codebase improves)
             ...tseslint.configs.recommended.rules,
             'no-unused-vars': 'off',
-            // server/ is at zero `any` apart from one documented exception in
-            // GameActions.ts
             '@typescript-eslint/no-explicit-any': 'error',
+            '@typescript-eslint/no-unnecessary-type-assertion': 'error',
             '@typescript-eslint/no-unused-vars': ['error', {
                 argsIgnorePattern: '^_',
                 varsIgnorePattern: '^_'

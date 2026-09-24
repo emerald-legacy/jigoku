@@ -34,7 +34,7 @@ export class ResolveConflictRingAction extends RingAction {
             return;
         }
 
-        const eventContext = event.context as AbilityContext;
+        const eventContext = event.context;
         const cannotResolveRingEffects = eventContext.player.getEffects(EffectName.CannotResolveRings);
 
         if(cannotResolveRingEffects.length) {

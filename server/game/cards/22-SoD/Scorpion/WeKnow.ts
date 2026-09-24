@@ -6,7 +6,6 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import type { ChoicesInterface } from '../../../Interfaces.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 
 export default class WeKnow extends DrawCard {
     static id = 'we-know';
@@ -65,13 +64,13 @@ export default class WeKnow extends DrawCard {
                 if(context.selects.select.choice === 'Lose honor and let opponent draw cards') {
                     return [
                         'draw two cards and cause ',
-                        context.player.opponent as Player,
+                        context.player.opponent,
                         ' to lose 1 honor'
                     ];
                 }
                 return [
                     'replace ',
-                    (context.tokens.token as StatusToken[])[0].card as DrawCard,
+                    (context.tokens.token as StatusToken[])[0].card,
                     ' honored status token with a dishonored status token'
                 ];
 

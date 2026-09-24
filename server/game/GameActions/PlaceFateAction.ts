@@ -23,12 +23,12 @@ export class PlaceFateAction extends CardGameAction<PlaceFateProperties> {
     }
 
     getEffectMessage(context: AbilityContext): MessageArgs {
-        const { amount, target } = this.getProperties(context) as PlaceFateProperties;
+        const { amount, target } = this.getProperties(context);
         return ['place {1} fate on {0}', [target, amount]];
     }
 
     canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
-        const { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateProperties;
+        const { amount, origin } = this.getProperties(context, additionalProperties);
         if(amount === 0 || card.location !== Location.PlayArea) {
             return false;
         }
@@ -52,7 +52,7 @@ export class PlaceFateAction extends CardGameAction<PlaceFateProperties> {
     }
 
     addPropertiesToEvent(event: GameEvent<EventName.OnMoveFate>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        const { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateProperties;
+        const { amount, origin } = this.getProperties(context, additionalProperties);
         event.fate = amount ?? 0;
         event.origin = origin;
         event.context = context;
@@ -64,7 +64,7 @@ export class PlaceFateAction extends CardGameAction<PlaceFateProperties> {
     }
 
     isEventFullyResolved(event: GameEvent<EventName.OnMoveFate>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
-        const { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateProperties;
+        const { amount, origin } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&
             event.name === this.eventName &&

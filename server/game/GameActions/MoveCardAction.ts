@@ -71,7 +71,7 @@ export class MoveCardAction extends CardGameAction {
     }
 
     eventHandler(event: GameEvent<EventName.Unnamed>, additionalProperties = {}): void {
-        let context = (event.context as AbilityContext);
+        let context = (event.context);
         let card = event.card as DrawCard;
         event.cardStateWhenMoved = card.createSnapshot();
         let properties = this.getProperties(context, additionalProperties) as MoveCardProperties;
@@ -93,7 +93,7 @@ export class MoveCardAction extends CardGameAction {
             }
         }
         player.moveCard(card, properties.destination as Location, { bottom: !!properties.bottom });
-        let target = properties.target as BaseCard | BaseCard[] | undefined;
+        let target = properties.target;
         const targetArr = Array.isArray(target) ? target : target ? [target] : [];
         if(properties.shuffle && (targetArr.length === 0 || card === targetArr[targetArr.length - 1])) {
             if(properties.destination === Location.ConflictDeck) {

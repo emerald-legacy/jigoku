@@ -35,7 +35,7 @@ export class RevealAction extends CardGameAction {
     }
 
     eventHandler(event: GameEvent<EventName.OnCardRevealed>, additionalProperties: Record<string, unknown> = {}): void {
-        const context = event.context as AbilityContext;
+        const context = event.context;
         const properties = this.getProperties(context, additionalProperties) as RevealProperties;
         if(properties.chatMessage) {
             context.game.addMessage(
@@ -45,6 +45,6 @@ export class RevealAction extends CardGameAction {
                 context.source
             );
         }
-        (event.card as BaseCard).facedown = false;
+        (event.card).facedown = false;
     }
 }

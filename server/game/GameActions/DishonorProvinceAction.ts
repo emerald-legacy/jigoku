@@ -16,7 +16,7 @@ export class DishonorProvinceAction extends CardGameAction {
     effect = 'dishonor {0}';
 
     getEffectMessage(context: AbilityContext): MessageArgs {
-        const properties = this.getProperties(context) as DishonorProvinceProperties;
+        const properties = this.getProperties(context);
         const targetArray = [];
         if(properties.target) {
             if(Array.isArray(properties.target)) {

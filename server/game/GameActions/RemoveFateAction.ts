@@ -23,17 +23,17 @@ export class RemoveFateAction extends CardGameAction<RemoveFateProperties> {
     }
 
     getCostMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as RemoveFateProperties;
+        let properties = this.getProperties(context);
         return ['removing {1} fate from {0}', [properties.amount]];
     }
 
     getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as RemoveFateProperties;
+        let properties = this.getProperties(context);
         return ['remove {1} fate from {0}', [properties.target, properties.amount]];
     }
 
     canAffect(card: BaseCard, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties) as RemoveFateProperties;
+        let properties = this.getProperties(context, additionalProperties);
         if(properties.amount === 0 || card.location !== Location.PlayArea || card.getFate() === 0) {
             return false;
         }
@@ -51,7 +51,7 @@ export class RemoveFateAction extends CardGameAction<RemoveFateProperties> {
     }
 
     addPropertiesToEvent(event: GameEvent<EventName.OnMoveFate>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount, recipient } = this.getProperties(context, additionalProperties) as RemoveFateProperties;
+        let { amount, recipient } = this.getProperties(context, additionalProperties);
         event.fate = amount ?? 0;
         event.recipient = recipient;
         event.origin = card;
@@ -63,7 +63,7 @@ export class RemoveFateAction extends CardGameAction<RemoveFateProperties> {
     }
 
     isEventFullyResolved(event: GameEvent<EventName.OnMoveFate>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
-        let { amount, recipient } = this.getProperties(context, additionalProperties) as RemoveFateProperties;
+        let { amount, recipient } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&
             event.name === this.eventName &&

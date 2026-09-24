@@ -3,7 +3,6 @@ import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type BaseCard from '../../../BaseCard.js';
-import type Player from '../../../Player.js';
 
 function getAttachmentSkill(card: DrawCard) {
     let amount = 0;
@@ -51,7 +50,7 @@ export default class BitingSteel extends DrawCard {
             title: 'Send an enemy home',
             condition: (context) =>
                 !!context.source.parentCharacter?.isParticipating('military') &&
-                (context.player as Player).hasAffinity('fire', context),
+                (context.player).hasAffinity('fire', context),
             target: {
                 cardType: CardType.Character,
                 controller: Players.Opponent,

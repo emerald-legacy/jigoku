@@ -51,7 +51,7 @@ export class MoveToConflictAction extends CardGameAction {
     }
 
     eventHandler(event: GameEvent<EventName.OnMoveToConflict>): void {
-        const context = event.context as AbilityContext;
+        const context = event.context;
         const player = event.side as Player;
         const conflict = context.game.currentConflict as Conflict;
 

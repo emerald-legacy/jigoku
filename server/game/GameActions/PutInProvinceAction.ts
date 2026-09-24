@@ -34,12 +34,12 @@ export class PutInProvinceAction extends CardGameAction<PutInProvinceProperties,
     }
 
     getCostMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as PutInProvinceProperties;
+        let properties = this.getProperties(context);
         return ['putting {0} into {1}}', [properties.target, properties.destination]];
     }
 
     getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as PutInProvinceProperties;
+        let properties = this.getProperties(context);
         const target = properties.target as BaseCard | BaseCard[];
         let destinationController = Array.isArray(target)
             ? properties.changePlayer
@@ -55,7 +55,7 @@ export class PutInProvinceAction extends CardGameAction<PutInProvinceProperties,
         const { changePlayer, destination } = this.getProperties(
             context,
             additionalProperties
-        ) as PutInProvinceProperties;
+        );
         const canMove =
             (!changePlayer || card.checkRestrictions(EffectName.TakeControl, context)) &&
             (!destination || context.player.isLegalLocationForCard(card, destination)) &&
@@ -65,10 +65,10 @@ export class PutInProvinceAction extends CardGameAction<PutInProvinceProperties,
     }
 
     eventHandler(event: GameEvent<EventName.OnCardLeavesPlay>, additionalProperties: Record<string, unknown> = {}): void {
-        let context = event.context as AbilityContext;
+        let context = event.context;
         let card = event.card as DrawCard;
         (event as GameEvent<EventName.OnCardLeavesPlay> & { cardStateWhenMoved: DrawCard }).cardStateWhenMoved = card.createSnapshot();
-        let properties = this.getProperties(context, additionalProperties) as PutInProvinceProperties;
+        let properties = this.getProperties(context, additionalProperties);
         if(properties.switch && properties.switchTarget) {
             let otherCard = properties.switchTarget;
             card.owner.moveCard(otherCard, card.location);

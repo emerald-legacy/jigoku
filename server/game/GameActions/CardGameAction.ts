@@ -34,7 +34,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
     }
 
     checkEventCondition(event: GameEvent<N>, additionalProperties = {}): boolean {
-        return this.canAffect((event as { card?: BaseCard }).card as BaseCard, event.context as AbilityContext, additionalProperties);
+        return this.canAffect((event as { card?: BaseCard }).card as BaseCard, event.context, additionalProperties);
     }
 
     canAffect(target: BaseCard | Ring, context: AbilityContext, additionalProperties = {}): boolean {
@@ -163,7 +163,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
             const evCard = event.card as DrawCard;
             // Add an imminent triggering condition for all attachments leaving play
 
-            for(const attachment of (evCard.attachments ?? []) as DrawCard[]) {
+            for(const attachment of (evCard.attachments ?? [])) {
                 // we only need to add events for attachments that are in play.
                 if(attachment.location === Location.PlayArea) {
                     let attachmentEvent = context.game.actions

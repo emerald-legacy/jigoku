@@ -101,7 +101,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
         if(!this.declaredProvinces) {
             return 1;
         }
-        const provinceString = this.getProvinceIdString(currentProvince as ProvinceCard | undefined);
+        const provinceString = this.getProvinceIdString(currentProvince);
         if(!provinceString) {
             return 0;
         }
@@ -109,7 +109,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
     }
 
     private otherHoldingsInSameProvince(context: AbilityContext<this>): BaseCard[] {
-        return (context.game.allCards as BaseCard[]).filter(
+        return (context.game.allCards).filter(
             (card) =>
                 card.location === context.source.location &&
                 card.controller === context.source.controller &&
