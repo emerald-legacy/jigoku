@@ -5,23 +5,26 @@ describe('Daidoji Hiroteru', function () {
                 phase: 'conflict',
                 player1: {
                     inPlay: ['daidoji-hiroteru'],
-                    dynastyDiscard: ['cautious-scout', 'daidoji-ahma', 'doji-whisperer'],
+                    dynastyDiscard: ['cautious-scout', 'malicious-timekeeper', 'doji-whisperer'],
                     hand: ['adept-of-shadows', 'ornate-fan'],
                     fate: 10
                 },
                 player2: {
-                    inPlay: ['brash-samurai']
+                    inPlay: ['brash-samurai'],
+                    hand: ['shosuro-sadako'],
+                    fate: 10
                 }
             });
 
             this.hiroteru = this.player1.findCardByName('daidoji-hiroteru');
             this.scout = this.player1.placeCardInProvince('cautious-scout', 'province 1');
-            this.ahma = this.player1.placeCardInProvince('daidoji-ahma', 'province 2');
+            this.timekeeper = this.player1.placeCardInProvince('malicious-timekeeper', 'province 2');
             this.whisperer = this.player1.placeCardInProvince('doji-whisperer', 'province 3');
             this.shadows = this.player1.findCardByName('adept-of-shadows');
             this.fan = this.player1.findCardByName('ornate-fan');
 
             this.brash = this.player2.findCardByName('brash-samurai');
+            this.sadako = this.player2.findCardByName('shosuro-sadako');
         });
 
         describe('the constant ability', function () {
@@ -88,10 +91,11 @@ describe('Daidoji Hiroteru', function () {
             });
 
             it('triggers after you play a Shinobi', function () {
-                this.player1.clickCard(this.ahma);
+                expect(this.timekeeper.hasKeyword('covert')).toBe(false);
+                this.player1.clickCard(this.timekeeper);
                 this.player1.clickPrompt('0');
                 this.player1.clickCard(this.hiroteru);
-                expect(this.ahma.hasKeyword('covert')).toBe(true);
+                expect(this.timekeeper.hasKeyword('covert')).toBe(true);
             });
 
             it('triggers for a Shinobi played from hand', function () {
@@ -118,8 +122,12 @@ describe('Daidoji Hiroteru', function () {
 
             it('does not trigger for an opponent\'s Scout or Shinobi', function () {
                 this.player1.pass();
-                this.player2.clickCard(this.brash);
+                this.player2.clickCard(this.sadako);
+                this.player2.clickPrompt('0');
+                expect(this.sadako.location).toBe('play area');
+                expect(this.player1).toHavePrompt('Action Window');
                 expect(this.player1).not.toBeAbleToSelect(this.hiroteru);
+                expect(this.sadako.hasKeyword('covert')).toBe(false);
             });
 
             it('wears off at the end of the phase', function () {
