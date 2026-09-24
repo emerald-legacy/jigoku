@@ -237,19 +237,14 @@ interface IntegrationSetupOptions {
                         for(const wrapper of [flow.player1, flow.player2]) {
                             // A province emptied by the setup above (an `inPlay` card can be the
                             // only copy and get sourced out of a province) is backfilled facedown.
-                            // In the dynasty phase the reveal has already happened and no refill
-                            // has occurred yet, so a facedown card there is an impossible state --
-                            // reveal whatever the backfill just added, and only that. Later phases
-                            // legitimately hold facedown cards from post-reveal refills.
-                            const before = options.phase === 'dynasty'
-                                ? wrapper.player.getDynastyCardsInProvince(location)
-                                : [];
+                            // The dynasty-phase reveal has already happened, so reveal whatever the
+                            // backfill just added, and only that. Leaving it facedown would make the
+                            // province state depend on the deck shuffle.
+                            const before = wrapper.player.getDynastyCardsInProvince(location);
                             wrapper.player.replaceDynastyCard(location);
-                            if(options.phase === 'dynasty') {
-                                wrapper.player.getDynastyCardsInProvince(location)
-                                    .filter((card) => !before.includes(card))
-                                    .forEach((card) => (card.facedown = false));
-                            }
+                            wrapper.player.getDynastyCardsInProvince(location)
+                                .filter((card) => !before.includes(card))
+                                .forEach((card) => (card.facedown = false));
                         }
                     }
                 }
