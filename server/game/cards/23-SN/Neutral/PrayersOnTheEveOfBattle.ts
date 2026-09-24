@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -11,8 +12,8 @@ export default class PrayersOnTheEveOfBattle extends DrawCard {
             when: {
                 afterConflict: (event, context) => !!context.source.parentCharacter
             },
-            gameAction: AbilityDsl.actions.conditional(context => ({
-                condition: context.source.parentCharacter?.isParticipating() &&
+            gameAction: AbilityDsl.actions.conditional((context: TriggeredAbilityContext) => ({
+                condition: !!context.source.parentCharacter?.isParticipating() &&
                     context.event.conflict?.winner === context.source.parentCharacter?.controller,
                 trueGameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.gainFate({

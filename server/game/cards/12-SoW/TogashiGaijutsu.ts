@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -15,7 +16,7 @@ class TogashiGaijutsu extends DrawCard {
                     event.card.hasTrait('tattoo') &&
                     event.card.controller === context.player
             },
-            gameAction: AbilityDsl.actions.ready((context) => ({ target: context.event.card.parentCharacter }))
+            gameAction: AbilityDsl.actions.ready((context: TriggeredAbilityContext) => ({ target: context.event.card?.parentCharacter ?? [] }))
         });
     }
 }

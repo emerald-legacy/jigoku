@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type BaseAction from '../../BaseAction.js';
 import { CardType, Players } from '../../Constants.js';
 import { PlayAttachmentAction } from '../../PlayAttachmentAction.js';
@@ -38,11 +39,11 @@ export default class IronMountainCastle extends StrongholdCard {
             },
             cost: AbilityDsl.costs.bowSelf(),
             effect: 'reduce the cost of their next attachment by 1',
-            gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
+            gameAction: AbilityDsl.actions.playerLastingEffect((context: TriggeredAbilityContext) => ({
                 targetController: context.player,
                 effect: AbilityDsl.effects.reduceNextPlayedCardCost(
                     1,
-                    (card: DrawCard) => card === context.event.context.source
+                    (card: DrawCard) => card === context.event.context?.source
                 )
             }))
         });

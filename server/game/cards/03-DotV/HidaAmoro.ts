@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, Players } from '../../Constants.js';
@@ -14,13 +15,13 @@ class HidaAmoro extends DrawCard {
             limit: AbilityDsl.limit.perPhase(Infinity),
             effect: 'force {1} to sacrifice a character',
             effectArgs: (context) => context.event.conflict?.attackingPlayer ?? '',
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
-                player: context.event.conflict.attackingPlayer === context.player ? Players.Self : Players.Opponent,
+            gameAction: AbilityDsl.actions.selectCard((context: TriggeredAbilityContext) => ({
+                player: context.event.conflict?.attackingPlayer === context.player ? Players.Self : Players.Opponent,
                 activePromptTitle: 'Choose a character to sacrifice',
                 cardType: CardType.Character,
-                cardCondition: (card) => card.controller === context.event.conflict.attackingPlayer,
+                cardCondition: (card) => card.controller === context.event.conflict?.attackingPlayer,
                 message: '{0} sacrifices {1} to {2}',
-                messageArgs: (card) => [context.event.conflict.attackingPlayer, card, context.source],
+                messageArgs: (card) => [context.event.conflict?.attackingPlayer ?? '', card, context.source],
                 gameAction: AbilityDsl.actions.sacrifice()
             }))
         });

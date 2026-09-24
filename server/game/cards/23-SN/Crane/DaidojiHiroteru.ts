@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { CardType, Duration, Location, Phases, Players } from '../../../Constants.js';
 import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -30,7 +31,7 @@ export default class DaidojiHiroteru extends DrawCard {
                     event.card.type === CardType.Character &&
                     event.card.hasSomeTrait('scout', 'shinobi')
             },
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+            gameAction: AbilityDsl.actions.cardLastingEffect((context: TriggeredAbilityContext) => ({
                 target: context.event.card,
                 duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.addKeyword('covert')
