@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- stub-based unit test: partial fakes of game, card and context */
 import { CardAction } from '../../../server/game/CardAction.js';
 
 interface CardActionTestContext {

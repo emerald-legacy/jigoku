@@ -8,15 +8,20 @@ interface RequestWithUser {
     user: jwt.JwtPayload | null;
 }
 
+/** The parts of a socket.io socket this wrapper uses. */
+export interface SocketLike extends Pick<IOSocket, 'id' | 'on' | 'join' | 'leave' | 'emit' | 'disconnect'> {
+    request: unknown;
+}
+
 class Socket extends EventEmitter {
-    socket: IOSocket;
+    socket: SocketLike;
     user: jwt.JwtPayload | null;
 
-    constructor(socket: IOSocket) {
+    constructor(socket: SocketLike) {
         super();
 
         this.socket = socket;
-        this.user = (socket.request as unknown as RequestWithUser).user;
+        this.user = (socket.request as RequestWithUser).user;
 
         socket.on('error', this.onError.bind(this));
         socket.on('authenticate', this.onAuthenticate.bind(this));
@@ -73,7 +78,7 @@ class Socket extends EventEmitter {
                 this.socket.disconnect();
                 return;
             }
-            (this.socket.request as unknown as RequestWithUser).user = payload;
+            (this.socket.request as RequestWithUser).user = payload;
             this.user = payload;
             this.emit('authenticate', this, payload);
         });

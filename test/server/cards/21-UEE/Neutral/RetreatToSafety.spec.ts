@@ -1,9 +1,10 @@
-import DrawCard from '../../../../../server/game/DrawCard.js';
+import type DrawCard from '../../../../../server/game/DrawCard.js';
+import type { IntegrationContext } from '../../../../helpers/integrationhelper.js';
 
 describe('Retreat to Safety', () => {
     integration(() => {
-        let player1: any;
-        let player2: any;
+        let player1: IntegrationContext['player1'];
+        let player2: IntegrationContext['player2'];
         let borderRider: DrawCard;
         let matsuBerserker: DrawCard;
         let kitsuMotso: DrawCard;
@@ -13,7 +14,7 @@ describe('Retreat to Safety', () => {
         let noMoreActions: () => void;
         let getChatLogs: (_n: number) => string[];
 
-        beforeEach(function(this: any) {
+        beforeEach(function(this: IntegrationContext) {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
@@ -31,11 +32,11 @@ describe('Retreat to Safety', () => {
             noMoreActions = () => this.noMoreActions();
             getChatLogs = (n) => this.getChatLogs(n);
 
-            borderRider = player1.findCardByName('border-rider');
-            matsuBerserker = player2.findCardByName('matsu-berserker');
-            kitsuMotso = player2.findCardByName('kitsu-motso');
-            ikomaProdigy = player2.findCardByName('ikoma-prodigy');
-            retreatToSafety = player2.findCardByName('retreat-to-safety');
+            borderRider = player1.findCardByName('border-rider') as DrawCard;
+            matsuBerserker = player2.findCardByName('matsu-berserker') as DrawCard;
+            kitsuMotso = player2.findCardByName('kitsu-motso') as DrawCard;
+            ikomaProdigy = player2.findCardByName('ikoma-prodigy') as DrawCard;
+            retreatToSafety = player2.findCardByName('retreat-to-safety') as DrawCard;
             ikomaProdigy.bowed = true;
         });
 

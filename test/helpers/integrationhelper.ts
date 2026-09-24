@@ -3,8 +3,10 @@
 import { GameModes } from '../../server/GameModes.js';
 import './objectformatters.js';
 import DeckBuilder, { fillers } from './deckbuilder.js';
+import type { PlayerDeckOptions } from './deckbuilder.js';
 import GameFlowWrapper from './gameflowwrapper.js';
 import type PlayerInteractionWrapper from './playerinteractionwrapper.js';
+import type Game from '../../server/game/Game.js';
 
 const deckBuilder = new DeckBuilder();
 
@@ -24,7 +26,7 @@ const ProxiedGameFlowWrapperMethods = [
     'getChatLog'
 ] as const;
 
-const customMatchers: any = {
+const customMatchers: jasmine.CustomMatcherFactories = {
     toHavePrompt: function () {
         return {
             compare: function (actual: PlayerInteractionWrapper, expected: string) {
@@ -37,12 +39,12 @@ const customMatchers: any = {
             }
         };
     },
-    toHavePromptButton: function (util: any, customEqualityMatchers: any) {
+    toHavePromptButton: function (util: jasmine.MatchersUtil) {
         return {
             compare: function (actual: PlayerInteractionWrapper, expected: string) {
                 const buttons = actual.currentPrompt().buttons as Array<{ text: string; disabled?: boolean }>;
                 const pass = buttons.some(
-                    (button) => !button.disabled && util.equals(button.text, expected, customEqualityMatchers)
+                    (button) => !button.disabled && util.equals(button.text, expected)
                 );
                 let message: string;
                 if(pass) {
@@ -57,12 +59,12 @@ const customMatchers: any = {
             }
         };
     },
-    toHaveDisabledPromptButton: function (util: any, customEqualityMatchers: any) {
+    toHaveDisabledPromptButton: function (util: jasmine.MatchersUtil) {
         return {
             compare: function (actual: PlayerInteractionWrapper, expected: string) {
                 const buttons = actual.currentPrompt().buttons as Array<{ text: string; disabled?: boolean }>;
                 const pass = buttons.some(
-                    (button) => button.disabled && util.equals(button.text, expected, customEqualityMatchers)
+                    (button) => button.disabled && util.equals(button.text, expected)
                 );
                 let message: string;
                 if(pass) {
@@ -120,11 +122,11 @@ interface IntegrationDeckOptions {
     role?: string;
     stronghold?: string;
     strongholdProvince?: string;
-    provinces?: any;
+    provinces?: PlayerDeckOptions['provinces'];
     rings?: string[];
     fate?: number;
     honor?: number;
-    inPlay?: any[];
+    inPlay?: PlayerDeckOptions['inPlay'];
     hand?: string[];
     conflictDiscard?: string[];
     dynastyDiscard?: string[];
@@ -139,6 +141,25 @@ interface IntegrationSetupOptions {
     skipAutoSetup?: boolean;
     skipAutoFirstPlayer?: boolean;
 }
+
+interface InitiateConflictOptions {
+    type?: string;
+    ring?: string;
+    province?: unknown;
+    attackers?: unknown[];
+    defenders?: unknown[];
+    jumpTo?: boolean;
+}
+
+/** `this` inside an `integration()` spec. */
+export type IntegrationContext = Pick<GameFlowWrapper, (typeof ProxiedGameFlowWrapperMethods)[number]> & {
+    flow: GameFlowWrapper;
+    game: Game;
+    player1: PlayerInteractionWrapper;
+    player2: PlayerInteractionWrapper;
+    setupTest(options?: IntegrationSetupOptions): void;
+    initiateConflict(options?: InitiateConflictOptions): void;
+};
 
 (globalThis as { fillers?: typeof fillers }).fillers = fillers;
 
@@ -253,14 +274,7 @@ interface IntegrationSetupOptions {
                 }
             };
 
-            this.initiateConflict = function (this: Record<string, unknown>, options: {
-                type?: string;
-                ring?: string;
-                province?: unknown;
-                attackers?: unknown[];
-                defenders?: unknown[];
-                jumpTo?: boolean;
-            } = {}) {
+            this.initiateConflict = function (this: Record<string, unknown>, options: InitiateConflictOptions = {}) {
                 if(!options.type) {
                     options.type = 'military';
                 }

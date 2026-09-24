@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- stub-based unit test: partial fakes of game, card and context */
 import CardAbility from '../../../server/game/CardAbility.js';
 import { GameChat } from '../../../server/game/GameChat.js';
 import AbilityDsl from '../../../server/game/abilitydsl.js';
