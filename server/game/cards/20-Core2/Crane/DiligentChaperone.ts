@@ -51,7 +51,7 @@ export default class DiligentChaperone extends DrawCard {
                 activePromptTitle: 'Choose a character',
                 hidePromptIfSingleCard: true,
                 cardCondition: (card, context) => targetsFromEvent(context).has(card),
-                subActionProperties: (card) => {
+                subActionProperties: (card: DrawCard) => {
                     context.target = card;
                     return { target: card };
                 },

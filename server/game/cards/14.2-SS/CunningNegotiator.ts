@@ -2,6 +2,7 @@ import { CardType, DuelType, Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 
 export default class CunningNegotiator extends DrawCard {
     static id = 'cunning-negotiator';
@@ -43,7 +44,7 @@ export default class CunningNegotiator extends DrawCard {
                             hidePromptIfSingleCard: true,
                             cardType: CardType.Province,
                             location: Location.Provinces,
-                            subActionProperties: (card) => {
+                            subActionProperties: (card: ProvinceCard) => {
                                 context.target = card;
                                 return { target: card };
                             },
