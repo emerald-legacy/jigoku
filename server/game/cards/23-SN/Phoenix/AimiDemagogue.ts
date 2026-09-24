@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Players } from '../../../Constants.js';
@@ -13,7 +14,7 @@ export default class AimiDemagogue extends DrawCard {
                 controller: Players.Any,
                 cardType: CardType.Character,
                 cardCondition: card => card.isParticipating(),
-                gameAction: AbilityDsl.actions.multipleContext(context => {
+                gameAction: AbilityDsl.actions.multipleContext((context: ResolvedAbilityContext<DrawCard, DrawCard>) => {
                     const gameActions: GameAction[] = [];
 
                     gameActions.push(AbilityDsl.actions.cardLastingEffect({

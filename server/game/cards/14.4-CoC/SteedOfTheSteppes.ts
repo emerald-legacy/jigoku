@@ -9,7 +9,7 @@ const steedOfTheSteppesCaptureParentCost = function(): Cost {
             return true;
         },
         resolve: function(context: AbilityContext) {
-            context.costs.steedOfTheSteppesCaptureParentCost = (context.source as DrawCard).parent;
+            context.costs.steedOfTheSteppesCaptureParentCost = (context.source as DrawCard).parentCharacter;
         },
         pay: function() {
         }
@@ -31,9 +31,9 @@ class SteedOfTheSteppes extends DrawCard {
                 steedOfTheSteppesCaptureParentCost(),
                 AbilityDsl.costs.sacrificeSelf()
             ],
-            //need to put both as a target, context.source.parent is for the pre-cost checks, context.costs.steedOfTheSteppesCaptureParentCost is for the actual stand
+            //need to put both as a target, context.source.parentCharacter is for the pre-cost checks, context.costs.steedOfTheSteppesCaptureParentCost is for the actual stand
             //I don't like it, but it isnn't work otherwise
-            gameAction: AbilityDsl.actions.ready(context => ({ target: [context.source.parent, context.costs.steedOfTheSteppesCaptureParentCost] }))
+            gameAction: AbilityDsl.actions.ready(context => ({ target: [context.source.parentCharacter, context.costs.steedOfTheSteppesCaptureParentCost] }))
         });
     }
 }

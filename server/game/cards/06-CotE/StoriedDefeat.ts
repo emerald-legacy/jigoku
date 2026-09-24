@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import CardAbility from '../../CardAbility.js';
 import { CardType, EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
@@ -25,7 +26,7 @@ export default class StoriedDefeat extends DrawCard {
                 cardCondition: (card) => this.duelLosersThisConflict.has(card),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.bow(),
-                    AbilityDsl.actions.menuPrompt((context) => ({
+                    AbilityDsl.actions.menuPrompt((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         activePromptTitle: 'Spend 1 fate to dishonor ' + context.target.name + '?',
                         choices: ['Yes'].concat(
                             context.events.some((event: Event) => event.name === EventName.OnCardBowed) ? ['No'] : []

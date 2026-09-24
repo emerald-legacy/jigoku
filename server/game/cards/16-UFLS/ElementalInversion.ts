@@ -16,8 +16,8 @@ class ElementalInversion extends DrawCard {
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.placeFateOnRing(context => ({
                         origin: context.ring,
-                        target: context.game.currentConflict.ring,
-                        amount: context.ring.fate
+                        target: context.game.currentConflict?.ring,
+                        amount: context.ring?.fate
                     })),
                     AbilityDsl.actions.switchConflictElement()
                 ])

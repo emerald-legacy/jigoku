@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Players, Duration } from '../../../Constants.js';
@@ -17,7 +18,7 @@ class SurgingWave extends DrawCard {
                     let kihoPlayed = context.player.isKihoPlayedThisConflict(context, this);
                     let gameActions = [];
                     gameActions.push(
-                        AbilityDsl.actions.cardLastingEffect((context) => ({
+                        AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                             duration: Duration.UntilEndOfPhase,
                             effect: AbilityDsl.effects.delayedEffect({
                                 when: {
@@ -38,7 +39,7 @@ class SurgingWave extends DrawCard {
                     );
                     if(kihoPlayed) {
                         gameActions.push(
-                            AbilityDsl.actions.menuPrompt((context) => ({
+                            AbilityDsl.actions.menuPrompt((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                                 activePromptTitle:
                                     'Spend 1 fate to prevent ' +
                                     context.target.name +
@@ -57,7 +58,7 @@ class SurgingWave extends DrawCard {
                                 },
                                 gameAction: AbilityDsl.actions.joint([
                                     AbilityDsl.actions.loseFate({ target: context.player }),
-                                    AbilityDsl.actions.cardLastingEffect((context) => ({
+                                    AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                                         effect: AbilityDsl.effects.doesNotBow(),
                                         target: context.target
                                     }))

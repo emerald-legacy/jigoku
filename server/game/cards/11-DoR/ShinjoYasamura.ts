@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
@@ -19,7 +20,7 @@ class ShinjoYasamura extends DrawCard {
             },
             effect: 'prevent {1} from defending this phase',
             effectArgs: (context) => (context.event.context as AbilityContext).target as BaseCard,
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+            gameAction: AbilityDsl.actions.cardLastingEffect((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
                 target: (context.event.context as AbilityContext).target,
                 duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()

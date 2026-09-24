@@ -14,7 +14,7 @@ export default class JealousAncestor extends DrawCard {
 
         this.whileAttached({ effect: AbilityDsl.effects.addTrait('shadowlands') });
         this.persistentEffect({
-            condition: (context) => !!context.source.parent,
+            condition: (context) => !!context.source.parentCharacter,
             effect: AbilityDsl.effects.immunity({ restricts: 'events' })
         });
 
@@ -43,10 +43,10 @@ export default class JealousAncestor extends DrawCard {
     private addAttachedEffectOnOpponent(effect: EffectFactory) {
         this.persistentEffect({
             condition: (context) =>
-                !!(context.source.parent &&
-                context.source.parent.isParticipating() &&
+                !!(context.source.parentCharacter &&
+                context.source.parentCharacter.isParticipating() &&
                 !this.game.rings[this.getCurrentElementSymbol(ELEMENT_KEY)].isConsideredClaimed(
-                    context.source.parent.controller
+                    context.source.parentCharacter.controller
                 )),
             targetController: Players.Opponent,
             effect: effect

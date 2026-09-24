@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
@@ -21,7 +22,7 @@ export default class JadePrison extends DrawCard {
                     event.card.type === CardType.Character && event.card.controller === context.player.opponent &&
                     (event.card.hasSomeTrait('corrupt', 'shadowlands') || event.card.isTainted)
             },
-            gameAction: AbilityDsl.actions.bow((context) => ({ target: context.event.card }))
+            gameAction: AbilityDsl.actions.bow((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({ target: context.event.card }))
         });
     }
 

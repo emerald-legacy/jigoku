@@ -11,9 +11,9 @@ export default class Sato extends DrawCard {
             title: 'Force opponent to lose 1 honor',
             when: {
                 onCardPlayed: (event, context) =>
-                    context.source.parent &&
+                    context.source.parentCharacter &&
                     event.player === context.player.opponent &&
-                    context.source.parent.isParticipating()
+                    context.source.parentCharacter.isParticipating()
             },
             gameAction: AbilityDsl.actions.loseHonor(),
             limit: AbilityDsl.limit.unlimitedPerConflict()

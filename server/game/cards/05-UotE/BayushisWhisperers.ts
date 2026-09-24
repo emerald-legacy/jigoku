@@ -13,7 +13,7 @@ class BayushisWhisperers extends DrawCard {
             effect: 'look at {1}\'s hand, then name a card',
             effectArgs: context => context.player.opponent as Player,
             gameAction: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.lookAt(context => ({ target: context.player.opponent.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)), chatMessage: true })),
+                AbilityDsl.actions.lookAt(context => ({ target: context.player.opponent?.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)), chatMessage: true })),
                 AbilityDsl.actions.handler({
                     handler: context => this.game.promptWithMenu(context.player, this, {
                         context: context,

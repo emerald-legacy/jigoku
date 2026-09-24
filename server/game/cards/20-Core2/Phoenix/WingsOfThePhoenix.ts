@@ -20,7 +20,7 @@ export default class WingsOfThePhoenix extends DrawCard {
                     AbilityDsl.actions.onAffinity({
                         trait: 'fire',
                         gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                            target: context.game.currentConflict.getCharacters(context.player.opponent),
+                            target: context.game.currentConflict?.getCharacters(context.player.opponent),
                             effect: AbilityDsl.effects.modifyBothSkills(-1),
                             duration: Duration.UntilEndOfConflict
                         })),

@@ -22,7 +22,7 @@ export default class ShinjoAtagi extends DrawCard {
                     message: '{3} sets the {1} skill of {0} to {2}{1}',
                     messageArgs: (card: ProvinceCard) => [
                         context.target,
-                        context.game.currentConflict.conflictType,
+                        context.game.currentConflict?.conflictType,
                         card.getStrength(),
                         context.source
                     ],
@@ -31,7 +31,7 @@ export default class ShinjoAtagi extends DrawCard {
                         context.targets.province = card;
                         const provinceStrength = card.getStrength();
                         const effect =
-                            context.game.currentConflict.conflictType === 'military'
+                            context.game.currentConflict?.conflictType === 'military'
                                 ? AbilityDsl.effects.setMilitarySkill(provinceStrength)
                                 : AbilityDsl.effects.setPoliticalSkill(provinceStrength);
                         return {

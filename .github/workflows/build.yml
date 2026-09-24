@@ -9,15 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      DOMAIN: localhost
-      ENVIRONMENT: test
-      GAME_NODE_NAME: node-1
-      GAME_NODE_SOCKET_IO_PORT: 9500
-      HTTPS: false
-      LOBBY_PORT: 4000
-      LOBBY_WS_URL: ws://127.0.0.1:6000
-      SECRET: testsecret
 
     steps:
       - uses: actions/checkout@v6
@@ -30,16 +21,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: TypeScript compile
-        run: npx tsc -p tsconfig.test.json
-
       - name: Fetch card data
         run: node bin/fetchdata.js prod
 
       - name: Test
-        run: npx jasmine
-        env:
-          JASMINE_CONFIG_PATH: ./jasmine.json
+        run: npm test
 
       - name: Lint
         run: npm run lint

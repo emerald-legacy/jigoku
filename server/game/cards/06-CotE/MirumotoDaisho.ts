@@ -11,7 +11,7 @@ class MirumotoDaisho extends DrawCard {
         });
 
         this.persistentEffect({
-            condition: context => !!this.game.currentDuel && !!context.source.parent && this.game.currentDuel.isInvolved(context.source.parent),
+            condition: context => !!this.game.currentDuel && !!context.source.parentCharacter && this.game.currentDuel.isInvolved(context.source.parentCharacter),
             targetController: Players.Opponent,
             effect: [
                 ability.effects.cannotBidInDuels('1'),

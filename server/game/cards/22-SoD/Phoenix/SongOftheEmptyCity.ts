@@ -1,4 +1,4 @@
-import { AbilityContext } from '../../../AbilityContext.js';
+import { AbilityContext, type ResolvedAbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
 import type { Conflict } from '../../../Conflict.js';
@@ -31,7 +31,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
                 cardCondition: (card, context) =>
                     card.location !== context.source.location && card.location !== Location.StrongholdProvince
             },
-            gameAction: AbilityDsl.actions.moveCard((context) => ({
+            gameAction: AbilityDsl.actions.moveCard((context: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
                 target: context.source,
                 destination: context.target.location
             })),

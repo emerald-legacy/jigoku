@@ -1,3 +1,5 @@
+import type DrawCard from '../../DrawCard.js';
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -14,7 +16,7 @@ export default class SharingShineisWisdom extends ProvinceCard {
             target: {
                 cardType: CardType.Character,
                 controller: Players.Any,
-                gameAction: AbilityDsl.actions.selectCard((context) => ({
+                gameAction: AbilityDsl.actions.selectCard((context: ResolvedAbilityContext<ProvinceCard, DrawCard>) => ({
                     activePromptTitle: 'Choose a character to receive a fate',
                     cardType: CardType.Character,
                     controller: context.target.controller === context.player ? Players.Self : Players.Opponent,

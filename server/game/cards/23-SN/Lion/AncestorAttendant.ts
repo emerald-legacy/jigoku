@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -19,7 +20,7 @@ export default class AncestorAttendant extends DrawCard {
                 // Not joint: the discard is what "if you do" refers to, so a character
                 // that cannot be dishonored is still a legal choice and still costs the
                 // cards. Discard first, as printed.
-                gameAction: AbilityDsl.actions.multipleContext(context => ({
+                gameAction: AbilityDsl.actions.multipleContext((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                     gameActions: [
                         AbilityDsl.actions.discardCard((discardContext) => ({
                             target: discardContext.player.dynastyDeck.slice(0, context.target.printedCost || 0)

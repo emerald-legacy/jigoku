@@ -15,7 +15,7 @@ export default class UpholdingAuthority extends ProvinceCard {
         let gameAction = AbilityDsl.actions.menuPrompt((context) => ({
             activePromptTitle: 'Choose how many cards to discard',
             choices: (properties: MenuPromptProperties) =>
-                (context.game.currentConflict.attackingPlayer.hand as DrawCard[])
+                (context.game.currentConflict?.attackingPlayer.hand as DrawCard[])
                     .filter((card) => card.name === (properties.target as DrawCard[])[0].name)
                     .map((_, idx) => (idx + 1).toString()),
             gameAction: AbilityDsl.actions.discardCard(),
@@ -31,7 +31,7 @@ export default class UpholdingAuthority extends ProvinceCard {
                     );
                 }
                 return {
-                    target: context.game.currentConflict.attackingPlayer.hand
+                    target: context.game.currentConflict?.attackingPlayer.hand
                         .filter((card: DrawCard) => card.name === chosenCard.name)
                         .slice(0, parseInt(choice))
                 };
@@ -50,13 +50,13 @@ export default class UpholdingAuthority extends ProvinceCard {
             effect: 'look at the attacking player\'s hand and choose a card to be discarded',
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.lookAt((context) => ({
-                    target: context.game.currentConflict.attackingPlayer.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)),
+                    target: context.game.currentConflict?.attackingPlayer.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)),
                     message: '{0} reveals their hand: {1}',
-                    messageArgs: (cards) => [context.game.currentConflict.attackingPlayer, cards]
+                    messageArgs: (cards) => [context.game.currentConflict?.attackingPlayer, cards]
                 })),
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to discard',
-                    cards: context.game.currentConflict.attackingPlayer.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)),
+                    cards: context.game.currentConflict?.attackingPlayer.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)),
                     targets: true,
                     gameAction: gameAction,
                     choices: context.choosingPlayerOverride ? [] : ['Don\'t discard anything'],

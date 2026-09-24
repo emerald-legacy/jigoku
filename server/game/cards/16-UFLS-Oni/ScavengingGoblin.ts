@@ -21,7 +21,7 @@ export default class ScavengingGoblin extends BaseOni {
             effect: 'remove the top 3 cards of {1}\'s conflict deck from the game as well as any matching attachments',
             effectArgs: (context) => [context.player.opponent ?? ''],
             gameAction: AbilityDsl.actions.multipleContext((context) => {
-                const cardsToRemove = context.player.opponent.conflictDeck.slice(0, 3);
+                const cardsToRemove = context.player.opponent?.conflictDeck.slice(0, 3) ?? [];
                 const cardNames = cardsToRemove.map((card: DrawCard) => card.name);
                 const attachmentsToRemove = this.game.allCards.filter((card) => {
                     if(card.location !== 'play area') {

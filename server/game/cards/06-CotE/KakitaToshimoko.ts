@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import { DuelType, Players } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -17,7 +18,7 @@ export default class KakitaToshimoko extends DrawCard {
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
                 message: 'both players count 0 total skill for the conflict',
-                gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
+                gameAction: AbilityDsl.actions.playerLastingEffect((context: AbilityContext<DrawCard, DrawCard>) => ({
                     targetController: Players.Any,
                     effect:
                         (context.game.currentDuel as Duel).winner?.includes(context.source) ?? false

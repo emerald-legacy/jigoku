@@ -69,7 +69,7 @@ export class AttachToRingAction extends CardGameAction<AttachToRingActionPropert
 
         const context = event.context as AbilityContext;
         event.parent.attachments.push(card);
-        card.parent = event.parent as DrawCard;
+        card.parent = event.parent;
         if(card.controller !== context.player) {
             card.controller = context.player;
             card.updateEffectContexts();

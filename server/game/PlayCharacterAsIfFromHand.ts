@@ -9,6 +9,13 @@ export class PlayCharacterAsIfFromHand extends PlayCharacterAction {
         super(card);
     }
 
+    // A card in hand is never facedown, and putIntoPlay refuses a facedown card, so a
+    // card played out of a province this way is turned face up as it is played.
+    public executeHandler(context: AbilityContext<DrawCard> & { chooseFate: number }): void {
+        context.source.facedown = false;
+        super.executeHandler(context);
+    }
+
     public createContext(player: Player = this.card.controller) {
         const context = super.createContext(player);
         context.playType = PlayType.PlayFromHand;

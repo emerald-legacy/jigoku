@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -11,7 +12,7 @@ export default class ApprenticeEarthcaller extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking() && card.attachments.length === 0,
-                gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+                gameAction: AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                     effect: [
                         AbilityDsl.effects.setMilitarySkill(context.target.printedMilitarySkill),
                         AbilityDsl.effects.setPoliticalSkill(context.target.printedPoliticalSkill)

@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType } from '../../Constants.js';
@@ -14,7 +15,7 @@ class BayushiKachiko extends DrawCard {
                 cardCondition: (card, context) => card.politicalSkill < context.source.politicalSkill && card.isParticipating(),
                 gameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.sendHome(),
-                    AbilityDsl.actions.menuPrompt(context => ({
+                    AbilityDsl.actions.menuPrompt((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         activePromptTitle: 'Do you want to bow ' + context.target.name + '?',
                         choices: ['Yes', 'No'],
                         choiceHandler: (choice, displayMessage) => {

@@ -28,7 +28,7 @@ export class DetachAction extends CardGameAction<DetachActionProperties, EventNa
 
     eventHandler(event: GameEvent<EventName.OnCardDetached>): void {
         const card = event.card as DrawCard;
-        (card.parent as DrawCard).removeAttachment(card);
+        card.parent?.removeAttachment(card);
         card.controller.cardsInPlay.push(card);
     }
 }

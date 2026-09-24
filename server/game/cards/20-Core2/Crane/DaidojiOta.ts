@@ -37,7 +37,7 @@ export default class DaidojiOta extends DrawCard {
                         cardCondition: (card) => card.type === CardType.Event
                     }),
                     'Reveal your hand': AbilityDsl.actions.lookAt((context) => ({
-                        target: context.player.opponent.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)),
+                        target: context.player.opponent?.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)),
                         chatMessage: true,
                         message: '{0} reveals their hand: {1}',
                         messageArgs: (cards) => [context.player.opponent, cards]

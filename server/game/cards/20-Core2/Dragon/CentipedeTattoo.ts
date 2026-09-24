@@ -11,8 +11,8 @@ export default class CentipedeTattoo extends DrawCard {
 
         this.whileAttached({
             condition: () =>
-                !!this.parent && !!this.game.currentConflict &&
-                this.parent.isParticipating() && this.game.currentConflict.loser === this.parent.controller,
+                !!this.parentCharacter && !!this.game.currentConflict &&
+                this.parentCharacter.isParticipating() && this.game.currentConflict.loser === this.parentCharacter.controller,
             effect: AbilityDsl.effects.doesNotBow()
         });
     }

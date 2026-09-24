@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import { CardType, Duration, EventName, Phases, Players, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -16,7 +17,7 @@ export default class IkomaMasterHunter extends DrawCard {
                 mode: TargetMode.Single,
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+                gameAction: AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                     duration: Duration.UntilEndOfPhase,
                     target: context.source,
                     effect: AbilityDsl.effects.delayedEffect({

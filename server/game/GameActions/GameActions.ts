@@ -101,7 +101,14 @@ import { TransferHonorAction, TransferHonorProperties } from './TransferHonorAct
 import { TriggerAbilityAction, TriggerAbilityProperties } from './TriggerAbilityAction.js';
 import { TurnCardFacedownAction, TurnCardFacedownProperties } from './TurnCardFacedownAction.js';
 
+// The `any` is load-bearing. Card authors write this callback both untyped
+// (`context => ...`) and narrowed (`(context: AbilityContext<SomeCard>) => ...`),
+// and many bodies read off `context` in ways that only compiled because it was
+// `any`. Typing it as AbilityContext costs 442 errors across 279 card files:
+// ~90 contravariance rejections plus ~250 property reads that need per-card
+// annotation. `_Target`/NoInfer keeps the Props side fully checked regardless.
 type PropsFactory<Props, _Target = unknown> =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Props | ((context: any) => Props);
 
 //////////////

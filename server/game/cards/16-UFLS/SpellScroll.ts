@@ -9,22 +9,22 @@ export default class SpellScroll extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             condition: (context) =>
-                !!(context.source.parent?.isParticipating() &&
+                !!(context.source.parentCharacter?.isParticipating() &&
                 (context.game.currentConflict as Conflict).elements.some((element) =>
-                    (context.source.parent as DrawCard).hasTrait(element)
+                    context.source.parentCharacter?.hasTrait(element)
                 )),
             effect: AbilityDsl.effects.modifyPoliticalSkill(3)
         });
 
         this.action<DrawCard>({
             title: 'Put a card into your hand',
-            condition: (context) => !!context.source.parent,
+            condition: (context) => !!context.source.parentCharacter,
             target: {
                 location: Location.ConflictDiscardPile,
                 controller: Players.Self,
                 cardCondition: (card: DrawCard, context) =>
                     card.type !== CardType.Character &&
-                    (context.source.parent as DrawCard).hasSomeTrait(card.getTraitSet()),
+                    !!context.source.parentCharacter?.hasSomeTrait(card.getTraitSet()),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.moveCard<DrawCard>((context) => ({
                         target: context.target,

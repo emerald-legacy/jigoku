@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, EventName } from '../../Constants.js';
@@ -15,7 +16,7 @@ class AudienceChamber extends DrawCard {
                     event.card.type === CardType.Character &&
                     (event.card.getCost() ?? 0) >= 4
             },
-            gameAction: AbilityDsl.actions.placeFate((context) => ({
+            gameAction: AbilityDsl.actions.placeFate((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
                 target: context.event.card
             }))
         });

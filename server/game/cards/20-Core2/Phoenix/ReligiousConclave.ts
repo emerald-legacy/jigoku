@@ -21,7 +21,7 @@ export default class ReligiousConclave extends DrawCard {
             effectArgs: (context) => context.player.opponent as Player,
             gameAction: AbilityDsl.actions.ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
-                target: (context.ring.getElements() as Element[]).map((element) => context.game.rings[element]),
+                target: (context.ring?.getElements() as Element[]).map((element) => context.game.rings[element]),
                 effect: AbilityDsl.effects.cannotDeclareRing((player: Player) => player === context.player.opponent)
             }))
         });

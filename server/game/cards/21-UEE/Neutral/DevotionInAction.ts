@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -17,7 +18,7 @@ export default class DevotionInAction extends DrawCard {
                 location: [Location.Provinces, Location.Hand],
                 controller: Players.Self,
                 cardCondition: (card) => card instanceof DrawCard && card.hasTrait('bushi') && (card.printedCost ?? 0) <= 3,
-                gameAction: AbilityDsl.actions.putIntoConflict((context) => ({
+                gameAction: AbilityDsl.actions.putIntoConflict((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                     target: context.target,
                     status: context.target.hasTrait('yojimbo') ? 'honored' : 'ordinary'
                 }))

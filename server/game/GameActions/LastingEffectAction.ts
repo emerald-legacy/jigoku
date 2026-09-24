@@ -6,11 +6,12 @@ import type Player from '../Player.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
 
 import type { Event } from '../Events/Event.js';
+import type { EffectFactory } from '../Effects/EffectBuilder.js';
 export interface LastingEffectGeneralProperties extends GameActionProperties {
     duration?: Duration;
     condition?: (context: AbilityContext) => boolean;
     until?: WhenType;
-    effect?: any;
+    effect?: EffectFactory | EffectFactory[];
     message?: string;
     ability?: BaseAbility;
 }
@@ -18,6 +19,9 @@ export interface LastingEffectGeneralProperties extends GameActionProperties {
 export interface LastingEffectProperties extends LastingEffectGeneralProperties {
     targetController?: Players | Player;
 }
+
+// getProperties promotes a bare factory to an array, so what it returns is always an array
+type ResolvedLastingEffectProperties = LastingEffectProperties & { effect: EffectFactory[] };
 
 export class LastingEffectAction<P extends LastingEffectProperties = LastingEffectProperties> extends GameAction<P> {
     name = 'applyLastingEffect';
@@ -34,10 +38,8 @@ export class LastingEffectAction<P extends LastingEffectProperties = LastingEffe
     getProperties(
         context: AbilityContext,
         additionalProperties = {}
-    ): LastingEffectProperties & { effect: Array<any> } {
-        let properties = super.getProperties(context, additionalProperties) as LastingEffectProperties & {
-            effect: Array<any>;
-        };
+    ): ResolvedLastingEffectProperties {
+        let properties = super.getProperties(context, additionalProperties) as ResolvedLastingEffectProperties;
         if(!Array.isArray(properties.effect)) {
             properties.effect = [properties.effect];
         }

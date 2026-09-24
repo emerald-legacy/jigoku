@@ -27,11 +27,11 @@ class StoneBreaker extends DrawCard {
                         card.location !== Location.StrongholdProvince &&
                         !(card as ProvinceCard).isBroken &&
                         ( //same controller check
-                            ((context.targets.cardInProvince as DrawCard).type === CardType.Attachment && card.controller === (context.targets.cardInProvince as DrawCard).parent?.controller) ||
+                            ((context.targets.cardInProvince as DrawCard).type === CardType.Attachment && card.controller === (context.targets.cardInProvince as DrawCard).parentProvince?.controller) ||
                             ((context.targets.cardInProvince as DrawCard).type !== CardType.Attachment && card.controller === (context.targets.cardInProvince as DrawCard).controller)
                         ) &&
                         ( //different location check
-                            ((context.targets.cardInProvince as DrawCard).type === CardType.Attachment && card.location !== (context.targets.cardInProvince as DrawCard).parent?.location) ||
+                            ((context.targets.cardInProvince as DrawCard).type === CardType.Attachment && card.location !== (context.targets.cardInProvince as DrawCard).parentProvince?.location) ||
                             ((context.targets.cardInProvince as DrawCard).type !== CardType.Attachment && card.location !== (context.targets.cardInProvince as DrawCard).location)
                         ),
                     gameAction: AbilityDsl.actions.conditional(context => ({
@@ -52,7 +52,7 @@ class StoneBreaker extends DrawCard {
                 (context.targets.cardInProvince as DrawCard).isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
                 (context.targets.province as ProvinceCard).isFacedown() ? (context.targets.province as ProvinceCard).location : context.targets.province
             ],
-            gameAction: AbilityDsl.actions.refillFaceup(context => ({ location: context.cardStateWhenInitiated.location }))
+            gameAction: AbilityDsl.actions.refillFaceup(context => ({ location: context.cardStateWhenInitiated?.location }))
 
         });
 

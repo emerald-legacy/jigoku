@@ -48,7 +48,7 @@ export default class NezumiInfiltrator extends DrawCard {
                             action: AbilityDsl.actions.cardLastingEffect((context) => ({
                                 targetLocation: Location.Provinces,
                                 effect:
-                                    context.target.getStrength() > 1
+                                    context.target?.getStrength() > 1
                                         ? AbilityDsl.effects.modifyProvinceStrength(-1)
                                         : []
                             })),

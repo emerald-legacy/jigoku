@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -23,7 +24,7 @@ class AkodoMotivator extends DrawCard {
                     );
                 }
             },
-            gameAction: AbilityDsl.actions.discardAtRandom((context) => ({
+            gameAction: AbilityDsl.actions.discardAtRandom((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
                 amount: context.event.amount
             }))
         });

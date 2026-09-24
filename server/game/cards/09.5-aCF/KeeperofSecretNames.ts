@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import BaseCard from '../../BaseCard.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
@@ -15,7 +16,7 @@ class KeeperOfSecretNames extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card: BaseCard) => card.abilities.actions.length > 0 && !(card as ProvinceCard).isBroken,
-                gameAction: AbilityDsl.actions.resolveAbility(context => ({
+                gameAction: AbilityDsl.actions.resolveAbility((context: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
                     target: context.target,
                     ability: context.target.abilities.actions[0],
                     ignoredRequirements: ['province'],

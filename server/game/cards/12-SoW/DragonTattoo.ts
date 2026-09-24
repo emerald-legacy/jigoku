@@ -26,7 +26,7 @@ export default class DragonTattoo extends DrawCard {
                         this.isValidTargetForTattoo(card, context))
             },
             title: 'Play card again',
-            gameAction: AbilityDsl.actions.ifAble((context) => {
+            gameAction: AbilityDsl.actions.ifAble((context: TriggeredAbilityContext<DrawCard, DrawCard>) => {
                 const card = context.event.card;
                 return {
                     ifAbleAction: AbilityDsl.actions.playCard(() => {
@@ -63,7 +63,7 @@ export default class DragonTattoo extends DrawCard {
         return (
             card.type === CardType.Character &&
             card.controller === context.player &&
-            card === (context.source as DrawCard).parent &&
+            card === (context.source as DrawCard).parentCharacter &&
             card.location === Location.PlayArea
         );
     }

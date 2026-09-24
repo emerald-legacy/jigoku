@@ -1,4 +1,4 @@
-import { AbilityContext } from '../../../AbilityContext.js';
+import { AbilityContext, type ResolvedAbilityContext } from '../../../AbilityContext.js';
 import BaseCard from '../../../BaseCard.js';
 import { CardType, Duration, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -27,7 +27,7 @@ export default class LaughingThunder extends DrawCard {
                 cardCondition: (card, context) => card.hasTrait('kiho') &&
                     context.game.actions.attach({ attachment: this.getDummyAttachment(card) }).canAffect(context.source, context)
             },
-            gameAction: AbilityDsl.actions.sequentialContext(context => {
+            gameAction: AbilityDsl.actions.sequentialContext((context: ResolvedAbilityContext<DrawCard, DrawCard>) => {
                 const gameActions: GameAction[] = [];
 
                 gameActions.push(AbilityDsl.actions.cardLastingEffect({

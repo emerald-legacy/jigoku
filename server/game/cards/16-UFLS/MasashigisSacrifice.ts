@@ -15,7 +15,7 @@ class MasashigisSacrifice extends DrawCard {
             condition: () => this.game.isDuringConflict(),
             gameAction: [
                 AbilityDsl.actions.cardLastingEffect(context => ({
-                    target: context.game.currentConflict.getDefenders(),
+                    target: context.game.currentConflict?.getDefenders(),
                     effect: AbilityDsl.effects.doesNotBow()
                 }))
             ],

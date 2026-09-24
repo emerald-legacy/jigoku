@@ -15,12 +15,12 @@ class NaturalNegotiator extends DrawCard {
         this.action({
             title: 'Switch attached characters base skills',
             effect: 'switch {1}\'s base {2} and {3} skill',
-            effectArgs: (context: AbilityContext<this>) => [context.source.parent as DrawCard, 'military', 'political'],
+            effectArgs: (context: AbilityContext<this>) => [context.source.parentCharacter, 'military', 'political'],
             cost: AbilityDsl.costs.giveHonorToOpponent(),
             condition: (context) => context.game.isDuringConflict(),
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfConflict,
-                target: context.source.parent,
+                target: context.source.parentCharacter,
                 effect: AbilityDsl.effects.switchBaseSkills()
             }))
         });

@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -10,7 +11,7 @@ class TheMountainDoesNotFall extends DrawCard {
             title: 'Choose a character to not bow when defending',
             target: {
                 cardType: CardType.Character,
-                gameAction: ability.actions.cardLastingEffect(context => ({
+                gameAction: ability.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                     duration: Duration.UntilEndOfPhase,
                     condition: () => context.target.isDefending(),
                     effect: ability.effects.doesNotBow()

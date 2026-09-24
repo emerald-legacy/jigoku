@@ -1,3 +1,5 @@
+import type DrawCard from '../../DrawCard.js';
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import { CardType, Players } from '../../Constants.js';
 import type BaseCard from '../../BaseCard.js';
 import { BaseOni } from './_BaseOni.js';
@@ -18,7 +20,7 @@ export default class Penanggalan extends BaseOni {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isTainted && card.isParticipating(),
-                gameAction: AbilityDsl.actions.placeFate((context) => ({
+                gameAction: AbilityDsl.actions.placeFate((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                     target: context.source,
                     origin: context.target
                 }))

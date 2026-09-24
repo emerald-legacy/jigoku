@@ -28,7 +28,7 @@ describe('Time For War', function () {
                 expect(this.player2).toHavePrompt('Choose a character');
                 expect(this.player2).toBeAbleToSelect('matsu-berserker');
                 this.matsuBerserker = this.player2.clickCard('matsu-berserker');
-                expect(this.player2).toHavePrompt('Choose an attachment');
+                expect(this.player2).toHavePrompt('Choose a weapon attachment');
                 expect(this.player2).toBeAbleToSelect('kamayari');
                 this.kamayari = this.player2.clickCard('kamayari');
                 expect(this.matsuBerserker.attachments).toContain(this.kamayari);

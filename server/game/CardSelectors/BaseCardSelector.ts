@@ -17,7 +17,6 @@ export interface BaseCardSelectorProperties {
     controller?: ControllerProp;
     targets?: boolean;
     sameDiscardPile?: boolean;
-    [key: string]: unknown;
 }
 
 class BaseCardSelector {

@@ -1,3 +1,5 @@
+import { AttachmentManager } from './AttachmentManager.js';
+import type DrawCard from './DrawCard.js';
 import AbilityDsl from './abilitydsl.js';
 import Effects from './effects.js';
 import EffectSource from './EffectSource.js';
@@ -32,6 +34,7 @@ import { StatusToken } from './StatusToken.js';
 import Player from './Player.js';
 import type BaseAction from './BaseAction.js';
 import Ring from './Ring.js';
+import type { ProvinceCard } from './ProvinceCard.js';
 import type { CardEffect } from './Effects/types.js';
 import type Effect from './Effects/Effect.js';
 import type { EffectFactory } from './Effects/EffectBuilder.js';
@@ -113,6 +116,33 @@ class BaseCard extends EffectSource {
 
     protected statusManager!: CardStatusManager;
     allowedAttachmentTraits = [] as string[];
+    protected attachmentHost = new AttachmentManager(this);
+
+    /** What this card is attached to, or null — the inverse of `attachments`. */
+    parent: BaseCard | Ring | null = null;
+
+    /** The attached character, in the cards' sense; null when attached to anything else. */
+    get parentCharacter(): DrawCard | null {
+        return this.parent instanceof BaseCard && this.parent.isCharacter() ? this.parent : null;
+    }
+
+    /** The attached province, in the cards' sense; null when attached to anything else. */
+    get parentProvince(): ProvinceCard | null {
+        return this.parent instanceof BaseCard && this.parent.isProvinceCard() ? this.parent : null;
+    }
+
+    get attachments(): DrawCard[] {
+        return this.attachmentHost.attachments;
+    }
+
+    set attachments(value: DrawCard[]) {
+        this.attachmentHost.attachments = value;
+    }
+
+    removeAttachment(attachment: DrawCard): void {
+        this.attachmentHost.remove(attachment);
+    }
+
     printedKeywords: Array<PrintedKeyword> = [];
     disguisedKeywordTraits = [] as string[];
 
@@ -566,6 +596,16 @@ class BaseCard extends EffectSource {
         const factionArray = [...addedFactions, cardFaction].filter(faction => !lostFactions.includes(faction));
 
         return new Set(factionArray);
+    }
+
+    /** Narrows to `DrawCard`: an attachment may be attached to a province or a ring instead. */
+    isCharacter(): this is DrawCard {
+        return this.type === CardType.Character;
+    }
+
+    /** Narrows to `ProvinceCard`, the counterpart of `isCharacter`. */
+    isProvinceCard(): this is ProvinceCard {
+        return this.isProvince;
     }
 
     isInProvince(): boolean {

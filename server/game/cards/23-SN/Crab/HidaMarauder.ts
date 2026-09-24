@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import Player from '../../../Player.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -14,7 +15,7 @@ export default class HidaMarauder extends DrawCard {
                     event.conflict.winner === context.source.controller &&
                     context.player.opponent
             },
-            gameAction: AbilityDsl.actions.multipleContext((context) => {
+            gameAction: AbilityDsl.actions.multipleContext((context: AbilityContext<DrawCard, DrawCard>) => {
                 const count = context.game.currentConflict?.getCharacters(context.player)?.length || 0;
                 const cards =
                     context.player.opponent && count > 0
@@ -27,7 +28,7 @@ export default class HidaMarauder extends DrawCard {
                             chatMessage: true,
                             player: context.player.opponent
                         }),
-                        AbilityDsl.actions.cardMenu((context) => ({
+                        AbilityDsl.actions.cardMenu((context: AbilityContext<DrawCard, DrawCard>) => ({
                             cards: cards.slice().sort((a, b) => a.name.localeCompare(b.name)),
                             targets: true,
                             message: '{0} chooses {1} to be discarded',

@@ -10,7 +10,7 @@ export default class PassionatePoet extends DrawCard {
             title: 'Give all participating enemies -1/-1',
             condition: (context) => context.source.isParticipating(),
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.game.currentConflict.getCharacters(context.player.opponent),
+                target: context.game.currentConflict?.getCharacters(context.player.opponent),
                 effect: AbilityDsl.effects.modifyBothSkills(-1),
                 duration: Duration.UntilEndOfConflict
             })),

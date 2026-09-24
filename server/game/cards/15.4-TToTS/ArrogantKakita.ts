@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import { DuelType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -14,7 +15,7 @@ export default class ArrogantKakita extends DrawCard {
             initiateDuel: {
                 type: DuelType.Military,
                 gameAction: (duel) =>
-                    AbilityDsl.actions.sendHome((context) => ({
+                    AbilityDsl.actions.sendHome((context: AbilityContext<DrawCard, DrawCard>) => ({
                         target: duel.loser?.includes(context.source) ? context.source : []
                     }))
             },

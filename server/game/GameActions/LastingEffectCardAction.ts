@@ -6,14 +6,17 @@ import { Duration, EffectName, EventName, Location } from '../Constants.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import { CardGameAction } from './CardGameAction.js';
 import type { LastingEffectGeneralProperties } from './LastingEffectAction.js';
-
-type LastingEffectFactory = (game: unknown, source: unknown, props: unknown) => { effect: { canBeApplied: (card: BaseCard) => boolean; type: string }; match: unknown };
+import type { EffectFactory } from '../Effects/EffectBuilder.js';
+import type Effect from '../Effects/Effect.js';
 
 export interface LastingEffectCardProperties extends LastingEffectGeneralProperties {
     targetLocation?: Location | Location[];
     canChangeZoneOnce?: boolean;
     canChangeZoneNTimes?: number;
 }
+
+// getProperties promotes a bare factory to an array, so what it returns is always an array
+type ResolvedLastingEffectCardProperties = LastingEffectCardProperties & { effect: EffectFactory[] };
 
 export class LastingEffectCardAction<
     P extends LastingEffectCardProperties = LastingEffectCardProperties
@@ -39,8 +42,8 @@ export class LastingEffectCardAction<
     }
 
     // @ts-expect-error -- overriding return type to be more specific than base class signature
-    getProperties(context: AbilityContext, additionalProperties = {}): LastingEffectCardProperties {
-        let properties = super.getProperties(context, additionalProperties) as LastingEffectCardProperties;
+    getProperties(context: AbilityContext, additionalProperties = {}): ResolvedLastingEffectCardProperties {
+        let properties = super.getProperties(context, additionalProperties) as ResolvedLastingEffectCardProperties;
         if(!Array.isArray(properties.effect)) {
             properties.effect = [properties.effect];
         }
@@ -49,12 +52,12 @@ export class LastingEffectCardAction<
 
     canAffect(card: BaseCard, context: AbilityContext, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
-        properties.effect = properties.effect.map((factory: LastingEffectFactory) => factory(context.game, context.source, properties));
+        const effects = properties.effect.map((factory) => factory(context.game, context.source, properties));
         const lastingEffectRestrictions = card.getEffects(EffectName.CannotApplyLastingEffects);
         return (
             super.canAffect(card, context) &&
-            properties.effect.some(
-                (props: ReturnType<LastingEffectFactory>) =>
+            effects.some(
+                (props: Effect) =>
                     props.effect.canBeApplied(card) &&
                     !lastingEffectRestrictions.some((condition: (e: unknown) => boolean) => condition(props.effect))
             )
@@ -66,12 +69,12 @@ export class LastingEffectCardAction<
         const { effect: _effect, ...otherProperties } = this.getProperties(context, additionalProperties);
         const eventContext = event.context as AbilityContext;
         const effectProperties = Object.assign({ match: event.card, location: Location.Any }, otherProperties);
-        let effects = _effect.map((factory: LastingEffectFactory) =>
+        let effects = _effect.map((factory) =>
             factory(eventContext.game, eventContext.source, effectProperties)
         );
 
-        event.effectTypes = effects.map((eff: ReturnType<LastingEffectFactory>) => eff.effect.type);
-        const matches = effects.map((eff: ReturnType<LastingEffectFactory>) => eff.match);
+        event.effectTypes = effects.map((eff) => eff.effect.type);
+        const matches = effects.map((eff) => eff.match);
         event.matches = Array.isArray(matches) ? matches : [matches];
     }
 
@@ -86,11 +89,11 @@ export class LastingEffectCardAction<
         const lastingEffectRestrictions = card.getEffects(EffectName.CannotApplyLastingEffects);
         const { effect: _effect, ...otherProperties } = properties;
         const effectProperties = Object.assign({ match: card, location: Location.Any }, otherProperties);
-        let effects = properties.effect.map((factory: LastingEffectFactory) =>
+        let effects = properties.effect.map((factory) =>
             factory(eventContext.game, eventContext.source, effectProperties)
         );
         effects = effects.filter(
-            (props: ReturnType<LastingEffectFactory>) =>
+            (props: Effect) =>
                 props.effect.canBeApplied(card) &&
                 !lastingEffectRestrictions.some((condition: (e: unknown) => boolean) => condition(props.effect))
         );

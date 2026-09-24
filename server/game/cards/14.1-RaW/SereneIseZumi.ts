@@ -16,12 +16,12 @@ export default class SereneIseZumi extends DrawCard {
             title: 'Move attached character home',
             printedAbility: false,
             condition: (context) =>
-                !!(context.source.parent &&
+                !!(context.source.parentCharacter &&
                 context.game.isDuringConflict() &&
                 context.source.type === CardType.Attachment &&
-                context.source.parent.isParticipating()),
+                context.source.parentCharacter.isParticipating()),
             gameAction: AbilityDsl.actions.sendHome((context) => ({
-                target: context.source.parent
+                target: context.source.parentCharacter
             }))
         });
         this.persistentEffect({

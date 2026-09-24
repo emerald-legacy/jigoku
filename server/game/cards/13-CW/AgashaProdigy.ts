@@ -38,7 +38,7 @@ class AgashaProdigys extends DrawCard {
                     cardCondition: (card, context) => Boolean(context.costs.optionalHonorTransferFromOpponentCostPaid),
                     gameAction: AbilityDsl.actions.sequential([
                         AbilityDsl.actions.discardCard(context => ({
-                            target: context.targets.oppCharacter ? context.player.opponent.conflictDeck[0] : []
+                            target: context.targets.oppCharacter ? context.player.opponent?.conflictDeck[0] : []
                         })),
                         AbilityDsl.actions.ifAble(context => ({
                             ifAbleAction: AbilityDsl.actions.attach({

@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import BaseCard from '../../../BaseCard.js';
 import { CardType, Duration, Players, TargetMode } from '../../../Constants.js';
@@ -19,7 +20,7 @@ export default class ToShowThePath extends DrawCard {
                 controller: Players.Any,
                 mode: TargetMode.Single,
                 cardCondition: (card) => !card.hasTrait('monk') && !card.hasTrait('shugenja'),
-                gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
+                gameAction: AbilityDsl.actions.playerLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                     targetController: context.player.opponent,
                     duration: Duration.UntilEndOfPhase,
                     effect: AbilityDsl.effects.playerFateCostToTargetCard({

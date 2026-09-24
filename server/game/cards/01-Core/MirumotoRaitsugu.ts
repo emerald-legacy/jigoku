@@ -1,3 +1,4 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType, DuelType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
@@ -13,7 +14,7 @@ export default class MirumotoRaitsugu extends DrawCard {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.duel((context) => ({
+                gameAction: AbilityDsl.actions.duel((context: AbilityContext<DrawCard, DrawCard>) => ({
                     type: DuelType.Military,
                     challenger: context.source,
                     gameAction: (duel) =>

@@ -8,7 +8,7 @@ class Daikyu extends DrawCard {
 
     setupCardAbilities() {
         this.whileAttached({
-            condition: (context: AbilityContext<this>) => !!context.source.parent && !!context.source.controller.firstPlayer,
+            condition: (context: AbilityContext<this>) => !!context.source.parentCharacter && !!context.source.controller.firstPlayer,
             effect: AbilityDsl.effects.modifyMilitarySkill(2)
         });
 

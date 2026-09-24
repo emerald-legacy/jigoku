@@ -10,7 +10,7 @@ const nitenCaptureParentCost = function(): Cost {
             return true;
         },
         resolve: function(context: AbilityContext) {
-            context.costs.nitenCaptureParentCost = (context.source as DrawCard).parent;
+            context.costs.nitenCaptureParentCost = (context.source as DrawCard).parentCharacter;
         },
         pay: function() {
         }
@@ -28,7 +28,7 @@ class Niten extends DrawCard {
 
         this.action({
             title: 'Put an attachment into play',
-            condition: context => !!(context.source.parent && context.source.parent.isParticipating()),
+            condition: context => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()),
             cost: [
                 nitenCaptureParentCost(),
                 AbilityDsl.costs.returnSelfToHand()
@@ -37,7 +37,7 @@ class Niten extends DrawCard {
                 cardType: CardType.Attachment,
                 controller: Players.Self,
                 location: Location.Hand,
-                cardCondition: (card, context) => card.canAttach(context.source.parent ?? undefined) || card.canAttach(context.costs.nitenCaptureParentCost as DrawCard)
+                cardCondition: (card, context) => card.canAttach(context.source.parentCharacter ?? undefined) || card.canAttach(context.costs.nitenCaptureParentCost as DrawCard)
             },
             gameAction: AbilityDsl.actions.attach(context => ({
                 target: context.costs.nitenCaptureParentCost,

@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -14,7 +15,7 @@ class CommonCause extends DrawCard {
                 cardType: CardType.Character,
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.ready(),
-                    AbilityDsl.actions.honor(context => ({ target: context.target.controller !== context.player ? context.target : [] }))
+                    AbilityDsl.actions.honor((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({ target: context.target.controller !== context.player ? context.target : [] }))
                 ])
             }
         });

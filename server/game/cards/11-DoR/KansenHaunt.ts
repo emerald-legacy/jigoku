@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -15,7 +16,7 @@ class KansenHaunt extends DrawCard {
                     event.player === context.player
             },
             cost: AbilityDsl.costs.payHonor(2),
-            gameAction: AbilityDsl.actions.resolveRingEffect((context) => ({
+            gameAction: AbilityDsl.actions.resolveRingEffect((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
                 player: context.player,
                 target: context.event.ring
             }))

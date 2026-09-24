@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Duration, CardType } from '../../Constants.js';
@@ -15,7 +16,7 @@ class PurityOfSpirit extends DrawCard {
                 cardCondition: card => card.hasTrait('bushi') && card.isParticipating(),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.honor(),
-                    AbilityDsl.actions.cardLastingEffect(context => ({
+                    AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         duration: Duration.UntilEndOfPhase,
                         effect: AbilityDsl.effects.delayedEffect({
                             when : {

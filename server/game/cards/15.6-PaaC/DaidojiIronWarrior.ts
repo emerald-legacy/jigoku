@@ -13,7 +13,7 @@ class DaidojiIronWarrior extends DrawCard {
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.chosenDiscard(context => ({
                     target: context.player.opponent,
-                    amount: Math.max(0, context.player.opponent.hand.length - 4)
+                    amount: Math.max(0, (context.player.opponent?.hand.length ?? 0) - 4)
                 })),
                 AbilityDsl.actions.chosenDiscard(context => ({
                     target: context.player,

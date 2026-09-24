@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, Players } from '../../Constants.js';
@@ -18,7 +19,7 @@ class CaptivatingStory extends DrawCard {
                     AbilityDsl.actions.cardLastingEffect(context => ({
                         effect: AbilityDsl.effects.modifyPoliticalSkill(context.player.getNumberOfFaceupProvinces())
                     })),
-                    AbilityDsl.actions.menuPrompt(context => ({
+                    AbilityDsl.actions.menuPrompt((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         activePromptTitle: 'Remove 1 fate from ' + context.target.name + ' to honor them?',
                         choices: ['Yes'].concat(context.player.getNumberOfFaceupProvinces() > 0 ? ['No'] : []),
                         choiceHandler: (choice, displayMessage) => {
@@ -28,7 +29,7 @@ class CaptivatingStory extends DrawCard {
                             return { amount: choice === 'Yes' ? 1 : 0 };
                         },
                         gameAction: AbilityDsl.actions.joint([
-                            AbilityDsl.actions.removeFate(context => ({
+                            AbilityDsl.actions.removeFate((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                                 target: context.target
                             })),
                             AbilityDsl.actions.resolveAbility({

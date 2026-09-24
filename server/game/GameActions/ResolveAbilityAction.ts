@@ -93,7 +93,7 @@ export interface ResolveAbilityProperties extends CardActionProperties {
     ignoredRequirements?: string[];
     player?: Player;
     event?: Event;
-    choosingPlayerOverride?: Player;
+    choosingPlayerOverride?: Player | null;
 }
 
 type ResolvedResolveAbilityProperties = ResolveAbilityProperties & {

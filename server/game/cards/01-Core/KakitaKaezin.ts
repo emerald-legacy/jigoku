@@ -21,7 +21,7 @@ export default class KakitaKaezin extends DrawCard {
                         AbilityDsl.actions.sendHome({
                             target:
                                 duel.winner?.includes(context.source) ?? false
-                                    ? context.game.currentConflict.getParticipants(
+                                    ? context.game.currentConflict?.getParticipants(
                                         (card: DrawCard) => !duel.isInvolved(card)
                                     )
                                     : duel.loser

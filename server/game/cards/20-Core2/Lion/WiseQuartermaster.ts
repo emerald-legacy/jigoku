@@ -1,10 +1,12 @@
 import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import type BaseCard from '../../../BaseCard.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 
-function attachedToType(context: AbilityContext<DrawCard, DrawCard>): CardType | undefined {
-    return context.target?.parent?.type;
+/** The card the chosen attachment sits on. Null while it is on a ring, which this card cannot move. */
+function parentCard(context: AbilityContext<DrawCard, DrawCard>): BaseCard | null {
+    return context.target?.parentCharacter ?? context.target?.parentProvince ?? null;
 }
 
 export default class WiseQuartermaster extends DrawCard {
@@ -18,12 +20,12 @@ export default class WiseQuartermaster extends DrawCard {
                 cardType: CardType.Attachment,
                 controller: Players.Self,
                 gameAction: AbilityDsl.actions.selectCard<DrawCard>((context) => {
-                    const isOnProvince = attachedToType(context) === CardType.Province;
+                    const parent = parentCard(context);
+                    const isOnProvince = !!parent?.isProvinceCard();
                     return {
                         cardType: isOnProvince ? CardType.Province : CardType.Character,
                         location: isOnProvince ? Location.Provinces : Location.PlayArea,
-                        cardCondition: (card) =>
-                            card !== context.target?.parent && card.controller === context.target?.parent?.controller,
+                        cardCondition: (card) => card !== parent && card.controller === parent?.controller,
                         message: '{0} moves {1} to {2}',
                         messageArgs: (card) => [context.player, context.target ?? '', card],
                         gameAction: AbilityDsl.actions.attach({ attachment: context.target })
@@ -31,7 +33,7 @@ export default class WiseQuartermaster extends DrawCard {
                 })
             },
             effect: 'move {0} to another {1}',
-            effectArgs: (context) => [attachedToType(context) === CardType.Province ? 'province' : 'character']
+            effectArgs: (context) => [parentCard(context)?.isProvinceCard() ? 'province' : 'character']
         });
     }
 }

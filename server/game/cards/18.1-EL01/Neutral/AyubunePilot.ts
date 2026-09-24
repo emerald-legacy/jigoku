@@ -9,7 +9,7 @@ const ayubunePilotCaptureParentCost = function(): Cost {
             return true;
         },
         resolve: function(context: AbilityContext) {
-            context.costs.ayubunePilotCaptureParentCost = (context.source as DrawCard).parent;
+            context.costs.ayubunePilotCaptureParentCost = (context.source as DrawCard).parentCharacter;
         },
         pay: function() {
         }
@@ -31,8 +31,8 @@ class AyubunePilot extends DrawCard {
                 ayubunePilotCaptureParentCost(),
                 AbilityDsl.costs.sacrificeSelf()
             ],
-            condition: context => !!(context.source.parent && !context.source.parent.bowed),
-            gameAction: AbilityDsl.actions.moveToConflict(context => ({ target: [context.source.parent, context.costs.ayubunePilotCaptureParentCost] }))
+            condition: context => !!(context.source.parentCharacter && !context.source.parentCharacter.bowed),
+            gameAction: AbilityDsl.actions.moveToConflict(context => ({ target: [context.source.parentCharacter, context.costs.ayubunePilotCaptureParentCost] }))
         });
     }
 }

@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, ConflictType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -31,7 +32,7 @@ export default class BrokenBlades extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.removeFate((context) => ({
+                    AbilityDsl.actions.removeFate((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         amount: context.target.getFate(),
                         recipient: context.target.owner
                     })),

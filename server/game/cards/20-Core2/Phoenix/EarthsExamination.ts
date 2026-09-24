@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import { CardType, ConflictType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,7 +16,7 @@ export default class EarthsExamination extends DrawCard {
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.taint(),
-                    AbilityDsl.actions.onAffinity((context) => ({
+                    AbilityDsl.actions.onAffinity((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                         trait: 'earth',
                         promptTitleForConfirmingAffinity: context.target.isTainted ? undefined : 'Bow that character?',
                         gameAction: AbilityDsl.actions.bow(),

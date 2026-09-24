@@ -21,7 +21,7 @@ class Unhallow extends DrawCard {
         });
 
         this.persistentEffect({
-            condition: (context) => !!(context.source.parent && context.source.parent.isConflictProvince()),
+            condition: (context) => !!context.source.parentProvince?.isConflictProvince(),
             targetLocation: Location.Provinces,
             targetController: Players.Self,
             effect: AbilityDsl.effects.costToDeclareAnyParticipants({

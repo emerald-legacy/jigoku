@@ -10,6 +10,7 @@ import type Player from '../Player.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import { type GameAction } from './GameAction.js';
+import type { EffectFactory } from '../Effects/EffectBuilder.js';
 
 export interface DuelProperties extends CardActionProperties {
     type: DuelType;
@@ -21,8 +22,8 @@ export interface DuelProperties extends CardActionProperties {
     messageArgs?: (duel: Duel, context: AbilityContext) => unknown | unknown[];
     costHandler?: (context: AbilityContext, prompt: unknown) => void;
     statistic?: (card: DrawCard, duelRules: 'currentSkill' | 'printedSkill' | 'skirmish') => number;
-    challengerEffect?: unknown;
-    targetEffect?: unknown;
+    challengerEffect?: EffectFactory | EffectFactory[];
+    targetEffect?: EffectFactory | EffectFactory[];
     refuseGameAction?: GameAction;
     refusalMessage?: string;
     refusalMessageArgs?: (context: AbilityContext) => unknown | unknown[];

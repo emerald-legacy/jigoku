@@ -22,7 +22,7 @@ export function bowSelf(): Cost {
  * Cost that will bow the card that the card that initiated the ability is attached to.
  */
 export function bowParent(): Cost {
-    return new GameActionCost(GameActions.bow((context) => ({ target: context.source.parent })));
+    return new GameActionCost(GameActions.bow((context) => ({ target: context.source.parentCharacter })));
 }
 
 /**
@@ -162,7 +162,7 @@ export function removeFate(properties: SelectCostProperties): Cost {
  * Cost that will discard a fate from the card's parent
  */
 export function removeFateFromParent(): Cost {
-    return new GameActionCost(GameActions.removeFate((context) => ({ target: context.source.parent })));
+    return new GameActionCost(GameActions.removeFate((context) => ({ target: context.source.parentCharacter })));
 }
 
 /**

@@ -3,7 +3,6 @@ import { EffectName, Element, Location } from './Constants.js';
 import type { ElementSymbolInfo } from './ElementSymbol.js';
 import AbilityDsl from './abilitydsl.js';
 import BaseCard from './BaseCard.js';
-import { AttachmentManager } from './AttachmentManager.js';
 import type Player from './Player.js';
 import type DrawCard from './DrawCard.js';
 import StatModifier from './StatModifier.js';
@@ -19,20 +18,6 @@ export class ProvinceCard extends BaseCard {
         { command: 'honor', text: 'Honor' },
         { command: 'taint', text: 'Taint/Cleanse' }
     ];
-    private attachmentHost = new AttachmentManager(this);
-
-    get attachments(): DrawCard[] {
-        return this.attachmentHost.attachments;
-    }
-
-    set attachments(value: DrawCard[]) {
-        this.attachmentHost.attachments = value;
-    }
-
-    removeAttachment(attachment: DrawCard): void {
-        this.attachmentHost.remove(attachment);
-    }
-
     override checkForIllegalAttachments(): boolean {
         return this.attachmentHost.checkForIllegalAttachments();
     }

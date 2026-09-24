@@ -16,15 +16,15 @@ export default class AgashaSumiko2 extends DrawCard {
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.loseHonor((context) => ({
                     target: context.player.opponent,
-                    amount: context.player.opponent.isMoreHonorable() ? 2 : 0
+                    amount: context.player.opponent?.isMoreHonorable() ? 2 : 0
                 })),
                 AbilityDsl.actions.loseFate((context) => ({
                     target: context.player.opponent,
-                    amount: context.player.opponent.fate > context.player.fate ? 2 : 0
+                    amount: (context.player.opponent?.fate ?? 0) > context.player.fate ? 2 : 0
                 })),
                 AbilityDsl.actions.chosenDiscard((context) => ({
                     target: context.player.opponent,
-                    amount: context.player.opponent.hand.length > context.player.hand.length ? 2 : 0
+                    amount: (context.player.opponent?.hand.length ?? 0) > context.player.hand.length ? 2 : 0
                 }))
             ]),
             effect: 'make {1} {2}',

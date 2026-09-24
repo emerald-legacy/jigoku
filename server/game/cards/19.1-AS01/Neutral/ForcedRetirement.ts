@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Players, CharacterStatus } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -21,17 +22,15 @@ export default class ForcedRetirement extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => (card.isDishonored || card.isTainted) && !card.isParticipating()
             },
-            gameAction: AbilityDsl.actions.sequentialContext((context) => ({
+            gameAction: AbilityDsl.actions.sequentialContext((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                 gameActions: [
                     AbilityDsl.actions.multiple([
                         AbilityDsl.actions.discardStatusToken({
-                            target: [
-                                context.target.statusTokens.filter(
-                                    (t: StatusToken) =>
-                                        t.grantedStatus === CharacterStatus.Dishonored ||
-                                        t.grantedStatus === CharacterStatus.Tainted
-                                )
-                            ]
+                            target: context.target.statusTokens.filter(
+                                (t: StatusToken) =>
+                                    t.grantedStatus === CharacterStatus.Dishonored ||
+                                    t.grantedStatus === CharacterStatus.Tainted
+                            )
                         }),
                         AbilityDsl.actions.removeFate({
                             target: context.target,

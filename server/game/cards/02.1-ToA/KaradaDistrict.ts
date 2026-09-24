@@ -1,3 +1,4 @@
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -11,9 +12,9 @@ class KaradaDistrict extends DrawCard {
             cost: AbilityDsl.costs.giveFateToOpponent(1),
             target: {
                 cardType: CardType.Attachment,
-                cardCondition: (card, context) => Boolean(card.parent && card.parent.controller === context.player.opponent)
+                cardCondition: (card, context) => Boolean(card.parentCharacter && card.parentCharacter.controller === context.player.opponent)
             },
-            gameAction: AbilityDsl.actions.ifAble(context => ({
+            gameAction: AbilityDsl.actions.ifAble((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
                 ifAbleAction: AbilityDsl.actions.selectCard({
                     target: context.target,
                     cardType: CardType.Character,

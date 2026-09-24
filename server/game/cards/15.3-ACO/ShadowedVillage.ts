@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, EventName, Phases } from '../../Constants.js';
@@ -21,7 +22,7 @@ class ShadowedVillage extends DrawCard {
             },
             effect: 'draw {1} card{2}',
             effectArgs: (context) => ((context.event.origin as BaseCard).isDishonored ? ['2', 's'] : ['a', '']),
-            gameAction: AbilityDsl.actions.draw((context) => ({
+            gameAction: AbilityDsl.actions.draw((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
                 target: context.player,
                 amount: (context.event.origin as BaseCard).isDishonored ? 2 : 1
             }))

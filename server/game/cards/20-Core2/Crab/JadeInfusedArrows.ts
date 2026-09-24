@@ -9,17 +9,17 @@ export default class JadeInfusedArrows extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Give attached character a skill bonus',
-            condition: (context) => context.source.parent?.isParticipating(ConflictType.Military) ?? false,
+            condition: (context) => context.source.parentCharacter?.isParticipating(ConflictType.Military) ?? false,
             cost: AbilityDsl.costs.payFate(1),
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.source.parent,
+                target: context.source.parentCharacter,
                 effect: AbilityDsl.effects.modifyMilitarySkill(this.#bonusAmount(context))
             })),
             effect: 'give +{1}{2} to {3}{4}',
             effectArgs: (context) => [
                 this.#bonusAmount(context),
                 'military',
-                context.source.parent ?? '',
+                context.source.parentCharacter ?? '',
                 this.#isAgainstEvil(context) ? ' - the jade is potent against the spawns of jigoku!' : ''
             ],
             limit: AbilityDsl.limit.unlimitedPerConflict()

@@ -9,14 +9,14 @@ export default class SigilOfCondemnation extends DrawCard {
             title: 'Injure attached character',
             condition: (context) =>
                 !!(this.game.isDuringConflict('military') &&
-                context.source.parent &&
-                context.source.parent.isParticipating() &&
-                context.source.parent.controller.opponent &&
-                context.game.currentConflict?.hasMoreParticipants(context.source.parent.controller.opponent, () => true)),
+                context.source.parentCharacter &&
+                context.source.parentCharacter.isParticipating() &&
+                context.source.parentCharacter.controller.opponent &&
+                context.game.currentConflict?.hasMoreParticipants(context.source.parentCharacter.controller.opponent, () => true)),
             gameAction: AbilityDsl.actions.conditional((context) => ({
-                condition: context.source.parent.getFate() === 0,
-                trueGameAction: AbilityDsl.actions.discardFromPlay({ target: context.source.parent }),
-                falseGameAction: AbilityDsl.actions.removeFate({ target: context.source.parent })
+                condition: context.source.parentCharacter?.getFate() === 0,
+                trueGameAction: AbilityDsl.actions.discardFromPlay({ target: context.source.parentCharacter }),
+                falseGameAction: AbilityDsl.actions.removeFate({ target: context.source.parentCharacter })
             }))
         });
     }

@@ -51,7 +51,6 @@ class DrawCard extends BaseCard {
     ];
 
     defaultController: Player;
-    parent: DrawCard | null;
     printedMilitarySkill: number;
     printedPoliticalSkill: number;
     printedCost: number | null;
@@ -65,20 +64,7 @@ class DrawCard extends BaseCard {
     inConflict: boolean = false;
     new: boolean = false;
     private skillCalculator: SkillCalculator;
-    private attachmentHost = new AttachmentManager(this);
     private childCardHost = new ChildCardManager(this);
-
-    get attachments(): DrawCard[] {
-        return this.attachmentHost.attachments;
-    }
-
-    set attachments(value: DrawCard[]) {
-        this.attachmentHost.attachments = value;
-    }
-
-    removeAttachment(attachment: DrawCard): void {
-        this.attachmentHost.remove(attachment);
-    }
 
     override checkForIllegalAttachments(): boolean {
         return this.attachmentHost.checkForIllegalAttachments();
@@ -132,7 +118,6 @@ class DrawCard extends BaseCard {
         this.skillCalculator = new SkillCalculator(this);
 
         this.defaultController = owner;
-        this.parent = null;
 
         this.printedMilitarySkill = this.getPrintedSkill('military');
         this.printedPoliticalSkill = this.getPrintedSkill('political');

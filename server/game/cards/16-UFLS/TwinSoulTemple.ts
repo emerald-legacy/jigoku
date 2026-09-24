@@ -28,14 +28,14 @@ export default class TwinSoulTemple extends StrongholdCard {
                                 '{0} replaces {1}\'s {2} ({3}) symbol with {4}',
                                 context.player,
                                 context.elementCard,
-                                context.element.prettyName,
-                                this.capitalize(context.element.element),
+                                context.element?.prettyName,
+                                this.capitalize(context.element?.element),
                                 this.capitalize(newElement)
                             );
                         }
                         return {
                             effect: AbilityDsl.effects.replacePrintedElement({
-                                key: context.element.key,
+                                key: context.element?.key,
                                 element: newElement
                             })
                         };

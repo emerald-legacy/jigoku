@@ -2,6 +2,7 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "allowJs": false,
+        "incremental": true,
         "types": ["jasmine", "node"]
     },
     "include": ["server/**/*", "test/server/**/*", "test/helpers/**/*", "test/types/**/*"],

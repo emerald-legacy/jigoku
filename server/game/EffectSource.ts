@@ -14,7 +14,6 @@ interface EffectProperties {
     effect?: EffectFactory | EffectFactory[];
     match?: EffectMatch;
     condition?: (context: AbilityContext) => boolean;
-    [key: string]: any;
 }
 
 type PropertyFactory = (dsl: AbilityDslType) => EffectProperties;
