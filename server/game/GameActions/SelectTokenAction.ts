@@ -7,6 +7,7 @@ import type Player from '../Player.js';
 import type { StatusToken } from '../StatusToken.js';
 import type { GameAction } from './GameAction.js';
 import { TokenAction, type TokenActionProperties } from './TokenAction.js';
+import type { EffectArg } from '../Interfaces.js';
 
 export interface SelectTokenProperties extends TokenActionProperties {
     activePromptTitle?: string;
@@ -21,7 +22,7 @@ export interface SelectTokenProperties extends TokenActionProperties {
     messageArgs?: (tokens: StatusToken | StatusToken[], player: Player) => unknown[];
     gameAction: GameAction;
     effect?: string;
-    effectArgs?: (context: AbilityContext) => string[];
+    effectArgs?: (context: AbilityContext) => EffectArg[];
 }
 
 type ResolvedSelectTokenProperties = SelectTokenProperties & {

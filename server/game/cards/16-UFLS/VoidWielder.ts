@@ -29,7 +29,7 @@ class VoidWielder extends DrawCard {
                             activePromptTitle: 'Which token do you wish to discard?',
                             message: '{0} discards {1}',
                             effect: 'discard a status token from {0}',
-                            effectArgs: () => context.targets.character,
+                            effectArgs: () => [context.targets.character as DrawCard],
                             messageArgs: (token, player) => [player, token],
                             gameAction: AbilityDsl.actions.discardStatusToken()
                         })),
@@ -40,7 +40,7 @@ class VoidWielder extends DrawCard {
                             cardCondition: (card, context) => card.parentCharacter === context.targets.character,
                             gameAction: AbilityDsl.actions.discardFromPlay(),
                             effect: 'discard an attachment from {0}',
-                            effectArgs: () => context.targets.character,
+                            effectArgs: () => [context.targets.character as DrawCard],
                             message: '{0} discards {1}',
                             messageArgs: (card, player) => [player, card]
                         }))
