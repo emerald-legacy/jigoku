@@ -20,7 +20,7 @@ export default class TogashiKazue extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source.parentCharacter,
                 gameAction: AbilityDsl.actions.removeFate((context: AbilityContext<this>) => ({
-                    recipient: context.source.parentCharacter as DrawCard
+                    recipient: context.source.parentCharacter ?? undefined
                 }))
             },
             effect: 'steal a fate from {0} and place it on {1}',

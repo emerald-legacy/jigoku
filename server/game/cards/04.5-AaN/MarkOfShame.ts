@@ -15,7 +15,7 @@ class MarkOfShame extends DrawCard {
                 AbilityDsl.actions.dishonor(context => ({ target: context.source.parentCharacter }))
             ]),
             effect: 'dishonor {1}, then dishonor it again',
-            effectArgs: context => context.source.parentCharacter as DrawCard
+            effectArgs: context => context.source.parentCharacter
         });
     }
 }

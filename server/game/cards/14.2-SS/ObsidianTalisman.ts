@@ -18,7 +18,7 @@ class ObsidianTalisman extends DrawCard {
                 gameAction: AbilityDsl.actions.discardStatusToken()
             })),
             effect: 'discard a status token from {1}',
-            effectArgs: context => [context.source.parentCharacter as DrawCard]
+            effectArgs: context => [context.source.parentCharacter]
         });
     }
 }

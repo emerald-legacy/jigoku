@@ -11,7 +11,7 @@ export default class SpellScroll extends DrawCard {
             condition: (context) =>
                 !!(context.source.parentCharacter?.isParticipating() &&
                 (context.game.currentConflict as Conflict).elements.some((element) =>
-                    (context.source.parentCharacter as DrawCard).hasTrait(element)
+                    context.source.parentCharacter?.hasTrait(element)
                 )),
             effect: AbilityDsl.effects.modifyPoliticalSkill(3)
         });
@@ -24,7 +24,7 @@ export default class SpellScroll extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card: DrawCard, context) =>
                     card.type !== CardType.Character &&
-                    (context.source.parentCharacter as DrawCard).hasSomeTrait(card.getTraitSet()),
+                    !!context.source.parentCharacter?.hasSomeTrait(card.getTraitSet()),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.moveCard<DrawCard>((context) => ({
                         target: context.target,

@@ -15,7 +15,7 @@ export default class KakitaBlade extends DrawCard {
         this.reaction({
             title: 'Gain honor on duel win',
             when: {
-                afterDuel: (event: EventPayload<EventName.AfterDuel>, context) => event.winner?.includes(context.source.parentCharacter as DrawCard) ?? false
+                afterDuel: (event: EventPayload<EventName.AfterDuel>, context) => event.winner?.some((card) => card === context.source.parentCharacter) ?? false
             },
             gameAction: AbilityDsl.actions.gainHonor()
         });

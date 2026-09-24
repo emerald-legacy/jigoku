@@ -42,7 +42,7 @@ export default class BambooTattoo extends DrawCard {
                 })
             ]),
             effect: 'ready{1} {2}',
-            effectArgs: (context) => [this.isSelfTrigger(context) ? ' and dishonor' : '', context.source.parentCharacter as DrawCard]
+            effectArgs: (context) => [this.isSelfTrigger(context) ? ' and dishonor' : '', context.source.parentCharacter]
         });
     }
 

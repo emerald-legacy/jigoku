@@ -47,7 +47,7 @@ export default class ScoutsSteed extends DrawCard {
             effectArgs: (context) => {
                 const target = context.target;
                 return [
-                    context.source.parentCharacter as DrawCard,
+                    context.source.parentCharacter,
                     target && target.isFacedown() ? target.location : target ?? ''
                 ];
             }

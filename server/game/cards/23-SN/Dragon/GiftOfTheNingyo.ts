@@ -8,7 +8,7 @@ export default class GiftOfTheNingyo extends DrawCard {
     setupCardAbilities() {
         this.whileAttached({
             condition: (context: AbilityContext<this>) => (
-                Boolean(context.source.parentCharacter && (context.source.parentCharacter as DrawCard).isParticipating() &&
+                Boolean(context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                     this.getCharacters(context).some(card => card.hasSomeTrait('creature', 'spirit') ||
                         card.attachments.some(attachment => attachment.hasSomeTrait('creature', 'spirit'))
                     )

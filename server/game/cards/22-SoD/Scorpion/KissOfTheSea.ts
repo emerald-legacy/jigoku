@@ -27,11 +27,12 @@ export default class KissOfTheSea extends DrawCard {
                         return false;
                     }
 
-                    if(!event.matches || !event.matches.includes(context.source.parentCharacter as DrawCard)) {
+                    const parent = context.source.parentCharacter;
+                    if(!parent || !event.matches || !event.matches.includes(parent)) {
                         return false;
                     }
 
-                    if(!(context.source.parentCharacter as DrawCard).isParticipating()) {
+                    if(!parent.isParticipating()) {
                         return false;
                     }
 

@@ -18,16 +18,16 @@ class HawkTattoo extends DrawCard {
         this.reaction({
             title: 'Move attached character to the conflict',
             effect: 'move {1} into the conflict{2}',
-            effectArgs: context => [context.source.parentCharacter as DrawCard, (context.source.parentCharacter as DrawCard).hasTrait('monk') ? ' and take an additional action' : ''],
+            effectArgs: context => [context.source.parentCharacter, context.source.parentCharacter?.hasTrait('monk') ? ' and take an additional action' : ''],
             when: {
                 onCardPlayed: (event, context) => context.source.parentCharacter && event.card === context.source && this.game.isDuringConflict()
             },
             gameAction: [
-                ability.actions.moveToConflict((context: AbilityContext<this>) => ({ target: context.source.parentCharacter as DrawCard })),
+                ability.actions.moveToConflict((context: AbilityContext<this>) => ({ target: context.source.parentCharacter ?? [] })),
                 ability.actions.playerLastingEffect((context: AbilityContext<this>) => ({
                     targetController: context.player,
                     duration: Duration.UntilPassPriority,
-                    effect: (context.source.parentCharacter as DrawCard).hasTrait('monk') ? ability.effects.additionalAction() : []
+                    effect: context.source.parentCharacter?.hasTrait('monk') ? ability.effects.additionalAction() : []
                 }))
             ]
         });
