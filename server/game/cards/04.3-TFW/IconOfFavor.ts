@@ -20,7 +20,7 @@ class IconOfFavor extends DrawCard {
                     event.conflict.winner === context.player
             },
             gameAction: AbilityDsl.actions.honor(context => ({
-                target: context.source.parentCharacter
+                target: context.source.parentCharacter ?? []
             }))
         });
     }

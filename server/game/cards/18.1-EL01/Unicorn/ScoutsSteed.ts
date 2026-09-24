@@ -24,9 +24,9 @@ export default class ScoutsSteed extends DrawCard {
             gameAction: AbilityDsl.actions.sequentialContext(
                 ({ player, target: province, source: { parentCharacter: character } }: AbilityContext<DrawCard, ProvinceCard>) => ({
                     gameActions: [
-                        AbilityDsl.actions.ready({ target: character }),
+                        AbilityDsl.actions.ready({ target: character ?? [] }),
                         AbilityDsl.actions.cardLastingEffect({
-                            target: character,
+                            target: character ?? [],
                             effect: AbilityDsl.effects.mustBeDeclaredAsAttacker(),
                             duration: Duration.UntilEndOfConflict
                         }),

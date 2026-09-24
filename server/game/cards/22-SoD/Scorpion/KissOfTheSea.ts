@@ -45,7 +45,7 @@ export default class KissOfTheSea extends DrawCard {
                 }
             },
             gameAction: AbilityDsl.actions.bow(context => ({
-                target: context.source.parentCharacter
+                target: context.source.parentCharacter ?? []
             }))
         });
     }

@@ -11,7 +11,7 @@ class SharpenTheMind extends DrawCard {
             cost: AbilityDsl.costs.discardCard({ location: Location.Hand }),
             condition: context => context.game.isDuringConflict(),
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: context.source.parentCharacter,
+                target: context.source.parentCharacter ?? [],
                 effect: AbilityDsl.effects.modifyBothSkills(3)
             })),
             effect: 'give +3{1}/+3{2} to {3}',

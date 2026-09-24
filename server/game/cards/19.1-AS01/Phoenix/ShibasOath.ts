@@ -21,7 +21,7 @@ export default class ShibasOath extends DrawCard {
                     event.card === context.source && event.originalLocation !== Location.PlayArea
             },
             gameAction: AbilityDsl.actions.honor((context) => ({
-                target: context.source.parentCharacter
+                target: context.source.parentCharacter ?? []
             })),
             effect: 'honor {1}',
             effectArgs: (context) => context.source.parentCharacter

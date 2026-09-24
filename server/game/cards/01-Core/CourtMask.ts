@@ -15,7 +15,7 @@ class CourtMask extends DrawCard {
             effectArgs: context => context.source.parentCharacter ?? '',
             gameAction: [
                 AbilityDsl.actions.returnToHand(),
-                AbilityDsl.actions.dishonor(context => ({ target: context.source.parentCharacter }))
+                AbilityDsl.actions.dishonor(context => ({ target: context.source.parentCharacter ?? [] }))
             ]
         });
     }

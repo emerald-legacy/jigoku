@@ -19,7 +19,7 @@ class AdornedBarcha extends DrawCard {
                 cardCondition: card => card.isParticipating(),
                 gameAction: AbilityDsl.actions.bow()
             },
-            gameAction: AbilityDsl.actions.moveToConflict(context => ({ target: context.source.parentCharacter }))
+            gameAction: AbilityDsl.actions.moveToConflict(context => ({ target: context.source.parentCharacter ?? [] }))
         });
     }
 }

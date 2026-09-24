@@ -22,20 +22,22 @@ export default class SeppunRyo extends DrawCard {
 
         this.action({
             title: 'Initiate a military duel to bow',
-            initiateDuel: {
-                type: DuelType.Military,
-                refuseGameAction: AbilityDsl.actions.claimImperialFavor((context) => ({
-                    target: context.player.opponent?.imperialFavor !== '' ? context.player : null,
-                    side: this.getFavorSide(context.player.opponent?.imperialFavor)
-                })),
-                refusalMessage: '{0} chooses to refuse the duel and give the imperial favor to {1}',
-                refusalMessageArgs: (context) => [context.player.opponent, context.player],
-                gameAction: (duel) => AbilityDsl.actions.bow({ target: duel.loser })
+            initiateDuel: (context) => {
+                const opponentFavor = context.player.opponent?.imperialFavor;
+                return {
+                    type: DuelType.Military,
+                    refuseGameAction: opponentFavor !== ''
+                        ? AbilityDsl.actions.claimImperialFavor({ target: context.player, side: this.getFavorSide(opponentFavor) })
+                        : undefined,
+                    refusalMessage: '{0} chooses to refuse the duel and give the imperial favor to {1}',
+                    refusalMessageArgs: (context) => [context.player.opponent, context.player],
+                    gameAction: (duel) => AbilityDsl.actions.bow({ target: duel.loser })
+                };
             }
         });
     }
 
-    getFavorSide(favor: string) {
+    getFavorSide(favor: string | undefined) {
         switch(favor) {
             case 'military':
                 return FavorType.Military;

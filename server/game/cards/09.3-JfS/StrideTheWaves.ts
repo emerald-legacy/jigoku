@@ -20,10 +20,10 @@ class StrideTheWaves extends DrawCard {
             gameAction: AbilityDsl.actions.conditional({
                 condition: context => !!(context.source as DrawCard).parentCharacter?.inConflict,
                 trueGameAction: AbilityDsl.actions.sendHome(context => ({
-                    target: context.source.parentCharacter
+                    target: context.source.parentCharacter ?? []
                 })),
                 falseGameAction: AbilityDsl.actions.moveToConflict(context => ({
-                    target: context.source.parentCharacter
+                    target: context.source.parentCharacter ?? []
                 }))
             }),
             effect: '{3} {1} {2}',

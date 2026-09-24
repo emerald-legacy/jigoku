@@ -34,10 +34,10 @@ export default class BambooTattoo extends DrawCard {
                     event.context?.source.name !== 'Framework effect'
             },
             gameAction: AbilityDsl.actions.multiple([
-                AbilityDsl.actions.ready((context) => ({ target: context.source.parentCharacter })),
+                AbilityDsl.actions.ready((context) => ({ target: context.source.parentCharacter ?? [] })),
                 AbilityDsl.actions.conditional({
                     condition: (context: AbilityContext) => this.isSelfTrigger(context as TriggeredAbilityContext<this>),
-                    trueGameAction: AbilityDsl.actions.dishonor((context) => ({ target: context.source.parentCharacter })),
+                    trueGameAction: AbilityDsl.actions.dishonor((context) => ({ target: context.source.parentCharacter ?? [] })),
                     falseGameAction: AbilityDsl.actions.noAction()
                 })
             ]),

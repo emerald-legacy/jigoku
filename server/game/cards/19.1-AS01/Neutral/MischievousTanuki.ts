@@ -1,6 +1,9 @@
 import { Phases } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+
+type TanukiContext = AbilityContext & { fateTaken?: number };
 
 export default class MischievousTanuki extends DrawCard {
     static id = 'mischievous-tanuki';
@@ -13,9 +16,8 @@ export default class MischievousTanuki extends DrawCard {
             phase: Phases.Conflict,
             gameAction: AbilityDsl.actions.honorBid({
                 message: '{0}{1}{2}{3}',
-                messageArgs: (context) => {
+                messageArgs: (context: TanukiContext) => {
                     if(context.player.showBid % 2 === (context.player.opponent?.showBid ?? 0) % 2) {
-                        // @ts-expect-error -- fateTaken is dynamically added to context during ability resolution
                         return [context.player, ` takes ${context.fateTaken} fate from `, context.player.opponent, ''];
                     } else if(context.player.showBid % 2 === 0) {
                         return [context.player, ' gains 2 honor and ', context.player.opponent, ' draws 2 cards'];
@@ -25,12 +27,12 @@ export default class MischievousTanuki extends DrawCard {
                 postBidAction: AbilityDsl.actions.conditional({
                     condition: (context) => context.player.showBid % 2 === (context.player.opponent?.showBid ?? 0) % 2,
                     trueGameAction: AbilityDsl.actions.sequential([
-                        AbilityDsl.actions.handler((context) => ({
+                        AbilityDsl.actions.handler((context: TanukiContext) => ({
                             handler: () => {
-                                context.fateTaken = Math.min(2, context.player.opponent?.getFate());
+                                context.fateTaken = Math.min(2, context.player.opponent?.getFate() ?? 0);
                             }
                         })),
-                        AbilityDsl.actions.takeFate((context) => ({
+                        AbilityDsl.actions.takeFate((context: TanukiContext) => ({
                             target: context.player.opponent,
                             amount: context.fateTaken
                         }))

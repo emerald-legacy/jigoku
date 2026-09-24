@@ -32,7 +32,7 @@ class AyubunePilot extends DrawCard {
                 AbilityDsl.costs.sacrificeSelf()
             ],
             condition: context => !!(context.source.parentCharacter && !context.source.parentCharacter.bowed),
-            gameAction: AbilityDsl.actions.moveToConflict(context => ({ target: [context.source.parentCharacter, context.costs.ayubunePilotCaptureParentCost as DrawCard] }))
+            gameAction: AbilityDsl.actions.moveToConflict(context => ({ target: [context.source.parentCharacter, context.costs.ayubunePilotCaptureParentCost as DrawCard].filter((card) => card !== null) }))
         });
     }
 }

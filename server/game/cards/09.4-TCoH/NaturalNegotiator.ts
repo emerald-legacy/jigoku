@@ -20,7 +20,7 @@ class NaturalNegotiator extends DrawCard {
             condition: (context) => context.game.isDuringConflict(),
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfConflict,
-                target: context.source.parentCharacter,
+                target: context.source.parentCharacter ?? [],
                 effect: AbilityDsl.effects.switchBaseSkills()
             }))
         });

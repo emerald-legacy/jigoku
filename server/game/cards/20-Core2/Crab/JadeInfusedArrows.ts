@@ -12,7 +12,7 @@ export default class JadeInfusedArrows extends DrawCard {
             condition: (context) => context.source.parentCharacter?.isParticipating(ConflictType.Military) ?? false,
             cost: AbilityDsl.costs.payFate(1),
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.source.parentCharacter,
+                target: context.source.parentCharacter ?? [],
                 effect: AbilityDsl.effects.modifyMilitarySkill(this.#bonusAmount(context))
             })),
             effect: 'give +{1}{2} to {3}{4}',

@@ -18,7 +18,7 @@ export default class DeadEyes extends DrawCard {
             title: 'Increase a character\'s military skill',
             condition: context => !!(context.game.isDuringConflict(ConflictType.Military) && context.source.parentCharacter),
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: context.source.parentCharacter,
+                target: context.source.parentCharacter ?? [],
                 effect: [
                     AbilityDsl.effects.modifyMilitarySkill(2),
                     AbilityDsl.effects.cardCannot({

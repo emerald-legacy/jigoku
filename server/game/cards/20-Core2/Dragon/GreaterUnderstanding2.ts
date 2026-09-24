@@ -21,7 +21,7 @@ export default class GreaterUnderstanding extends DrawCard {
                 onPlaceFateOnUnclaimedRings: (event, context) => context.source.parent instanceof Ring && context.source.parent.isUnclaimed()
             },
             title: 'Resolve the attached ring\'s effect',
-            gameAction: AbilityDsl.actions.resolveRingEffect((context) => ({ target: context.source.parent })),
+            gameAction: AbilityDsl.actions.resolveRingEffect((context) => ({ target: context.source.parent ?? [] })),
             then: (context) => ({
                 gameAction: AbilityDsl.actions.selectRing({
                     activePromptTitle: 'Choose a ring to attach Greater Understanding',
