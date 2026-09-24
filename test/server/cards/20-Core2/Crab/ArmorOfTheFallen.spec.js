@@ -27,7 +27,7 @@ describe('Armor of the Fallen', function () {
             this.whisperer = this.player2.findCardByName('doji-whisperer');
             this.brash = this.player2.findCardByName('brash-samurai');
             this.challenger = this.player2.findCardByName('doji-challenger');
-            this.parent = this.player2.findCardByName('benevolent-host');
+            this.host = this.player2.findCardByName('benevolent-host');
             this.kuwanan = this.player2.findCardByName('doji-kuwanan');
 
             this.player1.clickCard(this.armor);
@@ -38,7 +38,7 @@ describe('Armor of the Fallen', function () {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.borderlands],
-                defenders: [this.whisperer, this.brash, this.challenger, this.parent, this.kuwanan],
+                defenders: [this.whisperer, this.brash, this.challenger, this.host, this.kuwanan],
                 type: 'military'
             });
             this.player2.pass();
@@ -56,7 +56,7 @@ describe('Armor of the Fallen', function () {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.borderlands],
-                defenders: [this.whisperer, this.brash, this.challenger, this.parent, this.kuwanan],
+                defenders: [this.whisperer, this.brash, this.challenger, this.host, this.kuwanan],
                 type: 'military'
             });
             this.player2.pass();
@@ -69,7 +69,7 @@ describe('Armor of the Fallen', function () {
             expect(this.player1).toBeAbleToSelect(this.whisperer);
             expect(this.player1).toBeAbleToSelect(this.brash);
             expect(this.player1).toBeAbleToSelect(this.challenger);
-            expect(this.player1).not.toBeAbleToSelect(this.parent);
+            expect(this.player1).not.toBeAbleToSelect(this.host);
             expect(this.player1).not.toBeAbleToSelect(this.kuwanan);
             expect(this.player1).toBeAbleToSelect(this.borderlands);
 
