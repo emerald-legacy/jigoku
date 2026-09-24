@@ -39,7 +39,7 @@ export default class SpiderwebPassage extends DrawCard {
                 return {
                     condition: () =>
                         (context.player.opponent?.hand.length ?? 0) >= discardCount &&
-                        discardFromHandAction.canAffect(context.player.opponent, context),
+                        !!context.player.opponent && discardFromHandAction.canAffect(context.player.opponent, context),
                     falseGameAction: killAction,
                     trueGameAction: AbilityDsl.actions.chooseAction(context => ({
                         player: Players.Opponent,

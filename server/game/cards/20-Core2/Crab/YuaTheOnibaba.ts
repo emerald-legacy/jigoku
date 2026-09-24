@@ -4,11 +4,14 @@ import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
 import type Player from '../../../Player.js';
 
-function charactersToBuffAndNerf(yuaController: Player, conflict: Conflict) {
+function charactersToBuffAndNerf(yuaController: Player, conflict: Conflict | null) {
     const res = {
         toBuff: [] as Array<DrawCard>,
         toNerf: [] as Array<DrawCard>
     };
+    if(!conflict) {
+        return res;
+    }
     for(const character of conflict.getAttackers()) {
         if(!character.hasTrait('bushi')) {
             res.toNerf.push(character);

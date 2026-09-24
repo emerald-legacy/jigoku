@@ -56,7 +56,7 @@ class OniTyrant extends DrawCard {
             ],
             condition: context => context.source.isParticipating(),
             gameAction: AbilityDsl.actions.putIntoConflict(context => ({
-                target: context.costs.oniTyrantCostCreature || context.player.outsideTheGameCards[1]
+                target: (context.costs.oniTyrantCostCreature as DrawCard | undefined) || context.player.outsideTheGameCards[1]
             })),
             effect: 'summon a{2} {1} from the depths of the Shadowlands!',
             effectArgs: context => {

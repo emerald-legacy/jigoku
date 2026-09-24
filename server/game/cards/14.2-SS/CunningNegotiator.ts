@@ -1,5 +1,6 @@
 import { CardType, DuelType, Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
@@ -48,14 +49,11 @@ export default class CunningNegotiator extends DrawCard {
                                 context.target = card;
                                 return { target: card };
                             },
-                            gameAction: AbilityDsl.actions.triggerAbility((context) => {
-                                const conflictProvince = context.target;
-                                return {
-                                    player: duel.winnerController ?? context.source.controller,
-                                    ability: duel.winner && conflictProvince ? conflictProvince.abilities.actions[0] : [],
-                                    ignoredRequirements: ['limit']
-                                };
-                            })
+                            gameAction: AbilityDsl.actions.triggerAbility((context: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
+                                player: duel.winnerController ?? context.source.controller,
+                                ability: context.target.abilities.actions[0],
+                                ignoredRequirements: ['limit']
+                            }))
                         }))
                     }))
             }

@@ -56,7 +56,7 @@ export default class UpholdingAuthority extends ProvinceCard {
                 })),
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to discard',
-                    cards: context.game.currentConflict?.attackingPlayer.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)),
+                    cards: context.game.currentConflict?.attackingPlayer.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)) ?? [],
                     targets: true,
                     gameAction: gameAction,
                     choices: context.choosingPlayerOverride ? [] : ['Don\'t discard anything'],

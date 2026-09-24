@@ -39,8 +39,8 @@ class Niten extends DrawCard {
                 location: Location.Hand,
                 cardCondition: (card, context) => card.canAttach(context.source.parentCharacter ?? undefined) || card.canAttach(context.costs.nitenCaptureParentCost as DrawCard)
             },
-            gameAction: AbilityDsl.actions.attach(context => ({
-                target: context.costs.nitenCaptureParentCost,
+            gameAction: AbilityDsl.actions.attach((context: AbilityContext<this, DrawCard>) => ({
+                target: context.costs.nitenCaptureParentCost as DrawCard,
                 attachment: context.target
             })),
             max: AbilityDsl.limit.perRound(1)

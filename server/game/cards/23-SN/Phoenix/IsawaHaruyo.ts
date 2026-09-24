@@ -1,5 +1,6 @@
 import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 import { shuffle } from '../../../utils/shuffle.js';
@@ -22,10 +23,10 @@ export default class IsawaHaruyo extends DrawCard {
                     context.target = card;
                     return { target: card };
                 },
-                gameAction: AbilityDsl.actions.multipleContext((context) => {
+                gameAction: AbilityDsl.actions.multipleContext((context: AbilityContext<this>) => {
                     let cardNumber = (context.target as ProvinceCard).getStrength();
                     let cards = cardNumber
-                        ? shuffle(context.player.opponent?.hand).slice(0, cardNumber)
+                        ? shuffle(context.player.opponent?.hand ?? []).slice(0, cardNumber)
                         : [context.source];
                     return {
                         gameActions: [

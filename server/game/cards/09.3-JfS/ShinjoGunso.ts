@@ -1,8 +1,9 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import { PlayType, Decks, CardType, Location } from '../../Constants.js';
+import { PlayType, Decks, CardType, EventName, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import type { Event } from '../../Events/Event.js';
+import type { GameEvent } from '../../Events/EventPayloads.js';
 
 export default class ShinjoGunso extends DrawCard {
     static id = 'shinjo-gunso';
@@ -38,7 +39,7 @@ export default class ShinjoGunso extends DrawCard {
                         })),
                         AbilityDsl.actions.moveCard((context2) => ({
                             target: topFive.filter((a: DrawCard) => {
-                                const events = context2.events.filter((a: Event) => a.name === 'onDeckSearch' && !a.cancelled);
+                                const events = context2.events.filter((a: Event): a is GameEvent<EventName.OnDeckSearch> => a.name === EventName.OnDeckSearch && !a.cancelled);
                                 if(events.length > 0 && events[0].selectedCards) {
                                     return !events[0].selectedCards.includes(a);
                                 }

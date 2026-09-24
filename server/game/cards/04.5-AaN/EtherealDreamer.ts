@@ -19,7 +19,7 @@ class EtherealDreamer extends DrawCard {
             effectArgs: ['military', 'political'],
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
                 duration: Duration.UntilEndOfPhase,
-                condition: () => context.ring?.isContested(),
+                condition: () => !!context.ring?.isContested(),
                 effect: AbilityDsl.effects.modifyBothSkills(2)
             }))
         });
