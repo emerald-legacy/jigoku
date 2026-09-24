@@ -47,7 +47,7 @@ class VoiceOfTheAncestors extends DrawCard {
                             AbilityDsl.effects.addTrait('spirit'),
                             AbilityDsl.effects.attachmentRestrictTraitAmount({ spirit: 1 }),
                             AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
-                                match: (card: BaseCard, context?: AbilityContext<this>) => card === context?.source?.attachedCharacter,
+                                match: (card: BaseCard, context?: AbilityContext<this>) => card === context?.source?.parentCharacter,
                                 effect: [
                                     AbilityDsl.effects.modifyMilitarySkill((card: EffectTarget, context) => (context.source as DrawCard).printedMilitarySkill || 0),
                                     AbilityDsl.effects.modifyPoliticalSkill((card: EffectTarget, context) => (context.source as DrawCard).printedPoliticalSkill || 0)

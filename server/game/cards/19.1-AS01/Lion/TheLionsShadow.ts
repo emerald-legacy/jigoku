@@ -17,13 +17,13 @@ export default class TheLionsShadow extends DrawCard {
         });
 
         this.whileAttached({
-            condition: (context) => !!context.source.attachedCharacter?.isDishonored,
+            condition: (context) => !!context.source.parentCharacter?.isDishonored,
             effect: AbilityDsl.effects.honorStatusDoesNotModifySkill()
         });
 
         this.whileAttached({
             condition: (context) =>
-                !!context.source.attachedCharacter?.isAttacking() &&
+                !!context.source.parentCharacter?.isAttacking() &&
                 context.game.currentConflict?.getNumberOfParticipantsFor('attacker') === 1,
             effect: AbilityDsl.effects.addKeyword('covert')
         });

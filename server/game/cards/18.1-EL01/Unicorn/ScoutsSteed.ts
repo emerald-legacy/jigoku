@@ -21,7 +21,7 @@ export default class ScoutsSteed extends DrawCard {
                 cardCondition: (card: BaseCard, context) => card.isFacedown() && (card as ProvinceCard).canBeAttacked() && card.controller !== context.player
             },
             gameAction: AbilityDsl.actions.sequentialContext(
-                ({ player, target: province, source: { attachedCharacter: character } }) => ({
+                ({ player, target: province, source: { parentCharacter: character } }) => ({
                     gameActions: [
                         AbilityDsl.actions.ready({ target: character }),
                         AbilityDsl.actions.cardLastingEffect({
@@ -47,7 +47,7 @@ export default class ScoutsSteed extends DrawCard {
             effectArgs: (context) => {
                 const target = context.target;
                 return [
-                    context.source.attachedCharacter as DrawCard,
+                    context.source.parentCharacter as DrawCard,
                     target && target.isFacedown() ? target.location : target ?? ''
                 ];
             }

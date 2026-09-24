@@ -10,11 +10,11 @@ class TaintedKoku extends DrawCard {
         this.interrupt({
             title: 'Move attachment to another character',
             when: {
-                onCardLeavesPlay: (event, context) => event.card === context.source.attachedCharacter
+                onCardLeavesPlay: (event, context) => event.card === context.source.parentCharacter
             },
             target: {
                 cardType: CardType.Character,
-                cardCondition: (card, context) => Boolean(context.source.attachedCharacter && card.controller === context.source.attachedCharacter.controller && card !== context.source.attachedCharacter),
+                cardCondition: (card, context) => Boolean(context.source.parentCharacter && card.controller === context.source.parentCharacter.controller && card !== context.source.parentCharacter),
                 gameAction: AbilityDsl.actions.attach((context: AbilityContext<DrawCard, DrawCard>) => ({ attachment: context.source }))
             }
         });

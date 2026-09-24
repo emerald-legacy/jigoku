@@ -7,8 +7,8 @@ class GuardDuty extends DrawCard {
     setupCardAbilities(ability: typeof AbilityDsl) {
         this.action({
             title: 'Honor this character',
-            condition: context => !!(context.source.attachedCharacter && context.source.attachedCharacter.isDefending()),
-            gameAction: ability.actions.honor(context => ({ target: context.source.attachedCharacter }))
+            condition: context => !!(context.source.parentCharacter && context.source.parentCharacter.isDefending()),
+            gameAction: ability.actions.honor(context => ({ target: context.source.parentCharacter }))
         });
     }
 }

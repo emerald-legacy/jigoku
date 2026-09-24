@@ -12,7 +12,7 @@ export default class TotalWarfare extends BattlefieldAttachment {
             title: 'Loser sacrifices a character',
             when: {
                 afterConflict: (event, context) =>
-                    event.conflict.loser && context.source.attachedProvince?.isConflictProvince()
+                    event.conflict.loser && context.source.parentProvince?.isConflictProvince()
             },
             target: {
                 cardType: CardType.Character,

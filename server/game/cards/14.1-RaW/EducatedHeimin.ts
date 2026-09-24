@@ -15,9 +15,9 @@ class EducatedHeimin extends DrawCard {
         });
 
         this.persistentEffect({
-            condition: context => !!context?.source.attachedTo,
+            condition: context => !!context?.source.parent,
             targetLocation: Location.Provinces,
-            match: (card, context) => !!context && card === context.source.attachedTo,
+            match: (card, context) => !!context && card === context.source.parent,
             effect: AbilityDsl.effects.customRefillProvince((player: Player, province: ProvinceCard) => {
                 let cards: DrawCard[] = [];
                 if(province.isFacedown()) {

@@ -18,9 +18,9 @@ export default class CripplingCurse extends DrawCard {
             when: {
                 onPhaseStarted: (event, context) =>
                     event.phase === Phases.Fate &&
-                    context.source.attachedCharacter &&
-                    !context.source.attachedCharacter.bowed &&
-                    context.source.attachedCharacter.getFate() > 0
+                    context.source.parentCharacter &&
+                    !context.source.parentCharacter.bowed &&
+                    context.source.parentCharacter.getFate() > 0
             },
             effect: 'discard all characters without fate and remove 1 fate from each character with fate',
             gameAction: AbilityDsl.actions.multiple([

@@ -15,14 +15,14 @@ class DaimyosFavor extends DrawCard {
             title: 'Bow to reduce attachment cost',
             cost: ability.costs.bowSelf(),
             effect: 'reduce the cost of the next attachment they play on {1} by 1',
-            effectArgs: context => context.source.attachedCharacter as DrawCard,
+            effectArgs: context => context.source.parentCharacter as DrawCard,
             gameAction: ability.actions.playerLastingEffect((context: AbilityContext<DrawCard, DrawCard>) => ({
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,
                 effect: ability.effects.reduceCost({
                     amount: 1,
                     cardType: CardType.Attachment,
-                    targetCondition: target => target === context.source.attachedCharacter,
+                    targetCondition: target => target === context.source.parentCharacter,
                     limit: ability.limit.fixed(1)
                 })
             }))

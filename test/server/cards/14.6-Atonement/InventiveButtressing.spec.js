@@ -38,7 +38,7 @@ describe('Inventive Buttressing', function() {
             expect(this.player2).toBeAbleToSelect(this.sd5);
             expect(this.player2).not.toBeAbleToSelect(this.p1SD);
             this.player2.clickCard(this.sd1);
-            expect(this.buttressing.attachedTo).toBe(this.sd1);
+            expect(this.buttressing.parent).toBe(this.sd1);
         });
 
         it('should discard if the province is broken', function() {

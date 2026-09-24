@@ -82,7 +82,7 @@ describe('Masterpiece Painter', function() {
 
                 this.player1.clickCard(this.katana);
                 this.player1.clickCard(this.masterpiecePainter);
-                expect(this.katana.attachedTo).toBe(this.masterpiecePainter);
+                expect(this.katana.parent).toBe(this.masterpiecePainter);
             });
 
             it('should let the target play the top card of their deck. - (p2 target)', function () {
@@ -101,7 +101,7 @@ describe('Masterpiece Painter', function() {
 
                 this.player2.clickCard(this.fan);
                 this.player2.clickCard(this.ikomaProdigy);
-                expect(this.fan.attachedTo).toBe(this.ikomaProdigy);
+                expect(this.fan.parent).toBe(this.ikomaProdigy);
             });
 
             it('should let the target play the top card of their deck. - (p1 and p2 target)', function () {
@@ -120,11 +120,11 @@ describe('Masterpiece Painter', function() {
 
                 this.player2.clickCard(this.fan);
                 this.player2.clickCard(this.ikomaProdigy);
-                expect(this.fan.attachedTo).toBe(this.ikomaProdigy);
+                expect(this.fan.parent).toBe(this.ikomaProdigy);
 
                 this.player1.clickCard(this.katana);
                 this.player1.clickCard(this.masterpiecePainter);
-                expect(this.katana.attachedTo).toBe(this.masterpiecePainter);
+                expect(this.katana.parent).toBe(this.masterpiecePainter);
             });
         });
     });
@@ -220,7 +220,7 @@ describe('Masterpiece Painter - opponent controls', function() {
 
             this.player1.clickCard(this.katana);
             this.player1.clickCard(this.masterpiecePainter);
-            expect(this.katana.attachedTo).toBe(this.masterpiecePainter);
+            expect(this.katana.parent).toBe(this.masterpiecePainter);
         });
 
         it('should let the target play the top card of their deck. - (p2 target)', function () {
@@ -235,7 +235,7 @@ describe('Masterpiece Painter - opponent controls', function() {
             this.player1.pass();
             this.player2.clickCard(this.fan);
             this.player2.clickCard(this.ikomaProdigy);
-            expect(this.fan.attachedTo).toBe(this.ikomaProdigy);
+            expect(this.fan.parent).toBe(this.ikomaProdigy);
         });
 
         it('should let the target play the top card of their deck. - (p1 and p2 target)', function () {
@@ -249,11 +249,11 @@ describe('Masterpiece Painter - opponent controls', function() {
 
             this.player1.clickCard(this.katana);
             this.player1.clickCard(this.masterpiecePainter);
-            expect(this.katana.attachedTo).toBe(this.masterpiecePainter);
+            expect(this.katana.parent).toBe(this.masterpiecePainter);
 
             this.player2.clickCard(this.fan);
             this.player2.clickCard(this.ikomaProdigy);
-            expect(this.fan.attachedTo).toBe(this.ikomaProdigy);
+            expect(this.fan.parent).toBe(this.ikomaProdigy);
         });
     });
 });

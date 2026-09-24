@@ -13,7 +13,7 @@ export default class WardOfEarthenThorns extends ProvinceAttachment {
             targetLocation: Location.Provinces,
             targetController: Players.Any,
             condition: (context) => context.source.controller.hasAffinity('earth', context),
-            match: (card, context) => card.type === CardType.Province && card === context?.source.attachedTo,
+            match: (card, context) => card.type === CardType.Province && card === context?.source.parent,
             effect: AbilityDsl.effects.modifyProvinceStrength(1)
         });
 
@@ -22,7 +22,7 @@ export default class WardOfEarthenThorns extends ProvinceAttachment {
             condition: (context) =>
                 (context.game.currentConflict as Conflict | undefined)
                     ?.getConflictProvinces()
-                    .some((province) => context.source.attachedTo === province) ?? false,
+                    .some((province) => context.source.parent === province) ?? false,
             target: {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking(),

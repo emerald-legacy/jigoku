@@ -106,7 +106,7 @@ describe('Feral Ningyo', function () {
                     this.player1.clickPrompt('Put into play');
                     this.player2.pass();
                     this.katana = this.player1.playAttachment('fine-katana', this.feral);
-                    expect(this.katana.attachedTo).toBe(this.feral);
+                    expect(this.katana.parent).toBe(this.feral);
                     this.noMoreActions();
                     this.player1.clickPrompt('No');
                     this.player1.clickPrompt('Don\'t resolve');

@@ -13,7 +13,7 @@ export default class WritOfSurvey extends DrawCard {
         });
 
         this.persistentEffect({
-            condition: (context) => !!context.source.attachedCharacter?.isHonored,
+            condition: (context) => !!context.source.parentCharacter?.isHonored,
             effect: AbilityDsl.effects.addKeyword('ancestral')
         });
 

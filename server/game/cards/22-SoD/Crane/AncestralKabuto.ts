@@ -15,8 +15,8 @@ export default class AncestralKabuto extends DrawCard {
         this.reaction({
             title: 'Gain 1 honor',
             when: {
-                afterConflict: (event, context) => context.source.attachedCharacter && context.source.attachedCharacter.isParticipating() &&
-                    event.conflict.winner === context.source.attachedCharacter.controller && context.source.attachedCharacter.isDishonored
+                afterConflict: (event, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
+                    event.conflict.winner === context.source.parentCharacter.controller && context.source.parentCharacter.isDishonored
             },
             gameAction: AbilityDsl.actions.gainHonor()
         });

@@ -23,7 +23,7 @@ describe('Obsidian Talisman', function() {
             this.preTalismanHonor = this.player1.honor;
 
             expect(this.challenger.isHonored).toBe(true);
-            expect(this.obsidianTalisman.attachedTo).toBe(this.challenger);
+            expect(this.obsidianTalisman.parent).toBe(this.challenger);
             this.player1.clickCard(this.obsidianTalisman);
             expect(this.challenger.isHonored).toBe(false);
             expect(this.player1.honor).toBe(this.preTalismanHonor - 1);
@@ -52,7 +52,7 @@ describe('Obsidian Talisman', function() {
                 this.preTalismanHonor = this.player1.honor;
                 this.challenger.honor();
                 expect(this.challenger.isHonored).toBe(true);
-                expect(this.obsidianTalisman.attachedTo).toBe(this.challenger);
+                expect(this.obsidianTalisman.parent).toBe(this.challenger);
                 this.player1.clickCard(this.obsidianTalisman);
                 expect(this.challenger.isHonored).toBe(false);
                 expect(this.player1.honor).toBe(this.preTalismanHonor - 1);

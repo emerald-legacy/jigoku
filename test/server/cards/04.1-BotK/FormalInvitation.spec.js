@@ -30,7 +30,7 @@ describe('Formal Invitation', function() {
                     expect(this.player1).toHavePrompt('Formal Invitation');
                     expect(this.player1).toBeAbleToSelect(this.dojiChallenger);
                     this.player1.clickCard(this.dojiChallenger);
-                    expect(this.formalInvitation.attachedTo).toBe(this.dojiChallenger);
+                    expect(this.formalInvitation.parent).toBe(this.dojiChallenger);
                 });
 
                 it('should give +1 political skill to attached character', function() {

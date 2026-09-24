@@ -13,17 +13,17 @@ export default class TogashiAcolyte extends DrawCard {
             limit: AbilityDsl.limit.unlimitedPerConflict(),
             when: {
                 onCardPlayed: (event, context) =>
-                    context.source.attachedCharacter &&
+                    context.source.parentCharacter &&
                     event.player === context.player &&
                     context.source.type === CardType.Attachment &&
-                    context.source.attachedCharacter.isParticipating()
+                    context.source.parentCharacter.isParticipating()
             },
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.source.attachedCharacter,
+                target: context.source.parentCharacter,
                 effect: AbilityDsl.effects.modifyBothSkills(1)
             })),
             effect: 'give +1{1} and +1{2} to {3}',
-            effectArgs: (context) => ['political', 'military', context.source.attachedCharacter as DrawCard]
+            effectArgs: (context) => ['political', 'military', context.source.parentCharacter as DrawCard]
         });
     }
 

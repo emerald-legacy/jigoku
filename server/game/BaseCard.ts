@@ -119,16 +119,16 @@ class BaseCard extends EffectSource {
     protected attachmentHost = new AttachmentManager(this);
 
     /** What this card is attached to, or null — the inverse of `attachments`. */
-    attachedTo: BaseCard | Ring | null = null;
+    parent: BaseCard | Ring | null = null;
 
     /** The attached character, in the cards' sense; null when attached to anything else. */
-    get attachedCharacter(): DrawCard | null {
-        return this.attachedTo instanceof BaseCard && this.attachedTo.isCharacter() ? this.attachedTo : null;
+    get parentCharacter(): DrawCard | null {
+        return this.parent instanceof BaseCard && this.parent.isCharacter() ? this.parent : null;
     }
 
     /** The attached province, in the cards' sense; null when attached to anything else. */
-    get attachedProvince(): ProvinceCard | null {
-        return this.attachedTo instanceof BaseCard && this.attachedTo.isProvinceCard() ? this.attachedTo : null;
+    get parentProvince(): ProvinceCard | null {
+        return this.parent instanceof BaseCard && this.parent.isProvinceCard() ? this.parent : null;
     }
 
     get attachments(): DrawCard[] {

@@ -10,7 +10,7 @@ class JewelOfTheKhamasin extends DrawCard {
     setupCardAbilities() {
         this.action({
             title: 'Reduce province strength',
-            condition: context => !!(context.source.attachedCharacter && context.source.attachedCharacter.isAttacking()),
+            condition: context => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()),
             cost: AbilityDsl.costs.payHonor(1),
             limit: AbilityDsl.limit.unlimitedPerConflict(),
             gameAction: AbilityDsl.actions.selectCard(context => ({

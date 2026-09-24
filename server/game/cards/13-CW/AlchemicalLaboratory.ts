@@ -12,7 +12,7 @@ class AlchemicalLaboratory extends DrawCard {
             condition: context => (
                 this.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player)
             ),
-            match: (card: DrawCard, context) => card.getType() === CardType.Attachment && card.attachedCharacter !== null && card.attachedCharacter !== undefined && card.attachedCharacter.controller !== context?.player,
+            match: (card: DrawCard, context) => card.getType() === CardType.Attachment && card.parentCharacter !== null && card.parentCharacter !== undefined && card.parentCharacter.controller !== context?.player,
             effect: AbilityDsl.effects.addKeyword('ancestral'),
             targetController: Players.Self
         });

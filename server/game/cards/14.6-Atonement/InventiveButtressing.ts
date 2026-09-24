@@ -10,7 +10,7 @@ class InventiveButtressing extends ProvinceAttachment {
         this.persistentEffect({
             condition: () => this.game.isDuringConflict('military'),
             targetLocation: Location.Provinces,
-            match: (card, context) => card === context?.source.attachedTo,
+            match: (card, context) => card === context?.source.parent,
             effect: AbilityDsl.effects.modifyProvinceStrength(3)
         });
     }

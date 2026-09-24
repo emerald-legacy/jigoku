@@ -72,8 +72,8 @@ describe('Kotobuki\'s Blessing', function () {
 
             this.player1.clickPrompt('Done');
             expect(this.player2).toHavePrompt('Action Window');
-            expect(this.katana.attachedTo).toBe(this.brash);
-            expect(this.ann.attachedTo).toBe(this.brash);
+            expect(this.katana.parent).toBe(this.brash);
+            expect(this.ann.parent).toBe(this.brash);
             expect(this.getChatLogs(5)).toContain('player1 plays Kotobuki\'s Blessing to place 1 fate on Brash Samurai');
         });
 

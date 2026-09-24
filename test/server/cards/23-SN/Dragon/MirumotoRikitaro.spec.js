@@ -188,7 +188,7 @@ describe('Mirumoto Rikitaro', function () {
 
                 let mil = this.rikitaro.getMilitarySkill();
 
-                expect(this.katana.attachedTo).toBe(this.initiate);
+                expect(this.katana.parent).toBe(this.initiate);
 
                 this.player2.pass();
                 this.player1.clickCard(this.rikitaro);
@@ -215,7 +215,7 @@ describe('Mirumoto Rikitaro', function () {
 
                 let mil = this.rikitaro.getMilitarySkill();
 
-                expect(this.katana.attachedTo).toBe(this.initiate);
+                expect(this.katana.parent).toBe(this.initiate);
 
                 this.player2.pass();
                 this.player1.clickCard(this.rikitaro);

@@ -81,7 +81,7 @@ export default class KitsukiMasanori extends DrawCard {
                     const [fetchedAttachment] = context.source.attachments;
                     return {
                         target: fetchedAttachment,
-                        condition: (context) => fetchedAttachment.attachedCharacter === context.source,
+                        condition: (context) => fetchedAttachment.parentCharacter === context.source,
                         duration: Duration.Custom,
                         effect: AbilityDsl.effects.cardCannot({
                             cannot: 'target',

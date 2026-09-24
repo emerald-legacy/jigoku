@@ -56,7 +56,7 @@ export default class LoyalWarhound extends DrawCard {
                         AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
                             targetController: Players.Any,
                             match: (card: BaseCard, context?: AbilityContext<DrawCard>) =>
-                                card === context?.source.attachedCharacter && card.hasTrait('scout'),
+                                card === context?.source.parentCharacter && card.hasTrait('scout'),
                             effect: AbilityDsl.effects.cardCannot({
                                 cannot: 'target',
                                 restricts: 'opponentsProvinceEffects'

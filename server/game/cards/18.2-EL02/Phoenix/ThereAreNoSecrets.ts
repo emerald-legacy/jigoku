@@ -11,7 +11,7 @@ export default class ThereAreNoSecrets extends DrawCard {
             title: 'Gain 1 fate',
             when: {
                 onMoveFate: (event, context) =>
-                    context.source.attachedCharacter && event.origin === context.source.attachedCharacter && event.fate > 0
+                    context.source.parentCharacter && event.origin === context.source.parentCharacter && event.fate > 0
             },
             gameAction: AbilityDsl.actions.gainFate((context) => ({ target: context.player }))
         });

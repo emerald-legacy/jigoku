@@ -14,21 +14,21 @@ export class DetachAction extends CardGameAction<DetachActionProperties, EventNa
 
     getEffectMessage(context: AbilityContext): MessageArgs {
         let target = this.getProperties(context).target as DrawCard;
-        return ['detach {1} from {0}', [target, target.attachedTo]];
+        return ['detach {1} from {0}', [target, target.parent]];
     }
 
     canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
         return !!(
             card &&
             card.location === Location.PlayArea &&
-            card.attachedTo &&
+            card.parent &&
             super.canAffect(card, context, additionalProperties)
         );
     }
 
     eventHandler(event: GameEvent<EventName.OnCardDetached>): void {
         const card = event.card as DrawCard;
-        card.attachedTo?.removeAttachment(card);
+        card.parent?.removeAttachment(card);
         card.controller.cardsInPlay.push(card);
     }
 }

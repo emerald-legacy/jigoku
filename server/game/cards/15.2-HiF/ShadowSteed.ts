@@ -11,9 +11,9 @@ class ShadowSteed extends DrawCard {
 
         this.action({
             title: 'Ready attached character',
-            condition: context => !!(context.source.attachedCharacter && context.source.attachedCharacter.getFate() === 0),
+            condition: context => !!(context.source.parentCharacter && context.source.parentCharacter.getFate() === 0),
             cost: AbilityDsl.costs.payHonor(1),
-            gameAction: AbilityDsl.actions.ready(context => ({target: context.source.attachedCharacter}))
+            gameAction: AbilityDsl.actions.ready(context => ({target: context.source.parentCharacter}))
         });
     }
 

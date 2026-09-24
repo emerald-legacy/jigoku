@@ -29,13 +29,13 @@ export default class BitingSteel extends DrawCard {
             title: 'Add a Weapon to your duel stats',
             duelCondition: (duel, context) =>
                 (duel.duelType === DuelType.Military || duel.duelType === DuelType.Political) &&
-                duel.isInvolved(context.source.attachedCharacter as DrawCard),
+                duel.isInvolved(context.source.parentCharacter as DrawCard),
             target: {
                 cardType: CardType.Attachment,
                 cardCondition: (card: DrawCard, context) =>
-                    !!card.attachedCharacter && card.attachedCharacter === context.source.attachedCharacter && card.hasTrait('weapon') && getAttachmentSkill(card) !== 0,
+                    !!card.parentCharacter && card.parentCharacter === context.source.parentCharacter && card.hasTrait('weapon') && getAttachmentSkill(card) !== 0,
                 gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
-                    target: context.target?.attachedCharacter ?? undefined,
+                    target: context.target?.parentCharacter ?? undefined,
                     effect: AbilityDsl.effects.modifyDuelistSkill(
                         context.target ? getAttachmentSkill(context.target) : 0,
                         (context as TriggeredAbilityContext<BaseCard, DrawCard>).event.duel
@@ -50,12 +50,12 @@ export default class BitingSteel extends DrawCard {
         this.action({
             title: 'Send an enemy home',
             condition: (context) =>
-                !!(context.source.attachedCharacter as DrawCard | undefined)?.isParticipating('military') &&
+                !!(context.source.parentCharacter as DrawCard | undefined)?.isParticipating('military') &&
                 (context.player as Player).hasAffinity('fire', context),
             target: {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card: DrawCard, context) => card.militarySkill < (context.source.attachedCharacter?.militarySkill ?? 0),
+                cardCondition: (card: DrawCard, context) => card.militarySkill < (context.source.parentCharacter?.militarySkill ?? 0),
                 gameAction: AbilityDsl.actions.sendHome()
             }
         });

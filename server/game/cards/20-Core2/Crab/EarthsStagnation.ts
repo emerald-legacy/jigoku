@@ -16,18 +16,18 @@ export default class EarthsStagnation extends DrawCard {
             title: 'Give attached character a skill penalty',
             when: {
                 onCardPlayed: (event, context) =>
-                    context.source.attachedCharacter &&
+                    context.source.parentCharacter &&
                     (event.card as DrawCard).type === CardType.Event &&
-                    context.source.attachedCharacter.isParticipating()
+                    context.source.parentCharacter.isParticipating()
             },
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.source.attachedCharacter,
+                target: context.source.parentCharacter,
                 effect: AbilityDsl.effects.modifyBothSkills(penaltyAmount(context))
             })),
             effect: 'give {1}{2} and {3}{4} to {5}',
             effectArgs: (context) => {
                 const penalty = penaltyAmount(context);
-                return [penalty, 'military', penalty, 'political', context.source.attachedCharacter as DrawCard];
+                return [penalty, 'military', penalty, 'political', context.source.parentCharacter as DrawCard];
             },
             limit: AbilityDsl.limit.unlimitedPerConflict()
         });
