@@ -33,7 +33,7 @@ export default class StormFromSakkaku extends DrawCard {
                 destination: context.target.location
             })),
             then: {
-                gameAction: AbilityDsl.actions.discardCard((context) => ({
+                gameAction: AbilityDsl.actions.discardCard((context: AbilityContext<this>) => ({
                     target: this.otherHoldingsInSameProvince(context)
                 })),
                 message: 'The {1} {3}',

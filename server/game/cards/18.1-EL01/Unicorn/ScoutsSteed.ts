@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Duration, Location } from '../../../Constants.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
@@ -21,7 +22,7 @@ export default class ScoutsSteed extends DrawCard {
                 cardCondition: (card: BaseCard, context) => card.isFacedown() && (card as ProvinceCard).canBeAttacked() && card.controller !== context.player
             },
             gameAction: AbilityDsl.actions.sequentialContext(
-                ({ player, target: province, source: { parentCharacter: character } }) => ({
+                ({ player, target: province, source: { parentCharacter: character } }: AbilityContext<DrawCard, ProvinceCard>) => ({
                     gameActions: [
                         AbilityDsl.actions.ready({ target: character }),
                         AbilityDsl.actions.cardLastingEffect({

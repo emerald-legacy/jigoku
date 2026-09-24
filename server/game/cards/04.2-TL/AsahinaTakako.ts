@@ -1,5 +1,6 @@
 import { Location, CardType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class AsahinaTakako extends DrawCard {
@@ -18,7 +19,7 @@ export default class AsahinaTakako extends DrawCard {
                 cardType: [CardType.Character, CardType.Holding, CardType.Event],
                 location: Location.Provinces,
                 controller: Players.Self,
-                gameAction: AbilityDsl.actions.chooseAction<DrawCard>((context) => ({
+                gameAction: AbilityDsl.actions.chooseAction((context: AbilityContext<DrawCard, DrawCard>) => ({
                     options: {
                         Discard: {
                             action: AbilityDsl.actions.discardCard({ target: context.target })

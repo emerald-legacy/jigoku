@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -11,7 +12,7 @@ export default class GiverOfGifts2 extends DrawCard {
             target: {
                 cardType: CardType.Attachment,
                 controller: Players.Self,
-                gameAction: AbilityDsl.actions.selectCard(context => ({
+                gameAction: AbilityDsl.actions.selectCard((context: AbilityContext<DrawCard, DrawCard>) => ({
                     cardCondition: (card) =>
                         card !== context.target?.parentCharacter && card.controller === context.target?.parentCharacter?.controller,
                     message: '{0} moves {1} to {2}',

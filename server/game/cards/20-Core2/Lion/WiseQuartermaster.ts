@@ -19,7 +19,7 @@ export default class WiseQuartermaster extends DrawCard {
             target: {
                 cardType: CardType.Attachment,
                 controller: Players.Self,
-                gameAction: AbilityDsl.actions.selectCard<DrawCard>((context) => {
+                gameAction: AbilityDsl.actions.selectCard((context: AbilityContext<DrawCard, DrawCard>) => {
                     const parent = parentCard(context);
                     const isOnProvince = !!parent?.isProvinceCard();
                     return {

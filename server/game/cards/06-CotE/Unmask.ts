@@ -1,4 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 
@@ -15,10 +16,10 @@ class Unmask extends DrawCard {
                 cardCondition: (card) => card.isParticipating(),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.discardStatusToken<DrawCard>((context) => ({ target: context.target?.statusTokens })),
-                    AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
+                    AbilityDsl.actions.cardLastingEffect((context: AbilityContext<DrawCard, DrawCard>) => ({
                         effect: [
-                            AbilityDsl.effects.setMilitarySkill(context.target?.printedMilitarySkill),
-                            AbilityDsl.effects.setPoliticalSkill(context.target?.printedPoliticalSkill)
+                            AbilityDsl.effects.setMilitarySkill(context.target?.printedMilitarySkill ?? 0),
+                            AbilityDsl.effects.setPoliticalSkill(context.target?.printedPoliticalSkill ?? 0)
                         ]
                     }))
                 ])

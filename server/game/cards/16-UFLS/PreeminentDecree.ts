@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 class PreeminentDecree extends DrawCard {
     static id = 'preeminent-decree';
@@ -15,7 +16,7 @@ class PreeminentDecree extends DrawCard {
                 cardCondition: (card) => {
                     return card.hasTrait('courtier') && card.isParticipating() && card.glory > 0;
                 },
-                gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>(context => ({
+                gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext<DrawCard, DrawCard>) => ({
                     target: context.game.currentConflict?.getParticipants().filter((a: DrawCard) => a !== context.target) ?? [],
                     effect: AbilityDsl.effects.modifyPoliticalSkill(-1 * ((context.target && context.target.glory) || 0))
                 }))
