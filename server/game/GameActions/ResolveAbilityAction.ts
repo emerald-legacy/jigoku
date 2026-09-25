@@ -123,7 +123,6 @@ export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> ext
         let properties = this.getProperties(context, additionalProperties);
         let ability = properties.ability as TriggeredAbility;
         let player = properties.player || context.player;
-        let newContextEvent = properties.event;
         if(
             !super.canAffect(card, context) ||
             !ability ||
@@ -131,7 +130,7 @@ export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> ext
         ) {
             return false;
         }
-        let newContext = ability.createContext(player, newContextEvent);
+        let newContext = this.resolvedAbilityContext(properties, context);
         let ignoredRequirements = properties.ignoredRequirements.concat(
             'player',
             'location',
@@ -143,9 +142,7 @@ export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> ext
 
     eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown>): void {
         let properties = this.getProperties((event.context), additionalProperties);
-        let player = properties.player || (event.context).player;
-        let newContextEvent = properties.event;
-        let newContext = (properties.ability as TriggeredAbility).createContext(player, newContextEvent);
+        let newContext = this.resolvedAbilityContext(properties, event.context);
         newContext.subResolution = !!properties.subResolution;
         if(properties.subResolution) {
             newContext.originatingContext = (event.context).triggeringContext;
@@ -163,7 +160,12 @@ export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> ext
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C): boolean {
-        let properties = this.getProperties(context);
-        return properties.ability.hasTargetsChosenByInitiatingPlayer(context);
+        const properties = this.getProperties(context);
+        return properties.ability.hasTargetsChosenByInitiatingPlayer(this.resolvedAbilityContext(properties, context));
+    }
+
+    /** The context the resolved ability runs with: its own, for the resolving player and the given event. */
+    private resolvedAbilityContext(properties: ResolveAbilityProperties, context: C) {
+        return (properties.ability as TriggeredAbility).createContext(properties.player || context.player, properties.event);
     }
 }

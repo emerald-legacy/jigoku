@@ -6,7 +6,7 @@ import { AttachAction, AttachActionProperties } from './AttachAction.js';
 import { AttachToRingAction, AttachToRingActionProperties } from './AttachToRingAction.js';
 import { BowAction, BowActionProperties } from './BowAction.js';
 import { BreakAction, BreakProperties } from './BreakAction.js';
-import { CancelAction, CancelActionProperties } from './CancelAction.js';
+import { CancelAction, CancelActionProperties, type CancellingContext } from './CancelAction.js';
 import { CardMenuAction, CardMenuProperties } from './CardMenuAction.js';
 import { ChooseActionProperties, ChooseGameAction } from './ChooseGameAction.js';
 import { ChosenDiscardAction, ChosenDiscardProperties } from './ChosenDiscardAction.js';
@@ -447,7 +447,7 @@ export function moveStatusToken<Target = unknown, C extends AbilityContext = Abi
 //////////////
 // GENERIC
 //////////////
-export function cancel<Target = unknown, C extends TriggeredAbilityContext = TriggeredAbilityContext>(propertyFactory: PropsFactory<CancelActionProperties, NoInfer<Target>, C> = {}): CancelAction<C> {
+export function cancel<Target = unknown, C extends CancellingContext = TriggeredAbilityContext>(propertyFactory: PropsFactory<CancelActionProperties, NoInfer<Target>, C> = {}): CancelAction<C> {
     return new CancelAction<C>(propertyFactory);
 }
 export function handler<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<HandlerProperties, NoInfer<Target>, C> = {}): HandlerAction<C> {

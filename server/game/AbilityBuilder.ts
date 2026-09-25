@@ -15,6 +15,8 @@ import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 type CardOfOne<K> = K extends CardType.Province ? ProvinceCard : K extends CardType ? DrawCard : BaseCard;
 /** The card class a target declared with `cardType: K` can hold. */
 export type CardOfType<K> = [K] extends [never] ? BaseCard : K extends readonly (infer E)[] ? CardOfOne<E> : CardOfOne<K>;
+/** What a card target holds once chosen: the engine stores `[]` when an optional one is skipped. */
+type ChosenCard<K, O> = true extends O ? CardOfType<K> | [] : CardOfType<K>;
 
 /**
  * What a builder callback receives: the ability's context plus the targets and cost results it can
@@ -53,7 +55,12 @@ type Earlier<Bag, D extends keyof Bag> = Pick<Bag, D> & Partial<Omit<Bag, D>>;
 /** The context of an action declared with a builder: it is always resolved as a `CardAction`. */
 export type ActionContext<S extends BaseCard> = AbilityContext<S> & { ability: CardAction };
 
-export type TriggerContext<S extends BaseCard, W> = TriggeredAbilityContext<S> & { event: GameEvent<Extract<EventName, keyof W>> };
+type TriggerEvent<W> = GameEvent<Extract<EventName, keyof W>>;
+
+export type TriggerContext<S extends BaseCard, W> = TriggeredAbilityContext<S> & { event: TriggerEvent<W> };
+
+/** A province's trigger may resolve without its event: Countryside Trader ignores triggering conditions. */
+export type ProvinceTriggerContext<S extends BaseCard, W> = AbilityContext<S> & Pick<TriggeredAbilityContext<S>, 'cancel'> & { event?: TriggerEvent<W> };
 
 interface TargetSpec {
     readonly bag: 'targets' | 'rings';
@@ -118,13 +125,13 @@ export function createDraft(title: string, holdsBase: (context: AbilityContext) 
     return { title, holdsBase, targets: {}, specs: [], costs: [], gameActions: [] };
 }
 
-interface CardTargetProps<Context, EarlierContext, K, D> {
+interface CardTargetProps<Context, EarlierContext, K, D, O> {
     cardType?: K;
     location?: Location | Location[];
     controller?: Players | ((context: EarlierContext) => Players);
     player?: Players.Self | Players.Opponent | ((context: EarlierContext) => Players.Self | Players.Opponent);
     activePromptTitle?: string;
-    optional?: boolean;
+    optional?: O;
     dependsOn?: D;
     cardCondition?: (card: CardOfType<K>, context: Context) => boolean;
 }
@@ -196,20 +203,25 @@ export class AbilityBuilder<Base extends AbilityContext, TG extends object = obj
     target<
         const Name extends string,
         const K extends CardType | readonly CardType[] | undefined = undefined,
-        D extends keyof TG & string = never
+        D extends keyof TG & string = never,
+        const O extends boolean = false
     >(
         name: Name,
         props: CardTargetProps<
             BuilderContext<Base, Visible<TG, D, Name, CardOfType<K>>, Partial<RG>, CO>,
             BuilderContext<Base, Earlier<TG, D>, Partial<RG>, CO>,
             K,
-            D
+            D,
+            O
         >,
-        ...gameActions: NoInfer<BuilderAction<Base, Visible<TG, D, Name, CardOfType<K>>, Partial<RG>, CO>>[]
-    ): AbilityBuilder<Base, TG & { [P in Name]: CardOfType<K> }, RG, CO> {
+        ...gameActions: NoInfer<BuilderAction<Base, Visible<TG, D, Name, ChosenCard<K, O>>, Partial<RG>, CO>>[]
+    ): AbilityBuilder<Base, TG & { [P in Name]: ChosenCard<K, O> }, RG, CO> {
         const holdsCard = holdsCardOf<K>(props.cardType);
-        const own: TargetSpec = { bag: 'targets', name, holds: holdsCard };
-        const [required, optional] = this.#visibleSpecs(props.dependsOn, own);
+        const skipped = (value: unknown) => props.optional === true && Array.isArray(value) && value.length === 0;
+        // Its own callbacks see the candidate card; later ones see what was chosen.
+        const candidate: TargetSpec = { bag: 'targets', name, holds: holdsCard };
+        const own: TargetSpec = { bag: 'targets', name, holds: (value) => holdsCard(value) || skipped(value) };
+        const [required, optional] = this.#visibleSpecs(props.dependsOn, candidate);
         const { cardCondition, cardType } = props;
         const entry: CardTargetEntry = {};
         for(const key of ['location', 'activePromptTitle', 'optional', 'dependsOn'] as const) {
@@ -256,12 +268,13 @@ export class AbilityBuilder<Base extends AbilityContext, TG extends object = obj
 
     /**
      * A ring target. Its `ringCondition` gets the candidate as an argument: the engine's ring prompt
-     * calls it with the ability's context, where the target's own ring is not set yet.
+     * calls it with the ability's context, where the target's own ring is not set yet. It may depend on
+     * a card target as well as on a ring target.
      */
-    ringTarget<const Name extends string, D extends keyof RG & string = never>(
+    ringTarget<const Name extends string, D extends (keyof TG | keyof RG) & string = never>(
         name: Name,
-        props: RingTargetProps<BuilderContext<Base, Partial<TG>, Earlier<RG, D>, CO>, D>,
-        ...gameActions: NoInfer<BuilderAction<Base, Partial<TG>, Visible<RG, D, Name, Ring>, CO>>[]
+        props: RingTargetProps<BuilderContext<Base, Earlier<TG, D & keyof TG>, Earlier<RG, D & keyof RG>, CO>, D>,
+        ...gameActions: NoInfer<BuilderAction<Base, Earlier<TG, D & keyof TG>, Visible<RG, D & keyof RG, Name, Ring>, CO>>[]
     ): AbilityBuilder<Base, TG, RG & { [P in Name]: Ring }, CO> {
         const own: TargetSpec = { bag: 'rings', name, holds: holdsRing };
         const required = this.draft.specs.filter((spec) => spec.name === props.dependsOn);
@@ -269,7 +282,7 @@ export class AbilityBuilder<Base extends AbilityContext, TG extends object = obj
         const entry: RingTargetEntry = {
             mode: TargetMode.Ring,
             ringCondition: (ring, context) => {
-                if(!context || !this.#isContext<BuilderContext<Base, Partial<TG>, Earlier<RG, D>, CO>>(context, required, optional)) {
+                if(!context || !this.#isContext<BuilderContext<Base, Earlier<TG, D & keyof TG>, Earlier<RG, D & keyof RG>, CO>>(context, required, optional)) {
                     throw new Error(`${this.draft.title}: context does not match its declared targets`);
                 }
                 return props.ringCondition(ring, context);
@@ -408,24 +421,45 @@ export class AbilityBuilder<Base extends AbilityContext, TG extends object = obj
 }
 
 /** A triggered ability before its trigger is known: `when` fixes the event type of its context. */
-export class TriggerBuilder<S extends BaseCard> {
+type TriggerBase<S extends BaseCard, W, EventOptional extends boolean> =
+    EventOptional extends true ? ProvinceTriggerContext<S, W> : TriggerContext<S, W>;
+
+export class TriggerBuilder<S extends BaseCard, EventOptional extends boolean = false> {
     constructor(private readonly start: <W extends WhenType<S>>(when: W) => AbilityDraft) {}
 
-    when<W extends WhenType<S>>(when: W): AbilityBuilder<TriggerContext<S, W>> {
-        return new AbilityBuilder(this.start(when));
+    when<W extends WhenType<S>>(when: W): AbilityBuilder<TriggerBase<S, W, EventOptional>> {
+        return new AbilityBuilder<TriggerBase<S, W, EventOptional>>(this.start(when));
     }
 }
 
 /** `holdsBase` for a triggered ability: its context carries one of the trigger's events. */
-export function holdsTriggerEvent(when: object): (context: AbilityContext) => boolean {
+/** Checks the trigger's event; `eventOptional` is asked at check time, once the card is fully constructed. */
+export function holdsTriggerEvent(when: object, eventOptional: () => boolean): (context: AbilityContext) => boolean {
     const events: string[] = Object.keys(when);
-    return (context) => 'event' in context && context.event instanceof Object && 'name' in context.event &&
-        typeof context.event.name === 'string' && events.includes(context.event.name);
+    return (context) => {
+        const event = 'event' in context ? context.event : undefined;
+        if(event === undefined) {
+            return eventOptional();
+        }
+        return event instanceof Object && 'name' in event && typeof event.name === 'string' && events.includes(event.name);
+    };
+}
+
+/**
+ * A lone target named `target` goes in `target`, like the object form: some engine code (the
+ * `toHand` restriction) only reads that one.
+ */
+function targetProperties(targets: AbilityDraft['targets']) {
+    const names = Object.keys(targets);
+    if(names.length === 1 && names[0] === 'target') {
+        return { target: targets.target };
+    }
+    return names.length > 0 ? { targets } : {};
 }
 
 function commonProperties(draft: AbilityDraft) {
     return {
-        ...(Object.keys(draft.targets).length > 0 ? { targets: draft.targets } : {}),
+        ...targetProperties(draft.targets),
         ...(draft.costs.length > 0 ? { cost: draft.costs } : {}),
         ...(draft.gameActions.length > 0 ? { gameAction: draft.gameActions } : {}),
         ...(draft.handler ? { handler: draft.handler } : {}),

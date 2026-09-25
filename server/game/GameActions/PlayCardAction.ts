@@ -7,7 +7,7 @@ import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import type Game from '../Game.js';
 import AbilityResolver from '../gamesteps/AbilityResolver.js';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
+import type Player from '../Player.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 
 class PlayCardResolver extends AbilityResolver {
@@ -111,6 +111,14 @@ export interface PlayCardProperties extends CardActionProperties {
     ignoredRequirements?: string[];
     playAction?: BaseAction | BaseAction[];
     payFateToOpponent?: boolean;
+    /** The event a reaction is played in response to, when it is played again (Dragon Tattoo). */
+    event?: Event;
+}
+
+/** A way to play the card, and the context it is played with. */
+interface PlayableAbility {
+    ability: BaseCardAbility;
+    createContext(player: Player): AbilityContext;
 }
 
 export class PlayCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlayCardProperties, EventName, C> {
@@ -143,18 +151,14 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         return this.getLegalAbilities(card, context, properties).length > 0;
     }
 
-    getLegalAbilities(card: DrawCard, context: C, properties: PlayCardProperties) {
-        let legalActions = this.getLegalActions(card, context, properties);
-        let legalReactions = this.getLegalReactions(card, context, properties);
-
-        let legalAbilities = legalActions.concat(legalReactions);
-
-        return legalAbilities.filter((ability: BaseCardAbility) => {
+    getLegalAbilities(card: DrawCard, context: C, properties: PlayCardProperties): PlayableAbility[] {
+        const playable = this.getLegalActions(card, context, properties).concat(this.getLegalReactions(card, context, properties));
+        return playable.filter(({ ability, createContext }) => {
             const ignoredRequirements = ['location', 'player', ...(properties.ignoredRequirements ?? [])];
             if(!properties.payCosts) {
                 ignoredRequirements.push('cost');
             }
-            let newContext = ability.createContext(context.player);
+            let newContext = createContext(context.player);
             newContext.gameActionsResolutionChain = context.gameActionsResolutionChain.concat(this);
             newContext.ignoreFateCost = properties.ignoreFateCost;
             this.setPlayType(newContext, properties.playType ?? PlayType.Other, card.location);
@@ -162,22 +166,19 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         });
     }
 
-    getLegalActions(card: DrawCard, context: C, properties: PlayCardProperties) {
-        if(properties.playAction) {
-            let actions = properties.playAction;
-            if(!Array.isArray(actions)) {
-                actions = [actions];
-            }
-            return actions;
-        }
-        return card.getPlayActions();
+    getLegalActions(card: DrawCard, context: C, properties: PlayCardProperties): PlayableAbility[] {
+        const actions: BaseCardAbility[] = properties.playAction ? [properties.playAction].flat() : card.getPlayActions();
+        return actions.map((ability) => ({ ability, createContext: (player) => ability.createContext(player) }));
     }
 
-    getLegalReactions(card: DrawCard, context: C, properties: PlayCardProperties) {
+    getLegalReactions(card: DrawCard, context: C, properties: PlayCardProperties): PlayableAbility[] {
         if(!properties.allowReactions) {
             return [];
         }
-        return card.getReactions();
+        return card.getReactions().map((ability) => ({
+            ability,
+            createContext: (player) => ability.createContext(player, properties.event)
+        }));
     }
 
     setPlayType(context: AbilityContext, playType: PlayType, location: Location): void {
@@ -212,15 +213,15 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         }
         context.game.promptWithHandlerMenu(context.player, {
             source: card,
-            choices: abilities.map((action: BaseCardAbility) => action.title).concat(properties.resetOnCancel ? 'Cancel' : []),
+            choices: abilities.map(({ ability }) => ability.title).concat(properties.resetOnCancel ? 'Cancel' : []),
             handlers: abilities
                 .map(
-                    (action: BaseCardAbility) => () =>
+                    ({ createContext }) => () =>
                         events.push(
                             this.getPlayCardEvent(
                                 card,
                                 context,
-                                action.createContext(context.player),
+                                createContext(context.player),
                                 additionalProperties
                             )
                         )
@@ -239,7 +240,6 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
         actionContext: AbilityContext,
         additionalProperties: Record<string, unknown> = {}
     ): Event {
-        this.updateForDragonTattoo_DYH(context, actionContext);
         let properties = this.getProperties(context, additionalProperties);
         let event = this.createEvent(card, context, additionalProperties);
         this.updateEvent(event, card, context, additionalProperties);
@@ -248,13 +248,6 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
             context.game.queueStep(new PlayCardResolver(context.game, actionContext, this, context, properties))
         );
         return event;
-    }
-
-    updateForDragonTattoo_DYH(context: AbilityContext, actionContext: AbilityContext) {
-        const innerCtx = (context as TriggeredAbilityContext).event?.context as TriggeredAbilityContext | undefined;
-        if(innerCtx?.event) {
-            (actionContext as TriggeredAbilityContext).event = innerCtx.event;
-        }
     }
 
     checkEventCondition(): boolean {

@@ -34,7 +34,6 @@ export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> ext
         let properties = this.getProperties(context, additionalProperties);
         let ability = properties.ability as TriggeredAbility;
         let player = properties.player || context.player;
-        let newContextEvent = properties.event;
         if(
             !super.canAffect(card, context) ||
             !ability ||
@@ -42,16 +41,14 @@ export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> ext
         ) {
             return false;
         }
-        let newContext = ability.createContext(player, newContextEvent);
+        let newContext = this.triggeredAbilityContext(properties, context);
         let ignoredRequirements = (properties.ignoredRequirements ?? []).concat('player', 'location', 'limit');
         return !ability.meetsRequirements(newContext, ignoredRequirements);
     }
 
     eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties((event.context), additionalProperties);
-        let player = properties.player || (event.context).player;
-        let newContextEvent = properties.event;
-        let newContext = (properties.ability as TriggeredAbility).createContext(player, newContextEvent);
+        let newContext = this.triggeredAbilityContext(properties, event.context);
         newContext.subResolution = !!properties.subResolution;
         if(properties.subResolution) {
             newContext.originatingContext = (event.context).triggeringContext;
@@ -64,7 +61,12 @@ export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> ext
         return (
             properties.ability &&
             properties.ability.hasTargetsChosenByInitiatingPlayer &&
-            properties.ability.hasTargetsChosenByInitiatingPlayer(context)
+            properties.ability.hasTargetsChosenByInitiatingPlayer(this.triggeredAbilityContext(properties, context))
         );
+    }
+
+    /** The context the triggered ability runs with: its own, for the triggering player and the given event. */
+    private triggeredAbilityContext(properties: TriggerAbilityProperties, context: C) {
+        return (properties.ability as TriggeredAbility).createContext(properties.player || context.player, properties.event);
     }
 }
