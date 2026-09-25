@@ -69,7 +69,7 @@ function sumModifiers(modifiers: StatModifier[]): number {
     return modifiers.reduce((total, modifier) => total + modifier.amount, 0);
 }
 
-/** A skill as the game reads it: a dash counts as 0, and it is floored at 0 unless asked not to. */
+/** A dash counts as 0. */
 function effectiveSkill(skill: number, floor = true): number {
     if(isNaN(skill)) {
         return 0;
@@ -81,7 +81,6 @@ function toExclusions(exclusions: Exclusions | EffectName): Exclusions {
     return Array.isArray(exclusions) || typeof exclusions === 'function' ? exclusions : [exclusions];
 }
 
-/** A summary of a stat for the client, from copies of its modifiers. */
 function statSummary(modifiers: StatModifier[], format: (stat: number) => string): StatSummary {
     const copies = modifiers.map((modifier) => Object.assign({}, modifier));
     return { stat: format(sumModifiers(copies)), modifiers: copies };
@@ -310,10 +309,6 @@ class DrawCard extends BaseCard {
 
     hasEphemeral(): boolean {
         return this.hasPrintedKeyword('ephemeral');
-    }
-
-    hasPeaceful(): boolean {
-        return this.hasPrintedKeyword('peaceful');
     }
 
     hasNoDuels(): boolean {
@@ -937,7 +932,6 @@ class DrawCard extends BaseCard {
     }
 }
 
-/** A duel trigger's `when`: the player may trigger at this step, and the card's own duel condition holds. */
 function duelTrigger(canTrigger: (duel: Duel, player: Player) => boolean, duelCondition?: DuelCondition) {
     return ({ duel }: { duel?: Duel }, context?: AbilityContext<DrawCard>): boolean =>
         !!context && !!duel && canTrigger(duel, context.player) && (!duelCondition || duelCondition(duel, context));

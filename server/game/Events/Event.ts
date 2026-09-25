@@ -64,10 +64,6 @@ export class Event {
         this.window = window;
     }
 
-    unsetWindow() {
-        this.window = null;
-    }
-
     checkCondition() {
         if(this.cancelled || this.resolved || this.name === EventName.Unnamed) {
             return;

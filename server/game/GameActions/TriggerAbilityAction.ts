@@ -65,7 +65,6 @@ export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> ext
         );
     }
 
-    /** The context the triggered ability runs with: its own, for the triggering player and the given event. */
     private triggeredAbilityContext(properties: TriggerAbilityProperties, context: C) {
         return (properties.ability as TriggeredAbility).createContext(properties.player || context.player, properties.event);
     }

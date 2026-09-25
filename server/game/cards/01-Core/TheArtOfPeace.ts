@@ -9,7 +9,6 @@ export default class TheArtOfPeace extends ProvinceCard {
             .when({
                 onBreakProvince: (event, context) => event.card === context.source
             })
-            // the current conflict, not the break event's: Countryside Trader resolves this without one
             .gameAction(
                 AbilityDsl.actions.dishonor((context) => ({ target: context.game.currentConflict?.getAttackers() ?? [] })),
                 AbilityDsl.actions.honor((context) => ({ target: context.game.currentConflict?.getDefenders() ?? [] }))

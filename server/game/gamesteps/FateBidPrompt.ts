@@ -1,7 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type Game from '../Game.js';
-import { JointGameAction } from '../GameActions/JointGameAction.js';
-import { LoseFateAction } from '../GameActions/LoseFateAction.js';
 import type Player from '../Player.js';
 import { AllPlayerPrompt } from './AllPlayerPrompt.js';
 
@@ -65,16 +63,6 @@ export class FateBidPrompt extends AllPlayerPrompt {
         this.game.queueSimpleStep(() => this.bidHandler(result, context));
 
         return true;
-    }
-
-    spendFateAfterBid() {
-        const actions: Array<LoseFateAction> = [];
-        const context = this.game.getFrameworkContext();
-        for(const [player, amount] of this.bids) {
-            this.game.addMessage('{0} spends {1} fate', player, amount);
-            actions.push(new LoseFateAction({ amount, target: player }));
-        }
-        new JointGameAction(actions).resolve(undefined, context);
     }
 
     activePrompt(player: Player) {

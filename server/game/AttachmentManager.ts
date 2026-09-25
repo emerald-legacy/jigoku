@@ -4,13 +4,6 @@ import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
 
-export interface CanHostAttachments {
-    attachments: DrawCard[];
-    removeAttachment(attachment: DrawCard): void;
-    allowAttachment(attachment: DrawCard): boolean;
-    checkForIllegalAttachments(): boolean;
-}
-
 export class AttachmentManager {
     attachments: DrawCard[] = [];
 

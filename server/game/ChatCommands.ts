@@ -470,16 +470,6 @@ class ChatCommands {
         return num;
     }
 
-    isValidIcon(icon: string): boolean {
-        if(!icon) {
-            return false;
-        }
-
-        const lowerIcon = icon.toLowerCase();
-
-        return lowerIcon === 'military' || lowerIcon === 'intrigue' || lowerIcon === 'power';
-    }
-
     isValidToken(token: string): boolean {
         if(!token) {
             return false;

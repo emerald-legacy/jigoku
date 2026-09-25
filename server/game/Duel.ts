@@ -90,11 +90,6 @@ export class Duel extends GameObject {
         this.targets.push(card);
     }
 
-    replaceTargetInDuel(oldTarget: DrawCard, newTarget: DrawCard) {
-        this.targets = this.targets.filter((a) => a !== oldTarget);
-        this.targets.push(newTarget);
-    }
-
     canAddToDuel(card: DrawCard, context: AbilityContext) {
         return (
             !this.participants.includes(card) &&

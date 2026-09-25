@@ -58,14 +58,6 @@ class StatModifier {
         );
     }
 
-    static fromStatusToken(amount: number, name: string, overrides = false) {
-        return new this(
-            amount,
-            name,
-            overrides,
-            undefined
-        );
-    }
 }
 
 export default StatModifier;

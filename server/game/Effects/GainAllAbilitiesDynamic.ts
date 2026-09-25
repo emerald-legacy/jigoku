@@ -96,10 +96,6 @@ export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch> {
         }
     }
 
-    _unapplyAbilities(target: BaseCard) {
-        this.unapply(target);
-    }
-
     unapply(target: BaseCard) {
         if(this.abilitiesForTargets[target.uuid]) {
             for(const value of this.abilitiesForTargets[target.uuid].reactions) {

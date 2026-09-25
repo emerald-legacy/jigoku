@@ -398,59 +398,6 @@ export function optionalFateCost(amount: number, forcePayment: (context: Trigger
     };
 }
 
-export function optionalGiveFateCost(amount: number): Cost {
-    return {
-        promptsPlayer: true,
-        canPay() {
-            return true;
-        },
-        resolve(context: TriggeredAbilityContext, result) {
-            let fateAvailable = true;
-            if(context.player.fate < amount) {
-                fateAvailable = false;
-            }
-            if(!context.player.checkRestrictions('spendFate', context)) {
-                fateAvailable = false;
-            }
-            if(!context.player.opponent || !context.player.opponent.checkRestrictions('gainFate', context)) {
-                fateAvailable = false;
-            }
-            let choices: string[] = [];
-            let handlers: Array<() => void> = [];
-            context.costs.optionalFateCost = 0;
-
-            if(fateAvailable) {
-                choices = ['Yes', 'No'];
-                handlers = [
-                    () => (context.costs.optionalFateCost = amount),
-                    () => (context.costs.optionalFateCost = 0)
-                ];
-            }
-            if(fateAvailable && result.canCancel) {
-                choices.push('Cancel');
-                handlers.push(() => {
-                    result.cancelled = true;
-                });
-            }
-
-            if(choices.length > 0) {
-                context.game.promptWithHandlerMenu(context.player, {
-                    activePromptTitle: 'Give your opponent ' + amount + ' fate?',
-                    source: context.source,
-                    choices: choices,
-                    handlers: handlers
-                });
-            }
-        },
-        pay(context: TriggeredAbilityContext) {
-            context.player.fate -= context.costs.optionalFateCost as number;
-            if(context.player.opponent) {
-                context.player.opponent.fate += context.costs.optionalFateCost as number;
-            }
-        }
-    };
-}
-
 export function optionalOpponentLoseHonor(
     prompt = 'Lose 1 honor?',
     canPayFunc?: (context: TriggeredAbilityContext) => boolean

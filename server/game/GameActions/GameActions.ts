@@ -43,7 +43,6 @@ import { IfAbleAction, IfAbleActionProperties } from './IfAbleAction.js';
 import { InitiateConflictAction, InitiateConflictProperties } from './InitiateConflictAction.js';
 import { InjureAction, InjureActionProperties } from './InjureAction.js';
 import { JointGameAction } from './JointGameAction.js';
-import { JointGameContextProperties, JointGameContextAction } from './JointGameContextAction.js';
 import { LastingEffectAction, LastingEffectProperties } from './LastingEffectAction.js';
 import { LastingEffectCardAction, LastingEffectCardProperties } from './LastingEffectCardAction.js';
 import { LastingEffectRingAction, LastingEffectRingProperties } from './LastingEffectRingAction.js';
@@ -63,7 +62,6 @@ import { MultipleGameAction } from './MultipleGameAction.js';
 import { OpponentPutIntoPlayAction, OpponentPutIntoPlayProperties } from './OpponentPutIntoPlayAction.js';
 import { PlaceCardUnderneathAction, PlaceCardUnderneathProperties } from './PlaceCardUnderneathAction.js';
 import { PlaceFateAction, PlaceFateProperties } from './PlaceFateAction.js';
-import { PlaceFateAttachmentAction, PlaceFateAttachmentProperties } from './PlaceFateAttachmentAction.js';
 import { PlaceFateRingAction, PlaceFateRingProperties } from './PlaceFateRingAction.js';
 import { PlayCardAction, PlayCardProperties } from './PlayCardAction.js';
 import { PutInProvinceAction, PutInProvinceProperties } from './PutInProvinceAction.js';
@@ -188,12 +186,6 @@ export function moveToConflict<Target = unknown, C extends AbilityContext = Abil
  */
 export function placeFate<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlaceFateProperties, NoInfer<Target>, C> = {}): PlaceFateAction<C> {
     return new PlaceFateAction<C>(propertyFactory);
-}
-/**
- * default amount = 1
- */
-export function placeFateAttachment<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<PlaceFateAttachmentProperties, NoInfer<Target>, C> = {}): PlaceFateAttachmentAction<C> {
-    return new PlaceFateAttachmentAction<C>(propertyFactory);
 }
 /**
  * default resetOnCancel = false
@@ -465,9 +457,6 @@ export function noAction(): GameAction {
 export function conflictLastingEffect<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectProperties, NoInfer<Target>, C>): LastingEffectAction<C> {
     return new LastingEffectAction<C>(propertyFactory);
 } // duration = 'untilEndOfConflict', effect, targetController, condition, until
-export function immediatelyResolveConflict(): GameAction {
-    return new HandlerAction({});
-}
 
 //////////////
 // DUEL
@@ -499,9 +488,6 @@ export function ifAble<Target = unknown, C extends AbilityContext = AbilityConte
 }
 export function joint<C extends AbilityContext = AbilityContext>(gameActions: GameAction<GameActionProperties, EventName, C>[]): JointGameAction<C> {
     return new JointGameAction<C>(gameActions);
-} // takes an array of gameActions, not a propertyFactory
-export function jointContext<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<JointGameContextProperties, NoInfer<Target>, C>): JointGameContextAction<C> {
-    return new JointGameContextAction<C>(propertyFactory);
 } // takes an array of gameActions, not a propertyFactory
 export function multiple<C extends AbilityContext = AbilityContext>(gameActions: GameAction<GameActionProperties, EventName, C>[]): MultipleGameAction<C> {
     return new MultipleGameAction<C>(gameActions);

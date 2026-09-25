@@ -328,10 +328,6 @@ export class Conflict extends GameObject {
         return defendersArray;
     }
 
-    anyParticipants(predicate: Predicate) {
-        return this.getAttackers().concat(this.getDefenders()).some(predicate);
-    }
-
     getParticipants(predicate?: Predicate) {
         const participants = this.getAttackers().concat(this.getDefenders());
         return typeof predicate === 'function' ? participants.filter(predicate) : participants;
@@ -544,13 +540,6 @@ export class Conflict extends GameObject {
         this.game.currentConflict = null;
         this.game.raiseEvent(EventName.OnConflictPass, { conflict: this });
         this.resetCards();
-    }
-
-    isBreaking() {
-        return (
-            this.conflictProvince &&
-            this.getConflictProvinces().some((p) => p.getStrength() - (this.attackerSkill - this.defenderSkill) <= 0)
-        );
     }
 
     public isAtStrongholdProvince(): boolean {

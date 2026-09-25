@@ -164,7 +164,6 @@ export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> ext
         return properties.ability.hasTargetsChosenByInitiatingPlayer(this.resolvedAbilityContext(properties, context));
     }
 
-    /** The context the resolved ability runs with: its own, for the resolving player and the given event. */
     private resolvedAbilityContext(properties: ResolveAbilityProperties, context: C) {
         return (properties.ability as TriggeredAbility).createContext(properties.player || context.player, properties.event);
     }

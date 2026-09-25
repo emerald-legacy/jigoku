@@ -27,7 +27,6 @@ export default class DragonTattoo extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.ifAble((context) => {
                 const card = context.event.card;
-                // a reaction event is played again in response to the event it first reacted to
                 const played = context.event.context;
                 const respondingTo = played instanceof TriggeredAbilityContext ? played.event : undefined;
                 return {

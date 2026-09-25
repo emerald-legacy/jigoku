@@ -58,13 +58,4 @@ export class GameEventBus {
         }
     }
 
-    removeAllListeners(eventName?: string): void {
-        if(eventName === undefined) {
-            this.handlers.clear();
-            this.onceWrappers.clear();
-            return;
-        }
-        this.handlers.delete(eventName);
-        this.onceWrappers.delete(eventName);
-    }
 }

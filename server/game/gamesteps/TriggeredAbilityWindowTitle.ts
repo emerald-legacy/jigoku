@@ -28,9 +28,6 @@ const EventToTitleFunc: Record<string, (event: Event) => string> = {
     onInitiateAbilityEffects(event: Event) {
         return `the effects of ${(event as GameEvent<EventName.OnInitiateAbilityEffects>).card.name}`;
     },
-    onMoveCharactersToConflict() {
-        return 'characters moving to the conflict';
-    },
     onMoveFate(event: Event) {
         const moveFate = event as GameEvent<EventName.OnMoveFate> & { card?: BaseCard };
         return `Fate being moved from ${moveFate.origin ? moveFate.origin.name : moveFate.card ? moveFate.card.name : 'somewhere'}`;
@@ -41,14 +38,8 @@ const EventToTitleFunc: Record<string, (event: Event) => string> = {
     onPhaseStarted(event: Event) {
         return `${(event as GameEvent<EventName.OnPhaseStarted>).phase} phase starting`;
     },
-    onRemovedFromChallenge(event: Event) {
-        return `${(event as GameEvent<EventName.OnCardLeavesPlay>).card.name} being removed from the challenge`;
-    },
     onReturnRing(event: Event) {
         return `returning the ${(event as GameEvent<EventName.OnReturnRing>).ring?.element} ring`;
-    },
-    onSacrificed(event: Event) {
-        return `${(event as GameEvent<EventName.OnCardLeavesPlay>).card.name} being sacrificed`;
     }
 };
 

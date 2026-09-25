@@ -69,9 +69,6 @@ class MenuPrompt extends UiPrompt {
         return true;
     }
 
-    hasMethodButton(method: string): boolean {
-        return (this.properties.activePrompt.buttons ?? []).some((button: MenuPromptButton) => button.method === method);
-    }
 }
 
 export default MenuPrompt;

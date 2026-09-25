@@ -91,34 +91,6 @@ export class GameServer implements GameRouter {
         this.io.on('connection', this.onConnection.bind(this));
     }
 
-    public debugDump() {
-        const games = [];
-        for(const game of this.games.values()) {
-            const players = [];
-            for(const player of Object.values(game.playersAndSpectators)) {
-                players.push({
-                    name: player.name,
-                    left: player.left,
-                    disconnected: player.disconnected,
-                    id: player.id,
-                    spectator: game.isSpectator(player)
-                });
-            }
-            games.push({
-                name: game.name,
-                players: players,
-                id: game.id,
-                started: game.started,
-                startedAt: game.startedAt
-            });
-        }
-
-        return {
-            games: games,
-            gameCount: this.games.size
-        };
-    }
-
     handleError(game: Game, e: Error) {
         logger.error(`Game error: ${e.message}\n${e.stack}`);
 

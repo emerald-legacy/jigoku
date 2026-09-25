@@ -102,10 +102,6 @@ class Effect {
         return true;
     }
 
-    getDefaultTarget(_context: AbilityContext): GameObject | null {
-        return null;
-    }
-
     getTargets(): GameObject[] {
         return [];
     }
@@ -115,17 +111,9 @@ class Effect {
         this.effect.apply(target);
     }
 
-    removeTarget(target: GameObject) {
-        this.removeTargets([target]);
-    }
-
     removeTargets(targets: GameObject[]) {
         targets.forEach(target => this.effect.unapply(target));
         this.targets = this.targets.filter(t => !targets.includes(t));
-    }
-
-    hasTarget(target: GameObject): boolean {
-        return this.targets.includes(target);
     }
 
     cancel() {

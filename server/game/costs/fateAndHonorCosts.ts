@@ -1,6 +1,4 @@
-import { EventName, PlayType } from '../Constants.js';
-import { Event } from '../Events/Event.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
+import { PlayType } from '../Constants.js';
 import * as GameActions from '../GameActions/GameActions.js';
 import { HandlerAction } from '../GameActions/HandlerAction.js';
 import { Derivable, derive } from '../utils/helpers.js';
@@ -13,30 +11,6 @@ import { GameActionCost } from './GameActionCost.js';
 import { MetaActionCost } from './MetaActionCost.js';
 import { ReduceableFateCost } from './ReduceableFateCost.js';
 import { TargetDependentFateCost } from './TargetDependentFateCost.js';
-
-/**
- * Cost that will pay the exact printed fate cost for the card.
- */
-export function payPrintedFateCost(): Cost {
-    return {
-        canIgnoreForTargeting: true,
-        canPay(context: TriggeredAbilityContext<DrawCard>) {
-            const amount = context.source.getCost() ?? 0;
-            return (
-                context.player.fate >= amount &&
-                (amount === 0 || context.player.checkRestrictions('spendFate', context))
-            );
-        },
-        payEvent(context: TriggeredAbilityContext<DrawCard>) {
-            const amount = context.source.getCost() ?? 0;
-            return new Event(
-                EventName.OnSpendFate,
-                { amount, context },
-                (event: Event) => ((event as GameEvent<EventName.OnSpendFate>).context.player.fate -= (event as GameEvent<EventName.OnSpendFate>).amount)
-            );
-        }
-    };
-}
 
 /**
  * Cost that will pay the printed fate cost on the card minus any active

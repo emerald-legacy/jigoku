@@ -61,7 +61,6 @@ export interface StoredPersistentEffect {
     isKeywordEffect?: boolean;
 }
 
-/** A copy or gain-all effect's value: the abilities it hands to the card. */
 interface ProvidedAbilities {
     getActions(target: GameObject): CardAction[];
     getReactions(target: GameObject): TriggeredAbility[];
@@ -130,7 +129,6 @@ class BaseCard extends EffectSource {
 
     protected statusManager!: CardStatusManager;
     allowedAttachmentTraits: string[] = [];
-    /** Abilities declared during `setupCardAbilities`, registered in declaration order once it returns. */
     readonly #pendingAbilities: Array<() => void> = [];
     #settingUp = false;
     protected attachmentHost = new AttachmentManager(this);
@@ -201,7 +199,6 @@ class BaseCard extends EffectSource {
         return this.getType() as CardType;
     }
 
-    /** The abilities of the card this one copies, if it copies one. */
     private copiedAbilities(): ProvidedAbilities | undefined {
         const effects = this.getRawEffects();
         const copyEffect =
@@ -210,7 +207,7 @@ class BaseCard extends EffectSource {
         return copyEffect?.value as ProvidedAbilities | undefined;
     }
 
-    /** What gain-all effects hand to this card: the static ones first, then the dynamic ones, recalculated. */
+    /** Static gains first, then dynamic ones, recalculated. */
     private gainedFromAllAbilities<T>(abilitiesOf: (value: ProvidedAbilities) => T[], ignoreDynamicGains: boolean): T[] {
         let gained: T[] = [];
         for(const effect of this.getRawEffects()) {
@@ -287,7 +284,6 @@ class BaseCard extends EffectSource {
         return this._getPersistentEffects();
     }
 
-    /** Declares the card's abilities; overridden by each card. */
     setupCardAbilities(_ability: typeof AbilityDsl): void {}
 
     action<Target extends BaseCard = BaseCard>(properties: ActionProps<this, Target>): void;
@@ -341,7 +337,6 @@ class BaseCard extends EffectSource {
         return new TriggeredAbility(this, abilityType, properties as TriggeredAbilityProperties<this>);
     }
 
-    /** A title starts a builder; props declare the ability directly. */
     private declareTriggeredAbility<Target extends BaseCard>(abilityType: AbilityType, properties: TriggeredAbilityProps<this, Target> | string): void | TriggerBuilder<this, boolean> {
         if(typeof properties === 'string') {
             return this.triggerBuilder<boolean>(abilityType, properties);

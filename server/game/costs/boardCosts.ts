@@ -34,13 +34,6 @@ export function bow(properties: SelectCostProperties): Cost {
 }
 
 /**
- * Cost that will move home the card that initiated the ability.
- */
-export function moveHomeSelf(): Cost {
-    return new GameActionCost(GameActions.sendHome((context) => ({ target: context.source })));
-}
-
-/**
  * Cost that will send the target to the conflict.
  */
 export function moveToConflict(properties: SelectCostProperties): Cost {
@@ -198,13 +191,6 @@ export function dishonor(properties?: SelectCostProperties): Cost {
  */
 export function taint(properties: SelectCostProperties): Cost {
     return getSelectCost(GameActions.taint(), properties, 'Select card to taint');
-}
-
-/**
- * Cost that requires tainting yourself
- */
-export function taintSelf(): Cost {
-    return new GameActionCost(GameActions.taint());
 }
 
 export function discardStatusToken(properties: Omit<SelectCardProperties, 'gameAction' | 'subActionProperties'>): Cost {

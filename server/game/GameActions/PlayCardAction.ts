@@ -115,7 +115,6 @@ export interface PlayCardProperties extends CardActionProperties {
     event?: Event;
 }
 
-/** A way to play the card, and the context it is played with. */
 interface PlayableAbility {
     ability: BaseCardAbility;
     createContext(player: Player): AbilityContext;
