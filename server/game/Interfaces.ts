@@ -235,6 +235,8 @@ export interface PersistentEffectProps<Source = BaseCard, MatchTarget extends Ga
     targetLocation?: Location | (string & {});
     effect: EffectFactory | EffectFactory[];
     createCopies?: boolean;
+    /** A keyword's effect (e.g. dire), which survives losing all non-keyword abilities. */
+    isKeywordEffect?: boolean;
 }
 
 export type traitLimit = {
