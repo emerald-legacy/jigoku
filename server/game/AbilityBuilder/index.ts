@@ -1,7 +1,7 @@
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import { TriggeredCompiler } from './adapter/compileTriggered.js';
-import { ConstantBuilder, StateCheckBuilder, type Constant, type StateCheck } from './ConstantBuilder.js';
+import { ConstantBuilder, WheneverBuilder, type Constant, type Whenever } from './ConstantBuilder.js';
 import type { GainedSupport } from './kits/ModifierKit.js';
 import { AbilityType } from '../Constants.js';
 import { limitKit, type FinishOptions } from './kits/LimitKit.js';
@@ -121,14 +121,14 @@ export interface PrintedAbilityEntry<Src extends BaseCard> extends AbilityEntry<
     /** "Dire - ...": a constant ability while this card has no fate. */
     dire(): Constant<Src>;
     /** "If X, do Y" without a timing word: the game checks it all the time. */
-    stateCheck(condition: (ctx: BaseCtx<Src>, util: Utils) => boolean): StateCheck<Src>;
+    whenever(condition: (ctx: BaseCtx<Src>, util: Utils) => boolean): Whenever<Src>;
 }
 
 /** The entry point for the printed abilities of a card: `this.ability`. */
 export function printedAbilityEntry<Src extends BaseCard>(card: Src): PrintedAbilityEntry<Src> {
     return {
         ...createEntry<Src, 'printed'>({ limitKit, register: (spec, limits) => register(card, spec, limits) }),
-        stateCheck: (condition) => new StateCheckBuilder(card, condition as never) as never,
+        whenever: (condition) => new WheneverBuilder(card, condition as never) as never,
         constant: () => new ConstantBuilder(card, gainedCompiler(card)) as never,
         composure: () =>
             new ConstantBuilder(card, gainedCompiler(card), true).while((ctx) =>

@@ -47,8 +47,8 @@ export type EffectCtx<S extends State> = ConditionCtx<S> & {
     readonly targets: Readonly<S['targets']>;
 };
 
-type EffectsFn<S extends State> = ($e: EffectKit, ctx: EffectCtx<S>, util: Utils) => readonly EffectNode[];
-type AnnounceFn<S extends State, R> = ($m: MessageKit, ctx: Ctx<S>, util: Utils) => R;
+type EffectsFn<S extends State> = ($effect: EffectKit, ctx: EffectCtx<S>, util: Utils) => readonly EffectNode[];
+type AnnounceFn<S extends State, R> = ($message: MessageKit, ctx: Ctx<S>, util: Utils) => R;
 type LimitsFn = ($limit: LimitKit) => FinishOptions;
 
 /** The announcement of the first step must start with the intro. */
@@ -56,7 +56,7 @@ export type FirstAnnouncement = WithIntroMessage | readonly [WithIntroMessage, .
 
 declare const gainedSource: unique symbol;
 
-/** A gained ability, ready for `$mod.gainAbility`. */
+/** A gained ability, ready for `$modifier.gainAbility`. */
 export interface GainedAbility<Src extends BaseCard> {
     readonly [gainedSource]: Src;
 }
@@ -87,14 +87,14 @@ export interface Setup<S extends State, F extends Finish> extends Targeting<S, F
     duringPhase(phase: PhaseName): Setup<S, F>;
     payCostsBeforeTargets(): Setup<With<S, { costsFirst: true }>, F>;
     costs<const C extends Record<string, CostSpec<unknown>>>(
-        costs: ($c: CostKit<S>) => C
+        costs: ($cost: CostKit<S>) => C
     ): Targeting<With<S, { costs: CostResults<C> }>, F>;
 }
 
 export interface Targeting<S extends State, F extends Finish> {
     /** Slots in one call are independent. A later call depends on the earlier calls. */
     targets<const T extends Record<string, TargetSpec<unknown>>>(
-        targets: ($t: TargetKit<S>) => T
+        targets: ($target: TargetKit<S>) => T
     ): Targeting<Next<S, T>, F>;
     militaryDuel(options?: DuelOptions): DuelStep<WithDuel<S>, F>;
     politicalDuel(options?: DuelOptions): DuelStep<WithDuel<S>, F>;
@@ -116,11 +116,11 @@ export interface DuelStep<S extends State, F extends Finish> {
 export type Resolving<S extends State, F extends Finish> = FinishOf<F, S['source']> & {
     then(): Step<S, F>;
     ifYouDo(): Branch<S, F>;
-    thenIf(condition: ($e: EffectKit, ctx: Ctx<S>, util: Utils) => boolean): Branch<S, F>;
+    thenIf(condition: ($effect: EffectKit, ctx: Ctx<S>, util: Utils) => boolean): Branch<S, F>;
 };
 
 export interface Step<S extends State, F extends Finish> {
-    targets<const T extends Record<string, TargetSpec<unknown>>>(targets: ($t: TargetKit<S>) => T): Step<Next<S, T>, F>;
+    targets<const T extends Record<string, TargetSpec<unknown>>>(targets: ($target: TargetKit<S>) => T): Step<Next<S, T>, F>;
     announce(fn: AnnounceFn<S, MessageResult>): StepAnnounced<S, F>;
     effects(fn: EffectsFn<S>): Resolving<S, F>;
 }
@@ -198,7 +198,7 @@ export type Gate =
 
 export interface StepSpec {
     gate: Gate;
-    targetGroups: (($t: never) => Record<string, TargetSpec<unknown>>)[];
+    targetGroups: (($target: never) => Record<string, TargetSpec<unknown>>)[];
     announce?: (...args: never[]) => MessageResult;
     effects?: (...args: never[]) => readonly EffectNode[];
     duel?: { type: 'military' | 'political' | 'glory'; options: DuelOptions };
@@ -213,7 +213,7 @@ export interface AbilitySpec {
     zones?: Zone[];
     phase?: PhaseName;
     costsFirst: boolean;
-    costs?: ($c: never) => Record<string, CostSpec<unknown>>;
+    costs?: ($cost: never) => Record<string, CostSpec<unknown>>;
     steps: StepSpec[];
 }
 
@@ -267,7 +267,7 @@ export class TriggeredBuilder {
         return this;
     }
 
-    costs(fn: ($c: never) => Record<string, CostSpec<unknown>>): this {
+    costs(fn: ($cost: never) => Record<string, CostSpec<unknown>>): this {
         if(this.spec.costs) {
             throw new Error('Ability builder: costs() can be called only once');
         }
@@ -275,7 +275,7 @@ export class TriggeredBuilder {
         return this;
     }
 
-    targets(fn: ($t: never) => Record<string, TargetSpec<unknown>>): this {
+    targets(fn: ($target: never) => Record<string, TargetSpec<unknown>>): this {
         this.step.targetGroups.push(fn);
         return this;
     }

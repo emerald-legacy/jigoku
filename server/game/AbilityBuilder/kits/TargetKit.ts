@@ -22,7 +22,7 @@ export interface LegacyTarget {
     props: Record<string, unknown>;
 }
 
-/** One slot of `.targets()`. Only `$t` creates it. */
+/** One slot of `.targets()`. Only `$target` creates it. */
 export abstract class TargetSpec<R> {
     declare readonly [targetResult]: R;
 
@@ -212,7 +212,7 @@ interface InOrderChoice<R> {
 }
 
 class InPlayerOrderSpec<R> extends TargetSpec<readonly InOrderChoice<R>[]> {
-    constructor(private readonly build: (player: Player, $t: TargetKit<State>) => TargetSpec<R>) {
+    constructor(private readonly build: (player: Player, $target: TargetKit<State>) => TargetSpec<R>) {
         super();
     }
 
@@ -296,7 +296,7 @@ export interface TargetKit<S extends State> {
     }): TargetSpec<keyof O & string>;
     /** Each player in turn order chooses. */
     inPlayerOrder<R>(
-        build: (player: Player, $t: TargetKit<S>) => TargetSpec<R>
+        build: (player: Player, $target: TargetKit<S>) => TargetSpec<R>
     ): TargetSpec<readonly InOrderChoice<R>[]>;
 }
 
@@ -325,5 +325,5 @@ export const targetKit: TargetKit<State> = {
     anyCard: (options = {}) => new CardTargetSpec(ALL_KINDS, 'single', options) as never,
     select: (options) => new SelectTargetSpec(options.options, options.chooser, options.prompt) as never,
     inPlayerOrder: (build) =>
-        new InPlayerOrderSpec(build as (player: Player, $t: TargetKit<State>) => TargetSpec<never>) as never
+        new InPlayerOrderSpec(build as (player: Player, $target: TargetKit<State>) => TargetSpec<never>) as never
 };

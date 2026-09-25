@@ -9,21 +9,21 @@ export default class IsawaKaede extends DrawCard {
     setupCardAbilities() {
         this.ability
             .constant()
-            .affects(($a) => $a.self())
-            .effects(($mod) => [$mod.immuneTo('opponentsRingEffects')])
+            .appliesTo(($subject) => $subject.self())
+            .modifiers(($modifier) => [$modifier.immuneTo('opponentsRingEffects')])
             .addPrinted();
 
         this.ability
             .constant()
-            .affects(($a) => $a.self())
-            .effects(($mod) => [$mod.addElementAsAttacker((source) => source.getCurrentElementSymbol(elementKey))])
+            .appliesTo(($subject) => $subject.self())
+            .modifiers(($modifier) => [$modifier.addElementAsAttacker((source) => source.getCurrentElementSymbol(elementKey))])
             .addPrinted();
 
         this.ability
             .constant()
             .while((ctx) => ctx.source.isAttacking() && ctx.conflict?.winner === ctx.player)
-            .affects(($a) => $a.conflict())
-            .effects(($mod) => [$mod.conflictElementsToResolve(5)])
+            .appliesTo(($subject) => $subject.conflict())
+            .modifiers(($modifier) => [$modifier.conflictElementsToResolve(5)])
             .addPrinted();
     }
 

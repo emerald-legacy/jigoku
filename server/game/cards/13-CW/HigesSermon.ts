@@ -8,17 +8,17 @@ export default class HigesSermon extends DrawCard {
             .action()
             .title('Bow characters')
             .duringPhase('draw')
-            .targets(($t) => ({
-                characters: $t.inPlayerOrder((player, $t) =>
-                    $t.card('character', {
+            .targets(($target) => ({
+                characters: $target.inPlayerOrder((player, $target) =>
+                    $target.card('character', {
                         chooser: player,
                         prompt: 'Choose a character to bow',
                         filter: (card) => card.controller !== player
                     })
                 )
             }))
-            .announce(($m, ctx) => $m.withIntro`bow ${ctx.targets.characters.map(({ choice }) => choice)}`)
-            .effects(($e, ctx) => [$e.bow(ctx.targets.characters.map(({ choice }) => choice))])
+            .announce(($message, ctx) => $message.withIntro`bow ${ctx.targets.characters.map(({ choice }) => choice)}`)
+            .effects(($effect, ctx) => [$effect.bow(ctx.targets.characters.map(({ choice }) => choice))])
             .addPrinted();
     }
 }

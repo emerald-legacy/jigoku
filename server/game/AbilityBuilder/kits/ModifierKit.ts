@@ -10,7 +10,7 @@ declare const modBrand: unique symbol;
 /** What a modifier applies to. */
 export type ModTarget = 'card' | 'player' | 'conflict';
 
-/** One modifier. Only `$mod` creates it. */
+/** One modifier. Only `$modifier` creates it. */
 export type Mod<T extends ModTarget = ModTarget> = EffectFactory & { readonly [modBrand]: T };
 
 export function modFactories(mods: readonly Mod[]): EffectFactory[] {

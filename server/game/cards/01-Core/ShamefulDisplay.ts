@@ -7,18 +7,18 @@ export default class ShamefulDisplay extends ProvinceCard {
         this.ability
             .conflictAction()
             .title('Dishonor/Honor two characters')
-            .targets(($t) => ({
-                characters: $t.cards('character', {
+            .targets(($target) => ({
+                characters: $target.cards('character', {
                     exactly: 2,
                     prompt: 'Select two characters',
                     filter: (card) => card.isParticipating()
                 })
             }))
-            .announce(($m, ctx) => $m.withIntro`change the personal honor of ${ctx.targets.characters}`)
-            .effects(($e, ctx) => [
-                $e.assign(ctx.targets.characters, {
-                    honor: (card) => $e.honor(card),
-                    dishonor: (card) => $e.dishonor(card)
+            .announce(($message, ctx) => $message.withIntro`change the personal honor of ${ctx.targets.characters}`)
+            .effects(($effect, ctx) => [
+                $effect.assign(ctx.targets.characters, {
+                    honor: (card) => $effect.honor(card),
+                    dishonor: (card) => $effect.dishonor(card)
                 })
             ])
             .addPrinted();

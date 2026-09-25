@@ -18,7 +18,7 @@ export default class ThirdTower extends DrawCard {
                 }
             })
             .title('Take an honor from your opponent')
-            .effects(($e, ctx) => [$e.takeHonor({ from: ctx.event.conflict.attackingPlayer })])
+            .effects(($effect, ctx) => [$effect.takeHonor({ from: ctx.event.conflict.attackingPlayer })])
             .addPrinted(($limit) => ({ limit: $limit.unlimitedPerConflict() }));
     }
 }

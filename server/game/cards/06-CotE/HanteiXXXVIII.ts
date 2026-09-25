@@ -5,19 +5,19 @@ export default class HanteiXXXVIII extends DrawCard {
 
     setupCardAbilities() {
         this.ability
-            .stateCheck((ctx) => Boolean(ctx.opponent?.imperialFavor))
+            .whenever((ctx) => Boolean(ctx.opponent?.imperialFavor))
             .announce(
-                ($m, ctx) =>
-                    $m.freeform`${ctx.source} is discarded from play as its controller's opponent has the imperial favor`
+                ($message, ctx) =>
+                    $message.freeform`${ctx.source} is discarded from play as its controller's opponent has the imperial favor`
             )
-            .effects(($e, ctx) => [$e.discardFromPlay(ctx.source)])
+            .effects(($effect, ctx) => [$effect.discardFromPlay(ctx.source)])
             .addPrinted();
 
         this.ability
             .action()
             .title('Bow a character')
-            .targets(($t) => ({ character: $t.card('character', { filter: (card) => card.isParticipating() }) }))
-            .effects(($e, ctx) => [$e.bow(ctx.targets.character)])
+            .targets(($target) => ({ character: $target.card('character', { filter: (card) => card.isParticipating() }) }))
+            .effects(($effect, ctx) => [$effect.bow(ctx.targets.character)])
             .addPrinted();
 
         this.ability
@@ -28,10 +28,10 @@ export default class HanteiXXXVIII extends DrawCard {
             })
             .title('Choose targets for opponent\'s ability')
             .announce(
-                ($m, ctx, util) =>
-                    $m.withIntro`choose targets for ${ctx.event.card}'s ${util.titleOf(ctx.event.ability)} ability`
+                ($message, ctx, util) =>
+                    $message.withIntro`choose targets for ${ctx.event.card}'s ${util.titleOf(ctx.event.ability)} ability`
             )
-            .effects(($e, ctx) => [$e.chooseTargetsInstead(ctx.event.context)])
+            .effects(($effect, ctx) => [$effect.chooseTargetsInstead(ctx.event.context)])
             .addPrinted();
     }
 }

@@ -13,22 +13,22 @@ export default class Subterfuge extends DrawCard {
                     event.player === ctx.opponent
             })
             .title('Prevent draw')
-            .announce(($m, ctx) => {
+            .announce(($message, ctx) => {
                 const { amount } = ctx.event;
                 const discarded = Math.min(amount, 3);
                 const drawn = amount - discarded;
                 return [
-                    $m.withIntro`prevent ${discarded} card${amount > 1 ? 's' : ''} from being drawn, discarding ${amount > 1 ? 'them' : 'it'} instead`,
-                    $m.freeform`${ctx.opponent} discards ${ctx.opponent?.conflictDeck.slice(0, discarded)}`,
-                    drawn > 0 ? $m.freeform`${ctx.opponent} draws ${drawn} card${drawn > 1 ? 's' : ''}` : $m.none()
+                    $message.withIntro`prevent ${discarded} card${amount > 1 ? 's' : ''} from being drawn, discarding ${amount > 1 ? 'them' : 'it'} instead`,
+                    $message.freeform`${ctx.opponent} discards ${ctx.opponent?.conflictDeck.slice(0, discarded)}`,
+                    drawn > 0 ? $message.freeform`${ctx.opponent} draws ${drawn} card${drawn > 1 ? 's' : ''}` : $message.none()
                 ];
             })
-            .effects(($e, ctx) => {
+            .effects(($effect, ctx) => {
                 const discarded = Math.min(ctx.event.amount, 3);
                 return [
-                    $e.instead([
-                        $e.discard(ctx.opponent?.conflictDeck.slice(0, discarded)),
-                        $e.draw(ctx.opponent, ctx.event.amount - discarded)
+                    $effect.instead([
+                        $effect.discard(ctx.opponent?.conflictDeck.slice(0, discarded)),
+                        $effect.draw(ctx.opponent, ctx.event.amount - discarded)
                     ])
                 ];
             })

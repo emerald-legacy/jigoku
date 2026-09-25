@@ -6,14 +6,14 @@ export default class UnleashedExperiment extends DrawCard {
     setupCardAbilities() {
         this.ability
             .dire()
-            .affects(($a) => $a.self())
-            .effects(($mod) => [$mod.loseAllNonKeywordAbilities()])
+            .appliesTo(($subject) => $subject.self())
+            .modifiers(($modifier) => [$modifier.loseAllNonKeywordAbilities()])
             .addPrinted();
 
         this.ability
             .constant()
-            .affects(($a) => $a.self())
-            .effects(($mod) => [$mod.honorCostToDeclare(2)])
+            .appliesTo(($subject) => $subject.self())
+            .modifiers(($modifier) => [$modifier.honorCostToDeclare(2)])
             .addPrinted();
     }
 }

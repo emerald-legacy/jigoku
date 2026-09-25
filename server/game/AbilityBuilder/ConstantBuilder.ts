@@ -33,17 +33,17 @@ const ZONE_LOCATION: Partial<Record<Zone, Location>> = {
 const table = new SlotTable();
 const view = (context: AbilityContext) => createView([context], table);
 
-// ---- State checks ----
+// ---- "Whenever" abilities ----
 
-type StateCtx<Src extends BaseCard> = BaseCtx<Src>;
+type WheneverCtx<Src extends BaseCard> = BaseCtx<Src>;
 
-export interface StateCheck<Src extends BaseCard> {
-    announce(fn: ($m: MessageKit, ctx: StateCtx<Src>, util: Utils) => MessageResult): StateCheckAnnounced<Src>;
-    effects(fn: ($e: EffectKit, ctx: StateCtx<Src>, util: Utils) => readonly EffectNode[]): Printable;
+export interface Whenever<Src extends BaseCard> {
+    announce(fn: ($message: MessageKit, ctx: WheneverCtx<Src>, util: Utils) => MessageResult): WheneverAnnounced<Src>;
+    effects(fn: ($effect: EffectKit, ctx: WheneverCtx<Src>, util: Utils) => readonly EffectNode[]): Printable;
 }
 
-export interface StateCheckAnnounced<Src extends BaseCard> {
-    effects(fn: ($e: EffectKit, ctx: StateCtx<Src>, util: Utils) => readonly EffectNode[]): Printable;
+export interface WheneverAnnounced<Src extends BaseCard> {
+    effects(fn: ($effect: EffectKit, ctx: WheneverCtx<Src>, util: Utils) => readonly EffectNode[]): Printable;
 }
 
 export interface Printable {
@@ -54,7 +54,7 @@ export interface Printable {
  * "If X, do Y" printed on a card without a timing word: the game checks the condition all the
  * time, and does Y when it is true.
  */
-export class StateCheckBuilder {
+export class WheneverBuilder {
     private announceFn: undefined | Fn;
     private effectsFn: undefined | Fn;
 
@@ -100,40 +100,40 @@ export class StateCheckBuilder {
 
 // ---- Constant abilities ----
 
-declare const affectBrand: unique symbol;
+declare const subjectBrand: unique symbol;
 
-/** What a constant ability affects. Only `$a` creates it. */
-export interface Affect<T extends ModTarget> {
-    readonly [affectBrand]: T;
+/** What a constant ability applies to. Only `$subject` creates it. */
+export interface Subject<T extends ModTarget> {
+    readonly [subjectBrand]: T;
 }
 
-interface AffectCardsOptions<Src extends BaseCard, C extends BaseCard> {
+interface SubjectCardsOptions<Src extends BaseCard, C extends BaseCard> {
     /** Where the affected cards are. The default is the play area. */
     in?: Zone;
     controller?: (ctx: BaseCtx<Src>, util: Utils) => undefined | Player;
     filter?: (card: C, ctx: BaseCtx<Src>, util: Utils) => boolean;
 }
 
-function affect<T extends ModTarget>(props: Props): Affect<T> {
-    return props as unknown as Affect<T>;
+function subject<T extends ModTarget>(props: Props): Subject<T> {
+    return props as unknown as Subject<T>;
 }
 
 function kindList(kind: CardKindInput): readonly CardKind[] {
     return typeof kind === 'string' ? [kind] : kind;
 }
 
-function createAffectKit<Src extends BaseCard>() {
+function createSubjectKit<Src extends BaseCard>() {
     return {
         /** The card with the ability. */
-        self: () => affect<'card'>({}),
+        self: () => subject<'card'>({}),
         /** The character that this attachment is attached to. */
         attachedCharacter: () =>
-            affect<'card'>({
+            subject<'card'>({
                 match: (card: GameObject, context: AbilityContext) => card === (context.source as DrawCard).parent,
                 targetController: Players.Any
             }),
-        cards: <const K extends CardKindInput>(kind: K, options: AffectCardsOptions<Src, CardFor<K>> = {}) =>
-            affect<'card'>({
+        cards: <const K extends CardKindInput>(kind: K, options: SubjectCardsOptions<Src, CardFor<K>> = {}) =>
+            subject<'card'>({
                 targetController: Players.Any,
                 ...(options.in ? { targetLocation: ZONE_LOCATION[options.in] ?? Location.Any } : {}),
                 match: (card: BaseCard, context: AbilityContext) => {
@@ -147,33 +147,33 @@ function createAffectKit<Src extends BaseCard>() {
                 }
             }),
         /** The current conflict. */
-        conflict: () => affect<'conflict'>({}),
+        conflict: () => subject<'conflict'>({}),
         /** The player who controls the card with the ability. */
-        you: () => affect<'player'>({ targetController: Players.Self }),
-        opponent: () => affect<'player'>({ targetController: Players.Opponent }),
-        eachPlayer: () => affect<'player'>({ targetController: Players.Any })
+        you: () => subject<'player'>({ targetController: Players.Self }),
+        opponent: () => subject<'player'>({ targetController: Players.Opponent }),
+        eachPlayer: () => subject<'player'>({ targetController: Players.Any })
     };
 }
 
-export type AffectKit<Src extends BaseCard> = ReturnType<typeof createAffectKit<Src>>;
+export type SubjectKit<Src extends BaseCard> = ReturnType<typeof createSubjectKit<Src>>;
 
 export interface Constant<Src extends BaseCard> {
     while(condition: (ctx: BaseCtx<Src>, util: Utils) => boolean): Constant<Src>;
     /** Where the card with the ability must be. The default depends on the card type. */
     activeFrom(zone: Zone): Constant<Src>;
-    affects<T extends ModTarget>(fn: ($a: AffectKit<Src>) => Affect<T>): ConstantAffects<T>;
+    appliesTo<T extends ModTarget>(fn: ($subject: SubjectKit<Src>) => Subject<T>): ConstantSubject<T>;
 }
 
-export interface ConstantAffects<T extends ModTarget> {
-    effects(fn: ($mod: ModifierKit) => readonly Mod<T>[]): Printable;
+export interface ConstantSubject<T extends ModTarget> {
+    modifiers(fn: ($modifier: ModifierKit) => readonly Mod<T>[]): Printable;
 }
 
 /** A constant ability: an ability text without a timing word. */
 export class ConstantBuilder {
     private readonly conditions: Fn[] = [];
     private zone: undefined | Zone;
-    private affectsFn: undefined | Fn;
-    private effectsFn: undefined | Fn;
+    private appliesToFn: undefined | Fn;
+    private modifiersFn: undefined | Fn;
 
     constructor(
         private readonly card: BaseCard,
@@ -192,22 +192,22 @@ export class ConstantBuilder {
         return this;
     }
 
-    affects(fn: Fn): this {
-        this.affectsFn = fn;
+    appliesTo(fn: Fn): this {
+        this.appliesToFn = fn;
         return this;
     }
 
-    effects(fn: Fn): this {
-        this.effectsFn = fn;
+    modifiers(fn: Fn): this {
+        this.modifiersFn = fn;
         return this;
     }
 
     addPrinted(): void {
-        const target = (this.affectsFn?.(createAffectKit()) ?? {}) as Props;
-        const mods = (this.effectsFn?.(createModifierKit(this.gained)) ?? []) as Mod[];
+        const subjectProps = (this.appliesToFn?.(createSubjectKit()) ?? {}) as Props;
+        const mods = (this.modifiersFn?.(createModifierKit(this.gained)) ?? []) as Mod[];
         const conditions = this.conditions;
 
-        const props: Props = { ...target, effect: modFactories(mods) };
+        const props: Props = { ...subjectProps, effect: modFactories(mods) };
         if(conditions.length > 0) {
             props.condition = (context: AbilityContext) =>
                 conditions.every((condition) => condition(view(context), createUtils(context)));

@@ -8,23 +8,23 @@ export default class RaiseTheAlarm extends DrawCard {
             .militaryConflictAction()
             .title('Flip a dynasty card')
             .condition((ctx) => ctx.player.isDefendingPlayer())
-            .targets(($t) => ({
-                card: $t.anyCard({
+            .targets(($target) => ({
+                card: $target.anyCard({
                     from: (ctx, util) => util.cardsInConflictProvince(ctx.player),
                     filter: (card) => card.isFacedown()
                 })
             }))
-            .announce(($m) => $m.withIntro`flip the card in the conflict province faceup`)
-            .effects(($e, ctx) => [$e.flipDynasty(ctx.targets.card)])
+            .announce(($message) => $message.withIntro`flip the card in the conflict province faceup`)
+            .effects(($effect, ctx) => [$effect.flipDynasty(ctx.targets.card)])
             .thenIf(
-                ($e, ctx, util) =>
-                    util.is(ctx.targets.card, 'character') && $e.putIntoConflict(ctx.targets.card).canAffect()
+                ($effect, ctx, util) =>
+                    util.is(ctx.targets.card, 'character') && $effect.putIntoConflict(ctx.targets.card).canAffect()
             )
-            .announce(($m, ctx) => $m.freeform`${ctx.targets.card} is revealed and brought into the conflict!`)
-            .effects(($e, ctx) => [$e.putIntoConflict(ctx.targets.card)])
+            .announce(($message, ctx) => $message.freeform`${ctx.targets.card} is revealed and brought into the conflict!`)
+            .effects(($effect, ctx) => [$effect.putIntoConflict(ctx.targets.card)])
             .otherwise()
             .announce(
-                ($m, ctx) => $m.freeform`${ctx.targets.card} is revealed but cannot be brought into the conflict!`
+                ($message, ctx) => $message.freeform`${ctx.targets.card} is revealed but cannot be brought into the conflict!`
             )
             .addPrinted();
     }

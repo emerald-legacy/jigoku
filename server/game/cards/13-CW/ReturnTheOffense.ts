@@ -9,13 +9,13 @@ export default class ReturnTheOffense extends DrawCard {
             .title('Initiate a political duel')
             .condition((ctx) => ctx.conflict !== undefined)
             .politicalDuel({ anyControllers: true })
-            .announce(($m, ctx) => {
+            .announce(($message, ctx) => {
                 const { winner, loser } = ctx.duel;
-                return $m.withIntro`${winner} does not bow as a result of conflict resolution${loser.length > 0 ? ' and ' : ''}${loser}${loser.length > 0 ? ' cannot be readied' : ''}`;
+                return $message.withIntro`${winner} does not bow as a result of conflict resolution${loser.length > 0 ? ' and ' : ''}${loser}${loser.length > 0 ? ' cannot be readied' : ''}`;
             })
-            .effects(($e, ctx) => [
-                $e.lastingEffect(ctx.duel.winner, ($mod) => [$mod.doesNotBow()], { until: 'conflict' }),
-                $e.lastingEffect(ctx.duel.loser, ($mod) => [$mod.cannotBeReadiedByCardEffects()], { until: 'conflict' })
+            .effects(($effect, ctx) => [
+                $effect.lastingEffect(ctx.duel.winner, ($modifier) => [$modifier.doesNotBow()], { until: 'conflict' }),
+                $effect.lastingEffect(ctx.duel.loser, ($modifier) => [$modifier.cannotBeReadiedByCardEffects()], { until: 'conflict' })
             ])
             .addPrinted();
     }

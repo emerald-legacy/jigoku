@@ -7,12 +7,12 @@ export default class CallingInFavors extends DrawCard {
         this.ability
             .action()
             .title('Take control of an attachment')
-            .costs(($c) => ({ dishonored: $c.dishonor('character') }))
-            .targets(($t) => ({ attachment: $t.card('attachment', { controller: (ctx) => ctx.opponent }) }))
-            .effects(($e, ctx) => [
-                $e
-                    .ifAble($e.takeControlAndAttach(ctx.targets.attachment, ctx.costs.dishonored))
-                    .otherwise($e.discardFromPlay(ctx.targets.attachment))
+            .costs(($cost) => ({ dishonored: $cost.dishonor('character') }))
+            .targets(($target) => ({ attachment: $target.card('attachment', { controller: (ctx) => ctx.opponent }) }))
+            .effects(($effect, ctx) => [
+                $effect
+                    .ifAble($effect.takeControlAndAttach(ctx.targets.attachment, ctx.costs.dishonored))
+                    .otherwise($effect.discardFromPlay(ctx.targets.attachment))
             ])
             .addPrinted();
     }

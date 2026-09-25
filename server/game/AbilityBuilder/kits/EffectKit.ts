@@ -22,7 +22,7 @@ import { createModifierKit, modFactories, type Mod, type ModifierKit, type ModTa
 
 export type Many<T> = undefined | T | readonly T[];
 
-/** One effect. Only `$e` creates it. */
+/** One effect. Only `$effect` creates it. */
 export class EffectNode {
     readonly #action: undefined | GameAction;
     readonly #context: AbilityContext;
@@ -43,7 +43,7 @@ export class EffectNode {
         return node.#action;
     }
 
-    /** A short text for the choice of `$e.mayPay`, for example "resolve this ability again". */
+    /** A short text for the choice of `$effect.mayPay`, for example "resolve this ability again". */
     static descriptionOf(node: EffectNode): undefined | string {
         return node.#action ? node.#description : undefined;
     }
@@ -53,7 +53,7 @@ export function nodeActions(nodes: readonly EffectNode[]): GameAction[] {
     return nodes.map((node) => EffectNode.actionOf(node)).filter((action) => action !== undefined);
 }
 
-type Mods<T extends ModTarget> = ($mod: ModifierKit) => readonly Mod<T>[];
+type Mods<T extends ModTarget> = ($modifier: ModifierKit) => readonly Mod<T>[];
 
 const lastingModifiers = createModifierKit({
     get entry(): never {
@@ -64,7 +64,7 @@ const lastingModifiers = createModifierKit({
     }
 });
 
-/** What a player can pay with `$e.mayPay`. */
+/** What a player can pay with `$effect.mayPay`. */
 function createPayKit(player: Player) {
     return {
         loseHonor: (amount = 1): Payment => ({
@@ -83,8 +83,8 @@ export type PayKit = ReturnType<typeof createPayKit>;
 type DelayedWhen = { [N in EventName]?: (event: GameEvent<N>) => unknown };
 
 interface DelayedBranch {
-    announce?: ($m: MessageKit) => MessageResult;
-    effects?: ($e: EffectKit) => readonly EffectNode[];
+    announce?: ($message: MessageKit) => MessageResult;
+    effects?: ($effect: EffectKit) => readonly EffectNode[];
 }
 
 interface DelayedOptions {
@@ -100,7 +100,7 @@ interface DelayedOptions {
 interface ChooseRingOptions {
     prompt?: string;
     filter?: (ring: Ring) => boolean;
-    announce?: ($m: MessageKit, ring: Ring) => MessageSpec;
+    announce?: ($message: MessageKit, ring: Ring) => MessageSpec;
 }
 
 interface LastingOptions {
@@ -276,7 +276,7 @@ export function createEffectKit(context: AbilityContext) {
             ),
 
         /** "You may pay X to Y". The player decides when this effect resolves. */
-        mayPay: (player: undefined | Player, payment: ($pay: PayKit) => Payment, effect: EffectNode) =>
+        mayPay: (player: undefined | Player, payment: ($payment: PayKit) => Payment, effect: EffectNode) =>
             node(player
                 ? new MayPayAction(player, payment(createPayKit(player)), EffectNode.actionOf(effect), EffectNode.descriptionOf(effect))
                 : undefined),

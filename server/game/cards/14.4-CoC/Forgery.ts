@@ -10,7 +10,7 @@ export default class Forgery extends DrawCard {
                     util.is(event.card, 'event') && ctx.opponent !== undefined && ctx.player.isLessHonorable()
             })
             .title('Cancel an event')
-            .effects(($e) => [$e.cancel()])
+            .effects(($effect) => [$effect.cancel()])
             .addPrinted();
     }
 }

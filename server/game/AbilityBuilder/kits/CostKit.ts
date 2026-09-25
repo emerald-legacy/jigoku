@@ -14,7 +14,7 @@ export interface CostEnv {
     util(context: AbilityContext): Utils;
 }
 
-/** One slot of `.costs()`. Only `$c` creates it. */
+/** One slot of `.costs()`. Only `$cost` creates it. */
 export class CostSpec<R> {
     declare readonly [costResult]: R;
 

@@ -10,20 +10,20 @@ export default class ForShame extends DrawCard {
             .condition((ctx) =>
                 ctx.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('courtier'))
             )
-            .targets(($t) => ({
-                character: $t.card('character', {
+            .targets(($target) => ({
+                character: $target.card('character', {
                     controller: (ctx) => ctx.opponent,
                     filter: (card) => card.isParticipating()
                 })
             }))
-            .targets(($t) => ({
-                choice: $t.select({
+            .targets(($target) => ({
+                choice: $target.select({
                     chooser: (ctx) => ctx.opponent,
                     options: { dishonor: 'Dishonor this character', bow: 'Bow this character' }
                 })
             }))
-            .effects(($e, ctx) => [
-                ctx.targets.choice === 'dishonor' ? $e.dishonor(ctx.targets.character) : $e.bow(ctx.targets.character)
+            .effects(($effect, ctx) => [
+                ctx.targets.choice === 'dishonor' ? $effect.dishonor(ctx.targets.character) : $effect.bow(ctx.targets.character)
             ])
             .addPrinted();
     }

@@ -7,25 +7,25 @@ export default class ShiroKitsuki extends StrongholdCard {
         this.ability
             .reaction({ onConflictDeclared: () => true })
             .title('Name a card')
-            .costs(($c) => ({ named: $c.nameCard() }))
+            .costs(($cost) => ({ named: $cost.nameCard() }))
             .announce(
-                ($m, ctx) => $m.withIntro`claim a ring whenever ${ctx.opponent} plays a card named ${ctx.costs.named}`
+                ($message, ctx) => $message.withIntro`claim a ring whenever ${ctx.opponent} plays a card named ${ctx.costs.named}`
             )
-            .effects(($e, ctx) => [
-                $e.eachTime(ctx.player, {
+            .effects(($effect, ctx) => [
+                $effect.eachTime(ctx.player, {
                     until: 'conflict',
                     when: {
                         onCardPlayed: (event) => event.player === ctx.opponent && event.card.name === ctx.costs.named
                     },
                     then: {
-                        effects: ($e) => [
-                            $e.chooseRing(
+                        effects: ($effect) => [
+                            $effect.chooseRing(
                                 {
                                     prompt: 'Choose a ring to claim',
                                     filter: (ring) => ring.isUnclaimed(),
-                                    announce: ($m, ring) => $m.freeform`${ctx.player} claims the ${ring}`
+                                    announce: ($message, ring) => $message.freeform`${ctx.player} claims the ${ring}`
                                 },
-                                (ring) => $e.claimRingAsPolitical(ring, { gainFate: true })
+                                (ring) => $effect.claimRingAsPolitical(ring, { gainFate: true })
                             )
                         ]
                     }
