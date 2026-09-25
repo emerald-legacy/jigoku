@@ -18,6 +18,7 @@ import {
     CharacterStatus,
     Duration,
     EffectName,
+    type Element,
     EventName,
     Location,
     Players
@@ -1095,13 +1096,12 @@ class BaseCard extends EffectSource {
         return mapped;
     }
 
-    getCurrentElementSymbol(key: string) {
-        const symbols = this.getCurrentElementSymbols();
-        const symbol = symbols.find((a) => a.key === key);
-        if(symbol) {
-            return symbol.element;
+    getCurrentElementSymbol(key: string): Element {
+        const symbol = this.getCurrentElementSymbols().find((a) => a.key === key);
+        if(!symbol) {
+            throw new Error(`${this.name} has no element symbol '${key}'`);
         }
-        return 'none';
+        return symbol.element;
     }
 
     public getShortSummary() {
