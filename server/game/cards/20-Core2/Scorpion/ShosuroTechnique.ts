@@ -2,7 +2,6 @@ import { CardType, ConflictType, Duration, Players, TargetMode } from '../../../
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { LastingEffectProperties } from '../../../GameActions/LastingEffectAction.js';
 
 export default class ShosuroTechnique extends DrawCard {
     static id = 'shosuro-technique';
@@ -15,7 +14,7 @@ export default class ShosuroTechnique extends DrawCard {
                 target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.duelIgnorePrintedSkill(),
                 duration: Duration.UntilEndOfDuel
-            } as LastingEffectProperties)),
+            })),
             effect: 'ignore printed skill when resolving this duel'
         });
 

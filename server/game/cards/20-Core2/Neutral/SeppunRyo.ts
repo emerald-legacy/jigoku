@@ -2,7 +2,6 @@ import { DuelType, Duration, FavorType } from '../../../Constants.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { LastingEffectProperties } from '../../../GameActions/LastingEffectAction.js';
 
 export default class SeppunRyo extends DrawCard {
     static id = 'seppun-ryo';
@@ -16,7 +15,7 @@ export default class SeppunRyo extends DrawCard {
                 target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.modifyDuelSkill({ amount: 1, player: context.player }),
                 duration: Duration.UntilEndOfDuel
-            } as LastingEffectProperties)),
+            })),
             effect: 'add 1 to their duel total'
         });
 

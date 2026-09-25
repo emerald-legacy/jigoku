@@ -9,12 +9,13 @@ import type { GameObject } from '../GameObject.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import type { StatusToken } from '../StatusToken.js';
+import type { Duel } from '../Duel.js';
 
-type PlayerOrRingOrCardOrToken = Player | Ring | BaseCard | StatusToken;
+type GameActionTarget = Player | Ring | BaseCard | StatusToken | Duel;
 type TargetValue = unknown;
 
 export interface GameActionProperties {
-    target?: PlayerOrRingOrCardOrToken | PlayerOrRingOrCardOrToken[];
+    target?: GameActionTarget | GameActionTarget[];
     cannotBeCancelled?: boolean;
     optional?: boolean;
     parentAction?: GameAction<GameActionProperties>;
@@ -65,7 +66,7 @@ export class GameAction<
         );
         const rawTarget = properties.target as TargetValue;
         const targetArray = Array.isArray(rawTarget) ? rawTarget : [rawTarget];
-        properties.target = targetArray.filter(Boolean) as PlayerOrRingOrCardOrToken[];
+        properties.target = targetArray.filter(Boolean) as GameActionTarget[];
         return properties;
     }
 
@@ -92,7 +93,7 @@ export class GameAction<
     }
 
     #targets(context: C, additionalProperties = {}) {
-        return this.getProperties(context, additionalProperties).target as PlayerOrRingOrCardOrToken[];
+        return this.getProperties(context, additionalProperties).target as GameActionTarget[];
     }
 
     hasLegalTarget(context: C, additionalProperties = {}): boolean {
@@ -143,7 +144,7 @@ export class GameAction<
     }
 
     resolve(
-        target: undefined | PlayerOrRingOrCardOrToken | PlayerOrRingOrCardOrToken[],
+        target: undefined | GameActionTarget | GameActionTarget[],
         context: C
     ): void {
         if(target) {

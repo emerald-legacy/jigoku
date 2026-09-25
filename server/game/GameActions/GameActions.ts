@@ -125,8 +125,8 @@ export function bow<Target = unknown, C extends AbilityContext = AbilityContext>
 export function breakProvince<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<BreakProperties, NoInfer<Target>, C> = {}): BreakAction<C> {
     return new BreakAction<C>(propertyFactory);
 }
-export function cardLastingEffect<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectCardProperties, NoInfer<Target>, C>): GameAction {
-    return new LastingEffectCardAction(propertyFactory as ConstructorParameters<typeof LastingEffectCardAction>[0]);
+export function cardLastingEffect<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectCardProperties, NoInfer<Target>, C>): LastingEffectCardAction<C> {
+    return new LastingEffectCardAction<C>(propertyFactory);
 }
 export function claimImperialFavor<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ClaimFavorProperties, NoInfer<Target>, C>): ClaimFavorAction<C> {
     return new ClaimFavorAction<C>(propertyFactory);
@@ -269,8 +269,8 @@ export function sacrifice<Target = unknown, C extends AbilityContext = AbilityCo
 export function taint<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TaintProperties, NoInfer<Target>, C> = {}): TaintAction<C> {
     return new TaintAction<C>(propertyFactory);
 }
-export function takeControl<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TakeControlProperties, NoInfer<Target>, C> = {}): GameAction {
-    return new TakeControlAction(propertyFactory as ConstructorParameters<typeof TakeControlAction>[0]);
+export function takeControl<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TakeControlProperties, NoInfer<Target>, C> = {}): TakeControlAction<C> {
+    return new TakeControlAction<C>(propertyFactory);
 }
 export function triggerAbility<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<TriggerAbilityProperties, NoInfer<Target>, C>): TriggerAbilityAction<C> {
     return new TriggerAbilityAction<C>(propertyFactory);
@@ -371,8 +371,8 @@ export function loseImperialFavor<Target = unknown, C extends AbilityContext = A
 export function modifyBid<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ModifyBidProperties, NoInfer<Target>, C> = {}): ModifyBidAction<C> {
     return new ModifyBidAction<C>(propertyFactory);
 } // amount = 1, direction = 'increast', promptPlayer = false
-export function playerLastingEffect<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectProperties, NoInfer<Target>, C>): GameAction {
-    return new LastingEffectAction(propertyFactory as ConstructorParameters<typeof LastingEffectAction>[0]);
+export function playerLastingEffect<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectProperties, NoInfer<Target>, C>): LastingEffectAction<C> {
+    return new LastingEffectAction<C>(propertyFactory);
 } // duration = 'untilEndOfConflict', effect, targetController, condition, until
 export function refillFaceup<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<RefillFaceupProperties, NoInfer<Target>, C>): RefillFaceupAction<C> {
     return new RefillFaceupAction<C>(propertyFactory);
@@ -461,8 +461,8 @@ export function noAction(): GameAction {
 //////////////
 // CONFLICT
 //////////////
-export function conflictLastingEffect<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectProperties, NoInfer<Target>, C>): GameAction {
-    return new LastingEffectAction(propertyFactory as ConstructorParameters<typeof LastingEffectAction>[0]);
+export function conflictLastingEffect<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectProperties, NoInfer<Target>, C>): LastingEffectAction<C> {
+    return new LastingEffectAction<C>(propertyFactory);
 } // duration = 'untilEndOfConflict', effect, targetController, condition, until
 export function immediatelyResolveConflict(): GameAction {
     return new HandlerAction({});
@@ -471,8 +471,8 @@ export function immediatelyResolveConflict(): GameAction {
 //////////////
 // DUEL
 //////////////
-export function duelLastingEffect<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectProperties, NoInfer<Target>, C>): GameAction {
-    return new LastingEffectAction(propertyFactory as ConstructorParameters<typeof LastingEffectAction>[0]);
+export function duelLastingEffect<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<LastingEffectProperties, NoInfer<Target>, C>): LastingEffectAction<C> {
+    return new LastingEffectAction<C>(propertyFactory);
 } // duration = 'untilEndOfConflict', effect, targetController, condition, until
 
 //////////////
