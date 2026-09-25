@@ -18,16 +18,14 @@ export default class IvoryKingdomsUnicorn extends DrawCard {
             EventName.OnConflictDeclared
         ]);
 
-        this.reaction({
-            title: 'Immediately declare a military conflict',
-            when: {
+        this.reaction('Immediately declare a military conflict')
+            .when({
                 onConflictFinished: () => this.provinceBroken && this.attackingAtConflictResolution
-            },
-            gameAction: AbilityDsl.actions.initiateConflict({
+            })
+            .gameAction(AbilityDsl.actions.initiateConflict({
                 canPass: false,
                 forcedDeclaredType: ConflictType.Military
-            })
-        });
+            }));
     }
 
     public afterConflict() {

@@ -8,24 +8,21 @@ class WhispersOfPower extends DrawCard {
     static id = 'whispers-of-power';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Gain political power according to fateless characters',
-            condition: (context: AbilityContext) => context.game.isDuringConflict(),
-            cost: AbilityDsl.costs.payHonor(),
-            target:{
+        this.action('Gain political power according to fateless characters')
+            .cost(AbilityDsl.costs.payHonor())
+            .condition((context) => context.game.isDuringConflict())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any
-            },
-            gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => ({
+            })
+            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfConflict,
                 target: context.target,
                 effect: AbilityDsl.effects.modifyPoliticalSkill(
                     this.getPoliticalPowerChange(context)
                 )
-            })),
-            effect: 'grant {0} +{1} {2} until the end of the conflict',
-            effectArgs: (context: AbilityContext) => [this.getPoliticalPowerChange(context), 'political']
-        });
+            })))
+            .effect('grant {0} +{1} {2} until the end of the conflict', (context) => [this.getPoliticalPowerChange(context), 'political']);
     }
 
     getPoliticalPowerChange(context: AbilityContext) {

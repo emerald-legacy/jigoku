@@ -10,11 +10,9 @@ class ReveredIkoma extends DrawCard {
             effect: AbilityDsl.effects.cannotReceiveDishonorToken()
         });
 
-        this.action({
-            title: 'Gain 1 fate',
-            condition: context => context.player.honorGained(context.game.roundNumber, this.game.currentPhase, true) >= 2,
-            gameAction: AbilityDsl.actions.gainFate()
-        });
+        this.action('Gain 1 fate')
+            .condition(context => context.player.honorGained(context.game.roundNumber, this.game.currentPhase, true) >= 2)
+            .gameAction(AbilityDsl.actions.gainFate());
     }
 }
 

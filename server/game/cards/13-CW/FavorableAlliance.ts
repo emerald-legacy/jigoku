@@ -7,16 +7,13 @@ class FavorableAlliance extends DrawCard {
     static id = 'favorable-alliance';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Draw cards',
-            cost: AbilityDsl.costs.variableFateCost({
+        this.action('Draw cards')
+            .cost(AbilityDsl.costs.variableFateCost({
                 minAmount: 1,
                 maxAmount: (context) => context.player.conflictDeck.length,
                 activePromptTitle: 'Choose a value for X'
-            }),
-            effect: 'set aside {1} card{2}',
-            effectArgs: (context) => [(context.costs.variableFateCost as number), (context.costs.variableFateCost as number) > 1 ? 's' : ''],
-            gameAction: AbilityDsl.actions.multiple([
+            }))
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.lookAt((context) => ({
                     target: context.player.conflictDeck.slice(0, (context.costs.variableFateCost as number)),
                     message: '{0} sets aside the top {1} card{3} from their conflict deck: {2}',
@@ -40,8 +37,8 @@ class FavorableAlliance extends DrawCard {
                         });
                     }
                 })
-            ])
-        });
+            ]))
+            .effect('set aside {1} card{2}', (context) => [(context.costs.variableFateCost as number), (context.costs.variableFateCost as number) > 1 ? 's' : '']);
     }
 }
 

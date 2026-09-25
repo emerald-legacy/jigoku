@@ -1,6 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import BaseCard from '../../BaseCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 import { CardType, Players, Location, Decks } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -9,16 +7,14 @@ class UnyieldingSensei extends DrawCard {
     static id = 'unyielding-sensei';
 
     setupCardAbilities() {
-        this.action<ProvinceCard>({
-            title: 'Choose a province',
-            target: {
+        this.action('Choose a province')
+            .target('target', {
                 cardType: CardType.Province,
                 controller: Players.Self,
                 location: Location.Provinces,
-                cardCondition: (card: BaseCard, context: AbilityContext) => !(card as ProvinceCard).isBroken && context.player.getDynastyCardsInProvince(card.location).some(c => c.getType() === CardType.Holding && c.isFaceup())
-            },
-            effect: 'look at the top two cards of their dynasty deck',
-            gameAction: AbilityDsl.actions.deckSearch({
+                cardCondition: (card, context) => !(card).isBroken && context.player.getDynastyCardsInProvince(card.location).some(c => c.getType() === CardType.Holding && c.isFaceup())
+            })
+            .gameAction(AbilityDsl.actions.deckSearch({
                 activePromptTitle: 'Choose a character',
                 amount: 2,
                 deck: Decks.DynastyDeck,
@@ -33,8 +29,8 @@ class UnyieldingSensei extends DrawCard {
                     destination: context.target?.location,
                     faceup: true
                 }))
-            })
-        });
+            }))
+            .effect('look at the top two cards of their dynasty deck');
     }
 }
 

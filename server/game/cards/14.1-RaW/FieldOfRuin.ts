@@ -20,17 +20,15 @@ export default class FieldOfRuin extends BattlefieldAttachment {
             })
         });
 
-        this.reaction({
-            title: 'discard each card in attached province',
-            when: {
+        this.reaction('discard each card in attached province')
+            .when({
                 onPhaseStarted: (event) => event.phase === Phases.Conflict
-            },
-            gameAction: AbilityDsl.actions.discardCard((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.discardCard((context) => ({
                 target:
                     context.source.parentProvince?.controller.getDynastyCardsInProvince(context.source.parentProvince.location) ?? []
-            })),
-            effect: 'discard each card in the attached province'
-        });
+            })))
+            .effect('discard each card in the attached province');
     }
 
     protected unbrokenOnly() {

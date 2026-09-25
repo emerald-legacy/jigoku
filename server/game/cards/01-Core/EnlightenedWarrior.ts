@@ -7,13 +7,11 @@ class EnlightenedWarrior extends DrawCard {
     static id = 'enlightened-warrior';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Gain 1 fate',
-            when: {
+        this.reaction('Gain 1 fate')
+            .when({
                 onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) => (event.ringFate ?? 0) > 0 && event.conflict.attackingPlayer === context.player.opponent
-            },
-            gameAction: ability.actions.placeFate()
-        });
+            })
+            .gameAction(ability.actions.placeFate());
     }
 }
 

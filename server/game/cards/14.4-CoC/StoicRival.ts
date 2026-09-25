@@ -6,15 +6,12 @@ export default class StoicRival extends DrawCard {
     static id = 'stoic-rival';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Dishonor a participating character with fewer attachments',
-            condition: (context) => context.source.attachments.length > 0 && context.source.isParticipating(),
-            target: {
+        this.action('Dishonor a participating character with fewer attachments')
+            .condition((context) => context.source.attachments.length > 0 && context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    card.isParticipating() && card.attachments.length < context.source.attachments.length,
-                gameAction: AbilityDsl.actions.dishonor()
-            }
-        });
+                    card.isParticipating() && card.attachments.length < context.source.attachments.length
+            }, AbilityDsl.actions.dishonor());
     }
 }

@@ -20,15 +20,14 @@ class VoiceOfTheAncestors extends DrawCard {
             traits: ['spirit']
         });
 
-        this.action({
-            title: 'Attach a character as a Spirit',
-            target: {
+        this.action('Attach a character as a Spirit')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     context.game.actions.attach({ attachment: DummySpiritAttachment }).canAffect(card, context)
-            },
-            gameAction: AbilityDsl.actions.selectCard({
+            })
+            .gameAction(AbilityDsl.actions.selectCard({
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 cardCondition: card => card.isFaction('lion'),
@@ -63,8 +62,7 @@ class VoiceOfTheAncestors extends DrawCard {
                         }
                     }))
                 ])
-            })
-        });
+            }));
     }
 }
 

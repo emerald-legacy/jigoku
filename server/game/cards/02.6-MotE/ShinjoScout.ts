@@ -7,13 +7,11 @@ class ShinjoScout extends DrawCard {
     static id = 'shinjo-scout';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Gain 1 fate',
-            when: {
+        this.reaction('Gain 1 fate')
+            .when({
                 onPassDuringDynasty: (event: EventPayload<EventName.OnPassDuringDynasty>, context) => event.player === context.player && event.firstToPass
-            },
-            gameAction: ability.actions.gainFate()
-        });
+            })
+            .gameAction(ability.actions.gainFate());
     }
 }
 

@@ -7,28 +7,23 @@ class CloakOfNight extends DrawCard {
     static id = 'cloak-of-night';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Give a participating character +3 glory',
-
-            target: {
+        this.action('Give a participating character +3 glory')
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating(),
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.cardLastingEffect(() => ({
-                        effect: AbilityDsl.effects.modifyGlory(3)
-                    })),
-                    AbilityDsl.actions.cardLastingEffect(context => ({
-                        effect: AbilityDsl.effects.cardCannot({
-                            cannot: 'target',
-                            restricts: 'opponentsCardAbilities',
-                            applyingPlayer: context.player
-                        })
-                    }))
-                ])
-            },
-            effect: 'give {0} +3 glory and prevent them from being chosen as the target of {1}\'s triggered abilities until the end of the conflict',
-            effectArgs: context => context.player.opponent ? [context.player.opponent] : []
-        });
+                cardCondition: card => card.isParticipating()
+            }, AbilityDsl.actions.multiple([
+                AbilityDsl.actions.cardLastingEffect(() => ({
+                    effect: AbilityDsl.effects.modifyGlory(3)
+                })),
+                AbilityDsl.actions.cardLastingEffect(context => ({
+                    effect: AbilityDsl.effects.cardCannot({
+                        cannot: 'target',
+                        restricts: 'opponentsCardAbilities',
+                        applyingPlayer: context.player
+                    })
+                }))
+            ]))
+            .effect('give {0} +3 glory and prevent them from being chosen as the target of {1}\'s triggered abilities until the end of the conflict', context => context.player.opponent ? [context.player.opponent] : []);
     }
 
     canPlay(context: AbilityContext, playType: string) {

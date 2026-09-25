@@ -2,7 +2,6 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
 
 type Choice = 'Even' | 'Odd';
 
@@ -10,27 +9,22 @@ export default class MazeOfIllusion extends DrawCard {
     static id = 'maze-of-illusion';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Dishonor and bow a character if your opponent can\'t guess your dial',
-            condition: (context) => context.player.opponent !== undefined,
-
-            target: {
+        this.action('Dishonor and bow a character if your opponent can\'t guess your dial')
+            .condition((context) => context.player.opponent !== undefined)
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: [AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor()]
-            },
-            effect: 'bow and dishonor {0} if {1} can\'t guess whether their dial is even or odd',
-            effectArgs: (context) => context.player.opponent as Player,
-            handler: (context: AbilityContext) => {
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor())
+            .handler((context) => {
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Choose a value to set your honor dial at',
                     context: context,
                     choices: ['1', '2', '3', '4', '5'],
                     handlers: [1, 2, 3, 4, 5].map((value) => () => this.opponentGuess(value, context))
                 });
-            }
-        });
+            })
+            .effect('bow and dishonor {0} if {1} can\'t guess whether their dial is even or odd', (context) => context.player.opponent);
     }
 
     private opponentGuess(value: number, context: AbilityContext) {

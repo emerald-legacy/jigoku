@@ -5,10 +5,8 @@ class ShinjoOutrider extends DrawCard {
     static id = 'shinjo-outrider';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Move this character to conflict',
-            gameAction: ability.actions.moveToConflict()
-        });
+        this.action('Move this character to conflict')
+            .gameAction(ability.actions.moveToConflict());
     }
 }
 

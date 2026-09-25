@@ -14,15 +14,11 @@ class UnderSiege extends DrawCard {
         this.setAsideCards = [];
         this.targetPlayer = null;
 
-        this.reaction({
-            title: 'Place defender under siege',
-            when: {
+        this.reaction('Place defender under siege')
+            .when({
                 onConflictDeclared: (event, context) => context.game.currentConflict !== null && context.game.currentConflict.defendingPlayer !== null
-            },
-            max: AbilityDsl.limit.perConflict(1),
-            effect: 'place {1} under siege!',
-            effectArgs: context => [context.game.currentConflict ? context.game.currentConflict.defendingPlayer : ''],
-            gameAction: AbilityDsl.actions.sequential([
+            })
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.playerLastingEffect(context => ({
                     duration: Duration.UntilEndOfRound,
                     targetController: context.game.currentConflict ? context.game.currentConflict.defendingPlayer : undefined,
@@ -89,8 +85,9 @@ class UnderSiege extends DrawCard {
                         handler: () => {}
                     })
                 }))
-            ])
-        });
+            ]))
+            .effect('place {1} under siege!', context => [context.game.currentConflict ? context.game.currentConflict.defendingPlayer : ''])
+            .max(AbilityDsl.limit.perConflict(1));
     }
 }
 

@@ -10,12 +10,11 @@ export default class BreakingIn extends ProvinceCard {
     static id = 'breaking-in';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Search for a character card',
-            when: {
+        this.reaction('Search for a character card')
+            .when({
                 onCardRevealed: (event: EventPayload<EventName.OnCardRevealed>, context: TriggeredAbilityContext) => event.card === context.source
-            },
-            handler: (context: TriggeredAbilityContext) => {
+            })
+            .handler((context) => {
                 return this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Select a card:',
                     context: context,
@@ -51,8 +50,7 @@ export default class BreakingIn extends ProvinceCard {
                         return true;
                     }
                 });
-            },
-            effect: 'choose a character to place in a province'
-        });
+            })
+            .effect('choose a character to place in a province');
     }
 }

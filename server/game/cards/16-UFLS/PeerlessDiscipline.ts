@@ -6,19 +6,16 @@ class PeerlessDiscipline extends DrawCard {
     static id = 'peerless-discipline';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Give each character +1 military and Bushi',
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
+        this.action('Give each character +1 military and Bushi')
+            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
                 target: context.player.cardsInPlay.filter(() => true),
                 effect: [
                     AbilityDsl.effects.modifyMilitarySkill(1),
                     AbilityDsl.effects.addTrait('bushi')
                 ],
                 duration: Duration.UntilEndOfPhase
-            })),
-            effect: 'give all characters they control +1{1} and the Bushi trait',
-            effectArgs: ['military']
-        });
+            })))
+            .effect('give all characters they control +1{1} and the Bushi trait', () => (['military']));
     }
 }
 

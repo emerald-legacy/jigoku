@@ -6,15 +6,12 @@ class MiyaMystic extends DrawCard {
     static id = 'miya-mystic';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Sacrifice to discard an attachment',
-            cost: ability.costs.sacrificeSelf(),
-            phase: Phases.Conflict,
-            target: {
-                cardType: CardType.Attachment,
-                gameAction: ability.actions.discardFromPlay()
-            }
-        });
+        this.action('Sacrifice to discard an attachment')
+            .cost(ability.costs.sacrificeSelf())
+            .target('target', {
+                cardType: CardType.Attachment
+            }, ability.actions.discardFromPlay())
+            .phase(Phases.Conflict);
     }
 }
 

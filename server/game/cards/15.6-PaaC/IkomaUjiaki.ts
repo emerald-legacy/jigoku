@@ -5,13 +5,11 @@ class IkomaUjiaki2 extends DrawCard {
     static id = 'ikoma-ujiaki-2';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Switch the conflict type',
-            condition: context => context.source.isParticipating(),
-            cost: AbilityDsl.costs.payHonor(2),
-            effect: 'switch the conflict type',
-            gameAction: AbilityDsl.actions.switchConflictType()
-        });
+        this.action('Switch the conflict type')
+            .cost(AbilityDsl.costs.payHonor(2))
+            .condition(context => context.source.isParticipating())
+            .gameAction(AbilityDsl.actions.switchConflictType())
+            .effect('switch the conflict type');
     }
 }
 

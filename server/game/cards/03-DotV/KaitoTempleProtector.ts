@@ -1,4 +1,3 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -15,32 +14,29 @@ class KaitoTempleProtector extends DrawCard {
             })
         });
 
-        this.action({
-            title: 'Change base skills to match another character\'s',
-            condition: context => context.source.isDefending(),
-            target: {
+        this.action('Change base skills to match another character\'s')
+            .condition(context => context.source.isDefending())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isParticipating() && card !== context.source,
-                gameAction: ability.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => {
-                    let effects = [];
-                    if(context.target.hasDash('military')) {
-                        effects.push(ability.effects.setBaseDash('military'));
-                    } else {
-                        effects.push(ability.effects.setBaseMilitarySkill(context.target.militarySkill));
-                    }
-                    if(context.target.hasDash('political')) {
-                        effects.push(ability.effects.setBaseDash('political'));
-                    } else {
-                        effects.push(ability.effects.setBasePoliticalSkill(context.target.politicalSkill));
-                    }
-                    return {
-                        target: context.source,
-                        effect: effects
-                    };
-                })
-            },
-            effect: 'change his base skills to equal {0}\'s current skills'
-        });
+                cardCondition: (card, context) => card.isParticipating() && card !== context.source
+            }, ability.actions.cardLastingEffect((context) => {
+                let effects = [];
+                if(context.target.hasDash('military')) {
+                    effects.push(ability.effects.setBaseDash('military'));
+                } else {
+                    effects.push(ability.effects.setBaseMilitarySkill(context.target.militarySkill));
+                }
+                if(context.target.hasDash('political')) {
+                    effects.push(ability.effects.setBaseDash('political'));
+                } else {
+                    effects.push(ability.effects.setBasePoliticalSkill(context.target.politicalSkill));
+                }
+                return {
+                    target: context.source,
+                    effect: effects
+                };
+            }))
+            .effect('change his base skills to equal {0}\'s current skills');
     }
 }
 

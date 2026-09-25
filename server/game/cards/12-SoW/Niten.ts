@@ -26,25 +26,21 @@ class Niten extends DrawCard {
             faction: 'dragon'
         });
 
-        this.action({
-            title: 'Put an attachment into play',
-            condition: context => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()),
-            cost: [
-                nitenCaptureParentCost(),
-                AbilityDsl.costs.returnSelfToHand()
-            ],
-            target: {
+        this.action('Put an attachment into play')
+            .cost(nitenCaptureParentCost())
+            .cost(AbilityDsl.costs.returnSelfToHand())
+            .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.isParticipating()))
+            .target('target', {
                 cardType: CardType.Attachment,
                 controller: Players.Self,
                 location: Location.Hand,
                 cardCondition: (card, context) => card.canAttach(context.source.parentCharacter ?? undefined) || card.canAttach(context.costs.nitenCaptureParentCost as DrawCard)
-            },
-            gameAction: AbilityDsl.actions.attach((context: AbilityContext<this, DrawCard>) => ({
+            })
+            .gameAction(AbilityDsl.actions.attach((context) => ({
                 target: context.costs.nitenCaptureParentCost as DrawCard,
                 attachment: context.target
-            })),
-            max: AbilityDsl.limit.perRound(1)
-        });
+            })))
+            .max(AbilityDsl.limit.perRound(1));
     }
 }
 

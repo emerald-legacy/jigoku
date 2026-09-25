@@ -6,15 +6,12 @@ class FavorableGround extends DrawCard {
     static id = 'favorable-ground';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Move a character into or out of the conflict',
-            cost: ability.costs.sacrificeSelf(),
-            target: {
+        this.action('Move a character into or out of the conflict')
+            .cost(ability.costs.sacrificeSelf())
+            .target('target', {
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: [ability.actions.sendHome(), ability.actions.moveToConflict()]
-            }
-        });
+                controller: Players.Self
+            }, ability.actions.sendHome(), ability.actions.moveToConflict());
     }
 }
 

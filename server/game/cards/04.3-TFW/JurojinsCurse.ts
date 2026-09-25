@@ -9,14 +9,12 @@ export default class JurojinsCurse extends DrawCard {
     static id = 'jurojin-s-curse';
 
     setupCardAbilities() {
-        this.forcedInterrupt({
-            title: 'Resolve a second fate phase',
-            when: {
+        this.forcedInterrupt('Resolve a second fate phase')
+            .when({
                 onPhaseEnded: (event, context) =>
                     context.source.parentCharacter && event.phase === Phases.Fate && !context.source.parentCharacter.bowed
-            },
-            effect: 'resolve a second fate phase after this',
-            gameAction: AbilityDsl.actions.playerLastingEffect({
+            })
+            .gameAction(AbilityDsl.actions.playerLastingEffect({
                 duration: Duration.UntilEndOfRound,
                 effect: AbilityDsl.effects.playerDelayedEffect({
                     when: {
@@ -28,8 +26,8 @@ export default class JurojinsCurse extends DrawCard {
                         handler: (context) => context.game.queueStep(new FatePhase(context.game))
                     })
                 })
-            }),
-            max: AbilityDsl.limit.perRound(1)
-        });
+            }))
+            .effect('resolve a second fate phase after this')
+            .max(AbilityDsl.limit.perRound(1));
     }
 }

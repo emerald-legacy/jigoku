@@ -6,23 +6,20 @@ class Outflank extends DrawCard {
     static id = 'outflank';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Prevent a character from declaring as a defender',
-            max: AbilityDsl.limit.perConflict(1),
-            when: {
+        this.reaction('Prevent a character from declaring as a defender')
+            .when({
                 onCardRevealed: (event, context) => event.card.isProvince && event.card.controller === context.player.opponent && this.game.isDuringConflict()
-            },
-            target: {
+            })
+            .target('target', {
                 controller: Players.Any,
                 cardType: CardType.Character,
-                cardCondition: card => !card.isUnique(),
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    duration: Duration.UntilEndOfConflict,
-                    effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()
-                })
-            },
-            effect: 'prevent {0} from declaring as a defender this conflict'
-        });
+                cardCondition: card => !card.isUnique()
+            }, AbilityDsl.actions.cardLastingEffect({
+                duration: Duration.UntilEndOfConflict,
+                effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()
+            }))
+            .effect('prevent {0} from declaring as a defender this conflict')
+            .max(AbilityDsl.limit.perConflict(1));
     }
 }
 

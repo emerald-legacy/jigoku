@@ -10,17 +10,13 @@ class OniMask extends DrawCard {
             myControl: true
         });
 
-        this.action({
-            title: 'Blank participating character',
-            cost: ability.costs.removeFateFromParent(),
-
-            target: {
+        this.action('Blank participating character')
+            .cost(ability.costs.removeFateFromParent())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating(),
-                gameAction: ability.actions.cardLastingEffect({ effect: ability.effects.blank() })
-            },
-            effect: 'blank {0} until the end of the conflict'
-        });
+                cardCondition: card => card.isParticipating()
+            }, ability.actions.cardLastingEffect({ effect: ability.effects.blank() }))
+            .effect('blank {0} until the end of the conflict');
     }
 }
 

@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, EventName, Players } from '../../Constants.js';
 import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -10,20 +9,17 @@ class Deathseeker extends DrawCard {
 
     setupCardAbilities(ability: typeof AbilityDsl) {
         // TODO: RemoveFateOrDiscard action?
-        this.reaction<DrawCard>({
-            title: 'Remove fate/discard character',
-            when: {
+        this.reaction('Remove fate/discard character')
+            .when({
                 afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<this>) => event.conflict.loser === context.player && context.source.isAttacking()
-            },
-            cost: ability.costs.sacrificeSelf(),
-            target: {
+            })
+            .cost(ability.costs.sacrificeSelf())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card, innerContext: AbilityContext) => (card.getFate() > 0 ? card.allowGameAction('removeFate', innerContext) : card.allowGameAction('discardFromPlay', innerContext))
-            },
-            effect: '{1} {0}',
-            effectArgs: (context) => (context.target?.getFate() ?? 0) > 0 ? 'remove 1 fate from' : 'discard',
-            handler: (context) => {
+                cardCondition: (card, innerContext) => (card.getFate() > 0 ? card.allowGameAction('removeFate', innerContext) : card.allowGameAction('discardFromPlay', innerContext))
+            })
+            .handler((context) => {
                 if(!context.target) {
                     return;
                 }
@@ -32,8 +28,8 @@ class Deathseeker extends DrawCard {
                 } else {
                     this.game.applyGameAction(context, { removeFate: context.target });
                 }
-            }
-        });
+            })
+            .effect('{1} {0}', (context) => (context.target?.getFate() ?? 0) > 0 ? 'remove 1 fate from' : 'discard');
     }
 }
 

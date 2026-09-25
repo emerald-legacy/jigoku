@@ -7,28 +7,25 @@ export default class MantraOfVoid extends DrawCard {
     static id = 'mantra-of-void';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Reduce the cost to attach to a monk by 1',
-            when: {
+        this.reaction('Reduce the cost to attach to a monk by 1')
+            .when({
                 onConflictDeclared: (event, context) =>
                     event.ring !== undefined && event.ring.hasElement(Element.Void) && event.conflict.attackingPlayer === context.player.opponent
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card) =>
-                    card.hasTrait('monk') || card.attachments.some((card: BaseCard) => card.hasTrait('monk')),
-                gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
-                    targetController: context.player,
-                    duration: Duration.UntilEndOfConflict,
-                    effect: AbilityDsl.effects.reduceCost({
-                        amount: 1,
-                        cardType: CardType.Attachment,
-                        targetCondition: (target: BaseCard) => target === context.target
-                    })
-                }))
-            },
-            effect: 'reduce the cost of attachments they play on {0} this conflict by 1 and draw a card',
-            gameAction: AbilityDsl.actions.draw()
-        });
+                    card.hasTrait('monk') || card.attachments.some((card: BaseCard) => card.hasTrait('monk'))
+            }, AbilityDsl.actions.playerLastingEffect((context) => ({
+                targetController: context.player,
+                duration: Duration.UntilEndOfConflict,
+                effect: AbilityDsl.effects.reduceCost({
+                    amount: 1,
+                    cardType: CardType.Attachment,
+                    targetCondition: (target: BaseCard) => target === context.target
+                })
+            })))
+            .gameAction(AbilityDsl.actions.draw())
+            .effect('reduce the cost of attachments they play on {0} this conflict by 1 and draw a card');
     }
 }

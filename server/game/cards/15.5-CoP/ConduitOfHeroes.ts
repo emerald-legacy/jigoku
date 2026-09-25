@@ -43,25 +43,21 @@ class ConduitOfHeroes extends DrawCard {
     static id = 'conduit-of-heroes';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Give a character +3/+1/+1',
-            cost: conduitOfHeroesCost(),
-            condition: () => this.game.isDuringConflict(),
-            target: {
+        this.action('Give a character +3/+1/+1')
+            .cost(conduitOfHeroesCost())
+            .condition(() => this.game.isDuringConflict())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card, context) => card !== context.source,
-                gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
-                    effect: [
-                        AbilityDsl.effects.modifyMilitarySkill(3),
-                        AbilityDsl.effects.modifyPoliticalSkill(1),
-                        AbilityDsl.effects.modifyGlory(1)
-                    ]
-                }))
-            },
-            effect: 'grant {0} +3{1}/+1{2}/+1{3} until the end of the conflict',
-            effectArgs: ['military', 'political', 'glory']
-        });
+                cardCondition: (card, context) => card !== context.source
+            }, AbilityDsl.actions.cardLastingEffect(() => ({
+                effect: [
+                    AbilityDsl.effects.modifyMilitarySkill(3),
+                    AbilityDsl.effects.modifyPoliticalSkill(1),
+                    AbilityDsl.effects.modifyGlory(1)
+                ]
+            })))
+            .effect('grant {0} +3{1}/+1{2}/+1{3} until the end of the conflict', () => (['military', 'political', 'glory']));
     }
 }
 

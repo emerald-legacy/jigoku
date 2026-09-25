@@ -6,9 +6,8 @@ export default class KakitaYuri extends DrawCard {
     static id = 'kakita-yuri';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Political duel to stop military conflicts',
-            initiateDuel: {
+        this.action('Political duel to stop military conflicts')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
                 message: 'prevent {0} from declaring military conflicts this phase',
@@ -21,7 +20,6 @@ export default class KakitaYuri extends DrawCard {
                             ? AbilityDsl.effects.cannotDeclareConflictsOfType(ConflictType.Military)
                             : []
                     }))
-            }
-        });
+            }));
     }
 }

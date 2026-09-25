@@ -5,11 +5,9 @@ class MotoEviscerator extends DrawCard {
     static id = 'moto-eviscerator';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move this character to conflict',
-            cost: AbilityDsl.costs.payHonor(1),
-            gameAction: AbilityDsl.actions.moveToConflict()
-        });
+        this.action('Move this character to conflict')
+            .cost(AbilityDsl.costs.payHonor(1))
+            .gameAction(AbilityDsl.actions.moveToConflict());
     }
 }
 

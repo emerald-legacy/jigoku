@@ -6,13 +6,11 @@ class GuidanceOfTheAncestors extends DrawCard {
     static id = 'guidance-of-the-ancestors';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Play this from the discard pile',
-            location: Location.ConflictDiscardPile,
-            gameAction: ability.actions.playCard({
+        this.action('Play this from the discard pile')
+            .gameAction(ability.actions.playCard({
                 source: this
-            })
-        });
+            }))
+            .location(Location.ConflictDiscardPile);
     }
 }
 

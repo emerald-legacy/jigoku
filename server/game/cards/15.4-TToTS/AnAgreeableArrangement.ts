@@ -52,17 +52,14 @@ class AnAgreeableArrangement extends DrawCard {
     static id = 'an-agreeable-arrangement';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow a non-champion',
-            cost: [agreeableCost()],
-            target: {
+        this.action('Bow a non-champion')
+            .cost(agreeableCost())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: card => !card.hasTrait('champion'),
-                activePromptTitle: 'Bow a non-champion',
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                activePromptTitle: 'Bow a non-champion'
+            }, AbilityDsl.actions.bow());
     }
 }
 

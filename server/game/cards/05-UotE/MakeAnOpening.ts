@@ -7,9 +7,8 @@ class MakeAnOpening extends DrawCard {
     static id = 'make-an-opening';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Give -X/-X to opposing character, where X is the difference between current honor dial bid values',
-            condition: context => {
+        this.action('Give -X/-X to opposing character, where X is the difference between current honor dial bid values')
+            .condition(context => {
                 const conflict = this.game.currentConflict;
                 const opponent = context.player.opponent;
                 return this.game.isDuringConflict() &&
@@ -20,19 +19,16 @@ class MakeAnOpening extends DrawCard {
                     !!context.player.showBid &&
                     !!opponent.showBid &&
                     context.player.showBid !== opponent.showBid;
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) =>
-                    card.isParticipating(),
-                gameAction: ability.actions.cardLastingEffect((context: AbilityContext) => ({
-                    effect: ability.effects.modifyBothSkills(-(this.getHonorDialDifference(context)))
-                }))
-            },
-            effect: 'give {0} -{1}{2}/-{1}{3}',
-            effectArgs: context => [this.getHonorDialDifference(context), 'military', 'political']
-        });
+                    card.isParticipating()
+            }, ability.actions.cardLastingEffect((context) => ({
+                effect: ability.effects.modifyBothSkills(-(this.getHonorDialDifference(context)))
+            })))
+            .effect('give {0} -{1}{2}/-{1}{3}', context => [this.getHonorDialDifference(context), 'military', 'political']);
     }
 
     getHonorDialDifference(context: AbilityContext) {

@@ -6,14 +6,11 @@ class VanguardWarrior extends DrawCard {
     static id = 'vanguard-warrior';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Sacrifice to put fate on one character',
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            target: {
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.placeFate()
-            }
-        });
+        this.action('Sacrifice to put fate on one character')
+            .cost(AbilityDsl.costs.sacrificeSelf())
+            .target('target', {
+                cardType: CardType.Character
+            }, AbilityDsl.actions.placeFate());
     }
 }
 

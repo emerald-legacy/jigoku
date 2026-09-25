@@ -5,14 +5,12 @@ class PacifistPhilosopher extends DrawCard {
     static id = 'pacifist-philosopher';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Gain 1 fate',
-            limit: ability.limit.perRound(2),
-            when: {
+        this.reaction('Gain 1 fate')
+            .when({
                 onConflictPass: () => true
-            },
-            gameAction: ability.actions.gainFate()
-        });
+            })
+            .gameAction(ability.actions.gainFate())
+            .limit(ability.limit.perRound(2));
     }
 }
 

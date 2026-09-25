@@ -6,19 +6,16 @@ class AshigaruLevy extends DrawCard {
     static id = 'ashigaru-levy';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Release the levies!',
-            when: {
+        this.reaction('Release the levies!')
+            .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
                 location: [Location.Provinces, Location.DynastyDiscardPile],
-                cardCondition: (card, context) => card.owner === context.player && card.id === 'ashigaru-levy',
-                gameAction: AbilityDsl.actions.putIntoPlay()
-            },
-            effect: 'put {0} into play.'
-        });
+                cardCondition: (card, context) => card.owner === context.player && card.id === 'ashigaru-levy'
+            }, AbilityDsl.actions.putIntoPlay())
+            .effect('put {0} into play.');
     }
 }
 

@@ -6,27 +6,24 @@ export default class AsakoMaezawa2 extends DrawCard {
     static id = 'asako-maezawa-2';
 
     public setupCardAbilities() {
-        this.reaction({
-            title: 'Bow a character with no fate',
-            when: {
+        this.reaction('Bow a character with no fate')
+            .when({
                 afterConflict: (event, context) =>
                     context.source.isParticipating() &&
                     event.conflict.winner === context.source.controller &&
                     context.player.opponent !== undefined
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.getFate() === 0,
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.bow(),
-                    AbilityDsl.actions.conditional({
-                        condition: (context) => (context.target as DrawCard).isFaction('phoenix'),
-                        trueGameAction: AbilityDsl.actions.dishonor(),
-                        falseGameAction: AbilityDsl.actions.draw({ amount: 0 }) //do nothing
-                    })
-                ])
-            },
-            effect: 'bow {0}'
-        });
+                cardCondition: (card) => card.getFate() === 0
+            }, AbilityDsl.actions.sequential([
+                AbilityDsl.actions.bow(),
+                AbilityDsl.actions.conditional({
+                    condition: (context) => (context.target as DrawCard).isFaction('phoenix'),
+                    trueGameAction: AbilityDsl.actions.dishonor(),
+                    falseGameAction: AbilityDsl.actions.draw({ amount: 0 }) //do nothing
+                })
+            ]))
+            .effect('bow {0}');
     }
 }

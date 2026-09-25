@@ -9,21 +9,18 @@ class IsawaUjina extends DrawCard {
     static id = 'isawa-ujina';
 
     setupCardAbilities() {
-        this.forcedReaction({
-            title: 'Remove a character from the game',
-            when: {
+        this.forcedReaction('Remove a character from the game')
+            .when({
                 onClaimRing: (event: EventPayload<EventName.OnClaimRing>) => {
                     const element = this.getCurrentElementSymbol(elementKey) || Element.Void;
                     return (event.conflict && event.conflict.ring && event.conflict.ring.hasElement(element)) || event.ring.hasElement(element);
                 }
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.getFate() === 0,
-                gameAction: AbilityDsl.actions.removeFromGame()
-            },
-            limit: AbilityDsl.limit.unlimitedPerConflict()
-        });
+                cardCondition: (card) => card.getFate() === 0
+            }, AbilityDsl.actions.removeFromGame())
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 
     getPrintedElementSymbols() {

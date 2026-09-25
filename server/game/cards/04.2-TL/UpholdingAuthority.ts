@@ -38,17 +38,15 @@ export default class UpholdingAuthority extends ProvinceCard {
             }
         }));
 
-        this.interrupt({
-            title: 'Look at the attacking player\'s hand and discard all copies of a card',
-            when: {
+        this.interrupt('Look at the attacking player\'s hand and discard all copies of a card')
+            .when({
                 onBreakProvince: (event, context) =>
                     event.card === context.source &&
                     context.game.currentConflict &&
                     context.game.currentConflict.attackingPlayer &&
                     context.game.currentConflict.attackingPlayer.hand.length > 0
-            },
-            effect: 'look at the attacking player\'s hand and choose a card to be discarded',
-            gameAction: AbilityDsl.actions.sequential([
+            })
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.lookAt((context) => ({
                     target: context.game.currentConflict?.attackingPlayer.hand.slice().sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name)),
                     message: '{0} reveals their hand: {1}',
@@ -64,7 +62,7 @@ export default class UpholdingAuthority extends ProvinceCard {
                         ? []
                         : [() => context.game.addMessage('{0} chooses not to discard anything', context.player)]
                 }))
-            ])
-        });
+            ]))
+            .effect('look at the attacking player\'s hand and choose a card to be discarded');
     }
 }

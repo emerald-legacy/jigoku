@@ -6,19 +6,16 @@ class TheSpearRushesForth extends DrawCard {
     static id = 'the-spear-rushes-forth';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow a participating character',
-            condition: () => this.game.isDuringConflict('military'),
-            cost: AbilityDsl.costs.discardStatusToken({
+        this.action('Bow a participating character')
+            .cost(AbilityDsl.costs.discardStatusToken({
                 cardCondition: card => card.isHonored && card.isParticipating()
-            }),
-            target: {
+            }))
+            .condition(() => this.game.isDuringConflict('military'))
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating(),
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: card => card.isParticipating()
+            }, AbilityDsl.actions.bow());
     }
 }
 

@@ -10,18 +10,15 @@ export default class KitsukiShomon extends DrawCard {
     static id = 'kitsuki-shomon';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Dishonor this character instead',
-            when: {
+        this.wouldInterrupt('Dishonor this character instead')
+            .when({
                 onCardDishonored: ({ card }: { card: BaseCard }, context: TriggeredAbilityContext) =>
                     card.controller === context.player &&
                     card.type === CardType.Character &&
                     context.source.allowGameAction('dishonor', context) &&
                     card !== context.source
-            },
-            effect: 'dishonor {0} instead of {1}',
-            effectArgs: (context: TriggeredAbilityContext) => context.event.card ?? '',
-            handler: (context: TriggeredAbilityContext) => {
+            })
+            .handler((context) => {
                 let newEvent = AbilityDsl.actions.dishonor().getEvent(context.source, context);
                 context.event.replacementEvent = newEvent;
                 let thenAbility = new ThenAbility(context.source, {
@@ -32,7 +29,7 @@ export default class KitsukiShomon extends DrawCard {
                 window.addEvent(newEvent);
                 window.addThenAbility(thenAbility, context);
                 context.cancel();
-            }
-        });
+            })
+            .effect('dishonor {0} instead of {1}', (context) => context.event.card ?? '');
     }
 }

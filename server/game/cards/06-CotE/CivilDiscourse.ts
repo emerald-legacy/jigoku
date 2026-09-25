@@ -6,9 +6,8 @@ class CivilDiscourse extends DrawCard {
     static id = 'civil-discourse';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a political duel',
-            initiateDuel: {
+        this.action('Initiate a political duel')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
                 message: '{0} gains \'Increase the cost to play each card in your hand by 1.\'',
@@ -23,8 +22,7 @@ class CivilDiscourse extends DrawCard {
                         })
                     })
                 })
-            }
-        });
+            }));
     }
 }
 

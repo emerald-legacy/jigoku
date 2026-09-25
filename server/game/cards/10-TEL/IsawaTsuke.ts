@@ -11,9 +11,8 @@ class IsawaTsuke extends DrawCard {
     static id = 'isawa-tsuke';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Fire ring same cost characters',
-            when: {
+        this.reaction('Fire ring same cost characters')
+            .when({
                 onCardDishonored: (event: EventPayload<EventName.OnCardDishonored>, context) => {
                     const dishonoredByYourEffect = context.player === event.context?.player;
                     const dishonoredByRingEffect = (event.context?.source.type as string) === 'ring';
@@ -26,8 +25,8 @@ class IsawaTsuke extends DrawCard {
                     const currentlyFire = this.getCurrentElementSymbol(elementKey) === Element.Fire;
                     return honoredByYourEffect && honoredByRingEffect && currentlyFire;
                 }
-            },
-            gameAction: AbilityDsl.actions.conditional((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.conditional((context) => ({
                 condition: (context as TriggeredAbilityContext).event.name === EventName.OnCardDishonored,
                 trueGameAction: AbilityDsl.actions.dishonor({
                     target: this.getTsukeTargets(context)
@@ -35,8 +34,7 @@ class IsawaTsuke extends DrawCard {
                 falseGameAction: AbilityDsl.actions.honor({
                     target: this.getTsukeTargets(context)
                 })
-            }))
-        });
+            })));
     }
     getTsukeTargets(context: AbilityContext) {
         let targetedCharacter = (context as TriggeredAbilityContext).event.card as DrawCard;

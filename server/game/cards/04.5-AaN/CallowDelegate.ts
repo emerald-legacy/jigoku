@@ -6,17 +6,14 @@ class CallowDelegate extends DrawCard {
     static id = 'callow-delegate';
 
     setupCardAbilities() {
-        this.interrupt({
-            title: 'Honor a character',
-            when: {
+        this.interrupt('Honor a character')
+            .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.honor()
-            }
-        });
+                controller: Players.Self
+            }, AbilityDsl.actions.honor());
     }
 }
 

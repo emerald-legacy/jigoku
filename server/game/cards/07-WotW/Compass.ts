@@ -7,16 +7,14 @@ class Compass extends DrawCard {
     static id = 'compass';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Look at top 3 cards of a deck',
-            when: {
+        this.reaction('Look at top 3 cards of a deck')
+            .when({
                 onCardRevealed: (event: EventPayload<EventName.OnCardRevealed>, context: TriggeredAbilityContext<this>) =>
                     event.card && event.card.type === CardType.Province && event.card.controller === context.player.opponent &&
                     context.source && context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                     (context.player.dynastyDeck.length > 0 || context.player.conflictDeck.length > 0)
-            },
-            effect: 'look at the top 3 cards of one of their decks',
-            handler: (context: TriggeredAbilityContext) => {
+            })
+            .handler((context) => {
                 let cards: DrawCard[] = [];
                 let choices: string[] = [];
                 let handlers: (() => void)[] = [];
@@ -42,8 +40,8 @@ class Compass extends DrawCard {
                     choices: choices,
                     handlers: handlers
                 });
-            }
-        });
+            })
+            .effect('look at the top 3 cards of one of their decks');
     }
 
     moveToBottomHandler(context: TriggeredAbilityContext, cards: DrawCard[], deck: string) {

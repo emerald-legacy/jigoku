@@ -10,20 +10,17 @@ class ConsumedByFiveFires extends DrawCard {
     static id = 'consumed-by-five-fires';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Remove up to 5 fate from characters',
-            condition: (context: AbilityContext) =>
+        this.action('Remove up to 5 fate from characters')
+            .condition((context) =>
                 context.player.cardsInPlay.some((card: BaseCard) => card.hasTrait('shugenja')) &&
                 !!context.player.opponent &&
-                context.player.opponent.cardsInPlay.some((card: BaseCard) => card.allowGameAction('removeFate', context)),
-            effect: 'remove fate from {1}\'s characters',
-            effectArgs: (context: AbilityContext) => context.player.opponent as Player,
-            handler: (context: AbilityContext) => {
+                context.player.opponent.cardsInPlay.some((card: BaseCard) => card.allowGameAction('removeFate', context)))
+            .handler((context) => {
                 if(context) {
                     this.chooseCard(context, {}, []);
                 }
-            }
-        });
+            })
+            .effect('remove fate from {1}\'s characters', (context) => context.player.opponent);
     }
 
     chooseCard(context: AbilityContext, targets: Record<string, number>, messages: string[]) {

@@ -81,18 +81,13 @@ class MerchantOfCuriosities extends DrawCard {
     static id = 'merchant-of-curiosities';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Discard a card to draw a card',
-            cost: [
-                AbilityDsl.costs.discardCard(),
-                merchantOfCuriositiesCost()
-            ],
-            gameAction: AbilityDsl.actions.draw(context => ({
+        this.action('Discard a card to draw a card')
+            .cost(AbilityDsl.costs.discardCard())
+            .cost(merchantOfCuriositiesCost())
+            .gameAction(AbilityDsl.actions.draw(context => ({
                 target: context.costs.merchantOfCuriositiesCostPaid ? context.game.getPlayers() : context.player
-            })),
-            effect: 'draw a card{2}',
-            effectArgs: context => [context.costs.discardCard as BaseCard, this.buildString(context)]
-        });
+            })))
+            .effect('draw a card{2}', context => [context.costs.discardCard as BaseCard, this.buildString(context)]);
     }
 
     buildString(context: AbilityContext) {

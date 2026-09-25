@@ -6,19 +6,17 @@ class ChasingTheSun extends DrawCard {
     static id = 'chasing-the-sun';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move the conflict to another eligible province',
-            condition: context => context.player.isAttackingPlayer(),
-            cannotBeMirrored: true,
-            effect: 'move the conflict to another eligible province',
-            gameAction: AbilityDsl.actions.selectCard({
+        this.action('Move the conflict to another eligible province')
+            .condition(context => context.player.isAttackingPlayer())
+            .gameAction(AbilityDsl.actions.selectCard({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 message: '{0} moves the conflict to {1}',
                 messageArgs: (card, player) => [player, card],
                 gameAction: AbilityDsl.actions.moveConflict()
-            })
-        });
+            }))
+            .effect('move the conflict to another eligible province')
+            .cannotBeMirrored();
     }
 }
 

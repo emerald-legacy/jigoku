@@ -11,16 +11,14 @@ class CurrentOfTheBeryt extends DrawCard {
             trait: 'shugenja'
         });
 
-        this.action({
-            title: 'Take two actions',
-            condition: () => this.game.isDuringConflict(),
-            effect: 'take two actions',
-            gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
+        this.action('Take two actions')
+            .condition(() => this.game.isDuringConflict())
+            .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
                 targetController: context.player,
                 duration: Duration.UntilPassPriority,
                 effect: AbilityDsl.effects.additionalAction(2)
-            }))
-        });
+            })))
+            .effect('take two actions');
     }
 }
 

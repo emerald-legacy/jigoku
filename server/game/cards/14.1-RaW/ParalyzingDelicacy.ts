@@ -7,19 +7,14 @@ class ParalyzingDelicacy extends DrawCard {
     static id = 'paralyzing-delicacy';
 
     setupCardAbilities() {
-        this.action({
-            title: '-X military equal to facedown provinces',
-
-            target: {
+        this.action('-X military equal to facedown provinces')
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                    effect: AbilityDsl.effects.modifyMilitarySkill(-this.getFaceDownProvinceCards(context))
-                }))
-            },
-            effect: 'give {1} -{2}{3}',
-            effectArgs: context => [context.target as DrawCard, this.getFaceDownProvinceCards(context), 'military']
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.cardLastingEffect(context => ({
+                effect: AbilityDsl.effects.modifyMilitarySkill(-this.getFaceDownProvinceCards(context))
+            })))
+            .effect('give {1} -{2}{3}', context => [context.target, this.getFaceDownProvinceCards(context), 'military']);
     }
 
     getFaceDownProvinceCards(context: AbilityContext) {

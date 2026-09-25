@@ -8,19 +8,16 @@ export default class HonorsReward extends ProvinceCard {
     static id = 'honor-s-reward';
 
     setupCardAbilities() {
-        this.action({
-            title: 'give target character +3 glory',
-            conflictProvinceCondition: (province) => province.isElement(this.getCurrentElementSymbol(elementKey)),
-            target: {
+        this.action('give target character +3 glory')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
-                    effect: AbilityDsl.effects.modifyGlory(3)
-                }))
-            },
-            effect: 'give {0} +3 glory'
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.cardLastingEffect(() => ({
+                effect: AbilityDsl.effects.modifyGlory(3)
+            })))
+            .effect('give {0} +3 glory')
+            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)));
     }
 
     getPrintedElementSymbols() {

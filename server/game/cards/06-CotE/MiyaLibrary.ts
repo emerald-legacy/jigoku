@@ -7,11 +7,9 @@ class MiyaLibrary extends DrawCard {
     static id = 'miya-library';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Replace Miya Library for a faceup imperial character',
-            condition: (context: AbilityContext) => context.player.dynastyDeck.length > 0,
-            effect: 'Search the top four card for your dynasty deck for an imperial character',
-            handler: (context: AbilityContext) => {
+        this.action('Replace Miya Library for a faceup imperial character')
+            .condition((context) => context.player.dynastyDeck.length > 0)
+            .handler((context) => {
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'select an imperial character to replace miya library',
                     context: context,
@@ -28,8 +26,8 @@ class MiyaLibrary extends DrawCard {
                         this.miyaLibraryPrompt(context, context.player.dynastyDeck.slice(0, 4), [], 'Select the card you would like to place on top of your dynasty deck');
                     }
                 });
-            }
-        });
+            })
+            .effect('Search the top four card for your dynasty deck for an imperial character');
     }
 
     miyaLibraryPrompt(context: AbilityContext, promptCards: DrawCard[], orderedCards: DrawCard[], promptTitle: string) {

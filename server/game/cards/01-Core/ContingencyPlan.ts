@@ -8,10 +8,8 @@ export default class ContingencyPlan extends DrawCard {
     static id = 'contingency-plan';
 
     public setupCardAbilities() {
-        this.reaction({
-            title: 'Change your bid by 1',
-            when: { onHonorDialsRevealed: (event: EventPayload<EventName.OnHonorDialsRevealed>) => event.isHonorBid },
-            gameAction: AbilityDsl.actions.modifyBid({ direction: Direction.Prompt })
-        });
+        this.reaction('Change your bid by 1')
+            .when({ onHonorDialsRevealed: (event: EventPayload<EventName.OnHonorDialsRevealed>) => event.isHonorBid })
+            .gameAction(AbilityDsl.actions.modifyBid({ direction: Direction.Prompt }));
     }
 }

@@ -3,7 +3,6 @@ import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
 import { AbilityType, CardType, Duration, Players } from '../../Constants.js';
 import type DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
 import type { PersistentEffectProps } from '../../Interfaces.js';
 import { BaseOni } from './_BaseOni.js';
 
@@ -13,9 +12,8 @@ export default class UndeadHorror extends BaseOni {
 
     public setupCardAbilities() {
         super.setupCardAbilities();
-        this.reaction({
-            title: 'Attach a character to this card',
-            when: {
+        this.reaction('Attach a character to this card')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller &&
                     context.source.isParticipating() &&
@@ -23,10 +21,8 @@ export default class UndeadHorror extends BaseOni {
                     (context.player.opponent.dynastyDiscardPile as BaseCard[]).filter(
                         (card) => card.type === CardType.Character
                     ).length > 0
-            },
-            effect: 'attach a random character from {1}\'s dynasty discard pile to {2}',
-            effectArgs: (context) => [context.player.opponent as Player, context.source],
-            gameAction: AbilityDsl.actions.sequentialContext((context) => {
+            })
+            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
                 const potentialTargets = ((context.player.opponent?.dynastyDiscardPile ?? []) as BaseCard[]).filter(
                     (card): card is DrawCard => card.type === CardType.Character
                 );
@@ -76,7 +72,7 @@ export default class UndeadHorror extends BaseOni {
                         })
                     ]
                 };
-            })
-        });
+            }))
+            .effect('attach a random character from {1}\'s dynasty discard pile to {2}', (context) => [context.player.opponent, context.source]);
     }
 }

@@ -9,13 +9,11 @@ class ShibaTsukune extends DrawCard {
     static id = 'shiba-tsukune';
 
     setupCardAbilities() {
-        this.interrupt({
-            title: 'Resolve 2 rings',
-            when : {
+        this.interrupt('Resolve 2 rings')
+            .when({
                 onPhaseEnded: (event: EventPayload<typeof EventName.OnPhaseEnded>) => event.phase === Phases.Conflict
-            },
-            effect: 'resolve up to 2 ring effects',
-            handler: context => (context ? this.game.promptForRingSelect(context.player, {
+            })
+            .handler(context => (context ? this.game.promptForRingSelect(context.player, {
                 activePromptTitle: 'Choose a ring to resolve',
                 context: context,
                 ringCondition: (ring: Ring) => ring.isUnclaimed(),
@@ -48,8 +46,8 @@ class ShibaTsukune extends DrawCard {
                     }
                     return true;
                 }
-            }) : undefined)
-        });
+            }) : undefined))
+            .effect('resolve up to 2 ring effects');
     }
 }
 

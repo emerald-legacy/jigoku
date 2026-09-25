@@ -7,13 +7,11 @@ class AppealToSympathy extends DrawCard {
     static id = 'appeal-to-sympathy';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Cancel an event',
-            when: {
+        this.wouldInterrupt('Cancel an event')
+            .when({
                 onInitiateAbilityEffects: (event) => event.card.type === CardType.Event
-            },
-            cannotBeMirrored: true,
-            gameAction: AbilityDsl.actions.multiple([
+            })
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cancel(),
                 AbilityDsl.actions.conditional({
                     condition: (context) => !!(context as TriggeredAbilityContext).event.card?.isConflict,
@@ -26,9 +24,8 @@ class AppealToSympathy extends DrawCard {
                         destination: Location.DynastyDiscardPile
                     }))
                 })
-            ]),
-            effect: 'cancel the effects of {1} and {2}',
-            effectArgs: (context) => {
+            ]))
+            .effect('cancel the effects of {1} and {2}', (context) => {
                 const card = context.event.card;
                 return [
                     card ?? '',
@@ -36,8 +33,8 @@ class AppealToSympathy extends DrawCard {
                         ? 'return it to the top of its owner\'s conflict deck'
                         : 'move it to its owner\'s dynasty discard pile'
                 ];
-            }
-        });
+            })
+            .cannotBeMirrored();
     }
 }
 

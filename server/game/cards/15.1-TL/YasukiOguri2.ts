@@ -6,16 +6,13 @@ class YasukiOguri2 extends DrawCard {
     static id = 'yasuki-oguri-2';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move a character in',
-            condition: context => context.source.isDefending(),
-            target: {
+        this.action('Move a character in')
+            .cost(AbilityDsl.costs.payFate(1))
+            .condition(context => context.source.isDefending())
+            .target('target', {
                 cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.moveToConflict(),
                 cardCondition: card => card.getFate() > 0
-            },
-            cost: AbilityDsl.costs.payFate(1)
-        });
+            }, AbilityDsl.actions.moveToConflict());
     }
 }
 

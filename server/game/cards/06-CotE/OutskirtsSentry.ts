@@ -6,17 +6,14 @@ class OutskirtsSentry extends DrawCard {
     static id = 'outskirts-sentry';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Honor a participating character',
-            when: {
+        this.reaction('Honor a participating character')
+            .when({
                 onMoveToConflict: (_event, context) => context.source.isParticipating()
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: ability.actions.honor()
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, ability.actions.honor());
     }
 }
 

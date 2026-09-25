@@ -7,17 +7,14 @@ class MatsuKoso extends DrawCard {
     static id = 'matsu-koso';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Lower military skill',
-            condition: (context) => context.source.isParticipating(),
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+        this.action('Lower military skill')
+            .condition((context) => context.source.isParticipating())
+            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: this.getTargets(context),
                 duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.modifyMilitarySkill((card: DrawCard) => -card.printedPoliticalSkill)
-            })),
-            effect: 'lower the military skill of {1} by their respective printed political skill',
-            effectArgs: (context) => [this.getTargets(context)]
-        });
+            })))
+            .effect('lower the military skill of {1} by their respective printed political skill', (context) => [this.getTargets(context)]);
     }
 
     // A dash or 0 printed political skill would change nothing, and applying the effect

@@ -9,12 +9,10 @@ class ShadowSteed extends DrawCard {
             effect: AbilityDsl.effects.addTrait('cavalry')
         });
 
-        this.action({
-            title: 'Ready attached character',
-            condition: context => !!(context.source.parentCharacter && context.source.parentCharacter.getFate() === 0),
-            cost: AbilityDsl.costs.payHonor(1),
-            gameAction: AbilityDsl.actions.ready(context => ({target: context.source.parentCharacter ?? []}))
-        });
+        this.action('Ready attached character')
+            .cost(AbilityDsl.costs.payHonor(1))
+            .condition(context => !!(context.source.parentCharacter && context.source.parentCharacter.getFate() === 0))
+            .gameAction(AbilityDsl.actions.ready(context => ({target: context.source.parentCharacter ?? []})));
     }
 
     isTemptationsMaho() {

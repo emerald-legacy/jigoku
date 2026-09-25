@@ -6,13 +6,11 @@ class TradingOnTheSandRoad extends DrawCard {
     static id = 'trading-on-the-sand-road';
 
     setupCardAbilities() {
-        this.interrupt({
-            title: 'Take top 4 cards from both players\' decks',
-            when: {
+        this.interrupt('Take top 4 cards from both players\' decks')
+            .when({
                 onPhaseCreated: event => event.phase === Phases.Draw
-            },
-            effect: 'remove the top 4 cards from each player\'s deck and make them playable by both players until the end of the round',
-            gameAction: AbilityDsl.actions.multiple([
+            })
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cancel(),
                 AbilityDsl.actions.lookAt(context=> ({
                     target: context.player.conflictDeck.slice(0, 4),
@@ -56,8 +54,8 @@ class TradingOnTheSandRoad extends DrawCard {
                     target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [],
                     destination: Location.RemovedFromGame
                 }))
-            ])
-        });
+            ]))
+            .effect('remove the top 4 cards from each player\'s deck and make them playable by both players until the end of the round');
     }
 }
 

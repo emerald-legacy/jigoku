@@ -48,18 +48,14 @@ class OniTyrant extends DrawCard {
     static id = 'oni-tyrant';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Summon a Shadowlands Creature',
-            cost: [
-                AbilityDsl.costs.payHonor(1),
-                oniTyrantCost()
-            ],
-            condition: context => context.source.isParticipating(),
-            gameAction: AbilityDsl.actions.putIntoConflict(context => ({
+        this.action('Summon a Shadowlands Creature')
+            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(oniTyrantCost())
+            .condition(context => context.source.isParticipating())
+            .gameAction(AbilityDsl.actions.putIntoConflict(context => ({
                 target: (context.costs.oniTyrantCostCreature as DrawCard | undefined) || context.player.outsideTheGameCards[1]
-            })),
-            effect: 'summon a{2} {1} from the depths of the Shadowlands!',
-            effectArgs: context => {
+            })))
+            .effect('summon a{2} {1} from the depths of the Shadowlands!', context => {
                 const creature = context.costs.oniTyrantCostCreature as DrawCard;
                 var testStr = creature.name;
                 var vowelRegex = '^[aieouAIEOU].*';
@@ -68,8 +64,7 @@ class OniTyrant extends DrawCard {
                     creature,
                     matched ? 'n' : ''
                 ];
-            }
-        });
+            });
     }
 }
 

@@ -7,9 +7,8 @@ export default class KakitaDojo extends DrawCard {
     static id = 'kakita-dojo';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a military duel',
-            initiateDuel: {
+        this.action('Initiate a military duel')
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 message: '{0} {1}cannot trigger its abilities until the end of the conflict',
                 messageArgs: (duel) => [duel.loser, this.#wonByDuelist(duel) ? 'is bowed and ' : ''],
@@ -21,8 +20,7 @@ export default class KakitaDojo extends DrawCard {
                         }),
                         AbilityDsl.actions.bow({ target: this.#wonByDuelist(duel) ? duel.loser : undefined })
                     ])
-            }
-        });
+            }));
     }
 
     #wonByDuelist(duel: Duel): boolean {

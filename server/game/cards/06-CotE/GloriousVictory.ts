@@ -8,16 +8,14 @@ class GloriousVictory extends DrawCard {
     static id = 'glorious-victory';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Honor each character you control',
-            when: {
+        this.reaction('Honor each character you control')
+            .when({
                 onBreakProvince: (event: EventPayload<EventName.OnBreakProvince>, context: AbilityContext) =>
                     this.game.isDuringConflict('military') && !!event.conflict && event.conflict.attackingPlayer === context.player
-            },
-            gameAction: AbilityDsl.actions.honor((context: AbilityContext) => ({
+            })
+            .gameAction(AbilityDsl.actions.honor((context) => ({
                 target: context.player.filterCardsInPlay((card) => card.getType() === CardType.Character)
-            }))
-        });
+            })));
     }
 }
 

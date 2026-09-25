@@ -8,11 +8,9 @@ class BonsaiGarden extends DrawCard {
     static id = 'bonsai-garden';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Gain 1 honor',
-            condition: context => context.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)),
-            gameAction: AbilityDsl.actions.gainHonor()
-        });
+        this.action('Gain 1 honor')
+            .condition(context => context.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))
+            .gameAction(AbilityDsl.actions.gainHonor());
     }
 
     getPrintedElementSymbols() {

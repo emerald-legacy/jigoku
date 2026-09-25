@@ -8,14 +8,13 @@ class KitsukiChiari extends DrawCard {
     static id = 'kitsuki-chiari';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Name a card',
-            when: {
+        this.reaction('Name a card')
+            .when({
                 onCardRevealed: (event, context) => event.card.isProvince && event.card.controller === context.player &&
                     context.player.opponent && context.player.opponent.hand.length > 0
-            },
-            cost: AbilityDsl.costs.nameCard(),
-            gameAction: AbilityDsl.actions.multipleContext(context => {
+            })
+            .cost(AbilityDsl.costs.nameCard())
+            .gameAction(AbilityDsl.actions.multipleContext(context => {
                 let cards: DrawCard[] = shuffle(context.player.opponent?.hand as DrawCard[]).slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
                 return ({
                     gameActions: [
@@ -31,10 +30,8 @@ class KitsukiChiari extends DrawCard {
                         }))
                     ]
                 });
-            }),
-            effect: 'look at 4 random cards in {1}\'s hand and discard all cards named {2}',
-            effectArgs: context => [context.player.opponent as Player, context.costs.nameCardCost as string]
-        });
+            }))
+            .effect('look at 4 random cards in {1}\'s hand and discard all cards named {2}', context => [context.player.opponent, context.costs.nameCardCost as string]);
     }
 
     selectCardName(player: Player, cardName: string, context: AbilityContext) {

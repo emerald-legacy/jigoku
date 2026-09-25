@@ -7,24 +7,21 @@ class YoungRumormonger extends DrawCard {
     static id = 'young-rumormonger';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Honor/dishonor a different character',
-            when: {
+        this.wouldInterrupt('Honor/dishonor a different character')
+            .when({
                 onCardHonored: (event) => event.card.type === CardType.Character,
                 onCardDishonored: (event) => event.card.type === CardType.Character
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    card !== (context as TriggeredAbilityContext<DrawCard>).event.card && card.controller === (context as TriggeredAbilityContext<DrawCard>).event.card?.controller,
-                gameAction: AbilityDsl.actions.cancel((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
-                    replacementGameAction:
+                    card !== (context as TriggeredAbilityContext<DrawCard>).event.card && card.controller === (context as TriggeredAbilityContext<DrawCard>).event.card?.controller
+            }, AbilityDsl.actions.cancel((context) => ({
+                replacementGameAction:
                         context.event.name === EventName.OnCardHonored
                             ? AbilityDsl.actions.honor()
                             : AbilityDsl.actions.dishonor()
-                }))
-            }
-        });
+            })));
     }
 }
 

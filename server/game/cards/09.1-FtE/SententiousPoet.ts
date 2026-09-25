@@ -8,9 +8,8 @@ class SententiousPoet extends DrawCard {
     static id = 'sententious-poet';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Gain 1 fate',
-            when: {
+        this.reaction('Gain 1 fate')
+            .when({
                 onSpendFate: (event: EventPayload<EventName.OnSpendFate>, context: TriggeredAbilityContext<this>) =>
                     event.context?.player === context.player.opponent &&
                     event.amount > 0 &&
@@ -24,9 +23,8 @@ class SententiousPoet extends DrawCard {
                     context.source.isParticipating() &&
                     event.context?.stage === Stage.Cost &&
                     event.recipient?.type === 'ring'
-            },
-            gameAction: AbilityDsl.actions.gainFate()
-        });
+            })
+            .gameAction(AbilityDsl.actions.gainFate());
     }
 }
 

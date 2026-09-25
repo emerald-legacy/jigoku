@@ -6,16 +6,13 @@ export default class WayOfTheCrab extends DrawCard {
     static id = 'way-of-the-crab';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Make your opponent sacrifice a character',
-            condition: (context) => context.player.opponent !== undefined,
-            cost: AbilityDsl.costs.sacrifice({
+        this.action('Make your opponent sacrifice a character')
+            .cost(AbilityDsl.costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card: DrawCard) => card.isFaction('crab')
-            }),
-            effect: 'force {1} to sacrifice a character',
-            effectArgs: (context) => context.player.opponent ?? '',
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+            }))
+            .condition((context) => context.player.opponent !== undefined)
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to sacrifice',
                 cardType: CardType.Character,
@@ -23,8 +20,8 @@ export default class WayOfTheCrab extends DrawCard {
                 message: '{0} sacrifices {1} to {2}',
                 messageArgs: (card) => [context.player.opponent, card, context.source],
                 gameAction: AbilityDsl.actions.sacrifice()
-            })),
-            max: AbilityDsl.limit.perRound(1)
-        });
+            })))
+            .effect('force {1} to sacrifice a character', (context) => context.player.opponent ?? '')
+            .max(AbilityDsl.limit.perRound(1));
     }
 }

@@ -1,7 +1,6 @@
 import { Duration, EventName } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type Player from '../../Player.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 import type { AbilityContext } from '../../AbilityContext.js';
@@ -9,14 +8,12 @@ export default class ShiroKitsuki extends StrongholdCard {
     static id = 'shiro-kitsuki';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Name a card',
-            when: {
+        this.reaction('Name a card')
+            .when({
                 onConflictDeclared: () => true
-            },
-            cost: AbilityDsl.costs.nameCard(),
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            gameAction: AbilityDsl.actions.playerLastingEffect((playerLastingEffectContext) => ({
+            })
+            .cost(AbilityDsl.costs.nameCard())
+            .gameAction(AbilityDsl.actions.playerLastingEffect((playerLastingEffectContext) => ({
                 targetController: playerLastingEffectContext.player,
                 duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.delayedEffect({
@@ -34,9 +31,8 @@ export default class ShiroKitsuki extends StrongholdCard {
                         gameAction: AbilityDsl.actions.claimRing({ takeFate: true, type: 'political' })
                     }))
                 })
-            })),
-            effect: 'claim a ring whenever {1} plays a card named {2}',
-            effectArgs: (context) => [context.player.opponent as Player, context.costs.nameCardCost as string]
-        });
+            })))
+            .effect('claim a ring whenever {1} plays a card named {2}', (context) => [context.player.opponent, context.costs.nameCardCost as string])
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }

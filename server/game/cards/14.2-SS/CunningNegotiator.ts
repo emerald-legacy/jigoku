@@ -9,10 +9,9 @@ export default class CunningNegotiator extends DrawCard {
     static id = 'cunning-negotiator';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Political duel to resolve the attacked province\'s action ability',
-            condition: (context) => context.game.currentConflict !== null,
-            initiateDuel: {
+        this.action('Political duel to resolve the attacked province\'s action ability')
+            .condition((context) => context.game.currentConflict !== null)
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
                 message: 'resolve the action ability of an attacked province',
@@ -56,7 +55,6 @@ export default class CunningNegotiator extends DrawCard {
                             }))
                         }))
                     }))
-            }
-        });
+            }));
     }
 }

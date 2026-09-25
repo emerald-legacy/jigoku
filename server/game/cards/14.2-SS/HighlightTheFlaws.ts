@@ -6,15 +6,12 @@ class HighlightTheFlaws extends DrawCard {
     static id = 'highlight-the-flaws';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Cancel conflict province ability',
-            when: {
+        this.wouldInterrupt('Cancel conflict province ability')
+            .when({
                 onInitiateAbilityEffects: event => event.card.type === CardType.Province
-            },
-            effect: 'cancel the effects of {1}\'s ability',
-            effectArgs: context => context.event.card ?? '',
-            gameAction: AbilityDsl.actions.cancel()
-        });
+            })
+            .gameAction(AbilityDsl.actions.cancel())
+            .effect('cancel the effects of {1}\'s ability', context => context.event.card ?? '');
     }
 }
 

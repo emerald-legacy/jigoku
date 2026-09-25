@@ -6,9 +6,8 @@ export default class DazzlingDuelist extends DrawCard {
     static id = 'dazzling-duelist';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Military duel to stop a player from claiming rings',
-            initiateDuel: {
+        this.action('Military duel to stop a player from claiming rings')
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
                 message: 'prevent {0} from claiming rings this conflict',
@@ -19,7 +18,6 @@ export default class DazzlingDuelist extends DrawCard {
                         duration: Duration.UntilEndOfConflict,
                         effect: duel.loser ? AbilityDsl.effects.playerCannot('claimRings') : []
                     }))
-            }
-        });
+            }));
     }
 }

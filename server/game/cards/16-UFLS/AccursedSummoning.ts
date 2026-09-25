@@ -102,14 +102,12 @@ class AccursedSummoning extends DrawCard {
     static id = 'accursed-summoning';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Summon a Shadowlands Creature',
-            cost: [accursedSummoningCost()],
-            gameAction: AbilityDsl.actions.putIntoConflict(context => ({
+        this.action('Summon a Shadowlands Creature')
+            .cost(accursedSummoningCost())
+            .gameAction(AbilityDsl.actions.putIntoConflict(context => ({
                 target: (context.costs.accursedSummoningCostCreature as DrawCard | undefined) || context.player.outsideTheGameCards[1]
-            })),
-            effect: 'summon a{2} {1} from the depths of the Shadowlands!',
-            effectArgs: context => {
+            })))
+            .effect('summon a{2} {1} from the depths of the Shadowlands!', context => {
                 const creature = context.costs.accursedSummoningCostCreature as DrawCard;
                 var testStr = creature.name;
                 var vowelRegex = '^[aieouAIEOU].*';
@@ -118,8 +116,7 @@ class AccursedSummoning extends DrawCard {
                     creature,
                     matched ? 'n' : ''
                 ];
-            }
-        });
+            });
     }
 
     isTemptationsMaho() {

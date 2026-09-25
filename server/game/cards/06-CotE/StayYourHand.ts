@@ -9,20 +9,17 @@ class StayYourHand extends DrawCard {
     static id = 'stay-your-hand';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Cancel a duel',
-            when: {
+        this.wouldInterrupt('Cancel a duel')
+            .when({
                 onDuelInitiated: (event: EventPayload<EventName.OnDuelInitiated>, context: AbilityContext) =>
                     !!event.context &&
                     event.context.player === context.player.opponent &&
                     (Object.values(event.context.targets).some((card) => (card as BaseCard).controller === context.player) ||
                     (event.context.targets.target && Object.values(event.context.targets.target).some((card) => (card as BaseCard).controller === context.player)))
-            },
-            cannotBeMirrored: true,
-            effect: 'cancel the duel originating from {1}',
-            effectArgs: (context: AbilityContext) => ((context as TriggeredAbilityContext).event.context as AbilityContext).source,
-            handler: (context: AbilityContext) => (context as TriggeredAbilityContext).cancel()
-        });
+            })
+            .handler((context) => (context as TriggeredAbilityContext).cancel())
+            .effect('cancel the duel originating from {1}', (context) => ((context as TriggeredAbilityContext).event.context as AbilityContext).source)
+            .cannotBeMirrored();
     }
 }
 

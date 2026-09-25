@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType, Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -7,18 +6,15 @@ class RaiseTheAlarm extends DrawCard {
     static id = 'raise-the-alarm';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Flip a dynasty card',
-            condition: context => this.game.isDuringConflict('military') && context.player.isDefendingPlayer(),
-            cannotBeMirrored: true,
-            effect: 'flip the card in the conflict province faceup',
-            target: {
+        this.action('Flip a dynasty card')
+            .condition(context => this.game.isDuringConflict('military') && context.player.isDefendingPlayer())
+            .target('target', {
                 controller: Players.Self,
                 location: Location.Provinces,
-                cardCondition: (card) => card.isInConflictProvince() && card.isFacedown(),
-                gameAction: AbilityDsl.actions.flipDynasty()
-            },
-            then: (context: AbilityContext) => ({
+                cardCondition: (card) => card.isInConflictProvince() && card.isFacedown()
+            }, AbilityDsl.actions.flipDynasty())
+            .effect('flip the card in the conflict province faceup')
+            .then((context) => ({
                 handler: () => {
                     let card = context.target as DrawCard;
                     if(card.type === CardType.Character && card.allowGameAction('putIntoConflict', context)) {
@@ -28,8 +24,8 @@ class RaiseTheAlarm extends DrawCard {
                         this.game.addMessage('{0} is revealed but cannot be brought into the conflict!', card);
                     }
                 }
-            })
-        });
+            }))
+            .cannotBeMirrored();
     }
 }
 

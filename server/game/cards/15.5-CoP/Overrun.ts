@@ -6,22 +6,19 @@ class Overrun extends DrawCard {
     static id = 'overrun';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Blank and reveal a province',
-            when: {
+        this.reaction('Blank and reveal a province')
+            .when({
                 onBreakProvince: (event, context) => event.card.owner !== context.player
-            },
-            target: {
+            })
+            .target('target', {
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 controller: Players.Opponent,
-                cardCondition: (card, context) => card.controller !== context.player,
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.dishonorProvince(),
-                    AbilityDsl.actions.reveal({ chatMessage: true })
-                ])
-            }
-        });
+                cardCondition: (card, context) => card.controller !== context.player
+            }, AbilityDsl.actions.sequential([
+                AbilityDsl.actions.dishonorProvince(),
+                AbilityDsl.actions.reveal({ chatMessage: true })
+            ]));
     }
 }
 

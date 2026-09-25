@@ -8,20 +8,16 @@ export default class DrivenByCourage extends ProvinceCard {
     static id = 'driven-by-courage';
 
     setupCardAbilities() {
-        this.action({
-            title: 'give target character +2/+2',
-            conflictProvinceCondition: (province) => province.isElement(this.getCurrentElementSymbol(elementKey)),
-            target: {
+        this.action('give target character +2/+2')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.modifyBothSkills(2)
-                })
-            },
-            effect: 'give {0} +2{1} and +2{2}',
-            effectArgs: () => ['political', 'military']
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.cardLastingEffect({
+                effect: AbilityDsl.effects.modifyBothSkills(2)
+            }))
+            .effect('give {0} +2{1} and +2{2}', () => ['political', 'military'])
+            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)));
     }
 
     getPrintedElementSymbols() {

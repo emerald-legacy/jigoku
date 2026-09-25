@@ -7,19 +7,16 @@ class MotoBeastmaster extends DrawCard {
     static id = 'moto-beastmaster';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Put a character into play',
-            when: {
+        this.reaction('Put a character into play')
+            .when({
                 onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) => event.attackers?.includes(context.source) ?? false
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: (card, context) => context.player.firstPlayer ? card.costLessThan(5) : card.costLessThan(3),
-                gameAction: AbilityDsl.actions.putIntoConflict()
-            }
-        });
+                cardCondition: (card, context) => context.player.firstPlayer ? card.costLessThan(5) : card.costLessThan(3)
+            }, AbilityDsl.actions.putIntoConflict());
     }
 }
 

@@ -112,18 +112,15 @@ export default class BackAlleyHideaway extends DrawCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.customDetachedCard(backAlleyPersistentEffect)
         });
-        this.interrupt({
-            title: 'Place character in Hideaway',
-            when: {
+        this.interrupt('Place character in Hideaway')
+            .when({
                 onCardLeavesPlay: (event, context: TriggeredAbilityContext) =>
                     event.card.isFaction('scorpion') &&
                     event.card.type === CardType.Character &&
                     event.card.controller === context.player &&
                     event.card.location === Location.PlayArea
-            },
-            effect: 'move {1} into hiding',
-            effectArgs: (context: TriggeredAbilityContext) => context?.event.card ?? '',
-            handler: (context: TriggeredAbilityContext<this>) => {
+            })
+            .handler((context) => {
                 context.event.replaceHandler((event: Event) => {
                     const card = (event as Event & { card: DrawCard }).card;
                     context.player.removeCardFromPile(card);
@@ -133,7 +130,7 @@ export default class BackAlleyHideaway extends DrawCard {
                     card.parent = context.source;
                     card.abilities.playActions.push(new BackAlleyPlayCharacterAction(context.source, card));
                 });
-            }
-        });
+            })
+            .effect('move {1} into hiding', (context) => context?.event.card ?? '');
     }
 }

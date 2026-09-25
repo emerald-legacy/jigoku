@@ -7,27 +7,21 @@ class HidaTsuru extends DrawCard {
     static id = 'hida-tsuru';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Give this character +1/+1',
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            when: {
+        this.reaction('Give this character +1/+1')
+            .when({
                 onMoveToConflict: (_event, context) => context.source.isParticipating()
-            },
-            effect: 'give him +1{1}/+1{2}',
-            effectArgs: () => ['military', 'political'],
-            gameAction: AbilityDsl.actions.cardLastingEffect({ effect: ability.effects.modifyBothSkills(1) })
-        });
+            })
+            .gameAction(AbilityDsl.actions.cardLastingEffect({ effect: ability.effects.modifyBothSkills(1) }))
+            .effect('give him +1{1}/+1{2}', () => ['military', 'political'])
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
 
-        this.reaction({
-            title: 'Give this character +1/+1',
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            when: {
+        this.reaction('Give this character +1/+1')
+            .when({
                 onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context) => event.card.isParticipating() && context.source.isParticipating()
-            },
-            effect: 'give him +1{1}/+1{2}',
-            effectArgs: () => ['military', 'political'],
-            gameAction: AbilityDsl.actions.cardLastingEffect({ effect: ability.effects.modifyBothSkills(1) })
-        });
+            })
+            .gameAction(AbilityDsl.actions.cardLastingEffect({ effect: ability.effects.modifyBothSkills(1) }))
+            .effect('give him +1{1}/+1{2}', () => ['military', 'political'])
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }
 

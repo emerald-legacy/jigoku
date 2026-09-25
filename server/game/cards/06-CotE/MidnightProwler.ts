@@ -7,16 +7,15 @@ export default class MidnightProwler extends DrawCard {
     static id = 'midnight-prowler';
 
     public setupCardAbilities() {
-        this.reaction({
-            title: 'Look at the top two card of your opponents conflict deck.',
-            when: {
+        this.reaction('Look at the top two card of your opponents conflict deck.')
+            .when({
                 afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<this>) =>
                     this.game.isDuringConflict('military') &&
                     context.source.isParticipating() &&
                     event.conflict.winner === context.source.controller &&
                     context.player.opponent !== undefined
-            },
-            handler: (context: TriggeredAbilityContext) => {
+            })
+            .handler((context) => {
                 if(!context || !context.player.opponent) {
                     return;
                 }
@@ -32,7 +31,6 @@ export default class MidnightProwler extends DrawCard {
                         context.game.addMessage('{0} chooses to discard {1}', context.player, card);
                     }
                 });
-            }
-        });
+            });
     }
 }

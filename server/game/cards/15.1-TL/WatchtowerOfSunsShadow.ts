@@ -22,16 +22,14 @@ class WatchtowerOfSunsShadow extends DrawCard {
             effect: AbilityDsl.effects.modifyBothSkills((card: DrawCard) => -card.getFate())
         });
 
-        this.forcedInterrupt({
-            title: 'Lose 2 fate',
-            when: {
+        this.forcedInterrupt('Lose 2 fate')
+            .when({
                 onBreakProvince: (event, context) => event.card.controller === context.player && event.card.location === context.source.location
-            },
-            gameAction: AbilityDsl.actions.loseFate(context => ({
+            })
+            .gameAction(AbilityDsl.actions.loseFate(context => ({
                 amount: 2,
                 target: context.player
-            }))
-        });
+            })));
     }
 }
 

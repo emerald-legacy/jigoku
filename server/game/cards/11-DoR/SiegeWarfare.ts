@@ -8,10 +8,9 @@ class SiegeWarfare extends DrawCard {
     static id = 'siege-warfare';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Give attacked province -2 strength',
-            condition: context => context.player.isAttackingPlayer() && context.player.getNumberOfHoldingsInPlay() > 0,
-            gameAction: AbilityDsl.actions.selectCard(context => ({
+        this.action('Give attacked province -2 strength')
+            .condition(context => context.player.isAttackingPlayer() && context.player.getNumberOfHoldingsInPlay() > 0)
+            .gameAction(AbilityDsl.actions.selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -23,9 +22,8 @@ class SiegeWarfare extends DrawCard {
                     targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.modifyProvinceStrength(-2)
                 }))
-            })),
-            effect: 'reduce the province strength of an attacked province by 2'
-        });
+            })))
+            .effect('reduce the province strength of an attacked province by 2');
     }
 }
 

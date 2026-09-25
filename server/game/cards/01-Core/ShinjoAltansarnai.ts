@@ -7,19 +7,16 @@ class ShinjoAltansarnai extends DrawCard {
     static id = 'shinjo-altansarnai';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Discard a character',
-            when: {
+        this.reaction('Discard a character')
+            .when({
                 onBreakProvince: (event: EventPayload<EventName.OnBreakProvince>, context) => event.conflict?.conflictType === 'military' && context.source.isAttacking()
-            },
-            target: {
+            })
+            .target('target', {
                 activePromptTitle: 'Choose a character to discard',
                 cardType: CardType.Character,
                 player: Players.Opponent,
-                controller: Players.Opponent,
-                gameAction: ability.actions.discardFromPlay()
-            }
-        });
+                controller: Players.Opponent
+            }, ability.actions.discardFromPlay());
     }
 }
 

@@ -31,12 +31,10 @@ export default class CourtlyChallenger extends DrawCard {
             ]
         });
 
-        this.action({
-            title: 'Initiate a Political duel',
-            initiateDuel: {
+        this.action('Initiate a Political duel')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 gameAction: (duel) => AbilityDsl.actions.draw({ amount: 2, target: duel.winnerController })
-            }
-        });
+            }));
     }
 }

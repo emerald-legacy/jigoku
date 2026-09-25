@@ -11,14 +11,12 @@ class FingerOfJade extends DrawCard {
             myControl: true
         });
 
-        this.wouldInterrupt({
-            title: 'Cancel an ability',
-            when: {
+        this.wouldInterrupt('Cancel an ability')
+            .when({
                 onInitiateAbilityEffects: (event: EventPayload<EventName.OnInitiateAbilityEffects>, context) => (event.cardTargets ?? []).some(card => card === context.source.parentCharacter)
-            },
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            gameAction: AbilityDsl.actions.cancel()
-        });
+            })
+            .cost(AbilityDsl.costs.sacrificeSelf())
+            .gameAction(AbilityDsl.actions.cancel());
     }
 }
 

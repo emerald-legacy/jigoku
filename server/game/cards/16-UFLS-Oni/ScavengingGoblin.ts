@@ -9,18 +9,15 @@ export default class ScavengingGoblin extends BaseOni {
 
     public setupCardAbilities() {
         super.setupCardAbilities();
-        this.reaction({
-            title: 'Remove cards from the game',
-            when: {
+        this.reaction('Remove cards from the game')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller &&
                     context.source.isParticipating() &&
                     context.player.opponent &&
                     context.player.opponent.conflictDeck.length > 0
-            },
-            effect: 'remove the top 3 cards of {1}\'s conflict deck from the game as well as any matching attachments',
-            effectArgs: (context) => [context.player.opponent ?? ''],
-            gameAction: AbilityDsl.actions.multipleContext((context) => {
+            })
+            .gameAction(AbilityDsl.actions.multipleContext((context) => {
                 const cardsToRemove = context.player.opponent?.conflictDeck.slice(0, 3) ?? [];
                 const cardNames = cardsToRemove.map((card: DrawCard) => card.name);
                 const attachmentsToRemove = this.game.allCards.filter((card) => {
@@ -68,7 +65,7 @@ export default class ScavengingGoblin extends BaseOni {
                         })
                     ]
                 };
-            })
-        });
+            }))
+            .effect('remove the top 3 cards of {1}\'s conflict deck from the game as well as any matching attachments', (context) => [context.player.opponent ?? '']);
     }
 }

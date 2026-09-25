@@ -6,15 +6,13 @@ class FavoredNiece extends DrawCard {
     static id = 'favored-niece';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Discard then draw a card',
-            limit: ability.limit.perRound(2),
-            cost: ability.costs.discardCard({
+        this.action('Discard then draw a card')
+            .cost(ability.costs.discardCard({
                 location: Location.Hand,
                 targets: true
-            }),
-            gameAction: ability.actions.draw()
-        });
+            }))
+            .gameAction(ability.actions.draw())
+            .limit(ability.limit.perRound(2));
     }
 }
 

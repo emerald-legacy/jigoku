@@ -6,15 +6,13 @@ class SneakyShinjo extends DrawCard {
     static id = 'sneaky-shinjo';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Play this character',
-            location: Location.Provinces,
-            when: {
+        this.reaction('Play this character')
+            .when({
                 onPassDuringDynasty: (event, context) => event.player === context.player
-            },
-            effect: 'play {0}',
-            gameAction: AbilityDsl.actions.playCard({ location: Location.ProvinceOne, source: this })
-        });
+            })
+            .gameAction(AbilityDsl.actions.playCard({ location: Location.ProvinceOne, source: this }))
+            .effect('play {0}')
+            .location(Location.Provinces);
     }
 }
 

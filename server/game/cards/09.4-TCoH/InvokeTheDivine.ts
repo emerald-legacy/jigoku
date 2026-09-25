@@ -24,11 +24,9 @@ class InvokeTheDivine extends DrawCard {
                 }
             }))
         });
-        this.action({
-            title: 'Play 3 spells',
-            effect: 'play 3 spells from their hand',
-            gameAction: getSelectCardAction(5, 0)
-        });
+        this.action('Play 3 spells')
+            .gameAction(getSelectCardAction(5, 0))
+            .effect('play 3 spells from their hand');
     }
 }
 

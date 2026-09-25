@@ -6,12 +6,10 @@ class OpenFieldSkirmisher extends DrawCard {
     static id = 'open-field-skirmisher';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Reduce Province Strength',
-            condition: context => context.source.isAttacking(),
-            effect: 'reduce the strength of an attacked province by 3',
-            cost: AbilityDsl.costs.removeFateFromSelf(),
-            gameAction: AbilityDsl.actions.selectCard(context => ({
+        this.action('Reduce Province Strength')
+            .cost(AbilityDsl.costs.removeFateFromSelf())
+            .condition(context => context.source.isAttacking())
+            .gameAction(AbilityDsl.actions.selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -23,8 +21,8 @@ class OpenFieldSkirmisher extends DrawCard {
                     targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.modifyProvinceStrength(-3)
                 }))
-            }))
-        });
+            })))
+            .effect('reduce the strength of an attacked province by 3');
     }
 }
 

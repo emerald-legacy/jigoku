@@ -1,7 +1,4 @@
-import type DrawCard from '../../DrawCard.js';
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import { CardType, Players } from '../../Constants.js';
-import type BaseCard from '../../BaseCard.js';
 import { BaseOni } from './_BaseOni.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -10,23 +7,19 @@ export default class Penanggalan extends BaseOni {
 
     public setupCardAbilities() {
         super.setupCardAbilities();
-        this.reaction({
-            title: 'Move a fate onto this character',
-            when: {
+        this.reaction('Move a fate onto this character')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
-            },
-            target: {
+            })
+            .target('target', {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isTainted && card.isParticipating(),
-                gameAction: AbilityDsl.actions.placeFate((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                    target: context.source,
-                    origin: context.target
-                }))
-            },
-            effect: 'take a fate from {1} and place it on {2}',
-            effectArgs: (context) => [context.target as BaseCard, context.source]
-        });
+                cardCondition: (card) => card.isTainted && card.isParticipating()
+            }, AbilityDsl.actions.placeFate((context) => ({
+                target: context.source,
+                origin: context.target
+            })))
+            .effect('take a fate from {1} and place it on {2}', (context) => [context.target, context.source]);
     }
 }

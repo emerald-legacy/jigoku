@@ -6,18 +6,15 @@ class Outwit extends DrawCard {
     static id = 'outwit';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Send a character home.',
-            target: {
+        this.action('Send a character home.')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card, context) => context.player.cardsInPlay.some((myCard: DrawCard) => (
                     myCard.hasTrait('courtier') && myCard.isParticipating() &&
                     myCard.politicalSkill > card.politicalSkill
-                )),
-                gameAction: ability.actions.sendHome()
-            }
-        });
+                ))
+            }, ability.actions.sendHome());
     }
 }
 

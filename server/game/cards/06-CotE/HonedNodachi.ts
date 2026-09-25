@@ -12,23 +12,20 @@ class HonedNodachi extends DrawCard {
             trait: 'bushi'
         });
 
-        this.reaction({
-            title: 'Remove a fate from attached character and force opponent to discard a participating character',
-            when: {
+        this.reaction('Remove a fate from attached character and force opponent to discard a participating character')
+            .when({
                 afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                                                    event.conflict.winner === context.source.parentCharacter.controller &&
                                                    event.conflict.conflictType === 'military'
-            },
-            cost: ability.costs.removeFateFromParent(),
-            target: {
+            })
+            .cost(ability.costs.removeFateFromParent())
+            .target('target', {
                 activePromptTitle: 'Choose a character to discard',
                 cardType: CardType.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: ability.actions.discardFromPlay()
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, ability.actions.discardFromPlay());
     }
 }
 

@@ -8,10 +8,9 @@ class DaidojiUji2 extends DrawCard {
     static id = 'daidoji-uji-2';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Search your conflict deck',
-            when: { onCharacterEntersPlay: (event, context) => event.card === context.source },
-            gameAction: AbilityDsl.actions.deckSearch({
+        this.reaction('Search your conflict deck')
+            .when({ onCharacterEntersPlay: (event, context) => event.card === context.source })
+            .gameAction(AbilityDsl.actions.deckSearch({
                 targetMode: TargetMode.UpTo,
                 numCards: 4,
                 deck: Decks.ConflictDeck,
@@ -38,8 +37,7 @@ class DaidojiUji2 extends DrawCard {
                         this.game.addMessage('{0} selects no cards', searchEvent.player);
                     }
                 }
-            })
-        });
+            }));
 
         this.persistentEffect({
             condition: context => context.source.isHonored,

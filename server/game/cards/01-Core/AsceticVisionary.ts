@@ -6,16 +6,13 @@ export default class AsceticVisionary extends DrawCard {
     static id = 'ascetic-visionary';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Ready a character',
-            cost: AbilityDsl.costs.payFateToRing(1),
-            condition: (context) => context.source.isAttacking(),
-            target: {
+        this.action('Ready a character')
+            .cost(AbilityDsl.costs.payFateToRing(1))
+            .condition((context) => context.source.isAttacking())
+            .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card) =>
-                    card.hasTrait('monk') || card.attachments.some((card: DrawCard) => card.hasTrait('monk')),
-                gameAction: AbilityDsl.actions.ready()
-            }
-        });
+                    card.hasTrait('monk') || card.attachments.some((card: DrawCard) => card.hasTrait('monk'))
+            }, AbilityDsl.actions.ready());
     }
 }

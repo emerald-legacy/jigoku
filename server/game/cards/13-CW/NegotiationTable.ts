@@ -7,10 +7,9 @@ export default class NegotiationTable extends DrawCard {
     static id = 'negotiation-table';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Make opponent pick from several options',
-            condition: (context) => context.player.opponent !== undefined,
-            handler: (context: AbilityContext) => {
+        this.action('Make opponent pick from several options')
+            .condition((context) => context.player.opponent !== undefined)
+            .handler((context) => {
                 let choices: string[] = [];
                 let handlers: (() => void)[] = [];
 
@@ -51,8 +50,7 @@ export default class NegotiationTable extends DrawCard {
                 handlers.push(doneHandler);
 
                 this.getHandlerMenu(context, choices, handlers);
-            }
-        });
+            });
     }
 
     getHandlerMenu(context: AbilityContext, choices: string[], handlers: (() => void)[]) {

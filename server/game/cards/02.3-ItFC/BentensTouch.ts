@@ -6,21 +6,17 @@ class BentensTouch extends DrawCard {
     static id = 'benten-s-touch';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Bow and Honor a character',
-
-            cost: ability.costs.bow({
+        this.action('Bow and Honor a character')
+            .cost(ability.costs.bow({
                 cardType: CardType.Character,
                 cardCondition: card => card.isFaction('phoenix') && card.hasTrait('shugenja')
-            }),
-            target: {
+            }))
+            .target('target', {
                 cardType: CardType.Character,
                 activePromptTitle: 'Choose a character to honor',
                 controller: Players.Self,
-                cardCondition: card => card.isParticipating(),
-                gameAction: ability.actions.honor()
-            }
-        });
+                cardCondition: card => card.isParticipating()
+            }, ability.actions.honor());
     }
 }
 

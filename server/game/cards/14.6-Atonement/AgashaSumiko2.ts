@@ -1,19 +1,17 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-import type Player from '../../Player.js';
 
 export default class AgashaSumiko2 extends DrawCard {
     static id = 'agasha-sumiko-2';
 
     public setupCardAbilities() {
-        this.interrupt({
-            title: 'Honor a character',
-            when: {
+        this.interrupt('Honor a character')
+            .when({
                 onCardLeavesPlay: (event, context) =>
                     event.card === context.source && context.player.opponent !== undefined
-            },
-            gameAction: AbilityDsl.actions.multiple([
+            })
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.loseHonor((context) => ({
                     target: context.player.opponent,
                     amount: context.player.opponent?.isMoreHonorable() ? 2 : 0
@@ -26,10 +24,8 @@ export default class AgashaSumiko2 extends DrawCard {
                     target: context.player.opponent,
                     amount: (context.player.opponent?.hand.length ?? 0) > context.player.hand.length ? 2 : 0
                 }))
-            ]),
-            effect: 'make {1} {2}',
-            effectArgs: (context) => [context.player.opponent as Player, this.getChatMessage(context)]
-        });
+            ]))
+            .effect('make {1} {2}', (context) => [context.player.opponent, this.getChatMessage(context)]);
     }
 
     private getChatMessage(context: TriggeredAbilityContext) {

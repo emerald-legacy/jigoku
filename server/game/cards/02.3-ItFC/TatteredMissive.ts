@@ -11,18 +11,16 @@ class TatteredMissive extends DrawCard {
             trait: 'courtier'
         });
 
-        this.action({
-            title: 'Search top 5 cards',
-            condition: context => context.player.conflictDeck.length > 0,
-            cost: AbilityDsl.costs.bowParent(),
-            effect: 'look at the top 5 cards of their conflict deck',
-            gameAction: AbilityDsl.actions.deckSearch({
+        this.action('Search top 5 cards')
+            .cost(AbilityDsl.costs.bowParent())
+            .condition(context => context.player.conflictDeck.length > 0)
+            .gameAction(AbilityDsl.actions.deckSearch({
                 amount: 5,
                 gameAction: AbilityDsl.actions.moveCard({
                     destination: Location.Hand
                 })
-            })
-        });
+            }))
+            .effect('look at the top 5 cards of their conflict deck');
     }
 }
 

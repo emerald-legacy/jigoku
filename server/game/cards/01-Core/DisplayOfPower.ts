@@ -9,17 +9,15 @@ class DisplayOfPower extends DrawCard {
     static id = 'display-of-power';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Cancel opponent\'s ring effect and claim and resolve the ring',
-            when: {
+        this.reaction('Cancel opponent\'s ring effect and claim and resolve the ring')
+            .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictUnopposed
-            },
-            cannotBeMirrored: true,
-            effect: 'resolve and claim the ring when the ring effect resolves',
-            handler: context => {
+            })
+            .handler(context => {
                 this.game.once(EventName.OnResolveConflictRing + ':' + AbilityType.WouldInterrupt, (event: unknown) => this.onResolveConflictRing(event as GameEvent<EventName.OnResolveConflictRing>, context));
-            }
-        });
+            })
+            .effect('resolve and claim the ring when the ring effect resolves')
+            .cannotBeMirrored();
     }
 
     onResolveConflictRing(event: GameEvent<EventName.OnResolveConflictRing>, context: AbilityContext) {

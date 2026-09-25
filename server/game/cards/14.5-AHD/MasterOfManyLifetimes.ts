@@ -7,9 +7,8 @@ class MasterOfManyLifetimes extends DrawCard {
     static id = 'master-of-many-lifetimes';
 
     setupCardAbilities() {
-        this.wouldInterrupt<DrawCard>({
-            title: 'Return a character and attachments',
-            when: {
+        this.wouldInterrupt('Return a character and attachments')
+            .when({
                 onCardLeavesPlay: (event, context) => {
                     return (
                         event.card.controller === context.player &&
@@ -17,14 +16,14 @@ class MasterOfManyLifetimes extends DrawCard {
                         event.card.location === Location.PlayArea
                     );
                 }
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Province,
                 controller: Players.Self,
                 location: Location.Provinces,
                 cardCondition: (card) => card.facedown
-            },
-            gameAction: AbilityDsl.actions.cancel((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
+            })
+            .gameAction(AbilityDsl.actions.cancel((context) => ({
                 replacementGameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.returnToHand((context: TriggeredAbilityContext) => ({
                         target: context.event.card?.attachments ?? []
@@ -35,10 +34,8 @@ class MasterOfManyLifetimes extends DrawCard {
                         destination: context.target?.location
                     })
                 ])
-            })),
-            effect: 'prevent {1} from leaving play, putting it into {2} instead',
-            effectArgs: (context) => [context.event.card ?? '', context.target?.location ?? '']
-        });
+            })))
+            .effect('prevent {1} from leaving play, putting it into {2} instead', (context) => [context.event.card ?? '', context.target?.location ?? '']);
     }
 }
 

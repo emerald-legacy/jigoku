@@ -1,4 +1,4 @@
-import { Duration, TargetMode } from '../../Constants.js';
+import { Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
@@ -9,21 +9,17 @@ export default class WayOfThePhoenix extends DrawCard {
     static id = 'way-of-the-phoenix';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Prevent an opponent contesting a ring',
-            condition: (context) => context.player.opponent !== undefined,
-            target: {
-                mode: TargetMode.Ring,
+        this.action('Prevent an opponent contesting a ring')
+            .condition((context) => context.player.opponent !== undefined)
+            .ringTarget('target', {
                 ringCondition: () => true
-            },
-            effect: 'prevent {1} from declaring a conflict with {0}',
-            effectArgs: (context) => context.player.opponent ?? '',
-            gameAction: AbilityDsl.actions.ringLastingEffect((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.ringLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
                 target: (context.ring?.getElements() as Element[]).map((element) => this.game.rings[element]),
                 effect: AbilityDsl.effects.cannotDeclareRing((player: Player) => player === context.player.opponent)
-            })),
-            max: AbilityDsl.limit.perPhase(1)
-        });
+            })))
+            .effect('prevent {1} from declaring a conflict with {0}', (context) => context.player.opponent ?? '')
+            .max(AbilityDsl.limit.perPhase(1));
     }
 }

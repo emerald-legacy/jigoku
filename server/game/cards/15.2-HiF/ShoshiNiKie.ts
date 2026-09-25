@@ -6,16 +6,13 @@ class ShoshiNiKie extends DrawCard {
     static id = 'shoshi-ni-kie';
 
     setupCardAbilities() {
-        this.action({
-            title: 'ready an ordinary character',
-            cost: AbilityDsl.costs.selectedReveal({ cardCondition: card => card.isFacedown(), cardType: CardType.Province }),
-            target: {
+        this.action('ready an ordinary character')
+            .cost(AbilityDsl.costs.selectedReveal({ cardCondition: card => card.isFacedown(), cardType: CardType.Province }))
+            .target('target', {
                 cardCondition: card => card.isOrdinary(),
                 cardType: CardType.Character,
-                player: Players.Self,
-                gameAction: AbilityDsl.actions.ready()
-            }
-        });
+                player: Players.Self
+            }, AbilityDsl.actions.ready());
     }
 }
 

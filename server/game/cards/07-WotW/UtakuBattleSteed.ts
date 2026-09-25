@@ -1,5 +1,4 @@
 import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -16,17 +15,15 @@ class UtakuBattleSteed extends DrawCard {
             effect: ability.effects.addTrait('cavalry')
         });
 
-        this.reaction({
-            title: 'Honor attached character',
-            when: {
+        this.reaction('Honor attached character')
+            .when({
                 afterConflict: (event: EventPayload<EventName.AfterConflict>, context) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                                                    event.conflict.winner === context.source.parentCharacter.controller &&
                                                    event.conflict.conflictType === 'military'
-            },
-            gameAction: ability.actions.honor((context: AbilityContext<this>) => ({
+            })
+            .gameAction(ability.actions.honor((context) => ({
                 target: context.source.parentCharacter ?? []
-            }))
-        });
+            })));
     }
 }
 

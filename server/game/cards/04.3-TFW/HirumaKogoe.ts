@@ -5,16 +5,14 @@ class HirumaKogoe extends DrawCard {
     static id = 'hiruma-kogoe';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Rearrange top 3 cards of your conflict deck',
-            when: {
+        this.reaction('Rearrange top 3 cards of your conflict deck')
+            .when({
                 onPhaseStarted: (event, context) => event.phase === 'draw' && context.player.opponent && context.player.honor < context.player.opponent.honor
-            },
-            effect: 'rearrange the top 3 cards of their conflict deck',
-            handler: (context) => {
+            })
+            .handler((context) => {
                 this.hirumaKogoePrompt(context, context.player.conflictDeck.slice(0, 3), [], 'Which card do you want to be on top?');
-            }
-        });
+            })
+            .effect('rearrange the top 3 cards of their conflict deck');
     }
 
     hirumaKogoePrompt(context: AbilityContext, promptCards: DrawCard[], orderedCards: DrawCard[], promptTitle: string) {

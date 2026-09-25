@@ -15,19 +15,17 @@ class TheMirrorsGaze extends DrawCard {
             trait: 'shugenja'
         });
 
-        this.reaction({
-            title: 'Mirror an opponent\'s event',
-            when: {
+        this.reaction('Mirror an opponent\'s event')
+            .when({
                 onCardAbilityTriggered: (event: EventPayload<EventName.OnCardAbilityTriggered>, context: TriggeredAbilityContext) => event.card.type === CardType.Event && !(event.context.ability as CardAbility).cannotBeMirrored &&
                     event.context.player === context.player.opponent && !event.cancelled
-            },
-            gameAction: ability.actions.resolveAbility((context: AbilityContext) => ({
+            })
+            .gameAction(ability.actions.resolveAbility((context) => ({
                 target: (context as TriggeredAbilityContext).event.card,
                 ability: ((context as TriggeredAbilityContext).event.context as AbilityContext).ability as CardAbility,
                 ignoredRequirements: ['cost', 'condition', 'limit'],
                 event: ((context as TriggeredAbilityContext).event.context as TriggeredAbilityContext).event
-            }))
-        });
+            })));
     }
 }
 

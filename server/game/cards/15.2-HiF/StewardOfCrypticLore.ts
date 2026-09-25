@@ -13,11 +13,9 @@ export default class StewardOfCrypticLore extends DrawCard {
             effect: AbilityDsl.effects.modifyPoliticalSkill(3)
         });
 
-        this.action({
-            title: 'Changes the strength of the attacked province',
-            condition: (context) => context.game.isDuringConflict(this.getCurrentElementSymbol(ELEMENT)),
-            effect: 'change the province strength of an attacked province',
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+        this.action('Changes the strength of the attacked province')
+            .condition((context) => context.game.isDuringConflict(this.getCurrentElementSymbol(ELEMENT)))
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -45,8 +43,8 @@ export default class StewardOfCrypticLore extends DrawCard {
                         }
                     }
                 }))
-            }))
-        });
+            })))
+            .effect('change the province strength of an attacked province');
     }
 
     getPrintedElementSymbols() {

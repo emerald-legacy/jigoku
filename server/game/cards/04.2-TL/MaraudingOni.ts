@@ -15,16 +15,14 @@ class MaraudingOni extends DrawCard {
             ]
         });
 
-        this.forcedReaction({
-            title: 'Lose honor when declared as attacker or defender',
-            when: {
+        this.forcedReaction('Lose honor when declared as attacker or defender')
+            .when({
                 onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context: AbilityContext<this>) => (event.attackers ?? []).includes(context.source),
                 onDefendersDeclared: (event: EventPayload<EventName.OnDefendersDeclared>, context: AbilityContext<this>) => (event.defenders ?? []).includes(context.source)
-            },
-            effect: 'lose an honor',
-            gameAction: AbilityDsl.actions.loseHonor((context: AbilityContext) => ({ target: context.player })),
-            limit: AbilityDsl.limit.unlimitedPerConflict()
-        });
+            })
+            .gameAction(AbilityDsl.actions.loseHonor((context) => ({ target: context.player })))
+            .effect('lose an honor')
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }
 

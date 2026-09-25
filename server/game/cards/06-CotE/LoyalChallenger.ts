@@ -32,9 +32,8 @@ class LoyalChallenger extends DrawCard {
                 })
             ]
         });
-        this.action({
-            title: 'Initiate a Political duel',
-            initiateDuel: {
+        this.action('Initiate a Political duel')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 message: '{0} is blanked until the end of the conflict',
                 messageArgs: duel => duel.loser,
@@ -42,8 +41,7 @@ class LoyalChallenger extends DrawCard {
                     target: duel.loser,
                     effect: AbilityDsl.effects.blank()
                 })
-            }
-        });
+            }));
     }
 }
 

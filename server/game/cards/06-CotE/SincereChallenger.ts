@@ -9,9 +9,8 @@ class SincereChallenger extends DrawCard {
         this.composure({
             effect: AbilityDsl.effects.modifyPoliticalSkill(2)
         });
-        this.action({
-            title: 'Initiate a Political duel',
-            initiateDuel: {
+        this.action('Initiate a Political duel')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 message: '{0} is immune to events until the end of the conflict',
                 messageArgs: duel => duel.winner,
@@ -19,8 +18,7 @@ class SincereChallenger extends DrawCard {
                     target: duel.winner,
                     effect: AbilityDsl.effects.immunity({ restricts: 'events' })
                 })
-            }
-        });
+            }));
     }
 }
 

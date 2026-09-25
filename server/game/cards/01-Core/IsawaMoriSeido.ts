@@ -6,17 +6,14 @@ export default class IsawaMoriSeido extends StrongholdCard {
     static id = 'isawa-mori-seido';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow this stronghold',
-            cost: AbilityDsl.costs.bowSelf(),
-            target: {
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.modifyGlory(2)
-                })
-            },
-            effect: 'give +2 glory to {0} until the end of the phase'
-        });
+        this.action('Bow this stronghold')
+            .cost(AbilityDsl.costs.bowSelf())
+            .target('target', {
+                cardType: CardType.Character
+            }, AbilityDsl.actions.cardLastingEffect({
+                duration: Duration.UntilEndOfPhase,
+                effect: AbilityDsl.effects.modifyGlory(2)
+            }))
+            .effect('give +2 glory to {0} until the end of the phase');
     }
 }

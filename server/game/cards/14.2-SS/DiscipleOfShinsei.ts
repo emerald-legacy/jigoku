@@ -6,16 +6,13 @@ class DiscipleOfShinsei extends DrawCard {
     static id = 'disciple-of-shinsei';
 
     setupCardAbilities() {
-        this.interrupt({
-            title: 'Discard an attachment',
-            when: {
+        this.interrupt('Discard an attachment')
+            .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
-            },
-            target: {
-                cardType: CardType.Attachment,
-                gameAction: AbilityDsl.actions.discardFromPlay()
-            }
-        });
+            })
+            .target('target', {
+                cardType: CardType.Attachment
+            }, AbilityDsl.actions.discardFromPlay());
     }
 }
 

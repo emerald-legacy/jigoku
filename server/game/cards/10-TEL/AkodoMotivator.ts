@@ -1,4 +1,3 @@
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -6,9 +5,8 @@ class AkodoMotivator extends DrawCard {
     static id = 'akodo-motivator';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Opponent discards an equal number of cards at random',
-            when: {
+        this.reaction('Opponent discards an equal number of cards at random')
+            .when({
                 onCardsDiscardedFromHand: (event, context) => {
                     if(!event.player || !event.context) {
                         return false;
@@ -23,11 +21,10 @@ class AkodoMotivator extends DrawCard {
                         (discardedByRingEffect || discardedByCardEffect)
                     );
                 }
-            },
-            gameAction: AbilityDsl.actions.discardAtRandom((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
+            })
+            .gameAction(AbilityDsl.actions.discardAtRandom((context) => ({
                 amount: context.event.amount
-            }))
-        });
+            })));
     }
 }
 

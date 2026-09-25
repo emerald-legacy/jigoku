@@ -36,15 +36,13 @@ class TestOfSkill extends DrawCard {
     static id = 'test-of-skill';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Reveal cards and take ones matching named type',
-            condition: (context: AbilityContext) => context.player.conflictDeck.length >= (context.player.cardsInPlay.some((card: BaseCard) => card.hasTrait('duelist')) ? 4 : 3),
-            cost: [ability.costs.reveal((context: AbilityContext) => context.player.conflictDeck.slice(0,
+        this.action('Reveal cards and take ones matching named type')
+            .cost(ability.costs.reveal((context: AbilityContext) => context.player.conflictDeck.slice(0,
                 context.player.cardsInPlay.some((card: BaseCard) => card.hasTrait('duelist')) ? 4 : 3
-            )), testOfSkillCost()],
-            cannotBeMirrored: true,
-            effect: 'take cards into their hand',
-            handler: (context: AbilityContext) => {
+            )))
+            .cost(testOfSkillCost())
+            .condition((context) => context.player.conflictDeck.length >= (context.player.cardsInPlay.some((card: BaseCard) => card.hasTrait('duelist')) ? 4 : 3))
+            .handler((context) => {
                 const isMatching = (card: BaseCard) => card.type === context.costs.testOfSkillCost && card.location === Location.ConflictDeck;
                 let matchingCards: BaseCard[] = (context.costs.reveal as BaseCard[]).filter(isMatching);
                 let cardsToDiscard: BaseCard[] = (context.costs.reveal as BaseCard[]).filter((card: BaseCard) => !isMatching(card));
@@ -89,8 +87,9 @@ class TestOfSkill extends DrawCard {
                     choices: ['Done'],
                     handlers: [discardHandler]
                 });
-            }
-        });
+            })
+            .effect('take cards into their hand')
+            .cannotBeMirrored();
     }
 }
 

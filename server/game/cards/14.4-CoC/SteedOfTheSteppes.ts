@@ -24,17 +24,13 @@ class SteedOfTheSteppes extends DrawCard {
             effect: AbilityDsl.effects.addTrait('cavalry')
         });
 
-        this.action({
-            title: 'Ready attached character',
-            condition: context => !!(context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 3),
-            cost: [
-                steedOfTheSteppesCaptureParentCost(),
-                AbilityDsl.costs.sacrificeSelf()
-            ],
+        this.action('Ready attached character')
+            .cost(steedOfTheSteppesCaptureParentCost())
+            .cost(AbilityDsl.costs.sacrificeSelf())
+            .condition(context => !!(context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 3))
             //need to put both as a target, context.source.parentCharacter is for the pre-cost checks, context.costs.steedOfTheSteppesCaptureParentCost is for the actual stand
             //I don't like it, but it isnn't work otherwise
-            gameAction: AbilityDsl.actions.ready(context => ({ target: [context.source.parentCharacter, context.costs.steedOfTheSteppesCaptureParentCost as DrawCard].filter((card) => card !== null) }))
-        });
+            .gameAction(AbilityDsl.actions.ready(context => ({ target: [context.source.parentCharacter, context.costs.steedOfTheSteppesCaptureParentCost as DrawCard].filter((card) => card !== null) })));
     }
 }
 

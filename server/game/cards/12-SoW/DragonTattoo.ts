@@ -2,7 +2,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
 import { CardType, Location, PlayType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 export default class DragonTattoo extends DrawCard {
     static id = 'dragon-tattoo';
@@ -14,8 +14,8 @@ export default class DragonTattoo extends DrawCard {
 
         this.whileAttached({ effect: AbilityDsl.effects.addTrait('tattooed') });
 
-        this.reaction({
-            when: {
+        this.reaction('Play card again')
+            .when({
                 onCardPlayed: (event, context) =>
                     event.card.type === CardType.Event &&
                     event.card.controller === context.player &&
@@ -24,10 +24,12 @@ export default class DragonTattoo extends DrawCard {
                     // chosenCardTargets covers the whole triggering, sub-resolutions included
                     (event.context?.triggeringContext.chosenCardTargets ?? []).some((card) =>
                         this.isValidTargetForTattoo(card, context))
-            },
-            title: 'Play card again',
-            gameAction: AbilityDsl.actions.ifAble((context: TriggeredAbilityContext<DrawCard, DrawCard>) => {
+            })
+            .gameAction(AbilityDsl.actions.ifAble((context) => {
                 const card = context.event.card;
+                // a reaction event is played again in response to the event it first reacted to
+                const played = context.event.context;
+                const respondingTo = played instanceof TriggeredAbilityContext ? played.event : undefined;
                 return {
                     ifAbleAction: AbilityDsl.actions.playCard(() => {
                         this.cardPlayed = true;
@@ -38,7 +40,8 @@ export default class DragonTattoo extends DrawCard {
                             playType: PlayType.Other,
                             destination: Location.RemovedFromGame,
                             payCosts: true,
-                            allowReactions: true
+                            allowReactions: true,
+                            event: respondingTo
                         };
                     }),
                     otherwiseAction: AbilityDsl.actions.moveCard(() => {
@@ -49,14 +52,12 @@ export default class DragonTattoo extends DrawCard {
                         };
                     })
                 };
-            }),
-            effect: '{1}{2}{3}',
-            effectArgs: (context) => [
+            }))
+            .effect('{1}{2}{3}', (context) => [
                 this.cardPlayed ? 'play ' : 'remove ',
                 context.event.card?.name ?? '',
                 this.cardPlayed ? '' : ' from the game'
-            ]
-        });
+            ]);
     }
 
     private isValidTargetForTattoo(card: BaseCard, context: TriggeredAbilityContext) {

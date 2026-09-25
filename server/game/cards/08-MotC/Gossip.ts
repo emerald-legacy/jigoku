@@ -7,9 +7,8 @@ class Gossip extends DrawCard {
     static id = 'gossip';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Name a card that your opponent cannot play for the phase',
-            handler: context => {
+        this.action('Name a card that your opponent cannot play for the phase')
+            .handler(context => {
                 this.game.promptWithMenu(context.player, this, {
                     context: context,
                     activePrompt: {
@@ -19,8 +18,7 @@ class Gossip extends DrawCard {
                         ]
                     }
                 });
-            }
-        });
+            });
     }
 
     selectCardName(player: Player, cardName: string, context: AbilityContext) {

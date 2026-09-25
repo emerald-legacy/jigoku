@@ -6,13 +6,11 @@ class ForgottenLibrary extends DrawCard {
     static id = 'forgotten-library';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Draw a card',
-            when: {
+        this.reaction('Draw a card')
+            .when({
                 onPhaseStarted: event => event.phase === Phases.Draw
-            },
-            gameAction: ability.actions.draw()
-        });
+            })
+            .gameAction(ability.actions.draw());
     }
 }
 

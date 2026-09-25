@@ -6,10 +6,8 @@ class ThePerfectGift extends DrawCard {
     static id = 'the-perfect-gift';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Give each player a gift',
-            effect: 'give each player a gift',
-            gameAction: AbilityDsl.actions.sequential([
+        this.action('Give each player a gift')
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.lookAt(context => ({
                     target: context.player.conflictDeck.slice(0, 4),
                     message: '{0} reveals the top {1} from their conflict deck: {2}',
@@ -44,8 +42,8 @@ class ThePerfectGift extends DrawCard {
                     target: context.player.opponent || [],
                     deck: Location.ConflictDeck
                 }))
-            ])
-        });
+            ]))
+            .effect('give each player a gift');
     }
 }
 

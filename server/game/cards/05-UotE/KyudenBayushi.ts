@@ -7,28 +7,21 @@ export default class KyudenBayushi extends StrongholdCard {
     static id = 'kyuden-bayushi';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Ready a dishonored character',
-            cost: AbilityDsl.costs.bowSelf(),
-            target: {
+        this.action('Ready a dishonored character')
+            .cost(AbilityDsl.costs.bowSelf())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isDishonored,
-                gameAction: [
-                    AbilityDsl.actions.ready(),
-                    AbilityDsl.actions.cardLastingEffect((context) => ({
-                        target: context.player.honor <= 6 ? context.target : [],
-                        duration: Duration.UntilEndOfPhase,
-                        effect: AbilityDsl.effects.modifyBothSkills(1)
-                    }))
-                ]
-            },
-            effect: '{1}{2}{3} {0}',
-            effectArgs: (context) => [
+                cardCondition: (card) => card.isDishonored
+            }, AbilityDsl.actions.ready(), AbilityDsl.actions.cardLastingEffect((context) => ({
+                target: context.player.honor <= 6 ? context.target : [],
+                duration: Duration.UntilEndOfPhase,
+                effect: AbilityDsl.effects.modifyBothSkills(1)
+            })))
+            .effect('{1}{2}{3} {0}', (context) => [
                 (context.target as BaseCard).bowed ? 'ready' : '',
                 (context.target as BaseCard).bowed && context.player.honor <= 6 ? ' and ' : '',
                 context.player.honor <= 6 ? 'give +1/+1 until the end of phase to' : ''
-            ]
-        });
+            ]);
     }
 }

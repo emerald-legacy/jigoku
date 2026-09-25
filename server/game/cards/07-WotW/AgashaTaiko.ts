@@ -6,28 +6,24 @@ class AgashaTaiko extends DrawCard {
     static id = 'agasha-taiko';
 
     setupCardAbilities() {
-        this.reaction<DrawCard>({
-            title: 'Choose a province',
-            when: {
+        this.reaction('Choose a province')
+            .when({
                 onCardPlayed: (event, context) => event.card === context.source
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: card => card.location !== 'stronghold province',
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    targetLocation: Location.Provinces,
-                    duration: Duration.UntilEndOfRound,
-                    effect: AbilityDsl.effects.cannotBeAttacked()
-                })
-            },
-            effect: 'prevent {1}\'s {2} in {3} from being attacked this round',
-            effectArgs: context => [
+                cardCondition: card => card.location !== 'stronghold province'
+            }, AbilityDsl.actions.cardLastingEffect({
+                targetLocation: Location.Provinces,
+                duration: Duration.UntilEndOfRound,
+                effect: AbilityDsl.effects.cannotBeAttacked()
+            }))
+            .effect('prevent {1}\'s {2} in {3} from being attacked this round', context => [
                 context.target?.controller ?? '',
                 context.target?.isFacedown() ? 'hidden province' : context.target ?? '',
                 context.target?.location ?? ''
-            ]
-        });
+            ]);
     }
 }
 

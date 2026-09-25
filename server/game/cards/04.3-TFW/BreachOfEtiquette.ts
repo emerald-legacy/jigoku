@@ -8,13 +8,10 @@ class BreachOfEtiquette extends DrawCard {
     static id = 'breach-of-etiquette';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Force honor loss on players when their non-courtier characters use abilities',
-            condition: () => this.game.isDuringConflict('political'),
-            max: AbilityDsl.limit.perConflict(1),
-            effect: 'force honor loss on players when their non-courtier characters use abilities during this conflict',
-            gameAction: AbilityDsl.actions.multiple([
-                AbilityDsl.actions.playerLastingEffect((context: AbilityContext) => ({
+        this.action('Force honor loss on players when their non-courtier characters use abilities')
+            .condition(() => this.game.isDuringConflict('political'))
+            .gameAction(AbilityDsl.actions.multiple([
+                AbilityDsl.actions.playerLastingEffect((context) => ({
                     targetController: context.player,
                     effect: AbilityDsl.effects.playerDelayedEffect({
                         when: {
@@ -27,7 +24,7 @@ class BreachOfEtiquette extends DrawCard {
                         gameAction: AbilityDsl.actions.loseHonor()
                     })
                 })),
-                AbilityDsl.actions.playerLastingEffect((context: AbilityContext) => ({
+                AbilityDsl.actions.playerLastingEffect((context) => ({
                     targetController: context.player.opponent,
                     effect: AbilityDsl.effects.playerDelayedEffect({
                         when: {
@@ -40,8 +37,9 @@ class BreachOfEtiquette extends DrawCard {
                         gameAction: AbilityDsl.actions.loseHonor()
                     })
                 }))
-            ])
-        });
+            ]))
+            .effect('force honor loss on players when their non-courtier characters use abilities during this conflict')
+            .max(AbilityDsl.limit.perConflict(1));
     }
 }
 

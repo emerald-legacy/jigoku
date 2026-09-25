@@ -12,20 +12,17 @@ class InsolentRival extends DrawCard {
             effect: AbilityDsl.effects.modifyBothSkills(2)
         });
 
-        this.action({
-            title: 'Challenge a participating character to a Military duel: dishonor the loser of the duel',
-            condition: () => this.isParticipating(),
-            target: {
+        this.action('Challenge a participating character to a Military duel: dishonor the loser of the duel')
+            .condition(() => this.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.duel((context: AbilityContext<this>) => ({
-                    type: DuelType.Military,
-                    challenger: context.source,
-                    gameAction: (duel) => AbilityDsl.actions.dishonor({ target: duel.loser })
-                }))
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.duel((context) => ({
+                type: DuelType.Military,
+                challenger: context.source,
+                gameAction: (duel) => AbilityDsl.actions.dishonor({ target: duel.loser })
+            })));
     }
 }
 

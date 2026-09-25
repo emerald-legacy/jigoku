@@ -6,10 +6,9 @@ class ShinjoAltansarnai2 extends DrawCard {
     static id = 'shinjo-altansarnai-2';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Put a character into play',
-            condition: (context) => this.game.isDuringConflict('military') && context.source.isParticipating(),
-            gameAction: AbilityDsl.actions.sequential([
+        this.action('Put a character into play')
+            .condition((context) => this.game.isDuringConflict('military') && context.source.isParticipating())
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose a character that costs 3 or less',
                     cards: context.player.dynastyDeck.slice(0, 8),
@@ -33,9 +32,8 @@ class ShinjoAltansarnai2 extends DrawCard {
                     deck: Location.DynastyDeck,
                     target: context.player
                 }))
-            ]),
-            effect: 'search the top 8 cards of their dynasty deck for a character that costs 3 or less and put it into the conflict'
-        });
+            ]))
+            .effect('search the top 8 cards of their dynasty deck for a character that costs 3 or less and put it into the conflict');
     }
 }
 

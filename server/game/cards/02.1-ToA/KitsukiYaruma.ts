@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import BaseCard from '../../BaseCard.js';
-import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, Location } from '../../Constants.js';
 
@@ -8,18 +7,15 @@ class KitsukiYaruma extends DrawCard {
     static id = 'kitsuki-yaruma';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Flip province facedown',
-            when: {
+        this.reaction('Flip province facedown')
+            .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card: BaseCard) => !(card as ProvinceCard).isBroken,
-                gameAction: AbilityDsl.actions.turnFacedown()
-            }
-        });
+                cardCondition: (card) => !(card).isBroken
+            }, AbilityDsl.actions.turnFacedown());
     }
 
     allowAttachment(attachment: BaseCard | DrawCard): boolean {

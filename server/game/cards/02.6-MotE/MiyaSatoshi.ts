@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import { Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
@@ -8,11 +7,9 @@ class MiyaSatoshi extends DrawCard {
     static id = 'miya-satoshi';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Discard dynasty cards until you find an Imperial',
-            condition: (context: AbilityContext) => context.player.dynastyDeck.length > 0,
-            effect: 'search for an Imperial card and place it in a province',
-            handler: (context: AbilityContext) => {
+        this.action('Discard dynasty cards until you find an Imperial')
+            .condition((context) => context.player.dynastyDeck.length > 0)
+            .handler((context) => {
                 const firstImperial = context.player.dynastyDeck.find((card: DrawCard) => card.hasTrait('imperial'));
                 if(!firstImperial) {
                     this.game.addMessage('{0} discards their entire dynasty deck: {1}', context.player, context.player.dynastyDeck.slice());
@@ -37,8 +34,8 @@ class MiyaSatoshi extends DrawCard {
                         return true;
                     }
                 });
-            }
-        });
+            })
+            .effect('search for an Imperial card and place it in a province');
     }
 }
 

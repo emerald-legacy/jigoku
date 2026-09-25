@@ -7,9 +7,8 @@ class ThirdTower extends DrawCard {
     static id = 'third-tower';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Take an honor from your opponent',
-            when: {
+        this.reaction('Take an honor from your opponent')
+            .when({
                 onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) => {
                     if(event.conflict.attackingPlayer === context.player) {
                         return false;
@@ -20,10 +19,9 @@ class ThirdTower extends DrawCard {
                     let cards = context.player.getDynastyCardsInProvince(event.conflict.declaredProvince.location);
                     return !cards.some((card) => card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall'));
                 }
-            },
-            gameAction: AbilityDsl.actions.takeHonor(),
-            limit: AbilityDsl.limit.unlimitedPerConflict()
-        });
+            })
+            .gameAction(AbilityDsl.actions.takeHonor())
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }
 

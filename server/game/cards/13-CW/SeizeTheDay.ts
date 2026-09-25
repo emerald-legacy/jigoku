@@ -5,12 +5,11 @@ class SeizeTheDay extends DrawCard {
     static id = 'seize-the-day';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Become first player',
-            when: {
+        this.reaction('Become first player')
+            .when({
                 onPhaseStarted: (event, context) => event.phase === Phases.Conflict && this.game.getFirstPlayer() !== context.player
-            },
-            handler: () => {
+            })
+            .handler(() => {
                 let firstPlayer = this.game.getFirstPlayer();
                 if(!firstPlayer) {
                     return;
@@ -19,9 +18,8 @@ class SeizeTheDay extends DrawCard {
                 if(otherPlayer) {
                     this.game.raiseEvent(EventName.OnPassFirstPlayer, { player: otherPlayer }, () => this.game.setFirstPlayer(otherPlayer));
                 }
-            },
-            effect: 'become first player!'
-        });
+            })
+            .effect('become first player!');
     }
 }
 

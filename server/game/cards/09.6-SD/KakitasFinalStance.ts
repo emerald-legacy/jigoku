@@ -1,4 +1,3 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import { CardType, EventName } from '../../Constants.js';
 import type { Duel } from '../../Duel.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -15,28 +14,22 @@ export default class KakitasFinalStance extends DrawCard {
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register(['onConflictFinished', 'afterDuel']);
-        this.action({
-            title: 'Character cannot be bowed and doesn\'t bow during resolution',
-            condition: () => this.game.isDuringConflict('military'),
-            target: {
+        this.action('Character cannot be bowed and doesn\'t bow during resolution')
+            .condition(() => this.game.isDuringConflict('military'))
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: [
-                    AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                        condition: () => this.duelParticipantsInThisConflict.has(context.target),
-                        effect: AbilityDsl.effects.doesNotBow()
-                    })),
-                    AbilityDsl.actions.cardLastingEffect((context) => ({
-                        effect: AbilityDsl.effects.cardCannot({
-                            cannot: 'bow',
-                            restricts: 'opponentsCardEffects',
-                            applyingPlayer: context.player
-                        })
-                    }))
-                ]
-            },
-            effect: 'prevent opponents\' actions from bowing {0} and stop it bowing at the end of the conflict if it is involved in a duel'
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+                condition: () => this.duelParticipantsInThisConflict.has(context.target),
+                effect: AbilityDsl.effects.doesNotBow()
+            })), AbilityDsl.actions.cardLastingEffect((context) => ({
+                effect: AbilityDsl.effects.cardCannot({
+                    cannot: 'bow',
+                    restricts: 'opponentsCardEffects',
+                    applyingPlayer: context.player
+                })
+            })))
+            .effect('prevent opponents\' actions from bowing {0} and stop it bowing at the end of the conflict if it is involved in a duel');
     }
 
     public onConflictFinished() {

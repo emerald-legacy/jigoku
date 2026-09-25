@@ -7,19 +7,17 @@ export default class ArrogantKakita extends DrawCard {
     static id = 'arrogant-kakita';
 
     setupCardAbilities() {
-        this.forcedReaction({
-            title: 'Initiate a political duel',
-            when: {
+        this.forcedReaction('Initiate a political duel')
+            .when({
                 onDefendersDeclared: (event, context) => context.source.isParticipating()
-            },
-            initiateDuel: {
+            })
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 gameAction: (duel) =>
                     AbilityDsl.actions.sendHome((context: AbilityContext<DrawCard, DrawCard>) => ({
                         target: duel.loser?.includes(context.source) ? context.source : []
                     }))
-            },
-            limit: AbilityDsl.limit.perRound(Infinity)
-        });
+            }))
+            .limit(AbilityDsl.limit.perRound(Infinity));
     }
 }

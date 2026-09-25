@@ -7,14 +7,13 @@ class EmissaryOfLies extends DrawCard {
     static id = 'emissary-of-lies';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move a character home',
-            condition: context => context.source.isParticipating(),
-            target: {
+        this.action('Move a character home')
+            .condition(context => context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.controller === context.player.opponent
-            },
-            handler: (context) => {
+            })
+            .handler((context) => {
                 if(!context || !context.player.opponent) {
                     return;
                 }
@@ -27,8 +26,7 @@ class EmissaryOfLies extends DrawCard {
                         ]
                     }
                 });
-            }
-        });
+            });
     }
 
     selectCardName(player: Player, cardName: string, context: AbilityContext) {

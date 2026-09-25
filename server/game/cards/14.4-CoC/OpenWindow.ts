@@ -6,15 +6,12 @@ class OpenWindow extends DrawCard {
     static id = 'open-window';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move a Shinobi into the conflict',
-            target: {
+        this.action('Move a Shinobi into the conflict')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('shinobi'),
-                gameAction: AbilityDsl.actions.moveToConflict()
-            }
-        });
+                cardCondition: card => card.hasTrait('shinobi')
+            }, AbilityDsl.actions.moveToConflict());
     }
 }
 

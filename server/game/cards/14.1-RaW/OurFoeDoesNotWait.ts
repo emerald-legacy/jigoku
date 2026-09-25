@@ -1,7 +1,4 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
-import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 import { Location, Players, CardType, Decks } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -9,29 +6,27 @@ class OurFoeDoesNotWait extends DrawCard {
     static id = 'our-foe-does-not-wait';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Place a card from your deck faceup on a province',
-            when: {
+        this.reaction('Place a card from your deck faceup on a province')
+            .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player
 
-            },
-            max: AbilityDsl.limit.perConflictOpportunity(1),
-            effect: 'look at the top eight cards of their dynasty deck',
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Province,
                 controller: Players.Self,
                 location: Location.Provinces,
-                cardCondition: (card: BaseCard) => card.location !== Location.StrongholdProvince && !(card as ProvinceCard).isBroken
-            },
-            gameAction: AbilityDsl.actions.deckSearch((context: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
+                cardCondition: (card) => card.location !== Location.StrongholdProvince && !(card).isBroken
+            })
+            .gameAction(AbilityDsl.actions.deckSearch((context) => ({
                 amount: 8,
                 deck: Decks.DynastyDeck,
                 gameAction: AbilityDsl.actions.moveCard({
                     faceup: true,
                     destination: context.target.location
                 })
-            }))
-        });
+            })))
+            .effect('look at the top eight cards of their dynasty deck')
+            .max(AbilityDsl.limit.perConflictOpportunity(1));
     }
 }
 

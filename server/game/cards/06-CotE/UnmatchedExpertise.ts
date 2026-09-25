@@ -11,14 +11,12 @@ class UnmatchedExpertise extends DrawCard {
         this.whileAttached({
             effect: ability.effects.cannotReceiveDishonorToken()
         });
-        this.forcedReaction({
-            title: 'Removed after attached character loses a conflict',
-            when: {
+        this.forcedReaction('Removed after attached character loses a conflict')
+            .when({
                 afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                                                    event.conflict.loser === context.source.parentCharacter.controller
-            },
-            gameAction: ability.actions.discardFromPlay()
-        });
+            })
+            .gameAction(ability.actions.discardFromPlay());
     }
 }
 

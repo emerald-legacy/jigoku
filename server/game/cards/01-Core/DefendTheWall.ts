@@ -5,14 +5,12 @@ export default class DefendTheWall extends ProvinceCard {
     static id = 'defend-the-wall';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Resolve the ring effect',
-            when: {
+        this.reaction('Resolve the ring effect')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.getConflictProvinces().some((a) => a === context.source) &&
                     event.conflict.winner === context.player
-            },
-            gameAction: AbilityDsl.actions.resolveConflictRing()
-        });
+            })
+            .gameAction(AbilityDsl.actions.resolveConflictRing());
     }
 }

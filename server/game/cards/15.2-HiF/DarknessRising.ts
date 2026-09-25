@@ -7,15 +7,13 @@ class DarknessRising extends DrawCard {
     static id = 'darkness-rising';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow weaker military characters',
-            condition: context => context.game.isDuringConflict(),
-            cost: AbilityDsl.costs.dishonor({ cardCondition: (card: DrawCard, context: AbilityContext) => card.isParticipating() && this.getLegalTargetsForCard(card, context).length > 0 }),
-            cannotTargetFirst: true,
-            gameAction: AbilityDsl.actions.bow((context: AbilityContext) => ({
+        this.action('Bow weaker military characters')
+            .cost(AbilityDsl.costs.dishonor({ cardCondition: (card: DrawCard, context: AbilityContext) => card.isParticipating() && this.getLegalTargetsForCard(card, context).length > 0 }))
+            .condition(context => context.game.isDuringConflict())
+            .gameAction(AbilityDsl.actions.bow((context) => ({
                 target: this.getLegalTargetsForCard(context.costs.dishonor as DrawCard, context)
-            }))
-        });
+            })))
+            .cannotTargetFirst();
     }
 
     isTemptationsMaho() {

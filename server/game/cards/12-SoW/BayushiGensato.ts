@@ -6,17 +6,15 @@ class BayushiGensato extends DrawCard {
     static id = 'bayushi-gensato';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a military duel',
-            initiateDuel: {
+        this.action('Initiate a military duel')
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 gameAction: duel => AbilityDsl.actions.multiple([
                     AbilityDsl.actions.bow({ target: duel.loser }),
                     AbilityDsl.actions.dishonor({ target: duel.winner })
                 ]),
                 statistic: (card) => card.getMilitarySkillExcludingModifiers([EffectName.AttachmentMilitarySkillModifier, EffectName.AttachmentPoliticalSkillModifier])
-            }
-        });
+            }));
     }
 }
 

@@ -6,16 +6,13 @@ class SavvyPolitician extends DrawCard {
     static id = 'savvy-politician';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Honor a character',
-            when: {
+        this.reaction('Honor a character')
+            .when({
                 onCardHonored: (event, context) => event.card === context.source
-            },
-            target: {
-                cardType: CardType.Character,
-                gameAction: ability.actions.honor()
-            }
-        });
+            })
+            .target('target', {
+                cardType: CardType.Character
+            }, ability.actions.honor());
     }
 }
 

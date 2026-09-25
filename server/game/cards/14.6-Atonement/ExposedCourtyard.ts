@@ -30,17 +30,14 @@ class ExposedCourtyard extends DrawCard {
     static id = 'exposed-courtyard';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Make an event in your conflict discard playable',
-            effect: 'pick an event to make playable this conflict',
-            cannotTargetFirst: true,
-            condition: context => context.game.isDuringConflict('military'),
-            cost: [exposedCourtyardCost()],
-            gameAction: AbilityDsl.actions.sequential([
+        this.action('Make an event in your conflict discard playable')
+            .cost(exposedCourtyardCost())
+            .condition(context => context.game.isDuringConflict('military'))
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.handler({
                     handler: () => true
                 }),
-                AbilityDsl.actions.selectCard((context: AbilityContext) => ({
+                AbilityDsl.actions.selectCard((context) => ({
                     location: Location.ConflictDiscardPile,
                     cardType: CardType.Event,
                     activePromptTitle: 'Choose an event',
@@ -87,8 +84,9 @@ class ExposedCourtyard extends DrawCard {
                     message: '{0} can play {1} this conflict. It will be put on the bottom of the deck if it\'s played this conflict',
                     messageArgs: card => [context.player, card, context.source]
                 }))
-            ])
-        });
+            ]))
+            .effect('pick an event to make playable this conflict')
+            .cannotTargetFirst();
     }
 }
 

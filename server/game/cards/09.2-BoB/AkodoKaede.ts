@@ -12,18 +12,15 @@ class AkodoKaede extends DrawCard {
             })
         });
 
-        this.wouldInterrupt({
-            title: 'Prevent a character from leaving play',
-            when: {
+        this.wouldInterrupt('Prevent a character from leaving play')
+            .when({
                 onCardLeavesPlay: (event, context) => event.card.type === CardType.Character && event.card !== context.source && event.card.location === Location.PlayArea
-            },
-            effect: 'prevent {1} from leaving play',
-            effectArgs: context => context.event.card ?? '',
-            gameAction: AbilityDsl.actions.cancel(context => ({
+            })
+            .gameAction(AbilityDsl.actions.cancel(context => ({
                 target: context.source,
                 replacementGameAction: AbilityDsl.actions.removeFate()
-            }))
-        });
+            })))
+            .effect('prevent {1} from leaving play', context => context.event.card ?? '');
     }
 }
 

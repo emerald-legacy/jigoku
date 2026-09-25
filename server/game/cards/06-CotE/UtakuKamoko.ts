@@ -13,21 +13,16 @@ class UtakuKamoko extends DrawCard {
             condition: (context: AbilityContext) => context.source.isDishonored,
             effect: AbilityDsl.effects.honorStatusDoesNotModifySkill()
         });
-        this.reaction({
-            title: 'Ready and honor',
-            when: {
+        this.reaction('Ready and honor')
+            .when({
                 onBreakProvince: (event: EventPayload<EventName.OnBreakProvince>, context: TriggeredAbilityContext) => context.player.opponent && event.conflict && event.conflict.attackingPlayer === context.player.opponent
-            },
-            cost: AbilityDsl.costs.discardCard({
+            })
+            .cost(AbilityDsl.costs.discardCard({
                 location: Location.Hand,
                 targets: true
-            }),
-            gameAction: [
-                AbilityDsl.actions.ready(),
-                AbilityDsl.actions.honor()
-            ],
-            effect: 'ready and honor {0}'
-        });
+            }))
+            .gameAction(AbilityDsl.actions.ready(), AbilityDsl.actions.honor())
+            .effect('ready and honor {0}');
     }
 }
 

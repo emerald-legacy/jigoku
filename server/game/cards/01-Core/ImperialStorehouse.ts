@@ -5,11 +5,9 @@ class ImperialStorehouse extends DrawCard {
     static id = 'imperial-storehouse';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Draw a card',
-            cost: ability.costs.sacrificeSelf(),
-            gameAction: ability.actions.draw()
-        });
+        this.action('Draw a card')
+            .cost(ability.costs.sacrificeSelf())
+            .gameAction(ability.actions.draw());
     }
 }
 

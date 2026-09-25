@@ -8,11 +8,9 @@ class ProdigyOfTheWaves extends DrawCard {
     static id = 'prodigy-of-the-waves';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Ready this character',
-            condition: () => this.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(),
-            gameAction: AbilityDsl.actions.ready()
-        });
+        this.action('Ready this character')
+            .condition(() => this.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed())
+            .gameAction(AbilityDsl.actions.ready());
     }
 
     getPrintedElementSymbols() {

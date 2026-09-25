@@ -5,17 +5,12 @@ class MonoNoAware extends DrawCard {
     static id = 'mono-no-aware';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Remove 1 fate from each character. Draw 1 card.',
-            effect: 'remove a fate from each character and draw a card',
-            gameAction: [
-                ability.actions.draw(),
-                ability.actions.removeFate(() => ({
-                    target: this.game.findAnyCardsInPlay(card => card.getFate() > 0)
-                }))
-            ],
-            max: ability.limit.perRound(1)
-        });
+        this.action('Remove 1 fate from each character. Draw 1 card.')
+            .gameAction(ability.actions.draw(), ability.actions.removeFate(() => ({
+                target: this.game.findAnyCardsInPlay(card => card.getFate() > 0)
+            })))
+            .effect('remove a fate from each character and draw a card')
+            .max(ability.limit.perRound(1));
     }
 }
 

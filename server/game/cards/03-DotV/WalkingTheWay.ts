@@ -1,5 +1,4 @@
 import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import type Player from '../../Player.js';
 import { Location, Players, CardType } from '../../Constants.js';
@@ -16,11 +15,9 @@ class WalkingTheWay extends DrawCard {
             effect: ability.effects.reduceCost({ match: (card: BaseCard, source: BaseCard) => card === source })
         });
 
-        this.action({
-            title: 'Place a card from your deck faceup on a province',
-            condition: (context: AbilityContext) => context.player.dynastyDeck.length > 0,
-            effect: 'look at the top three cards of their dynasty deck',
-            handler: (context: AbilityContext) => {
+        this.action('Place a card from your deck faceup on a province')
+            .condition((context) => context.player.dynastyDeck.length > 0)
+            .handler((context) => {
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Choose a card to place in a province',
                     context: context,
@@ -41,8 +38,8 @@ class WalkingTheWay extends DrawCard {
                         }
                     })
                 });
-            }
-        });
+            })
+            .effect('look at the top three cards of their dynasty deck');
     }
 }
 

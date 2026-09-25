@@ -9,17 +9,14 @@ class AsakoTsuki extends DrawCard {
     static id = 'asako-tsuki';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Honor a scholar character',
-            when: {
+        this.reaction('Honor a scholar character')
+            .when({
                 onClaimRing: (event: EventPayload<EventName.OnClaimRing>) => (event.conflict && event.conflict.hasElement(this.getCurrentElementSymbol(elementKey))) || event.ring.hasElement(this.getCurrentElementSymbol(elementKey))
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('scholar'),
-                gameAction: AbilityDsl.actions.honor()
-            }
-        });
+                cardCondition: (card) => card.hasTrait('scholar')
+            }, AbilityDsl.actions.honor());
     }
 
     getPrintedElementSymbols() {

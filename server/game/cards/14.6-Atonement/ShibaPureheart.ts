@@ -6,9 +6,8 @@ class ShibaPureheart extends DrawCard {
     static id = 'shiba-pureheart';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Honor a character',
-            when: {
+        this.reaction('Honor a character')
+            .when({
                 onConflictDeclared: (event, context) => {
                     let controller = context.player;
                     let attacker = event.conflict.attackingPlayer;
@@ -17,12 +16,10 @@ class ShibaPureheart extends DrawCard {
                     }
                     return false;
                 }
-            },
-            target: {
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.honor()
-            }
-        });
+            })
+            .target('target', {
+                cardType: CardType.Character
+            }, AbilityDsl.actions.honor());
     }
 }
 

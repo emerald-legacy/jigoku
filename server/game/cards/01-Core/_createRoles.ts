@@ -8,16 +8,14 @@ export function createKeeperRole(id: string, element: Element) {
         static id = id;
 
         setupCardAbilities() {
-            this.reaction({
-                title: 'Gain 1 fate',
-                when: {
+            this.reaction('Gain 1 fate')
+                .when({
                     afterConflict: (event, context) =>
                         (event.conflict).elements.some((el) => this.hasTrait(el)) &&
                         event.conflict.winner === context.player &&
                         event.conflict.defendingPlayer === context.player
-                },
-                gameAction: AbilityDsl.actions.gainFate()
-            });
+                })
+                .gameAction(AbilityDsl.actions.gainFate());
         }
 
         getElement(): Element[] {
@@ -31,16 +29,14 @@ export function createSeekerRole(id: string, element: Element) {
         static id = id;
 
         setupCardAbilities() {
-            this.reaction({
-                title: 'Gain 1 fate',
-                when: {
+            this.reaction('Gain 1 fate')
+                .when({
                     onCardRevealed: (event, context) =>
                         event.card.controller === context.player &&
                         isProvinceCard(event.card) &&
                         event.card.getElement().some((element: string) => context.source.hasTrait(element))
-                },
-                gameAction: AbilityDsl.actions.gainFate()
-            });
+                })
+                .gameAction(AbilityDsl.actions.gainFate());
         }
 
         getElement(): Element[] {

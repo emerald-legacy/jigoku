@@ -6,17 +6,14 @@ class AdmitDefeat extends DrawCard {
     static id = 'admit-defeat';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow a character',
-            condition: () =>
+        this.action('Bow a character')
+            .condition(() =>
                 this.game.isDuringConflict() &&
-                this.game.currentConflict?.getNumberOfParticipantsFor('defender') === 1,
-            target: {
+                this.game.currentConflict?.getNumberOfParticipantsFor('defender') === 1)
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: card => card.isDefending(),
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: card => card.isDefending()
+            }, AbilityDsl.actions.bow());
     }
 }
 

@@ -8,13 +8,12 @@ export default class KakitaToshimoko extends DrawCard {
     static id = 'kakita-toshimoko';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Initiate a military duel',
-            when: {
+        this.wouldInterrupt('Initiate a military duel')
+            .when({
                 afterConflict: (event, context) =>
                     context.source.isParticipating() && event.conflict.loser === context.player
-            },
-            initiateDuel: {
+            })
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
                 message: 'both players count 0 total skill for the conflict',
@@ -25,7 +24,6 @@ export default class KakitaToshimoko extends DrawCard {
                             ? AbilityDsl.effects.setConflictTotalSkill(0)
                             : []
                 }))
-            }
-        });
+            }));
     }
 }

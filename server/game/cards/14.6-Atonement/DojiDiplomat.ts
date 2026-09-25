@@ -6,29 +6,22 @@ class DojiDiplomat extends DrawCard {
     static id = 'doji-diplomat';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Reveal provinces',
-            when: {
+        this.reaction('Reveal provinces')
+            .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
-            },
-            targets: {
-                myProvince: {
-                    cardType: CardType.Province,
-                    controller: Players.Opponent,
-                    location: Location.Provinces,
-                    gameAction: AbilityDsl.actions.reveal()
-                },
-                oppProvince: {
-                    player: Players.Opponent,
-                    controller: Players.Self,
-                    cardType: CardType.Province,
-                    location: Location.Provinces,
-                    gameAction: AbilityDsl.actions.reveal()
-                }
-            },
-            effect: 'reveal {1} and {2}',
-            effectArgs: context => [context.targets.myProvince, context.targets.oppProvince]
-        });
+            })
+            .target('myProvince', {
+                cardType: CardType.Province,
+                controller: Players.Opponent,
+                location: Location.Provinces
+            }, AbilityDsl.actions.reveal())
+            .target('oppProvince', {
+                player: Players.Opponent,
+                controller: Players.Self,
+                cardType: CardType.Province,
+                location: Location.Provinces
+            }, AbilityDsl.actions.reveal())
+            .effect('reveal {1} and {2}', context => [context.targets.myProvince, context.targets.oppProvince]);
     }
 }
 

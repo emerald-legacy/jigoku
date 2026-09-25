@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Location, CardType, Element } from '../../Constants.js';
 
@@ -9,30 +8,27 @@ class IsawaEju extends DrawCard {
     static id = 'isawa-eju';
 
     setupCardAbilities() {
-        this.action<ProvinceCard>({
-            title: 'Discard all cards in a province and refill it faceup',
-            condition: context => this.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player),
-            target: {
+        this.action('Discard all cards in a province and refill it faceup')
+            .condition(context => this.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player))
+            .target('target', {
                 location: Location.Provinces,
                 cardType: CardType.Province
-            },
-            gameAction: AbilityDsl.actions.moveCard<ProvinceCard>(context => ({
+            })
+            .gameAction(AbilityDsl.actions.moveCard(context => ({
                 destination: Location.DynastyDiscardPile,
                 target: context.target?.controller.getDynastyCardsInProvince(context.target.location) ?? []
-            })),
-            effect: 'discard {1} and refill the province faceup',
-            effectArgs: context => [context.target?.controller.getDynastyCardsInProvince(context.target.location) ?? []],
-            then: context => {
-                const target = context.target as ProvinceCard;
+            })))
+            .effect('discard {1} and refill the province faceup', context => [context.target?.controller.getDynastyCardsInProvince(context.target.location) ?? []])
+            .then(context => {
+                const target = context.target;
                 return {
                     gameAction: AbilityDsl.actions.refillFaceup(() => ({
                         target: target.controller,
                         location: target.location
                     }))
                 };
-            },
-            limit: AbilityDsl.limit.perRound(3)
-        });
+            })
+            .limit(AbilityDsl.limit.perRound(3));
     }
 
     getPrintedElementSymbols() {

@@ -13,14 +13,12 @@ class IaijutsuMaster extends DrawCard {
             trait: 'duelist'
         });
 
-        this.reaction({
-            title: 'Change your bid by 1 during a duel',
-            when: {
+        this.reaction('Change your bid by 1 during a duel')
+            .when({
                 onHonorDialsRevealed: (_event: EventPayload<EventName.OnHonorDialsRevealed>, context: TriggeredAbilityContext<this>) =>
                     !!context.source.parentCharacter && !!this.game.currentDuel?.isInvolved(context.source.parentCharacter)
-            },
-            gameAction: ability.actions.modifyBid({ direction: Direction.Prompt })
-        });
+            })
+            .gameAction(ability.actions.modifyBid({ direction: Direction.Prompt }));
     }
 }
 

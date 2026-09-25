@@ -7,9 +7,8 @@ class ArdentOmoidasu extends DrawCard {
     static id = 'ardent-omoidasu';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Steal 2 honor',
-            when: {
+        this.reaction('Steal 2 honor')
+            .when({
                 onCardDishonored: (event: EventPayload<EventName.OnCardDishonored>, context) => {
                     if(!event.context) {
                         return false;
@@ -23,11 +22,10 @@ class ArdentOmoidasu extends DrawCard {
                         dishonoredByOpponentsEffect &&
                         (dishonoredByRingEffect || dishonoredByCardEffect);
                 }
-            },
-            gameAction: AbilityDsl.actions.takeHonor({
-                amount: 2
             })
-        });
+            .gameAction(AbilityDsl.actions.takeHonor({
+                amount: 2
+            }));
     }
 }
 
