@@ -4,25 +4,25 @@ import type { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
+import type { ActionEvent } from './GameAction.js';
 export interface RefillFaceupProperties extends PlayerActionProperties {
     location: Location | Location[];
 }
 
-export class RefillFaceupAction extends PlayerAction<RefillFaceupProperties> {
+export class RefillFaceupAction<C extends AbilityContext = AbilityContext> extends PlayerAction<RefillFaceupProperties, EventName, C> {
     declare defaultProperties: RefillFaceupProperties;
 
     name = 'refill';
     effect = 'refill its province faceup';
-    constructor(propertyFactory: RefillFaceupProperties | ((context: AbilityContext) => RefillFaceupProperties)) {
+    constructor(propertyFactory: RefillFaceupProperties | ((context: C) => RefillFaceupProperties)) {
         super(propertyFactory);
     }
 
-    defaultTargets(context: AbilityContext): Player[] {
+    defaultTargets(context: C): Player[] {
         return [context.player];
     }
 
-    eventHandler(event: GameEvent<EventName.Unnamed>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: ActionEvent<EventName.Unnamed, C>, additionalProperties: Record<string, unknown> = {}): void {
         const context = event.context;
         let { location } = this.getProperties(context, additionalProperties);
         if(!Array.isArray(location)) {

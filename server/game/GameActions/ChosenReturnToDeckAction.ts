@@ -3,10 +3,10 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, Location, Players, TargetMode } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import type { Event } from '../Events/Event.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { shuffle } from '../utils/shuffle.js';
+import type { ActionEvent } from './GameAction.js';
 
 export interface ChosenReturnToDeckProperties extends PlayerActionProperties {
     amount?: number;
@@ -15,7 +15,7 @@ export interface ChosenReturnToDeckProperties extends PlayerActionProperties {
     bottom?: boolean;
 }
 
-export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckProperties, EventName.OnCardMoved> {
+export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ChosenReturnToDeckProperties, EventName.OnCardMoved, C> {
     defaultProperties: ChosenReturnToDeckProperties = {
         amount: 1,
         targets: true,
@@ -25,12 +25,12 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
     name = 'returnToDeck';
     eventName = EventName.OnCardMoved;
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         let properties = this.getProperties(context);
         return ['make {0} return {1} cards to their deck', [properties.target, properties.amount]];
     }
 
-    canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(player: Player, context: C, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
         if(player.hand.length === 0 || properties.amount === 0) {
             return false;
@@ -38,7 +38,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
         return super.canAffect(player, context);
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
         for(let player of properties.target as Player[]) {
             let amount = Math.min(player.hand.length, properties.amount ?? 0);
@@ -75,7 +75,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
         }
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnCardMoved>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnCardMoved, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, shuffle, bottom } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.options = { bottom };
@@ -85,7 +85,7 @@ export class ChosenReturnToDeckAction extends PlayerAction<ChosenReturnToDeckPro
         event.bottom = bottom;
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardMoved>): void {
+    eventHandler(event: ActionEvent<EventName.OnCardMoved, C>): void {
         const cards = event.cards as BaseCard[];
         const context = event.context;
         context.game.addMessage(

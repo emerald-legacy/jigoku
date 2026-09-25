@@ -1,7 +1,7 @@
 import type { MessageArgs, MsgArg } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { Players } from '../Constants.js';
+import { Players, type EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import type { StatusToken } from '../StatusToken.js';
@@ -25,7 +25,7 @@ export interface SelectTokenProperties extends TokenActionProperties {
     effectArgs?: (context: AbilityContext) => EffectArg[];
 }
 
-export class SelectTokenAction extends TokenAction<SelectTokenProperties> {
+export class SelectTokenAction<C extends AbilityContext = AbilityContext> extends TokenAction<SelectTokenProperties, EventName, C> {
     name = 'selectToken';
     defaultProperties: Partial<SelectTokenProperties> = {
         activePromptTitle: 'Which token do you wish to select?',
@@ -34,11 +34,11 @@ export class SelectTokenAction extends TokenAction<SelectTokenProperties> {
         subActionProperties: (token) => ({ target: token })
     };
 
-    constructor(properties: SelectTokenProperties | ((context: AbilityContext) => SelectTokenProperties)) {
+    constructor(properties: SelectTokenProperties | ((context: C) => SelectTokenProperties)) {
         super(properties);
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         let { target, effect, effectArgs } = this.getProperties(context);
         if(effect) {
             return [effect, (effectArgs && effectArgs(context)) || []];
@@ -46,7 +46,7 @@ export class SelectTokenAction extends TokenAction<SelectTokenProperties> {
         return ['choose a status token for {0}', [target]];
     }
 
-    private resolveProperties(context: AbilityContext, additionalProperties = {}): WithDefaults<SelectTokenProperties, 'tokenCondition' | 'subActionProperties' | 'card'> | null {
+    private resolveProperties(context: C, additionalProperties = {}): WithDefaults<SelectTokenProperties, 'tokenCondition' | 'subActionProperties' | 'card'> | null {
         const properties = super.getProperties(context, additionalProperties);
         if(!properties.card) {
             return null;
@@ -58,7 +58,7 @@ export class SelectTokenAction extends TokenAction<SelectTokenProperties> {
         });
     }
 
-    canAffect(token: StatusToken, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(token: StatusToken, context: C, additionalProperties = {}): boolean {
         const properties = this.resolveProperties(context, additionalProperties);
         if(!properties) {
             return false;
@@ -76,7 +76,7 @@ export class SelectTokenAction extends TokenAction<SelectTokenProperties> {
         );
     }
 
-    hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties = {}): boolean {
         const properties = this.resolveProperties(context, additionalProperties);
         if(!properties) {
             return false;
@@ -84,7 +84,7 @@ export class SelectTokenAction extends TokenAction<SelectTokenProperties> {
         return properties.card.statusTokens.some((token: StatusToken) => this.canAffect(token, context, additionalProperties));
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         const properties = this.resolveProperties(context, additionalProperties);
         if(!properties) {
             return;
@@ -138,7 +138,7 @@ export class SelectTokenAction extends TokenAction<SelectTokenProperties> {
         }
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties = {}): boolean {
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}): boolean {
         const properties = super.getProperties(context, additionalProperties);
         return !!properties.targets && properties.player !== Players.Opponent;
     }

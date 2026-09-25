@@ -3,10 +3,9 @@ import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { EventName, Location, Players, TargetMode } from '../Constants.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
-import type { WithDefaults } from './GameAction.js';
+import type { WithDefaults, ActionEvent } from './GameAction.js';
 
 export interface ChosenDiscardProperties extends PlayerActionProperties {
     amount?: number;
@@ -14,14 +13,14 @@ export interface ChosenDiscardProperties extends PlayerActionProperties {
     cardCondition?: (card: BaseCard, context: AbilityContext) => boolean;
 }
 
-export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties, EventName.OnCardsDiscardedFromHand> {
+export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ChosenDiscardProperties, EventName.OnCardsDiscardedFromHand, C> {
     defaultProperties: Partial<ChosenDiscardProperties> = {
         targets: true
     };
     name = 'discard';
     eventName = EventName.OnCardsDiscardedFromHand;
 
-    getProperties(context: AbilityContext, additionalProperties = {}): WithDefaults<ChosenDiscardProperties, 'amount' | 'cardCondition'> {
+    getProperties(context: C, additionalProperties = {}): WithDefaults<ChosenDiscardProperties, 'amount' | 'cardCondition'> {
         const properties = super.getProperties(context, additionalProperties);
         return Object.assign(properties, {
             amount: properties.amount ?? 1,
@@ -29,12 +28,12 @@ export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties, E
         });
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         let properties = this.getProperties(context);
         return ['make {0} discard {1} cards', [properties.target, properties.amount]];
     }
 
-    canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(player: Player, context: C, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
         const availableHand = player.hand.filter((card) => properties.cardCondition(card, context));
 
@@ -44,7 +43,7 @@ export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties, E
         return super.canAffect(player, context);
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
         for(let player of properties.target as Player[]) {
             const availableHand = player.hand.filter((card) => properties.cardCondition(card, context));
@@ -82,7 +81,7 @@ export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties, E
         }
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnCardsDiscardedFromHand>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>, player: Player, context: C, additionalProperties: Record<string, unknown>): void {
         let { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
@@ -90,7 +89,7 @@ export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties, E
         event.discardedAtRandom = false;
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardsDiscardedFromHand>): void {
+    eventHandler(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>): void {
         const context = event.context;
         context.game.addMessage('{0} discards {1}', event.player, event.cards);
         event.discardedCards = event.cards;

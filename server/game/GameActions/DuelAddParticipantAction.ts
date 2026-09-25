@@ -1,25 +1,25 @@
 import type { MessageArgs } from '../GameChat.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { Duel } from '../Duel.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export interface DuelAddParticipantProperties extends CardActionProperties {
     duel: Duel;
 }
 
-export class DuelAddParticipantAction extends CardGameAction<DuelAddParticipantProperties, EventName.OnAddDuelParticipant> {
+export class DuelAddParticipantAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DuelAddParticipantProperties, EventName.OnAddDuelParticipant, C> {
     name = 'onAddDuelParticipant';
     eventName = EventName.OnAddDuelParticipant;
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         let properties = this.getProperties(context);
         return ['extend the duel challenge to {0}', [properties.target]];
     }
 
-    canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
 
         if(card.type !== CardType.Character) {
@@ -36,13 +36,13 @@ export class DuelAddParticipantAction extends CardGameAction<DuelAddParticipantP
         return properties.duel.canAddToDuel(card, context);
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnAddDuelParticipant>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnAddDuelParticipant, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
         let { duel } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.duel = duel;
     }
 
-    eventHandler(event: GameEvent<EventName.OnAddDuelParticipant>): void {
+    eventHandler(event: ActionEvent<EventName.OnAddDuelParticipant, C>): void {
         event.duel.addTargetToDuel(event.card);
     }
 }

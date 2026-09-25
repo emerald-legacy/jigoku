@@ -1,34 +1,34 @@
 import type { MessageArgs } from '../GameChat.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export interface TransferFateProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class TransferFateAction extends PlayerAction<TransferFateProperties, EventName.OnMoveFate> {
+export class TransferFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<TransferFateProperties, EventName.OnMoveFate, C> {
     name = 'takeFate';
     eventName = EventName.OnMoveFate;
     defaultProperties: TransferFateProperties = { amount: 1 };
 
-    constructor(propertyFactory: TransferFateProperties | ((context: AbilityContext) => TransferFateProperties)) {
+    constructor(propertyFactory: TransferFateProperties | ((context: C) => TransferFateProperties)) {
         super(propertyFactory);
     }
 
-    getCostMessage(context: AbilityContext): MessageArgs {
+    getCostMessage(context: C): MessageArgs {
         let properties = this.getProperties(context);
         return ['giving {1} fate to {2}', [properties.amount, context.player.opponent]];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         let properties = this.getProperties(context);
         return ['take {1} fate from {0}', [properties.target, properties.amount]];
     }
 
-    canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(player: Player, context: C, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
         const amount = properties.amount ?? 0;
         return (
@@ -39,7 +39,7 @@ export class TransferFateAction extends PlayerAction<TransferFateProperties, Eve
         );
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnMoveFate>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.fate = amount ?? 0;
@@ -47,11 +47,11 @@ export class TransferFateAction extends PlayerAction<TransferFateProperties, Eve
         event.recipient = player.opponent;
     }
 
-    checkEventCondition(event: GameEvent<EventName.OnMoveFate>): boolean {
+    checkEventCondition(event: ActionEvent<EventName.OnMoveFate, C>): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    eventHandler(event: GameEvent<EventName.OnMoveFate>): void {
+    eventHandler(event: ActionEvent<EventName.OnMoveFate, C>): void {
         this.moveFateEventHandler(event);
     }
 }

@@ -1,11 +1,10 @@
 import type { MessageArgs, MsgArg } from '../GameChat.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, Players } from '../Constants.js';
 import HonorBidPrompt from '../gamesteps/HonorBidPrompt.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import type Player from '../Player.js';
-import type { GameAction } from './GameAction.js';
+import type { GameAction, ActionEvent } from './GameAction.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 
 export interface HonorBidProperties extends PlayerActionProperties {
@@ -17,7 +16,7 @@ export interface HonorBidProperties extends PlayerActionProperties {
     messageArgs?: (context: AbilityContext) => MsgArg[];
 }
 
-export class HonorBidAction extends PlayerAction<HonorBidProperties, EventName.OnHonorBid> {
+export class HonorBidAction<C extends AbilityContext = AbilityContext> extends PlayerAction<HonorBidProperties, EventName.OnHonorBid, C> {
     name = 'honorBid';
     eventName = EventName.OnHonorBid;
     defaultProperties: HonorBidProperties = {
@@ -27,15 +26,15 @@ export class HonorBidAction extends PlayerAction<HonorBidProperties, EventName.O
         postBidAction: undefined
     };
 
-    constructor(propertyFactory: HonorBidProperties | ((context: AbilityContext) => HonorBidProperties)) {
+    constructor(propertyFactory: HonorBidProperties | ((context: C) => HonorBidProperties)) {
         super(propertyFactory);
     }
 
-    defaultTargets(context: AbilityContext) {
+    defaultTargets(context: C) {
         return [context.player];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         let properties: HonorBidProperties = this.getProperties(context);
         if(properties.giveHonor) {
             return ['bid honor', []];
@@ -57,7 +56,7 @@ export class HonorBidAction extends PlayerAction<HonorBidProperties, EventName.O
         return ['have {0} select a value on their honor dial', [players]];
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnHonorBid>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnHonorBid, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
         let { giveHonor, prohibitedBids, players, postBidAction, message, messageArgs } = this.getProperties(
             context,
             additionalProperties
@@ -71,7 +70,7 @@ export class HonorBidAction extends PlayerAction<HonorBidProperties, EventName.O
         event.messageArgs = messageArgs;
     }
 
-    eventHandler(event: GameEvent<EventName.OnHonorBid>): void {
+    eventHandler(event: ActionEvent<EventName.OnHonorBid, C>): void {
         const context = event.context;
 
         if(event.players === Players.Any) {

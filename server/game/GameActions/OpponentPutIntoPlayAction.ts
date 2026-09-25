@@ -5,7 +5,7 @@ import { PutIntoPlayAction, PutIntoPlayProperties } from './PutIntoPlayAction.js
 
 export type OpponentPutIntoPlayProperties = PutIntoPlayProperties;
 
-export class OpponentPutIntoPlayAction extends PutIntoPlayAction {
+export class OpponentPutIntoPlayAction<C extends AbilityContext = AbilityContext> extends PutIntoPlayAction<C> {
     defaultProperties: PutIntoPlayProperties = {
         fate: 0,
         status: 'ordinary',
@@ -13,18 +13,18 @@ export class OpponentPutIntoPlayAction extends PutIntoPlayAction {
         side: undefined
     };
 
-    getDefaultSide(context: AbilityContext): Player {
+    getDefaultSide(context: C): Player {
         return context.player.opponent ?? context.player;
     }
 
     constructor(
-        properties: ((context: AbilityContext) => PutIntoPlayProperties) | PutIntoPlayProperties,
+        properties: ((context: C) => PutIntoPlayProperties) | PutIntoPlayProperties,
         intoConflict = true
     ) {
         super(properties, intoConflict);
     }
 
-    getPutIntoPlayPlayer(context: AbilityContext): Player {
+    getPutIntoPlayPlayer(context: C): Player {
         return context.player.opponent ?? context.player;
     }
 }

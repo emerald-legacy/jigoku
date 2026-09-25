@@ -1,19 +1,19 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, CharacterStatus, EventName, Location } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export type HonorProperties = CardActionProperties;
 
-export class HonorAction extends CardGameAction<HonorProperties> {
+export class HonorAction<C extends AbilityContext = AbilityContext> extends CardGameAction<HonorProperties, EventName, C> {
     name = 'honor';
     eventName = EventName.OnCardHonored;
     targetType = [CardType.Character];
     cost = 'honoring {0}';
     effect = 'honor {0}';
 
-    canAffect(card: BaseCard, context: AbilityContext): boolean {
+    canAffect(card: BaseCard, context: C): boolean {
         if(card.location !== Location.PlayArea || card.type !== CardType.Character || card.isHonored) {
             return false;
         } else if(!card.isDishonored && !card.checkRestrictions('receiveHonorToken', context)) {
@@ -25,7 +25,7 @@ export class HonorAction extends CardGameAction<HonorProperties> {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardHonored>): void {
+    eventHandler(event: ActionEvent<EventName.OnCardHonored, C>): void {
         event.card.honor();
         if(event.card.isHonored) {
             event.card.game.raiseEvent(EventName.OnStatusTokenGained, {

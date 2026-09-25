@@ -5,7 +5,7 @@ import { CardType, EffectName, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
+import type { ActionEvent } from './GameAction.js';
 export interface MoveCardProperties extends CardActionProperties {
     destination?: Location;
     switch?: boolean;
@@ -17,7 +17,7 @@ export interface MoveCardProperties extends CardActionProperties {
     discardDestinationCards?: boolean;
 }
 
-export class MoveCardAction extends CardGameAction<MoveCardProperties> {
+export class MoveCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<MoveCardProperties, EventName, C> {
     name = 'move';
     targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
     defaultProperties: MoveCardProperties = {
@@ -30,16 +30,16 @@ export class MoveCardAction extends CardGameAction<MoveCardProperties> {
         changePlayer: false,
         discardDestinationCards: false
     };
-    constructor(properties: MoveCardProperties | ((context: AbilityContext) => MoveCardProperties)) {
+    constructor(properties: MoveCardProperties | ((context: C) => MoveCardProperties)) {
         super(properties);
     }
 
-    getCostMessage(context: AbilityContext): MessageArgs {
+    getCostMessage(context: C): MessageArgs {
         let properties = this.getProperties(context);
         return ['shuffling {0} into their deck', [properties.target]];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         let properties = this.getProperties(context);
         const target = properties.target as BaseCard | BaseCard[];
         let destinationController = Array.isArray(target)
@@ -58,7 +58,7 @@ export class MoveCardAction extends CardGameAction<MoveCardProperties> {
         ];
     }
 
-    canAffect(card: BaseCard, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {
         const { changePlayer, destination } = this.getProperties(context, additionalProperties);
         return (
             (!changePlayer ||
@@ -70,7 +70,7 @@ export class MoveCardAction extends CardGameAction<MoveCardProperties> {
         );
     }
 
-    eventHandler(event: GameEvent<EventName.Unnamed>, additionalProperties = {}): void {
+    eventHandler(event: ActionEvent<EventName.Unnamed, C>, additionalProperties = {}): void {
         let context = (event.context);
         let card = event.card as DrawCard;
         event.cardStateWhenMoved = card.createSnapshot();

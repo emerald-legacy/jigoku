@@ -1,22 +1,22 @@
 import type { MessageArgs } from '../GameChat.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CharacterStatus, EventName } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export interface GainStatusTokenProperties extends CardActionProperties {
     token?: CharacterStatus;
 }
 
-export class GainStatusTokenAction extends CardGameAction<GainStatusTokenProperties> {
+export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<GainStatusTokenProperties, EventName, C> {
     name = 'gainStatus';
     eventName = EventName.OnStatusTokenGained;
     defaultProperties: GainStatusTokenProperties = {
         token: CharacterStatus.Honored
     };
 
-    canAffect(card: BaseCard, context: AbilityContext): boolean {
+    canAffect(card: BaseCard, context: C): boolean {
         let { token } = this.getProperties(context);
         if(
             (token === CharacterStatus.Honored && card.isHonored) ||
@@ -34,18 +34,18 @@ export class GainStatusTokenAction extends CardGameAction<GainStatusTokenPropert
         return super.canAffect(card, context);
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         let properties = this.getProperties(context);
         return ['give {0} a {1} status token', [properties.target, properties.token]];
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnStatusTokenGained>, card: BaseCard, context: AbilityContext, additionalProperties = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnStatusTokenGained, C>, card: BaseCard, context: C, additionalProperties = {}): void {
         const { token } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.token = token;
     }
 
-    eventHandler(event: GameEvent<EventName.OnStatusTokenGained>): void {
+    eventHandler(event: ActionEvent<EventName.OnStatusTokenGained, C>): void {
         (event.card as BaseCard).addStatusToken(event.token as CharacterStatus);
     }
 }

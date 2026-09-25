@@ -3,19 +3,19 @@ import { ConflictType, EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
+import type { ActionEvent } from './GameAction.js';
 export interface ClaimRingProperties extends RingActionProperties {
     takeFate?: boolean;
     type?: string;
 }
 
-export class ClaimRingAction extends RingAction<ClaimRingProperties, EventName.OnClaimRing> {
+export class ClaimRingAction<C extends AbilityContext = AbilityContext> extends RingAction<ClaimRingProperties, EventName.OnClaimRing, C> {
     name = 'claimRing';
     eventName = EventName.OnClaimRing;
     effect = 'claim {0}';
     defaultProperties: ClaimRingProperties = { takeFate: true, type: ConflictType.Military };
 
-    canAffect(ring: Ring, context: AbilityContext): boolean {
+    canAffect(ring: Ring, context: C): boolean {
         if(!context.player.checkRestrictions('claimRings', context)) {
             return false;
         }
@@ -23,7 +23,7 @@ export class ClaimRingAction extends RingAction<ClaimRingProperties, EventName.O
         return !ring.isRemovedFromGame() && ring.claimedBy !== context.player.name && super.canAffect(ring, context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnClaimRing>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: ActionEvent<EventName.OnClaimRing, C>, additionalProperties: Record<string, unknown> = {}): void {
         let context = event.context;
         let { takeFate, type } = this.getProperties(context, additionalProperties);
         let ring = event.ring;

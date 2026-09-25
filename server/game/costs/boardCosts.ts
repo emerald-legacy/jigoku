@@ -274,7 +274,7 @@ export function discardImperialFavor(): Cost {
 export function switchLocation(): Cost {
     return {
         promptsPlayer: false,
-        canPay(context: TriggeredAbilityContext) {
+        canPay(context: TriggeredAbilityContext<DrawCard>) {
             const canMoveHome = context.game.actions.sendHome().canAffect(context.source, context);
             const canMoveToConflict = context.game.actions.moveToConflict().canAffect(context.source, context);
 

@@ -1,23 +1,23 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EventName } from '../Constants.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export type TurnCardFacedownProperties = CardActionProperties;
 
-export class TurnCardFacedownAction extends CardGameAction<TurnCardFacedownProperties> {
+export class TurnCardFacedownAction<C extends AbilityContext = AbilityContext> extends CardGameAction<TurnCardFacedownProperties, EventName, C> {
     name = 'turnFacedown';
     eventName = EventName.OnCardTurnedFacedown;
     cost = 'turning {0} facedown';
     effect = 'turn {0} facedown';
     targetType = [CardType.Character, CardType.Holding, CardType.Province, CardType.Event];
 
-    canAffect(card: BaseCard, context: AbilityContext): boolean {
+    canAffect(card: BaseCard, context: C): boolean {
         return card.isFaceup() && super.canAffect(card, context) && card.isInProvince();
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardTurnedFacedown>): void {
+    eventHandler(event: ActionEvent<EventName.OnCardTurnedFacedown, C>): void {
         const context = event.context;
         const card = event.card as BaseCard;
         if(card.controller !== card.owner) {

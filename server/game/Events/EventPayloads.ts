@@ -70,6 +70,7 @@ export interface EventPayloadMap {
         card: BaseCard;
         destination?: Location;
         cardStateWhenLeftPlay?: BaseCard;
+        cardStateWhenMoved?: DrawCard;
         isSacrifice?: boolean;
         shuffle?: boolean;
         options?: { bottom?: boolean };
@@ -220,6 +221,7 @@ export interface EventPayloadMap {
         effect?: unknown;
         context?: AbilityContext;
         card?: BaseCard;
+        ring?: Ring;
         effectTypes?: string[];
         matches?: EffectMatch[];
     };

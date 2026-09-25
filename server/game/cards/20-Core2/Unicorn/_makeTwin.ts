@@ -2,6 +2,7 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { Decks, Duration, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameEvent } from '../../../Events/EventPayloads.js';
+import type { GameAction } from '../../../GameActions/GameAction.js';
 import type Player from '../../../Player.js';
 
 export function makeTwin(id: string, opt: { siblingName: string; title: string; effect: string }) {
@@ -31,7 +32,7 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                             : AbilityDsl.actions.putIntoPlay({ target: newCharacter });
                         intoPlayAction.resolve(newCharacter, context);
 
-                        const sequence = replacedCharacter.attachments.map((attachment) =>
+                        const sequence: GameAction[] = replacedCharacter.attachments.map((attachment) =>
                             AbilityDsl.actions.ifAble({
                                 ifAbleAction: AbilityDsl.actions.attach({ attachment, target: newCharacter }),
                                 otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: attachment })

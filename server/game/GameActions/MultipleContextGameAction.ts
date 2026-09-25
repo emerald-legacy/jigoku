@@ -3,15 +3,16 @@ import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
 import { GameAction, type GameActionProperties } from './GameAction.js';
+import type { EventName } from '../Constants.js';
 
 export interface MultipleContextActionProperties extends GameActionProperties {
     gameActions: GameAction[];
 }
 
-export class MultipleContextGameAction extends GameAction<MultipleContextActionProperties> {
+export class MultipleContextGameAction<C extends AbilityContext = AbilityContext> extends GameAction<MultipleContextActionProperties, EventName, C> {
     declare defaultProperties: MultipleContextActionProperties;
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         let { gameActions } = this.getProperties(context);
         let legalGameActions = gameActions.filter((action) => action.hasLegalTarget(context));
         let message = '{0}';
@@ -22,7 +23,7 @@ export class MultipleContextGameAction extends GameAction<MultipleContextActionP
         return [message, legalGameActions.map((action) => action.getEffectMessage(context))];
     }
 
-    getProperties(context: AbilityContext, additionalProperties = {}): MultipleContextActionProperties {
+    getProperties(context: C, additionalProperties = {}): MultipleContextActionProperties {
         let properties = super.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             gameAction.setDefaultTarget(() => properties.target);
@@ -30,22 +31,22 @@ export class MultipleContextGameAction extends GameAction<MultipleContextActionP
         return properties;
     }
 
-    hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.some((gameAction) => gameAction.hasLegalTarget(context, additionalProperties));
     }
 
-    canAffect(target: GameObject, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.some((gameAction) => gameAction.canAffect(target, context, additionalProperties));
     }
 
-    allTargetsLegal(context: AbilityContext, additionalProperties = {}): boolean {
+    allTargetsLegal(context: C, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
         return properties.gameActions.some((gameAction) => gameAction.hasLegalTarget(context, additionalProperties));
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             context.game.queueSimpleStep(() => {
@@ -56,7 +57,7 @@ export class MultipleContextGameAction extends GameAction<MultipleContextActionP
         }
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: AbilityContext) {
+    hasTargetsChosenByInitiatingPlayer(context: C) {
         let properties = this.getProperties(context);
         return properties.gameActions.some((gameAction) => gameAction.hasTargetsChosenByInitiatingPlayer(context));
     }

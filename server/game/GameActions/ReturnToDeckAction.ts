@@ -2,8 +2,8 @@ import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export interface ReturnToDeckProperties extends CardActionProperties {
     bottom?: boolean;
@@ -11,7 +11,7 @@ export interface ReturnToDeckProperties extends CardActionProperties {
     location?: Location | Location[];
 }
 
-export class ReturnToDeckAction extends CardGameAction<ReturnToDeckProperties> {
+export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> extends CardGameAction<ReturnToDeckProperties, EventName, C> {
     name = 'returnToDeck';
     eventName = EventName.OnCardLeavesPlay;
     targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
@@ -20,11 +20,11 @@ export class ReturnToDeckAction extends CardGameAction<ReturnToDeckProperties> {
         shuffle: false,
         location: Location.PlayArea
     };
-    constructor(properties: ((context: AbilityContext) => ReturnToDeckProperties) | ReturnToDeckProperties) {
+    constructor(properties: ((context: C) => ReturnToDeckProperties) | ReturnToDeckProperties) {
         super(properties);
     }
 
-    getCostMessage(context: AbilityContext): MessageArgs {
+    getCostMessage(context: C): MessageArgs {
         let properties = this.getProperties(context);
         return [
             properties.shuffle
@@ -34,7 +34,7 @@ export class ReturnToDeckAction extends CardGameAction<ReturnToDeckProperties> {
         ];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         let properties = this.getProperties(context);
         if(properties.shuffle) {
             return ['shuffle {0} into its owner\'s deck', [properties.target]];
@@ -45,7 +45,7 @@ export class ReturnToDeckAction extends CardGameAction<ReturnToDeckProperties> {
         ];
     }
 
-    canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
         const properties = this.getProperties(context);
         const rawLocation = properties.location ?? Location.PlayArea;
         let location: Location[] = Array.isArray(rawLocation) ? [...rawLocation] : [rawLocation];
@@ -61,7 +61,7 @@ export class ReturnToDeckAction extends CardGameAction<ReturnToDeckProperties> {
         );
     }
 
-    updateEvent(event: GameEvent<EventName.OnCardLeavesPlay>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
         const { shuffle, target, bottom } = this.getProperties(context, additionalProperties);
         this.updateLeavesPlayEvent(event, card, context, additionalProperties);
         event.destination = card.isDynasty ? Location.DynastyDeck : Location.ConflictDeck;
@@ -73,7 +73,7 @@ export class ReturnToDeckAction extends CardGameAction<ReturnToDeckProperties> {
         }
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardLeavesPlay>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: ActionEvent<EventName.OnCardLeavesPlay, C>, additionalProperties: Record<string, unknown> = {}): void {
         this.leavesPlayEventHandler(event, additionalProperties);
         const card = event.card as DrawCard;
         if(event.shuffle) {

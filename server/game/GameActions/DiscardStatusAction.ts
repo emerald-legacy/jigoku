@@ -1,19 +1,19 @@
 import type { MessageArgs } from '../GameChat.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { EventName } from '../Constants.js';
 import type { StatusToken } from '../StatusToken.js';
 import { TokenAction, TokenActionProperties } from './TokenAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export type DiscardStatusProperties = TokenActionProperties;
 
-export class DiscardStatusAction extends TokenAction<DiscardStatusProperties> {
+export class DiscardStatusAction<C extends AbilityContext = AbilityContext> extends TokenAction<DiscardStatusProperties, EventName, C> {
     name = 'discardStatus';
     eventName = EventName.OnStatusTokenDiscarded;
     cost = 'discarding a status token';
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         const cardsLosingStatus = this.#cardsLosingStatus(context);
         return cardsLosingStatus.length === 0
             ? ['discard a status token', []]
@@ -21,16 +21,16 @@ export class DiscardStatusAction extends TokenAction<DiscardStatusProperties> {
     }
 
     addPropertiesToEvent(
-        event: GameEvent<EventName.OnStatusTokenDiscarded>,
+        event: ActionEvent<EventName.OnStatusTokenDiscarded, C>,
         token: StatusToken,
-        context: AbilityContext,
+        context: C,
         additionalProperties: Record<string, unknown>
     ): void {
         super.addPropertiesToEvent(event, token, context, additionalProperties);
         event.cards = this.#cardsLosingStatus(context) as BaseCard[];
     }
 
-    eventHandler(event: GameEvent<EventName.OnStatusTokenDiscarded>): void {
+    eventHandler(event: ActionEvent<EventName.OnStatusTokenDiscarded, C>): void {
         const tokens = Array.isArray(event.token) ? event.token : [event.token];
         for(const token of tokens) {
             if(token.card) {
@@ -39,7 +39,7 @@ export class DiscardStatusAction extends TokenAction<DiscardStatusProperties> {
         }
     }
 
-    #cardsLosingStatus(context: AbilityContext) {
+    #cardsLosingStatus(context: C) {
         let properties = this.getProperties(context);
         if(!properties.target) {
             return [];
