@@ -1,43 +1,31 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityType, CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { ActionProps } from '../../../Interfaces.js';
-import type Player from '../../../Player.js';
 
 export default class DesperateAide extends DrawCard {
     static id = 'desperate-aide';
 
     public setupCardAbilities() {
-        this.composure({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Draw a card',
-                condition: (context) => context.source.isParticipating(),
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.draw((context) => ({ target: context.player })),
-                    AbilityDsl.actions.gainHonor((context) => ({
-                        amount: this.controllerHasHigherPol(context) ? 1 : 0,
-                        target: context.player
-                    }))
-                ]),
-                effect: 'draw 1 card{1}',
-                effectArgs: (context) => [this.controllerHasHigherPol(context) ? ' and gain 1 honor' : '']
-            } as ActionProps<this>)
-        });
-    }
-
-    private controllerHasHigherPol(context: AbilityContext): boolean {
-        return (
-            !context.player.opponent ||
-            this.participatingPolSkillTotal(context.player) > this.participatingPolSkillTotal(context.player.opponent)
-        );
-    }
-
-    private participatingPolSkillTotal(player: Player): number {
-        return player.cardsInPlay.reduce(
-            (total, card) =>
-                card.type === CardType.Character && card.isParticipating() ? total + card.politicalSkill : total,
-            0
-        );
+        this.ability
+            .composure()
+            .affects(($a) => $a.self())
+            .effects(($mod) => [
+                $mod.gainAbility(($ability) =>
+                    $ability
+                        .conflictAction()
+                        .title('Draw a card')
+                        .announce(($m, ctx, util) => {
+                            const countsMore = util.politicalSkill(ctx.player) > util.politicalSkill(ctx.opponent);
+                            return $m.withIntro`draw 1 card${countsMore ? ' and gain 1 honor' : ''}`;
+                        })
+                        .effects(($e, ctx, util) => [
+                            $e.draw(ctx.player, 1),
+                            $e.if(
+                                util.politicalSkill(ctx.player) > util.politicalSkill(ctx.opponent),
+                                $e.gainHonor(ctx.player, 1)
+                            )
+                        ])
+                        .build()
+                )
+            ])
+            .addPrinted();
     }
 }

@@ -1,6 +1,7 @@
 import { AttachmentManager } from './AttachmentManager.js';
 import type DrawCard from './DrawCard.js';
 import AbilityDsl from './abilitydsl.js';
+import { printedAbilityEntry, type PrintedAbilityEntry } from './AbilityBuilder/index.js';
 import Effects from './effects.js';
 import EffectSource from './EffectSource.js';
 import { CardStatusManager } from './CardStatusManager.js';
@@ -346,6 +347,11 @@ class BaseCard extends EffectSource {
      */
     setupCardAbilities(_ability: typeof AbilityDsl): void {
 
+    }
+
+    /** The builder for the printed abilities of this card. */
+    get ability(): PrintedAbilityEntry<this> {
+        return printedAbilityEntry(this);
     }
 
     action<Target extends BaseCard = BaseCard>(properties: ActionProps<this, Target>): void {

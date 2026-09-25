@@ -1,29 +1,18 @@
-import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, CardType } from '../../Constants.js';
 
-class EvenTheOdds extends DrawCard {
+export default class EvenTheOdds extends DrawCard {
     static id = 'even-the-odds';
 
     setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Move a character to the conflict',
-            condition: (context) =>
-                this.game.isDuringConflict() &&
-                !!this.game.currentConflict &&
-                !!context.player.opponent &&
-                this.game.currentConflict.hasMoreParticipants(context.player.opponent, () => true),
-            target: {
-                cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: [
-                    AbilityDsl.actions.moveToConflict(),
-                    AbilityDsl.actions.honor<DrawCard>((context) => ({ target: context.target?.hasTrait('commander') ? context.target : [] }))
-                ]
-            }
-        });
+        this.ability
+            .action()
+            .title('Move a character to the conflict')
+            .condition((ctx, util) => ctx.conflict !== undefined && util.outnumbered(ctx.player))
+            .targets(($t) => ({ character: $t.card('character', { controller: (ctx) => ctx.player }) }))
+            .effects(($e, ctx) => [
+                $e.moveToConflict(ctx.targets.character),
+                $e.if(ctx.targets.character.hasTrait('commander'), $e.honor(ctx.targets.character))
+            ])
+            .addPrinted();
     }
 }
-
-
-export default EvenTheOdds;

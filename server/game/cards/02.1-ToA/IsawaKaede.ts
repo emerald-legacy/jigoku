@@ -1,29 +1,34 @@
 import DrawCard from '../../DrawCard.js';
 import { Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 const elementKey = 'isawa-kaede-void';
 
-class IsawaKaede extends DrawCard {
+export default class IsawaKaede extends DrawCard {
     static id = 'isawa-kaede';
 
     setupCardAbilities() {
-        this.persistentEffect({
-            effect: AbilityDsl.effects.immunity({
-                restricts: 'opponentsRingEffects'
-            })
-        });
-        this.persistentEffect({
-            effect: AbilityDsl.effects.addElementAsAttacker(() => this.getCurrentElementSymbol(elementKey))
-        });
-        this.persistentEffect({
-            condition: context => context.source.isAttacking() && this.game.currentConflict?.winner === context.player,
-            effect: AbilityDsl.effects.modifyConflictElementsToResolve(5)
-        });
+        this.ability
+            .constant()
+            .affects(($a) => $a.self())
+            .effects(($mod) => [$mod.immuneTo('opponentsRingEffects')])
+            .addPrinted();
+
+        this.ability
+            .constant()
+            .affects(($a) => $a.self())
+            .effects(($mod) => [$mod.addElementAsAttacker((source) => source.getCurrentElementSymbol(elementKey))])
+            .addPrinted();
+
+        this.ability
+            .constant()
+            .while((ctx) => ctx.source.isAttacking() && ctx.conflict?.winner === ctx.player)
+            .affects(($a) => $a.conflict())
+            .effects(($mod) => [$mod.conflictElementsToResolve(5)])
+            .addPrinted();
     }
 
     getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
+        const symbols = super.getPrintedElementSymbols();
         symbols.push({
             key: elementKey,
             prettyName: 'Element to Add',
@@ -32,6 +37,3 @@ class IsawaKaede extends DrawCard {
         return symbols;
     }
 }
-
-
-export default IsawaKaede;

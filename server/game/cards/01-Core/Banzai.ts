@@ -1,63 +1,19 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import { TargetMode, CardType } from '../../Constants.js';
-import CardAbility from '../../CardAbility.js';
-import AbilityDsl from '../../abilitydsl.js';
 
-class Banzai extends DrawCard {
+export default class Banzai extends DrawCard {
     static id = 'banzai';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Increase a character\'s military skill',
-
-            max: AbilityDsl.limit.perConflict(1),
-            target: {
-                cardType: CardType.Character,
-                cardCondition: card => card.isParticipating(),
-                gameAction: ability.actions.cardLastingEffect(() => ({
-                    effect: AbilityDsl.effects.modifyMilitarySkill(2)
-                }))
-            },
-            effect: 'grant 2 military skill to {0}',
-            then: context => {
-                const ctx = context;
-                if(ctx.subResolution) {
-                    return {
-                        target: {
-                            mode: TargetMode.Select,
-                            choices: {
-                                'Lose 1 honor for no effect': AbilityDsl.actions.loseHonor({target: ctx.player }),
-                                'Done': () => true
-                            }
-                        },
-                        message: '{0} chooses {3}to lose an honor for no effect',
-                        messageArgs: (innerContext: AbilityContext) => innerContext.select === 'Done' ? 'not ' : ''
-                    };
-                }
-                const cardAbility = ctx.ability instanceof CardAbility ? ctx.ability : undefined;
-                return {
-                    target: {
-                        mode: TargetMode.Select,
-                        choices: {
-                            'Lose 1 honor to resolve this ability again': AbilityDsl.actions.loseHonor({target: ctx.player }),
-                            'Done': () => true
-                        }
-                    },
-                    message: '{0} chooses {3}to lose an honor to resolve {1} again',
-                    messageArgs: (innerContext: AbilityContext) => innerContext.select === 'Done' ? 'not ' : '',
-                    then: cardAbility ? {
-                        gameAction: AbilityDsl.actions.resolveAbility({
-                            ability: cardAbility,
-                            subResolution: true,
-                            choosingPlayerOverride: ctx.choosingPlayerOverride ?? undefined
-                        })
-                    } : undefined
-                };
-            }
-        });
+    setupCardAbilities() {
+        this.ability
+            .action()
+            .title('Increase a character\'s military skill')
+            .condition((ctx) => ctx.conflict !== undefined)
+            .targets(($t) => ({ character: $t.card('character', { filter: (card) => card.isParticipating() }) }))
+            .announce(($m, ctx) => $m.withIntro`grant 2 military skill to ${ctx.targets.character}`)
+            .effects(($e, ctx) => [
+                $e.lastingEffect(ctx.targets.character, ($mod) => [$mod.military(2)], { until: 'conflict' }),
+                $e.mayPay(ctx.player, ($pay) => $pay.loseHonor(1), $e.resolveThisAbility({ twice: true }))
+            ])
+            .addPrinted(($limit) => ({ max: $limit.per('conflict', 1) }));
     }
 }
-
-
-export default Banzai;

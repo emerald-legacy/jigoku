@@ -1,78 +1,37 @@
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Phases } from '../../Constants.js';
 
-class Subterfuge extends DrawCard {
+export default class Subterfuge extends DrawCard {
     static id = 'subterfuge';
-    private messageShown?: boolean;
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Prevent draw',
-            when: {
-                onCardsDrawn: (event, context) => {
-                    return (
-                        context.player.opponent &&
-                        context.player.isLessHonorable() &&
-                        context.game.currentPhase !== Phases.Draw &&
-                        event.player === context.player.opponent
-                    );
-                }
-            },
-            gameAction: AbilityDsl.actions.cancel((context: TriggeredAbilityContext) => ({
-                replacementGameAction: AbilityDsl.actions.sequentialContext(() => {
-                    const eventAmount = context.event.amount ?? 0;
-                    const discardAmount = Math.min(eventAmount, 3);
-                    const cardsToDiscard = context.player.opponent?.conflictDeck.slice(0, discardAmount);
-                    const drawAmount = eventAmount - discardAmount;
-                    this.messageShown = false;
-                    return {
-                        gameActions: [
-                            AbilityDsl.actions.discardCard({
-                                target: cardsToDiscard
-                            }),
-                            AbilityDsl.actions.handler({
-                                handler: (context) => {
-                                    if(!this.messageShown) {
-                                        // for some reason, it shows the message twice
-                                        context.game.addMessage(
-                                            '{0} discards {1}',
-                                            context.player.opponent,
-                                            cardsToDiscard
-                                        );
-                                        if(drawAmount > 0) {
-                                            context.game.addMessage(
-                                                '{0} draws {1} card{2}',
-                                                context.player.opponent,
-                                                drawAmount,
-                                                drawAmount > 1 ? 's' : ''
-                                            );
-                                        }
-                                        this.messageShown = true;
-                                    }
-                                }
-                            }),
-                            AbilityDsl.actions.draw({
-                                target: context.player.opponent,
-                                amount: drawAmount
-                            })
-                        ]
-                    };
-                })
-            })),
-            effect: 'prevent {1} card{2} from being drawn, discarding {3} instead',
-            effectArgs: (context) => {
-                const amount = context.event.amount ?? 0;
+        this.ability
+            .wouldInterrupt({
+                onCardsDrawn: (event, ctx) =>
+                    ctx.opponent !== undefined &&
+                    ctx.player.isLessHonorable() &&
+                    ctx.game.currentPhase !== 'draw' &&
+                    event.player === ctx.opponent
+            })
+            .title('Prevent draw')
+            .announce(($m, ctx) => {
+                const { amount } = ctx.event;
+                const discarded = Math.min(amount, 3);
+                const drawn = amount - discarded;
                 return [
-                    Math.min(amount, 3),
-                    amount > 1 ? 's' : '',
-                    amount > 1 ? 'them' : 'it'
+                    $m.withIntro`prevent ${discarded} card${amount > 1 ? 's' : ''} from being drawn, discarding ${amount > 1 ? 'them' : 'it'} instead`,
+                    $m.freeform`${ctx.opponent} discards ${ctx.opponent?.conflictDeck.slice(0, discarded)}`,
+                    drawn > 0 ? $m.freeform`${ctx.opponent} draws ${drawn} card${drawn > 1 ? 's' : ''}` : $m.none()
                 ];
-            }
-        });
+            })
+            .effects(($e, ctx) => {
+                const discarded = Math.min(ctx.event.amount, 3);
+                return [
+                    $e.instead([
+                        $e.discard(ctx.opponent?.conflictDeck.slice(0, discarded)),
+                        $e.draw(ctx.opponent, ctx.event.amount - discarded)
+                    ])
+                ];
+            })
+            .addPrinted();
     }
 }
-
-
-export default Subterfuge;
