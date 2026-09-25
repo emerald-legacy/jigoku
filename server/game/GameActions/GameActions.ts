@@ -33,7 +33,8 @@ import { FlipFavorAction, FlipFavorProperties } from './FlipFavorAction.js';
 import { GainFateAction, GainFateProperties } from './GainFateAction.js';
 import { GainHonorAction, GainHonorProperties } from './GainHonorAction.js';
 import { GainStatusTokenAction, GainStatusTokenProperties } from './GainStatusTokenAction.js';
-import { GameAction } from './GameAction.js';
+import { GameAction, type GameActionProperties } from './GameAction.js';
+import type { EventName } from '../Constants.js';
 import { GloryCountAction, GloryCountProperties } from './GloryCountAction.js';
 import { HandlerAction, HandlerProperties } from './HandlerAction.js';
 import { HonorAction, HonorProperties } from './HonorAction.js';
@@ -496,14 +497,14 @@ export function optional<Target = unknown, C extends AbilityContext = AbilityCon
 export function ifAble<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<IfAbleActionProperties, NoInfer<Target>, C>): IfAbleAction<C> {
     return new IfAbleAction<C>(propertyFactory);
 }
-export function joint(gameActions: GameAction[]): GameAction {
-    return new JointGameAction(gameActions);
+export function joint<C extends AbilityContext = AbilityContext>(gameActions: GameAction<GameActionProperties, EventName, C>[]): JointGameAction<C> {
+    return new JointGameAction<C>(gameActions);
 } // takes an array of gameActions, not a propertyFactory
 export function jointContext<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<JointGameContextProperties, NoInfer<Target>, C>): JointGameContextAction<C> {
     return new JointGameContextAction<C>(propertyFactory);
 } // takes an array of gameActions, not a propertyFactory
-export function multiple(gameActions: GameAction[]): GameAction {
-    return new MultipleGameAction(gameActions);
+export function multiple<C extends AbilityContext = AbilityContext>(gameActions: GameAction<GameActionProperties, EventName, C>[]): MultipleGameAction<C> {
+    return new MultipleGameAction<C>(gameActions);
 } // takes an array of gameActions, not a propertyFactory
 export function multipleContext<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MultipleContextActionProperties, NoInfer<Target>, C>): MultipleContextGameAction<C> {
     return new MultipleContextGameAction<C>(propertyFactory);
@@ -517,8 +518,8 @@ export function selectCard<Target = unknown, C extends AbilityContext = AbilityC
 export function selectToken<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectTokenProperties, NoInfer<Target>, C>): SelectTokenAction<C> {
     return new SelectTokenAction<C>(propertyFactory);
 }
-export function sequential(gameActions: GameAction[]): GameAction {
-    return new SequentialAction(gameActions);
+export function sequential<C extends AbilityContext = AbilityContext>(gameActions: GameAction<GameActionProperties, EventName, C>[]): SequentialAction<C> {
+    return new SequentialAction<C>(gameActions);
 } // takes an array of gameActions, not a propertyFactory
 export function sequentialContext<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SequentialContextProperties, NoInfer<Target>, C>): SequentialContextAction<C> {
     return new SequentialContextAction<C>(propertyFactory);

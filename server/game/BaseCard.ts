@@ -10,6 +10,7 @@ import type { TriggeredAbilityProperties } from './TriggeredAbility.js';
 import type BaseCardAbility from './BaseCardAbility.js';
 import Game from './Game.js';
 
+import { type ActionContext, AbilityBuilder, TriggerBuilder, actionProperties, createDraft, holdsTriggerEvent, triggeredProperties } from './AbilityBuilder.js';
 import { AbilityContext } from './AbilityContext.js';
 import { CardAction } from './CardAction.js';
 import {
@@ -117,6 +118,8 @@ class BaseCard extends EffectSource {
 
     protected statusManager!: CardStatusManager;
     allowedAttachmentTraits: string[] = [];
+    /** Abilities declared with a builder, registered once `setupCardAbilities` returns. */
+    readonly #builtAbilities: Array<() => void> = [];
     protected attachmentHost = new AttachmentManager(this);
 
     /** What this card is attached to, or null — the inverse of `attachments`. */
@@ -162,6 +165,9 @@ class BaseCard extends EffectSource {
         this.printedFaction = cardData.clan ?? cardData.faction ?? '';
 
         this.setupCardAbilities(AbilityDsl);
+        for(const register of this.#builtAbilities.splice(0)) {
+            register();
+        }
         this.parseKeywords(cardData.text ? cardData.text.replace(/<[^>]*>/g, '').toLowerCase() : '');
     }
 
@@ -348,8 +354,23 @@ class BaseCard extends EffectSource {
 
     }
 
-    action<Target extends BaseCard = BaseCard>(properties: ActionProps<this, Target>): void {
+    action<Target extends BaseCard = BaseCard>(properties: ActionProps<this, Target>): void;
+    action(title: string): AbilityBuilder<ActionContext<this>>;
+    action<Target extends BaseCard = BaseCard>(properties: ActionProps<this, Target> | string): void | AbilityBuilder<ActionContext<this>> {
+        if(typeof properties === 'string') {
+            const draft = createDraft(properties, (context) => context.ability instanceof CardAction);
+            this.#builtAbilities.push(() => this.action(actionProperties<this>(draft)));
+            return new AbilityBuilder(draft);
+        }
         this.abilities.actions.push(this.createAction(properties as ActionProps));
+    }
+
+    protected triggerBuilder(abilityType: AbilityType, title: string): TriggerBuilder<this> {
+        return new TriggerBuilder<this>((when) => {
+            const draft = createDraft(title, holdsTriggerEvent(when));
+            this.#builtAbilities.push(() => this.triggeredAbility(abilityType, triggeredProperties<this>(draft, when)));
+            return draft;
+        });
     }
 
     createAction(properties: ActionProps): CardAction {
@@ -366,7 +387,12 @@ class BaseCard extends EffectSource {
         return new TriggeredAbility(this, abilityType, properties as TriggeredAbilityProperties<this>);
     }
 
-    reaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void {
+    reaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void;
+    reaction(title: string): TriggerBuilder<this>;
+    reaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target> | string): void | TriggerBuilder<this> {
+        if(typeof properties === 'string') {
+            return this.triggerBuilder(AbilityType.Reaction, properties);
+        }
         this.triggeredAbility(AbilityType.Reaction, properties);
     }
 
@@ -374,11 +400,21 @@ class BaseCard extends EffectSource {
         this.triggeredAbility(AbilityType.ForcedReaction, properties);
     }
 
-    wouldInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void {
+    wouldInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void;
+    wouldInterrupt(title: string): TriggerBuilder<this>;
+    wouldInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target> | string): void | TriggerBuilder<this> {
+        if(typeof properties === 'string') {
+            return this.triggerBuilder(AbilityType.WouldInterrupt, properties);
+        }
         this.triggeredAbility(AbilityType.WouldInterrupt, properties);
     }
 
-    interrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void {
+    interrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void;
+    interrupt(title: string): TriggerBuilder<this>;
+    interrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target> | string): void | TriggerBuilder<this> {
+        if(typeof properties === 'string') {
+            return this.triggerBuilder(AbilityType.Interrupt, properties);
+        }
         this.triggeredAbility(AbilityType.Interrupt, properties);
     }
 
@@ -602,6 +638,11 @@ class BaseCard extends EffectSource {
     /** Narrows to `DrawCard`: an attachment may be attached to a province or a ring instead. */
     isCharacter(): this is DrawCard {
         return this.type === CardType.Character;
+    }
+
+    /** Narrows to `DrawCard`; `DrawCard` overrides this to return true. */
+    isDrawCard(): this is DrawCard {
+        return false;
     }
 
     /** Narrows to `ProvinceCard`, the counterpart of `isCharacter`. */

@@ -12,7 +12,7 @@ export class JointGameAction<C extends AbilityContext = AbilityContext> extends 
     effect = 'do several things';
     declare defaultProperties: JointGameProperties;
 
-    constructor(gameActions: GameAction[]) {
+    constructor(gameActions: GameAction<GameActionProperties, EventName, C>[]) {
         super({ gameActions: gameActions });
     }
 

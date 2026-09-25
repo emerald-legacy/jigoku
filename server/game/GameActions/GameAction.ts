@@ -40,7 +40,7 @@ export class GameAction<
     effect = '';
     isNoAction?: boolean;
     defaultProperties: Partial<P> = {};
-    getDefaultTargets: (context: AbilityContext) => TargetValue = (context) => this.defaultTargets(context);
+    #defaultTargetsOverride?: (context: AbilityContext) => TargetValue;
     // Method syntax keeps an action for a narrower context assignable to GameAction.
     readonly #own: { resolve(context: C): P };
 
@@ -53,8 +53,12 @@ export class GameAction<
         }
     }
 
-    defaultTargets(_context: AbilityContext): GameObject[] {
+    defaultTargets(_context: C): GameObject[] {
         return [];
+    }
+
+    getDefaultTargets(context: C): TargetValue {
+        return this.#defaultTargetsOverride ? this.#defaultTargetsOverride(context) : this.defaultTargets(context);
     }
 
     getProperties(context: C, additionalProperties = {}): P {
@@ -70,7 +74,7 @@ export class GameAction<
         return properties;
     }
 
-    getCostMessage(_context: AbilityContext): undefined | MessageArgs {
+    getCostMessage(_context: C): undefined | MessageArgs {
         return [this.cost, []];
     }
 
@@ -80,7 +84,7 @@ export class GameAction<
     }
 
     setDefaultTarget(func: (context: AbilityContext) => TargetValue): void {
-        this.getDefaultTargets = func;
+        this.#defaultTargetsOverride = func;
     }
 
     canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {

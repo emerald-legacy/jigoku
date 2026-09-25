@@ -10,8 +10,11 @@ export type Result = {
     cancelled?: boolean;
 };
 
-export interface Cost {
+export interface Cost<Results extends object = object> {
     canPay(context: AbilityContext): boolean;
+
+    /** Type only, never set: what paying this cost records on `context.costs`. */
+    readonly results?: Results;
 
     action?: GameAction;
     activePromptTitle?: string;

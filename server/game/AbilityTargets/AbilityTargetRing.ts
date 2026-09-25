@@ -53,7 +53,7 @@ class AbilityTargetRing {
                    properties.ringCondition(ring, contextCopy) && (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy));
         };
         for(let gameAction of this.properties.gameAction) {
-            gameAction.getDefaultTargets = (context: AbilityContext) => context.rings[name];
+            gameAction.setDefaultTarget((context: AbilityContext) => context.rings[name]);
         }
         this.dependentTarget = null;
         this.dependentCost = null;

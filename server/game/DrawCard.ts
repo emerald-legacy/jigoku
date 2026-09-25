@@ -26,7 +26,8 @@ import type Ring from './Ring.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { GameEvent } from './Events/EventPayloads.js';
 import type { Event } from './Events/Event.js';
-import type { ActionProps, ConflictActionProps, PersistentEffectProps, TriggeredAbilityProps, TriggeredAbilityWhenProps } from './Interfaces.js';
+import type { ActionProps, ConflictActionProps, PersistentEffectProps, TriggeredAbilityProps, TriggeredAbilityWhenProps, WhenType } from './Interfaces.js';
+import type { AbilityBuilder, TriggerContext } from './AbilityBuilder.js';
 import type { Duel } from './Duel.js';
 import type { CardData } from './types/CardData.js';
 
@@ -165,6 +166,10 @@ class DrawCard extends BaseCard {
         }
 
         this.applyAttachmentBonus();
+    }
+
+    isDrawCard(): this is DrawCard {
+        return true;
     }
 
     handleEphemeral(event: GameEvent<EventName.OnCardPlayed | EventName.OnCardLeavesPlay>): void {
@@ -1013,7 +1018,22 @@ class DrawCard extends BaseCard {
         });
     }
 
-    duelFocus(properties: Omit<TriggeredAbilityWhenProps, 'when'> & { duelCondition?: (duel: Duel, context: AbilityContext<DrawCard>) => boolean }): void {
+    duelFocus(properties: Omit<TriggeredAbilityWhenProps, 'when'> & { duelCondition?: (duel: Duel, context: AbilityContext<DrawCard>) => boolean }): void;
+    duelFocus(
+        title: string,
+        duelCondition?: (duel: Duel, context: AbilityContext<DrawCard>) => boolean
+    ): AbilityBuilder<TriggerContext<this, Pick<WhenType<this>, EventName.OnDuelFocus>>>;
+    duelFocus(
+        properties: (Omit<TriggeredAbilityWhenProps, 'when'> & { duelCondition?: (duel: Duel, context: AbilityContext<DrawCard>) => boolean }) | string,
+        duelCondition?: (duel: Duel, context: AbilityContext<DrawCard>) => boolean
+    ): void | AbilityBuilder<TriggerContext<this, Pick<WhenType<this>, EventName.OnDuelFocus>>> {
+        if(typeof properties === 'string') {
+            return this.triggerBuilder(AbilityType.DuelReaction, properties).when({
+                onDuelFocus: ({ duel }: { duel?: Duel }, context) =>
+                    !!context && !!duel && duel.playerCanTriggerFocus(context.player) &&
+                    (!duelCondition || duelCondition(duel, context))
+            });
+        }
         this.triggeredAbility(AbilityType.DuelReaction, {
             ...properties,
             when: {

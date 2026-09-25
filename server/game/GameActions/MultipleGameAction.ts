@@ -12,7 +12,7 @@ export interface MultipleActionProperties extends GameActionProperties {
 export class MultipleGameAction<C extends AbilityContext = AbilityContext> extends GameAction<MultipleActionProperties, EventName, C> {
     declare defaultProperties: MultipleActionProperties;
 
-    constructor(gameActions: GameAction[]) {
+    constructor(gameActions: GameAction<GameActionProperties, EventName, C>[]) {
         super({ gameActions: gameActions });
     }
 

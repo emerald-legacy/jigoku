@@ -11,7 +11,7 @@ import type Player from '../Player.js';
 import Ring from '../Ring.js';
 import type { Cost, Result } from './Cost.js';
 
-export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context: TriggeredAbilityContext) => true): Cost {
+export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context: TriggeredAbilityContext) => true): Cost<{ returnRing: Ring[] }> {
     return {
         promptsPlayer: true,
         canPay(context: TriggeredAbilityContext) {
