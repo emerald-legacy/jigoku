@@ -15,7 +15,6 @@ class KaitoKosori extends DrawCard {
                 const symbol = this.getCurrentElementSymbol(elementKey);
                 return context.player.cardsInPlay.some((card) => card.isParticipating()) &&
                     !!this.game.currentConflict &&
-                    symbol !== 'none' &&
                     this.game.currentConflict.hasElement(symbol) &&
                     !context.source.isParticipating() && !context.source.bowed;
             },
