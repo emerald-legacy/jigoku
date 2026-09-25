@@ -8,7 +8,7 @@ import { CardType, EffectName, Location, Players, TargetMode } from '../Constant
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-import type { GameAction } from './GameAction.js';
+import type { GameAction, WithDefaults } from './GameAction.js';
 import type { EffectArg } from '../Interfaces.js';
 
 export interface SelectCardProperties extends CardActionProperties {
@@ -33,16 +33,9 @@ export interface SelectCardProperties extends CardActionProperties {
     effectArgs?: (context: AbilityContext) => EffectArg[];
 }
 
-type ResolvedSelectCardProperties = SelectCardProperties & {
-    cardCondition: NonNullable<SelectCardProperties['cardCondition']>;
-    subActionProperties: NonNullable<SelectCardProperties['subActionProperties']>;
-    selector: BaseCardSelector;
-};
-
 export class SelectCardAction extends CardGameAction<SelectCardProperties> {
-    defaultProperties: SelectCardProperties = {
+    defaultProperties: Partial<SelectCardProperties> = {
         cardCondition: () => true,
-        gameAction: null as unknown as GameAction,
         subActionProperties: (card) => ({ target: card }),
         targets: false,
         hidePromptIfSingleCard: false,
@@ -54,14 +47,14 @@ export class SelectCardAction extends CardGameAction<SelectCardProperties> {
     }
 
     getEffectMessage(context: AbilityContext): MessageArgs {
-        let { target, effect, effectArgs } = this.getProperties(context) as SelectCardProperties;
+        let { target, effect, effectArgs } = this.getProperties(context);
         if(effect) {
             return [effect, (effectArgs && effectArgs(context)) || []];
         }
         return ['choose a target for {0}', [target]];
     }
 
-    getProperties(context: AbilityContext, additionalProperties = {}): ResolvedSelectCardProperties {
+    getProperties(context: AbilityContext, additionalProperties = {}): WithDefaults<SelectCardProperties, 'cardCondition' | 'subActionProperties' | 'selector'> {
         let properties = super.getProperties(context, additionalProperties);
         properties.gameAction.setDefaultTarget(() => properties.target);
         const cardCondition = properties.cardCondition ?? (() => true);

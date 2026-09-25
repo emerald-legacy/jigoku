@@ -5,7 +5,7 @@ import { Players } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import type { StatusToken } from '../StatusToken.js';
-import type { GameAction } from './GameAction.js';
+import type { GameAction, WithDefaults } from './GameAction.js';
 import { TokenAction, type TokenActionProperties } from './TokenAction.js';
 import type { EffectArg } from '../Interfaces.js';
 
@@ -25,20 +25,13 @@ export interface SelectTokenProperties extends TokenActionProperties {
     effectArgs?: (context: AbilityContext) => EffectArg[];
 }
 
-type ResolvedSelectTokenProperties = SelectTokenProperties & {
-    tokenCondition: NonNullable<SelectTokenProperties['tokenCondition']>;
-    subActionProperties: NonNullable<SelectTokenProperties['subActionProperties']>;
-    card: BaseCard;
-};
-
 export class SelectTokenAction extends TokenAction<SelectTokenProperties> {
     name = 'selectToken';
-    defaultProperties: SelectTokenProperties = {
+    defaultProperties: Partial<SelectTokenProperties> = {
         activePromptTitle: 'Which token do you wish to select?',
         tokenCondition: () => true,
         singleToken: true,
-        subActionProperties: (token) => ({ target: token }),
-        gameAction: null as unknown as GameAction
+        subActionProperties: (token) => ({ target: token })
     };
 
     constructor(properties: SelectTokenProperties | ((context: AbilityContext) => SelectTokenProperties)) {
@@ -53,7 +46,7 @@ export class SelectTokenAction extends TokenAction<SelectTokenProperties> {
         return ['choose a status token for {0}', [target]];
     }
 
-    private resolveProperties(context: AbilityContext, additionalProperties = {}): ResolvedSelectTokenProperties | null {
+    private resolveProperties(context: AbilityContext, additionalProperties = {}): WithDefaults<SelectTokenProperties, 'tokenCondition' | 'subActionProperties' | 'card'> | null {
         const properties = super.getProperties(context, additionalProperties);
         if(!properties.card) {
             return null;

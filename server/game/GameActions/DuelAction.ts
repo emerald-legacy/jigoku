@@ -9,7 +9,7 @@ import { DuelFlow } from '../gamesteps/DuelFlow.js';
 import type Player from '../Player.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
-import { type GameAction } from './GameAction.js';
+import { type GameAction, type WithDefaults } from './GameAction.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
 
 function toArray(args: MsgArg | MsgArg[]): MsgArg[] {
@@ -33,16 +33,13 @@ export interface DuelProperties extends CardActionProperties {
     refusalMessageArgs?: (context: AbilityContext) => MsgArg | MsgArg[];
 }
 
-type ResolvedDuelProperties = DuelProperties & { challenger: DrawCard };
-
 export class DuelAction extends CardGameAction<DuelProperties> {
     name = 'duel';
     eventName = EventName.OnDuelInitiated;
     targetType = [CardType.Character];
 
-    defaultProperties: DuelProperties = { cannotBeCancelled: false, optional: false } as DuelProperties;
 
-    getProperties(context: AbilityContext, additionalProperties = {}): ResolvedDuelProperties {
+    getProperties(context: AbilityContext, additionalProperties = {}): WithDefaults<DuelProperties, 'challenger'> {
         const properties = super.getProperties(context, additionalProperties);
         return Object.assign(properties, { challenger: properties.challenger ?? context.source });
     }

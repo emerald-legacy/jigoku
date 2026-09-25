@@ -20,6 +20,9 @@ export interface GameActionProperties {
     parentAction?: GameAction<GameActionProperties>;
 }
 
+/** `P` after `getProperties` has filled in the defaults for `K`. */
+export type WithDefaults<P, K extends keyof P> = P & { [Key in K]-?: NonNullable<P[Key]> };
+
 export class GameAction<P extends GameActionProperties = GameActionProperties, N extends EventName = EventName> {
     propertyFactory?: (context: AbilityContext) => P;
     properties?: P;
@@ -29,14 +32,17 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
     cost = '';
     effect = '';
     isNoAction?: boolean;
-    defaultProperties: P = { cannotBeCancelled: false, optional: false } as P;
+    defaultProperties: Partial<P> = {};
     getDefaultTargets: (context: AbilityContext) => TargetValue = (context) => this.defaultTargets(context);
+    readonly #ownProperties: (context: AbilityContext) => P;
 
     constructor(propertyFactory: P | ((context: AbilityContext) => P)) {
         if(typeof propertyFactory === 'function') {
             this.propertyFactory = propertyFactory;
+            this.#ownProperties = propertyFactory;
         } else {
             this.properties = propertyFactory;
+            this.#ownProperties = () => propertyFactory;
         }
     }
 
@@ -46,10 +52,10 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
 
     getProperties(context: AbilityContext, additionalProperties = {}): P {
         const properties = Object.assign(
-            { target: this.getDefaultTargets(context) },
+            { target: this.getDefaultTargets(context), cannotBeCancelled: false, optional: false },
             this.defaultProperties,
             additionalProperties,
-            this.properties ?? this.propertyFactory?.(context) ?? {}
+            this.#ownProperties(context)
         );
         const rawTarget = properties.target as TargetValue;
         const targetArray = Array.isArray(rawTarget) ? rawTarget : [rawTarget];

@@ -4,7 +4,7 @@ import type { Event } from '../Events/Event.js';
 import { Players } from '../Constants.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
-import type { GameAction } from './GameAction.js';
+import type { GameAction, WithDefaults } from './GameAction.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
 export interface SelectRingProperties extends RingActionProperties {
@@ -19,16 +19,10 @@ export interface SelectRingProperties extends RingActionProperties {
     gameAction: GameAction;
 }
 
-type ResolvedSelectRingProperties = SelectRingProperties & {
-    ringCondition: NonNullable<SelectRingProperties['ringCondition']>;
-    subActionProperties: NonNullable<SelectRingProperties['subActionProperties']>;
-};
-
 export class SelectRingAction extends RingAction<SelectRingProperties> {
-    defaultProperties: SelectRingProperties = {
+    defaultProperties: Partial<SelectRingProperties> = {
         ringCondition: () => true,
-        subActionProperties: (ring) => ({ target: ring }),
-        gameAction: null as unknown as GameAction
+        subActionProperties: (ring) => ({ target: ring })
     };
 
     constructor(properties: SelectRingProperties | ((context: AbilityContext) => SelectRingProperties)) {
@@ -40,7 +34,7 @@ export class SelectRingAction extends RingAction<SelectRingProperties> {
         return ['choose a ring for {0}', [target]];
     }
 
-    getProperties(context: AbilityContext, additionalProperties = {}): ResolvedSelectRingProperties {
+    getProperties(context: AbilityContext, additionalProperties = {}): WithDefaults<SelectRingProperties, 'ringCondition' | 'subActionProperties'> {
         const properties = super.getProperties(context, additionalProperties);
         const ringCondition = properties.ringCondition ?? (() => true);
         const subActionProperties = properties.subActionProperties ?? ((ring: Ring) => ({ target: ring }));

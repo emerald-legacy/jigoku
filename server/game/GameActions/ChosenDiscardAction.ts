@@ -6,6 +6,7 @@ import { EventName, Location, Players, TargetMode } from '../Constants.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import type { WithDefaults } from './GameAction.js';
 
 export interface ChosenDiscardProperties extends PlayerActionProperties {
     amount?: number;
@@ -13,19 +14,20 @@ export interface ChosenDiscardProperties extends PlayerActionProperties {
     cardCondition?: (card: BaseCard, context: AbilityContext) => boolean;
 }
 
-type ResolvedChosenDiscardProperties = ChosenDiscardProperties & {
-    amount: NonNullable<ChosenDiscardProperties['amount']>;
-    cardCondition: NonNullable<ChosenDiscardProperties['cardCondition']>;
-};
-
 export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties, EventName.OnCardsDiscardedFromHand> {
-    defaultProperties: ChosenDiscardProperties = {
-        amount: 1,
-        targets: true,
-        cardCondition: () => true
+    defaultProperties: Partial<ChosenDiscardProperties> = {
+        targets: true
     };
     name = 'discard';
     eventName = EventName.OnCardsDiscardedFromHand;
+
+    getProperties(context: AbilityContext, additionalProperties = {}): WithDefaults<ChosenDiscardProperties, 'amount' | 'cardCondition'> {
+        const properties = super.getProperties(context, additionalProperties);
+        return Object.assign(properties, {
+            amount: properties.amount ?? 1,
+            cardCondition: properties.cardCondition ?? (() => true)
+        });
+    }
 
     getEffectMessage(context: AbilityContext): MessageArgs {
         let properties = this.getProperties(context);
@@ -33,7 +35,7 @@ export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties, E
     }
 
     canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties) as ResolvedChosenDiscardProperties;
+        let properties = this.getProperties(context, additionalProperties);
         const availableHand = player.hand.filter((card) => properties.cardCondition(card, context));
 
         if(availableHand.length === 0 || properties.amount === 0) {
@@ -43,7 +45,7 @@ export class ChosenDiscardAction extends PlayerAction<ChosenDiscardProperties, E
     }
 
     addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
-        let properties = this.getProperties(context, additionalProperties) as ResolvedChosenDiscardProperties;
+        let properties = this.getProperties(context, additionalProperties);
         for(let player of properties.target as Player[]) {
             const availableHand = player.hand.filter((card) => properties.cardCondition(card, context));
             let amount = Math.min(availableHand.length, properties.amount);

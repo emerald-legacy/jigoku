@@ -19,8 +19,7 @@ export interface TriggerAbilityProperties extends CardActionProperties {
 
 export class TriggerAbilityAction extends CardGameAction<TriggerAbilityProperties> {
     name = 'triggerAbility';
-    defaultProperties: TriggerAbilityProperties = {
-        ability: null as unknown as CardAbility,
+    defaultProperties: Partial<TriggerAbilityProperties> = {
         ignoredRequirements: [],
         subResolution: false
     };

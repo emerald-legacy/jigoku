@@ -5,7 +5,7 @@ import { Players } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-import type { GameAction } from './GameAction.js';
+import type { GameAction, WithDefaults } from './GameAction.js';
 
 export interface CardMenuProperties extends CardActionProperties {
     activePromptTitle?: string;
@@ -22,28 +22,22 @@ export interface CardMenuProperties extends CardActionProperties {
     gameActionHasLegalTarget?: (context: AbilityContext) => boolean;
 }
 
-type ResolvedCardMenuProperties = CardMenuProperties & {
-    subActionProperties: NonNullable<CardMenuProperties['subActionProperties']>;
-    cardCondition: NonNullable<CardMenuProperties['cardCondition']>;
-    choices: NonNullable<CardMenuProperties['choices']>;
-};
-
 export class CardMenuAction extends CardGameAction<CardMenuProperties> {
     effect = 'choose a target for {0}';
-    defaultProperties: CardMenuProperties = {
+    defaultProperties: Partial<CardMenuProperties> = {
         activePromptTitle: 'Select a card:',
-        subActionProperties: (card) => ({ target: card }),
         targets: false,
-        cards: [],
-        choices: [],
-        cardCondition: () => true,
-        gameAction: null as unknown as GameAction
+        cards: []
     };
 
-    getProperties(context: AbilityContext, additionalProperties = {}): ResolvedCardMenuProperties {
-        let properties = super.getProperties(context, additionalProperties) as ResolvedCardMenuProperties;
+    getProperties(context: AbilityContext, additionalProperties = {}): WithDefaults<CardMenuProperties, 'subActionProperties' | 'cardCondition' | 'choices'> {
+        const properties = super.getProperties(context, additionalProperties);
         properties.gameAction.setDefaultTarget(() => properties.target);
-        return properties;
+        return Object.assign(properties, {
+            subActionProperties: properties.subActionProperties ?? ((card: DrawCard) => ({ target: card })),
+            cardCondition: properties.cardCondition ?? (() => true),
+            choices: properties.choices ?? []
+        });
     }
 
     canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
