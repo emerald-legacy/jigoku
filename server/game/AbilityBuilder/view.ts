@@ -17,6 +17,8 @@ type WhenFn = (event: Event, ctx: unknown, util: Utils) => unknown;
 export class SlotTable {
     costs: Slot[] = [];
     targets: Slot[] = [];
+    /** Extra `ctx` fields of the ability, for example the duel of a duel window ability. */
+    extras: Extras = {};
     when: undefined | Record<string, WhenFn>;
 
     addCost(slot: Slot): void {
@@ -70,7 +72,7 @@ export function createView(chain: AbilityContext[], table: SlotTable, extras: Ex
             return when ? when(event, createBaseView(root, root), createUtils(root)) : undefined;
         }
     });
-    for(const [key, read] of Object.entries(extras)) {
+    for(const [key, read] of Object.entries({ ...table.extras, ...extras })) {
         Object.defineProperty(view, key, { get: () => read(root) });
     }
     return view;

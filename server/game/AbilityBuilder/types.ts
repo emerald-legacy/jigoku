@@ -98,6 +98,15 @@ export type MatchOf<W> = {
     [K in keyof W]: W[K] extends (...args: never[]) => infer R ? Exclude<R, false | undefined | null | 0 | ''> : never;
 }[keyof W];
 
+export type DuelKind = 'military' | 'political' | 'glory';
+
+/** The characters chosen when a duel is initiated (RRG "Duel": they are targets). */
+export interface DuelChoice {
+    readonly type: DuelKind;
+    readonly challenger: DrawCard;
+    readonly challenged: DrawCard;
+}
+
 /** The result of a duel. The arrays are empty on a tie. */
 export interface DuelOutcome {
     readonly duel: Duel;

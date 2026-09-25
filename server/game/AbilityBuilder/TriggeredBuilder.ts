@@ -11,7 +11,6 @@ import type { Utils } from './Utils.js';
 import type {
     ConditionCtx,
     Ctx,
-    DuelOutcome,
     Empty,
     EventOf,
     MatchOf,
@@ -66,18 +65,6 @@ type FinishOf<F extends Finish, Src extends BaseCard> = F extends 'printed'
     : { build(limits?: LimitsFn): GainedAbility<Src> };
 
 type Next<S extends State, T> = With<S, { targets: S['targets'] & TargetResults<T> }>;
-type WithDuel<S extends State> = With<S, { extras: S['extras'] & { duel: DuelOutcome } }>;
-
-export interface DuelOptions {
-    challenger?: (card: BaseCard) => boolean;
-    challenged?: (card: BaseCard) => boolean;
-    requiresConflict?: boolean;
-    /**
-     * "between two characters controlled by different players, even if you do not control either".
-     * With two players, this is the same as the default duel, so the adapter does not use it yet.
-     */
-    anyControllers?: boolean;
-}
 
 export interface Setup<S extends State, F extends Finish> extends Targeting<S, F> {
     title(text: string): Setup<S, F>;
@@ -85,10 +72,18 @@ export interface Setup<S extends State, F extends Finish> extends Targeting<S, F
     /** Where the source card must be. The default depends on the card type. */
     from(...zones: Zone[]): Setup<S, F>;
     duringPhase(phase: PhaseName): Setup<S, F>;
-    payCostsBeforeTargets(): Setup<With<S, { costsFirst: true }>, F>;
+    /** The costs. The player can choose the targets before paying them. */
     costs<const C extends Record<string, CostSpec<unknown>>>(
         costs: ($cost: CostKit<S>) => C
     ): Targeting<With<S, { costs: CostResults<C> }>, F>;
+    /**
+     * The costs, always paid before the targets are chosen (RRG "Initiating Abilities", steps 4
+     * and 5). Target filters then see the paid costs. Without costs, only the fate cost of the
+     * card is paid first.
+     */
+    costsBeforeTargets<const C extends Record<string, CostSpec<unknown>> = Empty>(
+        costs?: ($cost: CostKit<S>) => C
+    ): Targeting<With<S, { costs: CostResults<C>; costsFirst: true }>, F>;
 }
 
 export interface Targeting<S extends State, F extends Finish> {
@@ -96,20 +91,11 @@ export interface Targeting<S extends State, F extends Finish> {
     targets<const T extends Record<string, TargetSpec<unknown>>>(
         targets: ($target: TargetKit<S>) => T
     ): Targeting<Next<S, T>, F>;
-    militaryDuel(options?: DuelOptions): DuelStep<WithDuel<S>, F>;
-    politicalDuel(options?: DuelOptions): DuelStep<WithDuel<S>, F>;
-    gloryDuel(options?: DuelOptions): DuelStep<WithDuel<S>, F>;
     announce(fn: AnnounceFn<S, FirstAnnouncement>): Announced<S, F>;
     effects(fn: EffectsFn<S>): Resolving<S, F>;
 }
 
 export interface Announced<S extends State, F extends Finish> {
-    effects(fn: EffectsFn<S>): Resolving<S, F>;
-}
-
-/** The step that runs when the duel resolves. */
-export interface DuelStep<S extends State, F extends Finish> {
-    announce(fn: AnnounceFn<S, MessageResult>): Announced<S, F>;
     effects(fn: EffectsFn<S>): Resolving<S, F>;
 }
 
@@ -201,7 +187,6 @@ export interface StepSpec {
     targetGroups: (($target: never) => Record<string, TargetSpec<unknown>>)[];
     announce?: (...args: never[]) => MessageResult;
     effects?: (...args: never[]) => readonly EffectNode[];
-    duel?: { type: 'military' | 'political' | 'glory'; options: DuelOptions };
 }
 
 export interface AbilitySpec {
@@ -262,36 +247,19 @@ export class TriggeredBuilder {
         return this;
     }
 
-    payCostsBeforeTargets(): this {
-        this.spec.costsFirst = true;
+    costs(fn: ($cost: never) => Record<string, CostSpec<unknown>>): this {
+        this.setCosts(fn);
         return this;
     }
 
-    costs(fn: ($cost: never) => Record<string, CostSpec<unknown>>): this {
-        if(this.spec.costs) {
-            throw new Error('Ability builder: costs() can be called only once');
-        }
-        this.spec.costs = fn;
+    costsBeforeTargets(fn: ($cost: never) => Record<string, CostSpec<unknown>> = () => ({})): this {
+        this.setCosts(fn);
+        this.spec.costsFirst = true;
         return this;
     }
 
     targets(fn: ($target: never) => Record<string, TargetSpec<unknown>>): this {
         this.step.targetGroups.push(fn);
-        return this;
-    }
-
-    militaryDuel(options: DuelOptions = {}): this {
-        this.step.duel = { type: 'military', options };
-        return this;
-    }
-
-    politicalDuel(options: DuelOptions = {}): this {
-        this.step.duel = { type: 'political', options };
-        return this;
-    }
-
-    gloryDuel(options: DuelOptions = {}): this {
-        this.step.duel = { type: 'glory', options };
         return this;
     }
 
@@ -333,6 +301,13 @@ export class TriggeredBuilder {
             throw new Error('Ability builder: a printed ability uses addPrinted(), not build()');
         }
         return this.finish.build(this.spec, limits?.(this.finish.limitKit) ?? {});
+    }
+
+    private setCosts(fn: ($cost: never) => Record<string, CostSpec<unknown>>): void {
+        if(this.spec.costs) {
+            throw new Error('Ability builder: costs can be given only once');
+        }
+        this.spec.costs = fn;
     }
 
     private addStep(gate: Gate): this {

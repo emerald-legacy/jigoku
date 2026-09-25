@@ -1,19 +1,18 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
-import { CardType, DuelType, Location } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 import type DrawCard from '../../DrawCard.js';
-import type { Duel } from '../../Duel.js';
 import type { Event } from '../../Events/Event.js';
 import type { GameAction } from '../../GameActions/GameAction.js';
-import type { MsgArg } from '../../GameChat.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import { costKit, type CostSpec } from '../kits/CostKit.js';
 import { createEffectKit, nodeActions, type EffectNode } from '../kits/EffectKit.js';
 import type { FinishOptions } from '../kits/LimitKit.js';
 import { formatted, messageKit, messageList, type MessageResult } from '../kits/MessageKit.js';
 import { targetKit, type LegacyTarget, type TargetSpec } from '../kits/TargetKit.js';
-import type { AbilitySpec, DuelOptions, StepSpec, Zone } from '../TriggeredBuilder.js';
+import type { AbilitySpec, StepSpec, Zone } from '../TriggeredBuilder.js';
 import { createUtils } from '../Utils.js';
-import { createBaseView, createView, SlotTable, type Extras } from '../view.js';
+import { createBaseView, createView, SlotTable } from '../view.js';
 import { EffectsAction } from './EffectsAction.js';
 
 type Props = Record<string, unknown>;
@@ -30,8 +29,6 @@ const ZONE_LOCATION: Record<Zone, Location> = {
     removedFromGame: Location.RemovedFromGame
 };
 
-const DUEL_TYPE = { military: DuelType.Military, political: DuelType.Political, glory: DuelType.Glory };
-
 type Call<F> = F extends (...args: never[]) => infer R ? (...args: unknown[]) => R : never;
 
 function call<F extends (...args: never[]) => unknown>(fn: F): Call<F> {
@@ -46,18 +43,6 @@ function verb(source: BaseCard): string {
 function directTargets(action: GameAction, context: AbilityContext): unknown[] {
     const target = action.getProperties(context).target;
     return Array.isArray(target) ? target : [];
-}
-
-function duelOutcome(duel: Duel): Extras {
-    return {
-        duel: () => ({
-            duel,
-            winner: duel.winner ?? [],
-            loser: duel.loser ?? [],
-            winningPlayer: duel.winningPlayer,
-            losingPlayer: duel.losingPlayer
-        })
-    };
 }
 
 /**
@@ -95,6 +80,10 @@ export class TriggeredCompiler {
         private readonly gained = false
     ) {
         this.table.when = spec.when as SlotTable['when'];
+        if(spec.kind === 'duelChallenge' || spec.kind === 'duelFocus' || spec.kind === 'duelStrike') {
+            // The duel window abilities read the duel that is resolving.
+            this.table.extras = { duel: (root) => (root as TriggeredAbilityContext).event.duel };
+        }
 
         this.costs = Object.entries(spec.costs ? call(spec.costs)(costKit) : {});
         for(const [name, cost] of this.costs) {
@@ -176,7 +165,7 @@ export class TriggeredCompiler {
     /** The first step prints its announcement as the effect text after the standard intro. */
     private rootMessage(): Props {
         const step = this.spec.steps[0];
-        if(!step.announce || step.duel) {
+        if(!step.announce) {
             return {};
         }
         const announce = step.announce;
@@ -196,13 +185,9 @@ export class TriggeredCompiler {
         };
     }
 
-    private announcement(
-        announce: NonNullable<StepSpec['announce']>,
-        chain: AbilityContext[],
-        extras: Extras = {}
-    ): MessageResult {
+    private announcement(announce: NonNullable<StepSpec['announce']>, chain: AbilityContext[]): MessageResult {
         const context = chain[chain.length - 1];
-        return call(announce)(messageKit, createView(chain, this.table, extras), createUtils(context));
+        return call(announce)(messageKit, createView(chain, this.table), createUtils(context));
     }
 
     /** Prints the announcement of a later step. */
@@ -227,28 +212,23 @@ export class TriggeredCompiler {
     private effectsAction(
         step: StepSpec,
         slots: Slots,
-        chain: (context: AbilityContext) => AbilityContext[],
-        extras: Extras = {}
+        chain: (context: AbilityContext) => AbilityContext[]
     ): undefined | EffectsAction {
         const effects = step.effects;
         if(!effects) {
             return undefined;
         }
         return new EffectsAction(
-            (context) => this.actionsOf(effects, chain(context), extras),
+            (context) => this.actionsOf(effects, chain(context)),
             (context, actions) => this.chosenCardsCanBeAffected(slots, context, actions)
         );
     }
 
-    private actionsOf(
-        effects: NonNullable<StepSpec['effects']>,
-        chain: AbilityContext[],
-        extras: Extras = {}
-    ): GameAction[] {
+    private actionsOf(effects: NonNullable<StepSpec['effects']>, chain: AbilityContext[]): GameAction[] {
         const context = chain[chain.length - 1];
         const nodes = call(effects)(
             createEffectKit(context),
-            createView(chain, this.table, extras),
+            createView(chain, this.table),
             createUtils(context)
         ) as readonly EffectNode[];
         return nodeActions(nodes);
@@ -269,15 +249,9 @@ export class TriggeredCompiler {
         const slots = this.slots[index];
         const chain = (context: AbilityContext) => [...parentChain, context];
 
-        if(step.duel) {
-            if(slots.length > 0) {
-                throw new Error('Ability builder: a duel cannot have other targets yet');
-            }
-            return { initiateDuel: this.duelProps(step, step.duel.type, step.duel.options) };
-        }
-
         const env = {
             owner: this.card.owner,
+            sourceIsCharacter: this.gained || this.card.type === CardType.Character,
             view: (context: AbilityContext) => createView(chain(context), this.table),
             util: createUtils
         };
@@ -302,33 +276,6 @@ export class TriggeredCompiler {
             last.props.gameAction = [effects];
         }
         return { targets: Object.fromEntries(targets.map((target) => [target.name, target.props])) };
-    }
-
-    private duelProps(step: StepSpec, type: 'military' | 'political' | 'glory', options: DuelOptions): Props {
-        const effects = step.effects;
-        const announce = step.announce;
-        const props: Props = {
-            type: DUEL_TYPE[type],
-            gameAction: (duel: Duel) =>
-                new EffectsAction((context) => (effects ? this.actionsOf(effects, [context], duelOutcome(duel)) : []))
-        };
-        if(announce) {
-            props.message = '{0}';
-            props.messageArgs = (duel: Duel, context: AbilityContext): MsgArg[] => {
-                const [first] = messageList(this.announcement(announce, [context], duelOutcome(duel)));
-                return first ? [formatted(context.game, first)] : [];
-            };
-        }
-        if(options.requiresConflict !== undefined) {
-            props.requiresConflict = options.requiresConflict;
-        }
-        if(options.challenger) {
-            props.challengerCondition = options.challenger;
-        }
-        if(options.challenged) {
-            props.targetCondition = options.challenged;
-        }
-        return props;
     }
 
     /** The `then` of the old API: builds the next step when the previous step resolves. */

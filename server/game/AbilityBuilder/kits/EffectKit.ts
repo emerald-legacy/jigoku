@@ -1,12 +1,13 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import type DrawCard from '../../DrawCard.js';
-import { Duration } from '../../Constants.js';
+import { Duration, DuelType } from '../../Constants.js';
+import type { Duel } from '../../Duel.js';
 import type { EffectFactory } from '../../Effects/EffectBuilder.js';
 import { GameAction } from '../../GameActions/GameAction.js';
 import * as GameActions from '../../GameActions/GameActions.js';
 import type Player from '../../Player.js';
-import type { Until } from '../types.js';
+import type { DuelChoice, DuelKind, DuelOutcome, Until } from '../types.js';
 import AbilityDsl from '../../abilitydsl.js';
 import BaseCardValue from '../../BaseCard.js';
 import type { EventName } from '../../Constants.js';
@@ -15,7 +16,15 @@ import type Ring from '../../Ring.js';
 import { AssignAction, type AssignOptions } from '../adapter/AssignAction.js';
 import { ChosenAction } from '../adapter/ChosenAction.js';
 import { EffectsAction } from '../adapter/EffectsAction.js';
-import { formatted, messageKit, messageList, type MessageKit, type MessageResult, type MessageSpec } from './MessageKit.js';
+import {
+    formatted,
+    messageKit,
+    messageList,
+    type FreeformMessage,
+    type MessageKit,
+    type MessageResult,
+    type MessageSpec
+} from './MessageKit.js';
 import { MayPayAction, type Payment } from '../adapter/MayPayAction.js';
 import type CardAbility from '../../CardAbility.js';
 import { createModifierKit, modFactories, type Mod, type ModifierKit, type ModTarget } from './ModifierKit.js';
@@ -95,6 +104,68 @@ interface DelayedOptions {
     otherwise?: DelayedBranch;
     /** How long the effect waits for its trigger. The default is the end of the round. */
     until?: Until;
+}
+
+/** The skill rules of the game mode: which value a duel counts. */
+type DuelRules = 'currentSkill' | 'printedSkill' | 'skirmish';
+
+interface DuelOptions {
+    /** "using each character's base military skill": the value that the duel counts for each character. */
+    statistic?: (card: DrawCard, rules: DuelRules) => number;
+    /** "giving each dueling character ... until the end of the duel". */
+    duelistModifiers?: (card: DrawCard, $modifier: ModifierKit) => readonly Mod<'card'>[];
+    /** Prints as "Duel Effect: <text>" when the consequences resolve. */
+    announce?: ($message: MessageKit, outcome: DuelOutcome) => FreeformMessage;
+}
+
+type Consequences = (outcome: DuelOutcome) => readonly EffectNode[];
+
+const DUEL_TYPE: Record<DuelKind, DuelType> = {
+    military: DuelType.Military,
+    political: DuelType.Political,
+    glory: DuelType.Glory
+};
+
+function outcomeOf(duel: Duel): DuelOutcome {
+    return {
+        duel,
+        winner: duel.winner ?? [],
+        loser: duel.loser ?? [],
+        winningPlayer: duel.winningPlayer,
+        losingPlayer: duel.losingPlayer
+    };
+}
+
+/** The old duel action: resolves the duel, then the consequences for its result (RRG D.4). */
+function duelAction(
+    type: DuelKind,
+    challenger: undefined | DrawCard,
+    challenged: undefined | DrawCard,
+    consequences: Consequences,
+    options: DuelOptions
+): undefined | GameAction {
+    if(!challenger || !challenged) {
+        return undefined;
+    }
+
+    const { statistic, duelistModifiers, announce } = options;
+    const modifiers = (card: DrawCard) => (duelistModifiers ? modFactories(duelistModifiers(card, lastingModifiers)) : []);
+    return GameActions.duel({
+        type: DUEL_TYPE[type],
+        challenger,
+        target: challenged,
+        gameAction: (duel: Duel) => new EffectsAction(() => nodeActions(consequences(outcomeOf(duel)))),
+        ...(statistic ? { statistic } : {}),
+        ...(duelistModifiers ? { challengerEffect: modifiers(challenger), targetEffect: modifiers(challenged) } : {}),
+        ...(announce
+            ? {
+                message: '{0}',
+                messageArgs: (duel: Duel, context: AbilityContext) => [
+                    formatted(context.game, announce(messageKit, outcomeOf(duel)))
+                ]
+            }
+            : {})
+    });
 }
 
 interface ChooseRingOptions {
@@ -242,6 +313,19 @@ export function createEffectKit(context: AbilityContext) {
         /** A replacement effect: cancel the triggering event and resolve these effects instead. */
         instead: (effects: readonly EffectNode[]) =>
             node(GameActions.cancel({ replacementGameAction: GameActions.multiple(nodeActions(effects)) })),
+
+        /** "Initiate a duel – resolve the duel. <consequences>": resolves a duel that the targets initiated. */
+        resolveDuel: (duel: undefined | DuelChoice, consequences: Consequences, options: DuelOptions = {}) =>
+            node(duel ? duelAction(duel.type, duel.challenger, duel.challenged, consequences, options) : undefined),
+        /** "Your character challenges that character to a military duel": a duel that starts in the effect. */
+        militaryDuel: (challenger: undefined | DrawCard, challenged: undefined | DrawCard, consequences: Consequences, options: DuelOptions = {}) =>
+            node(duelAction('military', challenger, challenged, consequences, options)),
+        /** "Your character challenges that character to a political duel": a duel that starts in the effect. */
+        politicalDuel: (challenger: undefined | DrawCard, challenged: undefined | DrawCard, consequences: Consequences, options: DuelOptions = {}) =>
+            node(duelAction('political', challenger, challenged, consequences, options)),
+        /** "Your character challenges that character to a glory duel": a duel that starts in the effect. */
+        gloryDuel: (challenger: undefined | DrawCard, challenged: undefined | DrawCard, consequences: Consequences, options: DuelOptions = {}) =>
+            node(duelAction('glory', challenger, challenged, consequences, options)),
 
         /** Hantei XXXVIII: the player of this ability chooses the targets of that ability. */
         chooseTargetsInstead: (abilityContext: undefined | AbilityContext) =>

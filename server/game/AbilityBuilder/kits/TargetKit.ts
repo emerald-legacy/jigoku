@@ -3,7 +3,8 @@ import type BaseCard from '../../BaseCard.js';
 import { CardType, Location, Players, TargetMode } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type { Utils } from '../Utils.js';
-import type { CardFor, CardKind, CardKindInput, FilterCtx, PlayerRef, State } from '../types.js';
+import type DrawCard from '../../DrawCard.js';
+import type { CardFor, CardKind, CardKindInput, DuelChoice, DuelKind, FilterCtx, PlayerRef, State } from '../types.js';
 
 declare const targetResult: unique symbol;
 
@@ -11,6 +12,8 @@ declare const targetResult: unique symbol;
 export interface TargetEnv {
     /** The owner of the ability, for the parts of the spec that must be known when the ability is built. */
     owner: Player;
+    /** RRG D.1: when the ability is on a character, that character initiates its duels. */
+    sourceIsCharacter: boolean;
     view(context: AbilityContext): unknown;
     util(context: AbilityContext): Utils;
 }
@@ -272,6 +275,96 @@ class InPlayerOrderSpec<R> extends TargetSpec<readonly InOrderChoice<R>[]> {
     }
 }
 
+interface DuelSideOptions<S extends State> {
+    chooser?: PlayerRef<S>;
+    prompt?: string;
+    filter?: (card: DrawCard, ctx: FilterCtx<S>, util: Utils) => boolean;
+}
+
+interface DuelTargetOptions<S extends State> {
+    /** Only when the ability is not on a character. On a character, that character is the challenger. */
+    challenger?: DuelSideOptions<S>;
+    challenged?: DuelSideOptions<S>;
+    /** The default is true: both characters must be participating. */
+    requiresConflict?: boolean;
+}
+
+function single(value: unknown): undefined | DrawCard {
+    return (Array.isArray(value) ? value[0] : value) as undefined | DrawCard;
+}
+
+/** RRG "Duel", D.1: the two characters of a duel, one for each player. They are targets. */
+class DuelTargetSpec extends TargetSpec<DuelChoice> {
+    private challengerIsSource = false;
+
+    constructor(
+        private readonly type: DuelKind,
+        private readonly options: DuelTargetOptions<State>
+    ) {
+        super();
+    }
+
+    compile(name: string, env: TargetEnv): LegacyTarget[] {
+        this.challengerIsSource = env.sourceIsCharacter;
+        const requiresConflict = this.options.requiresConflict ?? true;
+        const canDuel = (card: undefined | DrawCard) => card !== undefined && (!requiresConflict || card.isParticipating());
+
+        const side = (
+            options: DuelSideOptions<State> = {},
+            controller: Players,
+            extra: (card: DrawCard, context: AbilityContext) => boolean
+        ): Record<string, unknown> => {
+            const { chooser, prompt, filter } = options;
+            const props: Record<string, unknown> = {
+                cardType: CardType.Character,
+                controller,
+                cardCondition: (card: DrawCard, context: AbilityContext) =>
+                    canDuel(card) &&
+                    extra(card, context) &&
+                    (!filter || filter(card, env.view(context) as FilterCtx<State>, env.util(context)))
+            };
+            if(chooser !== undefined) {
+                props.player = (context: AbilityContext) =>
+                    relativePlayer(context, resolveRef(chooser, env.view(context), env.util(context)));
+            }
+            if(prompt) {
+                props.activePromptTitle = prompt;
+            }
+            return props;
+        };
+
+        const challenged = side(this.options.challenged, Players.Opponent, (card, context) => {
+            const challenger = this.challengerOf(context, name);
+            return canDuel(challenger) && card !== challenger;
+        });
+        if(this.challengerIsSource) {
+            return [{ name: `${name}#challenged`, kind: 'card', props: challenged }];
+        }
+        return [
+            { name: `${name}#challenger`, kind: 'card', props: side(this.options.challenger, Players.Self, () => true) },
+            { name: `${name}#challenged`, kind: 'card', props: challenged }
+        ];
+    }
+
+    private challengerOf(context: AbilityContext, name: string): undefined | DrawCard {
+        return this.challengerIsSource ? (context.source as DrawCard) : single(context.targets[`${name}#challenger`]);
+    }
+
+    read(context: AbilityContext, name: string): unknown {
+        return {
+            type: this.type,
+            challenger: this.challengerOf(context, name),
+            challenged: single(context.targets[`${name}#challenged`])
+        };
+    }
+
+    chosenCards(context: AbilityContext, name: string): BaseCard[] {
+        const challenged = single(context.targets[`${name}#challenged`]);
+        const challenger = this.challengerIsSource ? undefined : single(context.targets[`${name}#challenger`]);
+        return [challenger, challenged].filter((card) => card !== undefined);
+    }
+}
+
 function kindsOf(kind: CardKindInput): readonly CardKind[] {
     return typeof kind === 'string' ? [kind] : kind;
 }
@@ -298,6 +391,13 @@ export interface TargetKit<S extends State> {
     inPlayerOrder<R>(
         build: (player: Player, $target: TargetKit<S>) => TargetSpec<R>
     ): TargetSpec<readonly InOrderChoice<R>[]>;
+
+    /** "Initiate a military duel": the challenger and the challenged character. */
+    militaryDuel(options?: DuelTargetOptions<S>): TargetSpec<DuelChoice>;
+    /** "Initiate a political duel": the challenger and the challenged character. */
+    politicalDuel(options?: DuelTargetOptions<S>): TargetSpec<DuelChoice>;
+    /** "Initiate a glory duel": the challenger and the challenged character. */
+    gloryDuel(options?: DuelTargetOptions<S>): TargetSpec<DuelChoice>;
 }
 
 function countOf(options: object): Count<State> {
@@ -325,5 +425,8 @@ export const targetKit: TargetKit<State> = {
     anyCard: (options = {}) => new CardTargetSpec(ALL_KINDS, 'single', options) as never,
     select: (options) => new SelectTargetSpec(options.options, options.chooser, options.prompt) as never,
     inPlayerOrder: (build) =>
-        new InPlayerOrderSpec(build as (player: Player, $target: TargetKit<State>) => TargetSpec<never>) as never
+        new InPlayerOrderSpec(build as (player: Player, $target: TargetKit<State>) => TargetSpec<never>) as never,
+    militaryDuel: (options = {}) => new DuelTargetSpec('military', options),
+    politicalDuel: (options = {}) => new DuelTargetSpec('political', options),
+    gloryDuel: (options = {}) => new DuelTargetSpec('glory', options)
 };
