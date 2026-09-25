@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import type { ProvinceCard } from '../../ProvinceCard.js';
 import { TargetMode, CardType, Location } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -21,7 +22,7 @@ class HeroOfThreeTrees extends DrawCard {
                         cardType: CardType.Province,
                         location: Location.Provinces,
                         cardCondition: card => card.isConflictProvince(),
-                        subActionProperties: card => {
+                        subActionProperties: (card: ProvinceCard) => {
                             context.target = card;
                             return ({ target: card });
                         },
@@ -29,7 +30,7 @@ class HeroOfThreeTrees extends DrawCard {
                         messageArgs: cards => [context.player, cards],
                         gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
                             effect: (
-                                context.target?.getStrength() > 0 ?
+                                ((context.target as ProvinceCard | undefined)?.getStrength() ?? 0) > 0 ?
                                     AbilityDsl.effects.modifyProvinceStrength(-1) : []
                             )
                         }))

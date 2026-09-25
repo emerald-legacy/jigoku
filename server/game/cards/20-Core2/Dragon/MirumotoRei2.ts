@@ -3,7 +3,6 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { LastingEffectProperties } from '../../../GameActions/LastingEffectAction.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 import type { Duel } from '../../../Duel.js';
 
@@ -26,7 +25,7 @@ export default class MirumotoRei2 extends DrawCard {
                     player: context.player
                 }),
                 duration: Duration.UntilEndOfDuel
-            } as LastingEffectProperties)),
+            })),
             effect: 'add {1} to their duel total',
             effectArgs: (context) => [this.getWeaponCount(context)]
         });

@@ -41,7 +41,7 @@ export default class MapmakerApprentice extends DrawCard {
                             cardType: CardType.Province,
                             location: Location.Provinces,
                             cardCondition: (card) => card.isConflictProvince(),
-                            subActionProperties: (card) => {
+                            subActionProperties: (card: ProvinceCard) => {
                                 context.target = card;
                                 return { target: card };
                             },

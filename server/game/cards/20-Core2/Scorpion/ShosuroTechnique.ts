@@ -2,7 +2,6 @@ import { CardType, ConflictType, Duration, Players, TargetMode } from '../../../
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { LastingEffectProperties } from '../../../GameActions/LastingEffectAction.js';
 
 export default class ShosuroTechnique extends DrawCard {
     static id = 'shosuro-technique';
@@ -15,7 +14,7 @@ export default class ShosuroTechnique extends DrawCard {
                 target: (context as TriggeredAbilityContext).event.duel,
                 effect: AbilityDsl.effects.duelIgnorePrintedSkill(),
                 duration: Duration.UntilEndOfDuel
-            } as LastingEffectProperties)),
+            })),
             effect: 'ignore printed skill when resolving this duel'
         });
 
@@ -44,7 +43,7 @@ export default class ShosuroTechnique extends DrawCard {
                 AbilityDsl.actions.cardLastingEffect((context) => ({
                     duration: Duration.UntilEndOfConflict,
                     target: context.targets.shinobi,
-                    effect: AbilityDsl.effects.setMilitarySkill(context.targets.enemy.militarySkill)
+                    effect: AbilityDsl.effects.setMilitarySkill((context.targets.enemy as DrawCard).militarySkill)
                 }))
             ]),
             effect: 'set the {3} of {1} to {4}{3} (equal to {2}). There\'s no blade as keen as surprise.',

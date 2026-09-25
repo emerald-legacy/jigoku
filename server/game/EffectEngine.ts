@@ -16,7 +16,7 @@ type DelayedEffectValue = {
     onlyRemoveOnSuccess?: boolean;
     gameAction: GameAction;
     message?: string;
-    messageArgs?: unknown[] | ((context: AbilityContext, targets: unknown[]) => unknown[]);
+    messageArgs?: MsgArg[] | ((context: AbilityContext, targets: unknown[]) => MsgArg[]);
 };
 
 interface CustomDurationEvent {
@@ -89,7 +89,7 @@ export class EffectEngine {
                         if(typeof messageArgs === 'function') {
                             messageArgs = messageArgs(context, targets);
                         }
-                        this.game.addMessage(properties.message, ...(messageArgs as MsgArg[]));
+                        this.game.addMessage(properties.message, ...(messageArgs));
                     }
                     const actionEvents: Event[] = [];
                     properties.gameAction.addEventsToArray(actionEvents, context);

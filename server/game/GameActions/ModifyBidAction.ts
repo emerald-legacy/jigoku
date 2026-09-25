@@ -1,10 +1,10 @@
 import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export enum Direction {
     Decrease = 'decrease',
@@ -17,7 +17,7 @@ export interface ModifyBidProperties extends PlayerActionProperties {
     direction?: Direction;
 }
 
-export class ModifyBidAction extends PlayerAction<ModifyBidProperties, EventName.OnModifyBid> {
+export class ModifyBidAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ModifyBidProperties, EventName.OnModifyBid, C> {
     name = 'modifyBid';
     eventName = EventName.OnModifyBid;
     defaultProperties: ModifyBidProperties = {
@@ -25,15 +25,15 @@ export class ModifyBidAction extends PlayerAction<ModifyBidProperties, EventName
         direction: Direction.Increase
     };
 
-    constructor(propertyFactory: ModifyBidProperties | ((context: AbilityContext) => ModifyBidProperties)) {
+    constructor(propertyFactory: ModifyBidProperties | ((context: C) => ModifyBidProperties)) {
         super(propertyFactory);
     }
 
-    defaultTargets(context: AbilityContext) {
+    defaultTargets(context: C) {
         return [context.player];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         let properties: ModifyBidProperties = this.getProperties(context);
         if(properties.direction === Direction.Prompt) {
             return ['modify their honor bid by {0}', [properties.amount]];
@@ -41,7 +41,7 @@ export class ModifyBidAction extends PlayerAction<ModifyBidProperties, EventName
         return ['{0} their bid by {1}', [properties.direction, properties.amount]];
     }
 
-    canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(player: Player, context: C, additionalProperties = {}): boolean {
         let properties: ModifyBidProperties = this.getProperties(context, additionalProperties);
         if(properties.amount === 0 || (properties.direction === Direction.Decrease && player.honorBid === 0)) {
             return false;
@@ -49,7 +49,7 @@ export class ModifyBidAction extends PlayerAction<ModifyBidProperties, EventName
         return super.canAffect(player, context);
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown> = {}): void {
         let properties: ModifyBidProperties = this.getProperties(context, additionalProperties);
         if(properties.direction !== Direction.Prompt) {
             return super.addEventsToArray(events, context);
@@ -80,14 +80,14 @@ export class ModifyBidAction extends PlayerAction<ModifyBidProperties, EventName
         }
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnModifyBid>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount, direction } = this.getProperties(context, additionalProperties) as ModifyBidProperties;
+    addPropertiesToEvent(event: ActionEvent<EventName.OnModifyBid, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
+        let { amount, direction } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.direction = direction;
     }
 
-    eventHandler(event: GameEvent<EventName.OnModifyBid>): void {
+    eventHandler(event: ActionEvent<EventName.OnModifyBid, C>): void {
         const player = event.player as Player;
         const amount = event.amount as number;
         if(event.direction === Direction.Increase) {

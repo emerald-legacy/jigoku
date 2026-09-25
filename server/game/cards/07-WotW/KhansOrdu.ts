@@ -14,7 +14,7 @@ export default class KhansOrdu extends ProvinceCard {
             gameAction: AbilityDsl.actions.multiple([
                 AbilityDsl.actions.switchConflictType((context) => ({
                     targetConflictType: ConflictType.Military,
-                    target: context.game.currentConflict && context.game.currentConflict.ring
+                    target: context.game.currentConflict ? context.game.currentConflict.ring : []
                 })),
                 AbilityDsl.actions.playerLastingEffect({
                     targetController: Players.Any,

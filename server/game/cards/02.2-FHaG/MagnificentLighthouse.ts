@@ -46,7 +46,7 @@ class MagnificentLighthouse extends DrawCard {
                     const dest = destinations.pop();
                     if(msg && dest) {
                         this.game.addMessage(msg, context.player, card);
-                        opponent.moveCard(card, dest as Location);
+                        opponent.moveCard(card, dest);
                     }
                     if(messages.length > 0) {
                         let index = topThree.indexOf(card);

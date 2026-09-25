@@ -4,7 +4,6 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { Duel } from '../../../Duel.js';
 import { AbilityContext } from '../../../AbilityContext.js';
-import Player from '../../../Player.js';
 
 export default class BayushiGichin extends DrawCard {
     static id = 'bayushi-gichin';
@@ -41,7 +40,7 @@ export default class BayushiGichin extends DrawCard {
                         cardType: CardType.Attachment,
                         controller: Players.Self,
                         location: [Location.Hand, Location.ConflictDiscardPile, Location.DynastyDiscardPile],
-                        cardCondition: (card) => card.hasTrait('poison') && AbilityDsl.actions.attach().canAffect(context.targets.character, context, { attachment: card }),
+                        cardCondition: (card) => card.hasTrait('poison') && AbilityDsl.actions.attach().canAffect(context.targets.character as DrawCard, context, { attachment: card }),
                         message: '{0} attaches {1}',
                         messageArgs: (cards) => {
                             return [context.player, cards];
@@ -55,7 +54,7 @@ export default class BayushiGichin extends DrawCard {
                     AbilityDsl.actions.attach(() => {
                         return {
                             target: context.targets.character,
-                            attachment: context.targets.attachment
+                            attachment: context.targets.attachment as DrawCard
                         };
                     })
                 ]
@@ -78,7 +77,7 @@ export default class BayushiGichin extends DrawCard {
     }
 
     getPoisons(context: AbilityContext) {
-        const player = context.player as Player;
+        const player = context.player;
         const inDiscard = player.conflictDiscardPile.filter(card => card.hasTrait('poison'));
         const inHand = player.hand.filter(card => card.hasTrait('poison'));
 

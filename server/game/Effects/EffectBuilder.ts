@@ -18,10 +18,10 @@ import DynamicEffect from './DynamicEffect.js';
 import PlayerEffect from './PlayerEffect.js';
 import RingEffect from './RingEffect.js';
 import StaticEffect from './StaticEffect.js';
+import type { Duel } from '../Duel.js';
 
-type PlayerOrRingOrCardOrToken = Player | Ring | BaseCard | StatusToken;
 
-export type EffectTarget = PlayerOrRingOrCardOrToken;
+export type EffectTarget = Player | Ring | BaseCard | StatusToken | Duel;
 type StaticValue = unknown;
 export type DynamicValue = (target: EffectTarget, context: AbilityContext) => unknown;
 export type DetachedValue = {
@@ -38,7 +38,7 @@ type Props = {
     condition?: (context: AbilityContext) => boolean;
     until?: WhenType;
     ability?: BaseAbility;
-    target?: PlayerOrRingOrCardOrToken | PlayerOrRingOrCardOrToken[];
+    target?: EffectTarget | EffectTarget[];
     cannotBeCancelled?: boolean;
     optional?: boolean;
     parentAction?: GameAction<GameActionProperties>;

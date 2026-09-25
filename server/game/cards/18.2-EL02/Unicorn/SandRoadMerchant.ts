@@ -55,10 +55,12 @@ export default class SandRoadMerchant extends DrawCard {
                                 'Put on the bottom of your deck': {
                                     action: AbilityDsl.actions.handler({
                                         handler: () => {
-                                            context.player.opponent?.moveCard(
-                                                topCard,
-                                                Location.ConflictDeck + ' bottom'
-                                            );
+                                            if(topCard) {
+                                                context.player.opponent?.moveCard(
+                                                    topCard,
+                                                    Location.ConflictDeck + ' bottom'
+                                                );
+                                            }
                                         }
                                     }),
                                     message: '{0} chooses to put {2} on the bottom of their deck'

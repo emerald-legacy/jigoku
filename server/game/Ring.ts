@@ -98,10 +98,7 @@ class Ring extends EffectSource {
         return [...new Set(elements.flat())];
     }
 
-    hasElement(element: Element | 'none'): boolean {
-        if(element === 'none') {
-            return false;
-        }
+    hasElement(element: Element): boolean {
         return this.getElements().includes(element);
     }
 

@@ -2,11 +2,10 @@ import { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Conflict } from '../../../Conflict.js';
 
 function shinobiCount(context: AbilityContext): number {
     return (
-        (context.game.currentConflict as Conflict | null)?.getParticipants(
+        (context.game.currentConflict)?.getParticipants(
             (card: DrawCard) => card.controller === context.player && card.hasTrait('shinobi')
         )?.length ?? 0
     );
@@ -39,7 +38,7 @@ export default class SpiderwebPassage extends DrawCard {
                 return {
                     condition: () =>
                         (context.player.opponent?.hand.length ?? 0) >= discardCount &&
-                        discardFromHandAction.canAffect(context.player.opponent, context),
+                        !!context.player.opponent && discardFromHandAction.canAffect(context.player.opponent, context),
                     falseGameAction: killAction,
                     trueGameAction: AbilityDsl.actions.chooseAction(context => ({
                         player: Players.Opponent,

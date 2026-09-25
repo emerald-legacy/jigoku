@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CallingInFavors extends DrawCard {
@@ -13,9 +14,9 @@ export default class CallingInFavors extends DrawCard {
                 cardType: CardType.Attachment,
                 controller: Players.Opponent
             },
-            gameAction: AbilityDsl.actions.ifAble((context) => ({
+            gameAction: AbilityDsl.actions.ifAble((context: AbilityContext<DrawCard, DrawCard>) => ({
                 ifAbleAction: AbilityDsl.actions.attach({
-                    target: context.costs.dishonor,
+                    target: context.costs.dishonor as DrawCard,
                     attachment: context.target,
                     takeControl: true
                 }),

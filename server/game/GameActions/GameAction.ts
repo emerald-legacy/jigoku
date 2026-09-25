@@ -9,19 +9,29 @@ import type { GameObject } from '../GameObject.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import type { StatusToken } from '../StatusToken.js';
+import type { Duel } from '../Duel.js';
 
-type PlayerOrRingOrCardOrToken = Player | Ring | BaseCard | StatusToken;
+type GameActionTarget = Player | Ring | BaseCard | StatusToken | Duel;
 type TargetValue = unknown;
 
 export interface GameActionProperties {
-    target?: PlayerOrRingOrCardOrToken | PlayerOrRingOrCardOrToken[];
+    target?: GameActionTarget | GameActionTarget[];
     cannotBeCancelled?: boolean;
     optional?: boolean;
     parentAction?: GameAction<GameActionProperties>;
 }
 
-export class GameAction<P extends GameActionProperties = GameActionProperties, N extends EventName = EventName> {
-    propertyFactory?: (context: AbilityContext) => P;
+/** An event this action created: its context is the one the action was resolved with. */
+export type ActionEvent<N extends EventName, C extends AbilityContext> = GameEvent<N> & { context: C };
+
+/** `P` after `getProperties` has filled in the defaults for `K`. */
+export type WithDefaults<P, K extends keyof P> = P & { [Key in K]-?: NonNullable<P[Key]> };
+
+export class GameAction<
+    P extends GameActionProperties = GameActionProperties,
+    N extends EventName = EventName,
+    C extends AbilityContext = AbilityContext
+> {
     properties?: P;
     targetType: string[] = [];
     eventName = EventName.Unnamed;
@@ -29,14 +39,17 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
     cost = '';
     effect = '';
     isNoAction?: boolean;
-    defaultProperties: P = { cannotBeCancelled: false, optional: false } as P;
+    defaultProperties: Partial<P> = {};
     getDefaultTargets: (context: AbilityContext) => TargetValue = (context) => this.defaultTargets(context);
+    // Method syntax keeps an action for a narrower context assignable to GameAction.
+    readonly #own: { resolve(context: C): P };
 
-    constructor(propertyFactory: P | ((context: AbilityContext) => P)) {
+    constructor(propertyFactory: P | ((context: C) => P)) {
         if(typeof propertyFactory === 'function') {
-            this.propertyFactory = propertyFactory;
+            this.#own = { resolve: propertyFactory };
         } else {
             this.properties = propertyFactory;
+            this.#own = { resolve: () => propertyFactory };
         }
     }
 
@@ -44,16 +57,16 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         return [];
     }
 
-    getProperties(context: AbilityContext, additionalProperties = {}): P {
+    getProperties(context: C, additionalProperties = {}): P {
         const properties = Object.assign(
-            { target: this.getDefaultTargets(context) },
+            { target: this.getDefaultTargets(context), cannotBeCancelled: false, optional: false },
             this.defaultProperties,
             additionalProperties,
-            this.properties ?? this.propertyFactory?.(context) ?? {}
+            this.#own.resolve(context)
         );
         const rawTarget = properties.target as TargetValue;
         const targetArray = Array.isArray(rawTarget) ? rawTarget : [rawTarget];
-        properties.target = targetArray.filter(Boolean) as PlayerOrRingOrCardOrToken[];
+        properties.target = targetArray.filter(Boolean) as GameActionTarget[];
         return properties;
     }
 
@@ -61,7 +74,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         return [this.cost, []];
     }
 
-    getEffectMessage(context: AbilityContext, additionalProperties = {}): MessageArgs {
+    getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
         let { target } = this.getProperties(context, additionalProperties);
         return [this.effect, [target]];
     }
@@ -70,7 +83,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         this.getDefaultTargets = func;
     }
 
-    canAffect(target: GameObject, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
         const { cannotBeCancelled } = this.getProperties(context, additionalProperties);
         return (
             this.targetType.includes(target.type) &&
@@ -79,11 +92,11 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         );
     }
 
-    #targets(context: AbilityContext, additionalProperties = {}) {
-        return this.getProperties(context, additionalProperties).target as PlayerOrRingOrCardOrToken[];
+    #targets(context: C, additionalProperties = {}) {
+        return this.getProperties(context, additionalProperties).target as GameActionTarget[];
     }
 
-    hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties = {}): boolean {
         for(const candidateTarget of this.#targets(context, additionalProperties)) {
             if(this.canAffect(candidateTarget, context, additionalProperties)) {
                 return true;
@@ -92,7 +105,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         return false;
     }
 
-    allTargetsLegal(context: AbilityContext, additionalProperties = {}): boolean {
+    allTargetsLegal(context: C, additionalProperties = {}): boolean {
         for(const candidateTarget of this.#targets(context, additionalProperties)) {
             if(!this.canAffect(candidateTarget, context, additionalProperties)) {
                 return false;
@@ -101,7 +114,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         return true;
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         for(const target of this.#targets(context, additionalProperties)) {
             if(this.canAffect(target, context, additionalProperties)) {
                 events.push(this.getEvent(target, context, additionalProperties));
@@ -109,30 +122,30 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         }
     }
 
-    getEvent(target: TargetValue, context: AbilityContext, additionalProperties = {}): GameEvent<N> {
+    getEvent(target: TargetValue, context: C, additionalProperties = {}): ActionEvent<N, C> {
         const event = this.createEvent(target, context, additionalProperties);
         this.updateEvent(event, target, context, additionalProperties);
         return event;
     }
 
-    updateEvent(event: GameEvent<N>, target: TargetValue, context: AbilityContext, additionalProperties = {}): void {
+    updateEvent(event: ActionEvent<N, C>, target: TargetValue, context: C, additionalProperties = {}): void {
         event.name = this.eventName;
         this.addPropertiesToEvent(event, target, context, additionalProperties);
-        event.replaceHandler((eventArg: Event) => this.eventHandler(eventArg as GameEvent<N>, additionalProperties));
+        event.replaceHandler((eventArg: Event) => this.eventHandler(eventArg as ActionEvent<N, C>, additionalProperties));
         event.condition = () => this.checkEventCondition(event, additionalProperties);
     }
 
-    createEvent(target: TargetValue, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): GameEvent<N> {
+    createEvent(target: TargetValue, context: C, additionalProperties: Record<string, unknown> = {}): ActionEvent<N, C> {
         const { cannotBeCancelled } = this.getProperties(context, additionalProperties);
-        const event = new Event(EventName.Unnamed, { cannotBeCancelled }) as GameEvent<N>;
+        const event = new Event(EventName.Unnamed, { cannotBeCancelled, context }) as ActionEvent<N, C>;
         event.checkFullyResolved = (eventAtResolution) =>
-            this.isEventFullyResolved(eventAtResolution as GameEvent<N>, target, context, additionalProperties);
+            this.isEventFullyResolved(eventAtResolution as ActionEvent<N, C>, target, context, additionalProperties);
         return event;
     }
 
     resolve(
-        target: undefined | PlayerOrRingOrCardOrToken | PlayerOrRingOrCardOrToken[],
-        context: AbilityContext
+        target: undefined | GameActionTarget | GameActionTarget[],
+        context: C
     ): void {
         if(target) {
             this.setDefaultTarget(() => target);
@@ -142,27 +155,27 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         context.game.queueSimpleStep(() => context.game.openEventWindow(events));
     }
 
-    getEventArray(context: AbilityContext, additionalProperties = {}): Event[] {
+    getEventArray(context: C, additionalProperties = {}): Event[] {
         const events: Event[] = [];
         this.addEventsToArray(events, context, additionalProperties);
         return events;
     }
 
-    addPropertiesToEvent(event: GameEvent<N>, target: TargetValue, context: AbilityContext, _additionalProperties = {}): void {
+    addPropertiesToEvent(event: ActionEvent<N, C>, target: TargetValue, context: C, _additionalProperties = {}): void {
         event.context = context;
     }
 
-    eventHandler(event: GameEvent<N>, _additionalProperties = {}): void {}
+    eventHandler(event: ActionEvent<N, C>, _additionalProperties = {}): void {}
 
-    checkEventCondition(event: GameEvent<N>, _additionalProperties = {}): boolean {
+    checkEventCondition(event: ActionEvent<N, C>, _additionalProperties = {}): boolean {
         return true;
     }
 
-    isEventFullyResolved(event: GameEvent<N>, target: TargetValue, context: AbilityContext, _additionalProperties = {}): boolean {
+    isEventFullyResolved(event: ActionEvent<N, C>, target: TargetValue, context: C, _additionalProperties = {}): boolean {
         return !event.cancelled && event.name === this.eventName;
     }
 
-    isOptional(context: AbilityContext, additionalProperties = {}): boolean {
+    isOptional(context: C, additionalProperties = {}): boolean {
         return this.getProperties(context, additionalProperties).optional ?? false;
     }
 
@@ -172,7 +185,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
                 return false;
             } else if(
                 event.origin.type === CardType.Character &&
-                !event.origin.allowGameAction('removeFate', (event.context as AbilityContext))
+                !event.origin.allowGameAction('removeFate', (event.context))
             ) {
                 return false;
             }
@@ -180,7 +193,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         if(event.recipient) {
             if(
                 event.recipient.type === CardType.Character &&
-                !event.recipient.allowGameAction('placeFate', (event.context as AbilityContext))
+                !event.recipient.allowGameAction('placeFate', (event.context))
             ) {
                 return false;
             }
@@ -198,7 +211,7 @@ export class GameAction<P extends GameActionProperties = GameActionProperties, N
         }
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: AbilityContext, _additionalProperties = {}): boolean {
+    hasTargetsChosenByInitiatingPlayer(context: C, _additionalProperties = {}): boolean {
         return false;
     }
 }

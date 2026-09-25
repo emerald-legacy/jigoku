@@ -1,6 +1,7 @@
 import { TargetMode } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import type Ring from '../../../Ring.js';
 
 export default class TempleOfTheFivefoldPath extends StrongholdCard {
     static id = 'temple-of-the-fivefold-path';
@@ -54,7 +55,7 @@ export default class TempleOfTheFivefoldPath extends StrongholdCard {
                     ringCondition: (ring, context) => ring !== context?.rings.donor,
                     gameAction: AbilityDsl.actions.placeFateOnRing((context) => ({
                         target: context.rings.receiver,
-                        origin: context.rings.donor
+                        origin: context.rings.donor as Ring
                     }))
                 }
             },

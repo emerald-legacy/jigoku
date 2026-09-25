@@ -35,14 +35,14 @@ class StoneBreaker extends DrawCard {
                             ((context.targets.cardInProvince as DrawCard).type !== CardType.Attachment && card.location !== (context.targets.cardInProvince as DrawCard).location)
                         ),
                     gameAction: AbilityDsl.actions.conditional(context => ({
-                        condition: context.targets.cardInProvince.type === CardType.Attachment,
+                        condition: (context.targets.cardInProvince as DrawCard).type === CardType.Attachment,
                         trueGameAction: AbilityDsl.actions.attach({
                             target: context.targets.province,
-                            attachment: context.targets.cardInProvince
+                            attachment: context.targets.cardInProvince as DrawCard
                         }),
                         falseGameAction: AbilityDsl.actions.moveCard({
                             target: context.targets.cardInProvince,
-                            destination: context.targets.province.location
+                            destination: (context.targets.province as ProvinceCard).location
                         })
                     }))
                 }
@@ -52,7 +52,7 @@ class StoneBreaker extends DrawCard {
                 (context.targets.cardInProvince as DrawCard).isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
                 (context.targets.province as ProvinceCard).isFacedown() ? (context.targets.province as ProvinceCard).location : context.targets.province
             ],
-            gameAction: AbilityDsl.actions.refillFaceup(context => ({ location: context.cardStateWhenInitiated?.location }))
+            gameAction: AbilityDsl.actions.refillFaceup(context => ({ location: context.cardStateWhenInitiated?.location ?? [] }))
 
         });
 

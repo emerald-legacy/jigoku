@@ -8,7 +8,7 @@ export default class WrathstormDancer extends DrawCard {
         this.persistentEffect({
             condition: (context) =>
                 context.source.isParticipating() &&
-                (context.player.cardsInPlay as DrawCard[]).some(
+                (context.player.cardsInPlay).some(
                     (card) => card.hasTrait('berserker') && card !== context.source && card.isParticipating()
                 ),
             effect: AbilityDsl.effects.doesNotBow()

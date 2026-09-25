@@ -3,27 +3,27 @@ import { EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
+import type { ActionEvent } from './GameAction.js';
 export interface TakeRingProperties extends RingActionProperties {
     takeFate?: boolean;
 }
 
-export class TakeRingAction extends RingAction {
+export class TakeRingAction<C extends AbilityContext = AbilityContext> extends RingAction<TakeRingProperties, EventName, C> {
     name = 'takeFate';
     eventName = EventName.OnTakeRing;
     effect = 'take {0}';
     defaultProperties: TakeRingProperties = { takeFate: true };
-    constructor(properties: ((context: AbilityContext) => TakeRingProperties) | TakeRingProperties) {
+    constructor(properties: ((context: C) => TakeRingProperties) | TakeRingProperties) {
         super(properties);
     }
 
-    canAffect(ring: Ring, context: AbilityContext): boolean {
+    canAffect(ring: Ring, context: C): boolean {
         return !ring.isRemovedFromGame() && ring.claimedBy !== context.player.name && super.canAffect(ring, context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnTakeRing>, additionalProperties: Record<string, unknown> = {}): void {
-        const context = event.context as AbilityContext;
-        const { takeFate } = this.getProperties(context, additionalProperties) as TakeRingProperties;
+    eventHandler(event: ActionEvent<EventName.OnTakeRing, C>, additionalProperties: Record<string, unknown> = {}): void {
+        const context = event.context;
+        const { takeFate } = this.getProperties(context, additionalProperties);
         const ring = event.ring;
         ring.claimRing(context.player);
         ring.contested = false;

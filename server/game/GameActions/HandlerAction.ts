@@ -1,14 +1,15 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import DrawCard from '../DrawCard.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
+import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
 
 import type { Event } from '../Events/Event.js';
+import type { EventName } from '../Constants.js';
 export interface HandlerProperties extends GameActionProperties {
     handler?: (context: AbilityContext) => void;
     hasTargetsChosenByInitiatingPlayer?: boolean;
 }
 
-export class HandlerAction extends GameAction<HandlerProperties> {
+export class HandlerAction<C extends AbilityContext = AbilityContext> extends GameAction<HandlerProperties, EventName, C> {
     defaultProperties: HandlerProperties = {
         handler: () => true,
         hasTargetsChosenByInitiatingPlayer: false
@@ -22,20 +23,20 @@ export class HandlerAction extends GameAction<HandlerProperties> {
         return true;
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         events.push(this.getEvent(null, context, additionalProperties));
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        const properties = this.getProperties((event.context as AbilityContext), additionalProperties) as HandlerProperties;
-        properties.handler?.((event.context as AbilityContext));
+    eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown> = {}): void {
+        const properties = this.getProperties((event.context), additionalProperties);
+        properties.handler?.((event.context));
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: Record<string, unknown> = {}): boolean {
         const { hasTargetsChosenByInitiatingPlayer } = this.getProperties(
             context,
             additionalProperties
-        ) as HandlerProperties;
+        );
         return !!hasTargetsChosenByInitiatingPlayer;
     }
 }

@@ -21,7 +21,7 @@ class TogashiDreamer extends DrawCard {
                     dependsOn: 'character',
                     activePromptTitle: 'Choose an unclaimed ring to move fate to',
                     ringCondition: ring => ring.isUnclaimed(),
-                    gameAction: AbilityDsl.actions.placeFateOnRing(context => ({ origin: context.targets.character }))
+                    gameAction: AbilityDsl.actions.placeFateOnRing(context => ({ origin: context.targets.character as DrawCard }))
                 }
             }
         });

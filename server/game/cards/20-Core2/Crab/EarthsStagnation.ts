@@ -17,11 +17,11 @@ export default class EarthsStagnation extends DrawCard {
             when: {
                 onCardPlayed: (event, context) =>
                     context.source.parentCharacter &&
-                    (event.card as DrawCard).type === CardType.Event &&
+                    (event.card).type === CardType.Event &&
                     context.source.parentCharacter.isParticipating()
             },
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.source.parentCharacter,
+                target: context.source.parentCharacter ?? [],
                 effect: AbilityDsl.effects.modifyBothSkills(penaltyAmount(context))
             })),
             effect: 'give {1}{2} and {3}{4} to {5}',

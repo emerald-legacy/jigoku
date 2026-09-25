@@ -1,5 +1,6 @@
 import { CardType, Location, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
@@ -17,10 +18,10 @@ export default class IsawaTadaka2 extends DrawCard {
                 location: Location.DynastyDiscardPile,
                 mode: TargetMode.Unlimited
             }),
-            gameAction: AbilityDsl.actions.multipleContext((context) => {
+            gameAction: AbilityDsl.actions.multipleContext((context: AbilityContext<this>) => {
                 let cards =
                     context.player.opponent && context.costs.removeFromGame
-                        ? shuffle(context.player.opponent.hand).slice(0, context.costs.removeFromGame.length)
+                        ? shuffle(context.player.opponent.hand).slice(0, (context.costs.removeFromGame as DrawCard[]).length)
                         : [context.source];
                 return {
                     gameActions: [

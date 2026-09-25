@@ -32,13 +32,13 @@ export default class AkodoCho extends DrawCard {
                             effect: 'discard an attachment on {0}',
                             effectArgs: () => [context.targets[CHARACTER]],
                             player:
-                                context.targets[CHARACTER].controller === context.player
+                                (context.targets[CHARACTER] as DrawCard).controller === context.player
                                     ? Players.Self
                                     : Players.Opponent,
                             activePromptTitle: 'Choose an attachment to discard',
                             cardCondition: (card) => card.parentCharacter === context.targets[CHARACTER],
                             message: '{0} discards {1}',
-                            messageArgs: (card) => [context.targets[CHARACTER].controller, card],
+                            messageArgs: (card) => [(context.targets[CHARACTER] as DrawCard).controller, card],
                             gameAction: AbilityDsl.actions.discardFromPlay()
                         })),
                         'Bow this character': AbilityDsl.actions.bow((context) => ({

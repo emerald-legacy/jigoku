@@ -22,7 +22,7 @@ export default class PolicyDebate extends DrawCard {
                     cardCondition: (card) => card.isParticipating(),
                     gameAction: AbilityDsl.actions.duel((context) => ({
                         type: DuelType.Political,
-                        challenger: context.targets.challenger,
+                        challenger: context.targets.challenger as DrawCard,
                         message: '{0} sees {1}\'s hand and chooses a card to discard',
                         messageArgs: (duel) => [duel.loserController?.opponent ?? '', duel.loserController ?? ''],
                         gameAction: (duel) =>

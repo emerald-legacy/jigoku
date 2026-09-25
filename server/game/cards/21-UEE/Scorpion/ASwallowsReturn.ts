@@ -19,7 +19,7 @@ export default class ASwallowsReturn extends DrawCard {
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to play',
-                    cards: context.costs.reveal,
+                    cards: context.costs.reveal as DrawCard[],
                     cardCondition: (card) =>
                         card.location === Location.ConflictDeck &&
             //Handle situations where card is played from deck, such as with pillow book
@@ -36,10 +36,10 @@ export default class ASwallowsReturn extends DrawCard {
                         source: context.source
                     }),
                     message: '{0} chooses to play {1} and discard {2}',
-                    messageArgs: (card, player) => [player, card.name, context.costs.reveal?.filter((c: DrawCard) => c !== card)]
+                    messageArgs: (card, player) => [player, card.name, (context.costs.reveal as DrawCard[] | undefined)?.filter((c) => c !== card)]
                 })),
                 AbilityDsl.actions.discardCard((context) => ({
-                    target: (context.costs.reveal ?? []).filter((card: DrawCard) => card.location === Location.ConflictDeck)
+                    target: ((context.costs.reveal ?? []) as DrawCard[]).filter((card) => card.location === Location.ConflictDeck)
                 }))
             ]),
             effect: 'choose one of those to play'

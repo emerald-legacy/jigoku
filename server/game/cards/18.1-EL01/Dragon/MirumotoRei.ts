@@ -26,7 +26,7 @@ export default class MirumotoRei extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.hasTrait('bushi') && card !== context.source,
-                gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
+                gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext<DrawCard, DrawCard>) => ({
                     target: context.source,
                     effect: [
                         AbilityDsl.effects.modifyMilitarySkill(

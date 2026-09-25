@@ -3,25 +3,25 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type { Conflict } from '../Conflict.js';
 import { EffectName, EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import { ResolveElementAction } from './ResolveElementAction.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
+import type { ActionEvent } from './GameAction.js';
 
-export class ResolveConflictRingAction extends RingAction {
+export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext> extends RingAction<RingActionProperties, EventName, C> {
     name = 'resolveRing';
     eventName = EventName.OnResolveConflictRing;
-    constructor(properties: ((context: AbilityContext) => RingActionProperties) | RingActionProperties) {
+    constructor(properties: ((context: C) => RingActionProperties) | RingActionProperties) {
         super(properties);
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         let properties: RingActionProperties = this.getProperties(context);
         return ['resolve {0}', [properties.target]];
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnResolveConflictRing>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnResolveConflictRing, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, ring, context, additionalProperties);
         let conflict = context.game.currentConflict;
 
@@ -29,12 +29,12 @@ export class ResolveConflictRingAction extends RingAction {
         event.player = context.player;
     }
 
-    eventHandler(event: GameEvent<EventName.OnResolveConflictRing>): void {
+    eventHandler(event: ActionEvent<EventName.OnResolveConflictRing, C>): void {
         if(event.name !== this.eventName) {
             return;
         }
 
-        const eventContext = event.context as AbilityContext;
+        const eventContext = event.context;
         const cannotResolveRingEffects = eventContext.player.getEffects(EffectName.CannotResolveRings);
 
         if(cannotResolveRingEffects.length) {

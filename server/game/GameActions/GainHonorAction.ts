@@ -1,23 +1,23 @@
 import type { MessageArgs } from '../GameChat.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { CalculateHonorLimit } from './Shared/HonorLogic.js';
+import type { ActionEvent } from './GameAction.js';
 
 export interface GainHonorProperties extends PlayerActionProperties {
     amount?: number;
     dueToStatusToken?: boolean;
 }
 
-export class GainHonorAction extends PlayerAction<GainHonorProperties> {
+export class GainHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<GainHonorProperties, EventName, C> {
     defaultProperties: GainHonorProperties = { amount: 1, dueToStatusToken: false };
 
     name: string = 'gainHonor';
     eventName = EventName.OnModifyHonor;
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         let properties = this.getProperties(context);
         var [_, amountToTransfer] = CalculateHonorLimit(
             context.player,
@@ -28,7 +28,7 @@ export class GainHonorAction extends PlayerAction<GainHonorProperties> {
         return ['gain ' + amountToTransfer + ' honor', []];
     }
 
-    canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(player: Player, context: C, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
         var wouldGainAnyHonor = properties.amount !== 0;
 
@@ -50,19 +50,19 @@ export class GainHonorAction extends PlayerAction<GainHonorProperties> {
         return super.canAffect(player, context);
     }
 
-    defaultTargets(context: AbilityContext): Player[] {
+    defaultTargets(context: C): Player[] {
         return [context.player];
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnModifyHonor>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnModifyHonor, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, dueToStatusToken } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.dueToStatusToken = dueToStatusToken;
     }
 
-    eventHandler(event: GameEvent<EventName.OnModifyHonor>): void {
-        const context = event.context as AbilityContext;
+    eventHandler(event: ActionEvent<EventName.OnModifyHonor, C>): void {
+        const context = event.context;
         const player = event.player as Player;
         var [_, amountToTransfer] = CalculateHonorLimit(
             player,

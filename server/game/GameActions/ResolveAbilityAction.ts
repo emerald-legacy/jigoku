@@ -12,6 +12,7 @@ import type Player from '../Player.js';
 import type TriggeredAbility from '../TriggeredAbility.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { WithDefaults, ActionEvent } from './GameAction.js';
 
 class ResolveAbilityActionResolver extends AbilityResolver {
     ignoreCosts: boolean;
@@ -96,31 +97,30 @@ export interface ResolveAbilityProperties extends CardActionProperties {
     choosingPlayerOverride?: Player | null;
 }
 
-type ResolvedResolveAbilityProperties = ResolveAbilityProperties & {
-    ignoredRequirements: NonNullable<ResolveAbilityProperties['ignoredRequirements']>;
-};
-
-export class ResolveAbilityAction extends CardGameAction {
+export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> extends CardGameAction<ResolveAbilityProperties, EventName, C> {
     name = 'resolveAbility';
-    defaultProperties: ResolveAbilityProperties = {
-        ability: null as unknown as CardAbility,
-        ignoredRequirements: [],
+    defaultProperties: Partial<ResolveAbilityProperties> = {
         subResolution: false,
         choosingPlayerOverride: undefined
     };
     constructor(
-        properties: ((context: TriggeredAbilityContext) => ResolveAbilityProperties) | ResolveAbilityProperties
+        properties: ((context: C) => ResolveAbilityProperties) | ResolveAbilityProperties
     ) {
-        super(properties as CardActionProperties | ((context: AbilityContext) => CardActionProperties));
+        super(properties);
     }
 
-    getEffectMessage(context: TriggeredAbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as ResolveAbilityProperties;
+    getProperties(context: C, additionalProperties = {}): WithDefaults<ResolveAbilityProperties, 'ignoredRequirements'> {
+        const properties = super.getProperties(context, additionalProperties);
+        return Object.assign(properties, { ignoredRequirements: properties.ignoredRequirements ?? [] });
+    }
+
+    getEffectMessage(context: C): MessageArgs {
+        let properties = this.getProperties(context);
         return ['resolve {0}\'s {1} ability', [properties.target, properties.ability.title]];
     }
 
-    canAffect(card: DrawCard, context: TriggeredAbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties) as ResolvedResolveAbilityProperties;
+    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
+        let properties = this.getProperties(context, additionalProperties);
         let ability = properties.ability as TriggeredAbility;
         let player = properties.player || context.player;
         let newContextEvent = properties.event;
@@ -141,29 +141,29 @@ export class ResolveAbilityAction extends CardGameAction {
         return !ability.meetsRequirements(newContext, ignoredRequirements);
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown>): void {
-        let properties = this.getProperties((event.context as AbilityContext), additionalProperties) as ResolvedResolveAbilityProperties;
-        let player = properties.player || (event.context as AbilityContext).player;
+    eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown>): void {
+        let properties = this.getProperties((event.context), additionalProperties);
+        let player = properties.player || (event.context).player;
         let newContextEvent = properties.event;
         let newContext = (properties.ability as TriggeredAbility).createContext(player, newContextEvent);
         newContext.subResolution = !!properties.subResolution;
         if(properties.subResolution) {
-            newContext.originatingContext = (event.context as AbilityContext).triggeringContext;
+            newContext.originatingContext = (event.context).triggeringContext;
         }
         if(properties.choosingPlayerOverride) {
             newContext.choosingPlayerOverride = properties.choosingPlayerOverride;
         }
-        (event.context as AbilityContext).game.queueStep(
+        (event.context).game.queueStep(
             new ResolveAbilityActionResolver(
-                (event.context as AbilityContext).game,
+                (event.context).game,
                 newContext,
                 properties.ignoredRequirements.includes('cost')
             )
         );
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: TriggeredAbilityContext): boolean {
-        let properties = this.getProperties(context) as ResolveAbilityProperties;
+    hasTargetsChosenByInitiatingPlayer(context: C): boolean {
+        let properties = this.getProperties(context);
         return properties.ability.hasTargetsChosenByInitiatingPlayer(context);
     }
 }

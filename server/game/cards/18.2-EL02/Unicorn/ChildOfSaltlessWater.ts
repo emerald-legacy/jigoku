@@ -29,7 +29,7 @@ export default class ChildOfSaltlessWater extends DrawCard {
                 cardType: CardType.Province,
                 cardCondition: (card) => card.isConflictProvince()
             },
-            gameAction: AbilityDsl.actions.cardLastingEffect<ProvinceCard>((context) => ({
+            gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext<DrawCard, ProvinceCard>) => ({
                 target: context.source,
                 effect: AbilityDsl.effects.setMilitarySkill(context.target?.printedStrength ?? 0)
             })),

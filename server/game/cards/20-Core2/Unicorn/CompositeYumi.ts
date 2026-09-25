@@ -14,7 +14,7 @@ export default class CompositeYumi extends DrawCard {
                 onCreateTokenCharacter: (_, context) => this.#matchCondition(context)
             },
             gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: context.source.parentCharacter,
+                target: context.source.parentCharacter ?? [],
                 effect: AbilityDsl.effects.modifyMilitarySkill(1)
             })),
             effect: 'give +1{1} to {2}',

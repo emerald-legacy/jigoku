@@ -1,6 +1,7 @@
 import { TargetMode, Location, Duration, Element } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import type { ElementSymbol } from '../../ElementSymbol.js';
 
 export default class TwinSoulTemple extends StrongholdCard {
@@ -14,7 +15,7 @@ export default class TwinSoulTemple extends StrongholdCard {
                 activePromptTitle: 'Choose an element to replace',
                 mode: TargetMode.ElementSymbol,
                 location: [Location.PlayArea, Location.Provinces],
-                gameAction: AbilityDsl.actions.menuPrompt((context) => ({
+                gameAction: AbilityDsl.actions.menuPrompt((context: AbilityContext & { element: ElementSymbol }) => ({
                     activePromptTitle: 'Choose the new element',
                     choices: this.getChoices(context),
                     gameAction: AbilityDsl.actions.cardLastingEffect({

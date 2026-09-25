@@ -1,23 +1,22 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type Player from '../Player.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
+import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
 import type { EventName } from '../Constants.js';
 
 export type PlayerActionProperties = GameActionProperties;
 
-export class PlayerAction<P extends PlayerActionProperties = PlayerActionProperties, N extends EventName = EventName> extends GameAction<P, N> {
+export class PlayerAction<P extends PlayerActionProperties = PlayerActionProperties, N extends EventName = EventName, C extends AbilityContext = AbilityContext> extends GameAction<P, N, C> {
     targetType = ['player'];
 
-    defaultTargets(context: AbilityContext): Player[] {
+    defaultTargets(context: C): Player[] {
         return context.player && context.player.opponent ? [context.player.opponent] : [];
     }
 
-    checkEventCondition(event: GameEvent<N>, additionalProperties: Record<string, unknown> = {}): boolean {
-        return this.canAffect((event as { player: Player }).player, (event.context as AbilityContext), additionalProperties);
+    checkEventCondition(event: ActionEvent<N, C>, additionalProperties: Record<string, unknown> = {}): boolean {
+        return this.canAffect((event as { player: Player }).player, (event.context), additionalProperties);
     }
 
-    addPropertiesToEvent(event: GameEvent<N>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<N, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         (event as { player: Player }).player = player;
     }

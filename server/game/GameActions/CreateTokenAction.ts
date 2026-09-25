@@ -5,7 +5,7 @@ import { CardType, Duration, EventName, Location } from '../Constants.js';
 import Effects from '../effects.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import SpiritOfTheRiver from '../cards/SpiritOfTheRiver.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
+import type { ActionEvent } from './GameAction.js';
 
 export interface CreateTokenProperties extends CardActionProperties {
     atHome?: boolean;
@@ -14,14 +14,14 @@ export interface CreateTokenProperties extends CardActionProperties {
     canEnterConflict: (type: 'military' | 'political') => boolean;
 }
 
-export class CreateTokenAction extends CardGameAction<CreateTokenProperties> {
+export class CreateTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<CreateTokenProperties, EventName, C> {
     name = 'createToken';
     effect = 'create a token';
     eventName = EventName.OnCreateTokenCharacter;
     targetType = [CardType.Character, CardType.Holding, CardType.Event];
     defaultProperties: CreateTokenProperties = { atHome: false, token: SpiritOfTheRiver, canEnterConflict: () => true };
 
-    canAffect(card: BaseCard, context: AbilityContext): boolean {
+    canAffect(card: BaseCard, context: C): boolean {
         let { canEnterConflict } = this.getProperties(context);
 
         if(!card.isFacedown() || !card.isInProvince() || card.location === Location.StrongholdProvince) {
@@ -34,8 +34,8 @@ export class CreateTokenAction extends CardGameAction<CreateTokenProperties> {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnCreateTokenCharacter>, additionalProperties: Record<string, unknown> = {}): void {
-        let context = event.context as AbilityContext;
+    eventHandler(event: ActionEvent<EventName.OnCreateTokenCharacter, C>, additionalProperties: Record<string, unknown> = {}): void {
+        let context = event.context;
         let { atHome, token: propToken, leavingPlayMessage } = this.getProperties(context, additionalProperties);
         let card = event.card as DrawCard;
         let token = context.game.createToken(card, propToken);

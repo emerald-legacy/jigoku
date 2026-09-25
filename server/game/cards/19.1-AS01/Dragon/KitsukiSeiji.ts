@@ -33,7 +33,7 @@ export default class KitsukiSeiji extends DrawCard {
             effect: 'put the fate that would go on the {1} ring on {0} instead',
             effectArgs: () => [this.getCurrentElementSymbol(ELEMENT_KEY)],
             gameAction: AbilityDsl.actions.cancel((context) => {
-                switch((context as TriggeredAbilityContext).event.name) {
+                switch((context).event.name) {
                     case 'onPlaceFateOnUnclaimedRings':
                         return { replacementGameAction: this.replacementForPlaceFateOnUnclaimedRings(context) };
                     case 'onMoveFate':

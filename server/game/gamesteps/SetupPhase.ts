@@ -1,7 +1,6 @@
 import { GameModes } from '../../GameModes.js';
 import { Location } from '../Constants.js';
 import { randomItem } from '../utils/helpers.js';
-import type BaseCard from '../BaseCard.js';
 import type Game from '../Game.js';
 import { Phase } from './Phase.js';
 import { SimpleStep } from './SimpleStep.js';
@@ -117,7 +116,7 @@ export class SetupPhase extends Phase {
             }
         }
 
-        for(const card of this.game.allCards as BaseCard[]) {
+        for(const card of this.game.allCards) {
             card.applyAnyLocationPersistentEffects();
         }
     }

@@ -33,7 +33,7 @@ export default class StormFromSakkaku extends DrawCard {
                 destination: context.target.location
             })),
             then: {
-                gameAction: AbilityDsl.actions.discardCard((context) => ({
+                gameAction: AbilityDsl.actions.discardCard((context: AbilityContext<this>) => ({
                     target: this.otherHoldingsInSameProvince(context)
                 })),
                 message: 'The {1} {3}',
@@ -47,7 +47,7 @@ export default class StormFromSakkaku extends DrawCard {
     }
 
     private otherHoldingsInSameProvince(context: AbilityContext<this>): BaseCard[] {
-        return (context.game.allCards as BaseCard[]).filter(
+        return (context.game.allCards).filter(
             (card) =>
                 card.location === context.source.location &&
                 card.controller === context.source.controller &&

@@ -24,7 +24,7 @@ class MyAncestorsStrength extends DrawCard {
                     controller: Players.Self,
                     gameAction: AbilityDsl.actions.cardLastingEffect(context => {
                         let effects = [];
-                        let ancestor = context.targets.ancestor;
+                        let ancestor = context.targets.ancestor as DrawCard;
                         if(ancestor.hasDash('military')) {
                             effects.push(AbilityDsl.effects.setBaseDash('military'));
                         } else {

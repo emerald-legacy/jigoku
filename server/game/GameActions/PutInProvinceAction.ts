@@ -5,7 +5,7 @@ import { CardType, EffectName, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
+import type { ActionEvent } from './GameAction.js';
 export interface PutInProvinceProperties extends CardActionProperties {
     destination?: Location;
     switch?: boolean;
@@ -16,7 +16,7 @@ export interface PutInProvinceProperties extends CardActionProperties {
     discardDestinationCards?: boolean;
 }
 
-export class PutInProvinceAction extends CardGameAction<PutInProvinceProperties, EventName.OnCardLeavesPlay> {
+export class PutInProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PutInProvinceProperties, EventName.OnCardLeavesPlay, C> {
     name = 'putInProvince';
     eventName = EventName.OnCardLeavesPlay;
     targetType = [CardType.Character, CardType.Attachment];
@@ -29,17 +29,17 @@ export class PutInProvinceAction extends CardGameAction<PutInProvinceProperties,
         changePlayer: false,
         discardDestinationCards: false
     };
-    constructor(properties: PutInProvinceProperties | ((context: AbilityContext) => PutInProvinceProperties)) {
+    constructor(properties: PutInProvinceProperties | ((context: C) => PutInProvinceProperties)) {
         super(properties);
     }
 
-    getCostMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as PutInProvinceProperties;
+    getCostMessage(context: C): MessageArgs {
+        let properties = this.getProperties(context);
         return ['putting {0} into {1}}', [properties.target, properties.destination]];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as PutInProvinceProperties;
+    getEffectMessage(context: C): MessageArgs {
+        let properties = this.getProperties(context);
         const target = properties.target as BaseCard | BaseCard[];
         let destinationController = Array.isArray(target)
             ? properties.changePlayer
@@ -51,11 +51,11 @@ export class PutInProvinceAction extends CardGameAction<PutInProvinceProperties,
         return ['move {0} to {1}\'s {2}', [properties.target, destinationController, properties.destination]];
     }
 
-    canAffect(card: BaseCard, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {
         const { changePlayer, destination } = this.getProperties(
             context,
             additionalProperties
-        ) as PutInProvinceProperties;
+        );
         const canMove =
             (!changePlayer || card.checkRestrictions(EffectName.TakeControl, context)) &&
             (!destination || context.player.isLegalLocationForCard(card, destination)) &&
@@ -64,11 +64,11 @@ export class PutInProvinceAction extends CardGameAction<PutInProvinceProperties,
         return canMove;
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardLeavesPlay>, additionalProperties: Record<string, unknown> = {}): void {
-        let context = event.context as AbilityContext;
+    eventHandler(event: ActionEvent<EventName.OnCardLeavesPlay, C>, additionalProperties: Record<string, unknown> = {}): void {
+        let context = event.context;
         let card = event.card as DrawCard;
-        (event as GameEvent<EventName.OnCardLeavesPlay> & { cardStateWhenMoved: DrawCard }).cardStateWhenMoved = card.createSnapshot();
-        let properties = this.getProperties(context, additionalProperties) as PutInProvinceProperties;
+        event.cardStateWhenMoved = card.createSnapshot();
+        let properties = this.getProperties(context, additionalProperties);
         if(properties.switch && properties.switchTarget) {
             let otherCard = properties.switchTarget;
             card.owner.moveCard(otherCard, card.location);

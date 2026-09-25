@@ -20,8 +20,8 @@ export default class KaiuNoIshiTauro extends DrawCard {
                     deck: Decks.ConflictDeck,
                     cardCondition: (card) => card.type === CardType.Attachment &&
                         (card.hasTrait('weapon') || card.hasTrait('armor') || card.hasTrait('item')) &&
-                        (context.game.actions.attach({ attachment: card }).canAffect(context.target, context)) &&
-                        card.costLessThan(context.costs.returnRing ? context.costs.returnRing.length + 1 : 1),
+                        !!context.target && context.game.actions.attach({ attachment: card }).canAffect(context.target, context) &&
+                        card.costLessThan(context.costs.returnRing ? (context.costs.returnRing as Ring[]).length + 1 : 1),
                     shuffle: true,
                     reveal: true,
                     selectedCardsHandler: (context, event: Event, cards) => {

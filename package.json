@@ -7,7 +7,7 @@
     "scripts": {
         "test": "npm run jasmine -- --parallel=auto",
         "jasmine": "tsc -p tsconfig.test.json && cross-env JASMINE_CONFIG_PATH=./jasmine.json DOMAIN=localhost ENVIRONMENT=test GAME_NODE_NAME=test GAME_NODE_SOCKET_IO_PORT=9500 HTTPS=false LOBBY_PORT=4000 LOBBY_WS_URL=ws://localhost:6000 SECRET=testsecret jasmine",
-        "lint": "eslint server/ test/server/",
+        "lint": "eslint server/ test/",
         "typecheck": "tsc --noEmit"
     },
     "repository": {

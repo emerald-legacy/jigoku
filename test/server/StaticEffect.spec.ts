@@ -1,6 +1,7 @@
 import StaticEffect from '../../server/game/Effects/StaticEffect.js';
 import GainAbility from '../../server/game/Effects/GainAbility.js';
 import { EffectName, AbilityType } from '../../server/game/Constants.js';
+import type { GameObject } from '../../server/game/GameObject.js';
 
 describe('StaticEffect', function() {
     let target: jasmine.SpyObj<{ addEffect: (e: unknown) => void; removeEffect: (e: unknown) => void }>;
@@ -47,18 +48,16 @@ describe('StaticEffect', function() {
     });
 
     describe('persistent ability gain applied to multiple targets', function() {
-        let target1: any;
-        let target2: any;
+        let target1: GameObject;
+        let target2: GameObject;
         let copy1: jasmine.SpyObj<{ apply: (t: unknown) => void; unapply: (t: unknown) => void }>;
         let copy2: jasmine.SpyObj<{ apply: (t: unknown) => void; unapply: (t: unknown) => void }>;
         let gain: GainAbility;
         let effect: StaticEffect;
 
         beforeEach(function() {
-            target1 = jasmine.createSpyObj('target1', ['addEffect', 'removeEffect']);
-            target1.uuid = 'uuid-1';
-            target2 = jasmine.createSpyObj('target2', ['addEffect', 'removeEffect']);
-            target2.uuid = 'uuid-2';
+            target1 = { ...jasmine.createSpyObj('target1', ['addEffect', 'removeEffect']), uuid: 'uuid-1' } as GameObject;
+            target2 = { ...jasmine.createSpyObj('target2', ['addEffect', 'removeEffect']), uuid: 'uuid-2' } as GameObject;
 
             copy1 = jasmine.createSpyObj('copy1', ['apply', 'unapply']);
             copy2 = jasmine.createSpyObj('copy2', ['apply', 'unapply']);

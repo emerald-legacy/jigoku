@@ -49,7 +49,7 @@ export class DynastyPhase extends Phase {
         for(const player of this.game.getPlayersInFirstPlayerOrder()) {
             const revealedCards = new Set<DrawCard>();
             for(const province of this.game.getProvinceArray()) {
-                for(const card of player.getDynastyCardsInProvince(province) as DrawCard[]) {
+                for(const card of player.getDynastyCardsInProvince(province)) {
                     if(card.isFacedown()) {
                         this.game.applyGameAction(null, { flipDynasty: card });
                         revealedCards.add(card);

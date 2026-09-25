@@ -2,7 +2,6 @@ import type { Element } from '../../Constants.js';
 import { isProvinceCard } from '../../ProvinceCard.js';
 import { RoleCard } from '../../RoleCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type { Conflict } from '../../Conflict.js';
 
 export function createKeeperRole(id: string, element: Element) {
     return class KeeperRole extends RoleCard {
@@ -13,7 +12,7 @@ export function createKeeperRole(id: string, element: Element) {
                 title: 'Gain 1 fate',
                 when: {
                     afterConflict: (event, context) =>
-                        (event.conflict as Conflict).elements.some((el) => this.hasTrait(el)) &&
+                        (event.conflict).elements.some((el) => this.hasTrait(el)) &&
                         event.conflict.winner === context.player &&
                         event.conflict.defendingPlayer === context.player
                 },

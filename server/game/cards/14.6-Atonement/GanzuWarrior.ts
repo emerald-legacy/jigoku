@@ -1,3 +1,5 @@
+import { isProvinceCard } from '../../ProvinceCard.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -12,13 +14,13 @@ class GanzuWarrior extends DrawCard {
                 onCardRevealed: (event, context) =>
                     event.card && event.card.type === CardType.Province && context.source.isParticipating()
             },
-            gameAction: AbilityDsl.actions.selectRing((context) => ({
+            gameAction: AbilityDsl.actions.selectRing((context: TriggeredAbilityContext) => ({
                 activePromptTitle: 'Choose a ring effect to resolve',
                 player: Players.Self,
                 targets: false,
                 message: '{0} resolves the {1}\'s effect',
                 ringCondition: (ring) =>
-                    context.event.card.element.includes(ring.element),
+                    !!context.event.card && isProvinceCard(context.event.card) && context.event.card.element.includes(ring.element),
                 messageArgs: (ring) => [context.player, ring],
                 gameAction: AbilityDsl.actions.resolveRingEffect({ player: context.player })
             })),

@@ -16,7 +16,7 @@ class TogashiYokuni extends DrawCard {
                 abilityCondition: ability => ability.printedAbility,
                 gameAction: ability.actions.cardLastingEffect(context => ({
                     duration: Duration.UntilEndOfPhase,
-                    effect: ability.effects.gainAbility(context.targetAbility?.abilityType, context.targetAbility)
+                    effect: context.targetAbility ? ability.effects.gainAbility(context.targetAbility.abilityType, context.targetAbility) : []
                 }))
             },
             effect: 'copy {1}\'s \'{2}\' ability',

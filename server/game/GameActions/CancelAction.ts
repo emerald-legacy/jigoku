@@ -4,15 +4,15 @@ import type EventWindow from '../Events/EventWindow.js';
 import { CardType, EventName } from '../Constants.js';
 import type { GameObject } from '../GameObject.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
+import { GameAction, type GameActionProperties, type ActionEvent } from './GameAction.js';
 
 export interface CancelActionProperties extends GameActionProperties {
     replacementGameAction?: GameAction;
     effect?: string;
 }
 
-export class CancelAction extends GameAction {
-    getEffectMessage(context: TriggeredAbilityContext): MessageArgs {
+export class CancelAction<C extends TriggeredAbilityContext = TriggeredAbilityContext> extends GameAction<CancelActionProperties, EventName, C> {
+    getEffectMessage(context: C): MessageArgs {
         let { replacementGameAction, effect } = this.getProperties(context);
         if(effect) {
             return [effect, []];
@@ -23,15 +23,15 @@ export class CancelAction extends GameAction {
         return ['cancel the effects of {0}', [context.event.card]];
     }
 
-    getProperties(context: TriggeredAbilityContext, additionalProperties = {}): CancelActionProperties {
-        let properties = super.getProperties(context, additionalProperties) as CancelActionProperties;
+    getProperties(context: C, additionalProperties = {}): CancelActionProperties {
+        let properties = super.getProperties(context, additionalProperties);
         if(properties.replacementGameAction) {
             properties.replacementGameAction.setDefaultTarget(() => properties.target);
         }
         return properties;
     }
 
-    hasLegalTarget(context: TriggeredAbilityContext, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties = {}): boolean {
         if(!context.event || context.event.cancelled) {
             return false;
         }
@@ -60,15 +60,15 @@ export class CancelAction extends GameAction {
         );
     }
 
-    addEventsToArray(events: Event[], context: TriggeredAbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         let event = this.createEvent(null, context, additionalProperties);
         super.addPropertiesToEvent(event, null, context, additionalProperties);
-        event.replaceHandler((event: Event) => this.eventHandler(event, additionalProperties));
+        event.replaceHandler(() => this.eventHandler(event, additionalProperties));
         events.push(event);
     }
 
-    eventHandler(event: Event, additionalProperties = {}): void {
-        const context = event.context as TriggeredAbilityContext;
+    eventHandler(event: ActionEvent<EventName, C>, additionalProperties = {}): void {
+        const context = event.context;
         let { replacementGameAction } = this.getProperties(context, additionalProperties);
         if(replacementGameAction) {
             let events: Event[] = [];
@@ -90,7 +90,7 @@ export class CancelAction extends GameAction {
         context.cancel();
     }
 
-    canAffect(target: GameObject, context: TriggeredAbilityContext, additionalProperties = {}): boolean {
+    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
         let { replacementGameAction } = this.getProperties(context, additionalProperties);
         if(!replacementGameAction) {
             return !context.event.cannotBeCancelled;
@@ -98,11 +98,11 @@ export class CancelAction extends GameAction {
         return replacementGameAction.canAffect(target, context, additionalProperties);
     }
 
-    defaultTargets(context: TriggeredAbilityContext): GameObject[] {
+    defaultTargets(context: C): GameObject[] {
         return context.event.card ? [context.event.card] : [];
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: TriggeredAbilityContext, additionalProperties = {}): boolean {
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}): boolean {
         let { replacementGameAction } = this.getProperties(context);
         return (
             replacementGameAction !== undefined &&

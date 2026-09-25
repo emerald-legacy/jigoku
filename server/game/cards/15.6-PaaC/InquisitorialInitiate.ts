@@ -28,7 +28,7 @@ export default class InquisitorialInitiate extends DrawCard {
                     target: context.target
                 })),
                 AbilityDsl.actions.cardMenu((context) => ({
-                    cards: context.target,
+                    cards: context.targets.target as DrawCard[],
                     gameAction: AbilityDsl.actions.discardCard(),
                     message: '{0} chooses {1} to be discarded',
                     messageArgs: (card, player) => [player, card]

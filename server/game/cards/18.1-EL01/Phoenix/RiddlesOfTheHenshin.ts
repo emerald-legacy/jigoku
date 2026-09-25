@@ -6,14 +6,14 @@ import type Player from '../../../Player.js';
 import type Ring from '../../../Ring.js';
 
 function getNumberOfMonks(context: AbilityContext) {
-    return (context.player.cardsInPlay as Array<DrawCard>).reduce(
+    return (context.player.cardsInPlay).reduce(
         (total, card) => total + (card.getType() === CardType.Character && card.hasTrait('monk') ? 1 : 0),
         0
     );
 }
 
 class Process {
-    #chosenRings = [] as Array<Ring>;
+    #chosenRings: Ring[] = [];
     constructor(
         private maxRings: number,
         private context: AbilityContext

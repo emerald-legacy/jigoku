@@ -16,7 +16,7 @@ class YasukiFuzake extends DrawCard {
                     optional: true,
                     cardType: CardType.Character,
                     gameAction: AbilityDsl.actions.discardStatusToken(context => ({
-                        target: context.targets.first.statusTokens
+                        target: (context.targets.first as DrawCard).statusTokens
                     }))
                 },
                 second: {

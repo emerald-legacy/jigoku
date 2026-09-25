@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { GameAction } from '../../../GameActions/GameAction.js';
 import { ProvinceAttachment } from '../../ProvinceAttachment.js';
@@ -18,11 +19,14 @@ export default class LessonsFromEarth extends ProvinceAttachment {
             limit: AbilityDsl.limit.unlimitedPerConflict(),
             effect: 'cause {1} to draw a card and {2} to discard a card',
             effectArgs: context => [context.event.conflict?.winner, context.event.conflict?.loser],
-            gameAction: AbilityDsl.actions.multipleContext(context => {
+            gameAction: AbilityDsl.actions.multipleContext((context: TriggeredAbilityContext) => {
                 const gameActions: GameAction[] = [];
 
-                const winner = context.event.conflict.winner;
-                const loser = context.event.conflict.loser;
+                const winner = context.event.conflict?.winner;
+                const loser = context.event.conflict?.loser;
+                if(!winner || !loser) {
+                    return { gameActions };
+                }
 
                 gameActions.push(AbilityDsl.actions.draw({
                     target: winner

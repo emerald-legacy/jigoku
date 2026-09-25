@@ -3,6 +3,7 @@ import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Cost } from '../../../costs/Cost.js';
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 function captureLocationCost(): Cost {
     return {
@@ -34,15 +35,15 @@ export default class RoadToShakyakuMura extends DrawCard {
                     );
                 }
             },
-            gameAction: AbilityDsl.actions.cancel((context) => ({
+            gameAction: AbilityDsl.actions.cancel((context: TriggeredAbilityContext) => ({
                 replacementGameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.returnToHand(() => ({
-                        target: context.event.card.attachments
+                        target: context.event.card?.attachments ?? []
                     })),
                     AbilityDsl.actions.putIntoProvince({
                         target: context.event.card,
                         canBeStronghold: true,
-                        destination: context.costs.captureLocationCost
+                        destination: context.costs.captureLocationCost as Location
                     })
                 ])
             })),

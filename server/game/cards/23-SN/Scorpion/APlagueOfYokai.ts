@@ -1,7 +1,6 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import Player from '../../../Player.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 export default class APlagueOfYokai extends DrawCard {
@@ -47,7 +46,7 @@ export default class APlagueOfYokai extends DrawCard {
     }
 
     getCopiesInDeck(context: AbilityContext) {
-        const player = context.player as Player;
+        const player = context.player;
         return player.conflictDeck.filter(card => card.name === context.source.name);
     }
 
@@ -57,10 +56,7 @@ export default class APlagueOfYokai extends DrawCard {
         }
 
         const participatingCharacters = context.game.currentConflict.getParticipants();
-        const attachments = participatingCharacters.reduce(
-            (prev, current) => [...prev, ...current.attachments],
-            [] as DrawCard[]
-        );
+        const attachments = participatingCharacters.flatMap((current) => current.attachments);
 
         const matchingAttachments = attachments.filter(a => a.name === context.source.name && a.controller === context.source.controller);
         return matchingAttachments.length;

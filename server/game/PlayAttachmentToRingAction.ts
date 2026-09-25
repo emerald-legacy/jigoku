@@ -13,7 +13,7 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
 
     constructor(card: DrawCard) {
         super(card, [payTargetDependentFateCost('target')], {
-            gameAction: attachToRing((context) => ({ attachment: context.source })),
+            gameAction: attachToRing((context: AbilityContext<DrawCard>) => ({ attachment: context.source })),
             ringCondition: (ring: Ring, context: TriggeredAbilityContext<DrawCard>) => context.source.canPlayOn(ring),
             mode: TargetMode.Ring
         });

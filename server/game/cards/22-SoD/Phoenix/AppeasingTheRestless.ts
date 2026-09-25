@@ -41,9 +41,9 @@ export default class AppeasingTheRestless extends DrawCard {
 
                 if(!context.player.hasAffinity('void', context)) {
                     gameActions.push(AbilityDsl.actions.conditional({
-                        condition: () => (context.costs.bow?.getFate() ?? 0) === 0,
-                        trueGameAction: AbilityDsl.actions.discardFromPlay({ target: context.costs.bow }),
-                        falseGameAction: AbilityDsl.actions.removeFate({ target: context.costs.bow })
+                        condition: () => ((context.costs.bow as DrawCard | undefined)?.getFate() ?? 0) === 0,
+                        trueGameAction: AbilityDsl.actions.discardFromPlay({ target: context.costs.bow as DrawCard }),
+                        falseGameAction: AbilityDsl.actions.removeFate({ target: context.costs.bow as DrawCard })
                     }));
                 }
 

@@ -8,9 +8,9 @@ import type DrawCard from '../../server/game/DrawCard.js';
 import type { ProvinceCard } from '../../server/game/ProvinceCard.js';
 import type Ring from '../../server/game/Ring.js';
 
-type CardLike = BaseCard | string;
+export type CardLike = BaseCard | string;
 
-interface InPlayCardSpec {
+export interface InPlayCardSpec {
     card: string;
     fate?: number;
     honor?: 'honored' | 'dishonored';
@@ -19,10 +19,12 @@ interface InPlayCardSpec {
     attachments?: string[];
 }
 
-interface ProvinceContents {
+export interface ProvinceContents {
     provinceCard?: CardLike;
     dynastyCards?: CardLike[];
 }
+
+export type ProvinceState = CardLike[] | Record<string, ProvinceContents>;
 
 class PlayerInteractionWrapper {
     game: Game;
@@ -67,13 +69,13 @@ class PlayerInteractionWrapper {
         return this.player.hand;
     }
 
-    set hand(cards: any) {
+    set hand(cards: CardLike[] | undefined) {
         if(!cards) {
             cards = [];
         }
         const cardsInHand = this.hand;
         cardsInHand.forEach((card) => this.moveCard(card, 'conflict deck'));
-        const resolved = this.mixedListToCardList(cards as CardLike[], 'conflict deck');
+        const resolved = this.mixedListToCardList(cards, 'conflict deck');
         resolved.forEach((card) => this.moveCard(card, 'hand'));
     }
 
@@ -102,7 +104,7 @@ class PlayerInteractionWrapper {
         };
     }
 
-    set provinces(newProvinceState: any) {
+    set provinces(newProvinceState: ProvinceState | undefined) {
         if(!newProvinceState) {
             return;
         }
@@ -149,7 +151,7 @@ class PlayerInteractionWrapper {
         return this.player.filterCardsInPlay(() => true);
     }
 
-    set inPlay(newState: any) {
+    set inPlay(newState: Array<string | InPlayCardSpec> | undefined) {
         if(!newState) {
             newState = [];
         }
@@ -161,7 +163,7 @@ class PlayerInteractionWrapper {
                 this.moveCard(card, 'conflict deck');
             }
         });
-        (newState as Array<string | InPlayCardSpec>).forEach((entry) => {
+        newState.forEach((entry) => {
             const options: InPlayCardSpec = typeof entry === 'string' ? { card: entry } : entry;
             if(!options.card) {
                 throw new Error('You must provide a card name');
@@ -210,14 +212,14 @@ class PlayerInteractionWrapper {
         return this.player.conflictDiscardPile;
     }
 
-    set conflictDiscard(newContents: any) {
+    set conflictDiscard(newContents: string[] | undefined) {
         if(!newContents) {
             newContents = [];
         }
         this.conflictDiscard.slice().forEach((card) => {
             this.moveCard(card, 'conflict deck');
         });
-        (newContents as string[]).slice().reverse().forEach((name: string) => {
+        newContents.slice().reverse().forEach((name) => {
             const card = this.findCardByName(name, 'conflict deck');
             this.moveCard(card, 'conflict discard pile');
         });
@@ -231,14 +233,14 @@ class PlayerInteractionWrapper {
         return this.player.dynastyDiscardPile;
     }
 
-    set dynastyDiscard(newContents: any) {
+    set dynastyDiscard(newContents: string[] | undefined) {
         if(!newContents) {
             return;
         }
         this.dynastyDiscard.slice().forEach((card) => {
             this.moveCard(card, 'dynasty deck');
         });
-        (newContents as string[]).slice().reverse().forEach((name: string) => {
+        newContents.slice().reverse().forEach((name) => {
             const card = this.findCardByName(name, ['dynasty deck', 'provinces']);
             this.moveCard(card, 'dynasty discard pile');
         });
@@ -256,13 +258,13 @@ class PlayerInteractionWrapper {
         return this.player.opponent;
     }
 
-    currentPrompt(): any {
+    currentPrompt() {
         return this.player.currentPrompt();
     }
 
     get currentButtons(): string[] {
         const buttons = this.currentPrompt().buttons;
-        return buttons.map((button: { text: string | number }) => button.text.toString());
+        return buttons.map((button) => String(button.text));
     }
 
     get currentActionTargets(): BaseCard[] {
@@ -292,7 +294,7 @@ class PlayerInteractionWrapper {
         return (
             prompt.menuTitle +
             '\n' +
-            prompt.buttons.map((button: { text: string | number; disabled?: boolean }) =>
+            prompt.buttons.map((button) =>
                 '[ ' + button.text + (button.disabled ? ' (disabled)' : '') + ' ]'
             ).join('\n') +
             '\n' +

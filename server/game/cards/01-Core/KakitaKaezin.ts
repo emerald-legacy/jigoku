@@ -1,5 +1,6 @@
 import { DuelType, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class KakitaKaezin extends DrawCard {
@@ -14,7 +15,7 @@ export default class KakitaKaezin extends DrawCard {
                 activePromptTitle: 'Choose a character to duel with Kaezin',
                 controller: Players.Opponent,
                 cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.duel((context) => ({
+                gameAction: AbilityDsl.actions.duel((context: AbilityContext<this>) => ({
                     type: DuelType.Military,
                     challenger: context.source,
                     gameAction: (duel) =>

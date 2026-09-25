@@ -11,7 +11,7 @@ class ObsidianTalisman extends DrawCard {
             cost: AbilityDsl.costs.payHonor(1),
             condition: context => !!context.source.parentCharacter,
             gameAction: AbilityDsl.actions.selectToken(context => ({
-                card: context.source.parentCharacter,
+                card: context.source.parentCharacter ?? undefined,
                 activePromptTitle: 'Which token do you wish to discard?',
                 message: '{0} discards {1}',
                 messageArgs: (token, player) => [player, token],

@@ -157,7 +157,7 @@ export class ProvinceCard extends BaseCard {
     getElement(): Element[] {
         let copyEffect = this.mostRecentEffect(EffectName.CopyProvince);
         if(copyEffect) {
-            return (copyEffect as ProvinceCard).getElement();
+            return (copyEffect).getElement();
         }
 
         const symbols = this.getCurrentElementSymbols();

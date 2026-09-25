@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Phases } from '../../Constants.js';
@@ -19,7 +20,7 @@ class Subterfuge extends DrawCard {
                     );
                 }
             },
-            gameAction: AbilityDsl.actions.cancel((context) => ({
+            gameAction: AbilityDsl.actions.cancel((context: TriggeredAbilityContext) => ({
                 replacementGameAction: AbilityDsl.actions.sequentialContext(() => {
                     const eventAmount = context.event.amount ?? 0;
                     const discardAmount = Math.min(eventAmount, 3);

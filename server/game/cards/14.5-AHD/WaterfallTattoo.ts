@@ -18,7 +18,7 @@ class WaterfallTattoo extends DrawCard {
             when: {
                 onCardRevealed: (event, context) => context.source.parentCharacter && event.card.isProvince && event.card.controller === context.source.parentCharacter.controller
             },
-            gameAction: AbilityDsl.actions.ready(context => ({ target: context.source.parentCharacter }))
+            gameAction: AbilityDsl.actions.ready(context => ({ target: context.source.parentCharacter ?? [] }))
         });
     }
 }

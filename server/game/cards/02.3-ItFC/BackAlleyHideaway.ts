@@ -20,7 +20,7 @@ const backAlleyPersistentEffect = {
     },
     unapply: (target: EffectTarget) => {
         const card = target as BackAlleyHideaway;
-        for(const character of card.attachments as DrawCard[]) {
+        for(const character of card.attachments) {
             character.owner.moveCard(
                 character,
                 character.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile
@@ -131,7 +131,7 @@ export default class BackAlleyHideaway extends DrawCard {
                     card.moveTo(context.source.uuid as Location);
                     (context.source as BackAlleyHideaway).attachments.push(card);
                     card.parent = context.source;
-                    card.abilities.playActions.push(new BackAlleyPlayCharacterAction(context.source as BackAlleyHideaway, card));
+                    card.abilities.playActions.push(new BackAlleyPlayCharacterAction(context.source, card));
                 });
             }
         });

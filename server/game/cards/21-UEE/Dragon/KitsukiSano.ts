@@ -3,7 +3,6 @@ import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.j
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Conflict } from '../../../Conflict.js';
-import type { LastingEffectProperties } from '../../../GameActions/LastingEffectAction.js';
 
 export default class KitsukiSano extends DrawCard {
     static id = 'kitsuki-sano';
@@ -23,7 +22,7 @@ export default class KitsukiSano extends DrawCard {
                     player: context.player
                 }),
                 duration: Duration.UntilEndOfDuel
-            } as LastingEffectProperties)),
+            })),
             effect: 'add 2 to their duel total'
         });
 

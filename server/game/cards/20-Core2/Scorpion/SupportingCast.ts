@@ -33,7 +33,7 @@ export default class SupportingCast extends DrawCard {
                         hidePromptIfSingleCard: true,
                         cardCondition: (card, context: AbilityContext) =>
                             ((context as TriggeredAbilityContext).event.cardTargets as BaseCard[]).some((eventCard: BaseCard) => eventCard === card),
-                        subActionProperties: (card) => {
+                        subActionProperties: (card: DrawCard) => {
                             context.target = card;
                             return { target: card };
                         },

@@ -35,13 +35,13 @@ export default class WhiteLotusMethod extends DrawCard {
                         gameActions: [
                             AbilityDsl.actions.moveStatusToken({
                                 target: context.tokens[TOKEN],
-                                recipient: context.targets[RECIPIENT]
+                                recipient: context.targets[RECIPIENT] as DrawCard
                             }),
                             AbilityDsl.actions.conditional({
                                 condition: doesCardDraw,
                                 trueGameAction: AbilityDsl.actions.draw((context) => ({
                                     amount: 1,
-                                    target: context.targets[RECIPIENT].controller
+                                    target: (context.targets[RECIPIENT] as DrawCard).controller
                                 })),
                                 falseGameAction: AbilityDsl.actions.noAction()
                             })

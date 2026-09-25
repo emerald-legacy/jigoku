@@ -200,7 +200,7 @@ export class GameInputHandler {
         }
 
         if(!this.game.isSpectator(player)) {
-            if(this.game.chatCommands.executeCommand(player as Player, args[0], args)) {
+            if(this.game.chatCommands.executeCommand(player, args[0], args)) {
                 this.game.checkGameState(true);
                 return;
             }
@@ -212,14 +212,14 @@ export class GameInputHandler {
             if(card) {
                 const packId = resolvePackId(undefined, card, this.game.gameMode);
                 const cardFragment = { id: card.id, name: card.name, type: card.type, packId };
-                this.game.gameChat.addChatMessage(player as Player, { message: this.game.gameChat.formatMessage('{0}', [cardFragment]) });
+                this.game.gameChat.addChatMessage(player, { message: this.game.gameChat.formatMessage('{0}', [cardFragment]) });
 
                 return;
             }
         }
 
         if(!this.game.isSpectator(player) || !this.game.spectatorSquelch) {
-            this.game.gameChat.addChatMessage(player as Player, message);
+            this.game.gameChat.addChatMessage(player, message);
         }
     }
 

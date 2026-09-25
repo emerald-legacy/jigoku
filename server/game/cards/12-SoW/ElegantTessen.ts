@@ -15,7 +15,7 @@ class ElegantTessen extends DrawCard {
                     event.originalLocation !== Location.PlayArea
                 )
             },
-            gameAction: AbilityDsl.actions.ready(context => ({ target: context.source.parentCharacter }))
+            gameAction: AbilityDsl.actions.ready(context => ({ target: context.source.parentCharacter ?? [] }))
         });
     }
 }

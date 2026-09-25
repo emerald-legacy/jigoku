@@ -15,9 +15,6 @@ class Kudaka extends DrawCard {
             when: {
                 onClaimRing: (event, context) => {
                     const elem = this.getCurrentElementSymbol(elementKey);
-                    if(elem === 'none') {
-                        return false;
-                    }
                     return ((event.conflict && event.conflict.hasElement(elem)) || event.ring.hasElement(elem)) && event.player === context.player;
                 }
             },

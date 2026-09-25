@@ -146,11 +146,11 @@ class AbilityResolver extends BaseStepWithPipeline {
         this.context.ability.resolveCosts(this.context, this.costResults);
     }
 
-    getCostResults() {
+    getCostResults(): AbilityResolverCostResults {
         return {
             cancelled: false,
             canCancel: this.canCancel,
-            events: [] as Event[],
+            events: [],
             playCosts: true,
             triggerCosts: true
         };

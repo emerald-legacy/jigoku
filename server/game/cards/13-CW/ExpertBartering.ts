@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 class ExpertBartering extends DrawCard {
     static id = 'expert-bartering';
@@ -20,15 +21,15 @@ class ExpertBartering extends DrawCard {
                 controller: context => (context.costs.optionalFateCost === undefined || (context.costs.optionalFateCost as number) > 0) ? Players.Any : Players.Self
             },
             gameAction: AbilityDsl.actions.joint([
-                AbilityDsl.actions.ifAble<DrawCard>(context => ({
+                AbilityDsl.actions.ifAble((context: AbilityContext<DrawCard, DrawCard>) => ({
                     ifAbleAction: AbilityDsl.actions.attach({
-                        target: context.source.parentCharacter,
+                        target: context.source.parentCharacter ?? [],
                         attachment: context.target,
                         takeControl: context.target?.controller !== context.player
                     }),
                     otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: context.target })
                 })),
-                AbilityDsl.actions.ifAble<DrawCard>(context => ({
+                AbilityDsl.actions.ifAble((context: AbilityContext<DrawCard, DrawCard>) => ({
                     ifAbleAction: AbilityDsl.actions.attach({
                         target: context.target?.parentCharacter ?? undefined,
                         attachment: context.source,

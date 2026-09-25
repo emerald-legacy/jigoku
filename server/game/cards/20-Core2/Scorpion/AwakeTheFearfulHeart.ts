@@ -1,6 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Conflict } from '../../../Conflict.js';
 import { CardType } from '../../../Constants.js';
 
 export default class AwakeTheFearfulHeart extends DrawCard {
@@ -16,7 +15,7 @@ export default class AwakeTheFearfulHeart extends DrawCard {
             gameAction: AbilityDsl.actions.sequential([
                 AbilityDsl.actions.sendHome((context) => ({
                     target:
-                        (context.game.currentConflict as Conflict | null)?.getParticipants(
+                        (context.game.currentConflict)?.getParticipants(
                             (character) => character.fate === 0
                         ) ?? []
                 })),

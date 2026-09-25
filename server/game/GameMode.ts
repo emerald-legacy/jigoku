@@ -1,7 +1,6 @@
 import type { AbilityContext } from './AbilityContext.js';
 import type { CardAction } from './CardAction.js';
 import { AbilityType, Location, Phases } from './Constants.js';
-import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 
@@ -157,7 +156,7 @@ const Emerald: GameMode = {
     dynastyPhaseCanPlayConflictEvents: (action) =>
         action.abilityType !== AbilityType.Action ||
         action.phase === Phases.Dynasty ||
-        (action.card as BaseCard).isDynasty,
+        (action.card).isDynasty,
     dynastyPhaseCanPlayConflictCharacters: false,
     dynastyPhasePassingFate: false,
     dynastyPhaseActionsFromCardsInPlay: false

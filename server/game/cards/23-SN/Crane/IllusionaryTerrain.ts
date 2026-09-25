@@ -40,10 +40,10 @@ export default class IllusionaryTerrain extends DrawCard {
                 },
                 cardCondition: (card: BaseCard, context) => (card as ProvinceCard).isFaceup() &&
                     card !== (context as TriggeredAbilityContext<DrawCard>).event.conflict?.conflictProvince,
-                gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
-                    target: context.event.conflict.conflictProvince,
+                gameAction: AbilityDsl.actions.cardLastingEffect((context: TriggeredAbilityContext<DrawCard, ProvinceCard>) => ({
+                    target: context.event.conflict?.conflictProvince ?? [],
                     targetLocation: Location.Any,
-                    effect: AbilityDsl.effects.copyProvince(context.target)
+                    effect: context.target ? AbilityDsl.effects.copyProvince(context.target) : []
                 }))
             }
         });

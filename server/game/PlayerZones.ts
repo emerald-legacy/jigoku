@@ -54,13 +54,13 @@ export class PlayerZones {
             case Location.ProvinceDeck:
                 return this.provinceDeck;
             case Location.Provinces:
-                return ([] as BaseCard[]).concat(
+                return [
                     this.provinceOne,
                     this.provinceTwo,
                     this.provinceThree,
                     this.provinceFour,
                     this.strongholdProvince
-                );
+                ].flat();
             case Location.UnderneathStronghold:
                 return this.underneathStronghold;
             default:

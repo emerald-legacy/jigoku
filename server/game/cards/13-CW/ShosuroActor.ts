@@ -16,7 +16,7 @@ export default class ShosuroActor extends DrawCard {
                 cardCondition: (card) => !card.isUnique(),
                 gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
                     target: context.source,
-                    effect: AbilityDsl.effects.copyCard(context.target)
+                    effect: context.target ? AbilityDsl.effects.copyCard(context.target) : []
                 }))
             },
             effect: 'become a copy of {1}',

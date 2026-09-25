@@ -24,11 +24,10 @@ class ImbuedWithShadows extends DrawCard {
                     return this.getNumberOfLegalTargets(context);
                 },
                 cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.multipleContext((context) => {
-                    let targets = Object.values(context.targets).flat();
-                    targets = targets.concat(Object.values(context.selects).flat());
+                gameAction: AbilityDsl.actions.multipleContext((context: AbilityContext) => {
+                    const targets = Object.values(context.targets).flat();
                     return {
-                        gameActions: this.getStatusTokenPrompts(targets as BaseCard[])
+                        gameActions: this.getStatusTokenPrompts(targets)
                     };
                 })
             },

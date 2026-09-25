@@ -17,7 +17,7 @@ class AgashaShunsen extends DrawCard {
                 gameAction: AbilityDsl.actions.cardMenu(context => ({
                     cards: context.player.conflictDeck.filter((card: DrawCard) =>
                         card.type === CardType.Attachment &&
-                        card.costLessThan(context.costs.returnRing ? context.costs.returnRing.length + 1 : 1)
+                        card.costLessThan(context.costs.returnRing ? (context.costs.returnRing as Ring[]).length + 1 : 1)
                     ),
                     message: '{0} chooses to attach {1} to {2}',
                     messageArgs: card => [context.player, card, context.target],

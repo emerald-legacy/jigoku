@@ -2,7 +2,6 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import { Location, Players, CardType } from '../../Constants.js';
 import { PlayCharacterAsIfFromHand } from '../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHand } from '../../PlayDisguisedCharacterAsIfFromHand.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
@@ -37,7 +36,7 @@ export default class ThirdWhiskerWarrens extends DrawCard {
         if(context.game.currentConflict === null) {
             return false;
         }
-        for(const province of context.game.currentConflict.getConflictProvinces() as ProvinceCard[]) {
+        for(const province of context.game.currentConflict.getConflictProvinces()) {
             for(const card of context.player.getDynastyCardsInProvince(province.location) as BaseCard[]) {
                 if(card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall')) {
                     return true;

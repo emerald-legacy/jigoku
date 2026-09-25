@@ -24,23 +24,23 @@ class VoidWielder extends DrawCard {
                     choices: {
                         'Move this character home': AbilityDsl.actions.sendHome(context => ({ target: context.targets.character })),
                         'Discard a status token from this character': AbilityDsl.actions.selectToken(context => ({
-                            card: context.targets.character,
-                            player: context.targets.character.controller === context.player ? Players.Self : Players.Opponent,
+                            card: context.targets.character as DrawCard,
+                            player: (context.targets.character as DrawCard).controller === context.player ? Players.Self : Players.Opponent,
                             activePromptTitle: 'Which token do you wish to discard?',
                             message: '{0} discards {1}',
                             effect: 'discard a status token from {0}',
-                            effectArgs: () => context.targets.character,
+                            effectArgs: () => [context.targets.character],
                             messageArgs: (token, player) => [player, token],
                             gameAction: AbilityDsl.actions.discardStatusToken()
                         })),
                         'Discard an attachment from this character': AbilityDsl.actions.selectCard(context => ({
                             cardType: CardType.Attachment,
-                            player: context.targets.character.controller === context.player ? Players.Self : Players.Opponent,
+                            player: (context.targets.character as DrawCard).controller === context.player ? Players.Self : Players.Opponent,
                             activePromptTitle: 'Which attachment do you wish to discard?',
                             cardCondition: (card, context) => card.parentCharacter === context.targets.character,
                             gameAction: AbilityDsl.actions.discardFromPlay(),
                             effect: 'discard an attachment from {0}',
-                            effectArgs: () => context.targets.character,
+                            effectArgs: () => [context.targets.character],
                             message: '{0} discards {1}',
                             messageArgs: (card, player) => [player, card]
                         }))

@@ -13,7 +13,7 @@ export class PlayAttachmentAction extends PlayCardSourceAction {
     constructor(card: DrawCard, ignoreType = false) {
         super(card, [payTargetDependentFateCost('target', ignoreType)], {
             location: [Location.PlayArea, Location.Provinces],
-            gameAction: attach((context) => ({
+            gameAction: attach((context: AbilityContext<DrawCard>) => ({
                 attachment: context.source,
                 ignoreType: ignoreType,
                 takeControl: context.source.controller !== context.player

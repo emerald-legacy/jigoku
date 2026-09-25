@@ -14,7 +14,7 @@ class GreaterUnderstanding extends DrawCard {
                 onPlaceFateOnUnclaimedRings: () => this.parent instanceof Ring && this.parent.isUnclaimed()
             },
             title: 'Resolve the attached ring\'s effect',
-            gameAction: AbilityDsl.actions.resolveRingEffect(context => ({ target: context.source.parent }))
+            gameAction: AbilityDsl.actions.resolveRingEffect(context => ({ target: context.source.parent ?? [] }))
         });
     }
     canAttach(ring: BaseCard | Ring) {

@@ -48,7 +48,7 @@ export default class SpiritOfValor extends DrawCard {
                 cardCondition: (card) => card.isFaction('lion'),
                 gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
                     target: receiver(context),
-                    effect: AbilityDsl.effects.gainAllAbilities(context.target)
+                    effect: context.target ? AbilityDsl.effects.gainAllAbilities(context.target) : []
                 }))
             },
             effect: 'copy {0}\'s abilities onto {1}',

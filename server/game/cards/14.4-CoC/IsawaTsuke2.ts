@@ -30,12 +30,8 @@ class IsawaTsuke2 extends DrawCard {
                 },
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating(),
-                // @ts-expect-error context.targets/selects values are dynamically typed, flat() returns unknown[] but game engine handles it
-                gameAction: AbilityDsl.actions.removeFate((context) => {
-                    let targets = Object.values(context.targets).flat();
-                    targets = targets.concat(Object.values(context.selects).flat());
-
-                    return { target: targets };
+                gameAction: AbilityDsl.actions.removeFate((context: AbilityContext) => {
+                    return { target: Object.values(context.targets).flat() };
                 })
             },
             cannotTargetFirst: true

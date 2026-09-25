@@ -1,4 +1,4 @@
-import type { AbilityContext } from '../../AbilityContext.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import type Ring from '../../Ring.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -21,7 +21,7 @@ class RestoredHeirloom extends DrawCard {
             target: {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                gameAction: AbilityDsl.actions.cancel((context: AbilityContext<DrawCard, DrawCard>) => ({
+                gameAction: AbilityDsl.actions.cancel((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
                     replacementGameAction: AbilityDsl.actions.attach({ attachment: context.source })
                 }))
             }

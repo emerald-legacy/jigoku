@@ -16,20 +16,32 @@ interface DeckCardEntry {
     pack_id?: string;
 }
 
+interface PreparedDeck {
+    faction: DeckDTO['faction'];
+    conflictCards: DrawCard[];
+    dynastyCards: DrawCard[];
+    provinceCards: ProvinceCard[];
+    outOfPlayCards: DrawCard[];
+    outsideTheGameCards: DrawCard[];
+    stronghold: StrongholdCard | undefined;
+    role: RoleCard | undefined;
+    allCards: BaseCard[];
+}
+
 export class Deck {
     constructor(public data: DeckDTO) {}
 
     prepare(player: Player) {
-        const result = {
+        const result: PreparedDeck = {
             faction: this.data.faction,
-            conflictCards: [] as DrawCard[],
-            dynastyCards: [] as DrawCard[],
-            provinceCards: [] as ProvinceCard[],
-            outOfPlayCards: [] as DrawCard[],
-            outsideTheGameCards: [] as DrawCard[],
-            stronghold: undefined as StrongholdCard | undefined,
-            role: undefined as RoleCard | undefined,
-            allCards: [] as BaseCard[]
+            conflictCards: [],
+            dynastyCards: [],
+            provinceCards: [],
+            outOfPlayCards: [],
+            outsideTheGameCards: [],
+            stronghold: undefined,
+            role: undefined,
+            allCards: []
         };
 
         //conflict
@@ -129,14 +141,13 @@ export class Deck {
         return result;
     }
 
-    #makeSkirmishProvinceCardData(provinceNumber: number) {
+    #makeSkirmishProvinceCardData(provinceNumber: number): CardData {
         return {
             strength: 3,
-            element: [] as string[],
             type: 'province',
             side: 'province',
             name: 'Skirmish Province',
             id: `skirmish-province-${provinceNumber}`
-        } as const;
+        };
     }
 }

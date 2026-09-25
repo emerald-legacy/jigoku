@@ -21,7 +21,7 @@ export default class SereneIseZumi extends DrawCard {
                 context.source.type === CardType.Attachment &&
                 context.source.parentCharacter.isParticipating()),
             gameAction: AbilityDsl.actions.sendHome((context) => ({
-                target: context.source.parentCharacter
+                target: context.source.parentCharacter ?? []
             }))
         });
         this.persistentEffect({

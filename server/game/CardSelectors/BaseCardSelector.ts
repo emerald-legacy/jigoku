@@ -3,7 +3,6 @@ import type BaseCard from '../BaseCard.js';
 import { CardType, Location, Players } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
-import type Ring from '../Ring.js';
 
 type ControllerProp = Players | ((context: AbilityContext) => Players);
 
@@ -77,21 +76,21 @@ class BaseCardSelector {
             }
             return context.game.allCards;
         }
-        let attachments: BaseCard[] = context.player.cardsInPlay.reduce((array: BaseCard[], card: DrawCard) => array.concat(card.attachments), [] as BaseCard[]);
+        let attachments: BaseCard[] = context.player.cardsInPlay.flatMap((card: DrawCard) => card.attachments);
         let allProvinceAttachments: BaseCard[] = context.player
             .getProvinces()
-            .reduce((array: BaseCard[], card) => array.concat(card.attachments), [] as BaseCard[]);
+            .flatMap((card) => card.attachments);
 
         if(context.player.opponent) {
             allProvinceAttachments = allProvinceAttachments.concat(
-                context.player.opponent.getProvinces().reduce((array: BaseCard[], card) => array.concat(card.attachments), [] as BaseCard[])
+                context.player.opponent.getProvinces().flatMap((card) => card.attachments)
             );
         }
 
         attachments = attachments.concat(allProvinceAttachments);
 
         if(context.game.rings) {
-            let rings = Object.values(context.game.rings) as Ring[];
+            let rings = Object.values(context.game.rings);
             let allRingAttachments = rings.map((ring) => ring.attachments).flat();
             attachments = attachments.concat(allRingAttachments);
         }
@@ -150,7 +149,7 @@ class BaseCardSelector {
         if(controllerProp === Players.Opponent && card.controller !== context.player.opponent) {
             return false;
         }
-        if(!this.location.includes(Location.Any) && !this.location.includes(card.location as Location)) {
+        if(!this.location.includes(Location.Any) && !this.location.includes(card.location)) {
             return false;
         }
         if(card.location === Location.Hand && card.controller !== choosingPlayer) {

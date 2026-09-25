@@ -6,7 +6,7 @@ import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
+import type { ActionEvent } from './GameAction.js';
 export interface AttachActionProperties extends CardActionProperties {
     attachment?: DrawCard;
     ignoreType?: boolean;
@@ -18,7 +18,7 @@ export interface AttachActionProperties extends CardActionProperties {
     wasACharacter?: boolean;
 }
 
-export class AttachAction extends CardGameAction<AttachActionProperties> {
+export class AttachAction<C extends AbilityContext = AbilityContext> extends CardGameAction<AttachActionProperties, EventName, C> {
     name = 'attach';
     eventName = EventName.OnCardAttached;
     targetType = [CardType.Character, CardType.Province];
@@ -32,7 +32,7 @@ export class AttachAction extends CardGameAction<AttachActionProperties> {
         wasACharacter: false
     };
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         let properties = this.getProperties(context);
         if(properties.takeControl) {
             return [
@@ -48,11 +48,11 @@ export class AttachAction extends CardGameAction<AttachActionProperties> {
         return ['attach {1} to {0}', [properties.target, properties.attachment]];
     }
 
-    canAffect(card: BaseCard, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
         let canAttachProps = {
             ignoreType: !!properties.ignoreType,
-            controller: this.getFinalController(properties, context) as Player
+            controller: this.getFinalController(properties, context)
         };
         if(properties.viaDisguised) {
             return true;
@@ -89,7 +89,7 @@ export class AttachAction extends CardGameAction<AttachActionProperties> {
         return card.allowAttachment(properties.attachment) && super.canAffect(card, context);
     }
 
-    getFinalController(properties: AttachActionProperties, context: AbilityContext): Player {
+    getFinalController(properties: AttachActionProperties, context: C): Player {
         if(properties.takeControl) {
             return context.player;
         } else if(properties.giveControl) {
@@ -99,16 +99,16 @@ export class AttachAction extends CardGameAction<AttachActionProperties> {
         return (properties.attachment as DrawCard)?.controller ?? context.player;
     }
 
-    checkEventCondition(event: GameEvent<EventName.OnCardAttached>, additionalProperties: Record<string, unknown>): boolean {
-        return this.canAffect(event.parent as DrawCard, (event.context as AbilityContext), additionalProperties);
+    checkEventCondition(event: ActionEvent<EventName.OnCardAttached, C>, additionalProperties: Record<string, unknown>): boolean {
+        return this.canAffect(event.parent as DrawCard, (event.context), additionalProperties);
     }
 
-    isEventFullyResolved(event: GameEvent<EventName.OnCardAttached>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown>): boolean {
+    isEventFullyResolved(event: ActionEvent<EventName.OnCardAttached, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown>): boolean {
         let { attachment } = this.getProperties(context, additionalProperties);
         return event.parent === card && event.card === attachment && event.name === this.eventName && !event.cancelled;
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnCardAttached>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnCardAttached, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown>): void {
         let { attachment } = this.getProperties(context, additionalProperties);
         event.name = this.eventName;
         event.parent = card;
@@ -116,10 +116,10 @@ export class AttachAction extends CardGameAction<AttachActionProperties> {
         event.context = context;
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardAttached>, additionalProperties = {}): void {
+    eventHandler(event: ActionEvent<EventName.OnCardAttached, C>, additionalProperties = {}): void {
         const card = event.card as DrawCard;
         const parent = event.parent as BaseCard;
-        const context = event.context as AbilityContext;
+        const context = event.context;
         const properties = this.getProperties(context, additionalProperties);
         event.originalLocation = card.location;
 

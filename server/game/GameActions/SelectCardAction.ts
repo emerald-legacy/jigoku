@@ -4,11 +4,11 @@ import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import CardSelector from '../CardSelector.js';
 import type BaseCardSelector from '../CardSelectors/BaseCardSelector.js';
-import { CardType, EffectName, Location, Players, TargetMode } from '../Constants.js';
+import { CardType, EffectName, Location, Players, TargetMode, type EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-import type { GameAction } from './GameAction.js';
+import type { GameAction, WithDefaults } from './GameAction.js';
 import type { EffectArg } from '../Interfaces.js';
 
 export interface SelectCardProperties extends CardActionProperties {
@@ -21,7 +21,7 @@ export interface SelectCardProperties extends CardActionProperties {
     targets?: boolean;
     message?: string;
     manuallyRaiseEvent?: boolean;
-    messageArgs?(card: BaseCard | BaseCard[], player: Player, properties: SelectCardProperties): unknown[];
+    messageArgs?(card: BaseCard | BaseCard[], player: Player, properties: SelectCardProperties): MsgArg[];
     gameAction: GameAction;
     selector?: BaseCardSelector;
     mode?: TargetMode;
@@ -33,42 +33,35 @@ export interface SelectCardProperties extends CardActionProperties {
     effectArgs?: (context: AbilityContext) => EffectArg[];
 }
 
-type ResolvedSelectCardProperties = SelectCardProperties & {
-    cardCondition: NonNullable<SelectCardProperties['cardCondition']>;
-    subActionProperties: NonNullable<SelectCardProperties['subActionProperties']>;
-    selector: BaseCardSelector;
-};
-
-export class SelectCardAction extends CardGameAction {
-    defaultProperties: SelectCardProperties = {
+export class SelectCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<SelectCardProperties, EventName, C> {
+    defaultProperties: Partial<SelectCardProperties> = {
         cardCondition: () => true,
-        gameAction: null as unknown as GameAction,
         subActionProperties: (card) => ({ target: card }),
         targets: false,
         hidePromptIfSingleCard: false,
         manuallyRaiseEvent: false
     };
 
-    constructor(properties: SelectCardProperties | ((context: AbilityContext) => SelectCardProperties)) {
+    constructor(properties: SelectCardProperties | ((context: C) => SelectCardProperties)) {
         super(properties);
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let { target, effect, effectArgs } = this.getProperties(context) as SelectCardProperties;
+    getEffectMessage(context: C): MessageArgs {
+        let { target, effect, effectArgs } = this.getProperties(context);
         if(effect) {
             return [effect, (effectArgs && effectArgs(context)) || []];
         }
         return ['choose a target for {0}', [target]];
     }
 
-    getProperties(context: AbilityContext, additionalProperties = {}): ResolvedSelectCardProperties {
-        let properties = super.getProperties(context, additionalProperties) as SelectCardProperties;
+    getProperties(context: C, additionalProperties = {}): WithDefaults<SelectCardProperties, 'cardCondition' | 'subActionProperties' | 'selector'> {
+        let properties = super.getProperties(context, additionalProperties);
         properties.gameAction.setDefaultTarget(() => properties.target);
         const cardCondition = properties.cardCondition ?? (() => true);
         const subActionProperties = properties.subActionProperties ?? ((card: BaseCard | BaseCard[]) => ({ target: card }));
         let selector = properties.selector;
         if(!selector) {
-            const selectorCardCondition = (card: BaseCard, context: AbilityContext) =>
+            const selectorCardCondition = (card: BaseCard, context: C) =>
                 properties.gameAction.allTargetsLegal(
                     context,
                     Object.assign({}, additionalProperties, subActionProperties(card))
@@ -78,7 +71,7 @@ export class SelectCardAction extends CardGameAction {
         return Object.assign(properties, { cardCondition, subActionProperties, selector });
     }
 
-    canAffect(card: BaseCard, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(card: BaseCard, context: C, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         const player =
             (properties.targets && context.choosingPlayerOverride) ||
@@ -87,7 +80,7 @@ export class SelectCardAction extends CardGameAction {
         return properties.selector.canTarget(card, context, player);
     }
 
-    hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties = {}): boolean {
         const properties = this.getProperties(context, additionalProperties);
         const player =
             (properties.targets && context.choosingPlayerOverride) ||
@@ -96,7 +89,7 @@ export class SelectCardAction extends CardGameAction {
         return properties.selector.hasEnoughTargets(context, player);
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         const properties = this.getProperties(context, additionalProperties);
         if(properties.player === Players.Opponent && !context.player.opponent) {
             return;
@@ -110,7 +103,7 @@ export class SelectCardAction extends CardGameAction {
                 .filter((card: BaseCard) =>
                     card
                         .getEffects(EffectName.MustBeChosen)
-                        .some((restriction: { isMatch: (kind: string, context: AbilityContext) => boolean }) => restriction.isMatch('target', context))
+                        .some((restriction: { isMatch: (kind: string, context: C) => boolean }) => restriction.isMatch('target', context))
                 );
         }
         if(!properties.selector.hasEnoughTargets(context, player)) {
@@ -125,7 +118,7 @@ export class SelectCardAction extends CardGameAction {
             onCancel: properties.cancelHandler,
             onSelect: (player: Player, cards: BaseCard | BaseCard[]) => {
                 if(properties.message && messageArgs) {
-                    context.game.addMessage(properties.message, ...(messageArgs(cards, player, properties) as MsgArg[]));
+                    context.game.addMessage(properties.message, ...messageArgs(cards, player, properties));
                 }
                 properties.gameAction.addEventsToArray(
                     events,
@@ -149,7 +142,7 @@ export class SelectCardAction extends CardGameAction {
         context.game.promptForSelect(player, finalProperties);
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties = {}): boolean {
+    hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
         return !!properties.targets && properties.player !== Players.Opponent;
     }

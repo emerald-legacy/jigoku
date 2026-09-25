@@ -59,14 +59,14 @@ class HandlerMenuPrompt extends UiPrompt {
             properties.source = properties.context.source;
         }
         if(properties.source && !properties.waitingPromptTitle) {
-            properties.waitingPromptTitle = 'Waiting for opponent to use ' + (properties.source as EffectSource).name;
+            properties.waitingPromptTitle = 'Waiting for opponent to use ' + (properties.source).name;
         } else if(!properties.source) {
             properties.source = new EffectSource(game);
         }
         this.properties = properties;
         this.properties.choices = properties.choices || [];
         this.cardCondition = properties.cardCondition || (() => true);
-        this.context = properties.context || new AbilityContext({ game: game, player: player, source: properties.source as EffectSource });
+        this.context = properties.context || new AbilityContext({ game: game, player: player, source: properties.source });
     }
 
     activeCondition(player: Player): boolean {
@@ -128,7 +128,7 @@ class HandlerMenuPrompt extends UiPrompt {
             return [];
         }
         const rawTargets: Array<BaseCard | BaseCard[]> = this.context.targets ? Object.values(this.context.targets) : [];
-        let targets: GameObject[] = rawTargets.reduce((array: GameObject[], target: BaseCard | BaseCard[]) => array.concat(target), [] as GameObject[]);
+        let targets: GameObject[] = rawTargets.flat();
         if(this.properties.target) {
             targets = Array.isArray(this.properties.target) ? this.properties.target : [this.properties.target];
         }

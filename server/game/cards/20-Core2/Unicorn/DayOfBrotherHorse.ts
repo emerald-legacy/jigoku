@@ -31,7 +31,7 @@ export default class DayOfBrotherHorse extends DrawCard {
             when: {
                 onConflictPass: (event, context) =>
                     context.player === event.conflict.attackingPlayer &&
-                    (context.player.cardsInPlay as DrawCard[]).some((card: DrawCard) => !card.bowed)
+                    (context.player.cardsInPlay).some((card: DrawCard) => !card.bowed)
             },
             target: {
                 mode: TargetMode.Ring,

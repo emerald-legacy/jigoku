@@ -10,7 +10,7 @@ export default class CounselFromYumeDo extends DrawCard {
         this.action({
             title: 'Shuffle cards back into your deck',
             condition: (context) =>
-                (context.player.cardsInPlay as Array<DrawCard>).some(
+                (context.player.cardsInPlay).some(
                     (card) => card.getType() === CardType.Character && card.hasTrait('shugenja')
                 ),
             target: {

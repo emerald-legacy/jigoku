@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -12,7 +13,7 @@ class AkodoGunso extends DrawCard {
                     event.card === context.source && event.originalLocation !== undefined &&
                     context.game.getProvinceArray().includes(event.originalLocation)
             },
-            gameAction: AbilityDsl.actions.refillFaceup((context) => ({ location: context.event.originalLocation }))
+            gameAction: AbilityDsl.actions.refillFaceup((context: TriggeredAbilityContext) => ({ location: context.event.originalLocation ?? [] }))
         });
     }
 }

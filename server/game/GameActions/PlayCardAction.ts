@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAction from '../BaseAction.js';
 import type BaseCard from '../BaseCard.js';
 import type BaseCardAbility from '../BaseCardAbility.js';
-import { Location, PlayType, Stage } from '../Constants.js';
+import { Location, PlayType, Stage, type EventName } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import type Game from '../Game.js';
@@ -113,7 +113,7 @@ export interface PlayCardProperties extends CardActionProperties {
     payFateToOpponent?: boolean;
 }
 
-export class PlayCardAction extends CardGameAction {
+export class PlayCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlayCardProperties, EventName, C> {
     name = 'playCard';
     effect = 'play {0} as if it were in their hand';
     defaultProperties: PlayCardProperties = {
@@ -127,15 +127,15 @@ export class PlayCardAction extends CardGameAction {
         playAction: undefined,
         source: undefined
     };
-    constructor(properties: ((context: AbilityContext) => PlayCardProperties) | PlayCardProperties) {
+    constructor(properties: ((context: C) => PlayCardProperties) | PlayCardProperties) {
         super(properties);
     }
 
-    getProperties(context: AbilityContext, additionalProperties = {}): PlayCardProperties {
-        return super.getProperties(context, additionalProperties) as PlayCardProperties;
+    getProperties(context: C, additionalProperties = {}): PlayCardProperties {
+        return super.getProperties(context, additionalProperties);
     }
 
-    canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
         if(!super.canAffect(card, context)) {
             return false;
         }
@@ -143,7 +143,7 @@ export class PlayCardAction extends CardGameAction {
         return this.getLegalAbilities(card, context, properties).length > 0;
     }
 
-    getLegalAbilities(card: DrawCard, context: AbilityContext, properties: PlayCardProperties) {
+    getLegalAbilities(card: DrawCard, context: C, properties: PlayCardProperties) {
         let legalActions = this.getLegalActions(card, context, properties);
         let legalReactions = this.getLegalReactions(card, context, properties);
 
@@ -162,7 +162,7 @@ export class PlayCardAction extends CardGameAction {
         });
     }
 
-    getLegalActions(card: DrawCard, context: AbilityContext, properties: PlayCardProperties) {
+    getLegalActions(card: DrawCard, context: C, properties: PlayCardProperties) {
         if(properties.playAction) {
             let actions = properties.playAction;
             if(!Array.isArray(actions)) {
@@ -173,7 +173,7 @@ export class PlayCardAction extends CardGameAction {
         return card.getPlayActions();
     }
 
-    getLegalReactions(card: DrawCard, context: AbilityContext, properties: PlayCardProperties) {
+    getLegalReactions(card: DrawCard, context: C, properties: PlayCardProperties) {
         if(!properties.allowReactions) {
             return [];
         }
@@ -189,14 +189,14 @@ export class PlayCardAction extends CardGameAction {
             PlayType.Other;
     }
 
-    cancelAction(context: AbilityContext, properties: PlayCardProperties): number {
+    cancelAction(context: C, properties: PlayCardProperties): number {
         if(properties.parentAction) {
             properties.parentAction.resolve(undefined, context);
         }
         return 0;
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
         const targets = properties.target as DrawCard | DrawCard[] | undefined;
         if(!targets || (Array.isArray(targets) && targets.length === 0)) {
@@ -229,13 +229,13 @@ export class PlayCardAction extends CardGameAction {
         });
     }
 
-    addPropertiesToEvent(event: Event, card: DrawCard, context: AbilityContext): void {
+    addPropertiesToEvent(event: Event, card: DrawCard, context: C): void {
         event.onPlayCardSource = context.source;
     }
 
     getPlayCardEvent(
         card: DrawCard,
-        context: AbilityContext,
+        context: C,
         actionContext: AbilityContext,
         additionalProperties: Record<string, unknown> = {}
     ): Event {

@@ -1,3 +1,4 @@
+import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, PlayType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -18,7 +19,7 @@ export default class StrangeMirror extends DrawCard {
                     // the event is only movable once it has finished resolving
                     event.card.location === Location.ConflictDiscardPile
             },
-            gameAction: AbilityDsl.actions.placeCardUnderneath((context) => ({
+            gameAction: AbilityDsl.actions.placeCardUnderneath((context: TriggeredAbilityContext) => ({
                 target: context.event.card,
                 destination: context.source.parentCharacter ?? undefined
             })),

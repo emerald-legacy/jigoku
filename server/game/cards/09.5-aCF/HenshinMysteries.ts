@@ -18,7 +18,7 @@ export default class HenshinMysteries extends ProvinceCard {
             !this.isBroken &&
             !this.isBlank() &&
             event.conflict &&
-            (event.conflict.getConflictProvinces() as ProvinceCard[]).some((a) => a === this) &&
+            (event.conflict.getConflictProvinces()).some((a) => a === this) &&
             !event.cancelled
         ) {
             event.cancel();

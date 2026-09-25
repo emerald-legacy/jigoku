@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 import { CardType } from '../../Constants.js';
 
 class KarmicTwist extends DrawCard {
@@ -12,7 +13,7 @@ class KarmicTwist extends DrawCard {
                 activePromptTitle: 'Choose a donor character',
                 cardType: CardType.Character,
                 cardCondition: card => !card.isUnique() && card.getFate() > 0,
-                gameAction: AbilityDsl.actions.selectCard<DrawCard>(context => ({
+                gameAction: AbilityDsl.actions.selectCard((context: AbilityContext<DrawCard, DrawCard>) => ({
                     cardType: CardType.Character,
                     activePromptTitle: 'Choose a recipient character',
                     cardCondition: (card) => !card.isUnique() && card.getFate() === 0 && card.controller === context.target?.controller,

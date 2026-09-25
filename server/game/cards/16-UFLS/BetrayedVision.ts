@@ -24,7 +24,7 @@ export default class BetrayedVision extends DrawCard {
                     controller: Players.Opponent,
                     cardCondition: (card, context) => card.isParticipating() && card !== context.targets.cardToCopy,
                     gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                        effect: AbilityDsl.effects.copyCard(context.targets.cardToCopy)
+                        effect: AbilityDsl.effects.copyCard(context.targets.cardToCopy as DrawCard)
                     }))
                 }
             },

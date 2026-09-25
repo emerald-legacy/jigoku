@@ -35,7 +35,7 @@ export default class TogashiNaname extends DrawCard {
                             (context.rings.ring as Ring).element
                         )}`]: AbilityDsl.actions.placeFateOnRing((context) => ({
                             target: context.rings.ring,
-                            origin: context.targets.character
+                            origin: context.targets.character as DrawCard
                         })),
                         [`Let Opponent Resolve the ${RingEffects.getRingName((context.rings.ring as Ring).element)}`]:
                             AbilityDsl.actions.resolveRingEffect((context) => ({

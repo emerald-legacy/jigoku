@@ -1,19 +1,19 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, CharacterStatus, EventName, Location } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export type TaintProperties = CardActionProperties;
 
-export class TaintAction extends CardGameAction {
+export class TaintAction<C extends AbilityContext = AbilityContext> extends CardGameAction<TaintProperties, EventName, C> {
     name = 'taint';
     eventName = EventName.OnCardTainted;
     targetType = [CardType.Character, CardType.Province];
     cost = 'tainting {0}';
     effect = 'taint {0}';
 
-    canAffect(card: BaseCard, context: AbilityContext): boolean {
+    canAffect(card: BaseCard, context: C): boolean {
         if(card.isTainted) {
             return false;
         }
@@ -29,7 +29,7 @@ export class TaintAction extends CardGameAction {
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardTainted>): void {
+    eventHandler(event: ActionEvent<EventName.OnCardTainted, C>): void {
         const card = event.card as BaseCard;
         card.taint();
         card.game.raiseEvent(EventName.OnStatusTokenGained, {

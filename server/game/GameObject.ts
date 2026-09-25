@@ -21,7 +21,7 @@ export class GameObject {
     protected id: string;
     public printedType = '';
     public facedown = false;
-    protected effects = [] as CardEffect[];
+    protected effects: CardEffect[] = [];
     protected effectsByType = new Map<EffectName, CardEffect[]>();
     private suppressEffectCount = 0;
 
@@ -190,7 +190,7 @@ export class GameObject {
 
     public mostRecentEffect<N extends EffectName>(type: N): EffectValueMap[N] {
         const effects = this.getEffects(type);
-        return effects[effects.length - 1] as EffectValueMap[N];
+        return effects[effects.length - 1];
     }
 
     public getRawEffects() {

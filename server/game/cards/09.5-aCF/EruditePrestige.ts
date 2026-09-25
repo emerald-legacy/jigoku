@@ -16,7 +16,7 @@ class EruditePrestige extends DrawCard {
                 onCardPlayed: (event, context) => context.source.parentCharacter && event.player === context.player && context.source.parentCharacter.isParticipating()
             },
             gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: context.source.parentCharacter,
+                target: context.source.parentCharacter ?? [],
                 effect: AbilityDsl.effects.modifyPoliticalSkill(1)
             })),
             effect: 'give +1{1} to {2}',

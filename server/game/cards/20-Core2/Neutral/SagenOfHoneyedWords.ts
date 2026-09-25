@@ -1,5 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 
 function skillBonus(companion: DrawCard): number {
@@ -18,7 +19,7 @@ export default class SagenOfHoneyedWords extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
             },
-            gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
+            gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext<DrawCard, DrawCard>) => ({
                 target: context.source,
                 effect: AbilityDsl.effects.modifyBothSkills(context.target ? skillBonus(context.target) : 0)
             })),

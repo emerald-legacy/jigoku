@@ -4,7 +4,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
 import { GameAction, GameActionProperties } from './GameAction.js';
 import { RemoveFateAction } from './RemoveFateAction.js';
-import { CardType, Location } from '../Constants.js';
+import { CardType, Location, type EventName } from '../Constants.js';
 import { DiscardFromPlayAction } from './DiscardFromPlayAction.js';
 import DrawCard from '../DrawCard.js';
 import BaseCard from '../BaseCard.js';
@@ -13,31 +13,31 @@ export interface InjureActionProperties extends GameActionProperties {
     target?: BaseCard | BaseCard[];
 }
 
-export class InjureAction extends GameAction<InjureActionProperties> {
+export class InjureAction<C extends AbilityContext = AbilityContext> extends GameAction<InjureActionProperties, EventName, C> {
     name = 'injure';
     targetType = [CardType.Character];
     removeFateGameAction: GameAction;
     discardGameAction: GameAction;
 
-    constructor(propertyFactory: InjureActionProperties | ((context: AbilityContext) => InjureActionProperties)) {
+    constructor(propertyFactory: InjureActionProperties | ((context: C) => InjureActionProperties)) {
         super(propertyFactory);
         this.removeFateGameAction = new RemoveFateAction({ amount: 1 });
         this.discardGameAction = new DiscardFromPlayAction({});
     }
 
-    getProperties(context: AbilityContext, additionalProperties = {}): InjureActionProperties {
+    getProperties(context: C, additionalProperties = {}): InjureActionProperties {
         let properties = super.getProperties(context, additionalProperties);
         this.removeFateGameAction.setDefaultTarget(() => properties.target);
         this.discardGameAction.setDefaultTarget(() => properties.target);
         return properties;
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         let properties = this.getProperties(context);
         return ['injure {0}', [properties.target]];
     }
 
-    canAffect(target: GameObject, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
         if(!(target instanceof DrawCard)) {
             return false;
         }
@@ -52,7 +52,7 @@ export class InjureAction extends GameAction<InjureActionProperties> {
         return this.removeFateGameAction.canAffect(target, context, additionalProperties);
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
         for(let target of properties.target as DrawCard[]) {
             if(target.getFate() === 0) {

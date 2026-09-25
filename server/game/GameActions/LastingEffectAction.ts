@@ -3,11 +3,13 @@ import type BaseAbility from '../BaseAbility.js';
 import { Duration, EventName, Players } from '../Constants.js';
 import type { WhenType } from '../Interfaces.js';
 import type Player from '../Player.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
+import { GameAction, type ActionEvent, type GameActionProperties } from './GameAction.js';
 
 import type { Event } from '../Events/Event.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
-export interface LastingEffectGeneralProperties extends GameActionProperties {
+
+/** The lasting-effect fields, shared by the player, card and ring variants. */
+export interface LastingEffectFields {
     duration?: Duration;
     condition?: (context: AbilityContext) => boolean;
     until?: WhenType;
@@ -16,52 +18,49 @@ export interface LastingEffectGeneralProperties extends GameActionProperties {
     ability?: BaseAbility;
 }
 
+export interface LastingEffectGeneralProperties extends GameActionProperties, LastingEffectFields {}
+
+/** A single effect factory becomes a one-element list; a missing one becomes an empty list. */
+export function toEffectList(effect: EffectFactory | EffectFactory[] | undefined): EffectFactory[] {
+    if(effect === undefined) {
+        return [];
+    }
+    return Array.isArray(effect) ? effect : [effect];
+}
+
 export interface LastingEffectProperties extends LastingEffectGeneralProperties {
     targetController?: Players | Player;
 }
 
-// getProperties promotes a bare factory to an array, so what it returns is always an array
-type ResolvedLastingEffectProperties = LastingEffectProperties & { effect: EffectFactory[] };
-
-export class LastingEffectAction<P extends LastingEffectProperties = LastingEffectProperties> extends GameAction<P> {
+export class LastingEffectAction<C extends AbilityContext = AbilityContext> extends GameAction<LastingEffectProperties, EventName, C> {
     name = 'applyLastingEffect';
     eventName = EventName.OnEffectApplied;
     effect = 'apply a lasting effect';
-    // @ts-expect-error -- intentionally narrowing defaultProperties type from base class generic P to LastingEffectProperties
-    defaultProperties: LastingEffectProperties = {
-        duration: Duration.UntilEndOfConflict,
-        effect: [],
-        ability: undefined
-    } as LastingEffectProperties;
+    defaultProperties: Partial<LastingEffectProperties> = {
+        duration: Duration.UntilEndOfConflict
+    };
 
-    // @ts-expect-error -- overriding return type to be more specific than base class signature
-    getProperties(
-        context: AbilityContext,
-        additionalProperties = {}
-    ): ResolvedLastingEffectProperties {
-        let properties = super.getProperties(context, additionalProperties) as ResolvedLastingEffectProperties;
-        if(!Array.isArray(properties.effect)) {
-            properties.effect = [properties.effect];
-        }
-        return properties;
+    getProperties(context: C, additionalProperties = {}): LastingEffectProperties & { effect: EffectFactory[] } {
+        const properties = super.getProperties(context, additionalProperties);
+        return Object.assign(properties, { effect: toEffectList(properties.effect) });
     }
 
-    hasLegalTarget(context: AbilityContext, additionalProperties = {}): boolean {
+    hasLegalTarget(context: C, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
         return properties.effect.length > 0;
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties: Record<string, unknown>): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown>): void {
         if(this.hasLegalTarget(context, additionalProperties)) {
             events.push(this.getEvent(null, context, additionalProperties));
         }
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown>): void {
-        let properties = this.getProperties((event.context as AbilityContext), additionalProperties);
+    eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown>): void {
+        let properties = this.getProperties(event.context, additionalProperties);
         if(!properties.ability) {
-            properties.ability = (event.context as AbilityContext).ability;
+            properties.ability = event.context.ability;
         }
-        (event.context as AbilityContext).source.applyDurationEffect(properties.duration ?? Duration.UntilEndOfConflict, () => properties);
+        event.context.source.applyDurationEffect(properties.duration ?? Duration.UntilEndOfConflict, () => properties);
     }
 }

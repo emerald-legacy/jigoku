@@ -23,12 +23,12 @@ export default class HirumasEyes extends DrawCard {
                     player: Players.Self,
                     choices: {
                         'Give +2': AbilityDsl.actions.cardLastingEffect((context) => ({
-                            target: this.getTargets(context.targets.provinceCard, context),
+                            target: this.getTargets(context.targets.provinceCard as DrawCard, context),
                             effect: AbilityDsl.effects.modifyMilitarySkill(2),
                             duration: Duration.UntilEndOfConflict
                         })),
                         'Give -2': AbilityDsl.actions.cardLastingEffect((context) => ({
-                            target: this.getTargets(context.targets.provinceCard, context),
+                            target: this.getTargets(context.targets.provinceCard as DrawCard, context),
                             effect: AbilityDsl.effects.modifyMilitarySkill(-2),
                             duration: Duration.UntilEndOfConflict
                         }))

@@ -1,15 +1,15 @@
 import type { MessageArgs } from '../GameChat.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export interface DrawProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class DrawAction extends PlayerAction<DrawProperties> {
+export class DrawAction<C extends AbilityContext = AbilityContext> extends PlayerAction<DrawProperties, EventName, C> {
     name = 'draw';
     eventName = EventName.OnCardsDrawn;
 
@@ -17,27 +17,27 @@ export class DrawAction extends PlayerAction<DrawProperties> {
         amount: 1
     };
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
+    getEffectMessage(context: C): MessageArgs {
         let properties = this.getProperties(context);
         return ['draw ' + properties.amount + ((properties.amount ?? 0) > 1 ? ' cards' : ' card'), []];
     }
 
-    canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
+    canAffect(player: Player, context: C, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
         return properties.amount !== 0 && super.canAffect(player, context);
     }
 
-    defaultTargets(context: AbilityContext): Player[] {
+    defaultTargets(context: C): Player[] {
         return [context.player];
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnCardsDrawn>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDrawn, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount as number;
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardsDrawn>): void {
+    eventHandler(event: ActionEvent<EventName.OnCardsDrawn, C>): void {
         event.player.drawCardsToHand(event.amount);
     }
 }

@@ -18,7 +18,7 @@ export default class UnderTheNewMoon extends DrawCard {
             cost: AbilityDsl.costs.payHonor(1),
             effect: 'force {1} to declare defenders before attackers are chosen this conflict',
             effectArgs: (context) => [context.player.opponent as Player],
-            gameAction: AbilityDsl.actions.menuPrompt((context) => ({
+            gameAction: AbilityDsl.actions.menuPrompt((context: TriggeredAbilityContext<this>) => ({
                 activePromptTitle: 'Choose how many characters will be attacking',
                 choices: this.#getChoices(context),
                 gameAction: AbilityDsl.actions.playerLastingEffect({

@@ -106,7 +106,7 @@ class AccursedSummoning extends DrawCard {
             title: 'Summon a Shadowlands Creature',
             cost: [accursedSummoningCost()],
             gameAction: AbilityDsl.actions.putIntoConflict(context => ({
-                target: context.costs.accursedSummoningCostCreature || context.player.outsideTheGameCards[1]
+                target: (context.costs.accursedSummoningCostCreature as DrawCard | undefined) || context.player.outsideTheGameCards[1]
             })),
             effect: 'summon a{2} {1} from the depths of the Shadowlands!',
             effectArgs: context => {

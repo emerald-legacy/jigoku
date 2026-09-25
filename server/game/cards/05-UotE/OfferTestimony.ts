@@ -43,7 +43,7 @@ class OfferTestimony extends DrawCard {
                 AbilityDsl.actions.bow(context => {
                     let events = context.events.filter((event: Event) => event.name === EventName.OnCardRevealed);
                     let revealedCards = events.map((event: Event) => (event as Event & { card: DrawCard }).card);
-                    let lowestCost = Math.min(...revealedCards.map((card: DrawCard) => card.getCost()).filter((number: number | null) => Number.isInteger(number)));
+                    let lowestCost = Math.min(...revealedCards.map((card: DrawCard) => card.getCost()).filter((number: number | null): number is number => Number.isInteger(number)));
                     let lowestCostPlayers = revealedCards.filter((card: DrawCard) => card.getCost() === lowestCost).map((card: DrawCard) => card.controller);
                     // @ts-expect-error context.targets values are dynamically typed (BaseCard | BaseCard[]); game engine handles the array case
                     return { target: Object.values(context.targets).filter((card: BaseCard) => lowestCostPlayers.includes(card.controller)) };

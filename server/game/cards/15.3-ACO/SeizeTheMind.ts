@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import type { AbilityContext } from '../../AbilityContext.js';
 
 class SeizeTheMind extends DrawCard {
     static id = 'seize-the-mind';
@@ -14,7 +15,7 @@ class SeizeTheMind extends DrawCard {
                 controller: Players.Opponent,
                 cardCondition: card => !card.isUnique(),
                 gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.loseHonor<DrawCard>(context => ({
+                    AbilityDsl.actions.loseHonor((context: AbilityContext<DrawCard, DrawCard>) => ({
                         target: context.player,
                         amount: context.target?.fate ?? 0
                     })),

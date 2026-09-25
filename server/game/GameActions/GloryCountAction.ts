@@ -1,15 +1,14 @@
 import { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import Player from '../Player.js';
-import { GameAction, GameActionProperties } from './GameAction.js';
+import { GameAction, GameActionProperties, type ActionEvent } from './GameAction.js';
 
 import type { Event } from '../Events/Event.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 export interface GloryCountProperties extends GameActionProperties {
     gameAction: ((gloryCountWinner: Player | null, context: AbilityContext) => GameAction) | GameAction;
 }
 
-export class GloryCountAction extends GameAction<GloryCountProperties> {
+export class GloryCountAction<C extends AbilityContext = AbilityContext> extends GameAction<GloryCountProperties, EventName, C> {
     name = 'gloryCount';
     eventName = EventName.OnGloryCount;
 
@@ -17,13 +16,13 @@ export class GloryCountAction extends GameAction<GloryCountProperties> {
         return true;
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown> = {}): void {
         events.push(this.getEvent(null, context, additionalProperties));
     }
 
-    eventHandler(event: GameEvent<EventName.OnGloryCount>, additionalProperties: Record<string, unknown> = {}): void {
-        let game = (event.context as AbilityContext).game;
-        let properties = this.getProperties((event.context as AbilityContext), additionalProperties);
+    eventHandler(event: ActionEvent<EventName.OnGloryCount, C>, additionalProperties: Record<string, unknown> = {}): void {
+        let game = (event.context).game;
+        let properties = this.getProperties((event.context), additionalProperties);
 
         let gloryTotals = game.getPlayersInFirstPlayerOrder().map((player: Player) => {
             return player.getGloryCount();
@@ -44,10 +43,10 @@ export class GloryCountAction extends GameAction<GloryCountProperties> {
 
         let gameAction =
             typeof properties.gameAction === 'function'
-                ? properties.gameAction(winner, (event.context as AbilityContext))
+                ? properties.gameAction(winner, (event.context))
                 : properties.gameAction;
-        if(gameAction && gameAction.hasLegalTarget((event.context as AbilityContext)) && winner) {
-            gameAction.resolve(undefined, (event.context as AbilityContext));
+        if(gameAction && gameAction.hasLegalTarget((event.context)) && winner) {
+            gameAction.resolve(undefined, (event.context));
         }
     }
 }

@@ -1,4 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
+import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import { CardType, Duration, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
@@ -30,7 +31,7 @@ export default class TheRushingWave extends DrawCard {
                 cardType: CardType.Province,
                 gameAction: AbilityDsl.actions.onAffinity<ProvinceCard>({
                     trait: 'water',
-                    gameAction: AbilityDsl.actions.cardLastingEffect(({ target }: { target: ProvinceCard }) => ({
+                    gameAction: AbilityDsl.actions.cardLastingEffect(({ target }: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
                         target: target.controller.getProvinces(
                             (province: ProvinceCard) =>
                                 target.location === province.location ||
