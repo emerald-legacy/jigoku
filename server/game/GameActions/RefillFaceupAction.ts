@@ -9,7 +9,7 @@ export interface RefillFaceupProperties extends PlayerActionProperties {
     location: Location | Location[];
 }
 
-export class RefillFaceupAction extends PlayerAction {
+export class RefillFaceupAction extends PlayerAction<RefillFaceupProperties> {
     declare defaultProperties: RefillFaceupProperties;
 
     name = 'refill';
@@ -24,7 +24,7 @@ export class RefillFaceupAction extends PlayerAction {
 
     eventHandler(event: GameEvent<EventName.Unnamed>, additionalProperties: Record<string, unknown> = {}): void {
         const context = event.context;
-        let { location } = this.getProperties(context, additionalProperties) as RefillFaceupProperties;
+        let { location } = this.getProperties(context, additionalProperties);
         if(!Array.isArray(location)) {
             location = [location];
         }

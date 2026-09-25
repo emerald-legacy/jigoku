@@ -6,7 +6,7 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export type BreakProperties = CardActionProperties;
 
-export class BreakAction extends CardGameAction {
+export class BreakAction extends CardGameAction<BreakProperties> {
     name = 'break';
     eventName = EventName.OnBreakProvince;
     targetType = [CardType.Province];

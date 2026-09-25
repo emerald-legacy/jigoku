@@ -6,7 +6,7 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 export type MoveConflictProperties = CardActionProperties;
 
-export class MoveConflictAction extends CardGameAction {
+export class MoveConflictAction extends CardGameAction<MoveConflictProperties> {
     name = 'moveConflict';
     eventName = EventName.OnConflictMoved;
     targetType = [CardType.Province];

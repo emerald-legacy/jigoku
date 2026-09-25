@@ -35,7 +35,7 @@ export interface DuelProperties extends CardActionProperties {
 
 type ResolvedDuelProperties = DuelProperties & { challenger: DrawCard };
 
-export class DuelAction extends CardGameAction {
+export class DuelAction extends CardGameAction<DuelProperties> {
     name = 'duel';
     eventName = EventName.OnDuelInitiated;
     targetType = [CardType.Character];
@@ -43,7 +43,7 @@ export class DuelAction extends CardGameAction {
     defaultProperties: DuelProperties = { cannotBeCancelled: false, optional: false } as DuelProperties;
 
     getProperties(context: AbilityContext, additionalProperties = {}): ResolvedDuelProperties {
-        const properties = super.getProperties(context, additionalProperties) as DuelProperties;
+        const properties = super.getProperties(context, additionalProperties);
         return Object.assign(properties, { challenger: properties.challenger ?? context.source });
     }
 

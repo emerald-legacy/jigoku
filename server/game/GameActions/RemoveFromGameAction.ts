@@ -8,7 +8,7 @@ export interface RemoveFromGameProperties extends CardActionProperties {
     location?: Location | Location[];
 }
 
-export class RemoveFromGameAction extends CardGameAction {
+export class RemoveFromGameAction extends CardGameAction<RemoveFromGameProperties> {
     name = 'removeFromGame';
     eventName = EventName.OnCardLeavesPlay;
     cost = 'removing {0} from the game';
@@ -16,7 +16,7 @@ export class RemoveFromGameAction extends CardGameAction {
     effect = 'remove {0} from the game';
 
     canAffect(card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
-        const properties = this.getProperties(context, additionalProperties) as RemoveFromGameProperties;
+        const properties = this.getProperties(context, additionalProperties);
         const propValidLocations = Array.isArray(properties.location)
             ? properties.location
             : properties.location

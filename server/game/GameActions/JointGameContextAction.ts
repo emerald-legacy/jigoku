@@ -7,14 +7,14 @@ export interface JointGameContextProperties extends GameActionProperties {
     gameActions?: GameAction[];
 }
 
-export class JointGameContextAction extends GameAction {
+export class JointGameContextAction extends GameAction<JointGameContextProperties> {
     effect = 'do several things';
     defaultProperties: JointGameContextProperties = {
         gameActions: []
     };
 
     getProperties(context: AbilityContext, additionalProperties = {}): JointGameContextProperties {
-        let properties = super.getProperties(context, additionalProperties) as JointGameContextProperties;
+        let properties = super.getProperties(context, additionalProperties);
         const actions = properties.gameActions ?? [];
         for(const gameAction of actions) {
             gameAction.setDefaultTarget(() => properties.target);

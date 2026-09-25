@@ -100,7 +100,7 @@ type ResolvedResolveAbilityProperties = ResolveAbilityProperties & {
     ignoredRequirements: NonNullable<ResolveAbilityProperties['ignoredRequirements']>;
 };
 
-export class ResolveAbilityAction extends CardGameAction {
+export class ResolveAbilityAction extends CardGameAction<ResolveAbilityProperties> {
     name = 'resolveAbility';
     defaultProperties: ResolveAbilityProperties = {
         ability: null as unknown as CardAbility,
@@ -109,13 +109,13 @@ export class ResolveAbilityAction extends CardGameAction {
         choosingPlayerOverride: undefined
     };
     constructor(
-        properties: ((context: TriggeredAbilityContext) => ResolveAbilityProperties) | ResolveAbilityProperties
+        properties: ((context: AbilityContext) => ResolveAbilityProperties) | ResolveAbilityProperties
     ) {
-        super(properties as CardActionProperties | ((context: AbilityContext) => CardActionProperties));
+        super(properties);
     }
 
     getEffectMessage(context: TriggeredAbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as ResolveAbilityProperties;
+        let properties = this.getProperties(context);
         return ['resolve {0}\'s {1} ability', [properties.target, properties.ability.title]];
     }
 
@@ -163,7 +163,7 @@ export class ResolveAbilityAction extends CardGameAction {
     }
 
     hasTargetsChosenByInitiatingPlayer(context: TriggeredAbilityContext): boolean {
-        let properties = this.getProperties(context) as ResolveAbilityProperties;
+        let properties = this.getProperties(context);
         return properties.ability.hasTargetsChosenByInitiatingPlayer(context);
     }
 }

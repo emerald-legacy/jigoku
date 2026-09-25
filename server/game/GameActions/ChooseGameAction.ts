@@ -12,7 +12,7 @@ export interface ChooseActionProperties extends GameActionProperties {
     options: { [label: string]: { action: GameAction; message?: string } };
 }
 
-export class ChooseGameAction extends GameAction {
+export class ChooseGameAction extends GameAction<ChooseActionProperties> {
     effect = 'choose between different actions';
     defaultProperties: ChooseActionProperties = {
         activePromptTitle: 'Select an action:',
@@ -24,7 +24,7 @@ export class ChooseGameAction extends GameAction {
     }
 
     getProperties(context: AbilityContext, additionalProperties = {}): ChooseActionProperties {
-        const properties = super.getProperties(context, additionalProperties) as ChooseActionProperties;
+        const properties = super.getProperties(context, additionalProperties);
         for(const opt of Object.values(properties.options)) {
             opt.action.setDefaultTarget(() => properties.target);
         }

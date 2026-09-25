@@ -10,7 +10,7 @@ export interface RandomDiscardProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class RandomDiscardAction extends PlayerAction {
+export class RandomDiscardAction extends PlayerAction<RandomDiscardProperties> {
     defaultProperties: RandomDiscardProperties = { amount: 1 };
 
     name = 'discard';
@@ -33,7 +33,7 @@ export class RandomDiscardAction extends PlayerAction {
     }
 
     addPropertiesToEvent(event: GameEvent<EventName.OnCardsDiscardedFromHand>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount } = this.getProperties(context, additionalProperties) as RandomDiscardProperties;
+        let { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.discardedAtRandom = true;

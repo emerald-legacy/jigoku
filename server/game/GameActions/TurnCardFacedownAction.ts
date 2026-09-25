@@ -6,7 +6,7 @@ import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 
 export type TurnCardFacedownProperties = CardActionProperties;
 
-export class TurnCardFacedownAction extends CardGameAction {
+export class TurnCardFacedownAction extends CardGameAction<TurnCardFacedownProperties> {
     name = 'turnFacedown';
     eventName = EventName.OnCardTurnedFacedown;
     cost = 'turning {0} facedown';

@@ -6,7 +6,7 @@ import { RingAction, type RingActionProperties } from './RingAction.js';
 
 export type ReturnRingProperties = RingActionProperties;
 
-export class ReturnRingAction extends RingAction {
+export class ReturnRingAction extends RingAction<ReturnRingProperties> {
     name = 'returnRing';
     eventName = EventName.OnReturnRing;
     effect = 'return {0} to the unclaimed pool';

@@ -7,7 +7,7 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export type SendHomeProperties = CardActionProperties;
 
-export class SendHomeAction extends CardGameAction {
+export class SendHomeAction extends CardGameAction<SendHomeProperties> {
     name = 'sendHome';
     eventName = EventName.OnSendHome;
     cost = 'moving home {0}';

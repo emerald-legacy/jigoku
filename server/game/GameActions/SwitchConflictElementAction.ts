@@ -7,7 +7,7 @@ import { RingAction, type RingActionProperties } from './RingAction.js';
 
 export type SwitchConflictElementProperties = RingActionProperties;
 
-export class SwitchConflictElementAction extends RingAction {
+export class SwitchConflictElementAction extends RingAction<SwitchConflictElementProperties> {
     name = 'switchConflictElement';
     cost = 'switching the contested ring to {0}';
     effect = 'switch the contested ring to {0}';

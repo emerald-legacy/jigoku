@@ -11,7 +11,7 @@ export interface CancelActionProperties extends GameActionProperties {
     effect?: string;
 }
 
-export class CancelAction extends GameAction {
+export class CancelAction extends GameAction<CancelActionProperties> {
     getEffectMessage(context: TriggeredAbilityContext): MessageArgs {
         let { replacementGameAction, effect } = this.getProperties(context);
         if(effect) {
@@ -24,7 +24,7 @@ export class CancelAction extends GameAction {
     }
 
     getProperties(context: TriggeredAbilityContext, additionalProperties = {}): CancelActionProperties {
-        let properties = super.getProperties(context, additionalProperties) as CancelActionProperties;
+        let properties = super.getProperties(context, additionalProperties);
         if(properties.replacementGameAction) {
             properties.replacementGameAction.setDefaultTarget(() => properties.target);
         }

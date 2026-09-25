@@ -9,11 +9,11 @@ export interface IfAbleActionProperties extends GameActionProperties {
     otherwiseAction: GameAction;
 }
 
-export class IfAbleAction extends GameAction {
+export class IfAbleAction extends GameAction<IfAbleActionProperties> {
     declare defaultProperties: IfAbleActionProperties;
 
     getProperties(context: AbilityContext, additionalProperties = {}): IfAbleActionProperties {
-        let properties = super.getProperties(context, additionalProperties) as IfAbleActionProperties;
+        let properties = super.getProperties(context, additionalProperties);
         properties.ifAbleAction.setDefaultTarget(() => properties.target);
         properties.otherwiseAction.setDefaultTarget(() => properties.target);
         return properties;

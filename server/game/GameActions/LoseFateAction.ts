@@ -9,7 +9,7 @@ export interface LoseFateProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class LoseFateAction extends PlayerAction {
+export class LoseFateAction extends PlayerAction<LoseFateProperties> {
     name = 'spendFate';
     eventName = EventName.OnModifyFate;
     defaultProperties: LoseFateProperties = { amount: 1 };
@@ -34,7 +34,7 @@ export class LoseFateAction extends PlayerAction {
     }
 
     addPropertiesToEvent(event: GameEvent<EventName.OnModifyFate>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount } = this.getProperties(context, additionalProperties) as LoseFateProperties;
+        let { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = -(amount ?? 0);
     }

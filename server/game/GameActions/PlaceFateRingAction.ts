@@ -12,7 +12,7 @@ export interface PlaceFateRingProperties extends RingActionProperties {
     origin?: DrawCard | Player | Ring;
 }
 
-export class PlaceFateRingAction extends RingAction {
+export class PlaceFateRingAction extends RingAction<PlaceFateRingProperties> {
     name = 'placeFate';
     eventName = EventName.OnMoveFate;
     defaultProperties: PlaceFateRingProperties = { amount: 1 };
@@ -45,7 +45,7 @@ export class PlaceFateRingAction extends RingAction {
     }
 
     addPropertiesToEvent(event: GameEvent<EventName.OnMoveFate>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateRingProperties;
+        let { amount, origin } = this.getProperties(context, additionalProperties);
         event.fate = amount ?? 0;
         event.origin = origin;
         event.context = context;
@@ -57,7 +57,7 @@ export class PlaceFateRingAction extends RingAction {
     }
 
     isEventFullyResolved(event: GameEvent<EventName.OnMoveFate>, ring: Ring, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
-        let { amount, origin } = this.getProperties(context, additionalProperties) as PlaceFateRingProperties;
+        let { amount, origin } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&
             event.name === this.eventName &&

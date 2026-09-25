@@ -8,20 +8,20 @@ export interface SequentialProperties extends GameActionProperties {
     gameActions: GameAction[];
 }
 
-export class SequentialAction extends GameAction {
+export class SequentialAction extends GameAction<SequentialProperties> {
     declare defaultProperties: SequentialProperties;
 
     constructor(gameActions: GameAction[]) {
-        super({ gameActions: gameActions } as GameActionProperties);
+        super({ gameActions: gameActions });
     }
 
     getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = super.getProperties(context) as SequentialProperties;
+        let properties = super.getProperties(context);
         return properties.gameActions[0].getEffectMessage(context);
     }
 
     getProperties(context: AbilityContext, additionalProperties = {}): SequentialProperties {
-        let properties = super.getProperties(context, additionalProperties) as SequentialProperties;
+        let properties = super.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             gameAction.setDefaultTarget(() => properties.target);
         }

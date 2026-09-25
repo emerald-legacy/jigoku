@@ -6,7 +6,7 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 export type ReturnToHandProperties = CardActionProperties;
 
-export class ReturnToHandAction extends CardGameAction {
+export class ReturnToHandAction extends CardGameAction<ReturnToHandProperties> {
     name = 'returnToHand';
     eventName = EventName.OnCardLeavesPlay;
     effect = 'return {0} to their hand';

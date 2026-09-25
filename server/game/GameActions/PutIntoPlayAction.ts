@@ -14,7 +14,7 @@ export interface PutIntoPlayProperties extends CardActionProperties {
     overrideLocation?: Location;
 }
 
-export class PutIntoPlayAction extends CardGameAction {
+export class PutIntoPlayAction extends CardGameAction<PutIntoPlayProperties> {
     name = 'putIntoPlay';
     eventName = EventName.OnCharacterEntersPlay;
     cost = 'putting {0} into play';
@@ -49,7 +49,7 @@ export class PutIntoPlayAction extends CardGameAction {
     }
 
     canAffect(card: DrawCard, context: AbilityContext): boolean {
-        let properties = this.getProperties(context) as PutIntoPlayProperties;
+        let properties = this.getProperties(context);
         let contextCopy = context.copy({ source: card });
         let player = this.getPutIntoPlayPlayer(contextCopy);
         let targetSide = properties.side || this.getDefaultSide(contextCopy);
@@ -92,7 +92,7 @@ export class PutIntoPlayAction extends CardGameAction {
         let { fate, status, controller, side, overrideLocation } = this.getProperties(
             context,
             additionalProperties
-        ) as PutIntoPlayProperties;
+        );
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.fate = fate;
         event.status = status;

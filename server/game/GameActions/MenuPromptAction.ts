@@ -13,7 +13,7 @@ export interface MenuPromptProperties extends GameActionProperties {
     choiceHandler: (choice: string, displayMessage: boolean, properties: MenuPromptProperties) => object;
 }
 
-export class MenuPromptAction extends GameAction {
+export class MenuPromptAction extends GameAction<MenuPromptProperties> {
     constructor(properties: MenuPromptProperties | ((context: AbilityContext) => MenuPromptProperties)) {
         super(properties);
     }
@@ -24,7 +24,7 @@ export class MenuPromptAction extends GameAction {
     }
 
     getProperties(context: AbilityContext, additionalProperties = {}): MenuPromptProperties {
-        let properties = super.getProperties(context, additionalProperties) as MenuPromptProperties;
+        let properties = super.getProperties(context, additionalProperties);
         if(typeof properties.choices === 'function') {
             properties.choices = properties.choices(properties);
         }

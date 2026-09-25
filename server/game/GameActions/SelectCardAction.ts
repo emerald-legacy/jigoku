@@ -39,7 +39,7 @@ type ResolvedSelectCardProperties = SelectCardProperties & {
     selector: BaseCardSelector;
 };
 
-export class SelectCardAction extends CardGameAction {
+export class SelectCardAction extends CardGameAction<SelectCardProperties> {
     defaultProperties: SelectCardProperties = {
         cardCondition: () => true,
         gameAction: null as unknown as GameAction,
@@ -62,7 +62,7 @@ export class SelectCardAction extends CardGameAction {
     }
 
     getProperties(context: AbilityContext, additionalProperties = {}): ResolvedSelectCardProperties {
-        let properties = super.getProperties(context, additionalProperties) as SelectCardProperties;
+        let properties = super.getProperties(context, additionalProperties);
         properties.gameAction.setDefaultTarget(() => properties.target);
         const cardCondition = properties.cardCondition ?? (() => true);
         const subActionProperties = properties.subActionProperties ?? ((card: BaseCard | BaseCard[]) => ({ target: card }));

@@ -11,7 +11,7 @@ export interface TransferHonorProperties extends PlayerActionProperties {
     afterBid?: boolean;
 }
 
-export class TransferHonorAction extends PlayerAction {
+export class TransferHonorAction extends PlayerAction<TransferHonorProperties> {
     name = 'takeHonor';
     eventName = EventName.OnTransferHonor;
     defaultProperties: TransferHonorProperties = { amount: 1, afterBid: false };
@@ -40,7 +40,7 @@ export class TransferHonorAction extends PlayerAction {
     }
 
     getCostMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as TransferHonorProperties;
+        let properties = this.getProperties(context);
         const opponent = context.player.opponent;
         if(!opponent) {
             return ['giving {1} honor to {2}', [0, null]];
@@ -55,7 +55,7 @@ export class TransferHonorAction extends PlayerAction {
     }
 
     getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as TransferHonorProperties;
+        let properties = this.getProperties(context);
         const opponent = context.player.opponent;
         if(!opponent) {
             return ['take {1} honor from {0}', [null, 0]];
@@ -70,7 +70,7 @@ export class TransferHonorAction extends PlayerAction {
     }
 
     canAffect(player: Player, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties) as TransferHonorProperties;
+        let properties = this.getProperties(context, additionalProperties);
 
         const amount = properties.amount ?? 0;
         const gainsHonor = amount > 0;
@@ -97,7 +97,7 @@ export class TransferHonorAction extends PlayerAction {
     }
 
     addPropertiesToEvent(event: GameEvent<EventName.OnTransferHonor>, player: Player, context: AbilityContext, additionalProperties: Record<string, unknown>): void {
-        let { afterBid, amount } = this.getProperties(context, additionalProperties) as TransferHonorProperties;
+        let { afterBid, amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.amount = amount;
         event.afterBid = afterBid;

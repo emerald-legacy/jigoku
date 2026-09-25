@@ -6,7 +6,7 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export type TaintProperties = CardActionProperties;
 
-export class TaintAction extends CardGameAction {
+export class TaintAction extends CardGameAction<TaintProperties> {
     name = 'taint';
     eventName = EventName.OnCardTainted;
     targetType = [CardType.Character, CardType.Province];

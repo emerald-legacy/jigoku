@@ -11,7 +11,7 @@ export interface PlaceCardUnderneathProperties extends CardActionProperties {
     hideWhenFaceup?: boolean;
 }
 
-export class PlaceCardUnderneathAction extends CardGameAction {
+export class PlaceCardUnderneathAction extends CardGameAction<PlaceCardUnderneathProperties> {
     name = 'placeCardUnderneath';
     targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
     defaultProperties: PlaceCardUnderneathProperties = {
@@ -25,17 +25,17 @@ export class PlaceCardUnderneathAction extends CardGameAction {
     }
 
     getCostMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as PlaceCardUnderneathProperties;
+        let properties = this.getProperties(context);
         return ['placing {0} underneath {1}', [properties.target, properties.destination]];
     }
 
     getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as PlaceCardUnderneathProperties;
+        let properties = this.getProperties(context);
         return ['place {0} underneath {1}', [properties.target, properties.destination]];
     }
 
     canAffect(card: BaseCard, context: AbilityContext, additionalProperties = {}): boolean {
-        const { destination } = this.getProperties(context, additionalProperties) as PlaceCardUnderneathProperties;
+        const { destination } = this.getProperties(context, additionalProperties);
         return !!(destination && destination.uuid) && super.canAffect(card, context);
     }
 
@@ -43,7 +43,7 @@ export class PlaceCardUnderneathAction extends CardGameAction {
         let context = event.context;
         let card = event.card as BaseCard;
         event.cardStateWhenMoved = card.createSnapshot();
-        let properties = this.getProperties(context, additionalProperties) as PlaceCardUnderneathProperties;
+        let properties = this.getProperties(context, additionalProperties);
         if(!properties.destination) {
             return;
         }

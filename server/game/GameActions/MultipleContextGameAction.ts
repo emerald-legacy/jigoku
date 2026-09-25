@@ -8,7 +8,7 @@ export interface MultipleContextActionProperties extends GameActionProperties {
     gameActions: GameAction[];
 }
 
-export class MultipleContextGameAction extends GameAction {
+export class MultipleContextGameAction extends GameAction<MultipleContextActionProperties> {
     declare defaultProperties: MultipleContextActionProperties;
 
     getEffectMessage(context: AbilityContext): MessageArgs {
@@ -23,7 +23,7 @@ export class MultipleContextGameAction extends GameAction {
     }
 
     getProperties(context: AbilityContext, additionalProperties = {}): MultipleContextActionProperties {
-        let properties = super.getProperties(context, additionalProperties) as MultipleContextActionProperties;
+        let properties = super.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             gameAction.setDefaultTarget(() => properties.target);
         }

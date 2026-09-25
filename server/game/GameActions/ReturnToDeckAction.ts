@@ -11,7 +11,7 @@ export interface ReturnToDeckProperties extends CardActionProperties {
     location?: Location | Location[];
 }
 
-export class ReturnToDeckAction extends CardGameAction {
+export class ReturnToDeckAction extends CardGameAction<ReturnToDeckProperties> {
     name = 'returnToDeck';
     eventName = EventName.OnCardLeavesPlay;
     targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
@@ -25,7 +25,7 @@ export class ReturnToDeckAction extends CardGameAction {
     }
 
     getCostMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as ReturnToDeckProperties;
+        let properties = this.getProperties(context);
         return [
             properties.shuffle
                 ? 'shuffling {0} into their deck'
@@ -35,7 +35,7 @@ export class ReturnToDeckAction extends CardGameAction {
     }
 
     getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as ReturnToDeckProperties;
+        let properties = this.getProperties(context);
         if(properties.shuffle) {
             return ['shuffle {0} into its owner\'s deck', [properties.target]];
         }
@@ -46,7 +46,7 @@ export class ReturnToDeckAction extends CardGameAction {
     }
 
     canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
-        const properties = this.getProperties(context) as ReturnToDeckProperties;
+        const properties = this.getProperties(context);
         const rawLocation = properties.location ?? Location.PlayArea;
         let location: Location[] = Array.isArray(rawLocation) ? [...rawLocation] : [rawLocation];
         const index = location.indexOf(Location.Provinces);
@@ -62,7 +62,7 @@ export class ReturnToDeckAction extends CardGameAction {
     }
 
     updateEvent(event: GameEvent<EventName.OnCardLeavesPlay>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        const { shuffle, target, bottom } = this.getProperties(context, additionalProperties) as ReturnToDeckProperties;
+        const { shuffle, target, bottom } = this.getProperties(context, additionalProperties);
         this.updateLeavesPlayEvent(event, card, context, additionalProperties);
         event.destination = card.isDynasty ? Location.DynastyDeck : Location.ConflictDeck;
         event.options = { bottom };

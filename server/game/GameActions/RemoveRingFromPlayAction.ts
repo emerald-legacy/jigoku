@@ -6,7 +6,7 @@ import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
 export type RemoveRingFromPlayProperties = RingActionProperties;
 
-export class RemoveRingFromPlayAction extends RingAction {
+export class RemoveRingFromPlayAction extends RingAction<RemoveRingFromPlayProperties> {
     name = 'removeRingFromPlay';
     eventName = EventName.OnRemoveRingFromPlay;
     effect = 'remove the {0} from play';

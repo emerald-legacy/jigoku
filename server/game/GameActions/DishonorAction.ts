@@ -6,7 +6,7 @@ import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 
 export type DishonorProperties = CardActionProperties;
 
-export class DishonorAction extends CardGameAction {
+export class DishonorAction extends CardGameAction<DishonorProperties> {
     name = 'dishonor';
     eventName = EventName.OnCardDishonored;
     targetType = [CardType.Character];

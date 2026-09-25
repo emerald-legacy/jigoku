@@ -113,7 +113,7 @@ export interface PlayCardProperties extends CardActionProperties {
     payFateToOpponent?: boolean;
 }
 
-export class PlayCardAction extends CardGameAction {
+export class PlayCardAction extends CardGameAction<PlayCardProperties> {
     name = 'playCard';
     effect = 'play {0} as if it were in their hand';
     defaultProperties: PlayCardProperties = {

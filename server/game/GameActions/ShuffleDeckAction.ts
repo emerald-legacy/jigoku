@@ -9,7 +9,7 @@ export interface ShuffleDeckProperties extends PlayerActionProperties {
     deck: Location;
 }
 
-export class ShuffleDeckAction extends PlayerAction {
+export class ShuffleDeckAction extends PlayerAction<ShuffleDeckProperties> {
     declare defaultProperties: ShuffleDeckProperties;
 
     name = 'refill';
@@ -23,7 +23,7 @@ export class ShuffleDeckAction extends PlayerAction {
     }
 
     eventHandler(event: GameEvent<EventName.Unnamed>, additionalProperties: Record<string, unknown> = {}): void {
-        let { deck } = this.getProperties((event.context), additionalProperties) as ShuffleDeckProperties;
+        let { deck } = this.getProperties((event.context), additionalProperties);
         const player = event.player as Player;
         if(deck === Location.ConflictDeck) {
             player.shuffleConflictDeck();

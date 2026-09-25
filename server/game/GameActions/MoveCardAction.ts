@@ -17,7 +17,7 @@ export interface MoveCardProperties extends CardActionProperties {
     discardDestinationCards?: boolean;
 }
 
-export class MoveCardAction extends CardGameAction {
+export class MoveCardAction extends CardGameAction<MoveCardProperties> {
     name = 'move';
     targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
     defaultProperties: MoveCardProperties = {
@@ -35,12 +35,12 @@ export class MoveCardAction extends CardGameAction {
     }
 
     getCostMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as MoveCardProperties;
+        let properties = this.getProperties(context);
         return ['shuffling {0} into their deck', [properties.target]];
     }
 
     getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as MoveCardProperties;
+        let properties = this.getProperties(context);
         const target = properties.target as BaseCard | BaseCard[];
         let destinationController = Array.isArray(target)
             ? properties.changePlayer
@@ -59,7 +59,7 @@ export class MoveCardAction extends CardGameAction {
     }
 
     canAffect(card: BaseCard, context: AbilityContext, additionalProperties = {}): boolean {
-        const { changePlayer, destination } = this.getProperties(context, additionalProperties) as MoveCardProperties;
+        const { changePlayer, destination } = this.getProperties(context, additionalProperties);
         return (
             (!changePlayer ||
                 (card.checkRestrictions(EffectName.TakeControl, context) &&
@@ -74,7 +74,7 @@ export class MoveCardAction extends CardGameAction {
         let context = (event.context);
         let card = event.card as DrawCard;
         event.cardStateWhenMoved = card.createSnapshot();
-        let properties = this.getProperties(context, additionalProperties) as MoveCardProperties;
+        let properties = this.getProperties(context, additionalProperties);
         if(properties.switch && properties.switchTarget) {
             let otherCard = properties.switchTarget;
             card.owner.moveCard(otherCard, card.location);

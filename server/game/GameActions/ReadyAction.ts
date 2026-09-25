@@ -6,7 +6,7 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export type ReadyProperties = CardActionProperties;
 
-export class ReadyAction extends CardGameAction {
+export class ReadyAction extends CardGameAction<ReadyProperties> {
     name = 'ready';
     eventName = EventName.OnCardReadied;
     cost = 'readying {0}';

@@ -11,7 +11,7 @@ export interface MoveToConflictProperties extends CardActionProperties {
     side?: Player;
 }
 
-export class MoveToConflictAction extends CardGameAction {
+export class MoveToConflictAction extends CardGameAction<MoveToConflictProperties> {
     name = 'moveToConflict';
     eventName = EventName.OnMoveToConflict;
     cost = 'moving {0} into the conflict';
@@ -20,7 +20,7 @@ export class MoveToConflictAction extends CardGameAction {
     defaultProperties: MoveToConflictProperties = { side: undefined };
 
     canAffect(card: DrawCard, context: AbilityContext): boolean {
-        let properties = this.getProperties(context) as MoveToConflictProperties;
+        let properties = this.getProperties(context);
         if(!super.canAffect(card, context)) {
             return false;
         }
@@ -45,7 +45,7 @@ export class MoveToConflictAction extends CardGameAction {
     }
 
     addPropertiesToEvent(event: GameEvent<EventName.OnMoveToConflict>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let properties = this.getProperties(context) as MoveToConflictProperties;
+        let properties = this.getProperties(context);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.side = properties.side || card.controller;
     }

@@ -11,7 +11,7 @@ export interface LookAtProperties extends CardActionProperties {
     messageArgs?: (cards: BaseCard[]) => MsgArg[];
 }
 
-export class LookAtAction extends CardGameAction<CardActionProperties, EventName.OnLookAtCards> {
+export class LookAtAction extends CardGameAction<LookAtProperties, EventName.OnLookAtCards> {
     name = 'lookAt';
     eventName = EventName.OnLookAtCards;
     effect = 'look at a facedown card';
@@ -54,7 +54,7 @@ export class LookAtAction extends CardGameAction<CardActionProperties, EventName
 
     eventHandler(event: GameEvent<EventName.OnLookAtCards>, additionalProperties = {}): void {
         let context = event.context;
-        let properties = this.getProperties(context, additionalProperties) as LookAtProperties;
+        let properties = this.getProperties(context, additionalProperties);
         let cards = event.cards as BaseCard[];
         let messageArgs = properties.messageArgs ? properties.messageArgs(cards) : [context.source, cards];
         context.game.addMessage(this.getMessage(properties.message, context), ...(messageArgs));

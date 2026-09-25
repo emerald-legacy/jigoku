@@ -24,7 +24,7 @@ type ResolvedSelectRingProperties = SelectRingProperties & {
     subActionProperties: NonNullable<SelectRingProperties['subActionProperties']>;
 };
 
-export class SelectRingAction extends RingAction {
+export class SelectRingAction extends RingAction<SelectRingProperties> {
     defaultProperties: SelectRingProperties = {
         ringCondition: () => true,
         subActionProperties: (ring) => ({ target: ring }),
@@ -41,7 +41,7 @@ export class SelectRingAction extends RingAction {
     }
 
     getProperties(context: AbilityContext, additionalProperties = {}): ResolvedSelectRingProperties {
-        const properties = super.getProperties(context, additionalProperties) as SelectRingProperties;
+        const properties = super.getProperties(context, additionalProperties);
         const ringCondition = properties.ringCondition ?? (() => true);
         const subActionProperties = properties.subActionProperties ?? ((ring: Ring) => ({ target: ring }));
         return Object.assign(properties, { ringCondition, subActionProperties });

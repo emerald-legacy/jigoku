@@ -31,7 +31,7 @@ type ResolvedSelectTokenProperties = SelectTokenProperties & {
     card: BaseCard;
 };
 
-export class SelectTokenAction extends TokenAction {
+export class SelectTokenAction extends TokenAction<SelectTokenProperties> {
     name = 'selectToken';
     defaultProperties: SelectTokenProperties = {
         activePromptTitle: 'Which token do you wish to select?',
@@ -46,7 +46,7 @@ export class SelectTokenAction extends TokenAction {
     }
 
     getEffectMessage(context: AbilityContext): MessageArgs {
-        let { target, effect, effectArgs } = this.getProperties(context) as SelectTokenProperties;
+        let { target, effect, effectArgs } = this.getProperties(context);
         if(effect) {
             return [effect, (effectArgs && effectArgs(context)) || []];
         }
@@ -54,7 +54,7 @@ export class SelectTokenAction extends TokenAction {
     }
 
     private resolveProperties(context: AbilityContext, additionalProperties = {}): ResolvedSelectTokenProperties | null {
-        const properties = super.getProperties(context, additionalProperties) as SelectTokenProperties;
+        const properties = super.getProperties(context, additionalProperties);
         if(!properties.card) {
             return null;
         }
@@ -146,7 +146,7 @@ export class SelectTokenAction extends TokenAction {
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties = {}): boolean {
-        const properties = super.getProperties(context, additionalProperties) as SelectTokenProperties;
+        const properties = super.getProperties(context, additionalProperties);
         return !!properties.targets && properties.player !== Players.Opponent;
     }
 }

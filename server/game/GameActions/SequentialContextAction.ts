@@ -8,16 +8,16 @@ export interface SequentialContextProperties extends GameActionProperties {
     gameActions: GameAction[];
 }
 
-export class SequentialContextAction extends GameAction {
+export class SequentialContextAction extends GameAction<SequentialContextProperties> {
     declare defaultProperties: SequentialContextProperties;
 
     getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = super.getProperties(context) as SequentialContextProperties;
+        let properties = super.getProperties(context);
         return properties.gameActions[0].getEffectMessage(context);
     }
 
     getProperties(context: AbilityContext, additionalProperties = {}): SequentialContextProperties {
-        let properties = super.getProperties(context, additionalProperties) as SequentialContextProperties;
+        let properties = super.getProperties(context, additionalProperties);
         for(const gameAction of properties.gameActions) {
             gameAction.setDefaultTarget(() => properties.target);
         }

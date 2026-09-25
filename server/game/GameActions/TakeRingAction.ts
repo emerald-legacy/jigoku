@@ -8,7 +8,7 @@ export interface TakeRingProperties extends RingActionProperties {
     takeFate?: boolean;
 }
 
-export class TakeRingAction extends RingAction {
+export class TakeRingAction extends RingAction<TakeRingProperties> {
     name = 'takeFate';
     eventName = EventName.OnTakeRing;
     effect = 'take {0}';
@@ -23,7 +23,7 @@ export class TakeRingAction extends RingAction {
 
     eventHandler(event: GameEvent<EventName.OnTakeRing>, additionalProperties: Record<string, unknown> = {}): void {
         const context = event.context;
-        const { takeFate } = this.getProperties(context, additionalProperties) as TakeRingProperties;
+        const { takeFate } = this.getProperties(context, additionalProperties);
         const ring = event.ring;
         ring.claimRing(context.player);
         ring.contested = false;

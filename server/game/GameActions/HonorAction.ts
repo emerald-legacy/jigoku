@@ -6,7 +6,7 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 
 export type HonorProperties = CardActionProperties;
 
-export class HonorAction extends CardGameAction {
+export class HonorAction extends CardGameAction<HonorProperties> {
     name = 'honor';
     eventName = EventName.OnCardHonored;
     targetType = [CardType.Character];
