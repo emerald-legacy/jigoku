@@ -128,7 +128,7 @@ class HandlerMenuPrompt extends UiPrompt {
             return [];
         }
         const rawTargets: Array<BaseCard | BaseCard[]> = this.context.targets ? Object.values(this.context.targets) : [];
-        let targets: GameObject[] = rawTargets.reduce((array: GameObject[], target: BaseCard | BaseCard[]) => array.concat(target), [] as GameObject[]);
+        let targets: GameObject[] = rawTargets.flat();
         if(this.properties.target) {
             targets = Array.isArray(this.properties.target) ? this.properties.target : [this.properties.target];
         }

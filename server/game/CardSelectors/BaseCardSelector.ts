@@ -76,14 +76,14 @@ class BaseCardSelector {
             }
             return context.game.allCards;
         }
-        let attachments: BaseCard[] = context.player.cardsInPlay.reduce((array: BaseCard[], card: DrawCard) => array.concat(card.attachments), [] as BaseCard[]);
+        let attachments: BaseCard[] = context.player.cardsInPlay.flatMap((card: DrawCard) => card.attachments);
         let allProvinceAttachments: BaseCard[] = context.player
             .getProvinces()
-            .reduce((array: BaseCard[], card) => array.concat(card.attachments), [] as BaseCard[]);
+            .flatMap((card) => card.attachments);
 
         if(context.player.opponent) {
             allProvinceAttachments = allProvinceAttachments.concat(
-                context.player.opponent.getProvinces().reduce((array: BaseCard[], card) => array.concat(card.attachments), [] as BaseCard[])
+                context.player.opponent.getProvinces().flatMap((card) => card.attachments)
             );
         }
 
