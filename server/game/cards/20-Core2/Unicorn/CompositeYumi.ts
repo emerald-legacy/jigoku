@@ -6,21 +6,18 @@ export default class CompositeYumi extends DrawCard {
     static id = 'composite-yumi';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Give attached character +1/+0',
-            when: {
+        this.reaction('Give attached character +1/+0')
+            .when({
                 onMoveToConflict: (_, context) => this.#matchCondition(context),
                 onCharacterEntersPlay: (_, context) => this.#matchCondition(context),
                 onCreateTokenCharacter: (_, context) => this.#matchCondition(context)
-            },
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
                 effect: AbilityDsl.effects.modifyMilitarySkill(1)
-            })),
-            effect: 'give +1{1} to {2}',
-            effectArgs: (context) => ['military', context.source.parentCharacter],
-            limit: AbilityDsl.limit.unlimitedPerConflict()
-        });
+            })))
+            .effect('give +1{1} to {2}', (context) => ['military', context.source.parentCharacter])
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 
     #matchCondition(context: TriggeredAbilityContext<this>) {

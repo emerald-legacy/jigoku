@@ -1,8 +1,5 @@
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { CardType, EventName, Location, Phases, Players } from '../../../Constants.js';
-import type BaseCard from '../../../BaseCard.js';
-import type { ProvinceCard } from '../../../ProvinceCard.js';
-import type Player from '../../../Player.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -16,31 +13,28 @@ export default class EbonyBloodGarrison extends StrongholdCard {
     static id = 'ebony-blood-garrison';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Break a province from each player',
-            when: {
+        this.reaction('Break a province from each player')
+            .when({
                 onPhaseEnded: (event: EventPayload<EventName.OnPhaseEnded>, context: TriggeredAbilityContext) => event.phase === Phases.Dynasty && context.game.roundNumber === 1
-            },
-            cost: AbilityDsl.costs.bowSelf(),
-            targets: {
-                [MY_PROVINCE]: {
-                    controller: Players.Self,
-                    cardType: CardType.Province,
-                    location: Location.Provinces,
-                    cardCondition: (card: BaseCard) =>
-                        (card as ProvinceCard).facedown && card.location !== Location.StrongholdProvince
-                },
-                [OPP_PROVINCE]: {
-                    dependsOn: MY_PROVINCE,
-                    controller: Players.Opponent,
-                    cardType: CardType.Province,
-                    location: Location.Provinces,
-                    cardCondition: (card: BaseCard) =>
-                        (card as ProvinceCard).facedown && card.location !== Location.StrongholdProvince
-                }
-            },
-            handler: (context: TriggeredAbilityContext) => {
-                const provinces = [context.targets[MY_PROVINCE] as ProvinceCard, context.targets[OPP_PROVINCE] as ProvinceCard];
+            })
+            .cost(AbilityDsl.costs.bowSelf())
+            .target(MY_PROVINCE, {
+                controller: Players.Self,
+                cardType: CardType.Province,
+                location: Location.Provinces,
+                cardCondition: (card) =>
+                    (card).facedown && card.location !== Location.StrongholdProvince
+            })
+            .target(OPP_PROVINCE, {
+                dependsOn: MY_PROVINCE,
+                controller: Players.Opponent,
+                cardType: CardType.Province,
+                location: Location.Provinces,
+                cardCondition: (card) =>
+                    (card).facedown && card.location !== Location.StrongholdProvince
+            })
+            .handler((context) => {
+                const provinces = [context.targets[MY_PROVINCE], context.targets[OPP_PROVINCE]];
                 context.game.queueStep(
                     new SimpleStep(context.game, () =>
                         AbilityDsl.actions.reveal({ target: provinces }).resolve(provinces, context)
@@ -64,13 +58,11 @@ export default class EbonyBloodGarrison extends StrongholdCard {
                 //         AbilityDsl.actions.gainFate({ target: context.player }).resolve(context.player, context)
                 //     )
                 // );
-            },
-            effect: 'drag {1} into chaos, as a crisis strikes {2} and {3}',
-            effectArgs: (context: TriggeredAbilityContext) => [
-                context.player.opponent as Player,
-                context.targets[MY_PROVINCE] as ProvinceCard,
-                context.targets[OPP_PROVINCE] as ProvinceCard
-            ]
-        });
+            })
+            .effect('drag {1} into chaos, as a crisis strikes {2} and {3}', (context) => [
+                context.player.opponent,
+                context.targets[MY_PROVINCE],
+                context.targets[OPP_PROVINCE]
+            ]);
     }
 }

@@ -30,10 +30,9 @@ export default class MirumotoRei2 extends DrawCard {
             effectArgs: (context) => [this.getWeaponCount(context)]
         });
 
-        this.action({
-            title: 'Duel an opposing character',
-            condition: (context) => context.game.isDuringConflict(ConflictType.Military),
-            initiateDuel: {
+        this.action('Duel an opposing character')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 message: 'injure {0}',
                 messageArgs: (duel) => [duel.loser],
@@ -59,7 +58,6 @@ export default class MirumotoRei2 extends DrawCard {
                         });
                         return { gameActions };
                     })) as (duel: Duel, context: AbilityContext) => GameAction
-            }
-        });
+            }));
     }
 }

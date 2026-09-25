@@ -19,9 +19,8 @@ export default class DaidojiAkikore extends DrawCard {
             effect: 'add 1 to their duel total'
         });
 
-        this.action({
-            title: 'Military duel to add skill',
-            initiateDuel: (context) => ({
+        this.action('Military duel to add skill')
+            .initiateDuel((context) => ({
                 type: DuelType.Military,
                 opponentChoosesDuelTarget: true,
                 message: '{0}{1}{2}',
@@ -38,7 +37,6 @@ export default class DaidojiAkikore extends DrawCard {
                         })),
                         falseGameAction: AbilityDsl.actions.noAction()
                     })
-            })
-        });
+            }));
     }
 }

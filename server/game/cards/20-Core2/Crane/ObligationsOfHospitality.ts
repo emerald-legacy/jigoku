@@ -15,19 +15,16 @@ export default class ObligationsOfHospitality extends DrawCard {
             effect: AbilityDsl.effects.reduceCost({ match: (card, source) => card === source })
         });
 
-        this.action({
-            title: 'Take control of a character',
-            condition: () => this.game.isDuringConflict(),
-            target: {
+        this.action('Take control of a character')
+            .condition(() => this.game.isDuringConflict())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card, context) => !card.anotherUniqueInPlay(context.player) && card.costLessThan(3),
-                gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: AbilityDsl.effects.takeControl(context.player)
-                }))
-            },
-            effect: 'take control of {0}'
-        });
+                cardCondition: (card, context) => !card.anotherUniqueInPlay(context.player) && card.costLessThan(3)
+            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+                effect: AbilityDsl.effects.takeControl(context.player)
+            })))
+            .effect('take control of {0}');
     }
 
     canPlay(context: TriggeredAbilityContext, playType: string) {

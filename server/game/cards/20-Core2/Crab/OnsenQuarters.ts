@@ -19,18 +19,16 @@ export default class OnsenQuarters extends ProvinceCard {
             effect: AbilityDsl.effects.modifyProvinceStrength(1)
         });
 
-        this.reaction({
-            title: 'Resolve the ring effect',
-            when: {
+        this.reaction('Resolve the ring effect')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.player &&
                     event.conflict.getConflictProvinces().some((a: ProvinceCard) => a === context.source)
-            },
-            gameAction: AbilityDsl.actions.resolveRingEffect((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.resolveRingEffect((context) => ({
                 target: this.#ringForRole(context),
                 player: context.player
-            }))
-        });
+            })));
     }
 
     #ringForRole(context: AbilityContext): Ring | undefined {

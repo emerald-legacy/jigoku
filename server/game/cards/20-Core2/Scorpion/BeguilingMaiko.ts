@@ -8,12 +8,11 @@ export default class BeguilingMaiko extends DrawCard {
     static id = 'beguiling-maiko';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Employ your charm',
-            when: {
+        this.reaction('Employ your charm')
+            .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
-            },
-            gameAction: AbilityDsl.actions.sequentialContext((context) => {
+            })
+            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
                 const favor = context.game.getFavorSide();
                 if(favor === undefined) {
                     return {
@@ -44,7 +43,6 @@ export default class BeguilingMaiko extends DrawCard {
                     );
                 }
                 return { gameActions };
-            })
-        });
+            }));
     }
 }

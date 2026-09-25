@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import BaseCard from '../../../BaseCard.js';
-import { CardType, EventName, Location, Players, TargetMode } from '../../../Constants.js';
+import { CardType, EventName, Location, Players } from '../../../Constants.js';
 import { Result } from '../../../costs/Cost.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventPayload } from '../../../Events/EventPayloads.js';
@@ -86,30 +86,25 @@ export default class DisruptedSupplyLines extends DrawCard {
     static id = 'disrupted-supply-lines';
 
     setupCardAbilities() {
-        this.interrupt({
-            title: 'Remove attachment from game',
-            cost: disruptedSupplyLinesCost(),
-            when: {
+        this.interrupt('Remove attachment from game')
+            .when({
                 onCardAttached: (event: EventPayload<EventName.OnCardAttached>, context) => (
                     !!event.parent && event.parent.getType() === CardType.Character &&
                     event.context?.player === context.player.opponent
                 )
-            },
-            target: {
-                player: Players.Opponent,
-                mode: TargetMode.Select,
-                choices: {
-                    'Give your opponent 1 fate': AbilityDsl.actions.takeFate(),
-                    'Remove attachment from the game': AbilityDsl.actions.cancel((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
-                        target: context.source,
-                        replacementGameAction: AbilityDsl.actions.removeFromGame((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({ target: context.event.card, location: Location.Any }))
-                    }))
-                }
-            },
-            effect: '{1}{2}{3}',
-            effectArgs: context => context.select === 'Give your opponent 1 fate' ?
+            })
+            .cost(disruptedSupplyLinesCost())
+            .select('target', {
+                player: Players.Opponent
+            }, {
+                'Give your opponent 1 fate': AbilityDsl.actions.takeFate(),
+                'Remove attachment from the game': AbilityDsl.actions.cancel((context) => ({
+                    target: context.source,
+                    replacementGameAction: AbilityDsl.actions.removeFromGame((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({ target: context.event.card, location: Location.Any }))
+                }))
+            })
+            .effect('{1}{2}{3}', context => context.select === 'Give your opponent 1 fate' ?
                 ['take 1 fate from ', context.player.opponent, ''] :
-                ['remove ', context.event.card, ' from the game']
-        });
+                ['remove ', context.event.card, ' from the game']);
     }
 }

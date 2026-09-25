@@ -1070,7 +1070,7 @@ class DrawCard extends BaseCard {
             ...properties,
             condition: finalCondition
         };
-        this.abilities.actions.push(this.createAction(finalProperties as ActionProps));
+        this.registerAbility(() => this.abilities.actions.push(this.createAction(finalProperties as ActionProps)));
     }
 }
 

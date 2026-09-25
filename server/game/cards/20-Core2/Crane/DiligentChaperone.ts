@@ -32,9 +32,8 @@ export default class DiligentChaperone extends DrawCard {
             effect: AbilityDsl.effects.cannotParticipateAsAttacker()
         });
 
-        this.reaction({
-            title: 'Rehonor the character',
-            when: {
+        this.reaction('Rehonor the character')
+            .when({
                 onStatusTokenMoved: (event: EventPayload<EventName.OnStatusTokenMoved>, context) =>
                     !!event.token && event.token.grantedStatus === CharacterStatus.Honored &&
                     !!event.donor && isFriendlyCharacter(context, event.donor) &&
@@ -45,9 +44,8 @@ export default class DiligentChaperone extends DrawCard {
                     !context.source.bowed &&
                     !!event.token && event.token.grantedStatus === CharacterStatus.Honored &&
                     (event.cards ?? []).some(isFriendlyCharacter.bind(null, context))
-            },
-            effect: 'protect the honor of the Crane',
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose a character',
                 hidePromptIfSingleCard: true,
                 cardCondition: (card, context) => targetsFromEvent(context).has(card),
@@ -58,7 +56,7 @@ export default class DiligentChaperone extends DrawCard {
                 gameAction: AbilityDsl.actions.honor(),
                 message: '{0} honors {1}',
                 messageArgs: (card, player) => [player, card]
-            }))
-        });
+            })))
+            .effect('protect the honor of the Crane');
     }
 }

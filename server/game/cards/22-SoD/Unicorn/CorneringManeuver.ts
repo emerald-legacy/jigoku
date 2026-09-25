@@ -6,19 +6,16 @@ export default class CorneringManeuver extends DrawCard {
     static id = 'cornering-maneuver';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Give a character +2 mil',
-            condition: context => context.game.isDuringConflict('military'),
-            target: {
+        this.action('Give a character +2 mil')
+            .condition(context => context.game.isDuringConflict('military'))
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isParticipatingFor(context.player),
-                gameAction: AbilityDsl.actions.cardLastingEffect(_context => ({
-                    effect: AbilityDsl.effects.modifyMilitarySkill(2)
-                }))
-            },
-            effect: 'give {0} +2{1}',
-            effectArgs: () => ['military'],
-            then: context => ({
+                cardCondition: (card, context) => card.isParticipatingFor(context.player)
+            }, AbilityDsl.actions.cardLastingEffect(_context => ({
+                effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            })))
+            .effect('give {0} +2{1}', () => ['military'])
+            .then(context => ({
                 gameAction: AbilityDsl.actions.selectCard({
                     activePromptTitle: 'Choose a character to move',
                     targets: true,
@@ -34,7 +31,6 @@ export default class CorneringManeuver extends DrawCard {
                         AbilityDsl.actions.moveToConflict()
                     ])
                 })
-            })
-        });
+            }));
     }
 }

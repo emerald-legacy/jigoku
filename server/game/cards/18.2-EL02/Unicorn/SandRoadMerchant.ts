@@ -21,16 +21,14 @@ export default class SandRoadMerchant extends DrawCard {
             ]
         });
 
-        this.reaction({
-            title: 'Look at your opponent\'s conflict deck',
-            effect: 'look at the top two cards of their opponent\'s conflict deck',
-            when: {
+        this.reaction('Look at your opponent\'s conflict deck')
+            .when({
                 onConflictDeclared: (event, context) =>
                     (event.attackers ?? []).includes(context.source) && context.player.opponent !== undefined,
                 onDefendersDeclared: (event, context) =>
                     (event.defenders ?? []).includes(context.source) && context.player.opponent !== undefined
-            },
-            gameAction: AbilityDsl.actions.sequentialContext((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.sequentialContext((context) => ({
                 gameActions: [
                     AbilityDsl.actions.deckSearch(() => ({
                         amount: 2,
@@ -70,7 +68,7 @@ export default class SandRoadMerchant extends DrawCard {
                         };
                     })
                 ]
-            }))
-        });
+            })))
+            .effect('look at the top two cards of their opponent\'s conflict deck');
     }
 }

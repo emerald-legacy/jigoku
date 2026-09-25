@@ -90,11 +90,9 @@ export default class RiddlesOfTheHenshin extends DrawCard {
     static id = 'riddles-of-the-henshin';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Resolve ring effects',
-            condition: (context) => getNumberOfMonks(context) > 0 && context.player.getClaimedRings().length > 0,
-            handler: (context) => new Process(getNumberOfMonks(context as AbilityContext), context as AbilityContext).promptPlayer(),
-            effect: 'resolve ring effects'
-        });
+        this.action('Resolve ring effects')
+            .condition((context) => getNumberOfMonks(context) > 0 && context.player.getClaimedRings().length > 0)
+            .handler((context) => new Process(getNumberOfMonks(context), context).promptPlayer())
+            .effect('resolve ring effects');
     }
 }

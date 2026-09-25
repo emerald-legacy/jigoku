@@ -118,8 +118,9 @@ class BaseCard extends EffectSource {
 
     protected statusManager!: CardStatusManager;
     allowedAttachmentTraits: string[] = [];
-    /** Abilities declared with a builder, registered once `setupCardAbilities` returns. */
-    readonly #builtAbilities: Array<() => void> = [];
+    /** Abilities declared during `setupCardAbilities`, registered in declaration order once it returns. */
+    readonly #pendingAbilities: Array<() => void> = [];
+    #settingUp = false;
     protected attachmentHost = new AttachmentManager(this);
 
     /** What this card is attached to, or null — the inverse of `attachments`. */
@@ -164,8 +165,10 @@ class BaseCard extends EffectSource {
         this.traits = cardData.traits || [];
         this.printedFaction = cardData.clan ?? cardData.faction ?? '';
 
+        this.#settingUp = true;
         this.setupCardAbilities(AbilityDsl);
-        for(const register of this.#builtAbilities.splice(0)) {
+        this.#settingUp = false;
+        for(const register of this.#pendingAbilities.splice(0)) {
             register();
         }
         this.parseKeywords(cardData.text ? cardData.text.replace(/<[^>]*>/g, '').toLowerCase() : '');
@@ -359,16 +362,25 @@ class BaseCard extends EffectSource {
     action<Target extends BaseCard = BaseCard>(properties: ActionProps<this, Target> | string): void | AbilityBuilder<ActionContext<this>> {
         if(typeof properties === 'string') {
             const draft = createDraft(properties, (context) => context.ability instanceof CardAction);
-            this.#builtAbilities.push(() => this.action(actionProperties<this>(draft)));
+            this.registerAbility(() => this.action(actionProperties<this>(draft)));
             return new AbilityBuilder(draft);
         }
-        this.abilities.actions.push(this.createAction(properties as ActionProps));
+        this.registerAbility(() => this.abilities.actions.push(this.createAction(properties as ActionProps)));
+    }
+
+    /** Queues a registration while `setupCardAbilities` runs, so builder and object abilities keep their order. */
+    protected registerAbility(register: () => void): void {
+        if(this.#settingUp) {
+            this.#pendingAbilities.push(register);
+        } else {
+            register();
+        }
     }
 
     protected triggerBuilder(abilityType: AbilityType, title: string): TriggerBuilder<this> {
         return new TriggerBuilder<this>((when) => {
             const draft = createDraft(title, holdsTriggerEvent(when));
-            this.#builtAbilities.push(() => this.triggeredAbility(abilityType, triggeredProperties<this>(draft, when)));
+            this.registerAbility(() => this.triggeredAbility(abilityType, triggeredProperties<this>(draft, when)));
             return draft;
         });
     }
@@ -378,7 +390,7 @@ class BaseCard extends EffectSource {
     }
 
     triggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityType, properties: TriggeredAbilityProps<this, Target>): void {
-        this.abilities.reactions.push(this.createTriggeredAbility(abilityType, properties));
+        this.registerAbility(() => this.abilities.reactions.push(this.createTriggeredAbility(abilityType, properties)));
     }
 
     createTriggeredAbility<Target extends BaseCard = BaseCard>(abilityType: AbilityType, properties: TriggeredAbilityProps<this, Target>): TriggeredAbility {
@@ -396,7 +408,12 @@ class BaseCard extends EffectSource {
         this.triggeredAbility(AbilityType.Reaction, properties);
     }
 
-    forcedReaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void {
+    forcedReaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void;
+    forcedReaction(title: string): TriggerBuilder<this>;
+    forcedReaction<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target> | string): void | TriggerBuilder<this> {
+        if(typeof properties === 'string') {
+            return this.triggerBuilder(AbilityType.ForcedReaction, properties);
+        }
         this.triggeredAbility(AbilityType.ForcedReaction, properties);
     }
 
@@ -418,7 +435,12 @@ class BaseCard extends EffectSource {
         this.triggeredAbility(AbilityType.Interrupt, properties);
     }
 
-    forcedInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void {
+    forcedInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target>): void;
+    forcedInterrupt(title: string): TriggerBuilder<this>;
+    forcedInterrupt<Target extends BaseCard = BaseCard>(properties: TriggeredAbilityProps<this, Target> | string): void | TriggerBuilder<this> {
+        if(typeof properties === 'string') {
+            return this.triggerBuilder(AbilityType.ForcedInterrupt, properties);
+        }
         this.triggeredAbility(AbilityType.ForcedInterrupt, properties);
     }
 

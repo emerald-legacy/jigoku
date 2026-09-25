@@ -6,9 +6,8 @@ export default class UnbridledRage extends DrawCard {
     static id = 'unbridled-rage';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Military duel to stop contribution',
-            initiateDuel: {
+        this.action('Military duel to stop contribution')
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 challengerCondition: card => card.hasTrait('berserker'),
                 message: 'prevent {0} from contributing to resolution of this conflict',
@@ -35,7 +34,6 @@ export default class UnbridledRage extends DrawCard {
                         effect: [AbilityDsl.effects.cannotContribute(() => (card: DrawCard) => (duel.loser ?? []).includes(card))],
                         duration: Duration.UntilEndOfConflict
                     }))
-            }
-        });
+            }));
     }
 }

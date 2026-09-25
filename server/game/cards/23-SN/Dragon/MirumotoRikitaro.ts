@@ -1,4 +1,3 @@
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 import BaseAction from '../../../BaseAction.js';
 import { CardType } from '../../../Constants.js';
@@ -10,9 +9,8 @@ export default class MirumotoRikitaro extends DrawCard {
     static id = 'mirumoto-rikitaro';
 
     setupCardAbilities() {
-        this.interrupt({
-            title: 'Reduce cost of next attachment',
-            when: {
+        this.interrupt('Reduce cost of next attachment')
+            .when({
                 onAbilityResolverInitiated: (event, context) => {
                     if(event.context === undefined) {
                         return false;
@@ -32,16 +30,15 @@ export default class MirumotoRikitaro extends DrawCard {
                         (ec.ability as BaseAction).getReducedCost(ec) > 0
                     );
                 }
-            },
-            effect: 'reduce the cost of their next attachment by 1',
-            gameAction: AbilityDsl.actions.playerLastingEffect((context: TriggeredAbilityContext) => ({
+            })
+            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
                 effect: AbilityDsl.effects.reduceNextPlayedCardCost(
                     1,
                     (card: DrawCard) => card === context.event.context?.source
                 )
-            }))
-        });
+            })))
+            .effect('reduce the cost of their next attachment by 1');
 
         this.conflictAction({
             title: 'Discard an attachment',

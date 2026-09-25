@@ -26,18 +26,16 @@ export default class KitsukiSano extends DrawCard {
             effect: 'add 2 to their duel total'
         });
 
-        this.action({
-            title: 'Draw 2 cards, discard 2 cards',
-            condition: (context) =>
-                context.source.isAttacking() && (context.game.currentConflict as Conflict).defenders.length === 0,
-            gameAction: AbilityDsl.actions.draw((context) => ({ target: context.player, amount: 2 })),
-            then: {
+        this.action('Draw 2 cards, discard 2 cards')
+            .condition((context) =>
+                context.source.isAttacking() && (context.game.currentConflict as Conflict).defenders.length === 0)
+            .gameAction(AbilityDsl.actions.draw((context) => ({ target: context.player, amount: 2 })))
+            .then(() => ({
                 gameAction: AbilityDsl.actions.chosenDiscard((context) => ({
                     targets: false,
                     target: context.player,
                     amount: 2
                 }))
-            }
-        });
+            }));
     }
 }

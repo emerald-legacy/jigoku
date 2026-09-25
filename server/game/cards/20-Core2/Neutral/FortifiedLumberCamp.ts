@@ -1,21 +1,19 @@
 import { CardType, Location } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class FortifiedLumberCamp extends DrawCard {
     static id = 'fortified-lumber-camp';
 
     setupCardAbilities() {
-        this.action<ProvinceCard>({
-            title: 'Discard all cards in and attached to a province ',
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            target: {
+        this.action('Discard all cards in and attached to a province ')
+            .cost(AbilityDsl.costs.sacrificeSelf())
+            .target('target', {
                 location: Location.Provinces,
                 cardType: CardType.Province
-            },
-            gameAction: AbilityDsl.actions.multipleContext((context: AbilityContext<DrawCard, ProvinceCard>) => ({
+            })
+            .gameAction(AbilityDsl.actions.multipleContext((context) => ({
                 gameActions: context.target ? [
                     AbilityDsl.actions.moveCard({
                         destination: Location.DynastyDiscardPile,
@@ -23,10 +21,8 @@ export default class FortifiedLumberCamp extends DrawCard {
                     }),
                     AbilityDsl.actions.discardFromPlay({ target: context.target.attachments })
                 ] : []
-            })),
-            effect: 'discard {1}',
-            effectArgs: (context) => [context.target ? this.#cardsInProvince(context.target).concat(context.target.attachments) : []]
-        });
+            })))
+            .effect('discard {1}', (context) => [context.target ? this.#cardsInProvince(context.target).concat(context.target.attachments) : []]);
     }
 
     #cardsInProvince(targetProvince: ProvinceCard) {

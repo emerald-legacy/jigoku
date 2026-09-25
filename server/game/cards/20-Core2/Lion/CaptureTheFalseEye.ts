@@ -6,10 +6,9 @@ export default class CaptureTheFalseEye extends DrawCard {
     static id = 'capture-the-false-eye';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow a character',
-            condition: (context) => context.game.isDuringConflict(),
-            target: {
+        this.action('Bow a character')
+            .condition((context) => context.game.isDuringConflict())
+            .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() &&
@@ -17,20 +16,14 @@ export default class CaptureTheFalseEye extends DrawCard {
                         ?.getCharacters(context.player)
                         .some(
                             (myCard: DrawCard) => myCard.hasTrait('bushi') && myCard.militarySkill >= card.militarySkill
-                        ) ?? false),
-                gameAction: [
-                    AbilityDsl.actions.bow(),
-                    AbilityDsl.actions.playerLastingEffect((context) => ({
-                        targetController: context.player,
-                        effect: AbilityDsl.effects.increaseCost({
-                            amount: 1,
-                            match: (card: DrawCard) => card.type === CardType.Event
-                        })
-                    }))
-                ]
-            },
-            effect: 'bow {0}. For this conflict, {1}\'s events cost 1 more fate - did {1} walk into a trap?',
-            effectArgs: (context) => [context.player]
-        });
+                        ) ?? false)
+            }, AbilityDsl.actions.bow(), AbilityDsl.actions.playerLastingEffect((context) => ({
+                targetController: context.player,
+                effect: AbilityDsl.effects.increaseCost({
+                    amount: 1,
+                    match: (card: DrawCard) => card.type === CardType.Event
+                })
+            })))
+            .effect('bow {0}. For this conflict, {1}\'s events cost 1 more fate - did {1} walk into a trap?', (context) => [context.player]);
     }
 }

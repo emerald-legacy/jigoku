@@ -2,11 +2,11 @@ import type { AbilityContext } from './AbilityContext.js';
 import type { AbilityLimit } from './AbilityLimit.js';
 import type { CardAction } from './CardAction.js';
 import BaseCard from './BaseCard.js';
-import { CardType, type EventName, type Location, type Players, TargetMode } from './Constants.js';
+import { CardType, type EventName, type Location, type Phases, type Players, TargetMode } from './Constants.js';
 import type { Cost } from './costs/Cost.js';
 import type DrawCard from './DrawCard.js';
 import type { GameEvent } from './Events/EventPayloads.js';
-import type { GameAction, GameActionProperties } from './GameActions/GameAction.js';
+import { GameAction } from './GameActions/GameAction.js';
 import type { ActionProps, EffectArg, InitiateDuel, TriggeredAbilityWhenProps, WhenType } from './Interfaces.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import Ring from './Ring.js';
@@ -14,15 +14,34 @@ import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 
 type CardOfOne<K> = K extends CardType.Province ? ProvinceCard : K extends CardType ? DrawCard : BaseCard;
 /** The card class a target declared with `cardType: K` can hold. */
-export type CardOfType<K> = K extends readonly (infer E)[] ? CardOfOne<E> : CardOfOne<K>;
+export type CardOfType<K> = [K] extends [never] ? BaseCard : K extends readonly (infer E)[] ? CardOfOne<E> : CardOfOne<K>;
 
 /**
  * What a builder callback receives: the ability's context plus the targets and cost results it can
  * rely on at that point. Cost results are only known once paid, so they are optional.
  */
-export type BuilderContext<Base extends AbilityContext, TG, RG, CO> = Base & { targets: TG; rings: RG; costs: Partial<CO> };
+export type BuilderContext<Base extends AbilityContext, TG, RG, CO> =
+    Base & { targets: TG; rings: RG; costs: Partial<CO> } & NamedTarget<TG> & NamedRing<RG>;
 
-type BuilderAction<Base extends AbilityContext, TG, RG, CO> = GameAction<GameActionProperties, EventName, BuilderContext<Base, TG, RG, CO>>;
+/** The engine mirrors a target named `target` onto `context.target`, and a ring target of that name onto `context.ring`. */
+type NamedTarget<TG> = TG extends { target: infer T } ? { target: T } : unknown;
+type NamedRing<RG> = RG extends { target: infer R } ? { ring: R } : unknown;
+
+/**
+ * An action that accepts the builder's context. One method only: TypeScript infers the context of
+ * `AbilityDsl.actions.x((context) => ...)` from it exactly, and, since methods compare bivariantly,
+ * an action built for a wider context fits too.
+ */
+interface BuilderAction<Base extends AbilityContext, TG, RG, CO> {
+    hasLegalTarget(context: BuilderContext<Base, TG, RG, CO>, additionalProperties?: object): boolean;
+}
+
+function toGameAction(title: string, action: object): GameAction {
+    if(!(action instanceof GameAction)) {
+        throw new Error(`${title}: not a game action`);
+    }
+    return action;
+}
 
 /**
  * What a target's own callbacks can rely on: the target it depends on is set, other earlier ones
@@ -51,17 +70,17 @@ interface BaseTargetEntry {
 interface CardTargetEntry extends BaseTargetEntry {
     cardType?: CardType | CardType[];
     location?: Location | Location[];
-    controller?: Players;
-    player?: Players.Self | Players.Opponent;
+    controller?: Players | ((context: AbilityContext) => Players);
+    player?: Players.Self | Players.Opponent | ((context: AbilityContext) => Players.Self | Players.Opponent);
     optional?: boolean;
     cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
-    gameAction?: GameAction;
+    gameAction?: GameAction | GameAction[];
 }
 
 interface RingTargetEntry extends BaseTargetEntry {
     mode: TargetMode.Ring;
     ringCondition: (ring: Ring, context?: AbilityContext) => boolean;
-    gameAction?: GameAction;
+    gameAction?: GameAction | GameAction[];
 }
 
 interface SelectTargetEntry extends BaseTargetEntry {
@@ -87,19 +106,23 @@ export interface AbilityDraft {
     location?: Location | Location[];
     cannotBeMirrored?: boolean;
     cannotTargetFirst?: boolean;
-    then?: (context: AbilityContext) => object;
+    then?: (context: AbilityContext) => object | undefined;
     initiateDuel?: (context: AbilityContext) => InitiateDuel;
+    phase?: Phases | 'any';
+    evenDuringDynasty?: boolean;
+    conflictProvinceCondition?: (province: ProvinceCard, context: AbilityContext) => boolean;
+    canTriggerOutsideConflict?: boolean;
 }
 
 export function createDraft(title: string, holdsBase: (context: AbilityContext) => boolean): AbilityDraft {
     return { title, holdsBase, targets: {}, specs: [], costs: [], gameActions: [] };
 }
 
-interface CardTargetProps<Context, K, D> {
+interface CardTargetProps<Context, EarlierContext, K, D> {
     cardType?: K;
     location?: Location | Location[];
-    controller?: Players;
-    player?: Players.Self | Players.Opponent;
+    controller?: Players | ((context: EarlierContext) => Players);
+    player?: Players.Self | Players.Opponent | ((context: EarlierContext) => Players.Self | Players.Opponent);
     activePromptTitle?: string;
     optional?: boolean;
     dependsOn?: D;
@@ -147,8 +170,10 @@ export class AbilityBuilder<Base extends AbilityContext, TG extends object = obj
      */
     #isContext<V extends BuilderContext<Base, object, object, CO>>(context: AbilityContext, required: readonly TargetSpec[], optional: readonly TargetSpec[] = []): context is V {
         const value = (spec: TargetSpec) => (spec.bag === 'targets' ? context.targets[spec.name] : context.rings[spec.name]);
+        const mirrored = (spec: TargetSpec) =>
+            spec.name !== 'target' || (spec.bag === 'targets' ? context.target : context.ring) === value(spec);
         return this.draft.holdsBase(context) &&
-            required.every((spec) => spec.holds(value(spec))) &&
+            required.every((spec) => spec.holds(value(spec)) && mirrored(spec)) &&
             optional.every((spec) => value(spec) === undefined || spec.holds(value(spec)));
     }
 
@@ -174,18 +199,36 @@ export class AbilityBuilder<Base extends AbilityContext, TG extends object = obj
         D extends keyof TG & string = never
     >(
         name: Name,
-        props: CardTargetProps<BuilderContext<Base, Visible<TG, D, Name, CardOfType<K>>, Partial<RG>, CO>, K, D>,
-        gameAction?: NoInfer<BuilderAction<Base, Visible<TG, D, Name, CardOfType<K>>, Partial<RG>, CO>>
+        props: CardTargetProps<
+            BuilderContext<Base, Visible<TG, D, Name, CardOfType<K>>, Partial<RG>, CO>,
+            BuilderContext<Base, Earlier<TG, D>, Partial<RG>, CO>,
+            K,
+            D
+        >,
+        ...gameActions: NoInfer<BuilderAction<Base, Visible<TG, D, Name, CardOfType<K>>, Partial<RG>, CO>>[]
     ): AbilityBuilder<Base, TG & { [P in Name]: CardOfType<K> }, RG, CO> {
         const holdsCard = holdsCardOf<K>(props.cardType);
         const own: TargetSpec = { bag: 'targets', name, holds: holdsCard };
         const [required, optional] = this.#visibleSpecs(props.dependsOn, own);
         const { cardCondition, cardType } = props;
         const entry: CardTargetEntry = {};
-        for(const key of ['location', 'controller', 'player', 'activePromptTitle', 'optional', 'dependsOn'] as const) {
+        for(const key of ['location', 'activePromptTitle', 'optional', 'dependsOn'] as const) {
             if(props[key] !== undefined) {
                 Object.assign(entry, { [key]: props[key] });
             }
+        }
+        const earlier = this.draft.specs.filter((spec) => spec.name === props.dependsOn);
+        const others = this.draft.specs.filter((spec) => spec.name !== props.dependsOn);
+        const { controller, player } = props;
+        if(typeof controller === 'function') {
+            entry.controller = this.#checked(controller, earlier, others);
+        } else if(controller !== undefined) {
+            entry.controller = controller;
+        }
+        if(typeof player === 'function') {
+            entry.player = this.#checked(player, earlier, others);
+        } else if(player !== undefined) {
+            entry.player = player;
         }
         if(cardType !== undefined) {
             entry.cardType = ([] as CardType[]).concat(cardType);
@@ -202,8 +245,9 @@ export class AbilityBuilder<Base extends AbilityContext, TG extends object = obj
                 return cardCondition(card, context);
             };
         }
-        if(gameAction) {
-            entry.gameAction = gameAction;
+        if(gameActions.length > 0) {
+            const actions = gameActions.map((action) => toGameAction(this.draft.title, action));
+            entry.gameAction = actions.length === 1 ? actions[0] : actions;
         }
         this.draft.targets[name] = entry;
         this.draft.specs.push(own);
@@ -217,7 +261,7 @@ export class AbilityBuilder<Base extends AbilityContext, TG extends object = obj
     ringTarget<const Name extends string, D extends keyof RG & string = never>(
         name: Name,
         props: RingTargetProps<BuilderContext<Base, Partial<TG>, Earlier<RG, D>, CO>, D>,
-        gameAction?: NoInfer<BuilderAction<Base, Partial<TG>, Visible<RG, D, Name, Ring>, CO>>
+        ...gameActions: NoInfer<BuilderAction<Base, Partial<TG>, Visible<RG, D, Name, Ring>, CO>>[]
     ): AbilityBuilder<Base, TG, RG & { [P in Name]: Ring }, CO> {
         const own: TargetSpec = { bag: 'rings', name, holds: holdsRing };
         const required = this.draft.specs.filter((spec) => spec.name === props.dependsOn);
@@ -237,8 +281,9 @@ export class AbilityBuilder<Base extends AbilityContext, TG extends object = obj
         if(props.dependsOn !== undefined) {
             entry.dependsOn = props.dependsOn;
         }
-        if(gameAction) {
-            entry.gameAction = gameAction;
+        if(gameActions.length > 0) {
+            const actions = gameActions.map((action) => toGameAction(this.draft.title, action));
+            entry.gameAction = actions.length === 1 ? actions[0] : actions;
         }
         this.draft.targets[name] = entry;
         this.draft.specs.push(own);
@@ -257,7 +302,7 @@ export class AbilityBuilder<Base extends AbilityContext, TG extends object = obj
         ];
         const entry: SelectTargetEntry = { mode: TargetMode.Select, choices: {} };
         for(const [label, choice] of Object.entries(choices)) {
-            entry.choices[label] = choice;
+            entry.choices[label] = toGameAction(this.draft.title, choice);
         }
         if(props.activePromptTitle !== undefined) {
             entry.activePromptTitle = props.activePromptTitle;
@@ -286,7 +331,7 @@ export class AbilityBuilder<Base extends AbilityContext, TG extends object = obj
     }
 
     gameAction(...actions: BuilderAction<Base, TG, RG, CO>[]): this {
-        this.draft.gameActions = this.draft.gameActions.concat(actions);
+        this.draft.gameActions = this.draft.gameActions.concat(actions.map((action) => toGameAction(this.draft.title, action)));
         return this;
     }
 
@@ -301,14 +346,38 @@ export class AbilityBuilder<Base extends AbilityContext, TG extends object = obj
         return this;
     }
 
-    /** What happens after this ability resolves; the engine's `then` properties, built from this ability's context. */
-    then(fn: (context: BuilderContext<Base, TG, RG, CO>) => object): this {
+    /**
+     * What happens after this ability resolves; the engine's `then` properties, built from this ability's context.
+     * The engine calls it as the ability resolves, so some cards return nothing and use it for a side effect.
+     */
+    then(fn: (context: BuilderContext<Base, TG, RG, CO>) => object | undefined): this {
         this.draft.then = this.#checked(fn, this.draft.specs);
         return this;
     }
 
     initiateDuel(fn: (context: BuilderContext<Base, TG, RG, CO>) => InitiateDuel): this {
         this.draft.initiateDuel = this.#checked(fn, this.draft.specs);
+        return this;
+    }
+
+    phase(phase: Phases | 'any'): this {
+        this.draft.phase = phase;
+        return this;
+    }
+
+    evenDuringDynasty(): this {
+        this.draft.evenDuringDynasty = true;
+        return this;
+    }
+
+    canTriggerOutsideConflict(): this {
+        this.draft.canTriggerOutsideConflict = true;
+        return this;
+    }
+
+    conflictProvinceCondition(condition: (province: ProvinceCard, context: Base) => boolean): this {
+        const checked = this.#checked((context: Base) => context, []);
+        this.draft.conflictProvinceCondition = (province, context) => condition(province, checked(context));
         return this;
     }
 
@@ -368,7 +437,8 @@ function commonProperties(draft: AbilityDraft) {
         ...(draft.cannotBeMirrored ? { cannotBeMirrored: true } : {}),
         ...(draft.cannotTargetFirst ? { cannotTargetFirst: true } : {}),
         ...(draft.then ? { then: draft.then } : {}),
-        ...(draft.initiateDuel ? { initiateDuel: draft.initiateDuel } : {})
+        ...(draft.initiateDuel ? { initiateDuel: draft.initiateDuel } : {}),
+        ...(draft.evenDuringDynasty ? { evenDuringDynasty: true } : {})
     };
 }
 
@@ -377,7 +447,10 @@ export function actionProperties<S extends BaseCard>(draft: AbilityDraft): Actio
     return {
         title: draft.title,
         ...commonProperties(draft),
-        ...(draft.condition ? { condition: draft.condition } : {})
+        ...(draft.condition ? { condition: draft.condition } : {}),
+        ...(draft.phase ? { phase: draft.phase } : {}),
+        ...(draft.conflictProvinceCondition ? { conflictProvinceCondition: draft.conflictProvinceCondition } : {}),
+        ...(draft.canTriggerOutsideConflict ? { canTriggerOutsideConflict: true } : {})
     };
 }
 

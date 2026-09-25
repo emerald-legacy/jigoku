@@ -55,16 +55,14 @@ export default class Objection extends DrawCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([EventName.OnPhaseStarted]);
 
-        this.wouldInterrupt({
-            title: 'Cancel an event',
-            when: {
+        this.wouldInterrupt('Cancel an event')
+            .when({
                 onInitiateAbilityEffects: (event, context) =>
                     event.card.type === CardType.Event && context.player.imperialFavor !== ''
-            },
-            cannotBeMirrored: true,
-            cost: new ObjectionCost(),
-            gameAction: AbilityDsl.actions.cancel()
-        });
+            })
+            .cost(new ObjectionCost())
+            .gameAction(AbilityDsl.actions.cancel())
+            .cannotBeMirrored();
     }
 
     onPhaseStarted() {

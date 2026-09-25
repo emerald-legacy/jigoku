@@ -34,16 +34,13 @@ export default class Coward extends DrawCard {
             effect: 'dishonor a duel challenger'
         });
 
-        this.reaction({
-            title: 'Dishonor a character',
-            when: {
+        this.reaction('Dishonor a character')
+            .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player.opponent
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
-                controller: Players.Any,
-                gameAction: AbilityDsl.actions.dishonor()
-            }
-        });
+                controller: Players.Any
+            }, AbilityDsl.actions.dishonor());
     }
 }

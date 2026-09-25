@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardType, ConflictType, TargetMode } from '../../../Constants.js';
+import { CardType, ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
 
@@ -9,27 +9,19 @@ export default class ToGovernTheLand extends DrawCard {
     static id = 'to-govern-the-land';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Send home and bow based on bushi\'s power',
-            condition: (context) => this.conditionToTrigger(ConflictType.Political, context),
-            target: {
+        this.action('Send home and bow based on bushi\'s power')
+            .condition((context) => this.conditionToTrigger(ConflictType.Political, context))
+            .target('target', {
                 cardType: CardType.Character,
-                mode: TargetMode.Single,
-                cardCondition: (card, context) => this.conditionToTarget(ConflictType.Political, card, context),
-                gameAction: this.gameAction()
-            }
-        });
+                cardCondition: (card, context) => this.conditionToTarget(ConflictType.Political, card, context)
+            }, this.gameAction());
 
-        this.action({
-            title: 'Send home and bow based on courtier\'s power',
-            condition: (context) => this.conditionToTrigger(ConflictType.Military, context),
-            target: {
+        this.action('Send home and bow based on courtier\'s power')
+            .condition((context) => this.conditionToTrigger(ConflictType.Military, context))
+            .target('target', {
                 cardType: CardType.Character,
-                mode: TargetMode.Single,
-                cardCondition: (card, context) => this.conditionToTarget(ConflictType.Military, card, context),
-                gameAction: this.gameAction()
-            }
-        });
+                cardCondition: (card, context) => this.conditionToTarget(ConflictType.Military, card, context)
+            }, this.gameAction());
     }
 
     private governSkill(conflictType: ConflictType, card: BaseCard): number {

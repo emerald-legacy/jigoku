@@ -7,15 +7,14 @@ export default class BayushiTruthseeker extends DrawCard {
     static id = 'bayushi-truthseeker';
 
     public setupCardAbilities() {
-        this.reaction({
-            title: 'Look at the top two card of your opponents conflict deck',
-            when: {
+        this.reaction('Look at the top two card of your opponents conflict deck')
+            .when({
                 afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<this>) =>
                     context.player.opponent !== undefined &&
                     event.conflict.winner === context.source.controller &&
                     context.source.isAttacking()
-            },
-            handler: (context: TriggeredAbilityContext) => {
+            })
+            .handler((context) => {
                 if(!context || !context.player.opponent) {
                     return;
                 }
@@ -31,7 +30,6 @@ export default class BayushiTruthseeker extends DrawCard {
                         context.game.addMessage('{0} chooses to discard {1}', context.player, card);
                     }
                 });
-            }
-        });
+            });
     }
 }

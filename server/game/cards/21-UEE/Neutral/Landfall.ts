@@ -16,20 +16,18 @@ export default class Landfall extends ProvinceCard {
         this.cards = [];
         this.chosenProvinces = [];
 
-        this.reaction({
-            title: 'Look at your dynasty deck',
-            when: {
+        this.reaction('Look at your dynasty deck')
+            .when({
                 onCardRevealed: (event, context) =>
                     event.card === context.source && context.player.dynastyDeck.length > 0
-            },
-            effect: 'look at the top 8 cards of their dynasty deck',
-            handler: (context: AbilityContext) => {
+            })
+            .handler((context) => {
                 this.cards = context.player.dynastyDeck.slice(0, 8);
                 this.chosenProvinces = [];
 
                 this.wealthSelectPrompt(context);
-            }
-        });
+            })
+            .effect('look at the top 8 cards of their dynasty deck');
     }
 
     wealthSelectPrompt(context: AbilityContext) {

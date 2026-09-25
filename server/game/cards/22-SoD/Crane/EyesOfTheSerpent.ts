@@ -70,28 +70,23 @@ export default class EyesOfTheSerpent extends DrawCard {
     static id = 'eyes-of-the-serpent';
 
     setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Taint a character',
-
-            cost: eyesOfTheSerpentCost(),
-            target: {
+        this.action('Taint a character')
+            .cost(eyesOfTheSerpentCost())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating() && card.isDishonored,
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.taint(),
-                    AbilityDsl.actions.onAffinity((_context) => ({
-                        trait: 'air',
-                        gameAction: AbilityDsl.actions.gainHonor(context => ({
-                            target: context.player,
-                            amount: 1
-                        })),
-                        effect: 'gain 1 honor'
-                    }))
-                ])
-            },
-            effect: 'taint {1}',
-            effectArgs: (context) => [context.target ?? '']
-        });
+                cardCondition: (card) => card.isParticipating() && card.isDishonored
+            }, AbilityDsl.actions.multiple([
+                AbilityDsl.actions.taint(),
+                AbilityDsl.actions.onAffinity((_context) => ({
+                    trait: 'air',
+                    gameAction: AbilityDsl.actions.gainHonor(context => ({
+                        target: context.player,
+                        amount: 1
+                    })),
+                    effect: 'gain 1 honor'
+                }))
+            ]))
+            .effect('taint {1}', (context) => [context.target ?? '']);
     }
 
     canPlay(context: TriggeredAbilityContext, playType: string) {

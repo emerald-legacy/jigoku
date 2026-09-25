@@ -6,19 +6,16 @@ export default class StandYourGround extends DrawCard {
     static id = 'stand-your-ground';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Prevent a character from leaving play',
-            when: {
+        this.wouldInterrupt('Prevent a character from leaving play')
+            .when({
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.isHonored
-            },
-            effect: 'prevent {1} from leaving play',
-            effectArgs: (context) => context.event.card ?? '',
-            cannotBeMirrored: true,
-            gameAction: AbilityDsl.actions.cancel((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.cancel((context) => ({
                 replacementGameAction: AbilityDsl.actions.discardStatusToken({
                     target: ((context).event.card as DrawCard)?.getStatusToken(CharacterStatus.Honored)
                 })
-            }))
-        });
+            })))
+            .effect('prevent {1} from leaving play', (context) => context.event.card ?? '')
+            .cannotBeMirrored();
     }
 }

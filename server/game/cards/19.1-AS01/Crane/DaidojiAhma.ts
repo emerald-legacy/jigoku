@@ -9,9 +9,8 @@ export default class DaidojiAhma extends DrawCard {
     static id = 'daidoji-ahma';
 
     public setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Cancel ability',
-            when: {
+        this.wouldInterrupt('Cancel ability')
+            .when({
                 onInitiateAbilityEffects: (event, context) =>
                     event.context.ability.isTriggeredAbility() &&
                     (event.cardTargets as Array<BaseCard>).some((card) => this.targetIsDishonoredCrane(card, context)),
@@ -25,14 +24,12 @@ export default class DaidojiAhma extends DrawCard {
                     this.isRingEffect(event) && this.targetIsDishonoredCrane(event.card, context),
                 onCardReadied: (event, context) =>
                     this.isRingEffect(event) && this.targetIsDishonoredCrane(event.card, context)
-            },
-            gameAction: AbilityDsl.actions.cancel(),
-            effect: 'cancel the effects of {1}{2}',
-            effectArgs: (context) => [
-                ((context.event.context as AbilityContext).source.type as string) === 'ring' ? 'the ' : '',
-                (context.event.context as AbilityContext).source
-            ]
-        });
+            })
+            .gameAction(AbilityDsl.actions.cancel())
+            .effect('cancel the effects of {1}{2}', (context) => [
+                ((context.event.context).source.type as string) === 'ring' ? 'the ' : '',
+                (context.event.context).source
+            ]);
     }
 
     private isRingEffect(event: { context?: AbilityContext }): boolean {

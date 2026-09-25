@@ -8,41 +8,34 @@ export default class FieldsOfRollingThunder extends DrawCard {
     static id = 'fields-of-rolling-thunder';
 
     public setupCardAbilities() {
-        this.forcedReaction({
-            title: 'Discard this holding',
-            when: {
+        this.forcedReaction('Discard this holding')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.loser === context.player && event.conflict.conflictUnopposed
-            },
-            gameAction: AbilityDsl.actions.discardFromPlay()
-        });
+            })
+            .gameAction(AbilityDsl.actions.discardFromPlay());
 
-        this.action({
-            title: 'Honor a character',
-
-            effect: 'honor {0}. They will be dishonored at the end of the conflict if {1} loses the conflict.',
-            effectArgs: (context) => [context.source.controller],
-            target: {
+        this.action('Honor a character')
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating() && card.isFaction('unicorn'),
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.honor(),
-                    AbilityDsl.actions.cardLastingEffect((context) => {
-                        const conflictWhenItWasTriggered = this.game.currentConflict;
-                        return {
-                            duration: Duration.UntilEndOfPhase,
-                            effect: AbilityDsl.effects.delayedEffect({
-                                when: {
-                                    onConflictFinished: (event: EventPayload<EventName.OnConflictFinished>, context: TriggeredAbilityContext) =>
-                                        event.conflict === conflictWhenItWasTriggered &&
+                cardCondition: (card) => card.isParticipating() && card.isFaction('unicorn')
+            }, AbilityDsl.actions.multiple([
+                AbilityDsl.actions.honor(),
+                AbilityDsl.actions.cardLastingEffect((context) => {
+                    const conflictWhenItWasTriggered = this.game.currentConflict;
+                    return {
+                        duration: Duration.UntilEndOfPhase,
+                        effect: AbilityDsl.effects.delayedEffect({
+                            when: {
+                                onConflictFinished: (event: EventPayload<EventName.OnConflictFinished>, context: TriggeredAbilityContext) =>
+                                    event.conflict === conflictWhenItWasTriggered &&
                                         event.conflict.winner === context.player.opponent
-                                },
-                                gameAction: AbilityDsl.actions.dishonor({ target: context.target })
-                            })
-                        };
-                    })
-                ])
-            }
-        });
+                            },
+                            gameAction: AbilityDsl.actions.dishonor({ target: context.target })
+                        })
+                    };
+                })
+            ]))
+            .effect('honor {0}. They will be dishonored at the end of the conflict if {1} loses the conflict.', (context) => [context.source.controller]);
     }
 }

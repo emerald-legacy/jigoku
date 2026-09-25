@@ -8,13 +8,11 @@ export default class ExcellenceAttained extends ProvinceCard {
     static id = 'excellence-attained';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Search for an attachment',
-            when: {
+        this.reaction('Search for an attachment')
+            .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source && context.player.conflictDeck.length > 0
-            },
-            effect: 'search the top 5 cards of their conflict deck for an attachment and put it into play',
-            gameAction: AbilityDsl.actions.sequential([
+            })
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose an attachment',
                     cards: context.player.conflictDeck.slice(0, 5),
@@ -44,7 +42,7 @@ export default class ExcellenceAttained extends ProvinceCard {
                     deck: Location.ConflictDeck,
                     target: context.player
                 }))
-            ])
-        });
+            ]))
+            .effect('search the top 5 cards of their conflict deck for an attachment and put it into play');
     }
 }

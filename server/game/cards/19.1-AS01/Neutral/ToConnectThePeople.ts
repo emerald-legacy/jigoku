@@ -2,7 +2,6 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Location, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 import { PlayCharacterAsIfFromHand } from '../../../PlayCharacterAsIfFromHand.js';
 import { PlayDisguisedCharacterAsIfFromHand } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 
@@ -10,16 +9,13 @@ export default class ToConnectThePeople extends DrawCard {
     static id = 'to-connect-the-people';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Play a character from your opponent\'s discard pile',
-            condition: (context) =>
+        this.action('Play a character from your opponent\'s discard pile')
+            .condition((context) =>
                 !context.game.isDuringConflict() &&
                 (context.player.cardsInPlay).some(
                     (card) => card.getType() === CardType.Character && card.hasTrait('merchant')
-                ),
-            effect: 'discard the top 3 cards of {1}\'s dynasty deck',
-            effectArgs: (context) => [context.player.opponent as Player],
-            gameAction: AbilityDsl.actions.sequential([
+                ))
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.handler({
                     handler: (context) => {
                         const cards = context.player.opponent?.dynastyDeck.slice(0, 3) ?? [];
@@ -51,9 +47,9 @@ export default class ToConnectThePeople extends DrawCard {
                         AbilityDsl.actions.playCard({ ignoredRequirements: ['location'] })
                     ])
                 })
-            ]),
-            max: AbilityDsl.limit.perRound(1)
-        });
+            ]))
+            .effect('discard the top 3 cards of {1}\'s dynasty deck', (context) => [context.player.opponent])
+            .max(AbilityDsl.limit.perRound(1));
     }
 
     private maxMerchantGlory(context: AbilityContext) {

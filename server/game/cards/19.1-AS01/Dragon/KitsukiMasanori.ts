@@ -23,11 +23,9 @@ export default class KitsukiMasanori extends DrawCard {
             effect: AbilityDsl.effects.cardCannot({ cannot: 'applyCovert', restricts: 'opponentsCardEffects' })
         });
 
-        this.reaction({
-            title: 'Search for a Title or Technique',
-            when: { onCharacterEntersPlay: (event, context) => event.card === context.source },
-            effect: 'search for a Technique or Title',
-            gameAction: AbilityDsl.actions.sequential([
+        this.reaction('Search for a Title or Technique')
+            .when({ onCharacterEntersPlay: (event, context) => event.card === context.source })
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.chooseAction({
                     activePromptTitle: 'Select where to search',
                     options: {
@@ -90,7 +88,7 @@ export default class KitsukiMasanori extends DrawCard {
                         })
                     };
                 })
-            ])
-        });
+            ]))
+            .effect('search for a Technique or Title');
     }
 }

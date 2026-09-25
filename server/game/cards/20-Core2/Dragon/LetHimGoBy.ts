@@ -7,24 +7,21 @@ export default class LetHimGoBy extends DrawCard {
     static id = 'let-him-go-by';
 
     public setupCardAbilities() {
-        this.reaction({
-            title: 'Bow a character',
-            when: {
+        this.reaction('Bow a character')
+            .when({
                 onMoveToConflict: (event, context) =>
                     context.player.opponent && event.card.controller === context.player.opponent,
                 onCardPlayed: (event, context) =>
                     context.player.opponent &&
                     event.card.controller === context.player.opponent &&
                     event.card.isParticipating()
-            },
-            gameAction: AbilityDsl.actions.bow((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.bow((context) => ({
                 target: (context as TriggeredAbilityContext).event.card
-            }))
-        });
+            })));
 
-        this.action({
-            title: 'Challenge a character anywhere to a duel',
-            initiateDuel: {
+        this.action('Challenge a character anywhere to a duel')
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 targetCondition: () => true,
                 gameAction: (duel) =>
@@ -40,8 +37,7 @@ export default class LetHimGoBy extends DrawCard {
                     (duel.loser ?? []).reduce((total: number, card) => total + card.getMilitarySkill(), 0),
                     'military'
                 ]
-            },
-            max: AbilityDsl.limit.perConflict(1)
-        });
+            }))
+            .max(AbilityDsl.limit.perConflict(1));
     }
 }

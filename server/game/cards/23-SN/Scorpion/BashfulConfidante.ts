@@ -33,22 +33,18 @@ export default class BashfulConfidante extends DrawCard {
     static id = 'bashful-confidante';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Pick a character to spend honor to use abilities',
-            when: {
+        this.reaction('Pick a character to spend honor to use abilities')
+            .when({
                 onConflictStarted: (_, context) => context.source.isParticipating()
-            },
-            target: {
+            })
+            .target('target', {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                    duration: Duration.UntilEndOfConflict,
-                    effect: AbilityDsl.effects.additionalTriggerCostForCard(() => [abilityCost(context.player)])
-                }))
-            },
-            effect: 'force {1} to pay 1 honor to {2} in order to trigger {0}\'s abilities',
-            effectArgs: context => [context.player.opponent, context.player]
-        });
+                cardCondition: card => card.isParticipating()
+            }, AbilityDsl.actions.cardLastingEffect(context => ({
+                duration: Duration.UntilEndOfConflict,
+                effect: AbilityDsl.effects.additionalTriggerCostForCard(() => [abilityCost(context.player)])
+            })))
+            .effect('force {1} to pay 1 honor to {2} in order to trigger {0}\'s abilities', context => [context.player.opponent, context.player]);
     }
 }

@@ -18,19 +18,16 @@ export default class ChainOfCommand extends DrawCard {
             location: Location.ConflictDiscardPile,
             effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
-        this.action({
-            title: 'Ready a character',
-            cost: AbilityDsl.costs.bow({
+        this.action('Ready a character')
+            .cost(AbilityDsl.costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card: BaseCard) => !card.isUnique()
-            }),
-            target: {
+            }))
+            .target('target', {
                 activePromptTitle: 'Choose a unique character',
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isUnique(),
-                gameAction: AbilityDsl.actions.ready()
-            }
-        });
+                cardCondition: (card) => card.isUnique()
+            }, AbilityDsl.actions.ready());
     }
 
     public onCardPlayed(event: EventPayload<EventName.OnCardPlayed>) {

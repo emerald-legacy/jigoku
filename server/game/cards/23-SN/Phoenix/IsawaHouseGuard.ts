@@ -19,9 +19,8 @@ export default class IsawaHouseGuard extends DrawCard {
             effect: 'add 1 to their duel total'
         });
 
-        this.action({
-            title: 'Initiate a military duel to dishonor',
-            initiateDuel: {
+        this.action('Initiate a military duel to dishonor')
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 gameAction: (duel) => AbilityDsl.actions.multipleContext(() => {
                     const gameActions: GameAction[] = [];
@@ -40,7 +39,6 @@ export default class IsawaHouseGuard extends DrawCard {
                 }),
                 message: '{0} is dishonored and injured if tainted',
                 messageArgs: duel => [duel.loser]
-            }
-        });
+            }));
     }
 }

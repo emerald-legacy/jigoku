@@ -9,24 +9,20 @@ export default class CinderSalamander extends DrawCard {
     static id = 'cinder-salamander';
 
     public setupCardAbilities() {
-        this.reaction({
-            title: 'Shuffle this character back into the deck',
-            location: Location.DynastyDiscardPile,
-            when: {
+        this.reaction('Shuffle this character back into the deck')
+            .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
-            },
-            gameAction: AbilityDsl.actions.moveCard({
+            })
+            .gameAction(AbilityDsl.actions.moveCard({
                 destination: Location.DynastyDeck,
                 shuffle: true
-            })
-        });
+            }))
+            .location(Location.DynastyDiscardPile);
 
-        this.action({
-            title: 'Search other copies of this character and put them into play',
-            condition: (context) =>
-                this.game.rings[this.getCurrentElementSymbol(ELEMENT_KEY)].isConsideredClaimed(context.player),
-
-            gameAction: AbilityDsl.actions.multiple([
+        this.action('Search other copies of this character and put them into play')
+            .condition((context) =>
+                this.game.rings[this.getCurrentElementSymbol(ELEMENT_KEY)].isConsideredClaimed(context.player))
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.deckSearch({
                     activePromptTitle: 'Select characters to put into play from your deck',
                     deck: Decks.DynastyDeck,
@@ -50,10 +46,9 @@ export default class CinderSalamander extends DrawCard {
                     message: '{0} finds {1} in their provinces',
                     messageArgs: (cards: DrawCard[], player) => [player, this.salamanderCountToText(cards.length)]
                 })
-            ]),
-            effect: 'search their deck and provinces for other copies of {0} and put them into play',
-            max: AbilityDsl.limit.perRound(1)
-        });
+            ]))
+            .effect('search their deck and provinces for other copies of {0} and put them into play')
+            .max(AbilityDsl.limit.perRound(1));
     }
 
     public getPrintedElementSymbols() {

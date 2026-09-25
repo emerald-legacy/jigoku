@@ -6,10 +6,9 @@ export default class SteelOnSteel extends DrawCard {
     static id = 'steel-on-steel';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a military duel, discarding the loser',
-            condition: (context) => context.game.isDuringConflict(ConflictType.Military),
-            initiateDuel: {
+        this.action('Initiate a military duel, discarding the loser')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 gameAction: (duel) =>
                     AbilityDsl.actions.conditional({
@@ -18,7 +17,6 @@ export default class SteelOnSteel extends DrawCard {
                         trueGameAction: AbilityDsl.actions.removeFate(),
                         falseGameAction: AbilityDsl.actions.discardFromPlay()
                     })
-            }
-        });
+            }));
     }
 }

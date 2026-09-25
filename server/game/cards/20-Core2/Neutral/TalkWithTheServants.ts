@@ -6,17 +6,16 @@ export default class TalkWithTheServants extends DrawCard {
     static id = 'talk-with-the-servants';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Force opponent to discard 2 cards',
-            when: {
+        this.reaction('Force opponent to discard 2 cards')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.player && event.conflict.conflictType === ConflictType.Political
-            },
-            cost: AbilityDsl.costs.dishonor({
+            })
+            .cost(AbilityDsl.costs.dishonor({
                 optional: true,
                 cardCondition: (card) => card.isParticipating()
-            }),
-            gameAction: AbilityDsl.actions.conditional({
+            }))
+            .gameAction(AbilityDsl.actions.conditional({
                 condition: (context) => context.costs.dishonor instanceof DrawCard,
                 trueGameAction: AbilityDsl.actions.discardAtRandom((context) => ({
                     amount: 2,
@@ -26,8 +25,7 @@ export default class TalkWithTheServants extends DrawCard {
                     amount: 2,
                     target: context.player.opponent
                 }))
-            }),
-            max: AbilityDsl.limit.perConflict(1)
-        });
+            }))
+            .max(AbilityDsl.limit.perConflict(1));
     }
 }

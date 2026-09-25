@@ -2,7 +2,6 @@ import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { ProvinceCard } from '../../../ProvinceCard.js';
 
 export default class ChildOfSaltlessWater extends DrawCard {
     static id = 'child-of-saltless-water';
@@ -19,22 +18,19 @@ export default class ChildOfSaltlessWater extends DrawCard {
             })
         });
 
-        this.reaction<ProvinceCard>({
-            title: 'Evoke the strength of water!',
-            when: {
+        this.reaction('Evoke the strength of water!')
+            .when({
                 onCardPlayed: (event, context) => event.card === context.source
-            },
-            target: {
+            })
+            .target('target', {
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: (card) => card.isConflictProvince()
-            },
-            gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext<DrawCard, ProvinceCard>) => ({
+            })
+            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.source,
                 effect: AbilityDsl.effects.setMilitarySkill(context.target?.printedStrength ?? 0)
-            })),
-            effect: 'set it\'s {1} to {2}',
-            effectArgs: (context) => ['military', context.target?.printedStrength ?? 0]
-        });
+            })))
+            .effect('set it\'s {1} to {2}', (context) => ['military', context.target?.printedStrength ?? 0]);
     }
 }

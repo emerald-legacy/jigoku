@@ -6,13 +6,12 @@ export default class AwakeTheFearfulHeart extends DrawCard {
     static id = 'awake-the-fearful-heart';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move home each character without fate',
-            condition: (context) =>
+        this.action('Move home each character without fate')
+            .condition((context) =>
                 context.player.cardsInPlay.some(
                     (card: DrawCard) => card.isParticipating() && card.hasTrait('shugenja')
-                ),
-            gameAction: AbilityDsl.actions.sequential([
+                ))
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.sendHome((context) => ({
                     target:
                         (context.game.currentConflict)?.getParticipants(
@@ -29,7 +28,6 @@ export default class AwakeTheFearfulHeart extends DrawCard {
                     })),
                     effect: 'forbid all players from moving characters into the conflict'
                 })
-            ])
-        });
+            ]));
     }
 }

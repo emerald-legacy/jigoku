@@ -20,37 +20,34 @@ export default class KakitaTechnique extends DrawCard {
             })
         });
 
-        this.action({
-            title: 'Give character +1/+1',
-            target: {
+        this.action('Give character +1/+1')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating() && (card.hasTrait('bushi') || card.hasTrait('duelist')),
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.cardLastingEffect((context) => ({
-                        effect: AbilityDsl.effects.delayedEffect({
-                            when: {
-                                onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context: AbilityContext) =>
-                                    event.player === context.player && event.card.type === CardType.Event
-                            },
-                            message: '{0} gets +1{1} and +1{2} due to the delayed effect of {3}',
-                            messageArgs: () => [context.target, 'military', 'political', context.source],
-                            multipleTrigger: true,
-                            gameAction: AbilityDsl.actions.cardLastingEffect({
-                                target: context.target,
-                                effect: AbilityDsl.effects.modifyBothSkills(1)
-                            })
+                cardCondition: (card) => card.isParticipating() && (card.hasTrait('bushi') || card.hasTrait('duelist'))
+            }, AbilityDsl.actions.sequential([
+                AbilityDsl.actions.cardLastingEffect((context) => ({
+                    effect: AbilityDsl.effects.delayedEffect({
+                        when: {
+                            onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context: AbilityContext) =>
+                                event.player === context.player && event.card.type === CardType.Event
+                        },
+                        message: '{0} gets +1{1} and +1{2} due to the delayed effect of {3}',
+                        messageArgs: () => [context.target, 'military', 'political', context.source],
+                        multipleTrigger: true,
+                        gameAction: AbilityDsl.actions.cardLastingEffect({
+                            target: context.target,
+                            effect: AbilityDsl.effects.modifyBothSkills(1)
                         })
-                    })),
-                    AbilityDsl.actions.playerLastingEffect((context) => ({
-                        targetController: context.player,
-                        duration: Duration.UntilPassPriority,
-                        effect: AbilityDsl.effects.additionalAction(this.#getExtraActionCount(context))
-                    }))
-                ])
-            },
-            effect: 'give {0} +1{1} and +1{2} after each event they play{3}{4}{5}{6}',
-            effectArgs: (context) => {
+                    })
+                })),
+                AbilityDsl.actions.playerLastingEffect((context) => ({
+                    targetController: context.player,
+                    duration: Duration.UntilPassPriority,
+                    effect: AbilityDsl.effects.additionalAction(this.#getExtraActionCount(context))
+                }))
+            ]))
+            .effect('give {0} +1{1} and +1{2} after each event they play{3}{4}{5}{6}', (context) => {
                 const actions = this.#getExtraActionCount(context);
                 if(actions > 0) {
                     return [
@@ -63,9 +60,8 @@ export default class KakitaTechnique extends DrawCard {
                     ];
                 }
                 return ['military', 'political', '', '', '', ''];
-            },
-            max: AbilityDsl.limit.perConflict(1)
-        });
+            })
+            .max(AbilityDsl.limit.perConflict(1));
     }
 
     #getExtraActionCount(context: AbilityContext) {

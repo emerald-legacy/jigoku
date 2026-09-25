@@ -1,4 +1,3 @@
-import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -7,18 +6,15 @@ class NoBreathWasted extends DrawCard {
     static id = 'no-breath-wasted';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Ready character',
-            cost: AbilityDsl.costs.sacrifice({ cardType: CardType.Character }),
-            target: {
+        this.action('Ready character')
+            .cost(AbilityDsl.costs.sacrifice({ cardType: CardType.Character }))
+            .target('target', {
                 activePromptTitle: 'Choose a character to ready',
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.ready(),
-                    AbilityDsl.actions.honor((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({ target: context.target.controller !== context.player ? context.target : [] }))
-                ])
-            }
-        });
+                cardType: CardType.Character
+            }, AbilityDsl.actions.multiple([
+                AbilityDsl.actions.ready(),
+                AbilityDsl.actions.honor((context) => ({ target: context.target.controller !== context.player ? context.target : [] }))
+            ]));
     }
 }
 

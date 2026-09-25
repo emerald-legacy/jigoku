@@ -8,25 +8,21 @@ export default class MangroveSafehouse extends DrawCard {
     static id = 'mangrove-safehouse';
 
     public setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Move an attacker out of the conflict',
-            effect: 'move {0} home{1}',
-            effectArgs: (context) => [
-                this.targetIsMantis(context) && this.opponentHasFateToBeStolen(context) ? ' and steal 1 fate' : ''
-            ],
-            target: {
+        this.action('Move an attacker out of the conflict')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isAttacking(),
-                gameAction: AbilityDsl.actions.multipleContext((context: AbilityContext<DrawCard, DrawCard>) => {
-                    const gameActions: GameAction[] = [AbilityDsl.actions.sendHome()];
-                    if(this.targetIsMantis(context)) {
-                        gameActions.push(AbilityDsl.actions.takeFate({ target: context.player.opponent }));
-                    }
-                    return { gameActions };
-                })
-            }
-        });
+                cardCondition: (card) => card.isAttacking()
+            }, AbilityDsl.actions.multipleContext((context) => {
+                const gameActions: GameAction[] = [AbilityDsl.actions.sendHome()];
+                if(this.targetIsMantis(context)) {
+                    gameActions.push(AbilityDsl.actions.takeFate({ target: context.player.opponent }));
+                }
+                return { gameActions };
+            }))
+            .effect('move {0} home{1}', (context) => [
+                this.targetIsMantis(context) && this.opponentHasFateToBeStolen(context) ? ' and steal 1 fate' : ''
+            ]);
     }
 
     private targetIsMantis(context: AbilityContext<DrawCard, DrawCard>): boolean {

@@ -6,20 +6,17 @@ export default class SoshiIllusionist extends DrawCard {
     static id = 'soshi-illusionist';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Discard status from character',
-            cost: AbilityDsl.costs.payFate(1),
-            target: {
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.selectToken((context) => ({
-                    card: context.target,
-                    activePromptTitle: 'Which token do you wish to discard?',
-                    message: '{0} discards {1}',
-                    messageArgs: (token, player) => [player, token],
-                    gameAction: AbilityDsl.actions.discardStatusToken()
-                }))
-            },
-            effect: 'discard a status token from {0}'
-        });
+        this.action('Discard status from character')
+            .cost(AbilityDsl.costs.payFate(1))
+            .target('target', {
+                cardType: CardType.Character
+            }, AbilityDsl.actions.selectToken((context) => ({
+                card: context.target,
+                activePromptTitle: 'Which token do you wish to discard?',
+                message: '{0} discards {1}',
+                messageArgs: (token, player) => [player, token],
+                gameAction: AbilityDsl.actions.discardStatusToken()
+            })))
+            .effect('discard a status token from {0}');
     }
 }

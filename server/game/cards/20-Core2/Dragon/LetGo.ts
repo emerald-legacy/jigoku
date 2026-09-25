@@ -6,12 +6,9 @@ export default class LetGo extends DrawCard {
     static id = 'let-go';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Discard an attachment',
-            target: {
-                cardType: CardType.Attachment,
-                gameAction: AbilityDsl.actions.discardFromPlay()
-            }
-        });
+        this.action('Discard an attachment')
+            .target('target', {
+                cardType: CardType.Attachment
+            }, AbilityDsl.actions.discardFromPlay());
     }
 }

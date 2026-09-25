@@ -23,16 +23,13 @@ export default class KitsukiSeiji extends DrawCard {
             effect: [AbilityDsl.effects.modifyMilitarySkill(-2), AbilityDsl.effects.modifyPoliticalSkill(+2)]
         });
 
-        this.wouldInterrupt({
-            title: 'Put fate on this character',
-            when: {
+        this.wouldInterrupt('Put fate on this character')
+            .when({
                 onMoveFate: (event: EventPayload<EventName.OnMoveFate>) => this.fateRecipientIsSeijisRing(event.recipient),
                 onPlaceFateOnUnclaimedRings: (event: EventPayload<EventName.OnPlaceFateOnUnclaimedRings>) =>
                     (event.recipients ?? []).some((recipient) => this.fateRecipientIsSeijisRing(recipient.ring))
-            },
-            effect: 'put the fate that would go on the {1} ring on {0} instead',
-            effectArgs: () => [this.getCurrentElementSymbol(ELEMENT_KEY)],
-            gameAction: AbilityDsl.actions.cancel((context) => {
+            })
+            .gameAction(AbilityDsl.actions.cancel((context) => {
                 switch((context).event.name) {
                     case 'onPlaceFateOnUnclaimedRings':
                         return { replacementGameAction: this.replacementForPlaceFateOnUnclaimedRings(context) };
@@ -41,8 +38,8 @@ export default class KitsukiSeiji extends DrawCard {
                     default:
                         return { replacementGameAction: AbilityDsl.actions.noAction() };
                 }
-            })
-        });
+            }))
+            .effect('put the fate that would go on the {1} ring on {0} instead', () => [this.getCurrentElementSymbol(ELEMENT_KEY)]);
     }
 
     public getPrintedElementSymbols() {

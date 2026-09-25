@@ -8,17 +8,13 @@ export default class AppeasingTheRestless extends DrawCard {
     static id = 'appeasing-the-restless';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Place fates on spirits',
-            cost: AbilityDsl.costs.bow({
+        this.action('Place fates on spirits')
+            .cost(AbilityDsl.costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card: BaseCard) => card.hasTrait('shugenja')
-            }),
-            cannotTargetFirst: true,
-            effect: 'choose up to 3 spirits to place fate on{1}{2}',
-            effectArgs: context => context.player.hasAffinity('void', context) ? ['', ''] : [' and injure ', context.costs.bow as DrawCard],
-            condition: context => context.player.fate > 0 && context.player.checkRestrictions('spendFate', context) || !context.player.hasAffinity('void', context),
-            gameAction: AbilityDsl.actions.multipleContext(context => {
+            }))
+            .condition(context => context.player.fate > 0 && context.player.checkRestrictions('spendFate', context) || !context.player.hasAffinity('void', context))
+            .gameAction(AbilityDsl.actions.multipleContext(context => {
                 const gameActions = [];
 
                 if(context.player.fate > 0 && context.player.checkRestrictions('spendFate', context)) {
@@ -48,7 +44,8 @@ export default class AppeasingTheRestless extends DrawCard {
                 }
 
                 return { gameActions };
-            })
-        });
+            }))
+            .effect('choose up to 3 spirits to place fate on{1}{2}', context => context.player.hasAffinity('void', context) ? ['', ''] : [' and injure ', context.costs.bow as DrawCard])
+            .cannotTargetFirst();
     }
 }

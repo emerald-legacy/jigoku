@@ -9,14 +9,11 @@ export default class OpportunisticRustler extends DrawCard {
     static id = 'opportunistic-rustler';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Look at your opponent\'s dynasty deck',
-            when: {
+        this.reaction('Look at your opponent\'s dynasty deck')
+            .when({
                 onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) => event.attackers?.includes(context.source) && event.conflict.conflictType === ConflictType.Military
-            },
-            effect: 'look at {1}\'s dynasty deck',
-            effectArgs: context => [context.player.opponent],
-            gameAction: AbilityDsl.actions.deckSearch(context => ({
+            })
+            .gameAction(AbilityDsl.actions.deckSearch(context => ({
                 targetMode: TargetMode.Single,
                 numCards: 1,
                 amount: (context: AbilityContext) => context.game.currentConflict?.declaredProvince?.printedStrength || 1,
@@ -52,7 +49,7 @@ export default class OpportunisticRustler extends DrawCard {
 
                     return { gameActions };
                 })
-            }))
-        });
+            })))
+            .effect('look at {1}\'s dynasty deck', context => [context.player.opponent]);
     }
 }

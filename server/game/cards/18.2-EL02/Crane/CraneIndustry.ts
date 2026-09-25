@@ -14,21 +14,19 @@ export default class CraneIndustry extends DrawCard {
     public setupCardAbilities() {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register(['onConflictFinished', 'onCardPlayed']);
-        this.reaction({
-            when: {
+        this.reaction('Reduce the cost to play events')
+            .when({
                 onConflictStarted: () => true
-            },
-            max: AbilityDsl.limit.perConflict(1),
-            title: 'Reduce the cost to play events',
-            effect: 'reduce the cost of the first copy of each event they play this conflict by 1',
-            gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
                 effect: AbilityDsl.effects.reduceCost({
                     amount: 1,
                     match: (card: BaseCard) => !this.hasEventBeenPlayedByThisPlayer(card)
                 })
-            }))
-        });
+            })))
+            .effect('reduce the cost of the first copy of each event they play this conflict by 1')
+            .max(AbilityDsl.limit.perConflict(1));
     }
 
     public onConflictFinished() {

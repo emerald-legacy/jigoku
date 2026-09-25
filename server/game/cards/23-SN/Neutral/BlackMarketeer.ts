@@ -6,21 +6,17 @@ export default class BlackMarketeer extends DrawCard {
     static id = 'black-marketeer';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Play an attachment',
-            effect: 'buy an attachment from {1}\'s discard pile',
-            effectArgs: context => [context.player.opponent],
-            target: {
+        this.action('Play an attachment')
+            .target('target', {
                 cardType: CardType.Attachment,
                 controller: Players.Opponent,
-                location: Location.ConflictDiscardPile,
-                gameAction: AbilityDsl.actions.playCard({
-                    resetOnCancel: true,
-                    source: this,
-                    playType: PlayType.PlayFromHand,
-                    payFateToOpponent: true
-                })
-            }
-        });
+                location: Location.ConflictDiscardPile
+            }, AbilityDsl.actions.playCard({
+                resetOnCancel: true,
+                source: this,
+                playType: PlayType.PlayFromHand,
+                payFateToOpponent: true
+            }))
+            .effect('buy an attachment from {1}\'s discard pile', context => [context.player.opponent]);
     }
 }

@@ -24,27 +24,22 @@ export default class AgashaJianyu extends DrawCard {
     static id = 'agasha-jianyu';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Empower a character with the combined strength of the elements',
-
-            target: {
+        this.action('Empower a character with the combined strength of the elements')
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect((context) => {
-                    const bonus = bonusBase(context);
-                    return {
-                        effect: [
-                            AbilityDsl.effects.modifyMilitarySkill(2 * bonus),
-                            AbilityDsl.effects.modifyPoliticalSkill(1 * bonus)
-                        ]
-                    };
-                })
-            },
-            effect: 'give {0} +{1}{2}/+{3}{4}',
-            effectArgs: (context) => {
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.cardLastingEffect((context) => {
+                const bonus = bonusBase(context);
+                return {
+                    effect: [
+                        AbilityDsl.effects.modifyMilitarySkill(2 * bonus),
+                        AbilityDsl.effects.modifyPoliticalSkill(1 * bonus)
+                    ]
+                };
+            }))
+            .effect('give {0} +{1}{2}/+{3}{4}', (context) => {
                 const bonus = bonusBase(context);
                 return [2 * bonus, 'military', 1 * bonus, 'political'];
-            }
-        });
+            });
     }
 }

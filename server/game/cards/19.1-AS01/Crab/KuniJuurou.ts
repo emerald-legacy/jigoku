@@ -14,17 +14,14 @@ export default class KuniJuurou extends DrawCard {
             effect: AbilityDsl.effects.modifyBothSkills(-2)
         });
 
-        this.action({
-            title: 'Taint a character',
-            effect: 'identify the source of Crab\'s misfortune… it is {0}! {0} is tainted.',
-            phase: Phases.Conflict,
-            condition: (context) =>
-                !!(context.player.opponent && context.player.hand.length <= context.player.opponent.hand.length),
-            target: {
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.taint()
-            }
-        });
+        this.action('Taint a character')
+            .condition((context) =>
+                !!(context.player.opponent && context.player.hand.length <= context.player.opponent.hand.length))
+            .target('target', {
+                cardType: CardType.Character
+            }, AbilityDsl.actions.taint())
+            .effect('identify the source of Crab\'s misfortune… it is {0}! {0} is tainted.')
+            .phase(Phases.Conflict);
     }
 
     private controllerCannotPayHonorCostsEffect() {

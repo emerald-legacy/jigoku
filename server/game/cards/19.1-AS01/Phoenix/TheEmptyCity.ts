@@ -1,5 +1,4 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Duration, EventName, Location, Players, TargetMode } from '../../../Constants.js';
+import { CardType, Duration, EventName, Location, Players } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -18,50 +17,43 @@ export default class TheEmptyCity extends ProvinceCard {
 
         const sharedLimit = AbilityDsl.limit.perRound(1);
 
-        this.action({
-            title: 'Claim a ring',
-            canTriggerOutsideConflict: true,
-            cost: AbilityDsl.costs.bow({
+        this.action('Claim a ring')
+            .cost(AbilityDsl.costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card: BaseCard) => card.hasTrait('spirit')
-            }),
-            target: {
-                mode: TargetMode.Ring,
+            }))
+            .ringTarget('target', {
                 activePromptTitle: 'Choose an unclaimed ring',
-                ringCondition: (ring) => ring.isUnclaimed(),
-                gameAction: AbilityDsl.actions.claimRing({
-                    takeFate: false,
-                    type: 'political'
-                })
-            },
-            effect: 'claim {0} as a political ring',
-            limit: sharedLimit
-        });
+                ringCondition: (ring) => ring.isUnclaimed()
+            }, AbilityDsl.actions.claimRing({
+                takeFate: false,
+                type: 'political'
+            }))
+            .effect('claim {0} as a political ring')
+            .limit(sharedLimit)
+            .canTriggerOutsideConflict();
 
-        this.action({
-            title: 'Put a Spirit character into play',
-            canTriggerOutsideConflict: true,
-            target: {
+        this.action('Put a Spirit character into play')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
-                cardCondition: (card) => card.hasTrait('spirit') && (card.getCost() ?? 0) <= 3,
-                gameAction: AbilityDsl.actions.joint([
-                    AbilityDsl.actions.putIntoPlay(),
-                    AbilityDsl.actions.cardLastingEffect((context) => ({
-                        target: context.source,
-                        effect: AbilityDsl.effects.cannotTriggerAbilities(),
-                        duration: Duration.UntilEndOfRound
-                    }))
-                ])
-            },
-            effect: 'put {0} into play',
-            then: (context: AbilityContext) => {
+                cardCondition: (card) => card.hasTrait('spirit') && (card.getCost() ?? 0) <= 3
+            }, AbilityDsl.actions.joint([
+                AbilityDsl.actions.putIntoPlay(),
+                AbilityDsl.actions.cardLastingEffect((context) => ({
+                    target: context.source,
+                    effect: AbilityDsl.effects.cannotTriggerAbilities(),
+                    duration: Duration.UntilEndOfRound
+                }))
+            ]))
+            .effect('put {0} into play')
+            .then((context) => {
                 this.invokedSpirit = context.target;
                 return { gameAction: AbilityDsl.actions.noAction() };
-            },
-            limit: sharedLimit
-        });
+            })
+            .limit(sharedLimit)
+            .canTriggerOutsideConflict();
     }
 
     public onRoundEnded() {

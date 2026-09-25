@@ -15,43 +15,38 @@ export default class TheHundredHandStrike extends DrawCard {
     static id = 'the-hundred-hand-strike';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Give a skill penalty to a participating character',
-            condition: (context) => context.game.isDuringConflict(),
-            max: AbilityDsl.limit.perConflict(1),
-            targets: {
-                puncher: {
-                    cardType: CardType.Character,
-                    controller: Players.Self,
-                    cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
-                },
-                punchee: {
-                    cardType: CardType.Character,
-                    controller: Players.Opponent,
-                    cardCondition: (card) => card.isParticipating()
-                }
-            },
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+        this.action('Give a skill penalty to a participating character')
+            .condition((context) => context.game.isDuringConflict())
+            .target('puncher', {
+                cardType: CardType.Character,
+                controller: Players.Self,
+                cardCondition: (card) => card.isParticipating() && card.hasTrait('monk')
+            })
+            .target('punchee', {
+                cardType: CardType.Character,
+                controller: Players.Opponent,
+                cardCondition: (card) => card.isParticipating()
+            })
+            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.targets.punchee,
                 effect: AbilityDsl.effects.modifyBothSkills(penalty(context))
-            })),
-            then: (context) => {
+            })))
+            .effect('give {4} {1}{2} and {1}{3}', (context) => [penalty(context), 'military', 'political', context.targets.punchee])
+            .then((context) => {
                 const ctx = context;
                 return {
-                    thenCondition: () => (ctx.targets.puncher as DrawCard).hasTrait('tattooed') &&
+                    thenCondition: () => (ctx.targets.puncher).hasTrait('tattooed') &&
                         ctx.game.currentConflict !== null &&
-                        ctx.game.currentConflict.calculateSkillFor([ctx.targets.punchee as DrawCard]) === 0,
+                        ctx.game.currentConflict.calculateSkillFor([ctx.targets.punchee]) === 0,
                     gameAction: AbilityDsl.actions.conditional({
-                        condition: () => (ctx.targets.punchee as DrawCard).getFate() === 0,
+                        condition: () => (ctx.targets.punchee).getFate() === 0,
                         trueGameAction: AbilityDsl.actions.discardFromPlay({ target: ctx.targets.punchee }),
                         falseGameAction: AbilityDsl.actions.removeFate({ target: ctx.targets.punchee })
                     }),
                     message: '{3} is injured because it is not contributing skill to the current conflict',
                     messageArgs: () => [ctx.targets.punchee]
                 };
-            },
-            effect: 'give {4} {1}{2} and {1}{3}',
-            effectArgs: (context) => [penalty(context), 'military', 'political', context.targets.punchee]
-        });
+            })
+            .max(AbilityDsl.limit.perConflict(1));
     }
 }

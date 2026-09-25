@@ -7,22 +7,19 @@ export default class MarvelousBeings extends DrawCard {
     static id = 'marvelous-beings';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Move character to conflict and gain skill bonus',
-            condition: (context) => context.game.isDuringConflict(ConflictType.Political),
-            cost: AbilityDsl.costs.moveToConflict({
+        this.action('Move character to conflict and gain skill bonus')
+            .cost(AbilityDsl.costs.moveToConflict({
                 cardCondition: (card: DrawCard) =>
                     card.type === CardType.Character && (card.hasTrait('spirit') || card.hasTrait('creature'))
-            }),
-            gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
+            }))
+            .condition((context) => context.game.isDuringConflict(ConflictType.Political))
+            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
                 target: context.player,
                 duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.changePlayerSkillModifier(this.marvelousSkillBonus(context))
-            })),
-            effect: 'entrance the court, giving their side an extra {1}{2} this conflict',
-            effectArgs: (context) => [this.marvelousSkillBonus(context), 'political'],
-            max: AbilityDsl.limit.perConflict(1)
-        });
+            })))
+            .effect('entrance the court, giving their side an extra {1}{2} this conflict', (context) => [this.marvelousSkillBonus(context), 'political'])
+            .max(AbilityDsl.limit.perConflict(1));
     }
 
     private marvelousSkillBonus(context: AbilityContext): number {

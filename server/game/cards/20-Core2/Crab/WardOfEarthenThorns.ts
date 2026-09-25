@@ -17,18 +17,15 @@ export default class WardOfEarthenThorns extends ProvinceAttachment {
             effect: AbilityDsl.effects.modifyProvinceStrength(1)
         });
 
-        this.action({
-            title: 'Remove a fate from a character',
-            condition: (context) =>
+        this.action('Remove a fate from a character')
+            .condition((context) =>
                 (context.game.currentConflict as Conflict | undefined)
                     ?.getConflictProvinces()
-                    .some((province) => context.source.parent === province) ?? false,
-            target: {
+                    .some((province) => context.source.parent === province) ?? false)
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isAttacking(),
-                gameAction: AbilityDsl.actions.removeFate()
-            }
-        });
+                cardCondition: (card) => card.isAttacking()
+            }, AbilityDsl.actions.removeFate());
     }
 
     canPlay(context: AbilityContext, playType: string) {

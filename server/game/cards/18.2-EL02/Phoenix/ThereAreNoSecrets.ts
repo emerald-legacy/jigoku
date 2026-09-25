@@ -7,14 +7,12 @@ export default class ThereAreNoSecrets extends DrawCard {
     static id = 'there-are-no-secrets';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Gain 1 fate',
-            when: {
+        this.wouldInterrupt('Gain 1 fate')
+            .when({
                 onMoveFate: (event, context) =>
                     context.source.parentCharacter && event.origin === context.source.parentCharacter && event.fate > 0
-            },
-            gameAction: AbilityDsl.actions.gainFate((context) => ({ target: context.player }))
-        });
+            })
+            .gameAction(AbilityDsl.actions.gainFate((context) => ({ target: context.player })));
     }
 
     canPlay(context: TriggeredAbilityContext, playType: string) {

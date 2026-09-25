@@ -10,10 +10,8 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
         static id = id;
 
         setupCardAbilities() {
-            this.action({
-                title: opt.title,
-                effect: opt.effect,
-                gameAction: AbilityDsl.actions.deckSearch({
+            this.action(opt.title)
+                .gameAction(AbilityDsl.actions.deckSearch({
                     cardCondition: (card) => card.name === opt.siblingName,
                     deck: Decks.DynastyDeck,
                     shuffle: false,
@@ -71,8 +69,8 @@ export function makeTwin(id: string, opt: { siblingName: string; title: string; 
                             newCharacter
                         );
                     }
-                })
-            });
+                }))
+                .effect(opt.effect);
         }
     };
 }

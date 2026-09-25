@@ -5,14 +5,12 @@ export default class YatakabunePort extends ProvinceCard {
     static id = 'yatakabune-port';
 
     public setupCardAbilities() {
-        this.interrupt({
-            title: 'Claim the imperial favor',
-            when: {
+        this.interrupt('Claim the imperial favor')
+            .when({
                 onBreakProvince: (event, context) => event.card === context.source && context.game.isDuringConflict()
-            },
-            gameAction: AbilityDsl.actions.claimImperialFavor((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.claimImperialFavor((context) => ({
                 target: context.player
-            }))
-        });
+            })));
     }
 }

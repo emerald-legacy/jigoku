@@ -13,13 +13,11 @@ export default class IuchiTadamatsu extends DrawCard {
             })
         });
 
-        this.action({
-            title: 'Ready this character',
-            cost: AbilityDsl.costs.sacrifice({
+        this.action('Ready this character')
+            .cost(AbilityDsl.costs.sacrifice({
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) => card.parentCharacter === context.source
-            }),
-            gameAction: AbilityDsl.actions.ready()
-        });
+            }))
+            .gameAction(AbilityDsl.actions.ready());
     }
 }

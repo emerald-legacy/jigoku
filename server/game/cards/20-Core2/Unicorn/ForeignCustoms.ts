@@ -23,20 +23,17 @@ export default class ForeignCustoms extends DrawCard {
             }))
         });
 
-        this.action({
-            title: 'Ready a non-unicorn character',
-            condition: (context) =>
+        this.action('Ready a non-unicorn character')
+            .condition((context) =>
                 context.player.stronghold?.isFaction('unicorn') ||
                 context.player.cardsInPlay.some(
                     (card: DrawCard) =>
                         card.isFaction('unicorn') ||
                         card.attachments?.some((a: DrawCard) => a.isFaction('unicorn'))
-                ),
-            target: {
+                ))
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isAtHome() && (!card.isFaction('unicorn') || card.hasTrait('gaijin')),
-                gameAction: AbilityDsl.actions.ready()
-            }
-        });
+                cardCondition: (card) => card.isAtHome() && (!card.isFaction('unicorn') || card.hasTrait('gaijin'))
+            }, AbilityDsl.actions.ready());
     }
 }

@@ -1,7 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { EventName, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 import { shuffle } from '../../../utils/shuffle.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -11,15 +10,13 @@ export default class HonestAssessment extends DrawCard {
     setupCardAbilities() {
         this.attachmentConditions({ trait: 'courtier' });
 
-        this.reaction({
-            title: 'Name a card',
-            when: {
+        this.reaction('Name a card')
+            .when({
                 onCardAttached: (event: EventPayload<EventName.OnCardAttached>, context) =>
                     event.card === context.source && event.originalLocation !== Location.PlayArea
-            },
-            cost: AbilityDsl.costs.nameCard(),
-            max: AbilityDsl.limit.perRound(1),
-            gameAction: AbilityDsl.actions.multipleContext((context) => {
+            })
+            .cost(AbilityDsl.costs.nameCard())
+            .gameAction(AbilityDsl.actions.multipleContext((context) => {
                 const hand: Array<DrawCard> = shuffle(context.player.opponent?.hand ?? []);
                 const cards = hand.slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
                 return {
@@ -34,9 +31,8 @@ export default class HonestAssessment extends DrawCard {
                         })
                     ]
                 };
-            }),
-            effect: 'reveal 4 random cards from {1}\'s hand and discard all copies of {2}',
-            effectArgs: (context) => [context.player.opponent as Player, context.costs.nameCardCost as string]
-        });
+            }))
+            .effect('reveal 4 random cards from {1}\'s hand and discard all copies of {2}', (context) => [context.player.opponent, context.costs.nameCardCost as string])
+            .max(AbilityDsl.limit.perRound(1));
     }
 }

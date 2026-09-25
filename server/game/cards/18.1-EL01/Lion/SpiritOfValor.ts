@@ -38,21 +38,18 @@ export default class SpiritOfValor extends DrawCard {
             })
         });
 
-        this.action({
-            title: 'Gain abilities from a character in your discard pile',
-            cost: [captureParentCost(), AbilityDsl.costs.sacrificeSelf()],
-            target: {
+        this.action('Gain abilities from a character in your discard pile')
+            .cost(captureParentCost())
+            .cost(AbilityDsl.costs.sacrificeSelf())
+            .target('target', {
                 activePromptTitle: 'Choose a character from a discard pile',
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                 controller: Players.Self,
-                cardCondition: (card) => card.isFaction('lion'),
-                gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                    target: receiver(context),
-                    effect: context.target ? AbilityDsl.effects.gainAllAbilities(context.target) : []
-                }))
-            },
-            effect: 'copy {0}\'s abilities onto {1}',
-            effectArgs: (context) => [receiver(context)]
-        });
+                cardCondition: (card) => card.isFaction('lion')
+            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+                target: receiver(context),
+                effect: context.target ? AbilityDsl.effects.gainAllAbilities(context.target) : []
+            })))
+            .effect('copy {0}\'s abilities onto {1}', (context) => [receiver(context)]);
     }
 }

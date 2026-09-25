@@ -1,22 +1,18 @@
 import { CardType, ConflictType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 
 export default class OurDuty extends DrawCard {
     static id = 'our-duty-';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Make your opponent sacrifice a character',
-            condition: (context) => context.game.roundNumber > 1 && Boolean(context.player.opponent),
-            cost: AbilityDsl.costs.sacrifice({
+        this.action('Make your opponent sacrifice a character')
+            .cost(AbilityDsl.costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card: DrawCard) => card.isFaction('crab')
-            }),
-            effect: 'force {1} to sacrifice a character',
-            effectArgs: (context) => context.player.opponent as Player,
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+            }))
+            .condition((context) => context.game.roundNumber > 1 && Boolean(context.player.opponent))
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 player: Players.Opponent,
                 activePromptTitle: 'Choose a character to sacrifice',
                 cardType: CardType.Character,
@@ -24,22 +20,19 @@ export default class OurDuty extends DrawCard {
                 message: '{0} sacrifices {1} to {2}',
                 messageArgs: (card) => [context.player.opponent, card, context.source],
                 gameAction: AbilityDsl.actions.sacrifice()
-            })),
-            max: AbilityDsl.limit.perGame(1)
-        });
+            })))
+            .effect('force {1} to sacrifice a character', (context) => context.player.opponent)
+            .max(AbilityDsl.limit.perGame(1));
 
-        this.action({
-            title: 'Move an attacker home',
-            condition: (context) => context.game.isDuringConflict(ConflictType.Military),
-            cost: AbilityDsl.costs.sacrifice({
+        this.action('Move an attacker home')
+            .cost(AbilityDsl.costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending()
-            }),
-            target: {
+            }))
+            .condition((context) => context.game.isDuringConflict(ConflictType.Military))
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isAttacking(),
-                gameAction: AbilityDsl.actions.sendHome()
-            }
-        });
+                cardCondition: (card) => card.isAttacking()
+            }, AbilityDsl.actions.sendHome());
     }
 }

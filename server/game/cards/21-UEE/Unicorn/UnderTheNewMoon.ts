@@ -4,21 +4,17 @@ import AbilityDsl from '../../../abilitydsl.js';
 import { Duration, EventName } from '../../../Constants.js';
 import type { GameEvent } from '../../../Events/EventPayloads.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 
 export default class UnderTheNewMoon extends DrawCard {
     static id = 'under-the-new-moon';
 
     setupCardAbilities() {
-        this.interrupt({
-            title: 'Force defenders to assign first',
-            when: {
+        this.interrupt('Force defenders to assign first')
+            .when({
                 onConflictOpportunityAvailable: (event, context) => event.player === context.player
-            },
-            cost: AbilityDsl.costs.payHonor(1),
-            effect: 'force {1} to declare defenders before attackers are chosen this conflict',
-            effectArgs: (context) => [context.player.opponent as Player],
-            gameAction: AbilityDsl.actions.menuPrompt((context: TriggeredAbilityContext<this>) => ({
+            })
+            .cost(AbilityDsl.costs.payHonor(1))
+            .gameAction(AbilityDsl.actions.menuPrompt((context) => ({
                 activePromptTitle: 'Choose how many characters will be attacking',
                 choices: this.#getChoices(context),
                 gameAction: AbilityDsl.actions.playerLastingEffect({
@@ -38,8 +34,8 @@ export default class UnderTheNewMoon extends DrawCard {
                         effect: AbilityDsl.effects.defendersChosenFirstDuringConflict(amount)
                     };
                 }
-            }))
-        });
+            })))
+            .effect('force {1} to declare defenders before attackers are chosen this conflict', (context) => [context.player.opponent]);
     }
 
     #getChoices(context: AbilityContext<this>) {

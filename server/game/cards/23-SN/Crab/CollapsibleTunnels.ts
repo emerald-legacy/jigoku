@@ -6,11 +6,9 @@ export default class CollapsibleTunnels extends DrawCard {
     static id = 'collapsible-tunnels';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Add Province Strength',
-            condition: (context) => context.game.isDuringConflict(),
-            effect: 'increase the strength of an attacked province by 2',
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+        this.action('Add Province Strength')
+            .condition((context) => context.game.isDuringConflict())
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -22,18 +20,15 @@ export default class CollapsibleTunnels extends DrawCard {
                     targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.modifyProvinceStrength(2)
                 })
-            }))
-        });
+            })))
+            .effect('increase the strength of an attacked province by 2');
 
-        this.action({
-            title: 'Bow a character',
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            condition: (context) => context.game.isDuringConflict(),
-            target: {
+        this.action('Bow a character')
+            .cost(AbilityDsl.costs.sacrificeSelf())
+            .condition((context) => context.game.isDuringConflict())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isAttacking() && card.getBaseMilitarySkill() <= 2,
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.isAttacking() && card.getBaseMilitarySkill() <= 2
+            }, AbilityDsl.actions.bow());
     }
 }

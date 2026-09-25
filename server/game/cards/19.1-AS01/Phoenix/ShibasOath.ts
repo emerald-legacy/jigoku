@@ -14,18 +14,15 @@ export default class ShibasOath extends DrawCard {
             cardCondition: (card) => card.hasTrait('bushi')
         });
 
-        this.reaction({
-            title: 'Honor attached character',
-            when: {
+        this.reaction('Honor attached character')
+            .when({
                 onCardAttached: (event: EventPayload<EventName.OnCardAttached>, context) =>
                     event.card === context.source && event.originalLocation !== Location.PlayArea
-            },
-            gameAction: AbilityDsl.actions.honor((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.honor((context) => ({
                 target: context.source.parentCharacter ?? []
-            })),
-            effect: 'honor {1}',
-            effectArgs: (context) => context.source.parentCharacter
-        });
+            })))
+            .effect('honor {1}', (context) => context.source.parentCharacter);
 
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityType.WouldInterrupt, {

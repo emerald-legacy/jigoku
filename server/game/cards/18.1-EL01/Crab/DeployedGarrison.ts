@@ -17,21 +17,19 @@ export default class DeployedGarrison extends DrawCard {
             })
         });
 
-        this.reaction({
-            title: 'Does not bow at the end of the conflict',
-            when: {
+        this.reaction('Does not bow at the end of the conflict')
+            .when({
                 afterConflict: (event, context) =>
                     context.player.isDefendingPlayer() &&
                     event.conflict.winner === context.source.controller &&
                     context.source.isParticipating() &&
                     this.#conflictNearHolding(context)
-            },
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.source,
                 effect: AbilityDsl.effects.doesNotBow()
-            })),
-            effect: 'not bow during the conflict resolution'
-        });
+            })))
+            .effect('not bow during the conflict resolution');
     }
 
     #conflictNearHolding(context: AbilityContext) {

@@ -46,18 +46,15 @@ export default class BitingSteel extends DrawCard {
             effectArgs: (context) => [context.target ? getAttachmentSkill(context.target as DrawCard) : 0]
         });
 
-        this.action({
-            title: 'Send an enemy home',
-            condition: (context) =>
+        this.action('Send an enemy home')
+            .condition((context) =>
                 !!context.source.parentCharacter?.isParticipating('military') &&
-                (context.player).hasAffinity('fire', context),
-            target: {
+                (context.player).hasAffinity('fire', context))
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card: DrawCard, context) => card.militarySkill < (context.source.parentCharacter?.militarySkill ?? 0),
-                gameAction: AbilityDsl.actions.sendHome()
-            }
-        });
+                cardCondition: (card, context) => card.militarySkill < (context.source.parentCharacter?.militarySkill ?? 0)
+            }, AbilityDsl.actions.sendHome());
     }
 
     public canAttach(card: BaseCard) {

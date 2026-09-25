@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardType, Location, Players, TargetMode } from '../../../Constants.js';
+import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class PromisingHohei extends DrawCard {
@@ -17,17 +17,13 @@ export default class PromisingHohei extends DrawCard {
             })
         });
 
-        this.reaction({
-            title: 'return a follower to hand',
-            when: {
+        this.reaction('return a follower to hand')
+            .when({
                 onCardAttached: (event, context) => event.card === context.source
-            },
-            target: {
-                mode: TargetMode.Single,
+            })
+            .target('target', {
                 controller: Players.Self,
-                cardCondition: (card) => card.name !== 'Promising Hohei' && card.hasTrait('follower'),
-                gameAction: AbilityDsl.actions.returnToHand()
-            }
-        });
+                cardCondition: (card) => card.name !== 'Promising Hohei' && card.hasTrait('follower')
+            }, AbilityDsl.actions.returnToHand());
     }
 }

@@ -11,21 +11,18 @@ export default class EarnestSculptor extends DrawCard {
     static id = 'earnest-sculptor';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Search top 8 card for a spell',
-            effect: 'look at the top 8 cards of their deck',
-            gameAction: AbilityDsl.actions.deckSearch({
+        this.action('Search top 8 card for a spell')
+            .gameAction(AbilityDsl.actions.deckSearch({
                 amount: 8,
                 cardCondition: (card) => card.hasTrait('spell'),
                 gameAction: AbilityDsl.actions.moveCard({
                     destination: Location.Hand
                 })
-            })
-        });
+            }))
+            .effect('look at the top 8 cards of their deck');
 
-        this.interrupt({
-            title: 'Reduce cost of next Jade card',
-            when: {
+        this.interrupt('Reduce cost of next Jade card')
+            .when({
                 onCardPlayed: (event, context) =>
                     event.card.type === CardType.Event &&
                     event.player === context.player &&
@@ -39,17 +36,15 @@ export default class EarnestSculptor extends DrawCard {
                     event.context.player === context.player &&
                     event.context.source.hasTrait('jade') &&
                     (event.context.ability as BaseAction).getReducedCost(event.context) > 0
-            },
-            effect: 'reduce the cost of {1} by 1',
-            effectArgs: (context) => [(context.event.context as AbilityContext).source],
-            gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
                 effect: AbilityDsl.effects.reduceNextPlayedCardCost(
                     1,
                     (card: BaseCard) =>
                         card === (context as TriggeredAbilityContext).event.card || card === ((context as TriggeredAbilityContext).event.context as AbilityContext).source
                 )
-            }))
-        });
+            })))
+            .effect('reduce the cost of {1} by 1', (context) => [(context.event.context).source]);
     }
 }

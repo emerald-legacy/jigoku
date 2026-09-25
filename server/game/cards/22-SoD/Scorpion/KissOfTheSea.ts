@@ -5,9 +5,8 @@ export default class KissOfTheSea extends DrawCard {
     static id = 'kiss-of-the-sea';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Bow attached character',
-            when: {
+        this.reaction('Bow attached character')
+            .when({
                 onEffectApplied: (event, context) => {
                     const effects = [
                         'modifyBothSkills',
@@ -43,10 +42,9 @@ export default class KissOfTheSea extends DrawCard {
                     }
                     return false;
                 }
-            },
-            gameAction: AbilityDsl.actions.bow(context => ({
+            })
+            .gameAction(AbilityDsl.actions.bow(context => ({
                 target: context.source.parentCharacter ?? []
-            }))
-        });
+            })));
     }
 }

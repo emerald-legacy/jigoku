@@ -9,18 +9,15 @@ export default class PathOfReflection extends ProvinceCard {
     readonly #provinceElement = `${PathOfReflection.id}-province-water`;
 
     setupCardAbilities() {
-        this.action({
-            title: 'switch a character\'s base skills',
-            conflictProvinceCondition: (province, context) =>
-                province.isElement(this.getCurrentElementSymbol(this.#provinceElement)) ||
-                (context.game.currentConflict?.hasElement?.(this.getCurrentElementSymbol(this.#conflictElement)) ?? false),
-            target: {
+        this.action('switch a character\'s base skills')
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating() && !card.hasDash(),
-                gameAction: AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.switchBaseSkills() })
-            },
-            effect: 'switch {0}\'s military and political skill'
-        });
+                cardCondition: (card) => card.isParticipating() && !card.hasDash()
+            }, AbilityDsl.actions.cardLastingEffect({ effect: AbilityDsl.effects.switchBaseSkills() }))
+            .effect('switch {0}\'s military and political skill')
+            .conflictProvinceCondition((province, context) =>
+                province.isElement(this.getCurrentElementSymbol(this.#provinceElement)) ||
+                (context.game.currentConflict?.hasElement?.(this.getCurrentElementSymbol(this.#conflictElement)) ?? false));
     }
 
     getPrintedElementSymbols() {

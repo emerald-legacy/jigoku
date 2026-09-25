@@ -17,17 +17,14 @@ export default class ShowMeYourStance extends DrawCard {
             effect: 'have status tokens count when resolving this duel'
         });
 
-        this.action({
-            title: 'Send a character home',
-            target: {
+        this.action('Send a character home')
+            .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isAttacking() &&
                     (context.game.currentConflict
                         ?.getCharacters(context.player)
-                        .some((myCard: DrawCard) => myCard.hasTrait('duelist') && myCard.glory >= card.glory) ?? false),
-                gameAction: AbilityDsl.actions.sendHome()
-            }
-        });
+                        .some((myCard: DrawCard) => myCard.hasTrait('duelist') && myCard.glory >= card.glory) ?? false)
+            }, AbilityDsl.actions.sendHome());
     }
 }

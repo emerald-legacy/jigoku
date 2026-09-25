@@ -6,9 +6,8 @@ export default class ACleansingDeath extends DrawCard {
     static id = 'a-cleansing-death';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Put a character into play',
-            cost: AbilityDsl.costs.sacrifice({
+        this.action('Put a character into play')
+            .cost(AbilityDsl.costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => {
                     const cardsInProvinces = [
@@ -31,23 +30,21 @@ export default class ACleansingDeath extends DrawCard {
                     });
                     return hasValidCharacters;
                 }
-            }),
-            cannotTargetFirst: true,
-            target: {
+            }))
+            .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => (card.printedCost ?? 0) <=
                     ((context.costs.sacrificeStateWhenChosen as DrawCard | undefined)?.printedCost || 10),
                 location: Location.Provinces,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.joint([
-                    AbilityDsl.actions.putIntoPlay(),
-                    AbilityDsl.actions.gainHonor(context => ({
-                        amount: 1,
-                        target: context.player
-                    }))
-                ])
-            },
-            effect: 'put {0} into play and gain 1 honor'
-        });
+                controller: Players.Self
+            }, AbilityDsl.actions.joint([
+                AbilityDsl.actions.putIntoPlay(),
+                AbilityDsl.actions.gainHonor(context => ({
+                    amount: 1,
+                    target: context.player
+                }))
+            ]))
+            .effect('put {0} into play and gain 1 honor')
+            .cannotTargetFirst();
     }
 }

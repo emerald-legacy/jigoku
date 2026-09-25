@@ -15,16 +15,14 @@ export default class EnforcePropriety extends DrawCard {
     static id = 'enforce-propriety';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Cancel an event',
-            when: {
+        this.wouldInterrupt('Cancel an event')
+            .when({
                 onInitiateAbilityEffects: (event, context) =>
                     event.card.type === CardType.Event &&
                     context.player.opponent &&
                     countReadyShugenja(context.player) > countReadyShugenja(context.player.opponent)
-            },
-
-            gameAction: AbilityDsl.actions.chooseAction((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.chooseAction((context) => ({
                 player: Players.Opponent,
                 activePromptTitle: 'Select one',
                 options: {
@@ -38,8 +36,7 @@ export default class EnforcePropriety extends DrawCard {
                     }
                 },
                 messageArgs: [context.player, (context as TriggeredAbilityContext).event.card]
-            })),
-            effect: 'enforce the proper protocol'
-        });
+            })))
+            .effect('enforce the proper protocol');
     }
 }

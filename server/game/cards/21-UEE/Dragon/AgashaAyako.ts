@@ -7,13 +7,11 @@ export default class AgashaAyako extends DrawCard {
     static id = 'agasha-ayako';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Put a character into play',
-            when: {
+        this.reaction('Put a character into play')
+            .when({
                 onCardPlayed: (event, context) => event.card === context.source
-            },
-            effect: 'search their dynasty deck for a character',
-            gameAction: AbilityDsl.actions.deckSearch({
+            })
+            .gameAction(AbilityDsl.actions.deckSearch({
                 activePromptTitle: 'Choose a character to play',
                 deck: Decks.DynastyDeck,
                 cardCondition: (card) => card.type === CardType.Character && (card.printedCost ?? 0) <= 2 && !card.isUnique(),
@@ -38,7 +36,7 @@ export default class AgashaAyako extends DrawCard {
                         };
                     })
                 ])
-            })
-        });
+            }))
+            .effect('search their dynasty deck for a character');
     }
 }

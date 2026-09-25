@@ -8,16 +8,13 @@ export default class CompetingInterests extends DrawCard {
     static id = 'competing-interests';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow a character',
-            condition: (context) => this.#hasEnoughUniques(context),
-            target: {
+        this.action('Bow a character')
+            .condition((context) => this.#hasEnoughUniques(context))
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isUnique() && card.isParticipating(),
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.isUnique() && card.isParticipating()
+            }, AbilityDsl.actions.bow());
     }
 
     #hasEnoughUniques(ctx: AbilityContext) {

@@ -9,23 +9,20 @@ export default class BakeKujira extends DrawCard {
     setupCardAbilities() {
         this.legendary(1);
 
-        this.reaction<DrawCard>({
-            title: 'Eat a character',
-            when: {
+        this.reaction('Eat a character')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card, context) => card.isParticipating() && card !== context.source,
-                gameAction: AbilityDsl.actions.conditional({
-                    condition: (context) => this.#shouldDiscardTarget(context as AbilityContext<DrawCard, DrawCard>),
-                    trueGameAction: AbilityDsl.actions.discardFromPlay(),
-                    falseGameAction: AbilityDsl.actions.removeFate()
-                })
-            }
-        });
+                cardCondition: (card, context) => card.isParticipating() && card !== context.source
+            }, AbilityDsl.actions.conditional({
+                condition: (context) => this.#shouldDiscardTarget(context as AbilityContext<DrawCard, DrawCard>),
+                trueGameAction: AbilityDsl.actions.discardFromPlay(),
+                falseGameAction: AbilityDsl.actions.removeFate()
+            }));
     }
 
     #shouldDiscardTarget(context: AbilityContext<DrawCard, DrawCard>): boolean {

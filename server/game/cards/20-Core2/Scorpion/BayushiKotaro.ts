@@ -6,10 +6,9 @@ export default class BayushiKotaro extends DrawCard {
     static id = 'bayushi-kotaro';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Put a character into play',
-            condition: (context) => context.source.isParticipating(),
-            gameAction: AbilityDsl.actions.sequential([
+        this.action('Put a character into play')
+            .condition((context) => context.source.isParticipating())
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.reveal((context) => ({
                     target: context.player.getDynastyCardsInProvince(Location.Provinces)
                 })),
@@ -41,7 +40,6 @@ export default class BayushiKotaro extends DrawCard {
                         }))
                     ])
                 }))
-            ])
-        });
+            ]));
     }
 }

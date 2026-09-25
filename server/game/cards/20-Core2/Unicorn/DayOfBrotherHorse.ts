@@ -1,5 +1,5 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { Duration, TargetMode } from '../../../Constants.js';
+import { Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 
@@ -26,18 +26,16 @@ export default class DayOfBrotherHorse extends DrawCard {
     static id = 'day-of-brother-horse';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Protect a ring and draw three card',
-            when: {
+        this.reaction('Protect a ring and draw three card')
+            .when({
                 onConflictPass: (event, context) =>
                     context.player === event.conflict.attackingPlayer &&
                     (context.player.cardsInPlay).some((card: DrawCard) => !card.bowed)
-            },
-            target: {
-                mode: TargetMode.Ring,
+            })
+            .ringTarget('target', {
                 ringCondition: () => true
-            },
-            gameAction: AbilityDsl.actions.sequentialContext((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.sequentialContext((context) => ({
                 gameActions: [
                     AbilityDsl.actions.ringLastingEffect({
                         duration: Duration.UntilEndOfPhase,
@@ -49,10 +47,8 @@ export default class DayOfBrotherHorse extends DrawCard {
                     AbilityDsl.actions.draw({ target: context.player, amount: 3 }),
                     AbilityDsl.actions.chosenDiscard({ target: context.player })
                 ]
-            })),
-            max: AbilityDsl.limit.perRound(1),
-            effect: 'prevent {1} from declaring {0} conflicts, draw 3 cards, and discard 1 card - {2}',
-            effectArgs: (context) => [context.player.opponent ?? '', fluff((context.ring?.element ?? 'air') as Element)]
-        });
+            })))
+            .effect('prevent {1} from declaring {0} conflicts, draw 3 cards, and discard 1 card - {2}', (context) => [context.player.opponent ?? '', fluff((context.ring?.element ?? 'air'))])
+            .max(AbilityDsl.limit.perRound(1));
     }
 }

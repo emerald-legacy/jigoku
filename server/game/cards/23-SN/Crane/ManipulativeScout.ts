@@ -6,14 +6,11 @@ export default class ManipulativeScout extends DrawCard {
     static id = 'manipulative-scout';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Flip a card in a province',
-            target: {
+        this.action('Flip a card in a province')
+            .target('target', {
                 controller: Players.Any,
                 location: Location.Provinces,
-                cardCondition: card => card.isDynasty,
-                gameAction: [AbilityDsl.actions.flipDynasty(), AbilityDsl.actions.turnFacedown()]
-            }
-        });
+                cardCondition: card => card.isDynasty
+            }, AbilityDsl.actions.flipDynasty(), AbilityDsl.actions.turnFacedown());
     }
 }

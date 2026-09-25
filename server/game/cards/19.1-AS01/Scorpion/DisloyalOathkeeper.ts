@@ -22,20 +22,18 @@ export default class DisloyalOathkeeper extends DrawCard {
             ]
         });
 
-        this.reaction({
-            title: 'Put card under this',
-            when: {
+        this.reaction('Put card under this')
+            .when({
                 onCardPlayed: (event, context) =>
                     event.player === context.player.opponent &&
                     event.card.type === CardType.Event &&
                     !event.card.hasEphemeral() &&
                     context.source.controller.getSourceList(this.uuid).length === 0
-            },
-            gameAction: AbilityDsl.actions.placeCardUnderneath((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.placeCardUnderneath((context) => ({
                 target: (context as TriggeredAbilityContext).event.card,
                 hideWhenFaceup: true,
                 destination: this
-            }))
-        });
+            })));
     }
 }

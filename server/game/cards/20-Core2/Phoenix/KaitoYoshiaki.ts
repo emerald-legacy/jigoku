@@ -11,33 +11,29 @@ export default class KaitoYoshiaki extends DrawCard {
     static id = 'kaito-yoshiaki';
 
     setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Punish the wicked',
-            condition: (context) => context.source.isParticipating(),
-            target: {
+        this.action('Punish the wicked')
+            .condition((context) => context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card: DrawCard, context) =>
+                cardCondition: (card, context) =>
                     card !== context.source &&
                     card.isParticipating() &&
                     (context.game.currentConflict as Conflict)
                         .getCharacters(context.player)
-                        .some((myCard) => (myCard.printedCost ?? 0) >= (card.printedCost ?? 0)),
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.cardLastingEffect({
-                        effect: [
-                            AbilityDsl.effects.setBaseMilitarySkill(0),
-                            AbilityDsl.effects.setBasePoliticalSkill(0)
-                        ]
-                    }),
-                    AbilityDsl.actions.conditional({
-                        condition: (context) => isEvil(context.target as DrawCard),
-                        trueGameAction: AbilityDsl.actions.removeFate(),
-                        falseGameAction: AbilityDsl.actions.noAction()
-                    })
-                ])
-            },
-            effect: '{3}set the base skills of {0} to 0{1}/0{2}',
-            effectArgs: (context) => ['military', 'political', context.target && isEvil(context.target) ? 'remove a fate from and ' : '']
-        });
+                        .some((myCard) => (myCard.printedCost ?? 0) >= (card.printedCost ?? 0))
+            }, AbilityDsl.actions.multiple([
+                AbilityDsl.actions.cardLastingEffect({
+                    effect: [
+                        AbilityDsl.effects.setBaseMilitarySkill(0),
+                        AbilityDsl.effects.setBasePoliticalSkill(0)
+                    ]
+                }),
+                AbilityDsl.actions.conditional({
+                    condition: (context) => isEvil(context.target as DrawCard),
+                    trueGameAction: AbilityDsl.actions.removeFate(),
+                    falseGameAction: AbilityDsl.actions.noAction()
+                })
+            ]))
+            .effect('{3}set the base skills of {0} to 0{1}/0{2}', (context) => ['military', 'political', context.target && isEvil(context.target) ? 'remove a fate from and ' : '']);
     }
 }

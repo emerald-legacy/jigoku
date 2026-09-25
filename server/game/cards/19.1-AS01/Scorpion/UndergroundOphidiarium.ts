@@ -6,14 +6,12 @@ export default class UndergroundOphidiarium extends DrawCard {
     static id = 'underground-ophidiarium';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Search for a Poison',
-            effect: 'search conflict deck to reveal a poison attachment and add it to their hand',
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            gameAction: AbilityDsl.actions.deckSearch({
+        this.action('Search for a Poison')
+            .cost(AbilityDsl.costs.sacrificeSelf())
+            .gameAction(AbilityDsl.actions.deckSearch({
                 cardCondition: (card) => card.type === CardType.Attachment && card.hasTrait('poison'),
                 gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand })
-            })
-        });
+            }))
+            .effect('search conflict deck to reveal a poison attachment and add it to their hand');
     }
 }

@@ -8,20 +8,18 @@ export default class FeignedWeakness extends DrawCard {
     static id = 'feigned-weakness';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Cancel an event',
-            when: {
+        this.wouldInterrupt('Cancel an event')
+            .when({
                 onInitiateAbilityEffects: (event, context) =>
                     event.card.type === CardType.Event &&
                     context.game.isDuringConflict() &&
                     !!this.game.currentConflict && this.#hasEqualOrLessSkill(this.game.currentConflict, context.player)
-            },
-            cost: AbilityDsl.costs.discardCard({
+            })
+            .cost(AbilityDsl.costs.discardCard({
                 location: Location.Hand,
                 cardCondition: (card, context) => card !== context.source
-            }),
-            gameAction: AbilityDsl.actions.cancel()
-        });
+            }))
+            .gameAction(AbilityDsl.actions.cancel());
     }
 
     #hasEqualOrLessSkill(conflict: Conflict, player: Player): boolean {

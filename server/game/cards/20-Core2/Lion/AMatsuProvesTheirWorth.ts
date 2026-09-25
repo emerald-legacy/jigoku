@@ -9,9 +9,8 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
     static id = 'a-matsu-proves-their-worth';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Prove yourself worthy of a Matsu name',
-            when: {
+        this.reaction('Prove yourself worthy of a Matsu name')
+            .when({
                 onConflictDeclared: (_event, context) => {
                     const conflict = context.game.currentConflict;
                     return (
@@ -24,8 +23,8 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                         ).length === 1
                     );
                 }
-            },
-            gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => {
+            })
+            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => {
                 const target = (context.game.currentConflict as Conflict).getParticipants(
                     (participant) => participant.controller === context.player
                 )[0];
@@ -59,8 +58,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                         })
                     ]
                 };
-            }),
-            max: AbilityDsl.limit.perConflict(1)
-        });
+            }))
+            .max(AbilityDsl.limit.perConflict(1));
     }
 }

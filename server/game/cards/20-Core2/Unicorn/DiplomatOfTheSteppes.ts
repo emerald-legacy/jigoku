@@ -6,10 +6,9 @@ export default class DiplomatOfTheSteppes extends DrawCard {
     static id = 'diplomat-of-the-steppes';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Change the conflict to military',
-            cost: AbilityDsl.costs.payHonor(1),
-            condition: (context) => {
+        this.action('Change the conflict to military')
+            .cost(AbilityDsl.costs.payHonor(1))
+            .condition((context) => {
                 if(!context.source.isParticipating('political')) {
                     return false;
                 }
@@ -19,10 +18,8 @@ export default class DiplomatOfTheSteppes extends DrawCard {
                 }
                 const diff = conflict.attackerSkill - conflict.defenderSkill;
                 return context.player.isAttackingPlayer() ? diff >= 0 : diff <= 0;
-            },
-            effect: 'switch the conflict type to {1}',
-            effectArgs: () => 'military',
-            gameAction: AbilityDsl.actions.switchConflictType({ targetConflictType: ConflictType.Military })
-        });
+            })
+            .gameAction(AbilityDsl.actions.switchConflictType({ targetConflictType: ConflictType.Military }))
+            .effect('switch the conflict type to {1}', () => 'military');
     }
 }

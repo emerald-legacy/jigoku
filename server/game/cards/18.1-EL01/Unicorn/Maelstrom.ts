@@ -1,4 +1,3 @@
-import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
 import { CardType, Duration, Element, EventName, Location, Players, TargetMode } from '../../../Constants.js';
 import type { Cost } from '../../../costs/Cost.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
@@ -83,48 +82,44 @@ const elementKey = 'maelstrom-water';
 export default class Maelstrom extends ProvinceCard {
     static id = 'maelstrom';
     setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Move a character into the conflict',
-            cost: maelstromCost(),
-            conflictProvinceCondition: (province) => province.isElement(this.getCurrentElementSymbol(elementKey)),
-            cannotTargetFirst: true,
-            target: {
+        this.action('Move a character into the conflict')
+            .cost(maelstromCost())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card, context) =>
-                    context.costs.maelstromCostPaid ? true : card.controller === context.player,
-                gameAction: AbilityDsl.actions.multipleContext((context: ResolvedAbilityContext<ProvinceCard, DrawCard>) => {
-                    const target = context.target;
-                    // "you" is whoever triggered this, which is not always the province's
-                    // controller (Contested Countryside). A delayed effect's own context is
-                    // owned by the source's controller, so capture the player here.
-                    const triggeringPlayer = context.player;
-                    return {
-                        gameActions: [
-                            AbilityDsl.actions.moveToConflict(),
-                            AbilityDsl.actions.cardLastingEffect({
-                                target: target,
-                                duration: Duration.UntilEndOfPhase,
-                                effect: AbilityDsl.effects.delayedEffect({
-                                    when: {
-                                        afterConflict: (event: EventPayload<EventName.AfterConflict>) =>
-                                            event.conflict.winner === target.controller &&
+                    context.costs.maelstromCostPaid ? true : card.controller === context.player
+            }, AbilityDsl.actions.multipleContext((context) => {
+                const target = context.target;
+                // "you" is whoever triggered this, which is not always the province's
+                // controller (Contested Countryside). A delayed effect's own context is
+                // owned by the source's controller, so capture the player here.
+                const triggeringPlayer = context.player;
+                return {
+                    gameActions: [
+                        AbilityDsl.actions.moveToConflict(),
+                        AbilityDsl.actions.cardLastingEffect({
+                            target: target,
+                            duration: Duration.UntilEndOfPhase,
+                            effect: AbilityDsl.effects.delayedEffect({
+                                when: {
+                                    afterConflict: (event: EventPayload<EventName.AfterConflict>) =>
+                                        event.conflict.winner === target.controller &&
                                             target.isParticipating() &&
                                             target.controller === triggeringPlayer
-                                    },
-                                    message: '{0} is honored due to {1}\'s effect',
-                                    messageArgs: [target, context.source],
-                                    gameAction: AbilityDsl.actions.honor()
-                                })
+                                },
+                                message: '{0} is honored due to {1}\'s effect',
+                                messageArgs: [target, context.source],
+                                gameAction: AbilityDsl.actions.honor()
                             })
-                        ]
-                    };
-                })
-            },
-            effect: 'move {0} into the conflict{1}',
-            effectArgs: (context) =>
-                context.target?.controller === context.player ? ['. It will be honored if it wins the conflict'] : ['']
-        });
+                        })
+                    ]
+                };
+            }))
+            .effect('move {0} into the conflict{1}', (context) =>
+                context.target?.controller === context.player ? ['. It will be honored if it wins the conflict'] : [''])
+            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)))
+            .cannotTargetFirst();
     }
 
     getPrintedElementSymbols() {

@@ -13,27 +13,23 @@ export default class WiseQuartermaster extends DrawCard {
     static id = 'wise-quartermaster';
 
     setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Move an attachment',
-            condition: (context) => !context.game.isDuringConflict(),
-            target: {
+        this.action('Move an attachment')
+            .condition((context) => !context.game.isDuringConflict())
+            .target('target', {
                 cardType: CardType.Attachment,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.selectCard((context: AbilityContext<DrawCard, DrawCard>) => {
-                    const parent = parentCard(context);
-                    const isOnProvince = !!parent?.isProvinceCard();
-                    return {
-                        cardType: isOnProvince ? CardType.Province : CardType.Character,
-                        location: isOnProvince ? Location.Provinces : Location.PlayArea,
-                        cardCondition: (card) => card !== parent && card.controller === parent?.controller,
-                        message: '{0} moves {1} to {2}',
-                        messageArgs: (card) => [context.player, context.target ?? '', card],
-                        gameAction: AbilityDsl.actions.attach({ attachment: context.target })
-                    };
-                })
-            },
-            effect: 'move {0} to another {1}',
-            effectArgs: (context) => [parentCard(context)?.isProvinceCard() ? 'province' : 'character']
-        });
+                controller: Players.Self
+            }, AbilityDsl.actions.selectCard((context) => {
+                const parent = parentCard(context);
+                const isOnProvince = !!parent?.isProvinceCard();
+                return {
+                    cardType: isOnProvince ? CardType.Province : CardType.Character,
+                    location: isOnProvince ? Location.Provinces : Location.PlayArea,
+                    cardCondition: (card) => card !== parent && card.controller === parent?.controller,
+                    message: '{0} moves {1} to {2}',
+                    messageArgs: (card) => [context.player, context.target ?? '', card],
+                    gameAction: AbilityDsl.actions.attach({ attachment: context.target })
+                };
+            }))
+            .effect('move {0} to another {1}', (context) => [parentCard(context)?.isProvinceCard() ? 'province' : 'character']);
     }
 }

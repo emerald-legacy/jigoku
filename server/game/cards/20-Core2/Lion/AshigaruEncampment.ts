@@ -20,17 +20,14 @@ export default class AshigaruEncampment extends DrawCard {
     static id = 'ashigaru-encampment';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Recruit a fresh Ashigaru',
-            effect: 'recruit {1}!',
-            effectArgs: {
+        this.action('Recruit a fresh Ashigaru')
+            .gameAction(AbilityDsl.actions.handler({ handler: putAshigaruTokenIntoPlay }))
+            .effect('recruit {1}!', () => ({
                 id: 'ashigaru-recruit',
                 label: 'Ashigaru Recruit',
                 name: 'Ashigaru Recruit',
                 facedown: false,
                 type: CardType.Character
-            },
-            gameAction: AbilityDsl.actions.handler({ handler: putAshigaruTokenIntoPlay })
-        });
+            }));
     }
 }

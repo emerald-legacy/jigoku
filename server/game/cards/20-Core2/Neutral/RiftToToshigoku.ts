@@ -19,24 +19,21 @@ export default class RiftToToshigoku extends ProvinceCard {
             }
         ]);
 
-        this.reaction({
-            title: 'Force opponent to remove all fate from a character and resolve the conflict',
-            when: {
+        this.reaction('Force opponent to remove all fate from a character and resolve the conflict')
+            .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
-            },
-            cost: AbilityDsl.costs.breakSelf(),
-            target: {
+            })
+            .cost(AbilityDsl.costs.breakSelf())
+            .target('target', {
                 activePromptTitle: 'Choose a character to discard',
                 player: Players.Opponent,
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isAttacking(),
-                gameAction: AbilityDsl.actions.discardFromPlay()
-            },
-            then: (_context) => {
+                cardCondition: (card) => card.isAttacking()
+            }, AbilityDsl.actions.discardFromPlay())
+            .then((_context) => {
                 this.shouldCancelRingEffectsHere = true;
-            }
-        });
+            });
     }
 
     public cancelRingEffect(event: Event) {

@@ -26,18 +26,15 @@ export default class AgashaCrucible extends DrawCard {
     static id = 'agasha-crucible';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Give Elemental Trait to a Fire Shugenja',
-            target: {
+        this.action('Give Elemental Trait to a Fire Shugenja')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('shugenja'),
-                gameAction: AbilityDsl.actions.chooseAction({
-                    options,
-                    activePromptTitle: 'Choose Trait to gain'
-                })
-            },
-            effect: 'give {0} another Elemental Trait, and take another action!'
-        });
+                cardCondition: (card) => card.hasTrait('shugenja')
+            }, AbilityDsl.actions.chooseAction({
+                options,
+                activePromptTitle: 'Choose Trait to gain'
+            }))
+            .effect('give {0} another Elemental Trait, and take another action!');
     }
 }

@@ -11,11 +11,8 @@ export default class VillageDoshin extends DrawCard {
     static id = 'village-doshin';
 
     public setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Protect attachment from leaving play',
-            location: Location.Hand,
-            cost: AbilityDsl.costs.discardSelf(),
-            when: {
+        this.wouldInterrupt('Protect attachment from leaving play')
+            .when({
                 onInitiateAbilityEffects: (event: EventPayload<EventName.OnInitiateAbilityEffects>, context) =>
                     (event.cardTargets ?? []).some((card: BaseCard) => {
                         const attachment = card.type === CardType.Attachment;
@@ -24,9 +21,9 @@ export default class VillageDoshin extends DrawCard {
                         const inPlay = card.location === Location.PlayArea;
                         return attachment && onCharacterYouControl && inPlay;
                     })
-            },
-
-            gameAction: AbilityDsl.actions.conditional({
+            })
+            .cost(AbilityDsl.costs.discardSelf())
+            .gameAction(AbilityDsl.actions.conditional({
                 condition: (context) => {
                     const opponentHasEnoughCards = (context.player.opponent?.hand.length ?? 0) >= DOSHIN_TAX;
                     const opponentIsAllowedToDiscardCards = !!context.player.opponent && AbilityDsl.actions
@@ -53,9 +50,8 @@ export default class VillageDoshin extends DrawCard {
                     },
                     messageArgs: [(context as TriggeredAbilityContext).event.card]
                 }))
-            }),
-            effect: 'protect {1}',
-            effectArgs: (context) => context.event.cardTargets ?? []
-        });
+            }))
+            .effect('protect {1}', (context) => context.event.cardTargets ?? [])
+            .location(Location.Hand);
     }
 }

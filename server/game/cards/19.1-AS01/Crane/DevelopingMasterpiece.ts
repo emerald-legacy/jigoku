@@ -30,25 +30,23 @@ export default class DevelopingMasterpiece extends DrawCard {
             effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
 
-        this.action({
-            title: 'Gain honor',
-            phase: Phases.Fate,
-            condition: (context) => !!context.source.parentCharacter,
-            cost: [captureParentCost(), AbilityDsl.costs.removeSelfFromGame()],
-            gameAction: AbilityDsl.actions.gainHonor((context) => ({
+        this.action('Gain honor')
+            .cost(captureParentCost())
+            .cost(AbilityDsl.costs.removeSelfFromGame())
+            .condition((context) => !!context.source.parentCharacter)
+            .gameAction(AbilityDsl.actions.gainHonor((context) => ({
                 amount: this.getHonorGain(context),
                 target: context.player
-            })),
-            effect: 'gain {1} honor',
-            effectArgs: (context: AbilityContext) => [this.getHonorGain(context)],
-            then: (context) => {
+            })))
+            .effect('gain {1} honor', (context) => [this.getHonorGain(context)])
+            .then((context) => {
                 const haiku = randomHaiku();
                 if(haiku && context) {
                     haiku.forEach((line) => context.game.addMessage(`>> ${line}`));
                     context.game.addMessage('>>>> Matsuo Bashō <<<<');
                 }
-            }
-        });
+            })
+            .phase(Phases.Fate);
     }
 
     public canAttach(card: BaseCard): boolean {

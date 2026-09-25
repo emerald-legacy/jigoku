@@ -1,4 +1,3 @@
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Location, PlayType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -9,29 +8,25 @@ export default class StrangeMirror extends DrawCard {
     static id = 'strange-mirror';
 
     public setupCardAbilities() {
-        this.reaction({
-            title: 'Put the event underneath attached character',
-            when: {
+        this.reaction('Put the event underneath attached character')
+            .when({
                 onCardPlayed: (event, context) =>
                     !!context.source.parentCharacter &&
                     event.card.type === CardType.Event &&
                     event.player === context.player.opponent &&
                     // the event is only movable once it has finished resolving
                     event.card.location === Location.ConflictDiscardPile
-            },
-            gameAction: AbilityDsl.actions.placeCardUnderneath((context: TriggeredAbilityContext) => ({
+            })
+            .gameAction(AbilityDsl.actions.placeCardUnderneath((context) => ({
                 target: context.event.card,
                 destination: context.source.parentCharacter ?? undefined
-            })),
-            effect: 'put {1} facedown underneath {2}',
-            effectArgs: (context) => [context.event.card, context.source.parentCharacter]
-        });
+            })))
+            .effect('put {1} facedown underneath {2}', (context) => [context.event.card, context.source.parentCharacter]);
 
-        this.action({
-            title: 'Play an event from underneath attached character',
-            condition: (context) => this.eventsUnderneath(context).length > 0,
-            gameAction: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.selectCard((context: AbilityContext<this>) => ({
+        this.action('Play an event from underneath attached character')
+            .condition((context) => this.eventsUnderneath(context).length > 0)
+            .gameAction(AbilityDsl.actions.sequential([
+                AbilityDsl.actions.selectCard((context) => ({
                     activePromptTitle: 'Choose an event to play',
                     cardType: CardType.Event,
                     location: Location.Any,
@@ -55,7 +50,7 @@ export default class StrangeMirror extends DrawCard {
                             )
                     })
                 })),
-                AbilityDsl.actions.chooseAction((context: AbilityContext<this>) => ({
+                AbilityDsl.actions.chooseAction((context) => ({
                     activePromptTitle: 'Choose a cost for Strange Mirror',
                     options: {
                         'Sacrifice Strange Mirror': {
@@ -69,8 +64,7 @@ export default class StrangeMirror extends DrawCard {
                     },
                     messageArgs: [context.source, context.source.parentCharacter]
                 }))
-            ])
-        });
+            ]));
     }
 
     private eventsUnderneath(context: AbilityContext<this>): DrawCard[] {

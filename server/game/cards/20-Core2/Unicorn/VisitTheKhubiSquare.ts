@@ -9,13 +9,11 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
     static id = 'visit-the-khubi-square';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Put a character into play',
-            when: {
+        this.reaction('Put a character into play')
+            .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
-            },
-            effect: 'search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play',
-            gameAction: AbilityDsl.actions.sequentialContext((context) => {
+            })
+            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
                 const topFive = context.player.dynastyDeck.slice(0, 5);
                 return {
                     gameActions: [
@@ -46,7 +44,7 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
                         }))
                     ]
                 };
-            })
-        });
+            }))
+            .effect('search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play');
     }
 }

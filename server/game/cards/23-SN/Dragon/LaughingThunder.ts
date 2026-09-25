@@ -1,4 +1,4 @@
-import { AbilityContext, type ResolvedAbilityContext } from '../../../AbilityContext.js';
+import { AbilityContext } from '../../../AbilityContext.js';
 import BaseCard from '../../../BaseCard.js';
 import { CardType, Duration, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -18,16 +18,15 @@ export default class LaughingThunder extends DrawCard {
             )
         });
 
-        this.action({
-            title: 'Attach a kiho to this character',
-            target: {
+        this.action('Attach a kiho to this character')
+            .target('target', {
                 cardType: CardType.Event,
                 controller: Players.Self,
                 location: Location.Hand,
                 cardCondition: (card, context) => card.hasTrait('kiho') &&
                     context.game.actions.attach({ attachment: this.getDummyAttachment(card) }).canAffect(context.source, context)
-            },
-            gameAction: AbilityDsl.actions.sequentialContext((context: ResolvedAbilityContext<DrawCard, DrawCard>) => {
+            })
+            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
                 const gameActions: GameAction[] = [];
 
                 gameActions.push(AbilityDsl.actions.cardLastingEffect({
@@ -51,9 +50,8 @@ export default class LaughingThunder extends DrawCard {
                 }));
 
                 return { gameActions };
-            }),
-            effect: 'claim the effects of {0} as its own!'
-        });
+            }))
+            .effect('claim the effects of {0} as its own!');
     }
 
 

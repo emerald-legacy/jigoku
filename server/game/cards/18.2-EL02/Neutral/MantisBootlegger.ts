@@ -7,11 +7,9 @@ class MantisBootlegger extends DrawCard {
     static id = 'mantis-bootlegger';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Gain 1 fate',
-            condition: (context) => this.numCharactersWithAttachments(context) >= 3,
-            gameAction: AbilityDsl.actions.gainFate()
-        });
+        this.action('Gain 1 fate')
+            .condition((context) => this.numCharactersWithAttachments(context) >= 3)
+            .gameAction(AbilityDsl.actions.gainFate());
     }
 
     numCharactersWithAttachments(context: AbilityContext) {

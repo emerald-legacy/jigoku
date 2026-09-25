@@ -23,17 +23,14 @@ export default class CeremonialRobes extends DrawCard {
             )
         });
 
-        this.action({
-            title: 'Place a card from your deck faceup on a province',
-            effect: 'look at the top 3 cards of their dynasty deck',
-            evenDuringDynasty: true,
-            target: {
+        this.action('Place a card from your deck faceup on a province')
+            .target('target', {
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: (card) => card.location !== Location.StrongholdProvince,
                 controller: Players.Self
-            },
-            handler: (context) => {
+            })
+            .handler((context) => {
                 const ctx = context;
                 const top3Cards = ctx.player.dynastyDeck.slice(0, 3);
                 const steps: HandlerStep[] = [
@@ -41,7 +38,7 @@ export default class CeremonialRobes extends DrawCard {
                         activePromptTitle: 'Select a card to put into the province faceup',
                         message: '{0} places {1} into their province',
                         callback: (chosenCard) => {
-                            ctx.player.moveCard(chosenCard, (ctx.target as DrawCard).location);
+                            ctx.player.moveCard(chosenCard, ctx.target.location);
                             chosenCard.facedown = false;
                         }
                     },
@@ -71,8 +68,9 @@ export default class CeremonialRobes extends DrawCard {
                 ];
 
                 this.recursivePromptHandler(steps, ctx, top3Cards);
-            }
-        });
+            })
+            .effect('look at the top 3 cards of their dynasty deck')
+            .evenDuringDynasty();
     }
 
     private recursivePromptHandler(

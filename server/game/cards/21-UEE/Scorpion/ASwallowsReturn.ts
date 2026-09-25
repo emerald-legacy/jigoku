@@ -8,15 +8,13 @@ export default class ASwallowsReturn extends DrawCard {
     static id = 'a-swallow-s-return';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Reveal cards and take ones matching named type',
-            condition: (context) =>
+        this.action('Reveal cards and take ones matching named type')
+            .cost(AbilityDsl.costs.reveal((context) => context.player.opponent?.conflictDeck.slice(0, CARD_COUNT) ?? []))
+            .condition((context) =>
                 context.game.currentConflict !== null &&
         context.player.opponent !== undefined &&
-        context.player.opponent.conflictDeck.length >= CARD_COUNT,
-            cost: AbilityDsl.costs.reveal((context) => context.player.opponent?.conflictDeck.slice(0, CARD_COUNT) ?? []),
-            cannotBeMirrored: true,
-            gameAction: AbilityDsl.actions.sequential([
+        context.player.opponent.conflictDeck.length >= CARD_COUNT)
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to play',
                     cards: context.costs.reveal as DrawCard[],
@@ -41,8 +39,8 @@ export default class ASwallowsReturn extends DrawCard {
                 AbilityDsl.actions.discardCard((context) => ({
                     target: ((context.costs.reveal ?? []) as DrawCard[]).filter((card) => card.location === Location.ConflictDeck)
                 }))
-            ]),
-            effect: 'choose one of those to play'
-        });
+            ]))
+            .effect('choose one of those to play')
+            .cannotBeMirrored();
     }
 }

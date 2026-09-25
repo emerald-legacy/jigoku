@@ -26,9 +26,8 @@ export default class DestinyRevealed extends DrawCard {
             }))
         });
 
-        this.wouldInterrupt({
-            title: 'Cancel a ring effect',
-            when: {
+        this.wouldInterrupt('Cancel a ring effect')
+            .when({
                 onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context) =>
                     (event.context?.source.type as string) === 'ring' &&
                     !!event.origin && 'controller' in event.origin &&
@@ -38,11 +37,9 @@ export default class DestinyRevealed extends DrawCard {
                 onCardDishonored: targetedByOpponentRingEffect,
                 onCardBowed: targetedByOpponentRingEffect,
                 onCardReadied: targetedByOpponentRingEffect
-            },
-            gameAction: AbilityDsl.actions.cancel(),
-            effect: 'cancel the effects of the {1}',
-            effectArgs: (context) => [context.event.context?.source as DrawCard]
-        });
+            })
+            .gameAction(AbilityDsl.actions.cancel())
+            .effect('cancel the effects of the {1}', (context) => [context.event.context?.source]);
     }
 }
 
