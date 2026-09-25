@@ -7,7 +7,7 @@ import { GameAction, type GameActionProperties } from './GameAction.js';
 
 export interface ChooseActionProperties extends GameActionProperties {
     activePromptTitle?: string;
-    messageArgs?: unknown[];
+    messageArgs?: MsgArg[];
     player?: Players.Self | Players.Opponent;
     options: { [label: string]: { action: GameAction; message?: string } };
 }
@@ -55,7 +55,7 @@ export class ChooseGameAction extends GameAction {
                 return;
             }
             if(choice.message) {
-                context.game.addMessage(choice.message, player, properties.target, ...((properties.messageArgs ?? []) as MsgArg[]));
+                context.game.addMessage(choice.message, player, properties.target, ...((properties.messageArgs ?? [])));
             }
             context.game.queueSimpleStep(() => choice.action.addEventsToArray(events, context));
         };

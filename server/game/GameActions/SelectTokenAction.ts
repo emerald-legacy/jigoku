@@ -19,7 +19,7 @@ export interface SelectTokenProperties extends TokenActionProperties {
     cancelHandler?: () => void;
     subActionProperties?: (tokens: StatusToken | StatusToken[]) => Record<string, unknown>;
     message?: string;
-    messageArgs?: (tokens: StatusToken | StatusToken[], player: Player) => unknown[];
+    messageArgs?: (tokens: StatusToken | StatusToken[], player: Player) => MsgArg[];
     gameAction: GameAction;
     effect?: string;
     effectArgs?: (context: AbilityContext) => EffectArg[];
@@ -116,7 +116,7 @@ export class SelectTokenAction extends TokenAction {
             const handlers = validTokens.map((token: StatusToken) => {
                 return () => {
                     if(properties.message && messageArgs) {
-                        context.game.addMessage(properties.message, ...(messageArgs(token, player) as MsgArg[]));
+                        context.game.addMessage(properties.message, ...(messageArgs(token, player)));
                     }
                     context.tokens[this.name] = token;
                     properties.gameAction.addEventsToArray(
@@ -135,7 +135,7 @@ export class SelectTokenAction extends TokenAction {
         } else {
             context.tokens[this.name] = validTokens;
             if(properties.message && messageArgs) {
-                context.game.addMessage(properties.message, ...(messageArgs(validTokens, player) as MsgArg[]));
+                context.game.addMessage(properties.message, ...(messageArgs(validTokens, player)));
             }
             properties.gameAction.addEventsToArray(
                 events,

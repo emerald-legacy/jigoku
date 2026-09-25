@@ -33,7 +33,7 @@ export default class AsakoKousuke extends DrawCard {
                             return {};
                         }
 
-                        const choices = [] as Array<[string, GameAction]>;
+                        const choices: Array<[string, GameAction]> = [];
                         if(!targetCard.isHonored) {
                             choices.push([
                                 'Turn it into Honored',

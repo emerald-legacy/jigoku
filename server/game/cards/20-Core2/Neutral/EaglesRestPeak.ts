@@ -21,7 +21,7 @@ export default class EaglesRestPeak extends ProvinceCard {
             effectArgs: context => [context.target?.getCost() ?? 0, context.player.opponent],
             gameAction: AbilityDsl.actions.sequentialContext((context: AbilityContext<ProvinceCard, DrawCard>) => {
                 const opponent = context.player.opponent;
-                const setAsideCards: DrawCard[] = shuffle(opponent?.hand ?? [] as DrawCard[])
+                const setAsideCards: DrawCard[] = shuffle(opponent?.hand ?? [])
                     .slice(0, context.target?.getCost() ?? 0);
 
                 return {

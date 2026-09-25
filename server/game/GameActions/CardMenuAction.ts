@@ -16,7 +16,7 @@ export interface CardMenuProperties extends CardActionProperties {
     handlers?: ((...args: unknown[]) => unknown)[];
     targets?: boolean;
     message?: string;
-    messageArgs?: (card: DrawCard, player: Player, cards: DrawCard[]) => unknown[];
+    messageArgs?: (card: DrawCard, player: Player, cards: DrawCard[]) => MsgArg[];
     subActionProperties?: (card: DrawCard) => Record<string, unknown>;
     gameAction: GameAction;
     gameActionHasLegalTarget?: (context: AbilityContext) => boolean;
@@ -101,7 +101,7 @@ export class CardMenuAction extends CardGameAction<CardMenuProperties> {
                 );
                 if(properties.message && properties.messageArgs) {
                     let cards = properties.cards.filter((card) => cardCondition(card, context));
-                    context.game.addMessage(properties.message, ...(properties.messageArgs(card, player, cards) as MsgArg[]));
+                    context.game.addMessage(properties.message, ...(properties.messageArgs(card, player, cards)));
                 }
             }
         };

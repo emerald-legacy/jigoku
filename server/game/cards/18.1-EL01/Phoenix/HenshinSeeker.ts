@@ -13,7 +13,7 @@ export default class HenshinSeeker extends DrawCard {
             title: 'Ready a character',
             when: {
                 onClaimRing: (event: EventPayload<EventName.OnClaimRing>) => {
-                    const element = this.getCurrentElementSymbol(RING_CLAIM) as Element;
+                    const element = this.getCurrentElementSymbol(RING_CLAIM);
                     return (event.conflict && event.conflict.hasElement(element)) || event.ring.hasElement(element);
                 }
             },

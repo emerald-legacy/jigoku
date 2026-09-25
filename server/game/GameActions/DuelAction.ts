@@ -12,6 +12,10 @@ import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import { type GameAction } from './GameAction.js';
 import type { EffectFactory } from '../Effects/EffectBuilder.js';
 
+function toArray(args: MsgArg | MsgArg[]): MsgArg[] {
+    return Array.isArray(args) ? args : [args];
+}
+
 export interface DuelProperties extends CardActionProperties {
     type: DuelType;
     challenger?: DrawCard;
@@ -19,14 +23,14 @@ export interface DuelProperties extends CardActionProperties {
     requiresConflict?: boolean;
     gameAction: GameAction | ((duel: Duel, context: AbilityContext) => GameAction);
     message?: string;
-    messageArgs?: (duel: Duel, context: AbilityContext) => unknown | unknown[];
+    messageArgs?: (duel: Duel, context: AbilityContext) => MsgArg | MsgArg[];
     costHandler?: (context: AbilityContext, prompt: unknown) => void;
     statistic?: (card: DrawCard, duelRules: 'currentSkill' | 'printedSkill' | 'skirmish') => number;
     challengerEffect?: EffectFactory | EffectFactory[];
     targetEffect?: EffectFactory | EffectFactory[];
     refuseGameAction?: GameAction;
     refusalMessage?: string;
-    refusalMessageArgs?: (context: AbilityContext) => unknown | unknown[];
+    refusalMessageArgs?: (context: AbilityContext) => MsgArg | MsgArg[];
 }
 
 type ResolvedDuelProperties = DuelProperties & { challenger: DrawCard };
@@ -92,10 +96,10 @@ export class DuelAction extends CardGameAction {
             typeof properties.gameAction === 'function' ? properties.gameAction(duel, context) : properties.gameAction;
         const isNoAction = !!gameAction?.isNoAction;
         if(gameAction && !isNoAction && gameAction.hasLegalTarget(context)) {
-            const [message, messageArgs] = properties.message
-                ? [properties.message, properties.messageArgs ? ([] as unknown[]).concat(properties.messageArgs(duel, context) as unknown[]) : []]
+            const [message, messageArgs]: MessageArgs = properties.message
+                ? [properties.message, properties.messageArgs ? toArray(properties.messageArgs(duel, context)) : []]
                 : gameAction.getEffectMessage(context);
-            context.game.addMessage('Duel Effect: ' + message, ...(messageArgs as MsgArg[]));
+            context.game.addMessage('Duel Effect: ' + message, ...messageArgs);
             gameAction.resolve(undefined, context);
         } else {
             context.game.addMessage('The duel has no effect');
@@ -131,8 +135,8 @@ export class DuelAction extends CardGameAction {
                 handlers: [
                     () => {
                         if(refusalMessage) {
-                            const refusalArgs = refusalMessageArgs ? ([] as unknown[]).concat(refusalMessageArgs(context) as unknown[]) : [];
-                            context.game.addMessage(refusalMessage, ...(refusalArgs as MsgArg[]));
+                            const refusalArgs = refusalMessageArgs ? toArray(refusalMessageArgs(context)) : [];
+                            context.game.addMessage(refusalMessage, ...refusalArgs);
                         } else {
                             context.game.addMessage(
                                 '{0} chooses to refuse the duel and {1}',

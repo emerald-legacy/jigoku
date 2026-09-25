@@ -5,9 +5,9 @@ import type { Conflict } from '../../../Conflict.js';
 import type Player from '../../../Player.js';
 
 function charactersToBuffAndNerf(yuaController: Player, conflict: Conflict | null) {
-    const res = {
-        toBuff: [] as Array<DrawCard>,
-        toNerf: [] as Array<DrawCard>
+    const res: { toBuff: DrawCard[]; toNerf: DrawCard[] } = {
+        toBuff: [],
+        toNerf: []
     };
     if(!conflict) {
         return res;

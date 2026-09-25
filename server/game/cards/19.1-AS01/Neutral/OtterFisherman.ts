@@ -18,8 +18,8 @@ export default class OtterFisherman extends DrawCard {
             when: {
                 onClaimRing: (event: EventPayload<EventName.OnClaimRing>, context) =>
                     event.player === context.player &&
-                    ((event.conflict && event.conflict.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY) as Element)) ||
-                        event.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY) as Element))
+                    ((event.conflict && event.conflict.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY))) ||
+                        event.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY)))
             },
             target: {
                 mode: TargetMode.Select,

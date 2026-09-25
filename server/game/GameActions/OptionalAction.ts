@@ -8,7 +8,7 @@ import { GameAction, type GameActionProperties } from './GameAction.js';
 export interface OptionalActionProperties extends GameActionProperties {
     gameAction: GameAction;
     effect?: string;
-    effectArgs?: Derivable<Array<unknown>, AbilityContext>;
+    effectArgs?: Derivable<MsgArg[], AbilityContext>;
     promptTitleForConfirming: string;
     showMessageOnNo?: boolean;
 }
@@ -63,7 +63,7 @@ export class OptionalAction extends GameAction<OptionalActionProperties> {
         const args = properties.effectArgs ? derive(properties.effectArgs, context) : [];
         const nextArg = args.length;
         const msg = `{${nextArg}} chooses to ${properties.effect ?? ''}`;
-        context.game.addMessage(msg, ...(args as MsgArg[]), context.player);
+        context.game.addMessage(msg, ...args, context.player);
     }
 
     skipAction(
@@ -74,7 +74,7 @@ export class OptionalAction extends GameAction<OptionalActionProperties> {
             const args = properties.effectArgs ? derive(properties.effectArgs, context) : [];
             const nextArg = args.length;
             const msg = `{${nextArg}} chooses not to ${properties.effect ?? ''}`;
-            context.game.addMessage(msg, ...(args as MsgArg[]), context.player);
+            context.game.addMessage(msg, ...args, context.player);
         }
     }
 }

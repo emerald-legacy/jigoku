@@ -200,7 +200,7 @@ export class GameInputHandler {
         }
 
         if(!this.game.isSpectator(player)) {
-            if(this.game.chatCommands.executeCommand(player as Player, args[0], args)) {
+            if(this.game.chatCommands.executeCommand(player, args[0], args)) {
                 this.game.checkGameState(true);
                 return;
             }

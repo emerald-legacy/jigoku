@@ -15,7 +15,7 @@ export interface SelectRingProperties extends RingActionProperties {
     cancelHandler?: () => void;
     subActionProperties?: (ring: Ring) => Record<string, unknown>;
     message?: string;
-    messageArgs?: (ring: Ring, player: Player) => unknown[];
+    messageArgs?: (ring: Ring, player: Player) => MsgArg[];
     gameAction: GameAction;
 }
 
@@ -90,7 +90,7 @@ export class SelectRingAction extends RingAction {
             onCancel: properties.cancelHandler,
             onSelect: (selectingPlayer: Player, ring: Ring) => {
                 if(properties.message && messageArgs) {
-                    context.game.addMessage(properties.message, ...(messageArgs(ring, selectingPlayer) as MsgArg[]));
+                    context.game.addMessage(properties.message, ...(messageArgs(ring, selectingPlayer)));
                 }
                 properties.gameAction.addEventsToArray(
                     events,

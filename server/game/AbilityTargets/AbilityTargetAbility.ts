@@ -130,7 +130,7 @@ class AbilityTargetAbility {
                             if(choice === 'Back') {
                                 context.game.queueSimpleStep(() => this.resolve(context, targetResults));
                             } else {
-                                context.targetAbility = abilities.find((ability) => ability.title === choice) as CardAbility;
+                                context.targetAbility = abilities.find((ability) => ability.title === choice) ?? null;
                             }
                         }
                     });

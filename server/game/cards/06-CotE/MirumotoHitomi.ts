@@ -32,7 +32,7 @@ export default class MirumotoHitomi extends DrawCard {
                             return undefined;
                         }
                         return AbilityDsl.actions.multiple(
-                            ([] as DrawCard[]).concat(duel.loser).map((card) =>
+                            duel.loser.map((card) =>
                                 AbilityDsl.actions.chooseAction({
                                     target: card,
                                     player: context.player !== card.controller ? Players.Opponent : Players.Self,

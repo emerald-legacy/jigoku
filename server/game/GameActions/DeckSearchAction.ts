@@ -26,7 +26,7 @@ export interface DeckSearchProperties extends PlayerActionProperties {
     player?: Player;
     choosingPlayer?: Player;
     placeOnBottomInRandomOrder?: boolean;
-    messageArgs?: (context: AbilityContext, cards: DrawCard[]) => unknown[];
+    messageArgs?: (context: AbilityContext, cards: DrawCard[]) => MsgArg[];
     selectedCardsHandler?: (context: AbilityContext, event: Event, cards: DrawCard[]) => void;
     remainingCardsHandler?: (context: AbilityContext, event: Event, cards: DrawCard[]) => void;
     cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
@@ -286,7 +286,7 @@ export class DeckSearchAction extends PlayerAction<DeckSearchProperties, EventNa
         const choosingPlayer = (properties.choosingPlayer || event.player) as Player;
         if(selectedCards.size > 0 && properties.message) {
             const args = properties.messageArgs ? properties.messageArgs(context, Array.from(selectedCards)) : [];
-            return context.game.addMessage(properties.message, ...(args as MsgArg[]));
+            return context.game.addMessage(properties.message, ...(args));
         }
 
         if(selectedCards.size === 0) {

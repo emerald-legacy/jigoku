@@ -8,7 +8,7 @@ import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 
 export interface LookAtProperties extends CardActionProperties {
     message?: string | ((context: AbilityContext) => string);
-    messageArgs?: (cards: BaseCard[]) => unknown[];
+    messageArgs?: (cards: BaseCard[]) => MsgArg[];
 }
 
 export class LookAtAction extends CardGameAction<CardActionProperties, EventName.OnLookAtCards> {
@@ -57,7 +57,7 @@ export class LookAtAction extends CardGameAction<CardActionProperties, EventName
         let properties = this.getProperties(context, additionalProperties) as LookAtProperties;
         let cards = event.cards as BaseCard[];
         let messageArgs = properties.messageArgs ? properties.messageArgs(cards) : [context.source, cards];
-        context.game.addMessage(this.getMessage(properties.message, context), ...(messageArgs as MsgArg[]));
+        context.game.addMessage(this.getMessage(properties.message, context), ...(messageArgs));
     }
 
     getMessage(message: string | ((context: AbilityContext) => string) | undefined, context: AbilityContext): string {

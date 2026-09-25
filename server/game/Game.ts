@@ -288,7 +288,7 @@ class Game {
     /**
      * Checks if a player is a spectator
      */
-    isSpectator(player: Player | Spectator): boolean {
+    isSpectator(player: Player | Spectator): player is Spectator {
         return player.constructor === Spectator;
     }
 
@@ -309,7 +309,7 @@ class Game {
      */
     getPlayers(): Player[] {
         if(!this._playersCache) {
-            this._playersCache = Object.values(this.playersAndSpectators).filter((player) => !this.isSpectator(player)) as Player[];
+            this._playersCache = Object.values(this.playersAndSpectators).filter((player): player is Player => !this.isSpectator(player));
         }
         return this._playersCache;
     }
@@ -320,7 +320,7 @@ class Game {
     getPlayerByName(playerName: string): Player | undefined {
         const player = this.playersAndSpectators[playerName];
         if(player && !this.isSpectator(player)) {
-            return player as Player;
+            return player;
         }
         return undefined;
     }
@@ -344,7 +344,7 @@ class Game {
      */
     getSpectators(): Spectator[] {
         if(!this._spectatorsCache) {
-            this._spectatorsCache = Object.values(this.playersAndSpectators).filter((player) => this.isSpectator(player)) as Spectator[];
+            this._spectatorsCache = Object.values(this.playersAndSpectators).filter((player) => this.isSpectator(player));
         }
         return this._spectatorsCache;
     }

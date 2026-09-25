@@ -14,7 +14,7 @@ export interface HonorBidProperties extends PlayerActionProperties {
     players?: Players;
     postBidAction?: GameAction;
     message?: string;
-    messageArgs?: (context: AbilityContext) => unknown[];
+    messageArgs?: (context: AbilityContext) => MsgArg[];
 }
 
 export class HonorBidAction extends PlayerAction<HonorBidProperties, EventName.OnHonorBid> {
@@ -88,10 +88,10 @@ export class HonorBidAction extends PlayerAction<HonorBidProperties, EventName.O
             );
             context.game.queueStep(
                 new SimpleStep(context.game, () => {
-                    const [message, messageArgs] = event.message
+                    const [message, messageArgs]: MessageArgs = event.message
                         ? [event.message, event.messageArgs ? Array.from(event.messageArgs(context)) : []]
                         : (event.postBidAction ? event.postBidAction.getEffectMessage(context) : ['', []]);
-                    context.game.addMessage(message, ...(messageArgs as MsgArg[]));
+                    context.game.addMessage(message, ...messageArgs);
                 })
             );
         } else {

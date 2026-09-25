@@ -13,7 +13,7 @@ function getNumberOfMonks(context: AbilityContext) {
 }
 
 class Process {
-    #chosenRings = [] as Array<Ring>;
+    #chosenRings: Ring[] = [];
     constructor(
         private maxRings: number,
         private context: AbilityContext

@@ -21,7 +21,7 @@ export interface SelectCardProperties extends CardActionProperties {
     targets?: boolean;
     message?: string;
     manuallyRaiseEvent?: boolean;
-    messageArgs?(card: BaseCard | BaseCard[], player: Player, properties: SelectCardProperties): unknown[];
+    messageArgs?(card: BaseCard | BaseCard[], player: Player, properties: SelectCardProperties): MsgArg[];
     gameAction: GameAction;
     selector?: BaseCardSelector;
     mode?: TargetMode;
@@ -125,7 +125,7 @@ export class SelectCardAction extends CardGameAction {
             onCancel: properties.cancelHandler,
             onSelect: (player: Player, cards: BaseCard | BaseCard[]) => {
                 if(properties.message && messageArgs) {
-                    context.game.addMessage(properties.message, ...(messageArgs(cards, player, properties) as MsgArg[]));
+                    context.game.addMessage(properties.message, ...messageArgs(cards, player, properties));
                 }
                 properties.gameAction.addEventsToArray(
                     events,

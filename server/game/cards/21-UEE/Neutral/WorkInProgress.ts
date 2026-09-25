@@ -34,7 +34,7 @@ export default class WorkInProgress extends DrawCard {
                         }
                         return acc;
                     },
-                    [[] as DrawCard[], [] as DrawCard[]]
+                    [[], []]
                 );
                 matchingCards = matchingCards.filter((c: DrawCard) => c.uuid !== context.source.uuid);
 

@@ -115,7 +115,7 @@ class BaseCard extends EffectSource {
     packId: string | undefined;
 
     protected statusManager!: CardStatusManager;
-    allowedAttachmentTraits = [] as string[];
+    allowedAttachmentTraits: string[] = [];
     protected attachmentHost = new AttachmentManager(this);
 
     /** What this card is attached to, or null — the inverse of `attachments`. */
@@ -144,7 +144,7 @@ class BaseCard extends EffectSource {
     }
 
     printedKeywords: Array<PrintedKeyword> = [];
-    disguisedKeywordTraits = [] as string[];
+    disguisedKeywordTraits: string[] = [];
 
     constructor(
         public owner: Player,

@@ -13,7 +13,7 @@ import type { GameEvent } from '../Events/EventPayloads.js';
 export interface FateBidProperties extends PlayerActionProperties {
     postBidAction?: GameAction;
     message?: string;
-    messageArgs?: (context: AbilityContext) => unknown[];
+    messageArgs?: (context: AbilityContext) => MsgArg[];
 }
 
 export class FateBidAction extends PlayerAction<FateBidProperties, EventName.Unnamed> {
@@ -68,10 +68,10 @@ export class FateBidAction extends PlayerAction<FateBidProperties, EventName.Unn
         );
         context.game.queueStep(
             new SimpleStep(context.game, () => {
-                const [message, messageArgs] = bidEvent.message
+                const [message, messageArgs]: MessageArgs = bidEvent.message
                     ? [bidEvent.message, bidEvent.messageArgs ? Array.from(bidEvent.messageArgs(context)) : []]
                     : (bidEvent.postBidAction ? bidEvent.postBidAction.getEffectMessage(context) : ['', []]);
-                context.game.addMessage(message, ...(messageArgs as MsgArg[]));
+                context.game.addMessage(message, ...messageArgs);
             })
         );
     }

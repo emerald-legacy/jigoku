@@ -8,7 +8,7 @@ import { GameAction, type GameActionProperties } from './GameAction.js';
 export interface AffinityActionProperties extends GameActionProperties {
     gameAction: GameAction;
     effect?: string;
-    effectArgs?: Derivable<Array<unknown>, AbilityContext>;
+    effectArgs?: Derivable<MsgArg[], AbilityContext>;
     trait: string;
     noAffinityGameAction?: GameAction;
     promptTitleForConfirmingAffinity?: string;
@@ -87,6 +87,6 @@ export class AffinityAction extends GameAction<AffinityActionProperties> {
         const args = properties.effectArgs ? derive(properties.effectArgs, context) : [];
         const nextArg = args.length;
         const affinityMsg = `{${nextArg}} channels their ${properties.trait} affinity to ${properties.effect ?? ''}`;
-        context.game.addMessage(affinityMsg, ...(args as MsgArg[]), context.player);
+        context.game.addMessage(affinityMsg, ...args, context.player);
     }
 }

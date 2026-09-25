@@ -48,7 +48,7 @@ class ThenAbility extends BaseCardAbility {
             message = message(context);
         }
         if(message) {
-            let messageArgs: unknown[] = [context.player, context.source, context.target];
+            let messageArgs: MsgArg[] = [context.player, context.source, context.target];
             if(this.properties.messageArgs) {
                 let args = this.properties.messageArgs;
                 if(typeof args === 'function') {
@@ -56,13 +56,13 @@ class ThenAbility extends BaseCardAbility {
                 }
                 messageArgs = messageArgs.concat(args);
             }
-            this.game.addMessage(message, ...(messageArgs as MsgArg[]));
+            this.game.addMessage(message, ...messageArgs);
         }
     }
 
     getGameActions(context: AbilityContext): GameAction[] {
         // if there are any targets, look for gameActions attached to them
-        const actions = this.targets.reduce((array: GameAction[], target) => array.concat(target.getGameAction(context)), [] as GameAction[]);
+        const actions = this.targets.flatMap((target) => target.getGameAction(context));
         // look for a gameAction on the ability itself, on an attachment execute that action on its parent, otherwise on the card itself
         return actions.concat(this.gameAction);
     }

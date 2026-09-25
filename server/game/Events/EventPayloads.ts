@@ -10,6 +10,7 @@ import type DrawCard from '../DrawCard.js';
 import type { Duel } from '../Duel.js';
 import type { EffectMatch } from '../Effects/Effect.js';
 import type { Event } from './Event.js';
+import type { MsgArg } from '../GameChat.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type Player from '../Player.js';
 import type { ProvinceCard } from '../ProvinceCard.js';
@@ -240,7 +241,7 @@ export interface EventPayloadMap {
         players?: Players;
         postBidAction?: GameAction;
         message?: string;
-        messageArgs?: (context: AbilityContext) => unknown[];
+        messageArgs?: (context: AbilityContext) => MsgArg[];
     };
     [EventName.OnModifyBid]: BaseEventPayload & {
         player?: Player;

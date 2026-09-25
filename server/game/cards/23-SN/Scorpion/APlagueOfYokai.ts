@@ -56,10 +56,7 @@ export default class APlagueOfYokai extends DrawCard {
         }
 
         const participatingCharacters = context.game.currentConflict.getParticipants();
-        const attachments = participatingCharacters.reduce(
-            (prev, current) => [...prev, ...current.attachments],
-            [] as DrawCard[]
-        );
+        const attachments = participatingCharacters.flatMap((current) => current.attachments);
 
         const matchingAttachments = attachments.filter(a => a.name === context.source.name && a.controller === context.source.controller);
         return matchingAttachments.length;
