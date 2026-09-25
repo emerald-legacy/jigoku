@@ -1,40 +1,35 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { DuelType } from '../../Constants.js';
 
-class ReturnTheOffense extends DrawCard {
+export default class ReturnTheOffense extends DrawCard {
     static id = 'return-the-offense';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a political duel',
-            initiateDuel: {
-                type: DuelType.Political,
-                message: '{0}{1}{2}{3}{4}',
-                messageArgs: (duel) => [
-                    duel.winner,
-                    duel.winner?.length ? ' does not bow as a result of conflict resolution' : '',
-                    duel.loser?.length ? ' and ' : '',
-                    duel.loser,
-                    duel.loser?.length ? ' cannot be readied' : ''
-                ],
-                gameAction: (duel) => AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.cardLastingEffect({
-                        target: duel.winner,
-                        effect: AbilityDsl.effects.doesNotBow()
-                    }),
-                    AbilityDsl.actions.cardLastingEffect({
-                        target: duel.loser,
-                        effect: AbilityDsl.effects.cardCannot({
-                            cannot: 'ready',
-                            restricts: 'cardEffects'
-                        })
-                    })
-                ])
-            }
-        });
+        this.ability
+            .action()
+            .title('Initiate a political duel')
+            .condition((ctx) => ctx.conflict !== undefined)
+            .targets(($target) => ({ duel: $target.politicalDuel() }))
+            .effects(($effect, ctx) => [
+                $effect.resolveDuel(
+                    ctx.targets.duel,
+                    (outcome) => [
+                        $effect.lastingEffect(outcome.winner, ($modifier) => [$modifier.doesNotBow()], {
+                            until: 'conflict'
+                        }),
+                        $effect.lastingEffect(
+                            outcome.loser,
+                            ($modifier) => [$modifier.cannotBeReadiedByCardEffects()],
+                            {
+                                until: 'conflict'
+                            }
+                        )
+                    ],
+                    {
+                        announce: ($message, { winner, loser }) =>
+                            $message.freeform`${winner} does not bow as a result of conflict resolution${loser.length > 0 ? ' and ' : ''}${loser}${loser.length > 0 ? ' cannot be readied' : ''}`
+                    }
+                )
+            ])
+            .addPrinted();
     }
 }
-
-
-export default ReturnTheOffense;

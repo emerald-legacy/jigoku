@@ -1,22 +1,16 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType } from '../../Constants.js';
 
-class Forgery extends DrawCard {
+export default class Forgery extends DrawCard {
     static id = 'forgery';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Cancel an event',
-            when: {
-                onInitiateAbilityEffects: (event, context) => event.card.type === CardType.Event && context.player.opponent &&
-                    context.player.isLessHonorable()
-            },
-            cannotBeMirrored: true,
-            gameAction: AbilityDsl.actions.cancel()
-        });
+        this.ability
+            .wouldInterrupt({
+                onInitiateAbilityEffects: (event, ctx, util) =>
+                    util.is(event.card, 'event') && ctx.opponent !== undefined && ctx.player.isLessHonorable()
+            })
+            .title('Cancel an event')
+            .effects(($effect) => [$effect.cancel()])
+            .addPrinted();
     }
 }
-
-
-export default Forgery;

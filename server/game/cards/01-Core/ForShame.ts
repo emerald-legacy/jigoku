@@ -1,34 +1,30 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { Players, TargetMode, CardType } from '../../Constants.js';
 
-class ForShame extends DrawCard {
+export default class ForShame extends DrawCard {
     static id = 'for-shame';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Dishonor or bow a character',
-            condition: context => context.player.anyCardsInPlay(card => card.isParticipating() && card.hasTrait('courtier')),
-            targets: {
-                character: {
-                    cardType: CardType.Character,
-                    controller: Players.Opponent,
-                    cardCondition: card => card.isParticipating()
-                },
-                select: {
-                    mode: TargetMode.Select,
-                    dependsOn: 'character',
-                    player: Players.Opponent,
-                    choices: {
-                        'Dishonor this character': ability.actions.dishonor((context: AbilityContext) => ({ target: context.targets.character })),
-                        'Bow this character': ability.actions.bow((context: AbilityContext) => ({ target: context.targets.character }))
-                    }
-                }
-            }
-        });
+    setupCardAbilities() {
+        this.ability
+            .conflictAction()
+            .title('Dishonor or bow a character')
+            .condition((ctx) =>
+                ctx.player.anyCardsInPlay((card) => card.isParticipating() && card.hasTrait('courtier'))
+            )
+            .targets(($target) => ({
+                character: $target.card('character', {
+                    controller: (ctx) => ctx.opponent,
+                    filter: (card) => card.isParticipating()
+                })
+            }))
+            .targets(($target) => ({
+                choice: $target.select({
+                    chooser: (ctx) => ctx.opponent,
+                    options: { dishonor: 'Dishonor this character', bow: 'Bow this character' }
+                })
+            }))
+            .effects(($effect, ctx) => [
+                ctx.targets.choice === 'dishonor' ? $effect.dishonor(ctx.targets.character) : $effect.bow(ctx.targets.character)
+            ])
+            .addPrinted();
     }
 }
-
-
-export default ForShame;
