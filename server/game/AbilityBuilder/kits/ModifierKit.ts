@@ -59,12 +59,12 @@ export function createModifierKit(gained: GainedSupport) {
         addElementAsAttacker: (element: (source: BaseCard) => string | string[]) =>
             card(
                 AbilityDsl.effects.addElementAsAttacker((_target: BaseCard, context) =>
-                    element(context.source as BaseCard)
+                    element(context.source)
                 )
             ),
         /** The affected card gains the ability. Its source is the card that gains it. */
         gainAbility: (build: ($ability: AbilityEntry<DrawCard, 'gained'>) => GainedAbility<DrawCard>) => {
-            const { type, props } = gained.compile(build(gained.entry) as GainedAbility<BaseCard>);
+            const { type, props } = gained.compile(build(gained.entry));
             return card(AbilityDsl.effects.gainAbility(type as AbilityType.Action, props as never));
         },
 

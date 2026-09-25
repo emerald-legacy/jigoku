@@ -224,7 +224,7 @@ class InPlayerOrderSpec<R> extends TargetSpec<readonly InOrderChoice<R>[]> {
     }
 
     private specFor(context: AbilityContext, index: number, fallback: Player): CardTargetSpec<R> {
-        const spec = this.build(this.playerAt(context, index) ?? fallback, targetKit as TargetKit<State>);
+        const spec = this.build(this.playerAt(context, index) ?? fallback, targetKit);
         if(!(spec instanceof CardTargetSpec)) {
             throw new Error('Ability builder: inPlayerOrder supports only card targets');
         }
@@ -232,7 +232,7 @@ class InPlayerOrderSpec<R> extends TargetSpec<readonly InOrderChoice<R>[]> {
     }
 
     compile(name: string, env: TargetEnv): LegacyTarget[] {
-        const spec = this.build(env.owner, targetKit as TargetKit<State>);
+        const spec = this.build(env.owner, targetKit);
         if(!(spec instanceof CardTargetSpec)) {
             throw new Error('Ability builder: inPlayerOrder supports only card targets');
         }
@@ -425,7 +425,7 @@ export const targetKit: TargetKit<State> = {
     anyCard: (options = {}) => new CardTargetSpec(ALL_KINDS, 'single', options) as never,
     select: (options) => new SelectTargetSpec(options.options, options.chooser, options.prompt) as never,
     inPlayerOrder: (build) =>
-        new InPlayerOrderSpec(build as (player: Player, $target: TargetKit<State>) => TargetSpec<never>) as never,
+        new InPlayerOrderSpec(build as (player: Player, $target: TargetKit<State>) => TargetSpec<never>),
     militaryDuel: (options = {}) => new DuelTargetSpec('military', options),
     politicalDuel: (options = {}) => new DuelTargetSpec('political', options),
     gloryDuel: (options = {}) => new DuelTargetSpec('glory', options)

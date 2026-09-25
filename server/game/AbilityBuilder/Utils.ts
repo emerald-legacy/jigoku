@@ -82,7 +82,7 @@ export function createUtils(context: AbilityContext): Utils {
         hasAffinity: (trait, player) => player?.hasAffinity(trait, context) ?? false,
 
         is: <const K extends CardKindInput>(card: undefined | BaseCard, kind: K): card is CardFor<K> =>
-            card !== undefined && kindList(kind).includes(card.type as CardKind),
+            card !== undefined && kindList(kind).includes(card.type),
         cardsInConflictProvince(player) {
             const current = conflict();
             if(!current) {

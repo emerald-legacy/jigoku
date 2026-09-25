@@ -140,7 +140,7 @@ function createSubjectKit<Src extends BaseCard>() {
                     const ctx = view(context) as BaseCtx<Src>;
                     const util = createUtils(context);
                     return (
-                        kindList(kind).includes(card.type as CardKind) &&
+                        kindList(kind).includes(card.type) &&
                         (!options.controller || card.controller === options.controller(ctx, util)) &&
                         (!options.filter || options.filter(card as CardFor<K>, ctx, util))
                     );

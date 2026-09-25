@@ -12,11 +12,8 @@ import {
     type AbilityEntry,
     type AbilityKind,
     type AbilitySpec,
-    type Finish,
-    type GainedAbility
+    type Finish
 } from './TriggeredBuilder.js';
-
-export type { AbilityEntry, GainedAbility } from './TriggeredBuilder.js';
 
 function register(card: BaseCard, spec: AbilitySpec, limits: FinishOptions): void {
     const props = new TriggeredCompiler(card, spec).compile(limits) as never;
@@ -63,11 +60,11 @@ function createEntry<Src extends BaseCard, F extends Finish>(
         militaryConflictAction: () => start('action', { conflict: { type: 'military' } }),
         politicalConflictAction: () => start('action', { conflict: { type: 'political' } }),
 
-        reaction: (when) => start('reaction', { when: when as AbilitySpec['when'] }),
-        forcedReaction: (when) => start('forcedReaction', { when: when as AbilitySpec['when'] }),
-        interrupt: (when) => start('interrupt', { when: when as AbilitySpec['when'] }),
-        wouldInterrupt: (when) => start('wouldInterrupt', { when: when as AbilitySpec['when'] }),
-        forcedInterrupt: (when) => start('forcedInterrupt', { when: when as AbilitySpec['when'] }),
+        reaction: (when) => start('reaction', { when: when }),
+        forcedReaction: (when) => start('forcedReaction', { when: when }),
+        interrupt: (when) => start('interrupt', { when: when }),
+        wouldInterrupt: (when) => start('wouldInterrupt', { when: when }),
+        forcedInterrupt: (when) => start('forcedInterrupt', { when: when }),
 
         duelChallenge: () => start('duelChallenge'),
         duelFocus: () => start('duelFocus'),
@@ -109,7 +106,7 @@ function gainedCompiler(card: BaseCard): GainedSupport {
 function gainedEntry<Src extends BaseCard = DrawCard>(): AbilityEntry<Src, 'gained'> {
     return createEntry<Src, 'gained'>({
         limitKit,
-        build: (spec, limits) => ({ spec, limits }) as unknown as GainedAbility<Src>
+        build: (spec, limits) => ({ spec, limits })
     });
 }
 

@@ -202,7 +202,11 @@ function target<T>(value: Many<T>): T[] {
     if(value === undefined) {
         return [];
     }
-    return (Array.isArray(value) ? [...value] : [value]) as T[];
+    return isList(value) ? [...value] : [value];
+}
+
+function isList<T>(value: T | readonly T[]): value is readonly T[] {
+    return Array.isArray(value);
 }
 
 /** The old action of a delayed effect: picks the branch and prints its announcement when it triggers. */
@@ -374,7 +378,7 @@ export function createEffectKit(context: AbilityContext) {
                 return node(undefined);
             }
             const action = GameActions.resolveAbility({
-                target: context.source as BaseCard,
+                target: context.source,
                 ability: context.ability as CardAbility,
                 subResolution: true,
                 player: options.player,

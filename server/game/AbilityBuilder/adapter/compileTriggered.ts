@@ -6,7 +6,7 @@ import type { Event } from '../../Events/Event.js';
 import type { GameAction } from '../../GameActions/GameAction.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import { costKit, type CostSpec } from '../kits/CostKit.js';
-import { createEffectKit, nodeActions, type EffectNode } from '../kits/EffectKit.js';
+import { createEffectKit, nodeActions } from '../kits/EffectKit.js';
 import type { FinishOptions } from '../kits/LimitKit.js';
 import { formatted, messageKit, messageList, type MessageResult } from '../kits/MessageKit.js';
 import { targetKit, type LegacyTarget, type TargetSpec } from '../kits/TargetKit.js';
@@ -135,7 +135,7 @@ export class TriggeredCompiler {
                     conflictCondition(
                         context,
                         conflict.type,
-                        this.gained ? (context.source as BaseCard) : this.card
+                        this.gained ? (context.source) : this.card
                     )) &&
                 spec.conditions.every((condition) =>
                     call(condition)(createView([context], this.table), createUtils(context))
@@ -199,8 +199,8 @@ export class TriggeredCompiler {
                 game.addMessage(
                     '{0} {1} {2} to {3}',
                     context.player,
-                    verb(context.source as BaseCard),
-                    context.source as BaseCard,
+                    verb(context.source),
+                    context.source,
                     formatted(game, message)
                 );
             } else {
@@ -230,7 +230,7 @@ export class TriggeredCompiler {
             createEffectKit(context),
             createView(chain, this.table),
             createUtils(context)
-        ) as readonly EffectNode[];
+        );
         return nodeActions(nodes);
     }
 
