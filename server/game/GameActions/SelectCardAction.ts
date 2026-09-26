@@ -11,17 +11,17 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { GameAction, WithDefaults } from './GameAction.js';
 import type { EffectArg } from '../Interfaces.js';
 
-export interface SelectCardProperties extends CardActionProperties {
+export interface SelectCardProperties<C extends AbilityContext = AbilityContext> extends CardActionProperties {
     activePromptTitle?: string;
     player?: Players.Self | Players.Opponent;
     cardType?: CardType | CardType[];
     controller?: Players;
     location?: Location | Location[];
-    cardCondition?(card: DrawCard, context: AbilityContext): boolean;
+    cardCondition?(card: DrawCard, context: C): boolean;
     targets?: boolean;
     message?: string;
     manuallyRaiseEvent?: boolean;
-    messageArgs?(card: BaseCard | BaseCard[], player: Player, properties: SelectCardProperties): MsgArg[];
+    messageArgs?(card: BaseCard | BaseCard[], player: Player, properties: SelectCardProperties<C>): MsgArg[];
     gameAction: GameAction;
     selector?: BaseCardSelector;
     mode?: TargetMode;
@@ -30,11 +30,11 @@ export interface SelectCardProperties extends CardActionProperties {
     subActionProperties?(card: BaseCard | BaseCard[]): Record<string, unknown>;
     cancelHandler?: () => void;
     effect?: string;
-    effectArgs?: (context: AbilityContext) => EffectArg[];
+    effectArgs?: (context: C) => EffectArg[];
 }
 
-export class SelectCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<SelectCardProperties, EventName, C> {
-    defaultProperties: Partial<SelectCardProperties> = {
+export class SelectCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<SelectCardProperties<C>, EventName, C> {
+    defaultProperties: Partial<SelectCardProperties<C>> = {
         cardCondition: () => true,
         subActionProperties: (card) => ({ target: card }),
         targets: false,
@@ -42,7 +42,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
         manuallyRaiseEvent: false
     };
 
-    constructor(properties: SelectCardProperties | ((context: C) => SelectCardProperties)) {
+    constructor(properties: SelectCardProperties<C> | ((context: C) => SelectCardProperties<C>)) {
         super(properties);
     }
 
@@ -54,7 +54,7 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
         return ['choose a target for {0}', [target]];
     }
 
-    getProperties(context: C, additionalProperties = {}): WithDefaults<SelectCardProperties, 'cardCondition' | 'subActionProperties' | 'selector'> {
+    getProperties(context: C, additionalProperties = {}): WithDefaults<SelectCardProperties<C>, 'cardCondition' | 'subActionProperties' | 'selector'> {
         let properties = super.getProperties(context, additionalProperties);
         properties.gameAction.setDefaultTarget(() => properties.target);
         const cardCondition = properties.cardCondition ?? (() => true);

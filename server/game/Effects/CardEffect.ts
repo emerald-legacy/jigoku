@@ -4,7 +4,6 @@ import type { EffectName } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type EffectSource from '../EffectSource.js';
-import type { SourceWithState } from '../EffectSource.js';
 import type Game from '../Game.js';
 import type { GameObject } from '../GameObject.js';
 import type { EffectBase } from './EffectBase.js';
@@ -35,7 +34,7 @@ export default class CardEffect extends Effect<BaseCard> {
             // This is a hack to check whether this is a lasting effect
             return true;
         }
-        const sourceController = (this.source as SourceWithState).controller;
+        const sourceController = this.source.getEffectController();
         return (
             target.allowGameAction('applyEffect', this.context) &&
             (this.targetController !== Players.Self || target.controller === sourceController) &&

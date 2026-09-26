@@ -20,16 +20,6 @@ type PropertyFactory = (dsl: AbilityDslType) => EffectProperties;
 
 // This class is inherited by Ring and BaseCard and also represents Framework effects
 
-// State the effect engine reads off a source. Subclasses expose these in
-// incompatible forms (BaseCard.controller is a field, StatusToken.controller a
-// getter; persistentEffects is a getter on BaseCard but a field on StatusToken/
-// ElementSymbol), so they can't be hoisted as a single class member — effect
-// sites narrow to this type instead.
-export type SourceWithState = EffectSource & {
-    controller?: Player;
-    persistentEffects?: { ref?: Effect[] }[];
-};
-
 class EffectSource extends GameObject {
     constructor(game: Game, name = 'Framework effect') {
         super(game, name);
@@ -68,6 +58,19 @@ class EffectSource extends GameObject {
 
     public isTemptationsMaho() {
         return false;
+    }
+
+    // What the effect engine reads off a source. Subclasses hold these in incompatible forms
+    // (controller is a field on BaseCard but a getter on StatusToken), so they override methods.
+
+    /** The player whose effects these are; framework effects, rings and element symbols have none. */
+    public getEffectController(): Player | undefined {
+        return undefined;
+    }
+
+    /** The persistent effects this source put into the effect engine. */
+    public getPersistentEffectRecords(): readonly { ref?: Effect[] }[] {
+        return [];
     }
 
     public applyDurationEffect(duration: Duration, propertyFactory: PropertyFactory): void {

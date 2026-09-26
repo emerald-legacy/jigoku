@@ -810,11 +810,11 @@ class Player extends GameObject {
         this.costManager.removePlayableLocation(location);
     }
 
-    getAlternateFatePools(playingType: PlayType | undefined, card: DrawCard, context?: AbilityContext): FatePool[] {
+    getAlternateFatePools(playingType: PlayType | undefined, card: BaseCard, context?: AbilityContext): FatePool[] {
         return this.costManager.getAlternateFatePools(playingType, card, context);
     }
 
-    getMinimumCost(playingType: PlayType | undefined, context: AbilityContext, target?: BaseCard, ignoreType: boolean = false): number {
+    getMinimumCost(playingType: PlayType | undefined, context: AbilityContext<DrawCard>, target?: BaseCard, ignoreType: boolean = false): number {
         return this.costManager.getMinimumCost(playingType, context, target, ignoreType);
     }
 

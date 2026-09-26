@@ -1,9 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import type DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
-import type { Event } from '../../Events/Event.js';
 import { Location, CardType, EventName } from '../../Constants.js';
-import type { GameEvent } from '../../Events/EventPayloads.js';
 import type Player from '../../Player.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -84,8 +82,8 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
             def.push([]);
             return def;
         }
-        let events = context.events.filter((a: Event) => a.name === 'onCardLeavesPlay' && !a.cancelled);
-        let allCards = events.map((a: Event) => (a as GameEvent<EventName.OnCardLeavesPlay>).cardStateWhenLeftPlay as BaseCard);
+        let allCards = context.events.flatMap((event) =>
+            event.is(EventName.OnCardLeavesPlay) && !event.cancelled && event.cardStateWhenLeftPlay ? [event.cardStateWhenLeftPlay] : []);
         let cards = allCards.filter((a: BaseCard) => a.controller === player);
 
         //Figure out how many cards to reveal and which characters to put into play

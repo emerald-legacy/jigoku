@@ -126,7 +126,8 @@ class AttackersMatrix {
         return availableAttackers;
     }
 
-    getForcedAttackers(ring: Ring, conflictType: ConflictType, province?: ProvinceCard | null): DrawCard[] {
+    /** The ring and type may not be chosen yet: attackers can be picked first. */
+    getForcedAttackers(ring: Ring | undefined, conflictType: ConflictType | undefined, province?: ProvinceCard | null): DrawCard[] {
         const optional = this.getOptionallyForcedAttackersByDeclarationRequirement(ring, conflictType, province);
         const optionalNumberOfAttackers = optional.length;
         if(this.requiredNumberOfAttackers + optionalNumberOfAttackers <= 0) {
@@ -139,7 +140,7 @@ class AttackersMatrix {
     }
 
     //Internal use only
-    getForcedAttackersByDeclarationAmountRequirement(ring: Ring, conflictType: ConflictType, province?: ProvinceCard | null): DrawCard[] {
+    getForcedAttackersByDeclarationAmountRequirement(ring: Ring | undefined, conflictType: ConflictType | undefined, province?: ProvinceCard | null): DrawCard[] {
         if(!this.player.hasLegalConflictDeclaration({ type: conflictType, ring: ring, province: province })) {
             return [];
         }
@@ -164,7 +165,7 @@ class AttackersMatrix {
     }
 
     //Internal use only
-    getOptionallyForcedAttackersByDeclarationRequirement(ring: Ring, conflictType: ConflictType, province?: ProvinceCard | null): DrawCard[] {
+    getOptionallyForcedAttackersByDeclarationRequirement(ring: Ring | undefined, conflictType: ConflictType | undefined, province?: ProvinceCard | null): DrawCard[] {
         if(!this.player.hasLegalConflictDeclaration({ type: conflictType, ring: ring, province: province })) {
             return [];
         }
@@ -173,7 +174,7 @@ class AttackersMatrix {
             card.getEffects(EffectName.MustBeDeclaredAsAttackerIfType).some((effect: string) => effect === 'both' || effect === conflictType));
     }
 
-    getForcedAttackersByDeclarationRequirement(ring: Ring, conflictType: ConflictType, province?: ProvinceCard | null): DrawCard[] {
+    getForcedAttackersByDeclarationRequirement(ring: Ring | undefined, conflictType: ConflictType | undefined, province?: ProvinceCard | null): DrawCard[] {
         if(!this.player.hasLegalConflictDeclaration({ type: conflictType, ring: ring, province: province })) {
             return [];
         }

@@ -5,7 +5,7 @@ import type BaseCard from '../../../BaseCard.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 
 /** The card the chosen attachment sits on. Null while it is on a ring, which this card cannot move. */
-function parentCard(context: AbilityContext<DrawCard, DrawCard>): BaseCard | null {
+function parentCard(context: AbilityContext): BaseCard | null {
     return context.target?.parentCharacter ?? context.target?.parentProvince ?? null;
 }
 

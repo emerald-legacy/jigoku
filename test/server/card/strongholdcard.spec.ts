@@ -1,4 +1,6 @@
+import { CardType } from '../../../server/game/Constants.js';
 import { StrongholdCard } from '../../../server/game/StrongholdCard.js';
+import type { CardSummary } from '../../../server/game/BaseCard.js';
 import type { CardData } from '../../../server/game/types/CardData.js';
 
 function makeGame() {
@@ -30,7 +32,7 @@ describe('StrongholdCard', () => {
         cardData = {
             id: 'stronghold-test',
             name: 'Test Stronghold',
-            type: 'stronghold',
+            type: CardType.Stronghold,
             clan: 'crab',
             fate: 7,
             honor: 10,
@@ -165,7 +167,9 @@ describe('StrongholdCard', () => {
         });
 
         it('reflects base card summary fields', () => {
-            expect((summary as Record<string, unknown>).uuid).toBeDefined();
+            // the subclass summary spreads the base one, whose fields are only typed by its index signature
+            const baseSummary: CardSummary = summary;
+            expect(baseSummary.uuid).toBeDefined();
         });
     });
 });

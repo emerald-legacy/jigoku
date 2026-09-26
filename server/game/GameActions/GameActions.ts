@@ -442,7 +442,7 @@ export function moveStatusToken<Target = unknown, C extends AbilityContext = Abi
 export function cancel<Target = unknown, C extends CancellingContext = TriggeredAbilityContext>(propertyFactory: PropsFactory<CancelActionProperties, NoInfer<Target>, C> = {}): CancelAction<C> {
     return new CancelAction<C>(propertyFactory);
 }
-export function handler<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<HandlerProperties, NoInfer<Target>, C> = {}): HandlerAction<C> {
+export function handler<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<HandlerProperties<C>, NoInfer<Target>, C> = {}): HandlerAction<C> {
     return new HandlerAction<C>(propertyFactory);
 }
 export function noAction(): GameAction {
@@ -474,7 +474,7 @@ export function cardMenu<Target = unknown, C extends AbilityContext = AbilityCon
 export function chooseAction<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ChooseActionProperties, NoInfer<Target>, C>): ChooseGameAction<C> {
     return new ChooseGameAction<C>(propertyFactory);
 } // choices, activePromptTitle = 'Select one'
-export function conditional<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ConditionalActionProperties, NoInfer<Target>, C>): ConditionalAction<C> {
+export function conditional<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<ConditionalActionProperties<C>, NoInfer<Target>, C>): ConditionalAction<C> {
     return new ConditionalAction<C>(propertyFactory);
 }
 export function onAffinity<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<AffinityActionProperties, NoInfer<Target>, C>): AffinityAction<C> {
@@ -498,7 +498,7 @@ export function multipleContext<Target = unknown, C extends AbilityContext = Abi
 export function menuPrompt<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<MenuPromptProperties, NoInfer<Target>, C>): MenuPromptAction<C> {
     return new MenuPromptAction<C>(propertyFactory);
 }
-export function selectCard<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectCardProperties, NoInfer<Target>, C>): SelectCardAction<C> {
+export function selectCard<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectCardProperties<C>, NoInfer<Target>, C>): SelectCardAction<C> {
     return new SelectCardAction<C>(propertyFactory);
 }
 export function selectToken<Target = unknown, C extends AbilityContext = AbilityContext>(propertyFactory: PropsFactory<SelectTokenProperties, NoInfer<Target>, C>): SelectTokenAction<C> {

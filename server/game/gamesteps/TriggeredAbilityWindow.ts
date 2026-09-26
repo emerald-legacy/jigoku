@@ -3,15 +3,15 @@ import { TriggeredAbilityWindowTitle } from './TriggeredAbilityWindowTitle.js';
 import { CardType, EventName, AbilityType } from '../Constants.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
-import type { Event } from '../Events/Event.js';
+import { Event } from '../Events/Event.js';
 import type EventWindow from '../Events/EventWindow.js';
 import type TriggeredAbility from '../TriggeredAbility.js';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
+import type { TriggerChoice } from '../TriggeredAbility.js';
 
 class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
     complete: boolean;
     prevPlayerPassed: boolean;
-    resolvedAbilitiesPerPlayer: Record<string, Array<{ ability: TriggeredAbility; event: Event }>>;
+    resolvedAbilitiesPerPlayer: Record<string, Array<{ ability: TriggeredAbility; event: Event | Event[] }>>;
 
     constructor(game: Game, abilityType: AbilityType, window: EventWindow, eventsToExclude: Event[] = []) {
         super(game, abilityType, window, eventsToExclude);
@@ -54,10 +54,11 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
             player.noTimer = true;
             player.resetTimerAtEndOfRound = true;
         }
-        if(this.prevPlayerPassed || !this.currentPlayer.opponent) {
+        const opponent = this.prevPlayerPassed ? undefined : this.requireCurrentPlayer().opponent;
+        if(!opponent) {
             this.complete = true;
         } else {
-            this.currentPlayer = this.currentPlayer.opponent;
+            this.currentPlayer = opponent;
             this.prevPlayerPassed = true;
         }
 
@@ -70,9 +71,10 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
             return true;
         }
         // remove any choices which involve the current player canceling their own abilities
-        if(this.abilityType === AbilityType.WouldInterrupt && !this.currentPlayer.optionSettings.cancelOwnAbilities) {
+        if(this.abilityType === AbilityType.WouldInterrupt && !this.requireCurrentPlayer().optionSettings.cancelOwnAbilities) {
             this.choices = this.choices.filter(context => !(
                 context.player === this.currentPlayer &&
+                context.event instanceof Event &&
                 context.event.name === EventName.OnInitiateAbilityEffects &&
                 context.event.context?.player === this.currentPlayer
             ));
@@ -80,8 +82,9 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
 
         // if the current player has no available choices in this window, check to see if they should get a bluff prompt
         if(!this.choices.some(context => context.player === this.currentPlayer && context.ability.isInValidLocation(context))) {
-            if(this.showBluffPrompt(this.currentPlayer)) {
-                this.promptWithBluffPrompt(this.currentPlayer);
+            const player = this.requireCurrentPlayer();
+            if(this.showBluffPrompt(player)) {
+                this.promptWithBluffPrompt(player);
                 return false;
             }
             // Otherwise pass
@@ -95,7 +98,7 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
         return false;
     }
 
-    postResolutionUpdate(context: TriggeredAbilityContext): void {
+    postResolutionUpdate(context: TriggerChoice): void {
         super.postResolutionUpdate(context);
         if(!this.resolvedAbilitiesPerPlayer[context.player.uuid]) {
             this.resolvedAbilitiesPerPlayer[context.player.uuid] = [];
@@ -103,12 +106,13 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
         this.resolvedAbilitiesPerPlayer[context.player.uuid].push({ ability: context.ability, event: context.event });
 
         this.prevPlayerPassed = false;
-        this.currentPlayer = this.currentPlayer.opponent || this.currentPlayer;
+        const player = this.requireCurrentPlayer();
+        this.currentPlayer = player.opponent || player;
     }
 
     getPromptForSelectProperties() {
         return Object.assign({}, super.getPromptForSelectProperties(), {
-            selectCard: this.currentPlayer.optionSettings.markCardsUnselectable,
+            selectCard: this.requireCurrentPlayer().optionSettings.markCardsUnselectable,
             buttons: [{ text: 'Pass', arg: 'pass' }],
             onMenuCommand: (player: Player, arg: string) => {
                 this.pass(player, arg);
@@ -117,7 +121,7 @@ class TriggeredAbilityWindow extends ForcedTriggeredAbilityWindow {
         });
     }
 
-    hasAbilityBeenTriggered(context: TriggeredAbilityContext): boolean {
+    hasAbilityBeenTriggered(context: TriggerChoice): boolean {
         let alreadyResolved = false;
         if(Array.isArray(this.resolvedAbilitiesPerPlayer[context.player.uuid])) {
             alreadyResolved = this.resolvedAbilitiesPerPlayer[context.player.uuid].some(resolved => resolved.ability === context.ability && (context.ability.collectiveTrigger || resolved.event === context.event));

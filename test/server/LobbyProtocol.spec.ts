@@ -3,6 +3,7 @@ import path from 'path';
 import { DeckSchema, PendingGameSchema } from '../../server/gamenode/LobbyProtocol.js';
 import { CardDataSchema } from '../../server/game/types/CardData.js';
 import { ClockType } from '../../server/game/Clocks/ClockSelector.js';
+import { CardType } from '../../server/game/Constants.js';
 
 const cardDirectory = path.join(process.cwd(), 'test/json/Card');
 
@@ -106,5 +107,12 @@ describe('LobbyProtocol schemas', function() {
     it('still reject a player without a username', function() {
         const game = { id: 'g1', name: 'Game', owner: 'alice', players: { alice: { id: 'p1', name: 'alice', user: {} } } };
         expect(PendingGameSchema.safeParse(game).success).toBe(false);
+    });
+
+    it('parse warlord and treaty types, and skip a card of an unknown type without failing the deck', function() {
+        expect(CardDataSchema.parse({ id: 'w', name: 'W', type: 'warlord' }).type).toBe(CardType.Warlord);
+        expect(CardDataSchema.parse({ id: 't', name: 'T', type: 'treaty' }).type).toBe(CardType.Treaty);
+        const deck = DeckSchema.parse({ conflictCards: [{ count: 1, card: { id: 'x', name: 'X', type: 'sorcery' } }] });
+        expect(deck.conflictCards?.[0].card).toBeNull();
     });
 });

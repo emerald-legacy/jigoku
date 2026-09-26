@@ -1,7 +1,7 @@
 import { Deck } from '../../server/game/Deck.js';
 import DrawCard from '../../server/game/DrawCard.js';
 import { ProvinceCard } from '../../server/game/ProvinceCard.js';
-import { Location } from '../../server/game/Constants.js';
+import { CardType, Location } from '../../server/game/Constants.js';
 import type Player from '../../server/game/Player.js';
 import type { CardClass } from '../../server/game/types/CardClass.js';
 
@@ -15,7 +15,7 @@ function makePlayer(cardLibrary: Map<string, CardClass>): Player {
     return player;
 }
 
-const conflictEvent = { id: 'test-event', name: 'Test Event', type: 'event', side: 'conflict' };
+const conflictEvent = { id: 'test-event', name: 'Test Event', type: CardType.Event, side: 'conflict' };
 
 describe('Deck.prepare', function() {
     it('falls back to the base class for a card without an implementation', function() {

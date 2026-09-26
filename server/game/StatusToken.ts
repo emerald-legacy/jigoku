@@ -45,6 +45,14 @@ export class StatusToken extends EffectSource {
         return this.card?.controller;
     }
 
+    getEffectController() {
+        return this.controller;
+    }
+
+    getPersistentEffectRecords(): readonly StatusTokenEffect[] {
+        return this.persistentEffects;
+    }
+
     get grantedStatus() {
         return this.overrideStatus ?? this.initialStatus;
     }

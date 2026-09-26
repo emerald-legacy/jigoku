@@ -21,7 +21,7 @@ class FavorableAlliance extends DrawCard {
                 })),
                 AbilityDsl.actions.handler({
                     handler: (context) => {
-                        let cards = context.player.conflictDeck.slice(0, (context.costs.variableFateCost as number));
+                        let cards = context.player.conflictDeck.slice(0, (context.costs.variableFateCost));
                         cards.forEach((card) => {
                             card.owner.removeCardFromPile(card);
                             card.moveTo(Location.RemovedFromGame);

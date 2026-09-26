@@ -1,5 +1,6 @@
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
+import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { AbilityType, CardType, EventName } from '../../Constants.js';
 
@@ -19,7 +20,7 @@ class Chikara extends DrawCard {
             effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
                 title: 'Return all fate from, then sacrifice a character',
                 when: {
-                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: AbilityContext<this>) => {
+                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => {
                         return event.conflict.winner === context.source.controller && context.source.isParticipating();
                     }
                 },

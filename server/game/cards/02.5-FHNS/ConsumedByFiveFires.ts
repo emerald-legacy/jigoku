@@ -3,7 +3,6 @@ import type BaseCard from '../../BaseCard.js';
 import { CardType, EventName, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import * as GameActions from '../../GameActions/GameActions.js';
-import type { GameEvent } from '../../Events/EventPayloads.js';
 import type Player from '../../Player.js';
 
 class ConsumedByFiveFires extends DrawCard {
@@ -74,8 +73,9 @@ class ConsumedByFiveFires extends DrawCard {
                 const keys = Object.keys(targets);
                 const events = this.game.applyGameAction(context, { removeFate: opponent.cardsInPlay.filter((card: BaseCard) => keys.includes(card.uuid)) });
                 events.forEach((event) => {
-                    const fateEvent = event as GameEvent<EventName.OnMoveFate> & { card: BaseCard };
-                    fateEvent.fate = targets[fateEvent.card.uuid];
+                    if(event.is(EventName.OnMoveFate) && event.card) {
+                        event.fate = targets[event.card.uuid];
+                    }
                 });
                 return true;
             }

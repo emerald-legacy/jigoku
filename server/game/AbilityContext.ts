@@ -15,7 +15,7 @@ import type { StatusToken } from './StatusToken.js';
 
 export interface AbilityContextProperties {
     game: Game;
-    source?: BaseCard | Ring | EffectSource;
+    source?: EffectSource;
     player?: Player;
     ability?: BaseAbility;
     costs?: Record<string, unknown>;
@@ -44,10 +44,10 @@ export interface AbilityContextProperties {
  *   target: { cardType: ..., gameAction: AbilityDsl.actions.x(
  *       (context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({ ... })) }
  */
-export type ResolvedAbilityContext<S = BaseCard, T extends BaseCard = BaseCard> =
+export type ResolvedAbilityContext<S extends EffectSource = BaseCard, T extends BaseCard = BaseCard> =
     AbilityContext<S, T> & { target: T };
 
-export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
+export class AbilityContext<S extends EffectSource = BaseCard, T extends BaseCard = BaseCard> {
     game: Game;
     source: S;
     player: Player;
@@ -80,7 +80,7 @@ export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
     provincesToRefill: { player: Player; location: Location }[] = [];
     subResolution = false;
     /** Set when this context continues an earlier one: a sub-resolution (`resolveAbility`/`triggerAbility`) or a `then` clause. */
-    originatingContext?: AbilityContext<unknown>;
+    originatingContext?: AbilityContext<EffectSource>;
     /** Every card chosen as a target across this triggering, continuations included. */
     chosenCardTargets: BaseCard[] = [];
     choosingPlayerOverride: Player | null = null;
@@ -106,17 +106,22 @@ export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
         this.elements = properties.elements || {};
         this.stage = properties.stage || Stage.Effect;
         this.targetAbility = properties.targetAbility ?? null;
-        // const location = this.player && this.player.playableLocations.find(location => location.contains(this.source));
-        this.playType = this.player && this.player.findPlayType(this.source as BaseCard); //location && location.playingType;
+        // only a card can be played from somewhere
+        const source: EffectSource = this.source;
+        this.playType = this.player && source.isCard() ? this.player.findPlayType(source) : undefined;
     }
 
     /** The context representing the triggering this one belongs to. */
-    get triggeringContext(): AbilityContext<unknown> {
+    get triggeringContext(): AbilityContext<EffectSource> {
         return this.originatingContext ?? this;
     }
 
-    copy(newProps: Partial<AbilityContextProperties>): this {
-        let copy = this.createCopy(newProps);
+    copy(newProps: Partial<AbilityContextProperties>): AbilityContext<S, T> {
+        return this.copyStateTo(this.createCopy(newProps));
+    }
+
+    /** Carries the state that is not a constructor property over to a copy. */
+    protected copyStateTo<C extends AbilityContext<S, T>>(copy: C): C {
         copy.target = this.target;
         copy.token = this.token;
         copy.element = this.element;
@@ -133,8 +138,8 @@ export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
         return copy;
     }
 
-    createCopy(newProps: Partial<AbilityContextProperties>): this {
-        return new AbilityContext<S, T>(Object.assign(this.getProps(), newProps)) as this;
+    createCopy(newProps: Partial<AbilityContextProperties>): AbilityContext<S, T> {
+        return new AbilityContext<S, T>(Object.assign(this.getProps(), newProps));
     }
 
     refillProvince(player: Player, location: Location): void {
@@ -158,7 +163,7 @@ export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
     getProps(): AbilityContextProperties {
         return {
             game: this.game,
-            source: this.source as BaseCard | Ring | EffectSource,
+            source: this.source,
             player: this.player,
             ability: this.ability,
             costs: Object.assign({}, this.costs),

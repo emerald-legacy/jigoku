@@ -9,7 +9,7 @@ import { EffectValue } from '../EffectValue.js';
 import GainAbility from '../GainAbility.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 
-class CopyCard<C extends BaseCard> extends EffectValue<C, BaseCard> {
+export class CopyCard<C extends BaseCard> extends EffectValue<C, BaseCard> {
     actions: Array<GainAbility>;
     reactions: Array<GainAbility>;
     persistentEffects: StoredPersistentEffect[];

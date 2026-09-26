@@ -1,6 +1,7 @@
 import { RoleCard } from '../../../server/game/RoleCard.js';
+import type { CardSummary } from '../../../server/game/BaseCard.js';
 import type { CardData } from '../../../server/game/types/CardData.js';
-import { Location } from '../../../server/game/Constants.js';
+import { CardType, Location } from '../../../server/game/Constants.js';
 
 function makeGame() {
     const game = jasmine.createSpyObj('game', ['raiseEvent', 'getCurrentAbilityContext', 'getFrameworkContext', 'getPlayers']);
@@ -31,7 +32,7 @@ describe('RoleCard', () => {
         cardData = {
             id: 'role-test',
             name: 'Test Role',
-            type: 'role',
+            type: CardType.Role,
             clan: 'neutral',
             influence_pool: 3
         };
@@ -136,7 +137,9 @@ describe('RoleCard', () => {
         });
 
         it('reflects base card summary fields', () => {
-            expect((summary as Record<string, unknown>).uuid).toBeDefined();
+            // the subclass summary spreads the base one, whose fields are only typed by its index signature
+            const baseSummary: CardSummary = summary;
+            expect(baseSummary.uuid).toBeDefined();
         });
     });
 });

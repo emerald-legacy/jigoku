@@ -4,14 +4,7 @@ import { EventName, AbilityType } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from './Event.js';
 import type { GameEvent } from './EventPayloads.js';
-import type { AbilityContext } from '../AbilityContext.js';
-import type BaseAbility from '../BaseAbility.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
-
-/** A play ability: its fate cost is what cost reducers lower. */
-function hasReducibleCost(ability: BaseAbility): ability is BaseAbility & { getReducedCost(context: AbilityContext): number } {
-    return 'getReducedCost' in ability && typeof ability.getReducedCost === 'function';
-}
 
 class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
     /** The resolver that plays the card is attached to its play event. */
@@ -48,7 +41,7 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
             const alternatePools = context.player.getAlternateFatePools(this.playEvent.playType, this.playEvent.card, context);
             const alternatePoolTotal = alternatePools.reduce((total: number, pool: { fate: number }) => total + pool.fate, 0);
             const maxPlayerFate = context.player.checkRestrictions('spendFate', context) ? context.player.fate : 0;
-            const reducedCost = hasReducibleCost(ability) ? ability.getReducedCost(context) : 0;
+            const reducedCost = ability.getReducedCost(context);
             return Math.max(reducedCost - maxPlayerFate - alternatePoolTotal, 0);
         }
         return 0;

@@ -9,7 +9,7 @@ import { initiateDuel } from './DuelHelper.js';
 import BaseCard from './BaseCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { AbilityContext } from './AbilityContext.js';
-import type { EffectArg, InitiateDuel } from './Interfaces.js';
+import type { EffectArg, InitiateDuel, OwnContextCallback } from './Interfaces.js';
 import type { MsgArg } from './GameChat.js';
 import type { Cost } from './costs/Cost.js';
 
@@ -26,7 +26,7 @@ export interface CardAbilityProperties<C extends AbilityContext = AbilityContext
     origin?: BaseCard;
     initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);
     effect?: string;
-    effectArgs?: EffectArg | ((context: C) => EffectArg);
+    effectArgs?: EffectArg | OwnContextCallback<[context: C], EffectArg>;
 }
 
 /** Cost results are open-ended; only those the chat can format are passed to it. */
@@ -302,6 +302,10 @@ class CardAbility extends ThenAbility {
     }
 
     isTriggeredAbility(): boolean {
+        return true;
+    }
+
+    isCardAbilityInstance(): this is CardAbility {
         return true;
     }
 

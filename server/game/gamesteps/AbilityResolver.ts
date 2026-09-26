@@ -99,10 +99,12 @@ class AbilityResolver extends BaseStepWithPipeline {
                     resolver: this
                 }));
             }
-            if(this.context.ability.isTriggeredAbility()) {
+            const ability = this.context.ability;
+            if(ability.isTriggeredAbility() && ability.isCardAbilityInstance()) {
                 this.events.push(this.game.getEvent(EventName.OnCardAbilityTriggered, {
                     player: this.context.player,
                     card: this.context.source,
+                    ability,
                     context: this.context
                 }));
             }

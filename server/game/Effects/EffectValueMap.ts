@@ -28,6 +28,12 @@ type RestrictionLike = { isMatch(type: string, context: AbilityContext | undefin
 
 export type FatePool = DrawCard | Ring;
 
+// Method syntax on purpose: the engine passes any target or ability source, cards narrow the type.
+interface TargetingCallbacks {
+    match(target: GameObject): boolean;
+    alternateFatePool(source: BaseCard): FatePool | false;
+}
+
 export interface ParticipantCostEffect {
     type: string;
     cost: GameAction | ((player: Player) => GameAction);
@@ -122,7 +128,7 @@ export interface EffectValueMap {
     [EffectName.HonorCostToDeclare]: { amount: number, dueToStatusToken?: boolean };
     [EffectName.FateCostToRingToDeclareConflictAgainst]: number;
     [EffectName.FateCostToTarget]: { cardType?: string; targetPlayer?: Players; amount: number };
-    [EffectName.PlayerFateCostToTargetCard]: { match: (card: BaseCard) => boolean; amount: number };
+    [EffectName.PlayerFateCostToTargetCard]: { match: TargetingCallbacks['match']; amount: number };
     [EffectName.GainAbility]: GainedAbilityValue;
     [EffectName.GainAllAbilities]: BaseCard;
     [EffectName.GainAllAbilitiesDynamic]: DynamicMatch;
@@ -191,7 +197,7 @@ export interface EffectValueMap {
     [EffectName.AdditionalConflict]: string | true;
     [EffectName.AdditionalTriggerCost]: (context: AbilityContext) => Cost | Cost[];
     [EffectName.AdditionalPlayCost]: (context: AbilityContext) => Cost | Cost[];
-    [EffectName.AlternateFatePool]: (card: DrawCard) => FatePool | false;
+    [EffectName.AlternateFatePool]: TargetingCallbacks['alternateFatePool'];
     [EffectName.CannotDeclareConflictsOfType]: string;
     [EffectName.CanPlayFromOwn]: boolean;
     [EffectName.CanPlayFromOutOfPlay]: CanPlayFromOutOfPlayValue;
@@ -256,8 +262,8 @@ export type FlexibleEffectName = {
 
 export interface ICanOnlyBeDeclaredAsAttackerWithCondition {
     context: AbilityContext,
-    conflictType: string,
-    ring: Ring,
+    conflictType: string | undefined,
+    ring: Ring | undefined,
     province?: ProvinceCard | null,
     incomingAttackers?: DrawCard[]
 }

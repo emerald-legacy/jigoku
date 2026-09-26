@@ -604,7 +604,7 @@ export class AbilityBuilder<
         this.#addTarget(name, entry);
     }
 
-    cost<R extends object>(cost: Cost<R>): AbilityBuilder<Base, TG, RG, CO & R, TK, SL> {
+    cost<R extends object>(cost: Cost<R, Base>): AbilityBuilder<Base, TG, RG, CO & R, TK, SL> {
         this.draft.costs.push(cost);
         return new AbilityBuilder(this.draft);
     }
@@ -714,7 +714,7 @@ type AggregateBase<S extends BaseCard, EventOptional extends boolean> = EventOpt
     ? AbilityContext<S> & Pick<TriggeredAbilityContext<S>, 'cancel'> & { event?: Event[] }
     : TriggeredAbilityContext<S> & { event: Event[] };
 
-export type AggregateWhen<S extends BaseCard> = (events: Event[], context: TriggeredAbilityContext<S>) => boolean;
+export type AggregateWhen<S extends BaseCard> = (events: Event[], context: TriggeredAbilityContext<S, BaseCard, Event[]>) => boolean;
 
 interface TriggerStarts<S extends BaseCard> {
     when<W extends WhenType<S>>(when: W): AbilityDraft;

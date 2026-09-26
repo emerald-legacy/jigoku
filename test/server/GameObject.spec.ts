@@ -1,16 +1,19 @@
 import { GameObject } from '../../server/game/GameObject.js';
+import { AbilityContext } from '../../server/game/AbilityContext.js';
+import type Game from '../../server/game/Game.js';
 import { getGameAction, setGameActionCatalog } from '../../server/game/GameActions/GameActionRegistry.js';
+import { createTestGame } from '../helpers/fixtures.js';
 
 describe('GameObject', function() {
-    let game: jasmine.SpyObj<{ getFrameworkContext: () => unknown }>;
-    let frameworkContext: { name: string };
+    let game: Game;
+    let frameworkContext: AbilityContext;
     let gameObject: GameObject;
 
     beforeEach(function() {
-        frameworkContext = { name: 'context' };
-        game = jasmine.createSpyObj('game', ['getFrameworkContext']);
-        game.getFrameworkContext.and.returnValue(frameworkContext);
-        gameObject = new GameObject(game as never, 'test object');
+        game = createTestGame();
+        frameworkContext = new AbilityContext({ game });
+        spyOn(game, 'getFrameworkContext').and.returnValue(frameworkContext);
+        gameObject = new GameObject(game, 'test object');
     });
 
     describe('allowGameAction()', function() {
@@ -36,8 +39,8 @@ describe('GameObject', function() {
             });
 
             it('should use a supplied context over the framework context', function() {
-                const otherContext = { name: 'other' };
-                gameObject.allowGameAction('specAllowAction', otherContext as never);
+                const otherContext = new AbilityContext({ game });
+                gameObject.allowGameAction('specAllowAction', otherContext);
                 expect(gameAction.canAffect).toHaveBeenCalledWith(gameObject, otherContext);
             });
         });
@@ -50,7 +53,7 @@ describe('GameObject', function() {
             it('should fall back to checkRestrictions', function() {
                 expect(getGameAction('specUnregisteredAction')).toBeUndefined();
                 gameObject.allowGameAction('specUnregisteredAction');
-                expect(gameObject.checkRestrictions).toHaveBeenCalledWith('specUnregisteredAction', frameworkContext as never);
+                expect(gameObject.checkRestrictions).toHaveBeenCalledWith('specUnregisteredAction', frameworkContext);
             });
         });
     });

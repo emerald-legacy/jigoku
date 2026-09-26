@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
 import type BaseCard from '../../../BaseCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { EventName, Location, Players } from '../../../Constants.js';
@@ -36,7 +35,7 @@ export default class BambooTattoo extends DrawCard {
             .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.ready((context) => ({ target: context.source.parentCharacter ?? [] })),
                 AbilityDsl.actions.conditional({
-                    condition: (context: AbilityContext) => this.isSelfTrigger(context as TriggeredAbilityContext<this>),
+                    condition: (context) => this.isSelfTrigger(context),
                     trueGameAction: AbilityDsl.actions.dishonor((context) => ({ target: context.source.parentCharacter ?? [] })),
                     falseGameAction: AbilityDsl.actions.noAction()
                 })

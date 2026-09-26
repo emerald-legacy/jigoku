@@ -1,7 +1,6 @@
 import { AbilityContext } from '../../../AbilityContext.js';
 import { AbilityType, CardType, Location, TargetMode } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ArmorOfTheFallen extends DrawCard {
@@ -31,8 +30,10 @@ export default class ArmorOfTheFallen extends DrawCard {
     }
 
     #maxCostReachable(context: AbilityContext) {
-        if(context.costs.removeFromGame) {
-            return (context.costs.removeFromGame as BaseCard[]).length;
+        const removed = context.costs.removeFromGame;
+        if(removed) {
+            // the cost is paid before targeting, so it holds every card removed
+            return Array.isArray(removed) ? removed.length : 1;
         }
 
         const dynasty = this.#sumCharactersInPile(context.player.dynastyDiscardPile);

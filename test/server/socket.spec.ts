@@ -13,7 +13,7 @@ function makeIoSocket() {
 }
 
 function fireRegisteredEvent(ioSocket: ReturnType<typeof makeIoSocket>, eventName: string, ...args: unknown[]) {
-    const call = (ioSocket.on as jasmine.Spy).calls.allArgs().find((a: unknown[]) => a[0] === eventName);
+    const call = ioSocket.on.calls.allArgs().find((a: unknown[]) => a[0] === eventName);
     if(!call) { throw new Error(`No handler registered for '${eventName}'`); }
     call[1](...args);
 }

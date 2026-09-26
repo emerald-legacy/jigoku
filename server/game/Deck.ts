@@ -24,7 +24,7 @@ interface PreparedDeck {
 }
 
 /** Builds the card's registered implementation; it must be a `base`, which is also the fallback. */
-function createCard<T extends BaseCard>(player: Player, cardData: CardData, base: CardClass<T>): T {
+export function createCard<T extends BaseCard>(player: Player, cardData: CardData, base: CardClass<T>): T {
     const Implementation = player.game.cardLibrary.get(cardData.id) ?? base;
     const card = new Implementation(player, cardData);
     if(!(card instanceof base)) {
@@ -137,7 +137,7 @@ export class Deck {
     #makeSkirmishProvinceCardData(provinceNumber: number): CardData {
         return {
             strength: 3,
-            type: 'province',
+            type: CardType.Province,
             side: 'province',
             name: 'Skirmish Province',
             id: `skirmish-province-${provinceNumber}`

@@ -25,8 +25,9 @@ import type Ring from './Ring.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { GameEvent } from './Events/EventPayloads.js';
 import type { Event } from './Events/Event.js';
-import type { ActionProps, ConflictActionProps, PersistentEffectProps, TriggeredAbilityProps, TriggeredAbilityWhenProps, WhenType } from './Interfaces.js';
+import type { ConflictActionProps, PersistentEffectProps, TriggeredAbilityProps, TriggeredAbilityWhenProps, WhenType } from './Interfaces.js';
 import type { NumericEffectName } from './Effects/EffectValueMap.js';
+import type { GameObject } from './GameObject.js';
 import type { ActionContext, AbilityBuilder, TriggerContext } from './AbilityBuilder.js';
 import type { Duel } from './Duel.js';
 import type { CardData } from './types/CardData.js';
@@ -677,9 +678,10 @@ class DrawCard extends BaseCard {
         return !this.isCovert() && this.checkRestrictions('applyCovert', context);
     }
 
+    /** The ring and type are undefined while attackers are picked before the ring. */
     canDeclareAsAttacker(
-        conflictType: string,
-        ring: Ring,
+        conflictType: string | undefined,
+        ring: Ring | undefined,
         province?: ProvinceCard | null,
         incomingAttackers?: DrawCard[]
     ): boolean {
@@ -724,6 +726,10 @@ class DrawCard extends BaseCard {
         }
         if(this.anyEffect(EffectName.CanOnlyBeDeclaredAsAttackerWithElement)) {
             for(const element of this.getEffects(EffectName.CanOnlyBeDeclaredAsAttackerWithElement)) {
+                if(!ring) {
+                    // no ring chosen yet; kept as the crash it has always been, see the cast-removal report
+                    throw new TypeError('Cannot check the declared ring\'s element before a ring is chosen');
+                }
                 if(!ring.hasElement(element) && !elementsAdded.includes(element)) {
                     return false;
                 }
@@ -840,7 +846,8 @@ class DrawCard extends BaseCard {
             if(!targetsThis) {
                 continue;
             }
-            const sourceObj = e.context?.source;
+            // status tokens are effect sources too
+            const sourceObj: GameObject | undefined = e.context?.source;
             if(sourceObj?.printedType === 'token') {
                 continue;
             }
@@ -960,7 +967,7 @@ class DrawCard extends BaseCard {
                 (properties.evenFromHome || context.source.isParticipating(properties.conflictType)) &&
                 (condition?.(context) ?? true)
         };
-        this.registerAbility(() => this.abilities.actions.push(this.createAction(finalProperties as ActionProps)));
+        this.registerAbility(() => this.abilities.actions.push(this.createAction(finalProperties)));
     }
 }
 

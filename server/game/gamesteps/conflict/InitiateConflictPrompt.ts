@@ -223,13 +223,13 @@ class InitiateConflictPrompt extends UiPrompt {
             const drawCard = card;
             if(card.controller === this.choosingPlayer) {
                 if(this.conflict.attackers.includes(drawCard)) {
-                    let forced = this.attackerMatrix.getForcedAttackers(this.conflict.ring as Ring, this.conflict.conflictType as ConflictType, this.conflict.conflictProvince).includes(drawCard);
+                    let forced = this.attackerMatrix.getForcedAttackers(this.conflict.ring, this.conflict.conflictType, this.conflict.conflictProvince).includes(drawCard);
                     let extraAttackers = this.attackerMatrix.requiredNumberOfAttackers > 0 ? this.conflict.attackers.length > this.attackerMatrix.requiredNumberOfAttackers : false;
                     let enoughForcedRemaining = true;
 
                     if(forced && extraAttackers) {
                         let forcedRemainingCount = this.conflict.attackers.filter((a: DrawCard) =>
-                            this.attackerMatrix.getForcedAttackers(this.conflict.ring as Ring, this.conflict.conflictType as ConflictType, this.conflict.conflictProvince).includes(a)).length - 1; //-1 because we're trying to remove a character from the list
+                            this.attackerMatrix.getForcedAttackers(this.conflict.ring, this.conflict.conflictType, this.conflict.conflictProvince).includes(a)).length - 1; //-1 because we're trying to remove a character from the list
                         if(forcedRemainingCount < this.attackerMatrix.requiredNumberOfAttackers) {
                             enoughForcedRemaining = false;
                         }

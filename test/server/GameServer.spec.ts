@@ -1,7 +1,8 @@
 import { GameServer } from '../../server/gamenode/GameServer.js';
 import jwt from 'jsonwebtoken';
+import { callMethod } from '../helpers/methodaccess.js';
 
-type GameSpy = jasmine.SpyObj<{
+type GameMethods = {
     addAlert: (kind: string, msg: string) => void;
     isEmpty: () => boolean;
     isSpectator: (p: unknown) => boolean;
@@ -17,15 +18,18 @@ type GameSpy = jasmine.SpyObj<{
     clearAnimations: () => void;
     allPlayersGone: () => boolean;
     recordHiddenInfoIfChanged: () => void;
-}> & {
+};
+
+type GameSpy = jasmine.SpyObj<GameMethods> & {
     id: string;
     name: string;
     started: boolean;
     password?: string;
     playersAndSpectators: Record<string, unknown>;
     gameChat: { messages: unknown[] };
-    pipeline: { getDebugInfo: () => unknown };
-    effectEngine: { getDebugInfo: () => unknown };
+    pipeline?: { getDebugInfo: () => unknown };
+    effectEngine?: { getDebugInfo: () => unknown };
+    failedConnect?: jasmine.Spy;
 };
 
 type ServerCtx = {
@@ -41,25 +45,26 @@ type ServerCtx = {
     unregisterUsersForGame?: (game: unknown) => void;
     findGameForUser?: (name: string) => unknown;
     clearMessageCountsForGame?: (game: unknown) => void;
+    shortCardData?: unknown[];
 };
 
-const proto = (GameServer as unknown as { prototype: Record<string, (...args: unknown[]) => unknown> }).prototype;
-
-function call<T = unknown>(method: string, ctx: unknown, ...args: unknown[]): T {
-    return proto[method].apply(ctx, args) as T;
+function call(method: string, ctx: ServerCtx, ...args: unknown[]): unknown {
+    return callMethod(ctx, method, ...args);
 }
 
 function makeGame(overrides: Partial<{ id: string; name: string; players: Record<string, unknown> }> = {}): GameSpy {
-    const game = jasmine.createSpyObj<GameSpy>('game', [
+    const methods = jasmine.createSpyObj<GameMethods>('game', [
         'addAlert', 'isEmpty', 'isSpectator', 'leave', 'watch', 'getSummary', 'getSaveState',
         'getState', 'getSharedState', 'getPlayers', 'getPlayersAndSpectators', 'addMessage',
         'clearAnimations', 'allPlayersGone', 'recordHiddenInfoIfChanged'
-    ]) as GameSpy;
-    game.id = overrides.id ?? 'g1';
-    game.name = overrides.name ?? 'Test Game';
-    game.started = false;
-    game.playersAndSpectators = overrides.players ?? {};
-    game.gameChat = { messages: [] };
+    ]);
+    const game: GameSpy = Object.assign(methods, {
+        id: overrides.id ?? 'g1',
+        name: overrides.name ?? 'Test Game',
+        started: false,
+        playersAndSpectators: overrides.players ?? {},
+        gameChat: { messages: [] }
+    });
     game.getPlayers.and.returnValue([]);
     game.getPlayersAndSpectators.and.returnValue(game.playersAndSpectators);
     game.isEmpty.and.returnValue(false);
@@ -69,13 +74,14 @@ function makeGame(overrides: Partial<{ id: string; name: string; players: Record
 }
 
 function makeCtx(overrides: Partial<ServerCtx> = {}): ServerCtx {
-    const ctx = Object.create(proto) as ServerCtx;
+    // built on the prototype: the real constructor starts a server
+    const ctx: ServerCtx = Object.create(GameServer.prototype);
     Object.assign(ctx, {
         games: new Map(),
         userGameMap: new Map(),
         abandonTimers: new Map(),
         lastSentMessageCount: new Map(),
-        wsSocket: jasmine.createSpyObj('wsSocket', ['send']),
+        wsSocket: jasmine.createSpyObj<{ send: (cmd: string, arg?: unknown) => void }>('wsSocket', ['send']),
         ...overrides
     });
     return ctx;
@@ -84,7 +90,7 @@ function makeCtx(overrides: Partial<ServerCtx> = {}): ServerCtx {
 describe('GameServer.handshake', () => {
     const TEST_SECRET = 'testsecret';
 
-    function fakeSocket(token: unknown): { handshake: { auth: { token: unknown } }; request: { user?: unknown } } {
+    function fakeSocket(token: unknown): { handshake: { auth: { token: unknown } }; request: { user?: { username: string } } } {
         return {
             handshake: { auth: { token } },
             request: {}
@@ -115,7 +121,7 @@ describe('GameServer.handshake', () => {
         const socket = fakeSocket(token);
         call('handshake', ctx, socket, (err?: Error) => {
             expect(err).toBeUndefined();
-            expect((socket.request as { user?: { username: string } }).user?.username).toBe('alice');
+            expect(socket.request.user?.username).toBe('alice');
             done();
         });
     });
@@ -292,8 +298,8 @@ describe('GameServer.handleError', () => {
     }
 
     function sentPayload(ctx: ServerCtx) {
-        const args = ctx.wsSocket.send.calls.mostRecent().args;
-        return { command: args[0], arg: args[1] as Record<string, unknown> };
+        const [command, arg] = ctx.wsSocket.send.calls.mostRecent().args;
+        return { command, arg };
     }
 
     it('sends the debug data when it is small enough', () => {
@@ -304,8 +310,10 @@ describe('GameServer.handleError', () => {
 
         const { command, arg } = sentPayload(ctx);
         expect(command).toBe('GAMEERROR');
-        expect(arg.errorMessage).toBe('boom');
-        expect(arg.debugData).toEqual({ pipeline: { step: 'ConflictFlow' }, effectEngine: { effects: [] } });
+        expect(arg).toEqual(jasmine.objectContaining({
+            errorMessage: 'boom',
+            debugData: { pipeline: { step: 'ConflictFlow' }, effectEngine: { effects: [] } }
+        }));
     });
 
     it('drops oversized debug data but still reports the error', () => {
@@ -316,9 +324,11 @@ describe('GameServer.handleError', () => {
 
         const { command, arg } = sentPayload(ctx);
         expect(command).toBe('GAMEERROR');
-        expect(arg.errorMessage).toBe('boom');
-        expect(arg.errorStack).toBeDefined();
-        expect((arg.debugData as { omitted?: string }).omitted).toContain('over the');
+        expect(arg).toEqual(jasmine.objectContaining({
+            errorMessage: 'boom',
+            errorStack: jasmine.any(String),
+            debugData: jasmine.objectContaining({ omitted: jasmine.stringContaining('over the') })
+        }));
     });
 
     it('drops debug data that cannot be serialized at all', () => {
@@ -330,8 +340,10 @@ describe('GameServer.handleError', () => {
         call('handleError', ctx, game, new Error('boom'));
 
         const { arg } = sentPayload(ctx);
-        expect(arg.errorMessage).toBe('boom');
-        expect((arg.debugData as { omitted?: string }).omitted).toContain('could not be serialized');
+        expect(arg).toEqual(jasmine.objectContaining({
+            errorMessage: 'boom',
+            debugData: jasmine.objectContaining({ omitted: jasmine.stringContaining('could not be serialized') })
+        }));
     });
 });
 
@@ -393,9 +405,7 @@ describe('GameServer.onGameSync', () => {
 
         call('onGameSync', ctx, callback);
 
-        const summaries = (callback.calls.mostRecent().args[0] as Array<{ id: string; password?: string }>);
-        expect(summaries.length).toBe(1);
-        expect(summaries[0]).toEqual(jasmine.objectContaining({ id: 'g1', password: 'secret' }));
+        expect(callback.calls.mostRecent().args[0]).toEqual([jasmine.objectContaining({ id: 'g1', password: 'secret' })]);
     });
 });
 
@@ -482,7 +492,7 @@ describe('GameServer.onFailedConnect', () => {
 
     it('does nothing when the found game has a different id', () => {
         const game = makeGame({ id: 'other' });
-        const failedConnectSpy = (game as unknown as { failedConnect: jasmine.Spy }).failedConnect = jasmine.createSpy();
+        const failedConnectSpy = game.failedConnect = jasmine.createSpy();
         const ctx = makeCtx({ userGameMap: new Map([['alice', game]]) });
         call('onFailedConnect', ctx, 'g1', 'alice');
         expect(failedConnectSpy).not.toHaveBeenCalled();
@@ -490,7 +500,7 @@ describe('GameServer.onFailedConnect', () => {
 
     it('forwards to game.failedConnect and clears userGameMap entry when gameId matches', () => {
         const game = makeGame({ id: 'g1' });
-        const failedConnectSpy = (game as unknown as { failedConnect: jasmine.Spy }).failedConnect = jasmine.createSpy();
+        const failedConnectSpy = game.failedConnect = jasmine.createSpy();
         const ctx = makeCtx({ userGameMap: new Map([['alice', game]]) });
         call('onFailedConnect', ctx, 'g1', 'alice');
         expect(failedConnectSpy).toHaveBeenCalledWith('alice');
@@ -540,7 +550,7 @@ describe('GameServer.onGameMessage', () => {
 
 describe('GameServer.onCardData', () => {
     it('keeps the valid card records and drops the invalid ones', () => {
-        const ctx = makeCtx() as ServerCtx & { shortCardData?: unknown[] };
+        const ctx = makeCtx();
         call('onCardData', ctx, { titleCardData: {}, shortCardData: [{ id: 'a', name: 'A' }, { id: 'b' }, null, { id: 'c', name: 'C', type: 7 }] });
         expect(ctx.shortCardData).toEqual([{ id: 'a', name: 'A' }, { id: 'c', name: 'C', type: undefined }]);
     });

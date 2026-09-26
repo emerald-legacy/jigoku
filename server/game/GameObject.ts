@@ -7,6 +7,7 @@ import type { EffectValueMap, NumericEffectName } from './Effects/EffectValueMap
 import type Game from './Game.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import { getGameAction } from './GameActions/GameActionRegistry.js';
+import type BaseCard from './BaseCard.js';
 import type Ring from './Ring.js';
 import type { StateViewer } from './types/StateViewer.js';
 
@@ -115,6 +116,11 @@ export class GameObject {
         return !this.getEffects(EffectName.AbilityRestrictions).some((restriction) =>
             restriction.isMatch(actionType, context, this)
         );
+    }
+
+    /** Narrows an effect source to `BaseCard`, which overrides this to return true. */
+    public isCard(): this is BaseCard {
+        return false;
     }
 
     /** Narrows an effect source to `Ring`, which overrides this to return true. */

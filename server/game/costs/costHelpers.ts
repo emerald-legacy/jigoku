@@ -4,12 +4,19 @@ import { SelectCardProperties } from '../GameActions/SelectCardAction.js';
 import type { CardType, TargetMode } from '../Constants.js';
 import type { CardOfType } from '../types/CardOfType.js';
 import type { Cost } from './Cost.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import type DrawCard from '../DrawCard.js';
 import { MetaActionCost } from './MetaActionCost.js';
 
 export type SelectCostProperties = Omit<SelectCardProperties, 'gameAction'>;
 
 /** A select cost's properties, with its card type and mode kept for the type of its result. */
-export type TypedSelectCostProperties<K, M> = Omit<SelectCostProperties, 'cardType' | 'mode'> & { cardType?: K; mode?: M };
+export type TypedSelectCostProperties<K, M, C extends AbilityContext = AbilityContext> = Omit<SelectCostProperties, 'cardType' | 'mode' | 'cardCondition'> & {
+    cardType?: K;
+    mode?: M;
+    /** Called with the context of the ability paying the cost. */
+    cardCondition?(card: DrawCard, context: C): boolean;
+};
 
 type MultiCardMode = TargetMode.Exactly | TargetMode.ExactlyVariable | TargetMode.MaxStat | TargetMode.Unlimited | TargetMode.UpTo | TargetMode.UpToVariable;
 
@@ -20,14 +27,14 @@ type ChosenForCost<K, M> = [M] extends [MultiCardMode] ? CardOfType<K> | CardOfT
 export type SelectCostResult<N extends string, K, M> =
     { [P in N]: ChosenForCost<K, M> } & { [P in `${N}StateWhenChosen`]: ReturnType<CardOfType<K>['createSnapshot']> };
 
-const isCardTypeList = (cardType: CardType | readonly CardType[]): cardType is readonly CardType[] => Array.isArray(cardType);
+export const isCardTypeList = (cardType: CardType | readonly CardType[]): cardType is readonly CardType[] => Array.isArray(cardType);
 
-export function getSelectCost<const N extends string, K extends CardType | readonly CardType[] | undefined, M extends TargetMode | undefined>(
+export function getSelectCost<const N extends string, K extends CardType | readonly CardType[] | undefined, M extends TargetMode | undefined, C extends AbilityContext>(
     name: N,
     action: CardGameAction,
-    properties: TypedSelectCostProperties<K, M> | undefined,
+    properties: TypedSelectCostProperties<K, M, C> | undefined,
     activePromptTitle: string
-): Cost<SelectCostResult<N, K, M>> {
+): Cost<SelectCostResult<N, K, M>, C> {
     if(action.name !== name) {
         throw new Error(`the ${action.name} cost stores its result under '${action.name}', not '${name}'`);
     }

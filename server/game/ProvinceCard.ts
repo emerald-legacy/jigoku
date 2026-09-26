@@ -1,5 +1,5 @@
 import { GameModes } from '../GameModes.js';
-import { EffectName, Element, Location } from './Constants.js';
+import { CardType, EffectName, Element, Location } from './Constants.js';
 import type { ElementSymbolInfo } from './ElementSymbol.js';
 import AbilityDsl from './abilitydsl.js';
 import BaseCard from './BaseCard.js';
@@ -27,7 +27,7 @@ export class ProvinceCard extends BaseCard {
         cardData: CardData = {
             strength: 3,
             elements: [],
-            type: 'province',
+            type: CardType.Province,
             side: 'province',
             name: 'Skirmish Province',
             id: 'skirmish-province'
@@ -200,8 +200,9 @@ export class ProvinceCard extends BaseCard {
         );
     }
 
-    canDeclare(type: string, _ring: unknown): boolean {
-        return this.canBeAttacked() && !this.getEffects(EffectName.CannotHaveConflictsDeclaredOfType).includes(type);
+    canDeclare(type: string | undefined, _ring: unknown): boolean {
+        const blockedTypes: readonly (string | undefined)[] = this.getEffects(EffectName.CannotHaveConflictsDeclaredOfType);
+        return this.canBeAttacked() && !blockedTypes.includes(type);
     }
 
     getFateCostToAttack() {

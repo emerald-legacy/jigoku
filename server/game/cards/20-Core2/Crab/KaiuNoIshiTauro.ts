@@ -1,8 +1,6 @@
-import { CardType, Players, Decks, EventName } from '../../../Constants.js';
+import { CardType, Players, Decks } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { GameEvent } from '../../../Events/EventPayloads.js';
-import type { Event } from '../../../Events/Event.js';
 
 export default class KaiuNoIshiTauro extends DrawCard {
     static id = 'kaiu-no-ishi-tauro';
@@ -22,7 +20,7 @@ export default class KaiuNoIshiTauro extends DrawCard {
                         card.costLessThan(context.costs.returnRing ? context.costs.returnRing.length + 1 : 1),
                 shuffle: true,
                 reveal: true,
-                selectedCardsHandler: (context, event: Event, cards) => {
+                selectedCardsHandler: (context, event, cards) => {
                     const card = cards[0];
                     if(!card) {
                         context.game.addMessage('{0} takes nothing', context.player);
@@ -31,7 +29,7 @@ export default class KaiuNoIshiTauro extends DrawCard {
 
                     context.game.addMessage(
                         '{0} takes {1} and attaches it to {2}',
-                        (event as GameEvent<EventName.OnDeckSearch>).player,
+                        event.player,
                         card,
                         context.target
                     );

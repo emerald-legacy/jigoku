@@ -46,6 +46,11 @@ type Grant =
 
 export type GainedAbilityValue = boolean | CardAction | TriggeredAbility | PersistentGainValue;
 
+/** A gained persistent effect: granted abilities never have the persistent type. */
+export function isPersistentGain(value: GainedAbilityValue): value is PersistentGainValue {
+    return typeof value === 'object' && value.abilityType === AbilityType.Persistent;
+}
+
 // only a card ability carries its properties; authored properties never have that key
 function isCopy(args: GainAbilityArgs): args is [AbilityType, CardAbility] {
     return 'properties' in args[1];

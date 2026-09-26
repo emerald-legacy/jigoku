@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { Element } from '../Constants.js';
+import { CardType, Element } from '../Constants.js';
 import { lenientArray } from '../utils/schemas.js';
 
 export interface CardData {
     id: string;
     name: string;
-    type: string;
+    type: CardType;
 
     faction?: string | null;
     clan?: string | null;
@@ -42,7 +42,7 @@ const optional = <T>(schema: z.ZodType<T>) => schema.nullish().catch(null);
 export const CardDataSchema: z.ZodType<CardData> = z.looseObject({
     id: z.string(),
     name: z.string(),
-    type: z.string(),
+    type: z.enum(CardType),
     faction: optional(z.string()),
     clan: optional(z.string()),
     side: optional(z.string()),

@@ -12,7 +12,7 @@ export class GloryCountAction<C extends AbilityContext = AbilityContext> extends
     name = 'gloryCount';
     eventName = EventName.OnGloryCount;
 
-    hasLegalTarget(): boolean {
+    hasLegalTarget(_context: C): boolean {
         return true;
     }
 

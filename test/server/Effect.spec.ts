@@ -1,30 +1,32 @@
 import Effect from '../../server/game/Effects/Effect.js';
-import { Duration } from '../../server/game/Constants.js';
+import EffectSource from '../../server/game/EffectSource.js';
+import StaticEffect from '../../server/game/Effects/StaticEffect.js';
+import { Duration, EffectName } from '../../server/game/Constants.js';
+import type Game from '../../server/game/Game.js';
+import { createTestGame } from '../helpers/fixtures.js';
 
 describe('Effect', function() {
-    let game: jasmine.SpyObj<{ getFrameworkContext: (player: unknown) => unknown }>;
-    let staticEffect: jasmine.SpyObj<{ setContext: (c: unknown) => void; apply: (t: unknown) => void; unapply: (t: unknown) => void; recalculate: (t: unknown) => boolean }>;
-    let frameworkContext: { source?: unknown; ability?: unknown };
+    let game: Game;
+    let staticEffect: StaticEffect<EffectName.ModifyMilitarySkill>;
 
     beforeEach(function() {
-        frameworkContext = {};
-        game = jasmine.createSpyObj('game', ['getFrameworkContext']);
-        game.getFrameworkContext.and.returnValue(frameworkContext);
-        staticEffect = jasmine.createSpyObj('staticEffect', ['setContext', 'apply', 'unapply', 'recalculate']);
+        game = createTestGame();
+        spyOn(game, 'getFrameworkContext').and.callThrough();
+        staticEffect = new StaticEffect(EffectName.ModifyMilitarySkill, 1);
     });
 
     describe('when the source has no controller (e.g. a framework / ring source)', function() {
         it('should resolve the framework context with null rather than undefined', function() {
-            const source = { name: 'framework', facedown: false };
-            new Effect(game as never, source as never, {}, staticEffect as never);
+            const source = new EffectSource(game, 'framework');
+            new Effect(game, source, {}, staticEffect);
             expect(game.getFrameworkContext).toHaveBeenCalledWith(null);
         });
     });
 
     describe('isEffectActive() for a persistent effect whose source tracks no persistentEffects', function() {
         it('should return false without throwing', function() {
-            const source = { name: 'ring', facedown: false };
-            const effect = new Effect(game as never, source as never, { duration: Duration.Persistent }, staticEffect as never);
+            const source = new EffectSource(game, 'ring');
+            const effect = new Effect(game, source, { duration: Duration.Persistent }, staticEffect);
             expect(effect.isEffectActive()).toBe(false);
         });
     });

@@ -2,6 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type ActionWindow from '../gamesteps/ActionWindow.js';
 import type AttackersMatrix from '../gamesteps/conflict/AttackersMatrix.js';
 import type BaseAbility from '../BaseAbility.js';
+import type CardAbility from '../CardAbility.js';
 import type AbilityResolver from '../gamesteps/AbilityResolver.js';
 import type BaseCard from '../BaseCard.js';
 import type { Conflict } from '../Conflict.js';
@@ -179,6 +180,7 @@ export interface EventPayloadMap {
     [EventName.OnCardAbilityTriggered]: BaseEventPayload & {
         player: Player;
         card: BaseCard;
+        ability: CardAbility;
         context: AbilityContext;
     };
     [EventName.OnAbilityResolved]: BaseEventPayload;

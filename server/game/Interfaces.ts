@@ -2,6 +2,7 @@ import type { AbilityContext } from './AbilityContext.js';
 import type { EventPayload } from './Events/EventPayloads.js';
 import type { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import type { GameAction } from './GameActions/GameAction.js';
+import type { DeclaredGameAction } from './BaseAbility.js';
 import type { Event } from './Events/Event.js';
 import type { Cost } from './costs/Cost.js';
 import type { AbilityLimit } from './AbilityLimit.js';
@@ -147,6 +148,14 @@ export type EffectArg =
     | { id: string; label: string; name: string; facedown: boolean; type: CardType }
     | EffectArg[];
 
+/**
+ * A callback an ability calls with its own context. It's typed through a method, so it's
+ * bivariant in its parameters: an ability declared for a narrower source (`AbilityContext<DrawCard>`)
+ * can be stored as a plain ability, because the ability only ever calls it with a context whose
+ * source is its own card.
+ */
+export type OwnContextCallback<Args extends unknown[], R> = { callback(...args: Args): R }['callback'];
+
 interface AbilityProps<Context> {
     title: string;
     location?: Location | Location[];
@@ -161,27 +170,27 @@ interface AbilityProps<Context> {
     cannotTargetFirst?: boolean;
     effect?: string;
     evenDuringDynasty?: boolean;
-    effectArgs?: EffectArg | ((context: Context) => EffectArg);
-    gameAction?: GameAction | GameAction[];
-    handler?: (context: Context) => void;
+    effectArgs?: EffectArg | OwnContextCallback<[context: Context], EffectArg>;
+    gameAction?: NoInfer<DeclaredGameAction<Context> | DeclaredGameAction<Context>[]>;
+    handler?: OwnContextCallback<[context: Context], void>;
     then?: ((context: AbilityContext) => object) | object;
 }
 
-export interface ActionProps<Source = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<AbilityContext<Source, Target>> {
-    condition?: (context: AbilityContext<Source, Target>) => boolean;
+export interface ActionProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<AbilityContext<Source, Target>> {
+    condition?: OwnContextCallback<[context: AbilityContext<Source, Target>], boolean>;
     phase?: Phases | 'any';
     emeraldWorksInDynsty?: boolean;
     /**
      * @deprecated
      */
     anyPlayer?: boolean;
-    conflictProvinceCondition?: (province: ProvinceCard, context: AbilityContext<Source, Target>) => boolean;
+    conflictProvinceCondition?: OwnContextCallback<[province: ProvinceCard, context: AbilityContext<Source, Target>], boolean>;
     canTriggerOutsideConflict?: boolean;
     /** Its choices are not targets, so cards reacting to targeting ignore them. */
     doesNotTarget?: boolean;
 }
 
-export interface ConflictActionProps<Source = BaseCard, Target extends BaseCard = BaseCard> extends ActionProps<Source, Target> {
+export interface ConflictActionProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> extends ActionProps<Source, Target> {
     conflictType?: 'military' | 'political';
     evenFromHome?: boolean;
 }
@@ -205,32 +214,32 @@ interface TriggeredAbilityTargets {
 
 export type TargetPropertiesInput = (ActionTarget | TriggeredAbilityTarget) & SubTarget;
 
-export type WhenType<Source = BaseCard> = {
-    [Evt in EventName]?: (event: EventPayload<Evt>, context: TriggeredAbilityContext<Source>) => unknown;
+export type WhenType<Source extends EffectSource = BaseCard> = {
+    [Evt in EventName]?: OwnContextCallback<[event: EventPayload<Evt>, context: TriggeredAbilityContext<Source>], unknown>;
 };
 
-export interface TriggeredAbilityWhenProps<Source = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<TriggeredAbilityContext<Source, Target>> {
+export interface TriggeredAbilityWhenProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<TriggeredAbilityContext<Source, Target>> {
     when: WhenType<Source>;
     collectiveTrigger?: boolean;
     anyPlayer?: boolean;
     target?: TriggeredAbilityTarget & TriggeredAbilityTarget;
     targets?: TriggeredAbilityTargets;
-    handler?: (context: TriggeredAbilityContext<Source, Target>) => void;
-    then?: ((context: TriggeredAbilityContext<Source, Target>) => object) | object;
+    handler?: OwnContextCallback<[context: TriggeredAbilityContext<Source, Target>], void>;
+    then?: OwnContextCallback<[context: TriggeredAbilityContext<Source, Target>], object> | object;
 }
 
-export interface TriggeredAbilityAggregateWhenProps<Source = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<TriggeredAbilityContext<Source, Target>> {
-    aggregateWhen: (events: Event[], context: TriggeredAbilityContext<Source, Target>) => boolean;
+export interface TriggeredAbilityAggregateWhenProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> extends AbilityProps<TriggeredAbilityContext<Source, Target>> {
+    aggregateWhen: OwnContextCallback<[events: Event[], context: TriggeredAbilityContext<Source, Target, Event[]>], boolean>;
     collectiveTrigger?: boolean;
     target?: TriggeredAbilityTarget & TriggeredAbilityTarget;
     targets?: TriggeredAbilityTargets;
-    handler?: (context: TriggeredAbilityContext<Source, Target>) => void;
-    then?: ((context: TriggeredAbilityContext<Source, Target>) => object) | object;
+    handler?: OwnContextCallback<[context: TriggeredAbilityContext<Source, Target>], void>;
+    then?: OwnContextCallback<[context: TriggeredAbilityContext<Source, Target>], object> | object;
 }
 
-export type TriggeredAbilityProps<Source = BaseCard, Target extends BaseCard = BaseCard> = TriggeredAbilityWhenProps<Source, Target> | TriggeredAbilityAggregateWhenProps<Source, Target>;
+export type TriggeredAbilityProps<Source extends EffectSource = BaseCard, Target extends BaseCard = BaseCard> = TriggeredAbilityWhenProps<Source, Target> | TriggeredAbilityAggregateWhenProps<Source, Target>;
 
-export interface PersistentEffectProps<Source = BaseCard, MatchTarget extends GameObject = GameObject> {
+export interface PersistentEffectProps<Source extends EffectSource = BaseCard, MatchTarget extends GameObject = GameObject> {
     location?: Location | Location[];
     condition?: (context: AbilityContext<Source>) => boolean;
     match?: (card: MatchTarget, context?: AbilityContext<Source>) => boolean;

@@ -3,6 +3,10 @@ import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 import { EventName } from '../../Constants.js';
+function discardedCost(discarded: DrawCard[] | undefined): number {
+    return discarded?.[0]?.getCost() ?? 0;
+}
+
 class WarDogMaster extends DrawCard {
     static id = 'war-dog-master';
 
@@ -13,11 +17,9 @@ class WarDogMaster extends DrawCard {
             })
             .cost(AbilityDsl.costs.discardCardSpecific(context => context.player.dynastyDeck[0]))
             .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
-                effect: AbilityDsl.effects.modifyMilitarySkill(
-                    context.costs.discardCard && typeof (context.costs.discardCard as DrawCard[])[0].getCost() === 'number' ? ((context.costs.discardCard as DrawCard[])[0].getCost() ?? 0) : 0
-                )
+                effect: AbilityDsl.effects.modifyMilitarySkill(discardedCost(context.costs.discardCard))
             })))
-            .effect('give {0} +{1}{2}', context => [context.costs.discardCard && typeof (context.costs.discardCard as DrawCard[])[0].getCost() === 'number' ? ((context.costs.discardCard as DrawCard[])[0].getCost() ?? 0) : 0, 'military']);
+            .effect('give {0} +{1}{2}', context => [discardedCost(context.costs.discardCard), 'military']);
     }
 }
 

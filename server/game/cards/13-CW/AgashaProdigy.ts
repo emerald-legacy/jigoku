@@ -1,7 +1,5 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import type { Event } from '../../Events/Event.js';
-import type { EventPayload } from '../../Events/EventPayloads.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Players, CardType, EventName } from '../../Constants.js';
 
@@ -49,14 +47,7 @@ class AgashaProdigys extends DrawCard {
     }
 
     getDiscardedCards(context: AbilityContext) {
-        let events = context.events.filter((event: Event) => event.name === EventName.OnCardsDiscarded);
-        if(events.length > 0) {
-            let cards: DrawCard[] = [];
-            events.forEach((a: Event) => cards = cards.concat(((a as Event & EventPayload<EventName.OnCardsDiscarded>).cards ?? [])));
-            return cards;
-        }
-
-        return [];
+        return context.events.flatMap((event) => event.is(EventName.OnCardsDiscarded) ? event.cards : []);
     }
 
     buildString(context: AbilityContext) {

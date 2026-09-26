@@ -3,7 +3,6 @@ import type { EffectName } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAbility from '../BaseAbility.js';
 import type EffectSource from '../EffectSource.js';
-import type { SourceWithState } from '../EffectSource.js';
 import type BaseCard from '../BaseCard.js';
 import type Game from '../Game.js';
 import type { GameObject } from '../GameObject.js';
@@ -105,7 +104,7 @@ class Effect<T extends GameObject = GameObject> {
     }
 
     refreshContext() {
-        this.context = this.game.getFrameworkContext((this.source as SourceWithState).controller ?? null);
+        this.context = this.game.getFrameworkContext(this.source.getEffectController() ?? null);
         this.context.source = this.source as BaseCard;
         if(this.ability) {
             this.context.ability = this.ability;
@@ -140,7 +139,7 @@ class Effect<T extends GameObject = GameObject> {
         if(this.duration !== Duration.Persistent) {
             return true;
         }
-        let effectOnSource = (this.source as SourceWithState).persistentEffects?.some((effect) => effect.ref && effect.ref.includes(this)) ?? false;
+        let effectOnSource = this.source.getPersistentEffectRecords().some((effect) => effect.ref && effect.ref.includes(this));
         return !this.source.facedown && effectOnSource;
     }
 

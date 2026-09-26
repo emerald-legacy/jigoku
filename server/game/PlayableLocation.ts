@@ -1,4 +1,5 @@
 import type { Location, PlayType } from './Constants.js';
+import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type Player from './Player.js';
 
@@ -10,8 +11,9 @@ export class PlayableLocation {
         public cards = new Set<DrawCard>()
     ) {}
 
-    public contains(card: DrawCard) {
-        if(this.cards.size > 0 && !this.cards.has(card)) {
+    public contains(card: BaseCard) {
+        const cards: ReadonlySet<BaseCard> = this.cards;
+        if(cards.size > 0 && !cards.has(card)) {
             return false;
         }
 

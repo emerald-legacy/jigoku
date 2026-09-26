@@ -304,7 +304,8 @@ describe('InitateConflictPrompt: ', function() {
 
             describe('if the card is controlled by the other player,', function() {
                 beforeEach(function() {
-                    this.covertSpy = jasmine.createSpyObj('card', ['checkRestrictions', 'canDeclareAsAttacker', 'isCovert', 'canBeBypassedByCovert', 'getEffects', 'canBeAttacked']);
+                    this.covertSpy = jasmine.createSpyObj('card', ['checkRestrictions', 'canDeclareAsAttacker', 'isCovert', 'canBeBypassedByCovert', 'getEffects', 'canBeAttacked', 'isCard']);
+                    this.covertSpy.isCard.and.returnValue(true);
                     this.covertSpy.isCovert.and.returnValue(true);
                     this.conflictSpy.attackers.push(this.covertSpy);
                     this.conflictSpy.attackingPlayer = this.playerSpy;

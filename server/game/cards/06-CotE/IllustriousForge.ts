@@ -1,8 +1,7 @@
 import { CardType, Location, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type DrawCard from '../../DrawCard.js';
-import type { SelectCardProperties } from '../../GameActions/SelectCardAction.js';
+import type BaseCard from '../../BaseCard.js';
 
 export default class IllustriousForge extends ProvinceCard {
     static id = 'illustrious-forge';
@@ -25,17 +24,16 @@ export default class IllustriousForge extends ProvinceCard {
                             return true;
                         }
                     ],
-                    subActionProperties: (card) => ({ attachment: card }),
+                    // the chosen attachment reaches the message through the select's properties
+                    subActionProperties: (attachment) => ({
+                        attachment,
+                        messageArgs: (card: BaseCard | BaseCard[]) => [context.player, attachment, card]
+                    }),
                     gameAction: AbilityDsl.actions.selectCard({
                         controller: Players.Self,
                         location: Location.PlayArea,
                         cardType: CardType.Character,
                         message: '{0} chooses to attach {1} to {2}',
-                        messageArgs: (card, action, properties) => [
-                            context.player,
-                            (properties as SelectCardProperties & { attachment: DrawCard }).attachment,
-                            card
-                        ],
                         gameAction: AbilityDsl.actions.attach()
                     })
                 })),

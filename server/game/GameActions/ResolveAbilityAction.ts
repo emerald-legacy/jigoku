@@ -43,11 +43,13 @@ class ResolveAbilityActionResolver extends AbilityResolver {
         const events: Event[] = [
             this.game.getEvent(EventName.OnCardAbilityInitiated, params, () => this.queueInitiateAbilitySteps())
         ];
-        if(this.context.ability.isTriggeredAbility() && !this.context.subResolution) {
+        const ability = this.context.ability;
+        if(ability.isTriggeredAbility() && ability.isCardAbilityInstance() && !this.context.subResolution) {
             events.push(
                 this.game.getEvent(EventName.OnCardAbilityTriggered, {
                     player: this.context.player,
                     card: this.context.source,
+                    ability,
                     context: this.context
                 })
             );

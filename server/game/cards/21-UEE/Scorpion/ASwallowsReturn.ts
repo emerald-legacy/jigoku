@@ -17,7 +17,7 @@ export default class ASwallowsReturn extends DrawCard {
             .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.cardMenu((context) => ({
                     activePromptTitle: 'Choose a card to play',
-                    cards: context.costs.reveal as DrawCard[],
+                    cards: context.costs.reveal ?? [],
                     cardCondition: (card) =>
                         card.location === Location.ConflictDeck &&
             //Handle situations where card is played from deck, such as with pillow book

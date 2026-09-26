@@ -3,6 +3,7 @@ import GainAbility from './GainAbility.js';
 import { AbilityType } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
+import type { StoredPersistentEffect } from '../BaseCard.js';
 import type CardAbility from '../CardAbility.js';
 import type { CardAction } from '../CardAction.js';
 import type TriggeredAbility from '../TriggeredAbility.js';
@@ -10,7 +11,7 @@ import type TriggeredAbility from '../TriggeredAbility.js';
 export type DynamicMatch = ((target: BaseCard, context: AbilityContext) => BaseCard | BaseCard[]) | BaseCard | BaseCard[];
 
 interface GainedAbilities {
-    actions: unknown[];
+    actions: CardAction[];
     reactions: TriggeredAbility[];
 }
 
@@ -21,7 +22,7 @@ export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch, B
     abilitiesForTargets: Record<string, GainedAbilities>;
     actions: GainAbility[];
     reactions: GainAbility[];
-    persistentEffects: unknown[];
+    persistentEffects: StoredPersistentEffect[];
     printedAbilitiesOnly: boolean;
 
     constructor(match: DynamicMatch, printedAbilitiesOnly = false) {
@@ -100,7 +101,7 @@ export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch, B
         }
     }
 
-    getActions(target: BaseCard): unknown[] {
+    getActions(target: BaseCard): CardAction[] {
         if(this.abilitiesForTargets[target.uuid]) {
             return this.abilitiesForTargets[target.uuid].actions;
         }
@@ -114,7 +115,7 @@ export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch, B
         return [];
     }
 
-    getPersistentEffects(): unknown[] {
+    getPersistentEffects(): StoredPersistentEffect[] {
         return this.persistentEffects;
     }
 }

@@ -4,18 +4,18 @@ import { GameAction, type GameActionProperties, type ActionEvent } from './GameA
 
 import type { Event } from '../Events/Event.js';
 import type { EventName } from '../Constants.js';
-export interface HandlerProperties extends GameActionProperties {
-    handler?: (context: AbilityContext) => void;
+export interface HandlerProperties<C extends AbilityContext = AbilityContext> extends GameActionProperties {
+    handler?: (context: C) => void;
     hasTargetsChosenByInitiatingPlayer?: boolean;
 }
 
-export class HandlerAction<C extends AbilityContext = AbilityContext> extends GameAction<HandlerProperties, EventName.Unnamed, C> {
-    defaultProperties: HandlerProperties = {
+export class HandlerAction<C extends AbilityContext = AbilityContext> extends GameAction<HandlerProperties<C>, EventName.Unnamed, C> {
+    defaultProperties: HandlerProperties<C> = {
         handler: () => true,
         hasTargetsChosenByInitiatingPlayer: false
     };
 
-    hasLegalTarget(): boolean {
+    hasLegalTarget(_context: C): boolean {
         return true;
     }
 

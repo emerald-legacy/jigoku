@@ -6,7 +6,7 @@ export default class Soldier<D extends DrawCard> extends DrawCard {
     facedownCard: D;
 
     static createDummy(owner: Player) {
-        const dummyCard = new DrawCard(owner, { id: '', name: '', type: '' });
+        const dummyCard = new DrawCard(owner, { id: '', name: '', type: CardType.Attachment });
         return new Soldier(dummyCard);
     }
 

@@ -7,15 +7,15 @@ import type { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
 import type EventWindow from './Events/EventWindow.js';
 import type ThenEventWindow from './Events/ThenEventWindow.js';
-import type { EffectArg } from './Interfaces.js';
+import type { EffectArg, OwnContextCallback } from './Interfaces.js';
 
 export interface ThenAbilityProperties<C extends AbilityContext = AbilityContext> extends BaseAbilityProperties {
-    handler?: (context: C) => void;
-    then?: ThenAbilityProperties | ((context: C) => ThenAbilityProperties);
+    handler?: OwnContextCallback<[context: C], void>;
+    then?: ThenAbilityProperties | OwnContextCallback<[context: C], ThenAbilityProperties>;
     // called with the context on the immediate path, with an Event via EventWindow.addThenAbility
     thenCondition?(contextOrEvent: C | Event): boolean;
-    message?: string | ((context: C) => string);
-    messageArgs?: (EffectArg | undefined)[] | ((context: C) => (EffectArg | undefined)[]);
+    message?: string | OwnContextCallback<[context: C], string>;
+    messageArgs?: (EffectArg | undefined)[] | OwnContextCallback<[context: C], (EffectArg | undefined)[]>;
 }
 
 class ThenAbility extends BaseCardAbility {

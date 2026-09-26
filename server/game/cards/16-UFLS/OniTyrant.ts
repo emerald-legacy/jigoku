@@ -1,5 +1,6 @@
 import type { Cost } from '../../costs/Cost.js';
 import DrawCard from '../../DrawCard.js';
+import { createCard } from '../../Deck.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { Event } from '../../Events/Event.js';
 
@@ -31,7 +32,7 @@ const oniTyrantCost = function (): Cost<{ oniTyrantCostCreature: DrawCard | unde
         payEvent: function (context): Event | Event[] {
             if(context.costs.oniTyrantCostCreature) {
                 const oni = context.costs.oniTyrantCostCreature;
-                const copy = new (oni.constructor as typeof DrawCard)(context.player, oni.cardData);
+                const copy = createCard(context.player, oni.cardData, DrawCard);
                 context.game.allCards.push(copy);
                 context.costs.oniTyrantCostCreature = copy;
 

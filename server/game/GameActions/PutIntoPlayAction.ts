@@ -35,11 +35,11 @@ export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extend
         this.intoConflict = intoConflict;
     }
 
-    getDefaultSide(context: C) {
+    getDefaultSide(context: AbilityContext) {
         return context.player;
     }
 
-    getPutIntoPlayPlayer(context: C) {
+    getPutIntoPlayPlayer(context: AbilityContext) {
         return context.player;
     }
 

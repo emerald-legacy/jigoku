@@ -88,7 +88,11 @@ export const TriggeredAbilityWindowTitle = {
 
         return `Any ${abilityWord}s?`;
     },
-    getAction(event: Event) {
+    getAction(event: Event | Event[]) {
+        // an aggregate trigger's events name no single action
+        if(Array.isArray(event)) {
+            return undefined;
+        }
         let func = EventToTitleFunc[event.name];
         if(func) {
             return func(event);

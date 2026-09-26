@@ -131,8 +131,9 @@ export default class BackAlleyHideaway extends DrawCard {
                     event.card.location === Location.PlayArea
             })
             .handler((context) => {
-                context.event.replaceHandler((event: Event) => {
-                    const card = (event as Event & { card: DrawCard }).card;
+                const event = context.event;
+                event.replaceHandler(() => {
+                    const card = event.card;
                     context.player.removeCardFromPile(card);
                     card.leavesPlay();
                     card.moveTo(context.source.uuid as Location);

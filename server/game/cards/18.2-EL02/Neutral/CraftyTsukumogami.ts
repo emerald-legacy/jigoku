@@ -70,7 +70,7 @@ class CraftyTsukumogami extends DrawCard {
         return ring && ring.type === 'ring' && this.getType() === CardType.Attachment;
     }
     canPlayOn(source: BaseCard) {
-        return source && source.getType() === 'ring' && this.getType() === CardType.Attachment;
+        return source && source.isRing() && this.getType() === CardType.Attachment;
     }
     mustAttachToRing() {
         return this.getType() === CardType.Attachment;

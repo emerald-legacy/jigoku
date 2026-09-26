@@ -24,7 +24,7 @@ class DaidojiHarrier extends DrawCard {
                     target: context.target
                 })),
                 AbilityDsl.actions.cardMenu(context => ({
-                    cards: context.targets.target as DrawCard[],
+                    cards: context.targets.target.filter((card) => card.isDrawCard()),
                     gameAction: AbilityDsl.actions.discardCard(),
                     message: '{0} chooses {1} to be discarded',
                     messageArgs: (card, player) => [player, card]

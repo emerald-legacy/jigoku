@@ -14,7 +14,7 @@ class VoiceOfTheAncestors extends DrawCard {
             glory: '0',
             side: 'dynasty',
             text: '',
-            type: 'attachment',
+            type: CardType.Attachment,
             name: 'Spirit Attachment',
             id: 'dummy-spirit-attachment',
             traits: ['spirit']

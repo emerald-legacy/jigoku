@@ -6,12 +6,13 @@ import AbilityTargetToken from './AbilityTargets/AbilityTargetToken.js';
 import AbilityTargetElementSymbol from './AbilityTargets/AbilityTargetElementSymbol.js';
 import { Stage, TargetMode, AbilityType, Players, EventName } from './Constants.js';
 import type { AbilityContext } from './AbilityContext.js';
-import type { GameAction } from './GameActions/GameAction.js';
+import { GameAction } from './GameActions/GameAction.js';
 import type { Event } from './Events/Event.js';
 import type { Cost } from './costs/Cost.js';
 import type { TargetPropertiesInput } from './Interfaces.js';
 import type { AbilityLimit } from './AbilityLimit.js';
 import type BaseCard from './BaseCard.js';
+import type CardAbility from './CardAbility.js';
 
 interface AbilityTargetProperties {
     dependsOn?: string;
@@ -41,11 +42,26 @@ interface AbilityTarget extends DependentTarget {
     getGameAction(context: AbilityContext): GameAction[];
 }
 
+/**
+ * A game action as ability properties declare it: typed for the ability's own context, so nested
+ * property factories get that context. The ability checks that it is a `GameAction` when stored.
+ */
+export interface DeclaredGameAction<C = never> {
+    hasLegalTarget(context: C, additionalProperties?: object): boolean;
+}
+
+function toGameAction(action: DeclaredGameAction): GameAction {
+    if(!(action instanceof GameAction)) {
+        throw new Error('An ability\'s gameAction must be a game action');
+    }
+    return action;
+}
+
 export interface BaseAbilityProperties {
     cost?: Cost | Cost[];
     target?: TargetPropertiesInput;
     targets?: Record<string, TargetPropertiesInput>;
-    gameAction?: GameAction | GameAction[];
+    gameAction?: DeclaredGameAction | DeclaredGameAction[];
 }
 
 interface TargetResults {
@@ -95,7 +111,8 @@ class BaseAbility {
      * @param properties.gameAction - optional array of game actions
      */
     constructor(properties: BaseAbilityProperties) {
-        this.gameAction = properties.gameAction ? (Array.isArray(properties.gameAction) ? properties.gameAction : [properties.gameAction]) : [];
+        const gameActions = properties.gameAction ? (Array.isArray(properties.gameAction) ? properties.gameAction : [properties.gameAction]) : [];
+        this.gameAction = gameActions.map(toGameAction);
         this.targets = [];
         this.buildTargets(properties);
         this.cost = this.buildCost(properties.cost);
@@ -308,6 +325,11 @@ class BaseAbility {
     }
 
     isTriggeredAbility(): boolean {
+        return false;
+    }
+
+    /** Narrows to `CardAbility`, which overrides this. */
+    isCardAbilityInstance(): this is CardAbility {
         return false;
     }
 

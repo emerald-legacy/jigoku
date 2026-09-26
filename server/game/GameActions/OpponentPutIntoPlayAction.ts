@@ -13,7 +13,7 @@ export class OpponentPutIntoPlayAction<C extends AbilityContext = AbilityContext
         side: undefined
     };
 
-    getDefaultSide(context: C): Player {
+    getDefaultSide(context: AbilityContext): Player {
         return context.player.opponent ?? context.player;
     }
 
@@ -24,7 +24,7 @@ export class OpponentPutIntoPlayAction<C extends AbilityContext = AbilityContext
         super(properties, intoConflict);
     }
 
-    getPutIntoPlayPlayer(context: C): Player {
+    getPutIntoPlayPlayer(context: AbilityContext): Player {
         return context.player.opponent ?? context.player;
     }
 }

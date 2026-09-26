@@ -1,7 +1,6 @@
 import DrawCard from '../../DrawCard.js';
+import { createCard } from '../../Deck.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type Player from '../../Player.js';
-import type { CardData } from '../../types/CardData.js';
 import type { Event } from '../../Events/Event.js';
 import type { Cost } from '../../costs/Cost.js';
 
@@ -81,7 +80,7 @@ const accursedSummoningCost = function (): Cost<{ accursedSummoningCostCreature:
         payEvent: function (context) {
             if(context.costs.accursedSummoningCostCreature) {
                 const oni = context.costs.accursedSummoningCostCreature;
-                const copy = new (oni.constructor as new (owner: Player, cardData: CardData) => DrawCard)(context.player, oni.cardData);
+                const copy = createCard(context.player, oni.cardData, DrawCard);
                 context.game.allCards.push(copy);
                 context.costs.accursedSummoningCostCreature = copy;
 

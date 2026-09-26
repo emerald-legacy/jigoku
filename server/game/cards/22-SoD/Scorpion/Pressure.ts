@@ -1,7 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 export default class Pressure extends DrawCard {
     static id = 'pressure';
@@ -20,9 +19,9 @@ export default class Pressure extends DrawCard {
                 targets: false,
                 hidePromptIfSingleCard: true,
                 cardCondition: (card, context) => card.isDishonored && card.isParticipating() && (
-                    (context as TriggeredAbilityContext).event.attackers?.includes(card) ||
-                    (context as TriggeredAbilityContext).event.defenders?.includes(card) ||
-                    (context as TriggeredAbilityContext).event?.card === card
+                    (context).event.attackers?.includes(card) ||
+                    (context).event.defenders?.includes(card) ||
+                    (context).event?.card === card
                 ),
                 gameAction: AbilityDsl.actions.multiple([
                     AbilityDsl.actions.sendHome(),
