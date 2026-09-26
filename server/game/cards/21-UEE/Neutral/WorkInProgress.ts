@@ -9,23 +9,18 @@ export default class WorkInProgress extends DrawCard {
     static id = 'work-in-progress';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Reveal cards and take ones matching named type',
-            condition: (context: AbilityContext<this>) =>
+        this.action('Reveal cards and take ones matching named type')
+            .cost(AbilityDsl.costs.reveal((context: AbilityContext) =>
+                context.player.conflictDeck.slice(
+                    0, context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('artisan')) ? 4 : 3
+                )
+            ))
+            .cost(workInProgressCost())
+            .condition((context) =>
                 context.player.conflictDeck.length >=
-        (context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('artisan')) ? 4 : 3),
-            cost: [
-                AbilityDsl.costs.reveal((context: AbilityContext) =>
-                    context.player.conflictDeck.slice(
-                        0, context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('artisan')) ? 4 : 3
-                    )
-                ),
-                workInProgressCost()
-            ],
-            cannotBeMirrored: true,
-            effect: 'take cards into their hand',
-            handler: (context: AbilityContext<this>) => {
-                let [matchingCards, cardsToDiscard] = (context.costs.reveal as DrawCard[]).reduce(
+        (context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('artisan')) ? 4 : 3))
+            .handler((context) => {
+                let [matchingCards, cardsToDiscard] = (context.costs.reveal ?? []).reduce(
                     (acc: DrawCard[][], card: DrawCard) => {
                         if(card.type === context.costs.workInProgress && card.location === Location.ConflictDeck) {
                             acc[0].push(card);
@@ -77,17 +72,18 @@ export default class WorkInProgress extends DrawCard {
                     choices: ['Done'],
                     handlers: [discardHandler]
                 });
-            }
-        });
+            })
+            .effect('take cards into their hand')
+            .cannotBeMirrored();
     }
 }
 
-function workInProgressCost(): Cost {
+function workInProgressCost(): Cost<{ workInProgress: string }> {
     return {
         getActionName: () => 'workInProgress',
         getCostMessage: (): MessageArgs => ['naming {0}', []],
         canPay: () => true,
-        resolve: (context: AbilityContext) => {
+        resolve: (context) => {
             const choices = [CardType.Attachment, CardType.Character, CardType.Event];
             context.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Select a card type',

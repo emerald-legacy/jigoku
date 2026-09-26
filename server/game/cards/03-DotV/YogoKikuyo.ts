@@ -6,17 +6,15 @@ class YogoKikuyo extends DrawCard {
     static id = 'yogo-kikuyo';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Cancel a spell',
-            when: {
+        this.wouldInterrupt('Cancel a spell')
+            .when({
                 onInitiateAbilityEffects: (event, context) =>
                     this.game.isDuringConflict() && event.card.type === CardType.Event &&
                     event.card.hasTrait('spell') && event.card.controller === context.player.opponent
-            },
-            cost: AbilityDsl.costs.putSelfIntoPlay(),
-            location: Location.Hand,
-            gameAction: AbilityDsl.actions.cancel()
-        });
+            })
+            .cost(AbilityDsl.costs.putSelfIntoPlay())
+            .gameAction(AbilityDsl.actions.cancel())
+            .location(Location.Hand);
     }
 }
 

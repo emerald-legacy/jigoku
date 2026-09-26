@@ -1,21 +1,21 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType } from '../../Constants.js';
+import Ring from '../../Ring.js';
 
 class RighteousSamurai extends DrawCard {
     static id = 'righteous-samurai';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Honor a character',
-            when: {
+        this.reaction('Honor a character')
+            .when({
                 onModifyHonor: (event, context) => {
                     if(event.amount === undefined || event.context === undefined) {
                         return false;
                     }
                     const honorLoss = event.amount < 0;
                     const viaOpponentsEffect = (context.player.opponent === event.context.player);
-                    const viaRingEffect = (event.context.source.type as string) === 'ring';
+                    const viaRingEffect = event.context.source instanceof Ring;
                     const viaCardEffect = event.context.ability.isCardAbility();
                     const honorLossBelongsToController = event.player === context.player;
                     return honorLoss && viaOpponentsEffect && honorLossBelongsToController && (viaRingEffect || viaCardEffect);
@@ -26,17 +26,15 @@ class RighteousSamurai extends DrawCard {
                     }
                     const honorLoss = event.amount > 0;
                     const viaOpponentsEffect = (context.player.opponent === event.context.player);
-                    const viaRingEffect = (event.context.source.type as string) === 'ring';
+                    const viaRingEffect = event.context.source instanceof Ring;
                     const viaCardEffect = event.context.ability.isCardAbility();
                     const honorLossBelongsToController = event.player === context.player;
                     return honorLoss && viaOpponentsEffect && honorLossBelongsToController && (viaRingEffect || viaCardEffect);
                 }
-            },
-            target: {
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.honor()
-            }
-        });
+            })
+            .target('target', {
+                cardType: CardType.Character
+            }, AbilityDsl.actions.honor());
     }
 }
 

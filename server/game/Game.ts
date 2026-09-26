@@ -1,4 +1,5 @@
-import type { LobbyUser, UserIdentity, ShortCardData } from '../gamenode/LobbyProtocol.js';
+import type { DeckDTO, UserIdentity, ShortCardData } from '../gamenode/LobbyProtocol.js';
+import type { CardLibrary } from './types/CardClass.js';
 import ChatCommands from './ChatCommands.js';
 import { GameChat } from './GameChat.js';
 import type { MsgArg } from './GameChat.js';
@@ -17,7 +18,7 @@ import { SimpleStep } from './gamesteps/SimpleStep.js';
 import GameWonPrompt from './gamesteps/GameWonPrompt.js';
 import * as GameActions from './GameActions/GameActions.js';
 import { Event } from './Events/Event.js';
-import type { EventPayload, GameEvent } from './Events/EventPayloads.js';
+import type { EventParams, GameEvent } from './Events/EventPayloads.js';
 import EventWindow from './Events/EventWindow.js';
 import ThenEventWindow from './Events/ThenEventWindow.js';
 import AbilityResolver from './gamesteps/AbilityResolver.js';
@@ -37,9 +38,9 @@ import { Duel } from './Duel.js';
 import ConflictFlow from './gamesteps/conflict/ConflictFlow.js';
 import { GameInputHandler } from './GameInputHandler.js';
 import { GameStateSerializer } from './GameStateSerializer.js';
-import type { DeckForSaving, FormattedDeck } from './GameStateSerializer.js';
+import type { FormattedDeck } from './GameStateSerializer.js';
 import type { MenuItem } from './MenuCommands.js';
-import type { Step } from './gamesteps/Step.js';
+import type { MenuArg, Step } from './gamesteps/Step.js';
 import { GameEventManager } from './GameEventManager.js';
 import { GameConnectionManager } from './GameConnectionManager.js';
 import SpiritOfTheRiver from './cards/SpiritOfTheRiver.js';
@@ -48,6 +49,7 @@ import { EffectName, EventName, Location, ConflictType, Element, Players } from 
 import { ConflictTracker, type ConflictRecord } from './ConflictTracker.js';
 import { type EventHandler } from './GameEventBus.js';
 import { GamePromptHelper } from './GamePromptHelper.js';
+import { isOwnKey } from './utils/helpers.js';
 import { GameModes } from '../GameModes.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
@@ -73,25 +75,20 @@ export interface GameDetails {
     id: string;
     name: string;
     allowSpectators: boolean;
-    spectatorSquelch: boolean;
+    spectatorSquelch?: boolean;
     owner: string;
     savedGameId?: string;
-    gameType: string;
-    gameMode: string;
+    gameType?: string;
+    gameMode?: string;
     password?: string;
-    players: Record<string, GamePlayerEntry>;
-    spectators: Record<string, GamePlayerEntry>;
-    clocks: unknown;
-}
-
-interface GamePlayerEntry {
-    id: string;
-    user: GamePlayerUser;
+    players: Record<string, { id: string; user: GamePlayerUser }>;
+    spectators: Record<string, { id: string; user: UserIdentity }>;
+    clocks?: ClockConfig | null;
 }
 
 interface GameOptions {
     shortCardData?: ShortCardData[];
-    cardLibrary?: Map<string, unknown>;
+    cardLibrary?: CardLibrary;
     router?: GameRouter;
 }
 
@@ -142,20 +139,20 @@ class Game {
     id: string;
     name: string;
     allowSpectators: boolean;
-    spectatorSquelch: boolean;
+    spectatorSquelch?: boolean;
     owner: string;
     started: boolean;
     playStarted: boolean;
     createdAt: Date;
     savedGameId?: string;
-    gameType: string;
+    gameType?: string;
     currentAbilityWindow: ForcedTriggeredAbilityWindow | SimultaneousEffectWindow | null;
     currentActionWindow: ActionWindow | null;
     currentEventWindow: EventWindow | null;
     currentConflict: Conflict | null;
     currentDuel: Duel | null;
     manualMode: boolean;
-    gameMode: string;
+    gameMode?: string;
     currentPhase: string;
     password?: string;
     roundNumber: number;
@@ -167,7 +164,7 @@ class Game {
     private readonly connections: GameConnectionManager;
     rings: Record<string, Ring>;
     shortCardData: ShortCardData[];
-    cardLibrary: Map<string, unknown>;
+    cardLibrary: CardLibrary;
     router?: GameRouter;
     allCards: BaseCard[];
     private cardsByUuid = new Map<string, BaseCard>();
@@ -227,17 +224,17 @@ class Game {
         this.provinceCards = [];
         this.hiddenInfoLog = [];
 
-        Object.values(details.players).forEach((player: { id: string; user: GamePlayerUser }) => {
+        Object.values(details.players).forEach((player) => {
             this.playersAndSpectators[player.user.username] = new Player(
                 player.id,
                 player.user,
                 this.owner === player.user.username,
                 this,
-                details.clocks as ClockConfig | undefined
+                details.clocks ?? undefined
             );
         });
 
-        Object.values(details.spectators).forEach((spectator: { id: string; user: GamePlayerUser }) => {
+        Object.values(details.spectators).forEach((spectator) => {
             this.playersAndSpectators[spectator.user.username] = new Spectator(spectator.id, spectator.user);
         });
 
@@ -369,13 +366,14 @@ class Game {
      * Returns the card (i.e. character) with matching uuid from either players
      * 'in play' area.
      */
-    findAnyCardInPlayByUuid(cardId: string): DrawCard | null {
-        return this.getPlayers().reduce((card: DrawCard | null, player: Player) => {
+    findAnyCardInPlayByUuid(cardId: string): DrawCard | undefined {
+        for(const player of this.getPlayers()) {
+            const card = player.findCardInPlayByUuid(cardId);
             if(card) {
                 return card;
             }
-            return player.findCardInPlayByUuid(cardId);
-        }, null);
+        }
+        return undefined;
     }
 
     /**
@@ -391,6 +389,8 @@ class Game {
     /**
      * Returns all cards from anywhere in the game matching the passed predicate
      */
+    findAnyCardsInAnyList<T extends BaseCard>(predicate: (card: BaseCard) => card is T): T[];
+    findAnyCardsInAnyList(predicate: (card: BaseCard) => boolean): BaseCard[];
     findAnyCardsInAnyList(predicate: (card: BaseCard) => boolean): BaseCard[] {
         return this.allCards.filter(predicate);
     }
@@ -403,7 +403,7 @@ class Game {
         let foundCards: DrawCard[] = [];
 
         this.getPlayers().forEach((player) => {
-            foundCards = foundCards.concat(player.findCards(player.cardsInPlay, predicate as (card: BaseCard) => boolean) as DrawCard[]);
+            foundCards = foundCards.concat(player.findCards(player.cardsInPlay, predicate));
         });
 
         return foundCards;
@@ -448,6 +448,14 @@ class Game {
         return GameActions;
     }
 
+    /** For code that only runs during a conflict. */
+    requireConflict(): Conflict {
+        if(!this.currentConflict) {
+            throw new Error('No conflict in progress');
+        }
+        return this.currentConflict;
+    }
+
     isDuringConflict(types: string | string[] | null = null): boolean {
         const conflict = this.currentConflict;
         if(!conflict) {
@@ -457,9 +465,7 @@ class Game {
         } else if(!Array.isArray(types)) {
             types = [types];
         }
-        const elementsAndType = ([...conflict.elements, conflict.conflictType] as Array<string | undefined>).filter(
-            (value): value is string => typeof value === 'string'
-        );
+        const elementsAndType: string[] = [...conflict.elements, conflict.conflictType].filter((value) => value !== undefined);
         return types.every((type) => elementsAndType.includes(type));
     }
 
@@ -599,7 +605,7 @@ class Game {
         this.input.concede(playerName);
     }
 
-    selectDeck(playerName: string, deck: unknown): void {
+    selectDeck(playerName: string, deck: DeckDTO): void {
         this.input.selectDeck(playerName, deck);
     }
 
@@ -635,7 +641,7 @@ class Game {
      * This function is called by the client whenever a player clicks a button
      * in a prompt
      */
-    menuButton(playerName: string, arg: string, uuid: string, method: string): boolean {
+    menuButton(playerName: string, arg: MenuArg, uuid: string, method?: string | null): boolean {
         return this.input.menuButton(playerName, arg, uuid, method);
     }
 
@@ -779,22 +785,18 @@ class Game {
         this.queueStep(window);
     }
 
-    getEvent<N extends EventName>(eventName: N, params?: EventPayload<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N>;
-    getEvent(eventName: string, params?: Record<string, unknown>, handler?: (event: Event) => void): Event;
-    getEvent(eventName: string, params: Record<string, unknown> = {}, handler?: (event: Event) => void): Event {
+    getEvent<N extends EventName>(eventName: N, params?: EventParams<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N> {
         return this.events.getEvent(eventName, params, handler);
     }
 
     /**
      * Creates a game Event, and opens a window for it.
      */
-    raiseEvent<N extends EventName>(eventName: N, params?: EventPayload<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N>;
-    raiseEvent(eventName: string, params?: Record<string, unknown>, handler?: (event: Event) => void): Event;
-    raiseEvent(eventName: string, params: Record<string, unknown> = {}, handler: (event: Event) => void = () => true): Event {
+    raiseEvent<N extends EventName>(eventName: N, params?: EventParams<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N> {
         return this.events.raiseEvent(eventName, params, handler);
     }
 
-    emitEvent(eventName: string, params: Record<string, unknown> = {}): void {
+    emitEvent<N extends EventName>(eventName: N, params?: EventParams<N>): void {
         this.events.emitEvent(eventName, params);
     }
 
@@ -851,17 +853,20 @@ class Game {
             context = this.getFrameworkContext();
         }
         const resolvedContext = context;
-        const actionPairs = Object.entries(actions);
-        const events = actionPairs.reduce((array: Event[], [action, cards]) => {
-            if(action in APPLY_CARD_ACTIONS) {
-                const factory = APPLY_CARD_ACTIONS[action as keyof typeof APPLY_CARD_ACTIONS];
-                factory(cards as ApplyGameActionCardTarget).addEventsToArray(array, resolvedContext);
-            } else if(action in APPLY_PLAYER_ACTIONS) {
-                const factory = APPLY_PLAYER_ACTIONS[action as keyof typeof APPLY_PLAYER_ACTIONS];
-                factory(cards as ApplyGameActionPlayerTarget).addEventsToArray(array, resolvedContext);
+        const events: Event[] = [];
+        for(const action of Object.keys(actions)) {
+            if(isOwnKey(APPLY_CARD_ACTIONS, action)) {
+                const target = actions[action];
+                if(target) {
+                    APPLY_CARD_ACTIONS[action](target).addEventsToArray(events, resolvedContext);
+                }
+            } else if(isOwnKey(APPLY_PLAYER_ACTIONS, action)) {
+                const target = actions[action];
+                if(target) {
+                    APPLY_PLAYER_ACTIONS[action](target).addEventsToArray(events, resolvedContext);
+                }
             }
-            return array;
-        }, []);
+        }
         if(events.length > 0) {
             this.openEventWindow(events);
             this.queueSimpleStep(() => resolvedContext.refill());
@@ -882,7 +887,7 @@ class Game {
         const conflict = new Conflict(
             this,
             player,
-            player.opponent as Player,
+            player.opponent,
             undefined,
             forceProvinceTarget ?? undefined,
             forcedDeclaredType
@@ -937,7 +942,7 @@ class Game {
         return this.connections.watch(socketId, user);
     }
 
-    join(socketId: string, user: LobbyUser): boolean {
+    join(socketId: string, user: GamePlayerUser): boolean {
         return this.connections.join(socketId, user);
     }
 
@@ -1013,7 +1018,7 @@ class Game {
         this.pipeline.continue();
     }
 
-    formatDeckForSaving(deck: DeckForSaving): FormattedDeck {
+    formatDeckForSaving(deck: DeckDTO): FormattedDeck {
         return this.serializer.formatDeckForSaving(deck);
     }
 

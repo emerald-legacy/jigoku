@@ -16,11 +16,12 @@ interface SimultaneousEffectChoice {
 
 class SimultaneousEffectWindow extends BaseStep {
     choices: SimultaneousEffectChoice[] = [];
-    currentPlayer: Player;
+    // unset while the first player is not chosen yet (during setup)
+    currentPlayer: Player | undefined;
 
     constructor(game: Game) {
         super(game);
-        this.currentPlayer = this.game.getFirstPlayer() as Player;
+        this.currentPlayer = this.game.getFirstPlayer();
     }
 
     continue(): boolean {
@@ -45,16 +46,17 @@ class SimultaneousEffectWindow extends BaseStep {
         if(choices.length === 0) {
             return true;
         }
-        if(choices.length === 1 || !this.currentPlayer.optionSettings.orderForcedAbilities) {
+        const player = this.currentPlayer;
+        if(choices.length === 1 || !player || !player.optionSettings.orderForcedAbilities) {
             this.resolveEffect(choices[0]);
         } else {
-            this.promptBetweenChoices(choices);
+            this.promptBetweenChoices(player, choices);
         }
         return false;
     }
 
-    promptBetweenChoices(choices: SimultaneousEffectChoice[]): void {
-        this.game.promptWithHandlerMenu(this.currentPlayer, {
+    promptBetweenChoices(player: Player, choices: SimultaneousEffectChoice[]): void {
+        this.game.promptWithHandlerMenu(player, {
             source: 'Order Simultaneous effects',
             activePromptTitle: 'Choose an effect to be resolved',
             waitingPromptTitle: 'Waiting for opponent',

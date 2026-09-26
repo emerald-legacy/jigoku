@@ -1,4 +1,4 @@
-import { Players, TargetMode } from '../../../Constants.js';
+import { Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -14,14 +14,10 @@ export default class DarbukaOfBanishment extends DrawCard {
             })
         });
 
-        this.action({
-            title: 'Return a ring to the unclaimed pool',
-            cost: AbilityDsl.costs.payHonor(1),
-            target: {
-                mode: TargetMode.Ring,
-                ringCondition: (ring) => ring.isClaimed(),
-                gameAction: AbilityDsl.actions.returnRing()
-            }
-        });
+        this.action('Return a ring to the unclaimed pool')
+            .cost(AbilityDsl.costs.payHonor(1))
+            .ringTarget('target', {
+                ringCondition: (ring) => ring.isClaimed()
+            }, AbilityDsl.actions.returnRing());
     }
 }

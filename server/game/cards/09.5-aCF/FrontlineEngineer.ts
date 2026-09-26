@@ -12,11 +12,9 @@ class FrontlineEngineer extends DrawCard {
             effect: AbilityDsl.effects.modifyGlory(() => this.getHoldingsInPlay())
         });
 
-        this.action({
-            title: 'Place a holding from your deck faceup in the defending province',
-            condition: context => context.player.dynastyDeck.length > 0 && context.source.isDefending(),
-            effect: 'look at the top five cards of their dynasty deck',
-            gameAction: AbilityDsl.actions.selectCard<ProvinceCard>(context => ({
+        this.action('Place a holding from your deck faceup in the defending province')
+            .condition(context => context.player.dynastyDeck.length > 0 && context.source.isDefending())
+            .gameAction(AbilityDsl.actions.selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -53,8 +51,8 @@ class FrontlineEngineer extends DrawCard {
                         }
                     })
                 })
-            }))
-        });
+            })))
+            .effect('look at the top five cards of their dynasty deck');
     }
 
     getHoldingsInPlay() {

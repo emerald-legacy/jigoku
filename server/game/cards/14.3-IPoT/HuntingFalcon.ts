@@ -7,21 +7,18 @@ class HuntingFalcon extends DrawCard {
     static id = 'hunting-falcon';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Look at a province',
-            when: {
+        this.reaction('Look at a province')
+            .when({
                 onCardAttached: (event: EventPayload<EventName.OnCardAttached>, context) => event.card === context.source && event.originalLocation !== Location.PlayArea
-            },
-            target: {
+            })
+            .target('target', {
                 location: Location.Provinces,
                 cardType: CardType.Province,
-                cardCondition: (card) => card.isFacedown(),
-                gameAction: AbilityDsl.actions.lookAt(context => ({
-                    message: '{0} sees {1} in {2}',
-                    messageArgs: (cards) => [context.source, cards[0], cards[0].location]
-                }))
-            }
-        });
+                cardCondition: (card) => card.isFacedown()
+            }, AbilityDsl.actions.lookAt(context => ({
+                message: '{0} sees {1} in {2}',
+                messageArgs: (cards) => [context.source, cards[0], cards[0].location]
+            })));
     }
 }
 

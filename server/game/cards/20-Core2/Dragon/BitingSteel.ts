@@ -24,46 +24,38 @@ export default class BitingSteel extends DrawCard {
     static id = 'biting-steel';
 
     public setupCardAbilities() {
-        this.duelChallenge({
-            title: 'Add a Weapon to your duel stats',
-            duelCondition: (duel, context) =>
-                (duel.duelType === DuelType.Military || duel.duelType === DuelType.Political) &&
-                !!context.source.parentCharacter && duel.isInvolved(context.source.parentCharacter),
-            target: {
+        this.duelChallenge('Add a Weapon to your duel stats', (duel, context) =>
+            (duel.duelType === DuelType.Military || duel.duelType === DuelType.Political) &&
+                !!context.source.parentCharacter && duel.isInvolved(context.source.parentCharacter))
+            .target('target', {
                 cardType: CardType.Attachment,
-                cardCondition: (card: DrawCard, context) =>
-                    !!card.parentCharacter && card.parentCharacter === context.source.parentCharacter && card.hasTrait('weapon') && getAttachmentSkill(card) !== 0,
-                gameAction: AbilityDsl.actions.cardLastingEffect((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
-                    target: context.target?.parentCharacter ?? undefined,
-                    effect: AbilityDsl.effects.modifyDuelistSkill(
-                        context.target ? getAttachmentSkill(context.target) : 0,
-                        context.event.duel
-                    ),
-                    duration: Duration.UntilEndOfDuel
-                }))
-            },
-            effect: 'add the skill bonus of {0} ({1}) to their duel total',
-            effectArgs: (context) => [context.target ? getAttachmentSkill(context.target as DrawCard) : 0]
-        });
+                cardCondition: (card, context) =>
+                    !!card.parentCharacter && card.parentCharacter === context.source.parentCharacter && card.hasTrait('weapon') && getAttachmentSkill(card) !== 0
+            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+                target: context.target?.parentCharacter ?? undefined,
+                effect: AbilityDsl.effects.modifyDuelistSkill(
+                    context.target ? getAttachmentSkill(context.target) : 0,
+                    context.event.duel
+                ),
+                duration: Duration.UntilEndOfDuel
+            })))
+            .effect('add the skill bonus of {0} ({1}) to their duel total', (context) => [context.target ? getAttachmentSkill(context.target) : 0]);
 
-        this.action({
-            title: 'Send an enemy home',
-            condition: (context) =>
+        this.action('Send an enemy home')
+            .condition((context) =>
                 !!context.source.parentCharacter?.isParticipating('military') &&
-                (context.player).hasAffinity('fire', context),
-            target: {
+                context.player.hasAffinity('fire', context))
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card: DrawCard, context) => card.militarySkill < (context.source.parentCharacter?.militarySkill ?? 0),
-                gameAction: AbilityDsl.actions.sendHome()
-            }
-        });
+                cardCondition: (card, context) => card.militarySkill < (context.source.parentCharacter?.militarySkill ?? 0)
+            }, AbilityDsl.actions.sendHome());
     }
 
     public canAttach(card: BaseCard) {
         return (
             card.getType() === CardType.Character &&
-            (card as DrawCard).attachments.some((c: DrawCard) => c.hasTrait('weapon')) &&
+            card.attachments.some((c: DrawCard) => c.hasTrait('weapon')) &&
             super.canAttach(card)
         );
     }

@@ -20,11 +20,9 @@ export default class PropitiousMarket extends DrawCard {
             effect: AbilityDsl.effects.modifyProvinceStrength(() => this.getTokenCount(TokenType.Honor))
         });
 
-        this.action({
-            title: 'Place an honor token',
-            phase: Phases.Conflict,
-            gameAction: AbilityDsl.actions.addToken(),
-            then: (context: AbilityContext) => ({
+        this.action('Place an honor token')
+            .gameAction(AbilityDsl.actions.addToken())
+            .then((context) => ({
                 target: {
                     mode: TargetMode.Select,
                     activePromptTitle: 'Sacrifice ' + context.source.name + '?',
@@ -40,7 +38,7 @@ export default class PropitiousMarket extends DrawCard {
                     message: '{0} uses {1} to gain {3} fate',
                     messageArgs: [amountOfFateGain(subThenContext.source)]
                 })
-            })
-        });
+            }))
+            .phase(Phases.Conflict);
     }
 }

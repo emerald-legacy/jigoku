@@ -5,10 +5,8 @@ class DojiRepresentative extends DrawCard {
     static id = 'doji-representative';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Move this character home',
-            gameAction: ability.actions.sendHome()
-        });
+        this.action('Move this character home')
+            .gameAction(ability.actions.sendHome());
     }
 }
 

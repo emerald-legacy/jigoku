@@ -7,11 +7,9 @@ export default class BayushiManipulator extends DrawCard {
     static id = 'bayushi-manipulator';
 
     public setupCardAbilities() {
-        this.reaction({
-            title: 'Increase bid by 1',
-            when: { onHonorDialsRevealed: (event: EventPayload<EventName.OnHonorDialsRevealed>) => event.isHonorBid },
-            effect: 'increase their bid by 1',
-            gameAction: AbilityDsl.actions.modifyBid()
-        });
+        this.reaction('Increase bid by 1')
+            .when({ onHonorDialsRevealed: (event: EventPayload<EventName.OnHonorDialsRevealed>) => event.isHonorBid })
+            .gameAction(AbilityDsl.actions.modifyBid())
+            .effect('increase their bid by 1');
     }
 }

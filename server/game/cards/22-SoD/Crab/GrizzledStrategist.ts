@@ -10,15 +10,13 @@ export default class GrizzledStrategist extends DrawCard {
             effect: AbilityDsl.effects.cannotReceiveDishonorToken()
         });
 
-        this.wouldInterrupt({
-            title: 'Cancel an event',
-            cost: AbilityDsl.costs.sacrifice({ cardType: CardType.Character }),
-            when: {
+        this.wouldInterrupt('Cancel an event')
+            .when({
                 onInitiateAbilityEffects: (event, context) => context.game.isDuringConflict() &&
                     context.source.isParticipating() &&
                     event.card.type === CardType.Event
-            },
-            gameAction: AbilityDsl.actions.cancel()
-        });
+            })
+            .cost(AbilityDsl.costs.sacrifice({ cardType: CardType.Character }))
+            .gameAction(AbilityDsl.actions.cancel());
     }
 }

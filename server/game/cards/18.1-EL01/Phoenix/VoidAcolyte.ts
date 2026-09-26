@@ -8,14 +8,12 @@ class VoidAcolyte extends DrawCard {
     static id = 'void-acolyte';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Gain fate',
-            when: {
+        this.reaction('Gain fate')
+            .when({
                 onClaimRing: (event, context) => event.player === context.player &&
                 (event.conflict && event.conflict.elements.some(element => element === this.getCurrentElementSymbol(elementKey)) || event.ring.element === this.getCurrentElementSymbol(elementKey))
-            },
-            gameAction: AbilityDsl.actions.placeFate()
-        });
+            })
+            .gameAction(AbilityDsl.actions.placeFate());
     }
 
     getPrintedElementSymbols() {

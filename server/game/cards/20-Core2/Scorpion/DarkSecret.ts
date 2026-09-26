@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -6,20 +5,17 @@ export default class DarkSecret extends DrawCard {
     static id = 'dark-secret';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Make the controller of attached character lose 1 honor',
-            when: {
+        this.reaction('Make the controller of attached character lose 1 honor')
+            .when({
                 onMoveFate: (event, context) =>
-                    context.source.parentCharacter && context.source.parentCharacter === event.origin && event.fate > 0
-            },
-            gameAction: AbilityDsl.actions.loseHonor((context: AbilityContext<DrawCard, DrawCard>) => ({
+                    context.source.parentCharacter && context.source.parentCharacter === event.origin && (event.fate ?? 0) > 0
+            })
+            .gameAction(AbilityDsl.actions.loseHonor((context) => ({
                 amount: 1,
                 target: this.#targetPlayer(context.source.parentCharacter)
-            })),
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            effect: 'make {1} lose 1 honor - {2}',
-            effectArgs: (context) => [this.#targetPlayer(context.source.parentCharacter), this.#quote(context.source.parentCharacter)]
-        });
+            })))
+            .effect('make {1} lose 1 honor - {2}', (context) => [this.#targetPlayer(context.source.parentCharacter), this.#quote(context.source.parentCharacter)])
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 
     #targetPlayer(character: DrawCard | null) {

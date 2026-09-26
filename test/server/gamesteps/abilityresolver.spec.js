@@ -23,7 +23,8 @@ describe('AbilityResolver', function() {
         this.ability.isCardAbility.and.returnValue(false);
         this.ability.hasLegalTargets.and.returnValue(true);
         this.ability.resolveTargets.and.returnValue({});
-        this.source = jasmine.createSpyObj('source', ['createSnapshot', 'getType']);
+        this.source = jasmine.createSpyObj('source', ['createSnapshot', 'getType', 'isDrawCard']);
+        this.source.isDrawCard.and.returnValue(true);
         this.costEvent = jasmine.createSpyObj('costEvent', ['getResolutionEvent']);
         this.costEvent.getResolutionEvent.and.returnValue({ cancelled: false });
         this.player = { player: 1 };

@@ -11,10 +11,9 @@ export default class TruthIsInTheKilling extends DrawCard {
     static id = 'truth-is-in-the-killing';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a military duel, discarding the loser',
-            condition: (context) => context.game.isDuringConflict('military'),
-            initiateDuel: {
+        this.action('Initiate a military duel, discarding the loser')
+            .condition((context) => context.game.isDuringConflict('military'))
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 challengerCondition: (card) => card.hasTrait('bushi') && card.isParticipating(),
                 gameAction: ((duel: Duel) =>
@@ -41,7 +40,6 @@ export default class TruthIsInTheKilling extends DrawCard {
                         ) : AbilityDsl.actions.noAction())),
                 message: 'return all fate on {0} to {1}\'s fate pool{2}',
                 messageArgs: (duel) => [duel.loser, duel.losingPlayer, applyFullEffect(duel) ? ' and discard them' : '']
-            }
-        });
+            }));
     }
 }

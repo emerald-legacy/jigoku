@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -13,16 +12,14 @@ class SolitaryHero extends DrawCard {
             })
         });
 
-        this.action({
-            title: 'Remove a fate from weaker military characters',
-            condition: context =>
+        this.action('Remove a fate from weaker military characters')
+            .condition(context =>
                 context.source.isParticipatingFor(context.player) &&
-                (context.game.currentConflict?.getNumberOfParticipantsFor(context.player) ?? 0) === 1,
-            gameAction: AbilityDsl.actions.removeFate((context: AbilityContext<DrawCard, DrawCard>) => ({
+                (context.game.currentConflict?.getNumberOfParticipantsFor(context.player) ?? 0) === 1)
+            .gameAction(AbilityDsl.actions.removeFate((context) => ({
                 target: context.game.currentConflict?.getParticipants((card: DrawCard) => card.getMilitarySkill() <= context.source.getMilitarySkill() && card !== context.source) ?? [],
                 amount: 1
-            }))
-        });
+            })));
     }
 }
 

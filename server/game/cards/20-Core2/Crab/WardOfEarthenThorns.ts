@@ -3,7 +3,6 @@ import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { ProvinceAttachment } from '../../ProvinceAttachment.js';
-import { Conflict } from '../../../Conflict.js';
 
 export default class WardOfEarthenThorns extends ProvinceAttachment {
     static id = 'ward-of-earthen-thorns';
@@ -17,18 +16,15 @@ export default class WardOfEarthenThorns extends ProvinceAttachment {
             effect: AbilityDsl.effects.modifyProvinceStrength(1)
         });
 
-        this.action({
-            title: 'Remove a fate from a character',
-            condition: (context) =>
-                (context.game.currentConflict as Conflict | undefined)
+        this.action('Remove a fate from a character')
+            .condition((context) =>
+                context.game.currentConflict
                     ?.getConflictProvinces()
-                    .some((province) => context.source.parent === province) ?? false,
-            target: {
+                    .some((province) => context.source.parent === province) ?? false)
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isAttacking(),
-                gameAction: AbilityDsl.actions.removeFate()
-            }
-        });
+                cardCondition: (card) => card.isAttacking()
+            }, AbilityDsl.actions.removeFate());
     }
 
     canPlay(context: AbilityContext, playType: string) {

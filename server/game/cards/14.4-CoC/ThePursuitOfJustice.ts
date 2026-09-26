@@ -8,15 +8,12 @@ export default class ThePursuitOfJustice extends ProvinceCard {
     static id = 'the-pursuit-of-justice';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Ready a character',
-            conflictProvinceCondition: (province) => province.isElement(this.getCurrentElementSymbol(elementKey)),
-            target: {
+        this.action('Ready a character')
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.ready()
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.ready())
+            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(elementKey)));
     }
 
     getPrintedElementSymbols() {

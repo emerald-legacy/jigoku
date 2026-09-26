@@ -6,7 +6,7 @@ import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 export type MoveConflictProperties = CardActionProperties;
 
-export class MoveConflictAction<C extends AbilityContext = AbilityContext> extends CardGameAction<MoveConflictProperties, EventName, C> {
+export class MoveConflictAction<C extends AbilityContext = AbilityContext> extends CardGameAction<MoveConflictProperties, EventName.OnConflictMoved, C> {
     name = 'moveConflict';
     eventName = EventName.OnConflictMoved;
     targetType = [CardType.Province];
@@ -32,7 +32,7 @@ export class MoveConflictAction<C extends AbilityContext = AbilityContext> exten
     }
 
     eventHandler(event: ActionEvent<EventName.OnConflictMoved, C>, _additionalProperties: Record<string, unknown> = {}): void {
-        let context = (event.context);
+        let context = event.context;
         let newProvince = event.card;
         const conflict = context.game.currentConflict;
         if(!conflict || !conflict.conflictProvince) {

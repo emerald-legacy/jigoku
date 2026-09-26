@@ -1,6 +1,5 @@
+import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -9,25 +8,22 @@ class AdornedTemple extends DrawCard {
     static id = 'adorned-temple';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Draw cards',
-            when: {
+        this.reaction('Draw cards')
+            .when({
                 onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context) => {
                     return (
-                        event.fate > 0 &&
-                        event.recipient &&
-                        (event.recipient as DrawCard).controller === context.player &&
+                        (event.fate ?? 0) > 0 &&
+                        event.recipient instanceof BaseCard &&
+                        event.recipient.controller === context.player &&
                         event.context?.ability.isCardAbility()
                     );
                 }
-            },
-            effect: 'draw {1} card{2}',
-            effectArgs: (context: AbilityContext) => (((context as TriggeredAbilityContext).event.recipient as DrawCard)?.isOrdinary() ? ['2', 's'] : ['a', '']),
-            gameAction: AbilityDsl.actions.draw((context: AbilityContext) => ({
+            })
+            .gameAction(AbilityDsl.actions.draw((context) => ({
                 target: context.player,
-                amount: ((context as TriggeredAbilityContext).event.recipient as DrawCard)?.isOrdinary() ? 2 : 1
-            }))
-        });
+                amount: context.event.recipient instanceof BaseCard && context.event.recipient.isOrdinary() ? 2 : 1
+            })))
+            .effect('draw {1} card{2}', (context) => (context.event.recipient instanceof BaseCard && context.event.recipient.isOrdinary() ? ['2', 's'] : ['a', '']));
     }
 }
 

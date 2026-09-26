@@ -11,7 +11,7 @@ export interface LoseHonorProperties extends PlayerActionProperties {
     dueToStatusToken?: boolean;
 }
 
-export class LoseHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<LoseHonorProperties, EventName, C> {
+export class LoseHonorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<LoseHonorProperties, EventName.OnModifyHonor, C> {
     defaultProperties: LoseHonorProperties = { amount: 1, dueToUnopposed: false, dueToStatusToken: false };
 
     name = 'loseHonor';
@@ -42,9 +42,9 @@ export class LoseHonorAction<C extends AbilityContext = AbilityContext> extends 
 
     eventHandler(event: ActionEvent<EventName.OnModifyHonor, C>): void {
         if(event.player) {
-            event.player.modifyHonor(event.amount as number);
+            event.player.modifyHonor(event.amount);
             if(event.context?.game) {
-                event.context.game.addAnimation({ type: 'honor', playerName: event.player.name, amount: event.amount as number });
+                event.context.game.addAnimation({ type: 'honor', playerName: event.player.name, amount: event.amount });
             }
         }
     }

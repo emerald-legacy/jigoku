@@ -1,12 +1,10 @@
-import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { Conflict } from '../../../Conflict.js';
-import { EventName, TargetMode, AbilityType } from '../../../Constants.js';
+import { EventName, AbilityType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import Ring from '../../../Ring.js';
 
 export default class VengefulKami extends DrawCard {
     static id = 'vengeful-kami';
@@ -21,25 +19,21 @@ export default class VengefulKami extends DrawCard {
         }]);
         this.eventRegistrar.register([EventName.OnRoundEnded]);
 
-        this.action({
-            title: 'Resolve Ring Effect',
-            condition: context => context.game.isDuringConflict() &&
+        this.action('Resolve Ring Effect')
+            .condition(context => context.game.isDuringConflict() &&
                 context.player.isDefendingPlayer() &&
-                (context.game.currentConflict as Conflict)
+                context.game.requireConflict()
                     .getConflictProvinces()
-                    .some((province: ProvinceCard) => this.wasProvinceAttacked(context.game.currentConflict, province)),
-            target: {
-                mode: TargetMode.Ring,
+                    .some((province: ProvinceCard) => this.wasProvinceAttacked(context.game.currentConflict, province)))
+            .ringTarget('target', {
                 activePromptTitle: 'Choose a ring',
-                ringCondition: (ring: Ring, context?: AbilityContext) =>
-                    !!context && (context.game.currentConflict as Conflict)
+                ringCondition: (ring, context) =>
+                    !!context && context.game.requireConflict()
                         .getConflictProvinces()
-                        .some((province: ProvinceCard) => this.wasProvinceAttacked(context.game.currentConflict, province) && province.getElement().includes(ring.element)),
-                gameAction: AbilityDsl.actions.resolveRingEffect()
-            },
-            effect: 'resolve the {0} effect',
-            max: AbilityDsl.limit.perConflict(1)
-        });
+                        .some((province: ProvinceCard) => this.wasProvinceAttacked(context.game.currentConflict, province) && province.getElement().includes(ring.element))
+            }, AbilityDsl.actions.resolveRingEffect())
+            .effect('resolve the {0} effect')
+            .max(AbilityDsl.limit.perConflict(1));
 
         this.persistentEffect({
             effect: AbilityDsl.effects.cardCannot({

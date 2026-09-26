@@ -7,26 +7,22 @@ class MagistratesIntervention extends DrawCard {
     static id = 'magistrate-s-intervention';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Dishonor a character',
-            target: {
+        this.action('Dishonor a character')
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: card => card.isAttacking(),
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.dishonor(),
-                    AbilityDsl.actions.conditional({
-                        condition: (context: AbilityContext) => !!(
-                            context.player.opponent && (context.target as DrawCard).controller === context.player.opponent &&
+                cardCondition: card => card.isAttacking()
+            }, AbilityDsl.actions.sequential([
+                AbilityDsl.actions.dishonor(),
+                AbilityDsl.actions.conditional({
+                    condition: (context: AbilityContext) => !!(
+                        context.player.opponent && context.target?.controller === context.player.opponent &&
                             context.game.getConflicts(context.player.opponent).filter(conflict => !conflict.passed).length > 1),
-                        trueGameAction: AbilityDsl.actions.dishonor(),
-                        falseGameAction: AbilityDsl.actions.draw({ amount: 0 }) //do nothing
-                    })
+                    trueGameAction: AbilityDsl.actions.dishonor(),
+                    falseGameAction: AbilityDsl.actions.draw({ amount: 0 }) //do nothing
+                })
 
-                ])
-            },
-            effect: 'dishonor {0}{1}',
-            effectArgs: (context: AbilityContext) => [context.player.opponent && context.game.getConflicts(context.player.opponent).filter(conflict => !conflict.passed).length > 1 ? ', then dishonor it again' : '']
-        });
+            ]))
+            .effect('dishonor {0}{1}', (context) => [context.player.opponent && context.game.getConflicts(context.player.opponent).filter(conflict => !conflict.passed).length > 1 ? ', then dishonor it again' : '']);
     }
 
     canPlay(context: AbilityContext, playType: string) {

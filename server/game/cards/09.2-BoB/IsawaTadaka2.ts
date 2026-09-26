@@ -1,27 +1,24 @@
 import { CardType, Location, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
 import { shuffle } from '../../utils/shuffle.js';
 
 export default class IsawaTadaka2 extends DrawCard {
     static id = 'isawa-tadaka-2';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Remove discarded characters to discard a card',
-            condition: (context) => context.game.isDuringConflict() && context.player.opponent !== undefined,
-            cost: AbilityDsl.costs.removeFromGame({
+        this.action('Remove discarded characters to discard a card')
+            .cost(AbilityDsl.costs.removeFromGame({
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 mode: TargetMode.Unlimited
-            }),
-            gameAction: AbilityDsl.actions.multipleContext((context: AbilityContext<this>) => {
+            }))
+            .condition((context) => context.game.isDuringConflict() && context.player.opponent !== undefined)
+            .gameAction(AbilityDsl.actions.multipleContext((context) => {
+                const removed = context.costs.removeFromGame;
                 let cards =
-                    context.player.opponent && context.costs.removeFromGame
-                        ? shuffle(context.player.opponent.hand).slice(0, (context.costs.removeFromGame as DrawCard[]).length)
+                    context.player.opponent && removed
+                        ? shuffle(context.player.opponent.hand).slice(0, Array.isArray(removed) ? removed.length : 1)
                         : [context.source];
                 return {
                     gameActions: [
@@ -37,13 +34,11 @@ export default class IsawaTadaka2 extends DrawCard {
                         }))
                     ]
                 };
-            }),
-            effect: 'look at {1} random card{3} in {2}\'s hand',
-            effectArgs: (context) => [
-                (context.costs.removeFromGame as BaseCard[]).length,
-                context.player.opponent as Player,
-                (context.costs.removeFromGame as BaseCard[]).length === 1 ? '' : 's'
-            ]
-        });
+            }))
+            .effect('look at {1} random card{3} in {2}\'s hand', (context) => {
+                const removed = context.costs.removeFromGame ?? [];
+                const amount = Array.isArray(removed) ? removed.length : 1;
+                return [amount, context.player.opponent, amount === 1 ? '' : 's'];
+            });
     }
 }

@@ -1,4 +1,3 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, EventName } from '../../Constants.js';
@@ -8,35 +7,32 @@ class YogoHiroue extends DrawCard {
     static id = 'yogo-hiroue';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move a character into the conflict',
-            condition: context => context.source.isParticipating(),
-            target: {
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.moveToConflict(),
-                    AbilityDsl.actions.cardLastingEffect((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                        effect: AbilityDsl.effects.delayedEffect({
-                            when: {
-                                afterConflict: (event: EventPayload<EventName.AfterConflict>) => event.conflict.winner === context.player
+        this.action('Move a character into the conflict')
+            .condition(context => context.source.isParticipating())
+            .target('target', {
+                cardType: CardType.Character
+            }, AbilityDsl.actions.sequential([
+                AbilityDsl.actions.moveToConflict(),
+                AbilityDsl.actions.cardLastingEffect((context) => ({
+                    effect: AbilityDsl.effects.delayedEffect({
+                        when: {
+                            afterConflict: (event: EventPayload<EventName.AfterConflict>) => event.conflict.winner === context.player
+                        },
+                        gameAction: AbilityDsl.actions.menuPrompt({
+                            activePromptTitle: 'Dishonor ' + context.target.name + '?',
+                            choices: ['Yes', 'No'],
+                            choiceHandler: (choice, displayMessage) => {
+                                if(displayMessage && choice === 'Yes') {
+                                    context.game.addMessage('{0} chooses to dishonor {1} due to {2}\'s delayed effect', context.player, context.target, context.source);
+                                }
+                                return { target: (choice === 'Yes' ? context.target : []) };
                             },
-                            gameAction: AbilityDsl.actions.menuPrompt({
-                                activePromptTitle: 'Dishonor ' + context.target.name + '?',
-                                choices: ['Yes', 'No'],
-                                choiceHandler: (choice, displayMessage) => {
-                                    if(displayMessage && choice === 'Yes') {
-                                        context.game.addMessage('{0} chooses to dishonor {1} due to {2}\'s delayed effect', context.player, context.target, context.source);
-                                    }
-                                    return { target: (choice === 'Yes' ? context.target : []) };
-                                },
-                                gameAction: AbilityDsl.actions.dishonor()
-                            })
+                            gameAction: AbilityDsl.actions.dishonor()
                         })
-                    }))
-                ])
-            },
-            effect: 'move {0} into the conflict - they may choose to dishonor it if they win the conflict'
-        });
+                    })
+                }))
+            ]))
+            .effect('move {0} into the conflict - they may choose to dishonor it if they win the conflict');
     }
 }
 

@@ -10,7 +10,7 @@ export interface RandomDiscardProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class RandomDiscardAction<C extends AbilityContext = AbilityContext> extends PlayerAction<RandomDiscardProperties, EventName, C> {
+export class RandomDiscardAction<C extends AbilityContext = AbilityContext> extends PlayerAction<RandomDiscardProperties, EventName.OnCardsDiscardedFromHand, C> {
     defaultProperties: RandomDiscardProperties = { amount: 1 };
 
     name = 'discard';
@@ -40,8 +40,8 @@ export class RandomDiscardAction<C extends AbilityContext = AbilityContext> exte
     }
 
     eventHandler(event: ActionEvent<EventName.OnCardsDiscardedFromHand, C>): void {
-        let player = event.player as Player;
-        let amount = Math.min(event.amount as number, player.hand.length);
+        let player = event.player;
+        let amount = Math.min(event.amount ?? 0, player.hand.length);
         if(amount === 0) {
             return;
         }

@@ -5,7 +5,6 @@ import type BaseCard from '../../BaseCard.js';
 import { CardType, Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 
 class TheWealthOfTheCrane extends DrawCard {
     static id = 'the-wealth-of-the-crane';
@@ -27,18 +26,16 @@ class TheWealthOfTheCrane extends DrawCard {
             })
         });
 
-        this.action({
-            title: 'Look at your dynasty deck',
-            effect: 'look at the top ten cards of their dynasty deck',
-            condition: (context: AbilityContext) => context.player.dynastyDeck.length > 0,
-            max: AbilityDsl.limit.perPhase(1),
-            handler: (context: AbilityContext) => {
+        this.action('Look at your dynasty deck')
+            .condition((context) => context.player.dynastyDeck.length > 0)
+            .handler((context) => {
                 this.cards = context.player.dynastyDeck.slice(0, 10);
                 this.chosenProvinces = [];
 
                 this.wealthSelectPrompt(context);
-            }
-        });
+            })
+            .effect('look at the top ten cards of their dynasty deck')
+            .max(AbilityDsl.limit.perPhase(1));
     }
 
     wealthSelectPrompt(context: AbilityContext) {
@@ -59,7 +56,7 @@ class TheWealthOfTheCrane extends DrawCard {
                         '{0} puts {1} into {2}',
                         context.player,
                         currentCard,
-                        (card as ProvinceCard).isFacedown() ? 'a facedown province' : card.name
+                        card.isFacedown() ? 'a facedown province' : card.name
                     );
                     this.chosenProvinces.push(card);
                     context.player.moveCard(currentCard, card.location);

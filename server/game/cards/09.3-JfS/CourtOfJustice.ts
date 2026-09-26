@@ -1,6 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
 import { shuffle } from '../../utils/shuffle.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -9,21 +8,18 @@ export default class CourtOfJustice extends DrawCard {
     static id = 'court-of-justice';
 
     public setupCardAbilities() {
-        this.reaction({
-            title: 'Look at 3 random cards of the opponent\'s hand',
-            when: {
+        this.reaction('Look at 3 random cards of the opponent\'s hand')
+            .when({
                 afterConflict: (event: EventPayload<EventName.AfterConflict>, context) =>
                     event.conflict.winner === context.player &&
                     event.conflict.conflictType === 'political' &&
                     context.player.opponent !== undefined
-            },
-            gameAction: AbilityDsl.actions.lookAt((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.lookAt((context) => ({
                 target: shuffle((context.player.opponent?.hand ?? [])).slice(0, 3),
                 message: 'reveals {0} from {1}\'s hand.',
                 messageArgs: (cards) => [cards, context.player.opponent]
-            })),
-            effect: 'look at 3 random cards from {1}\'s hand.',
-            effectArgs: (context) => [context.player.opponent as Player]
-        });
+            })))
+            .effect('look at 3 random cards from {1}\'s hand.', (context) => [context.player.opponent]);
     }
 }

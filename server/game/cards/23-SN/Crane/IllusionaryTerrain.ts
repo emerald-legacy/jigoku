@@ -1,9 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
-import { ProvinceCard } from '../../../ProvinceCard.js';
 import { CardType, Players, Location } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import BaseCard from '../../../BaseCard.js';
 
 export default class IllusionaryTerrain extends DrawCard {
     static id = 'illusionary-terrain';
@@ -22,30 +19,27 @@ export default class IllusionaryTerrain extends DrawCard {
             })
         });
 
-        this.wouldInterrupt({
-            title: 'Turn province into copy of a province',
-            effect: 'transform the attacked province into a copy of {0}',
-            when: {
+        this.wouldInterrupt('Turn province into copy of a province')
+            .when({
                 onConflictDeclaredBeforeProvinceReveal: () => true
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: (context) => {
                     if(context.player.hasAffinity('air', context)) {
                         return Players.Any;
                     }
-                    const conflict = (context as TriggeredAbilityContext<DrawCard>).event.conflict;
+                    const conflict = context.event.conflict;
                     return conflict?.defendingPlayer === context.player ? Players.Self : Players.Opponent;
                 },
-                cardCondition: (card: BaseCard, context) => (card as ProvinceCard).isFaceup() &&
-                    card !== (context as TriggeredAbilityContext<DrawCard>).event.conflict?.conflictProvince,
-                gameAction: AbilityDsl.actions.cardLastingEffect((context: TriggeredAbilityContext<DrawCard, ProvinceCard>) => ({
-                    target: context.event.conflict?.conflictProvince ?? [],
-                    targetLocation: Location.Any,
-                    effect: context.target ? AbilityDsl.effects.copyProvince(context.target) : []
-                }))
-            }
-        });
+                cardCondition: (card, context) => card.isFaceup() &&
+                    card !== context.event.conflict?.conflictProvince
+            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+                target: context.event.conflict?.conflictProvince ?? [],
+                targetLocation: Location.Any,
+                effect: context.target ? AbilityDsl.effects.copyProvince(context.target) : []
+            })))
+            .effect('transform the attacked province into a copy of {0}');
     }
 }

@@ -6,11 +6,10 @@ class IkomaUjiaki extends DrawCard {
     static id = 'ikoma-ujiaki';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Put characters into play',
-            condition: context => context.source.isParticipating(),
-            cost: AbilityDsl.costs.discardImperialFavor(),
-            gameAction: AbilityDsl.actions.sequential([
+        this.action('Put characters into play')
+            .cost(AbilityDsl.costs.discardImperialFavor())
+            .condition(context => context.source.isParticipating())
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.reveal(context => ({
                     target: context.player.getDynastyCardsInProvince(Location.Provinces)
                 })),
@@ -28,9 +27,8 @@ class IkomaUjiaki extends DrawCard {
                     messageArgs: cards => [context.player, cards],
                     gameAction: AbilityDsl.actions.putIntoConflict()
                 }))
-            ]),
-            effect: 'reveal their dynasty cards and put up to two of them into play'
-        });
+            ]))
+            .effect('reveal their dynasty cards and put up to two of them into play');
     }
 }
 

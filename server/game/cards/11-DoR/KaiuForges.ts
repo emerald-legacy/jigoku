@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 import { Location, CardType, Players } from '../../Constants.js';
 import type Player from '../../Player.js';
 import type BaseCard from '../../BaseCard.js';
@@ -8,15 +7,13 @@ class KaiuForges extends DrawCard {
     static id = 'kaiu-forges';
 
     setupCardAbilities() {
-        this.action<ProvinceCard>({
-            title: 'Choose a province',
-            target: {
+        this.action('Choose a province')
+            .target('target', {
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardType: CardType.Province
-            },
-            effect: 'look at the top ten cards of their dynasty deck',
-            handler: (context) => {
+            })
+            .handler((context) => {
                 const province = context.target;
                 if(!province) {
                     return;
@@ -59,8 +56,8 @@ class KaiuForges extends DrawCard {
                         }
                     }
                 });
-            }
-        });
+            })
+            .effect('look at the top ten cards of their dynasty deck');
     }
 }
 

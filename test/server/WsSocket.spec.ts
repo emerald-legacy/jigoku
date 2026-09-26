@@ -131,9 +131,23 @@ describe('WsSocket.onMessage', () => {
 
     it('STARTGAME emits onStartGame with the pendingGame payload', () => {
         const { ctx } = withSendSpy();
-        const pendingGame = { id: 'g1', players: {}, spectators: {} };
+        const pendingGame = {
+            id: 'g1',
+            name: 'Game',
+            owner: 'alice',
+            allowSpectators: true,
+            players: { alice: { id: 'p1', name: 'alice', user: { username: 'alice' } } },
+            spectators: {}
+        };
         call('onMessage', ctx, JSON.stringify({ command: 'STARTGAME', arg: pendingGame }));
         expect(ctx.emit).toHaveBeenCalledWith('onStartGame', jasmine.objectContaining({ id: 'g1' }));
+    });
+
+    it('drops STARTGAME when a player has no user', () => {
+        const { ctx } = withSendSpy();
+        const pendingGame = { id: 'g1', name: 'Game', owner: 'alice', allowSpectators: true, players: { alice: { id: 'p1', name: 'alice' } }, spectators: {} };
+        call('onMessage', ctx, JSON.stringify({ command: 'STARTGAME', arg: pendingGame }));
+        expect(ctx.emit).not.toHaveBeenCalled();
     });
 
     it('SPECTATOR emits onSpectator with game and user', () => {
@@ -158,7 +172,7 @@ describe('WsSocket.onMessage', () => {
 
     it('CARDDATA emits onCardData with arg', () => {
         const { ctx } = withSendSpy();
-        const cardData = { someCard: { id: 'x' } };
+        const cardData = { titleCardData: {}, shortCardData: [{ id: 'x', name: 'X' }] };
         call('onMessage', ctx, JSON.stringify({ command: 'CARDDATA', arg: cardData }));
         expect(ctx.emit).toHaveBeenCalledWith('onCardData', jasmine.objectContaining(cardData));
     });

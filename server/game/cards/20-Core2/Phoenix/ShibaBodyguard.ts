@@ -6,20 +6,16 @@ export default class ShibaBodyguard extends DrawCard {
     static id = 'shiba-bodyguard';
 
     public setupCardAbilities() {
-        this.interrupt({
-            title: 'Place a fate on a character',
-            when: {
+        this.interrupt('Place a fate on a character')
+            .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => !card.hasTrait('bushi'),
-                gameAction: AbilityDsl.actions.placeFate((context) => ({
-                    origin: context.player
-                }))
-            },
-            effect: 'place a fate from {1}\'s fate pool on {0}',
-            effectArgs: (context) => [context.player]
-        });
+                cardCondition: (card) => !card.hasTrait('bushi')
+            }, AbilityDsl.actions.placeFate((context) => ({
+                origin: context.player
+            })))
+            .effect('place a fate from {1}\'s fate pool on {0}', (context) => [context.player]);
     }
 }

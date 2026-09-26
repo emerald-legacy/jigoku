@@ -1,5 +1,4 @@
 import { CardType, Players } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -7,15 +6,14 @@ export default class Coward extends DrawCard {
     static id = 'coward-';
 
     public setupCardAbilities() {
-        this.duelChallenge({
-            title: 'Dishonor a character',
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+        this.duelChallenge('Dishonor a character')
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose a duel participant',
                 cardType: CardType.Character,
                 controller: Players.Any,
                 hidePromptIfSingleCard: true,
                 cardCondition: (card: DrawCard) => {
-                    const duel = (context as TriggeredAbilityContext).event.duel;
+                    const duel = context.event.duel;
                     if(!duel) {
                         return false;
                     }
@@ -30,20 +28,16 @@ export default class Coward extends DrawCard {
                 message: '{0} dishonors {1}',
                 messageArgs: (cards) => [context.player, cards],
                 gameAction: AbilityDsl.actions.dishonor()
-            })),
-            effect: 'dishonor a duel challenger'
-        });
+            })))
+            .effect('dishonor a duel challenger');
 
-        this.reaction({
-            title: 'Dishonor a character',
-            when: {
+        this.reaction('Dishonor a character')
+            .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player.opponent
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
-                controller: Players.Any,
-                gameAction: AbilityDsl.actions.dishonor()
-            }
-        });
+                controller: Players.Any
+            }, AbilityDsl.actions.dishonor());
     }
 }

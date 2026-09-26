@@ -18,24 +18,19 @@ export default class GraspOfEarth extends DrawCard {
             effect: AbilityDsl.effects.reduceCost({ amount: 1, match: (card, source) => card === source })
         });
 
-        this.action({
-            title: 'Opponent\'s cards cannot join this conflict',
-            condition: (context) => this.game.isDuringConflict() && context.player.opponent !== undefined,
-            cost: AbilityDsl.costs.bowSelf(),
-            effect: 'prevent the opponent from bringing characters to the conflict',
-            gameAction: [
-                AbilityDsl.actions.cardLastingEffect((context) => ({
-                    target: context.player.opponent?.cardsInPlay.slice(),
-                    effect: AbilityDsl.effects.cardCannot('moveToConflict')
-                })),
-                AbilityDsl.actions.playerLastingEffect((context) => ({
-                    targetController: context.player.opponent,
-                    effect: AbilityDsl.effects.playerCannot({
-                        cannot: PlayType.PlayFromHand,
-                        restricts: 'characters'
-                    })
-                }))
-            ]
-        });
+        this.action('Opponent\'s cards cannot join this conflict')
+            .cost(AbilityDsl.costs.bowSelf())
+            .condition((context) => this.game.isDuringConflict() && context.player.opponent !== undefined)
+            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
+                target: context.player.opponent?.cardsInPlay.slice(),
+                effect: AbilityDsl.effects.cardCannot('moveToConflict')
+            })), AbilityDsl.actions.playerLastingEffect((context) => ({
+                targetController: context.player.opponent,
+                effect: AbilityDsl.effects.playerCannot({
+                    cannot: PlayType.PlayFromHand,
+                    restricts: 'characters'
+                })
+            })))
+            .effect('prevent the opponent from bringing characters to the conflict');
     }
 }

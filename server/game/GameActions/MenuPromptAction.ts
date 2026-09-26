@@ -23,17 +23,15 @@ export class MenuPromptAction<C extends AbilityContext = AbilityContext> extends
         return ['make a choice for {0}', [target]];
     }
 
-    getProperties(context: C, additionalProperties = {}): MenuPromptProperties {
-        let properties = super.getProperties(context, additionalProperties);
-        if(typeof properties.choices === 'function') {
-            properties.choices = properties.choices(properties);
-        }
-        return properties;
+    getProperties(context: C, additionalProperties = {}): MenuPromptProperties & { choices: string[] } {
+        const properties = super.getProperties(context, additionalProperties);
+        const choices = properties.choices;
+        return Object.assign(properties, { choices: typeof choices === 'function' ? choices(properties) : choices });
     }
 
     canAffect(target: GameObject, context: C, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
-        return (properties.choices as string[]).some((choice) => {
+        return properties.choices.some((choice) => {
             let childProperties = properties.choiceHandler(choice, false, properties);
             return properties.gameAction.canAffect(target, context, childProperties);
         });
@@ -41,7 +39,7 @@ export class MenuPromptAction<C extends AbilityContext = AbilityContext> extends
 
     hasLegalTarget(context: C, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
-        return (properties.choices as string[]).some((choice) => {
+        return properties.choices.some((choice) => {
             let childProperties = properties.choiceHandler(choice, false, properties);
             return properties.gameAction.hasLegalTarget(context, childProperties);
         });
@@ -49,7 +47,7 @@ export class MenuPromptAction<C extends AbilityContext = AbilityContext> extends
 
     addEventsToArray(events: Event[], context: C, additionalProperties: Record<string, unknown> = {}): void {
         let properties = this.getProperties(context, additionalProperties);
-        const choices = properties.choices as string[];
+        const choices = properties.choices;
         if(choices.length === 0 || (properties.player === Players.Opponent && !context.player.opponent)) {
             return;
         }

@@ -14,7 +14,7 @@ export interface PutIntoPlayProperties extends CardActionProperties {
     overrideLocation?: Location;
 }
 
-export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PutIntoPlayProperties, EventName, C> {
+export class PutIntoPlayAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PutIntoPlayProperties, EventName.OnCharacterEntersPlay, C> {
     name = 'putIntoPlay';
     eventName = EventName.OnCharacterEntersPlay;
     cost = 'putting {0} into play';

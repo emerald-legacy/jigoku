@@ -1,5 +1,4 @@
 import { Location } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -8,15 +7,14 @@ export default class TheEastWind extends StrongholdCard {
     static id = 'the-east-wind';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Place fate on character',
-            when: {
+        this.reaction('Place fate on character')
+            .when({
                 onCardPlayed: (event, context) =>
                     event.player === context.player && (event.card.hasTrait('gaijin') || this.#isOutOfClan(event.card))
-            },
-            cost: AbilityDsl.costs.bowSelf(),
-            gameAction: AbilityDsl.actions.deckSearch((context) => {
-                const playedCardTraits = (context as TriggeredAbilityContext).event.card?.getTraitSet() ?? new Set<string>();
+            })
+            .cost(AbilityDsl.costs.bowSelf())
+            .gameAction(AbilityDsl.actions.deckSearch((context) => {
+                const playedCardTraits = context.event.card?.getTraitSet() ?? new Set<string>();
                 return {
                     amount: 5,
                     cardCondition: (card) => {
@@ -30,8 +28,7 @@ export default class TheEastWind extends StrongholdCard {
                     gameAction: AbilityDsl.actions.moveCard({ destination: Location.Hand }),
                     takesNothingGameAction: AbilityDsl.actions.gainFate()
                 };
-            })
-        });
+            }));
     }
 
     #isOutOfClan(card: BaseCard): boolean {

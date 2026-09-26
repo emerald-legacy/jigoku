@@ -7,15 +7,13 @@ export default class Pressure extends DrawCard {
     static id = 'pressure';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Move home a character',
-            max: AbilityDsl.limit.perConflict(1),
-            when: {
+        this.reaction('Move home a character')
+            .when({
                 onConflictDeclared: (_event, _context) => true,
                 onDefendersDeclared: (_event, _context) => true,
                 onMoveToConflict: (_event, _context) => true
-            },
-            gameAction: AbilityDsl.actions.selectCard(context => ({
+            })
+            .gameAction(AbilityDsl.actions.selectCard(context => ({
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
@@ -37,8 +35,8 @@ export default class Pressure extends DrawCard {
                 ]),
                 message: '{0} chooses {1}',
                 messageArgs: (cards) => [context.player, cards]
-            })),
-            effect: 'move a character home and prevent it from participating in the conflict'
-        });
+            })))
+            .effect('move a character home and prevent it from participating in the conflict')
+            .max(AbilityDsl.limit.perConflict(1));
     }
 }

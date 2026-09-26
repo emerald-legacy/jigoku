@@ -7,16 +7,13 @@ class YasukiOguri extends DrawCard {
     static id = 'yasuki-oguri';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Gain +1/+1',
-            limit: ability.limit.unlimitedPerConflict(),
-            when: {
+        this.reaction('Gain +1/+1')
+            .when({
                 onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context) => event.player === context.player.opponent && event.card.type === CardType.Event && context.source.isDefending()
-            },
-            effect: 'give him +1{1}/+1{2}',
-            effectArgs: () => ['military', 'political'],
-            gameAction: ability.actions.cardLastingEffect({ effect: ability.effects.modifyBothSkills(1) })
-        });
+            })
+            .gameAction(ability.actions.cardLastingEffect({ effect: ability.effects.modifyBothSkills(1) }))
+            .effect('give him +1{1}/+1{2}', () => ['military', 'political'])
+            .limit(ability.limit.unlimitedPerConflict());
     }
 }
 

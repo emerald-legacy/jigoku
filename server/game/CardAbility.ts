@@ -1,12 +1,12 @@
 import * as AbilityLimit from './AbilityLimit.js';
 import type { AbilityLimit as IAbilityLimit } from './AbilityLimit.js';
+import type { CardAction } from './CardAction.js';
 import ThenAbility from './ThenAbility.js';
 import type { ThenAbilityProperties } from './ThenAbility.js';
 import { payReduceableFateCost } from './costs/fateAndHonorCosts.js';
 import { Location, CardType, EffectName } from './Constants.js';
 import { initiateDuel } from './DuelHelper.js';
-import type BaseCard from './BaseCard.js';
-import type DrawCard from './DrawCard.js';
+import BaseCard from './BaseCard.js';
 import type { GameAction } from './GameActions/GameAction.js';
 import type { AbilityContext } from './AbilityContext.js';
 import type { EffectArg, InitiateDuel } from './Interfaces.js';
@@ -27,6 +27,21 @@ export interface CardAbilityProperties<C extends AbilityContext = AbilityContext
     initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);
     effect?: string;
     effectArgs?: EffectArg | ((context: C) => EffectArg);
+}
+
+/** Cost results are open-ended; only those the chat can format are passed to it. */
+function isMsgArg(value: unknown): value is MsgArg {
+    if(value === undefined || value === null || typeof value === 'string' || typeof value === 'number') {
+        return true;
+    }
+    if(Array.isArray(value)) {
+        return value.every(isMsgArg);
+    }
+    return typeof value === 'object' && (
+        ('name' in value && typeof value.name === 'string') ||
+        ('getShortSummary' in value && typeof value.getShortSummary === 'function') ||
+        'message' in value
+    );
 }
 
 const DefaultLocationForType: Record<string, Location> = {
@@ -107,7 +122,7 @@ class CardAbility extends ThenAbility {
 
         if(
             (this.isTriggeredAbility() && !this.card.canTriggerAbilities(context, ignoredRequirements)) ||
-            (this.card.type === CardType.Event && !(this.card as DrawCard).canPlay(context, context.playType))
+            (this.card.type === CardType.Event && this.card.isDrawCard() && !this.card.canPlay(context, context.playType))
         ) {
             return 'cannotTrigger';
         }
@@ -124,7 +139,7 @@ class CardAbility extends ThenAbility {
             return 'max';
         }
 
-        if(this.isCardPlayed() && (this.card as DrawCard).isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
+        if(this.isCardPlayed() && this.card.isDrawCard() && this.card.isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
             return 'limited';
         }
 
@@ -165,11 +180,12 @@ class CardAbility extends ThenAbility {
     }
 
     getReducedCost(context: AbilityContext): number {
-        const fateCost = this.cost.find(
-            (cost): cost is Cost & { getReducedCost(context: AbilityContext): number } =>
-                !!(cost as { getReducedCost?: unknown }).getReducedCost
-        );
-        return fateCost ? fateCost.getReducedCost(context) : 0;
+        for(const cost of this.cost) {
+            if(cost.getReducedCost) {
+                return cost.getReducedCost(context);
+            }
+        }
+        return 0;
     }
 
     isInValidLocation(context: AbilityContext): boolean {
@@ -220,7 +236,7 @@ class CardAbility extends ThenAbility {
             this.game.addMessage(message, ...messageArgs);
             return;
         }
-        let origin = context.ability && (context.ability as CardAbility).origin;
+        let origin = context.ability && context.ability.origin;
         // if origin is the same as source then ignore it
         if(origin === context.source) {
             origin = undefined;
@@ -231,12 +247,13 @@ class CardAbility extends ThenAbility {
         const costMessages = this.cost
             .map((cost) => {
                 const costMsg = cost.getCostMessage && cost.getCostMessage(context);
-                if(costMsg && costMsg.length > 0) {
-                    let card = context.costs[(cost.getActionName as (c: AbilityContext) => string)(context)] as MsgArg | undefined;
-                    if(card && (card as { isFacedown?(): boolean }).isFacedown?.()) {
+                if(costMsg && costMsg.length !== 0) {
+                    const paid = cost.getActionName ? context.costs[cost.getActionName(context)] : undefined;
+                    let card: MsgArg = isMsgArg(paid) ? paid : undefined;
+                    if(paid instanceof BaseCard && paid.isFacedown()) {
                         card = 'a facedown card';
                     }
-                    const [format, args] = costMsg as [string, MsgArg[]];
+                    const [format, args] = costMsg;
                     return { message: this.game.gameChat.formatMessage(format, [card].concat(args)) };
                 }
                 return undefined;
@@ -286,6 +303,11 @@ class CardAbility extends ThenAbility {
 
     isTriggeredAbility(): boolean {
         return true;
+    }
+
+    /** Narrows to `CardAction`, which overrides this. */
+    isCardAction(): this is CardAction {
+        return false;
     }
 }
 

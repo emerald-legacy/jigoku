@@ -1,7 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { AbilityType, CardType, EventName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { TriggeredAbilityProps } from '../../../Interfaces.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -35,7 +34,7 @@ export default class Naginata extends DrawCard {
                         card.isParticipating() && card.getMilitarySkill() < context.source.getMilitarySkill(),
                     gameAction: AbilityDsl.actions.bow()
                 }
-            } as TriggeredAbilityProps<DrawCard>)
+            })
         });
     }
 }

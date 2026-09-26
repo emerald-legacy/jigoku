@@ -6,12 +6,10 @@ class DisdainfulRemark extends DrawCard {
     static id = 'disdainful-remark';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Add Province Strength',
-            condition: context => context.player.anyCardsInPlay(card => card.isParticipating() && card.hasTrait('courtier')) &&
-                                  !!context.player.opponent && context.player.opponent.hand.length > 0,
-            effect: 'increase the strength of an attacked province',
-            gameAction: AbilityDsl.actions.selectCard(context => ({
+        this.action('Add Province Strength')
+            .condition(context => context.player.anyCardsInPlay(card => card.isParticipating() && card.hasTrait('courtier')) &&
+                                  !!context.player.opponent && context.player.opponent.hand.length > 0)
+            .gameAction(AbilityDsl.actions.selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -23,8 +21,8 @@ class DisdainfulRemark extends DrawCard {
                     targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.modifyProvinceStrength(context.player.opponent?.hand.length ?? 0)
                 }))
-            }))
-        });
+            })))
+            .effect('increase the strength of an attacked province');
     }
 }
 

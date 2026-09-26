@@ -4,13 +4,14 @@ import { EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
+import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
 export interface TakeFateRingProperties extends RingActionProperties {
     amount?: number;
     removeOnly?: boolean;
 }
 
-export class TakeFateRingAction<C extends AbilityContext = AbilityContext> extends RingAction<TakeFateRingProperties, EventName, C> {
+export class TakeFateRingAction<C extends AbilityContext = AbilityContext> extends RingAction<TakeFateRingProperties, EventName.OnMoveFate, C> {
     name = 'takeFate';
     eventName = EventName.OnMoveFate;
     defaultProperties: TakeFateRingProperties = { amount: 1, removeOnly: false };
@@ -48,7 +49,7 @@ export class TakeFateRingAction<C extends AbilityContext = AbilityContext> exten
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: ActionEvent<EventName.OnMoveFate, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: AnyEvent, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
         let { amount } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&

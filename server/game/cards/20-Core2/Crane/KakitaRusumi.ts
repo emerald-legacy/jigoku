@@ -4,17 +4,16 @@ import DrawCard from '../../../DrawCard.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 
 function statusOfIntern(context: AbilityContext) {
-    return (context.source as DrawCard).isHonored ? 'honored' : 'ordinary';
+    return context.source.isHonored ? 'honored' : 'ordinary';
 }
 
 export default class KakitaRusumi extends DrawCard {
     static id = 'kakita-rusumi';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Put a character into play',
-            condition: (context) => context.player.isDefendingPlayer(),
-            gameAction: AbilityDsl.actions.deckSearch(() => ({
+        this.action('Put a character into play')
+            .condition((context) => context.player.isDefendingPlayer())
+            .gameAction(AbilityDsl.actions.deckSearch(() => ({
                 activePromptTitle: 'Choose a character to put into play',
                 amount: 4,
                 deck: Decks.DynastyDeck,
@@ -24,9 +23,9 @@ export default class KakitaRusumi extends DrawCard {
                 messageArgs: (context, cards) => [context.player, cards, statusOfIntern(context)],
                 shuffle: true,
                 gameAction: AbilityDsl.actions.putIntoConflict((context) => ({ status: statusOfIntern(context) }))
-            })),
-            effect: 'search their dynasty deck for a character to put into play',
-            then: (context) => ({
+            })))
+            .effect('search their dynasty deck for a character to put into play')
+            .then((context) => ({
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => {
                     let target: DrawCard | DrawCard[] = [];
                     const selected = context?.deckSearchSelected ?? [];
@@ -46,7 +45,6 @@ export default class KakitaRusumi extends DrawCard {
                         })
                     };
                 })
-            })
-        });
+            }));
     }
 }

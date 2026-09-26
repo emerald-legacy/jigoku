@@ -1,10 +1,11 @@
+import type { AbilityContext } from '../../../AbilityContext.js';
+import type { Cost } from '../../../costs/Cost.js';
 import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { MsgArg } from '../../../GameChat.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
-const resourcesAvailable = (context: TriggeredAbilityContext) => {
+const resourcesAvailable = (context: AbilityContext) => {
     let honorAvailable = false;
     let fateAvailable = false;
     if(context.game.actions.loseHonor().canAffect(context.player, context)) {
@@ -18,19 +19,19 @@ const resourcesAvailable = (context: TriggeredAbilityContext) => {
     return { honorAvailable, fateAvailable };
 };
 
-const eyesOfTheSerpentCost = function () {
+const eyesOfTheSerpentCost = function (): Cost<{ merchantOfCuriositiesCostPaid: boolean; serpentCostPaid: 'honor' | 'fate' }> {
     return {
-        getCostMessage(context: TriggeredAbilityContext) {
-            return ['paying 1 {1}', context.costs.serpentCostPaid as MsgArg];
+        getCostMessage(context) {
+            return ['paying 1 {1}', context.costs.serpentCostPaid];
         },
-        getActionName(_context: TriggeredAbilityContext) {
+        getActionName(_context) {
             return 'eyesOfTheSerpentCost';
         },
-        canPay: function (context: TriggeredAbilityContext) {
+        canPay: function (context) {
             const { honorAvailable, fateAvailable } = resourcesAvailable(context);
             return honorAvailable || fateAvailable;
         },
-        resolve: function (context: TriggeredAbilityContext, _result: unknown) {
+        resolve: function (context, _result: unknown) {
             const { honorAvailable, fateAvailable } = resourcesAvailable(context);
             context.costs.merchantOfCuriositiesCostPaid = false;
             if(honorAvailable && fateAvailable) {
@@ -51,7 +52,7 @@ const eyesOfTheSerpentCost = function () {
                 }
             }
         },
-        payEvent: function (context: TriggeredAbilityContext) {
+        payEvent: function (context) {
             const events = [];
             if(context.costs.serpentCostPaid === 'honor') {
                 const action = context.game.actions.loseHonor({ amount: 1 });
@@ -70,28 +71,23 @@ export default class EyesOfTheSerpent extends DrawCard {
     static id = 'eyes-of-the-serpent';
 
     setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Taint a character',
-
-            cost: eyesOfTheSerpentCost(),
-            target: {
+        this.action('Taint a character')
+            .cost(eyesOfTheSerpentCost())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating() && card.isDishonored,
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.taint(),
-                    AbilityDsl.actions.onAffinity((_context) => ({
-                        trait: 'air',
-                        gameAction: AbilityDsl.actions.gainHonor(context => ({
-                            target: context.player,
-                            amount: 1
-                        })),
-                        effect: 'gain 1 honor'
-                    }))
-                ])
-            },
-            effect: 'taint {1}',
-            effectArgs: (context) => [context.target ?? '']
-        });
+                cardCondition: (card) => card.isParticipating() && card.isDishonored
+            }, AbilityDsl.actions.multiple([
+                AbilityDsl.actions.taint(),
+                AbilityDsl.actions.onAffinity((_context) => ({
+                    trait: 'air',
+                    gameAction: AbilityDsl.actions.gainHonor(context => ({
+                        target: context.player,
+                        amount: 1
+                    })),
+                    effect: 'gain 1 honor'
+                }))
+            ]))
+            .effect('taint {1}', (context) => [context.target ?? '']);
     }
 
     canPlay(context: TriggeredAbilityContext, playType: string) {

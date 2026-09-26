@@ -9,9 +9,8 @@ class DistinguishedDojo extends DrawCard {
     static id = 'distinguished-dojo';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Place an honor token',
-            when: {
+        this.reaction('Place an honor token')
+            .when({
                 afterDuel: (event: EventPayload<typeof EventName.AfterDuel>, context: AbilityContext) => {
                     if(!event.winningPlayer) {
                         return false;
@@ -21,10 +20,9 @@ class DistinguishedDojo extends DrawCard {
                     }
                     return event.winningPlayer === context.player;
                 }
-            },
-            limit: AbilityDsl.limit.perRound(3),
-            gameAction: AbilityDsl.actions.addToken(),
-            then: (context: AbilityContext) => ({
+            })
+            .gameAction(AbilityDsl.actions.addToken())
+            .then((context) => ({
                 target: {
                     mode: TargetMode.Select,
                     activePromptTitle: 'Sacrifice ' + (context?.source.name ?? '') + '?',
@@ -40,8 +38,8 @@ class DistinguishedDojo extends DrawCard {
                     message: '{0} uses {1} to gain {3} honor',
                     messageArgs: [subThenContext.source.getTokenCount(TokenType.Honor)]
                 })
-            })
-        });
+            }))
+            .limit(AbilityDsl.limit.perRound(3));
     }
 }
 

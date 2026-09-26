@@ -33,12 +33,9 @@ export default class YuaTheOnibaba extends DrawCard {
     static id = 'yua-the-onibaba';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Weaken non-bushi, empower bushi',
-            condition: (context) => context.source.isParticipating(),
-            effect: 'give all friendly participating bushi characters +1{1} / +1{2} and give all participating non-bushi characters -1{1} / -1{2}',
-            effectArgs: () => ['military', 'political'],
-            gameAction: AbilityDsl.actions.multipleContext((context) => {
+        this.action('Weaken non-bushi, empower bushi')
+            .condition((context) => context.source.isParticipating())
+            .gameAction(AbilityDsl.actions.multipleContext((context) => {
                 const targets = charactersToBuffAndNerf(context.player, context.game.currentConflict);
                 return {
                     gameActions: [
@@ -54,7 +51,7 @@ export default class YuaTheOnibaba extends DrawCard {
                         })
                     ]
                 };
-            })
-        });
+            }))
+            .effect('give all friendly participating bushi characters +1{1} / +1{2} and give all participating non-bushi characters -1{1} / -1{2}', () => ['military', 'political']);
     }
 }

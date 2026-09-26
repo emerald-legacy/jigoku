@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Duration, EventName } from '../../Constants.js';
+import { Duration, EventName, type Element } from '../../Constants.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 import type { ProvinceCard } from '../../ProvinceCard.js';
 
@@ -9,18 +9,15 @@ class StudyTheNaturalWorld extends DrawCard {
     static id = 'study-the-natural-world';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Add elements to the conflict ring',
-            condition: (context: AbilityContext) => context.player.anyCardsInPlay((card: DrawCard) => card.isAttacking() && card.hasTrait('scholar')),
-            effect: 'add {1} to the conflict ring. They may resolve all elements if they win the conflict',
-            effectArgs: (context: AbilityContext) => [this.getElements(context)],
-            gameAction: AbilityDsl.actions.multiple([
-                AbilityDsl.actions.ringLastingEffect((context: AbilityContext) => ({
+        this.action('Add elements to the conflict ring')
+            .condition((context) => context.player.anyCardsInPlay((card: DrawCard) => card.isAttacking() && card.hasTrait('scholar')))
+            .gameAction(AbilityDsl.actions.multiple([
+                AbilityDsl.actions.ringLastingEffect((context) => ({
                     duration: Duration.UntilEndOfConflict,
                     target: context.game.currentConflict?.ring,
                     effect: AbilityDsl.effects.addElement(this.getElementsOfAttackedProvinces(context))
                 })),
-                AbilityDsl.actions.playerLastingEffect((context: AbilityContext) => ({
+                AbilityDsl.actions.playerLastingEffect((context) => ({
                     targetController: context.player,
                     effect: AbilityDsl.effects.delayedEffect({
                         when: {
@@ -40,12 +37,12 @@ class StudyTheNaturalWorld extends DrawCard {
                         })
                     })
                 }))
-            ])
-        });
+            ]))
+            .effect('add {1} to the conflict ring. They may resolve all elements if they win the conflict', (context) => [this.getElements(context)]);
     }
 
-    getElementsOfAttackedProvinces(context: AbilityContext): string[] {
-        let elements: string[] = [];
+    getElementsOfAttackedProvinces(context: AbilityContext): Element[] {
+        let elements: Element[] = [];
         context.game.currentConflict?.getConflictProvinces().forEach((a: ProvinceCard) => {
             elements = elements.concat(a.getElement());
         });

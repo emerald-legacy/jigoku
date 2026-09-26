@@ -1,21 +1,20 @@
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
+import Ring from '../../Ring.js';
 
 class AkodoMotivator extends DrawCard {
     static id = 'akodo-motivator';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Opponent discards an equal number of cards at random',
-            when: {
+        this.reaction('Opponent discards an equal number of cards at random')
+            .when({
                 onCardsDiscardedFromHand: (event, context) => {
                     if(!event.player || !event.context) {
                         return false;
                     }
                     const discardedFromOwnHand = event.player === context.player;
                     const discardedByOpponentsEffect = event.player.opponent === event.context.player;
-                    const discardedByRingEffect = (event.context.source.type as string) === 'ring';
+                    const discardedByRingEffect = event.context.source instanceof Ring;
                     const discardedByCardEffect = event.context.ability.isCardAbility();
                     return (
                         discardedFromOwnHand &&
@@ -23,11 +22,10 @@ class AkodoMotivator extends DrawCard {
                         (discardedByRingEffect || discardedByCardEffect)
                     );
                 }
-            },
-            gameAction: AbilityDsl.actions.discardAtRandom((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
+            })
+            .gameAction(AbilityDsl.actions.discardAtRandom((context) => ({
                 amount: context.event.amount
-            }))
-        });
+            })));
     }
 }
 

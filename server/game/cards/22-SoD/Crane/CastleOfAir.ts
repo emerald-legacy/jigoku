@@ -21,16 +21,13 @@ export default class CastleOfAir extends DrawCard {
         ]);
         this.eventRegistrar.register([EventName.OnConflictFinished]);
 
-        this.action({
-            title: 'Add Province Strength',
-            cost: AbilityDsl.costs.bow({
+        this.action('Add Province Strength')
+            .cost(AbilityDsl.costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card: BaseCard) => card.hasTrait('shugenja')
-            }),
-            effect: 'increase the strength of an attacked province by 4{1}',
-            effectArgs: context => context.player.hasAffinity('air', context) ? [' and prevent unopposed honor loss'] : [''],
-            condition: (context) => context.game.isDuringConflict(),
-            gameAction: AbilityDsl.actions.multiple([
+            }))
+            .condition((context) => context.game.isDuringConflict())
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.selectCard((context) => ({
                     activePromptTitle: 'Choose an attacked province',
                     hidePromptIfSingleCard: true,
@@ -53,8 +50,8 @@ export default class CastleOfAir extends DrawCard {
                     }),
                     falseGameAction: AbilityDsl.actions.noAction()
                 }))
-            ])
-        });
+            ]))
+            .effect('increase the strength of an attacked province by 4{1}', context => context.player.hasAffinity('air', context) ? [' and prevent unopposed honor loss'] : ['']);
     }
 
     onHonorLoss(event: Event & EventPayload<EventName.OnModifyHonor>) {

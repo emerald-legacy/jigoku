@@ -6,12 +6,10 @@ class RideThemDown extends DrawCard {
     static id = 'ride-them-down';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Reduce province strength',
-            cost: AbilityDsl.costs.discardImperialFavor(),
-            condition: () => this.game.isDuringConflict(),
-            effect: 'reduce the strength of an attacked province to 1',
-            gameAction: AbilityDsl.actions.selectCard(context => ({
+        this.action('Reduce province strength')
+            .cost(AbilityDsl.costs.discardImperialFavor())
+            .condition(() => this.game.isDuringConflict())
+            .gameAction(AbilityDsl.actions.selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -23,8 +21,8 @@ class RideThemDown extends DrawCard {
                     targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.setBaseProvinceStrength(1)
                 }))
-            }))
-        });
+            })))
+            .effect('reduce the strength of an attacked province to 1');
     }
 }
 

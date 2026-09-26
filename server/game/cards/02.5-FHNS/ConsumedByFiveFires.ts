@@ -10,20 +10,17 @@ class ConsumedByFiveFires extends DrawCard {
     static id = 'consumed-by-five-fires';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Remove up to 5 fate from characters',
-            condition: (context: AbilityContext) =>
+        this.action('Remove up to 5 fate from characters')
+            .condition((context) =>
                 context.player.cardsInPlay.some((card: BaseCard) => card.hasTrait('shugenja')) &&
                 !!context.player.opponent &&
-                context.player.opponent.cardsInPlay.some((card: BaseCard) => card.allowGameAction('removeFate', context)),
-            effect: 'remove fate from {1}\'s characters',
-            effectArgs: (context: AbilityContext) => context.player.opponent as Player,
-            handler: (context: AbilityContext) => {
+                context.player.opponent.cardsInPlay.some((card: BaseCard) => card.allowGameAction('removeFate', context)))
+            .handler((context) => {
                 if(context) {
                     this.chooseCard(context, {}, []);
                 }
-            }
-        });
+            })
+            .effect('remove fate from {1}\'s characters', (context) => context.player.opponent);
     }
 
     chooseCard(context: AbilityContext, targets: Record<string, number>, messages: string[]) {
@@ -51,8 +48,9 @@ class ConsumedByFiveFires extends DrawCard {
             cardCondition: (card: BaseCard) => card.location === Location.PlayArea && card.allowGameAction('removeFate', context) && card.controller !== context.player && !Object.keys(targets).includes(card.uuid),
             onSelect: (player: Player, card: BaseCard) => {
                 const maxFate = Math.min(fateRemaining, card.getFate());
-                const choices: (number | string)[] = Array.from({ length: maxFate }, (_, i) => i + 1);
-                const handlers: (() => void)[] = (choices as number[]).map((choice: number) => {
+                const amounts = Array.from({ length: maxFate }, (_, i) => i + 1);
+                const choices: (number | string)[] = [...amounts];
+                const handlers: (() => void)[] = amounts.map((choice: number) => {
                     return () => {
                         targets[card.uuid] = choice;
                         messages.push('take ' + choice.toString() + ' fate from ' + card.name);

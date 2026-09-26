@@ -12,30 +12,27 @@ class StrideTheWaves extends DrawCard {
             myControl: true
         });
 
-        this.action({
-            title: 'Move attached character in or out of the conflict',
-            limit: AbilityDsl.limit.perRound(2),
-            condition: context => context.game.isDuringConflict() &&
-                context.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player),
-            gameAction: AbilityDsl.actions.conditional({
-                condition: context => !!(context.source as DrawCard).parentCharacter?.inConflict,
+        this.action('Move attached character in or out of the conflict')
+            .condition(context => context.game.isDuringConflict() &&
+                context.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player))
+            .gameAction(AbilityDsl.actions.conditional({
+                condition: context => !!context.source.parentCharacter?.inConflict,
                 trueGameAction: AbilityDsl.actions.sendHome(context => ({
                     target: context.source.parentCharacter ?? []
                 })),
                 falseGameAction: AbilityDsl.actions.moveToConflict(context => ({
                     target: context.source.parentCharacter ?? []
                 }))
-            }),
-            effect: '{3} {1} {2}',
-            effectArgs: context => {
+            }))
+            .effect('{3} {1} {2}', context => {
                 const parent = context.source.parentCharacter;
                 return [
                     parent ?? '',
                     parent && parent.inConflict ? 'home' : 'into the conflict',
                     parent && parent.inConflict ? 'send' : 'move'
                 ];
-            }
-        });
+            })
+            .limit(AbilityDsl.limit.perRound(2));
     }
 
     getPrintedElementSymbols() {

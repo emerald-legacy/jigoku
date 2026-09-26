@@ -5,7 +5,7 @@ import { Element } from '../../Constants.js';
 const elementKeys = {
     air: 'sadane-student-air',
     fire: 'sadane-student-fire'
-} as Record<string, string>;
+};
 
 class SadaneStudent extends DrawCard {
     static id = 'sadane-student';

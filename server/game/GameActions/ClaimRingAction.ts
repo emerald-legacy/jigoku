@@ -3,10 +3,10 @@ import { ConflictType, EventName } from '../Constants.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 
-import type { ActionEvent } from './GameAction.js';
+import type { ActionEvent, WithDefaults } from './GameAction.js';
 export interface ClaimRingProperties extends RingActionProperties {
     takeFate?: boolean;
-    type?: string;
+    type?: ConflictType;
 }
 
 export class ClaimRingAction<C extends AbilityContext = AbilityContext> extends RingAction<ClaimRingProperties, EventName.OnClaimRing, C> {
@@ -14,6 +14,11 @@ export class ClaimRingAction<C extends AbilityContext = AbilityContext> extends 
     eventName = EventName.OnClaimRing;
     effect = 'claim {0}';
     defaultProperties: ClaimRingProperties = { takeFate: true, type: ConflictType.Military };
+
+    getProperties(context: C, additionalProperties = {}): WithDefaults<ClaimRingProperties, 'type'> {
+        const properties = super.getProperties(context, additionalProperties);
+        return Object.assign(properties, { type: properties.type ?? ConflictType.Military });
+    }
 
     canAffect(ring: Ring, context: C): boolean {
         if(!context.player.checkRestrictions('claimRings', context)) {
@@ -28,7 +33,7 @@ export class ClaimRingAction<C extends AbilityContext = AbilityContext> extends 
         let { takeFate, type } = this.getProperties(context, additionalProperties);
         let ring = event.ring;
         ring.contested = false;
-        ring.conflictType = type as ConflictType;
+        ring.conflictType = type;
         if(takeFate && ring.fate > 0 && context.player.checkRestrictions('takeFateFromRings', context)) {
             context.game.addMessage('{0} takes {1} fate from {2}', context.player, ring.fate, ring);
             let fate = ring.fate;

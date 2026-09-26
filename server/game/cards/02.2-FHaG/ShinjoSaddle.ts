@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -12,15 +11,12 @@ class ShinjoSaddle extends DrawCard {
             trait: 'cavalry'
         });
 
-        this.action({
-            title: 'Move to another character',
-            target: {
+        this.action('Move to another character')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('cavalry'),
-                gameAction: ability.actions.attach((context: AbilityContext<DrawCard, DrawCard>) => ({ attachment: context.source }))
-            }
-        });
+                cardCondition: card => card.hasTrait('cavalry')
+            }, ability.actions.attach((context) => ({ attachment: context.source })));
     }
 }
 

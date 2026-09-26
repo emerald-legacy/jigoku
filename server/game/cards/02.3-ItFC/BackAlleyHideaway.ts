@@ -12,14 +12,18 @@ import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import type { EffectTarget } from '../../Effects/EffectBuilder.js';
 
 const backAlleyPersistentEffect = {
-    apply: (target: EffectTarget) => {
-        const card = target as BackAlleyHideaway;
+    apply: (card: EffectTarget) => {
+        if(!(card instanceof BackAlleyHideaway)) {
+            return;
+        }
         card.showPopup = true;
         card.popupMenuText = 'Use Interrupt ability';
         card.backAlleyActionLimit.registerEvents(card.game);
     },
-    unapply: (target: EffectTarget) => {
-        const card = target as BackAlleyHideaway;
+    unapply: (card: EffectTarget) => {
+        if(!(card instanceof BackAlleyHideaway)) {
+            return;
+        }
         for(const character of card.attachments) {
             character.owner.moveCard(
                 character,
@@ -57,7 +61,7 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
             return 'location';
         }
         if(
-            !(context.source as DrawCard).canPlay(context, PlayType.PlayFromProvince) ||
+            !(context.source.isDrawCard() && context.source.canPlay(context, PlayType.PlayFromProvince)) ||
             !(context.source.parent instanceof DrawCard && context.source.parent.canTriggerAbilities(context))
         ) {
             return 'cannotTrigger';
@@ -80,16 +84,22 @@ class BackAlleyPlayCharacterAction extends DynastyCardAction {
             (action) => action.title !== 'Play this character from Back-Alley Hideaway'
         );
         // remove associations between this card and Back-Alley Hideaway
-        this.backAlleyCard.removeAttachment(context.source as DrawCard);
+        if(context.source.isDrawCard()) {
+            this.backAlleyCard.removeAttachment(context.source);
+        }
         context.source.parent = null;
         let putIntoPlayEvent = putIntoPlay({ fate: context.chooseFate }).getEvent(context.source, context);
-        let cardPlayedEvent = context.game.getEvent(EventName.OnCardPlayed, {
-            player: context.player,
-            card: context.source,
-            originalLocation: this.backAlleyCard.uuid,
-            playType: PlayType.PlayFromProvince
-        });
-        let window = context.game.openEventWindow([putIntoPlayEvent, cardPlayedEvent]);
+        const card = context.source;
+        const events: Event[] = [putIntoPlayEvent];
+        if(card.isDrawCard()) {
+            events.push(context.game.getEvent(EventName.OnCardPlayed, {
+                player: context.player,
+                card,
+                originalLocation: this.backAlleyCard.uuid,
+                playType: PlayType.PlayFromProvince
+            }));
+        }
+        let window = context.game.openEventWindow(events);
         context.events = [putIntoPlayEvent];
         let thenAbility = new ThenAbility(this.backAlleyCard, {
             gameAction: sacrifice({ target: this.backAlleyCard })
@@ -112,28 +122,25 @@ export default class BackAlleyHideaway extends DrawCard {
         this.persistentEffect({
             effect: AbilityDsl.effects.customDetachedCard(backAlleyPersistentEffect)
         });
-        this.interrupt({
-            title: 'Place character in Hideaway',
-            when: {
+        this.interrupt('Place character in Hideaway')
+            .when({
                 onCardLeavesPlay: (event, context: TriggeredAbilityContext) =>
                     event.card.isFaction('scorpion') &&
                     event.card.type === CardType.Character &&
                     event.card.controller === context.player &&
                     event.card.location === Location.PlayArea
-            },
-            effect: 'move {1} into hiding',
-            effectArgs: (context: TriggeredAbilityContext) => context?.event.card ?? '',
-            handler: (context: TriggeredAbilityContext<this>) => {
+            })
+            .handler((context) => {
                 context.event.replaceHandler((event: Event) => {
                     const card = (event as Event & { card: DrawCard }).card;
                     context.player.removeCardFromPile(card);
                     card.leavesPlay();
                     card.moveTo(context.source.uuid as Location);
-                    (context.source as BackAlleyHideaway).attachments.push(card);
+                    context.source.attachments.push(card);
                     card.parent = context.source;
                     card.abilities.playActions.push(new BackAlleyPlayCharacterAction(context.source, card));
                 });
-            }
-        });
+            })
+            .effect('move {1} into hiding', (context) => context?.event.card ?? '');
     }
 }

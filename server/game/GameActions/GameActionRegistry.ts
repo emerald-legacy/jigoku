@@ -11,10 +11,13 @@ export type GameActionFactory = (...args: never[]) => GameAction;
 
 const catalog = new Map<string, GameActionFactory>();
 
-export function setGameActionCatalog(actions: Record<string, unknown>): void {
+/** Any value but a function or an object: a catalog skips these. */
+type NotAFactory = string | number | boolean | bigint | symbol | null | undefined;
+
+export function setGameActionCatalog(actions: Record<string, GameActionFactory | NotAFactory>): void {
     for(const [name, factory] of Object.entries(actions)) {
         if(typeof factory === 'function') {
-            catalog.set(name, factory as GameActionFactory);
+            catalog.set(name, factory);
         }
     }
 }

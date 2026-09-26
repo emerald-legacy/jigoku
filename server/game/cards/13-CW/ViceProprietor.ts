@@ -6,17 +6,14 @@ export default class ViceProprietor extends DrawCard {
     static id = 'vice-proprietor';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Bow a character',
-            cost: AbilityDsl.costs.dishonorSelf(),
-            condition: (context) => context.source.isParticipating() && context.player.opponent !== undefined,
-            target: {
+        this.action('Bow a character')
+            .cost(AbilityDsl.costs.dishonorSelf())
+            .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
+            .target('target', {
                 player: Players.Opponent,
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.bow());
     }
 }

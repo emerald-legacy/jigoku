@@ -2,7 +2,7 @@ import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName } from '../Constants.js';
 import type Player from '../Player.js';
-import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
 import type { ActionEvent } from './GameAction.js';
 
 export interface TransferFateProperties extends PlayerActionProperties {
@@ -39,7 +39,7 @@ export class TransferFateAction<C extends AbilityContext = AbilityContext> exten
         );
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: PlayerEvent<EventName.OnMoveFate, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.fate = amount ?? 0;

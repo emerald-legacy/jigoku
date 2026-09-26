@@ -7,18 +7,15 @@ export default class LostSamurai extends BaseOni {
 
     public setupCardAbilities() {
         super.setupCardAbilities();
-        this.reaction({
-            title: 'Dishonor a character',
-            when: {
+        this.reaction('Dishonor a character')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
-            },
-            target: {
+            })
+            .target('target', {
                 controller: Players.Any,
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating() && !card.isFaction('shadowlands'),
-                gameAction: AbilityDsl.actions.dishonor()
-            }
-        });
+                cardCondition: (card) => card.isParticipating() && !card.isFaction('shadowlands')
+            }, AbilityDsl.actions.dishonor());
     }
 }

@@ -21,17 +21,14 @@ class DojiKuwanan extends DrawCard {
                 }))
             })
         });
-        this.action({
-            title: 'Bow a participating character with lower military skill',
-            condition: (context) =>
-                context.source.game.isDuringConflict('military') && context.source.isParticipating(),
-            target: {
+        this.action('Bow a participating character with lower military skill')
+            .condition((context) =>
+                context.source.game.isDuringConflict('military') && context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    card.getMilitarySkill() < context.source.getMilitarySkill() && card.isParticipating(),
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                    card.getMilitarySkill() < context.source.getMilitarySkill() && card.isParticipating()
+            }, AbilityDsl.actions.bow());
     }
 }
 

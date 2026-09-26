@@ -1,11 +1,12 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import type BaseCard from '../../../BaseCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, EventName, Location, Players } from '../../../Constants.js';
+import { EventName, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
+import Ring from '../../../Ring.js';
 export default class BambooTattoo extends DrawCard {
     static id = 'bamboo-tattoo';
 
@@ -19,38 +20,35 @@ export default class BambooTattoo extends DrawCard {
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: 1,
-                targetCondition: (target: BaseCard) => target.type === CardType.Character && ((target as DrawCard).printedCost ?? 0) <= 3,
+                targetCondition: (target: BaseCard) => target.isCharacter() && (target.printedCost ?? 0) <= 3,
                 match: (card, source) => card === source
             })
         });
 
-        this.reaction({
-            title: 'Ready attached character',
-            when: {
+        this.reaction('Ready attached character')
+            .when({
                 onCardBowed: (event: EventPayload<EventName.OnCardBowed>, context) =>
                     context.source.parentCharacter &&
                     event.card === context.source.parentCharacter &&
-                    (event.context?.source.type as string) !== 'ring' &&
+                    !(event.context?.source instanceof Ring) &&
                     event.context?.source.name !== 'Framework effect'
-            },
-            gameAction: AbilityDsl.actions.multiple([
+            })
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.ready((context) => ({ target: context.source.parentCharacter ?? [] })),
                 AbilityDsl.actions.conditional({
                     condition: (context: AbilityContext) => this.isSelfTrigger(context as TriggeredAbilityContext<this>),
                     trueGameAction: AbilityDsl.actions.dishonor((context) => ({ target: context.source.parentCharacter ?? [] })),
                     falseGameAction: AbilityDsl.actions.noAction()
                 })
-            ]),
-            effect: 'ready{1} {2}',
-            effectArgs: (context) => [this.isSelfTrigger(context) ? ' and dishonor' : '', context.source.parentCharacter]
-        });
+            ]))
+            .effect('ready{1} {2}', (context) => [this.isSelfTrigger(context) ? ' and dishonor' : '', context.source.parentCharacter]);
     }
 
     private isSelfTrigger(context: TriggeredAbilityContext<this>) {
-        const triggerCtx = context.event.context as AbilityContext;
-        return (
+        const triggerCtx = context.event.context;
+        return !!(
             context.source.controller &&
-            triggerCtx.player &&
+            triggerCtx?.player &&
             context.source.controller === triggerCtx.player
         );
     }

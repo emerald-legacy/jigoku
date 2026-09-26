@@ -6,24 +6,19 @@ class AgashaHiyori extends DrawCard {
     static id = 'agasha-hiyori';
 
     setupCardAbilities() {
-        this.reaction<DrawCard>({
-            title: 'Blank an attachment',
-            when: {
+        this.reaction('Blank an attachment')
+            .when({
                 onPhaseStarted: (event) => event.phase !== 'setup'
-            },
-            cost: AbilityDsl.costs.payFateToRing(1),
-            target: {
+            })
+            .cost(AbilityDsl.costs.payFateToRing(1))
+            .target('target', {
                 cardType: CardType.Attachment,
-                cardCondition: (card) => Boolean(card.parentCharacter),
-                targets: true,
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.blank()
-                })
-            },
-            effect: 'treat {1} as if its printed text box were blank and as if it had no skill modifiers until the end of the phase',
-            effectArgs: (context) => context.target ?? ''
-        });
+                cardCondition: (card) => Boolean(card.parentCharacter)
+            }, AbilityDsl.actions.cardLastingEffect({
+                duration: Duration.UntilEndOfPhase,
+                effect: AbilityDsl.effects.blank()
+            }))
+            .effect('treat {1} as if its printed text box were blank and as if it had no skill modifiers until the end of the phase', (context) => context.target ?? '');
     }
 }
 

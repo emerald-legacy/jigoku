@@ -1,5 +1,4 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import type CardAbility from '../../../CardAbility.js';
 import type BaseCard from '../../../BaseCard.js';
 import type { Event } from '../../../Events/Event.js';
 import { CardType, Players, TargetMode, EventName } from '../../../Constants.js';
@@ -10,22 +9,20 @@ export default class ALegionOfOne extends DrawCard {
     static id = 'a-legion-of-one';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Give a solitary character +3/+0',
-            condition: () => this.game.isDuringConflict('military'),
-            target: {
+        this.action('Give a solitary character +3/+0')
+            .condition(() => this.game.isDuringConflict('military'))
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     card.isParticipating() &&
                     this.game.currentConflict !== null &&
-                    this.game.currentConflict.getNumberOfParticipantsFor(context.player) === 1,
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.modifyMilitarySkill(3)
-                })
-            },
-            effect: 'give {0} +3/+0',
-            then: (context) => {
+                    this.game.currentConflict.getNumberOfParticipantsFor(context.player) === 1
+            }, AbilityDsl.actions.cardLastingEffect({
+                effect: AbilityDsl.effects.modifyMilitarySkill(3)
+            }))
+            .effect('give {0} +3/+0')
+            .then((context) => {
                 const ctx = context;
                 if(ctx.subResolution) {
                     return {
@@ -58,13 +55,12 @@ export default class ALegionOfOne extends DrawCard {
                         thenCondition: (event: Event & { origin?: BaseCard }) =>
                             event.origin === ctx.target && !event.cancelled && event.name === EventName.OnMoveFate,
                         gameAction: AbilityDsl.actions.resolveAbility({
-                            ability: ctx.ability as CardAbility,
+                            ability: ctx.ability,
                             subResolution: true,
                             choosingPlayerOverride: ctx.choosingPlayerOverride ?? undefined
                         })
                     }
                 };
-            }
-        });
+            });
     }
 }

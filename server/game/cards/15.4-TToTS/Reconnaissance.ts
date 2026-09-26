@@ -7,47 +7,44 @@ class Reconnaissance extends DrawCard {
     static id = 'reconnaissance';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Look at provinces',
-            when: {
+        this.reaction('Look at provinces')
+            .when({
                 onPhaseStarted: event => event.phase === Phases.Conflict
-            },
-            effect: 'look at 3 provinces',
-            target: {
+            })
+            .targetCards('target', {
                 mode: TargetMode.Exactly,
                 numCards: 3,
                 activePromptTitle: 'Choose 3 provinces',
                 location: Location.Provinces,
                 cardType: CardType.Province,
-                controller: Players.Any,
-                gameAction: AbilityDsl.actions.conditional({
-                    condition: context => !!(context.player.opponent && context.player.honor >= context.player.opponent.honor + 5),
-                    trueGameAction: AbilityDsl.actions.sequential([
-                        this.getLookAtAction(),
-                        AbilityDsl.actions.selectCard(context => {
-                            let target: BaseCard | BaseCard[] | undefined = context.target;
-                            if(!Array.isArray(target)) {
-                                target = [target as BaseCard];
-                            }
-                            const locations = target.map((a: BaseCard) => a.location);
-                            return ({
-                                activePromptTitle: 'Choose cards to discard',
-                                mode: TargetMode.Unlimited,
-                                optional: true,
-                                cardType: [CardType.Character, CardType.Event, CardType.Holding],
-                                location: [Location.Provinces],
-                                controller: Players.Any,
-                                cardCondition: (card) => locations.includes(card.location),
-                                message: '{0} chooses to discard {1}',
-                                messageArgs: (cards) => [context.player, cards],
-                                gameAction: AbilityDsl.actions.moveCard({ destination: Location.DynastyDiscardPile })
-                            });
-                        })
-                    ]),
-                    falseGameAction: this.getLookAtAction()
-                })
-            }
-        });
+                controller: Players.Any
+            }, AbilityDsl.actions.conditional({
+                condition: context => !!(context.player.opponent && context.player.honor >= context.player.opponent.honor + 5),
+                trueGameAction: AbilityDsl.actions.sequential([
+                    this.getLookAtAction(),
+                    AbilityDsl.actions.selectCard(context => {
+                        let target: BaseCard | BaseCard[] | undefined = context.target;
+                        if(!Array.isArray(target)) {
+                            target = target ? [target] : [];
+                        }
+                        const locations = target.map((a: BaseCard) => a.location);
+                        return ({
+                            activePromptTitle: 'Choose cards to discard',
+                            mode: TargetMode.Unlimited,
+                            optional: true,
+                            cardType: [CardType.Character, CardType.Event, CardType.Holding],
+                            location: [Location.Provinces],
+                            controller: Players.Any,
+                            cardCondition: (card) => locations.includes(card.location),
+                            message: '{0} chooses to discard {1}',
+                            messageArgs: (cards) => [context.player, cards],
+                            gameAction: AbilityDsl.actions.moveCard({ destination: Location.DynastyDiscardPile })
+                        });
+                    })
+                ]),
+                falseGameAction: this.getLookAtAction()
+            }))
+            .effect('look at 3 provinces');
     }
 
     getLookAtAction() {
@@ -55,7 +52,7 @@ class Reconnaissance extends DrawCard {
             message: context => {
                 let target: BaseCard | BaseCard[] | undefined = context.target;
                 if(!Array.isArray(target)) {
-                    target = [target as BaseCard];
+                    target = target ? [target] : [];
                 }
 
                 if(target.length === 1) {
@@ -69,7 +66,7 @@ class Reconnaissance extends DrawCard {
             messageArgs: () => {
                 let target: BaseCard | BaseCard[] | undefined = context.target;
                 if(!Array.isArray(target)) {
-                    target = [target as BaseCard];
+                    target = target ? [target] : [];
                 }
 
                 if(target.length === 1) {

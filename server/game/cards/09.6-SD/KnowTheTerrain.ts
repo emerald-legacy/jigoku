@@ -9,15 +9,13 @@ class KnowTheTerrain extends DrawCard {
     static id = 'know-the-terrain';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Switch the attacked province with a facedown province',
-            effect: 'switch the attacked province card',
-            when: {
+        this.wouldInterrupt('Switch the attacked province with a facedown province')
+            .when({
                 onConflictDeclaredBeforeProvinceReveal: (event: EventPayload<EventName.OnConflictDeclaredBeforeProvinceReveal>, context: TriggeredAbilityContext) => !!event.conflict.conflictProvince && event.conflict.conflictProvince.isFacedown() &&
                     event.conflict.defendingPlayer === context.player &&
                     event.conflict.conflictProvince.location !== Location.StrongholdProvince
-            },
-            handler: (context: TriggeredAbilityContext) => {
+            })
+            .handler((context) => {
                 const conflict = context.event.conflict;
                 if(!conflict) {
                     return;
@@ -46,8 +44,8 @@ class KnowTheTerrain extends DrawCard {
                         return true;
                     }
                 });
-            }
-        });
+            })
+            .effect('switch the attacked province card');
     }
 }
 

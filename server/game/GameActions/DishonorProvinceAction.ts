@@ -1,14 +1,13 @@
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { CardType, EventName } from '../Constants.js';
-import type { ProvinceCard } from '../ProvinceCard.js';
 import type BaseCard from '../BaseCard.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 
 export type DishonorProvinceProperties = CardActionProperties;
 
-export class DishonorProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DishonorProvinceProperties, EventName, C> {
+export class DishonorProvinceAction<C extends AbilityContext = AbilityContext> extends CardGameAction<DishonorProvinceProperties, EventName.OnCardDishonored, C> {
     name = 'dishonor';
     eventName = EventName.OnCardDishonored;
     targetType = [CardType.Province];
@@ -21,12 +20,12 @@ export class DishonorProvinceAction<C extends AbilityContext = AbilityContext> e
         if(properties.target) {
             if(Array.isArray(properties.target)) {
                 properties.target.forEach((t) => {
-                    const target = t as ProvinceCard;
+                    const target = t;
                     const targetMessage = target && target.isFacedown && target.isFacedown() ? target.location : target;
                     targetArray.push(targetMessage);
                 });
             } else {
-                const target = properties.target as ProvinceCard;
+                const target = properties.target;
                 const targetMessage = target && target.isFacedown && target.isFacedown() ? target.location : target;
                 targetArray.push(targetMessage);
             }

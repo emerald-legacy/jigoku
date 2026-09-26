@@ -9,19 +9,16 @@ class EruditePrestige extends DrawCard {
             trait: 'courtier'
         });
 
-        this.reaction({
-            title: 'Give attached character +1 political',
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            when: {
+        this.reaction('Give attached character +1 political')
+            .when({
                 onCardPlayed: (event, context) => context.source.parentCharacter && event.player === context.player && context.source.parentCharacter.isParticipating()
-            },
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
+            })
+            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
                 target: context.source.parentCharacter ?? [],
                 effect: AbilityDsl.effects.modifyPoliticalSkill(1)
-            })),
-            effect: 'give +1{1} to {2}',
-            effectArgs: context => ['political', context.source.parentCharacter]
-        });
+            })))
+            .effect('give +1{1} to {2}', context => ['political', context.source.parentCharacter])
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }
 

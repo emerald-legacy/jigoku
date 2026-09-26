@@ -4,15 +4,14 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EventName } from '../Constants.js';
 import Effects from '../effects.js';
-import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
-import type { ActionEvent } from './GameAction.js';
+import { type CardActionProperties, type CardEvent, CardGameAction } from './CardGameAction.js';
 
 export interface PlaceCardUnderneathProperties extends CardActionProperties {
     destination?: BaseCard;
     hideWhenFaceup?: boolean;
 }
 
-export class PlaceCardUnderneathAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlaceCardUnderneathProperties, EventName, C> {
+export class PlaceCardUnderneathAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlaceCardUnderneathProperties, EventName.Unnamed, C> {
     name = 'placeCardUnderneath';
     targetType = [CardType.Character, CardType.Attachment, CardType.Event, CardType.Holding];
     defaultProperties: PlaceCardUnderneathProperties = {
@@ -40,10 +39,12 @@ export class PlaceCardUnderneathAction<C extends AbilityContext = AbilityContext
         return !!(destination && destination.uuid) && super.canAffect(card, context);
     }
 
-    eventHandler(event: ActionEvent<EventName.Unnamed, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: CardEvent<EventName.Unnamed, C>, additionalProperties: Record<string, unknown> = {}): void {
         let context = event.context;
-        let card = event.card as BaseCard;
-        event.cardStateWhenMoved = card.createSnapshot();
+        let card = event.card;
+        if(card.isDrawCard()) {
+            event.cardStateWhenMoved = card.createSnapshot();
+        }
         let properties = this.getProperties(context, additionalProperties);
         if(!properties.destination) {
             return;

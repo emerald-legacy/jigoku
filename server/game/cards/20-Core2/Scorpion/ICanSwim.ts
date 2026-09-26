@@ -6,16 +6,13 @@ export default class ICanSwim extends DrawCard {
     static id = 'i-can-swim';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Discard a dishonored character',
-            condition: (context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid),
-            cannotBeMirrored: true,
-            target: {
+        this.action('Discard a dishonored character')
+            .condition((context) => !!(context.player.opponent && context.player.showBid > context.player.opponent.showBid))
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating() && card.isDishonored,
-                gameAction: AbilityDsl.actions.discardFromPlay()
-            }
-        });
+                cardCondition: (card) => card.isParticipating() && card.isDishonored
+            }, AbilityDsl.actions.discardFromPlay())
+            .cannotBeMirrored();
     }
 }

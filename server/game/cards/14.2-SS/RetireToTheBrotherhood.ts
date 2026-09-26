@@ -12,12 +12,11 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
     static id = 'retire-to-the-brotherhood';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Retire characters with no fate',
-            when: {
+        this.reaction('Retire characters with no fate')
+            .when({
                 onCardRevealed: (event, context) => event.card === context.source
-            },
-            gameAction: AbilityDsl.actions.sequential([
+            })
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.discardFromPlay((context) => ({
                     target: context.player.cardsInPlay
                         .filter((a: DrawCard) => a.getFate() === 0)
@@ -53,7 +52,7 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
                         //Identify who actually entered play
                         let enteredPlay = context.events
                             .filter((a) => a.name === 'onCharacterEntersPlay' && !a.cancelled)
-                            .map((a) => (a as GameEvent<EventName.OnCharacterEntersPlay>).card)
+                            .map((a) => a.card)
                             .filter((a): a is DrawCard => !!a);
                         let myEnter = enteredPlay.filter((a) => a.controller === context.player);
                         let oppEnter = enteredPlay.filter((a) => a.controller === context.player.opponent);
@@ -75,8 +74,7 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
                         target: context.player.opponent ? context.player.opponent : []
                     }))
                 ])
-            ])
-        });
+            ]));
     }
 
     getBrotherhoodCards(context: AbilityContext, player: Player | undefined) {

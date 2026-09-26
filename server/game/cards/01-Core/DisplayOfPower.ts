@@ -3,23 +3,20 @@ import DrawCard from '../../DrawCard.js';
 import * as GameActions from '../../GameActions/GameActions.js';
 import { EventName, AbilityType } from '../../Constants.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
-import type EventWindow from '../../Events/EventWindow.js';
 
 class DisplayOfPower extends DrawCard {
     static id = 'display-of-power';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Cancel opponent\'s ring effect and claim and resolve the ring',
-            when: {
+        this.reaction('Cancel opponent\'s ring effect and claim and resolve the ring')
+            .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player && event.conflict.conflictUnopposed
-            },
-            cannotBeMirrored: true,
-            effect: 'resolve and claim the ring when the ring effect resolves',
-            handler: context => {
+            })
+            .handler(context => {
                 this.game.once(EventName.OnResolveConflictRing + ':' + AbilityType.WouldInterrupt, (event: unknown) => this.onResolveConflictRing(event as GameEvent<EventName.OnResolveConflictRing>, context));
-            }
-        });
+            })
+            .effect('resolve and claim the ring when the ring effect resolves')
+            .cannotBeMirrored();
     }
 
     onResolveConflictRing(event: GameEvent<EventName.OnResolveConflictRing>, context: AbilityContext) {
@@ -32,13 +29,14 @@ class DisplayOfPower extends DrawCard {
             return;
         }
         const ring = conflict.ring;
-        if(!ring) {
+        const window = event.window;
+        if(!ring || !window) {
             return;
         }
-        (event.window as EventWindow).addEvent(GameActions.resolveConflictRing().getEvent(ring, context));
+        window.addEvent(GameActions.resolveConflictRing().getEvent(ring, context));
 
         if(context.player.checkRestrictions('claimRings', context)) {
-            (event.window as EventWindow).addEvent(this.game.getEvent(EventName.OnClaimRing, { player: this.controller, ring:ring, conflict: event.conflict }, () => ring.claimRing(context.player)));
+            window.addEvent(this.game.getEvent(EventName.OnClaimRing, { player: this.controller, ring:ring, conflict: event.conflict }, () => ring.claimRing(context.player)));
         }
         event.cancel();
     }

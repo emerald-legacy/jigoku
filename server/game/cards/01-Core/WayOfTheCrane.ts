@@ -6,15 +6,12 @@ class WayOfTheCrane extends DrawCard {
     static id = 'way-of-the-crane';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Honor a character',
-            target: {
+        this.action('Honor a character')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.isFaction('crane'),
-                gameAction: ability.actions.honor()
-            }
-        });
+                cardCondition: card => card.isFaction('crane')
+            }, ability.actions.honor());
     }
 }
 

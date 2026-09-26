@@ -9,7 +9,7 @@ export interface DrawProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class DrawAction<C extends AbilityContext = AbilityContext> extends PlayerAction<DrawProperties, EventName, C> {
+export class DrawAction<C extends AbilityContext = AbilityContext> extends PlayerAction<DrawProperties, EventName.OnCardsDrawn, C> {
     name = 'draw';
     eventName = EventName.OnCardsDrawn;
 
@@ -34,7 +34,7 @@ export class DrawAction<C extends AbilityContext = AbilityContext> extends Playe
     addPropertiesToEvent(event: ActionEvent<EventName.OnCardsDrawn, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
         let { amount } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        event.amount = amount as number;
+        event.amount = amount ?? 0;
     }
 
     eventHandler(event: ActionEvent<EventName.OnCardsDrawn, C>): void {

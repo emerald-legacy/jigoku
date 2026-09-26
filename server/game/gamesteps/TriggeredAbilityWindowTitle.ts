@@ -1,54 +1,44 @@
-import { AbilityType, EventName } from '../Constants.js';
+import { AbilityType } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
-import type BaseCard from '../BaseCard.js';
+import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
-const EventToTitleFunc: Record<string, (event: Event) => string> = {
-    onCardBowed(event: Event) {
-        return `${(event as GameEvent<EventName.OnCardBowed>).card.name} being bowed`;
+// The payload fields each title reads; the event name guarantees them.
+const EventToTitleFunc: Record<string, (event: AnyEvent) => string> = {
+    onCardBowed(event) {
+        return `${event.card?.name} being bowed`;
     },
-    onCardDishonored(event: Event) {
-        return `${(event as GameEvent<EventName.OnCardDishonored>).card.name} being dishonored`;
+    onCardDishonored(event) {
+        return `${event.card?.name} being dishonored`;
     },
-    onCardHonored(event: Event) {
-        return `${(event as GameEvent<EventName.OnCardHonored>).card.name} being honored`;
+    onCardHonored(event) {
+        return `${event.card?.name} being honored`;
     },
-    onCardLeavesPlay(event: Event) {
-        return `${(event as GameEvent<EventName.OnCardLeavesPlay>).card.name} leaving play`;
+    onCardLeavesPlay(event) {
+        return `${event.card?.name} leaving play`;
     },
-    onCardPlayed(event: Event) {
-        return `${(event as GameEvent<EventName.OnCardPlayed>).card.name} being played`;
+    onCardPlayed(event) {
+        return `${event.card?.name} being played`;
     },
-    onCharacterEntersPlay(event: Event) {
-        return `${(event as GameEvent<EventName.OnCharacterEntersPlay>).card.name} entering play`;
+    onCharacterEntersPlay(event) {
+        return `${event.card?.name} entering play`;
     },
-    onClaimRing(event: Event) {
-        return `to the ${(event as GameEvent<EventName.OnClaimRing>).ring.element} ring being claimed`;
+    onClaimRing(event) {
+        return `to the ${event.ring?.element} ring being claimed`;
     },
-    onInitiateAbilityEffects(event: Event) {
-        return `the effects of ${(event as GameEvent<EventName.OnInitiateAbilityEffects>).card.name}`;
+    onInitiateAbilityEffects(event) {
+        return `the effects of ${event.card?.name}`;
     },
-    onMoveCharactersToConflict() {
-        return 'characters moving to the conflict';
+    onMoveFate(event) {
+        return `Fate being moved from ${event.origin ? event.origin.name : event.card ? event.card.name : 'somewhere'}`;
     },
-    onMoveFate(event: Event) {
-        const moveFate = event as GameEvent<EventName.OnMoveFate> & { card?: BaseCard };
-        return `Fate being moved from ${moveFate.origin ? moveFate.origin.name : moveFate.card ? moveFate.card.name : 'somewhere'}`;
+    onPhaseEnded(event) {
+        return `${event.phase} phase ending`;
     },
-    onPhaseEnded(event: Event) {
-        return `${(event as GameEvent<EventName.OnPhaseEnded>).phase} phase ending`;
+    onPhaseStarted(event) {
+        return `${event.phase} phase starting`;
     },
-    onPhaseStarted(event: Event) {
-        return `${(event as GameEvent<EventName.OnPhaseStarted>).phase} phase starting`;
-    },
-    onRemovedFromChallenge(event: Event) {
-        return `${(event as GameEvent<EventName.OnCardLeavesPlay>).card.name} being removed from the challenge`;
-    },
-    onReturnRing(event: Event) {
-        return `returning the ${(event as GameEvent<EventName.OnReturnRing>).ring?.element} ring`;
-    },
-    onSacrificed(event: Event) {
-        return `${(event as GameEvent<EventName.OnCardLeavesPlay>).card.name} being sacrificed`;
+    onReturnRing(event) {
+        return `returning the ${event.ring?.element} ring`;
     }
 };
 

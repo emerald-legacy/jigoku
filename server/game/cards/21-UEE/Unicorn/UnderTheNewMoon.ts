@@ -1,26 +1,20 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { Duration, EventName } from '../../../Constants.js';
 import type { GameEvent } from '../../../Events/EventPayloads.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 
 export default class UnderTheNewMoon extends DrawCard {
     static id = 'under-the-new-moon';
 
     setupCardAbilities() {
-        this.interrupt({
-            title: 'Force defenders to assign first',
-            when: {
+        this.interrupt('Force defenders to assign first')
+            .when({
                 onConflictOpportunityAvailable: (event, context) => event.player === context.player
-            },
-            cost: AbilityDsl.costs.payHonor(1),
-            effect: 'force {1} to declare defenders before attackers are chosen this conflict',
-            effectArgs: (context) => [context.player.opponent as Player],
-            gameAction: AbilityDsl.actions.menuPrompt((context: TriggeredAbilityContext<this>) => ({
+            })
+            .cost(AbilityDsl.costs.payHonor(1))
+            .gameAction(AbilityDsl.actions.menuPrompt((context) => ({
                 activePromptTitle: 'Choose how many characters will be attacking',
-                choices: this.#getChoices(context),
+                choices: this.getChoices(context.event),
                 gameAction: AbilityDsl.actions.playerLastingEffect({
                     duration: Duration.UntilEndOfConflict
                 }),
@@ -38,13 +32,13 @@ export default class UnderTheNewMoon extends DrawCard {
                         effect: AbilityDsl.effects.defendersChosenFirstDuringConflict(amount)
                     };
                 }
-            }))
-        });
+            })))
+            .effect('force {1} to declare defenders before attackers are chosen this conflict', (context) => [context.player.opponent]);
     }
 
-    #getChoices(context: AbilityContext<this>) {
+    private getChoices(event: GameEvent<EventName.OnConflictOpportunityAvailable>) {
         const min = 1;
-        const max = ((context as TriggeredAbilityContext<this>).event as GameEvent<EventName.OnConflictOpportunityAvailable>).attackerMatrix?.maximumNumberOfAttackers ?? 0;
+        const max = event.attackerMatrix?.maximumNumberOfAttackers ?? 0;
         const array = [];
         for(let i = min; i <= max; i++) {
             array.push(i.toString());

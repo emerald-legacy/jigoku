@@ -1,14 +1,14 @@
+import type { Cost } from '../../costs/Cost.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { AbilityContext } from '../../AbilityContext.js';
 import type { Event } from '../../Events/Event.js';
 
-const oniTyrantCost = function () {
+const oniTyrantCost = function (): Cost<{ oniTyrantCostCreature: DrawCard | undefined }> {
     return {
         canPay: function () {
             return true;
         },
-        resolve: function (context: AbilityContext, result: { cancelled?: boolean }) {
+        resolve: function (context, result: { cancelled?: boolean }) {
             let creatures = context.player.outsideTheGameCards;
             creatures = creatures.filter((card: DrawCard) => (card.printedCost ?? 0) <= 2 && context.game.actions.putIntoConflict().canAffect(card, context));
             context.game.promptWithHandlerMenu(context.player, {
@@ -28,9 +28,9 @@ const oniTyrantCost = function () {
                 ]
             });
         },
-        payEvent: function (context: AbilityContext): Event | Event[] {
+        payEvent: function (context): Event | Event[] {
             if(context.costs.oniTyrantCostCreature) {
-                const oni = context.costs.oniTyrantCostCreature as DrawCard;
+                const oni = context.costs.oniTyrantCostCreature;
                 const copy = new (oni.constructor as typeof DrawCard)(context.player, oni.cardData);
                 context.game.allCards.push(copy);
                 context.costs.oniTyrantCostCreature = copy;
@@ -48,28 +48,23 @@ class OniTyrant extends DrawCard {
     static id = 'oni-tyrant';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Summon a Shadowlands Creature',
-            cost: [
-                AbilityDsl.costs.payHonor(1),
-                oniTyrantCost()
-            ],
-            condition: context => context.source.isParticipating(),
-            gameAction: AbilityDsl.actions.putIntoConflict(context => ({
-                target: (context.costs.oniTyrantCostCreature as DrawCard | undefined) || context.player.outsideTheGameCards[1]
-            })),
-            effect: 'summon a{2} {1} from the depths of the Shadowlands!',
-            effectArgs: context => {
-                const creature = context.costs.oniTyrantCostCreature as DrawCard;
-                var testStr = creature.name;
+        this.action('Summon a Shadowlands Creature')
+            .cost(AbilityDsl.costs.payHonor(1))
+            .cost(oniTyrantCost())
+            .condition(context => context.source.isParticipating())
+            .gameAction(AbilityDsl.actions.putIntoConflict(context => ({
+                target: context.costs.oniTyrantCostCreature || context.player.outsideTheGameCards[1]
+            })))
+            .effect('summon a{2} {1} from the depths of the Shadowlands!', context => {
+                const creature = context.costs.oniTyrantCostCreature;
+                var testStr = creature?.name ?? '';
                 var vowelRegex = '^[aieouAIEOU].*';
                 var matched = testStr.match(vowelRegex);
                 return [
                     creature,
                     matched ? 'n' : ''
                 ];
-            }
-        });
+            });
     }
 }
 

@@ -6,16 +6,13 @@ class ReserveTents extends DrawCard {
     static id = 'reserve-tents';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move a character to the conflict',
-            limit: AbilityDsl.limit.perRound(2),
-            target: {
+        this.action('Move a character to the conflict')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                player: Players.Self,
-                gameAction: AbilityDsl.actions.moveToConflict()
-            }
-        });
+                player: Players.Self
+            }, AbilityDsl.actions.moveToConflict())
+            .limit(AbilityDsl.limit.perRound(2));
     }
 }
 

@@ -5,14 +5,12 @@ class StaunchHida extends DrawCard {
     static id = 'staunch-hida';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Resolve the ring effect',
-            max: ability.limit.perConflict(1),
-            when: {
+        this.reaction('Resolve the ring effect')
+            .when({
                 afterConflict: (event, context) => event.conflict.winner === context.source.controller && context.source.isDefending()
-            },
-            gameAction: ability.actions.resolveConflictRing()
-        });
+            })
+            .gameAction(ability.actions.resolveConflictRing())
+            .max(ability.limit.perConflict(1));
     }
 }
 

@@ -7,14 +7,11 @@ class GoodOmen extends DrawCard {
     static id = 'good-omen';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Add a fate to a character',
-            target: {
+        this.action('Add a fate to a character')
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: card => (card.getCost() ?? 0) > 2,
-                gameAction: ability.actions.placeFate()
-            }
-        });
+                cardCondition: card => (card.getCost() ?? 0) > 2
+            }, ability.actions.placeFate());
     }
 
     canPlay(context: AbilityContext, playType: string): boolean {

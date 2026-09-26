@@ -6,16 +6,13 @@ class KanjoDistrict extends DrawCard {
     static id = 'kanjo-district';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Bow and send home a participating character',
-            cost: ability.costs.discardImperialFavor(),
-            target: {
+        this.action('Bow and send home a participating character')
+            .cost(ability.costs.discardImperialFavor())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating(),
-                gameAction: [ability.actions.bow(), ability.actions.sendHome()]
-            },
-            effect: 'bow and send {0} home'
-        });
+                cardCondition: card => card.isParticipating()
+            }, ability.actions.bow(), ability.actions.sendHome())
+            .effect('bow and send {0} home');
     }
 }
 

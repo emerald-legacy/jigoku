@@ -5,14 +5,12 @@ class MediatorOfHostilities extends DrawCard {
     static id = 'mediator-of-hostilities';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Draw a card',
-            limit: AbilityDsl.limit.perRound(2),
-            when: {
+        this.reaction('Draw a card')
+            .when({
                 onConflictPass: () => true
-            },
-            gameAction: AbilityDsl.actions.draw()
-        });
+            })
+            .gameAction(AbilityDsl.actions.draw())
+            .limit(AbilityDsl.limit.perRound(2));
     }
 }
 

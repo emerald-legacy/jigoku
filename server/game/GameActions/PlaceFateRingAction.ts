@@ -6,13 +6,14 @@ import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
+import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
 export interface PlaceFateRingProperties extends RingActionProperties {
     amount?: number;
     origin?: DrawCard | Player | Ring;
 }
 
-export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> extends RingAction<PlaceFateRingProperties, EventName, C> {
+export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> extends RingAction<PlaceFateRingProperties, EventName.OnMoveFate, C> {
     name = 'placeFate';
     eventName = EventName.OnMoveFate;
     defaultProperties: PlaceFateRingProperties = { amount: 1 };
@@ -56,7 +57,7 @@ export class PlaceFateRingAction<C extends AbilityContext = AbilityContext> exte
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: ActionEvent<EventName.OnMoveFate, C>, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: AnyEvent, ring: Ring, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
         let { amount, origin } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&

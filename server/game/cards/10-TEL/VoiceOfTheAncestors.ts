@@ -20,15 +20,14 @@ class VoiceOfTheAncestors extends DrawCard {
             traits: ['spirit']
         });
 
-        this.action({
-            title: 'Attach a character as a Spirit',
-            target: {
+        this.action('Attach a character as a Spirit')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     context.game.actions.attach({ attachment: DummySpiritAttachment }).canAffect(card, context)
-            },
-            gameAction: AbilityDsl.actions.selectCard({
+            })
+            .gameAction(AbilityDsl.actions.selectCard({
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 cardCondition: card => card.isFaction('lion'),
@@ -49,8 +48,8 @@ class VoiceOfTheAncestors extends DrawCard {
                             AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
                                 match: (card: BaseCard, context?: AbilityContext<this>) => card === context?.source?.parentCharacter,
                                 effect: [
-                                    AbilityDsl.effects.modifyMilitarySkill((card: EffectTarget, context) => (context.source as DrawCard).printedMilitarySkill || 0),
-                                    AbilityDsl.effects.modifyPoliticalSkill((card: EffectTarget, context) => (context.source as DrawCard).printedPoliticalSkill || 0)
+                                    AbilityDsl.effects.modifyMilitarySkill((card: EffectTarget, context) => (context.source.isDrawCard() && context.source.printedMilitarySkill) || 0),
+                                    AbilityDsl.effects.modifyPoliticalSkill((card: EffectTarget, context) => (context.source.isDrawCard() && context.source.printedPoliticalSkill) || 0)
                                 ]
                             })
                         ]
@@ -63,8 +62,7 @@ class VoiceOfTheAncestors extends DrawCard {
                         }
                     }))
                 ])
-            })
-        });
+            }));
     }
 }
 

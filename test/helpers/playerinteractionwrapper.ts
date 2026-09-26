@@ -7,6 +7,7 @@ import type BaseCard from '../../server/game/BaseCard.js';
 import type DrawCard from '../../server/game/DrawCard.js';
 import type { ProvinceCard } from '../../server/game/ProvinceCard.js';
 import type Ring from '../../server/game/Ring.js';
+import type { DeckDTO } from '../../server/gamenode/LobbyProtocol.js';
 
 export type CardLike = BaseCard | string;
 
@@ -399,7 +400,7 @@ class PlayerInteractionWrapper {
         );
     }
 
-    selectDeck(deck: unknown): void {
+    selectDeck(deck: DeckDTO): void {
         this.game.selectDeck(this.player.name, deck);
     }
 

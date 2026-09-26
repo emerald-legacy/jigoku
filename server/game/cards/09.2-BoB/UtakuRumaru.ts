@@ -18,21 +18,18 @@ class UtakuRumaru extends DrawCard {
             effect: AbilityDsl.effects.modifyGlory(-1)
         });
 
-        this.reaction({
-            title: 'Honor a participating character',
-            when: {
+        this.reaction('Honor a participating character')
+            .when({
                 afterConflict: (event, context) => context.source.isParticipating() && event.conflict.winner === context.source.controller
-            },
-            cost: AbilityDsl.costs.discardCard({
+            })
+            .cost(AbilityDsl.costs.discardCard({
                 location: Location.Hand
-            }),
-            target: {
+            }))
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card, context) => card.isParticipating() && card !== context.source,
-                gameAction: AbilityDsl.actions.honor()
-            }
-        });
+                cardCondition: (card, context) => card.isParticipating() && card !== context.source
+            }, AbilityDsl.actions.honor());
     }
 }
 

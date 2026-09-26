@@ -39,7 +39,7 @@ class HifumiCost extends ReduceableFateCost {
         return false;
     }
 
-    protected getReducedCost(context: AbilityContext): number {
+    public getReducedCost(context: AbilityContext): number {
         return this.currentCost(context.player);
     }
 
@@ -48,7 +48,10 @@ class HifumiCost extends ReduceableFateCost {
     }
 
     protected afterPayHook(event: Event): void {
-        const player = (event.context as AbilityContext).player;
+        const player = event.context?.player;
+        if(!player) {
+            return;
+        }
         this.#timesTriggered.set(player, this.currentCost(player) + 1);
     }
 
@@ -70,11 +73,9 @@ export default class IsawaHifumi extends DrawCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register([EventName.OnRoundEnded, EventName.OnCardLeavesPlay]);
 
-        this.action({
-            title: 'Play an event from discard',
-            cost: this.hifumiCost,
-            cannotTargetFirst: true,
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+        this.action('Play an event from discard')
+            .cost(this.hifumiCost)
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an event',
                 cardType: CardType.Event,
                 controller: Players.Self,
@@ -89,11 +90,10 @@ export default class IsawaHifumi extends DrawCard {
                         context.player.moveCard(card, Location.RemovedFromGame);
                     }
                 })
-            })),
-            effect: 'play an event from their discard pile (the next time it is used this round will cost {1} fate from {2} characters)',
-            effectArgs: (context) => [this.hifumiCost.currentCost(context.player), context.player],
-            limit: AbilityDsl.limit.unlimited()
-        });
+            })))
+            .effect('play an event from their discard pile (the next time it is used this round will cost {1} fate from {2} characters)', (context) => [this.hifumiCost.currentCost(context.player), context.player])
+            .limit(AbilityDsl.limit.unlimited())
+            .cannotTargetFirst();
     }
 
     public onRoundEnded() {

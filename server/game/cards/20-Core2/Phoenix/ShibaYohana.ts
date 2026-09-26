@@ -6,19 +6,17 @@ export default class ShibaYohana extends DrawCard {
     static id = 'shiba-yohana';
 
     public setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Prevent this character from leaving play',
-            when: {
+        this.wouldInterrupt('Prevent this character from leaving play')
+            .when({
                 onCardLeavesPlay: (event, context) =>
                     event.card === context.source && event.card.location === Location.PlayArea
-            },
-            effect: 'prevent {1} from leaving play - vengeance and destruction sustains her in a damned existence',
-            effectArgs: (context) => context.event.card ?? '',
-            gameAction: AbilityDsl.actions.cancel((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.cancel((context) => ({
                 target: context.source,
                 replacementGameAction: AbilityDsl.actions.taint()
-            })),
-            then: (context) => ({
+            })))
+            .effect('prevent {1} from leaving play - vengeance and destruction sustains her in a damned existence', (context) => context.event.card ?? '')
+            .then((context) => ({
                 gameAction: AbilityDsl.actions.cardLastingEffect({
                     target: context?.source,
                     duration: Duration.Custom,
@@ -27,17 +25,13 @@ export default class ShibaYohana extends DrawCard {
                     },
                     effect: AbilityDsl.effects.addTrait('spirit')
                 })
-            })
-        });
+            }));
 
-        this.action({
-            title: 'Move a character into the conflict',
-            condition: (context) => context.source.isParticipating(),
-            target: {
+        this.action('Move a character into the conflict')
+            .condition((context) => context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isHonored || card.isDishonored,
-                gameAction: AbilityDsl.actions.moveToConflict()
-            }
-        });
+                cardCondition: (card) => card.isHonored || card.isDishonored
+            }, AbilityDsl.actions.moveToConflict());
     }
 }

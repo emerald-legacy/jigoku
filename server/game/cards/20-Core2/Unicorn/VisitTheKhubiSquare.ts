@@ -2,20 +2,16 @@ import { CardType, Decks, Location, EventName } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Event } from '../../../Events/Event.js';
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 export default class VisitTheKhubiSquare extends ProvinceCard {
     static id = 'visit-the-khubi-square';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Put a character into play',
-            when: {
+        this.reaction('Put a character into play')
+            .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
-            },
-            effect: 'search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play',
-            gameAction: AbilityDsl.actions.sequentialContext((context) => {
+            })
+            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
                 const topFive = context.player.dynastyDeck.slice(0, 5);
                 return {
                     gameActions: [
@@ -35,9 +31,11 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
                         })),
                         AbilityDsl.actions.moveCard((context2) => ({
                             target: topFive.filter((a: DrawCard) => {
-                                const events = context2.events.filter((a: Event) => a.name === 'onDeckSearch' && !a.cancelled) as EventPayload<EventName.OnDeckSearch>[];
-                                if(events.length > 0 && events[0].selectedCards) {
-                                    return !events[0].selectedCards.includes(a);
+                                const deckSearch = context2.events
+                                    .filter((event) => !event.cancelled)
+                                    .find((event) => event.is(EventName.OnDeckSearch));
+                                if(deckSearch && deckSearch.selectedCards) {
+                                    return !deckSearch.selectedCards.includes(a);
                                 }
                                 return true;
                             }),
@@ -46,7 +44,7 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
                         }))
                     ]
                 };
-            })
-        });
+            }))
+            .effect('search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play');
     }
 }

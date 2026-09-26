@@ -5,19 +5,17 @@ import type Player from '../Player.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type { ChoicesInterface } from '../Interfaces.js';
 import type EffectSource from '../EffectSource.js';
+import type { DependentTarget, OwningAbility } from '../BaseAbility.js';
 
 type ChoiceValue = ((context: AbilityContext) => unknown) | GameAction | GameAction[];
 
-interface OwningAbility {
-    targets: { name: string }[];
-}
 
 interface AbilityTargetSelectProperties {
     choices: ChoicesInterface | ((context: AbilityContext) => ChoicesInterface);
     condition?: (context: AbilityContext) => boolean;
     targets?: boolean;
     activePromptTitle?: string;
-    source?: unknown;
+    source?: EffectSource | string;
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
     [key: string]: unknown;
@@ -33,7 +31,7 @@ interface SelectTargetResults {
 class AbilityTargetSelect {
     name: string;
     properties: AbilityTargetSelectProperties;
-    dependentTarget: AbilityTargetSelect | null;
+    dependentTarget: DependentTarget | null;
     dependentCost: { canPay(context: AbilityContext): boolean } | null;
 
     constructor(name: string, properties: AbilityTargetSelectProperties, ability: OwningAbility) {
@@ -44,7 +42,7 @@ class AbilityTargetSelect {
         if(this.properties.dependsOn) {
             let dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
             if(dependsOnTarget) {
-                (dependsOnTarget as AbilityTargetSelect).dependentTarget = this;
+                dependsOnTarget.dependentTarget = this;
             }
         }
     }
@@ -81,7 +79,7 @@ class AbilityTargetSelect {
         if(typeof choice === 'function') {
             return !!choice(contextCopy);
         }
-        return (choice as GameAction).hasLegalTarget(contextCopy);
+        return (Array.isArray(choice) ? choice : [choice]).some((action) => action.hasLegalTarget(contextCopy));
     }
 
     getGameAction(context: AbilityContext): GameAction[] {
@@ -133,6 +131,10 @@ class AbilityTargetSelect {
         if(handlers.length === 1) {
             handlers[0]();
         } else if(handlers.length > 1) {
+            if(!player) {
+                // a solo game has no opponent to choose
+                return;
+            }
             let waitingPromptTitle = '';
             if(context.stage === Stage.PreTarget) {
                 if(context.ability.abilityType === 'action') {
@@ -145,7 +147,7 @@ class AbilityTargetSelect {
                 waitingPromptTitle: waitingPromptTitle,
                 activePromptTitle: promptTitle,
                 context: context,
-                source: (this.properties.source as EffectSource | string | undefined) || context.source,
+                source: this.properties.source || context.source,
                 choices: choices,
                 handlers: handlers
             });
@@ -163,20 +165,20 @@ class AbilityTargetSelect {
         return !!context.selects[this.name] && this.isChoiceLegal(context.selects[this.name].choice, context);
     }
 
-    getChoosingPlayer(context: AbilityContext): Player {
+    getChoosingPlayer(context: AbilityContext): Player | undefined {
         let playerProp = this.properties.player;
         if(typeof playerProp === 'function') {
             playerProp = playerProp(context);
         }
-        return playerProp === Players.Opponent ? (context.player.opponent as Player) : context.player;
+        return playerProp === Players.Opponent ? context.player.opponent : context.player;
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
         if(this.properties.targets) {
             return true;
         }
-        let actions = Object.values(this.getChoices(context)).filter((value) => typeof value !== 'function');
-        return actions.some((action) => (action as GameAction).hasTargetsChosenByInitiatingPlayer(context));
+        let actions = Object.values(this.getChoices(context)).flatMap((value: ChoiceValue) => typeof value === 'function' ? [] : value);
+        return actions.some((action) => action.hasTargetsChosenByInitiatingPlayer(context));
     }
 }
 

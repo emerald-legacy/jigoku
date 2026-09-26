@@ -6,11 +6,9 @@ class AkodoToshiro extends DrawCard {
     static id = 'akodo-toshiro';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Gain +5/+0 and provinces can\'t be broken',
-            condition: context => context.source.isAttacking(),
-            effect: 'gain +5/+0 - provinces cannot be broken during this conflict',
-            gameAction: AbilityDsl.actions.multiple([
+        this.action('Gain +5/+0 and provinces can\'t be broken')
+            .condition(context => context.source.isAttacking())
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.cardLastingEffect(() => ({
                     target: this.game.provinceCards,
                     targetLocation: Location.Provinces,
@@ -32,8 +30,8 @@ class AkodoToshiro extends DrawCard {
                         gameAction: AbilityDsl.actions.discardFromPlay()
                     })
                 }))
-            ])
-        });
+            ]))
+            .effect('gain +5/+0 - provinces cannot be broken during this conflict');
     }
 }
 

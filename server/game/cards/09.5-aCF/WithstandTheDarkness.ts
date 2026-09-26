@@ -10,8 +10,8 @@ export default class WithstandTheDarkness extends DrawCard {
     private currentTargets = new Set<BaseCard>();
 
     setupCardAbilities() {
-        this.reaction({
-            when: {
+        this.reaction('Place a fate on a character')
+            .when({
                 onCardPlayed: (event, context) => {
                     if(event.card.type !== CardType.Event || event.card.controller !== context.player.opponent) {
                         return false;
@@ -23,18 +23,15 @@ export default class WithstandTheDarkness extends DrawCard {
                     );
                     return this.currentTargets.size > 0;
                 }
-            },
-            title: 'Place a fate on a character',
-            target: {
+            })
+            .target('target', {
                 activePromptTitle: 'Choose a character to receive a fate',
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
-                    this.currentTargets.has(card) && this.isValidTargetForWithstand(card, context as TriggeredAbilityContext<DrawCard>),
-                gameAction: AbilityDsl.actions.placeFate()
-            },
-            max: AbilityDsl.limit.perPhase(1)
-        });
+                    this.currentTargets.has(card) && this.isValidTargetForWithstand(card, context)
+            }, AbilityDsl.actions.placeFate())
+            .max(AbilityDsl.limit.perPhase(1));
     }
 
     private isValidTargetForWithstand(card: BaseCard, context: TriggeredAbilityContext) {

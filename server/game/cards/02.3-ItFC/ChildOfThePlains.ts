@@ -7,18 +7,16 @@ class ChildOfThePlains extends DrawCard {
     static id = 'child-of-the-plains';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Get first action',
-            when: {
+        this.reaction('Get first action')
+            .when({
                 onCardRevealed: (event: EventPayload<EventName.OnCardRevealed>, context) =>
                     context.source.isAttacking() && event.card.isConflictProvince() && event.onDeclaration
-            },
-            effect: 'get the first action in this conflict',
-            gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
+            })
+            .gameAction(AbilityDsl.actions.playerLastingEffect(context => ({
                 targetController: context.player,
                 effect: AbilityDsl.effects.gainActionPhasePriority()
-            }))
-        });
+            })))
+            .effect('get the first action in this conflict');
     }
 }
 

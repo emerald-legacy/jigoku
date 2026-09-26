@@ -1,4 +1,5 @@
 import { AllPlayerPrompt } from '../AllPlayerPrompt.js';
+import { Location } from '../../Constants.js';
 import type BaseCard from '../../BaseCard.js';
 import type DrawCard from '../../DrawCard.js';
 import type Game from '../../Game.js';
@@ -84,7 +85,7 @@ class MulliganDynastyPrompt extends AllPlayerPrompt {
                 }
                 for(const card of this.selectedCards[player.name]) {
                     let location = card.location;
-                    player.moveCard(card, 'dynasty deck bottom');
+                    player.moveCard(card, Location.DynastyDeck, { bottom: true });
                     player.replaceDynastyCard(location);
                 }
                 player.shuffleDynastyDeck();

@@ -7,13 +7,14 @@ import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
+import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
 export interface RemoveFateProperties extends CardActionProperties {
     amount?: number;
     recipient?: DrawCard | Player | Ring;
 }
 
-export class RemoveFateAction<C extends AbilityContext = AbilityContext> extends CardGameAction<RemoveFateProperties, EventName, C> {
+export class RemoveFateAction<C extends AbilityContext = AbilityContext> extends CardGameAction<RemoveFateProperties, EventName.OnMoveFate, C> {
     name = 'removeFate';
     eventName = EventName.OnMoveFate;
     targetType = [CardType.Character];
@@ -50,7 +51,7 @@ export class RemoveFateAction<C extends AbilityContext = AbilityContext> extends
         return true;
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, recipient } = this.getProperties(context, additionalProperties);
         event.fate = amount ?? 0;
         event.recipient = recipient;
@@ -62,7 +63,7 @@ export class RemoveFateAction<C extends AbilityContext = AbilityContext> extends
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: ActionEvent<EventName.OnMoveFate, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: AnyEvent, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
         let { amount, recipient } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&

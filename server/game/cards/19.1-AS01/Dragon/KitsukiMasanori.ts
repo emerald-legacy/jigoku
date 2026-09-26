@@ -1,6 +1,5 @@
 import { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Decks, Duration, EventName } from '../../../Constants.js';
-import type { GameEvent } from '../../../Events/EventPayloads.js';
+import { CardType, Decks, Duration } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
@@ -23,11 +22,9 @@ export default class KitsukiMasanori extends DrawCard {
             effect: AbilityDsl.effects.cardCannot({ cannot: 'applyCovert', restricts: 'opponentsCardEffects' })
         });
 
-        this.reaction({
-            title: 'Search for a Title or Technique',
-            when: { onCharacterEntersPlay: (event, context) => event.card === context.source },
-            effect: 'search for a Technique or Title',
-            gameAction: AbilityDsl.actions.sequential([
+        this.reaction('Search for a Title or Technique')
+            .when({ onCharacterEntersPlay: (event, context) => event.card === context.source })
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.chooseAction({
                     activePromptTitle: 'Select where to search',
                     options: {
@@ -62,7 +59,7 @@ export default class KitsukiMasanori extends DrawCard {
 
                                     context.game.addMessage(
                                         '{0} takes {1} and attaches it to {2}',
-                                        (event as GameEvent<EventName.OnDeckSearch>).player,
+                                        event.player,
                                         card,
                                         context.source
                                     );
@@ -90,7 +87,7 @@ export default class KitsukiMasanori extends DrawCard {
                         })
                     };
                 })
-            ])
-        });
+            ]))
+            .effect('search for a Technique or Title');
     }
 }

@@ -59,7 +59,7 @@ export class ConflictPhase extends Phase {
             ) {
                 initiateConflict(props).resolve(this.currentPlayer, this.game.getFrameworkContext(this.currentPlayer));
             } else {
-                var conflict = new Conflict(this.game, this.currentPlayer, this.currentPlayer.opponent as Player);
+                var conflict = new Conflict(this.game, this.currentPlayer, this.currentPlayer.opponent);
                 conflict.passConflict(
                     '{0} passes their conflict opportunity as none of their characters can be declared as an attacker'
                 );
@@ -77,10 +77,8 @@ export class ConflictPhase extends Phase {
     claimImperialFavor() {
         AbilityDsl.actions
             .performGloryCount({
-                gameAction: ((winner: Player | null) =>
-                    winner
-                        ? AbilityDsl.actions.claimImperialFavor({ target: winner })
-                        : (null as unknown as ReturnType<typeof AbilityDsl.actions.claimImperialFavor>)) as never
+                gameAction: (winner: Player | null) =>
+                    winner ? AbilityDsl.actions.claimImperialFavor({ target: winner }) : null
             })
             .resolve(undefined, this.game.getFrameworkContext());
     }

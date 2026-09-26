@@ -1,16 +1,16 @@
 import Effect, { type EffectMatchFn, type EffectProperties } from './Effect.js';
 import { Players } from '../Constants.js';
+import type { EffectName } from '../Constants.js';
 import type EffectSource from '../EffectSource.js';
 import type { SourceWithState } from '../EffectSource.js';
 import type Game from '../Game.js';
-import type { GameObject } from '../GameObject.js';
 import type Player from '../Player.js';
-import type StaticEffect from './StaticEffect.js';
+import type { EffectBase } from './EffectBase.js';
 
-export default class PlayerEffect extends Effect {
-    targetController: string;
+export default class PlayerEffect extends Effect<Player> {
+    targetController: string | Player;
 
-    constructor(game: Game, source: EffectSource, properties: EffectProperties, effect: StaticEffect) {
+    constructor(game: Game, source: EffectSource, properties: EffectProperties<Player>, effect: EffectBase<EffectName, Player>) {
         super(game, source, properties, effect);
         this.targetController = properties.targetController || Players.Self;
         if(typeof this.match !== 'function') {
@@ -18,8 +18,8 @@ export default class PlayerEffect extends Effect {
         }
     }
 
-    isValidTarget(target: GameObject): boolean {
-        if(this.targetController !== Players.Any && this.targetController !== Players.Self && this.targetController !== Players.Opponent && (this.targetController as unknown) !== target) {
+    isValidTarget(target: Player): boolean {
+        if(this.targetController !== Players.Any && this.targetController !== Players.Self && this.targetController !== Players.Opponent && this.targetController !== target) {
             return false;
         }
 
@@ -32,8 +32,7 @@ export default class PlayerEffect extends Effect {
         return true;
     }
 
-    getTargets(): GameObject[] {
-        const matchFn = this.match as EffectMatchFn;
+    getTargets(matchFn: EffectMatchFn<Player>): Player[] {
         return this.game.getPlayers().filter((player: Player) => matchFn(player));
     }
 }

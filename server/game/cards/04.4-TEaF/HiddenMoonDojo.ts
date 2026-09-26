@@ -17,10 +17,9 @@ export default class HiddenMoonDojo extends DrawCard {
             effect: AbilityDsl.effects.gainPlayAction(PlayCharacterAsIfFromHand)
         });
 
-        this.action({
-            title: 'Turn an adjacent card face up',
-            condition: () => this.game.isDuringConflict(),
-            gameAction: AbilityDsl.actions.selectCard({
+        this.action('Turn an adjacent card face up')
+            .condition(() => this.game.isDuringConflict())
+            .gameAction(AbilityDsl.actions.selectCard({
                 location: Location.Provinces,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
@@ -28,8 +27,7 @@ export default class HiddenMoonDojo extends DrawCard {
                 gameAction: AbilityDsl.actions.flipDynasty(),
                 message: '{0} chooses to turn {1} in {2} faceup',
                 messageArgs: (card: DrawCard, player) => [player, card, card.location]
-            }),
-            effect: 'turn a card in an adjacent province faceup'
-        });
+            }))
+            .effect('turn a card in an adjacent province faceup');
     }
 }

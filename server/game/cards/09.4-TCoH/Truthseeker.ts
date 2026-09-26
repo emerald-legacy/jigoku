@@ -1,4 +1,3 @@
-import { TargetMode } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
@@ -7,29 +6,24 @@ class Truthseeker extends DrawCard {
     static id = 'truthseeker';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Look at top 3 cards',
-            when: {
+        this.reaction('Look at top 3 cards')
+            .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
-            },
-            target: {
-                mode: TargetMode.Select,
+            })
+            .selectIf('target', {
                 targets: true,
-                activePromptTitle: 'Choose which deck to look at:',
-                choices: {
-                    [this.getChoiceName('OppDynasty')]: (context: AbilityContext) =>
-                        !!context.player.opponent && context.player.opponent.dynastyDeck.length > 0,
-                    [this.getChoiceName('OppConflict')]: (context: AbilityContext) =>
-                        !!context.player.opponent && context.player.opponent.conflictDeck.length > 0,
-                    [this.getChoiceName('MyDynasty')]: (context: AbilityContext) =>
-                        !!context.player && context.player.dynastyDeck.length > 0,
-                    [this.getChoiceName('MyConflict')]: (context: AbilityContext) =>
-                        !!context.player && context.player.conflictDeck.length > 0
-                }
-            },
-            effect: 'look at the top 3 cards of {1}\'s {2}',
-            effectArgs: (context: AbilityContext) => this.mapChoiceToEffectArgs(context) as [Player, string],
-            handler: (context: AbilityContext) => {
+                activePromptTitle: 'Choose which deck to look at:'
+            }, {
+                [this.getChoiceName('OppDynasty')]: (context) =>
+                    !!context.player.opponent && context.player.opponent.dynastyDeck.length > 0,
+                [this.getChoiceName('OppConflict')]: (context) =>
+                    !!context.player.opponent && context.player.opponent.conflictDeck.length > 0,
+                [this.getChoiceName('MyDynasty')]: (context) =>
+                    !!context.player && context.player.dynastyDeck.length > 0,
+                [this.getChoiceName('MyConflict')]: (context) =>
+                    !!context.player && context.player.conflictDeck.length > 0
+            })
+            .handler((context) => {
                 const cardsToSort = this.mapChoiceToCards(context);
                 this.truthSeekerPrompt(
                     context,
@@ -37,8 +31,8 @@ class Truthseeker extends DrawCard {
                     [],
                     'Select the card you would like to place on top of the deck.'
                 );
-            }
-        });
+            })
+            .effect('look at the top 3 cards of {1}\'s {2}', (context) => this.mapChoiceToEffectArgs(context));
     }
 
     getChoiceName(key: string) {
@@ -61,12 +55,12 @@ class Truthseeker extends DrawCard {
     }
 
     mapChoiceToEffectArgs(context: AbilityContext): (string | Player)[] {
-        const opponent = this.owner.opponent as Player;
+        const opponent = this.owner.opponent;
         switch(context.select) {
             case this.getChoiceName('OppDynasty'):
-                return [opponent, 'dynasty deck'];
+                return opponent ? [opponent, 'dynasty deck'] : [];
             case this.getChoiceName('OppConflict'):
-                return [opponent, 'conflict deck'];
+                return opponent ? [opponent, 'conflict deck'] : [];
             case this.getChoiceName('MyDynasty'):
                 return [this.owner, 'dynasty deck'];
             case this.getChoiceName('MyConflict'):
@@ -77,28 +71,16 @@ class Truthseeker extends DrawCard {
     }
 
     mapChoiceToCards(context: AbilityContext): DrawCard[] {
-        const opponent = this.owner.opponent as Player;
-        switch(context.select) {
-            case this.getChoiceName('OppDynasty'):
-                return opponent.dynastyDeck.slice(0, 3);
-            case this.getChoiceName('OppConflict'):
-                return opponent.conflictDeck.slice(0, 3);
-            case this.getChoiceName('MyDynasty'):
-                return this.owner.dynastyDeck.slice(0, 3);
-            case this.getChoiceName('MyConflict'):
-                return this.owner.conflictDeck.slice(0, 3);
-            default:
-                return [];
-        }
+        return this.mapChoiceToDeck(context).slice(0, 3);
     }
 
     mapChoiceToDeck(context: AbilityContext): DrawCard[] {
-        const opponent = this.owner.opponent as Player;
+        const opponent = this.owner.opponent;
         switch(context.select) {
             case this.getChoiceName('OppDynasty'):
-                return opponent.dynastyDeck;
+                return opponent?.dynastyDeck ?? [];
             case this.getChoiceName('OppConflict'):
-                return opponent.conflictDeck;
+                return opponent?.conflictDeck ?? [];
             case this.getChoiceName('MyDynasty'):
                 return this.owner.dynastyDeck;
             case this.getChoiceName('MyConflict'):

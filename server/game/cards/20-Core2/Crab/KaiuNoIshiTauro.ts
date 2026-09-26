@@ -1,7 +1,6 @@
 import { CardType, Players, Decks, EventName } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type Ring from '../../../Ring.js';
 import type { GameEvent } from '../../../Events/EventPayloads.js';
 import type { Event } from '../../../Events/Event.js';
 
@@ -9,44 +8,40 @@ export default class KaiuNoIshiTauro extends DrawCard {
     static id = 'kaiu-no-ishi-tauro';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Return rings to fetch an attachment',
-            cost: AbilityDsl.costs.returnRings(),
-            target: {
+        this.action('Return rings to fetch an attachment')
+            .cost(AbilityDsl.costs.returnRings())
+            .target('target', {
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.deckSearch(context => ({
-                    activePromptTitle: 'Select an attachment',
-                    deck: Decks.ConflictDeck,
-                    cardCondition: (card) => card.type === CardType.Attachment &&
+                controller: Players.Self
+            }, AbilityDsl.actions.deckSearch(context => ({
+                activePromptTitle: 'Select an attachment',
+                deck: Decks.ConflictDeck,
+                cardCondition: (card) => card.type === CardType.Attachment &&
                         (card.hasTrait('weapon') || card.hasTrait('armor') || card.hasTrait('item')) &&
                         !!context.target && context.game.actions.attach({ attachment: card }).canAffect(context.target, context) &&
-                        card.costLessThan(context.costs.returnRing ? (context.costs.returnRing as Ring[]).length + 1 : 1),
-                    shuffle: true,
-                    reveal: true,
-                    selectedCardsHandler: (context, event: Event, cards) => {
-                        const card = cards[0];
-                        if(!card) {
-                            context.game.addMessage('{0} takes nothing', context.player);
-                            return;
-                        }
-
-                        context.game.addMessage(
-                            '{0} takes {1} and attaches it to {2}',
-                            (event as GameEvent<EventName.OnDeckSearch>).player,
-                            card,
-                            context.target
-                        );
-                        context.game.queueSimpleStep(() =>
-                            AbilityDsl.actions
-                                .attach({ target: context.target, attachment: card })
-                                .resolve(undefined, context)
-                        );
+                        card.costLessThan(context.costs.returnRing ? context.costs.returnRing.length + 1 : 1),
+                shuffle: true,
+                reveal: true,
+                selectedCardsHandler: (context, event: Event, cards) => {
+                    const card = cards[0];
+                    if(!card) {
+                        context.game.addMessage('{0} takes nothing', context.player);
+                        return;
                     }
-                }))
-            },
-            effect: 'search their deck for an attachment costing {1} or less and attach it to {0}',
-            effectArgs: (context) => (context.costs.returnRing as Ring[]).length
-        });
+
+                    context.game.addMessage(
+                        '{0} takes {1} and attaches it to {2}',
+                        (event as GameEvent<EventName.OnDeckSearch>).player,
+                        card,
+                        context.target
+                    );
+                    context.game.queueSimpleStep(() =>
+                        AbilityDsl.actions
+                            .attach({ target: context.target, attachment: card })
+                            .resolve(undefined, context)
+                    );
+                }
+            })))
+            .effect('search their deck for an attachment costing {1} or less and attach it to {0}', (context) => (context.costs.returnRing ?? []).length);
     }
 }

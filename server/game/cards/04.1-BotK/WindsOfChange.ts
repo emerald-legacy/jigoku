@@ -5,14 +5,12 @@ class WindsOfChange extends DrawCard {
     static id = 'winds-of-change';
 
     setupCardAbilities() {
-        this.action({
-            condition: () => this.game.rings.air.isClaimed(),
-            title: 'Return the air ring to the unclaimed pool',
-            effect: 'return the air ring to the unclaimed pool',
-            gameAction: AbilityDsl.actions.returnRing(context => ({
+        this.action('Return the air ring to the unclaimed pool')
+            .condition(() => this.game.rings.air.isClaimed())
+            .gameAction(AbilityDsl.actions.returnRing(context => ({
                 target: context.game.rings.air
-            }))
-        });
+            })))
+            .effect('return the air ring to the unclaimed pool');
     }
 }
 

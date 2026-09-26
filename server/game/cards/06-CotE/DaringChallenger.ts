@@ -13,15 +13,13 @@ class DaringChallenger extends DrawCard {
             effect: AbilityDsl.effects.modifyMilitarySkill(1)
         });
 
-        this.action({
-            title: 'Initiate a Military duel',
-            initiateDuel: {
+        this.action('Initiate a Military duel')
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 gameAction: (duel: Duel) => AbilityDsl.actions.placeFate({
                     target: duel.winner
                 })
-            }
-        });
+            }));
     }
 }
 

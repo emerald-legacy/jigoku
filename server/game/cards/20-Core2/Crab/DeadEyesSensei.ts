@@ -6,21 +6,18 @@ export default class DeadEyesSensei extends DrawCard {
     static id = 'dead-eyes-sensei';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Ready a character and give them Berserker',
-            target: {
+        this.action('Ready a character and give them Berserker')
+            .target('target', {
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.ready(),
-                    AbilityDsl.actions.removeFate(),
-                    AbilityDsl.actions.cardLastingEffect({
-                        duration: Duration.UntilEndOfPhase,
-                        effect: AbilityDsl.effects.addTrait('berserker')
-                    })
-                ])
-            },
-            effect: 'ready and remove a fate from {0}, giving them the Berserker trait'
-        });
+                controller: Players.Self
+            }, AbilityDsl.actions.multiple([
+                AbilityDsl.actions.ready(),
+                AbilityDsl.actions.removeFate(),
+                AbilityDsl.actions.cardLastingEffect({
+                    duration: Duration.UntilEndOfPhase,
+                    effect: AbilityDsl.effects.addTrait('berserker')
+                })
+            ]))
+            .effect('ready and remove a fate from {0}, giving them the Berserker trait');
     }
 }

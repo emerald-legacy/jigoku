@@ -1,6 +1,6 @@
 import ExactlyXCardSelector from './CardSelectors/ExactlyXCardSelector.js';
 import ExactlyVariableXCardSelector from './CardSelectors/ExactlyVariableXCardSelector.js';
-import MaxStatCardSelector, { type MaxStatCardSelectorProperties } from './CardSelectors/MaxStatCardSelector.js';
+import MaxStatCardSelector from './CardSelectors/MaxStatCardSelector.js';
 import SingleCardSelector from './CardSelectors/SingleCardSelector.js';
 import UnlimitedCardSelector from './CardSelectors/UnlimitedCardSelector.js';
 import UpToXCardSelector from './CardSelectors/UpToXCardSelector.js';
@@ -36,7 +36,13 @@ const ModeToSelector: Record<string, (p: CardSelectorProperties) => BaseSelector
     autoSingle: (p) => new SingleCardSelector(p),
     exactly: (p) => new ExactlyXCardSelector(p.numCards ?? 1, p),
     exactlyVariable: (p) => new ExactlyVariableXCardSelector(p.numCardsFunc ?? (() => 1), p),
-    maxStat: (p) => new MaxStatCardSelector(p as MaxStatCardSelectorProperties),
+    maxStat: (p) => {
+        const { cardStat, maxStat } = p;
+        if(!cardStat || !maxStat) {
+            throw new Error('A maxStat card selector needs cardStat and maxStat');
+        }
+        return new MaxStatCardSelector({ ...p, cardStat, maxStat, numCards: p.numCards ?? 1 });
+    },
     single: (p) => new SingleCardSelector(p),
     token: (p) => new SingleCardSelector(p),
     elementSymbol: (p) => new SingleCardSelector(p),

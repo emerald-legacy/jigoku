@@ -1,8 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
 import { AbilityType, CardType, EventName, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { TriggeredAbilityProps } from '../../../Interfaces.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class ShibasOath extends DrawCard {
@@ -14,25 +12,22 @@ export default class ShibasOath extends DrawCard {
             cardCondition: (card) => card.hasTrait('bushi')
         });
 
-        this.reaction({
-            title: 'Honor attached character',
-            when: {
+        this.reaction('Honor attached character')
+            .when({
                 onCardAttached: (event: EventPayload<EventName.OnCardAttached>, context) =>
                     event.card === context.source && event.originalLocation !== Location.PlayArea
-            },
-            gameAction: AbilityDsl.actions.honor((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.honor((context) => ({
                 target: context.source.parentCharacter ?? []
-            })),
-            effect: 'honor {1}',
-            effectArgs: (context) => context.source.parentCharacter
-        });
+            })))
+            .effect('honor {1}', (context) => context.source.parentCharacter);
 
         this.whileAttached({
             effect: AbilityDsl.effects.gainAbility(AbilityType.WouldInterrupt, {
                 title: 'Cancel an ability',
                 when: {
                     onInitiateAbilityEffects: (event, context) =>
-                        (event.cardTargets as Array<BaseCard>).some(
+                        event.cardTargets.some(
                             (card) =>
                                 // In play
                                 card.location === Location.PlayArea &&
@@ -54,7 +49,7 @@ export default class ShibasOath extends DrawCard {
                 ]),
                 effect: 'cancel the effects of {1} and return {2} to their hand',
                 effectArgs: (context) => [context.event.card, this]
-            } as TriggeredAbilityProps)
+            })
         });
     }
 }

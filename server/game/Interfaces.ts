@@ -8,6 +8,7 @@ import type { AbilityLimit } from './AbilityLimit.js';
 import type { GameObject } from './GameObject.js';
 import type Ring from './Ring.js';
 import type BaseCard from './BaseCard.js';
+import type { Faction } from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type EffectSource from './EffectSource.js';
@@ -33,27 +34,27 @@ export interface ChoicesInterface {
     [propName: string]: ((context: AbilityContext) => unknown) | GameAction | GameAction[];
 }
 
-interface TargetSelect extends BaseTarget {
+export interface TargetSelect extends BaseTarget {
     mode: TargetMode.Select;
     choices: (ChoicesInterface | Record<string, never>) | ((context: AbilityContext) => ChoicesInterface | Record<string, never>);
     condition?: (context: AbilityContext) => boolean;
     targets?: boolean;
 }
 
-interface TargetRing extends BaseTarget {
+export interface TargetRing extends BaseTarget {
     mode: TargetMode.Ring;
     optional?: boolean;
     ringCondition: (ring: Ring, context?: AbilityContext) => boolean;
 }
 
-interface TargetAbility extends BaseTarget {
+export interface TargetAbility extends BaseTarget {
     mode: TargetMode.Ability;
     cardType?: CardType | CardType[];
     cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
     abilityCondition?: (ability: CardAbility) => boolean;
 }
 
-interface TargetToken extends BaseTarget {
+export interface TargetToken extends BaseTarget {
     mode: TargetMode.Token;
     optional?: boolean;
     location?: Location | Location[];
@@ -63,7 +64,7 @@ interface TargetToken extends BaseTarget {
     tokenCondition?: (token: StatusToken, context?: AbilityContext) => boolean;
 }
 
-interface TargetElementSymbol extends BaseTarget {
+export interface TargetElementSymbol extends BaseTarget {
     mode: TargetMode.ElementSymbol;
     location?: Location | Location[];
     cardType?: CardType | CardType[];
@@ -75,25 +76,25 @@ interface BaseTargetCard extends BaseTarget {
     optional?: boolean;
 }
 
-interface TargetCardExactlyUpTo extends BaseTargetCard {
+export interface TargetCardExactlyUpTo extends BaseTargetCard {
     mode: TargetMode.Exactly | TargetMode.UpTo;
     numCards: number;
     sameDiscardPile?: boolean;
 }
 
-interface TargetCardExactlyUpToVariable extends BaseTargetCard {
+export interface TargetCardExactlyUpToVariable extends BaseTargetCard {
     mode: TargetMode.ExactlyVariable | TargetMode.UpToVariable;
     numCardsFunc: (context: AbilityContext) => number;
 }
 
-interface TargetCardMaxStat extends BaseTargetCard {
+export interface TargetCardMaxStat extends BaseTargetCard {
     mode: TargetMode.MaxStat;
     numCards: number;
     cardStat: (card: DrawCard) => number;
     maxStat: () => number;
 }
 
-interface TargetCardSingleUnlimited extends BaseTargetCard {
+export interface TargetCardSingleUnlimited extends BaseTargetCard {
     mode?: TargetMode.Single | TargetMode.Unlimited | TargetMode.AutoSingle;
 }
 
@@ -106,15 +107,15 @@ type TargetCard =
     | TargetToken
     | TargetElementSymbol;
 
-interface SubTarget {
+export interface SubTarget {
     dependsOn?: string;
 }
 
-interface ActionCardTarget {
+export interface ActionCardTarget {
     cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
 }
 
-interface ActionRingTarget {
+export interface ActionRingTarget {
     ringCondition?: (ring: Ring, context?: AbilityContext) => boolean;
 }
 
@@ -128,8 +129,8 @@ export interface InitiateDuel extends DuelProperties {
     opponentChoosesDuelTarget?: boolean;
     opponentChoosesChallenger?: boolean;
     requiresConflict?: boolean;
-    challengerCondition?: (card: DrawCard, context: TriggeredAbilityContext) => boolean;
-    targetCondition?: (card: DrawCard, context: TriggeredAbilityContext) => boolean;
+    challengerCondition?: (card: DrawCard, context: AbilityContext) => boolean;
+    targetCondition?: (card: DrawCard, context: AbilityContext) => boolean;
 }
 
 export type EffectArg =
@@ -176,6 +177,8 @@ export interface ActionProps<Source = BaseCard, Target extends BaseCard = BaseCa
     anyPlayer?: boolean;
     conflictProvinceCondition?: (province: ProvinceCard, context: AbilityContext<Source, Target>) => boolean;
     canTriggerOutsideConflict?: boolean;
+    /** Its choices are not targets, so cards reacting to targeting ignore them. */
+    doesNotTarget?: boolean;
 }
 
 export interface ConflictActionProps<Source = BaseCard, Target extends BaseCard = BaseCard> extends ActionProps<Source, Target> {
@@ -235,6 +238,8 @@ export interface PersistentEffectProps<Source = BaseCard, MatchTarget extends Ga
     targetLocation?: Location | (string & {});
     effect: EffectFactory | EffectFactory[];
     createCopies?: boolean;
+    /** A keyword's effect (e.g. dire), which survives losing all non-keyword abilities. */
+    isKeywordEffect?: boolean;
 }
 
 export type traitLimit = {
@@ -246,7 +251,7 @@ export interface AttachmentConditionProps {
     myControl?: boolean;
     opponentControlOnly?: boolean;
     unique?: boolean;
-    faction?: string | string[];
+    faction?: Faction | Faction[];
     trait?: string | string[];
     limitTrait?: traitLimit | traitLimit[];
     cardCondition?: (card: DrawCard) => boolean;

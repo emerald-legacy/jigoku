@@ -26,42 +26,38 @@ export default class TogashiTsurumi extends DrawCard {
             ]
         });
 
-        this.action({
-            title: 'Place a card underneath self',
-            effect: 'place a card from their hand beneath {1} and draw a card',
-            effectArgs: (context) => [context.source],
-            target: {
+        this.action('Place a card underneath self')
+            .target('target', {
                 activePromptTitle: 'Choose a card',
                 location: Location.Hand,
                 controller: Players.Self,
-                cardType: [CardType.Event, CardType.Attachment, CardType.Character],
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.draw((context) => ({
-                        target: context.player,
-                        amount: 1
-                    })),
-                    AbilityDsl.actions.handler({
-                        handler: (context) => {
-                            const card = context.target;
-                            if(!(card instanceof DrawCard)) {
-                                return;
-                            }
-                            context.player.moveCard(card, this.uuid);
-                            card.controller = context.source.controller;
-                            card.facedown = false;
-                            card.lastingEffect(() => ({
-                                until: {
-                                    onCardMoved: (event: EventPayload<EventName.OnCardMoved>) =>
-                                        event.card === card && event.originalLocation === this.uuid
-                                },
-                                match: card,
-                                effect: [AbilityDsl.effects.hideWhenFaceUp()]
-                            }));
+                cardType: [CardType.Event, CardType.Attachment, CardType.Character]
+            }, AbilityDsl.actions.multiple([
+                AbilityDsl.actions.draw((context) => ({
+                    target: context.player,
+                    amount: 1
+                })),
+                AbilityDsl.actions.handler({
+                    handler: (context) => {
+                        const card = context.target;
+                        if(!(card instanceof DrawCard)) {
+                            return;
                         }
-                    })
-                ])
-            }
-        });
+                        context.player.moveCard(card, this.uuid);
+                        card.controller = context.source.controller;
+                        card.facedown = false;
+                        card.lastingEffect(() => ({
+                            until: {
+                                onCardMoved: (event: EventPayload<EventName.OnCardMoved>) =>
+                                    event.card === card && event.originalLocation === this.uuid
+                            },
+                            match: card,
+                            effect: [AbilityDsl.effects.hideWhenFaceUp()]
+                        }));
+                    }
+                })
+            ]))
+            .effect('place a card from their hand beneath {1} and draw a card', (context) => [context.source]);
     }
 
     private getSkillBonus() {

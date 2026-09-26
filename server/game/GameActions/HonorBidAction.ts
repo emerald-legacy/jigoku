@@ -94,7 +94,10 @@ export class HonorBidAction<C extends AbilityContext = AbilityContext> extends P
                 })
             );
         } else {
-            const player = (event.players === Players.Self ? context.player : context.player.opponent) as Player;
+            const player = event.players === Players.Self ? context.player : context.player.opponent;
+            if(!player) {
+                return;
+            }
 
             context.game.promptWithHandlerMenu(player, {
                 activePromptTitle: 'Choose a value to set your honor dial at',

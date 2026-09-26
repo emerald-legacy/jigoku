@@ -6,21 +6,20 @@ class DaidojiHarrier extends DrawCard {
     static id = 'daidoji-harrier';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Discard an opponent\'s card',
-            when: {
+        this.reaction('Discard an opponent\'s card')
+            .when({
                 afterConflict: (event, context) => context.source.isParticipating() &&
                                                     event.conflict.winner === context.source.controller &&
                                                     context.player.opponent && event.conflict.conflictType === 'military'
-            },
-            target: {
+            })
+            .targetCards('target', {
                 activePromptTitle: 'Choose two cards to reveal',
                 player: Players.Opponent,
                 numCards: 2,
                 mode: TargetMode.Exactly,
                 location: Location.Hand
-            },
-            gameAction: AbilityDsl.actions.multiple([
+            })
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.lookAt(context => ({
                     target: context.target
                 })),
@@ -30,8 +29,7 @@ class DaidojiHarrier extends DrawCard {
                     message: '{0} chooses {1} to be discarded',
                     messageArgs: (card, player) => [player, card]
                 }))
-            ])
-        });
+            ]));
     }
 }
 

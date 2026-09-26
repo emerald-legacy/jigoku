@@ -6,7 +6,7 @@ import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
 export type ReturnRingToPlayProperties = RingActionProperties;
 
-export class ReturnRingToPlayAction<C extends AbilityContext = AbilityContext> extends RingAction<ReturnRingToPlayProperties, EventName, C> {
+export class ReturnRingToPlayAction<C extends AbilityContext = AbilityContext> extends RingAction<ReturnRingToPlayProperties, EventName.OnReturnRingToPlay, C> {
     name = 'returnRingToPlay';
     eventName = EventName.OnReturnRingToPlay;
     effect = 'return the {0} to play';

@@ -8,19 +8,17 @@ class WanderingMediator extends DrawCard {
     static id = 'wandering-mediator';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move in/out the conflict',
-            condition: context => context.game.isDuringConflict() && (context.game.currentConflict?.getConflictProvinces().some((a) => a.isElement(this.getCurrentElementSymbol(elementKey))) ?? false),
-            gameAction: AbilityDsl.actions.conditional({
-                condition: context => (context.source as DrawCard).isParticipating(),
+        this.action('Move in/out the conflict')
+            .condition(context => context.game.isDuringConflict() && (context.game.currentConflict?.getConflictProvinces().some((a) => a.isElement(this.getCurrentElementSymbol(elementKey))) ?? false))
+            .gameAction(AbilityDsl.actions.conditional({
+                condition: context => context.source.isDrawCard() && context.source.isParticipating(),
                 trueGameAction: AbilityDsl.actions.sendHome(context => ({
                     target: context.source
                 })),
                 falseGameAction: AbilityDsl.actions.moveToConflict(context => ({
                     target: context.source
                 }))
-            })
-        });
+            }));
     }
 
     getPrintedElementSymbols() {

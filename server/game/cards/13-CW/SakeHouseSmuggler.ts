@@ -6,11 +6,8 @@ class SakeHouseSmuggler extends DrawCard {
     static id = 'sake-house-smuggler';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Reduce cost of next non-event card by 1',
-            phase: Phases.Conflict,
-            effect: 'reduce the cost of each player\'s next non-event card by 1',
-            gameAction: AbilityDsl.actions.multiple([
+        this.action('Reduce cost of next non-event card by 1')
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.playerLastingEffect(context => ({
                     targetController: context.player,
                     duration: Duration.UntilEndOfPhase,
@@ -21,8 +18,9 @@ class SakeHouseSmuggler extends DrawCard {
                     targetController: context.player.opponent,
                     effect: AbilityDsl.effects.reduceNextPlayedCardCost(1, (card: DrawCard) => card.type !== CardType.Event)
                 }))
-            ])
-        });
+            ]))
+            .effect('reduce the cost of each player\'s next non-event card by 1')
+            .phase(Phases.Conflict);
     }
 }
 

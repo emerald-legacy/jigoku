@@ -1,4 +1,4 @@
-import { AbilityContext, type ResolvedAbilityContext } from '../../../AbilityContext.js';
+import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
 import type { Conflict } from '../../../Conflict.js';
@@ -22,39 +22,35 @@ export default class SongOfTheEmptyCity extends DrawCard {
         }]);
         this.eventRegistrar.register([EventName.OnRoundEnded]);
 
-        this.action({
-            title: 'Move holding to another province',
-            target: {
+        this.action('Move holding to another province')
+            .target('target', {
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     card.location !== context.source.location && card.location !== Location.StrongholdProvince
-            },
-            gameAction: AbilityDsl.actions.moveCard((context: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
+            })
+            .gameAction(AbilityDsl.actions.moveCard((context) => ({
                 target: context.source,
                 destination: context.target.location
-            })),
-            then: (context: AbilityContext) => ({
-                thenCondition: () => !!context && this.otherHoldingsInSameProvince(context as AbilityContext<this>).length > 0,
+            })))
+            .then((context) => ({
+                thenCondition: () => !!context && this.otherHoldingsInSameProvince(context).length > 0,
                 gameAction: AbilityDsl.actions.discardCard(() => ({
-                    target: context ? this.otherHoldingsInSameProvince(context as AbilityContext<this>) : []
+                    target: context ? this.otherHoldingsInSameProvince(context) : []
                 })),
                 message: '{1} discards the other holdings in the province'
-            })
-        });
+            }));
 
-        this.reaction({
-            title: 'Gain honor',
-            when: {
+        this.reaction('Gain honor')
+            .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.player.getProvinceCardInProvince(context.source.location)
-            },
-            gameAction: AbilityDsl.actions.gainHonor(context => ({
+            })
+            .gameAction(AbilityDsl.actions.gainHonor(context => ({
                 target: context.player,
                 amount: this.getHonorGain(context)
-            })),
-            limit: AbilityDsl.limit.unlimitedPerConflict()
-        });
+            })))
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 
     public onRoundEnded() {
@@ -109,7 +105,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
     }
 
     private otherHoldingsInSameProvince(context: AbilityContext<this>): BaseCard[] {
-        return (context.game.allCards).filter(
+        return context.game.allCards.filter(
             (card) =>
                 card.location === context.source.location &&
                 card.controller === context.source.controller &&

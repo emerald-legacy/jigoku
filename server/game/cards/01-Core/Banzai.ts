@@ -8,19 +8,15 @@ class Banzai extends DrawCard {
     static id = 'banzai';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Increase a character\'s military skill',
-
-            max: AbilityDsl.limit.perConflict(1),
-            target: {
+        this.action('Increase a character\'s military skill')
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating(),
-                gameAction: ability.actions.cardLastingEffect(() => ({
-                    effect: AbilityDsl.effects.modifyMilitarySkill(2)
-                }))
-            },
-            effect: 'grant 2 military skill to {0}',
-            then: context => {
+                cardCondition: card => card.isParticipating()
+            }, ability.actions.cardLastingEffect(() => ({
+                effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            })))
+            .effect('grant 2 military skill to {0}')
+            .then(context => {
                 const ctx = context;
                 if(ctx.subResolution) {
                     return {
@@ -54,8 +50,8 @@ class Banzai extends DrawCard {
                         })
                     } : undefined
                 };
-            }
-        });
+            })
+            .max(AbilityDsl.limit.perConflict(1));
     }
 }
 

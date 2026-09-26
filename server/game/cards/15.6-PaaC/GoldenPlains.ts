@@ -16,16 +16,13 @@ export default class GoldenPlains extends ProvinceCard {
             condition: (context: AbilityContext) => context.player.stronghold?.name === 'Golden Plains Outpost'
         });
 
-        this.reaction({
-            title: 'Move the conflict',
-            when: {
+        this.reaction('Move the conflict')
+            .when({
                 onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) => event.conflict.declaredProvince === context.source
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Province,
-                location: Location.Provinces,
-                gameAction: AbilityDsl.actions.moveConflict()
-            }
-        });
+                location: Location.Provinces
+            }, AbilityDsl.actions.moveConflict());
     }
 }

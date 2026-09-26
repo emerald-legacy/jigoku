@@ -8,15 +8,12 @@ class StudentOfTheTao extends DrawCard {
     static id = 'student-of-the-tao';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move in/out the conflict',
-            condition: context => context.game.isDuringConflict() && (context.game.currentConflict?.getConflictProvinces().some((a) => a.isElement(this.getCurrentElementSymbol(elementKey))) ?? false),
-            target: {
+        this.action('Move in/out the conflict')
+            .condition(context => context.game.isDuringConflict() && (context.game.currentConflict?.getConflictProvinces().some((a) => a.isElement(this.getCurrentElementSymbol(elementKey))) ?? false))
+            .target('target', {
                 controller: Players.Opponent,
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.sendHome()
-            }
-        });
+                cardType: CardType.Character
+            }, AbilityDsl.actions.sendHome());
     }
 
     getPrintedElementSymbols() {

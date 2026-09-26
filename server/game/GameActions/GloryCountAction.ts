@@ -5,10 +5,10 @@ import { GameAction, GameActionProperties, type ActionEvent } from './GameAction
 
 import type { Event } from '../Events/Event.js';
 export interface GloryCountProperties extends GameActionProperties {
-    gameAction: ((gloryCountWinner: Player | null, context: AbilityContext) => GameAction) | GameAction;
+    gameAction: ((gloryCountWinner: Player | null, context: AbilityContext) => GameAction | null) | GameAction;
 }
 
-export class GloryCountAction<C extends AbilityContext = AbilityContext> extends GameAction<GloryCountProperties, EventName, C> {
+export class GloryCountAction<C extends AbilityContext = AbilityContext> extends GameAction<GloryCountProperties, EventName.OnGloryCount, C> {
     name = 'gloryCount';
     eventName = EventName.OnGloryCount;
 
@@ -21,8 +21,8 @@ export class GloryCountAction<C extends AbilityContext = AbilityContext> extends
     }
 
     eventHandler(event: ActionEvent<EventName.OnGloryCount, C>, additionalProperties: Record<string, unknown> = {}): void {
-        let game = (event.context).game;
-        let properties = this.getProperties((event.context), additionalProperties);
+        let game = event.context.game;
+        let properties = this.getProperties(event.context, additionalProperties);
 
         let gloryTotals = game.getPlayersInFirstPlayerOrder().map((player: Player) => {
             return player.getGloryCount();
@@ -43,10 +43,10 @@ export class GloryCountAction<C extends AbilityContext = AbilityContext> extends
 
         let gameAction =
             typeof properties.gameAction === 'function'
-                ? properties.gameAction(winner, (event.context))
+                ? properties.gameAction(winner, event.context)
                 : properties.gameAction;
-        if(gameAction && gameAction.hasLegalTarget((event.context)) && winner) {
-            gameAction.resolve(undefined, (event.context));
+        if(gameAction && gameAction.hasLegalTarget(event.context) && winner) {
+            gameAction.resolve(undefined, event.context);
         }
     }
 }

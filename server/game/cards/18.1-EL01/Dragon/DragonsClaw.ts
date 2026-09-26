@@ -1,7 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { AbilityType, CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { ActionProps } from '../../../Interfaces.js';
 
 export default class DragonsClaw extends DrawCard {
     static id = 'dragon-s-claw';
@@ -19,7 +18,7 @@ export default class DragonsClaw extends DrawCard {
                         card.isParticipating() && card.getMilitarySkill() < context.source.getMilitarySkill(),
                     gameAction: AbilityDsl.actions.multiple([AbilityDsl.actions.bow(), AbilityDsl.actions.sendHome()])
                 }
-            } as ActionProps<DrawCard>)
+            })
         });
     }
 }

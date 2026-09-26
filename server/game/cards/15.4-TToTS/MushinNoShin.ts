@@ -7,9 +7,8 @@ class MushinNoShin extends DrawCard {
     static id = 'mushin-no-shin';
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Cancel an ability',
-            when: {
+        this.wouldInterrupt('Cancel an ability')
+            .when({
                 onInitiateAbilityEffects: (event: EventPayload<EventName.OnInitiateAbilityEffects>, context) =>
                     event.context.ability.isTriggeredAbility() &&
                     (event.cardTargets ?? []).some(
@@ -17,11 +16,10 @@ class MushinNoShin extends DrawCard {
                             card.type === CardType.Character &&
                             card.location === Location.PlayArea &&
                             card.controller === context.player &&
-                            (card as DrawCard).attachments.length >= 2
+                            card.attachments.length >= 2
                     )
-            },
-            gameAction: AbilityDsl.actions.cancel()
-        });
+            })
+            .gameAction(AbilityDsl.actions.cancel());
     }
 }
 

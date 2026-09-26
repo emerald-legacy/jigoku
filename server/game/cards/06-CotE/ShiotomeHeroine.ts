@@ -8,15 +8,13 @@ class ShiotomeHeroine extends DrawCard {
     static id = 'shiotome-heroine';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Ready this character',
-            when: {
+        this.reaction('Ready this character')
+            .when({
                 onModifyHonor: (event: EventPayload<EventName.OnModifyHonor>, context: TriggeredAbilityContext) =>
                     (event.amount ?? 0) > 0 && context.player.opponent &&
                     event.player === context.player.opponent && event.context?.stage === Stage.Effect
-            },
-            gameAction: AbilityDsl.actions.ready()
-        });
+            })
+            .gameAction(AbilityDsl.actions.ready());
     }
 }
 

@@ -8,9 +8,8 @@ export default class RecklessAssault extends DrawCard {
     static id = 'reckless-assault';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Force defenders',
-            when: {
+        this.reaction('Force defenders')
+            .when({
                 onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) =>
                     !!context.game.currentConflict &&
                     context.game.currentConflict.getNumberOfParticipantsFor(context.player) === 1 &&
@@ -18,15 +17,13 @@ export default class RecklessAssault extends DrawCard {
                         participant => participant.hasTrait('berserker') && participant.controller === context.player
                     ).length === 1 &&
                     context.player === context.game.currentConflict.attackingPlayer
-            },
-            effect: 'prevent characters with less than 3{1} from defending (this affects {2})',
-            effectArgs: (context) => ['military', this.getCharacters(context)],
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: this.getCharacters(context),
                 duration: Duration.UntilEndOfConflict,
                 effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()
-            }))
-        });
+            })))
+            .effect('prevent characters with less than 3{1} from defending (this affects {2})', (context) => ['military', this.getCharacters(context)]);
     }
 
     getCharacters(context: AbilityContext) {

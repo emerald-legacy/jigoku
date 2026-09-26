@@ -6,13 +6,11 @@ class ShinjoAmbusher extends DrawCard {
     static id = 'shinjo-ambusher';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Disable a province',
-            when: {
+        this.reaction('Disable a province')
+            .when({
                 onCardPlayed: (event, context) => event.card === context.source && context.source.isParticipating()
-            },
-            effect: 'prevent an attacked province from triggering its abilities this conflict',
-            gameAction: AbilityDsl.actions.selectCard(context => ({
+            })
+            .gameAction(AbilityDsl.actions.selectCard(context => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -24,8 +22,8 @@ class ShinjoAmbusher extends DrawCard {
                     targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.cannotTriggerAbilities()
                 }))
-            }))
-        });
+            })))
+            .effect('prevent an attacked province from triggering its abilities this conflict');
     }
 }
 

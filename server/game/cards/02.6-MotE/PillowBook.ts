@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, Decks, Duration, EventName } from '../../Constants.js';
@@ -8,11 +7,9 @@ class PillowBook extends DrawCard {
     static id = 'pillow-book';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Make top card of your conflict deck playable',
-            condition: (context: AbilityContext<this>) => !!context.source.parentCharacter && context.source.parentCharacter.isParticipating() && context.player.conflictDeck.length > 0,
-            effect: 'make the top card of their deck playable until the end of the conflict',
-            gameAction: AbilityDsl.actions.playerLastingEffect((context: AbilityContext) => {
+        this.action('Make top card of your conflict deck playable')
+            .condition((context) => !!context.source.parentCharacter && context.source.parentCharacter.isParticipating() && context.player.conflictDeck.length > 0)
+            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => {
                 let topCard = context.player.conflictDeck[0];
                 return {
                     targetController: context.player,
@@ -27,8 +24,8 @@ class PillowBook extends DrawCard {
                         AbilityDsl.effects.canPlayFromOwn(Location.ConflictDeck, [topCard], this)
                     ]
                 };
-            })
-        });
+            }))
+            .effect('make the top card of their deck playable until the end of the conflict');
     }
 }
 

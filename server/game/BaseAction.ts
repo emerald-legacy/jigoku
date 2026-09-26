@@ -2,7 +2,6 @@ import { AbilityContext } from './AbilityContext.js';
 import { AbilityType } from './Constants.js';
 import BaseCardAbility from './BaseCardAbility.js';
 import type BaseCard from './BaseCard.js';
-import type DrawCard from './DrawCard.js';
 import type { Cost } from './costs/Cost.js';
 
 interface TargetProperties {
@@ -23,7 +22,7 @@ class BaseAction extends BaseCardAbility {
     }
 
     meetsRequirements(context: AbilityContext, ignoredRequirements: string[] = []): string {
-        if(this.isCardPlayed() && (this.card as DrawCard).isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
+        if(this.isCardPlayed() && this.card.isDrawCard() && this.card.isLimited() && context.player.limitedPlayed >= context.player.maxLimited) {
             return 'limited';
         }
 
@@ -31,11 +30,12 @@ class BaseAction extends BaseCardAbility {
     }
 
     getReducedCost(context: AbilityContext): number {
-        const fateCost = this.cost.find(
-            (cost): cost is Cost & { getReducedCost(context: AbilityContext): number } =>
-                !!(cost as { getReducedCost?: unknown }).getReducedCost
-        );
-        return fateCost ? fateCost.getReducedCost(context) : 0;
+        for(const cost of this.cost) {
+            if(cost.getReducedCost) {
+                return cost.getReducedCost(context);
+            }
+        }
+        return 0;
     }
 
     isAction(): boolean {

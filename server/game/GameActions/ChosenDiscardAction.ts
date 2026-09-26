@@ -5,7 +5,7 @@ import type BaseCard from '../BaseCard.js';
 import { EventName, Location, Players, TargetMode } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
-import type { WithDefaults, ActionEvent } from './GameAction.js';
+import { targetList, type WithDefaults, type ActionEvent } from './GameAction.js';
 
 export interface ChosenDiscardProperties extends PlayerActionProperties {
     amount?: number;
@@ -45,7 +45,7 @@ export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> exte
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
-        for(let player of properties.target as Player[]) {
+        for(let player of targetList(properties.target)) {
             const availableHand = player.hand.filter((card) => properties.cardCondition(card, context));
             let amount = Math.min(availableHand.length, properties.amount);
             if(amount > 0) {
@@ -93,8 +93,8 @@ export class ChosenDiscardAction<C extends AbilityContext = AbilityContext> exte
         const context = event.context;
         context.game.addMessage('{0} discards {1}', event.player, event.cards);
         event.discardedCards = event.cards;
-        for(let card of event.cards as BaseCard[]) {
-            (event.player as Player).moveCard(card, card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
+        for(let card of event.cards ?? []) {
+            event.player.moveCard(card, card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
         }
     }
 }

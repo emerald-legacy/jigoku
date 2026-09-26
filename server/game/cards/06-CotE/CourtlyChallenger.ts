@@ -1,6 +1,6 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import { DuelType } from '../../Constants.js';
-import type { Duel } from '../../Duel.js';
+import { DuelType, EventName } from '../../Constants.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -12,7 +12,7 @@ export default class CourtlyChallenger extends DrawCard {
             effect: [
                 AbilityDsl.effects.delayedEffect({
                     when: {
-                        afterDuel: (event: Duel, context: AbilityContext<this>) =>
+                        afterDuel: (event: EventPayload<EventName.AfterDuel>, context: AbilityContext<this>) =>
                             event.winner?.includes(context.source) ?? false
                     },
                     message: '{0} is honored due to winning a duel',
@@ -21,7 +21,7 @@ export default class CourtlyChallenger extends DrawCard {
                 }),
                 AbilityDsl.effects.delayedEffect({
                     when: {
-                        afterDuel: (event: Duel, context: AbilityContext<this>) =>
+                        afterDuel: (event: EventPayload<EventName.AfterDuel>, context: AbilityContext<this>) =>
                             event.loser?.includes(context.source) ?? false
                     },
                     message: '{0} is dishonored due to losing a duel',
@@ -31,12 +31,10 @@ export default class CourtlyChallenger extends DrawCard {
             ]
         });
 
-        this.action({
-            title: 'Initiate a Political duel',
-            initiateDuel: {
+        this.action('Initiate a Political duel')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 gameAction: (duel) => AbilityDsl.actions.draw({ amount: 2, target: duel.winnerController })
-            }
-        });
+            }));
     }
 }

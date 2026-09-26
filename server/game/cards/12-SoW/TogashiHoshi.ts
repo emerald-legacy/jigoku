@@ -7,9 +7,8 @@ class TogashiHoshi extends DrawCard {
     static id = 'togashi-hoshi';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Turn attachment into character',
-            gameAction: AbilityDsl.actions.selectCard({
+        this.action('Turn attachment into character')
+            .gameAction(AbilityDsl.actions.selectCard({
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) => card.parentCharacter?.controller === context.player,
                 subActionProperties: (card: DrawCard) => ({
@@ -26,8 +25,7 @@ class TogashiHoshi extends DrawCard {
                     AbilityDsl.actions.detach(),
                     AbilityDsl.actions.cardLastingEffect({ duration: Duration.Custom })
                 ])
-            })
-        });
+            }));
     }
 }
 

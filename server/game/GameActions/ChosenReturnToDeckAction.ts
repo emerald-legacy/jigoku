@@ -4,9 +4,9 @@ import { EventName, Location, Players, TargetMode } from '../Constants.js';
 import type BaseCard from '../BaseCard.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
-import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
 import { shuffle } from '../utils/shuffle.js';
-import type { ActionEvent } from './GameAction.js';
+import { targetList, type ActionEvent } from './GameAction.js';
 
 export interface ChosenReturnToDeckProperties extends PlayerActionProperties {
     amount?: number;
@@ -40,7 +40,7 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
-        for(let player of properties.target as Player[]) {
+        for(let player of targetList(properties.target)) {
             let amount = Math.min(player.hand.length, properties.amount ?? 0);
             if(amount > 0) {
                 if(amount === player.hand.length) {
@@ -75,7 +75,7 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
         }
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnCardMoved, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: PlayerEvent<EventName.OnCardMoved, C>, player: Player, context: C, additionalProperties: Record<string, unknown> = {}): void {
         let { amount, shuffle, bottom } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, player, context, additionalProperties);
         event.options = { bottom };
@@ -86,7 +86,7 @@ export class ChosenReturnToDeckAction<C extends AbilityContext = AbilityContext>
     }
 
     eventHandler(event: ActionEvent<EventName.OnCardMoved, C>): void {
-        const cards = event.cards as BaseCard[];
+        const cards = event.cards ?? [];
         const context = event.context;
         context.game.addMessage(
             '{0} returns {1} card{2} to{3} their deck',

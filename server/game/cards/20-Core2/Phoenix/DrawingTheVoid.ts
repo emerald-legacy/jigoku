@@ -7,10 +7,9 @@ export default class DrawingTheVoid extends DrawCard {
     static id = 'drawing-the-void';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Gaze into the void',
-            condition: (context) => context.player.isTraitInPlay('shugenja'),
-            gameAction: AbilityDsl.actions.sequentialContext((context) => {
+        this.action('Gaze into the void')
+            .condition((context) => context.player.isTraitInPlay('shugenja'))
+            .gameAction(AbilityDsl.actions.sequentialContext((context) => {
                 const revealedCards = (shuffle(context.player.opponent?.hand ?? []))
                     .slice(0, 2)
                     .sort((a, b) => a.name.localeCompare(b.name));
@@ -37,8 +36,7 @@ export default class DrawingTheVoid extends DrawCard {
                         }))
                     ]
                 };
-            }),
-            max: AbilityDsl.limit.perRound(1)
-        });
+            }))
+            .max(AbilityDsl.limit.perRound(1));
     }
 }

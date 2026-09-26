@@ -5,10 +5,9 @@ class Enlightenment extends DrawCard {
     static id = 'enlightenment';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Resolve all claimed ring effects',
-            condition: context => context.player.getClaimedRings().length > 0,
-            gameAction: AbilityDsl.actions.sequential([
+        this.action('Resolve all claimed ring effects')
+            .condition(context => context.player.getClaimedRings().length > 0)
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.resolveRingEffect(context => ({
                     player: context.player,
                     target: context.player.getClaimedRings()
@@ -20,9 +19,8 @@ class Enlightenment extends DrawCard {
                         }
                     }
                 })
-            ]),
-            effect: 'resolve all claimed ring effects'
-        });
+            ]))
+            .effect('resolve all claimed ring effects');
     }
 }
 

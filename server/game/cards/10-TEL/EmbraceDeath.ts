@@ -6,32 +6,30 @@ class EmbraceDeath extends DrawCard {
     static id = 'embrace-death';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Sacrifice a bushi, remove a fate/discard',
-            when: {
+        this.reaction('Sacrifice a bushi, remove a fate/discard')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.loser === context.player &&
                     context.player.isAttackingPlayer() &&
                     event.conflict.getAttackers().some((card) => card.hasTrait('bushi'))
-            },
-            cost: AbilityDsl.costs.sacrifice({
+            })
+            .cost(AbilityDsl.costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait('bushi') && card.isAttacking()
-            }),
-            target: {
+            }))
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent
-            },
-            gameAction: AbilityDsl.actions.conditional({
-                condition: (context) => (context.target as DrawCard).getFate() > 0,
+            })
+            .gameAction(AbilityDsl.actions.conditional({
+                condition: (context) => (context.target?.getFate() ?? 0) > 0,
                 trueGameAction: AbilityDsl.actions.removeFate((context) => ({
                     target: context.target
                 })),
                 falseGameAction: AbilityDsl.actions.discardFromPlay((context) => ({
                     target: context.target
                 }))
-            })
-        });
+            }));
     }
 }
 

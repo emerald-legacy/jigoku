@@ -7,12 +7,11 @@ export default class EmperorsSummons extends ProvinceCard {
     static id = 'emperor-s-summons';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Search for a character card',
-            when: {
+        this.reaction('Search for a character card')
+            .when({
                 onCardRevealed: (event, context) => event.card === context.source
-            },
-            gameAction: AbilityDsl.actions.cardMenu((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.cardMenu((context) => ({
                 cards: context.player.dynastyDeck.filter((card: DrawCard) => card.type === CardType.Character),
                 choices: ['Select nothing'],
                 handlers: [() => this.game.addMessage('{0} selects nothing from their deck', context.player)],
@@ -31,8 +30,7 @@ export default class EmperorsSummons extends ProvinceCard {
                         player.getDynastyCardsInProvince(card.location)
                     ]
                 })
-            })),
-            effect: 'choose a character to place in a province'
-        });
+            })))
+            .effect('choose a character to place in a province');
     }
 }

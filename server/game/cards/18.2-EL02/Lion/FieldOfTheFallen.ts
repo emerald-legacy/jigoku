@@ -6,11 +6,10 @@ class FieldOfTheFallen extends DrawCard {
     static id = 'field-of-the-fallen';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Discard then draw a card',
-            condition: context => context.game.isDuringConflict('military'),
-            cost: AbilityDsl.costs.discardCard({ location: Location.Hand }),
-            gameAction: AbilityDsl.actions.sequentialContext(context => {
+        this.action('Discard then draw a card')
+            .cost(AbilityDsl.costs.discardCard({ location: Location.Hand }))
+            .condition(context => context.game.isDuringConflict('military'))
+            .gameAction(AbilityDsl.actions.sequentialContext(context => {
                 let moreHonorable = context.player.isMoreHonorable();
                 let gameActions = [];
                 gameActions.push(AbilityDsl.actions.draw(context => ({
@@ -34,8 +33,7 @@ class FieldOfTheFallen extends DrawCard {
                 return ({
                     gameActions: gameActions
                 });
-            })
-        });
+            }));
     }
 }
 

@@ -9,11 +9,10 @@ export default class AshalanLantern extends DrawCard {
     static id = 'ashalan-lantern';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Play a character from your opponent\'s dynasty deck',
-            condition: (context) => context.game.isDuringConflict(),
-            cost: AbilityDsl.costs.nameCard(),
-            gameAction: AbilityDsl.actions.sequential([
+        this.action('Play a character from your opponent\'s dynasty deck')
+            .cost(AbilityDsl.costs.nameCard())
+            .condition((context) => context.game.isDuringConflict())
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.playerLastingEffect((context) => ({
                     duration: Duration.UntilPassPriority,
                     targetController: context.player,
@@ -62,9 +61,7 @@ export default class AshalanLantern extends DrawCard {
                         selectedCards.length > 0 ? ' into service' : ''
                     ]
                 }))
-            ]),
-            effect: 'look for a character on the top of {1}\'s dynasty deck. They reveal {2}',
-            effectArgs: (context) => [context.player.opponent ?? '', context.player.opponent?.dynastyDeck.slice(0, 3) ?? []]
-        });
+            ]))
+            .effect('look for a character on the top of {1}\'s dynasty deck. They reveal {2}', (context) => [context.player.opponent ?? '', context.player.opponent?.dynastyDeck.slice(0, 3) ?? []]);
     }
 }

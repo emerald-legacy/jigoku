@@ -1,6 +1,5 @@
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { Conflict } from '../Conflict.js';
 import { EffectName, EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type Player from '../Player.js';
@@ -9,7 +8,7 @@ import { ResolveElementAction } from './ResolveElementAction.js';
 import { RingAction, type RingActionProperties } from './RingAction.js';
 import type { ActionEvent } from './GameAction.js';
 
-export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext> extends RingAction<RingActionProperties, EventName, C> {
+export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext> extends RingAction<RingActionProperties, EventName.OnResolveConflictRing, C> {
     name = 'resolveRing';
     eventName = EventName.OnResolveConflictRing;
     constructor(properties: ((context: C) => RingActionProperties) | RingActionProperties) {
@@ -43,12 +42,15 @@ export class ResolveConflictRingAction<C extends AbilityContext = AbilityContext
             return;
         }
 
-        let elements = (event.ring as Ring).getElements();
-        let player = event.player as Player;
+        let elements = event.ring.getElements();
+        let player = event.player;
         if(elements.length === 1) {
             this.resolveRingEffects(player, elements);
         } else {
-            this.chooseElementsToResolve(player, elements, (event.conflict as Conflict).elementsToResolve);
+            if(!event.conflict) {
+                throw new Error('A ring with several elements can only be resolved during a conflict');
+            }
+            this.chooseElementsToResolve(player, elements, event.conflict.elementsToResolve);
         }
     }
 

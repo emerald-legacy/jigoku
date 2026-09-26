@@ -8,14 +8,11 @@ export default class OutmaneuveredByForce extends DrawCard {
     static id = 'outmaneuvered-by-force';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Declare a conflict right now',
-            phase: Phases.Conflict,
-            condition: (context) =>
-                context.game.getConflicts(Players.All).filter((conflict: ConflictRecord & { declared?: boolean }) => conflict.declared).length === 0,
-
-            gameAction: AbilityDsl.actions.initiateConflict({ canPass: false })
-        });
+        this.action('Declare a conflict right now')
+            .condition((context) =>
+                context.game.getConflicts(Players.All).filter((conflict: ConflictRecord & { declared?: boolean }) => conflict.declared).length === 0)
+            .gameAction(AbilityDsl.actions.initiateConflict({ canPass: false }))
+            .phase(Phases.Conflict);
     }
 
     public canPlay(context: AbilityContext, playType: string): boolean {

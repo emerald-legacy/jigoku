@@ -2,7 +2,7 @@ import type BaseCard from '../BaseCard.js';
 import type Game from '../Game.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
-import type { Step } from './Step.js';
+import type { MenuArg, Step } from './Step.js';
 
 export class BaseStep implements Step {
     constructor(public game: Game) {}
@@ -19,7 +19,7 @@ export class BaseStep implements Step {
         return false;
     }
 
-    public onMenuCommand(_player: Player, _arg: string, _uuid: string, _method: string): boolean {
+    public onMenuCommand(_player: Player, _arg: MenuArg, _uuid: string, _method?: string | null): boolean {
         return false;
     }
 

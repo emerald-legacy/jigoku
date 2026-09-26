@@ -1,23 +1,22 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import type Player from '../../Player.js';
 import type { CardData } from '../../types/CardData.js';
 import type { Event } from '../../Events/Event.js';
 import type { Cost } from '../../costs/Cost.js';
 
-const accursedSummoningCost = function (): Cost {
+const accursedSummoningCost = function (): Cost<{ accursedSummoningCostCreature: DrawCard | undefined; accursedSummoningCost: number | null }> {
     return {
-        getActionName(_context: AbilityContext) {
+        getActionName(_context) {
             return 'accursedSummoningCost';
         },
-        getCostMessage: function (_context: AbilityContext) {
+        getCostMessage: function (_context) {
             return ['losing {0} honor'];
         },
-        canPay: function (context: AbilityContext) {
+        canPay: function (context) {
             return context.game.actions.loseHonor().canAffect(context.player, context);
         },
-        resolve: function (context: AbilityContext, result: { cancelled?: boolean }) {
+        resolve: function (context, result: { cancelled?: boolean }) {
             let creatures = context.player.outsideTheGameCards;
             creatures = creatures.filter((card: DrawCard) => context.game.actions.putIntoConflict().canAffect(card, context));
 
@@ -79,15 +78,15 @@ const accursedSummoningCost = function (): Cost {
 
             promptForCost();
         },
-        payEvent: function (context: AbilityContext) {
+        payEvent: function (context) {
             if(context.costs.accursedSummoningCostCreature) {
-                const oni = context.costs.accursedSummoningCostCreature as DrawCard;
+                const oni = context.costs.accursedSummoningCostCreature;
                 const copy = new (oni.constructor as new (owner: Player, cardData: CardData) => DrawCard)(context.player, oni.cardData);
                 context.game.allCards.push(copy);
                 context.costs.accursedSummoningCostCreature = copy;
 
                 let events: Event[] = [];
-                const honorAmount = context.costs.accursedSummoningCost as number;
+                const honorAmount = context.costs.accursedSummoningCost ?? 0;
                 let honorAction = context.game.actions.loseHonor({ target: context.player, amount: honorAmount });
                 events.push(honorAction.getEvent(context.player, context));
                 return events;
@@ -102,24 +101,21 @@ class AccursedSummoning extends DrawCard {
     static id = 'accursed-summoning';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Summon a Shadowlands Creature',
-            cost: [accursedSummoningCost()],
-            gameAction: AbilityDsl.actions.putIntoConflict(context => ({
-                target: (context.costs.accursedSummoningCostCreature as DrawCard | undefined) || context.player.outsideTheGameCards[1]
-            })),
-            effect: 'summon a{2} {1} from the depths of the Shadowlands!',
-            effectArgs: context => {
-                const creature = context.costs.accursedSummoningCostCreature as DrawCard;
-                var testStr = creature.name;
+        this.action('Summon a Shadowlands Creature')
+            .cost(accursedSummoningCost())
+            .gameAction(AbilityDsl.actions.putIntoConflict(context => ({
+                target: context.costs.accursedSummoningCostCreature || context.player.outsideTheGameCards[1]
+            })))
+            .effect('summon a{2} {1} from the depths of the Shadowlands!', context => {
+                const creature = context.costs.accursedSummoningCostCreature;
+                var testStr = creature?.name ?? '';
                 var vowelRegex = '^[aieouAIEOU].*';
                 var matched = testStr.match(vowelRegex);
                 return [
                     creature,
                     matched ? 'n' : ''
                 ];
-            }
-        });
+            });
     }
 
     isTemptationsMaho() {

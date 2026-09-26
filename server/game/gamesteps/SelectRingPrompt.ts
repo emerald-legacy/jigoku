@@ -6,7 +6,6 @@ import type Player from '../Player.js';
 import type Game from '../Game.js';
 import type Ring from '../Ring.js';
 import type BaseCard from '../BaseCard.js';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 
 interface SelectRingPromptButton {
     text?: string;
@@ -68,7 +67,7 @@ class SelectRingPrompt extends UiPrompt {
             properties.source = properties.context.source;
         }
         if(properties.source && !properties.waitingPromptTitle) {
-            properties.waitingPromptTitle = 'Waiting for opponent to use ' + (properties.source).name;
+            properties.waitingPromptTitle = 'Waiting for opponent to use ' + properties.source.name;
         } else if(!properties.source) {
             properties.source = new EffectSource(game);
         }
@@ -103,9 +102,9 @@ class SelectRingPrompt extends UiPrompt {
         if(!this.properties.context) {
             return [];
         }
-        let targets: unknown[] = this.properties.context.targets ? Object.values(this.properties.context.targets as Record<string, BaseCard>).map((target: BaseCard) => target.getShortSummaryForControls(this.choosingPlayer)) : [];
-        const triggeredContext = this.properties.context as TriggeredAbilityContext;
-        const eventCard = Event.promptCardOf(triggeredContext.event);
+        const context = this.properties.context;
+        let targets: unknown[] = context.targets ? Object.values(context.targets).flat().map((target: BaseCard) => target.getShortSummaryForControls(this.choosingPlayer)) : [];
+        const eventCard = Event.promptCardOf('event' in context ? context.event : undefined);
         if(targets.length === 0 && eventCard) {
             this.targets = [eventCard.getShortSummaryForControls(this.choosingPlayer)];
         }
@@ -159,7 +158,7 @@ class SelectRingPrompt extends UiPrompt {
             selectOrder: this.properties.ordered,
             menuTitle: this.properties.activePromptTitle || this.defaultActivePromptTitle(),
             buttons: buttons,
-            promptTitle: this.properties.source ? (this.properties.source as EffectSource).name : undefined
+            promptTitle: typeof this.properties.source === 'string' ? undefined : this.properties.source?.name
         };
     }
 

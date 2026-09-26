@@ -73,7 +73,8 @@ export class SelectRingAction<C extends AbilityContext = AbilityContext> extends
         } else if(!this.hasLegalTarget(context, additionalProperties)) {
             return;
         }
-        let player: Player = (properties.player === Players.Opponent ? context.player.opponent : context.player) as Player;
+        const opponent = context.player.opponent;
+        let player: Player = properties.player === Players.Opponent && opponent ? opponent : context.player;
         if(properties.targets && context.choosingPlayerOverride) {
             player = context.choosingPlayerOverride;
         }

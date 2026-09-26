@@ -28,14 +28,12 @@ class SolitaryStrength extends DrawCard {
             })
         });
 
-        this.reaction({
-            title: 'Gain 1 honor',
-            when: {
+        this.reaction('Gain 1 honor')
+            .when({
                 afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<DrawCard>) => context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                                                    event.conflict.winner === context.source.parentCharacter.controller
-            },
-            gameAction: AbilityDsl.actions.gainHonor()
-        });
+            })
+            .gameAction(AbilityDsl.actions.gainHonor());
     }
 }
 

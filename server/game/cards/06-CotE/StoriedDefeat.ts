@@ -1,4 +1,3 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import CardAbility from '../../CardAbility.js';
 import { CardType, EventName } from '../../Constants.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
@@ -18,45 +17,42 @@ export default class StoriedDefeat extends DrawCard {
         this.eventRegistrar = new EventRegistrar(this.game, this);
         this.eventRegistrar.register(['onConflictFinished', 'afterDuel', 'onCharacterEntersPlay']);
 
-        this.action({
-            title: 'Bow a character who lost a duel',
-            condition: (context) => context.game.isDuringConflict(),
-            target: {
+        this.action('Bow a character who lost a duel')
+            .condition((context) => context.game.isDuringConflict())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => this.duelLosersThisConflict.has(card),
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.bow(),
-                    AbilityDsl.actions.menuPrompt((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                        activePromptTitle: 'Spend 1 fate to dishonor ' + context.target.name + '?',
-                        choices: ['Yes'].concat(
-                            context.events.some((event: Event) => event.name === EventName.OnCardBowed) ? ['No'] : []
-                        ),
-                        choiceHandler: (choice, displayMessage) => {
-                            if(displayMessage) {
-                                context.game.addMessage(
-                                    '{0} chooses {1}to spend a fate to dishonor {2}',
-                                    context.player,
-                                    choice === 'No' ? 'not ' : '',
-                                    context.target
-                                );
-                            }
-                            return { amount: choice === 'Yes' ? 1 : 0 };
-                        },
-                        gameAction: AbilityDsl.actions.joint([
-                            AbilityDsl.actions.loseFate({ target: context.player }),
-                            AbilityDsl.actions.resolveAbility({
-                                target: context.source,
-                                subResolution: true,
-                                ability: new CardAbility(context.source, {
-                                    title: 'Dishonor this character',
-                                    gameAction: AbilityDsl.actions.dishonor({ target: context.target })
-                                })
+                cardCondition: (card) => this.duelLosersThisConflict.has(card)
+            }, AbilityDsl.actions.sequential([
+                AbilityDsl.actions.bow(),
+                AbilityDsl.actions.menuPrompt((context) => ({
+                    activePromptTitle: 'Spend 1 fate to dishonor ' + context.target.name + '?',
+                    choices: ['Yes'].concat(
+                        context.events.some((event: Event) => event.name === EventName.OnCardBowed) ? ['No'] : []
+                    ),
+                    choiceHandler: (choice, displayMessage) => {
+                        if(displayMessage) {
+                            context.game.addMessage(
+                                '{0} chooses {1}to spend a fate to dishonor {2}',
+                                context.player,
+                                choice === 'No' ? 'not ' : '',
+                                context.target
+                            );
+                        }
+                        return { amount: choice === 'Yes' ? 1 : 0 };
+                    },
+                    gameAction: AbilityDsl.actions.joint([
+                        AbilityDsl.actions.loseFate({ target: context.player }),
+                        AbilityDsl.actions.resolveAbility({
+                            target: context.source,
+                            subResolution: true,
+                            ability: new CardAbility(context.source, {
+                                title: 'Dishonor this character',
+                                gameAction: AbilityDsl.actions.dishonor({ target: context.target })
                             })
-                        ])
-                    }))
-                ])
-            }
-        });
+                        })
+                    ])
+                }))
+            ]));
     }
 
     public onConflictFinished() {
@@ -72,7 +68,7 @@ export default class StoriedDefeat extends DrawCard {
             return;
         }
         if(Array.isArray(event.duel.loser)) {
-            (event.duel.loser as BaseCard[]).forEach((duelLoser) => this.duelLosersThisConflict.add(duelLoser));
+            event.duel.loser.forEach((duelLoser) => this.duelLosersThisConflict.add(duelLoser));
         } else if(event.duel.loser) {
             this.duelLosersThisConflict.add(event.duel.loser);
         }

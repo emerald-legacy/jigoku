@@ -8,14 +8,12 @@ export default class IllusionaryDecoy extends DrawCard {
     static id = 'illusionary-decoy';
 
     public setupCardAbilities() {
-        this.reaction({
-            title: 'Put into play',
-            location: Location.Hand,
-            when: {
+        this.reaction('Put into play')
+            .when({
                 onConflictStarted: (event, context) =>
                     context.player.anyCardsInPlay((card: BaseCard) => card.hasTrait('shugenja'))
-            },
-            gameAction: AbilityDsl.actions.multiple([
+            })
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.putIntoConflict((context) => ({ target: context.source })),
                 AbilityDsl.actions.chooseAction({
                     options: {
@@ -32,16 +30,15 @@ export default class IllusionaryDecoy extends DrawCard {
                         Done: { action: AbilityDsl.actions.noAction() }
                     }
                 })
-            ]),
-            effect: 'put {0} into play in the conflict',
-            max: AbilityDsl.limit.perConflict(1)
-        });
+            ]))
+            .effect('put {0} into play in the conflict')
+            .max(AbilityDsl.limit.perConflict(1))
+            .location(Location.Hand);
 
-        this.action({
-            title: 'Return to hand',
-            condition: (context) => {
+        this.action('Return to hand')
+            .condition((context) => {
                 const claimedRings: Ring[] = context.source.controller.getClaimedRings();
-                const matchShugenjaElementWithClaimedRing = (context.source.controller.cardsInPlay as BaseCard[]).some(
+                const matchShugenjaElementWithClaimedRing = context.source.controller.cardsInPlay.some(
                     (card) =>
                         card.getType() === CardType.Character &&
                         card.hasTrait('shugenja') &&
@@ -50,8 +47,7 @@ export default class IllusionaryDecoy extends DrawCard {
                         )
                 );
                 return matchShugenjaElementWithClaimedRing;
-            },
-            gameAction: AbilityDsl.actions.returnToHand()
-        });
+            })
+            .gameAction(AbilityDsl.actions.returnToHand());
     }
 }

@@ -5,13 +5,11 @@ class IntimidatingHida extends DrawCard {
     static id = 'intimidating-hida';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Make opponent lose honor',
-            when: {
+        this.reaction('Make opponent lose honor')
+            .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player.opponent
-            },
-            gameAction: ability.actions.loseHonor()
-        });
+            })
+            .gameAction(ability.actions.loseHonor());
     }
 }
 

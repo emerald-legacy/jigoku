@@ -6,22 +6,19 @@ export default class KayoTheShrinetender extends DrawCard {
     static id = 'kayo-the-shrinetender';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Ready a Temple',
-            target: {
+        this.action('Ready a Temple')
+            .target('target', {
                 cardCondition: card => card.hasTrait('temple') && !card.facedown,
                 controller: Players.Self,
-                location: [Location.Provinces, Location.PlayArea],
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.ready(),
-                    AbilityDsl.actions.cardLastingEffect({
-                        duration: Duration.UntilEndOfRound,
-                        targetLocation: Location.Provinces,
-                        effect: AbilityDsl.effects.increaseLimitOnAbilities()
-                    })
-                ])
-            },
-            effect: 'ready {0} and add an additional use to each of its abilities'
-        });
+                location: [Location.Provinces, Location.PlayArea]
+            }, AbilityDsl.actions.multiple([
+                AbilityDsl.actions.ready(),
+                AbilityDsl.actions.cardLastingEffect({
+                    duration: Duration.UntilEndOfRound,
+                    targetLocation: Location.Provinces,
+                    effect: AbilityDsl.effects.increaseLimitOnAbilities()
+                })
+            ]))
+            .effect('ready {0} and add an additional use to each of its abilities');
     }
 }

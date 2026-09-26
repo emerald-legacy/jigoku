@@ -8,19 +8,17 @@ class ProvingGround extends DrawCard {
     static id = 'proving-ground';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Draw a card after winning a duel',
-            when: {
+        this.reaction('Draw a card after winning a duel')
+            .when({
                 afterDuel: (event: EventPayload<EventName.AfterDuel>, context: TriggeredAbilityContext) => {
                     if(!event.winner) {
                         return false;
                     }
                     return event.winner.some((card) => card.controller === context.player);
                 }
-            },
-            gameAction: ability.actions.draw(),
-            limit: ability.limit.perRound(2)
-        });
+            })
+            .gameAction(ability.actions.draw())
+            .limit(ability.limit.perRound(2));
     }
 }
 

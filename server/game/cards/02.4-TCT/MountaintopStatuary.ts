@@ -6,24 +6,19 @@ class MountaintopStatuary extends DrawCard {
     static id = 'mountaintop-statuary';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Move this to stronghold province',
-            when: {
+        this.reaction('Move this to stronghold province')
+            .when({
                 onCardRevealed: (event, context) => event.card === context.source
-            },
-            effect: 'move it to their stronghold province',
-            gameAction: ability.actions.moveCard({ destination: Location.StrongholdProvince })
-        });
-        this.action({
-            title: 'Send a 2 or lower cost character home',
-            cost: ability.costs.sacrificeSelf(),
-            condition: context => context.source.isInConflictProvince(),
-            target: {
+            })
+            .gameAction(ability.actions.moveCard({ destination: Location.StrongholdProvince }))
+            .effect('move it to their stronghold province');
+        this.action('Send a 2 or lower cost character home')
+            .cost(ability.costs.sacrificeSelf())
+            .condition(context => context.source.isInConflictProvince())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: card => card.isAttacking() && card.costLessThan(3),
-                gameAction: ability.actions.sendHome()
-            }
-        });
+                cardCondition: card => card.isAttacking() && card.costLessThan(3)
+            }, ability.actions.sendHome());
     }
 }
 

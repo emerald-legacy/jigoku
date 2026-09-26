@@ -6,16 +6,13 @@ export default class ItinerantPhilosopher extends DrawCard {
     static id = 'itinerant-philosopher';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow a character',
-            condition: (context) => context.source.isParticipating(),
-            cost: AbilityDsl.costs.discardImperialFavor(),
-            target: {
+        this.action('Bow a character')
+            .cost(AbilityDsl.costs.discardImperialFavor())
+            .condition((context) => context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating() && card.attachments.length > 0,
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.isParticipating() && card.attachments.length > 0
+            }, AbilityDsl.actions.bow());
     }
 }

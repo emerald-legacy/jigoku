@@ -1,5 +1,5 @@
 import { AbilityContext } from '../../AbilityContext.js';
-import { CardType, Players, TargetMode, Element } from '../../Constants.js';
+import { CardType, Players, Element } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import BaseCard from '../../BaseCard.js';
@@ -11,25 +11,21 @@ export default class WeightOfDuty extends ProvinceCard {
     static id = 'weight-of-duty';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow & dishonor a character',
-            condition: (context) => context.player.opponent !== undefined,
-            conflictProvinceCondition: (province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)),
-            cannotTargetFirst: true,
-            cost: AbilityDsl.costs.sacrifice({
+        this.action('Bow & dishonor a character')
+            .cost(AbilityDsl.costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card: DrawCard, context: AbilityContext) =>
                     card.isParticipating() && this.#hasValidTarget(card, context)
-            }),
-            target: {
+            }))
+            .condition((context) => context.player.opponent !== undefined)
+            .target('target', {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                mode: TargetMode.Single,
                 cardCondition: (card, context) =>
-                    context.costs.sacrifice && !(context.costs.sacrifice as DrawCard).isUnique() ? !card.isUnique() : true,
-                gameAction: AbilityDsl.actions.multiple([AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor()])
-            }
-        });
+                    context.costs.sacrifice && !context.costs.sacrifice.isUnique() ? !card.isUnique() : true
+            }, AbilityDsl.actions.multiple([AbilityDsl.actions.bow(), AbilityDsl.actions.dishonor()]))
+            .conflictProvinceCondition((province) => province.isElement(this.getCurrentElementSymbol(ELEMENT_KEY)))
+            .cannotTargetFirst();
     }
 
     getPrintedElementSymbols() {

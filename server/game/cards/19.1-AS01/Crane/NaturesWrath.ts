@@ -1,7 +1,6 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import CardAbility from '../../../CardAbility.js';
 import { CardType, ConflictType, EventName, Players, TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { Event } from '../../../Events/Event.js';
@@ -23,33 +22,26 @@ export default class NaturesWrath extends DrawCard {
     static id = 'nature-s-wrath';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Dishonor or move home a character',
-            condition: (context) =>
+        this.action('Dishonor or move home a character')
+            .condition((context) =>
                 context.game.isDuringConflict(ConflictType.Military) &&
-                context.player.anyCardsInPlay((card: DrawCard) => card.isParticipating()),
-            targets: {
-                [TARGET_CHARACTER]: {
-                    cardType: CardType.Character,
-                    controller: Players.Opponent,
-                    cardCondition: (card) => card.isParticipating()
-                },
-                select: {
-                    mode: TargetMode.Select,
-                    dependsOn: TARGET_CHARACTER,
-                    player: Players.Opponent,
-                    choices: {
-                        'Dishonor this character': AbilityDsl.actions.dishonor((context: AbilityContext) => ({
-                            target: context.targets[TARGET_CHARACTER]
-                        })),
-                        'Move this character home': AbilityDsl.actions.sendHome((context: AbilityContext) => ({
-                            target: context.targets[TARGET_CHARACTER]
-                        }))
-                    }
-                }
-            },
-            then: (context) => {
-                if(!context || !context.subResolution) {
+                context.player.anyCardsInPlay((card: DrawCard) => card.isParticipating())
+            )
+            .target(TARGET_CHARACTER, {
+                cardType: CardType.Character,
+                controller: Players.Opponent,
+                cardCondition: (card) => card.isParticipating()
+            })
+            .select('select', { dependsOn: TARGET_CHARACTER, player: Players.Opponent }, {
+                'Dishonor this character': AbilityDsl.actions.dishonor((context) => ({
+                    target: context.targets[TARGET_CHARACTER]
+                })),
+                'Move this character home': AbilityDsl.actions.sendHome((context) => ({
+                    target: context.targets[TARGET_CHARACTER]
+                }))
+            })
+            .then((context) => {
+                if(!context.subResolution) {
                     return {
                         target: {
                             mode: TargetMode.Select,
@@ -62,14 +54,13 @@ export default class NaturesWrath extends DrawCard {
                         },
                         then: {
                             thenCondition: (event: Event & { origin?: BaseCard }) =>
-                                !!context &&
                                 event.origin === context.target &&
                                 !event.cancelled &&
                                 event.name === EventName.OnCardDishonored,
                             gameAction: AbilityDsl.actions.resolveAbility({
-                                ability: (context && context.ability instanceof CardAbility ? context.ability : undefined) as CardAbility,
+                                ability: context.ability,
                                 subResolution: true,
-                                choosingPlayerOverride: context?.choosingPlayerOverride ?? undefined
+                                choosingPlayerOverride: context.choosingPlayerOverride ?? undefined
                             })
                         }
                     };
@@ -85,9 +76,8 @@ export default class NaturesWrath extends DrawCard {
                         }
                     }
                 };
-            },
-            cannotTargetFirst: true,
-            max: AbilityDsl.limit.perConflict(1)
-        });
+            })
+            .cannotTargetFirst()
+            .max(AbilityDsl.limit.perConflict(1));
     }
 }

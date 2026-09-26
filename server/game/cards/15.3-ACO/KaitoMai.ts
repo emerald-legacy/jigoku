@@ -10,17 +10,14 @@ class KaitoMai extends DrawCard {
             effect: AbilityDsl.effects.modifyGlory(3)
         });
 
-        this.reaction({
-            title: 'Remove a fate',
-            when: {
+        this.reaction('Remove a fate')
+            .when({
                 onMoveFate: (event, context) =>
-                    event.origin === context.source && event.fate > 0 && context.game.currentPhase !== Phases.Fate
-            },
-            target: {
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.removeFate({amount: 1})
-            }
-        });
+                    event.origin === context.source && (event.fate ?? 0) > 0 && context.game.currentPhase !== Phases.Fate
+            })
+            .target('target', {
+                cardType: CardType.Character
+            }, AbilityDsl.actions.removeFate({amount: 1}));
     }
 }
 

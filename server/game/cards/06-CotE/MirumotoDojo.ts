@@ -8,9 +8,8 @@ export default class MirumotoDojo extends DrawCard {
     static id = 'mirumoto-dojo';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a military duel',
-            initiateDuel: {
+        this.action('Initiate a military duel')
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 message: '{0}{1}{2}{3}{4}',
                 messageArgs: (duel) =>
@@ -27,8 +26,7 @@ export default class MirumotoDojo extends DrawCard {
                             })
                         ) : []
                     )
-            }
-        });
+            }));
     }
 
     #wonByDuelist(duel: Duel): boolean {

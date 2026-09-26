@@ -1,33 +1,28 @@
 import { TargetMode, CardType } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import type BaseCard from '../../BaseCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 export default class DishonorableAssault extends ProvinceCard {
     static id = 'dishonorable-assault';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Discard cards to dishonor attackers',
-            effect: 'discard {1} and dishonor {2}',
-            effectArgs: (context) => [context.costs.discardCardsUpToVariableX as BaseCard[], context.targets.target as BaseCard[]],
-            cost: AbilityDsl.costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTargets(context)),
-            target: {
+        this.action('Discard cards to dishonor attackers')
+            .cost(AbilityDsl.costs.discardCardsUpToVariableX((context) => this.getNumberOfLegalTargets(context)))
+            .targetCards('target', {
                 mode: TargetMode.ExactlyVariable,
                 numCardsFunc: (context) => {
                     if(context && context.costs && context.costs.discardCardsUpToVariableX) {
-                        return (context.costs.discardCardsUpToVariableX as BaseCard[]).length;
+                        return context.costs.discardCardsUpToVariableX.length;
                     }
 
                     return this.getNumberOfLegalTargets(context);
                 },
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isAttacking(),
-                gameAction: AbilityDsl.actions.dishonor()
-            },
-            cannotTargetFirst: true
-        });
+                cardCondition: (card) => card.isAttacking()
+            }, AbilityDsl.actions.dishonor())
+            .effect('discard {1} and dishonor {2}', (context) => [context.costs.discardCardsUpToVariableX, context.targets.target])
+            .cannotTargetFirst();
     }
 
     getNumberOfLegalTargets(context: AbilityContext) {

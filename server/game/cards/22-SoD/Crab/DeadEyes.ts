@@ -14,10 +14,9 @@ export default class DeadEyes extends DrawCard {
             effect: AbilityDsl.effects.setGlory(0)
         });
 
-        this.action({
-            title: 'Increase a character\'s military skill',
-            condition: context => !!(context.game.isDuringConflict(ConflictType.Military) && context.source.parentCharacter),
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
+        this.action('Increase a character\'s military skill')
+            .condition(context => !!(context.game.isDuringConflict(ConflictType.Military) && context.source.parentCharacter))
+            .gameAction(AbilityDsl.actions.cardLastingEffect(context => ({
                 target: context.source.parentCharacter ?? [],
                 effect: [
                     AbilityDsl.effects.modifyMilitarySkill(2),
@@ -46,9 +45,7 @@ export default class DeadEyes extends DrawCard {
                         messageArgs: [context.source.parentCharacter, context.source]
                     })
                 ]
-            })),
-            effect: 'grant +2{2} to {1}, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill',
-            effectArgs: context => [context.source.parentCharacter ?? '', 'military']
-        });
+            })))
+            .effect('grant +2{2} to {1}, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill', context => [context.source.parentCharacter ?? '', 'military']);
     }
 }

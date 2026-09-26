@@ -19,28 +19,21 @@ export default class Hayate extends DrawCard {
             })
         });
 
-        this.action({
-            title: 'Move this and another character to the conflict',
-            targets: {
-                self: {
-                    cardType: CardType.Character,
-                    controller: Players.Self,
-                    cardCondition: (card, context) => card === context.source,
-                    gameAction: AbilityDsl.actions.moveToConflict()
-                },
-                optional: {
-                    cardType: CardType.Character,
-                    controller: Players.Self,
-                    cardCondition: (card, context) => card !== context.source,
-                    optional: true,
-                    gameAction: AbilityDsl.actions.moveToConflict()
-                }
-            },
-            effect: 'move {0}{1}{2} into the conflict',
-            effectArgs: (context) => [
+        this.action('Move this and another character to the conflict')
+            .target('self', {
+                cardType: CardType.Character,
+                controller: Players.Self,
+                cardCondition: (card, context) => card === context.source
+            }, AbilityDsl.actions.moveToConflict())
+            .target('optional', {
+                cardType: CardType.Character,
+                controller: Players.Self,
+                cardCondition: (card, context) => card !== context.source,
+                optional: true
+            }, AbilityDsl.actions.moveToConflict())
+            .effect('move {0}{1}{2} into the conflict', (context) => [
                 !Array.isArray(context.targets.optional) ? ' and ' : '',
                 !Array.isArray(context.targets.optional) ? context.targets.optional : ''
-            ]
-        });
+            ]);
     }
 }

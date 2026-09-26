@@ -1,9 +1,9 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { EventName } from '../Constants.js';
 import type { Cost } from './Cost.js';
 import { Event } from '../Events/Event.js';
 import { ReduceableFateCost } from './ReduceableFateCost.js';
+import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 
 export class TargetDependentFateCost extends ReduceableFateCost implements Cost {
@@ -22,7 +22,7 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
         const reducedCost = context.player.getMinimumCost(
             context.playType,
             context,
-            context.targets[this.dependsOn] as DrawCard,
+            this.#target(context),
             this.ignoreType
         );
 
@@ -36,15 +36,15 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
         );
     }
 
-    public payEvent(context: TriggeredAbilityContext<DrawCard>): Event {
+    public payEvent(context: AbilityContext<DrawCard>): Event {
         const amount = (context.costs.targetDependentFate = this.getReducedCost(context));
 
         if(this.payFateCostToOpponent) {
-            return new Event(EventName.OnMoveFate, { amount, context }, () => {
+            return context.game.getEvent(EventName.OnMoveFate, { amount, context }, () => {
                 context.player.markUsedReducers(
                     context.playType,
                     context.source,
-                    context.targets[this.dependsOn] as DrawCard
+                    this.#target(context)
                 );
                 context.player.fate -= this.getFinalFatecost(context, amount);
                 if(context.player.opponent) {
@@ -53,21 +53,27 @@ export class TargetDependentFateCost extends ReduceableFateCost implements Cost 
             });
         }
 
-        return new Event(EventName.OnSpendFate, { amount, context }, () => {
+        return context.game.getEvent(EventName.OnSpendFate, { amount, context }, () => {
             context.player.markUsedReducers(
                 context.playType,
                 context.source,
-                context.targets[this.dependsOn] as DrawCard
+                this.#target(context)
             );
             context.player.fate -= this.getFinalFatecost(context, amount);
         });
     }
 
-    protected getReducedCost(context: AbilityContext<DrawCard>): number {
+    /** The single card the cost depends on (the attachment's parent). */
+    #target(context: AbilityContext): BaseCard | undefined {
+        const target = context.targets[this.dependsOn];
+        return Array.isArray(target) ? undefined : target;
+    }
+
+    public getReducedCost(context: AbilityContext<DrawCard>): number {
         return context.player.getReducedCost(
             context.playType,
             context.source,
-            context.targets[this.dependsOn] as DrawCard,
+            this.#target(context),
             this.ignoreType
         );
     }

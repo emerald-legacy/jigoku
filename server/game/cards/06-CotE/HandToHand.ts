@@ -1,5 +1,4 @@
 import type AbilityDsl from '../../abilitydsl.js';
-import type CardAbility from '../../CardAbility.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players, TargetMode } from '../../Constants.js';
@@ -8,16 +7,14 @@ class HandToHand extends DrawCard {
     static id = 'hand-to-hand';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Discard an attachment',
-            condition: () => this.game.isDuringConflict('military'),
-            target: {
+        this.action('Discard an attachment')
+            .condition(() => this.game.isDuringConflict('military'))
+            .target('target', {
                 cardType: CardType.Attachment,
-                cardCondition: (card) => Boolean(card.parentCharacter?.isParticipating()),
-                gameAction: ability.actions.discardFromPlay()
-            },
-            effect: 'discard {0} from play',
-            then: context => {
+                cardCondition: (card) => Boolean(card.parentCharacter?.isParticipating())
+            }, ability.actions.discardFromPlay())
+            .effect('discard {0} from play')
+            .then(context => {
                 const ctx = context;
                 return {
                     target: {
@@ -26,7 +23,7 @@ class HandToHand extends DrawCard {
                         activePromptTitle: 'Resolve Hand to Hand\'s ability again?',
                         choices: {
                             'Yes': ability.actions.resolveAbility({
-                                ability: ctx.ability as CardAbility,
+                                ability: ctx.ability,
                                 player: ctx.player.opponent ?? ctx.player,
                                 subResolution: true,
                                 choosingPlayerOverride: ctx.choosingPlayerOverride ?? undefined
@@ -37,8 +34,7 @@ class HandToHand extends DrawCard {
                     message: '{3} chooses {4}to resolve {1}\'s ability again',
                     messageArgs: (thenContext: AbilityContext) => [ctx.player.opponent ?? ctx.player, thenContext.select === 'No' ? 'not ' : '']
                 };
-            }
-        });
+            });
     }
 }
 

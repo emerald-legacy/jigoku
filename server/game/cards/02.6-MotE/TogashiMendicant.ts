@@ -6,14 +6,12 @@ class TogashiMendicant extends DrawCard {
     static id = 'togashi-mendicant';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Rearrange top 3 cards of dynasty deck',
-            when: {
+        this.reaction('Rearrange top 3 cards of dynasty deck')
+            .when({
                 onPhaseStarted: (event, context) => event.phase === Phases.Fate && context.player.dynastyDeck.length > 0
-            },
-            effect: 'rearrange the top 3 cards of their dynasty deck',
-            handler: (context: AbilityContext) => this.togashiMendicantPrompt(context, context.player.dynastyDeck.slice(0, 3), [], 'Which card do you want to be on top?')
-        });
+            })
+            .handler((context) => this.togashiMendicantPrompt(context, context.player.dynastyDeck.slice(0, 3), [], 'Which card do you want to be on top?'))
+            .effect('rearrange the top 3 cards of their dynasty deck');
     }
 
     togashiMendicantPrompt(context: AbilityContext, promptCards: DrawCard[], orderedCards: DrawCard[], promptTitle: string) {

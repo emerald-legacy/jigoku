@@ -6,26 +6,23 @@ class AkodoMakoto extends DrawCard {
     static id = 'akodo-makoto';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Remove fate/discard character',
-            when: {
+        this.reaction('Remove fate/discard character')
+            .when({
                 afterConflict: (event, context) => {
                     return event.conflict.winner === context.source.controller && context.source.isParticipating();
                 }
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Any,
                 cardCondition: (card) => {
                     return card.hasTrait('courtier') && card.isParticipating();
-                },
-                gameAction: AbilityDsl.actions.conditional({
-                    condition: context => (context.target as DrawCard).getFate() > 0,
-                    trueGameAction: AbilityDsl.actions.removeFate(),
-                    falseGameAction: AbilityDsl.actions.discardFromPlay()
-                })
-            }
-        });
+                }
+            }, AbilityDsl.actions.conditional({
+                condition: context => (context.target?.getFate() ?? 0) > 0,
+                trueGameAction: AbilityDsl.actions.removeFate(),
+                falseGameAction: AbilityDsl.actions.discardFromPlay()
+            }));
     }
 }
 

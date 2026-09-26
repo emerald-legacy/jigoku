@@ -1,4 +1,4 @@
-import { TargetMode, Players } from '../../../Constants.js';
+import { Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -6,27 +6,23 @@ export default class JadeColoredRocks extends ProvinceCard {
     static id = 'jade-colored-rocks';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Make your opponent lose a resource',
-            target: {
-                mode: TargetMode.Select,
+        this.action('Make your opponent lose a resource')
+            .select('target', {
                 player: Players.Self,
-                activePromptTitle: 'Choose an option',
-                choices: {
-                    'Opponent loses 1 fate': AbilityDsl.actions.loseFate((context) => ({
-                        amount: 1,
-                        target: context.player.opponent
-                    })),
-                    'Opponent loses 1 honor': AbilityDsl.actions.loseHonor((context) => ({
-                        amount: 1,
-                        target: (context.player.opponent?.honor ?? 0) > 6 ? context.player.opponent : []
-                    })),
-                    'Opponent discards 1 card at random': AbilityDsl.actions.discardAtRandom((context) => ({
-                        amount: 1,
-                        target: context.player.opponent
-                    }))
-                }
-            }
-        });
+                activePromptTitle: 'Choose an option'
+            }, {
+                'Opponent loses 1 fate': AbilityDsl.actions.loseFate((context) => ({
+                    amount: 1,
+                    target: context.player.opponent
+                })),
+                'Opponent loses 1 honor': AbilityDsl.actions.loseHonor((context) => ({
+                    amount: 1,
+                    target: (context.player.opponent?.honor ?? 0) > 6 ? context.player.opponent : []
+                })),
+                'Opponent discards 1 card at random': AbilityDsl.actions.discardAtRandom((context) => ({
+                    amount: 1,
+                    target: context.player.opponent
+                }))
+            });
     }
 }

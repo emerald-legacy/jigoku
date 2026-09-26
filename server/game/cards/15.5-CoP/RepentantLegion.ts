@@ -7,12 +7,11 @@ class RepentantLegion extends DrawCard {
     static id = 'repentant-legion';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'fill provinces with a card',
-            when: {
+        this.reaction('fill provinces with a card')
+            .when({
                 onBreakProvince: (event: EventPayload<EventName.OnBreakProvince>, context) => context.source.isParticipating() && (event.conflict?.getConflictProvinces().some(a => a.owner !== context.player) ?? false)
-            },
-            gameAction: AbilityDsl.actions.sequential([
+            })
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.moveCard(context => ({
                     target: context.player.dynastyDeck[0],
                     destination: Location.ProvinceOne
@@ -29,9 +28,8 @@ class RepentantLegion extends DrawCard {
                     target: context.player.dynastyDeck[0],
                     destination: Location.ProvinceFour
                 }))
-            ]),
-            effect: 'put 1 card into each of their non-stronghold provinces.'
-        });
+            ]))
+            .effect('put 1 card into each of their non-stronghold provinces.');
     }
 }
 

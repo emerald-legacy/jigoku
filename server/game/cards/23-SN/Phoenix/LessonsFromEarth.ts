@@ -1,4 +1,3 @@
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { GameAction } from '../../../GameActions/GameAction.js';
 import { ProvinceAttachment } from '../../ProvinceAttachment.js';
@@ -9,17 +8,13 @@ export default class LessonsFromEarth extends ProvinceAttachment {
     setupCardAbilities() {
         super.setupCardAbilities();
 
-        this.forcedReaction({
-            title: 'Winner draws, loser discards',
-            when: {
+        this.forcedReaction('Winner draws, loser discards')
+            .when({
                 afterConflict: (event, context) => {
                     return event.conflict.winner && event.conflict.loser && context.source.parentProvince?.isConflictProvince();
                 }
-            },
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            effect: 'cause {1} to draw a card and {2} to discard a card',
-            effectArgs: context => [context.event.conflict?.winner, context.event.conflict?.loser],
-            gameAction: AbilityDsl.actions.multipleContext((context: TriggeredAbilityContext) => {
+            })
+            .gameAction(AbilityDsl.actions.multipleContext((context) => {
                 const gameActions: GameAction[] = [];
 
                 const winner = context.event.conflict?.winner;
@@ -45,7 +40,8 @@ export default class LessonsFromEarth extends ProvinceAttachment {
                     }));
                 }
                 return { gameActions };
-            })
-        });
+            }))
+            .effect('cause {1} to draw a card and {2} to discard a card', context => [context.event.conflict?.winner, context.event.conflict?.loser])
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }

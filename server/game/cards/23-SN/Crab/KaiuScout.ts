@@ -13,25 +13,22 @@ export default class KaiuScout extends DrawCard {
         this.cards = [];
         this.chosenCards = [];
 
-        this.action<DrawCard>({
-            title: 'Look at cards in a province',
-            evenDuringDynasty: true,
-            target: {
+        this.action('Look at cards in a province')
+            .target('target', {
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: card => card.controller.getDynastyCardsInProvince(card.location).filter(a => a.isFacedown()).length > 0
-            },
-            gameAction: AbilityDsl.actions.handler({
+            })
+            .gameAction(AbilityDsl.actions.handler({
                 handler: (context: AbilityContext) => {
                     this.cards = context.target?.controller.getDynastyCardsInProvince(context.target.location) ?? [];
                     this.cards = this.cards.filter(a => a.isFacedown());
                     this.chosenCards = [];
                     this.selectPrompt(context);
                 }
-            }),
-            effect: 'look at facedown dynasty cards in {1}',
-            effectArgs: context => [context.target?.isFacedown() ? context.target.location : context.target]
-        });
+            }))
+            .effect('look at facedown dynasty cards in {1}', context => [context.target?.isFacedown() ? context.target.location : context.target])
+            .evenDuringDynasty();
     };
 
     selectPrompt(context: AbilityContext) {

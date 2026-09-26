@@ -5,21 +5,21 @@ import type { EventPayload } from '../../Events/EventPayloads.js';
 import { CardType, EventName, Location, Players, Duration } from '../../Constants.js';
 import type { Cost } from '../../costs/Cost.js';
 
-const exposedCourtyardCost = (): Cost => ({
-    getActionName(_context: AbilityContext) {
+const exposedCourtyardCost = (): Cost<{ exposedCourtyardCost: DrawCard[] }> => ({
+    getActionName(_context) {
         return 'exposedCourtyardCost';
     },
-    getCostMessage: function (_context: AbilityContext) {
+    getCostMessage: function (_context) {
         return ['discarding {0}'];
     },
-    canPay: function (context: AbilityContext) {
+    canPay: function (context) {
         return context.player.conflictDeck.length >= 2;
     },
-    resolve: function(context: AbilityContext) {
+    resolve: function(context) {
         context.costs.exposedCourtyardCost = context.player.conflictDeck.slice(0, 2);
     },
-    pay: function(context: AbilityContext) {
-        const discardedCards = context.costs.exposedCourtyardCost as DrawCard[];
+    pay: function(context) {
+        const discardedCards = context.costs.exposedCourtyardCost ?? [];
         discardedCards.slice(0, 2).forEach(card => {
             card.controller.moveCard(card, Location.ConflictDiscardPile);
         });
@@ -30,17 +30,14 @@ class ExposedCourtyard extends DrawCard {
     static id = 'exposed-courtyard';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Make an event in your conflict discard playable',
-            effect: 'pick an event to make playable this conflict',
-            cannotTargetFirst: true,
-            condition: context => context.game.isDuringConflict('military'),
-            cost: [exposedCourtyardCost()],
-            gameAction: AbilityDsl.actions.sequential([
+        this.action('Make an event in your conflict discard playable')
+            .cost(exposedCourtyardCost())
+            .condition(context => context.game.isDuringConflict('military'))
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.handler({
                     handler: () => true
                 }),
-                AbilityDsl.actions.selectCard((context: AbilityContext) => ({
+                AbilityDsl.actions.selectCard((context) => ({
                     location: Location.ConflictDiscardPile,
                     cardType: CardType.Event,
                     activePromptTitle: 'Choose an event',
@@ -61,7 +58,7 @@ class ExposedCourtyard extends DrawCard {
                                     },
                                     onConflictFinished: () => true
                                 },
-                                effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [context.target as DrawCard], this)
+                                effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, context.target?.isDrawCard() ? [context.target] : [], this)
                             };
                         }),
                         AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
@@ -87,8 +84,9 @@ class ExposedCourtyard extends DrawCard {
                     message: '{0} can play {1} this conflict. It will be put on the bottom of the deck if it\'s played this conflict',
                     messageArgs: card => [context.player, card, context.source]
                 }))
-            ])
-        });
+            ]))
+            .effect('pick an event to make playable this conflict')
+            .cannotTargetFirst();
     }
 }
 

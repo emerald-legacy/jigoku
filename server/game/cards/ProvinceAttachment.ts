@@ -13,7 +13,7 @@ export class ProvinceAttachment extends DrawCard {
             source &&
             source.getType() === 'province' &&
             (!this.unbrokenOnly() || !(source instanceof ProvinceCard && source.isBroken)) &&
-            (!this.controllerProvinceOnly() || (source as BaseCard).controller === this.controller) &&
+            (!this.controllerProvinceOnly() || (source instanceof BaseCard && source.controller === this.controller)) &&
             this.getType() === CardType.Attachment
         );
     }

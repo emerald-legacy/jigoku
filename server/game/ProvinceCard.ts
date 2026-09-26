@@ -7,6 +7,9 @@ import type Player from './Player.js';
 import type DrawCard from './DrawCard.js';
 import StatModifier from './StatModifier.js';
 import type { CardData } from './types/CardData.js';
+import { type CardEffect, isEffectOf } from './Effects/types.js';
+import type { NumericEffectName } from './Effects/EffectValueMap.js';
+import type { StateViewer } from './types/StateViewer.js';
 
 export class ProvinceCard extends BaseCard {
     isProvince = true;
@@ -18,9 +21,6 @@ export class ProvinceCard extends BaseCard {
         { command: 'honor', text: 'Honor' },
         { command: 'taint', text: 'Taint/Cleanse' }
     ];
-    override checkForIllegalAttachments(): boolean {
-        return this.attachmentHost.checkForIllegalAttachments();
-    }
 
     constructor(
         owner: Player,
@@ -39,6 +39,10 @@ export class ProvinceCard extends BaseCard {
             location: Location.Any,
             effect: AbilityDsl.effects.cardCannot('turnFacedown')
         });
+    }
+
+    override checkForIllegalAttachments(): boolean {
+        return this.attachmentHost.checkForIllegalAttachments();
     }
 
     get strength() {
@@ -71,61 +75,48 @@ export class ProvinceCard extends BaseCard {
     }
 
     getCardStrength(): number {
-        let copyEffect = this.mostRecentEffect(EffectName.CopyProvince);
-        const cardStrengthString = copyEffect ? copyEffect.cardData.strength : this.cardData.strength;
-        const cardStrength = (parseInt(String(cardStrengthString ?? '')) || 0);
-
-        return cardStrength;
+        const copiedProvince = this.mostRecentEffect(EffectName.CopyProvince);
+        const strength = (copiedProvince || this).cardData.strength;
+        return parseInt(String(strength ?? '')) || 0;
     }
 
     getBaseStrength(): number {
         if(this.anyEffect(EffectName.SetBaseProvinceStrength)) {
             return this.mostRecentEffect(EffectName.SetBaseProvinceStrength);
         }
-        return (
-            this.sumEffects(EffectName.ModifyBaseProvinceStrength) +
-            this.getCardStrength()
-        );
+        return this.sumEffects(EffectName.ModifyBaseProvinceStrength) + this.getCardStrength();
     }
 
     getDynastyOrStrongholdCardModifier(): number {
-        const province = this.controller.getSourceList(this.location);
         const canBeIncreased = !this.anyEffect(EffectName.ProvinceCannotHaveSkillIncreased);
-
-        return province.reduce((bonus, card) => {
-            let s = card.getProvinceStrengthBonus();
-            if(!canBeIncreased && s > 0) {
-                s = 0;
-            }
-            return bonus + s;
+        return this.controller.getSourceList(this.location).reduce((total, card) => {
+            const bonus = card.getProvinceStrengthBonus();
+            return total + (canBeIncreased ? bonus : Math.min(bonus, 0));
         }, 0);
     }
 
     getStrengthModifiers(): StatModifier[] {
-        const modifiers: StatModifier[] = [];
+        const effectsOf = <N extends NumericEffectName>(type: N) => this.getRawEffects().filter((effect) => isEffectOf(effect, type));
+        const setModifier = (effect: CardEffect<NumericEffectName>) =>
+            StatModifier.fromEffect(effect.getValue(this), effect, true, StatModifier.getEffectName(effect));
 
         // Set effects override everything
-        const setEffects = this.getRawEffects().filter((e) => e.type === EffectName.SetProvinceStrength);
-        if(setEffects.length > 0) {
-            const effect = setEffects[setEffects.length - 1];
-            modifiers.push(StatModifier.fromEffect(effect.getValue(this), effect, true, StatModifier.getEffectName(effect)));
-            return modifiers;
+        const setEffect = effectsOf(EffectName.SetProvinceStrength).at(-1);
+        if(setEffect) {
+            return [setModifier(setEffect)];
         }
 
-        // Base strength
-        const setBaseEffects = this.getRawEffects().filter((e) => e.type === EffectName.SetBaseProvinceStrength);
-        if(setBaseEffects.length > 0) {
-            const effect = setBaseEffects[setBaseEffects.length - 1];
-            modifiers.push(StatModifier.fromEffect(effect.getValue(this), effect, true, StatModifier.getEffectName(effect)));
+        const modifiers: StatModifier[] = [];
+        const setBaseEffect = effectsOf(EffectName.SetBaseProvinceStrength).at(-1);
+        if(setBaseEffect) {
+            modifiers.push(setModifier(setBaseEffect));
         } else {
             modifiers.push(new StatModifier(this.getCardStrength(), 'Printed', false, undefined));
-            for(const effect of this.getRawEffects().filter((e) => e.type === EffectName.ModifyBaseProvinceStrength)) {
+            for(const effect of effectsOf(EffectName.ModifyBaseProvinceStrength)) {
                 modifiers.push(StatModifier.fromEffect(effect.getValue(this), effect, false));
             }
         }
-
-        // Province strength modifiers
-        for(const effect of this.getRawEffects().filter((e) => e.type === EffectName.ModifyProvinceStrength)) {
+        for(const effect of effectsOf(EffectName.ModifyProvinceStrength)) {
             modifiers.push(StatModifier.fromEffect(effect.getValue(this), effect, false));
         }
 
@@ -143,11 +134,7 @@ export class ProvinceCard extends BaseCard {
             return {};
         }
         const modifiers = this.getStrengthModifiers().map((modifier) => Object.assign({}, modifier));
-        const strength = this.getStrength();
-        return {
-            stat: strength.toString(),
-            modifiers: modifiers
-        };
+        return { stat: this.getStrength().toString(), modifiers };
     }
 
     get element() {
@@ -155,24 +142,17 @@ export class ProvinceCard extends BaseCard {
     }
 
     getElement(): Element[] {
-        let copyEffect = this.mostRecentEffect(EffectName.CopyProvince);
-        if(copyEffect) {
-            return (copyEffect).getElement();
+        const copiedProvince = this.mostRecentEffect(EffectName.CopyProvince);
+        if(copiedProvince) {
+            return copiedProvince.getElement();
         }
-
-        const symbols = this.getCurrentElementSymbols();
-        const elementArray: Element[] = [];
-        symbols.forEach((symbol) => {
-            if(symbol.key.startsWith('province-element')) {
-                elementArray.push(symbol.element);
-            }
-        });
-
-        return elementArray;
+        return this.getCurrentElementSymbols()
+            .filter((symbol) => symbol.key.startsWith('province-element'))
+            .map((symbol) => symbol.element);
     }
 
     isElement(element: string): boolean {
-        return (this.element as string[]).includes(element);
+        return this.element.some((provinceElement) => provinceElement === element);
     }
 
     hasElementSymbols(): boolean {
@@ -180,19 +160,15 @@ export class ProvinceCard extends BaseCard {
     }
 
     getPrintedElementSymbols(): ElementSymbolInfo[] {
-        const symbols: ElementSymbolInfo[] = [];
-        if(this.hasElementSymbols()) {
-            const elements =
-                this.cardData.elements === 'all' ? ['air', 'earth', 'fire', 'void', 'water'] : this.cardData.elements;
-            elements?.forEach((element: string, index: number) => {
-                symbols.push({
-                    key: `province-element-${index}`,
-                    prettyName: 'The Province\'s Element',
-                    element: element as Element
-                });
-            });
+        if(!this.hasElementSymbols()) {
+            return [];
         }
-        return symbols;
+        const elements = this.cardData.elements === 'all' ? [Element.Air, Element.Earth, Element.Fire, Element.Void, Element.Water] : this.cardData.elements ?? [];
+        return elements.map((element, index) => ({
+            key: `province-element-${index}`,
+            prettyName: 'The Province\'s Element',
+            element
+        }));
     }
 
     flipFaceup() {
@@ -206,16 +182,13 @@ export class ProvinceCard extends BaseCard {
     }
 
     isConflictProvince(): boolean {
-        return !!this.game.currentConflict && this.game.currentConflict.getConflictProvinces().includes(this);
+        return !!this.game.currentConflict?.getConflictProvinces().includes(this);
     }
 
     canBeAttacked() {
         const fateCostToAttack = this.getFateCostToAttack();
         const attackers = this.game.isDuringConflict() && this.game.currentConflict ? this.game.currentConflict.attackers : [];
-        const fateToDeclareAttackers = attackers.reduce(
-            (total, card) => total + card.sumEffects(EffectName.FateCostToAttack),
-            0
-        );
+        const fateToDeclareAttackers = attackers.reduce((total, card) => total + card.sumEffects(EffectName.FateCostToAttack), 0);
 
         return (
             !this.isBroken &&
@@ -237,9 +210,7 @@ export class ProvinceCard extends BaseCard {
 
     isBlank(): boolean {
         const ignoreTokens =
-            this.game.currentConflict &&
-            this.game.currentConflict.anyEffect(EffectName.ConflictIgnoreStatusTokens) &&
-            this.isConflictProvince();
+            !!this.game.currentConflict?.anyEffect(EffectName.ConflictIgnoreStatusTokens) && this.isConflictProvince();
         const dishonored = this.isDishonored && !ignoreTokens;
         return this.isBroken || dishonored || super.isBlank();
     }
@@ -266,36 +237,22 @@ export class ProvinceCard extends BaseCard {
             return;
         }
 
+        const choosingPlayer = this.game.currentConflict?.attackingPlayer ?? this.controller.opponent;
         for(const dynastyCard of this.cardsInSelf()) {
             if(!dynastyCard) {
-                // Why?
                 continue;
             }
-
-            const choosingPlayer =
-                this.game.isDuringConflict() && this.game.currentConflict?.attackingPlayer
-                    ? this.game.currentConflict.attackingPlayer
-                    : this.controller.opponent;
+            const cardLabel = () => (dynastyCard.isFacedown() ? 'the facedown card' : dynastyCard);
             this.game.promptWithHandlerMenu(choosingPlayer, {
-                activePromptTitle: `Do you wish to discard ${dynastyCard.isFacedown() ? 'the facedown card' : dynastyCard.name
-                }?`,
+                activePromptTitle: `Do you wish to discard ${dynastyCard.isFacedown() ? 'the facedown card' : dynastyCard.name}?`,
                 source: `Break ${this.name}`,
                 choices: ['Yes', 'No'],
                 handlers: [
                     () => {
-                        this.game.addMessage(
-                            '{0} chooses to discard {1}',
-                            choosingPlayer,
-                            dynastyCard.isFacedown() ? 'the facedown card' : dynastyCard
-                        );
+                        this.game.addMessage('{0} chooses to discard {1}', choosingPlayer, cardLabel());
                         this.game.applyGameAction(this.game.getFrameworkContext(), { discardCard: dynastyCard });
                     },
-                    () =>
-                        this.game.addMessage(
-                            '{0} chooses not to discard {1}',
-                            choosingPlayer,
-                            dynastyCard.isFacedown() ? 'the facedown card' : dynastyCard
-                        )
+                    () => this.game.addMessage('{0} chooses not to discard {1}', choosingPlayer, cardLabel())
                 ]
             });
         }
@@ -320,26 +277,24 @@ export class ProvinceCard extends BaseCard {
 
     getMenu() {
         const menu = super.getMenu();
-
-        if(menu) {
-            if(
-                this.game.isDuringConflict() &&
-                !this.isConflictProvince() &&
-                this.canBeAttacked() &&
-                this.game.currentConflict?.getConflictProvinces().some((a) => a.controller === this.controller)
-            ) {
-                menu.push({ command: 'move_conflict', text: 'Move Conflict' });
-            }
-
-            if(this.cardsInSelf().length <= 0) {
-                menu.push({ command: 'refill', text: 'Refill Province' });
-            }
+        if(!menu) {
+            return menu;
         }
-
+        if(
+            this.game.isDuringConflict() &&
+            !this.isConflictProvince() &&
+            this.canBeAttacked() &&
+            this.game.currentConflict?.getConflictProvinces().some((a) => a.controller === this.controller)
+        ) {
+            menu.push({ command: 'move_conflict', text: 'Move Conflict' });
+        }
+        if(this.cardsInSelf().length === 0) {
+            menu.push({ command: 'refill', text: 'Refill Province' });
+        }
         return menu;
     }
 
-    getSummary(activePlayer: Player, hideWhenFaceup: boolean) {
+    getSummary(activePlayer: StateViewer, hideWhenFaceup: boolean) {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
         return {
             ...baseSummary,
@@ -350,11 +305,8 @@ export class ProvinceCard extends BaseCard {
         };
     }
 
-    allowAttachment(attachment: DrawCard): boolean {
-        if(this.allowedAttachmentTraits.some((trait) => attachment.hasTrait(trait))) {
-            return true;
-        }
-
+    /** Provinces take any attachment: their 'no attachments' restrictions don't apply. */
+    allowAttachment(_attachment: DrawCard): boolean {
         return true;
     }
 
@@ -364,10 +316,7 @@ export class ProvinceCard extends BaseCard {
     }
 
     isFaceup(): boolean {
-        if(this.game.gameMode === GameModes.Skirmish) {
-            return false;
-        }
-        return super.isFaceup();
+        return this.game.gameMode !== GameModes.Skirmish && super.isFaceup();
     }
 
     isFacedown(): boolean {

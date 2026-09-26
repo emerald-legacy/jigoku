@@ -7,14 +7,13 @@ export default class MirumotoHitori extends DrawCard {
     static id = 'mirumoto-hitori';
 
     public setupCardAbilities() {
-        this.interrupt({
-            title: 'A new incarnation awaits',
-            when: {
+        this.interrupt('A new incarnation awaits')
+            .when({
                 onCardLeavesPlay: (event, context) =>
                     event.card === context.source && context.game.currentPhase === Phases.Fate
-            },
-            cost: AbilityDsl.costs.returnRings(1),
-            gameAction: AbilityDsl.actions.cancel((context) => ({
+            })
+            .cost(AbilityDsl.costs.returnRings(1))
+            .gameAction(AbilityDsl.actions.cancel((context) => ({
                 target: context.source,
                 replacementGameAction: AbilityDsl.actions.sequential([
                     AbilityDsl.actions.removeFromGame(),
@@ -39,9 +38,7 @@ export default class MirumotoHitori extends DrawCard {
                         })
                     })
                 ])
-            })),
-            effect: 'remove {1} from play, to be put back into play next round',
-            effectArgs: (context) => context.source
-        });
+            })))
+            .effect('remove {1} from play, to be put back into play next round', (context) => context.source);
     }
 }

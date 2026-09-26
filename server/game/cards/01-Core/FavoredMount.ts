@@ -13,11 +13,9 @@ class FavoredMount extends DrawCard {
             effect: ability.effects.addTrait('cavalry')
         });
 
-        this.action({
-            title: 'Move this character into the conflict',
-            cost: ability.costs.bowSelf(),
-            gameAction: ability.actions.moveToConflict(context => ({ target: context.source.parentCharacter ?? [] }))
-        });
+        this.action('Move this character into the conflict')
+            .cost(ability.costs.bowSelf())
+            .gameAction(ability.actions.moveToConflict(context => ({ target: context.source.parentCharacter ?? [] })));
     }
 }
 

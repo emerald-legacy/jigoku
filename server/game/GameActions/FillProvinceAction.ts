@@ -2,16 +2,15 @@ import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { EventName, Location } from '../Constants.js';
 import type Player from '../Player.js';
-import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
 
-import type { ActionEvent } from './GameAction.js';
 export interface FillProvinceProperties extends PlayerActionProperties {
     location: Location;
     fillTo?: number;
     faceup?: boolean;
 }
 
-export class FillProvinceAction<C extends AbilityContext = AbilityContext> extends PlayerAction<FillProvinceProperties, EventName, C> {
+export class FillProvinceAction<C extends AbilityContext = AbilityContext> extends PlayerAction<FillProvinceProperties, EventName.Unnamed, C> {
     defaultProperties: FillProvinceProperties = { location: Location.ProvinceOne, fillTo: 1, faceup: false };
     name = 'fill';
     effect = 'fills {0} with more cards';
@@ -25,10 +24,10 @@ export class FillProvinceAction<C extends AbilityContext = AbilityContext> exten
         return ['fills {0} to {1} cards!', [properties.location, properties.fillTo]];
     }
 
-    eventHandler(event: ActionEvent<EventName.Unnamed, C>, additionalProperties: Record<string, unknown> = {}): void {
+    eventHandler(event: PlayerEvent<EventName.Unnamed, C>, additionalProperties: Record<string, unknown> = {}): void {
         const context = event.context;
         let properties = this.getProperties(context, additionalProperties);
-        const player = event.player as Player;
+        const player = event.player;
         let currentCards = player.getDynastyCardsInProvince(properties.location).length;
         player.refillProvince(properties.location, (properties.fillTo ?? 0) - currentCards);
 

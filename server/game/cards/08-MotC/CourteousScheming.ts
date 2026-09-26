@@ -6,10 +6,9 @@ export default class CourteousScheming extends DrawCard {
     static id = 'courteous-scheming';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a political duel',
-            condition: () => this.game.currentConflict !== null && this.game.currentConflict.conflictType === 'political',
-            initiateDuel: () => ({
+        this.action('Initiate a political duel')
+            .condition(() => this.game.currentConflict !== null && this.game.currentConflict.conflictType === 'political')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesDuelTarget: true,
                 message: 'allow {0} to declare an additional political conflict this phase',
@@ -22,8 +21,7 @@ export default class CourteousScheming extends DrawCard {
                             effect: AbilityDsl.effects.additionalConflict('political')
                         })
                         : AbilityDsl.actions.noAction()
-            }),
-            max: AbilityDsl.limit.perRound(1)
-        });
+            }))
+            .max(AbilityDsl.limit.perRound(1));
     }
 }

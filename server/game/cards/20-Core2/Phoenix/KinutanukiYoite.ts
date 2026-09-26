@@ -6,22 +6,19 @@ export default class KinutanukiYoite extends DrawCard {
     static id = 'kinutanuki-yoite';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Discard an enemy character',
-            when: {
+        this.reaction('Discard an enemy character')
+            .when({
                 onCardPlayed: (event, context) =>
                     event.player === context.player &&
                     context.source.isParticipating() &&
                     (event.card).hasEveryTrait('fire', 'spell')
-            },
-            target: {
+            })
+            .target('target', {
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card: DrawCard, context) =>
-                    card.isParticipating() && card.militarySkill <= context.source.militarySkill,
-                gameAction: AbilityDsl.actions.injure()
-            }
-        });
+                cardCondition: (card, context) =>
+                    card.isParticipating() && card.militarySkill <= context.source.militarySkill
+            }, AbilityDsl.actions.injure());
     }
 }

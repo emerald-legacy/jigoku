@@ -7,78 +7,82 @@ import type Game from './Game.js';
 import { InitiateDuel } from './Interfaces.js';
 import type { TargetPropertiesInput } from './Interfaces.js';
 
+type DuelSource = InitiateDuel | ((context: AbilityContext) => InitiateDuel);
+
 interface InitiateDuelHelperProps {
-    initiateDuel?: InitiateDuel | ((context: AbilityContext) => InitiateDuel);
+    initiateDuel?: DuelSource;
     condition?: (context: AbilityContext) => boolean;
     target?: TargetPropertiesInput;
     targets?: Record<string, TargetPropertiesInput>;
 }
 
 export const initiateDuel = (game: Game, card: BaseCard, properties: InitiateDuelHelperProps): void => {
-    if(properties.initiateDuel) {
-        if(card.type === CardType.Character) {
-            initiateDuelFromCharacter(game, card as DrawCard, properties);
+    const source = properties.initiateDuel;
+    if(source) {
+        if(card.isCharacter()) {
+            initiateDuelFromCharacter(game, card, properties, source);
         } else {
-            initiateDuelFromOther(game, card, properties);
+            initiateDuelFromOther(game, card, properties, source);
         }
     }
 };
 
-const checkChallengerCondition = (card: DrawCard, context: AbilityContext, properties: InitiateDuelHelperProps): boolean => {
-    const requiresConflict = getProperty(properties, context, 'requiresConflict');
-    const challengerCondition = getProperty(properties, context, 'challengerCondition');
+/** The duel's properties; a duel requires a conflict unless it says otherwise. */
+const duelProperties = (source: DuelSource, context: AbilityContext): InitiateDuel => ({
+    requiresConflict: true,
+    ...(typeof source === 'function' ? source(context) : source)
+});
+
+const checkChallengerCondition = (card: DrawCard, context: AbilityContext, source: DuelSource): boolean => {
+    const { requiresConflict, challengerCondition } = duelProperties(source, context);
 
     // default target condition
     if(!challengerCondition) {
         return !requiresConflict || card.isParticipating();
     }
-    return (challengerCondition as (card: DrawCard, context: AbilityContext) => boolean)(card, context);
+    return challengerCondition(card, context);
 };
 
-const initiateDuelFromCharacter = (_game: Game, card: DrawCard, properties: InitiateDuelHelperProps): void => {
+const initiateDuelFromCharacter = (_game: Game, card: DrawCard, properties: InitiateDuelHelperProps, source: DuelSource): void => {
     let prevCondition = properties.condition;
     properties.condition = (context: AbilityContext) => {
         const abilityCondition = (!prevCondition || prevCondition(context));
-        const challengerCondition = checkChallengerCondition(card, context, properties);
+        const challengerCondition = checkChallengerCondition(card, context, source);
         return abilityCondition && challengerCondition;
     };
     properties.target = {
-        ...getBaselineDuelTargetProperties(card, properties),
+        ...getBaselineDuelTargetProperties(source, card),
         gameAction: AbilityDsl.actions.duel((context: AbilityContext) => {
-            const duelProperties = getProperty(properties, context) as InitiateDuel;
-            return Object.assign({ challenger: context.source }, duelProperties);
+            return Object.assign({ challenger: context.source }, duelProperties(source, context));
         })
     };
 };
 
-const initiateDuelFromOther = (_game: Game, _card: BaseCard, properties: InitiateDuelHelperProps): void => {
+const initiateDuelFromOther = (_game: Game, _card: BaseCard, properties: InitiateDuelHelperProps, source: DuelSource): void => {
     properties.targets = {
         challenger: {
             cardType: CardType.Character,
             player: (context: AbilityContext) => {
-                const opponentChoosesChallenger = getProperty(properties, context, 'opponentChoosesChallenger');
-                return opponentChoosesChallenger ? Players.Opponent : Players.Self;
+                return duelProperties(source, context).opponentChoosesChallenger ? Players.Opponent : Players.Self;
             },
             controller: Players.Self,
-            cardCondition: (card: DrawCard, context: AbilityContext) => checkChallengerCondition(card, context, properties)
+            cardCondition: (card: DrawCard, context: AbilityContext) => checkChallengerCondition(card, context, source)
         },
         duelTarget: {
             dependsOn: 'challenger',
-            ...getBaselineDuelTargetProperties(undefined, properties),
+            ...getBaselineDuelTargetProperties(source),
             gameAction: AbilityDsl.actions.duel((context: AbilityContext) => {
-                const duelProperties = getProperty(properties, context) as InitiateDuel;
-                return Object.assign({ challenger: context.targets.challenger }, duelProperties);
+                return Object.assign({ challenger: context.targets.challenger }, duelProperties(source, context));
             })
         }
     };
 };
 
-const getBaselineDuelTargetProperties = (challenger: DrawCard | undefined, properties: InitiateDuelHelperProps) => {
+const getBaselineDuelTargetProperties = (source: DuelSource, challenger?: DrawCard) => {
     const props = {
         cardType: CardType.Character,
         player: (context: AbilityContext) => {
-            const opponentChoosesDuelTarget = getProperty(properties, context, 'opponentChoosesDuelTarget');
-            return opponentChoosesDuelTarget ? Players.Opponent : Players.Self;
+            return duelProperties(source, context).opponentChoosesDuelTarget ? Players.Opponent : Players.Self;
         },
         controller: Players.Opponent,
         cardCondition: (card: DrawCard, context: AbilityContext) => {
@@ -87,36 +91,13 @@ const getBaselineDuelTargetProperties = (challenger: DrawCard | undefined, prope
             if(challengerCard === card) {
                 return false;
             }
-            const requiresConflict = getProperty(properties, context, 'requiresConflict');
-            const targetCondition = getProperty(properties, context, 'targetCondition');
+            const { requiresConflict, targetCondition } = duelProperties(source, context);
             // default target condition
             if(!targetCondition) {
                 return !requiresConflict || card.isParticipating();
             }
-            return (targetCondition as (card: DrawCard, context: AbilityContext) => boolean)(card, context);
+            return targetCondition(card, context);
         }
     };
     return props;
-};
-
-const getProperty = (properties: InitiateDuelHelperProps, context: AbilityContext, propName?: keyof InitiateDuel) => {
-    let duelProperties: InitiateDuel;
-
-    if(typeof properties.initiateDuel === 'function') {
-        duelProperties = properties.initiateDuel(context);
-    } else {
-        duelProperties = properties.initiateDuel ?? ({} as InitiateDuel);
-    }
-
-    // default values
-    duelProperties = {
-        requiresConflict: true,
-        ...duelProperties
-    };
-
-    if(!propName) {
-        return duelProperties;
-    }
-
-    return duelProperties?.[propName];
 };

@@ -6,13 +6,11 @@ class WardenOfTheDamned extends DrawCard {
     static id = 'warden-of-the-damned';
 
     setupCardAbilities() {
-        this.forcedInterrupt({
-            title: 'Each player sacrifices a dishonored character',
-            when: {
+        this.forcedInterrupt('Each player sacrifices a dishonored character')
+            .when({
                 onPhaseEnded: event => event.phase === Phases.Conflict
-            },
-            effect: 'force both players to sacrifice a dishonored character',
-            gameAction: AbilityDsl.actions.multiple([
+            })
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.selectCard(context => ({
                     activePromptTitle: 'Choose a character to sacrifice',
                     cardType: CardType.Character,
@@ -29,8 +27,8 @@ class WardenOfTheDamned extends DrawCard {
                     cardCondition: card => card.isDishonored,
                     gameAction: AbilityDsl.actions.sacrifice()
                 }))
-            ])
-        });
+            ]))
+            .effect('force both players to sacrifice a dishonored character');
     }
 }
 

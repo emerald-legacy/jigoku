@@ -6,14 +6,9 @@ export default class IntoTheStorm extends DrawCard {
     static id = 'into-the-storm';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Increase the cost to play events',
-            effect: 'increase the cost of events this conflict by 1{1}',
-            effectArgs: context => [
-                context.player.isCharacterTraitInPlay('scout') ? ' and gain 1 fate' : ''
-            ],
-            condition: context => context.game.isDuringConflict(),
-            gameAction: AbilityDsl.actions.multiple([
+        this.action('Increase the cost to play events')
+            .condition(context => context.game.isDuringConflict())
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.playerLastingEffect((context) => ({
                     targetController: Players.Any,
                     effect: AbilityDsl.effects.increaseCost({
@@ -35,7 +30,9 @@ export default class IntoTheStorm extends DrawCard {
                     }),
                     falseGameAction: AbilityDsl.actions.noAction()
                 }))
-            ])
-        });
+            ]))
+            .effect('increase the cost of events this conflict by 1{1}', context => [
+                context.player.isCharacterTraitInPlay('scout') ? ' and gain 1 fate' : ''
+            ]);
     }
 }

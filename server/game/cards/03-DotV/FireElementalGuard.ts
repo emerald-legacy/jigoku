@@ -6,16 +6,13 @@ class FireElementalGuard extends DrawCard {
     static id = 'fire-elemental-guard';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Discard an attachment',
-            condition: context =>
+        this.action('Discard an attachment')
+            .condition(context =>
                 this.game.isDuringConflict() &&
-                (this.game.currentConflict?.getNumberOfCardsPlayed(context.player, (card) => card.hasTrait('spell')) ?? 0) > 2,
-            target: {
-                cardType: CardType.Attachment,
-                gameAction: ability.actions.discardFromPlay()
-            }
-        });
+                (this.game.currentConflict?.getNumberOfCardsPlayed(context.player, (card) => card.hasTrait('spell')) ?? 0) > 2)
+            .target('target', {
+                cardType: CardType.Attachment
+            }, ability.actions.discardFromPlay());
     }
 }
 

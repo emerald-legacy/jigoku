@@ -1,18 +1,16 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CaretakerOfTheDeadEyes extends DrawCard {
     static id = 'caretaker-of-the-dead-eyes';
 
     setupCardAbilities() {
-        this.interrupt({
-            title: 'Honor a character',
-            when: {
+        this.interrupt('Honor a character')
+            .when({
                 onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.hasTrait('bushi')
-            },
-            gameAction: AbilityDsl.actions.multipleContext(context => {
-                const card = (context as TriggeredAbilityContext).event.card;
+            })
+            .gameAction(AbilityDsl.actions.multipleContext(context => {
+                const card = context.event.card;
                 const gameActions = [];
                 if(card) {
                     if(card.isDishonored) {
@@ -28,7 +26,6 @@ export default class CaretakerOfTheDeadEyes extends DrawCard {
                 }
 
                 return { gameActions };
-            })
-        });
+            }));
     }
 }

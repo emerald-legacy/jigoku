@@ -6,13 +6,12 @@ export default class ShinjoScout2 extends DrawCard {
     static id = 'shinjo-scout-2';
 
     setupCardAbilities() {
-        this.interrupt({
-            title: 'Cancel the province effect',
-            when: {
+        this.interrupt('Cancel the province effect')
+            .when({
                 onCardRevealed: (event, context) =>
                     event.card.type === CardType.Province && context.source.isAttacking()
-            },
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -24,8 +23,7 @@ export default class ShinjoScout2 extends DrawCard {
                     targetLocation: Location.Provinces,
                     effect: AbilityDsl.effects.cannotTriggerAbilities()
                 })
-            })),
-            effect: 'avoid the dangers of their exploration'
-        });
+            })))
+            .effect('avoid the dangers of their exploration');
     }
 }

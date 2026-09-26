@@ -11,7 +11,7 @@ export interface RevealProperties extends CardActionProperties {
     onDeclaration?: boolean;
 }
 
-export class RevealAction<C extends AbilityContext = AbilityContext> extends CardGameAction<RevealProperties, EventName, C> {
+export class RevealAction<C extends AbilityContext = AbilityContext> extends CardGameAction<RevealProperties, EventName.OnCardRevealed, C> {
     name = 'reveal';
     eventName = EventName.OnCardRevealed;
     effect = 'reveal a card';
@@ -45,6 +45,6 @@ export class RevealAction<C extends AbilityContext = AbilityContext> extends Car
                 context.source
             );
         }
-        (event.card).facedown = false;
+        event.card.facedown = false;
     }
 }

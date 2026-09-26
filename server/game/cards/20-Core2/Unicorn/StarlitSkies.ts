@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { Location, TargetMode } from '../../../Constants.js';
+import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 const possibleChoices = {
@@ -19,28 +19,25 @@ export default class StarlitSkies extends DrawCard {
     static id = 'starlit-skies';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Look at top 3 cards',
-            evenDuringDynasty: true,
-            target: {
-                mode: TargetMode.Select,
-                activePromptTitle: 'Choose which deck to look at:',
-                choices: Object.fromEntries(
-                    Object.entries(possibleChoices).map(([name, { condition }]) => [name, condition])
-                )
-            },
-            effect: 'look at the top 3 cards of {1}\'s {2}',
-            effectArgs: (context) => [context.player, (context.select ?? '').toLowerCase()],
-            handler: (context: AbilityContext) => {
-                const choice = possibleChoices[context.select as keyof typeof possibleChoices];
+        this.action('Look at top 3 cards')
+            .selectIf('target', {
+                activePromptTitle: 'Choose which deck to look at:'
+            }, Object.fromEntries(
+                Object.entries(possibleChoices).map(([name, { condition }]) => [name, condition])
+            ))
+            .handler((context) => {
+                const choice = Object.entries(possibleChoices).find(([name]) => name === context.select)?.[1];
+                if(!choice) {
+                    return;
+                }
                 const topThree = choice.cards(context);
                 if(topThree.length === 0) {
                     return;
                 }
                 const messages = ['{0} places a card on the bottom of the deck', '{0} chooses to discard {1}'];
-                const destinations: string[] = [
-                    topThree[0].isDynasty ? 'dynasty deck bottom' : 'conflict deck bottom',
-                    topThree[0].isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile
+                const destinations = [
+                    { location: topThree[0].isDynasty ? Location.DynastyDeck : Location.ConflictDeck, bottom: true },
+                    { location: topThree[0].isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile, bottom: false }
                 ];
                 let choices: string[] = [];
                 const handlers: (() => void)[] = [];
@@ -49,7 +46,7 @@ export default class StarlitSkies extends DrawCard {
                     const dest = destinations.pop();
                     if(msg && dest) {
                         context.game.addMessage(msg, context.player, card);
-                        choice.player(context).moveCard(card, dest);
+                        choice.player(context).moveCard(card, dest.location, { bottom: dest.bottom });
                     }
                     if(messages.length > 0) {
                         const index = topThree.findIndex((x) => x === card);
@@ -93,7 +90,8 @@ export default class StarlitSkies extends DrawCard {
                     handlers: handlers,
                     choices: choices
                 });
-            }
-        });
+            })
+            .effect('look at the top 3 cards of {1}\'s {2}', (context) => [context.player, (context.select ?? '').toLowerCase()])
+            .evenDuringDynasty();
     }
 }

@@ -49,19 +49,6 @@ export class StatusToken extends EffectSource {
         return this.overrideStatus ?? this.initialStatus;
     }
 
-    get grantedStatusName(): string {
-        switch(this.grantedStatus) {
-            case CharacterStatus.Honored:
-                return 'Honorable';
-            case CharacterStatus.Dishonored:
-                return 'Dishonorable';
-            case CharacterStatus.Tainted:
-                return 'Tainter';
-            default:
-                return '';
-        }
-    }
-
     applyEffects(): void {
         switch(this.grantedStatus) {
             case CharacterStatus.Honored:

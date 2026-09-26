@@ -6,18 +6,15 @@ class SoulBeyondReproach extends DrawCard {
     static id = 'soul-beyond-reproach';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Honor a character, then honor it again',
-            target: {
+        this.action('Honor a character, then honor it again')
+            .target('target', {
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.honor(),
-                    AbilityDsl.actions.honor()
-                ])
-            },
-            effect: 'honor {0}, then honor it again'
-        });
+                controller: Players.Self
+            }, AbilityDsl.actions.sequential([
+                AbilityDsl.actions.honor(),
+                AbilityDsl.actions.honor()
+            ]))
+            .effect('honor {0}, then honor it again');
     }
 }
 

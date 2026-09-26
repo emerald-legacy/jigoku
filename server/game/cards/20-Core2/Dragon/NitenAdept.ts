@@ -6,18 +6,15 @@ export default class NitenAdept extends DrawCard {
     static id = 'niten-adept';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow character',
-            condition: (context) => context.source.attachments.length > 0 && context.source.isParticipating(),
-            cost: AbilityDsl.costs.bow({
+        this.action('Bow character')
+            .cost(AbilityDsl.costs.bow({
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) => card.parentCharacter === context.source
-            }),
-            target: {
+            }))
+            .condition((context) => context.source.attachments.length > 0 && context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating() && card.attachments.length === 0,
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.isParticipating() && card.attachments.length === 0
+            }, AbilityDsl.actions.bow());
     }
 }

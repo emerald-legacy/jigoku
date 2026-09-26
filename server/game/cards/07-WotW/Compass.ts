@@ -7,16 +7,14 @@ class Compass extends DrawCard {
     static id = 'compass';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Look at top 3 cards of a deck',
-            when: {
+        this.reaction('Look at top 3 cards of a deck')
+            .when({
                 onCardRevealed: (event: EventPayload<EventName.OnCardRevealed>, context: TriggeredAbilityContext<this>) =>
                     event.card && event.card.type === CardType.Province && event.card.controller === context.player.opponent &&
                     context.source && context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
                     (context.player.dynastyDeck.length > 0 || context.player.conflictDeck.length > 0)
-            },
-            effect: 'look at the top 3 cards of one of their decks',
-            handler: (context: TriggeredAbilityContext) => {
+            })
+            .handler((context) => {
                 let cards: DrawCard[] = [];
                 let choices: string[] = [];
                 let handlers: (() => void)[] = [];
@@ -42,12 +40,11 @@ class Compass extends DrawCard {
                     choices: choices,
                     handlers: handlers
                 });
-            }
-        });
+            })
+            .effect('look at the top 3 cards of one of their decks');
     }
 
     moveToBottomHandler(context: TriggeredAbilityContext, cards: DrawCard[], deck: string) {
-        let bottomOfDeck = deck + ' bottom';
         if(cards.length > 0) {
             this.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Choose a card to place on the bottom of your deck',
@@ -57,7 +54,7 @@ class Compass extends DrawCard {
                 handlers: [() => this.moveToTopHandler(context, cards, deck)],
                 cardHandler: (card: DrawCard) => {
                     this.game.addMessage('{0} places a card on the bottom of their {1}', context.player, deck);
-                    context.player.moveCard(card, bottomOfDeck);
+                    context.player.moveCard(card, deck, { bottom: true });
                     cards = cards.filter((c) => c !== card);
                     this.moveToBottomHandler(context, cards, deck);
                 }

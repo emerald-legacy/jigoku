@@ -12,25 +12,22 @@ export default class EarthsStagnation extends DrawCard {
     static id = 'earth-s-stagnation';
 
     public setupCardAbilities() {
-        this.forcedReaction({
-            title: 'Give attached character a skill penalty',
-            when: {
+        this.forcedReaction('Give attached character a skill penalty')
+            .when({
                 onCardPlayed: (event, context) =>
                     context.source.parentCharacter &&
                     (event.card).type === CardType.Event &&
                     context.source.parentCharacter.isParticipating()
-            },
-            gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.source.parentCharacter ?? [],
                 effect: AbilityDsl.effects.modifyBothSkills(penaltyAmount(context))
-            })),
-            effect: 'give {1}{2} and {3}{4} to {5}',
-            effectArgs: (context) => {
+            })))
+            .effect('give {1}{2} and {3}{4} to {5}', (context) => {
                 const penalty = penaltyAmount(context);
                 return [penalty, 'military', penalty, 'political', context.source.parentCharacter];
-            },
-            limit: AbilityDsl.limit.unlimitedPerConflict()
-        });
+            })
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 
     public canPlay(context: TriggeredAbilityContext, playType: string) {

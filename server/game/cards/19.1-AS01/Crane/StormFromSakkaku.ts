@@ -1,5 +1,4 @@
-import type { ProvinceCard } from '../../../ProvinceCard.js';
-import { AbilityContext, type ResolvedAbilityContext } from '../../../AbilityContext.js';
+import { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
 import { EventName, AbilityType, Location, CardType, Players } from '../../../Constants.js';
@@ -19,20 +18,19 @@ export default class StormFromSakkaku extends DrawCard {
             { [`${EventName.OnResolveRingElement}:${AbilityType.WouldInterrupt}`]: 'cancelRingEffect' }
         ]);
 
-        this.action({
-            title: 'Move holding to another province',
-            target: {
+        this.action('Move holding to another province')
+            .target('target', {
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     card.location !== context.source.location && card.location !== Location.StrongholdProvince
-            },
-            gameAction: AbilityDsl.actions.moveCard((context: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
+            })
+            .gameAction(AbilityDsl.actions.moveCard((context) => ({
                 target: context.source,
                 destination: context.target.location
-            })),
-            then: {
+            })))
+            .then(() => ({
                 gameAction: AbilityDsl.actions.discardCard((context: AbilityContext<this>) => ({
                     target: this.otherHoldingsInSameProvince(context)
                 })),
@@ -42,8 +40,7 @@ export default class StormFromSakkaku extends DrawCard {
                         ? 'is angry and discards the holdings that they find in the province'
                         : 'calms down'
                 ]
-            }
-        });
+            }));
     }
 
     private otherHoldingsInSameProvince(context: AbilityContext<this>): BaseCard[] {

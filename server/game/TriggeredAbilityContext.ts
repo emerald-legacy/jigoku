@@ -2,6 +2,7 @@ import { AbilityContext, type AbilityContextProperties } from './AbilityContext.
 import type BaseCard from './BaseCard.js';
 import type { Event } from './Events/Event.js';
 import type { EventUnion } from './Events/EventPayloads.js';
+import type TriggeredAbility from './TriggeredAbility.js';
 
 // An event whose specific name is not statically known here: the framework Event
 // surface plus every payload field as optional. (Precise per-event typing is
@@ -9,14 +10,17 @@ import type { EventUnion } from './Events/EventPayloads.js';
 export type AnyEvent = Event & Omit<EventUnion, 'context' | 'name' | 'cancelled' | 'resolved'>;
 
 interface TriggeredAbilityContextProperties extends AbilityContextProperties {
+    ability: TriggeredAbility;
     event: AnyEvent;
 }
 
 export class TriggeredAbilityContext<S = BaseCard, T extends BaseCard = BaseCard> extends AbilityContext<S, T> {
+    declare ability: TriggeredAbility;
     event: AnyEvent;
 
     constructor(properties: TriggeredAbilityContextProperties) {
         super(properties);
+        this.ability = properties.ability;
         this.event = properties.event;
     }
 
@@ -25,7 +29,7 @@ export class TriggeredAbilityContext<S = BaseCard, T extends BaseCard = BaseCard
     }
 
     getProps(): TriggeredAbilityContextProperties {
-        return Object.assign(super.getProps(), { event: this.event });
+        return Object.assign(super.getProps(), { ability: this.ability, event: this.event });
     }
 
     cancel() {

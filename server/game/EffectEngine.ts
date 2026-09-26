@@ -1,23 +1,30 @@
 import { Duration, EffectName, EventName } from './Constants.js';
-import type { AbilityContext } from './AbilityContext.js';
-import type { GameAction } from './GameActions/GameAction.js';
 import type Effect from './Effects/Effect.js';
+import type { EffectUntil } from './Effects/Effect.js';
+import { isEffectOf } from './Effects/types.js';
+import type { DelayedEffectValue, DelayedEffectWhen } from './Effects/EffectValueMap.js';
+import type { AbilityContext } from './AbilityContext.js';
+import { isEnumValue } from './utils/helpers.js';
 import type EffectSource from './EffectSource.js';
-import type { Event } from './Events/Event.js';
+import { Event } from './Events/Event.js';
 import type { GameEvent } from './Events/EventPayloads.js';
-import type { MsgArg } from './GameChat.js';
 import { EventRegistrar } from './EventRegistrar.js';
 import type Game from './Game.js';
 
-type DelayedEffectValue = {
-    condition?: (context: AbilityContext) => boolean;
-    when?: Record<string, (event: Event, context: AbilityContext) => boolean>;
-    multipleTrigger?: boolean;
-    onlyRemoveOnSuccess?: boolean;
-    gameAction: GameAction;
-    message?: string;
-    messageArgs?: MsgArg[] | ((context: AbilityContext, targets: unknown[]) => MsgArg[]);
-};
+// an event's name decides its payload
+function isEventNamed<N extends EventName>(event: Event, name: N): event is GameEvent<N> {
+    return event.name === name;
+}
+
+function fireTrigger<N extends EventName>(when: DelayedEffectWhen, name: N, event: Event, context: AbilityContext): unknown {
+    const trigger = when[name];
+    return trigger && isEventNamed(event, name) && trigger(event, context);
+}
+
+function untilEnds<N extends EventName>(until: EffectUntil, name: N, event: Event): unknown {
+    const ends = until[name];
+    return ends && isEventNamed(event, name) && ends(event);
+}
 
 interface CustomDurationEvent {
     name: string;
@@ -52,22 +59,26 @@ export class EffectEngine {
     }
 
     checkDelayedEffects(events: Event[]) {
-        let effectsToTrigger: Effect[] = [];
+        let effectsToTrigger: { effect: Effect; properties: DelayedEffectValue }[] = [];
         const effectsToRemove: Effect[] = [];
-        for(const effect of this.effects.filter(
-            (effect) => effect.isEffectActive() && effect.effect.type === EffectName.DelayedEffect
-        )) {
-            const properties = effect.effect.getValue<DelayedEffectValue>();
+        for(const effect of this.effects.filter((effect) => effect.isEffectActive())) {
+            const delayedEffect = effect.effect;
+            // a delayed effect is static, so it has a value without a target
+            const properties = isEffectOf(delayedEffect, EffectName.DelayedEffect) ? delayedEffect.getValue() : undefined;
+            if(!properties) {
+                continue;
+            }
             if(properties.condition) {
                 if(properties.condition(effect.context)) {
-                    effectsToTrigger.push(effect);
+                    effectsToTrigger.push({ effect, properties });
                 }
             } else {
-                const triggeringEvents = events.filter((event) => properties.when?.[event.name]);
+                const when = properties.when ?? {};
+                const triggeringEvents = events.filter((event) => isEnumValue(EventName, event.name) && when[event.name]);
                 if(triggeringEvents.length > 0) {
                     let effectTriggered = false;
-                    if(triggeringEvents.some((event) => properties.when?.[event.name](event, effect.context))) {
-                        effectsToTrigger.push(effect);
+                    if(triggeringEvents.some((event) => isEnumValue(EventName, event.name) && fireTrigger(when, event.name, event, effect.context))) {
+                        effectsToTrigger.push({ effect, properties });
                         effectTriggered = true;
                     }
                     if(!properties.multipleTrigger && effect.duration !== Duration.Persistent && (!properties.onlyRemoveOnSuccess || effectTriggered)) {
@@ -76,8 +87,7 @@ export class EffectEngine {
                 }
             }
         }
-        const triggers = effectsToTrigger.map((effect) => {
-            const properties = effect.effect.getValue<DelayedEffectValue>();
+        const triggers = effectsToTrigger.map(({ effect, properties }) => {
             const context = effect.context;
             const targets = effect.targets;
             return {
@@ -208,11 +218,10 @@ export class EffectEngine {
     }
 
     createCustomDurationHandler(customDurationEffect: Effect) {
+        // the custom duration events are emitted with the event alone
         return (...args: unknown[]) => {
-            const event = args[0] as Event;
-            const until = customDurationEffect.until;
-            const listener = until?.[event.name as EventName] as ((...args: unknown[]) => unknown) | undefined;
-            if(listener && listener(...args)) {
+            const event = args[0];
+            if(event instanceof Event && isEnumValue(EventName, event.name) && untilEnds(customDurationEffect.until, event.name, event)) {
                 customDurationEffect.cancel();
                 this.unregisterCustomDurationEvents(customDurationEffect);
                 this.effects = this.effects.filter((effect) => effect !== customDurationEffect);

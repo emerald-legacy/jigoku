@@ -127,15 +127,13 @@ export default class ShachihokoBay extends ProvinceCard {
     static id = 'shachihoko-bay';
 
     setupCardAbilities() {
-        this.interrupt({
-            title: 'Look at the top 6 cards of the attacker\'s deck and steal up to 3 of them',
-            when: {
+        this.interrupt('Look at the top 6 cards of the attacker\'s deck and steal up to 3 of them')
+            .when({
                 onBreakProvince: (event, context) =>
                     event.card === context.source && context.game.currentConflict && Boolean(context.player.opponent)
-            },
-            gameAction: AbilityDsl.actions.handler({
-                handler: (context) => new Process(context).start()
             })
-        });
+            .gameAction(AbilityDsl.actions.handler({
+                handler: (context) => new Process(context).start()
+            }));
     }
 }

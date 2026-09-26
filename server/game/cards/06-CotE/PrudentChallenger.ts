@@ -6,9 +6,8 @@ export default class PrudentChallenger extends DrawCard {
     static id = 'prudent-challenger';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Initiate a duel to discard attachment',
-            initiateDuel: {
+        this.action('Initiate a duel to discard attachment')
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 message: '{0} chooses one of {1}\'s attachments to discard',
                 messageArgs: (duel) => [duel.winnerController, duel.loser],
@@ -22,7 +21,6 @@ export default class PrudentChallenger extends DrawCard {
                         messageArgs: (card, player) => [player, card],
                         gameAction: AbilityDsl.actions.discardFromPlay()
                     })
-            }
-        });
+            }));
     }
 }

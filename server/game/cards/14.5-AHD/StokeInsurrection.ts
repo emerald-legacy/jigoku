@@ -18,10 +18,9 @@ export default class StokeInsurrection extends DrawCard {
             })
         });
 
-        this.action({
-            title: 'Put characters into play',
-            condition: (context) => context.game.isDuringConflict() && context.player.opponent !== undefined,
-            gameAction: AbilityDsl.actions.sequential([
+        this.action('Put characters into play')
+            .condition((context) => context.game.isDuringConflict() && context.player.opponent !== undefined)
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.reveal((context) => ({
                     target: context.player.opponent ? context.player.opponent.getDynastyCardsInProvince(Location.Provinces) : []
                 })),
@@ -41,10 +40,8 @@ export default class StokeInsurrection extends DrawCard {
                     messageArgs: (cards) => [context.player, cards],
                     gameAction: AbilityDsl.actions.putIntoConflict()
                 }))
-            ]),
-            effect: 'reveal {1}\'s dynasty cards and put up to two of them into play',
-            effectArgs: (context) => context.player.opponent ? [context.player.opponent] : []
-        });
+            ]))
+            .effect('reveal {1}\'s dynasty cards and put up to two of them into play', (context) => context.player.opponent ? [context.player.opponent] : []);
     }
 
     private getFaceDownProvinceCards(player: Player) {

@@ -45,7 +45,7 @@ class EducatedHeimin extends DrawCard {
     }
 
     canPlayOn(source: BaseCard | Ring) {
-        return source instanceof BaseCard && source.getType() === 'province' && source.controller === this.controller && !(source as ProvinceCard).isBroken && this.getType() === CardType.Attachment;
+        return source instanceof BaseCard && source.isProvinceCard() && source.controller === this.controller && !source.isBroken && this.getType() === CardType.Attachment;
     }
 
     canAttach(parent?: BaseCard | Ring) {
@@ -53,7 +53,7 @@ class EducatedHeimin extends DrawCard {
             return false;
         }
 
-        if(parent.type === CardType.Province && (parent as ProvinceCard).isBroken) {
+        if(parent.isProvinceCard() && parent.isBroken) {
             return false;
         }
 

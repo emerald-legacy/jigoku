@@ -6,20 +6,16 @@ export default class UsogawaChidori extends DrawCard {
     static id = 'usogawa-chidori';
 
     setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Blank a character',
-            cost: AbilityDsl.costs.giveFateToOpponent(),
-            target: {
+        this.action('Blank a character')
+            .cost(AbilityDsl.costs.giveFateToOpponent())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => !card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.blank(),
-                    duration: Duration.UntilEndOfPhase
-                })
-            },
-            effect: 'treat {1} as if it had no printed abilities until the end of the phase',
-            effectArgs: (context) => [context.target ?? '']
-        });
+                cardCondition: (card) => !card.isParticipating()
+            }, AbilityDsl.actions.cardLastingEffect({
+                effect: AbilityDsl.effects.blank(),
+                duration: Duration.UntilEndOfPhase
+            }))
+            .effect('treat {1} as if it had no printed abilities until the end of the phase', (context) => [context.target ?? '']);
     }
 }

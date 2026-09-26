@@ -9,19 +9,16 @@ export default class MidnightRevels extends ProvinceCard {
     static id = 'midnight-revels';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Bow a character',
-            when: {
+        this.reaction('Bow a character')
+            .when({
                 onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context: TriggeredAbilityContext) => event.conflict.declaredProvince === context.source
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => {
                     let charactersInPlay = context.game.findAnyCardsInPlay((c: DrawCard) => c.type === CardType.Character);
                     return card.getCost() === Math.max(...charactersInPlay.map((c: DrawCard) => c.getCost() ?? 0));
-                },
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                }
+            }, AbilityDsl.actions.bow());
     }
 }

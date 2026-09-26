@@ -2,7 +2,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import type DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
-import { TargetMode } from '../../Constants.js';
+import { CardType, TargetMode } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -10,21 +10,16 @@ export default class ShamefulDisplay extends ProvinceCard {
     static id = 'shameful-display';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Dishonor/Honor two characters',
-            target: {
+        this.action('Dishonor/Honor two characters')
+            .targetCards('target', {
                 mode: TargetMode.Exactly,
                 numCards: 2,
+                cardType: CardType.Character,
                 activePromptTitle: 'Select two characters',
-                cardCondition: card => card.isParticipating(),
-                gameAction: [AbilityDsl.actions.honor(), AbilityDsl.actions.dishonor()]
-            },
-            effect: 'change the personal honor of {0}',
-            handler: (context: AbilityContext) => {
-                if(!context.target) {
-                    return;
-                }
-                const targets = context.getCards<DrawCard>('target');
+                cardCondition: card => card.isParticipating()
+            }, AbilityDsl.actions.honor(), AbilityDsl.actions.dishonor())
+            .handler((context) => {
+                const targets = context.target;
                 if(targets.every((card: DrawCard) => !card.allowGameAction('honor', context))) {
                     this.game.promptForSelect(context.player, {
                         activePromptTitle: 'Choose a character to dishonor',
@@ -58,8 +53,8 @@ export default class ShamefulDisplay extends ProvinceCard {
                 } else {
                     this.promptToChooseHonorOrDishonor(targets, context);
                 }
-            }
-        });
+            })
+            .effect('change the personal honor of {0}');
     }
 
     promptToChooseHonorOrDishonor(cards: DrawCard[], context: AbilityContext) {

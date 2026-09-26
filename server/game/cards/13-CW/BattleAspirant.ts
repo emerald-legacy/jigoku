@@ -7,22 +7,19 @@ class BattleAspirant extends DrawCard {
     static id = 'battle-aspirant';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Force a character to defend',
-            when: {
+        this.reaction('Force a character to defend')
+            .when({
                 onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) => event.attackers?.includes(context.source) && this.game.currentConflict?.conflictType === 'military'
-            },
-            target: {
+            })
+            .target('target', {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: card => !card.hasKeyword('covert'),
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    duration: Duration.UntilEndOfConflict,
-                    effect: AbilityDsl.effects.mustBeDeclaredAsDefender()
-                })
-            },
-            effect: 'force {0} to declare as a defender this conflict'
-        });
+                cardCondition: card => !card.hasKeyword('covert')
+            }, AbilityDsl.actions.cardLastingEffect({
+                duration: Duration.UntilEndOfConflict,
+                effect: AbilityDsl.effects.mustBeDeclaredAsDefender()
+            }))
+            .effect('force {0} to declare as a defender this conflict');
     }
 }
 

@@ -1,4 +1,3 @@
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { Phases } from '../../Constants.js';
@@ -8,9 +7,8 @@ class Subterfuge extends DrawCard {
     private messageShown?: boolean;
 
     setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Prevent draw',
-            when: {
+        this.wouldInterrupt('Prevent draw')
+            .when({
                 onCardsDrawn: (event, context) => {
                     return (
                         context.player.opponent &&
@@ -19,8 +17,8 @@ class Subterfuge extends DrawCard {
                         event.player === context.player.opponent
                     );
                 }
-            },
-            gameAction: AbilityDsl.actions.cancel((context: TriggeredAbilityContext) => ({
+            })
+            .gameAction(AbilityDsl.actions.cancel((context) => ({
                 replacementGameAction: AbilityDsl.actions.sequentialContext(() => {
                     const eventAmount = context.event.amount ?? 0;
                     const discardAmount = Math.min(eventAmount, 3);
@@ -60,17 +58,15 @@ class Subterfuge extends DrawCard {
                         ]
                     };
                 })
-            })),
-            effect: 'prevent {1} card{2} from being drawn, discarding {3} instead',
-            effectArgs: (context) => {
+            })))
+            .effect('prevent {1} card{2} from being drawn, discarding {3} instead', (context) => {
                 const amount = context.event.amount ?? 0;
                 return [
                     Math.min(amount, 3),
                     amount > 1 ? 's' : '',
                     amount > 1 ? 'them' : 'it'
                 ];
-            }
-        });
+            });
     }
 }
 

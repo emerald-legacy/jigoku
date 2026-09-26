@@ -11,18 +11,16 @@ export default class WarCry extends DrawCard {
     static id = 'war-cry';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Break the attacked province',
-            when: {
+        this.reaction('Break the attacked province')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.player &&
                     event.conflict.attackingPlayer === context.player &&
                     event.conflict.conflictType === ConflictType.Military &&
-                    !(context.game.currentConflict as Conflict).isAtStrongholdProvince() &&
+                    !context.game.requireConflict().isAtStrongholdProvince() &&
                     areAllAttackersBerserker(event.conflict)
-            },
-            effect: 'break an attacked province',
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+            })
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose an attacked province',
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
@@ -31,7 +29,7 @@ export default class WarCry extends DrawCard {
                 message: '{0} breaks {1}',
                 messageArgs: (cards) => [context.player, cards],
                 gameAction: AbilityDsl.actions.breakProvince()
-            }))
-        });
+            })))
+            .effect('break an attacked province');
     }
 }

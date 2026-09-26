@@ -1,5 +1,4 @@
 import type { AbilityContext } from '../../AbilityContext.js';
-import type CardAbility from '../../CardAbility.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import { CardType, EventName } from '../../Constants.js';
@@ -18,28 +17,21 @@ class HanteiXXXVIII extends DrawCard {
             })
         });
 
-        this.action({
-            title: 'Bow a character',
-
-            target: {
+        this.action('Bow a character')
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.bow());
 
-        this.interrupt({
-            title: 'Choose targets for opponent\'s ability',
-            when: {
+        this.interrupt('Choose targets for opponent\'s ability')
+            .when({
                 onCardAbilityInitiated: (event: EventPayload<EventName.OnCardAbilityInitiated>, context) =>
                     event.ability.hasTargetsChosenByInitiatingPlayer(event.context) && event.context.player === context.player.opponent
-            },
-            effect: 'choose targets for {1}\'s {2} ability',
-            effectArgs: context => context ? [context.event.card ?? '', (context.event.ability as CardAbility)?.title ?? ''] : [],
-            handler: context => {
-                (context.event.context as AbilityContext).choosingPlayerOverride = context.player;
-            }
-        });
+            })
+            .handler(context => {
+                context.event.context.choosingPlayerOverride = context.player;
+            })
+            .effect('choose targets for {1}\'s {2} ability', context => context ? [context.event.card ?? '', context.event.ability?.title ?? ''] : []);
     }
 }
 

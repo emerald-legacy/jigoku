@@ -20,16 +20,15 @@ export default class LoyalWarhound extends DrawCard {
             traits: ['creature']
         });
 
-        this.action({
-            title: 'Attach this to a character',
-            condition: context => context.source.type === CardType.Character,
-            target: {
+        this.action('Attach this to a character')
+            .condition(context => context.source.type === CardType.Character)
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     context.game.actions.attach({ attachment: DummyHoundAttachment }).canAffect(card, context) && card !== context.source
-            },
-            gameAction: AbilityDsl.actions.sequentialContext(context => {
+            })
+            .gameAction(AbilityDsl.actions.sequentialContext(context => {
                 const gameActions: GameAction[] = [];
 
                 gameActions.push(AbilityDsl.actions.cardLastingEffect({
@@ -79,13 +78,12 @@ export default class LoyalWarhound extends DrawCard {
 
                 // It is no longer a character, so it stops contributing to the conflict
                 gameActions.push(AbilityDsl.actions.handler({
-                    handler: () => context.game.currentConflict?.removeFromConflict(context.source as DrawCard)
+                    handler: () => context.game.currentConflict?.removeFromConflict(context.source)
                 }));
 
                 return { gameActions };
-            }),
-            effect: 'attach itself to {0}'
-        });
+            }))
+            .effect('attach itself to {0}');
     }
 
     leavesPlay() {

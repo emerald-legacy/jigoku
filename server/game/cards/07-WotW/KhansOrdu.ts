@@ -6,12 +6,11 @@ export default class KhansOrdu extends ProvinceCard {
     static id = 'khan-s-ordu';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Make all conflicts military',
-            when: {
+        this.reaction('Make all conflicts military')
+            .when({
                 onCardRevealed: (event, context) => event.card === context.source
-            },
-            gameAction: AbilityDsl.actions.multiple([
+            })
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.switchConflictType((context) => ({
                     targetConflictType: ConflictType.Military,
                     target: context.game.currentConflict ? context.game.currentConflict.ring : []
@@ -21,9 +20,7 @@ export default class KhansOrdu extends ProvinceCard {
                     effect: AbilityDsl.effects.setConflictDeclarationType(ConflictType.Military),
                     duration: Duration.UntilEndOfPhase
                 })
-            ]),
-            effect: 'switch the conflict type to {1} and make all future conflicts {1} for this phase',
-            effectArgs: ['military']
-        });
+            ]))
+            .effect('switch the conflict type to {1} and make all future conflicts {1} for this phase', () => (['military']));
     }
 }

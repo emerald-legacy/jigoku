@@ -7,10 +7,8 @@ export default class ShinjoSora extends DrawCard {
     static id = 'shinjo-sora';
 
     setupCardAbilities() {
-        this.conflictAction({
-            title: 'Create beasts from facedown dynasty cards',
-            effect: 'release the hounds!',
-            gameAction: AbilityDsl.actions.createToken((context) => ({
+        this.conflictAction('Create beasts from facedown dynasty cards')
+            .gameAction(AbilityDsl.actions.createToken((context) => ({
                 target: context.game
                     .getProvinceArray()
                     .flatMap((location: Location) =>
@@ -19,7 +17,7 @@ export default class ShinjoSora extends DrawCard {
                 token: UnleashedHound,
                 canEnterConflict: () => true,
                 leavingPlayMessage: '{0} grows tired and decides to have a nap'
-            }))
-        });
+            })))
+            .effect('release the hounds!');
     }
 }

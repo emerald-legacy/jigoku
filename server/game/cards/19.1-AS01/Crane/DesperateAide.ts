@@ -2,7 +2,6 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { AbilityType, CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { ActionProps } from '../../../Interfaces.js';
 import type Player from '../../../Player.js';
 
 export default class DesperateAide extends DrawCard {
@@ -22,7 +21,7 @@ export default class DesperateAide extends DrawCard {
                 ]),
                 effect: 'draw 1 card{1}',
                 effectArgs: (context) => [this.controllerHasHigherPol(context) ? ' and gain 1 honor' : '']
-            } as ActionProps<this>)
+            })
         });
     }
 

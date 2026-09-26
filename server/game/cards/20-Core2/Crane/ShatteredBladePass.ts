@@ -6,23 +6,20 @@ export default class ShatteredBladePass extends ProvinceCard {
     static id = 'shattered-blade-pass';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Ready a character and move it to the conflict',
-            condition: (context) => context.game.currentConflict !== null && context.game.currentConflict.defenders.length === 0,
-            target: {
+        this.action('Ready a character and move it to the conflict')
+            .condition((context) => context.game.currentConflict !== null && context.game.currentConflict.defenders.length === 0)
+            .target('target', {
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.ready(),
-                    AbilityDsl.actions.moveToConflict(),
-                    AbilityDsl.actions.playerLastingEffect(context => ({
-                        targetController: context.player,
-                        duration: Duration.UntilPassPriority,
-                        effect: AbilityDsl.effects.additionalAction()
-                    }))
-                ])
-            },
-            effect: 'ready {0} and move it into the conflict, taking an additional action'
-        });
+                controller: Players.Self
+            }, AbilityDsl.actions.multiple([
+                AbilityDsl.actions.ready(),
+                AbilityDsl.actions.moveToConflict(),
+                AbilityDsl.actions.playerLastingEffect(context => ({
+                    targetController: context.player,
+                    duration: Duration.UntilPassPriority,
+                    effect: AbilityDsl.effects.additionalAction()
+                }))
+            ]))
+            .effect('ready {0} and move it into the conflict, taking an additional action');
     }
 }

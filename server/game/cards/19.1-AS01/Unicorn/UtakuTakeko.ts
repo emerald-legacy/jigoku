@@ -8,9 +8,8 @@ export default class UtakuTakeko extends DrawCard {
     static id = 'utaku-takeko';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'Play a character from your dynasty deck',
-            gameAction: AbilityDsl.actions.deckSearch(() => ({
+        this.action('Play a character from your dynasty deck')
+            .gameAction(AbilityDsl.actions.deckSearch(() => ({
                 activePromptTitle: 'Select a character to play',
                 amount: 8,
                 deck: Decks.DynastyDeck,
@@ -44,8 +43,7 @@ export default class UtakuTakeko extends DrawCard {
                     this.#msgArticle(cards[0]),
                     cards[0]
                 ]
-            }))
-        });
+            })));
     }
 
     #msgDistance(card: DrawCard): string {

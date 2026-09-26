@@ -6,13 +6,12 @@ export default class DarkMoto extends BaseOni {
 
     public setupCardAbilities() {
         super.setupCardAbilities();
-        this.reaction({
-            title: 'Place a fate and prevent from bowing',
-            when: {
+        this.reaction('Place a fate and prevent from bowing')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller && context.source.isParticipating()
-            },
-            gameAction: AbilityDsl.actions.multiple([
+            })
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.placeFate((context) => ({
                     target: context.source,
                     origin: context.player
@@ -21,8 +20,7 @@ export default class DarkMoto extends BaseOni {
                     target: context.source,
                     effect: AbilityDsl.effects.doesNotBow()
                 }))
-            ]),
-            effect: 'place a fate on and prevent {0} from bowing as a result of conflict resolution'
-        });
+            ]))
+            .effect('place a fate on and prevent {0} from bowing as a result of conflict resolution');
     }
 }

@@ -6,19 +6,16 @@ class HirumaAmbusher extends DrawCard {
     static id = 'hiruma-ambusher';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Disable a character',
-            when: {
+        this.reaction('Disable a character')
+            .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source && context.source.isDefending()
-            },
-            target: {
-                cardType: CardType.Character,
-                gameAction: ability.actions.cardLastingEffect({
-                    effect: ability.effects.cannotTriggerAbilities()
-                })
-            },
-            effect: 'prevent {0} from using any abilities'
-        });
+            })
+            .target('target', {
+                cardType: CardType.Character
+            }, ability.actions.cardLastingEffect({
+                effect: ability.effects.cannotTriggerAbilities()
+            }))
+            .effect('prevent {0} from using any abilities');
     }
 }
 

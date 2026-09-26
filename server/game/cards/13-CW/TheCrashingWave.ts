@@ -7,17 +7,14 @@ class TheCrashingWave extends DrawCard {
     static id = 'the-crashing-wave';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Move the conflict',
-            when: {
+        this.reaction('Move the conflict')
+            .when({
                 onTheCrashingWave: (event: EventPayload<EventName.OnTheCrashingWave>, context) => event.conflict.defendingPlayer === context.player
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Province,
-                location: Location.Provinces,
-                gameAction: AbilityDsl.actions.moveConflict()
-            }
-        });
+                location: Location.Provinces
+            }, AbilityDsl.actions.moveConflict());
     }
 }
 

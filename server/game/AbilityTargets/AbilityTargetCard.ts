@@ -2,21 +2,18 @@ import CardSelector from '../CardSelector.js';
 import { Stage, Players, EffectName, TargetMode } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import type { GameAction } from '../GameActions/GameAction.js';
+import type { DependentTarget, OwningAbility } from '../BaseAbility.js';
 
 type CardSelectorInstance = ReturnType<typeof CardSelector.for>;
 
-interface OwningAbility {
-    targets: { name: string }[];
-}
 
 interface AbilityTargetCardProperties {
     gameAction: GameAction[];
     dependsOn?: string;
     mode?: TargetMode;
-    cardCondition?(card: DrawCard, context: AbilityContext<DrawCard>): boolean;
+    cardCondition?(card: BaseCard, context: AbilityContext): boolean;
     player?: ((context: AbilityContext) => Players) | Players;
     [key: string]: unknown;
 }
@@ -38,7 +35,7 @@ class AbilityTargetCard {
     name: string;
     properties: AbilityTargetCardProperties;
     selector: CardSelectorInstance;
-    dependentTarget: AbilityTargetCard | null;
+    dependentTarget: DependentTarget | null;
     dependentCost: { canPay(context: AbilityContext): boolean } | null;
 
     constructor(name: string, properties: AbilityTargetCardProperties, ability: OwningAbility) {
@@ -53,7 +50,7 @@ class AbilityTargetCard {
         if(this.properties.dependsOn) {
             let dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
             if(dependsOnTarget) {
-                (dependsOnTarget as AbilityTargetCard).dependentTarget = this;
+                dependsOnTarget.dependentTarget = this;
             }
         }
     }
@@ -64,7 +61,7 @@ class AbilityTargetCard {
             if(context.stage === Stage.PreTarget && this.dependentCost && !this.dependentCost.canPay(contextCopy)) {
                 return false;
             }
-            return (!properties.cardCondition || properties.cardCondition(card as DrawCard, contextCopy as AbilityContext<DrawCard>)) &&
+            return (!properties.cardCondition || properties.cardCondition(card, contextCopy)) &&
                    (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
                    (properties.gameAction.length === 0 || properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy)));
         };
@@ -159,6 +156,10 @@ class AbilityTargetCard {
                 return true;
             }
         };
+        if(!player) {
+            // a solo game has no opponent to choose
+            return;
+        }
         context.game.promptForSelect(player, Object.assign(promptProperties, otherProperties));
     }
 
@@ -174,16 +175,16 @@ class AbilityTargetCard {
                 this.selector.hasEnoughSelected(cards, context) && !this.selector.hasExceededLimit(cards, context));
     }
 
-    getChoosingPlayer(context: AbilityContext): Player {
+    getChoosingPlayer(context: AbilityContext): Player | undefined {
         let playerProp = this.properties.player;
         if(typeof playerProp === 'function') {
             playerProp = playerProp(context);
         }
-        return playerProp === Players.Opponent ? (context.player.opponent as Player) : context.player;
+        return playerProp === Players.Opponent ? context.player.opponent : context.player;
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {
-        if(this.getChoosingPlayer(context) === context.player && (this.selector.optional || this.selector.hasEnoughTargets(context, context.player.opponent as Player))) {
+        if(this.getChoosingPlayer(context) === context.player && (this.selector.optional || this.selector.hasEnoughTargets(context, context.player.opponent))) {
             return true;
         }
         return !this.properties.dependsOn && this.checkGameActionsForTargetsChosenByInitiatingPlayer(context);
@@ -195,7 +196,8 @@ class AbilityTargetCard {
             if(this.properties.gameAction.some((action) => action.hasTargetsChosenByInitiatingPlayer(contextCopy))) {
                 return true;
             } else if(this.dependentTarget) {
-                return this.dependentTarget.checkGameActionsForTargetsChosenByInitiatingPlayer(contextCopy);
+                // only a card target looks further down the chain
+                return this.dependentTarget.checkGameActionsForTargetsChosenByInitiatingPlayer?.(contextCopy) ?? false;
             }
             return false;
         });

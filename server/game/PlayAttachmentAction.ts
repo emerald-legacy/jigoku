@@ -47,8 +47,8 @@ export class PlayAttachmentAction extends PlayCardSourceAction {
     }
 
     displayMessage(context: AbilityContext) {
-        const t = context.target as BaseCard;
-        const target = t.type === CardType.Province && t.isFacedown() ? t.location : t;
+        const t = context.target;
+        const target = t && t.type === CardType.Province && t.isFacedown() ? t.location : t;
         context.game.addMessage('{0} plays {1}, attaching it to {2}', context.player, context.source, target);
     }
 

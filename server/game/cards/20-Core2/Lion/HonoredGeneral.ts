@@ -11,12 +11,10 @@ export default class HonoredGeneral extends DrawCard {
             effect: AbilityDsl.effects.modifyMilitarySkill(1)
         });
 
-        this.reaction({
-            title: 'Honor this character',
-            when: {
+        this.reaction('Honor this character')
+            .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
-            },
-            gameAction: AbilityDsl.actions.honor()
-        });
+            })
+            .gameAction(AbilityDsl.actions.honor());
     }
 }

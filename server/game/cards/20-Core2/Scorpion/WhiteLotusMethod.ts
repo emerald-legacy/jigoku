@@ -1,59 +1,50 @@
-import { CardType, CharacterStatus, Players, TargetMode } from '../../../Constants.js';
-import type { StatusToken } from '../../../StatusToken.js';
+import { CardType, CharacterStatus, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
 
 const TOKEN = 'token';
 const RECIPIENT = 'recipient';
 
-function doesCardDraw(context: AbilityContext) {
-    return (context.targets[RECIPIENT] as DrawCard).controller !== context.source.controller;
+function doesCardDraw(recipient: DrawCard, source: DrawCard) {
+    return recipient.controller !== source.controller;
 }
 
 export default class WhiteLotusMethod extends DrawCard {
     static id = 'white-lotus-method';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Move a status token',
-            condition: (context) => context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('courtier')),
-            targets: {
-                [TOKEN]: {
-                    activePromptTitle: 'Choose the status token to move',
-                    mode: TargetMode.Token,
-                    cardType: CardType.Character,
-                    tokenCondition: (token: StatusToken) => token.grantedStatus === CharacterStatus.Dishonored
-                },
-                [RECIPIENT]: {
-                    activePromptTitle: 'Choose a Character to receive the token',
-                    dependsOn: TOKEN,
-                    cardType: CardType.Character,
-                    controller: Players.Any,
-                    cardCondition: (card) => card.isOrdinary(),
-                    gameAction: AbilityDsl.actions.sequentialContext((context) => ({
-                        gameActions: [
-                            AbilityDsl.actions.moveStatusToken({
-                                target: context.tokens[TOKEN],
-                                recipient: context.targets[RECIPIENT] as DrawCard
-                            }),
-                            AbilityDsl.actions.conditional({
-                                condition: doesCardDraw,
-                                trueGameAction: AbilityDsl.actions.draw((context) => ({
-                                    amount: 1,
-                                    target: (context.targets[RECIPIENT] as DrawCard).controller
-                                })),
-                                falseGameAction: AbilityDsl.actions.noAction()
-                            })
-                        ]
-                    }))
-                }
-            },
-            effect: 'move a status token to {1}{2}',
-            effectArgs: (context) => [
+        this.action('Move a status token')
+            .condition((context) => context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('courtier')))
+            .tokenTarget(TOKEN, {
+                activePromptTitle: 'Choose the status token to move',
+                cardType: CardType.Character,
+                tokenCondition: (token) => token.grantedStatus === CharacterStatus.Dishonored
+            })
+            .target(RECIPIENT, {
+                activePromptTitle: 'Choose a Character to receive the token',
+                dependsOn: TOKEN,
+                cardType: CardType.Character,
+                controller: Players.Any,
+                cardCondition: (card) => card.isOrdinary()
+            }, AbilityDsl.actions.sequentialContext((context) => ({
+                gameActions: [
+                    AbilityDsl.actions.moveStatusToken({
+                        target: context.tokens[TOKEN],
+                        recipient: context.targets[RECIPIENT]
+                    }),
+                    AbilityDsl.actions.conditional({
+                        condition: () => doesCardDraw(context.targets[RECIPIENT], context.source),
+                        trueGameAction: AbilityDsl.actions.draw(() => ({
+                            amount: 1,
+                            target: context.targets[RECIPIENT].controller
+                        })),
+                        falseGameAction: AbilityDsl.actions.noAction()
+                    })
+                ]
+            })))
+            .effect('move a status token to {1}{2}', (context) => [
                 context.targets[RECIPIENT],
-                doesCardDraw(context) ? ', their controller draws a card' : ''
-            ]
-        });
+                doesCardDraw(context.targets[RECIPIENT], context.source) ? ', their controller draws a card' : ''
+            ]);
     }
 }

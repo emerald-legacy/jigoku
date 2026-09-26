@@ -8,7 +8,7 @@ export interface TakeRingProperties extends RingActionProperties {
     takeFate?: boolean;
 }
 
-export class TakeRingAction<C extends AbilityContext = AbilityContext> extends RingAction<TakeRingProperties, EventName, C> {
+export class TakeRingAction<C extends AbilityContext = AbilityContext> extends RingAction<TakeRingProperties, EventName.OnTakeRing, C> {
     name = 'takeFate';
     eventName = EventName.OnTakeRing;
     effect = 'take {0}';

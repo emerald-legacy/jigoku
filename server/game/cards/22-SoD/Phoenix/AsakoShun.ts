@@ -16,18 +16,17 @@ export default class AsakoShun extends DrawCard {
     static id = 'asako-shun';
 
     setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Give a skill penalty to a participating character',
-            condition: (context) => context.source.isParticipating(),
-            target: {
+        this.action('Give a skill penalty to a participating character')
+            .condition((context) => context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                    effect: AbilityDsl.effects.modifyBothSkills(penalty(context))
-                }))
-            },
-            then: (context) => ({
+                cardCondition: (card) => card.isParticipating()
+            }, AbilityDsl.actions.cardLastingEffect((context) => ({
+                effect: AbilityDsl.effects.modifyBothSkills(penalty(context))
+            })))
+            .effect('give {4} {1}{2} and {1}{3}', (context) => [penalty(context), 'military', 'political', context.target ?? ''])
+            .then((context) => ({
                 thenCondition: () => {
                     const conflict = context?.game.currentConflict;
                     const target = context?.target;
@@ -39,9 +38,6 @@ export default class AsakoShun extends DrawCard {
                 }),
                 message: '{4} gains 1 honor because {3} is not contributing skill to the current conflict',
                 messageArgs: () => [context?.target, context?.player]
-            }),
-            effect: 'give {4} {1}{2} and {1}{3}',
-            effectArgs: (context) => [penalty(context), 'military', 'political', context.target ?? '']
-        });
+            }));
     }
 }

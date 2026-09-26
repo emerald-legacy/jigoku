@@ -20,38 +20,34 @@ export default class TheRushingWave extends DrawCard {
     static id = 'the-rushing-wave';
 
     setupCardAbilities() {
-        this.action<ProvinceCard>({
-            title: 'Set a province to zero strength',
-            condition: (context) =>
+        this.action('Set a province to zero strength')
+            .condition((context) =>
                 context.player.cardsInPlay.some(
                     (card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja')
-                ),
-            target: {
+                ))
+            .target('target', {
                 location: Location.Provinces,
-                cardType: CardType.Province,
-                gameAction: AbilityDsl.actions.onAffinity<ProvinceCard>({
-                    trait: 'water',
-                    gameAction: AbilityDsl.actions.cardLastingEffect(({ target }: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
-                        target: target.controller.getProvinces(
-                            (province: ProvinceCard) =>
-                                target.location === province.location ||
+                cardType: CardType.Province
+            }, AbilityDsl.actions.onAffinity({
+                trait: 'water',
+                gameAction: AbilityDsl.actions.cardLastingEffect(({ target }: ResolvedAbilityContext<DrawCard, ProvinceCard>) => ({
+                    target: target.controller.getProvinces(
+                        (province: ProvinceCard) =>
+                            target.location === province.location ||
                                 target.controller.areLocationsAdjacent(target.location, province.location)
-                        ),
-                        targetLocation: Location.Provinces,
-                        duration: Duration.UntilEndOfPhase,
-                        effect: AbilityDsl.effects.setProvinceStrength(0)
-                    })),
-                    noAffinityGameAction: AbilityDsl.actions.cardLastingEffect({
-                        targetLocation: Location.Provinces,
-                        duration: Duration.UntilEndOfPhase,
-                        effect: AbilityDsl.effects.setProvinceStrength(0)
-                    }),
-                    effect: 'also set the strength of {0} to 0',
-                    effectArgs: (context) => [context.target ? adjacentProvinces(context.target as ProvinceCard) : []]
-                })
-            },
-            effect: 'set {1}\'s strength to 0 until the end of the phase',
-            effectArgs: (context) => [context.target ? provinceLog(context.target) : '']
-        });
+                    ),
+                    targetLocation: Location.Provinces,
+                    duration: Duration.UntilEndOfPhase,
+                    effect: AbilityDsl.effects.setProvinceStrength(0)
+                })),
+                noAffinityGameAction: AbilityDsl.actions.cardLastingEffect({
+                    targetLocation: Location.Provinces,
+                    duration: Duration.UntilEndOfPhase,
+                    effect: AbilityDsl.effects.setProvinceStrength(0)
+                }),
+                effect: 'also set the strength of {0} to 0',
+                effectArgs: (context) => [context.target?.isProvinceCard() ? adjacentProvinces(context.target) : []]
+            }))
+            .effect('set {1}\'s strength to 0 until the end of the phase', (context) => [context.target ? provinceLog(context.target) : '']);
     }
 }

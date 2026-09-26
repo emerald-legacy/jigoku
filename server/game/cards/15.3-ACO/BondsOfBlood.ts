@@ -6,19 +6,17 @@ class BondsOfBlood extends DrawCard {
     static id = 'bonds-of-blood';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Send a character home',
-            cost: AbilityDsl.costs.dishonor({ cardCondition: card => card.isParticipating() }),
-            target: {
+        this.action('Send a character home')
+            .cost(AbilityDsl.costs.dishonor({ cardCondition: card => card.isParticipating() }))
+            .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.allowGameAction('sendHome', context)
-            },
-            cannotTargetFirst: true,
-            gameAction: AbilityDsl.actions.multiple([
+            })
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.sendHome(context => ({target: context.target })),
-                AbilityDsl.actions.sendHome(context => ({target: context.costs.dishonor as DrawCard }))
-            ])
-        });
+                AbilityDsl.actions.sendHome(context => ({target: context.costs.dishonor }))
+            ]))
+            .cannotTargetFirst();
     }
 
     isTemptationsMaho() {

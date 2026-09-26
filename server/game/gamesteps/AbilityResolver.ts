@@ -6,9 +6,7 @@ import { Location, Stage, CardType, EventName } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from '../Events/Event.js';
 import type BaseAbility from '../BaseAbility.js';
-import type CardAbility from '../CardAbility.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type DrawCard from '../DrawCard.js';
 
 type AbilityResolverTarget = Parameters<BaseAbility['resolveRemainingTargets']>[1];
 
@@ -30,6 +28,8 @@ interface AbilityResolverCostResults {
     playCosts: boolean;
     triggerCosts: boolean;
 }
+
+const snapshotTypes: readonly string[] = [CardType.Character, CardType.Holding, CardType.Attachment];
 
 class AbilityResolver extends BaseStepWithPipeline {
     context: AbilityContext;
@@ -67,8 +67,9 @@ class AbilityResolver extends BaseStepWithPipeline {
     }
 
     createSnapshot() {
-        if([CardType.Character, CardType.Holding, CardType.Attachment].includes(this.context.source.getType() as CardType)) {
-            this.context.cardStateWhenInitiated = (this.context.source as DrawCard).createSnapshot();
+        const source = this.context.source;
+        if(snapshotTypes.includes(source.getType()) && source.isDrawCard()) {
+            this.context.cardStateWhenInitiated = source.createSnapshot();
         }
     }
 
@@ -76,24 +77,23 @@ class AbilityResolver extends BaseStepWithPipeline {
         if(this.cancelled) {
             return;
         }
-        let eventName = EventName.OnAbilityResolverInitiated;
-        let eventProps: Record<string, unknown> = {
-            context: this.context
-        };
-        if(this.context.ability.isCardAbility()) {
-            eventName = EventName.OnCardAbilityInitiated;
-            eventProps = {
+        const initiate = () => this.queueInitiateAbilitySteps();
+        const initiateEvent: Event = this.context.ability.isCardAbility()
+            ? this.game.getEvent(EventName.OnCardAbilityInitiated, {
                 card: this.context.source,
                 ability: this.context.ability,
                 context: this.context
-            };
-            if(this.context.ability.isCardPlayed()) {
+            }, initiate)
+            : this.game.getEvent(EventName.OnAbilityResolverInitiated, { context: this.context }, initiate);
+        if(this.context.ability.isCardAbility()) {
+            const source = this.context.source;
+            if(this.context.ability.isCardPlayed() && source.isDrawCard()) {
                 this.events.push(this.game.getEvent(EventName.OnCardPlayed, {
                     player: this.context.player,
-                    card: this.context.source,
+                    card: source,
                     context: this.context,
-                    originalLocation: this.context.source.location,
-                    originallyOnTopOfConflictDeck: this.context.player && this.context.player.conflictDeck && this.context.player.conflictDeck[0] === this.context.source,
+                    originalLocation: source.location,
+                    originallyOnTopOfConflictDeck: this.context.player && this.context.player.conflictDeck && this.context.player.conflictDeck[0] === source,
                     onPlayCardSource: this.context.onPlayCardSource,
                     playType: this.context.playType,
                     resolver: this
@@ -107,7 +107,7 @@ class AbilityResolver extends BaseStepWithPipeline {
                 }));
             }
         }
-        this.events.push(this.game.getEvent(eventName, eventProps, () => this.queueInitiateAbilitySteps()));
+        this.events.push(initiateEvent);
         this.game.queueStep(new InitiateAbilityEventWindow(this.game, this.events));
     }
 
@@ -124,7 +124,7 @@ class AbilityResolver extends BaseStepWithPipeline {
 
     resolveEarlyTargets() {
         this.context.stage = Stage.PreTarget;
-        if(!(this.context.ability as CardAbility).cannotTargetFirst) {
+        if(!this.context.ability.cannotTargetFirst) {
             this.targetResults = this.context.ability.resolveTargets(this.context);
         }
     }
@@ -206,23 +206,25 @@ class AbilityResolver extends BaseStepWithPipeline {
             return;
         }
 
-        if(this.context.ability.isCardPlayed()) {
-            if((this.context.source as DrawCard).isLimited()) {
+        const source = this.context.source;
+        // a played card is always a draw card
+        if(this.context.ability.isCardPlayed() && source.isDrawCard()) {
+            if(source.isLimited()) {
                 this.context.player.limitedPlayed += 1;
             }
             if(this.game.currentConflict) {
-                this.game.currentConflict.addCardPlayed(this.context.player, this.context.source as DrawCard);
+                this.game.currentConflict.addCardPlayed(this.context.player, source);
             }
         }
 
         // Increment limits (limits aren't used up on cards in hand)
-        const cardAbility = this.context.ability as CardAbility;
-        if(cardAbility.limit && this.context.source.location !== Location.Hand &&
-           (!this.context.cardStateWhenInitiated || this.context.cardStateWhenInitiated.location === this.context.source.location)) {
-            cardAbility.limit.increment(this.context.player);
+        const { limit, max, maxIdentifier } = this.context.ability;
+        if(limit && source.location !== Location.Hand &&
+           (!this.context.cardStateWhenInitiated || this.context.cardStateWhenInitiated.location === source.location)) {
+            limit.increment(this.context.player);
         }
-        if(cardAbility.max) {
-            this.context.player.incrementAbilityMax(cardAbility.maxIdentifier);
+        if(max && maxIdentifier !== undefined) {
+            this.context.player.incrementAbilityMax(maxIdentifier);
         }
         this.context.ability.displayMessage(this.context);
 

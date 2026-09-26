@@ -6,18 +6,16 @@ class YasukiTaka extends DrawCard {
     static id = 'yasuki-taka';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Gain fate',
-            when: {
+        this.reaction('Gain fate')
+            .when({
                 onCardLeavesPlay: event => {
                     const state = event.cardStateWhenLeftPlay;
                     return this.game.currentPhase === Phases.Conflict && !!state && state.isFaction('crab') &&
                         state.type === CardType.Character && state.location === Location.PlayArea;
                 }
-            },
-            limit: ability.limit.perPhase(Infinity),
-            gameAction: ability.actions.gainFate()
-        });
+            })
+            .gameAction(ability.actions.gainFate())
+            .limit(ability.limit.perPhase(Infinity));
     }
 }
 

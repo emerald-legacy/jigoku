@@ -3,12 +3,12 @@ import type BaseCard from '../../BaseCard.js';
 import type Player from '../../Player.js';
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { TargetMode, Location, Players, CardType } from '../../Constants.js';
+import { Location, Players, CardType } from '../../Constants.js';
 import { GameModes } from '../../../GameModes.js';
 
 class CardWrapper {
     dynastyCard: BaseCard;
-    targetLocation: string | null;
+    targetLocation: Location | null;
     constructor(card: BaseCard) {
         this.dynastyCard = card;
         this.targetLocation = null;
@@ -24,28 +24,23 @@ class GovernorsSpy extends DrawCard {
     setupCardAbilities() {
         this.dynastyCards = [];
         this.unplacedDynastyCards = [];
-        this.action({
-            title: 'Flip a player\'s dynasty cards facedown and rearrange them',
-            condition: (context) => context.source.isParticipating(),
-            target: {
-                mode: TargetMode.Select,
-                targets: true,
-                choices: {
-                    [this.owner.name]: AbilityDsl.actions.handler({
-                        handler: (context: AbilityContext) => this.governorHandler(context, this.owner)
-                    }),
-                    [(this.owner.opponent && this.owner.opponent.name) || 'NA']: AbilityDsl.actions.handler({
-                        handler: (context: AbilityContext) => {
-                            if(this.owner.opponent) {
-                                this.governorHandler(context, this.owner.opponent);
-                            }
+        this.action('Flip a player\'s dynasty cards facedown and rearrange them')
+            .condition((context) => context.source.isParticipating())
+            .select('target', {
+                targets: true
+            }, {
+                [this.owner.name]: AbilityDsl.actions.handler({
+                    handler: (context: AbilityContext) => this.governorHandler(context, this.owner)
+                }),
+                [(this.owner.opponent && this.owner.opponent.name) || 'NA']: AbilityDsl.actions.handler({
+                    handler: (context: AbilityContext) => {
+                        if(this.owner.opponent) {
+                            this.governorHandler(context, this.owner.opponent);
                         }
-                    })
-                }
-            },
-            effect: 'turn facedown and rearrange all of {1}\'s dynasty cards',
-            effectArgs: (context) => (context.select === this.owner.name ? this.owner : this.owner.opponent) as Player
-        });
+                    }
+                })
+            })
+            .effect('turn facedown and rearrange all of {1}\'s dynasty cards', (context) => (context.select === this.owner.name ? this.owner : this.owner.opponent));
     }
 
     governorHandler(context: AbilityContext, targetPlayer: Player) {
@@ -111,7 +106,9 @@ class GovernorsSpy extends DrawCard {
 
     governorMoveCards(context: AbilityContext, targetPlayer: Player) {
         this.dynastyCards.forEach((card: CardWrapper) => {
-            targetPlayer.moveCard(card.dynastyCard, card.targetLocation as Location);
+            if(card.targetLocation) {
+                targetPlayer.moveCard(card.dynastyCard, card.targetLocation);
+            }
         });
         let emptyLocations = this.getEmptyProvinces(this.dynastyCards);
         emptyLocations.forEach((location) => {

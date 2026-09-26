@@ -11,10 +11,8 @@ export default class SecondWind extends DrawCard {
     static id = 'second-wind';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'put a character from your discard pile into play',
-            cannotTargetFirst: true,
-            gameAction: AbilityDsl.actions.sequential([
+        this.action('put a character from your discard pile into play')
+            .gameAction(AbilityDsl.actions.sequential([
                 AbilityDsl.actions.discardCard((context) => ({
                     target: cardsToDiscard(context)
                 })),
@@ -41,9 +39,8 @@ export default class SecondWind extends DrawCard {
                         '{0} puts {1} into play. {1} will be put on the bottom of the deck if it\'s still in play by the end of the conflict',
                     messageArgs: (card) => [context.player, card, context.source]
                 }))
-            ]),
-            effect: 'find a character to put into play. {1} discards {2}',
-            effectArgs: (context) => [context.player, cardsToDiscard(context)]
-        });
+            ]))
+            .effect('find a character to put into play. {1} discards {2}', (context) => [context.player, cardsToDiscard(context)])
+            .cannotTargetFirst();
     }
 }

@@ -14,9 +14,8 @@ class AsakoReina extends DrawCard {
     static id = 'asako-reina';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Gain boons based based on your currently claimed rings',
-            gameAction: AbilityDsl.actions.multiple([
+        this.action('Gain boons based based on your currently claimed rings')
+            .gameAction(AbilityDsl.actions.multiple([
                 AbilityDsl.actions.gainHonor(context => ({
                     target: context.player,
                     amount: context.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player) ? 1 : 0
@@ -54,10 +53,8 @@ class AsakoReina extends DrawCard {
                     })),
                     falseGameAction: AbilityDsl.actions.draw(() => ({ amount: 0 }))
                 })
-            ]),
-            effect: '{1}',
-            effectArgs: context => [this.createEffectMessage(context)]
-        });
+            ]))
+            .effect('{1}', context => [this.createEffectMessage(context)]);
     }
 
     createEffectMessage(context: AbilityContext) {

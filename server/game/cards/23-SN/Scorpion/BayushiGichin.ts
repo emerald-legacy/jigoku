@@ -1,25 +1,21 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, DuelType, Players, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import { Duel } from '../../../Duel.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 
 export default class BayushiGichin extends DrawCard {
     static id = 'bayushi-gichin';
 
     setupCardAbilities() {
-        this.duelStrike({
-            title: 'Poison a character',
-            duelCondition: (duel, context) => duel.participants.includes(context.source),
-            gameAction: AbilityDsl.actions.sequentialContext(context => ({
+        this.duelStrike('Poison a character', (duel, context) => duel.participants.includes(context.source))
+            .gameAction(AbilityDsl.actions.sequentialContext(context => ({
                 gameActions: [
                     AbilityDsl.actions.selectCard({
                         activePromptTitle: 'Choose a duel participant',
                         cardType: CardType.Character,
                         controller: Players.Opponent,
                         cardCondition: (card) => {
-                            if(!((context as TriggeredAbilityContext).event.duel as Duel).isInvolved(card)) {
+                            if(!context.event.duel?.isInvolved(card)) {
                                 return false;
                             }
                             const poisons = this.getPoisons(context);
@@ -58,22 +54,19 @@ export default class BayushiGichin extends DrawCard {
                         };
                     })
                 ]
-            })),
-            limit: AbilityDsl.limit.unlimitedPerConflict()
-        });
+            })))
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
 
-        this.conflictAction({
-            title: 'Military duel to steal honor',
-            initiateDuel: {
+        this.conflictAction('Military duel to steal honor')
+            .initiateDuel(() => ({
                 type: DuelType.Military,
                 gameAction: (duel, context) => {
-                    if(duel.winner?.includes(context.source as DrawCard)) {
+                    if(context.source.isDrawCard() && duel.winner?.includes(context.source)) {
                         return AbilityDsl.actions.takeHonor({ target: duel.loserController });
                     }
                     return AbilityDsl.actions.noAction();
                 }
-            }
-        });
+            }));
     }
 
     getPoisons(context: AbilityContext) {

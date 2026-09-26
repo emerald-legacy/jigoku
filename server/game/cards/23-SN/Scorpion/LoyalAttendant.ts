@@ -1,23 +1,20 @@
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 import { shuffle } from '../../../utils/shuffle.js';
 
 export default class LoyalAttendant extends DrawCard {
     static id = 'loyal-attendant';
 
     public setupCardAbilities() {
-        this.conflictAction({
-            title: 'Discard a card',
-            target: {
+        this.conflictAction('Discard a card')
+            .target('target', {
                 controller: Players.Opponent,
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card.attachments.filter(a => a.controller === context.player).length > 0
-            },
-            gameAction: AbilityDsl.actions.multipleContext((context: AbilityContext<this>) => {
-                let cardNumber = (context.target as DrawCard).attachments.length;
+            })
+            .gameAction(AbilityDsl.actions.multipleContext((context) => {
+                let cardNumber = context.target.attachments.length;
                 let cards = cardNumber
                     ? shuffle(context.player.opponent?.hand ?? []).slice(0, cardNumber)
                     : [context.source];
@@ -35,13 +32,11 @@ export default class LoyalAttendant extends DrawCard {
                         }))
                     ]
                 };
-            }),
-            effect: 'look at {2} random cards in {1}\'s hand and discard one of them',
-            effectArgs: (context) => [
-                context.player.opponent as Player,
-                (context.target as DrawCard)?.attachments?.length
-            ],
-            max: AbilityDsl.limit.perConflict(1)
-        });
+            }))
+            .effect('look at {2} random cards in {1}\'s hand and discard one of them', (context) => [
+                context.player.opponent,
+                context.target?.attachments?.length
+            ])
+            .max(AbilityDsl.limit.perConflict(1));
     }
 }

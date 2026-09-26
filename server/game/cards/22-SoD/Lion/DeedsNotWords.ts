@@ -7,32 +7,30 @@ export default class DeedsNotWords extends DrawCard {
     static id = 'deeds-not-words';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Give a character +2 mil',
-
-            target: {
+        this.action('Give a character +2 mil')
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card, _context) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.cardLastingEffect(_context => ({
-                        effect: AbilityDsl.effects.modifyMilitarySkill(2)
-                    })),
-                    AbilityDsl.actions.playerLastingEffect(context => ({
-                        targetController: context.player,
-                        effect: AbilityDsl.effects.delayedEffect({
-                            when: {
-                                afterConflict: (event: EventPayload<EventName.AfterConflict>) =>
-                                    context.player === event.conflict.winner
-                            },
-                            gameAction: AbilityDsl.actions.claimImperialFavor(() => ({ target: context.player })),
-                            message: '{0} claims the Imperial Favor to the delayed effect of {1}',
-                            messageArgs: [context.player, context.source]
-                        })
-                    }))
-                ])
-            },
-            then: context => ({
+                cardCondition: (card, _context) => card.isParticipating()
+            }, AbilityDsl.actions.sequential([
+                AbilityDsl.actions.cardLastingEffect(_context => ({
+                    effect: AbilityDsl.effects.modifyMilitarySkill(2)
+                })),
+                AbilityDsl.actions.playerLastingEffect(context => ({
+                    targetController: context.player,
+                    effect: AbilityDsl.effects.delayedEffect({
+                        when: {
+                            afterConflict: (event: EventPayload<EventName.AfterConflict>) =>
+                                context.player === event.conflict.winner
+                        },
+                        gameAction: AbilityDsl.actions.claimImperialFavor(() => ({ target: context.player })),
+                        message: '{0} claims the Imperial Favor to the delayed effect of {1}',
+                        messageArgs: [context.player, context.source]
+                    })
+                }))
+            ]))
+            .effect('give {0} +2{1}', _context => ['military'])
+            .then(context => ({
                 thenCondition: () => !!context && context.player.imperialFavor !== '',
                 target: {
                     mode: TargetMode.Select,
@@ -48,9 +46,6 @@ export default class DeedsNotWords extends DrawCard {
                         'Done': () => true
                     }
                 }
-            }),
-            effect: 'give {0} +2{1}',
-            effectArgs: _context => ['military']
-        });
+            }));
     }
 }

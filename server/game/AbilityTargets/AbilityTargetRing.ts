@@ -3,10 +3,8 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type Ring from '../Ring.js';
 import type Player from '../Player.js';
 import type { GameAction } from '../GameActions/GameAction.js';
+import type { DependentTarget, OwningAbility } from '../BaseAbility.js';
 
-interface OwningAbility {
-    targets: { name: string }[];
-}
 
 interface AbilityTargetRingProperties {
     gameAction: GameAction[];
@@ -34,7 +32,7 @@ class AbilityTargetRing {
     name: string;
     properties: AbilityTargetRingProperties;
     ringCondition: (ring: Ring, context: AbilityContext) => boolean;
-    dependentTarget: AbilityTargetRing | null;
+    dependentTarget: DependentTarget | null;
     dependentCost: { canPay(context: AbilityContext): boolean } | null;
 
     constructor(name: string, properties: AbilityTargetRingProperties, ability: OwningAbility) {
@@ -53,14 +51,14 @@ class AbilityTargetRing {
                    properties.ringCondition(ring, contextCopy) && (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy));
         };
         for(let gameAction of this.properties.gameAction) {
-            gameAction.getDefaultTargets = (context: AbilityContext) => context.rings[name];
+            gameAction.setDefaultTarget((context: AbilityContext) => context.rings[name]);
         }
         this.dependentTarget = null;
         this.dependentCost = null;
         if(this.properties.dependsOn) {
             let dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
             if(dependsOnTarget) {
-                (dependsOnTarget as AbilityTargetRing).dependentTarget = this;
+                dependsOnTarget.dependentTarget = this;
             }
         }
     }
@@ -126,6 +124,10 @@ class AbilityTargetRing {
                 return true;
             }
         };
+        if(!player) {
+            // a solo game has no opponent to choose
+            return;
+        }
         context.game.promptForRingSelect(player, Object.assign({}, promptProperties, this.properties));
     }
 
@@ -134,16 +136,19 @@ class AbilityTargetRing {
         if(!selected || context.choosingPlayerOverride && this.getChoosingPlayer(context) === context.player) {
             return false;
         }
-        return this.properties.optional && Array.isArray(selected) && selected.length === 0 ||
-            this.properties.ringCondition(selected as Ring, context);
+        // a skipped optional target holds []
+        if(Array.isArray(selected)) {
+            return !!this.properties.optional && selected.length === 0;
+        }
+        return this.properties.ringCondition(selected, context);
     }
 
-    getChoosingPlayer(context: AbilityContext): Player {
+    getChoosingPlayer(context: AbilityContext): Player | undefined {
         let playerProp = this.properties.player;
         if(typeof playerProp === 'function') {
             playerProp = playerProp(context);
         }
-        return playerProp === Players.Opponent ? (context.player.opponent as Player) : context.player;
+        return playerProp === Players.Opponent ? context.player.opponent : context.player;
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {

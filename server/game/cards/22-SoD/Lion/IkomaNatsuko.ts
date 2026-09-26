@@ -6,18 +6,14 @@ export default class IkomaNatsuko extends DrawCard {
     static id = 'ikoma-natsuko';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow and send home a participating character',
-
-            condition: (context) => context.source.isParticipating(),
-            cost: AbilityDsl.costs.discardImperialFavor(),
-            target: {
+        this.action('Bow and send home a participating character')
+            .cost(AbilityDsl.costs.discardImperialFavor())
+            .condition((context) => context.source.isParticipating())
+            .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: card => card.isParticipating(),
-                gameAction: [AbilityDsl.actions.bow(), AbilityDsl.actions.sendHome()]
-            },
-            effect: 'bow and send {0} home'
-        });
+                cardCondition: card => card.isParticipating()
+            }, AbilityDsl.actions.bow(), AbilityDsl.actions.sendHome())
+            .effect('bow and send {0} home');
     }
 }

@@ -11,17 +11,14 @@ export default class AbandoningHonor extends ProvinceCard {
             effect: AbilityDsl.effects.modifyProvinceStrength(2)
         });
 
-        this.interrupt({
-            title: 'Choose a dishonored character',
-            when: {
+        this.interrupt('Choose a dishonored character')
+            .when({
                 onBreakProvince: (event, context) =>
                     event.card === context.source && context.player.opponent !== undefined
-            },
-            target: {
+            })
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isDishonored,
-                gameAction: AbilityDsl.actions.discardFromPlay()
-            }
-        });
+                cardCondition: (card) => card.isDishonored
+            }, AbilityDsl.actions.discardFromPlay());
     }
 }

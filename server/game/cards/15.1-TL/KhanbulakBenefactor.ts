@@ -14,13 +14,11 @@ class KhanbulakBenefactor extends DrawCard {
             })
         });
 
-        this.reaction({
-            title: 'Draw 2 cards',
-            when: {
+        this.reaction('Draw 2 cards')
+            .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
-            },
-            gameAction: AbilityDsl.actions.draw({ amount: 2 })
-        });
+            })
+            .gameAction(AbilityDsl.actions.draw({ amount: 2 }));
     }
 }
 

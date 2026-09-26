@@ -1,38 +1,39 @@
+import type { Cost } from '../../costs/Cost.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import type BaseCard from '../../BaseCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import type { Result } from '../../costs/Cost.js';
 import { Location, TargetMode, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { Event } from '../../Events/Event.js';
 
-const merchantOfCuriositiesCost = function () {
+const merchantOfCuriositiesCost = function (): Cost<{ merchantOfCuriositiesCostPaid: boolean; merchantOfCuriositiesCostDiscardedCard: DrawCard }> {
     return {
         canPay: function () {
             return true;
         },
-        resolve: function (context: AbilityContext, result: Result) {
+        resolve: function (context, result: Result) {
+            const opponent = context.player.opponent;
             let honorAvailable = true;
             let cardAvailable = true;
-            if(!context.player.opponent || !context.game.actions.loseHonor().canAffect(context.player.opponent, context) || !context.game.actions.gainHonor().canAffect(context.player, context)) {
+            if(!opponent || !context.game.actions.loseHonor().canAffect(opponent, context) || !context.game.actions.gainHonor().canAffect(context.player, context)) {
                 honorAvailable = false;
             }
 
-            if(!context.player.opponent || !context.game.actions.chosenDiscard().canAffect(context.player.opponent, context)) {
+            if(!opponent || !context.game.actions.chosenDiscard().canAffect(opponent, context)) {
                 cardAvailable = false;
             }
 
             context.costs.merchantOfCuriositiesCostPaid = false;
-            if(honorAvailable && cardAvailable) {
-                context.game.promptWithHandlerMenu(context.player.opponent as Player, {
+            if(opponent && honorAvailable && cardAvailable) {
+                context.game.promptWithHandlerMenu(opponent, {
                     activePromptTitle: 'Give an honor and discard a card?',
                     source: context.source,
                     choices: ['Yes', 'No'],
                     handlers: [
                         () => {
                             context.costs.merchantOfCuriositiesCostPaid = true;
-                            context.game.promptForSelect(context.player.opponent as Player, {
+                            context.game.promptForSelect(opponent, {
                                 activePromptTitle: 'Choose a card to discard',
                                 context: context,
                                 mode: TargetMode.Single,
@@ -40,7 +41,9 @@ const merchantOfCuriositiesCost = function () {
                                 location: Location.Hand,
                                 controller: Players.Opponent,
                                 onSelect: (_player: Player, card: BaseCard) => {
-                                    context.costs.merchantOfCuriositiesCostDiscardedCard = card;
+                                    if(card.isDrawCard()) {
+                                        context.costs.merchantOfCuriositiesCostDiscardedCard = card;
+                                    }
                                     return true;
                                 },
                                 onCancel: () => {
@@ -54,14 +57,14 @@ const merchantOfCuriositiesCost = function () {
                 });
             }
         },
-        payEvent: function (context: AbilityContext) {
+        payEvent: function (context) {
             if(context.costs.merchantOfCuriositiesCostPaid) {
                 let events: Event[] = [];
 
-                let discardAction = context.game.actions.discardCard({ target: context.costs.merchantOfCuriositiesCostDiscardedCard as DrawCard });
+                let discardAction = context.game.actions.discardCard({ target: context.costs.merchantOfCuriositiesCostDiscardedCard });
                 events.push(discardAction.getEvent(context.costs.merchantOfCuriositiesCostDiscardedCard, context));
 
-                let honorAction = context.game.actions.takeHonor({ target: context.player.opponent as Player });
+                let honorAction = context.game.actions.takeHonor({ target: context.player.opponent });
                 events.push(honorAction.getEvent(context.player.opponent, context));
                 context.game.addMessage('{0} chooses to discard a card and give {1} 1 honor', context.player.opponent, context.player);
 
@@ -81,24 +84,20 @@ class MerchantOfCuriosities extends DrawCard {
     static id = 'merchant-of-curiosities';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Discard a card to draw a card',
-            cost: [
-                AbilityDsl.costs.discardCard(),
-                merchantOfCuriositiesCost()
-            ],
-            gameAction: AbilityDsl.actions.draw(context => ({
+        this.action('Discard a card to draw a card')
+            .cost(AbilityDsl.costs.discardCard())
+            .cost(merchantOfCuriositiesCost())
+            .gameAction(AbilityDsl.actions.draw(context => ({
                 target: context.costs.merchantOfCuriositiesCostPaid ? context.game.getPlayers() : context.player
-            })),
-            effect: 'draw a card{2}',
-            effectArgs: context => [context.costs.discardCard as BaseCard, this.buildString(context)]
-        });
+            })))
+            .effect('draw a card{2}', context => [context.costs.discardCard, this.buildString(context.player, context.costs.merchantOfCuriositiesCostDiscardedCard)]);
     }
 
-    buildString(context: AbilityContext) {
-        if(context.costs.merchantOfCuriositiesCostPaid) {
-            return '.  ' + (context.player.opponent as Player).name + ' gives ' + context.player.name + ' 1 honor to discard ' +
-                (context.costs.merchantOfCuriositiesCostDiscardedCard as DrawCard).name + ' and draw a card';
+    // the card is chosen only once the opponent agreed to pay
+    buildString(player: Player, discardedCard: DrawCard | undefined) {
+        if(player.opponent && discardedCard) {
+            return '.  ' + player.opponent.name + ' gives ' + player.name + ' 1 honor to discard ' +
+                discardedCard.name + ' and draw a card';
         }
         return '';
     }

@@ -1,6 +1,6 @@
 import { GamePipeline } from '../GamePipeline.js';
 import { BaseStep } from './BaseStep.js';
-import type { Step } from './Step.js';
+import type { MenuArg, Step } from './Step.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
@@ -24,7 +24,7 @@ export class BaseStepWithPipeline extends BaseStep implements Step {
         return this.pipeline.handleRingClicked(player, ring);
     }
 
-    onMenuCommand(player: Player, arg: string, uuid: string, method: string) {
+    onMenuCommand(player: Player, arg: MenuArg, uuid: string, method?: string | null) {
         return this.pipeline.handleMenuCommand(player, arg, uuid, method);
     }
 
@@ -36,7 +36,7 @@ export class BaseStepWithPipeline extends BaseStep implements Step {
         try {
             return this.pipeline.continue();
         } catch(e) {
-            this.game.reportError(e as Error);
+            this.game.reportError(e instanceof Error ? e : new Error(String(e)));
             return true;
         }
     }

@@ -6,15 +6,12 @@ class SteadfastWitchHunter extends DrawCard {
     static id = 'steadfast-witch-hunter';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Ready character',
-            cost: ability.costs.sacrifice({ cardType: CardType.Character }),
-            target: {
+        this.action('Ready character')
+            .cost(ability.costs.sacrifice({ cardType: CardType.Character }))
+            .target('target', {
                 activePromptTitle: 'Choose a character to ready',
-                cardType: CardType.Character,
-                gameAction: ability.actions.ready()
-            }
-        });
+                cardType: CardType.Character
+            }, ability.actions.ready());
     }
 }
 

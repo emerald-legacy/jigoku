@@ -3,22 +3,21 @@ import { Duration, EventName } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
-import type Player from '../../Player.js';
 class MercenaryCompany extends DrawCard {
     static id = 'mercenary-company';
 
     setupCardAbilities() {
-        this.forcedReaction({
-            title: 'Give control of this character',
-            when: {
+        this.forcedReaction('Give control of this character')
+            .when({
                 afterConflict: (event: EventPayload<EventName.AfterConflict>, context) => !!context.player.opponent && event.conflict.loser === context.player && context.source.isParticipating()
                     && AbilityDsl.actions.loseFate().canAffect(context.player.opponent, context)
                     && AbilityDsl.actions.placeFate().canAffect(context.source, context)
-            },
-            gameAction: AbilityDsl.actions.handler({
+            })
+            .gameAction(AbilityDsl.actions.handler({
                 handler: context => {
                     const opponent = context.player.opponent;
-                    if(!opponent) {
+                    const source = context.source;
+                    if(!opponent || !source.isDrawCard()) {
                         return;
                     }
                     context.game.promptWithHandlerMenu(opponent, {
@@ -28,7 +27,7 @@ class MercenaryCompany extends DrawCard {
                         handlers: [
                             () => {
                                 opponent.modifyFate(-1);
-                                (context.source as DrawCard).modifyFate(1);
+                                source.modifyFate(1);
                                 context.source.lastingEffect(() => ({
                                     duration: Duration.Custom,
                                     effect: AbilityDsl.effects.takeControl(opponent)
@@ -41,11 +40,9 @@ class MercenaryCompany extends DrawCard {
                         ]
                     });
                 }
-            }),
-            effect: 'let {1} hire their services',
-            effectArgs: context => [context.player.opponent as Player],
-            limit: AbilityDsl.limit.unlimitedPerConflict()
-        });
+            }))
+            .effect('let {1} hire their services', context => [context.player.opponent])
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 
 }

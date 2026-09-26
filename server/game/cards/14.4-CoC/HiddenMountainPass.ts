@@ -7,17 +7,14 @@ class HiddenMountainPass extends DrawCard {
     static id = 'hidden-mountain-pass';
 
     setupCardAbilities() {
-        this.interrupt({
-            title: 'Flip this holding\'s province facedown',
-            when: {
+        this.interrupt('Flip this holding\'s province facedown')
+            .when({
                 onPhaseEnded: (event: EventPayload<EventName.OnPhaseEnded>, context) => event.phase === Phases.Conflict && !context.player.getProvinceCardInProvince(context.source.location)?.isBroken
-            },
-            gameAction: AbilityDsl.actions.turnFacedown(context => ({
+            })
+            .gameAction(AbilityDsl.actions.turnFacedown(context => ({
                 target: context.player.getProvinceCardInProvince(context.source.location)
-            })),
-            effect: 'Turn {1} facedown',
-            effectArgs: context => context.player.getProvinceCardInProvince(context.source.location)
-        });
+            })))
+            .effect('Turn {1} facedown', context => context.player.getProvinceCardInProvince(context.source.location));
     }
 }
 

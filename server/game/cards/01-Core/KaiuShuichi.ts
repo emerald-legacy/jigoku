@@ -5,12 +5,10 @@ class KaiuShuichi extends DrawCard {
     static id = 'kaiu-shuichi';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Gain 1 fate',
-            condition: context => !!(context.source.isParticipating() && (context.player.getNumberOfHoldingsInPlay() > 0 ||
-                                  (context.player.opponent && context.player.opponent.getNumberOfHoldingsInPlay() > 0))),
-            gameAction: ability.actions.gainFate()
-        });
+        this.action('Gain 1 fate')
+            .condition(context => !!(context.source.isParticipating() && (context.player.getNumberOfHoldingsInPlay() > 0 ||
+                                  (context.player.opponent && context.player.opponent.getNumberOfHoldingsInPlay() > 0))))
+            .gameAction(ability.actions.gainFate());
     }
 }
 

@@ -9,42 +9,39 @@ class PrepareForWar extends DrawCard {
     static id = 'prepare-for-war';
 
     setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Remove honor token and any attachment',
-            target: {
+        this.action('Remove honor token and any attachment')
+            .target('target', {
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.multipleContext<DrawCard>((context) => {
-                        const promptActions = this.getStatusTokenPrompts(context);
-                        return {
-                            gameActions: [
-                                AbilityDsl.actions.selectCard<DrawCard>((context) => ({
-                                    mode: TargetMode.Unlimited,
-                                    cardType: CardType.Attachment,
-                                    controller: Players.Any,
-                                    cardCondition: (card) => card.parentCharacter === context.target,
-                                    activePromptTitle: 'Choose any amount of attachments',
-                                    optional: true,
-                                    gameAction: AbilityDsl.actions.discardFromPlay(),
-                                    message: '{0} chooses to discard {1} from {2}',
-                                    messageArgs: (cards: DrawCard[]) => [
-                                        context.player,
-                                        cards.length === 0 ? 'no attachments' : cards,
-                                        context.target ?? ''
-                                    ]
-                                })),
-                                ...promptActions
-                            ]
-                        };
-                    }),
-                    AbilityDsl.actions.honor<DrawCard>((context) => ({
-                        target: context.target?.hasTrait('commander') ? context.target : []
-                    }))
-                ])
-            },
-            effect: '{1}{2} {0}',
-            effectArgs: (context) => {
+                controller: Players.Self
+            }, AbilityDsl.actions.sequential([
+                AbilityDsl.actions.multipleContext((context) => {
+                    const promptActions = this.getStatusTokenPrompts(context);
+                    return {
+                        gameActions: [
+                            AbilityDsl.actions.selectCard<DrawCard>((context) => ({
+                                mode: TargetMode.Unlimited,
+                                cardType: CardType.Attachment,
+                                controller: Players.Any,
+                                cardCondition: (card) => card.parentCharacter === context.target,
+                                activePromptTitle: 'Choose any amount of attachments',
+                                optional: true,
+                                gameAction: AbilityDsl.actions.discardFromPlay(),
+                                message: '{0} chooses to discard {1} from {2}',
+                                messageArgs: (cards: DrawCard[]) => [
+                                    context.player,
+                                    cards.length === 0 ? 'no attachments' : cards,
+                                    context.target ?? ''
+                                ]
+                            })),
+                            ...promptActions
+                        ]
+                    };
+                }),
+                AbilityDsl.actions.honor((context) => ({
+                    target: context.target?.hasTrait('commander') ? context.target : []
+                }))
+            ]))
+            .effect('{1}{2} {0}', (context) => {
                 const target = context.target;
                 if(!target) {
                     return ['', ''];
@@ -71,12 +68,11 @@ class PrepareForWar extends DrawCard {
                     }
                 }
                 return [honorMessage, discardMessage];
-            }
-        });
+            });
     }
 
     getStatusTokenPrompts(context: AbilityContext) {
-        const tokens = (context.target as DrawCard).statusTokens;
+        const tokens = context.target?.statusTokens ?? [];
         let prompts: GameAction[] = [];
         tokens.forEach((token: StatusToken) => {
             prompts.push(

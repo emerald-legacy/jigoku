@@ -6,17 +6,14 @@ export default class HeraldOfJustice extends DrawCard {
     static id = 'herald-of-justice';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Gain another military conflict',
-            effect: 'allow {1} to declare an additional military conflict this phase',
-            effectArgs: (context) => [context.player],
-            condition: (context) => context.game.currentPhase === Phases.Conflict,
-            cost: AbilityDsl.costs.sacrifice({ cardType: CardType.Character }),
-            gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
+        this.action('Gain another military conflict')
+            .cost(AbilityDsl.costs.sacrifice({ cardType: CardType.Character }))
+            .condition((context) => context.game.currentPhase === Phases.Conflict)
+            .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,
                 duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.additionalConflict(ConflictType.Military)
-            }))
-        });
+            })))
+            .effect('allow {1} to declare an additional military conflict this phase', (context) => [context.player]);
     }
 }

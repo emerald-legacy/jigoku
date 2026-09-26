@@ -16,24 +16,21 @@ export default class CeremonialRobes extends DrawCard {
     public setupCardAbilities() {
         this.persistentEffect({
             effect: AbilityDsl.effects.modifyGlory((_character: BaseCard, context: AbilityContext) =>
-                (context.player.cardsInPlay as BaseCard[]).reduce(
+                context.player.cardsInPlay.reduce(
                     (sum: number, card: BaseCard) => (card.type === CardType.Character && card.hasTrait('spirit') ? sum + 1 : sum),
                     0
                 )
             )
         });
 
-        this.action({
-            title: 'Place a card from your deck faceup on a province',
-            effect: 'look at the top 3 cards of their dynasty deck',
-            evenDuringDynasty: true,
-            target: {
+        this.action('Place a card from your deck faceup on a province')
+            .target('target', {
                 location: Location.Provinces,
                 cardType: CardType.Province,
                 cardCondition: (card) => card.location !== Location.StrongholdProvince,
                 controller: Players.Self
-            },
-            handler: (context) => {
+            })
+            .handler((context) => {
                 const ctx = context;
                 const top3Cards = ctx.player.dynastyDeck.slice(0, 3);
                 const steps: HandlerStep[] = [
@@ -41,14 +38,14 @@ export default class CeremonialRobes extends DrawCard {
                         activePromptTitle: 'Select a card to put into the province faceup',
                         message: '{0} places {1} into their province',
                         callback: (chosenCard) => {
-                            ctx.player.moveCard(chosenCard, (ctx.target as DrawCard).location);
+                            ctx.player.moveCard(chosenCard, ctx.target.location);
                             chosenCard.facedown = false;
                         }
                     },
                     {
                         activePromptTitle: 'Select a card to put on the bottom of the deck',
                         message: '{0} places a card on the bottom of the deck',
-                        callback: (chosenCard) => ctx.player.moveCard(chosenCard, 'dynasty deck bottom')
+                        callback: (chosenCard) => ctx.player.moveCard(chosenCard, Location.DynastyDeck, { bottom: true })
                     },
                     {
                         activePromptTitle: 'Select a card to discard',
@@ -71,8 +68,9 @@ export default class CeremonialRobes extends DrawCard {
                 ];
 
                 this.recursivePromptHandler(steps, ctx, top3Cards);
-            }
-        });
+            })
+            .effect('look at the top 3 cards of their dynasty deck')
+            .evenDuringDynasty();
     }
 
     private recursivePromptHandler(

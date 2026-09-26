@@ -7,16 +7,13 @@ class FromTheShadows extends DrawCard {
     static id = 'from-the-shadows';
 
     setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Put a shinobi character into the conflict from hand or a province, dishonored',
-            target: {
+        this.action('Put a shinobi character into the conflict from hand or a province, dishonored')
+            .target('target', {
                 cardType: CardType.Character,
                 location: [Location.Provinces, Location.Hand],
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('shinobi'),
-                gameAction: ability.actions.putIntoConflict({ status: 'dishonored' })
-            }
-        });
+                cardCondition: (card) => card.hasTrait('shinobi')
+            }, ability.actions.putIntoConflict({ status: 'dishonored' }));
     }
 
     canPlay(context: AbilityContext, type: string): boolean {

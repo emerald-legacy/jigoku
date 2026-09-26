@@ -1,4 +1,5 @@
 import { Location, Duration } from '../Constants.js';
+import type { EffectName } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAbility from '../BaseAbility.js';
 import type EffectSource from '../EffectSource.js';
@@ -6,23 +7,37 @@ import type { SourceWithState } from '../EffectSource.js';
 import type BaseCard from '../BaseCard.js';
 import type Game from '../Game.js';
 import type { GameObject } from '../GameObject.js';
-import type { WhenType } from '../Interfaces.js';
-import type StaticEffect from './StaticEffect.js';
+import type { EventName } from '../Constants.js';
+import type { GameEvent } from '../Events/EventPayloads.js';
+import type { EffectBase } from './EffectBase.js';
+import type Player from '../Player.js';
 
-export type EffectMatchFn = (target: GameObject, context?: AbilityContext) => boolean;
-export type EffectMatch = EffectMatchFn | GameObject;
+// Method syntax on purpose: a match function may take a narrower target type than its effect's targets.
+interface Matcher<T> {
+    match(target: T, context?: AbilityContext): boolean;
+}
+export type EffectMatchFn<T extends GameObject = GameObject> = Matcher<T>['match'];
+export type EffectMatch<T extends GameObject = GameObject> = EffectMatchFn<T> | T;
 
-export interface EffectProperties {
-    match?: EffectMatch;
+// Method syntax on purpose: cards narrow the event type.
+interface UntilCallback<N extends EventName> {
+    ends(event: GameEvent<N>): unknown;
+}
+/** Ends a custom-duration effect when one of these events happens and its callback returns true. */
+export type EffectUntil = { [N in EventName]?: UntilCallback<N>['ends'] };
+
+export interface EffectProperties<T extends GameObject = GameObject> {
+    match?: EffectMatch<T>;
     duration?: Duration;
-    until?: WhenType;
+    until?: EffectUntil;
     condition?: (context: AbilityContext) => boolean;
     location?: string;
     canChangeZoneOnce?: boolean;
     canChangeZoneNTimes?: number;
     ability?: BaseAbility;
     endingMessage?: string;
-    targetController?: string;
+    // a player, or which players relative to the source's controller
+    targetController?: string | Player;
     targetLocation?: Location | Location[];
     target?: GameObject | GameObject[];
     [key: string]: unknown;
@@ -54,27 +69,27 @@ export interface EffectProperties {
  *                    to match.  Card effects only.
  * effect           - object representing the effect to be applied.
  */
-class Effect {
+class Effect<T extends GameObject = GameObject> {
     game: Game;
     source: EffectSource;
-    match: EffectMatch;
-    duration: Duration;
-    until: WhenType;
+    match: EffectMatch<T>;
+    duration: Duration | undefined;
+    until: EffectUntil;
     condition: (context: AbilityContext) => boolean;
     location: string;
     canChangeZoneOnce: boolean;
     canChangeZoneNTimes: number;
-    effect: StaticEffect;
+    effect: EffectBase<EffectName, T>;
     ability: BaseAbility | undefined;
-    targets: GameObject[];
+    targets: T[];
     context!: AbilityContext;
     endingMessage: string | undefined;
 
-    constructor(game: Game, source: EffectSource, properties: EffectProperties, effect: StaticEffect) {
+    constructor(game: Game, source: EffectSource, properties: EffectProperties<T>, effect: EffectBase<EffectName, T>) {
         this.game = game;
         this.source = source;
         this.match = properties.match || (() => true);
-        this.duration = properties.duration as Duration;
+        this.duration = properties.duration;
         this.until = properties.until || {};
         this.condition = properties.condition || (() => true);
         this.location = properties.location || Location.PlayArea;
@@ -98,34 +113,22 @@ class Effect {
         this.effect.setContext(this.context);
     }
 
-    isValidTarget(_target: GameObject): boolean {
+    isValidTarget(_target: T): boolean {
         return true;
     }
 
-    getDefaultTarget(_context: AbilityContext): GameObject | null {
-        return null;
-    }
-
-    getTargets(): GameObject[] {
+    getTargets(_matchFn: EffectMatchFn<T>): T[] {
         return [];
     }
 
-    addTarget(target: GameObject) {
+    addTarget(target: T) {
         this.targets.push(target);
         this.effect.apply(target);
     }
 
-    removeTarget(target: GameObject) {
-        this.removeTargets([target]);
-    }
-
-    removeTargets(targets: GameObject[]) {
+    removeTargets(targets: T[]) {
         targets.forEach(target => this.effect.unapply(target));
         this.targets = this.targets.filter(t => !targets.includes(t));
-    }
-
-    hasTarget(target: GameObject): boolean {
-        return this.targets.includes(target);
     }
 
     cancel() {
@@ -156,7 +159,7 @@ class Effect {
             // Recalculate the effect for valid targets
             this.targets.forEach(target => stateChanged = this.effect.recalculate(target) || stateChanged);
             // Check for new targets
-            let newTargets = this.getTargets().filter(target => !this.targets.includes(target) && this.isValidTarget(target));
+            let newTargets = this.getTargets(matchFn).filter(target => !this.targets.includes(target) && this.isValidTarget(target));
             // Apply the effect to new targets
             newTargets.forEach(target => this.addTarget(target));
             return stateChanged || newTargets.length > 0;

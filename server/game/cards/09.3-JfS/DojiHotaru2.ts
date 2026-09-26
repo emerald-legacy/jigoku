@@ -16,18 +16,16 @@ class DojiHotaru2 extends DrawCard {
                 }))
             })
         });
-        this.reaction({
-            title: 'Gain 1 honor',
-            when: {
+        this.reaction('Gain 1 honor')
+            .when({
                 onCardPlayed: (event, context) => {
                     return context.source.isParticipating() &&
                         event.player === context.player.opponent;
                 }
-            },
-            gameAction: AbilityDsl.actions.gainHonor(),
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            effect: 'gain 1 honor'
-        });
+            })
+            .gameAction(AbilityDsl.actions.gainHonor())
+            .effect('gain 1 honor')
+            .limit(AbilityDsl.limit.unlimitedPerConflict());
     }
 }
 

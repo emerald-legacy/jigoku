@@ -15,7 +15,7 @@ interface GainedAbilities {
 }
 
 // This ignores persistent effects since it's used by Shosuro Deceiver who only takes triggered abilities
-export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch> {
+export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch, BaseCard> {
     match: DynamicMatch;
     createdAbilities: Record<string, GainAbility>;
     abilitiesForTargets: Record<string, GainedAbilities>;
@@ -78,12 +78,8 @@ export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch> {
         this.unapply(target);
         this._setAbilities(cards, target);
         this.abilitiesForTargets[target.uuid] = {
-            actions: this.actions.map((value) => {
-                return value.getValue() as CardAction;
-            }),
-            reactions: this.reactions.map((value) => {
-                return value.getValue() as TriggeredAbility;
-            })
+            actions: this.actions.flatMap((value) => value.grantedAction ?? []),
+            reactions: this.reactions.flatMap((value) => value.grantedTriggered ?? [])
         };
         this._applyAbilities(target);
     }
@@ -94,10 +90,6 @@ export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch> {
                 value.registerEvents();
             }
         }
-    }
-
-    _unapplyAbilities(target: BaseCard) {
-        this.unapply(target);
     }
 
     unapply(target: BaseCard) {

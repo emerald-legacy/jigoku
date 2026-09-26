@@ -8,16 +8,13 @@ export default class SolemnScholar extends DrawCard {
     static id = 'solemn-scholar';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Bow an attacking character',
-            condition: (context) =>
-                this.game.rings[this.getCurrentElementSymbol(BOW_ELEMENT)].isConsideredClaimed(context.player),
-            target: {
+        this.action('Bow an attacking character')
+            .condition((context) =>
+                this.game.rings[this.getCurrentElementSymbol(BOW_ELEMENT)].isConsideredClaimed(context.player))
+            .target('target', {
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isAttacking(),
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.isAttacking()
+            }, AbilityDsl.actions.bow());
     }
 
     getPrintedElementSymbols() {

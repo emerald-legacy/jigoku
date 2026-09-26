@@ -1,6 +1,7 @@
 import { v1 as uuid } from 'uuid';
 import type Player from '../Player.js';
 import { BaseStep } from './BaseStep.js';
+import type { MenuArg } from './Step.js';
 
 type PromptButton = { text?: string | number; arg?: string | number; command?: string; uuid?: string; [key: string]: unknown };
 type PromptControl = { type: string; source: unknown; targets: unknown; uuid?: string; [key: string]: unknown };
@@ -95,7 +96,7 @@ export class UiPrompt extends BaseStep {
         }
     }
 
-    public onMenuCommand(player: Player, arg: string, uuid: string, method: string): boolean {
+    public onMenuCommand(player: Player, arg: MenuArg, uuid: string, method?: string | null): boolean {
         if(!this.activeCondition(player) || uuid !== this.uuid) {
             return false;
         }
@@ -103,7 +104,7 @@ export class UiPrompt extends BaseStep {
         return this.menuCommand(player, arg, method);
     }
 
-    menuCommand(_player: Player, _arg: string, _method: string): boolean {
+    menuCommand(_player: Player, _arg: MenuArg, _method?: string | null): boolean {
         return true;
     }
 }
