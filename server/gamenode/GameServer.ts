@@ -258,9 +258,9 @@ export class GameServer implements GameRouter {
     }
 
     handshake(socket: socketio.Socket, next: (err?: Error) => void) {
-        const token = (socket.handshake.auth as Record<string, unknown>)?.token;
+        const token = socket.handshake.auth?.token;
         if(token && token !== 'undefined') {
-            jwt.verify(token as string, env.secret, { algorithms: ['HS256'] }, function (err, user) {
+            jwt.verify(token, env.secret, { algorithms: ['HS256'] }, function (err, user) {
                 if(err) {
                     logger.info(`JWT verification failed: ${err.message}`);
                     return next(new Error('Invalid authentication token'));

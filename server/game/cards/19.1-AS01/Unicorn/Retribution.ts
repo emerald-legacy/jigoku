@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
 import { CardType, ConflictType, Duration, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
@@ -43,7 +42,7 @@ export default class Retribution extends DrawCard {
                     AbilityDsl.actions.cardLastingEffect({
                         duration: Duration.UntilEndOfConflict,
                         effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker(),
-                        target: (context.player.cardsInPlay as BaseCard[]).filter(
+                        target: context.player.cardsInPlay.filter(
                             (card) => card.getType() === CardType.Character && card !== context.target
                         )
                     }),

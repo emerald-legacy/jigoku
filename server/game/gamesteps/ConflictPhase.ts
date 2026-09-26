@@ -80,7 +80,7 @@ export class ConflictPhase extends Phase {
                 gameAction: ((winner: Player | null) =>
                     winner
                         ? AbilityDsl.actions.claimImperialFavor({ target: winner })
-                        : (null as unknown as ReturnType<typeof AbilityDsl.actions.claimImperialFavor>)) as never
+                        : (null)) as never
             })
             .resolve(undefined, this.game.getFrameworkContext());
     }

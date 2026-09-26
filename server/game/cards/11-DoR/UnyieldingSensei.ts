@@ -12,7 +12,7 @@ class UnyieldingSensei extends DrawCard {
                 cardType: CardType.Province,
                 controller: Players.Self,
                 location: Location.Provinces,
-                cardCondition: (card, context) => !(card).isBroken && context.player.getDynastyCardsInProvince(card.location).some(c => c.getType() === CardType.Holding && c.isFaceup())
+                cardCondition: (card, context) => !card.isBroken && context.player.getDynastyCardsInProvince(card.location).some(c => c.getType() === CardType.Holding && c.isFaceup())
             })
             .gameAction(AbilityDsl.actions.deckSearch({
                 activePromptTitle: 'Choose a character',

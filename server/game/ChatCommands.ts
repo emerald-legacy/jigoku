@@ -143,7 +143,7 @@ class ChatCommands {
                 cardCondition: (card: BaseCard) =>
                     card.location === Location.PlayArea &&
                     card.controller === player &&
-                    !(card as DrawCard).inConflict,
+                    !card.inConflict,
                 cardType: CardType.Character,
                 numCards: 0,
                 multiSelect: true,
@@ -173,7 +173,7 @@ class ChatCommands {
                 cardCondition: (card: BaseCard) =>
                     card.location === Location.PlayArea &&
                     card.controller === player &&
-                    (card as DrawCard).inConflict,
+                    card.inConflict,
                 cardType: CardType.Character,
                 onSelect: (p: Player, card: BaseCard) => {
                     if(!this.game.currentConflict) {
@@ -211,7 +211,7 @@ class ChatCommands {
             controller: Players.Self,
             onSelect: (p: Player, card: BaseCard) => {
                 const cardInitialLocation = card.location;
-                const cardNewLocation = (card as DrawCard).isConflict
+                const cardNewLocation = card.isConflict
                     ? Location.ConflictDeck
                     : Location.DynastyDeck;
                 GameActions.moveCard({ target: card, bottom: true, destination: cardNewLocation }).resolve(
@@ -289,7 +289,7 @@ class ChatCommands {
                     '{0} uses the /add-fate command to set the fate count of {1} to {2}',
                     p,
                     card,
-                    (card as DrawCard).getFate()
+                    card.getFate()
                 );
 
                 return true;
@@ -311,7 +311,7 @@ class ChatCommands {
                     '{0} uses the /rem-fate command to set the fate count of {1} to {2}',
                     p,
                     card,
-                    (card as DrawCard).getFate()
+                    card.getFate()
                 );
 
                 return true;

@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Conflict } from '../../../Conflict.js';
 import { Decks } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -28,11 +27,11 @@ export default class YasukiYoshi extends DrawCard {
         this.reaction('Cause honor loss to the conflict loser')
             .when({
                 afterConflict: (event, context) =>
-                    (event.conflict as undefined | Conflict)?.winner === context.source.controller &&
+                    event.conflict?.winner === context.source.controller &&
                     context.source.isParticipating()
             })
             .gameAction(AbilityDsl.actions.loseHonor((context) => ({
-                target: (context.game.currentConflict as undefined | Conflict)?.loser
+                target: context.game.currentConflict?.loser
             })))
             .limit(AbilityDsl.limit.unlimited());
     }

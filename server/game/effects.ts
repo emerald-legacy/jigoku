@@ -279,7 +279,7 @@ const Effects = {
             new Restriction(
                 typeof properties === 'string'
                     ? { type: properties }
-                    : Object.assign({ type: (properties.cannot ?? properties.type) as string }, properties)
+                    : Object.assign({ type: (properties.cannot ?? properties.type) }, properties)
             )
         ),
     playerDelayedEffect: (properties: unknown) => EffectBuilder.player.static(EffectName.DelayedEffect, properties),
@@ -329,7 +329,7 @@ const Effects = {
             new Restriction(
                 typeof properties === 'string'
                     ? { restricts: 'characters', type: properties }
-                    : Object.assign({ restricts: 'characters', type: (properties.cannot ?? properties.type) as string }, properties)
+                    : Object.assign({ restricts: 'characters', type: (properties.cannot ?? properties.type) }, properties)
             )
         ),
     cannotContribute: (func: (conflict: EffectTarget, context: AbilityContext) => (card: DrawCard) => boolean) =>

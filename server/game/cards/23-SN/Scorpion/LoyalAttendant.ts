@@ -2,7 +2,6 @@ import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 import { shuffle } from '../../../utils/shuffle.js';
 
 export default class LoyalAttendant extends DrawCard {
@@ -38,8 +37,8 @@ export default class LoyalAttendant extends DrawCard {
             }),
             effect: 'look at {2} random cards in {1}\'s hand and discard one of them',
             effectArgs: (context) => [
-                context.player.opponent as Player,
-                (context.target as DrawCard)?.attachments?.length
+                context.player.opponent,
+                context.target?.attachments?.length
             ],
             max: AbilityDsl.limit.perConflict(1)
         });

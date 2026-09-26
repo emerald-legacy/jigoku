@@ -12,7 +12,7 @@ export default class StandYourGround extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.cancel((context) => ({
                 replacementGameAction: AbilityDsl.actions.discardStatusToken({
-                    target: ((context).event.card as DrawCard)?.getStatusToken(CharacterStatus.Honored)
+                    target: context.event.card?.getStatusToken(CharacterStatus.Honored)
                 })
             })))
             .effect('prevent {1} from leaving play', (context) => context.event.card ?? '')

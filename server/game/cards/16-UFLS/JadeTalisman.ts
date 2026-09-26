@@ -19,7 +19,7 @@ class JadeTalisman extends DrawCard {
             })
             .cost(AbilityDsl.costs.sacrificeSelf())
             .gameAction(AbilityDsl.actions.cancel())
-            .effect('cancel the effects of the {1}', context => [(context.event.context).source]);
+            .effect('cancel the effects of the {1}', context => [context.event.context.source]);
     }
 }
 

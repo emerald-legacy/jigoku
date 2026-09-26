@@ -68,7 +68,7 @@ export default class StoriedDefeat extends DrawCard {
             return;
         }
         if(Array.isArray(event.duel.loser)) {
-            (event.duel.loser as BaseCard[]).forEach((duelLoser) => this.duelLosersThisConflict.add(duelLoser));
+            event.duel.loser.forEach((duelLoser) => this.duelLosersThisConflict.add(duelLoser));
         } else if(event.duel.loser) {
             this.duelLosersThisConflict.add(event.duel.loser);
         }

@@ -66,7 +66,7 @@ export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> exten
         this.updateLeavesPlayEvent(event, card, context, additionalProperties);
         event.destination = card.isDynasty ? Location.DynastyDeck : Location.ConflictDeck;
         event.options = { bottom };
-        const targets = target as DrawCard | DrawCard[] | undefined;
+        const targets = target;
         const lastTarget = Array.isArray(targets) ? targets[targets.length - 1] : targets;
         if(shuffle && (!targets || (Array.isArray(targets) && targets.length === 0) || card === lastTarget)) {
             event.shuffle = true;
@@ -75,7 +75,7 @@ export class ReturnToDeckAction<C extends AbilityContext = AbilityContext> exten
 
     eventHandler(event: ActionEvent<EventName.OnCardLeavesPlay, C>, additionalProperties: Record<string, unknown> = {}): void {
         this.leavesPlayEventHandler(event, additionalProperties);
-        const card = event.card as DrawCard;
+        const card = event.card;
         if(event.shuffle) {
             if(event.destination === Location.DynastyDeck) {
                 card.owner.shuffleDynastyDeck();

@@ -49,7 +49,7 @@ export default class BitingSteel extends DrawCard {
         this.action('Send an enemy home')
             .condition((context) =>
                 !!context.source.parentCharacter?.isParticipating('military') &&
-                (context.player).hasAffinity('fire', context))
+                context.player.hasAffinity('fire', context))
             .target('target', {
                 cardType: CardType.Character,
                 controller: Players.Opponent,
@@ -60,7 +60,7 @@ export default class BitingSteel extends DrawCard {
     public canAttach(card: BaseCard) {
         return (
             card.getType() === CardType.Character &&
-            (card as DrawCard).attachments.some((c: DrawCard) => c.hasTrait('weapon')) &&
+            card.attachments.some((c: DrawCard) => c.hasTrait('weapon')) &&
             super.canAttach(card)
         );
     }

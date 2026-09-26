@@ -16,7 +16,7 @@ class RaiseTheAlarm extends DrawCard {
             .effect('flip the card in the conflict province faceup')
             .then((context) => ({
                 handler: () => {
-                    let card = context.target as DrawCard;
+                    let card = context.target;
                     if(card.type === CardType.Character && card.allowGameAction('putIntoConflict', context)) {
                         this.game.addMessage('{0} is revealed and brought into the conflict!', card);
                         AbilityDsl.actions.putIntoConflict().resolve(card, context);

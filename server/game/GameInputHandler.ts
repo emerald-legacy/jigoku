@@ -207,7 +207,7 @@ export class GameInputHandler {
 
             const card = Object.values(this.game.shortCardData).find((c: { name: string; id: string }) => {
                 return c.name.toLowerCase() === message.toLowerCase() || c.id.toLowerCase() === message.toLowerCase();
-            }) as { id: string; name: string; type: string } | undefined;
+            });
 
             if(card) {
                 const packId = resolvePackId(undefined, card, this.game.gameMode);

@@ -1,6 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Players, Location } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
 export default class IllusionaryTerrain extends DrawCard {
@@ -31,11 +30,11 @@ export default class IllusionaryTerrain extends DrawCard {
                     if(context.player.hasAffinity('air', context)) {
                         return Players.Any;
                     }
-                    const conflict = (context as TriggeredAbilityContext<DrawCard>).event.conflict;
+                    const conflict = context.event.conflict;
                     return conflict?.defendingPlayer === context.player ? Players.Self : Players.Opponent;
                 },
-                cardCondition: (card, context) => (card).isFaceup() &&
-                    card !== (context as TriggeredAbilityContext<DrawCard>).event.conflict?.conflictProvince
+                cardCondition: (card, context) => card.isFaceup() &&
+                    card !== context.event.conflict?.conflictProvince
             }, AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.event.conflict?.conflictProvince ?? [],
                 targetLocation: Location.Any,

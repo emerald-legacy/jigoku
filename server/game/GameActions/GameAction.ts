@@ -68,7 +68,7 @@ export class GameAction<
             additionalProperties,
             this.#own.resolve(context)
         );
-        const rawTarget = properties.target as TargetValue;
+        const rawTarget = properties.target;
         const targetArray = Array.isArray(rawTarget) ? rawTarget : [rawTarget];
         properties.target = targetArray.filter(Boolean) as GameActionTarget[];
         return properties;
@@ -189,7 +189,7 @@ export class GameAction<
                 return false;
             } else if(
                 event.origin.type === CardType.Character &&
-                !event.origin.allowGameAction('removeFate', (event.context))
+                !event.origin.allowGameAction('removeFate', event.context)
             ) {
                 return false;
             }
@@ -197,7 +197,7 @@ export class GameAction<
         if(event.recipient) {
             if(
                 event.recipient.type === CardType.Character &&
-                !event.recipient.allowGameAction('placeFate', (event.context))
+                !event.recipient.allowGameAction('placeFate', event.context)
             ) {
                 return false;
             }

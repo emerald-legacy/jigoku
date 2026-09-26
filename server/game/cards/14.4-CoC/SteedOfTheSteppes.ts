@@ -9,7 +9,7 @@ const steedOfTheSteppesCaptureParentCost = function(): Cost {
             return true;
         },
         resolve: function(context: AbilityContext) {
-            context.costs.steedOfTheSteppesCaptureParentCost = (context.source as DrawCard).parentCharacter;
+            context.costs.steedOfTheSteppesCaptureParentCost = context.source.parentCharacter;
         },
         pay: function() {
         }

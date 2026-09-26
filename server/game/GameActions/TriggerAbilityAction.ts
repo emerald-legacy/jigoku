@@ -32,7 +32,7 @@ export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> ext
 
     canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
-        let ability = properties.ability as TriggeredAbility;
+        let ability = properties.ability;
         let player = properties.player || context.player;
         if(
             !super.canAffect(card, context) ||
@@ -47,13 +47,13 @@ export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> ext
     }
 
     eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown> = {}): void {
-        let properties = this.getProperties((event.context), additionalProperties);
+        let properties = this.getProperties(event.context, additionalProperties);
         let newContext = this.triggeredAbilityContext(properties, event.context);
         newContext.subResolution = !!properties.subResolution;
         if(properties.subResolution) {
-            newContext.originatingContext = (event.context).triggeringContext;
+            newContext.originatingContext = event.context.triggeringContext;
         }
-        (event.context).game.queueStep(new AbilityResolver((event.context).game, newContext));
+        event.context.game.queueStep(new AbilityResolver(event.context.game, newContext));
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C) {

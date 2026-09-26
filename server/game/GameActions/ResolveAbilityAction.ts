@@ -141,18 +141,18 @@ export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> ext
     }
 
     eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown>): void {
-        let properties = this.getProperties((event.context), additionalProperties);
+        let properties = this.getProperties(event.context, additionalProperties);
         let newContext = this.resolvedAbilityContext(properties, event.context);
         newContext.subResolution = !!properties.subResolution;
         if(properties.subResolution) {
-            newContext.originatingContext = (event.context).triggeringContext;
+            newContext.originatingContext = event.context.triggeringContext;
         }
         if(properties.choosingPlayerOverride) {
             newContext.choosingPlayerOverride = properties.choosingPlayerOverride;
         }
-        (event.context).game.queueStep(
+        event.context.game.queueStep(
             new ResolveAbilityActionResolver(
-                (event.context).game,
+                event.context.game,
                 newContext,
                 properties.ignoredRequirements.includes('cost')
             )

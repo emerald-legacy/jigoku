@@ -20,8 +20,8 @@ class KitsukiKagi extends DrawCard {
                 optional: true,
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                 cardCondition: (card, context) =>
-                    card.controller === (context.targets.first as DrawCard).controller &&
-                        card.location === (context.targets.first as DrawCard).location &&
+                    card.controller === context.targets.first.controller &&
+                        card.location === context.targets.first.location &&
                         card !== context.targets.first
             }, AbilityDsl.actions.moveCard({ destination: Location.RemovedFromGame }))
             .target('third', {
@@ -30,8 +30,8 @@ class KitsukiKagi extends DrawCard {
                 optional: true,
                 location: [Location.DynastyDiscardPile, Location.ConflictDiscardPile],
                 cardCondition: (card, context) =>
-                    card.controller === (context.targets.first as DrawCard).controller &&
-                        card.location === (context.targets.first as DrawCard).location &&
+                    card.controller === context.targets.first.controller &&
+                        card.location === context.targets.first.location &&
                         card !== context.targets.first &&
                         card !== context.targets.second
             }, AbilityDsl.actions.moveCard({ destination: Location.RemovedFromGame }));

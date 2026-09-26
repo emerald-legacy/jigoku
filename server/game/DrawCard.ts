@@ -388,7 +388,7 @@ class DrawCard extends BaseCard {
     createSnapshot(): DrawCard {
         // Use Object.create to skip expensive constructor (setupCardAbilities, parseKeywords, uuid generation)
         // so the clone has no #private members: card classes use TS `private` for anything a snapshot may call
-        const clone = Object.create(DrawCard.prototype) as DrawCard;
+        const clone = Object.create(DrawCard.prototype);
 
         // Copy base identity properties
         clone.owner = this.owner;
@@ -786,7 +786,7 @@ class DrawCard extends BaseCard {
     getModifiedController(): Player {
         if(
             this.location === Location.PlayArea ||
-            (this.type === CardType.Holding && (this.location as string).includes('province'))
+            (this.type === CardType.Holding && this.location.includes('province'))
         ) {
             return this.mostRecentEffect(EffectName.TakeControl) || this.defaultController;
         }

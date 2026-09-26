@@ -44,7 +44,7 @@ class GovernorsSpy extends DrawCard {
                 }
             },
             effect: 'turn facedown and rearrange all of {1}\'s dynasty cards',
-            effectArgs: (context) => (context.select === this.owner.name ? this.owner : this.owner.opponent) as Player
+            effectArgs: (context) => (context.select === this.owner.name ? this.owner : this.owner.opponent)
         });
     }
 

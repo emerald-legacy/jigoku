@@ -1,5 +1,4 @@
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { TargetMode } from '../../../Constants.js';
 
@@ -19,7 +18,7 @@ class DiplomaticHall extends DrawCard {
                 }
             },
             effect: 'have {1} draw a card',
-            effectArgs: context => (context.select === this.owner.name ? this.owner : this.owner.opponent) as Player
+            effectArgs: context => (context.select === this.owner.name ? this.owner : this.owner.opponent)
         });
     }
 }

@@ -16,7 +16,7 @@ class MushinNoShin extends DrawCard {
                             card.type === CardType.Character &&
                             card.location === Location.PlayArea &&
                             card.controller === context.player &&
-                            (card as DrawCard).attachments.length >= 2
+                            card.attachments.length >= 2
                     )
             })
             .gameAction(AbilityDsl.actions.cancel());

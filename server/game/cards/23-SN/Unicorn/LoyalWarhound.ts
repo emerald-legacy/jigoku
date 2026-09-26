@@ -78,7 +78,7 @@ export default class LoyalWarhound extends DrawCard {
 
                 // It is no longer a character, so it stops contributing to the conflict
                 gameActions.push(AbilityDsl.actions.handler({
-                    handler: () => context.game.currentConflict?.removeFromConflict(context.source as DrawCard)
+                    handler: () => context.game.currentConflict?.removeFromConflict(context.source)
                 }));
 
                 return { gameActions };

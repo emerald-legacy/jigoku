@@ -18,7 +18,7 @@ export class MoveTokenAction<C extends AbilityContext = AbilityContext> extends 
         const { target, recipient } = this.getProperties(context, additionalProperties);
         let card = undefined;
         if(Array.isArray(target)) {
-            card = (target[0]).card;
+            card = target[0].card;
         } else {
             card = (target as StatusToken).card;
         }

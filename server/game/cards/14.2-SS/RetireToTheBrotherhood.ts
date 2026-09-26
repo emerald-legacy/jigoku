@@ -52,7 +52,7 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
                         //Identify who actually entered play
                         let enteredPlay = context.events
                             .filter((a) => a.name === 'onCharacterEntersPlay' && !a.cancelled)
-                            .map((a) => (a as GameEvent<EventName.OnCharacterEntersPlay>).card)
+                            .map((a) => a.card)
                             .filter((a): a is DrawCard => !!a);
                         let myEnter = enteredPlay.filter((a) => a.controller === context.player);
                         let oppEnter = enteredPlay.filter((a) => a.controller === context.player.opponent);

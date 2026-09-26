@@ -2,7 +2,6 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType } from '../../../Constants.js';
 import type { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
 import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -51,7 +50,7 @@ export default class DeployedGarrison extends DrawCard {
         });
 
         for(const province of nearbyProvinces) {
-            for(const card of context.player.getDynastyCardsInProvince(province.location) as BaseCard[]) {
+            for(const card of context.player.getDynastyCardsInProvince(province.location)) {
                 if(card.isFaceup() && card.type === CardType.Holding) {
                     return true;
                 }

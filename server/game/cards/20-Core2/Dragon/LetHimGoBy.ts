@@ -1,5 +1,4 @@
 import { DuelType } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -17,7 +16,7 @@ export default class LetHimGoBy extends DrawCard {
                     event.card.isParticipating()
             })
             .gameAction(AbilityDsl.actions.bow((context) => ({
-                target: (context as TriggeredAbilityContext).event.card
+                target: context.event.card
             })));
 
         this.action('Challenge a character anywhere to a duel')

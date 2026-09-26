@@ -18,12 +18,12 @@ export default class UndeadHorror extends BaseOni {
                     event.conflict.winner === context.source.controller &&
                     context.source.isParticipating() &&
                     context.player.opponent &&
-                    (context.player.opponent.dynastyDiscardPile as BaseCard[]).filter(
+                    context.player.opponent.dynastyDiscardPile.filter(
                         (card) => card.type === CardType.Character
                     ).length > 0
             })
             .gameAction(AbilityDsl.actions.sequentialContext((context) => {
-                const potentialTargets = ((context.player.opponent?.dynastyDiscardPile ?? []) as BaseCard[]).filter(
+                const potentialTargets = ((context.player.opponent?.dynastyDiscardPile ?? [])).filter(
                     (card): card is DrawCard => card.type === CardType.Character
                 );
                 var j = Math.floor(Math.random() * potentialTargets.length);
@@ -41,7 +41,7 @@ export default class UndeadHorror extends BaseOni {
                                 AbilityDsl.effects.changeType(CardType.Attachment),
                                 AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
                                     match: (card, context) => {
-                                        const parent = context && (context.source as DrawCard).parentCharacter;
+                                        const parent = context && context.source.parentCharacter;
                                         return card === parent;
                                     },
                                     targetController: Players.Opponent,

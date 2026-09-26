@@ -12,7 +12,7 @@ class KeenWarrior extends DrawCard {
             collectiveTrigger: true,
             when: {
                 onCardRevealed: (event, context) => {
-                    const raw = event.card as BaseCard | BaseCard[];
+                    const raw = event.card;
                     const cards = Array.isArray(raw) ? raw : [raw];
                     return cards.some((a: BaseCard) => a.location === Location.Hand && a.controller === context.player.opponent);
                 },

@@ -3,7 +3,6 @@ import { CardType, Location, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { ProvinceAttachment } from '../../ProvinceAttachment.js';
-import { Conflict } from '../../../Conflict.js';
 
 export default class WardOfEarthenThorns extends ProvinceAttachment {
     static id = 'ward-of-earthen-thorns';
@@ -19,7 +18,7 @@ export default class WardOfEarthenThorns extends ProvinceAttachment {
 
         this.action('Remove a fate from a character')
             .condition((context) =>
-                (context.game.currentConflict as Conflict | undefined)
+                context.game.currentConflict
                     ?.getConflictProvinces()
                     .some((province) => context.source.parent === province) ?? false)
             .target('target', {

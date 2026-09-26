@@ -7,7 +7,7 @@ export function detectBinary(
         return results;
     }
 
-    const type = (state as { constructor: { name: string } }).constructor.name;
+    const type = state.constructor.name;
     if(
         type !== 'Array' &&
         type !== 'Boolean' &&

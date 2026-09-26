@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 import { AbilityContext } from '../../../AbilityContext.js';
 
 function statusOfIntern(context: AbilityContext) {
-    return (context.source as DrawCard).isHonored ? 'honored' : 'ordinary';
+    return context.source.isHonored ? 'honored' : 'ordinary';
 }
 
 export default class KakitaRusumi extends DrawCard {

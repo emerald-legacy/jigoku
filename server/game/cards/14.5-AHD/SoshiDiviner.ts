@@ -19,18 +19,18 @@ class SoshiDiviner extends DrawCard {
                 cardCondition: (card, context) =>
                     card.location !== Location.StrongholdProvince &&
                         ( //same controller check
-                            (card.controller === (context.targets.cardInProvince as DrawCard).controller)
+                            (card.controller === context.targets.cardInProvince.controller)
                         ) &&
                         ( //different location check
-                            (card.location !== (context.targets.cardInProvince as DrawCard).location)
+                            (card.location !== context.targets.cardInProvince.location)
                         )
             }, AbilityDsl.actions.moveCard(context => ({
                 target: context.targets.cardInProvince,
-                destination: (context.targets.province).location
+                destination: context.targets.province.location
             })))
             .effect('move {1} to {2}', context => [
-                (context.targets.cardInProvince as DrawCard).isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
-                (context.targets.province).isFacedown() ? (context.targets.province).location : context.targets.province
+                context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
+                context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province
             ]);
     }
 }

@@ -60,7 +60,7 @@ export default class NightingaleTattoo extends DrawCard {
                 })
             },
             effect: 'have {1} shuffle one of {2} into {3}\'s conflict deck',
-            effectArgs: (context) => [context.player.opponent as Player, context.targets.target as DrawCard[], context.player]
+            effectArgs: (context) => [context.player.opponent, context.targets.target, context.player]
         });
     }
 }

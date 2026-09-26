@@ -12,7 +12,7 @@ class WayOfTheChrysanthemum extends DrawCard {
             .when({
                 onTransferHonor: (event: EventPayload<EventName.OnTransferHonor>, context: TriggeredAbilityContext) => event.player === context.player.opponent && event.afterBid
             })
-            .gameAction(ability.actions.gainHonor((context) => ({ amount: (context as TriggeredAbilityContext).event.amount })))
+            .gameAction(ability.actions.gainHonor((context) => ({ amount: context.event.amount })))
             .max(ability.limit.perRound(1))
             .cannotBeMirrored();
     }

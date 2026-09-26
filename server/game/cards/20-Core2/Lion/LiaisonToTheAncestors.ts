@@ -1,5 +1,4 @@
 import { CardType } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -12,12 +11,12 @@ export default class LiaisonToTheAncestors extends DrawCard {
                 onCardDishonored: (event: { card: DrawCard }, context) =>
                     event.card.type === CardType.Character &&
           event.card.controller === context.player &&
-          (context.player.dynastyDiscardPile).some(
+          context.player.dynastyDiscardPile.some(
               (card) => (event.card.printedCost ?? 0) < (card.printedCost ?? 0)
           )
             })
             .gameAction(AbilityDsl.actions.honor((context) => ({
-                target: (context as TriggeredAbilityContext).event.card
+                target: context.event.card
             })));
     }
 }

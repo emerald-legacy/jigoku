@@ -10,7 +10,7 @@ function captureParentCost(): Cost {
             return true;
         },
         resolve(context: AbilityContext) {
-            context.costs.captureParentCost = (context.source as DrawCard).parentCharacter;
+            context.costs.captureParentCost = context.source.parentCharacter;
         },
         pay() {}
     };

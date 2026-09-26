@@ -96,11 +96,11 @@ export class AttachAction<C extends AbilityContext = AbilityContext> extends Car
             return context.player.opponent as Player;
         }
 
-        return (properties.attachment as DrawCard)?.controller ?? context.player;
+        return properties.attachment?.controller ?? context.player;
     }
 
     checkEventCondition(event: ActionEvent<EventName.OnCardAttached, C>, additionalProperties: Record<string, unknown>): boolean {
-        return this.canAffect(event.parent as DrawCard, (event.context), additionalProperties);
+        return this.canAffect(event.parent as DrawCard, event.context, additionalProperties);
     }
 
     isEventFullyResolved(event: ActionEvent<EventName.OnCardAttached, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown>): boolean {

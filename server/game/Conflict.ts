@@ -293,7 +293,7 @@ export class Conflict extends GameObject {
             }
         }
 
-        for(const card of this.attackingPlayer.cardsInPlay as BaseCard[]) {
+        for(const card of this.attackingPlayer.cardsInPlay) {
             if(
                 card instanceof DrawCard &&
                 card.anyEffect(EffectName.ParticipatesFromHome) &&
@@ -314,7 +314,7 @@ export class Conflict extends GameObject {
                 defendersArray.push(defender);
             }
         }
-        for(const card of this.defendingPlayer.cardsInPlay as BaseCard[]) {
+        for(const card of this.defendingPlayer.cardsInPlay) {
             if(
                 card instanceof DrawCard &&
                 card.anyEffect(EffectName.ParticipatesFromHome) &&

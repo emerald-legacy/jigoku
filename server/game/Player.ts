@@ -446,7 +446,7 @@ class Player extends GameObject {
                 cardsToReturn.push(card);
             }
 
-            const attachments = (card as DrawCard).attachments;
+            const attachments = card.attachments;
             if(attachments) {
                 cardsToReturn.push(...attachments.filter(predicate));
             }
@@ -1167,7 +1167,7 @@ class Player extends GameObject {
                 return;
             }
 
-            for(const attachment of (card as DrawCard).attachments || []) {
+            for(const attachment of card.attachments || []) {
                 attachment.leavesPlay(targetLocation);
                 attachment.owner.moveCard(
                     attachment,

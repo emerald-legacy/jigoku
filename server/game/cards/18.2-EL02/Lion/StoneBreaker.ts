@@ -22,30 +22,30 @@ class StoneBreaker extends DrawCard {
                 cardType: CardType.Province,
                 cardCondition: (card, context) =>
                     card.location !== Location.StrongholdProvince &&
-                        !(card).isBroken &&
+                        !card.isBroken &&
                         ( //same controller check
-                            ((context.targets.cardInProvince as DrawCard).type === CardType.Attachment && card.controller === (context.targets.cardInProvince as DrawCard).parentProvince?.controller) ||
-                            ((context.targets.cardInProvince as DrawCard).type !== CardType.Attachment && card.controller === (context.targets.cardInProvince as DrawCard).controller)
+                            (context.targets.cardInProvince.type === CardType.Attachment && card.controller === context.targets.cardInProvince.parentProvince?.controller) ||
+                            (context.targets.cardInProvince.type !== CardType.Attachment && card.controller === context.targets.cardInProvince.controller)
                         ) &&
                         ( //different location check
-                            ((context.targets.cardInProvince as DrawCard).type === CardType.Attachment && card.location !== (context.targets.cardInProvince as DrawCard).parentProvince?.location) ||
-                            ((context.targets.cardInProvince as DrawCard).type !== CardType.Attachment && card.location !== (context.targets.cardInProvince as DrawCard).location)
+                            (context.targets.cardInProvince.type === CardType.Attachment && card.location !== context.targets.cardInProvince.parentProvince?.location) ||
+                            (context.targets.cardInProvince.type !== CardType.Attachment && card.location !== context.targets.cardInProvince.location)
                         )
             }, AbilityDsl.actions.conditional(context => ({
-                condition: (context.targets.cardInProvince as DrawCard).type === CardType.Attachment,
+                condition: context.targets.cardInProvince.type === CardType.Attachment,
                 trueGameAction: AbilityDsl.actions.attach({
                     target: context.targets.province,
                     attachment: context.targets.cardInProvince as DrawCard
                 }),
                 falseGameAction: AbilityDsl.actions.moveCard({
                     target: context.targets.cardInProvince,
-                    destination: (context.targets.province).location
+                    destination: context.targets.province.location
                 })
             })))
             .gameAction(AbilityDsl.actions.refillFaceup(context => ({ location: context.cardStateWhenInitiated?.location ?? [] })))
             .effect('move {1} to {2}', context => [
-                (context.targets.cardInProvince as DrawCard).isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
-                (context.targets.province).isFacedown() ? (context.targets.province).location : context.targets.province
+                context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
+                context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province
             ]);
 
         this.action('Reduce province strength')

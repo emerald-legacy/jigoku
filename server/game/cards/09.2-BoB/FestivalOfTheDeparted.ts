@@ -14,13 +14,13 @@ export default class FestivalOfTheDeparted extends ProvinceCard {
             effect: [
                 AbilityDsl.effects.suppressEffects((rawEffect: unknown) => {
                     const effect = rawEffect as StaticEffect;
-                    return (effect.context.source).type === CardType.Event &&
+                    return effect.context.source.type === CardType.Event &&
                         effect.isSkillModifier() &&
                         effect.getValue<number>() > 0;
                 }),
                 AbilityDsl.effects.cannotApplyLastingEffects(
                     (effect: StaticEffect) =>
-                        (effect.context.source).type === CardType.Event &&
+                        effect.context.source.type === CardType.Event &&
                         effect.isSkillModifier() &&
                         effect.getValue<number>() > 0
                 )

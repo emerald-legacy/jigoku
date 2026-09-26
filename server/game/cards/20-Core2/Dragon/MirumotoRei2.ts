@@ -10,7 +10,7 @@ export default class MirumotoRei2 extends DrawCard {
     static id = 'mirumoto-rei-2';
 
     getWeaponCount(context: AbilityContext) {
-        return (context.source as DrawCard).attachments.filter((card) => card.hasTrait('weapon')).length;
+        return context.source.attachments.filter((card) => card.hasTrait('weapon')).length;
     }
 
     setupCardAbilities() {

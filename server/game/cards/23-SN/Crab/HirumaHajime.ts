@@ -19,34 +19,34 @@ export default class HirumaHajime extends DrawCard {
                 cardType: CardType.Province,
                 cardCondition: (card, context) =>
                     card.location !== Location.StrongholdProvince &&
-                        !(card).isBroken &&
+                        !card.isBroken &&
                         ( //same controller check
-                            ((context.targets.cardInProvince as DrawCard).type === CardType.Attachment && card.controller === (context.targets.cardInProvince as DrawCard).parentProvince?.controller) ||
-                            ((context.targets.cardInProvince as DrawCard).type !== CardType.Attachment && card.controller === (context.targets.cardInProvince as DrawCard).controller)
+                            (context.targets.cardInProvince.type === CardType.Attachment && card.controller === context.targets.cardInProvince.parentProvince?.controller) ||
+                            (context.targets.cardInProvince.type !== CardType.Attachment && card.controller === context.targets.cardInProvince.controller)
                         ) &&
                         ( //different location check
-                            ((context.targets.cardInProvince as DrawCard).type === CardType.Attachment && card.location !== (context.targets.cardInProvince as DrawCard).parentProvince?.location) ||
-                            ((context.targets.cardInProvince as DrawCard).type !== CardType.Attachment && card.location !== (context.targets.cardInProvince as DrawCard).location)
+                            (context.targets.cardInProvince.type === CardType.Attachment && card.location !== context.targets.cardInProvince.parentProvince?.location) ||
+                            (context.targets.cardInProvince.type !== CardType.Attachment && card.location !== context.targets.cardInProvince.location)
                         )
             }, AbilityDsl.actions.conditional(context => ({
-                condition: (context.targets.cardInProvince as DrawCard).type === CardType.Attachment,
+                condition: context.targets.cardInProvince.type === CardType.Attachment,
                 trueGameAction: AbilityDsl.actions.attach({
                     target: context.targets.province,
                     attachment: context.targets.cardInProvince as DrawCard
                 }),
                 falseGameAction: AbilityDsl.actions.moveCard({
                     target: context.targets.cardInProvince,
-                    destination: (context.targets.province).location
+                    destination: context.targets.province.location
                 })
             })))
             .effect('move {1} to {2}', context => [
-                (context.targets.cardInProvince as DrawCard).isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
-                (context.targets.province).isFacedown() ? (context.targets.province).location : context.targets.province
+                context.targets.cardInProvince.isFacedown() ? 'a facedown card' : context.targets.cardInProvince,
+                context.targets.province.isFacedown() ? context.targets.province.location : context.targets.province
             ])
             .then((context) => ({
-                thenCondition: () => !!(context.targets.province).isConflictProvince() && (context.targets.cardInProvince as DrawCard).type !== CardType.Attachment && (context.targets.cardInProvince as DrawCard).isFaceup(),
+                thenCondition: () => !!context.targets.province.isConflictProvince() && context.targets.cardInProvince.type !== CardType.Attachment && context.targets.cardInProvince.isFaceup(),
                 gameAction: AbilityDsl.actions.optional(() => ({
-                    promptTitleForConfirming: 'Do you want to turn ' + (context.targets.cardInProvince).name + ' facedown?',
+                    promptTitleForConfirming: 'Do you want to turn ' + context.targets.cardInProvince.name + ' facedown?',
                     gameAction: AbilityDsl.actions.turnFacedown({
                         target: context.targets.cardInProvince
                     }),

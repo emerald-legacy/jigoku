@@ -1,7 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { TargetMode } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 
 export default class BackhandedCompliment2 extends DrawCard {
     static id = 'backhanded-compliment-2';
@@ -13,7 +12,7 @@ export default class BackhandedCompliment2 extends DrawCard {
                 mode: TargetMode.Select,
                 targets: true,
                 choices: Object.fromEntries(
-                    (this.game)
+                    this.game
                         .getPlayers()
                         .map((target) => [
                             target.name,
@@ -25,7 +24,7 @@ export default class BackhandedCompliment2 extends DrawCard {
                 )
             },
             effect: 'make {1} lose an honor and draw a card',
-            effectArgs: (context) => (context.select === this.owner.name ? this.owner : this.owner.opponent) as Player
+            effectArgs: (context) => (context.select === this.owner.name ? this.owner : this.owner.opponent)
         });
     }
 }

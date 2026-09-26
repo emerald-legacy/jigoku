@@ -1,5 +1,4 @@
 import { CardType, Players } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
@@ -35,7 +34,7 @@ export default class EnforcePropriety extends DrawCard {
                         message: '{0} refuses to appease the fortunes - the effects of {3} are canceled'
                     }
                 },
-                messageArgs: [context.player, (context as TriggeredAbilityContext).event.card]
+                messageArgs: [context.player, context.event.card]
             })))
             .effect('enforce the proper protocol');
     }

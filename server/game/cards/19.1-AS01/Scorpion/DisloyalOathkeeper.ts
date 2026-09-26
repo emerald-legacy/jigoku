@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { CardType, Location, Players, PlayType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
@@ -31,7 +30,7 @@ export default class DisloyalOathkeeper extends DrawCard {
                     context.source.controller.getSourceList(this.uuid).length === 0
             })
             .gameAction(AbilityDsl.actions.placeCardUnderneath((context) => ({
-                target: (context as TriggeredAbilityContext).event.card,
+                target: context.event.card,
                 hideWhenFaceup: true,
                 destination: this
             })));

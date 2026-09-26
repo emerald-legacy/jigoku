@@ -1,5 +1,4 @@
 import { Location } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
@@ -15,7 +14,7 @@ export default class TheEastWind extends StrongholdCard {
             })
             .cost(AbilityDsl.costs.bowSelf())
             .gameAction(AbilityDsl.actions.deckSearch((context) => {
-                const playedCardTraits = (context as TriggeredAbilityContext).event.card?.getTraitSet() ?? new Set<string>();
+                const playedCardTraits = context.event.card?.getTraitSet() ?? new Set<string>();
                 return {
                     amount: 5,
                     cardCondition: (card) => {

@@ -27,8 +27,8 @@ export default class DaidojiAhma extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.cancel())
             .effect('cancel the effects of {1}{2}', (context) => [
-                ((context.event.context).source.type as string) === 'ring' ? 'the ' : '',
-                (context.event.context).source
+                (context.event.context.source.type as string) === 'ring' ? 'the ' : '',
+                context.event.context.source
             ]);
     }
 

@@ -1,6 +1,4 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import type BaseAction from '../../../BaseAction.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, Location } from '../../../Constants.js';
@@ -42,9 +40,9 @@ export default class EarnestSculptor extends DrawCard {
                 effect: AbilityDsl.effects.reduceNextPlayedCardCost(
                     1,
                     (card: BaseCard) =>
-                        card === (context as TriggeredAbilityContext).event.card || card === ((context as TriggeredAbilityContext).event.context as AbilityContext).source
+                        card === context.event.card || card === context.event.context.source
                 )
             })))
-            .effect('reduce the cost of {1} by 1', (context) => [(context.event.context).source]);
+            .effect('reduce the cost of {1} by 1', (context) => [context.event.context.source]);
     }
 }

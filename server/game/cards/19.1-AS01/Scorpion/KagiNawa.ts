@@ -1,7 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { AbilityType, CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { ActionProps } from '../../../Interfaces.js';
 
 export default class KagiNawa extends DrawCard {
     static id = 'kagi-nawa';
@@ -20,7 +19,7 @@ export default class KagiNawa extends DrawCard {
                     gameAction: AbilityDsl.actions.moveToConflict()
                 },
                 effect: 'hook {0} and drag them into the conflict'
-            } as ActionProps<this>)
+            })
         });
     }
 }

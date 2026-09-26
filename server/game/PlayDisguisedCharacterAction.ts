@@ -12,8 +12,8 @@ import type { Event } from './Events/Event.js';
 function ChooseDisguisedCharacterCost(intoConflictOnly: PlayDisguisedCharacterIntoLocation) {
     return {
         canPay(context: AbilityContext<DrawCard>) {
-            return (context.player.cardsInPlay as BaseCard[]).some((card) =>
-                context.source.canDisguise(card as DrawCard, context, !!intoConflictOnly)
+            return context.player.cardsInPlay.some((card) =>
+                context.source.canDisguise(card, context, !!intoConflictOnly)
             );
         },
         resolve(context: AbilityContext<DrawCard>, results: Result) {

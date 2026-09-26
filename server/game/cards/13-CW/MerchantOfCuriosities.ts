@@ -61,7 +61,7 @@ const merchantOfCuriositiesCost = function () {
                 let discardAction = context.game.actions.discardCard({ target: context.costs.merchantOfCuriositiesCostDiscardedCard as DrawCard });
                 events.push(discardAction.getEvent(context.costs.merchantOfCuriositiesCostDiscardedCard, context));
 
-                let honorAction = context.game.actions.takeHonor({ target: context.player.opponent as Player });
+                let honorAction = context.game.actions.takeHonor({ target: context.player.opponent });
                 events.push(honorAction.getEvent(context.player.opponent, context));
                 context.game.addMessage('{0} chooses to discard a card and give {1} 1 honor', context.player.opponent, context.player);
 

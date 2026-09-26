@@ -56,7 +56,7 @@ export default class KaiuShihobu extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: (card) => card.location !== Location.StrongholdProvince && !(card).isBroken
+                cardCondition: (card) => card.location !== Location.StrongholdProvince && !card.isBroken
             })
             .handler((context) => {
                 let holding = context.targets.first;
@@ -72,8 +72,8 @@ export default class KaiuShihobu extends DrawCard {
                 });
             })
             .effect('discard {1}, replacing {2} with {3}', (context) => [
-                context.player.getDynastyCardsInProvince((context.targets.second).location),
-                context.player.getDynastyCardsInProvince((context.targets.second).location).length > 1 ? 'them' : 'it',
+                context.player.getDynastyCardsInProvince(context.targets.second.location),
+                context.player.getDynastyCardsInProvince(context.targets.second.location).length > 1 ? 'them' : 'it',
                 context.targets.first
             ]);
     }

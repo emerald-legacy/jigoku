@@ -179,7 +179,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
     }
 
     eventHandler(event: ActionEvent<EventName.OnDuelInitiated, C>, additionalProperties: Record<string, unknown> = {}): void {
-        const context: C = (event.context);
+        const context: C = event.context;
         const cards: DrawCard[] = event.cards as DrawCard[];
         const properties = this.getProperties(context, additionalProperties);
         if(
@@ -227,7 +227,7 @@ export class DuelAction<C extends AbilityContext = AbilityContext> extends CardG
     }
 
     checkEventCondition(event: ActionEvent<EventName.OnDuelInitiated, C>, additionalProperties: Record<string, unknown> = {}): boolean {
-        return (event.cards as DrawCard[]).some((card: DrawCard) => this.canAffect(card, (event.context), additionalProperties));
+        return (event.cards as DrawCard[]).some((card: DrawCard) => this.canAffect(card, event.context, additionalProperties));
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: Record<string, unknown> = {}): boolean {

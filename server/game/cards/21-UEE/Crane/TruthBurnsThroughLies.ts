@@ -1,7 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { AbilityType, CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { ActionProps } from '../../../Interfaces.js';
 
 export default class TruthBurnsThroughLies extends DrawCard {
     static id = 'truth-burns-through-lies';
@@ -22,7 +21,7 @@ export default class TruthBurnsThroughLies extends DrawCard {
                             : (card.printedCost ?? 0) < (context.source.printedCost ?? 0)),
                     gameAction: AbilityDsl.actions.dishonor()
                 }
-            } as ActionProps<this>)
+            })
         });
     }
 }

@@ -42,7 +42,7 @@ export class FateBidAction<C extends AbilityContext = AbilityContext> extends Pl
             additionalProperties
         );
         super.addPropertiesToEvent(event, player, context, additionalProperties);
-        const bidEvent = event as GameEvent<EventName.OnHonorBid>;
+        const bidEvent = event;
         bidEvent.postBidAction = postBidAction;
         bidEvent.message = message;
         bidEvent.messageArgs = messageArgs;
@@ -50,7 +50,7 @@ export class FateBidAction<C extends AbilityContext = AbilityContext> extends Pl
 
     eventHandler(event: ActionEvent<EventName.Unnamed, C>): void {
         const bidEvent = event as GameEvent<EventName.OnHonorBid>;
-        const context = (event.context);
+        const context = event.context;
         context.game.queueStep(
             new FateBidPrompt(context.game, 'Choose an amount of fate', (result, context) => {
                 const actions: Array<LoseFateAction> = [];

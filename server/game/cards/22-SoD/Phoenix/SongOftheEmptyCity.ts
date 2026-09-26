@@ -37,7 +37,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
             .then((context) => ({
                 thenCondition: () => !!context && this.otherHoldingsInSameProvince(context).length > 0,
                 gameAction: AbilityDsl.actions.discardCard(() => ({
-                    target: context ? this.otherHoldingsInSameProvince(context as AbilityContext<this>) : []
+                    target: context ? this.otherHoldingsInSameProvince(context) : []
                 })),
                 message: '{1} discards the other holdings in the province'
             }));
@@ -105,7 +105,7 @@ export default class SongOfTheEmptyCity extends DrawCard {
     }
 
     private otherHoldingsInSameProvince(context: AbilityContext<this>): BaseCard[] {
-        return (context.game.allCards).filter(
+        return context.game.allCards.filter(
             (card) =>
                 card.location === context.source.location &&
                 card.controller === context.source.controller &&

@@ -26,7 +26,7 @@ class CraftyTsukumogami extends DrawCard {
                             title: 'Discard a card',
                             limit: AbilityDsl.limit.unlimitedPerConflict(),
                             when: {
-                                onConflictDeclared: (event: EventPayload<typeof EventName.OnConflictDeclared>, context: AbilityContext<this>) => !!context.source.parent && (context.source.parent as unknown) === event.ring
+                                onConflictDeclared: (event: EventPayload<typeof EventName.OnConflictDeclared>, context: AbilityContext<this>) => !!context.source.parent && context.source.parent === event.ring
                             },
                             printedAbility: false,
                             gameAction: AbilityDsl.actions.chosenDiscard((context: AbilityContext) => ({

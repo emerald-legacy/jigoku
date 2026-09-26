@@ -43,7 +43,7 @@ export class LookAtAction<C extends AbilityContext = AbilityContext> extends Car
             const target = this.getProperties(context, additionalProperties).target;
             resolved = (Array.isArray(target) ? target : [target]) as BaseCard[];
         } else {
-            resolved = (Array.isArray(cards) ? cards : [cards]) as BaseCard[];
+            resolved = (Array.isArray(cards) ? cards : [cards]);
         }
         event.cards = resolved;
         event.stateBeforeResolution = resolved.map((a: BaseCard) => {

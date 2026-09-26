@@ -1,6 +1,5 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
-import type Player from '../../Player.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, TargetMode } from '../../Constants.js';
 
@@ -19,7 +18,7 @@ class MagnificentLighthouse extends DrawCard {
                 }
             },
             effect: 'look at the top 3 cards of {1}\'s {2}',
-            effectArgs: (context: AbilityContext) => [context.player.opponent as Player, (context.select ?? '').toLowerCase()],
+            effectArgs: (context: AbilityContext) => [context.player.opponent, (context.select ?? '').toLowerCase()],
             handler: (context: AbilityContext) => {
                 if(!context || !context.player.opponent) {
                     return;

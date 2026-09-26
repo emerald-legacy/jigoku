@@ -41,11 +41,11 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
 
     getEffectMessage(context: C): MessageArgs {
         let properties = this.getProperties(context);
-        const target = properties.target as BaseCard | BaseCard[];
+        const target = properties.target;
         let destinationController = Array.isArray(target)
             ? properties.changePlayer
-                ? (target[0] as DrawCard).controller.opponent
-                : (target[0] as DrawCard).controller
+                ? target[0].controller.opponent
+                : target[0].controller
             : properties.changePlayer
                 ? (target as DrawCard).controller.opponent
                 : (target as DrawCard).controller;
@@ -71,7 +71,7 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
     }
 
     eventHandler(event: ActionEvent<EventName.Unnamed, C>, additionalProperties = {}): void {
-        let context = (event.context);
+        let context = event.context;
         let card = event.card as DrawCard;
         event.cardStateWhenMoved = card.createSnapshot();
         let properties = this.getProperties(context, additionalProperties);
@@ -87,7 +87,7 @@ export class MoveCardAction<C extends AbilityContext = AbilityContext> extends C
             properties.destination &&
             context.game.getProvinceArray(false).includes(properties.destination)
         ) {
-            let cardsToDiscard = player.getSourceList(properties.destination).filter((card: BaseCard) => (card as DrawCard).isDynasty);
+            let cardsToDiscard = player.getSourceList(properties.destination).filter((card: BaseCard) => card.isDynasty);
             for(const card of cardsToDiscard) {
                 player.moveCard(card, Location.DynastyDiscardPile);
             }

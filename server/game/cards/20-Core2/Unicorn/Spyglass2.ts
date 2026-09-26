@@ -1,7 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { AbilityType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { TriggeredAbilityProps } from '../../../Interfaces.js';
 
 export default class Spyglass2 extends DrawCard {
     static id = 'spyglass-2';
@@ -16,7 +15,7 @@ export default class Spyglass2 extends DrawCard {
                     onMoveToConflict: (event, context) => event.card === context.source
                 },
                 gameAction: AbilityDsl.actions.draw()
-            } as TriggeredAbilityProps<DrawCard>)
+            })
         });
     }
 }

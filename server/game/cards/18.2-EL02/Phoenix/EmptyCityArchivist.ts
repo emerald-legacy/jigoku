@@ -15,7 +15,7 @@ class SearchTheArchives extends DrawCard {
             .gameAction(AbilityDsl.actions.deckSearch({
                 amount: 4,
                 cardCondition: (card: DrawCard, context: AbilityContext) => {
-                    const parent = (context.source as DrawCard).parentCharacter;
+                    const parent = context.source.parentCharacter;
                     return card.hasTrait('spell') || card.hasTrait('kiho') || (!!parent && parent.hasTrait('scholar'));
                 },
                 placeOnBottomInRandomOrder: true,

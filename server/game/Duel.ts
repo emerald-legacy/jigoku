@@ -224,7 +224,7 @@ export class Duel extends GameObject {
     }
 
     #getDuelModifiers(card: DrawCard): number {
-        const rawEffects = (card as unknown as { getRawEffects(): CardEffect[] })
+        const rawEffects = card
             .getRawEffects()
             .filter((effect: CardEffect) => effect.type === EffectName.ModifyDuelistSkill);
         let effectModifier = 0;

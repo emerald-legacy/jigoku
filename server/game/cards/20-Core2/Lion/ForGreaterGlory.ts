@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ForGreaterGlory extends DrawCard {
@@ -12,7 +11,7 @@ export default class ForGreaterGlory extends DrawCard {
                     this.game.isDuringConflict('military') && event.conflict?.attackingPlayer === context.player
             })
             .gameAction(AbilityDsl.actions.placeFate((context) => ({
-                target: (context as TriggeredAbilityContext).event.conflict
+                target: context.event.conflict
                     ?.getCharacters(context.player)
                     .filter((card: DrawCard) => card.hasTrait('bushi')) ?? []
             })))

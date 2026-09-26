@@ -30,7 +30,7 @@ export default class KitsukiSeiji extends DrawCard {
                     (event.recipients ?? []).some((recipient) => this.fateRecipientIsSeijisRing(recipient.ring))
             })
             .gameAction(AbilityDsl.actions.cancel((context) => {
-                switch((context).event.name) {
+                switch(context.event.name) {
                     case 'onPlaceFateOnUnclaimedRings':
                         return { replacementGameAction: this.replacementForPlaceFateOnUnclaimedRings(context) };
                     case 'onMoveFate':

@@ -1,7 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import { EventName } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class UtakuTomoe extends DrawCard {
@@ -22,7 +21,7 @@ export default class UtakuTomoe extends DrawCard {
                 onConflictFinished: () => this.defendingAtConflictResolution
             })
             .gameAction(AbilityDsl.actions.conditional((context) => ({
-                condition: (context as TriggeredAbilityContext).event.conflict?.winner === context.source.controller,
+                condition: context.event.conflict?.winner === context.source.controller,
                 trueGameAction: AbilityDsl.actions.gainHonor({ target: context.player, amount: 2 }),
                 falseGameAction: AbilityDsl.actions.ready({ target: context.source })
             })));

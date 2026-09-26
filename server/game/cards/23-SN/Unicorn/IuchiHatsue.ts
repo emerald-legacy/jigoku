@@ -1,7 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { Players, CardType } from '../../../Constants.js';
-import BaseCard from '../../../BaseCard.js';
 
 export default class IuchiHatsue extends DrawCard {
     static id = 'iuchi-hatsue';
@@ -28,8 +27,8 @@ export default class IuchiHatsue extends DrawCard {
                 dependsOn: 'characterInConflict',
                 activePromptTitle: 'Choose a character to move to the conflict',
                 cardType: CardType.Character,
-                controller: context => (context.targets.characterInConflict as BaseCard).controller === context.player ? Players.Self : Players.Opponent,
-                player: context => (context.targets.characterInConflict as BaseCard).controller === context.player ? Players.Self : Players.Opponent
+                controller: context => context.targets.characterInConflict.controller === context.player ? Players.Self : Players.Opponent,
+                player: context => context.targets.characterInConflict.controller === context.player ? Players.Self : Players.Opponent
             }, AbilityDsl.actions.joint([
                 AbilityDsl.actions.sendHome(context => ({ target: context.targets.characterInConflict })),
                 AbilityDsl.actions.moveToConflict()

@@ -53,7 +53,7 @@ export default class ToGovernTheLand extends DrawCard {
     private conditionToTrigger(conflictType: ConflictType, context: AbilityContext): boolean {
         return (
             context.game.isDuringConflict(conflictType) &&
-            (context.game.currentConflict?.getParticipants() as BaseCard[] ?? []).some((card) =>
+            (context.game.currentConflict?.getParticipants() ?? []).some((card) =>
                 this.governFulfillTrait(conflictType, context, card)
             )
         );
@@ -64,7 +64,7 @@ export default class ToGovernTheLand extends DrawCard {
             return false;
         }
 
-        const maxSkillExclusive = (context.game.currentConflict?.getParticipants() as BaseCard[] ?? []).reduce(
+        const maxSkillExclusive = (context.game.currentConflict?.getParticipants() ?? []).reduce(
             (max, myCard) => {
                 if(!this.governFulfillTrait(conflictType, context, myCard)) {
                     return max;

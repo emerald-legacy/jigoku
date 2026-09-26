@@ -1,7 +1,6 @@
 import { CardType, Duration, Players } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../BaseCard.js';
 
 export default class KyudenBayushi extends StrongholdCard {
     static id = 'kyuden-bayushi';
@@ -19,8 +18,8 @@ export default class KyudenBayushi extends StrongholdCard {
                 effect: AbilityDsl.effects.modifyBothSkills(1)
             })))
             .effect('{1}{2}{3} {0}', (context) => [
-                (context.target as BaseCard).bowed ? 'ready' : '',
-                (context.target as BaseCard).bowed && context.player.honor <= 6 ? ' and ' : '',
+                context.target.bowed ? 'ready' : '',
+                context.target.bowed && context.player.honor <= 6 ? ' and ' : '',
                 context.player.honor <= 6 ? 'give +1/+1 until the end of phase to' : ''
             ]);
     }

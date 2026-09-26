@@ -1,7 +1,6 @@
 import { Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Conflict } from '../../../Conflict.js';
 
 export default class PatronOfTheTradingCouncil extends DrawCard {
     static id = 'patron-of-the-trading-council';
@@ -9,7 +8,7 @@ export default class PatronOfTheTradingCouncil extends DrawCard {
     setupCardAbilities() {
         this.persistentEffect({
             condition: (context) =>
-                ((context.game.currentConflict as undefined | Conflict)?.getNumberOfParticipants((card) =>
+                (context.game.currentConflict?.getNumberOfParticipants((card) =>
                     card.hasTrait('mantis-clan')
                 ) ?? 0) > 0,
             effect: AbilityDsl.effects.modifyBothSkills(1)

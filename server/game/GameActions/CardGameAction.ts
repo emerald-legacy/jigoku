@@ -132,11 +132,11 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
 
     addPropertiesToEvent(event: ActionEvent<N, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
         super.addPropertiesToEvent(event, card, context, additionalProperties);
-        (event as { card?: BaseCard }).card = card;
+        event.card = card;
     }
 
     isEventFullyResolved(event: ActionEvent<N, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): boolean {
-        return (event as { card?: BaseCard }).card === card && super.isEventFullyResolved(event, card, context, additionalProperties);
+        return event.card === card && super.isEventFullyResolved(event, card, context, additionalProperties);
     }
 
     updateLeavesPlayEvent(event: ActionEvent<EventName.OnCardLeavesPlay, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown>): void {
@@ -159,7 +159,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
         };
         event.createContingentEvents = () => {
             let contingentEvents = [];
-            const evCard = event.card as DrawCard;
+            const evCard = event.card;
             // Add an imminent triggering condition for all attachments leaving play
 
             for(const attachment of (evCard.attachments ?? [])) {
@@ -191,7 +191,7 @@ export class CardGameAction<P extends CardActionProperties = CardActionPropertie
     }
 
     leavesPlayEventHandler(event: ActionEvent<EventName.OnCardLeavesPlay, C>, additionalProperties: Record<string, unknown> = {}): void {
-        const card = event.card as DrawCard;
+        const card = event.card;
         this.checkForRefillProvince(card, event, additionalProperties);
         if(!card.owner.isLegalLocationForCard(card, event.destination as Location)) {
             card.game.addMessage(

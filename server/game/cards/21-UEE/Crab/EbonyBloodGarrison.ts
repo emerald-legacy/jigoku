@@ -23,7 +23,7 @@ export default class EbonyBloodGarrison extends StrongholdCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) =>
-                    (card).facedown && card.location !== Location.StrongholdProvince
+                    card.facedown && card.location !== Location.StrongholdProvince
             })
             .target(OPP_PROVINCE, {
                 dependsOn: MY_PROVINCE,
@@ -31,7 +31,7 @@ export default class EbonyBloodGarrison extends StrongholdCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 cardCondition: (card) =>
-                    (card).facedown && card.location !== Location.StrongholdProvince
+                    card.facedown && card.location !== Location.StrongholdProvince
             })
             .handler((context) => {
                 const provinces = [context.targets[MY_PROVINCE], context.targets[OPP_PROVINCE]];

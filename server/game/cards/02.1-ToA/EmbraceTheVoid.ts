@@ -16,7 +16,7 @@ class EmbraceTheVoid extends DrawCard {
             .handler((context) => {
                 context.event.recipient = context.player;
             })
-            .effect('take the {1} fate being removed from {2}', (context) => context ? [(context.event as EventPayload<EventName.OnMoveFate>).fate, context.source.parentCharacter] : []);
+            .effect('take the {1} fate being removed from {2}', (context) => context ? [context.event.fate, context.source.parentCharacter] : []);
     }
 
     canPlay(context: AbilityContext, playType: string) {

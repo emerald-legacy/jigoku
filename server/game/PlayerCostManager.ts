@@ -100,7 +100,7 @@ export class PlayerCostManager {
         }
         if(context && context.source && context.source.isTemptationsMaho()) {
             alternateFatePools = alternateFatePools.filter(
-                (a) => a.printedType !== 'ring' && (a as DrawCard).type === CardType.Character
+                (a) => a.printedType !== 'ring' && a.type === CardType.Character
             );
         }
 
@@ -116,7 +116,7 @@ export class PlayerCostManager {
         }
 
         cards.forEach((card) => {
-            if(!card.allowGameAction('removeFate') && (card as DrawCard).type !== CardType.Attachment) {
+            if(!card.allowGameAction('removeFate') && card.type !== CardType.Attachment) {
                 alternateFatePools = alternateFatePools.filter((a) => a !== card);
             }
         });
