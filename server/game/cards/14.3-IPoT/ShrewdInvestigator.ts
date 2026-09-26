@@ -9,7 +9,7 @@ export default class ShrewdInvestigator extends DrawCard {
         this.action('Look at random cards from your opponent\'s hand')
             .condition((context) => context.source.isParticipating() && context.player.opponent !== undefined)
             .gameAction(AbilityDsl.actions.lookAt((context) => ({
-                target: (shuffle(context.player.opponent?.hand as DrawCard[])
+                target: (shuffle(context.player.opponent?.hand ?? [])
                     .slice(0, context.player.getNumberOfFacedownProvinces()))
                     .sort((a: DrawCard, b: DrawCard) => a.name.localeCompare(b.name))
             })))

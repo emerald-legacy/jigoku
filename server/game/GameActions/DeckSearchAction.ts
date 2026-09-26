@@ -27,8 +27,8 @@ export interface DeckSearchProperties extends PlayerActionProperties {
     choosingPlayer?: Player;
     placeOnBottomInRandomOrder?: boolean;
     messageArgs?: (context: AbilityContext, cards: DrawCard[]) => MsgArg[];
-    selectedCardsHandler?: (context: AbilityContext, event: Event, cards: DrawCard[]) => void;
-    remainingCardsHandler?: (context: AbilityContext, event: Event, cards: DrawCard[]) => void;
+    selectedCardsHandler?: (context: AbilityContext, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]) => void;
+    remainingCardsHandler?: (context: AbilityContext, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]) => void;
     cardCondition?: (card: DrawCard, context: AbilityContext) => boolean;
     takesNothingGameAction?: GameAction;
 }
@@ -140,7 +140,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         const properties = this.getProperties(context, additionalProperties);
         const canCancel = properties.targetMode !== TargetMode.Exactly;
         let selectAmount = 1;
-        const choosingPlayer = (properties.choosingPlayer || event.player) as Player;
+        const choosingPlayer = properties.choosingPlayer || event.player;
 
         if(properties.targetMode === TargetMode.UpTo || properties.targetMode === TargetMode.UpToVariable) {
             selectAmount = this.#getNumCards(properties.numCards ?? 1, context);
@@ -225,7 +225,7 @@ export class DeckSearchAction<C extends AbilityContext = AbilityContext> extends
         selectedCards: Set<DrawCard>,
         allCards: DrawCard[]
     ): void {
-        const player = event.player as Player;
+        const player = event.player;
         if(this.#shouldShuffle(properties.shuffle ?? false, context)) {
             switch(properties.deck) {
                 case Decks.ConflictDeck:

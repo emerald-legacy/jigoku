@@ -22,7 +22,7 @@ class ExactlyXCardSelector extends BaseCardSelector {
         return selectedCards.length === this.numCards;
     }
 
-    hasEnoughTargets(context: AbilityContext, choosingPlayer: Player): boolean {
+    hasEnoughTargets(context: AbilityContext, choosingPlayer?: Player): boolean {
         let matchedCards: BaseCard[] = [];
         let numMatchingCards = context.game.allCards.reduce((total: number, card: BaseCard) => {
             if(this.canTarget(card, context, choosingPlayer, matchedCards)) {

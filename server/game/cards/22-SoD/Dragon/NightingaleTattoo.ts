@@ -1,7 +1,6 @@
 import { Players, TargetMode, Location, CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 
 export default class NightingaleTattoo extends DrawCard {
     static id = 'nightingale-tattoo';
@@ -26,13 +25,18 @@ export default class NightingaleTattoo extends DrawCard {
                 cardCondition: (card) => card.hasTrait('kiho') || card.hasTrait('tattoo'),
                 controller: Players.Self
             }, AbilityDsl.actions.handler({
-                handler: (context) =>
-                    this.game.promptWithHandlerMenu(context.player.opponent as Player, {
+                handler: (context) => {
+                    const targets = context.targets.target;
+                    const opponent = context.player.opponent;
+                    if(!opponent || !Array.isArray(targets)) {
+                        return;
+                    }
+                    this.game.promptWithHandlerMenu(opponent, {
                         activePromptTitle: 'Choose a card to shuffle into your opponent\'s deck',
                         context: context,
-                        cards: context.targets.target as DrawCard[],
+                        cards: targets,
                         cardHandler: (selectedCard: DrawCard) => {
-                            let removedCard = (context.targets.target as DrawCard[]).filter((a: DrawCard) => a !== selectedCard);
+                            let removedCard = targets.filter((a) => a !== selectedCard);
                             context.game.addMessage(
                                 '{0} chooses {1} to be shuffled into {2}\'s deck. {3} is removed from the game',
                                 context.player.opponent,
@@ -55,7 +59,8 @@ export default class NightingaleTattoo extends DrawCard {
 
                             gameAction.resolve(undefined, context);
                         }
-                    })
+                    });
+                }
             }))
             .effect('have {1} shuffle one of {2} into {3}\'s conflict deck', (context) => [context.player.opponent, context.targets.target, context.player]);
     }

@@ -45,7 +45,6 @@ class Compass extends DrawCard {
     }
 
     moveToBottomHandler(context: TriggeredAbilityContext, cards: DrawCard[], deck: string) {
-        let bottomOfDeck = deck + ' bottom';
         if(cards.length > 0) {
             this.game.promptWithHandlerMenu(context.player, {
                 activePromptTitle: 'Choose a card to place on the bottom of your deck',
@@ -55,7 +54,7 @@ class Compass extends DrawCard {
                 handlers: [() => this.moveToTopHandler(context, cards, deck)],
                 cardHandler: (card: DrawCard) => {
                     this.game.addMessage('{0} places a card on the bottom of their {1}', context.player, deck);
-                    context.player.moveCard(card, bottomOfDeck);
+                    context.player.moveCard(card, deck, { bottom: true });
                     cards = cards.filter((c) => c !== card);
                     this.moveToBottomHandler(context, cards, deck);
                 }

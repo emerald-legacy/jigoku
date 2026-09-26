@@ -1,10 +1,8 @@
 import { CardType, DuelType, Players, TargetMode } from '../../Constants.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import type { Duel } from '../../Duel.js';
 import type { GameAction } from '../../GameActions/GameAction.js';
-import type { DuelProperties } from '../../GameActions/DuelAction.js';
 
 export default class MirumotoHitomi extends DrawCard {
     static id = 'mirumoto-hitomi';
@@ -18,17 +16,17 @@ export default class MirumotoHitomi extends DrawCard {
                 cardCondition: (card) => card.isParticipating(),
                 mode: TargetMode.UpTo,
                 numCards: 2
-            }, AbilityDsl.actions.duel(((context: AbilityContext) => ({
+            }, AbilityDsl.actions.duel((context) => ({
                 type: DuelType.Military,
-                challenger: context.source as DrawCard,
+                challenger: context.source,
                 message: '{0} chooses whether to dishonor or bow {1}',
                 messageArgs: (duel: Duel) => [
-                    (context.source as unknown) === duel.winner ? context.player.opponent : context.player,
+                    duel.winner?.includes(context.source) ? context.player.opponent : context.player,
                     duel.loser
                 ],
-                gameAction: (duel: Duel): GameAction | undefined => {
+                gameAction: (duel: Duel): GameAction => {
                     if(!duel.loser) {
-                        return undefined;
+                        return AbilityDsl.actions.noAction();
                     }
                     return AbilityDsl.actions.multiple(
                         duel.loser.map((card) =>
@@ -49,6 +47,6 @@ export default class MirumotoHitomi extends DrawCard {
                         )
                     );
                 }
-            })) as (context: AbilityContext) => DuelProperties));
+            })));
     }
 }

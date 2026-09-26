@@ -15,7 +15,7 @@ class KitsukiChiari extends DrawCard {
             })
             .cost(AbilityDsl.costs.nameCard())
             .gameAction(AbilityDsl.actions.multipleContext(context => {
-                let cards: DrawCard[] = shuffle(context.player.opponent?.hand as DrawCard[]).slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
+                let cards: DrawCard[] = shuffle(context.player.opponent?.hand ?? []).slice(0, 4).sort((a, b) => a.name.localeCompare(b.name));
                 return ({
                     gameActions: [
                         AbilityDsl.actions.lookAt(() => ({

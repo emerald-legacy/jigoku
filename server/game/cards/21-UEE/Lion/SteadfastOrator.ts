@@ -1,5 +1,4 @@
 import type { AbilityLimit } from '../../../AbilityLimit.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { CardType } from '../../../Constants.js';
 import type { Cost } from '../../../costs/Cost.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -26,15 +25,13 @@ export default class SteadfastOrator extends DrawCard {
 }
 
 function abilityWithCost(self: SteadfastOrator, limit: AbilityLimit, cost: Cost, title: string) {
-    self.reaction({
-        title,
-        when: {
+    self.reaction(title)
+        .when({
             onSendHome: (event, context) =>
                 !!event.card && event.card.type === CardType.Character && event.card.controller === context.player
-        },
-        cost,
-        cannotBeMirrored: true,
-        gameAction: AbilityDsl.actions.moveToConflict((context) => ({ target: (context as TriggeredAbilityContext).event.card })),
-        limit: limit
-    });
+        })
+        .cost(cost)
+        .cannotBeMirrored()
+        .gameAction(AbilityDsl.actions.moveToConflict((context) => ({ target: context.event.card })))
+        .limit(limit);
 }

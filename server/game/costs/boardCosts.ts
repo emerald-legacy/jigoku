@@ -2,12 +2,11 @@ import { type CardType, CharacterStatus, Decks, Location, TargetMode } from '../
 import * as GameActions from '../GameActions/GameActions.js';
 import { ReturnToDeckProperties } from '../GameActions/ReturnToDeckAction.js';
 import { SelectCardProperties } from '../GameActions/SelectCardAction.js';
+import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type { MessageArgs, MsgArg } from '../GameChat.js';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
-import type { Cost } from './Cost.js';
+import type { Cost, CostContext } from './Cost.js';
 import { getSelectCost, type SelectCostProperties, type SelectCostResult, type TypedSelectCostProperties } from './costHelpers.js';
 import { GameActionCost } from './GameActionCost.js';
 import { MetaActionCost } from './MetaActionCost.js';
@@ -134,7 +133,7 @@ export function discardTopCardsFromDeck(properties: { amount: number; deck: Deck
             context.costs.discardTopCardsFromDeck = getDeck(context).slice(0, properties.amount);
         },
         pay: (context) => {
-            for(const card of context.costs.discardTopCardsFromDeck as DrawCard[]) {
+            for(const card of context.costs.discardTopCardsFromDeck ?? []) {
                 card.controller.moveCard(card, destination);
             }
         }
@@ -261,37 +260,39 @@ export function discardImperialFavor(): Cost {
     return new GameActionCost(GameActions.loseImperialFavor((context) => ({ target: context.player })));
 }
 
-export function switchLocation(): Cost {
+type SwitchLocationContext = CostContext<{ switchLocation: DrawCard }, AbilityContext<DrawCard>>;
+
+export function switchLocation(): Cost<{ switchLocation: DrawCard }> {
     return {
         promptsPlayer: false,
-        canPay(context: TriggeredAbilityContext<DrawCard>) {
+        canPay(context: AbilityContext<DrawCard>) {
             const canMoveHome = context.game.actions.sendHome().canAffect(context.source, context);
             const canMoveToConflict = context.game.actions.moveToConflict().canAffect(context.source, context);
 
             return canMoveHome || canMoveToConflict;
         },
-        getActionName(_context: TriggeredAbilityContext) {
+        getActionName(_context) {
             return 'switchLocation';
         },
-        getCostMessage(context: TriggeredAbilityContext<DrawCard>) {
+        getCostMessage(context: AbilityContext<DrawCard>) {
             if(!context.source.isParticipating()) {
                 return ['moving {1} home', [context.source]];
             }
             return ['moving {1} to the conflict', [context.source]];
         },
-        resolve(context: TriggeredAbilityContext<DrawCard>, _result) {
+        resolve(context: SwitchLocationContext, _result) {
             context.costs.switchLocation = context.source;
         },
-        payEvent(context: TriggeredAbilityContext<DrawCard>) {
+        payEvent(context: SwitchLocationContext) {
             const action = context.source.isParticipating()
-                ? context.game.actions.sendHome({ target: context.costs.switchLocation as BaseCard })
-                : context.game.actions.moveToConflict({ target: context.costs.switchLocation as BaseCard });
+                ? context.game.actions.sendHome({ target: context.costs.switchLocation })
+                : context.game.actions.moveToConflict({ target: context.costs.switchLocation });
             return action.getEvent(context.costs.switchLocation, context);
         }
     };
 }
 
-export function dishonorAndSacrifice(properties: SelectCostProperties): Cost {
+export function dishonorAndSacrifice(properties: SelectCostProperties): Cost<{ dishonorAndSacrifice: BaseCard }> {
     const gameAction = GameActions.multiple([
         GameActions.dishonor(),
         GameActions.sacrifice()
@@ -306,8 +307,8 @@ export function dishonorAndSacrifice(properties: SelectCostProperties): Cost {
     );
 
     actionCost.getActionName = () => 'dishonorAndSacrifice';
-    actionCost.getCostMessage = (context: AbilityContext): MessageArgs => {
-        return ['dishonoring and sacrificing {1}', [context.costs.dishonorAndSacrifice as MsgArg]];
+    actionCost.getCostMessage = (context: CostContext<{ dishonorAndSacrifice: BaseCard }>): MessageArgs => {
+        return ['dishonoring and sacrificing {1}', [context.costs.dishonorAndSacrifice]];
     };
 
     return actionCost;

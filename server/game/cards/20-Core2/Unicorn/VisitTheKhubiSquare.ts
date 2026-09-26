@@ -2,8 +2,6 @@ import { CardType, Decks, Location, EventName } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import type DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type { Event } from '../../../Events/Event.js';
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 
 export default class VisitTheKhubiSquare extends ProvinceCard {
     static id = 'visit-the-khubi-square';
@@ -33,9 +31,11 @@ export default class VisitTheKhubiSquare extends ProvinceCard {
                         })),
                         AbilityDsl.actions.moveCard((context2) => ({
                             target: topFive.filter((a: DrawCard) => {
-                                const events = context2.events.filter((a: Event) => a.name === 'onDeckSearch' && !a.cancelled) as EventPayload<EventName.OnDeckSearch>[];
-                                if(events.length > 0 && events[0].selectedCards) {
-                                    return !events[0].selectedCards.includes(a);
+                                const deckSearch = context2.events
+                                    .filter((event) => !event.cancelled)
+                                    .find((event) => event.is(EventName.OnDeckSearch));
+                                if(deckSearch && deckSearch.selectedCards) {
+                                    return !deckSearch.selectedCards.includes(a);
                                 }
                                 return true;
                             }),

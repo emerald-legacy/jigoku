@@ -9,15 +9,15 @@ import type Game from '../Game.js';
 import AbilityResolver from '../gamesteps/AbilityResolver.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
 import type Player from '../Player.js';
-import type TriggeredAbility from '../TriggeredAbility.js';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
+import TriggeredAbility from '../TriggeredAbility.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
 import type { WithDefaults, ActionEvent } from './GameAction.js';
 
 class ResolveAbilityActionResolver extends AbilityResolver {
     ignoreCosts: boolean;
 
-    constructor(game: Game, context: TriggeredAbilityContext, ignoreCosts: boolean) {
+    /** `ability` is the ability `context` was created for. */
+    constructor(game: Game, context: AbilityContext, private readonly ability: CardAbility, ignoreCosts: boolean) {
         super(game, context);
         this.ignoreCosts = ignoreCosts;
     }
@@ -40,7 +40,7 @@ class ResolveAbilityActionResolver extends AbilityResolver {
 
     openInitiateAbilityEventWindow() {
         const params = { card: this.context.source, ability: this.context.ability, context: this.context };
-        const events = [
+        const events: Event[] = [
             this.game.getEvent(EventName.OnCardAbilityInitiated, params, () => this.queueInitiateAbilitySteps())
         ];
         if(this.context.ability.isTriggeredAbility() && !this.context.subResolution) {
@@ -62,7 +62,7 @@ class ResolveAbilityActionResolver extends AbilityResolver {
             }
             return;
         }
-        const cardAbility = this.context.ability as CardAbility;
+        const cardAbility = this.ability;
         if(cardAbility.max && !this.context.subResolution) {
             this.context.player.incrementAbilityMax(cardAbility.maxIdentifier);
         }
@@ -97,7 +97,7 @@ export interface ResolveAbilityProperties extends CardActionProperties {
     choosingPlayerOverride?: Player | null;
 }
 
-export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> extends CardGameAction<ResolveAbilityProperties, EventName, C> {
+export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> extends CardGameAction<ResolveAbilityProperties, EventName.Unnamed, C> {
     name = 'resolveAbility';
     defaultProperties: Partial<ResolveAbilityProperties> = {
         subResolution: false,
@@ -121,7 +121,7 @@ export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> ext
 
     canAffect(card: DrawCard, context: C, additionalProperties = {}): boolean {
         let properties = this.getProperties(context, additionalProperties);
-        let ability = properties.ability as TriggeredAbility;
+        let ability = properties.ability;
         let player = properties.player || context.player;
         if(
             !super.canAffect(card, context) ||
@@ -154,6 +154,7 @@ export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> ext
             new ResolveAbilityActionResolver(
                 event.context.game,
                 newContext,
+                properties.ability,
                 properties.ignoredRequirements.includes('cost')
             )
         );
@@ -165,6 +166,8 @@ export class ResolveAbilityAction<C extends AbilityContext = AbilityContext> ext
     }
 
     private resolvedAbilityContext(properties: ResolveAbilityProperties, context: C) {
-        return (properties.ability as TriggeredAbility).createContext(properties.player || context.player, properties.event);
+        const ability = properties.ability;
+        const player = properties.player || context.player;
+        return ability instanceof TriggeredAbility ? ability.createContext(player, properties.event) : ability.createContext(player);
     }
 }

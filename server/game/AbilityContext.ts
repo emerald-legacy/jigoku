@@ -80,13 +80,15 @@ export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
     provincesToRefill: { player: Player; location: Location }[] = [];
     subResolution = false;
     /** Set when this context continues an earlier one: a sub-resolution (`resolveAbility`/`triggerAbility`) or a `then` clause. */
-    originatingContext?: AbilityContext;
+    originatingContext?: AbilityContext<unknown>;
     /** Every card chosen as a target across this triggering, continuations included. */
     chosenCardTargets: BaseCard[] = [];
     choosingPlayerOverride: Player | null = null;
     gameActionsResolutionChain: GameAction[] = [];
     playType: PlayType | undefined;
     cardStateWhenInitiated: BaseCard | null = null;
+    /** Extra fate to place on a character being played, chosen by the `chooseFate` cost. */
+    chooseFate = 0;
     ignoreFateCost?: boolean;
     payFateCostToOpponent?: boolean;
     onPlayCardSource?: BaseCard;
@@ -109,9 +111,8 @@ export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
     }
 
     /** The context representing the triggering this one belongs to. */
-    get triggeringContext(): AbilityContext {
-        // S is unconstrained, so `this` is not assignable to the default instantiation.
-        return this.originatingContext ?? (this as unknown as AbilityContext);
+    get triggeringContext(): AbilityContext<unknown> {
+        return this.originatingContext ?? this;
     }
 
     copy(newProps: Partial<AbilityContextProperties>): this {
@@ -138,14 +139,6 @@ export class AbilityContext<S = BaseCard, T extends BaseCard = BaseCard> {
 
     refillProvince(player: Player, location: Location): void {
         this.provincesToRefill.push({ player, location });
-    }
-
-    getCards<U extends BaseCard = BaseCard>(name: string = 'target'): U[] {
-        const slot = this.targets[name];
-        if(!slot) {
-            return [];
-        }
-        return (Array.isArray(slot) ? slot : [slot]) as U[];
     }
 
     refill(): void {

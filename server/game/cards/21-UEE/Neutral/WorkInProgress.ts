@@ -20,7 +20,7 @@ export default class WorkInProgress extends DrawCard {
                 context.player.conflictDeck.length >=
         (context.player.cardsInPlay.some((card: DrawCard) => card.hasTrait('artisan')) ? 4 : 3))
             .handler((context) => {
-                let [matchingCards, cardsToDiscard] = (context.costs.reveal as DrawCard[]).reduce(
+                let [matchingCards, cardsToDiscard] = (context.costs.reveal ?? []).reduce(
                     (acc: DrawCard[][], card: DrawCard) => {
                         if(card.type === context.costs.workInProgress && card.location === Location.ConflictDeck) {
                             acc[0].push(card);

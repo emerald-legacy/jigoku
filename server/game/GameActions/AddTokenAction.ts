@@ -9,7 +9,7 @@ export interface AddTokenProperties extends CardActionProperties {
     tokenType?: TokenType;
 }
 
-export class AddTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<AddTokenProperties, EventName, C> {
+export class AddTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<AddTokenProperties, EventName.OnAddTokenToCard, C> {
     name = 'addToken';
     eventName = EventName.OnAddTokenToCard;
     defaultProperties: AddTokenProperties = {

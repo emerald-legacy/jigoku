@@ -18,11 +18,11 @@ class EndlessPlainsSkirmisher extends DrawCard {
             .effect('join the conflict for {1}!', context => this.getEffectArg(context, context.select));
     }
 
-    getEffectArg(context: AbilityContext, selection: string): Player {
+    getEffectArg(context: AbilityContext, selection: string): Player | undefined {
         if(selection === context.player.name) {
             return context.player;
         }
-        return context.player.opponent as Player;
+        return context.player.opponent;
     }
 }
 

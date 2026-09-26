@@ -42,9 +42,12 @@ class CraftyTsukumogami extends DrawCard {
                 AbilityDsl.actions.handler({
                     handler: context => {
                         const card = context.source;
-                        card.controller.cardsInPlay.splice(card.controller.cardsInPlay.indexOf(card as DrawCard), 1);
+                        if(!card.isDrawCard()) {
+                            return;
+                        }
+                        card.controller.cardsInPlay.splice(card.controller.cardsInPlay.indexOf(card), 1);
                         if(context.game.isDuringConflict() && context.game.currentConflict) {
-                            context.game.currentConflict.removeFromConflict(card as DrawCard);
+                            context.game.currentConflict.removeFromConflict(card);
                         }
                     }
                 })

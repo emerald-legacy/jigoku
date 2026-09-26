@@ -13,7 +13,7 @@ class KaitoMai extends DrawCard {
         this.reaction('Remove a fate')
             .when({
                 onMoveFate: (event, context) =>
-                    event.origin === context.source && event.fate > 0 && context.game.currentPhase !== Phases.Fate
+                    event.origin === context.source && (event.fate ?? 0) > 0 && context.game.currentPhase !== Phases.Fate
             })
             .target('target', {
                 cardType: CardType.Character

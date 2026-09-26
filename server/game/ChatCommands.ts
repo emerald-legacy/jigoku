@@ -5,7 +5,6 @@ import { Location, CardType, Players } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
-import type DrawCard from './DrawCard.js';
 import type Ring from './Ring.js';
 
 type CommandHandler = (player: Player, args: string[]) => boolean | void;
@@ -151,10 +150,11 @@ class ChatCommands {
                     if(!this.game.currentConflict) {
                         return true;
                     }
+                    const characters = cards.filter((card) => card.isDrawCard());
                     if(p.isAttackingPlayer()) {
-                        this.game.currentConflict.addAttackers(cards as DrawCard[]);
+                        this.game.currentConflict.addAttackers(characters);
                     } else {
-                        this.game.currentConflict.addDefenders(cards as DrawCard[]);
+                        this.game.currentConflict.addDefenders(characters);
                     }
                     this.game.addMessage('{0} uses the /move-to-conflict command', p);
                     return true;
@@ -176,10 +176,10 @@ class ChatCommands {
                     card.inConflict,
                 cardType: CardType.Character,
                 onSelect: (p: Player, card: BaseCard) => {
-                    if(!this.game.currentConflict) {
+                    if(!this.game.currentConflict || !card.isDrawCard()) {
                         return true;
                     }
-                    this.game.currentConflict.removeFromConflict(card as DrawCard);
+                    this.game.currentConflict.removeFromConflict(card);
 
                     this.game.addMessage('{0} uses the /send-home command to send {1} home', p, card);
                     return true;
@@ -241,8 +241,7 @@ class ChatCommands {
             activePromptTitle: 'Select a card',
             waitingPromptTitle: 'Waiting for opponent to set token',
             cardCondition: (card: BaseCard) =>
-                (card.location === Location.PlayArea || (card.location as string) === 'plot') &&
-                card.controller === player,
+                card.location === Location.PlayArea && card.controller === player,
             onSelect: (p: Player, card: BaseCard) => {
                 const numTokens = card.tokens[token] || 0;
 
@@ -284,7 +283,10 @@ class ChatCommands {
             cardCondition: (card: BaseCard) =>
                 card.location === Location.PlayArea && card.controller === player,
             onSelect: (p: Player, card: BaseCard) => {
-                (card as DrawCard).modifyFate(num);
+                if(!card.isDrawCard()) {
+                    return true;
+                }
+                card.modifyFate(num);
                 this.game.addMessage(
                     '{0} uses the /add-fate command to set the fate count of {1} to {2}',
                     p,
@@ -306,7 +308,10 @@ class ChatCommands {
             cardCondition: (card: BaseCard) =>
                 card.location === Location.PlayArea && card.controller === player,
             onSelect: (p: Player, card: BaseCard) => {
-                (card as DrawCard).modifyFate(-num);
+                if(!card.isDrawCard()) {
+                    return true;
+                }
+                card.modifyFate(-num);
                 this.game.addMessage(
                     '{0} uses the /rem-fate command to set the fate count of {1} to {2}',
                     p,
@@ -446,7 +451,8 @@ class ChatCommands {
         player.socket?.disconnect();
     }
 
-    manual(player: Player): void {
+    /** Spectators reach this through the client's manual mode toggle, without a player. */
+    manual(player: Player | undefined): void {
         if(this.game.manualMode) {
             this.game.manualMode = false;
             this.game.addMessage('{0} switches manual mode off', player);

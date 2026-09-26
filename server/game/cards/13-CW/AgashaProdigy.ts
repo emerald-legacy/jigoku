@@ -52,7 +52,7 @@ class AgashaProdigys extends DrawCard {
         let events = context.events.filter((event: Event) => event.name === EventName.OnCardsDiscarded);
         if(events.length > 0) {
             let cards: DrawCard[] = [];
-            events.forEach((a: Event) => cards = cards.concat(((a as Event & EventPayload<EventName.OnCardsDiscarded>).cards ?? []) as DrawCard[]));
+            events.forEach((a: Event) => cards = cards.concat(((a as Event & EventPayload<EventName.OnCardsDiscarded>).cards ?? [])));
             return cards;
         }
 

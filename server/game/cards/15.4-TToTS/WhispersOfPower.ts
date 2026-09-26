@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { Players, CardType, Duration } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -26,7 +25,7 @@ class WhispersOfPower extends DrawCard {
     }
 
     getPoliticalPowerChange(context: AbilityContext) {
-        return (context.player.opponent as Player).filterCardsInPlay((card) => card.type === CardType.Character && card.getFate() === 0).length * 3;
+        return (context.player.opponent?.filterCardsInPlay((card) => card.type === CardType.Character && card.getFate() === 0).length ?? 0) * 3;
     }
 
     isTemptationsMaho() {

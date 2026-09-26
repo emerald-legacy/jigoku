@@ -94,7 +94,8 @@ export class SelectCardAction<C extends AbilityContext = AbilityContext> extends
         if(properties.player === Players.Opponent && !context.player.opponent) {
             return;
         }
-        let player: Player = (properties.player === Players.Opponent ? context.player.opponent : context.player) as Player;
+        const opponent = context.player.opponent;
+        let player: Player = properties.player === Players.Opponent && opponent ? opponent : context.player;
         let mustSelect: BaseCard[] = [];
         if(properties.targets) {
             player = context.choosingPlayerOverride || player;

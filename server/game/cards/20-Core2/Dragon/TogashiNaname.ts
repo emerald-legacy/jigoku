@@ -26,7 +26,7 @@ export default class TogashiNaname extends DrawCard {
                 dependsOn: 'ring',
                 player: Players.Opponent
             }, (context) => ({
-                [`Move a fate from ${(context.targets.character as DrawCard).name} to the ${RingEffects.getRingName(
+                [`Move a fate from ${context.targets.character?.name ?? ''} to the ${RingEffects.getRingName(
                     context.rings.ring.element
                 )}`]: AbilityDsl.actions.placeFateOnRing((context) => ({
                     target: context.rings.ring,

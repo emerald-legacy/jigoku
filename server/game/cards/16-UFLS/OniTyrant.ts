@@ -56,8 +56,8 @@ class OniTyrant extends DrawCard {
                 target: context.costs.oniTyrantCostCreature || context.player.outsideTheGameCards[1]
             })))
             .effect('summon a{2} {1} from the depths of the Shadowlands!', context => {
-                const creature = context.costs.oniTyrantCostCreature as DrawCard;
-                var testStr = creature.name;
+                const creature = context.costs.oniTyrantCostCreature;
+                var testStr = creature?.name ?? '';
                 var vowelRegex = '^[aieouAIEOU].*';
                 var matched = testStr.match(vowelRegex);
                 return [

@@ -8,6 +8,7 @@ import type { AbilityLimit } from './AbilityLimit.js';
 import type { GameObject } from './GameObject.js';
 import type Ring from './Ring.js';
 import type BaseCard from './BaseCard.js';
+import type { Faction } from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type EffectSource from './EffectSource.js';
@@ -128,8 +129,8 @@ export interface InitiateDuel extends DuelProperties {
     opponentChoosesDuelTarget?: boolean;
     opponentChoosesChallenger?: boolean;
     requiresConflict?: boolean;
-    challengerCondition?: (card: DrawCard, context: TriggeredAbilityContext) => boolean;
-    targetCondition?: (card: DrawCard, context: TriggeredAbilityContext) => boolean;
+    challengerCondition?: (card: DrawCard, context: AbilityContext) => boolean;
+    targetCondition?: (card: DrawCard, context: AbilityContext) => boolean;
 }
 
 export type EffectArg =
@@ -176,6 +177,8 @@ export interface ActionProps<Source = BaseCard, Target extends BaseCard = BaseCa
     anyPlayer?: boolean;
     conflictProvinceCondition?: (province: ProvinceCard, context: AbilityContext<Source, Target>) => boolean;
     canTriggerOutsideConflict?: boolean;
+    /** Its choices are not targets, so cards reacting to targeting ignore them. */
+    doesNotTarget?: boolean;
 }
 
 export interface ConflictActionProps<Source = BaseCard, Target extends BaseCard = BaseCard> extends ActionProps<Source, Target> {
@@ -248,7 +251,7 @@ export interface AttachmentConditionProps {
     myControl?: boolean;
     opponentControlOnly?: boolean;
     unique?: boolean;
-    faction?: string | string[];
+    faction?: Faction | Faction[];
     trait?: string | string[];
     limitTrait?: traitLimit | traitLimit[];
     cardCondition?: (card: DrawCard) => boolean;

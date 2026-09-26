@@ -1,6 +1,5 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 export default class InsultToInjury extends DrawCard {
@@ -14,8 +13,8 @@ export default class InsultToInjury extends DrawCard {
                         (card) => card.controller === context.player && card.hasTrait('duelist')
                     ) ?? false
             })
-            .gameAction(AbilityDsl.actions.conditional({
-                condition: (context: AbilityContext) => ((context as TriggeredAbilityContext).event.loser?.length ?? 0) > 1,
+            .gameAction(AbilityDsl.actions.conditional((context) => ({
+                condition: (context.event.loser?.length ?? 0) > 1,
                 trueGameAction: AbilityDsl.actions.cardMenu((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
                     activePromptTitle: 'Choose a character to dishonor',
                     cards: context.event.loser ?? [],
@@ -24,7 +23,7 @@ export default class InsultToInjury extends DrawCard {
                     messageArgs: (card, player) => [player, card]
                 })),
                 falseGameAction: AbilityDsl.actions.dishonor((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({ target: context.event.loser?.[0] }))
-            }))
+            })))
             .effect('{1}', (context) => {
                 const loser = context.event.loser;
                 return [

@@ -1,9 +1,10 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
+import BaseCard from '../../../BaseCard.js';
 import { Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import Ring from '../../../Ring.js';
 
 export default class DaidojiAhma extends DrawCard {
     static id = 'daidoji-ahma';
@@ -13,9 +14,9 @@ export default class DaidojiAhma extends DrawCard {
             .when({
                 onInitiateAbilityEffects: (event, context) =>
                     event.context.ability.isTriggeredAbility() &&
-                    (event.cardTargets as Array<BaseCard>).some((card) => this.targetIsDishonoredCrane(card, context)),
+                    event.cardTargets.some((card) => this.targetIsDishonoredCrane(card, context)),
                 onMoveFate: (event, context) =>
-                    this.isRingEffect(event) && event.fate > 0 && this.targetIsDishonoredCrane(event.origin as BaseCard, context),
+                    this.isRingEffect(event) && (event.fate ?? 0) > 0 && event.origin instanceof BaseCard && this.targetIsDishonoredCrane(event.origin, context),
                 onCardHonored: (event, context) =>
                     this.isRingEffect(event) && this.targetIsDishonoredCrane(event.card, context),
                 onCardDishonored: (event, context) =>
@@ -27,13 +28,13 @@ export default class DaidojiAhma extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.cancel())
             .effect('cancel the effects of {1}{2}', (context) => [
-                (context.event.context.source.type as string) === 'ring' ? 'the ' : '',
+                context.event.context.source instanceof Ring ? 'the ' : '',
                 context.event.context.source
             ]);
     }
 
     private isRingEffect(event: { context?: AbilityContext }): boolean {
-        return (event.context?.source.type as string) === 'ring';
+        return event.context?.source instanceof Ring;
     }
 
     private targetIsDishonoredCrane(card: BaseCard, context: TriggeredAbilityContext<this>): boolean {

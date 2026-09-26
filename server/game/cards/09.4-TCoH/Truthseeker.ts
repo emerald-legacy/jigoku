@@ -55,12 +55,12 @@ class Truthseeker extends DrawCard {
     }
 
     mapChoiceToEffectArgs(context: AbilityContext): (string | Player)[] {
-        const opponent = this.owner.opponent as Player;
+        const opponent = this.owner.opponent;
         switch(context.select) {
             case this.getChoiceName('OppDynasty'):
-                return [opponent, 'dynasty deck'];
+                return opponent ? [opponent, 'dynasty deck'] : [];
             case this.getChoiceName('OppConflict'):
-                return [opponent, 'conflict deck'];
+                return opponent ? [opponent, 'conflict deck'] : [];
             case this.getChoiceName('MyDynasty'):
                 return [this.owner, 'dynasty deck'];
             case this.getChoiceName('MyConflict'):
@@ -71,28 +71,16 @@ class Truthseeker extends DrawCard {
     }
 
     mapChoiceToCards(context: AbilityContext): DrawCard[] {
-        const opponent = this.owner.opponent as Player;
-        switch(context.select) {
-            case this.getChoiceName('OppDynasty'):
-                return opponent.dynastyDeck.slice(0, 3);
-            case this.getChoiceName('OppConflict'):
-                return opponent.conflictDeck.slice(0, 3);
-            case this.getChoiceName('MyDynasty'):
-                return this.owner.dynastyDeck.slice(0, 3);
-            case this.getChoiceName('MyConflict'):
-                return this.owner.conflictDeck.slice(0, 3);
-            default:
-                return [];
-        }
+        return this.mapChoiceToDeck(context).slice(0, 3);
     }
 
     mapChoiceToDeck(context: AbilityContext): DrawCard[] {
-        const opponent = this.owner.opponent as Player;
+        const opponent = this.owner.opponent;
         switch(context.select) {
             case this.getChoiceName('OppDynasty'):
-                return opponent.dynastyDeck;
+                return opponent?.dynastyDeck ?? [];
             case this.getChoiceName('OppConflict'):
-                return opponent.conflictDeck;
+                return opponent?.conflictDeck ?? [];
             case this.getChoiceName('MyDynasty'):
                 return this.owner.dynastyDeck;
             case this.getChoiceName('MyConflict'):

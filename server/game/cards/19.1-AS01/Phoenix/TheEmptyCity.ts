@@ -1,4 +1,4 @@
-import { CardType, Duration, EventName, Location, Players } from '../../../Constants.js';
+import { CardType, ConflictType, Duration, EventName, Location, Players } from '../../../Constants.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
@@ -27,7 +27,7 @@ export default class TheEmptyCity extends ProvinceCard {
                 ringCondition: (ring) => ring.isUnclaimed()
             }, AbilityDsl.actions.claimRing({
                 takeFate: false,
-                type: 'political'
+                type: ConflictType.Political
             }))
             .effect('claim {0} as a political ring')
             .limit(sharedLimit)

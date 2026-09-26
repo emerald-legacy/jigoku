@@ -6,7 +6,7 @@ import type { ActionEvent } from './GameAction.js';
 
 export type SwitchConflictElementProperties = RingActionProperties;
 
-export class SwitchConflictElementAction<C extends AbilityContext = AbilityContext> extends RingAction<SwitchConflictElementProperties, EventName, C> {
+export class SwitchConflictElementAction<C extends AbilityContext = AbilityContext> extends RingAction<SwitchConflictElementProperties, EventName.OnSwitchConflictElement, C> {
     name = 'switchConflictElement';
     cost = 'switching the contested ring to {0}';
     effect = 'switch the contested ring to {0}';

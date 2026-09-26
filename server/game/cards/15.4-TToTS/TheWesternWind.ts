@@ -1,10 +1,7 @@
 import DrawCard from '../../DrawCard.js';
-import type BaseCard from '../../BaseCard.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type { GameEvent } from '../../Events/EventPayloads.js';
-import type Player from '../../Player.js';
 import AbilityDsl from '../../abilitydsl.js';
-import { Location, CardType, Players, TargetMode, Decks, EventName } from '../../Constants.js';
+import { Location, CardType, Players, TargetMode, Decks } from '../../Constants.js';
 
 class TheWesternWind extends DrawCard {
     static id = 'the-western-wind';
@@ -26,16 +23,18 @@ class TheWesternWind extends DrawCard {
                 amount: 8,
                 deck: Decks.DynastyDeck,
                 selectedCardsHandler: (context: AbilityContext, event, cards: DrawCard[]) => {
-                    const target = context.target as BaseCard;
-                    const searchEvent = event as GameEvent<EventName.OnDeckSearch> & { player: Player };
+                    const target = context.target;
+                    if(!target) {
+                        return;
+                    }
                     if(cards.length > 0) {
-                        this.game.addMessage('{0} selects {1} and puts {2} into {3}', searchEvent.player, cards, cards.length > 1 ? 'them' : 'it', target.facedown ? target.location : target);
+                        this.game.addMessage('{0} selects {1} and puts {2} into {3}', event.player, cards, cards.length > 1 ? 'them' : 'it', target.facedown ? target.location : target);
                         cards.forEach((card: DrawCard) => {
-                            searchEvent.player.moveCard(card, target.location);
+                            event.player.moveCard(card, target.location);
                             card.facedown = false;
                         });
                     } else {
-                        this.game.addMessage('{0} selects no characters', searchEvent.player);
+                        this.game.addMessage('{0} selects no characters', event.player);
                     }
                 }
             }));

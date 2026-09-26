@@ -3,7 +3,6 @@ import type BaseCard from '../../../BaseCard.js';
 import { Conflict } from '../../../Conflict.js';
 import { CardType, Decks, Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 
 export default class KakitaMio extends DrawCard {
     static id = 'kakita-mio';
@@ -45,7 +44,7 @@ export default class KakitaMio extends DrawCard {
                 context.game.currentConflict.getNumberOfParticipantsFor(context.player.opponent, (card) => (card.hasTrait('shadowlands') || card.isTainted)) > 0,
             match: (card: DrawCard, context) =>
                 card.type === CardType.Character &&
-                card.isParticipatingFor(context?.player as Player) &&
+                !!context && card.isParticipatingFor(context.player) &&
                 (card.hasTrait('imperial') || card.attachments.some((attachment: BaseCard) => attachment.hasTrait('imperial'))),
             effect: AbilityDsl.effects.modifyBothSkills(1)
         });

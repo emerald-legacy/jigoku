@@ -1,6 +1,5 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import { DuelType, Players } from '../../Constants.js';
-import type { Duel } from '../../Duel.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 
@@ -20,7 +19,7 @@ export default class KakitaToshimoko extends DrawCard {
                 gameAction: AbilityDsl.actions.playerLastingEffect((context: AbilityContext<DrawCard, DrawCard>) => ({
                     targetController: Players.Any,
                     effect:
-                        (context.game.currentDuel as Duel).winner?.includes(context.source) ?? false
+                        context.game.currentDuel?.winner?.includes(context.source) ?? false
                             ? AbilityDsl.effects.setConflictTotalSkill(0)
                             : []
                 }))

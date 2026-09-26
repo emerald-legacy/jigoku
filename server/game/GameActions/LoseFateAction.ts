@@ -9,7 +9,7 @@ export interface LoseFateProperties extends PlayerActionProperties {
     amount?: number;
 }
 
-export class LoseFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<LoseFateProperties, EventName, C> {
+export class LoseFateAction<C extends AbilityContext = AbilityContext> extends PlayerAction<LoseFateProperties, EventName.OnModifyFate, C> {
     name = 'spendFate';
     eventName = EventName.OnModifyFate;
     defaultProperties: LoseFateProperties = { amount: 1 };
@@ -40,6 +40,6 @@ export class LoseFateAction<C extends AbilityContext = AbilityContext> extends P
     }
 
     eventHandler(event: ActionEvent<EventName.OnModifyFate, C>): void {
-        (event.player as Player).modifyFate(event.amount as number);
+        event.player.modifyFate(event.amount);
     }
 }

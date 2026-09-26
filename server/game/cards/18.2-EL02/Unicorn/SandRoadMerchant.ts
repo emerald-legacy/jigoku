@@ -54,10 +54,7 @@ export default class SandRoadMerchant extends DrawCard {
                                     action: AbilityDsl.actions.handler({
                                         handler: () => {
                                             if(topCard) {
-                                                context.player.opponent?.moveCard(
-                                                    topCard,
-                                                    Location.ConflictDeck + ' bottom'
-                                                );
+                                                context.player.opponent?.moveCard(topCard, Location.ConflictDeck, { bottom: true });
                                             }
                                         }
                                     }),

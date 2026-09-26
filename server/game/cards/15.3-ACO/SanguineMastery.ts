@@ -7,10 +7,10 @@ class SanguineMastery extends DrawCard {
 
     setupCardAbilities() {
         this.action('Discard attachments')
-            .cost(AbilityDsl.costs.dishonor({ cardCondition: card => card.glory > 0 }))
+            .cost(AbilityDsl.costs.dishonor({ cardType: CardType.Character, cardCondition: card => card.glory > 0 }))
             .targetCards('target', {
                 mode: TargetMode.UpToVariable,
-                numCardsFunc: (context) => context.costs.dishonor ? (context.costs.dishonor as DrawCard).glory : 1,
+                numCardsFunc: (context) => context.costs.dishonor ? context.costs.dishonor.glory : 1,
                 cardType: CardType.Attachment
             }, AbilityDsl.actions.discardFromPlay())
             .cannotTargetFirst();

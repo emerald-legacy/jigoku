@@ -19,7 +19,7 @@ class SententiousPoet extends DrawCard {
                 onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context: TriggeredAbilityContext<this>) =>
                     event.context?.ability.isCardPlayed() &&
                     event.context?.player === context.player.opponent &&
-                    event.fate > 0 &&
+                    (event.fate ?? 0) > 0 &&
                     context.source.isParticipating() &&
                     event.context?.stage === Stage.Cost &&
                     event.recipient?.type === 'ring'

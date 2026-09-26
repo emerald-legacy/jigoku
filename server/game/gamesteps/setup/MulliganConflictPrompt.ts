@@ -39,7 +39,7 @@ class MulliganConflictPrompt extends MulliganDynastyPrompt {
         if(arg === 'done') {
             if(this.selectedCards[player.name].length > 0) {
                 for(const card of this.selectedCards[player.name]) {
-                    player.moveCard(card, 'conflict deck bottom');
+                    player.moveCard(card, Location.ConflictDeck, { bottom: true });
                 }
                 player.drawCardsToHand(this.selectedCards[player.name].length);
                 player.shuffleConflictDeck();

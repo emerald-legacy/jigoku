@@ -1,33 +1,30 @@
 import EventWindow from './EventWindow.js';
 import TriggeredAbilityWindow from '../gamesteps/TriggeredAbilityWindow.js';
-import { EventName, AbilityType, PlayType } from '../Constants.js';
+import { EventName, AbilityType } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from './Event.js';
 import type { GameEvent } from './EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type CardAbility from '../CardAbility.js';
-import type DrawCard from '../DrawCard.js';
+import type BaseAbility from '../BaseAbility.js';
 import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 
-// An OnCardPlayed event always plays a DrawCard via a fate-cost ability, and carries the play
-// resolver attached at resolution time — so its context/playType are narrowed accordingly.
-type PlayCardEvent = GameEvent<EventName.OnCardPlayed> & {
-    context: AbilityContext<DrawCard> & { ability: CardAbility };
-    playType: PlayType;
-    resolver: { canCancel: boolean; cancelled: boolean };
-};
+/** A play ability: its fate cost is what cost reducers lower. */
+function hasReducibleCost(ability: BaseAbility): ability is BaseAbility & { getReducedCost(context: AbilityContext): number } {
+    return 'getReducedCost' in ability && typeof ability.getReducedCost === 'function';
+}
 
 class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
-    playEvent: PlayCardEvent | undefined;
+    /** The resolver that plays the card is attached to its play event. */
+    playEvent: GameEvent<EventName.OnCardPlayed> | undefined;
 
     constructor(game: Game, abilityType: AbilityType, eventWindow: EventWindow) {
         super(game, abilityType, eventWindow);
-        this.playEvent = eventWindow.events.find(event => event.name === EventName.OnCardPlayed) as PlayCardEvent | undefined;
+        this.playEvent = eventWindow.events.find((event) => event.is(EventName.OnCardPlayed));
     }
 
     getPromptForSelectProperties() {
         let buttons: Array<{ text: string; arg: string }> = [];
-        if(this.playEvent && this.currentPlayer === this.playEvent.player && this.playEvent.resolver.canCancel) {
+        if(this.playEvent && this.currentPlayer === this.playEvent.player && this.playEvent.resolver?.canCancel) {
             buttons.push({ text: 'Cancel', arg: 'cancel' });
         }
         if(this.getMinCostReduction() === 0) {
@@ -36,7 +33,7 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
         return Object.assign(super.getPromptForSelectProperties(), {
             buttons: buttons,
             onCancel: () => {
-                if(this.playEvent) {
+                if(this.playEvent?.resolver) {
                     this.playEvent.resolver.cancelled = true;
                 }
                 this.complete = true;
@@ -47,16 +44,18 @@ class InitiateAbilityInterruptWindow extends TriggeredAbilityWindow {
     getMinCostReduction(): number {
         if(this.playEvent) {
             const context = this.playEvent.context;
-            const alternatePools = context.player.getAlternateFatePools(this.playEvent.playType, context.source, context);
+            const ability = context.ability;
+            const alternatePools = context.player.getAlternateFatePools(this.playEvent.playType, this.playEvent.card, context);
             const alternatePoolTotal = alternatePools.reduce((total: number, pool: { fate: number }) => total + pool.fate, 0);
             const maxPlayerFate = context.player.checkRestrictions('spendFate', context) ? context.player.fate : 0;
-            return Math.max(context.ability.getReducedCost(context) - maxPlayerFate - alternatePoolTotal, 0);
+            const reducedCost = hasReducibleCost(ability) ? ability.getReducedCost(context) : 0;
+            return Math.max(reducedCost - maxPlayerFate - alternatePoolTotal, 0);
         }
         return 0;
     }
 
     resolveAbility(context: TriggeredAbilityContext) {
-        if(this.playEvent) {
+        if(this.playEvent?.resolver) {
             this.playEvent.resolver.canCancel = false;
         }
         return super.resolveAbility(context);

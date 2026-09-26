@@ -23,7 +23,7 @@ export default class IaijutsuSensei extends DrawCard {
                 gameAction: (duel) =>
                     AbilityDsl.actions.cardLastingEffect((_context) => ({
                         target: duel.loser,
-                        effect: [AbilityDsl.effects.cannotContribute(() => (card: BaseCard) => (duel.loser ?? []).includes(card as DrawCard))],
+                        effect: [AbilityDsl.effects.cannotContribute(() => (card: BaseCard) => card.isDrawCard() && (duel.loser ?? []).includes(card))],
                         duration: Duration.UntilEndOfConflict
                     }))
             }));

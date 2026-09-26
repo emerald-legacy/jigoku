@@ -44,8 +44,8 @@ class TestOfSkill extends DrawCard {
             .condition((context) => context.player.conflictDeck.length >= (context.player.cardsInPlay.some((card: BaseCard) => card.hasTrait('duelist')) ? 4 : 3))
             .handler((context) => {
                 const isMatching = (card: BaseCard) => card.type === context.costs.testOfSkillCost && card.location === Location.ConflictDeck;
-                let matchingCards: BaseCard[] = (context.costs.reveal as BaseCard[]).filter(isMatching);
-                let cardsToDiscard: BaseCard[] = (context.costs.reveal as BaseCard[]).filter((card: BaseCard) => !isMatching(card));
+                let matchingCards: BaseCard[] = (context.costs.reveal ?? []).filter(isMatching);
+                let cardsToDiscard: BaseCard[] = (context.costs.reveal ?? []).filter((card: BaseCard) => !isMatching(card));
                 matchingCards = matchingCards.filter((c: BaseCard) => c.uuid !== context.source.uuid);
 
                 let discardHandler = () => {

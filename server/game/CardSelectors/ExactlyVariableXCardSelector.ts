@@ -26,7 +26,7 @@ class ExactlyVariableXCardSelector extends BaseCardSelector {
         return selectedCards.length === this.numCardsFunc(context);
     }
 
-    hasEnoughTargets(context: AbilityContext, choosingPlayer: Player): boolean {
+    hasEnoughTargets(context: AbilityContext, choosingPlayer?: Player): boolean {
         let numMatchingCards = context.game.allCards.reduce((total: number, card: BaseCard) => {
             if(this.canTarget(card, context, choosingPlayer)) {
                 return total + 1;

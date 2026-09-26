@@ -1,7 +1,6 @@
 import { CardType, Location, Players, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
 
 export default class RenownedSinger extends DrawCard {
     static id = 'renowned-singer';
@@ -20,13 +19,17 @@ export default class RenownedSinger extends DrawCard {
                 controller: Players.Self
             }, AbilityDsl.actions.handler({
                 handler: (context) => {
-                    const targets = context.targets.target as DrawCard[];
-                    return this.game.promptWithHandlerMenu(context.player.opponent as Player, {
+                    const targets = context.targets.target;
+                    const opponent = context.player.opponent;
+                    if(!opponent || !Array.isArray(targets)) {
+                        return;
+                    }
+                    return this.game.promptWithHandlerMenu(opponent, {
                         activePromptTitle: 'Choose a card to add to your opponent\'s hand',
                         context: context,
                         cards: targets,
                         cardHandler: (handCard: DrawCard) => {
-                            let bottomCard = targets.filter((a: DrawCard) => a !== handCard);
+                            let bottomCard = targets.filter((a) => a !== handCard);
                             context.game.addMessage(
                                 '{0} chooses {1} to be put into {2}\'s hand. {3} is put on the bottom of {2}\'s conflict deck',
                                 context.player.opponent,

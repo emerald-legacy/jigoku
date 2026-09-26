@@ -5,7 +5,7 @@ import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
 import AbilityResolver from '../gamesteps/AbilityResolver.js';
 import type Player from '../Player.js';
-import type TriggeredAbility from '../TriggeredAbility.js';
+import TriggeredAbility from '../TriggeredAbility.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import type { EventName } from '../Constants.js';
 import type { ActionEvent } from './GameAction.js';
@@ -18,7 +18,7 @@ export interface TriggerAbilityProperties extends CardActionProperties {
     event?: Event;
 }
 
-export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> extends CardGameAction<TriggerAbilityProperties, EventName, C> {
+export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> extends CardGameAction<TriggerAbilityProperties, EventName.Unnamed, C> {
     name = 'triggerAbility';
     defaultProperties: Partial<TriggerAbilityProperties> = {
         ignoredRequirements: [],
@@ -66,6 +66,8 @@ export class TriggerAbilityAction<C extends AbilityContext = AbilityContext> ext
     }
 
     private triggeredAbilityContext(properties: TriggerAbilityProperties, context: C) {
-        return (properties.ability as TriggeredAbility).createContext(properties.player || context.player, properties.event);
+        const ability = properties.ability;
+        const player = properties.player || context.player;
+        return ability instanceof TriggeredAbility ? ability.createContext(player, properties.event) : ability.createContext(player);
     }
 }

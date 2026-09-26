@@ -1,4 +1,3 @@
-import BaseAction from '../../../BaseAction.js';
 import { CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { PlayAttachmentAction } from '../../../PlayAttachmentAction.js';
@@ -26,7 +25,7 @@ export default class MirumotoRikitaro extends DrawCard {
                         ec.target &&
                         ec.target.controller === context.player &&
                         ec.target === context.source &&
-                        (ec.ability as BaseAction).getReducedCost(ec) > 0
+                        ec.ability.getReducedCost(ec) > 0
                     );
                 }
             })

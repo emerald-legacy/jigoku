@@ -1,7 +1,6 @@
 import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type StaticEffect from '../../Effects/StaticEffect.js';
 
 export default class FestivalOfTheDeparted extends ProvinceCard {
     static id = 'festival-of-the-departed';
@@ -12,17 +11,16 @@ export default class FestivalOfTheDeparted extends ProvinceCard {
             match: (card) => card.type === CardType.Character,
             targetController: Players.Any,
             effect: [
-                AbilityDsl.effects.suppressEffects((rawEffect: unknown) => {
-                    const effect = rawEffect as StaticEffect;
-                    return effect.context.source.type === CardType.Event &&
-                        effect.isSkillModifier() &&
-                        effect.getValue<number>() > 0;
-                }),
+                AbilityDsl.effects.suppressEffects((effect) =>
+                    effect.context.source.type === CardType.Event &&
+                    effect.isSkillModifier() &&
+                    (effect.getValue() ?? 0) > 0
+                ),
                 AbilityDsl.effects.cannotApplyLastingEffects(
-                    (effect: StaticEffect) =>
+                    (effect) =>
                         effect.context.source.type === CardType.Event &&
                         effect.isSkillModifier() &&
-                        effect.getValue<number>() > 0
+                        (effect.getValue() ?? 0) > 0
                 )
             ]
         });

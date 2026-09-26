@@ -7,7 +7,9 @@ import type Player from './Player.js';
 import type DrawCard from './DrawCard.js';
 import StatModifier from './StatModifier.js';
 import type { CardData } from './types/CardData.js';
-import type { CardEffect } from './Effects/types.js';
+import { type CardEffect, isEffectOf } from './Effects/types.js';
+import type { NumericEffectName } from './Effects/EffectValueMap.js';
+import type { StateViewer } from './types/StateViewer.js';
 
 export class ProvinceCard extends BaseCard {
     isProvince = true;
@@ -94,8 +96,8 @@ export class ProvinceCard extends BaseCard {
     }
 
     getStrengthModifiers(): StatModifier[] {
-        const effectsOf = (type: EffectName) => this.getRawEffects().filter((effect) => effect.type === type);
-        const setModifier = (effect: CardEffect) =>
+        const effectsOf = <N extends NumericEffectName>(type: N) => this.getRawEffects().filter((effect) => isEffectOf(effect, type));
+        const setModifier = (effect: CardEffect<NumericEffectName>) =>
             StatModifier.fromEffect(effect.getValue(this), effect, true, StatModifier.getEffectName(effect));
 
         // Set effects override everything
@@ -150,7 +152,7 @@ export class ProvinceCard extends BaseCard {
     }
 
     isElement(element: string): boolean {
-        return (this.element as string[]).includes(element);
+        return this.element.some((provinceElement) => provinceElement === element);
     }
 
     hasElementSymbols(): boolean {
@@ -161,11 +163,11 @@ export class ProvinceCard extends BaseCard {
         if(!this.hasElementSymbols()) {
             return [];
         }
-        const elements = this.cardData.elements === 'all' ? ['air', 'earth', 'fire', 'void', 'water'] : this.cardData.elements ?? [];
-        return elements.map((element: string, index: number) => ({
+        const elements = this.cardData.elements === 'all' ? [Element.Air, Element.Earth, Element.Fire, Element.Void, Element.Water] : this.cardData.elements ?? [];
+        return elements.map((element, index) => ({
             key: `province-element-${index}`,
             prettyName: 'The Province\'s Element',
-            element: element as Element
+            element
         }));
     }
 
@@ -292,7 +294,7 @@ export class ProvinceCard extends BaseCard {
         return menu;
     }
 
-    getSummary(activePlayer: Player, hideWhenFaceup: boolean) {
+    getSummary(activePlayer: StateViewer, hideWhenFaceup: boolean) {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
         return {
             ...baseSummary,

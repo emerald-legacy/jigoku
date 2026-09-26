@@ -13,7 +13,7 @@ class PitTrap extends DrawCard {
     }
 
     canPlayOn(card: BaseCard | Ring): boolean {
-        return (card as DrawCard).isAttacking() && super.canPlayOn(card);
+        return card instanceof DrawCard && card.isAttacking() && super.canPlayOn(card);
     }
 }
 

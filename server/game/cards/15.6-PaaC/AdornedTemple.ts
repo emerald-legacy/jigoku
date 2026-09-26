@@ -1,5 +1,5 @@
+import BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
@@ -12,18 +12,18 @@ class AdornedTemple extends DrawCard {
             .when({
                 onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context) => {
                     return (
-                        event.fate > 0 &&
-                        event.recipient &&
-                        (event.recipient as DrawCard).controller === context.player &&
+                        (event.fate ?? 0) > 0 &&
+                        event.recipient instanceof BaseCard &&
+                        event.recipient.controller === context.player &&
                         event.context?.ability.isCardAbility()
                     );
                 }
             })
             .gameAction(AbilityDsl.actions.draw((context) => ({
                 target: context.player,
-                amount: ((context as TriggeredAbilityContext).event.recipient as DrawCard)?.isOrdinary() ? 2 : 1
+                amount: context.event.recipient instanceof BaseCard && context.event.recipient.isOrdinary() ? 2 : 1
             })))
-            .effect('draw {1} card{2}', (context) => (((context as TriggeredAbilityContext).event.recipient as DrawCard)?.isOrdinary() ? ['2', 's'] : ['a', '']));
+            .effect('draw {1} card{2}', (context) => (context.event.recipient instanceof BaseCard && context.event.recipient.isOrdinary() ? ['2', 's'] : ['a', '']));
     }
 }
 

@@ -14,7 +14,7 @@ export default class DarkflamePurifier extends DrawCard {
                     event.origin?.type === CardType.Character &&
                     'controller' in event.origin &&
                     event.origin.controller === context.player.opponent &&
-                    event.fate > 0
+                    (event.fate ?? 0) > 0
             })
             .target('target', {
                 controller: Players.Any,

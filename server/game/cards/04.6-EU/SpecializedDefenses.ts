@@ -1,8 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 import { Location, CardType, Element } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
+import { isEnumValue } from '../../utils/helpers.js';
 
 class SpecializedDefenses extends DrawCard {
     static id = 'specialized-defenses';
@@ -15,12 +15,12 @@ class SpecializedDefenses extends DrawCard {
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card: BaseCard) => card.isConflictProvince() && (card as ProvinceCard).element.some((element: string) => {
+                cardCondition: (card: BaseCard) => card.isConflictProvince() && card.isProvinceCard() && card.element.some((element: string) => {
                     if(element === 'all') {
                         return true;
                     }
                     return this.game.rings[element].isConsideredClaimed(context.player) ||
-                           (this.game.currentConflict?.ring?.getElements().includes(element as Element) ?? false);
+                           (isEnumValue(Element, element) && (this.game.currentConflict?.ring?.getElements().includes(element) ?? false));
                 }),
                 message: '{0} doubles the province strength of {1}',
                 messageArgs: (cards) => [context.player, cards],

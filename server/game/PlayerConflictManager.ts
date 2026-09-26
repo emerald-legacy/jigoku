@@ -141,7 +141,7 @@ export class PlayerConflictManager {
         let forceConflictType: ConflictType | undefined = this.player.mostRecentEffect(EffectName.ForceConflictDeclarationType);
         const provideConflictDeclarationType = this.player.mostRecentEffect(EffectName.ProvideConflictDeclarationType);
         const additionalConflictEffects = this.player.getEffects(EffectName.AdditionalConflict);
-        const additionalConflictsForType = additionalConflictEffects.filter((x: string) => x === type).length;
+        const additionalConflictsForType = additionalConflictEffects.filter((x) => x === type).length;
         let baselineAvailableConflicts =
             this.defaultAllowedConflicts[ConflictType.Military] +
             this.defaultAllowedConflicts[ConflictType.Political];

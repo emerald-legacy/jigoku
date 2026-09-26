@@ -1,8 +1,6 @@
 import type BaseCard from '../../BaseCard.js';
 import { CardType, EffectName, Location, PlayType } from '../../Constants.js';
 import type DrawCard from '../../DrawCard.js';
-import type { PlayableLocation } from '../../PlayableLocation.js';
-import type Player from '../../Player.js';
 import { EffectBuilder } from '../EffectBuilder.js';
 
 export function canPlayFromOwn(
@@ -12,8 +10,7 @@ export function canPlayFromOwn(
     playType = PlayType.PlayFromHand
 ) {
     return EffectBuilder.player.detached(EffectName.CanPlayFromOwn, {
-        apply(target) {
-            const player = target as Player;
+        apply(player) {
             for(const card of cards) {
                 if(card.type === CardType.Event && card.location === location) {
                     for(const reaction of card.reactions) {
@@ -29,9 +26,7 @@ export function canPlayFromOwn(
 
             return player.addPlayableLocation(playType, player, location, cards);
         },
-        unapply(target, _context, state) {
-            const player = target as Player;
-            const location = state as PlayableLocation;
+        unapply(player, _context, location) {
             player.removePlayableLocation(location);
             for(const card of location.cards) {
                 if(Array.isArray(card.fromOutOfPlaySource)) {

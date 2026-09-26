@@ -23,7 +23,11 @@ class ActionWindow extends UiPrompt {
         if(this.game.currentConflict && !this.game.currentConflict.isSinglePlayer) {
             this.currentPlayer = this.game.currentConflict.defendingPlayer;
         } else {
-            this.currentPlayer = game.getFirstPlayer() as Player;
+            const firstPlayer = game.getFirstPlayer();
+            if(!firstPlayer) {
+                throw new Error('An action window cannot open before the first player is chosen');
+            }
+            this.currentPlayer = firstPlayer;
         }
         this.currentPlayerConsecutiveActions = 0;
         this.opportunityCounter = 0;

@@ -72,7 +72,7 @@ class PrepareForWar extends DrawCard {
     }
 
     getStatusTokenPrompts(context: AbilityContext) {
-        const tokens = (context.target as DrawCard).statusTokens;
+        const tokens = context.target?.statusTokens ?? [];
         let prompts: GameAction[] = [];
         tokens.forEach((token: StatusToken) => {
             prompts.push(

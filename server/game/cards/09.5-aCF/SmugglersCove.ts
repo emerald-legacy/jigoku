@@ -1,6 +1,5 @@
 import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
 export default class SmugglersCove extends ProvinceCard {
@@ -12,7 +11,7 @@ export default class SmugglersCove extends ProvinceCard {
                 cardType: CardType.Character,
                 controller: Players.Self
             }, AbilityDsl.actions.conditional({
-                condition: (context) => (context.target as DrawCard).isParticipating(),
+                condition: (context) => !!context.target?.isDrawCard() && context.target.isParticipating(),
                 trueGameAction: AbilityDsl.actions.sendHome(),
                 falseGameAction: AbilityDsl.actions.moveToConflict()
             }));

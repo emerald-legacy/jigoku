@@ -45,7 +45,7 @@ export default class CeremonialRobes extends DrawCard {
                     {
                         activePromptTitle: 'Select a card to put on the bottom of the deck',
                         message: '{0} places a card on the bottom of the deck',
-                        callback: (chosenCard) => ctx.player.moveCard(chosenCard, 'dynasty deck bottom')
+                        callback: (chosenCard) => ctx.player.moveCard(chosenCard, Location.DynastyDeck, { bottom: true })
                     },
                     {
                         activePromptTitle: 'Select a card to discard',

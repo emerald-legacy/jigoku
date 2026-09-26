@@ -1,5 +1,4 @@
 import { CardType, EventName, Players } from '../../Constants.js';
-import type { Duel } from '../../Duel.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
@@ -39,7 +38,7 @@ export default class MagnificentTriumph extends DrawCard {
     }
 
     public afterDuel(event: EventPayload<EventName.AfterDuel>) {
-        for(const winner of (event.duel as Duel).winner ?? []) {
+        for(const winner of event.duel.winner ?? []) {
             this.#duelWinnersThisConflict.add(winner);
         }
     }

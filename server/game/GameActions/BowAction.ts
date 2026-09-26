@@ -6,7 +6,7 @@ import type { ActionEvent } from './GameAction.js';
 
 export type BowActionProperties = CardActionProperties;
 
-export class BowAction<C extends AbilityContext = AbilityContext> extends CardGameAction<BowActionProperties, EventName, C> {
+export class BowAction<C extends AbilityContext = AbilityContext> extends CardGameAction<BowActionProperties, EventName.OnCardBowed, C> {
     name = 'bow';
     eventName = EventName.OnCardBowed;
     cost = 'bowing {0}';

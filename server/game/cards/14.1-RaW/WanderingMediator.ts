@@ -11,7 +11,7 @@ class WanderingMediator extends DrawCard {
         this.action('Move in/out the conflict')
             .condition(context => context.game.isDuringConflict() && (context.game.currentConflict?.getConflictProvinces().some((a) => a.isElement(this.getCurrentElementSymbol(elementKey))) ?? false))
             .gameAction(AbilityDsl.actions.conditional({
-                condition: context => (context.source as DrawCard).isParticipating(),
+                condition: context => context.source.isDrawCard() && context.source.isParticipating(),
                 trueGameAction: AbilityDsl.actions.sendHome(context => ({
                     target: context.source
                 })),

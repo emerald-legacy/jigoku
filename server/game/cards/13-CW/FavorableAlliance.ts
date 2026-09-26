@@ -38,7 +38,7 @@ class FavorableAlliance extends DrawCard {
                     }
                 })
             ]))
-            .effect('set aside {1} card{2}', (context) => [context.costs.variableFateCost, (context.costs.variableFateCost as number) > 1 ? 's' : '']);
+            .effect('set aside {1} card{2}', (context) => [context.costs.variableFateCost, (context.costs.variableFateCost ?? 0) > 1 ? 's' : '']);
     }
 }
 

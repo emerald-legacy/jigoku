@@ -1,7 +1,7 @@
 import BaseCard from './BaseCard.js';
 import { ChildCardManager } from './ChildCardManager.js';
 import type DrawCard from './DrawCard.js';
-import type Player from './Player.js';
+import type { StateViewer } from './types/StateViewer.js';
 import type { Location } from './Constants.js';
 
 export class StrongholdCard extends BaseCard {
@@ -46,7 +46,7 @@ export class StrongholdCard extends BaseCard {
         this.facedown = false;
     }
 
-    getSummary(activePlayer: Player, hideWhenFaceup = false) {
+    getSummary(activePlayer: StateViewer, hideWhenFaceup = false) {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
         return {
             ...baseSummary,

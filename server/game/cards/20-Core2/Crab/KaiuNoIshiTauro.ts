@@ -1,7 +1,6 @@
 import { CardType, Players, Decks, EventName } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type Ring from '../../../Ring.js';
 import type { GameEvent } from '../../../Events/EventPayloads.js';
 import type { Event } from '../../../Events/Event.js';
 
@@ -43,6 +42,6 @@ export default class KaiuNoIshiTauro extends DrawCard {
                     );
                 }
             })))
-            .effect('search their deck for an attachment costing {1} or less and attach it to {0}', (context) => (context.costs.returnRing as Ring[]).length);
+            .effect('search their deck for an attachment costing {1} or less and attach it to {0}', (context) => (context.costs.returnRing ?? []).length);
     }
 }

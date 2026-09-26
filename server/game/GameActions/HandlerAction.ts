@@ -9,7 +9,7 @@ export interface HandlerProperties extends GameActionProperties {
     hasTargetsChosenByInitiatingPlayer?: boolean;
 }
 
-export class HandlerAction<C extends AbilityContext = AbilityContext> extends GameAction<HandlerProperties, EventName, C> {
+export class HandlerAction<C extends AbilityContext = AbilityContext> extends GameAction<HandlerProperties, EventName.Unnamed, C> {
     defaultProperties: HandlerProperties = {
         handler: () => true,
         hasTargetsChosenByInitiatingPlayer: false
@@ -28,8 +28,8 @@ export class HandlerAction<C extends AbilityContext = AbilityContext> extends Ga
     }
 
     eventHandler(event: ActionEvent<EventName, C>, additionalProperties: Record<string, unknown> = {}): void {
-        const properties = this.getProperties((event.context), additionalProperties);
-        properties.handler?.((event.context));
+        const properties = this.getProperties(event.context, additionalProperties);
+        properties.handler?.(event.context);
     }
 
     hasTargetsChosenByInitiatingPlayer(context: C, additionalProperties: Record<string, unknown> = {}): boolean {

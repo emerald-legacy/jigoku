@@ -10,7 +10,7 @@ export default class MantraOfEarth extends DrawCard {
         this.reaction('Make a monk untargetable by opponents\' card effects and draw a card')
             .when({
                 onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) =>
-                    event.ring?.hasElement('earth' as Element) && event.conflict.attackingPlayer === context.player.opponent
+                    event.ring?.hasElement(Element.Earth) && event.conflict.attackingPlayer === context.player.opponent
             })
             .target('target', {
                 cardType: CardType.Character,

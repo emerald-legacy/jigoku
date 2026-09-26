@@ -1,6 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
-import type { ProvinceCard } from '../../../ProvinceCard.js';
 import { CardType, Location } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 
@@ -12,6 +11,7 @@ class StoneBreaker extends DrawCard {
             .cost(AbilityDsl.costs.sacrificeSelf())
             .target('cardInProvince', {
                 location: [Location.Provinces, Location.PlayArea],
+                cardType: [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding],
                 cardCondition: card =>
                     Boolean((card.isInProvince() && card.type !== CardType.Province && card.type !== CardType.Stronghold) ||
                         (card.type === CardType.Attachment && card.parent && card.parent.type === CardType.Province))
@@ -35,7 +35,7 @@ class StoneBreaker extends DrawCard {
                 condition: context.targets.cardInProvince.type === CardType.Attachment,
                 trueGameAction: AbilityDsl.actions.attach({
                     target: context.targets.province,
-                    attachment: context.targets.cardInProvince as DrawCard
+                    attachment: context.targets.cardInProvince
                 }),
                 falseGameAction: AbilityDsl.actions.moveCard({
                     target: context.targets.cardInProvince,
@@ -55,7 +55,7 @@ class StoneBreaker extends DrawCard {
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card: BaseCard) => card.isConflictProvince() && (card as ProvinceCard).getStrength() > 0,
+                cardCondition: (card: BaseCard) => card.isConflictProvince() && card.isProvinceCard() && card.getStrength() > 0,
                 message: '{0} reduces the strength of {1} by 2',
                 messageArgs: cards => [context.player, cards],
                 gameAction: AbilityDsl.actions.cardLastingEffect(() => ({

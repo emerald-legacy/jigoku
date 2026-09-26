@@ -2,6 +2,7 @@ import { Location, Duration, Element } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { ElementSymbol } from '../../ElementSymbol.js';
+import { isEnumValue } from '../../utils/helpers.js';
 
 export default class TwinSoulTemple extends StrongholdCard {
     static id = 'twin-soul-temple';
@@ -21,6 +22,10 @@ export default class TwinSoulTemple extends StrongholdCard {
                 }),
                 choiceHandler: (choice, displayMessage) => {
                     let newElement = choice.toLowerCase();
+                    // the choices are elements
+                    if(!isEnumValue(Element, newElement)) {
+                        return {};
+                    }
                     if(displayMessage) {
                         this.game.addMessage(
                             '{0} replaces {1}\'s {2} ({3}) symbol with {4}',

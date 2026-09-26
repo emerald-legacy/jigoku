@@ -35,10 +35,10 @@ export default class DevelopingMasterpiece extends DrawCard {
             .cost(AbilityDsl.costs.removeSelfFromGame())
             .condition((context) => !!context.source.parentCharacter)
             .gameAction(AbilityDsl.actions.gainHonor((context) => ({
-                amount: this.getHonorGain(context),
+                amount: this.getHonorGain(context.costs.captureParentCost, context.source),
                 target: context.player
             })))
-            .effect('gain {1} honor', (context) => [this.getHonorGain(context)])
+            .effect('gain {1} honor', (context) => [this.getHonorGain(context.costs.captureParentCost, context.source)])
             .then((context) => {
                 const haiku = randomHaiku();
                 if(haiku && context) {
@@ -62,10 +62,10 @@ export default class DevelopingMasterpiece extends DrawCard {
         return context.game.currentPhase === Phases.Draw && super.canPlay(context, playType);
     }
 
-    private getHonorGain(context: AbilityContext): number {
-        return context.costs.captureParentCost
-            ? (context.costs.captureParentCost as DrawCard).getGlory()
-            : (context.source.parentCharacter?.getGlory() ?? 0);
+    private getHonorGain(capturedParent: DrawCard | null | undefined, source: DrawCard): number {
+        return capturedParent
+            ? capturedParent.getGlory()
+            : (source.parentCharacter?.getGlory() ?? 0);
     }
 }
 

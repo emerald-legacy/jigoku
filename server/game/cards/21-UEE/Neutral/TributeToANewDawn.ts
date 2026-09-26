@@ -32,22 +32,16 @@ export default class TributeToANewDawn extends DrawCard {
                 player: (context) => (context.player.firstPlayer ? Players.Opponent : Players.Self)
             }, AbilityDsl.actions.bow())
             .gameAction(AbilityDsl.actions.removeFromGame((context) => ({
-                target: this.#getAffectedAttachments(context)
+                target: this.getAffectedAttachments(context, [...context.targets[FIRST], ...context.targets[SECOND]])
             })))
-            .effect('remove {1} from the game', (context) => [this.#getAffectedAttachments(context)]);
+            .effect('remove {1} from the game', (context) => [this.getAffectedAttachments(context, [...context.targets[FIRST], ...context.targets[SECOND]])]);
     }
 
-    #getAffectedAttachments(context: AbilityContext<DrawCard>) {
-        const protectedAttachments = new WeakSet<DrawCard>();
-        for(const card of context.targets[FIRST] as DrawCard[]) {
-            protectedAttachments.add(card);
-        }
-        for(const card of context.targets[SECOND] as DrawCard[]) {
-            protectedAttachments.add(card);
-        }
+    private getAffectedAttachments(context: AbilityContext<DrawCard>, keptAttachments: DrawCard[]) {
+        const protectedAttachments = new WeakSet<DrawCard>(keptAttachments);
 
-        return (context.game.allCards as Array<DrawCard>).filter(
-            (card) => card.type === CardType.Attachment && card.isInPlay() && !protectedAttachments.has(card)
+        return context.game.allCards.filter(
+            (card): card is DrawCard => card.isDrawCard() && card.type === CardType.Attachment && card.isInPlay() && !protectedAttachments.has(card)
         );
     }
 }

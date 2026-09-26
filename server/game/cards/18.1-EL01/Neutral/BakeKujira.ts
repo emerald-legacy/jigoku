@@ -1,4 +1,4 @@
-import { AbilityContext } from '../../../AbilityContext.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
@@ -19,13 +19,13 @@ export default class BakeKujira extends DrawCard {
                 controller: Players.Any,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
             }, AbilityDsl.actions.conditional({
-                condition: (context) => this.#shouldDiscardTarget(context as AbilityContext<DrawCard, DrawCard>),
+                condition: (context) => this.shouldDiscardTarget(context),
                 trueGameAction: AbilityDsl.actions.discardFromPlay(),
                 falseGameAction: AbilityDsl.actions.removeFate()
             }));
     }
 
-    #shouldDiscardTarget(context: AbilityContext<DrawCard, DrawCard>): boolean {
+    private shouldDiscardTarget(context: AbilityContext): boolean {
         return context.target?.getFate() === 0;
     }
 }

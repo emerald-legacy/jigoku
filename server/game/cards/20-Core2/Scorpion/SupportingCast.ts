@@ -2,8 +2,6 @@ import { CardType, Duration, EventName, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import type BaseCard from '../../../BaseCard.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class SupportingCast extends DrawCard {
@@ -25,12 +23,12 @@ export default class SupportingCast extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     card.isParticipating() &&
-                    !((context as TriggeredAbilityContext<DrawCard>).event.cardTargets as BaseCard[]).some((eventCard: BaseCard) => eventCard === card)
+                    !context.event.cardTargets.some((eventCard: BaseCard) => eventCard === card)
             }, AbilityDsl.actions.selectCard((context) => ({
                 activePromptTitle: 'Choose a character to bow',
                 hidePromptIfSingleCard: true,
-                cardCondition: (card, context: AbilityContext) =>
-                    ((context as TriggeredAbilityContext).event.cardTargets as BaseCard[]).some((eventCard: BaseCard) => eventCard === card),
+                cardCondition: (card) =>
+                    (context.event.cardTargets ?? []).some((eventCard: BaseCard) => eventCard === card),
                 subActionProperties: (card: DrawCard) => {
                     context.target = card;
                     return { target: card };

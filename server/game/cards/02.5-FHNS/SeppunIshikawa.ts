@@ -1,7 +1,6 @@
 import type AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
-import { ProvinceCard } from '../../ProvinceCard.js';
 import { Location, CardType } from '../../Constants.js';
 
 class SeppunIshikawa extends DrawCard {
@@ -16,7 +15,7 @@ class SeppunIshikawa extends DrawCard {
     getImperialCardsInPlay(source: DrawCard) {
         return this.game.allCards.reduce((sum: number, card: BaseCard) => {
             if(card !== source && card.controller === source.controller && card.hasTrait('imperial') && card.isFaceup() &&
-                (card.location === Location.PlayArea || (card.isProvince && !(card as ProvinceCard).isBroken) ||
+                (card.location === Location.PlayArea || (card.isProvinceCard() && !card.isBroken) ||
                 (card.isInProvince() && card.type === CardType.Holding))) {
                 return sum + 1;
             }

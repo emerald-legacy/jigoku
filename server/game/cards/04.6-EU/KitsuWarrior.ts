@@ -1,5 +1,6 @@
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
+import { ConflictType } from '../../Constants.js';
 
 class KitsuWarrior extends DrawCard {
     static id = 'kitsu-warrior';
@@ -14,13 +15,11 @@ class KitsuWarrior extends DrawCard {
     }
 
     twiceMilClaimedRings() {
-        // @ts-expect-error string literal 'military' vs ConflictType enum - game engine accepts both at runtime
-        let milclaimedRings = Object.values(this.game.rings).filter(ring => ring.isConsideredClaimed() && ring.isConflictType('military'));
+        let milclaimedRings = Object.values(this.game.rings).filter(ring => ring.isConsideredClaimed() && ring.isConflictType(ConflictType.Military));
         return 2 * milclaimedRings.length;
     }
     twicePolClaimedRings() {
-        // @ts-expect-error string literal 'political' vs ConflictType enum - game engine accepts both at runtime
-        let polclaimedRings = Object.values(this.game.rings).filter(ring => ring.isConsideredClaimed() && ring.isConflictType('political'));
+        let polclaimedRings = Object.values(this.game.rings).filter(ring => ring.isConsideredClaimed() && ring.isConflictType(ConflictType.Political));
         return 2 * polclaimedRings.length;
     }
 }

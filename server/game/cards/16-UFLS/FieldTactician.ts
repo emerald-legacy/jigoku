@@ -17,8 +17,8 @@ class FieldTactician extends DrawCard {
                 controller: Players.Any
             }, AbilityDsl.actions.handler({
                 handler: context => {
-                    const card = context.target as DrawCard;
-                    if(!card) {
+                    const card = context.target;
+                    if(!card?.isDrawCard()) {
                         return;
                     }
                     const player = card.owner;

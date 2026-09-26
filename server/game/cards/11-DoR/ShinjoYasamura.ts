@@ -12,7 +12,7 @@ class ShinjoYasamura extends DrawCard {
                 onCovertResolved: (event: EventPayload<EventName.OnCovertResolved>, context) =>
                     (event.card === context.source ||
                         (Array.isArray(event.card) && event.card.includes(context.source))) &&
-                    (event.context?.target as DrawCard)?.covert
+                    !!event.context?.target?.isDrawCard() && event.context.target.covert
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 target: context.event.context.target,

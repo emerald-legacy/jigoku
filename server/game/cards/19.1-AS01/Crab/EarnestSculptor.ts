@@ -1,5 +1,4 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseAction from '../../../BaseAction.js';
 import type BaseCard from '../../../BaseCard.js';
 import { CardType, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -26,14 +25,14 @@ export default class EarnestSculptor extends DrawCard {
                     event.player === context.player &&
                     event.card.hasTrait('jade') &&
                     event.context !== undefined &&
-                    (event.context.ability as BaseAction).getReducedCost(event.context) > 0,
+                    event.context.ability.getReducedCost(event.context) > 0,
                 onAbilityResolverInitiated: (event, context) =>
                     event.context !== undefined &&
                     (event.context.source.type === CardType.Attachment ||
                         event.context.ability instanceof PlayAttachmentAction) &&
                     event.context.player === context.player &&
                     event.context.source.hasTrait('jade') &&
-                    (event.context.ability as BaseAction).getReducedCost(event.context) > 0
+                    event.context.ability.getReducedCost(event.context) > 0
             })
             .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
                 targetController: context.player,

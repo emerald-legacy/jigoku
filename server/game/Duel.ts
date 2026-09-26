@@ -7,7 +7,7 @@ import type Game from './Game.js';
 import type Player from './Player.js';
 import { AbilityContext } from './AbilityContext.js';
 import type BaseCard from './BaseCard.js';
-import type { CardEffect } from './Effects/types.js';
+import { isEffectOf } from './Effects/types.js';
 import type { EffectValue } from './Effects/EffectValue.js';
 
 /**
@@ -107,7 +107,7 @@ export class Duel extends GameObject {
     isInvolved(card: BaseCard): boolean {
         return (
             card.location === Location.PlayArea &&
-            (card === this.challenger || this.targets.includes(card as DrawCard))
+            (card === this.challenger || this.targets.some((target) => target === card))
         );
     }
 
@@ -226,12 +226,12 @@ export class Duel extends GameObject {
     #getDuelModifiers(card: DrawCard): number {
         const rawEffects = card
             .getRawEffects()
-            .filter((effect: CardEffect) => effect.type === EffectName.ModifyDuelistSkill);
+            .filter((effect) => isEffectOf(effect, EffectName.ModifyDuelistSkill));
         let effectModifier = 0;
 
-        rawEffects.forEach((effect: CardEffect) => {
-            const props = effect.getValue<{ duel: Duel; value: number }>();
-            if(props.duel === this) {
+        rawEffects.forEach((effect) => {
+            const props = effect.getValue();
+            if(typeof props === 'object' && props.duel === this) {
                 effectModifier += props.value;
             }
         });

@@ -19,7 +19,7 @@ export default class AsakoMaezawa2 extends DrawCard {
             }, AbilityDsl.actions.sequential([
                 AbilityDsl.actions.bow(),
                 AbilityDsl.actions.conditional({
-                    condition: (context) => (context.target as DrawCard).isFaction('phoenix'),
+                    condition: (context) => !!context.target?.isFaction('phoenix'),
                     trueGameAction: AbilityDsl.actions.dishonor(),
                     falseGameAction: AbilityDsl.actions.draw({ amount: 0 }) //do nothing
                 })

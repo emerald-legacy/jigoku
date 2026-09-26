@@ -21,7 +21,6 @@ class SuddenTempest extends DrawCard {
                         when: {
                             onRoundEnded: () => true
                         },
-                        target: context.ring?.getElements().map((element: Element) => this.game.rings[element]),
                         gameAction: AbilityDsl.actions.returnRingToPlay()
                     })
                 }))

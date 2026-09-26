@@ -1,5 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
+import { ConflictType } from '../../../Constants.js';
 
 class CommuneWithTheSpirits extends DrawCard {
     static id = 'commune-with-the-spirits';
@@ -15,7 +16,7 @@ class CommuneWithTheSpirits extends DrawCard {
                     amount: context.ring?.fate,
                     removeOnly: true
                 })),
-                AbilityDsl.actions.claimRing({ takeFate: false, type: 'political'})
+                AbilityDsl.actions.claimRing({ takeFate: false, type: ConflictType.Political})
             ]))
             .effect('discard all fate from the {0} and claim it as a political ring')
             .max(AbilityDsl.limit.perRound(1));

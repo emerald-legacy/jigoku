@@ -9,6 +9,7 @@ import type Game from '../Game.js';
 import AbilityResolver from '../gamesteps/AbilityResolver.js';
 import type Player from '../Player.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
+import { targetList } from './GameAction.js';
 
 class PlayCardResolver extends AbilityResolver {
     playGameAction: PlayCardAction;
@@ -120,7 +121,7 @@ interface PlayableAbility {
     createContext(player: Player): AbilityContext;
 }
 
-export class PlayCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlayCardProperties, EventName, C> {
+export class PlayCardAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlayCardProperties, EventName.Unnamed, C> {
     name = 'playCard';
     effect = 'play {0} as if it were in their hand';
     defaultProperties: PlayCardProperties = {
@@ -198,11 +199,10 @@ export class PlayCardAction<C extends AbilityContext = AbilityContext> extends C
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
-        const targets = properties.target as DrawCard | DrawCard[] | undefined;
-        if(!targets || (Array.isArray(targets) && targets.length === 0)) {
+        const [card] = targetList(properties.target);
+        if(!card || !card.isDrawCard()) {
             return;
         }
-        let card: DrawCard = Array.isArray(targets) ? targets[0] : targets;
         let abilities = this.getLegalAbilities(card, context, properties);
         if(abilities.length === 1) {
             events.push(

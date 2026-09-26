@@ -1,7 +1,7 @@
 import type { AbilityContext } from './AbilityContext.js';
 import BaseCard from './BaseCard.js';
 import { EffectName, Element } from './Constants.js';
-import type Player from './Player.js';
+import type { StateViewer } from './types/StateViewer.js';
 
 const illegalActions = new Set([
     'bow',
@@ -33,7 +33,7 @@ export class RoleCard extends BaseCard {
         this.facedown = false;
     }
 
-    getSummary(activePlayer: Player, hideWhenFaceup = false) {
+    getSummary(activePlayer: StateViewer, hideWhenFaceup = false) {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
         return {
             ...baseSummary,

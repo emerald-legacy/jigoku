@@ -18,7 +18,6 @@ export default class BayushiShinobu extends DrawCard {
                         context.source.dishonor();
                     }
                 }),
-                duration: Duration.Persistent,
                 multipleTrigger: true
             })
         });

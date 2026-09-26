@@ -13,9 +13,11 @@ const agreeableCost = (): Cost<{ agreeableArrangementCost: DrawCard }> => ({
         return ['giving {1} control of {0}', context.player.opponent];
     },
     canPay: function(context) {
-        return !!context.player.opponent && context.player.cardsInPlay.some((card: DrawCard) => (card.printedCost ?? 0) >= 2 && !card.bowed && !card.anotherUniqueInPlay(context.player.opponent as Player));
+        const opponent = context.player.opponent;
+        return !!opponent && context.player.cardsInPlay.some((card: DrawCard) => (card.printedCost ?? 0) >= 2 && !card.bowed && !card.anotherUniqueInPlay(opponent));
     },
     resolve: function (context, result: Result) {
+        const opponent = context.player.opponent;
         context.game.promptForSelect(context.player, {
             activePromptTitle: 'Choose a card to give to your opponent',
             context: context,
@@ -24,7 +26,7 @@ const agreeableCost = (): Cost<{ agreeableArrangementCost: DrawCard }> => ({
             location: Location.PlayArea,
             cardType: CardType.Character,
             controller: Players.Self,
-            cardCondition: (card: DrawCard) => (card.printedCost ?? 0) >= 2 && !card.bowed && !card.anotherUniqueInPlay(context.player.opponent as Player),
+            cardCondition: (card: DrawCard) => !!opponent && (card.printedCost ?? 0) >= 2 && !card.bowed && !card.anotherUniqueInPlay(opponent),
             onSelect: (_player: Player, card: DrawCard) => {
                 context.costs.agreeableArrangementCost = card;
                 return true;

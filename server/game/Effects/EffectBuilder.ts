@@ -5,29 +5,28 @@ import type EffectSource from '../EffectSource.js';
 import type { Duration, EffectName, Location } from '../Constants.js';
 import type Game from '../Game.js';
 import type { GameAction, GameActionProperties } from '../GameActions/GameAction.js';
-import type { WhenType } from '../Interfaces.js';
+import type { GameObject } from '../GameObject.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import type { StatusToken } from '../StatusToken.js';
 import type Effect from './Effect.js';
+import type { EffectProperties, EffectUntil } from './Effect.js';
+import type { EffectBase } from './EffectBase.js';
+import type { EffectValueMap, FlexibleEffectName } from './EffectValueMap.js';
 import CardEffect from './CardEffect.js';
 import ConflictEffect from './ConflictEffect.js';
-import DetachedEffect from './DetachedEffect.js';
+import DetachedEffect, { type DetachedValue } from './DetachedEffect.js';
 import DuelEffect from './DuelEffect.js';
-import DynamicEffect from './DynamicEffect.js';
+import DynamicEffect, { type DynamicValue } from './DynamicEffect.js';
 import PlayerEffect from './PlayerEffect.js';
 import RingEffect from './RingEffect.js';
-import StaticEffect from './StaticEffect.js';
+import StaticEffect, { type StaticValue } from './StaticEffect.js';
 import type { Duel } from '../Duel.js';
+import type { Conflict } from '../Conflict.js';
 
+export type { DetachedValue, DynamicValue };
 
-export type EffectTarget = Player | Ring | BaseCard | StatusToken | Duel;
-type StaticValue = unknown;
-export type DynamicValue = (target: EffectTarget, context: AbilityContext) => unknown;
-export type DetachedValue = {
-    apply: (target: EffectTarget, context: AbilityContext, state?: unknown) => unknown;
-    unapply: (target: EffectTarget, context: AbilityContext, state?: unknown) => unknown;
-};
+export type EffectTarget = Player | Ring | BaseCard | StatusToken | Duel | Conflict;
 export type EffectFactory = (game: Game, source: EffectSource, props: Props) => Effect;
 
 type Props = {
@@ -36,7 +35,7 @@ type Props = {
     canChangeZoneNTimes?: number;
     duration?: Duration;
     condition?: (context: AbilityContext) => boolean;
-    until?: WhenType;
+    until?: EffectUntil;
     ability?: BaseAbility;
     target?: EffectTarget | EffectTarget[];
     cannotBeCancelled?: boolean;
@@ -44,65 +43,35 @@ type Props = {
     parentAction?: GameAction<GameActionProperties>;
 };
 
+/** A value, or a calculation of it for each target. Values are never functions, so a function is a calculation. */
+export type FlexibleValue<V, T> = V | DynamicValue<V, T>;
+
+function isCalculation<V, T>(value: FlexibleValue<V, T>): value is DynamicValue<V, T> {
+    return typeof value === 'function';
+}
+
+type Container<T extends GameObject> = new (game: Game, source: EffectSource, props: EffectProperties<T>, effect: EffectBase<EffectName, T>) => Effect<T>;
+
+/** Effect factories for one kind of target; each checks its value against `EffectValueMap`. */
+function effectsFor<T extends GameObject>(Container: Container<T>) {
+    const staticEffect = <N extends EffectName>(type: N, value: StaticValue<N, T>): EffectFactory =>
+        (game, source, props) => new Container(game, source, props, new StaticEffect<N, T>(type, value));
+    const dynamicEffect = <N extends EffectName>(type: N, value: DynamicValue<EffectValueMap[N], T>): EffectFactory =>
+        (game, source, props) => new Container(game, source, props, new DynamicEffect<N, T>(type, value));
+    return {
+        static: staticEffect,
+        dynamic: dynamicEffect,
+        detached: <N extends EffectName, S>(type: N, value: DetachedValue<T, S>): EffectFactory =>
+            (game, source, props) => new Container(game, source, props, new DetachedEffect<N, T, S>(type, value)),
+        flexible: <N extends FlexibleEffectName>(type: N, value: FlexibleValue<EffectValueMap[N], T>): EffectFactory =>
+            isCalculation(value) ? dynamicEffect(type, value) : staticEffect(type, value)
+    };
+}
+
 export const EffectBuilder = {
-    card: {
-        static: (type: EffectName, value: StaticValue) => (game: Game, source: EffectSource, props: Props) =>
-            new CardEffect(game, source, props, new StaticEffect(type, value)),
-        dynamic: (type: EffectName, value: DynamicValue) => (game: Game, source: EffectSource, props: Props) =>
-            new CardEffect(game, source, props, new DynamicEffect(type, value)),
-        detached: (type: EffectName, value: DetachedValue) => (game: Game, source: EffectSource, props: Props) =>
-            new CardEffect(game, source, props, new DetachedEffect(type, value.apply, value.unapply)),
-        flexible: <V, Target extends EffectTarget = BaseCard>(type: EffectName, value: V | ((target: Target, context: AbilityContext) => V)) =>
-            typeof value === 'function'
-                ? EffectBuilder.card.dynamic(type, value as DynamicValue)
-                : EffectBuilder.card.static(type, value)
-    },
-    player: {
-        static: (type: EffectName, value: StaticValue) => (game: Game, source: EffectSource, props: Props) =>
-            new PlayerEffect(game, source, props, new StaticEffect(type, value)),
-        dynamic: (type: EffectName, value: DynamicValue) => (game: Game, source: EffectSource, props: Props) =>
-            new PlayerEffect(game, source, props, new DynamicEffect(type, value)),
-        detached: (type: EffectName, value: DetachedValue) => (game: Game, source: EffectSource, props: Props) =>
-            new PlayerEffect(game, source, props, new DetachedEffect(type, value.apply, value.unapply)),
-        flexible: <V, Target extends EffectTarget = Player>(type: EffectName, value: V | ((target: Target, context: AbilityContext) => V)) =>
-            typeof value === 'function'
-                ? EffectBuilder.player.dynamic(type, value as DynamicValue)
-                : EffectBuilder.player.static(type, value)
-    },
-    conflict: {
-        static: (type: EffectName, value: StaticValue) => (game: Game, source: EffectSource, props: Props) =>
-            new ConflictEffect(game, source, props, new StaticEffect(type, value)),
-        dynamic: (type: EffectName, value: DynamicValue) => (game: Game, source: EffectSource, props: Props) =>
-            new ConflictEffect(game, source, props, new DynamicEffect(type, value)),
-        detached: (type: EffectName, value: DetachedValue) => (game: Game, source: EffectSource, props: Props) =>
-            new ConflictEffect(game, source, props, new DetachedEffect(type, value.apply, value.unapply)),
-        flexible: <V, Target extends EffectTarget = BaseCard>(type: EffectName, value: V | ((target: Target, context: AbilityContext) => V)) =>
-            typeof value === 'function'
-                ? EffectBuilder.conflict.dynamic(type, value as DynamicValue)
-                : EffectBuilder.conflict.static(type, value)
-    },
-    ring: {
-        static: (type: EffectName, value: StaticValue) => (game: Game, source: EffectSource, props: Props) =>
-            new RingEffect(game, source, props, new StaticEffect(type, value)),
-        dynamic: (type: EffectName, value: DynamicValue) => (game: Game, source: EffectSource, props: Props) =>
-            new RingEffect(game, source, props, new DynamicEffect(type, value)),
-        detached: (type: EffectName, value: DetachedValue) => (game: Game, source: EffectSource, props: Props) =>
-            new RingEffect(game, source, props, new DetachedEffect(type, value.apply, value.unapply)),
-        flexible: <V, Target extends EffectTarget = Ring>(type: EffectName, value: V | ((target: Target, context: AbilityContext) => V)) =>
-            typeof value === 'function'
-                ? EffectBuilder.ring.dynamic(type, value as DynamicValue)
-                : EffectBuilder.ring.static(type, value)
-    },
-    duel: {
-        static: (type: EffectName, value: StaticValue) => (game: Game, source: EffectSource, props: Props) =>
-            new DuelEffect(game, source, props, new StaticEffect(type, value)),
-        dynamic: (type: EffectName, value: DynamicValue) => (game: Game, source: EffectSource, props: Props) =>
-            new DuelEffect(game, source, props, new DynamicEffect(type, value)),
-        detached: (type: EffectName, value: DetachedValue) => (game: Game, source: EffectSource, props: Props) =>
-            new DuelEffect(game, source, props, new DetachedEffect(type, value.apply, value.unapply)),
-        flexible: <V, Target extends EffectTarget = BaseCard>(type: EffectName, value: V | ((target: Target, context: AbilityContext) => V)) =>
-            typeof value === 'function'
-                ? EffectBuilder.duel.dynamic(type, value as DynamicValue)
-                : EffectBuilder.duel.static(type, value)
-    }
+    card: effectsFor(CardEffect),
+    player: effectsFor(PlayerEffect),
+    conflict: effectsFor(ConflictEffect),
+    ring: effectsFor(RingEffect),
+    duel: effectsFor(DuelEffect)
 };

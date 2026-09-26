@@ -1,10 +1,10 @@
 import { CardType, Duration, Location, Players } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import type BaseCard from '../../../BaseCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 
-function skillBonus(card: DrawCard) {
-    return card.getMilitarySkill();
+function skillBonus(card: BaseCard) {
+    return card.isDrawCard() ? card.getMilitarySkill() : 0;
 }
 
 export default class MotoOktai extends DrawCard {
@@ -18,9 +18,9 @@ export default class MotoOktai extends DrawCard {
             })
             .gameAction(AbilityDsl.actions.cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.modifyMilitarySkill(skillBonus((context as TriggeredAbilityContext).event.card as DrawCard))
+                effect: AbilityDsl.effects.modifyMilitarySkill(skillBonus(context.event.card))
             })))
-            .effect('get +{1} {2} for this phase - he is emboldened by justice, but unburdened by mercy!', (context) => [skillBonus(context.event.card as DrawCard), 'military']);
+            .effect('get +{1} {2} for this phase - he is emboldened by justice, but unburdened by mercy!', (context) => [skillBonus(context.event.card), 'military']);
 
         this.action('Discard a character from play')
             .condition((context) => context.source.isParticipatingFor(context.player))

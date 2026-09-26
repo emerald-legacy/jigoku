@@ -1,6 +1,5 @@
 import DrawCard from '../../DrawCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type Ring from '../../Ring.js';
 import { Players, CardType, Location } from '../../Constants.js';
 
 class AgashaShunsen extends DrawCard {
@@ -26,7 +25,7 @@ class AgashaShunsen extends DrawCard {
                 subActionProperties: card => ({ attachment: card })
             })))
             .gameAction(AbilityDsl.actions.shuffleDeck({ deck: Location.ConflictDeck }))
-            .effect('search their deck for an attachment costing {1} or less and attach it to {0}', context => (context.costs.returnRing as Ring[]).length);
+            .effect('search their deck for an attachment costing {1} or less and attach it to {0}', context => (context.costs.returnRing ?? []).length);
     }
 }
 

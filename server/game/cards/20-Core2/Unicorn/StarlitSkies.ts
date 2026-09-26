@@ -26,15 +26,18 @@ export default class StarlitSkies extends DrawCard {
                 Object.entries(possibleChoices).map(([name, { condition }]) => [name, condition])
             ))
             .handler((context) => {
-                const choice = possibleChoices[context.select as keyof typeof possibleChoices];
+                const choice = Object.entries(possibleChoices).find(([name]) => name === context.select)?.[1];
+                if(!choice) {
+                    return;
+                }
                 const topThree = choice.cards(context);
                 if(topThree.length === 0) {
                     return;
                 }
                 const messages = ['{0} places a card on the bottom of the deck', '{0} chooses to discard {1}'];
-                const destinations: string[] = [
-                    topThree[0].isDynasty ? 'dynasty deck bottom' : 'conflict deck bottom',
-                    topThree[0].isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile
+                const destinations = [
+                    { location: topThree[0].isDynasty ? Location.DynastyDeck : Location.ConflictDeck, bottom: true },
+                    { location: topThree[0].isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile, bottom: false }
                 ];
                 let choices: string[] = [];
                 const handlers: (() => void)[] = [];
@@ -43,7 +46,7 @@ export default class StarlitSkies extends DrawCard {
                     const dest = destinations.pop();
                     if(msg && dest) {
                         context.game.addMessage(msg, context.player, card);
-                        choice.player(context).moveCard(card, dest);
+                        choice.player(context).moveCard(card, dest.location, { bottom: dest.bottom });
                     }
                     if(messages.length > 0) {
                         const index = topThree.findIndex((x) => x === card);

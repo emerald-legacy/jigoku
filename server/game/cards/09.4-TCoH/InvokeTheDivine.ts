@@ -19,7 +19,7 @@ class InvokeTheDivine extends DrawCard {
                 source: this,
                 postHandler: (context: AbilityContext) => {
                     if(spellsCast < 2) {
-                        getSelectCardAction(fate - ((context.source as DrawCard).getCost() ?? 0), spellsCast + 1).resolve(undefined, invokeContext);
+                        getSelectCardAction(fate - ((context.source.isDrawCard() ? context.source.getCost() : null) ?? 0), spellsCast + 1).resolve(undefined, invokeContext);
                     }
                 }
             }))

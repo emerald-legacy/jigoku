@@ -86,7 +86,7 @@ const accursedSummoningCost = function (): Cost<{ accursedSummoningCostCreature:
                 context.costs.accursedSummoningCostCreature = copy;
 
                 let events: Event[] = [];
-                const honorAmount = context.costs.accursedSummoningCost as number;
+                const honorAmount = context.costs.accursedSummoningCost ?? 0;
                 let honorAction = context.game.actions.loseHonor({ target: context.player, amount: honorAmount });
                 events.push(honorAction.getEvent(context.player, context));
                 return events;
@@ -107,8 +107,8 @@ class AccursedSummoning extends DrawCard {
                 target: context.costs.accursedSummoningCostCreature || context.player.outsideTheGameCards[1]
             })))
             .effect('summon a{2} {1} from the depths of the Shadowlands!', context => {
-                const creature = context.costs.accursedSummoningCostCreature as DrawCard;
-                var testStr = creature.name;
+                const creature = context.costs.accursedSummoningCostCreature;
+                var testStr = creature?.name ?? '';
                 var vowelRegex = '^[aieouAIEOU].*';
                 var matched = testStr.match(vowelRegex);
                 return [

@@ -2,7 +2,7 @@ import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { GameObject } from '../GameObject.js';
-import { GameAction, GameActionProperties } from './GameAction.js';
+import { GameAction, GameActionProperties, targetList } from './GameAction.js';
 import { RemoveFateAction } from './RemoveFateAction.js';
 import { CardType, Location, type EventName } from '../Constants.js';
 import { DiscardFromPlayAction } from './DiscardFromPlayAction.js';
@@ -54,7 +54,7 @@ export class InjureAction<C extends AbilityContext = AbilityContext> extends Gam
 
     addEventsToArray(events: Event[], context: C, additionalProperties = {}): void {
         let properties = this.getProperties(context, additionalProperties);
-        for(let target of properties.target as DrawCard[]) {
+        for(let target of targetList(properties.target)) {
             if(target.getFate() === 0) {
                 if(this.discardGameAction.canAffect(target, context, additionalProperties)) {
                     events.push(this.discardGameAction.getEvent(target, context, additionalProperties));

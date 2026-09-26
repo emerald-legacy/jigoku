@@ -1,6 +1,6 @@
 import { GameModes } from '../GameModes.js';
 
-const communityFormats = new Set([GameModes.Emerald, GameModes.Sanctuary, GameModes.Obsidian]);
+const communityFormats = new Set<string | undefined>([GameModes.Emerald, GameModes.Sanctuary, GameModes.Obsidian]);
 
 /**
  * Pick the preferred pack_id from a card's versions array based on game format.
@@ -8,13 +8,13 @@ const communityFormats = new Set([GameModes.Emerald, GameModes.Sanctuary, GameMo
  * Imperial formats prefer the first version (FFG printing).
  * If an explicit packId is provided, it takes priority.
  */
-export function resolvePackId(packId: string | undefined, card: { id?: string; versions?: { pack_id: string }[] } | null | undefined, gameMode: string): string | undefined {
+export function resolvePackId(packId: string | null | undefined, card: { versions?: { pack_id: string }[] | null } | null | undefined, gameMode: string | undefined): string | undefined {
     if(packId) {
         return packId;
     }
     const versions = card?.versions;
     if(versions && versions.length > 0) {
-        if(communityFormats.has(gameMode as GameModes)) {
+        if(communityFormats.has(gameMode)) {
             return versions[versions.length - 1].pack_id;
         }
         return versions[0].pack_id;

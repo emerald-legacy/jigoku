@@ -6,7 +6,7 @@ import type { ActionEvent } from './GameAction.js';
 
 export type SendHomeProperties = CardActionProperties;
 
-export class SendHomeAction<C extends AbilityContext = AbilityContext> extends CardGameAction<SendHomeProperties, EventName, C> {
+export class SendHomeAction<C extends AbilityContext = AbilityContext> extends CardGameAction<SendHomeProperties, EventName.OnSendHome, C> {
     name = 'sendHome';
     eventName = EventName.OnSendHome;
     cost = 'moving home {0}';

@@ -3,7 +3,6 @@ import DrawCard from '../../DrawCard.js';
 import * as GameActions from '../../GameActions/GameActions.js';
 import { EventName, AbilityType } from '../../Constants.js';
 import type { GameEvent } from '../../Events/EventPayloads.js';
-import type EventWindow from '../../Events/EventWindow.js';
 
 class DisplayOfPower extends DrawCard {
     static id = 'display-of-power';
@@ -30,13 +29,14 @@ class DisplayOfPower extends DrawCard {
             return;
         }
         const ring = conflict.ring;
-        if(!ring) {
+        const window = event.window;
+        if(!ring || !window) {
             return;
         }
-        (event.window as EventWindow).addEvent(GameActions.resolveConflictRing().getEvent(ring, context));
+        window.addEvent(GameActions.resolveConflictRing().getEvent(ring, context));
 
         if(context.player.checkRestrictions('claimRings', context)) {
-            (event.window as EventWindow).addEvent(this.game.getEvent(EventName.OnClaimRing, { player: this.controller, ring:ring, conflict: event.conflict }, () => ring.claimRing(context.player)));
+            window.addEvent(this.game.getEvent(EventName.OnClaimRing, { player: this.controller, ring:ring, conflict: event.conflict }, () => ring.claimRing(context.player)));
         }
         event.cancel();
     }

@@ -22,9 +22,9 @@ export default class DaidojiAmbusher extends DrawCard {
                     effect: AbilityDsl.effects.modifyMilitarySkill(-2)
                 }),
                 AbilityDsl.actions.conditional({
-                    condition: (context) => this.triggerKickerEffect(context as AbilityContext<DrawCard, DrawCard>, Timing.AFTER_PENALTY),
+                    condition: (context) => this.triggerKickerEffect(context, Timing.AFTER_PENALTY),
                     trueGameAction: AbilityDsl.actions.conditional({
-                        condition: (context) => this.shouldDiscardTarget(context as AbilityContext<DrawCard, DrawCard>),
+                        condition: (context) => this.shouldDiscardTarget(context),
                         trueGameAction: AbilityDsl.actions.discardFromPlay(),
                         falseGameAction: AbilityDsl.actions.removeFate()
                     }),
@@ -39,10 +39,10 @@ export default class DaidojiAmbusher extends DrawCard {
             ]);
     }
 
-    private triggerKickerEffect(context: AbilityContext<DrawCard, DrawCard>, timing: Timing): boolean {
+    private triggerKickerEffect(context: AbilityContext, timing: Timing): boolean {
         const isDishonored = context.source.isDishonored;
         const target = context.target;
-        if(!target) {
+        if(!target?.isDrawCard()) {
             return false;
         }
         const targetZero =
@@ -53,7 +53,7 @@ export default class DaidojiAmbusher extends DrawCard {
         return isDishonored && targetZero;
     }
 
-    private shouldDiscardTarget(context: AbilityContext<DrawCard, DrawCard>): boolean {
+    private shouldDiscardTarget(context: AbilityContext): boolean {
         return context.target?.getFate() === 0;
     }
 }

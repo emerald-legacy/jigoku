@@ -1,4 +1,4 @@
-import { Duration, EventName } from '../../Constants.js';
+import { ConflictType, Duration, EventName } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -28,7 +28,7 @@ export default class ShiroKitsuki extends StrongholdCard {
                         ringCondition: (ring) => ring.isUnclaimed(),
                         message: '{0} claims the {1}',
                         messageArgs: (ring) => [context.player, ring],
-                        gameAction: AbilityDsl.actions.claimRing({ takeFate: true, type: 'political' })
+                        gameAction: AbilityDsl.actions.claimRing({ takeFate: true, type: ConflictType.Political })
                     }))
                 })
             })))

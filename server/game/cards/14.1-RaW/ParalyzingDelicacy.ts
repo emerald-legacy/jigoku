@@ -18,9 +18,13 @@ class ParalyzingDelicacy extends DrawCard {
     }
 
     getFaceDownProvinceCards(context: AbilityContext) {
-        return (context.target as DrawCard).controller
+        const controller = context.target?.controller;
+        if(!controller) {
+            return 0;
+        }
+        return controller
             .getDynastyCardsInProvince(Location.Provinces)
-            .filter((card) => card.isFacedown() && card.controller === (context.target as DrawCard).controller).length;
+            .filter((card) => card.isFacedown() && card.controller === controller).length;
     }
 }
 

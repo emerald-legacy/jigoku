@@ -1,10 +1,8 @@
 import { CardType, ConflictType, Players, TargetMode } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
 import { Conflict } from '../../../Conflict.js';
-import { AbilityContext } from '../../../AbilityContext.js';
-import type { Duel } from '../../../Duel.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class TwoHands extends DrawCard {
     static id = 'two-hands';
@@ -14,7 +12,7 @@ export default class TwoHands extends DrawCard {
             .target('target', {
                 controller: Players.Opponent
             }, AbilityDsl.actions.duelAddParticipant((context) => ({
-                duel: (context as TriggeredAbilityContext).event.duel as Duel
+                duel: context.event.duel
             })));
 
         this.action('Set the skill of two enemy character to the lowest between them')
@@ -35,7 +33,7 @@ export default class TwoHands extends DrawCard {
                 player: Players.Opponent,
                 cardCondition: (card) => card.isParticipating()
             }, AbilityDsl.actions.cardLastingEffect((context) => {
-                const twoHands = calcTwoHandsEffect(context);
+                const twoHands = calcTwoHandsEffect(context, context.targets.target);
                 return {
                     target: twoHands.targets,
                     effect:
@@ -45,14 +43,14 @@ export default class TwoHands extends DrawCard {
                 };
             }))
             .effect('set {1} {2} skills equal to {3}', (context) => {
-                const twoHands = calcTwoHandsEffect(context);
+                const twoHands = calcTwoHandsEffect(context, context.targets.target);
                 return [twoHands.targets, twoHands.type, twoHands.value];
             });
     }
 }
 
-function calcTwoHandsEffect(context: AbilityContext) {
-    const targets = (Array.isArray(context.target) ? context.target : context.target ? [context.target] : []) as DrawCard[];
+function calcTwoHandsEffect(context: AbilityContext, chosen: DrawCard | DrawCard[]) {
+    const targets = Array.isArray(chosen) ? chosen : [chosen];
     if(context.game.requireConflict().conflictType === ConflictType.Military) {
         return {
             targets,

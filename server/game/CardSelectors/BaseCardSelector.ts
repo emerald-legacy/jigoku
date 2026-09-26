@@ -20,7 +20,9 @@ export interface BaseCardSelectorProperties {
 
 class BaseCardSelector {
     cardCondition: (card: BaseCard, context: AbilityContext) => boolean = () => true;
-    cardType: CardType[];
+    // a selector built without a card type holds [undefined], which matches nothing
+    cardType: (CardType | undefined)[];
+    numCards?: number;
     optional: boolean;
     location: Location[];
     controller: ControllerProp;
@@ -29,16 +31,12 @@ class BaseCardSelector {
 
     constructor(properties: BaseCardSelectorProperties) {
         this.cardCondition = properties.cardCondition ?? (() => true);
-        this.cardType = (properties.cardType as CardType[]) ?? [];
+        this.cardType = Array.isArray(properties.cardType) ? properties.cardType : [properties.cardType];
         this.optional = properties.optional ?? false;
         this.location = this.buildLocation(properties.location);
         this.controller = properties.controller || Players.Any;
         this.checkTarget = !!properties.targets;
         this.sameDiscardPile = !!properties.sameDiscardPile;
-
-        if(!Array.isArray(properties.cardType)) {
-            this.cardType = [properties.cardType as CardType];
-        }
     }
 
     buildLocation(property?: Location | Location[]): Location[] {
@@ -155,7 +153,8 @@ class BaseCardSelector {
         if(card.location === Location.Hand && card.controller !== choosingPlayer) {
             return false;
         }
-        return this.cardType.includes(card.getType() as CardType) && this.cardCondition(card, context);
+        const cardTypes: readonly (string | undefined)[] = this.cardType;
+        return cardTypes.includes(card.getType()) && this.cardCondition(card, context);
     }
 
     getAllLegalTargets(context: AbilityContext, choosingPlayer?: Player): BaseCard[] {
@@ -166,7 +165,7 @@ class BaseCardSelector {
         return this.optional || selectedCards.length > 0;
     }
 
-    hasEnoughTargets(context: AbilityContext, choosingPlayer: Player): boolean {
+    hasEnoughTargets(context: AbilityContext, choosingPlayer?: Player): boolean {
         return this.findPossibleCards(context).some((card: BaseCard) => this.canTarget(card, context, choosingPlayer));
     }
 

@@ -1,5 +1,4 @@
 import BaseCard, { type CardSummary } from './BaseCard.js';
-import type { GameObject } from './GameObject.js';
 import { AttachmentManager } from './AttachmentManager.js';
 import { ChildCardManager } from './ChildCardManager.js';
 import AbilityDsl from './abilitydsl.js';
@@ -27,10 +26,12 @@ import type { AbilityContext } from './AbilityContext.js';
 import type { GameEvent } from './Events/EventPayloads.js';
 import type { Event } from './Events/Event.js';
 import type { ActionProps, ConflictActionProps, PersistentEffectProps, TriggeredAbilityProps, TriggeredAbilityWhenProps, WhenType } from './Interfaces.js';
+import type { NumericEffectName } from './Effects/EffectValueMap.js';
 import type { ActionContext, AbilityBuilder, TriggerContext } from './AbilityBuilder.js';
 import type { Duel } from './Duel.js';
 import type { CardData } from './types/CardData.js';
 import type { GameAction } from './GameActions/GameAction.js';
+import type { StateViewer } from './types/StateViewer.js';
 
 interface MenuItem {
     command: string;
@@ -64,7 +65,7 @@ const SKILL_EFFECTS: Set<string> = new Set([
     EffectName.SetGlory
 ]);
 
-const MODES_LIMITING_REPEATED_ATTACHMENTS = new Set<string>([GameModes.Emerald, GameModes.Obsidian, GameModes.Sanctuary]);
+const MODES_LIMITING_REPEATED_ATTACHMENTS = new Set<string | undefined>([GameModes.Emerald, GameModes.Obsidian, GameModes.Sanctuary]);
 
 function sumModifiers(modifiers: StatModifier[]): number {
     return modifiers.reduce((total, modifier) => total + modifier.amount, 0);
@@ -179,7 +180,7 @@ class DrawCard extends BaseCard {
         this.printedPoliticalSkill = this.getPrintedSkill('political');
         const cost = parseInt(this.cardData.cost ?? '');
         this.printedCost = isNaN(cost) ? (this.type === CardType.Event ? 0 : null) : cost;
-        this.printedGlory = parseInt(cardData.glory ?? '');
+        this.printedGlory = parseInt(String(cardData.glory ?? ''));
         this.printedStrengthBonus = parseInt(cardData.strength_bonus ?? '');
         this.isConflict = cardData.side === 'conflict';
         this.isDynasty = cardData.side === 'dynasty';
@@ -252,10 +253,10 @@ class DrawCard extends BaseCard {
      * effect is applied (for cases where the effect only applies to specific
      * characters).
      */
-    whileAttached<T extends GameObject = GameObject>(properties: Pick<PersistentEffectProps<this, T>, 'condition' | 'match' | 'effect'>) {
+    whileAttached(properties: Pick<PersistentEffectProps<this, DrawCard>, 'condition' | 'match' | 'effect'>) {
         this.persistentEffect({
             condition: properties.condition || (() => true),
-            match: (card, context) => card === this.parent && (!properties.match || properties.match(card as T, context)),
+            match: (card, context) => card === this.parent && (!properties.match || (card instanceof DrawCard && properties.match(card, context))),
             targetController: Players.Any,
             effect: properties.effect
         });
@@ -450,7 +451,7 @@ class DrawCard extends BaseCard {
         return isNaN(baseSkillModifiers.baseMilitarySkill) || isNaN(baseSkillModifiers.basePoliticalSkill);
     }
 
-    getContributionToConflict(type: string): number {
+    getContributionToConflict(type: string | undefined): number {
         const skillFunction = this.mostRecentEffect(EffectName.ChangeContributionFunction);
         if(skillFunction) {
             return skillFunction(this);
@@ -463,7 +464,7 @@ class DrawCard extends BaseCard {
      * @param type - The type of the skill; military or political
      * @return The chosen skill value
      */
-    getSkill(type: string): number {
+    getSkill(type: string | undefined): number {
         if(type === 'military') {
             return this.getMilitarySkill();
         } else if(type === 'political') {
@@ -698,7 +699,7 @@ class DrawCard extends BaseCard {
         if(!attackers.includes(this)) {
             attackers = attackers.concat(this);
         }
-        const sumOverAttackers = (effect: EffectName) => attackers.reduce((total, card) => total + card.sumEffects(effect), 0);
+        const sumOverAttackers = (effect: NumericEffectName) => attackers.reduce((total, card) => total + card.sumEffects(effect), 0);
 
         // Check if I add an element that I can't attack with
         const elementsAdded = [this, ...this.attachments].flatMap((card) => card.getEffects(EffectName.AddElementAsAttacker)).flat();
@@ -860,7 +861,7 @@ class DrawCard extends BaseCard {
         return matching;
     }
 
-    getSummary(activePlayer: Player, hideWhenFaceup?: boolean): CardSummary {
+    getSummary(activePlayer: StateViewer, hideWhenFaceup?: boolean): CardSummary {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup ?? false);
 
         return Object.assign(baseSummary, {

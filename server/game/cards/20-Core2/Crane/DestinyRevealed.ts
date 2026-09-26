@@ -1,10 +1,10 @@
 import { CardType, EventName, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import { Duel } from '../../../Duel.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
+import Ring from '../../../Ring.js';
 export default class DestinyRevealed extends DrawCard {
     static id = 'destiny-revealed';
 
@@ -15,7 +15,7 @@ export default class DestinyRevealed extends DrawCard {
                 hidePromptIfSingleCard: true,
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => ((context as TriggeredAbilityContext).event.duel as Duel).isInvolved(card),
+                cardCondition: (card) => context.event.duel.isInvolved(card),
                 message: '{0} places a fate from their fate pool on {1}',
                 messageArgs: (cards) => [context.player, cards],
                 gameAction: AbilityDsl.actions.placeFate((context) => ({
@@ -26,10 +26,10 @@ export default class DestinyRevealed extends DrawCard {
         this.wouldInterrupt('Cancel a ring effect')
             .when({
                 onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context) =>
-                    (event.context?.source.type as string) === 'ring' &&
+                    event.context?.source instanceof Ring &&
                     !!event.origin && 'controller' in event.origin &&
                     event.origin.controller === context.player &&
-                    event.fate > 0,
+                    (event.fate ?? 0) > 0,
                 onCardHonored: targetedByOpponentRingEffect,
                 onCardDishonored: targetedByOpponentRingEffect,
                 onCardBowed: targetedByOpponentRingEffect,
@@ -47,5 +47,5 @@ type CardStatusEvent =
     | EventPayload<EventName.OnCardReadied>;
 
 function targetedByOpponentRingEffect(event: CardStatusEvent, context: TriggeredAbilityContext) {
-    return event.card?.controller === context.player && (event.context?.source.type as string) === 'ring';
+    return event.card?.controller === context.player && event.context?.source instanceof Ring;
 }

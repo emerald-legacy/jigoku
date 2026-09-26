@@ -27,11 +27,11 @@ class JoinTheFray extends DrawCard {
             .effect('have {1} join the conflict for {2}!', context => [context.targets.character, this.getEffectArg(context, context.selects.select.choice)]);
     }
 
-    getEffectArg(context: AbilityContext, selection: string): Player {
+    getEffectArg(context: AbilityContext, selection: string): Player | undefined {
         if(selection === context.player.name) {
             return context.player;
         }
-        return context.player.opponent as Player;
+        return context.player.opponent;
     }
 }
 

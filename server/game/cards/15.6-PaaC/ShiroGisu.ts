@@ -1,5 +1,4 @@
 import { Location } from '../../Constants.js';
-import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -25,6 +24,6 @@ export default class ShiroGisu extends StrongholdCard {
     }
 
     getCharactersWithoutFate(context: AbilityContext) {
-        return (context.player.opponent as Player).cardsInPlay.filter((card) => card.getFate() === 0).length;
+        return context.player.opponent?.cardsInPlay.filter((card) => card.getFate() === 0).length ?? 0;
     }
 }

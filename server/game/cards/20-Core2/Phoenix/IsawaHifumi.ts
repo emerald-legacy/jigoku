@@ -39,7 +39,7 @@ class HifumiCost extends ReduceableFateCost {
         return false;
     }
 
-    protected getReducedCost(context: AbilityContext): number {
+    public getReducedCost(context: AbilityContext): number {
         return this.currentCost(context.player);
     }
 
@@ -48,7 +48,10 @@ class HifumiCost extends ReduceableFateCost {
     }
 
     protected afterPayHook(event: Event): void {
-        const player = (event.context as AbilityContext).player;
+        const player = event.context?.player;
+        if(!player) {
+            return;
+        }
         this.#timesTriggered.set(player, this.currentCost(player) + 1);
     }
 

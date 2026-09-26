@@ -21,7 +21,7 @@ class ApprenticeEngineer extends DrawCard {
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: (card: BaseCard) => card.location !== Location.StrongholdProvince && !(card as ProvinceCard).isBroken,
+                cardCondition: (card: BaseCard) => card.location !== Location.StrongholdProvince && card.isProvinceCard() && !card.isBroken,
                 message: '{0} places {1} in {2}, discarding {3}',
                 messageArgs: (card: ProvinceCard) => [context.player, context.target, card.facedown ? card.location : card, context.player.getDynastyCardsInProvince(card.location)],
                 subActionProperties: (card: ProvinceCard) => ({ destination: card.location, target: context.player.getDynastyCardsInProvince(card.location) }),

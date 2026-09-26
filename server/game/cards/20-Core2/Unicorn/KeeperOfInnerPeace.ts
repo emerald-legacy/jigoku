@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import { CardType, EventName } from '../../../Constants.js';
+import BaseCard from '../../../BaseCard.js';
 import DrawCard from '../../../DrawCard.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
@@ -13,12 +13,12 @@ export default class KeeperOfInnerPeace extends DrawCard {
                 onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context) =>
                     !context.source.bowed &&
                     event.context?.source.name !== 'Framework effect' &&
-                    event.fate > 0 &&
+                    (event.fate ?? 0) > 0 &&
                     event.origin?.type === CardType.Character &&
                     'controller' in event.origin &&
                     event.origin.controller === context.player &&
                     event.context?.player === context.player.opponent
             })
-            .gameAction(AbilityDsl.actions.placeFate((context) => ({ target: (context as TriggeredAbilityContext).event.origin as DrawCard })));
+            .gameAction(AbilityDsl.actions.placeFate((context) => ({ target: context.event.origin instanceof BaseCard ? context.event.origin : [] })));
     }
 }

@@ -52,11 +52,8 @@ export class PlayerCostManager {
         }
     }
 
-    addPlayableLocation(type: PlayType, player: Player, location: Location, cards: BaseCard[] = []): PlayableLocation | undefined {
-        if(!player) {
-            return undefined;
-        }
-        const playableLocation = new PlayableLocation(type, player, location, new Set(cards as DrawCard[]));
+    addPlayableLocation(type: PlayType, player: Player, location: Location, cards: DrawCard[] = []): PlayableLocation {
+        const playableLocation = new PlayableLocation(type, player, location, new Set(cards));
         this.playableLocations.push(playableLocation);
         return playableLocation;
     }
@@ -91,9 +88,10 @@ export class PlayerCostManager {
 
     getAlternateFatePools(playingType: PlayType | undefined, card: DrawCard, context?: AbilityContext): FatePool[] {
         const effects = this.player.getEffects(EffectName.AlternateFatePool);
-        let alternateFatePools: FatePool[] = effects
-            .filter((match) => match(card) && match(card).getFate() > 0)
-            .map((match) => match(card));
+        let alternateFatePools: FatePool[] = effects.flatMap((match) => {
+            const pool = match(card);
+            return pool && pool.getFate() > 0 ? [pool] : [];
+        });
 
         if(context && context.source && context.source.isTemptationsMaho()) {
             alternateFatePools.push(...this.player.cardsInPlay.filter((a: DrawCard) => a.type === 'character'));
@@ -131,8 +129,10 @@ export class PlayerCostManager {
         const alternateFate = alternateFatePools.reduce((total: number, pool: FatePool) => total + pool.fate, 0);
         let triggeredCostReducers = 0;
         const fakeWindow = { addChoice: () => triggeredCostReducers++ };
-        const fakeEvent = this.game.getEvent(EventName.OnCardPlayed, { card: card, player: this.player, context: context });
-        this.game.emit(EventName.OnCardPlayed + ':' + AbilityType.Interrupt, fakeEvent, fakeWindow);
+        if(card.isDrawCard()) {
+            const fakeEvent = this.game.getEvent(EventName.OnCardPlayed, { card: card, player: this.player, context: context });
+            this.game.emit(EventName.OnCardPlayed + ':' + AbilityType.Interrupt, fakeEvent, fakeWindow);
+        }
         const fakeResolverEvent = this.game.getEvent(EventName.OnAbilityResolverInitiated, {
             card: card,
             player: this.player,
@@ -148,7 +148,7 @@ export class PlayerCostManager {
 
     getReducedCost(playingType: PlayType | undefined, card: DrawCard, target?: BaseCard, ignoreType: boolean = false): number {
         const matchingReducers = this.costReducers.filter((reducer) =>
-            reducer.canReduce(playingType as PlayType, card, target, ignoreType)
+            reducer.canReduce(playingType, card, target, ignoreType)
         );
         const costIncreases = matchingReducers
             .filter((a) => a.getAmount(card, this.player) < 0)
@@ -167,7 +167,7 @@ export class PlayerCostManager {
     getTotalCostModifiers(playingType: PlayType | undefined, card: DrawCard, target?: BaseCard, ignoreType: boolean = false): number {
         const baseCost = 0;
         const matchingReducers = this.costReducers.filter((reducer) =>
-            reducer.canReduce(playingType as PlayType, card, target, ignoreType)
+            reducer.canReduce(playingType, card, target, ignoreType)
         );
         const reducedCost = matchingReducers.reduce((cost, reducer) => cost - reducer.getAmount(card, this.player), baseCost);
         return reducedCost;
@@ -217,7 +217,7 @@ export class PlayerCostManager {
     }
 
     markUsedReducers(playingType: PlayType | undefined, card: DrawCard, target: BaseCard | null = null): void {
-        const matchingReducers = this.costReducers.filter((reducer) => reducer.canReduce(playingType as PlayType, card, target ?? undefined));
+        const matchingReducers = this.costReducers.filter((reducer) => reducer.canReduce(playingType, card, target ?? undefined));
         matchingReducers.forEach((reducer) => {
             reducer.markUsed();
             if(reducer.isExpired()) {

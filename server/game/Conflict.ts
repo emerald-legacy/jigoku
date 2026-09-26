@@ -44,7 +44,7 @@ export class Conflict extends GameObject {
     constructor(
         game: Game,
         public attackingPlayer: Player,
-        defendingPlayer: Player,
+        defendingPlayer: Player | undefined,
         public ring?: Ring,
         conflictProvince?: ProvinceCard,
         public forcedDeclaredType?: ConflictType
@@ -410,7 +410,8 @@ export class Conflict extends GameObject {
         ];
 
         const additionalContributingCards = this.game.findAnyCardsInAnyList(
-            (card: BaseCard) =>
+            (card): card is DrawCard =>
+                card.isDrawCard() &&
                 card.type === CardType.Character &&
                 contributingLocations.includes(card.location) &&
                 card.anyEffect(EffectName.ContributeToConflict)
@@ -423,7 +424,7 @@ export class Conflict extends GameObject {
                 card.getEffects(EffectName.ContributeToConflict).some((value: Player) => value === this.attackingPlayer)
             );
             this.attackerSkill =
-                this.calculateSkillFor(this.getAttackers().concat(additionalAttackers as DrawCard[])) +
+                this.calculateSkillFor(this.getAttackers().concat(additionalAttackers)) +
                 this.attackingPlayer.skillModifier;
             if(
                 (this.attackingPlayer.imperialFavor === this.conflictType ||
@@ -441,7 +442,7 @@ export class Conflict extends GameObject {
                 card.getEffects(EffectName.ContributeToConflict).some((value: Player) => value === this.defendingPlayer)
             );
             this.defenderSkill =
-                this.calculateSkillFor(this.getDefenders().concat(additionalDefenders as DrawCard[])) +
+                this.calculateSkillFor(this.getDefenders().concat(additionalDefenders)) +
                 this.defendingPlayer.skillModifier;
             if(
                 (this.defendingPlayer.imperialFavor === this.conflictType ||
@@ -455,10 +456,10 @@ export class Conflict extends GameObject {
         return stateChanged;
     }
 
-    calculateSkillFor(cards: BaseCard[]) {
+    calculateSkillFor(cards: DrawCard[]) {
         let skillFunction =
             this.mostRecentEffect(EffectName.ChangeConflictSkillFunction) ||
-            ((card: BaseCard) => (card as DrawCard).getContributionToConflict(this.conflictType as ConflictType));
+            ((card: DrawCard) => card.getContributionToConflict(this.conflictType));
         let cannotContributeFunctions = this.getEffects(EffectName.CannotContribute);
 
         return cards.reduce((sum, card) => {

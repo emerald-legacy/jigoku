@@ -127,7 +127,7 @@ export class FatePhase extends Phase {
         for(const location of this.game.getProvinceArray()) {
             const provinceCard = player.getProvinceCardInProvince(location);
             const province = player.getSourceList(location);
-            const dynastyCards = province.filter((card) => card.isDynasty && card.isFaceup()) as DrawCard[];
+            const dynastyCards = province.filter((card) => card.isDynastyCard()).filter((card) => card.isFaceup());
             if(dynastyCards.length > 0 && provinceCard) {
                 if(provinceCard.isBroken && this.game.gameMode !== GameModes.Skirmish) {
                     cardsToDiscard = cardsToDiscard.concat(dynastyCards);

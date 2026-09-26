@@ -1,6 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import type BaseCard from '../../../BaseCard.js';
-import { CardType, Location, Players } from '../../../Constants.js';
+import { Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class PromisingHohei extends DrawCard {
@@ -12,7 +12,7 @@ export default class PromisingHohei extends DrawCard {
             targetController: Players.Any,
             effect: AbilityDsl.effects.reduceCost({
                 amount: 1,
-                targetCondition: (target: BaseCard) => target.type === CardType.Character && (target as DrawCard).getGlory() >= 2,
+                targetCondition: (target: BaseCard) => target.isCharacter() && target.getGlory() >= 2,
                 match: (card, source) => card === source
             })
         });

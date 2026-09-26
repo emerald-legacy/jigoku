@@ -9,7 +9,7 @@ export interface SwitchConflictTypeProperties extends RingActionProperties {
     targetConflictType?: ConflictType;
 }
 
-export class SwitchConflictTypeAction<C extends AbilityContext = AbilityContext> extends RingAction<SwitchConflictTypeProperties, EventName, C> {
+export class SwitchConflictTypeAction<C extends AbilityContext = AbilityContext> extends RingAction<SwitchConflictTypeProperties, EventName.OnSwitchConflictType, C> {
     name = 'switchConflictType';
     eventName = EventName.OnSwitchConflictType;
 

@@ -9,7 +9,7 @@ export default class HidaRegular extends DrawCard {
         this.interrupt('Remove fate from a character')
             .when({
                 onCardLeavesPlay: ({ card }, context) =>
-                    card === context.source && card.location === Location.PlayArea && (card as DrawCard).isParticipating()
+                    card === context.source && card.location === Location.PlayArea && card.isParticipating()
             })
             .target('target', {
                 cardType: CardType.Character,

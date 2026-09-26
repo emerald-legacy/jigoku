@@ -1,6 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type BaseCard from '../../BaseCard.js';
-import type { Event } from '../../Events/Event.js';
 import { CardType } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 
@@ -29,7 +27,7 @@ class IdeRyoma extends DrawCard {
             })))
             .then((context) => ({
                 gameAction: AbilityDsl.actions.ready(() => ({
-                    target: (Object.values(context.targets) as BaseCard[]).filter((card: BaseCard) => context.events.every((event: Event) => (event as Event & { card?: BaseCard }).card !== card))
+                    target: [context.targets.unicorn, context.targets.nonunicorn].filter((card) => context.events.every((event) => !('card' in event) || event.card !== card))
                 }))
             }));
     }

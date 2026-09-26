@@ -3,7 +3,7 @@ import type { AbilityContext } from '../../AbilityContext.js';
 import { AbilityType, CardType, DuelType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type { Duel } from '../../Duel.js';
-import type HonorBidPrompt from '../../gamesteps/HonorBidPrompt.js';
+import HonorBidPrompt from '../../gamesteps/HonorBidPrompt.js';
 import * as GameActions from '../../GameActions/GameActions.js';
 
 class DuelistTraining extends DrawCard {
@@ -23,7 +23,11 @@ class DuelistTraining extends DrawCard {
                         type: DuelType.Military,
                         challenger: context.source,
                         gameAction: (duel: Duel) => ability.actions.bow({ target: duel.loser }),
-                        costHandler: (context: AbilityContext, prompt: unknown) => this.costHandler(context, prompt as HonorBidPrompt)
+                        costHandler: (context: AbilityContext, prompt: unknown) => {
+                            if(prompt instanceof HonorBidPrompt) {
+                                this.costHandler(context, prompt);
+                            }
+                        }
                     }))
                 }
             })

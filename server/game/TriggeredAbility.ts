@@ -4,7 +4,7 @@ import { TriggeredAbilityContext } from './TriggeredAbilityContext.js';
 import { Stage, CardType, EffectName, AbilityType } from './Constants.js';
 import type BaseCard from './BaseCard.js';
 import type Player from './Player.js';
-import type { Event } from './Events/Event.js';
+import { Event } from './Events/Event.js';
 import type { WhenType } from './Interfaces.js';
 import type { EventHandler } from './GameEventBus.js';
 
@@ -15,6 +15,13 @@ type AggregateWhen = (events: Event[], context: TriggeredAbilityContext) => bool
 interface AbilityChoiceWindow {
     addChoice(context: TriggeredAbilityContext): void;
 }
+
+// Trigger windows emit themselves; cost checks emit a stand-in that only counts choices.
+function isChoiceWindow(value: unknown): value is AbilityChoiceWindow {
+    return typeof value === 'object' && value !== null && 'addChoice' in value && typeof value.addChoice === 'function';
+}
+
+const isEvent = (value: unknown): value is Event => value instanceof Event;
 
 // Author-facing shape: `WhenType<S>` narrows each handler's event payload by event name and types
 // `context.source` as `S`. The runtime fields below erase that back to base `Event`/`BaseCard`.
@@ -150,7 +157,11 @@ class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
         } else if(this.aggregateWhen) {
             const event: RegisteredEvent = {
                 name: 'aggregateEvent:' + this.abilityType,
-                handler: ((events: Event[], window: AbilityChoiceWindow) => this.checkAggregateWhen(events, window)) as EventHandler
+                handler: (events: unknown, window: unknown) => {
+                    if(Array.isArray(events) && events.every(isEvent) && isChoiceWindow(window)) {
+                        this.checkAggregateWhen(events, window);
+                    }
+                }
             };
             this.events = [event];
             this.game.on(event.name, event.handler);
@@ -163,7 +174,11 @@ class TriggeredAbility<S extends BaseCard = BaseCard> extends CardAbility {
         eventNames.forEach((eventName) => {
             const event: RegisteredEvent = {
                 name: eventName + ':' + this.abilityType,
-                handler: ((evt: Event, window: AbilityChoiceWindow) => this.eventHandler(evt, window)) as EventHandler
+                handler: (evt: unknown, window: unknown) => {
+                    if(isEvent(evt) && isChoiceWindow(window)) {
+                        this.eventHandler(evt, window);
+                    }
+                }
             };
             this.game.on(event.name, event.handler);
             this.events?.push(event);

@@ -2,7 +2,7 @@ import * as Costs from '../../../build/server/game/costs/fateAndHonorCosts.js';
 
 describe('Costs.payReduceableFateCost', function () {
     beforeEach(function () {
-        this.gameSpy = jasmine.createSpyObj('game', ['addMessage']);
+        this.gameSpy = jasmine.createSpyObj('game', ['addMessage', 'getEvent']);
         this.playerSpy = jasmine.createSpyObj('player', [
             'getDuplicateInPlay',
             'getMinimumCost',

@@ -1,6 +1,5 @@
 import { CardType, Location, TargetMode } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import { shuffle } from '../../utils/shuffle.js';
 
@@ -16,9 +15,10 @@ export default class IsawaTadaka2 extends DrawCard {
             }))
             .condition((context) => context.game.isDuringConflict() && context.player.opponent !== undefined)
             .gameAction(AbilityDsl.actions.multipleContext((context) => {
+                const removed = context.costs.removeFromGame;
                 let cards =
-                    context.player.opponent && context.costs.removeFromGame
-                        ? shuffle(context.player.opponent.hand).slice(0, (context.costs.removeFromGame as DrawCard[]).length)
+                    context.player.opponent && removed
+                        ? shuffle(context.player.opponent.hand).slice(0, Array.isArray(removed) ? removed.length : 1)
                         : [context.source];
                 return {
                     gameActions: [
@@ -35,10 +35,10 @@ export default class IsawaTadaka2 extends DrawCard {
                     ]
                 };
             }))
-            .effect('look at {1} random card{3} in {2}\'s hand', (context) => [
-                (context.costs.removeFromGame as BaseCard[]).length,
-                context.player.opponent,
-                (context.costs.removeFromGame as BaseCard[]).length === 1 ? '' : 's'
-            ]);
+            .effect('look at {1} random card{3} in {2}\'s hand', (context) => {
+                const removed = context.costs.removeFromGame ?? [];
+                const amount = Array.isArray(removed) ? removed.length : 1;
+                return [amount, context.player.opponent, amount === 1 ? '' : 's'];
+            });
     }
 }

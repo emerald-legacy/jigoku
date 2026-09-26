@@ -31,9 +31,8 @@ export default class MirumotoRei2 extends DrawCard {
                 type: DuelType.Military,
                 message: 'injure {0}',
                 messageArgs: (duel) => [duel.loser],
-                gameAction: ((duel: Duel) =>
-                    duel.loser &&
-                    AbilityDsl.actions.multipleContext(() => {
+                gameAction: (duel: Duel) =>
+                    duel.loser ? AbilityDsl.actions.multipleContext(() => {
                         const gameActions: GameAction[] = [];
                         duel.loser?.forEach((loser: DrawCard) => {
                             if(loser.getFate() > 0) {
@@ -52,7 +51,7 @@ export default class MirumotoRei2 extends DrawCard {
                             }
                         });
                         return { gameActions };
-                    })) as (duel: Duel, context: AbilityContext) => GameAction
+                    }) : AbilityDsl.actions.noAction()
             }));
     }
 }

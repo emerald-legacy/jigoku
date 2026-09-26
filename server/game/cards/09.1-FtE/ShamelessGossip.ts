@@ -26,8 +26,8 @@ class ShamelessGossip extends DrawCard {
                 activePromptTitle: 'Which token do you wish to move?',
                 message: '{0} chooses to move {1}',
                 messageArgs: (token, player) => [player, token],
-                gameAction: AbilityDsl.actions.moveStatusToken(context => ({
-                    recipient: context.targets.second as DrawCard
+                gameAction: AbilityDsl.actions.moveStatusToken(() => ({
+                    recipient: context.targets.second
                 }))
             })))
             .effect('move a status token from {1} to {2}', context => [context.targets.first, context.targets.second]);

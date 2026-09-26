@@ -4,7 +4,7 @@ import { CharacterStatus, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { StatusToken } from '../StatusToken.js';
 import { TokenAction, type TokenActionProperties } from './TokenAction.js';
-import type { ActionEvent } from './GameAction.js';
+import { targetList, type ActionEvent } from './GameAction.js';
 
 export interface MoveTokenProperties extends TokenActionProperties {
     recipient: DrawCard;
@@ -16,12 +16,7 @@ export class MoveTokenAction<C extends AbilityContext = AbilityContext> extends 
 
     getEffectMessage(context: C, additionalProperties = {}): MessageArgs {
         const { target, recipient } = this.getProperties(context, additionalProperties);
-        let card = undefined;
-        if(Array.isArray(target)) {
-            card = target[0].card;
-        } else {
-            card = (target as StatusToken).card;
-        }
+        const card = targetList(target)[0].card;
         return ['move {0}\'s {1} to {2}', [card, target, recipient]];
     }
 
@@ -56,13 +51,10 @@ export class MoveTokenAction<C extends AbilityContext = AbilityContext> extends 
     }
 
     eventHandler(event: ActionEvent<EventName.OnStatusTokenMoved, C>): void {
-        const eventToken = event.token as StatusToken | StatusToken[];
-        const recipient = event.recipient as DrawCard;
-        let tokens: StatusToken[] = Array.isArray(eventToken) ? eventToken : [eventToken];
-        tokens.forEach((token: StatusToken) => {
-            token.card?.removeStatusToken(token);
-            recipient.addStatusToken(token);
-            recipient.game.raiseEvent(EventName.OnStatusTokenGained, { token: token, card: recipient });
-        });
+        const token = event.token;
+        const recipient = event.recipient;
+        token.card?.removeStatusToken(token);
+        recipient.addStatusToken(token);
+        recipient.game.raiseEvent(EventName.OnStatusTokenGained, { token: token, card: recipient });
     }
 }

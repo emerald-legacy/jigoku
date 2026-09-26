@@ -9,7 +9,7 @@ export interface GainStatusTokenProperties extends CardActionProperties {
     token?: CharacterStatus;
 }
 
-export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<GainStatusTokenProperties, EventName, C> {
+export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<GainStatusTokenProperties, EventName.OnStatusTokenGained, C> {
     name = 'gainStatus';
     eventName = EventName.OnStatusTokenGained;
     defaultProperties: GainStatusTokenProperties = {
@@ -46,6 +46,8 @@ export class GainStatusTokenAction<C extends AbilityContext = AbilityContext> ex
     }
 
     eventHandler(event: ActionEvent<EventName.OnStatusTokenGained, C>): void {
-        (event.card as BaseCard).addStatusToken(event.token as CharacterStatus);
+        if(event.token) {
+            event.card.addStatusToken(event.token);
+        }
     }
 }

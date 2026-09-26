@@ -1,5 +1,5 @@
 import { UiPrompt } from '../UiPrompt.js';
-import { Location, CardType, ConflictType, Element } from '../../Constants.js';
+import { Location, ConflictType } from '../../Constants.js';
 import AttackersMatrix from './AttackersMatrix.js';
 import { AbilityContext } from '../../AbilityContext.js';
 import CovertAbility from '../../KeywordAbilities/CovertAbility.js';
@@ -9,7 +9,6 @@ import type Game from '../../Game.js';
 import type Ring from '../../Ring.js';
 import type BaseCard from '../../BaseCard.js';
 import type DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
 import type { Conflict } from '../../Conflict.js';
 
 const capitalize: Record<string, string> = {
@@ -106,7 +105,7 @@ class InitiateConflictPrompt extends UiPrompt {
             menuTitle = this.conflict.forcedDeclaredType ? 'Choose an elemental ring' : 'Choose an elemental ring\n(click the ring again to change conflict type)';
             promptTitle = 'Initiate Conflict';
         } else {
-            promptTitle = capitalize[this.conflict.conflictType as ConflictType] + ' ' + capitalize[this.conflict.element as Element] + ' Conflict';
+            promptTitle = capitalize[ring.conflictType] + ' ' + capitalize[ring.element] + ' Conflict';
             if(!this.conflict.conflictProvince && !this.conflict.isSinglePlayer) {
                 menuTitle = 'Choose province to attack';
             } else if(this.conflict.attackers.length === 0) {
@@ -115,7 +114,7 @@ class InitiateConflictPrompt extends UiPrompt {
                 if(this.covertRemaining && this.game.gameMode !== GameModes.Emerald) {
                     menuTitle = 'Choose defenders to Covert';
                 } else {
-                    menuTitle = capitalize[this.conflict.conflictType as ConflictType] + ' skill: '.concat(String(this.conflict.attackerSkill));
+                    menuTitle = capitalize[ring.conflictType] + ' skill: '.concat(String(this.conflict.attackerSkill));
                 }
                 if(this.conflict.attackers.length === this.attackerMatrix.requiredNumberOfAttackers || this.attackerMatrix.requiredNumberOfAttackers <= 0) {
                     buttons.unshift({ text: 'Initiate Conflict', arg: 'done' });
@@ -214,14 +213,14 @@ class InitiateConflictPrompt extends UiPrompt {
     }
 
     checkCardCondition(card: BaseCard): boolean {
-        if(card.isProvince && card.controller !== this.choosingPlayer) {
+        if(card.isProvinceCard() && card.controller !== this.choosingPlayer) {
             return card === this.conflict.conflictProvince || this.choosingPlayer.hasLegalConflictDeclaration({
                 type: this.conflict.conflictType,
                 ring: this.conflict.ring,
-                province: card as ProvinceCard
+                province: card
             });
-        } else if(card.type === CardType.Character && card.location === Location.PlayArea) {
-            const drawCard = card as DrawCard;
+        } else if(card.isCharacter() && card.location === Location.PlayArea) {
+            const drawCard = card;
             if(card.controller === this.choosingPlayer) {
                 if(this.conflict.attackers.includes(drawCard)) {
                     let forced = this.attackerMatrix.getForcedAttackers(this.conflict.ring as Ring, this.conflict.conflictType as ConflictType, this.conflict.conflictProvince).includes(drawCard);
@@ -246,10 +245,10 @@ class InitiateConflictPrompt extends UiPrompt {
                 });
             }
 
-            if(this.selectedDefenders.includes(card as DrawCard)) {
+            if(this.selectedDefenders.includes(card)) {
                 return true;
             }
-            if((card as DrawCard).isCovert() || !this.covertRemaining || this.game.gameMode === GameModes.Emerald) {
+            if(card.isCovert() || !this.covertRemaining || this.game.gameMode === GameModes.Emerald) {
                 return false;
             }
 
@@ -266,7 +265,7 @@ class InitiateConflictPrompt extends UiPrompt {
 
             for(const context of covertContexts) {
                 if(context.player.checkRestrictions('initiateKeywords', context)) {
-                    if((card as DrawCard).canBeBypassedByCovert(context) && card.checkRestrictions('target', context)) {
+                    if(card.canBeBypassedByCovert(context) && card.checkRestrictions('target', context)) {
                         targetable = true;
                     }
                 }
@@ -284,17 +283,16 @@ class InitiateConflictPrompt extends UiPrompt {
     }
 
     selectCard(card: BaseCard): boolean {
-        if(card.isProvince) {
+        if(card.isProvinceCard()) {
             if(this.conflict.conflictProvince) {
                 this.conflict.conflictProvince.inConflict = false;
                 this.conflict.conflictProvince = null;
             } else {
-                const province = card as ProvinceCard;
-                this.conflict.conflictProvince = province;
-                province.inConflict = true;
+                this.conflict.conflictProvince = card;
+                card.inConflict = true;
             }
-        } else if(card.type === CardType.Character) {
-            const character = card as DrawCard;
+        } else if(card.isCharacter()) {
+            const character = card;
             if(card.controller === this.choosingPlayer) {
                 if(!this.conflict.attackers.includes(character)) {
                     this.conflict.addAttacker(character);
@@ -307,12 +305,12 @@ class InitiateConflictPrompt extends UiPrompt {
                     }
                 });
             } else {
-                if(!this.selectedDefenders.includes(card as DrawCard)) {
-                    this.selectedDefenders.push(card as DrawCard);
-                    (card as DrawCard).covert = true;
+                if(!this.selectedDefenders.includes(character)) {
+                    this.selectedDefenders.push(character);
+                    character.covert = true;
                 } else {
-                    this.selectedDefenders = this.selectedDefenders.filter((c: DrawCard) => c !== card);
-                    (card as DrawCard).covert = false;
+                    this.selectedDefenders = this.selectedDefenders.filter((c: DrawCard) => c !== character);
+                    character.covert = false;
                 }
             }
         }
@@ -335,7 +333,7 @@ class InitiateConflictPrompt extends UiPrompt {
 
     menuCommand(_player: Player, arg: string): boolean {
         if(arg === 'done') {
-            if(!this.conflict.ring || this.game.rings[this.conflict.element as Element] !== this.conflict.ring ||
+            if(!this.conflict.ring || this.game.rings[this.conflict.ring.element] !== this.conflict.ring ||
                 (!this.conflict.isSinglePlayer && !this.conflict.conflictProvince) || this.conflict.attackers.length === 0) {
                 return false;
             }

@@ -1,5 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import Ring from '../../../Ring.js';
 
 export default class ReadyForBattle extends DrawCard {
     static id = 'ready-for-battle';
@@ -9,7 +10,7 @@ export default class ReadyForBattle extends DrawCard {
             .when({
                 onCardBowed: (event, context) =>
                     event.card.controller === context.player &&
-                    ((event.context?.source.type as string) === 'ring' ||
+                    (event.context?.source instanceof Ring ||
                         (context.player.opponent && event.context?.player === context.player.opponent))
             })
             .cannotBeMirrored()

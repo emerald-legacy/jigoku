@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import type { Cost } from '../../../costs/Cost.js';
@@ -14,10 +13,6 @@ function captureParentCost(): Cost<{ captureParentCost: DrawCard | null }> {
         },
         pay() {}
     };
-}
-
-function receiver(context: AbilityContext): DrawCard {
-    return (context.costs.captureParentCost ?? (context.source as DrawCard).parentCharacter) as DrawCard;
 }
 
 export default class SpiritOfValor extends DrawCard {
@@ -47,9 +42,9 @@ export default class SpiritOfValor extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => card.isFaction('lion')
             }, AbilityDsl.actions.cardLastingEffect((context) => ({
-                target: receiver(context),
+                target: context.costs.captureParentCost ?? context.source.parentCharacter ?? [],
                 effect: context.target ? AbilityDsl.effects.gainAllAbilities(context.target) : []
             })))
-            .effect('copy {0}\'s abilities onto {1}', (context) => [receiver(context)]);
+            .effect('copy {0}\'s abilities onto {1}', (context) => [context.costs.captureParentCost ?? context.source.parentCharacter]);
     }
 }

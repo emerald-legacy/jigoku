@@ -8,10 +8,19 @@ export interface AdditionalPile {
     [key: string]: unknown;
 }
 
+/** The piles that only hold conflict and dynasty cards. */
+export type DrawCardPile =
+    | Location.Hand
+    | Location.ConflictDeck
+    | Location.DynastyDeck
+    | Location.ConflictDiscardPile
+    | Location.DynastyDiscardPile
+    | Location.PlayArea;
+
 export class PlayerZones {
     dynastyDeck: DrawCard[] = [];
     conflictDeck: DrawCard[] = [];
-    provinceDeck: BaseCard[] = [];
+    provinceDeck: ProvinceCard[] = [];
     hand: DrawCard[] = [];
     cardsInPlay: DrawCard[] = [];
     strongholdProvince: BaseCard[] = [];
@@ -25,22 +34,21 @@ export class PlayerZones {
     additionalPiles: Record<string, AdditionalPile> = {};
     underneathStronghold: BaseCard[] = [];
 
+    /** The pile at `source`; a pile unknown so far is created (custom piles are keyed by the uuid of the card they belong to). */
+    getSourceList(source: DrawCardPile): DrawCard[];
+    getSourceList(source: Location.ProvinceDeck): ProvinceCard[];
+    getSourceList(source: string): BaseCard[];
     getSourceList(source: string): BaseCard[] {
         switch(source) {
             case Location.Hand:
-                return this.hand;
             case Location.ConflictDeck:
-                return this.conflictDeck;
             case Location.DynastyDeck:
-                return this.dynastyDeck;
             case Location.ConflictDiscardPile:
-                return this.conflictDiscardPile;
             case Location.DynastyDiscardPile:
-                return this.dynastyDiscardPile;
+            case Location.PlayArea:
+                return this.drawCardPile(source);
             case Location.RemovedFromGame:
                 return this.removedFromGame;
-            case Location.PlayArea:
-                return this.cardsInPlay;
             case Location.ProvinceOne:
                 return this.provinceOne;
             case Location.ProvinceTwo:
@@ -71,6 +79,23 @@ export class PlayerZones {
                     return this.additionalPiles[source].cards;
                 }
                 return [];
+        }
+    }
+
+    private drawCardPile(source: DrawCardPile): DrawCard[] {
+        switch(source) {
+            case Location.Hand:
+                return this.hand;
+            case Location.ConflictDeck:
+                return this.conflictDeck;
+            case Location.DynastyDeck:
+                return this.dynastyDeck;
+            case Location.ConflictDiscardPile:
+                return this.conflictDiscardPile;
+            case Location.DynastyDiscardPile:
+                return this.dynastyDiscardPile;
+            case Location.PlayArea:
+                return this.cardsInPlay;
         }
     }
 

@@ -1,6 +1,5 @@
 import type { MessageArgs } from '../GameChat.js';
 import type { Event } from '../Events/Event.js';
-import type EventWindow from '../Events/EventWindow.js';
 import { CardType, EventName } from '../Constants.js';
 import type { GameObject } from '../GameObject.js';
 import type { AbilityContext } from '../AbilityContext.js';
@@ -14,7 +13,7 @@ export interface CancelActionProperties extends GameActionProperties {
 
 export type CancellingContext = AbilityContext & { event?: AnyEvent; cancel(): void };
 
-export class CancelAction<C extends CancellingContext = TriggeredAbilityContext> extends GameAction<CancelActionProperties, EventName, C> {
+export class CancelAction<C extends CancellingContext = TriggeredAbilityContext> extends GameAction<CancelActionProperties, EventName.Unnamed, C> {
     getEffectMessage(context: C): MessageArgs {
         let { replacementGameAction, effect } = this.getProperties(context);
         if(effect) {
@@ -79,7 +78,7 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
         let { replacementGameAction } = this.getProperties(context, additionalProperties);
         if(replacementGameAction) {
             let events: Event[] = [];
-            let eventWindow = cancelled.window as EventWindow;
+            const eventWindow = cancelled.window;
             replacementGameAction.addEventsToArray(
                 events,
                 context,
@@ -90,7 +89,7 @@ export class CancelAction<C extends CancellingContext = TriggeredAbilityContext>
                     cancelled.replacementEvent = events[0];
                 }
                 for(let newEvent of events) {
-                    eventWindow.addEvent(newEvent);
+                    eventWindow?.addEvent(newEvent);
                 }
             });
         }

@@ -14,7 +14,7 @@ class CommandTheTributary extends DrawCard {
                     cardType: CardType.Character,
                     cardCondition: (card, context) => card !== context.source,
                     gameAction: AbilityDsl.actions.placeFate((context: AbilityContext) => ({
-                        origin: context.source as DrawCard,
+                        origin: context.source.isDrawCard() ? context.source : undefined,
                         amount: 1
                     }))
                 }

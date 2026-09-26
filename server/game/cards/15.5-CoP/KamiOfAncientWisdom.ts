@@ -9,7 +9,7 @@ class KamiOfAncientWisdom extends DrawCard {
         this.reaction('Give or take fate')
             .when({
                 onMoveFate: (event, context) => context.game.currentPhase !== Phases.Fate &&
-                    event.origin && event.origin.type === CardType.Character && event.fate > 0
+                    event.origin && event.origin.type === CardType.Character && (event.fate ?? 0) > 0
             })
             .target('character', {
                 controller: Players.Any,

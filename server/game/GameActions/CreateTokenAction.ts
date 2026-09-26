@@ -14,7 +14,7 @@ export interface CreateTokenProperties extends CardActionProperties {
     canEnterConflict: (type: 'military' | 'political') => boolean;
 }
 
-export class CreateTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<CreateTokenProperties, EventName, C> {
+export class CreateTokenAction<C extends AbilityContext = AbilityContext> extends CardGameAction<CreateTokenProperties, EventName.OnCreateTokenCharacter, C> {
     name = 'createToken';
     effect = 'create a token';
     eventName = EventName.OnCreateTokenCharacter;
@@ -37,7 +37,7 @@ export class CreateTokenAction<C extends AbilityContext = AbilityContext> extend
     eventHandler(event: ActionEvent<EventName.OnCreateTokenCharacter, C>, additionalProperties: Record<string, unknown> = {}): void {
         let context = event.context;
         let { atHome, token: propToken, leavingPlayMessage } = this.getProperties(context, additionalProperties);
-        let card = event.card as DrawCard;
+        let card = event.card;
         let token = context.game.createToken(card, propToken);
         card.owner.removeCardFromPile(card);
         this.checkForRefillProvince(card, event, additionalProperties);

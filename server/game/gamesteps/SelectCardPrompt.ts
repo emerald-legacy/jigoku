@@ -8,7 +8,6 @@ import type Game from '../Game.js';
 import type BaseCard from '../BaseCard.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type BaseCardSelector from '../CardSelectors/BaseCardSelector.js';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 
 interface PromptButton {
     text: string;
@@ -116,12 +115,11 @@ class SelectCardPrompt extends UiPrompt {
             }
         }
         if(properties.gameAction) {
-            if(!Array.isArray(properties.gameAction)) {
-                this.properties.gameAction = [properties.gameAction];
-            }
+            const gameActions = Array.isArray(properties.gameAction) ? properties.gameAction : [properties.gameAction];
+            this.properties.gameAction = gameActions;
             let cardCondition = this.properties.cardCondition ?? (() => true);
             this.properties.cardCondition = (card: BaseCard, context: AbilityContext) =>
-                cardCondition(card, context) && (this.properties.gameAction as GameAction[]).some((gameAction: GameAction) => gameAction.canAffect(card, context));
+                cardCondition(card, context) && gameActions.some((gameAction: GameAction) => gameAction.canAffect(card, context));
         }
         this.hideIfNoLegalTargets = properties.hideIfNoLegalTargets ?? false;
         this.selector = properties.selector || CardSelector.for(this.properties);
@@ -130,7 +128,7 @@ class SelectCardPrompt extends UiPrompt {
         this.cannotUnselectMustSelect = false;
         this.targets = [];
         if(properties.mustSelect) {
-            const numCards = (this.selector as { numCards?: number }).numCards ?? 0;
+            const numCards = this.selector.numCards ?? 0;
             if(this.selector.hasEnoughSelected(properties.mustSelect, properties.context) && numCards > 0 && properties.mustSelect.length >= numCards) {
                 this.onlyMustSelectMayBeChosen = true;
             } else {
@@ -158,8 +156,7 @@ class SelectCardPrompt extends UiPrompt {
     getDefaultControls(): Array<{ type: string; source: unknown; targets: unknown[] }> {
         const rawTargets: Array<BaseCard | BaseCard[]> = this.context.targets ? Object.values(this.context.targets) : [];
         const targets = rawTargets.reduce((array: BaseCard[], target: BaseCard | BaseCard[]) => array.concat(target), []);
-        const triggeredContext = this.context as TriggeredAbilityContext;
-        const eventCard = Event.promptCardOf(triggeredContext.event);
+        const eventCard = Event.promptCardOf('event' in this.context ? this.context.event : undefined);
         if(targets.length === 0 && eventCard) {
             this.targets = [eventCard];
         }
@@ -207,7 +204,7 @@ class SelectCardPrompt extends UiPrompt {
             selectOrder: this.properties.ordered,
             menuTitle: this.properties.activePromptTitle || this.selector.defaultActivePromptTitle(this.context),
             buttons: buttons,
-            promptTitle: this.properties.source ? (this.properties.source as EffectSource).name : undefined,
+            promptTitle: typeof this.properties.source === 'string' ? undefined : this.properties.source?.name,
             controls: this.properties.controls
         };
     }

@@ -8,7 +8,7 @@ import { GameModes } from '../../../GameModes.js';
 
 class CardWrapper {
     dynastyCard: BaseCard;
-    targetLocation: string | null;
+    targetLocation: Location | null;
     constructor(card: BaseCard) {
         this.dynastyCard = card;
         this.targetLocation = null;
@@ -106,7 +106,9 @@ class GovernorsSpy extends DrawCard {
 
     governorMoveCards(context: AbilityContext, targetPlayer: Player) {
         this.dynastyCards.forEach((card: CardWrapper) => {
-            targetPlayer.moveCard(card.dynastyCard, card.targetLocation as Location);
+            if(card.targetLocation) {
+                targetPlayer.moveCard(card.dynastyCard, card.targetLocation);
+            }
         });
         let emptyLocations = this.getEmptyProvinces(this.dynastyCards);
         emptyLocations.forEach((location) => {

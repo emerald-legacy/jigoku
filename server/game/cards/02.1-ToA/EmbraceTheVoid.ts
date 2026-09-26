@@ -11,7 +11,7 @@ class EmbraceTheVoid extends DrawCard {
         this.wouldInterrupt('Take Fate')
             .when({
                 onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context: TriggeredAbilityContext<this>) =>
-                    event.origin === context.source.parentCharacter && event.fate > 0 && event.recipient !== context.player
+                    event.origin === context.source.parentCharacter && (event.fate ?? 0) > 0 && event.recipient !== context.player
             })
             .handler((context) => {
                 context.event.recipient = context.player;

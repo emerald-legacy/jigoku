@@ -2,8 +2,7 @@ import { GameModes } from '../../../GameModes.js';
 import { CardType, EventName, TargetMode, Decks, Location, Players } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import DrawCard from '../../DrawCard.js';
-import type { EventPayload, GameEvent } from '../../Events/EventPayloads.js';
-import type Player from '../../Player.js';
+import type { EventPayload } from '../../Events/EventPayloads.js';
 
 export default class KaiuShihobu extends DrawCard {
     static id = 'kaiu-shihobu';
@@ -19,12 +18,11 @@ export default class KaiuShihobu extends DrawCard {
                 targetMode: TargetMode.Unlimited,
                 deck: Decks.DynastyDeck,
                 selectedCardsHandler: (context, event, cards) => {
-                    const searchEvent = event as GameEvent<EventName.OnDeckSearch> & { player: Player };
                     if(cards.length > 0) {
-                        this.game.addMessage('{0} selects {1}', searchEvent.player, cards);
+                        this.game.addMessage('{0} selects {1}', event.player, cards);
                         cards.forEach((card) => {
-                            searchEvent.player.stronghold?.addChildCard(card, Location.UnderneathStronghold);
-                            searchEvent.player.moveCard(card, Location.UnderneathStronghold);
+                            event.player.stronghold?.addChildCard(card, Location.UnderneathStronghold);
+                            event.player.moveCard(card, Location.UnderneathStronghold);
                             card.lastingEffect(() => ({
                                 until: {
                                     onCardMoved: (event: EventPayload<EventName.OnCardMoved>) =>
@@ -35,7 +33,7 @@ export default class KaiuShihobu extends DrawCard {
                             }));
                         });
                     } else {
-                        this.game.addMessage('{0} selects no holdings', searchEvent.player);
+                        this.game.addMessage('{0} selects no holdings', event.player);
                     }
                 }
             }));

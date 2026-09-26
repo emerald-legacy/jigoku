@@ -2,7 +2,7 @@ import type { AbilityContext } from '../AbilityContext.js';
 import { Duration, EventName, Location } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import Effects from '../effects.js';
-import type { WhenType } from '../Interfaces.js';
+import type { EffectUntil } from '../Effects/Effect.js';
 import type { CardActionProperties } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
 import { LastingEffectCardAction, type LastingEffectCardProperties } from './LastingEffectCardAction.js';
@@ -10,7 +10,7 @@ import type { EffectFactory } from '../Effects/EffectBuilder.js';
 
 export interface TakeControlProperties extends CardActionProperties {
     duration?: Duration;
-    until?: WhenType;
+    until?: EffectUntil;
     effect?: EffectFactory | EffectFactory[];
     targetLocation?: Location | Location[];
 }

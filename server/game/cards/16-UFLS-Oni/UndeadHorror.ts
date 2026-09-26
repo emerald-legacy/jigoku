@@ -3,7 +3,6 @@ import AbilityDsl from '../../abilitydsl.js';
 import type BaseCard from '../../BaseCard.js';
 import { AbilityType, CardType, Duration, Players } from '../../Constants.js';
 import type DrawCard from '../../DrawCard.js';
-import type { PersistentEffectProps } from '../../Interfaces.js';
 import { BaseOni } from './_BaseOni.js';
 
 export default class UndeadHorror extends BaseOni {
@@ -48,14 +47,14 @@ export default class UndeadHorror extends BaseOni {
                                     effect: [
                                         AbilityDsl.effects.modifyMilitarySkill(
                                             (card: BaseCard, context: AbilityContext) =>
-                                                (context.source as DrawCard).printedMilitarySkill || 0
+                                                (context.source.isDrawCard() && context.source.printedMilitarySkill) || 0
                                         ),
                                         AbilityDsl.effects.modifyPoliticalSkill(
                                             (card: BaseCard, context: AbilityContext) =>
-                                                (context.source as DrawCard).printedPoliticalSkill || 0
+                                                (context.source.isDrawCard() && context.source.printedPoliticalSkill) || 0
                                         )
                                     ]
-                                } as PersistentEffectProps)
+                                })
                             ]
                         }),
                         AbilityDsl.actions.attach({

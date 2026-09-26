@@ -9,7 +9,7 @@ const nitenCaptureParentCost = function(): Cost<{ nitenCaptureParentCost: DrawCa
             return true;
         },
         resolve: function(context) {
-            context.costs.nitenCaptureParentCost = (context.source as DrawCard).parentCharacter;
+            context.costs.nitenCaptureParentCost = context.source.parentCharacter;
         },
         pay: function() {
         }
@@ -33,10 +33,10 @@ class Niten extends DrawCard {
                 cardType: CardType.Attachment,
                 controller: Players.Self,
                 location: Location.Hand,
-                cardCondition: (card, context) => card.canAttach(context.source.parentCharacter ?? undefined) || card.canAttach(context.costs.nitenCaptureParentCost as DrawCard)
+                cardCondition: (card, context) => card.canAttach(context.source.parentCharacter ?? undefined) || card.canAttach(context.costs.nitenCaptureParentCost ?? undefined)
             })
             .gameAction(AbilityDsl.actions.attach((context) => ({
-                target: context.costs.nitenCaptureParentCost as DrawCard,
+                target: context.costs.nitenCaptureParentCost ?? [],
                 attachment: context.target
             })))
             .max(AbilityDsl.limit.perRound(1));

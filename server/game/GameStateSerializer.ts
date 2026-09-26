@@ -1,24 +1,10 @@
 import { AnonymousSpectator } from './AnonymousSpectator.js';
 import type Game from './Game.js';
 import type { GameState, SharedGameState } from './Game.js';
-import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
 import type { PlayerState } from './Player.js';
-import type { GameSaveState, GameSummary, PlayerSummary } from '../gamenode/LobbyProtocol.js';
-
-interface DeckCardEntry {
-    count: number;
-    card?: { id: string };
-}
-
-export interface DeckForSaving {
-    faction: unknown;
-    conflictCards: DeckCardEntry[];
-    dynastyCards: DeckCardEntry[];
-    provinceCards?: DeckCardEntry[];
-    stronghold?: DeckCardEntry[];
-    role?: DeckCardEntry[];
-}
+import type { DeckDTO, GameSaveState, GameSummary, PlayerSummary } from '../gamenode/LobbyProtocol.js';
+import type { StateViewer } from './types/StateViewer.js';
 
 export interface FormattedDeck {
     faction: unknown;
@@ -34,7 +20,7 @@ export class GameStateSerializer {
 
     constructor(private readonly game: Game) {}
 
-    formatDeckForSaving(deck: DeckForSaving): FormattedDeck {
+    formatDeckForSaving(deck: DeckDTO): FormattedDeck {
         const result: FormattedDeck = {
             faction: {},
             conflictCards: [],
@@ -48,42 +34,36 @@ export class GameStateSerializer {
         result.faction = deck.faction;
 
         //conflict
-        deck.conflictCards.forEach((cardData: { count: number; card?: { id: string } }) => {
-            if(cardData && cardData.card) {
+        for(const cardData of deck.conflictCards ?? []) {
+            if(cardData.card) {
                 result.conflictCards.push(`${cardData.count}x ${cardData.card.id}`);
             }
-        });
+        }
 
         //dynasty
-        deck.dynastyCards.forEach((cardData: { count: number; card?: { id: string } }) => {
-            if(cardData && cardData.card) {
+        for(const cardData of deck.dynastyCards ?? []) {
+            if(cardData.card) {
                 result.dynastyCards.push(`${cardData.count}x ${cardData.card.id}`);
             }
-        });
+        }
 
         //provinces
-        if(deck.provinceCards) {
-            deck.provinceCards.forEach((cardData: { card?: { id: string } }) => {
-                if(cardData && cardData.card) {
-                    result.provinceCards.push(cardData.card.id);
-                }
-            });
+        for(const cardData of deck.provinceCards ?? []) {
+            if(cardData.card) {
+                result.provinceCards.push(cardData.card.id);
+            }
         }
 
         //stronghold & role
-        if(deck.stronghold) {
-            deck.stronghold.forEach((cardData: { card?: { id: string } }) => {
-                if(cardData && cardData.card) {
-                    result.stronghold = cardData.card.id;
-                }
-            });
+        for(const cardData of deck.stronghold ?? []) {
+            if(cardData.card) {
+                result.stronghold = cardData.card.id;
+            }
         }
-        if(deck.role) {
-            deck.role.forEach((cardData: { card?: { id: string } }) => {
-                if(cardData && cardData.card) {
-                    result.role = cardData.card.id;
-                }
-            });
+        for(const cardData of deck.role ?? []) {
+            if(cardData.card) {
+                result.role = cardData.card.id;
+            }
         }
 
         return result;
@@ -98,8 +78,8 @@ export class GameStateSerializer {
             lostProvinces: player
                 .getProvinceCards()
                 .reduce((count: number, card) => (card && card.isBroken ? count + 1 : count), 0),
-            deck: this.formatDeckForSaving(player.deck as DeckForSaving),
-            deckId: player.deck?._id?.toString()
+            deck: this.formatDeckForSaving(player.deck),
+            deckId: player.deck._id === undefined || player.deck._id === null ? undefined : String(player.deck._id)
         }));
 
         return {
@@ -150,7 +130,7 @@ export class GameStateSerializer {
 
     getState(activePlayerName?: string, sharedState?: SharedGameState | null): GameState | GameSummary | undefined {
         const game = this.game;
-        const activePlayer = (activePlayerName && game.playersAndSpectators[activePlayerName]) || new AnonymousSpectator();
+        const activePlayer: StateViewer = (activePlayerName && game.playersAndSpectators[activePlayerName]) || new AnonymousSpectator();
 
         if(!game.started) {
             return this.getSummary(activePlayerName);
@@ -162,11 +142,11 @@ export class GameStateSerializer {
         const ringState: Record<string, unknown> = {};
 
         for(const player of game.getPlayers()) {
-            playerState[player.name] = player.getState(activePlayer as Player);
+            playerState[player.name] = player.getState(activePlayer);
         }
 
         Object.values(game.rings).forEach((ring) => {
-            ringState[ring.element] = ring.getState(activePlayer as Player);
+            ringState[ring.element] = ring.getState(activePlayer);
         });
 
         return Object.assign({}, shared, {
@@ -250,7 +230,7 @@ export class GameStateSerializer {
                 emailHash: player.emailHash,
                 faction: player.faction.value,
                 id: player.id,
-                lobbyId: player.lobbyId as string | undefined,
+                lobbyId: player.lobbyId,
                 left: player.left,
                 name: player.name,
                 owner: player.owner

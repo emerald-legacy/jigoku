@@ -120,6 +120,16 @@ describe('GameServer.handshake', () => {
         });
     });
 
+    it('calls next() with "Invalid authentication token" when the JWT has no username', (done) => {
+        const ctx = makeCtx();
+        const socket = fakeSocket(jwt.sign({ name: 'alice' }, TEST_SECRET));
+        call('handshake', ctx, socket, (err?: Error) => {
+            expect(err?.message).toBe('Invalid authentication token');
+            expect(socket.request.user).toBeUndefined();
+            done();
+        });
+    });
+
     it('calls next() with "Invalid authentication token" for a malformed JWT', (done) => {
         const ctx = makeCtx();
         const socket = fakeSocket('not.a.valid.token');
@@ -485,5 +495,53 @@ describe('GameServer.onFailedConnect', () => {
         call('onFailedConnect', ctx, 'g1', 'alice');
         expect(failedConnectSpy).toHaveBeenCalledWith('alice');
         expect(ctx.userGameMap.has('alice')).toBe(false);
+    });
+});
+
+describe('GameServer.onGameMessage', () => {
+    function setup() {
+        const game = Object.assign(makeGame({ id: 'g1' }), {
+            stopNonChessClocks: jasmine.createSpy('stopNonChessClocks'),
+            continue: jasmine.createSpy('continue'),
+            cardClicked: jasmine.createSpy('cardClicked'),
+            menuButton: jasmine.createSpy('menuButton')
+        });
+        const ctx = makeCtx({ userGameMap: new Map([['alice', game]]), sendGameState: jasmine.createSpy('sendGameState') });
+        const socket = { user: { username: 'alice' }, id: 's1' };
+        return { game, ctx, socket };
+    }
+
+    it('runs a command whose arguments are valid', () => {
+        const { game, ctx, socket } = setup();
+        call('onGameMessage', ctx, socket, 'cardClicked', 'card-uuid');
+        expect(game.cardClicked).toHaveBeenCalledWith('alice', 'card-uuid');
+        expect(game.continue).toHaveBeenCalled();
+    });
+
+    it('passes a menu button\'s numeric arg and missing method through', () => {
+        const { game, ctx, socket } = setup();
+        call('onGameMessage', ctx, socket, 'menuButton', 2, 'prompt-uuid', null);
+        expect(game.menuButton).toHaveBeenCalledWith('alice', 2, 'prompt-uuid', null);
+    });
+
+    it('rejects a command with malformed arguments before touching the game', () => {
+        const { game, ctx, socket } = setup();
+        call('onGameMessage', ctx, socket, 'cardClicked', { uuid: 'card-uuid' });
+        expect(game.cardClicked).not.toHaveBeenCalled();
+        expect(game.stopNonChessClocks).not.toHaveBeenCalled();
+    });
+
+    it('rejects names inherited from Object.prototype', () => {
+        const { game, ctx, socket } = setup();
+        call('onGameMessage', ctx, socket, 'toString');
+        expect(game.stopNonChessClocks).not.toHaveBeenCalled();
+    });
+});
+
+describe('GameServer.onCardData', () => {
+    it('keeps the valid card records and drops the invalid ones', () => {
+        const ctx = makeCtx() as ServerCtx & { shortCardData?: unknown[] };
+        call('onCardData', ctx, { titleCardData: {}, shortCardData: [{ id: 'a', name: 'A' }, { id: 'b' }, null, { id: 'c', name: 'C', type: 7 }] });
+        expect(ctx.shortCardData).toEqual([{ id: 'a', name: 'A' }, { id: 'c', name: 'C', type: undefined }]);
     });
 });

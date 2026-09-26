@@ -1,7 +1,6 @@
 import { CardType, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 
 export default class DaidojiOta extends DrawCard {
     static id = 'daidoji-ota';
@@ -41,9 +40,9 @@ export default class DaidojiOta extends DrawCard {
                     messageArgs: (cards) => [context.player.opponent, cards]
                 }))
             })
-            .effect('make {1}{2}', (context): [Player, string] =>
+            .effect('make {1}{2}', (context) =>
                 context.select === 'Discard an event'
-                    ? [context.player.opponent as Player, ' discard an event']
-                    : [context.player.opponent as Player, ' reveal their hand']);
+                    ? [context.player.opponent, ' discard an event']
+                    : [context.player.opponent, ' reveal their hand']);
     }
 }

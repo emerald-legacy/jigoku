@@ -14,7 +14,7 @@ class PeacemakersBlade extends DrawCard {
     }
 
     canPlayOn(card: BaseCard | Ring) {
-        return ((card as DrawCard).getType() === CardType.Character && !(card as DrawCard).isAttacking()) && super.canPlayOn(card);
+        return card instanceof DrawCard && card.getType() === CardType.Character && !card.isAttacking() && super.canPlayOn(card);
     }
 }
 

@@ -24,7 +24,7 @@ class FuryOfTheDamned extends DrawCard {
                             onConflictFinished: () => true
                         },
                         message: '{1} {2} sacrificed due to {0}\'s delayed effect',
-                        messageArgs: [context.source, context.target, ((context.targets.target as DrawCard[] | undefined)?.length ?? 0) > 1 ? 'are' : 'is'],
+                        messageArgs: [context.source, context.target, (Array.isArray(context.targets.target) ? context.targets.target.length : 0) > 1 ? 'are' : 'is'],
                         gameAction: AbilityDsl.actions.sacrifice()
                     })
                 }))

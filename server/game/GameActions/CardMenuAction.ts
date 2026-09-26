@@ -81,7 +81,8 @@ export class CardMenuAction<C extends AbilityContext = AbilityContext> extends C
         ) {
             return;
         }
-        let player: Player = (properties.player === Players.Opponent ? context.player.opponent : context.player) as Player;
+        const opponent = context.player.opponent;
+        let player: Player = properties.player === Players.Opponent && opponent ? opponent : context.player;
         if(properties.targets && context.choosingPlayerOverride) {
             player = context.choosingPlayerOverride;
         }

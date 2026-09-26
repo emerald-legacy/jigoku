@@ -21,14 +21,14 @@ export default class CornerThePrey extends DrawCard {
             .target('target', {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    card.isParticipating() && (card.printedCost ?? 0) <= this.getFollowerCount(context)
+                    card.isParticipating() && (card.printedCost ?? 0) <= this.getFollowerCount(context, context.costs.sacrifice)
             }, AbilityDsl.actions.discardFromPlay())
             .cannotTargetFirst();
     }
 
-    private getFollowerCount(context: AbilityContext): number {
-        if(context.costs.sacrifice) {
-            return (context.costs.sacrifice as BaseCard[]).length;
+    private getFollowerCount(context: AbilityContext, sacrificed: BaseCard | BaseCard[] | undefined): number {
+        if(sacrificed) {
+            return Array.isArray(sacrificed) ? sacrificed.length : 1;
         }
         const myFollowers = context.game.allCards.filter(
             (card) => card.controller === context.player && card.hasTrait('follower')

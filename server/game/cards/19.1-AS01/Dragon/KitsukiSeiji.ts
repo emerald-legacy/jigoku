@@ -1,4 +1,3 @@
-import { AbilityContext } from '../../../AbilityContext.js';
 import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { Element, EventName } from '../../../Constants.js';
@@ -58,18 +57,18 @@ export default class KitsukiSeiji extends DrawCard {
         );
     }
 
-    private replacementForMoveFate(context: AbilityContext) {
-        const event = (context as TriggeredAbilityContext).event;
+    private replacementForMoveFate(context: TriggeredAbilityContext) {
+        const event = context.event;
         return AbilityDsl.actions.placeFate({
-            origin: event.origin as DrawCard | Player | Ring | undefined,
+            origin: event.origin,
             target: context.source,
             amount: event.fate
         });
     }
 
-    private replacementForPlaceFateOnUnclaimedRings(context: AbilityContext) {
+    private replacementForPlaceFateOnUnclaimedRings(context: TriggeredAbilityContext) {
         return AbilityDsl.actions.joint(
-            ((context as TriggeredAbilityContext).event.recipients ?? []).map((recipient) => {
+            (context.event.recipients ?? []).map((recipient) => {
                 const isSeijisRing = recipient.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY));
                 if(isSeijisRing) {
                     return AbilityDsl.actions.placeFate({

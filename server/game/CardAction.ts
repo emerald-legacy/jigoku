@@ -34,12 +34,13 @@ import type { ProvinceCard } from './ProvinceCard.js';
  *                   the card is clicked.
  */
 export class CardAction extends CardAbility {
+    declare properties: ActionProps;
     abilityType = AbilityType.Action;
 
     anyPlayer: boolean;
     canTriggerOutsideConflict: boolean;
     conflictProvinceCondition: (province: ProvinceCard, context: AbilityContext) => boolean;
-    doesNotTarget: boolean;
+    doesNotTarget?: boolean;
     phase: string;
     evenDuringDynasty: boolean;
 
@@ -52,7 +53,7 @@ export class CardAction extends CardAbility {
         this.evenDuringDynasty = properties.evenDuringDynasty ?? false;
         this.anyPlayer = properties.anyPlayer ?? false;
         this.condition = properties.condition;
-        this.doesNotTarget = (properties as ActionProps & { doesNotTarget: boolean }).doesNotTarget;
+        this.doesNotTarget = properties.doesNotTarget;
         this.conflictProvinceCondition = properties.conflictProvinceCondition ?? ((province) => province === this.card);
         this.canTriggerOutsideConflict = !!properties.canTriggerOutsideConflict;
     }
@@ -128,6 +129,10 @@ export class CardAction extends CardAbility {
     }
 
     isAction() {
+        return true;
+    }
+
+    isCardAction(): this is CardAction {
         return true;
     }
 }

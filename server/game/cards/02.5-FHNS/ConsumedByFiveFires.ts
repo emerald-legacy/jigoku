@@ -48,8 +48,9 @@ class ConsumedByFiveFires extends DrawCard {
             cardCondition: (card: BaseCard) => card.location === Location.PlayArea && card.allowGameAction('removeFate', context) && card.controller !== context.player && !Object.keys(targets).includes(card.uuid),
             onSelect: (player: Player, card: BaseCard) => {
                 const maxFate = Math.min(fateRemaining, card.getFate());
-                const choices: (number | string)[] = Array.from({ length: maxFate }, (_, i) => i + 1);
-                const handlers: (() => void)[] = (choices as number[]).map((choice: number) => {
+                const amounts = Array.from({ length: maxFate }, (_, i) => i + 1);
+                const choices: (number | string)[] = [...amounts];
+                const handlers: (() => void)[] = amounts.map((choice: number) => {
                     return () => {
                         targets[card.uuid] = choice;
                         messages.push('take ' + choice.toString() + ' fate from ' + card.name);

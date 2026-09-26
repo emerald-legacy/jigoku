@@ -2,8 +2,6 @@ import { UiPrompt } from './UiPrompt.js';
 import type Player from '../Player.js';
 import type Game from '../Game.js';
 
-type MenuCommandHandler = (player: Player, arg: string, context?: unknown) => boolean;
-
 type MenuContext = object;
 
 type MenuPromptButton = { text?: string; arg?: string; method?: string; [key: string]: unknown };
@@ -57,12 +55,14 @@ class MenuPrompt extends UiPrompt {
     }
 
     menuCommand(player: Player, arg: string, method: string): boolean {
-        const context = this.context as Record<string, MenuCommandHandler>;
-        if(!context[method]) {
+        const context = this.context;
+        // a method on the context object, named by the button
+        const handler: unknown = Reflect.get(context, method);
+        if(typeof handler !== 'function') {
             return false;
         }
 
-        if(context[method](player, arg, this.properties.context)) {
+        if(handler.call(context, player, arg, this.properties.context)) {
             this.complete();
         }
 

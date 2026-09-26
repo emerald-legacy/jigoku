@@ -1,8 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Decks, EventName, Location, Players } from '../../../Constants.js';
+import { CardType, Decks, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { GameEvent } from '../../../Events/EventPayloads.js';
-import type Player from '../../../Player.js';
 
 export default class AsahinaEnvoy extends DrawCard {
     static id = 'asahina-envoy';
@@ -24,22 +22,21 @@ export default class AsahinaEnvoy extends DrawCard {
                 deck: Decks.DynastyDeck,
                 shuffle: true,
                 selectedCardsHandler: (context, event, cards) => {
-                    const searchEvent = event as GameEvent<EventName.OnDeckSearch> & { player: Player };
                     if(cards.length === 0) {
-                        return this.game.addMessage('{0} selects no characters', searchEvent.player);
+                        return this.game.addMessage('{0} selects no characters', event.player);
                     }
 
                     const target = context.target;
                     this.game.addMessage(
                         '{0} selects {1} and puts it into {2}',
-                        searchEvent.player,
+                        event.player,
                         cards,
                         target?.facedown ? target.location : (target ?? '')
                     );
 
                     for(const card of cards) {
                         if(target) {
-                            searchEvent.player.moveCard(card, target.location);
+                            event.player.moveCard(card, target.location);
                         }
                         card.facedown = false;
                     }

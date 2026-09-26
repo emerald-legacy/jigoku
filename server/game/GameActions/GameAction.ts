@@ -1,7 +1,6 @@
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import type DrawCard from '../DrawCard.js';
 import { CardType, EventName, Stage } from '../Constants.js';
 import { Event } from '../Events/Event.js';
 import type { GameEvent } from '../Events/EventPayloads.js';
@@ -10,6 +9,7 @@ import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import type { StatusToken } from '../StatusToken.js';
 import type { Duel } from '../Duel.js';
+import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
 type GameActionTarget = Player | Ring | BaseCard | StatusToken | Duel;
 type TargetValue = unknown;
@@ -23,6 +23,11 @@ export interface GameActionProperties {
 
 /** An event this action created: its context is the one the action was resolved with. */
 export type ActionEvent<N extends EventName, C extends AbilityContext> = GameEvent<N> & { context: C };
+
+/** A `target` property as a list: `getProperties` has already made it one, but its type still allows a single target. */
+export function targetList<T>(target: T | T[] | undefined): T[] {
+    return Array.isArray(target) ? target : target ? [target] : [];
+}
 
 /** `P` after `getProperties` has filled in the defaults for `K`. */
 export type WithDefaults<P, K extends keyof P> = P & { [Key in K]-?: NonNullable<P[Key]> };
@@ -68,10 +73,9 @@ export class GameAction<
             additionalProperties,
             this.#own.resolve(context)
         );
-        const rawTarget = properties.target;
-        const targetArray = Array.isArray(rawTarget) ? rawTarget : [rawTarget];
-        properties.target = targetArray.filter(Boolean) as GameActionTarget[];
-        return properties;
+        const rawTarget: GameActionTarget | GameActionTarget[] | undefined = properties.target;
+        const targets = (Array.isArray(rawTarget) ? rawTarget : [rawTarget]).filter((target) => !!target);
+        return Object.assign(properties, { target: targets });
     }
 
     getCostMessage(_context: C): undefined | MessageArgs {
@@ -96,8 +100,8 @@ export class GameAction<
         );
     }
 
-    #targets(context: C, additionalProperties = {}) {
-        return this.getProperties(context, additionalProperties).target as GameActionTarget[];
+    #targets(context: C, additionalProperties = {}): GameActionTarget[] {
+        return targetList(this.getProperties(context, additionalProperties).target);
     }
 
     hasLegalTarget(context: C, additionalProperties = {}): boolean {
@@ -135,7 +139,7 @@ export class GameAction<
     updateEvent(event: ActionEvent<N, C>, target: TargetValue, context: C, additionalProperties = {}): void {
         event.name = this.eventName;
         this.addPropertiesToEvent(event, target, context, additionalProperties);
-        event.replaceHandler((eventArg: Event) => this.eventHandler(eventArg as ActionEvent<N, C>, additionalProperties));
+        event.replaceHandler(() => this.eventHandler(event, additionalProperties));
         event.condition = () => this.checkEventCondition(event, additionalProperties);
     }
 
@@ -143,7 +147,7 @@ export class GameAction<
         const { cannotBeCancelled } = this.getProperties(context, additionalProperties);
         const event = new Event(EventName.Unnamed, { cannotBeCancelled, context }) as ActionEvent<N, C>;
         event.checkFullyResolved = (eventAtResolution) =>
-            this.isEventFullyResolved(eventAtResolution as ActionEvent<N, C>, target, context, additionalProperties);
+            this.isEventFullyResolved(eventAtResolution, target, context, additionalProperties);
         return event;
     }
 
@@ -175,7 +179,8 @@ export class GameAction<
         return true;
     }
 
-    isEventFullyResolved(event: ActionEvent<N, C>, target: TargetValue, context: C, _additionalProperties = {}): boolean {
+    /** `event` is the event that finally resolved, which a replacement effect may have swapped for another kind. */
+    isEventFullyResolved(event: AnyEvent, target: TargetValue, context: C, _additionalProperties = {}): boolean {
         return !event.cancelled && event.name === this.eventName;
     }
 
@@ -205,13 +210,16 @@ export class GameAction<
         return !!event.origin || !!event.recipient;
     }
 
+    /** The fate actions always set `fate`. */
     moveFateEventHandler(event: GameEvent<EventName.OnMoveFate>): void {
+        let fate = event.fate ?? 0;
         if(event.origin) {
-            event.fate = Math.min(event.fate, event.origin.getFate());
-            (event.origin as DrawCard | Player).modifyFate(-event.fate);
+            fate = Math.min(fate, event.origin.getFate());
+            event.fate = fate;
+            event.origin.modifyFate(-fate);
         }
         if(event.recipient) {
-            (event.recipient as DrawCard | Player).modifyFate(event.fate);
+            event.recipient.modifyFate(fate);
         }
     }
 

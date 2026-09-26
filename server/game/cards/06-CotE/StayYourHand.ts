@@ -1,6 +1,5 @@
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import type BaseCard from '../../BaseCard.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
 import { EventName } from '../../Constants.js';
@@ -13,7 +12,7 @@ class StayYourHand extends DrawCard {
                 onDuelInitiated: (event: EventPayload<EventName.OnDuelInitiated>, context: AbilityContext) =>
                     !!event.context &&
                     event.context.player === context.player.opponent &&
-                    (Object.values(event.context.targets).some((card) => (card as BaseCard).controller === context.player) ||
+                    (Object.values(event.context.targets).some((card) => !Array.isArray(card) && card.controller === context.player) ||
                     (event.context.targets.target && Object.values(event.context.targets.target).some((card) => card.controller === context.player)))
             })
             .handler((context) => context.cancel())

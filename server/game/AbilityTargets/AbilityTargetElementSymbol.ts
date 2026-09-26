@@ -4,12 +4,10 @@ import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
 import type { GameAction } from '../GameActions/GameAction.js';
+import type { DependentTarget, OwningAbility } from '../BaseAbility.js';
 
 type CardSelectorInstance = ReturnType<typeof CardSelector.for>;
 
-interface OwningAbility {
-    targets: { name: string }[];
-}
 
 interface AbilityTargetElementSymbolProperties {
     gameAction: GameAction[];
@@ -37,7 +35,7 @@ class AbilityTargetElementSymbol {
     name: string;
     properties: AbilityTargetElementSymbolProperties;
     selector: CardSelectorInstance;
-    dependentTarget: AbilityTargetElementSymbol | null;
+    dependentTarget: DependentTarget | null;
     dependentCost: { canPay(context: AbilityContext): boolean } | null;
 
     constructor(name: string, properties: AbilityTargetElementSymbolProperties, ability: OwningAbility) {
@@ -53,7 +51,7 @@ class AbilityTargetElementSymbol {
         if(this.properties.dependsOn) {
             let dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
             if(dependsOnTarget) {
-                (dependsOnTarget as AbilityTargetElementSymbol).dependentTarget = this;
+                dependsOnTarget.dependentTarget = this;
             }
         }
     }
@@ -164,6 +162,10 @@ class AbilityTargetElementSymbol {
                 return true;
             }
         };
+        if(!player) {
+            // a solo game has no opponent to choose
+            return;
+        }
         context.game.promptForSelect(player, Object.assign(promptProperties, this.properties));
     }
 
@@ -174,12 +176,12 @@ class AbilityTargetElementSymbol {
         return this.selector.canTarget(context.elementCard, context);
     }
 
-    getChoosingPlayer(context: AbilityContext): Player {
+    getChoosingPlayer(context: AbilityContext): Player | undefined {
         let playerProp = this.properties.player;
         if(typeof playerProp === 'function') {
             playerProp = playerProp(context);
         }
-        return playerProp === Players.Opponent ? (context.player.opponent as Player) : context.player;
+        return playerProp === Players.Opponent ? context.player.opponent : context.player;
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {

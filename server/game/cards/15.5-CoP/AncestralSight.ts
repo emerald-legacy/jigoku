@@ -71,7 +71,8 @@ class AncestralSight extends DrawCard {
                 target: {
                     cardType: CardType.Character,
                     cardCondition: (card, context: AbilityContext) => {
-                        return !context.costs.ancestralSightCost || context.costs.ancestralSightCost && card.name === (context.costs.ancestralSightCost as DrawCard).name;
+                        const returned = context.costs.ancestralSightCost;
+                        return !returned || (returned instanceof DrawCard && card.name === returned.name);
                     },
                     gameAction: AbilityDsl.actions.placeFate((context: AbilityContext) => ({ origin: context.player }))
                 }

@@ -9,7 +9,7 @@ export interface ClaimFavorProperties extends PlayerActionProperties {
     side?: FavorType;
 }
 
-export class ClaimFavorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ClaimFavorProperties, EventName, C> {
+export class ClaimFavorAction<C extends AbilityContext = AbilityContext> extends PlayerAction<ClaimFavorProperties, EventName.OnClaimFavor, C> {
     name = 'claimFavor';
     eventName = EventName.OnClaimFavor;
     effect = 'claim the Emperor\'s favor';
@@ -27,7 +27,7 @@ export class ClaimFavorAction<C extends AbilityContext = AbilityContext> extends
     }
 
     eventHandler(event: ActionEvent<EventName.OnClaimFavor, C>, additionalProperties: Record<string, unknown> = {}): void {
-        let { side } = this.getProperties((event.context), additionalProperties);
+        let { side } = this.getProperties(event.context, additionalProperties);
         if(event.player) {
             event.player.claimImperialFavor(side);
         }

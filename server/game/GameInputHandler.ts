@@ -3,15 +3,15 @@ import type { MenuItem } from './MenuCommands.js';
 import { Phases } from './Constants.js';
 import { resolvePackId } from './CardPackUtil.js';
 import type Game from './Game.js';
-import type Player from './Player.js';
 import type BaseCard from './BaseCard.js';
 import type { DeckDTO } from '../gamenode/LobbyProtocol.js';
+import type { MenuArg } from './gamesteps/Step.js';
 
 const CHANGEABLE_STATS = ['fate', 'honor'] as const;
 type ChangeableStat = (typeof CHANGEABLE_STATS)[number];
 
 function isChangeableStat(stat: string): stat is ChangeableStat {
-    return (CHANGEABLE_STATS as readonly string[]).includes(stat);
+    return CHANGEABLE_STATS.some((changeable) => changeable === stat);
 }
 
 const TOGGLE_WINDOWS = new Set([
@@ -239,13 +239,13 @@ export class GameInputHandler {
         }
     }
 
-    selectDeck(playerName: string, deck: unknown): void {
+    selectDeck(playerName: string, deck: DeckDTO): void {
         if(this.game.playStarted) {
             return;
         }
         const player = this.game.getPlayerByName(playerName);
         if(player) {
-            player.selectDeck(deck as DeckDTO);
+            player.selectDeck(deck);
         }
     }
 
@@ -263,7 +263,7 @@ export class GameInputHandler {
         }
     }
 
-    menuButton(playerName: string, arg: string, uuid: string, method: string): boolean {
+    menuButton(playerName: string, arg: MenuArg, uuid: string, method?: string | null): boolean {
         const player = this.game.getPlayerByName(playerName);
         if(!player) {
             return false;
@@ -310,6 +310,6 @@ export class GameInputHandler {
     }
 
     toggleManualMode(playerName: string): void {
-        this.game.chatCommands.manual(this.game.getPlayerByName(playerName) as Player);
+        this.game.chatCommands.manual(this.game.getPlayerByName(playerName));
     }
 }

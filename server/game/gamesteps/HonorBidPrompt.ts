@@ -39,18 +39,22 @@ class HonorBidPrompt extends AllPlayerPrompt {
         let completed = super.continue();
 
         if(completed) {
-            const eventName = this.raiseEvent ? EventName.OnHonorDialsRevealed : EventName.Unnamed;
-            const eventProps = { duel: this.duel, isHonorBid: typeof this.costHandler !== 'function' };
-            this.game.raiseEvent(eventName, eventProps, () => {
+            const isHonorBid = typeof this.costHandler !== 'function';
+            const revealDials = () => {
                 for(const player of this.game.getPlayers()) {
                     player.honorBidModifier = 0;
                     this.game.actions
                         .setHonorDial({ value: this.bid[player.uuid] })
                         .resolve(player, this.game.getFrameworkContext());
                 }
-            });
+            };
+            if(this.raiseEvent) {
+                this.game.raiseEvent(EventName.OnHonorDialsRevealed, { duel: this.duel, isHonorBid }, revealDials);
+            } else {
+                this.game.raiseEvent(EventName.Unnamed, { duel: this.duel, isHonorBid }, revealDials);
+            }
             if(this.duel) {
-                this.game.raiseEvent(EventName.OnDuelFocus, eventProps);
+                this.game.raiseEvent(EventName.OnDuelFocus, { duel: this.duel, isHonorBid });
             }
             if(this.costHandler) {
                 const costHandler = this.costHandler;

@@ -2,16 +2,13 @@ import CardSelector from '../CardSelector.js';
 import { CardType, Stage, Players, Location } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import type { StatusToken } from '../StatusToken.js';
 import type { GameAction } from '../GameActions/GameAction.js';
+import type { DependentTarget, OwningAbility } from '../BaseAbility.js';
 
 type CardSelectorInstance = ReturnType<typeof CardSelector.for>;
 
-interface OwningAbility {
-    targets: { name: string }[];
-}
 
 interface AbilityTargetTokenProperties {
     gameAction: GameAction[];
@@ -19,7 +16,7 @@ interface AbilityTargetTokenProperties {
     cardType?: CardType | CardType[];
     singleToken?: boolean;
     tokenCondition?: (token: StatusToken, context: AbilityContext) => boolean;
-    cardCondition?: (card: DrawCard, context: AbilityContext<DrawCard>) => boolean;
+    cardCondition?(card: BaseCard, context: AbilityContext): boolean;
     dependsOn?: string;
     player?: ((context: AbilityContext) => Players) | Players;
     [key: string]: unknown;
@@ -42,7 +39,7 @@ class AbilityTargetToken {
     name: string;
     properties: AbilityTargetTokenProperties;
     selector: CardSelectorInstance;
-    dependentTarget: AbilityTargetToken | null;
+    dependentTarget: DependentTarget | null;
     dependentCost: { canPay(context: AbilityContext): boolean } | null;
 
     constructor(name: string, properties: AbilityTargetTokenProperties, ability: OwningAbility) {
@@ -59,7 +56,7 @@ class AbilityTargetToken {
         if(this.properties.dependsOn) {
             let dependsOnTarget = ability.targets.find((target) => target.name === this.properties.dependsOn);
             if(dependsOnTarget) {
-                (dependsOnTarget as AbilityTargetToken).dependentTarget = this;
+                dependsOnTarget.dependentTarget = this;
             }
         }
     }
@@ -86,7 +83,7 @@ class AbilityTargetToken {
             }
             let cardValid = true;
             if(properties.cardCondition) {
-                cardValid = cardValid && properties.cardCondition(card as DrawCard, context as AbilityContext<DrawCard>);
+                cardValid = cardValid && properties.cardCondition(card, context);
             }
 
             return (tokensValid && cardValid) && (!this.dependentTarget || this.dependentTarget.hasLegalTarget(contextCopy)) &&
@@ -180,6 +177,10 @@ class AbilityTargetToken {
                 return true;
             }
         };
+        if(!player) {
+            // a solo game has no opponent to choose
+            return;
+        }
         context.game.promptForSelect(player, Object.assign(promptProperties, this.properties));
     }
 
@@ -188,15 +189,16 @@ class AbilityTargetToken {
         if(!selected || !Array.isArray(selected) || selected.length === 0 || context.choosingPlayerOverride && this.getChoosingPlayer(context) === context.player) {
             return false;
         }
-        return this.selector.canTarget(selected[0].card as BaseCard, context);
+        const card = selected[0].card;
+        return !!card && this.selector.canTarget(card, context);
     }
 
-    getChoosingPlayer(context: AbilityContext): Player {
+    getChoosingPlayer(context: AbilityContext): Player | undefined {
         let playerProp = this.properties.player;
         if(typeof playerProp === 'function') {
             playerProp = playerProp(context);
         }
-        return playerProp === Players.Opponent ? (context.player.opponent as Player) : context.player;
+        return playerProp === Players.Opponent ? context.player.opponent : context.player;
     }
 
     hasTargetsChosenByInitiatingPlayer(context: AbilityContext): boolean {

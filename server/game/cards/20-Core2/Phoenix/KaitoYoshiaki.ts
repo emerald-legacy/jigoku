@@ -1,8 +1,9 @@
 import { CardType } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
+import type BaseCard from '../../../BaseCard.js';
 
-function isEvil(character: DrawCard): boolean {
+function isEvil(character: BaseCard): boolean {
     return character.isTainted || character.hasTrait('shadowlands');
 }
 
@@ -28,7 +29,7 @@ export default class KaitoYoshiaki extends DrawCard {
                     ]
                 }),
                 AbilityDsl.actions.conditional({
-                    condition: (context) => isEvil(context.target as DrawCard),
+                    condition: (context) => !!context.target && isEvil(context.target),
                     trueGameAction: AbilityDsl.actions.removeFate(),
                     falseGameAction: AbilityDsl.actions.noAction()
                 })

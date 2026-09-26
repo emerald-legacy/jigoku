@@ -3,7 +3,6 @@ import { ProvinceCard } from '../../../ProvinceCard.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { EventRegistrar } from '../../../EventRegistrar.js';
 import type { Event } from '../../../Events/Event.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class RiftToToshigoku extends ProvinceCard {
     static id = 'rift-to-toshigoku';
@@ -38,7 +37,7 @@ export default class RiftToToshigoku extends ProvinceCard {
 
     public cancelRingEffect(event: Event) {
         if(
-            (event.context as AbilityContext).game.currentConflict &&
+            this.game.currentConflict &&
             this.isConflictProvince() &&
             this.shouldCancelRingEffectsHere &&
             !event.cancelled

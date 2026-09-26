@@ -24,12 +24,12 @@ export default class ToGovernTheLand extends DrawCard {
             }, this.gameAction());
     }
 
-    private governSkill(conflictType: ConflictType, card: BaseCard): number {
+    private governSkill(conflictType: ConflictType, card: DrawCard): number {
         switch(conflictType) {
             case ConflictType.Political:
-                return (card as DrawCard).getMilitarySkill();
+                return card.getMilitarySkill();
             case ConflictType.Military:
-                return (card as DrawCard).getPoliticalSkill();
+                return card.getPoliticalSkill();
             default:
                 return NaN;
         }

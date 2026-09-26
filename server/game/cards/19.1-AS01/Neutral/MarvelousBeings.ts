@@ -1,4 +1,3 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import { CardType, ConflictType, Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
@@ -9,6 +8,7 @@ export default class MarvelousBeings extends DrawCard {
     public setupCardAbilities() {
         this.action('Move character to conflict and gain skill bonus')
             .cost(AbilityDsl.costs.moveToConflict({
+                cardType: CardType.Character,
                 cardCondition: (card: DrawCard) =>
                     card.type === CardType.Character && (card.hasTrait('spirit') || card.hasTrait('creature'))
             }))
@@ -16,17 +16,17 @@ export default class MarvelousBeings extends DrawCard {
             .gameAction(AbilityDsl.actions.playerLastingEffect((context) => ({
                 target: context.player,
                 duration: Duration.UntilEndOfConflict,
-                effect: AbilityDsl.effects.changePlayerSkillModifier(this.marvelousSkillBonus(context))
+                effect: AbilityDsl.effects.changePlayerSkillModifier(this.marvelousSkillBonus(context.costs.moveToConflict))
             })))
-            .effect('entrance the court, giving their side an extra {1}{2} this conflict', (context) => [this.marvelousSkillBonus(context), 'political'])
+            .effect('entrance the court, giving their side an extra {1}{2} this conflict', (context) => [this.marvelousSkillBonus(context.costs.moveToConflict), 'political'])
             .max(AbilityDsl.limit.perConflict(1));
     }
 
-    private marvelousSkillBonus(context: AbilityContext): number {
-        if(!context.costs.moveToConflict) {
+    private marvelousSkillBonus(movedCharacter: DrawCard | undefined): number {
+        if(!movedCharacter) {
             return 0;
         }
-        const bonus = Math.min((context.costs.moveToConflict as DrawCard).printedCost ?? NaN, 3);
+        const bonus = Math.min(movedCharacter.printedCost ?? NaN, 3);
         return isNaN(bonus) ? 0 : bonus;
     }
 }

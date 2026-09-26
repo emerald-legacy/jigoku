@@ -8,7 +8,7 @@ export default class DarkSecret extends DrawCard {
         this.reaction('Make the controller of attached character lose 1 honor')
             .when({
                 onMoveFate: (event, context) =>
-                    context.source.parentCharacter && context.source.parentCharacter === event.origin && event.fate > 0
+                    context.source.parentCharacter && context.source.parentCharacter === event.origin && (event.fate ?? 0) > 0
             })
             .gameAction(AbilityDsl.actions.loseHonor((context) => ({
                 amount: 1,

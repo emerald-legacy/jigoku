@@ -1,6 +1,6 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
 import AbilityDsl from '../../abilitydsl.js';
-import type DrawCard from '../../DrawCard.js';
+import DrawCard from '../../DrawCard.js';
 import type { MenuPromptProperties } from '../../GameActions/MenuPromptAction.js';
 
 export default class UpholdingAuthority extends ProvinceCard {
@@ -15,12 +15,12 @@ export default class UpholdingAuthority extends ProvinceCard {
         let gameAction = AbilityDsl.actions.menuPrompt((context) => ({
             activePromptTitle: 'Choose how many cards to discard',
             choices: (properties: MenuPromptProperties) =>
-                (context.game.currentConflict?.attackingPlayer.hand as DrawCard[])
-                    .filter((card) => card.name === (properties.target as DrawCard[])[0].name)
+                (context.game.currentConflict?.attackingPlayer.hand ?? [])
+                    .filter((card) => card.name === this.chosenCard(properties)?.name)
                     .map((_, idx) => (idx + 1).toString()),
             gameAction: AbilityDsl.actions.discardCard(),
             choiceHandler: (choice, displayMessage, properties: MenuPromptProperties) => {
-                let chosenCard = (properties.target as DrawCard[])[0];
+                let chosenCard = this.chosenCard(properties);
                 if(displayMessage) {
                     this.game.addMessage(
                         '{0} chooses to discard {1} cop{2} of {3}',
@@ -32,7 +32,7 @@ export default class UpholdingAuthority extends ProvinceCard {
                 }
                 return {
                     target: context.game.currentConflict?.attackingPlayer.hand
-                        .filter((card: DrawCard) => card.name === chosenCard.name)
+                        .filter((card: DrawCard) => card.name === chosenCard?.name)
                         .slice(0, parseInt(choice))
                 };
             }
@@ -64,5 +64,11 @@ export default class UpholdingAuthority extends ProvinceCard {
                 }))
             ]))
             .effect('look at the attacking player\'s hand and choose a card to be discarded');
+    }
+
+    // the card chosen from the menu this prompt belongs to
+    private chosenCard(properties: MenuPromptProperties): DrawCard | undefined {
+        const card = Array.isArray(properties.target) ? properties.target[0] : properties.target;
+        return card instanceof DrawCard ? card : undefined;
     }
 }

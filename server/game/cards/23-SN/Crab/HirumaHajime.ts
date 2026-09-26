@@ -9,6 +9,7 @@ export default class HirumaHajime extends DrawCard {
         this.action('Move a card in a province')
             .target('cardInProvince', {
                 location: [Location.Provinces, Location.PlayArea],
+                cardType: [CardType.Attachment, CardType.Character, CardType.Event, CardType.Holding],
                 cardCondition: card =>
                     Boolean((card.isInProvince() && card.type !== CardType.Province && card.type !== CardType.Stronghold) ||
                             (card.type === CardType.Attachment && card.parent && card.parent.type === CardType.Province))
@@ -32,7 +33,7 @@ export default class HirumaHajime extends DrawCard {
                 condition: context.targets.cardInProvince.type === CardType.Attachment,
                 trueGameAction: AbilityDsl.actions.attach({
                     target: context.targets.province,
-                    attachment: context.targets.cardInProvince as DrawCard
+                    attachment: context.targets.cardInProvince
                 }),
                 falseGameAction: AbilityDsl.actions.moveCard({
                     target: context.targets.cardInProvince,

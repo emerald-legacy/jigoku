@@ -25,7 +25,7 @@ class Reconnaissance extends DrawCard {
                     AbilityDsl.actions.selectCard(context => {
                         let target: BaseCard | BaseCard[] | undefined = context.target;
                         if(!Array.isArray(target)) {
-                            target = [target as BaseCard];
+                            target = target ? [target] : [];
                         }
                         const locations = target.map((a: BaseCard) => a.location);
                         return ({
@@ -52,7 +52,7 @@ class Reconnaissance extends DrawCard {
             message: context => {
                 let target: BaseCard | BaseCard[] | undefined = context.target;
                 if(!Array.isArray(target)) {
-                    target = [target as BaseCard];
+                    target = target ? [target] : [];
                 }
 
                 if(target.length === 1) {
@@ -66,7 +66,7 @@ class Reconnaissance extends DrawCard {
             messageArgs: () => {
                 let target: BaseCard | BaseCard[] | undefined = context.target;
                 if(!Array.isArray(target)) {
-                    target = [target as BaseCard];
+                    target = target ? [target] : [];
                 }
 
                 if(target.length === 1) {

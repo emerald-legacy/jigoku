@@ -21,7 +21,6 @@ export default class ToShowThePath extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: AbilityDsl.effects.playerFateCostToTargetCard({
                     amount: 1,
-                    targetPlayer: context.target.controller === context.player ? Players.Opponent : Players.Self,
                     match: (card: BaseCard) =>
                         card === context.target ||
                             context.target.attachments.some((attachment: BaseCard) => attachment === card)

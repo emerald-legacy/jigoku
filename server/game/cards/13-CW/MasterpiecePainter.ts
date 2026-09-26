@@ -24,8 +24,10 @@ class MasterpiecePainter extends DrawCard {
 
     revealAndMayPlayAbility(player: Player | undefined) {
         return AbilityDsl.actions.playerLastingEffect(() => {
-            let chosenPlayer = player as Player;
-            let topCard = chosenPlayer.conflictDeck[0];
+            if(!player) {
+                return {};
+            }
+            let topCard = player.conflictDeck[0];
 
             return {
                 targetController: player,
@@ -33,7 +35,7 @@ class MasterpiecePainter extends DrawCard {
                 until: {
                     onCardMoved: event => event.card === topCard && event.originalLocation === Location.ConflictDeck,
                     onPhaseEnded: () => true,
-                    onDeckShuffled: event => event.player === chosenPlayer && event.deck === Decks.ConflictDeck
+                    onDeckShuffled: event => event.player === player && event.deck === Decks.ConflictDeck
                 },
                 effect: [
                     AbilityDsl.effects.showTopConflictCard(),

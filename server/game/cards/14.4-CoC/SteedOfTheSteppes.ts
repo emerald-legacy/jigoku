@@ -29,7 +29,7 @@ class SteedOfTheSteppes extends DrawCard {
             .condition(context => !!(context.player.opponent && context.player.getNumberOfOpponentsFaceupProvinces() >= 3))
             //need to put both as a target, context.source.parentCharacter is for the pre-cost checks, context.costs.steedOfTheSteppesCaptureParentCost is for the actual stand
             //I don't like it, but it isnn't work otherwise
-            .gameAction(AbilityDsl.actions.ready(context => ({ target: [context.source.parentCharacter, context.costs.steedOfTheSteppesCaptureParentCost as DrawCard].filter((card) => card !== null) })));
+            .gameAction(AbilityDsl.actions.ready(context => ({ target: [context.source.parentCharacter, context.costs.steedOfTheSteppesCaptureParentCost].filter((card) => !!card) })));
     }
 }
 

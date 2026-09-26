@@ -1,8 +1,6 @@
 import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
 import { AbilityType, CardType, EventName, Location } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { TriggeredAbilityProps } from '../../../Interfaces.js';
 
 import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class ShibasOath extends DrawCard {
@@ -29,7 +27,7 @@ export default class ShibasOath extends DrawCard {
                 title: 'Cancel an ability',
                 when: {
                     onInitiateAbilityEffects: (event, context) =>
-                        (event.cardTargets as Array<BaseCard>).some(
+                        event.cardTargets.some(
                             (card) =>
                                 // In play
                                 card.location === Location.PlayArea &&
@@ -51,7 +49,7 @@ export default class ShibasOath extends DrawCard {
                 ]),
                 effect: 'cancel the effects of {1} and return {2} to their hand',
                 effectArgs: (context) => [context.event.card, this]
-            } as TriggeredAbilityProps)
+            })
         });
     }
 }

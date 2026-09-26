@@ -14,7 +14,7 @@ export default class ShinjoGunso extends DrawCard {
                     event.playType === PlayType.PlayFromProvince &&
                     event.card === context.source &&
                     !!event.originalLocation &&
-                    context.game.getProvinceArray().includes(event.originalLocation)
+                    context.game.getProvinceArray().some((location) => location === event.originalLocation)
             })
             .gameAction(AbilityDsl.actions.sequentialContext((context) => {
                 const topFive = context.player.dynastyDeck.slice(0, 5);

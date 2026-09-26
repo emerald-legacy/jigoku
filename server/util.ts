@@ -19,16 +19,12 @@ export function detectBinary(
         results.push({ path: path, type });
     }
 
-    if(type === 'Object') {
-        const obj = state as Record<string, unknown>;
-        for(let key in obj) {
-            detectBinary(obj[key], `${path}.${key}`, results);
+    if(type === 'Object' && typeof state === 'object') {
+        for(const [key, value] of Object.entries(state)) {
+            detectBinary(value, `${path}.${key}`, results);
         }
-    } else if(type === 'Array') {
-        const arr = state as unknown[];
-        for(let i = 0; i < arr.length; ++i) {
-            detectBinary(arr[i], `${path}[${i}]`, results);
-        }
+    } else if(type === 'Array' && Array.isArray(state)) {
+        state.forEach((value: unknown, i) => detectBinary(value, `${path}[${i}]`, results));
     }
 
     return results;

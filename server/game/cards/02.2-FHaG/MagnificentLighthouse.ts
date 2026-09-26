@@ -28,9 +28,9 @@ class MagnificentLighthouse extends DrawCard {
                     return;
                 }
                 let messages = ['{0} places a card on the bottom of the deck', '{0} chooses to discard {1}'];
-                let destinations: string[] = [
-                    topThree[0].isDynasty ? 'dynasty deck bottom' : 'conflict deck bottom',
-                    topThree[0].isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile
+                let destinations = [
+                    { location: topThree[0].isDynasty ? Location.DynastyDeck : Location.ConflictDeck, bottom: true },
+                    { location: topThree[0].isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile, bottom: false }
                 ];
                 let choices: string[] = [];
                 let handlers: (() => void)[] = [];
@@ -39,7 +39,7 @@ class MagnificentLighthouse extends DrawCard {
                     const dest = destinations.pop();
                     if(msg && dest) {
                         this.game.addMessage(msg, context.player, card);
-                        opponent.moveCard(card, dest);
+                        opponent.moveCard(card, dest.location, { bottom: dest.bottom });
                     }
                     if(messages.length > 0) {
                         let index = topThree.indexOf(card);

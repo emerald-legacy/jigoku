@@ -15,13 +15,13 @@ export default class SoshiYuka extends DrawCard {
                 player: Players.Opponent,
                 cardCondition: (card) => !card.bowed
             })
-            .gameAction(AbilityDsl.actions.selectCard({
+            .gameAction(AbilityDsl.actions.selectCard((context) => ({
                 cardType: CardType.Character,
-                cardCondition: (card, context) => (context.targets.target as DrawCard[]).includes(card),
+                cardCondition: (card) => context.targets.target.includes(card),
                 gameAction: AbilityDsl.actions.bow(),
                 message: '{0} is bowed, as they are dragged into a web of intrigue',
                 messageArgs: (card, _player) => [card]
-            }))
+            })))
             .effect('sow discord between {0}');
     }
 }

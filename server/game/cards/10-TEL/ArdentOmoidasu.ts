@@ -3,6 +3,7 @@ import AbilityDsl from '../../abilitydsl.js';
 import { CardType, EventName } from '../../Constants.js';
 
 import type { EventPayload } from '../../Events/EventPayloads.js';
+import Ring from '../../Ring.js';
 class ArdentOmoidasu extends DrawCard {
     static id = 'ardent-omoidasu';
 
@@ -15,7 +16,7 @@ class ArdentOmoidasu extends DrawCard {
                     }
                     const isCharacter = event.card.type === CardType.Character;
                     const dishonoredByOpponentsEffect = (context.player.opponent === event.context.player);
-                    const dishonoredByRingEffect = ((event.context.source.type as string) === 'ring');
+                    const dishonoredByRingEffect = (event.context.source instanceof Ring);
                     const dishonoredByCardEffect = event.context.ability.isCardAbility();
                     const dishonoredCharacterBelongsToOmoidasuController = event.card.controller === context.player;
                     return isCharacter && dishonoredCharacterBelongsToOmoidasuController &&

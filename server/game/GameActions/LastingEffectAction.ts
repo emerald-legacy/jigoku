@@ -1,7 +1,7 @@
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseAbility from '../BaseAbility.js';
 import { Duration, EventName, Players } from '../Constants.js';
-import type { WhenType } from '../Interfaces.js';
+import type { EffectUntil } from '../Effects/Effect.js';
 import type Player from '../Player.js';
 import { GameAction, type ActionEvent, type GameActionProperties } from './GameAction.js';
 
@@ -12,7 +12,7 @@ import type { EffectFactory } from '../Effects/EffectBuilder.js';
 export interface LastingEffectFields {
     duration?: Duration;
     condition?: (context: AbilityContext) => boolean;
-    until?: WhenType;
+    until?: EffectUntil;
     effect?: EffectFactory | EffectFactory[];
     message?: string;
     ability?: BaseAbility;
@@ -32,7 +32,7 @@ export interface LastingEffectProperties extends LastingEffectGeneralProperties 
     targetController?: Players | Player;
 }
 
-export class LastingEffectAction<C extends AbilityContext = AbilityContext> extends GameAction<LastingEffectProperties, EventName, C> {
+export class LastingEffectAction<C extends AbilityContext = AbilityContext> extends GameAction<LastingEffectProperties, EventName.OnEffectApplied, C> {
     name = 'applyLastingEffect';
     eventName = EventName.OnEffectApplied;
     effect = 'apply a lasting effect';

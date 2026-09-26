@@ -59,13 +59,13 @@ export default class HonoredVeterans extends DrawCard {
         return this.charactersPlayedThisPhase.has(card);
     }
 
-    private getCharacters(context: AbilityContext): Array<string | DrawCard> {
-        const characters: Array<string | DrawCard> = [];
+    private getCharacters(context: AbilityContext): Array<string | BaseCard> {
+        const characters: Array<string | BaseCard> = [];
         if(context.targets.myCharacter && !Array.isArray(context.targets.myCharacter)) {
-            characters.push(context.targets.myCharacter as DrawCard);
+            characters.push(context.targets.myCharacter);
         }
         if(context.targets.oppCharacter && !Array.isArray(context.targets.oppCharacter)) {
-            characters.push(context.targets.oppCharacter as DrawCard);
+            characters.push(context.targets.oppCharacter);
         }
         if(characters.length === 0) {
             characters.push('no one');

@@ -1,5 +1,4 @@
 import DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { Duration, Players, Phases } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
@@ -42,9 +41,10 @@ class ExpertInterpreter extends DrawCard {
     }
 
     buildString(context: AbilityContext) {
-        if(context.rings.oppRing && !Array.isArray(context.rings.oppRing)) {
+        const opponent = context.player.opponent;
+        if(opponent && context.rings.oppRing && !Array.isArray(context.rings.oppRing)) {
             let ring = context.rings.oppRing;
-            return '.  ' + (context.player.opponent as Player).name + ' gives ' + context.player.name + ' 1 honor to also apply this effect to the ' + ring.name;
+            return '.  ' + opponent.name + ' gives ' + context.player.name + ' 1 honor to also apply this effect to the ' + ring.name;
         }
         return '';
     }

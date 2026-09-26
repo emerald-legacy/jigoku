@@ -1,4 +1,3 @@
-import type BaseAction from '../../BaseAction.js';
 import { CardType, Players } from '../../Constants.js';
 import { PlayAttachmentAction } from '../../PlayAttachmentAction.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
@@ -31,7 +30,7 @@ export default class IronMountainCastle extends StrongholdCard {
                         ec.target &&
                         ec.target.controller === context.player &&
                         ec.target.type === CardType.Character &&
-                        (ec.ability as BaseAction).getReducedCost(ec) > 0
+                        ec.ability.getReducedCost(ec) > 0
                     );
                 }
             })

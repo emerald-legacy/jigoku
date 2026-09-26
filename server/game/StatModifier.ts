@@ -1,18 +1,19 @@
 import type BaseCard from './BaseCard.js';
 import { CardType } from './Constants.js';
 
+// a status token's source type is 'token'
 interface EffectLike {
-    context?: { source?: { name?: string; type?: CardType } };
+    context?: { source?: { name?: string; type?: string } };
 }
 
 class StatModifier {
     amount: number;
     name: string;
     countsAsBase: boolean = false;
-    type: CardType | undefined;
+    type: string | undefined;
     overrides: boolean;
 
-    constructor(amount: number, name: string, overrides: boolean, type?: CardType) {
+    constructor(amount: number, name: string, overrides: boolean, type?: string) {
         this.amount = amount;
         this.name = name;
         this.overrides = overrides;
@@ -26,7 +27,7 @@ class StatModifier {
         return 'Unknown';
     }
 
-    static getEffectType(effect: EffectLike | null | undefined): CardType | undefined {
+    static getEffectType(effect: EffectLike | null | undefined): string | undefined {
         if(effect && effect.context && effect.context.source) {
             return effect.context.source.type;
         }

@@ -7,13 +7,14 @@ import type Player from '../Player.js';
 import Ring from '../Ring.js';
 import { CardGameAction, type CardActionProperties } from './CardGameAction.js';
 import type { ActionEvent } from './GameAction.js';
+import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
 export interface PlaceFateProperties extends CardActionProperties {
     amount?: number;
     origin?: DrawCard | Player | Ring;
 }
 
-export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlaceFateProperties, EventName, C> {
+export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends CardGameAction<PlaceFateProperties, EventName.OnMoveFate, C> {
     name = 'placeFate';
     eventName = EventName.OnMoveFate;
     targetType = [CardType.Character];
@@ -51,7 +52,7 @@ export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends 
         );
     }
 
-    addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
+    addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, C>, card: DrawCard, context: C, additionalProperties: Record<string, unknown> = {}): void {
         const { amount, origin } = this.getProperties(context, additionalProperties);
         event.fate = amount ?? 0;
         event.origin = origin;
@@ -63,7 +64,7 @@ export class PlaceFateAction<C extends AbilityContext = AbilityContext> extends 
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: ActionEvent<EventName.OnMoveFate, C>, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
+    isEventFullyResolved(event: AnyEvent, card: BaseCard, context: C, additionalProperties: Record<string, unknown> = {}): boolean {
         const { amount, origin } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&

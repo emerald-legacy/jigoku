@@ -16,7 +16,8 @@ class MercenaryCompany extends DrawCard {
             .gameAction(AbilityDsl.actions.handler({
                 handler: context => {
                     const opponent = context.player.opponent;
-                    if(!opponent) {
+                    const source = context.source;
+                    if(!opponent || !source.isDrawCard()) {
                         return;
                     }
                     context.game.promptWithHandlerMenu(opponent, {
@@ -26,7 +27,7 @@ class MercenaryCompany extends DrawCard {
                         handlers: [
                             () => {
                                 opponent.modifyFate(-1);
-                                (context.source as DrawCard).modifyFate(1);
+                                source.modifyFate(1);
                                 context.source.lastingEffect(() => ({
                                     duration: Duration.Custom,
                                     effect: AbilityDsl.effects.takeControl(opponent)

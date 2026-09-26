@@ -8,7 +8,7 @@ class MotoJuro extends DrawCard {
     setupCardAbilities() {
         this.action('Move this character to the conflict or home from the conflict')
             .gameAction(AbilityDsl.actions.conditional({
-                condition: (context: AbilityContext) => (context.source as DrawCard).isParticipating(),
+                condition: (context: AbilityContext) => context.source.isDrawCard() && context.source.isParticipating(),
                 trueGameAction: AbilityDsl.actions.sendHome((context: AbilityContext) => ({ target: context.source })),
                 falseGameAction: AbilityDsl.actions.moveToConflict((context: AbilityContext) => ({ target: context.source }))
             }))

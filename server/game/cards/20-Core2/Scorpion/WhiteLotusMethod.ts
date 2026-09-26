@@ -1,13 +1,12 @@
 import { CardType, CharacterStatus, Players } from '../../../Constants.js';
 import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
 
 const TOKEN = 'token';
 const RECIPIENT = 'recipient';
 
-function doesCardDraw(context: AbilityContext) {
-    return (context.targets[RECIPIENT] as DrawCard).controller !== context.source.controller;
+function doesCardDraw(recipient: DrawCard, source: DrawCard) {
+    return recipient.controller !== source.controller;
 }
 
 export default class WhiteLotusMethod extends DrawCard {
@@ -34,10 +33,10 @@ export default class WhiteLotusMethod extends DrawCard {
                         recipient: context.targets[RECIPIENT]
                     }),
                     AbilityDsl.actions.conditional({
-                        condition: doesCardDraw,
-                        trueGameAction: AbilityDsl.actions.draw((context) => ({
+                        condition: () => doesCardDraw(context.targets[RECIPIENT], context.source),
+                        trueGameAction: AbilityDsl.actions.draw(() => ({
                             amount: 1,
-                            target: (context.targets[RECIPIENT] as DrawCard).controller
+                            target: context.targets[RECIPIENT].controller
                         })),
                         falseGameAction: AbilityDsl.actions.noAction()
                     })
@@ -45,7 +44,7 @@ export default class WhiteLotusMethod extends DrawCard {
             })))
             .effect('move a status token to {1}{2}', (context) => [
                 context.targets[RECIPIENT],
-                doesCardDraw(context) ? ', their controller draws a card' : ''
+                doesCardDraw(context.targets[RECIPIENT], context.source) ? ', their controller draws a card' : ''
             ]);
     }
 }

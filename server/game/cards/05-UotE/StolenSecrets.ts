@@ -2,7 +2,6 @@ import DrawCard from '../../DrawCard.js';
 import { Location, CardType, EventName } from '../../Constants.js';
 import AbilityDsl from '../../abilitydsl.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import type Player from '../../Player.js';
 import type { EventPayload } from '../../Events/EventPayloads.js';
 
 class StolenSecrets extends DrawCard {
@@ -16,7 +15,10 @@ class StolenSecrets extends DrawCard {
             }))
             .condition((context) => this.game.isDuringConflict('political') && !!context.player.opponent && context.player.opponent.conflictDeck.length > 0)
             .handler((context) => {
-                const opponent = context.player.opponent as Player;
+                const opponent = context.player.opponent;
+                if(!opponent) {
+                    return;
+                }
                 this.game.promptWithHandlerMenu(context.player, {
                     activePromptTitle: 'Choose a card to remove from the game',
                     context: context,
@@ -61,7 +63,7 @@ class StolenSecrets extends DrawCard {
                     return;
                 }
                 orderedCards.push(promptCards[0]);
-                (context.player.opponent as Player).conflictDeck.splice(0, 3, ...orderedCards);
+                context.player.opponent?.conflictDeck.splice(0, 3, ...orderedCards);
             }
         });
     }
