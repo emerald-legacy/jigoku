@@ -1,37 +1,31 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import { CardType, Location, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
 
-class RaiseTheAlarm extends DrawCard {
+export default class RaiseTheAlarm extends DrawCard {
     static id = 'raise-the-alarm';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Flip a dynasty card',
-            condition: context => this.game.isDuringConflict('military') && context.player.isDefendingPlayer(),
-            cannotBeMirrored: true,
-            effect: 'flip the card in the conflict province faceup',
-            target: {
-                controller: Players.Self,
-                location: Location.Provinces,
-                cardCondition: (card) => card.isInConflictProvince() && card.isFacedown(),
-                gameAction: AbilityDsl.actions.flipDynasty()
-            },
-            then: (context: AbilityContext) => ({
-                handler: () => {
-                    let card = context.target as DrawCard;
-                    if(card.type === CardType.Character && card.allowGameAction('putIntoConflict', context)) {
-                        this.game.addMessage('{0} is revealed and brought into the conflict!', card);
-                        AbilityDsl.actions.putIntoConflict().resolve(card, context);
-                    } else {
-                        this.game.addMessage('{0} is revealed but cannot be brought into the conflict!', card);
-                    }
-                }
-            })
-        });
+        this.ability
+            .militaryConflictAction()
+            .title('Flip a dynasty card')
+            .condition((ctx) => ctx.player.isDefendingPlayer())
+            .targets(($target) => ({
+                card: $target.anyCard({
+                    from: (ctx, util) => util.cardsInConflictProvince(ctx.player),
+                    filter: (card) => card.isFacedown()
+                })
+            }))
+            .announce(($message) => $message.withIntro`flip the card in the conflict province faceup`)
+            .effects(($effect, ctx) => [$effect.flipDynasty(ctx.targets.card)])
+            .thenIf(
+                ($effect, ctx, util) =>
+                    util.is(ctx.targets.card, 'character') && $effect.putIntoConflict(ctx.targets.card).canAffect()
+            )
+            .announce(($message, ctx) => $message.freeform`${ctx.targets.card} is revealed and brought into the conflict!`)
+            .effects(($effect, ctx) => [$effect.putIntoConflict(ctx.targets.card)])
+            .otherwise()
+            .announce(
+                ($message, ctx) => $message.freeform`${ctx.targets.card} is revealed but cannot be brought into the conflict!`
+            )
+            .addPrinted();
     }
 }
-
-
-export default RaiseTheAlarm;

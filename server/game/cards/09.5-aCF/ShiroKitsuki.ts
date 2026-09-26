@@ -1,42 +1,36 @@
-import { Duration, EventName } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import type Player from '../../Player.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import type { AbilityContext } from '../../AbilityContext.js';
 export default class ShiroKitsuki extends StrongholdCard {
     static id = 'shiro-kitsuki';
 
     setupCardAbilities() {
-        this.reaction({
-            title: 'Name a card',
-            when: {
-                onConflictDeclared: () => true
-            },
-            cost: AbilityDsl.costs.nameCard(),
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            gameAction: AbilityDsl.actions.playerLastingEffect((playerLastingEffectContext) => ({
-                targetController: playerLastingEffectContext.player,
-                duration: Duration.UntilEndOfConflict,
-                effect: AbilityDsl.effects.delayedEffect({
+        this.ability
+            .reaction({ onConflictDeclared: () => true })
+            .title('Name a card')
+            .costs(($cost) => ({ named: $cost.nameCard() }))
+            .announce(
+                ($message, ctx) => $message.withIntro`claim a ring whenever ${ctx.opponent} plays a card named ${ctx.costs.named}`
+            )
+            .effects(($effect, ctx) => [
+                $effect.eachTime(ctx.player, {
+                    until: 'conflict',
                     when: {
-                        onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, context: AbilityContext) =>
-                            event.player === context.player.opponent &&
-                            event.card.name === playerLastingEffectContext.costs.nameCardCost
+                        onCardPlayed: (event) => event.player === ctx.opponent && event.card.name === ctx.costs.named
                     },
-                    multipleTrigger: true,
-                    gameAction: AbilityDsl.actions.selectRing((context) => ({
-                        activePromptTitle: 'Choose a ring to claim',
-                        ringCondition: (ring) => ring.isUnclaimed(),
-                        message: '{0} claims the {1}',
-                        messageArgs: (ring) => [context.player, ring],
-                        gameAction: AbilityDsl.actions.claimRing({ takeFate: true, type: 'political' })
-                    }))
+                    then: {
+                        effects: ($effect) => [
+                            $effect.chooseRing(
+                                {
+                                    prompt: 'Choose a ring to claim',
+                                    filter: (ring) => ring.isUnclaimed(),
+                                    announce: ($message, ring) => $message.freeform`${ctx.player} claims the ${ring}`
+                                },
+                                (ring) => $effect.claimRingAsPolitical(ring, { gainFate: true })
+                            )
+                        ]
+                    }
                 })
-            })),
-            effect: 'claim a ring whenever {1} plays a card named {2}',
-            effectArgs: (context) => [context.player.opponent as Player, context.costs.nameCardCost as string]
-        });
+            ])
+            .addPrinted(($limit) => ({ limit: $limit.unlimitedPerConflict() }));
     }
 }

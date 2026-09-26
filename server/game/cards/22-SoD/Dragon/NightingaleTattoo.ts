@@ -1,66 +1,47 @@
-import { Players, TargetMode, Location, CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type Player from '../../../Player.js';
 
 export default class NightingaleTattoo extends DrawCard {
     static id = 'nightingale-tattoo';
 
     setupCardAbilities() {
-        this.attachmentConditions({
-            myControl: true,
-            trait: 'monk'
-        });
+        this.attachmentConditions({ myControl: true, trait: 'monk' });
 
-        this.whileAttached({
-            effect: AbilityDsl.effects.addTrait('tattooed')
-        });
+        this.ability
+            .constant()
+            .appliesTo(($subject) => $subject.attachedCharacter())
+            .modifiers(($modifier) => [$modifier.addTrait('tattooed')])
+            .addPrinted();
 
-        this.action({
-            title: 'Pick two cards in your discard pile',
-            target: {
-                mode: TargetMode.Exactly,
-                activePromptTitle: 'Choose two conflict cards',
-                numCards: 2,
-                location: Location.ConflictDiscardPile,
-                cardType: [CardType.Character, CardType.Attachment, CardType.Event],
-                cardCondition: (card) => card.hasTrait('kiho') || card.hasTrait('tattoo'),
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.handler({
-                    handler: (context) =>
-                        this.game.promptWithHandlerMenu(context.player.opponent as Player, {
-                            activePromptTitle: 'Choose a card to shuffle into your opponent\'s deck',
-                            context: context,
-                            cards: context.targets.target as DrawCard[],
-                            cardHandler: (selectedCard: DrawCard) => {
-                                let removedCard = (context.targets.target as DrawCard[]).filter((a: DrawCard) => a !== selectedCard);
-                                context.game.addMessage(
-                                    '{0} chooses {1} to be shuffled into {2}\'s deck. {3} is removed from the game',
-                                    context.player.opponent,
-                                    selectedCard,
-                                    context.player,
-                                    removedCard
-                                );
-
-                                let gameAction = AbilityDsl.actions.multiple([
-                                    AbilityDsl.actions.returnToDeck({
-                                        target: selectedCard,
-                                        location: Location.ConflictDiscardPile,
-                                        shuffle: true
-                                    }),
-                                    AbilityDsl.actions.removeFromGame({
-                                        target: removedCard,
-                                        location: Location.ConflictDiscardPile
-                                    })
-                                ]);
-
-                                gameAction.resolve(undefined, context);
-                            }
-                        })
+        this.ability
+            .action()
+            .title('Pick two cards in your discard pile')
+            .targets(($target) => ({
+                cards: $target.cards(['character', 'attachment', 'event'], {
+                    exactly: 2,
+                    prompt: 'Choose two conflict cards',
+                    from: (ctx) => ctx.player.conflictDiscardPile,
+                    filter: (card) => card.hasTrait('kiho') || card.hasTrait('tattoo')
                 })
-            },
-            effect: 'have {1} shuffle one of {2} into {3}\'s conflict deck',
-            effectArgs: (context) => [context.player.opponent as Player, context.targets.target as DrawCard[], context.player]
-        });
+            }))
+            .announce(($message, ctx) =>
+                $message.withIntro`have ${ctx.opponent} shuffle one of ${ctx.targets.cards} into ${ctx.player}'s conflict deck`
+            )
+            .effects(($effect, ctx) => [
+                $effect.assign(
+                    ctx.targets.cards,
+                    {
+                        shuffle: (card) => $effect.shuffleIntoDeck(card),
+                        remove: (card) => $effect.removeFromGame(card)
+                    },
+                    {
+                        chooser: ctx.opponent,
+                        pick: 'shuffle',
+                        prompt: 'Choose a card to shuffle into your opponent\'s deck',
+                        announce: ($message, { shuffle, remove }) =>
+                            $message.freeform`${ctx.opponent} chooses ${shuffle} to be shuffled into ${ctx.player}'s deck. ${remove} is removed from the game`
+                    }
+                )
+            ])
+            .addPrinted();
     }
 }

@@ -1,50 +1,38 @@
-import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-
-const ATTACHMENT = 'attachment';
-const RECEIVER = 'receiver';
 
 export default class JakIthith extends DrawCard {
     static id = 'jak-ithith';
 
     setupCardAbilities() {
-        this.persistentEffect({
-            effect: [
-                AbilityDsl.effects.immunity({ restricts: 'maho' }),
-                AbilityDsl.effects.immunity({ restricts: 'shadowlands' }),
-                AbilityDsl.effects.cannotReceiveTaintedToken()
-            ]
-        });
+        this.ability
+            .constant()
+            .appliesTo(($subject) => $subject.self())
+            .modifiers(($modifier) => [
+                $modifier.immuneToCardsWithTrait('maho'),
+                $modifier.immuneToCardsWithTrait('shadowlands'),
+                $modifier.cannotReceiveTaintedToken()
+            ])
+            .addPrinted();
 
-        this.reaction({
-            title: 'Take control of an attachment',
-            when: {
-                afterConflict: (event, context) =>
-                    event.conflict.winner === context.source.controller && context.source.isParticipating()
-            },
-            targets: {
-                [ATTACHMENT]: {
-                    cardType: CardType.Attachment,
-                    controller: Players.Opponent,
-                    cardCondition: (card) =>
-                        Boolean(card.parentCharacter?.isParticipating())
-                },
-                [RECEIVER]: {
-                    dependsOn: ATTACHMENT,
-                    cardType: CardType.Character,
-                    controller: Players.Self,
-                    cardCondition: (card) => card.isParticipating(),
-                    gameAction: AbilityDsl.actions.ifAble((context) => ({
-                        ifAbleAction: AbilityDsl.actions.attach({
-                            attachment: context.targets[ATTACHMENT] as DrawCard,
-                            target: context.targets[RECEIVER],
-                            takeControl: true
-                        }),
-                        otherwiseAction: AbilityDsl.actions.discardFromPlay({ target: context.targets[ATTACHMENT] })
-                    }))
-                }
-            }
-        });
+        this.ability
+            .reaction({
+                afterConflict: (event, ctx) => event.conflict.winner === ctx.player && ctx.source.isParticipating()
+            })
+            .title('Take control of an attachment')
+            .targets(($target) => ({
+                attachment: $target.card('attachment', { filter: (card, ctx, util) => util.onEnemySide(card) })
+            }))
+            .targets(($target) => ({
+                receiver: $target.card('character', {
+                    controller: (ctx) => ctx.player,
+                    filter: (card) => card.isParticipating()
+                })
+            }))
+            .effects(($effect, ctx) => [
+                $effect
+                    .ifAble($effect.takeControlAndAttach(ctx.targets.attachment, ctx.targets.receiver))
+                    .otherwise($effect.discardFromPlay(ctx.targets.attachment))
+            ])
+            .addPrinted();
     }
 }

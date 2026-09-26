@@ -1,43 +1,33 @@
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 
 export default class BetrayedVision extends DrawCard {
     static id = 'betrayed-vision';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Make a character a copy',
+        this.ability.playOnlyIf((ctx) => ctx.player.anyCardsInPlay((card) => card.hasTrait('shugenja')));
 
-            targets: {
-                cardToCopy: {
-                    activePromptTitle: 'Choose a character to copy',
-                    cardType: CardType.Character,
-                    controller: Players.Any,
-                    cardCondition: (card) => !card.isUnique()
-                },
-                myCharacter: {
-                    dependsOn: 'cardToCopy',
-                    activePromptTitle: 'Choose a character to turn into the copy',
-                    cardType: CardType.Character,
-                    controller: Players.Opponent,
-                    cardCondition: (card, context) => card.isParticipating() && card !== context.targets.cardToCopy,
-                    gameAction: AbilityDsl.actions.cardLastingEffect((context) => ({
-                        effect: AbilityDsl.effects.copyCard(context.targets.cardToCopy as DrawCard)
-                    }))
-                }
-            },
-            effect: 'make {1} into a copy of {2}',
-            effectArgs: (context) => [context.targets.myCharacter, context.targets.cardToCopy]
-        });
-    }
-
-    canPlay(context: TriggeredAbilityContext, playType: string) {
-        return (
-            context.player.cardsInPlay.some(
-                (card) => card.getType() === CardType.Character && card.hasTrait('shugenja')
-            ) && super.canPlay(context, playType)
-        );
+        this.ability
+            .conflictAction()
+            .title('Make a character a copy')
+            .targets(($target) => ({
+                original: $target.card('character', {
+                    prompt: 'Choose a character to copy',
+                    filter: (card) => !card.isUnique()
+                })
+            }))
+            .targets(($target) => ({
+                copy: $target.card('character', {
+                    prompt: 'Choose a character to turn into the copy',
+                    controller: (ctx) => ctx.opponent,
+                    filter: (card, ctx) => card.isParticipating() && card !== ctx.targets.original
+                })
+            }))
+            .announce(($message, ctx) => $message.withIntro`make ${ctx.targets.copy} into a copy of ${ctx.targets.original}`)
+            .effects(($effect, ctx) => [
+                $effect.lastingEffect(ctx.targets.copy, ($modifier) => [$modifier.copyOf(ctx.targets.original)], {
+                    until: 'conflict'
+                })
+            ])
+            .addPrinted();
     }
 }

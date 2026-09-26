@@ -63,6 +63,23 @@ describe('A Matsu Proves Their Worth', function () {
             );
         });
 
+        it('discards the bushi when it is at home at the end of the conflict', function () {
+            this.player1.clickRing('water');
+            this.player1.clickCard(this.shameful);
+            this.player1.clickCard(this.berserker);
+            this.player1.clickPrompt('Initiate Conflict');
+            this.player1.clickCard(this.comingOfAge);
+            this.player2.clickPrompt('Done');
+
+            this.game.currentConflict.removeFromConflict(this.berserker);
+            this.noMoreActions();
+
+            expect(this.berserker.location).toBe('dynasty discard pile');
+            expect(this.getChatLogs(5)).toContain(
+                'Matsu Berserker is discarded from play due to failing at A Matsu Proves Their Worth!'
+            );
+        });
+
         it('does nothing if the bushi is not alone ', function () {
             this.player1.clickRing('air');
             this.player1.clickCard(this.shameful);

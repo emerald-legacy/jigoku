@@ -1,49 +1,35 @@
-import { CardType, Duration, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
 import DrawCard from '../../../DrawCard.js';
-import type { AbilityContext } from '../../../AbilityContext.js';
-
-function cardsToDiscard(context: AbilityContext) {
-    return context.player.dynastyDeck.slice(0, 4);
-}
 
 export default class SecondWind extends DrawCard {
     static id = 'second-wind';
 
     public setupCardAbilities() {
-        this.action({
-            title: 'put a character from your discard pile into play',
-            cannotTargetFirst: true,
-            gameAction: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.discardCard((context) => ({
-                    target: cardsToDiscard(context)
-                })),
-                AbilityDsl.actions.selectCard((context) => ({
-                    location: Location.DynastyDiscardPile,
-                    cardType: CardType.Character,
-                    cardCondition: (card) => !card.isUnique(),
-                    controller: Players.Self,
-                    targets: true,
-                    gameAction: AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.putIntoConflict(),
-                        AbilityDsl.actions.cardLastingEffect(() => ({
-                            duration: Duration.UntilEndOfPhase,
-                            location: [Location.PlayArea],
-                            effect: AbilityDsl.effects.delayedEffect({
-                                when: {
-                                    onConflictFinished: () => true
-                                },
-                                gameAction: AbilityDsl.actions.returnToDeck({ bottom: true })
-                            })
-                        }))
-                    ]),
-                    message:
-                        '{0} puts {1} into play. {1} will be put on the bottom of the deck if it\'s still in play by the end of the conflict',
-                    messageArgs: (card) => [context.player, card, context.source]
-                }))
-            ]),
-            effect: 'find a character to put into play. {1} discards {2}',
-            effectArgs: (context) => [context.player, cardsToDiscard(context)]
-        });
+        this.ability
+            .conflictAction()
+            .title('put a character from your discard pile into play')
+            .announce(
+                ($message, ctx) =>
+                    $message.withIntro`find a character to put into play. ${ctx.player} discards ${ctx.player.dynastyDeck.slice(0, 4)}`
+            )
+            .effects(($effect, ctx) => [$effect.discard(ctx.player.dynastyDeck.slice(0, 4))])
+            .then()
+            .targets(($target) => ({
+                character: $target.card('character', {
+                    from: (ctx) => ctx.player.dynastyDiscardPile,
+                    filter: (card) => !card.isUnique()
+                })
+            }))
+            .announce(
+                ($message, ctx) =>
+                    $message.freeform`${ctx.player} puts ${ctx.targets.character} into play. ${ctx.targets.character} will be put on the bottom of the deck if it's still in play by the end of the conflict`
+            )
+            .effects(($effect, ctx) => [
+                $effect.putIntoConflict(ctx.targets.character),
+                $effect.delayed(ctx.targets.character, {
+                    when: { onConflictFinished: () => true },
+                    then: { effects: ($effect) => [$effect.putOnBottomOfDeck(ctx.targets.character)] }
+                })
+            ])
+            .addPrinted();
     }
 }

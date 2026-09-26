@@ -1,26 +1,22 @@
 import DrawCard from '../../DrawCard.js';
-import { EventName, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-class KeeperInitiate extends DrawCard {
+export default class KeeperInitiate extends DrawCard {
     static id = 'keeper-initiate';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Put this into play',
-            when: {
-                onClaimRing: (event: EventPayload<EventName.OnClaimRing>, context) => event.player === context.player && !!context.player.role &&
-                                                 (event.conflict && event.conflict.elements.some(element => context.player.role?.hasTrait(element)) || context.player.role?.hasTrait(event.ring.element))
-            },
-            location: [Location.Provinces, Location.DynastyDiscardPile],
-            gameAction: ability.actions.putIntoPlay(),
-            then: {
-                gameAction: ability.actions.placeFate()
-            }
-        });
+    setupCardAbilities() {
+        this.ability
+            .reaction({
+                onClaimRing: (event, ctx) => {
+                    const role = ctx.player.role;
+                    const elements = [...(event.conflict?.elements ?? []), event.ring.element];
+                    return event.player === ctx.player && !!role && elements.some((element) => role.hasTrait(element));
+                }
+            })
+            .title('Put this into play')
+            .from('provinces', 'dynastyDiscardPile')
+            .effects(($effect, ctx) => [$effect.putIntoPlay(ctx.source)])
+            .then()
+            .effects(($effect, ctx) => [$effect.placeFate(ctx.source, 1)])
+            .addPrinted();
     }
 }
-
-
-export default KeeperInitiate;

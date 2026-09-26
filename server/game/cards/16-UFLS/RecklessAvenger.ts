@@ -1,58 +1,35 @@
 import DrawCard from '../../DrawCard.js';
-import type BaseCard from '../../BaseCard.js';
-import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
 
-class RecklessAvenger extends DrawCard {
+export default class RecklessAvenger extends DrawCard {
     static id = 'reckless-avenger';
 
     setupCardAbilities() {
-        this.action({
-            title: 'Ready and honor characters',
-            condition: context => context.player.cardsInPlay.some((a) => a.bowed) && !!context.player.opponent || !!context.player.opponent?.cardsInPlay.some((a) => a.bowed),
-            targets: {
-                firstCharacter: {
-                    activePromptTitle: 'Choose a character',
-                    cardType: CardType.Character,
-                    optional: true,
-                    hideIfNoLegalTargets: true,
-                    controller: context => context.player.firstPlayer ? Players.Self : Players.Opponent,
-                    player: context => context.player.firstPlayer ? Players.Self : Players.Opponent,
-                    gameAction: AbilityDsl.actions.ready()
-                },
-                secondCharacter: {
-                    activePromptTitle: 'Choose a character',
-                    cardType: CardType.Character,
-                    optional: true,
-                    dependsOn: 'firstCharacter',
-                    controller: context => context.player.firstPlayer ? Players.Opponent : Players.Self,
-                    player: context => context.player.firstPlayer ? Players.Opponent : Players.Self,
-                    gameAction: AbilityDsl.actions.conditional({
-                        condition: context => this.isTargetValid(context.targets.firstCharacter),
-                        trueGameAction: AbilityDsl.actions.honor(context => ({
-                            target: context.targets.secondCharacter
-                        })),
-                        falseGameAction: AbilityDsl.actions.ready(context => ({
-                            target: context.targets.secondCharacter
-                        }))
+        this.ability
+            .action()
+            .title('Ready and honor characters')
+            .condition((ctx) =>
+                [ctx.player, ctx.opponent].some((player) => player?.cardsInPlay.some((card) => card.bowed))
+            )
+            .targets(($target) => ({
+                chosen: $target.inPlayerOrder((player, $target) =>
+                    $target.optionalCard('character', {
+                        chooser: player,
+                        controller: player,
+                        prompt: 'Choose a character',
+                        hideIfNoLegalTargets: true
                     })
-                }
-            },
-            effect: 'ready {1}{2}{3}',
-            effectArgs: context => [
-                this.isTargetValid(context.targets.firstCharacter) ? context.targets.firstCharacter : context.targets.secondCharacter,
-                this.isTargetValid(context.targets.firstCharacter) ? ' and honor ' : '',
-                this.isTargetValid(context.targets.firstCharacter) ? context.targets.secondCharacter : ''
-            ]
-        });
-    }
-
-    isTargetValid(target: BaseCard | BaseCard[] | undefined) {
-        return !!target && !Array.isArray(target);
+                )
+            }))
+            .announce(($message, ctx) => {
+                const [first, second] = ctx.targets.chosen.map(({ choice }) => choice);
+                return second
+                    ? $message.withIntro`ready ${first} and honor ${second}`
+                    : $message.withIntro`ready ${first}`;
+            })
+            .effects(($effect, ctx) => {
+                const [first, second] = ctx.targets.chosen.map(({ choice }) => choice);
+                return [$effect.ready(first), $effect.honor(second)];
+            })
+            .addPrinted();
     }
 }
-
-
-export default RecklessAvenger;
-
-
